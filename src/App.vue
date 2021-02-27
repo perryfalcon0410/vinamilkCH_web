@@ -4,9 +4,9 @@
     class="h-100"
     :class="[skinClasses]"
   >
-    <!-- <component :is="layout">
+    <component :is="layout">
       <router-view />
-    </component> -->
+    </component>
 
     <scroll-to-top v-if="enableScrollToTop" />
   </div>
@@ -36,17 +36,17 @@ import store from '@/store'
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
 
-// const LayoutVertical = () => import('@/layouts/vertical/LayoutVertical.vue')
-// const LayoutHorizontal = () => import('@/layouts/horizontal/LayoutHorizontal.vue')
-// const LayoutFull = () => import('@/layouts/full/LayoutFull.vue')
+const LayoutVertical = () => import('@/layouts/vertical/LayoutVertical.vue')
+const LayoutHorizontal = () => import('@/layouts/horizontal/LayoutHorizontal.vue')
+const LayoutFull = () => import('@/layouts/full/LayoutFull.vue')
 
 export default {
   name: 'App',
   components: {
     // Layouts
-    // LayoutHorizontal,
-    // LayoutVertical,
-    // LayoutFull,
+    LayoutHorizontal,
+    LayoutVertical,
+    LayoutFull,
     ScrollToTop,
   },
   data() {

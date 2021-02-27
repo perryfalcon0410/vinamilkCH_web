@@ -74,13 +74,12 @@
           <b-nav-text class="text-capitalize mr-1 font-weight-bold text-dark">
             Ngô Thị Lan hương
           </b-nav-text>
-
-          <img
-            src="../../../../assets/images/icons/profile.png"
-            width="35"
-            height="35"
-            class="mr-1 bg-info rounded-circle"
-          >
+          <b-icon
+            icon="person-circle"
+            width="25"
+            height="25"
+            class="mr-1 rounded-circle"
+          />
         </div>
         <!-- END - Profile -->
       </b-navbar-nav>
