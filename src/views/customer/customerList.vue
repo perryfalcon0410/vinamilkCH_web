@@ -140,6 +140,7 @@
               Xuất Excel
             </b-button>
             <b-button
+              v-b-modal.modal-delete
               class="ml-1 rounded"
               size="md"
               variant="danger"
@@ -203,6 +204,16 @@
       </b-form>
     </div>
     <!-- END - Customer list -->
+
+    <!-- START - Customer Modal Delete -->
+    <b-modal
+      id="modal-delete"
+      title="Thông báo"
+    >
+      Bạn có chắc muốn xóa hàng này không?
+    </b-modal>
+    <!-- END - Customer Modal Delete -->
+
   </b-container>
 </template>
 
