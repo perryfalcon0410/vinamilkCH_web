@@ -6,7 +6,6 @@
     title-class="text-uppercase font-weight-bold text-primary"
     content-class="bg-light"
     footer-border-variant="light"
-    modal-class="px-5 pt-2"
   >
     <!-- START - Body -->
     <b-container
@@ -16,32 +15,35 @@
 
         <!-- START - Import/Export List -->
         <b-col
-          cols="4"
-          class="d-flex flex-column"
+          xl="4"
+          class="d-flex flex-column px-0"
         >
           <label
             for="tableList"
-            class="pb-1 text-dark font-weight-bold"
+            class="p-1 text-dark font-weight-bold"
           >Danh sách nhập/xuất hàng
           </label>
 
-          <b-col class="bg-info pb-5 rounded text-dark">
-            <!-- START - Header -->
+          <b-col
+            id="tableList"
+            class="bg-info pb-4 rounded text-dark"
+          >
+            <!-- START - Title -->
             <b-row class="py-1">
               <b-col cols="1" />
-              <b-col cols="4">
+              <b-col>
                 Số chứng từ
               </b-col>
-              <b-col cols="3">
+              <b-col>
                 Ngày
               </b-col>
-              <b-col cols="4">
+              <b-col>
                 Ghi chú
               </b-col>
             </b-row>
-            <!-- END - Header -->
+            <!-- END - Title -->
 
-            <!-- START - Body -->
+            <!-- START - List -->
             <b-row
               v-for="item in productsList"
               :key="item.id"
@@ -50,39 +52,39 @@
               <b-col cols="1">
                 {{ item.id }}
               </b-col>
-              <b-col cols="4">
+              <b-col>
                 {{ item.lincenseNumber }}
               </b-col>
-              <b-col cols="3">
+              <b-col>
                 {{ item.date }}
               </b-col>
               <b-col
-                cols="4"
                 class="text-wrap"
               >
                 {{ item.note }}
 
               </b-col>
             </b-row>
-            <!-- END - Body -->
+            <!-- END - List -->
           </b-col>
         </b-col>
         <!-- END -  Import/Export List -->
 
         <!-- START -  Import/Export Detail -->
-        <b-col class="d-flex flex-column">
+        <b-col class="px-0 ml-xl-1 mt-1 mt-xl-0">
           <label
             for="tableDetail"
-            class="pb-1 text-dark font-weight-bold"
+            class="p-1 text-dark font-weight-bold"
           >Chi tiết nhập/xuất hàng
           </label>
-          <b-col class="bg-white py-1 rounded shadow h-100">
+          <b-col class="bg-white py-1 rounded shadow">
             <vue-good-table
+              id="tableDetail"
               :columns="columns"
               :rows="rows"
               style-class="vgt-table bordered"
               compact-mode
-              line-numbers="true"
+              line-numbers
             />
           </b-col>
         </b-col>

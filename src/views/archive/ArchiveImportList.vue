@@ -1,11 +1,11 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column"
+    class="d-flex flex-column p-1"
   >
     <!-- START - Search -->
-    <div class="m-1 bg-primary shadow-lg rounded">
-      <b-form class="bg-white rounded mt-1">
+    <b-col class="bg-primary shadow-lg rounded px-0 pt-1">
+      <b-form class="bg-white rounded">
         <label
           for="v-search-form"
           class="m-1 text-primary"
@@ -16,7 +16,10 @@
         <b-form-row
           class="v-search-form border-top p-1"
         >
-          <b-col cols="2">
+          <b-col
+            lg="2"
+            md
+          >
             <b-form-group
               label="Số hóa đơn"
               label-for="form-input-customer"
@@ -34,9 +37,12 @@
             </b-form-group>
           </b-col>
 
-          <b-col cols="2">
+          <b-col
+            lg="2"
+            md
+          >
             <b-form-group
-              class="ml-1"
+              class="ml-lg-1"
               label="Từ ngày"
               label-for="form-input-date-from"
             >
@@ -49,9 +55,12 @@
             </b-form-group>
           </b-col>
 
-          <b-col cols="2">
+          <b-col
+            lg="2"
+            md
+          >
             <b-form-group
-              class="ml-1"
+              class="ml-lg-1"
               label="Đến ngày"
               label-for="form-input-date-to"
             >
@@ -64,9 +73,12 @@
             </b-form-group>
           </b-col>
 
-          <b-col cols="2">
+          <b-col
+            lg="2"
+            md
+          >
             <b-form-group
-              class="ml-1"
+              class="ml-lg-1"
               label="Loại nhập"
               label-for="form-input-customer-group"
             >
@@ -76,9 +88,12 @@
             </b-form-group>
           </b-col>
 
-          <b-col>
+          <b-col
+            md="12"
+            lg="4"
+          >
             <b-form-group
-              class="ml-1"
+              class="ml-lg-1"
               label="Tìm kiếm"
               label-for="form-button-search"
             >
@@ -90,20 +105,20 @@
                 Tìm kiếm
               </b-button>
             </b-form-group>
-
           </b-col>
 
         </b-form-row>
       </b-form>
-    </div>
+    </b-col>
     <!-- END - Search -->
 
-    <!-- START - Customer list -->
-    <div class="v-search mx-1 mb-1 bg-primary shadow-lg rounded">
+    <!-- START - Product Import list -->
+    <b-col class="px-0 my-1 bg-primary shadow-lg rounded">
       <b-form class="bg-white rounded mt-1 pb-1">
+        <!-- START - Title -->
         <b-form-row class="justify-content-between align-items-center border-bottom p-1">
           <label
-            for=""
+            for="listProduct"
             class="text-primary"
           >
             Danh sách phiếu nhập hàng
@@ -117,8 +132,13 @@
             Thêm mới
           </b-button>
         </b-form-row>
+        <!-- END - Title -->
+
         <!-- START - Table -->
-        <div class="m-1 mt-1  ">
+        <b-col
+          id="listProduct"
+          class="py-1"
+        >
           <vue-good-table
             :columns="columns"
             :rows="rows"
@@ -127,7 +147,7 @@
               enabled: true
             }"
             compact-mode
-            line-numbers="true"
+            line-numbers
           >
             <!-- START - label -->
             <template
@@ -151,7 +171,7 @@
               <div v-if="props.column.field === 'ArchiveImportFeature'">
                 <b-button
                   variant="info"
-                  class="rounded-circle p-1 "
+                  class="rounded-circle p-1 ml-1"
                 >
                   <b-icon-printer
                     color="blue"
@@ -181,12 +201,12 @@
           <!-- END - Feature -->
 
           </vue-good-table>
-        </div>
+        </b-col>
         <!-- END - Table -->
 
       </b-form>
-    </div>
-    <!-- END - Customer list -->
+    </b-col>
+    <!-- END - Product Import list -->
   </b-container>
 </template>
 

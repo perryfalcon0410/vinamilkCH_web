@@ -6,67 +6,68 @@
     title-class="text-uppercase font-weight-bold text-primary"
     content-class="bg-light"
     footer-border-variant="light"
-    modal-class="px-5 pt-2"
   >
     <!-- START - Body -->
-    <b-container
-      fluid
-    >
+    <b-container fluid>
       <b-row>
-
         <!-- START - Import/Export List -->
         <b-col
-          cols="4"
-          class="d-flex flex-column"
+          xl="4"
+          class="bg-info pb-4 rounded text-dark"
         >
-          <b-col class="bg-info pb-5 rounded text-dark">
-            <!-- START - Header -->
-            <b-row class="py-1">
-              <b-col cols="1" />
-              <b-col cols="3">
-                PO No
-              </b-col>
-              <b-col cols="4">
-                Số nội bộ
-              </b-col>
-              <b-col cols="4">
-                Ngày
-              </b-col>
-            </b-row>
-            <!-- END - Header -->
+          <!-- START - Title -->
+          <b-row class="py-1">
+            <b-col
+              cols="1"
+            />
+            <b-col>
+              PO No
+            </b-col>
+            <b-col>
+              Số nội bộ
+            </b-col>
+            <b-col>
+              Ngày
+            </b-col>
+          </b-row>
+          <!-- END - Title -->
 
-            <b-row
-              v-for="item in productsList"
-              :key="item.id"
-              class="border-bottom border-white bg-light py-1"
+          <b-row
+            v-for="item in productsList"
+            :key="item.id"
+            class="border-bottom border-white bg-light py-1"
+          >
+            <b-col cols="1">
+              {{ item.id }}
+            </b-col>
+            <b-col>
+              {{ item.poNo }}
+            </b-col>
+            <b-col>
+              {{ item.internalNumber }}
+            </b-col>
+            <b-col
+
+              class="text-wrap"
             >
-              <b-col cols="1">
-                {{ item.id }}
-              </b-col>
-              <b-col cols="3">
-                {{ item.poNo }}
-              </b-col>
-              <b-col cols="4">
-                {{ item.internalNumber }}
-              </b-col>
-              <b-col
-                cols="4"
-                class="text-wrap"
-              >
-                {{ item.date }}
+              {{ item.date }}
 
-              </b-col>
-            </b-row>
-          </b-col>
+            </b-col>
+          </b-row>
         </b-col>
         <!-- END -  Import/Export List -->
 
         <!-- START - List -->
-        <b-col class="ml-1 bg-white shadow rounded p-1">
+        <b-col class="ml-xl-1 mt-1 mt-xl-0 bg-white shadow rounded pt-1">
 
           <!-- START - Table Product -->
-          <div class="d-flex flex-row justify-content-between">
-            <div class="bg-info d-flex align-items-center text-primary rounded-top font-weight-bold px-1">
+          <!-- START - Title Product -->
+          <b-row
+            align-v="end"
+            class="justify-content-between mx-0 "
+          >
+
+            <div class="bg-info d-flex h-25 align-items-center text-primary rounded-top font-weight-bold px-1">
               Sản phẩm
             </div>
             <b-button
@@ -81,34 +82,37 @@
               />
               Tải PO
             </b-button>
-          </div>
+          </b-row>
+          <!-- END - Title Product -->
 
           <vue-good-table
             :columns="columns"
             :rows="rowsProduct"
             style-class="vgt-table bordered"
             compact-mode
-            line-numbers="true"
+            line-numbers
             class="py-1 mb-1"
           />
           <!-- END - Table Product -->
 
           <!-- START - Table Product promotion -->
+          <!-- START - Title Product promotion -->
           <div class="bg-info d-inline-flex text-primary rounded-top font-weight-bold px-1">
             Hàng khuyến mãi
           </div>
+          <!-- END - Title Product promotion -->
 
           <vue-good-table
             :columns="columns"
             :rows="rowsProductPromotion"
             style-class="vgt-table bordered"
             compact-mode
-            line-numbers="true"
+            line-numbers
             class="py-1"
           />
           <!-- END - Table Product promotion -->
         </b-col>
-      <!-- END - List -->
+        <!-- END - List -->
       </b-row>
     </b-container>
     <!-- END - Body -->
