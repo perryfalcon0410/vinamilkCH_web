@@ -1,159 +1,167 @@
 <template>
-  <div class="d-flex flex-column">
+  <b-container
+    fluid
+    class="px-0"
+  >
     <!-- START - NavBar -->
-    <b-navbar
-      id="v-navbar"
-      type="light"
-    >
+    <b-navbar variant="light">
       <b-navbar-brand
-        id="v-brand-text"
         href="#"
+        class="d-md-none d-flex"
+      >
+        <b-icon-list
+          font-scale="1"
+        />
+      </b-navbar-brand>
+      <b-navbar-brand
+        href="#"
+        class="d-none d-md-flex"
       >
         SaleMT
       </b-navbar-brand>
 
-      <b-navbar-nav class="d-flex flex-row ml-auto">
+      <b-navbar-nav class="ml-auto">
         <!-- START - Contact -->
-        <div class="d-flex flex-row align-items-center mr-2">
+        <b-row
+          class="mx-0 d-none d-xl-flex"
+          align-v="center"
+        >
           <b-icon
             icon="telephone-fill"
-            width="25"
-            height="25"
-            class="mr-1"
+            font-scale="1.5"
           />
-          <div class="d-flex flex-column align-items-center">
-            <b-nav-text class="text-primary">
+          <b-col>
+            <div class="d-flex justify-content-center text-primary">
               1900 8098
-            </b-nav-text>
-
-            <b-nav-text class="text-lowercase">
+            </div>
+            <div class="d-flex justify-content-center text-lowercase">
               ch.support@vinamilk.com.vn
-            </b-nav-text>
-          </div>
-        </div>
+            </div>
+          </b-col>
+        </b-row>
         <!-- END - Contact -->
 
         <!-- START - Location -->
-        <div class="d-flex flex-row align-items-center  mr-2">
+        <b-row
+          class="mx-0 ml-1 d-none d-lg-flex"
+          align-v="center"
+        >
           <b-icon
             icon="geo-alt-fill"
-            width="25"
-            height="25"
-            class="mr-1"
+            font-scale="1.5"
           />
-          <div class="d-flex flex-column  align-items-center">
-            <b-nav-text class="text-uppercase">
+          <b-col>
+            <div class="d-flex justify-content-center text-uppercase">
               Cửa hàng
-            </b-nav-text>
-            <b-nav-text class="text-capitalize">
+            </div>
+            <div class="d-flex justify-content-center text-capitalize">
               Số 33 Đinh Tiên Hoàng, P. Đa Kao, Q. 1
-            </b-nav-text>
-          </div>
-        </div>
+            </div>
+          </b-col>
+        </b-row>
         <!-- END - Location -->
 
         <!-- START - Icon group -->
-        <div class="d-flex flex-row align-items-center mr-2">
-          <b-icon
-            icon="arrow-repeat"
-            width="25"
-            height="25"
-            class="mr-1"
-          />
-
-          <b-icon
-            icon="bell-fill"
-            width="25"
-            height="25"
-          />
-        </div>
+        <b-row
+          class="mx-0 row-cols-2"
+          align-v="center"
+        >
+          <b-nav-item>
+            <b-icon
+              icon="arrow-repeat"
+              font-scale="1.5"
+            />
+          </b-nav-item>
+          <b-nav-item>
+            <b-icon
+              icon="bell-fill"
+              font-scale="1.5"
+            />
+          </b-nav-item>
+        </b-row>
         <!-- END - Icon group -->
 
         <!-- START - Profile -->
-        <div class="d-flex flex-row align-items-center mr-2">
-          <b-nav-text class="text-capitalize mr-1 font-weight-bold text-dark">
-            Ngô Thị Lan hương
-          </b-nav-text>
-          <b-icon
-            icon="person-circle"
-            width="25"
-            height="25"
-            class="mr-1 rounded-circle"
-          />
-        </div>
+        <b-nav-item>
+          <b-row
+            class="mx-0"
+            align-v="center"
+          >
+            <b-nav-text class=" d-none d-sm-flex text-capitalize mr-1 font-weight-bold text-dark">
+              Ngô Thị Lan hương
+            </b-nav-text>
+            <b-icon
+              icon="person-circle"
+              font-scale="2"
+              class="rounded-circle"
+            />
+          </b-row>
+        </b-nav-item>
         <!-- END - Profile -->
       </b-navbar-nav>
     </b-navbar>
     <!-- END - NavBar -->
 
     <!-- START - Nav -->
-    <b-nav
-      class="d-flex flex-row align-items-center bg-info"
-    >
+    <b-nav class="d-none d-md-flex bg-primary">
       <b-nav-item class="mx-2">
         <b-icon
           icon="gear-fill"
-          width="25"
-          height="25"
+          font-scale="1.5"
           color="white"
-          class="mr-1"
         />
-        <b-nav-text class="text-white">
+        <b-nav-text class="text-white  ml-1">
           Hệ thống
         </b-nav-text>
       </b-nav-item>
+
       <b-nav-item class="mx-2">
         <b-icon
           icon="cart-fill"
-          width="25"
-          height="25"
+          font-scale="1.5"
           color="white"
-          class="mr-1"
         />
-        <b-nav-text class="text-white">
+        <b-nav-text class="text-white  ml-1">
           Bán hàng
         </b-nav-text>
       </b-nav-item>
+
       <b-nav-item class="mx-2">
         <b-icon
           icon="cart-fill"
-          width="25"
-          height="25"
+          font-scale="1.5"
           color="white"
-          class="mr-1"
         />
-        <b-nav-text class="text-white">
+        <b-nav-text class="text-white  ml-1">
           Mua hàng
         </b-nav-text>
       </b-nav-item>
+
       <b-nav-item class="mx-2">
         <b-icon
           icon="archive-fill"
-          width="25"
-          height="25"
+          font-scale="1.5"
           color="white"
-          class="mr-1"
         />
-        <b-nav-text class="text-white">
+        <b-nav-text class="text-white  ml-1">
           Kho
         </b-nav-text>
       </b-nav-item>
+
       <b-nav-item class="mx-2">
         <b-icon
           icon="graph-up"
-          width="25"
-          height="25"
+          font-scale="1.5"
           color="white"
-          class="mr-1"
         />
-        <b-nav-text class="text-white">
+        <b-nav-text class="text-white ml-1">
           Báo cáo
         </b-nav-text>
       </b-nav-item>
     </b-nav>
     <!-- END - Nav -->
 
-  </div>
+  </b-container>
 </template>
 
 <script>
