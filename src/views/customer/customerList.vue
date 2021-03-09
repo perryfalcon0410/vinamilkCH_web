@@ -4,47 +4,77 @@
     class="d-flex flex-column"
   >
     <!-- START - Search -->
-    <div class="m-1 bg-info shadow-lg rounded">
+    <b-col class="bg-primary shadow rounded my-1 px-0">
       <b-form class="bg-white rounded mt-1">
         <label
           for="v-search-form"
-          class="m-1 text-info"
+          class="text-primary m-1"
         >
           Tìm kiếm
         </label>
 
         <b-form-row
-          class="v-search-form border-top p-1"
+          class="v-search-form border-top mx-0 p-1"
         >
-          <b-col>
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
             <b-form-group
               label="Khách hàng"
               label-for="form-input-customer"
             >
               <b-form-input
                 id="form-input-customer"
-                placeholder=" Nhập họ tên/ mã"
+                placeholder=" Nhập họ tên/mã"
                 trim
               />
             </b-form-group>
           </b-col>
 
-          <b-col>
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
             <b-form-group
-              class="ml-1"
-              label="Thời gian tạo"
-              label-for="form-input-date"
+              label="Từ ngày"
+              label-for="form-input-date-from"
             >
               <b-form-datepicker
-                id="form-input-date"
-                placeholder="chọn từ ngày - đến ngày"
+                id="form-input-date-from"
+                v-model="valueDateFrom"
+                :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
+                locale="vi"
               />
             </b-form-group>
           </b-col>
 
-          <b-col>
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
             <b-form-group
-              class="ml-1"
+              label="Đến ngày"
+              label-for="form-input-date-to"
+            >
+              <b-form-datepicker
+                id="form-input-date-to"
+                v-model="valueDateTo"
+                :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
+                locale="vi"
+              />
+            </b-form-group>
+          </b-col>
+
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
+            <b-form-group
               label="Nhóm khách hàng"
               label-for="form-input-customer-group"
             >
@@ -54,9 +84,12 @@
             </b-form-group>
           </b-col>
 
-          <b-col>
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
             <b-form-group
-              class="ml-1"
               label="Trạng thái"
               label-for="form-input-customer-group"
             >
@@ -66,9 +99,12 @@
             </b-form-group>
           </b-col>
 
-          <b-col>
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
             <b-form-group
-              class="ml-1"
               label="Giới tính"
               label-for="form-input-customer-group"
             >
@@ -78,9 +114,12 @@
             </b-form-group>
           </b-col>
 
-          <b-col>
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
             <b-form-group
-              class="ml-1"
               label="Khu vực"
               label-for="form-input-customer-group"
             >
@@ -90,51 +129,52 @@
             </b-form-group>
           </b-col>
 
-          <b-col>
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
             <b-form-group
-              class="ml-1"
               label="Tìm kiếm"
               label-for="form-button-search"
             >
               <b-button
                 id="form-button-search"
-                variant="info"
+                variant="primary"
               >
-                <b-icon-search class="mr-1" />
+                <b-icon-search />
                 Tìm kiếm
               </b-button>
             </b-form-group>
-
           </b-col>
 
         </b-form-row>
       </b-form>
-    </div>
+    </b-col>
     <!-- END - Search -->
 
     <!-- START - Customer list -->
-    <div class="v-search mx-1 mb-1 bg-info shadow-lg rounded">
+    <b-col class="v-search my-1 bg-primary shadow rounded px-0">
       <b-form class="bg-white rounded mt-1 pb-1">
-        <b-form-row class="justify-content-between align-items-center border-bottom p-1">
-          <label
-            for=""
-            class="text-info"
-          >
+        <!-- START - Header -->
+        <b-row
+          class="justify-content-between border-bottom p-1 mx-0"
+          align-v="center"
+        >
+          <label class="text-primary">
             Danh sách khách hàng
           </label>
-          <b-button-group class="">
+          <b-button-group>
             <b-button
               class="rounded"
-              size="md"
-              variant="info"
+              variant="primary"
             >
               <b-icon-plus />
               Thêm mới
             </b-button>
             <b-button
               class="ml-1 rounded"
-              size="md"
-              variant="info"
+              variant="primary"
             >
               <b-icon-file-earmark-x-fill />
               Xuất Excel
@@ -142,16 +182,17 @@
             <b-button
               v-b-modal.modal-delete
               class="ml-1 rounded"
-              size="md"
               variant="danger"
             >
               <b-icon-trash-fill />
               Xóa
             </b-button>
           </b-button-group>
-        </b-form-row>
+        </b-row>
+        <!-- END - Header -->
 
-        <div class="m-1 mt-1  ">
+        <!-- START - Table -->
+        <b-col class="py-1">
           <vue-good-table
             :columns="columns"
             :rows="rows"
@@ -169,19 +210,19 @@
               disableSelectInfo: true,
               selectAllByGroup: true,
             }"
-            line-numbers="true"
+            line-numbers
           >
             <!-- START - label -->
             <template
               slot="table-column"
               slot-scope="props"
             >
-              <span v-if="props.column.label === 'Chức năng'">
+              <div v-if="props.column.label === 'Chức năng'">
                 <b-icon-bricks />
-              </span>
-              <span v-else>
+              </div>
+              <div v-else>
                 {{ props.column.label }}
-              </span>
+              </div>
             </template>
             <!-- END - label -->
 
@@ -190,19 +231,20 @@
               slot="table-row"
               slot-scope="props"
             >
-              <span v-if="props.column.field === 'customerFeature'">
+              <div v-if="props.column.field === 'customerFeature'">
                 <b-icon-pencil-fill />
-              </span>
-              <span v-else>
+              </div>
+              <div v-else>
                 {{ props.formattedRow[props.column.field] }}
-              </span>
+              </div>
             </template>
           <!-- END - Edit -->
 
           </vue-good-table>
-        </div>
+        </b-col>
+        <!-- END - Table -->
       </b-form>
-    </div>
+    </b-col>
     <!-- END - Customer list -->
 
     <!-- START - Customer Modal Delete -->
@@ -232,6 +274,8 @@ export default {
   },
   data() {
     return {
+      valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      valueDateTo: new Date(),
       columns: [
         {
           label: 'Mã khách hàng',
