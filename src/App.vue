@@ -7,7 +7,6 @@
     <!-- <component :is="layout">
       <router-view />
     </component> -->
-    <nav-bar />
 
     <customer-update v-if="isActive === true" />
 
@@ -36,7 +35,6 @@ import { useWindowSize, useCssVar } from '@vueuse/core'
 
 import store from '@/store'
 
-import navBar from '@core/layouts/components/app-navbar/AppNavbar.vue'
 import customerUpdate from './views/customer/customerUpdate.vue'
 
 Vue.use(BootstrapVue)
@@ -53,7 +51,7 @@ export default {
     // LayoutHorizontal,
     // LayoutVertical,
     // LayoutFull,
-    navBar,
+
     customerUpdate,
     ScrollToTop,
   },

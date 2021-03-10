@@ -1,26 +1,22 @@
 <template>
-  <b-container
-    fluid
-    class="d-flex flex-column py-1 px-2"
-  >
+  <b-container fluid>
     <!-- START - Header -->
     <b-row
       align-v="center"
-      class="justify-content-between mx-0"
+      class="justify-content-between p-1"
     >
-
       <!-- START - Back -->
       <b-row
         align-v="center"
-        class=""
+        class="mx-0"
       >
-        <b-icon
-          icon="arrow-left"
+        <b-icon-arrow-left
+          v-b-modal.modal-close
           font-scale="2"
           color="gray"
         />
         <b-col class="font-weight-bold text-dark">
-          Thêm mới khách hàng
+          Cập nhật khách hàng
         </b-col>
       </b-row>
       <!-- END - Back -->
@@ -28,28 +24,23 @@
       <!-- START - Button -->
       <b-button-group>
         <b-button
-          variant="info"
-          size="sm"
-          class="rounded"
+          variant="primary"
+          class="rounded mr-1"
         >
           <b-icon
             icon="download"
-            width="20"
-            height="20"
-            class="mr-1"
+            font-scale="1"
           />
           Lưu
         </b-button>
 
         <b-button
-          size="sm"
-          class="ml-1 rounded"
+          v-b-modal.modal-close
+          class="rounded"
         >
           <b-icon
             icon="x"
-            width="20"
-            height="20"
-            class=""
+            font-scale="1"
           />
           Đóng
         </b-button>
@@ -60,27 +51,34 @@
     <!-- END - Header -->
 
     <!-- START - Form Container-->
-    <b-form-row class="mt-1">
+    <b-row class="px-1 pb-1">
 
       <!-- START - Form Personal information -->
       <b-col
-        class="shadow px-0"
+        lg
+        class="shadow bg-white rounded"
       >
-        <b-row no-gutters>
+        <b-row>
           <!-- START - Section 1 -->
           <b-col
-            cols="7"
-            class="bg-white p-1 rounded"
+            sm="7"
+            class="rounded pb-1"
           >
-            <label class="font-weight-bold w-100 text-center">Thông tin cá nhân</label>
+            <label class="font-weight-bold w-100 text-center mb-2">Thông tin cá nhân</label>
             <!-- START - Customer ID -->
             <b-form-group
-              class="mt-2"
               label="Mã khách hàng"
               label-for="customerID"
+              :state="stateInputCustomerID"
+              invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
             >
               <b-form-input
                 id="customerID"
+                v-model="inputValueCustomerID"
+                maxlength="40"
+                :state="stateInputCustomerID"
+                required
+                trim
                 disabled
               />
             </b-form-group>
@@ -96,6 +94,8 @@
                   <b-form-input
                     id="customerSurnameAndMiddleName"
                     required
+                    trim
+                    maxlength="200"
                   />
                 </b-form-group>
               </b-col>
@@ -108,6 +108,8 @@
                   <b-form-input
                     id="customerName"
                     required
+                    trim
+                    maxlength="200"
                   />
                 </b-form-group>
               </b-col>
@@ -121,6 +123,8 @@
             >
               <b-form-input
                 id="customerBarcode"
+                trim
+                maxlength="200"
               />
             </b-form-group>
             <!-- END - Customer Barcode -->
@@ -132,8 +136,11 @@
                   label="Ngày sinh"
                   label-for="customerBirthDay"
                 >
-                  <b-form-input
+                  <b-form-datepicker
                     id="customerBirthDay"
+                    placeholder="chọn ngày"
+                    :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
+                    locale="vi"
                   />
                 </b-form-group>
               </b-col>
@@ -145,6 +152,8 @@
                 >
                   <b-form-select
                     id="customerGender"
+                    v-model="selectedCustomerGender"
+                    :options="optionsCustomerGender"
                   />
                 </b-form-group>
               </b-col>
@@ -160,6 +169,9 @@
                 >
                   <b-form-select
                     id="customerGroup"
+                    v-model="selectedCustomerGroup"
+                    required
+                    :options="optionsCustomerGroup"
                   />
                 </b-form-group>
               </b-col>
@@ -171,6 +183,9 @@
                 >
                   <b-form-select
                     id="customerState"
+                    v-model="selectedCustomerState"
+                    :options="optionsCustomerState"
+                    disabled
                   />
                 </b-form-group>
               </b-col>
@@ -191,66 +206,82 @@
             >
               <b-form-textarea
                 id="customerNote"
+                maxlength="4000"
               />
             </b-form-group>
             <!-- END - Customer Note -->
 
             <!-- START - Customer Date Created -->
-            <div class="d-flex flex-row">
+            <b-row class="mx-0">
               <div>
                 Ngày tạo:
               </div>
               <div class="font-weight-bold">
                 01/08/2018 (2 năm 3 tháng)
               </div>
-            </div>
+            </b-row>
             <!-- END - Customer Date Created -->
-
           </b-col>
           <!-- END - Section 1 -->
 
           <!-- START - Section 2 -->
           <b-col
-            cols="5"
-            class="rounded"
+            sm
+            class="d-flex flex-column rounded px-0"
           >
-            <b-col class="py-1 bg-gray">
+            <!-- START - Customer Info-->
+            <b-col class="bg-light py-2">
               <!-- START - Customer IdentityCard -->
               <b-form-group
                 label="CMND"
                 label-for="customerIdentityCard"
+                :state="stateInputIdentityCard"
+                invalid-feedback="Chỉ nhập ký tự số"
               >
                 <b-form-input
                   id="customerIdentityCard"
+                  v-model="inputValueIdentityCard"
+                  maxlength="15"
+                  :state="stateInputIdentityCard"
+                  trim
                 />
               </b-form-group>
               <!-- END - Customer IdentityCard -->
-              <!-- START - Customer ID Date -->
+
+              <!-- START - Customer Date -->
               <b-form-group
                 label="Ngày cấp"
                 label-for="customerIdDate"
               >
-                <b-form-input
+                <b-form-datepicker
                   id="customerIdDate"
+                  placeholder="chọn ngày"
+                  :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
+                  locale="vi"
                 />
               </b-form-group>
-              <!-- END - Customer ID Date -->
+              <!-- END - Customer Date -->
+
               <!-- START - Customer Location -->
               <b-form-group
                 label="Nơi cấp"
-                label-for="customerLocation"
+                label-for="customerIdLocation"
               >
                 <b-form-input
-                  id="customerLocation"
+                  id="customerIdLocation"
+                  maxlength="200"
+                  trim
                 />
               </b-form-group>
             <!-- END - Customer Location -->
             </b-col>
+            <!-- END - Customer Info-->
 
             <!-- START - Customer Sales -->
-            <b-col class="bg-light py-1">
-
+            <b-col class="bg-info py-1">
+              <!-- START - Group 1 -->
               <b-row>
+                <!-- START - 1 -->
                 <b-col>
                   <label>
                     Doanh số tháng này
@@ -259,7 +290,9 @@
                     3,500,000
                   </div>
                 </b-col>
+                <!-- END - 1 -->
 
+                <!-- START - 2 -->
                 <b-col>
                   <label>
                     Doanh số tổng
@@ -268,67 +301,77 @@
                     13,123,000
                   </div>
                 </b-col>
+                <!-- END - 2 -->
               </b-row>
+              <!-- END - Group 1 -->
 
               <!-- START - Customer Favorite product -->
-              <label class="my-1">
-                Sản phẩm yêu thích
-              </label>
-              <div
-                v-for="food in foods"
-                :key="food"
-                class="text-info"
-              >
-                {{ food.name }}
-              </div>
-              <div
-                class="my-1 d-flex flex-row"
-              >
+              <b-col class="px-0 my-1">
+                <label>
+                  Sản phẩm yêu thích
+                </label>
+                <div
+                  v-for="(food, index ) in foods"
+                  :key="index"
+                  class="text-primary my-1"
+                >
+                  {{ food.name }}
+                </div>
+              </b-col>
+
+              <b-row class="mx-0">
                 <div>
                   Ngày mua hàng cuối:
                 </div>
                 <div class="font-weight-bold">
                   31/10/2020
                 </div>
-              </div>
-
+              </b-row>
               <!-- END - Customer Favorite product -->
 
             </b-col>
             <!-- END - Customer Sales -->
           </b-col>
           <!-- END - Section 2 -->
-
         </b-row>
       </b-col>
       <!-- END - Form Personal information -->
 
       <!-- START - Form Contact information -->
       <b-col
-        cols="3"
-        class="bg-white p-1 ml-1 shadow rounded"
+        md
+        lg="6"
+        xl="3"
+        class="bg-white shadow rounded ml-lg-1 mt-1 mt-lg-0"
       >
-        <label class="font-weight-bold w-100 text-center">Thông tin liên hệ</label>
+        <label class="font-weight-bold w-100 text-center mb-2">Thông tin liên hệ</label>
         <!-- START - Customer Phone Number -->
         <b-form-group
-          class="mt-2"
           label="Di động"
           label-for="customerPhoneNumber"
+          :state="stateInputPhoneNumber"
+          invalid-feedback="Chỉ nhập ký tự số"
         >
           <b-form-input
             id="customerPhoneNumber"
+            v-model="inputValuePhoneNumber"
+            required
+            trim
+            maxlength="15"
+            :state="stateInputPhoneNumber"
           />
         </b-form-group>
         <!-- END - Customer Phone Number -->
 
         <!-- START - Customer Email -->
         <b-form-group
-          class="mt-2"
           label="Email"
           label-for="customerEmail"
         >
           <b-form-input
             id="customerEmail"
+            trim
+            maxlength="200"
           />
         </b-form-group>
         <!-- END - Customer Email -->
@@ -340,6 +383,9 @@
         >
           <b-form-input
             id="customerApartmentNumber"
+            required
+            trim
+            maxlength="200"
           />
         </b-form-group>
         <!-- END - Customer Apartment number -->
@@ -377,6 +423,8 @@
         >
           <b-form-input
             id="customerOrgan"
+            trim
+            maxlength="200"
           />
         </b-form-group>
         <!-- END - Customer Organ-->
@@ -388,6 +436,8 @@
         >
           <b-form-input
             id="customerOrganAddress"
+            trim
+            maxlength="200"
           />
         </b-form-group>
         <!-- END - Customer Organ Address-->
@@ -396,41 +446,52 @@
         <b-form-group
           label="Mã số thuế"
           label-for="customerTaxCode"
+          :state="stateInputTaxCode"
+          invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
         >
           <b-form-input
             id="customerTaxCode"
+            v-model="inputValueTaxCode"
+            maxlength="40"
+            trim
+            :state="stateInputTaxCode"
           />
         </b-form-group>
-      <!-- END - Customer Tax code-->
+        <!-- END - Customer Tax code-->
       </b-col>
       <!-- START - Form Contact information -->
 
       <!-- START - Form Membership card -->
       <b-col
-        cols="3"
-        class="bg-white p-1 ml-1 shadow rounded"
+        md
+        lg="6"
+        xl="3"
+        class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
       >
-        <label class="font-weight-bold w-100 text-center">Thẻ thành viên</label>
+        <label class="font-weight-bold w-100 text-center mb-2">Thẻ thành viên</label>
         <!-- START - Customer Membership card -->
         <b-form-group
-          class="mt-2"
           label="Thẻ thành viên"
           label-for="customerMembershipCard"
         >
-          <b-form-input
+          <b-form-select
             id="customerMembershipCard"
+            v-model="selectedMembershipCard"
+            :options="optionsMembershipCard"
           />
         </b-form-group>
         <!-- END - Customer Membership card  -->
 
         <!-- START - Customer Card Date -->
         <b-form-group
-          class="mt-2"
           label="Ngày cấp thẻ"
           label-for="customerCardDate"
         >
-          <b-form-input
+          <b-form-datepicker
             id="customerCardDate"
+            placeholder="chọn ngày"
+            :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
+            locale="vi"
           />
         </b-form-group>
         <!-- END - Customer Card Date -->
@@ -442,6 +503,8 @@
         >
           <b-form-select
             id="customerCardType"
+            v-model="selectedCardType"
+            :options="optionsCardType"
           />
         </b-form-group>
         <!-- END - Customer Card type -->
@@ -453,29 +516,112 @@
         >
           <b-form-select
             id="customerType"
+            v-model="selectedCustomerType"
+            :options="optionsCustomerType"
           />
         </b-form-group>
-      <!-- END - Customer Type -->
+        <!-- END - Customer Type -->
       </b-col>
       <!-- START - Form Membership card -->
 
-    </b-form-row>
+    </b-row>
     <!-- END - Form Container-->
 
+    <!-- START - Customer Modal Close -->
+    <b-modal
+      id="modal-close"
+      title="Thông báo"
+    >
+      Thông tin khách hàng sẽ không được cập nhật khi rời trang
+    </b-modal>
+    <!-- END - Customer Modal Close -->
   </b-container>
 </template>
 
 <script>
 export default {
-  name: 'AppCustomerUpdate',
   data() {
     return {
+      inputValueIdentityCard: '',
+      inputValueCustomerID: '',
+      inputValuePhoneNumber: '',
+      inputValueTaxCode: '',
+
       foods: [
         { name: 'Sữa bột Vinamilk Organic Gold 4' },
         { name: 'Nước Vfresh cam ép 100% - Hộp 1L' },
         { name: 'Sữa đặc Ngôi Sao Phương Nam xanh lá - 1284g' },
       ],
+
+      selectedCustomerGender: null,
+      optionsCustomerGender: [
+        { value: null, text: 'Khác' },
+        { value: 'Male', text: 'Nam' },
+        { value: 'Female', text: 'Nữ' },
+      ],
+
+      selectedCustomerGroup: null,
+      optionsCustomerGroup: [
+        { value: null, text: '--Chọn giá trị--' },
+      ],
+
+      selectedCustomerState: 'active',
+      optionsCustomerState: [
+        { value: 'active', text: 'Hoạt động' },
+      ],
+
+      selectedMembershipCard: null,
+      optionsMembershipCard: [
+        { value: null, text: '--Chọn thẻ thành viên--' },
+      ],
+
+      selectedCardType: null,
+      optionsCardType: [
+        { value: null, text: '--Chọn loại thẻ--' },
+      ],
+
+      selectedCustomerType: null,
+      optionsCustomerType: [
+        { value: null, text: '--Chọn loại khách hàng--' },
+      ],
     }
+  },
+  computed: {
+    stateInputCustomerID() {
+      const valid = /^([\w\\.]{0,40})$/
+      const result = valid.test(this.inputValueCustomerID)
+      if (this.inputValueCustomerID.length >= 1) {
+        return result
+      }
+      return null
+    },
+
+    stateInputIdentityCard() {
+      const valid = /^(\d{0,15})$/
+      const result = valid.test(this.inputValueIdentityCard)
+      if (this.inputValueIdentityCard.length >= 1) {
+        return result
+      }
+      return null
+    },
+
+    stateInputPhoneNumber() {
+      const valid = /^(\d{0,15})$/
+      const result = valid.test(this.inputValuePhoneNumber)
+      if (this.inputValuePhoneNumber.length >= 1) {
+        return result
+      }
+      return null
+    },
+
+    stateInputTaxCode() {
+      const valid = /^([\w\\.]{0,40})$/
+      const result = valid.test(this.inputValueTaxCode)
+      if (this.inputValueTaxCode.length >= 1) {
+        return result
+      }
+      return null
+    },
   },
 }
 </script>
