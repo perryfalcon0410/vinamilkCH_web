@@ -7,10 +7,8 @@
     <!-- <component :is="layout">
       <router-view />
     </component> -->
-    <nav-bar />
 
-    <customer-list v-if="isActive === false" />
-    <customer-add v-if="isActive === true" />
+    <customer-add />
 
     <scroll-to-top v-if="enableScrollToTop" />
   </div>
@@ -37,8 +35,6 @@ import { useWindowSize, useCssVar } from '@vueuse/core'
 
 import store from '@/store'
 
-import navBar from '@core/layouts/components/app-navbar/AppNavbar.vue'
-import customerList from './views/customer/customerList.vue'
 import customerAdd from './views/customer/customerAdd.vue'
 
 Vue.use(BootstrapVue)
@@ -55,8 +51,7 @@ export default {
     // LayoutHorizontal,
     // LayoutVertical,
     // LayoutFull,
-    navBar,
-    customerList,
+
     customerAdd,
     ScrollToTop,
   },
