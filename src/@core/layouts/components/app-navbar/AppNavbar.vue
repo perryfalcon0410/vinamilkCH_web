@@ -82,21 +82,33 @@
         <!-- END - Icon group -->
 
         <!-- START - Profile -->
-        <b-nav-item>
-          <b-row
-            class="mx-0"
-            align-v="center"
-          >
-            <b-nav-text class=" d-none d-sm-flex text-capitalize mr-1 font-weight-bold text-dark">
-              Ngô Thị Lan hương
-            </b-nav-text>
-            <b-icon
-              icon="person-circle"
-              font-scale="2"
-              class="rounded-circle"
-            />
-          </b-row>
-        </b-nav-item>
+        <b-nav-item-dropdown
+          no-caret
+          lazy
+        >
+          <!-- Using 'button-content' slot -->
+          <template #button-content>
+            <b-row
+              class="mx-0"
+              align-v="center"
+            >
+              <b-nav-text class="d-none d-sm-flex text-capitalize mr-1 font-weight-bold text-dark">
+                Ngô Thị Lan hương
+              </b-nav-text>
+              <b-icon
+                icon="person-circle"
+                font-scale="2"
+                class="rounded-circle"
+              />
+            </b-row>
+          </template>
+          <b-dropdown-item href="#">
+            Thông tin cá nhân
+          </b-dropdown-item>
+          <b-dropdown-item href="#">
+            Đăng xuất
+          </b-dropdown-item>
+        </b-nav-item-dropdown>
         <!-- END - Profile -->
       </b-navbar-nav>
     </b-navbar>
@@ -167,5 +179,9 @@
 <script>
 export default {
   name: 'AppNavbar',
+  data() {
+    return {
+    }
+  },
 }
 </script>
