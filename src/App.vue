@@ -8,8 +8,6 @@
       <router-view />
     </component> -->
 
-    <customer-list />
-
     <scroll-to-top v-if="enableScrollToTop" />
   </div>
 </template>
@@ -35,8 +33,6 @@ import { useWindowSize, useCssVar } from '@vueuse/core'
 
 import store from '@/store'
 
-import customerList from './views/customer/customerList.vue'
-
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
 
@@ -51,7 +47,6 @@ export default {
     // LayoutHorizontal,
     // LayoutVertical,
     // LayoutFull,
-    customerList,
     ScrollToTop,
   },
   data() {
