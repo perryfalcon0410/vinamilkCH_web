@@ -106,7 +106,7 @@
           <b-dropdown-item href="#">
             Thông tin cá nhân
           </b-dropdown-item>
-          <b-dropdown-item href="#">
+          <b-dropdown-item @click="logout">
             Đăng xuất
           </b-dropdown-item>
         </b-nav-item-dropdown>
@@ -119,7 +119,7 @@
     <b-nav class="d-none d-md-flex bg-primary">
       <b-nav-item
         class="mx-2"
-        @click="routeHome"
+        @click="routeCustomer"
       >
         <b-icon
           icon="gear-fill"
@@ -207,6 +207,9 @@
 </template>
 
 <script>
+import useJwt from '@/auth/jwt/useJwt'
+import { initialAbility } from '@/libs/acl/config'
+
 export default {
   name: 'AppNavbar',
   data() {
@@ -215,6 +218,9 @@ export default {
   },
   methods: {
     routeHome() {
+      this.$router.push({ name: 'dashboard-ecommerce' })
+    },
+    routeCustomer() {
       this.$router.push({ name: 'home-customerList' })
     },
     routeImportProduct() {
@@ -228,6 +234,21 @@ export default {
     },
     onDropDownLeave() {
       this.$refs.dropdown.visible = false
+    },
+    logout() {
+      // Remove userData from localStorage
+      // ? You just removed token from localStorage. If you like, you can also make API call to backend to blacklist used token
+      localStorage.removeItem(useJwt.jwtConfig.storageTokenKeyName)
+      localStorage.removeItem(useJwt.jwtConfig.storageRefreshTokenKeyName)
+
+      // Remove userData from localStorage
+      localStorage.removeItem('userData')
+
+      // Reset ability
+      this.$ability.update(initialAbility)
+
+      // Redirect to login page
+      this.$router.push({ name: 'auth-login' })
     },
   },
 }

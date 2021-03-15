@@ -60,9 +60,8 @@ export default {
   // Currently, router.currentRoute is not reactive and doesn't trigger any change
   computed: {
     layout() {
-      // if (this.$route.meta.layout === 'full') return 'layout-full'
-      // return `layout-${this.contentLayoutType}`
-      return 'layout-main'
+      if (this.$route.meta.layout === 'full') return 'layout-full'
+      return `layout-${this.contentLayoutType}`
     },
     contentLayoutType() {
       return this.$store.state.appConfig.layout.type

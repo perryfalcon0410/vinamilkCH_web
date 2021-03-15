@@ -1,6 +1,6 @@
 export default {
   // Endpoints
-  loginEndpoint: '/jwt/login',
+  loginEndpoint: 'user/preLogin',
   registerEndpoint: '/jwt/register',
   refreshEndpoint: '/jwt/refresh-token',
   logoutEndpoint: '/jwt/logout',
