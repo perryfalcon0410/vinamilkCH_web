@@ -5,6 +5,8 @@ import VueRouter from 'vue-router'
 import { canNavigate } from '@/libs/acl/routeProtection'
 import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 import apps from './routes/apps'
+import archive from './routes/archive'
+import customer from './routes/customer'
 import dashboard from './routes/dashboard'
 import uiElements from './routes/ui-elements/index'
 import pages from './routes/pages'
@@ -21,8 +23,11 @@ const router = new VueRouter({
     return { x: 0, y: 0 }
   },
   routes: [
-    { path: '/', redirect: { name: 'dashboard-ecommerce' } },
+    // { path: '/', redirect: { name: 'dashboard-ecommerce' } },
+    { path: '/', redirect: { name: 'home-customerList' } },
     ...apps,
+    ...archive,
+    ...customer,
     ...dashboard,
     ...pages,
     ...chartsMaps,

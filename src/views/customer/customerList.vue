@@ -168,6 +168,7 @@
             <b-button
               class="rounded"
               variant="primary"
+              @click="routeCustomerAdd"
             >
               <b-icon-plus />
               Thêm mới
@@ -232,7 +233,10 @@
               slot-scope="props"
             >
               <div v-if="props.column.field === 'customerFeature'">
-                <b-icon-pencil-fill />
+                <b-icon-pencil-fill
+                  class="cursor-pointer"
+                  @click="routeCustomerUpdate"
+                />
               </div>
               <div v-else>
                 {{ props.formattedRow[props.column.field] }}
@@ -393,6 +397,12 @@ export default {
     }
   },
   methods: {
+    routeCustomerAdd() {
+      this.$router.push({ name: 'customerList-customerAdd' })
+    },
+    routeCustomerUpdate() {
+      this.$router.push({ name: 'customerList-customerUpdate' })
+    },
   },
 }
 </script>

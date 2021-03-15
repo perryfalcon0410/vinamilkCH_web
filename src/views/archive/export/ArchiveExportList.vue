@@ -127,6 +127,7 @@
             class="rounded"
             size="md"
             variant="primary"
+            @click="routeArchiveExportAddNew"
           >
             <b-icon-plus />
             Thêm mới
@@ -171,7 +172,8 @@
               <div v-if="props.column.field === 'ArchiveExportFeature'">
                 <b-button
                   variant="info"
-                  class="rounded-circle ml-1 p-1 "
+                  class="rounded-circle ml-1 p-1"
+                  @click="routeArchiveExportAddNew"
                 >
                   <b-icon-pencil-fill
                     color="blue"
@@ -337,6 +339,11 @@ export default {
         return result
       }
       return null
+    },
+  },
+  methods: {
+    routeArchiveExportAddNew() {
+      this.$router.push({ name: 'archive-exportAddNew' })
     },
   },
 }

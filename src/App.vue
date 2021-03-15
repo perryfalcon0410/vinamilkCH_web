@@ -39,6 +39,7 @@ Vue.use(BootstrapVueIcons)
 const LayoutVertical = () => import('@/layouts/vertical/LayoutVertical.vue')
 const LayoutHorizontal = () => import('@/layouts/horizontal/LayoutHorizontal.vue')
 const LayoutFull = () => import('@/layouts/full/LayoutFull.vue')
+const LayoutMain = () => import('@/@core/layouts/layout-main/LayoutMain.vue')
 
 export default {
   name: 'App',
@@ -47,6 +48,8 @@ export default {
     LayoutHorizontal,
     LayoutVertical,
     LayoutFull,
+    LayoutMain,
+
     ScrollToTop,
   },
   data() {
@@ -57,8 +60,9 @@ export default {
   // Currently, router.currentRoute is not reactive and doesn't trigger any change
   computed: {
     layout() {
-      if (this.$route.meta.layout === 'full') return 'layout-full'
-      return `layout-${this.contentLayoutType}`
+      // if (this.$route.meta.layout === 'full') return 'layout-full'
+      // return `layout-${this.contentLayoutType}`
+      return 'layout-main'
     },
     contentLayoutType() {
       return this.$store.state.appConfig.layout.type

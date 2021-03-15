@@ -16,6 +16,7 @@
       <b-navbar-brand
         href="#"
         class="d-none d-md-flex"
+        @click="routeHome"
       >
         SaleMT
       </b-navbar-brand>
@@ -116,7 +117,10 @@
 
     <!-- START - Nav -->
     <b-nav class="d-none d-md-flex bg-primary">
-      <b-nav-item class="mx-2">
+      <b-nav-item
+        class="mx-2"
+        @click="routeHome"
+      >
         <b-icon
           icon="gear-fill"
           font-scale="1.5"
@@ -149,16 +153,42 @@
         </b-nav-text>
       </b-nav-item>
 
-      <b-nav-item class="mx-2">
-        <b-icon
-          icon="archive-fill"
-          font-scale="1.5"
-          color="white"
-        />
-        <b-nav-text class="text-white  ml-1">
-          Kho
-        </b-nav-text>
-      </b-nav-item>
+      <b-nav-item-dropdown
+        ref="dropdown"
+        no-caret
+        lazy
+      >
+        <!-- Using 'button-content' slot -->
+        <template #button-content>
+          <b-row
+            align-v="center"
+            class="mx-2"
+          >
+            <b-icon
+              icon="archive-fill"
+              font-scale="1.5"
+              color="white"
+            />
+            <b-nav-text class="text-white ml-1">
+              Kho
+            </b-nav-text>
+          </b-row>
+        </template>
+        <b-col>
+          <b-dropdown-item
+            href="#"
+            @click="routeImportProduct"
+          >
+            Nhập hàng
+          </b-dropdown-item>
+          <b-dropdown-item
+            href="#"
+            @click="routeExportProduct"
+          >
+            Xuất hàng
+          </b-dropdown-item>
+        </b-col>
+      </b-nav-item-dropdown>
 
       <b-nav-item class="mx-2">
         <b-icon
@@ -182,6 +212,23 @@ export default {
   data() {
     return {
     }
+  },
+  methods: {
+    routeHome() {
+      this.$router.push({ name: 'home-customerList' })
+    },
+    routeImportProduct() {
+      this.$router.push({ name: 'archive-importList' })
+    },
+    routeExportProduct() {
+      this.$router.push({ name: 'archive-exportList' })
+    },
+    onDropdownOver() {
+      this.$refs.dropdown.visible = true
+    },
+    onDropDownLeave() {
+      this.$refs.dropdown.visible = false
+    },
   },
 }
 </script>

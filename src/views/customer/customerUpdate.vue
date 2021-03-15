@@ -11,9 +11,10 @@
         class="mx-0"
       >
         <b-icon-arrow-left
-          v-b-modal.modal-close
+          class="cursor-pointer"
           font-scale="2"
           color="gray"
+          @click="isModalShow = true"
         />
         <b-col class="font-weight-bold text-dark">
           Cập nhật khách hàng
@@ -35,13 +36,10 @@
         </b-button>
 
         <b-button
-          v-b-modal.modal-close
           class="rounded"
+          @click="isModalShow = true"
         >
-          <b-icon
-            icon="x"
-            font-scale="1"
-          />
+          <b-icon-x />
           Đóng
         </b-button>
       </b-button-group>
@@ -278,7 +276,7 @@
             <!-- END - Customer Info-->
 
             <!-- START - Customer Sales -->
-            <b-col class="bg-info py-1">
+            <b-col class="bg-light py-1">
               <!-- START - Group 1 -->
               <b-row>
                 <!-- START - 1 -->
@@ -529,10 +527,21 @@
 
     <!-- START - Customer Modal Close -->
     <b-modal
-      id="modal-close"
+      v-model="isModalShow"
       title="Thông báo"
     >
       Thông tin khách hàng sẽ không được cập nhật khi rời trang
+      <template #modal-footer>
+        <b-button
+          variant="primary"
+          @click="routeBack"
+        >
+          Đồng ý
+        </b-button>
+        <b-button @click="isModalShow = !isModalShow">
+          Đóng
+        </b-button>
+      </template>
     </b-modal>
     <!-- END - Customer Modal Close -->
   </b-container>
@@ -546,6 +555,8 @@ export default {
       inputValueCustomerID: '',
       inputValuePhoneNumber: '',
       inputValueTaxCode: '',
+
+      isModalShow: false,
 
       foods: [
         { name: 'Sữa bột Vinamilk Organic Gold 4' },
@@ -621,6 +632,12 @@ export default {
         return result
       }
       return null
+    },
+  },
+  methods: {
+    routeBack() {
+      this.isModalShow = !this.isModalShow
+      this.$router.back()
     },
   },
 }

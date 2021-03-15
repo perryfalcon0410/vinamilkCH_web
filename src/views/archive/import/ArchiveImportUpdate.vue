@@ -8,13 +8,14 @@
       <b-row
         align-v="center"
       >
-        <b-icon
-          icon="arrow-left"
+        <b-icon-arrow-left
           font-scale="2"
           color="gray"
+          class="cursor-pointer"
+          @click="routeBack"
         />
         <b-col class="font-weight-bold text-dark">
-          Tạo phiếu nhập hàng
+          Cập nhật phiếu nhập hàng
         </b-col>
       </b-row>
     </b-col>
@@ -157,19 +158,19 @@
                 label="PO No"
                 label-for="archiveImportPoNo"
               >
-                <b-icon
-                  icon="three-dots-vertical"
-                  width="25"
-                  height="35"
-                  class="position-absolute"
-                  @click="showModal()"
-                />
-
-                <b-form-input
+                <b-input-group
                   id="archiveImportPoNo"
-                  class="px-2"
-                  required
-                />
+                  class="input-group-merge"
+                >
+                  <b-form-input
+                    required
+                  />
+                  <b-input-group-append is-text>
+                    <b-icon-three-dots-vertical
+                      @click="showModal()"
+                    />
+                  </b-input-group-append>
+                </b-input-group>
               </b-form-group>
             </b-col>
           </b-form-row>
@@ -265,6 +266,7 @@
               <b-button
                 size="sm"
                 class="ml-1 rounded text-uppercase"
+                @click="routeBack"
               >
                 <b-icon
                   icon="x"
@@ -473,6 +475,9 @@ export default {
       const BorrowedModal = this.selected === 'nhập vay mượn' ? this.EntryBorrowedModalVisible = !this.EntryBorrowedModalVisible : this.EntryBorrowedModalVisible = false
 
       return PoModal && AdjustmentModal && BorrowedModal
+    },
+    routeBack() {
+      this.$router.back()
     },
 
   },

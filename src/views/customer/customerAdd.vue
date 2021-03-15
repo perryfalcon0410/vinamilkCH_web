@@ -11,9 +11,10 @@
         class="mx-0"
       >
         <b-icon-arrow-left
-          v-b-modal.modal-close
+          class="cursor-pointer"
           font-scale="2"
           color="gray"
+          @click="isModalShow = true"
         />
         <b-col class="font-weight-bold text-dark">
           Thêm mới khách hàng
@@ -35,8 +36,8 @@
         </b-button>
 
         <b-button
-          v-b-modal.modal-close
           class="rounded"
+          @click="isModalShow = true"
         >
           <b-icon
             icon="x"
@@ -459,10 +460,21 @@
 
     <!-- START - Customer Modal Close -->
     <b-modal
-      id="modal-close"
+      v-model="isModalShow"
       title="Thông báo"
     >
       Thông tin khách hàng sẽ không được cập nhật khi rời trang
+      <template #modal-footer>
+        <b-button
+          variant="primary"
+          @click="routeBack"
+        >
+          Đồng ý
+        </b-button>
+        <b-button @click="isModalShow = !isModalShow">
+          Đóng
+        </b-button>
+      </template>
     </b-modal>
     <!-- END - Customer Modal Close -->
   </b-container>
@@ -476,6 +488,8 @@ export default {
       inputValueCustomerID: '',
       inputValuePhoneNumber: '',
       inputValueTaxCode: '',
+
+      isModalShow: false,
 
       selectedCustomerGender: null,
       optionsCustomerGender: [
@@ -545,6 +559,12 @@ export default {
         return result
       }
       return null
+    },
+  },
+  methods: {
+    routeBack() {
+      this.isModalShow = !this.isModalShow
+      this.$router.back()
     },
   },
 }

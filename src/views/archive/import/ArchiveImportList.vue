@@ -127,6 +127,7 @@
             class="rounded"
             size="md"
             variant="primary"
+            @click="routeArchiveImportAddNew"
           >
             <b-icon-plus />
             Thêm mới
@@ -179,13 +180,15 @@
                 </b-button>
                 <b-button
                   variant="info"
-                  class="rounded-circle ml-1 p-1 "
+                  class="rounded-circle ml-1 p-1"
+                  @click="routeArchiveImportUpdate"
                 >
                   <b-icon-pencil-fill
                     color="blue"
                   />
                 </b-button>
                 <b-button
+                  v-b-modal.modal-delete
                   variant="info"
                   class="rounded-circle ml-1 p-1"
                 >
@@ -207,6 +210,15 @@
       </b-form>
     </b-col>
     <!-- END - Product Import list -->
+
+    <!-- START - Import Product Modal Delete -->
+    <b-modal
+      id="modal-delete"
+      title="Thông báo"
+    >
+      Bạn có muốn xóa đợt nhập hàng?
+    </b-modal>
+    <!-- END - Import Product Modal Delete -->
   </b-container>
 </template>
 
@@ -355,6 +367,14 @@ export default {
         return result
       }
       return null
+    },
+  },
+  methods: {
+    routeArchiveImportAddNew() {
+      this.$router.push({ name: 'archive-importAddNew' })
+    },
+    routeArchiveImportUpdate() {
+      this.$router.push({ name: 'archive-importUpdate' })
     },
   },
 }

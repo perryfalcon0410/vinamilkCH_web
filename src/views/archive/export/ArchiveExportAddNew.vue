@@ -19,6 +19,8 @@
             <b-icon-arrow-left
               font-scale="1.5"
               color="gray"
+              class="cursor-pointer"
+              @click="routeBack"
             />
             <b-col class="font-weight-bold text-dark">
               Tạo phiếu xuất hàng
@@ -158,19 +160,17 @@
                   label="PO No"
                   label-for="archiveExportPoNo"
                 >
-                  <b-icon
-                    icon="three-dots-vertical"
-                    width="25"
-                    height="35"
-                    class="position-absolute"
-                    @click="showModal()"
-                  />
-
-                  <b-form-input
+                  <b-input-group
                     id="archiveExportPoNo"
-                    class="px-2"
-                    required
-                  />
+                    class="input-group-merge"
+                  >
+                    <b-form-input
+                      required
+                    />
+                    <b-input-group-append is-text>
+                      <b-icon-three-dots-vertical />
+                    </b-input-group-append>
+                  </b-input-group>
                 </b-form-group>
               </b-col>
             </b-form-row>
@@ -236,9 +236,9 @@
                 <b-button
                   size="sm"
                   class="ml-1 rounded text-uppercase"
+                  @click="routeBack"
                 >
-                  <b-icon
-                    icon="x"
+                  <b-icon-x
                     width="20"
                     height="20"
                   />
@@ -380,6 +380,11 @@ export default {
         return result
       }
       return null
+    },
+  },
+  methods: {
+    routeBack() {
+      this.$router.back()
     },
   },
 }
