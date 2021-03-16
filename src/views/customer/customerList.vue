@@ -1,10 +1,10 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column"
+    class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
-    <b-col class="bg-primary shadow rounded my-1 px-0">
+    <b-col class="bg-primary shadow rounded px-0">
       <b-form class="bg-white rounded mt-1">
         <label
           for="v-search-form"
@@ -181,9 +181,9 @@
               Xuất Excel
             </b-button>
             <b-button
-              v-b-modal.modal-delete
               class="ml-1 rounded"
               variant="danger"
+              @click="isModalShow = true"
             >
               <b-icon-trash-fill />
               Xóa
@@ -196,7 +196,7 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columns"
-            :rows="rows"
+            :rows="rowsFormatted()"
             style-class="vgt-table striped"
             :pagination-options="{
               enabled: true
@@ -212,6 +212,7 @@
               selectAllByGroup: true,
             }"
             line-numbers
+            @on-selected-rows-change="selectionChanged"
           >
             <!-- START - label -->
             <template
@@ -254,9 +255,21 @@
     <!-- START - Customer Modal Delete -->
     <b-modal
       id="modal-delete"
+      v-model="isModalShow"
       title="Thông báo"
     >
       Bạn có chắc muốn xóa hàng này không?
+      <template #modal-footer>
+        <b-button
+          variant="primary"
+          @click="deleteRow()"
+        >
+          Đồng ý
+        </b-button>
+        <b-button @click="isModalShow = !isModalShow">
+          Đóng
+        </b-button>
+      </template>
     </b-modal>
     <!-- END - Customer Modal Delete -->
 
@@ -270,6 +283,8 @@ import VueGoodTablePlugin from 'vue-good-table'
 // import the styles
 import 'vue-good-table/dist/vue-good-table.css'
 
+import axios from '@axios'
+
 Vue.use(VueGoodTablePlugin)
 
 export default {
@@ -278,8 +293,12 @@ export default {
   },
   data() {
     return {
+      isModalShow: false,
       valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       valueDateTo: new Date(),
+      customerData: [],
+      listDelete: [],
+
       columns: [
         {
           label: 'Mã khách hàng',
@@ -309,7 +328,7 @@ export default {
         },
         {
           label: 'Trạng thái',
-          field: 'customerState',
+          field: 'customerStatus',
           type: 'boolean',
           sortable: false,
           formatFn: this.formatFn,
@@ -331,72 +350,47 @@ export default {
           sortable: false,
         },
       ],
-      rows: [
-        {
-          customerID: 'CUS.CH40235.001',
-          customerName: 'Phan Bảo Châu',
-          customerPhone: '0345392726',
-          customerBirthDay: '02/08/1985',
-          customerGender: 'Nam',
-          customerState: 'Hoạt động',
-          customerGroup: 'Khách hàng thân thiết',
-          customerDate: '01/10/2020',
-          customerFeature: 'Chỉnh sửa',
-        },
-        {
-          customerID: 'CUS.CH40235.001',
-          customerName: 'Phan Bảo Châu',
-          customerPhone: '0345392726',
-          customerBirthDay: '02/08/1985',
-          customerGender: 'Nam',
-          customerState: 'Hoạt động',
-          customerGroup: 'Khách hàng thân thiết',
-          customerDate: '01/10/2020',
-        },
-        {
-          customerID: 'CUS.CH40235.001',
-          customerName: 'Phan Bảo Châu',
-          customerPhone: '0345392726',
-          customerBirthDay: '02/08/1985',
-          customerGender: 'Nam',
-          customerState: 'Hoạt động',
-          customerGroup: 'Khách hàng thân thiết',
-          customerDate: '01/10/2020',
-        },
-        {
-          customerID: 'CUS.CH40235.001',
-          customerName: 'Phan Bảo Châu',
-          customerPhone: '0345392726',
-          customerBirthDay: '02/08/1985',
-          customerGender: 'Nam',
-          customerState: 'Hoạt động',
-          customerGroup: 'Khách hàng thân thiết',
-          customerDate: '01/10/2020',
-        },
-        {
-          customerID: 'CUS.CH40235.001',
-          customerName: 'Phan Bảo Châu',
-          customerPhone: '0345392726',
-          customerBirthDay: '02/08/1985',
-          customerGender: 'Nam',
-          customerState: 'Hoạt động',
-          customerGroup: 'Khách hàng thân thiết',
-          customerDate: '01/10/2020',
-        },
-        {
-          customerID: 'CUS.CH40235.001',
-          customerName: 'Phan Bảo Châu',
-          customerPhone: '0345392726',
-          customerBirthDay: '02/08/1985',
-          customerGender: 'Nam',
-          customerState: 'Hoạt động',
-          customerGroup: 'Khách hàng thân thiết',
-          customerDate: '01/10/2020',
-        },
-      ],
     }
   },
+  mounted() {
+    axios
+      .get('customer/all')
+      .then(response => {
+        this.customerData = response.data.data.content
+      })
+  },
   methods: {
+    rowsFormatted() {
+      return this.customerData.map(data => ({
+        id: data.id,
+        customerID: data.cusCode,
+        customerName: `${data.lastName} ${data.firstName}`,
+        customerPhone: data.phoneNumber,
+        customerBirthDay: data.issueDate,
+        customerGender: data.gender,
+        customerStatus: data.status,
+        customerGroup: data.cusType,
+        customerDate: data.customerCreateDate,
+        customerFeature: 'Chỉnh sửa',
+      }))
+    },
+    selectionChanged(params) {
+      const listId = params.selectedRows.map(data => (data.id))
+      this.listDelete = [...listId]
+    },
+    deleteRow() {
+      axios
+        .delete('customer/delete', {
+          data: {
+            listId: this.listDelete,
+          },
+        })
+        .then(response => {
+          console.log()
+          console.log(response.data)
+        })
+      this.isModalShow = false
+    },
     routeCustomerAdd() {
       this.$router.push({ name: 'customerList-customerAdd' })
     },
