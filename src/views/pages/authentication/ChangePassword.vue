@@ -133,10 +133,12 @@
 </template>
 
 <script>
+import { ValidationObserver } from 'vee-validate'
 import axios from '@axios'
 
 export default {
   components: {
+    ValidationObserver,
   },
   props: {
     visible: {

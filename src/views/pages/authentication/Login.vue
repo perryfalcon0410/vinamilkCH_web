@@ -165,7 +165,6 @@
       :visible="valueShowModalSuccess"
       :username="username"
       :password="password"
-      :validate="validate"
     />
   </div>
 </template>
