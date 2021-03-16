@@ -1,24 +1,3 @@
-<script>
-export default {
-  components: {
-  },
-  props: {
-    visible: {
-      type: Boolean,
-    },
-  },
-  data() {
-    return {
-    }
-  },
-  methods: {
-    toggleModal() {
-      this.$refs['my-modal'].toggle('#toggle-btn')
-    },
-  },
-}
-</script>
-
 <template>
   <b-modal
     id="modal-scoped"
@@ -35,59 +14,77 @@ export default {
         </h2>
       </div>
     </template>
+    <validation-observer
+      ref="loginForm"
+    >
+      <!-- username -->
+      <b-col>
+        <b-input-group class="input-group-merge mt-4">
+          <b-input-group-prepend is-text>
+            <b-icon-person-fill />
+          </b-input-group-prepend>
+          <b-form-input
+            id="input-live"
+            v-model="username"
+            placeholder="Tên đăng nhập"
+            maxlength="20"
+          />
+        </b-input-group>
+      </b-col>
+
+      <!-- password -->
+      <b-col>
+        <b-input-group class="input-group-merge mt-4">
+          <b-input-group-prepend is-text>
+            <b-icon-lock-fill />
+          </b-input-group-prepend>
+          <b-form-input
+            id="input-live"
+            v-model="password"
+            placeholder="Mật khẩu cũ"
+            maxlength="20"
+            type="password"
+          />
+        </b-input-group>
+      </b-col>
+
+      <!-- newPassword -->
+      <b-col>
+        <b-input-group class="input-group-merge mt-4">
+          <b-input-group-prepend is-text>
+            <b-icon-lock-fill />
+          </b-input-group-prepend>
+          <b-form-input
+            id="input-live"
+            v-model="newPassword"
+            placeholder="Mật khẩu mới"
+            maxlength="20"
+            type="password"
+          />
+        </b-input-group>
+      </b-col>
+
+      <!-- reconfirmPassword -->
+      <b-col>
+        <b-input-group class="input-group-merge mt-4">
+          <b-input-group-prepend is-text>
+            <b-icon-lock-fill />
+          </b-input-group-prepend>
+          <b-form-input
+            id="input-live"
+            v-model="reconfirmPassword"
+            placeholder="Xác nhập mật khẩu"
+            maxlength="20"
+            type="password"
+          /></b-input-group>
+      </b-col>
+    </validation-observer>
     <b-col>
-      <b-input-group class="input-group-merge mt-4">
-        <b-input-group-prepend is-text>
-          <b-icon-person-fill />
-        </b-input-group-prepend>
-        <b-form-input
-          id="input-live"
-          v-model="username"
-          placeholder="Tên đăng nhập"
-          maxlength="20"
-        />
-      </b-input-group>
-    </b-col>
-    <b-col>
-      <b-input-group class="input-group-merge mt-4">
-        <b-input-group-prepend is-text>
-          <b-icon-lock-fill />
-        </b-input-group-prepend>
-        <b-form-input
-          id="input-live"
-          v-model="password"
-          placeholder="Mật khẩu cũ"
-          maxlength="20"
-          type="password"
-        />
-      </b-input-group>
-    </b-col>
-    <b-col>
-      <b-input-group class="input-group-merge mt-4">
-        <b-input-group-prepend is-text>
-          <b-icon-lock-fill />
-        </b-input-group-prepend>
-        <b-form-input
-          id="input-live"
-          v-model="newPassword"
-          placeholder="Mật khẩu mới"
-          maxlength="20"
-          type="password"
-        />
-      </b-input-group>
-    </b-col>
-    <b-col>
-      <b-input-group class="input-group-merge mt-4">
-        <b-input-group-prepend is-text>
-          <b-icon-lock-fill />
-        </b-input-group-prepend>
-        <b-form-input
-          id="input-live"
-          v-model="reconfirmPassword"
-          placeholder="Xác nhập mật khẩu"
-          maxlength="20"
-          type="password"
-        /></b-input-group>
+      <b-col
+        class="my-3 pl-2 "
+      >
+        {{ data.statusValue }}
+      </b-col>
     </b-col>
 
     <b-col>
@@ -95,6 +92,7 @@ export default {
         class="mt-4"
         variant="primary"
         block
+        @click="changePassword"
       >
         ĐỔI MẬT KHẨU
       </b-button>
@@ -133,3 +131,50 @@ export default {
     </b-navbar>
   </b-modal>
 </template>
+
+<script>
+import axios from '@axios'
+
+export default {
+  components: {
+  },
+  props: {
+    visible: {
+      type: Boolean,
+    },
+  },
+  data() {
+    return {
+      username: '',
+      password: '',
+      newPassword: '',
+      reconfirmPassword: '',
+
+      data: '',
+    }
+  },
+  methods: {
+    toggleModal() {
+      this.$refs['my-modal'].toggle('#toggle-btn')
+    },
+    changePassword() {
+      axios
+        .put('user/change-password', {
+          username: this.username,
+          password: this.password,
+          newPassword: this.newPassword,
+          reconfirmPassword: this.reconfirmPassword,
+        })
+        // eslint-disable-next-line no-return-assign
+        .then(response => ([
+          this.data = response.data, // Data
+          console.log(this.data),
+        ]))
+        .catch(error => {
+          console.log(error)
+        })
+      console.log('data')
+    },
+  },
+}
+</script>

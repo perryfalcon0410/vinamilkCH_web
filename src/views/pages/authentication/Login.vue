@@ -180,7 +180,7 @@ import {
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
-import axios from 'axios'
+import axios from '@axios'
 import ChangePassword from './ChangePassword.vue'
 import PopupSuccess from './PopupSuccess.vue'
 
@@ -251,7 +251,7 @@ export default {
     },
     login() {
       axios
-        .post('http://192.168.100.112:2407/api/user/preLogin', {
+        .post('user/preLogin', {
           username: this.username,
           password: this.password,
         })
