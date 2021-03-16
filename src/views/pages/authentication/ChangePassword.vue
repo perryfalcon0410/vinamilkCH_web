@@ -18,67 +18,123 @@
       ref="loginForm"
     >
       <!-- username -->
-      <b-col>
-        <b-input-group class="input-group-merge mt-4">
-          <b-input-group-prepend is-text>
-            <b-icon-person-fill />
-          </b-input-group-prepend>
+      <b-form-group
+        label="Tên đăng nhập"
+        label-for="login-username"
+        class="mt-3 px-1"
+      >
+        <validation-provider
+          #default="{ errors }"
+          name="username"
+          vid="username"
+          rules="required"
+        >
           <b-form-input
-            id="input-live"
+            id="login-username"
             v-model="username"
+            :state="errors.length > 0 ? false:null"
+            name="login-username"
             placeholder="Tên đăng nhập"
             maxlength="20"
           />
-        </b-input-group>
-      </b-col>
+          <small class="text-danger">{{ errors[0] }}</small>
+        </validation-provider>
+      </b-form-group>
 
       <!-- password -->
-      <b-col>
-        <b-input-group class="input-group-merge mt-4">
-          <b-input-group-prepend is-text>
-            <b-icon-lock-fill />
-          </b-input-group-prepend>
-          <b-form-input
-            id="input-live"
-            v-model="password"
-            placeholder="Mật khẩu cũ"
-            maxlength="20"
-            type="password"
-          />
-        </b-input-group>
-      </b-col>
+      <b-form-group
+        label="Mật khẩu"
+        label-for="login-username"
+        class="mt-3 px-1"
+      >
+        <validation-provider
+          #default="{ errors }"
+          name="password"
+          vid="password"
+          rules="required"
+        >
+          <b-input-group
+            class="input-group-merge"
+            :class="errors.length > 0 ? 'is-invalid':null"
+          >
+            <b-form-input
+              id="login-password"
+              v-model="password"
+              :state="errors.length > 0 ? false:null"
+              class="form-control-merge"
+              type="password"
+              name="login-password"
+              placeholder="Mật khẩu"
+              maxlength="20"
+            />
+          </b-input-group>
+          <small class="text-danger">{{ errors[0] }}</small>
+        </validation-provider>
+      </b-form-group>
 
       <!-- newPassword -->
-      <b-col>
-        <b-input-group class="input-group-merge mt-4">
-          <b-input-group-prepend is-text>
-            <b-icon-lock-fill />
-          </b-input-group-prepend>
-          <b-form-input
-            id="input-live"
-            v-model="newPassword"
-            placeholder="Mật khẩu mới"
-            maxlength="20"
-            type="password"
-          />
-        </b-input-group>
-      </b-col>
+      <b-form-group
+        label="Mật khẩu mới"
+        label-for="login-username"
+        class="mt-3 px-1"
+      >
+        <validation-provider
+          #default="{ errors }"
+          name="new password"
+          vid="password"
+          rules="required"
+        >
+          <b-input-group
+            class="input-group-merge"
+            :class="errors.length > 0 ? 'is-invalid':null"
+          >
+            <b-form-input
+              id="login-password"
+              v-model="newPassword"
+              :state="errors.length > 0 ? false:null"
+              class="form-control-merge"
+              type="password"
+              name="login-password"
+              placeholder="Mật khẩu mới"
+              maxlength="20"
+            />
+          </b-input-group>
+          <small class="text-danger">{{ errors[0] }}</small>
+        </validation-provider>
+      </b-form-group>
 
       <!-- reconfirmPassword -->
-      <b-col>
-        <b-input-group class="input-group-merge mt-4">
-          <b-input-group-prepend is-text>
-            <b-icon-lock-fill />
-          </b-input-group-prepend>
-          <b-form-input
-            id="input-live"
-            v-model="reconfirmPassword"
-            placeholder="Xác nhập mật khẩu"
-            maxlength="20"
-            type="password"
-          /></b-input-group>
-      </b-col>
+      <b-form-group
+        label="Xác thực mật khẩu"
+        label-for="login-username"
+        class="mt-3 px-1"
+      >
+        <validation-provider
+          #default="{ errors }"
+          name="reconfirm password"
+          vid="password"
+          rules="required"
+        >
+          <b-input-group
+            class="input-group-merge"
+            :class="errors.length > 0 ? 'is-invalid':null"
+          >
+            <b-form-input
+              id="login-password"
+              v-model="reconfirmPassword"
+              :state="errors.length > 0 ? false:null"
+              class="form-control-merge"
+              name="login-password"
+              placeholder="Xác nhận mật khẩu"
+              maxlength="20"
+              type="password"
+            />
+          </b-input-group>
+          <small class="text-danger">{{ errors[0] }}</small>
+        </validation-provider>
+      </b-form-group>
     </validation-observer>
+
     <b-col>
       <b-col
         class="my-3 pl-2 "
@@ -92,6 +148,7 @@
         class="mt-4"
         variant="primary"
         block
+        :disabled="invalid"
         @click="changePassword"
       >
         ĐỔI MẬT KHẨU
@@ -133,11 +190,15 @@
 </template>
 
 <script>
-import { ValidationObserver } from 'vee-validate'
 import axios from '@axios'
+import {
+  ValidationProvider,
+  ValidationObserver,
+} from 'vee-validate'
 
 export default {
   components: {
+    ValidationProvider,
     ValidationObserver,
   },
   props: {

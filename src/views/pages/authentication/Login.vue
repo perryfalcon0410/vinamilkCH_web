@@ -73,7 +73,7 @@
               <!-- forgot password -->
               <b-form-group>
                 <div class="d-flex justify-content-between mt-2">
-                  <label for="login-password">Password</label>
+                  <label for="login-password">Mật khẩu</label>
                 </div>
                 <validation-provider
                   #default="{ errors }"
