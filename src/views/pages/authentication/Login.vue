@@ -6,7 +6,7 @@
       <b-link class="brand-logo">
         <vuexy-logo />
         <h2 class="brand-text text-primary ml-1">
-          KCH
+          VINAMILK KÊNH CỬA HÀNG
         </h2>
       </b-link>
       <!-- /Brand logo-->
@@ -29,13 +29,13 @@
       <!-- Login-->
       <b-col
         lg="4"
-        class="d-flex align-items-center auth-bg px-2 p-lg-5"
+        class="d-flex align-items-center auth-bg px-2 p-lg-5 "
       >
         <b-col
           sm="8"
           md="6"
           lg="12"
-          class="px-xl-2 mx-auto"
+          class="px-xl-2 mx-auto  border rounded"
         >
           <!-- form -->
           <validation-observer
@@ -43,12 +43,12 @@
             #default="{invalid}"
           >
             <b-form
-              class="auth-login-form mt-2"
+              class="auth-login-form mt-3 "
               @submit.prevent="login"
             >
               <!-- user -->
               <b-form-group
-                label="Username"
+                label="Tên đăng nhập"
                 label-for="login-username"
               >
                 <validation-provider
@@ -62,7 +62,9 @@
                     v-model="username"
                     :state="errors.length > 0 ? false:null"
                     name="login-username"
-                    placeholder="Username"
+                    placeholder="Tên đăng nhập"
+                    maxlength="20"
+                    @click="error"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -70,15 +72,12 @@
 
               <!-- forgot password -->
               <b-form-group>
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between mt-2">
                   <label for="login-password">Password</label>
-                  <b-link :to="{name:'auth-forgot-password'}">
-                    <small>Forgot Password?</small>
-                  </b-link>
                 </div>
                 <validation-provider
                   #default="{ errors }"
-                  name="Password"
+                  name="password"
                   vid="password"
                   rules="required"
                 >
@@ -93,7 +92,9 @@
                       class="form-control-merge"
                       :type="passwordFieldType"
                       name="login-password"
-                      placeholder="Password"
+                      placeholder="Mật khẩu"
+                      maxlength="20"
+                      @click="error"
                     />
                     <b-input-group-append is-text>
                       <feather-icon
@@ -108,31 +109,64 @@
               </b-form-group>
 
               <!-- checkbox -->
-              <b-form-group>
+              <div class="d-flex justify-content-between my-3">
                 <b-form-checkbox
                   id="remember-me"
                   v-model="status"
                   name="checkbox-1"
                 >
-                  Remember Me
+                  Ghi nhớ mật khẩu
                 </b-form-checkbox>
-              </b-form-group>
-
+                <b-link
+                  variant="outline-light"
+                  class="text-primary"
+                  @click="showModalChangePass()"
+                >
+                  <small>Đổi mật khẩu</small>
+                </b-link>
+              </div>
               <!-- submit buttons -->
+              <b-col
+                v-show="!errored"
+                class="text-danger my-3 pl-2 "
+              >
+                {{ valuaLogin }}
+              </b-col>
               <b-button
                 type="submit"
                 variant="primary"
                 block
                 :disabled="invalid"
               >
-                Sign in
+                Đăng nhập
               </b-button>
             </b-form>
           </validation-observer>
+          <b-form-group
+            class="mt-4"
+            label="Liên hệ: email@..."
+          />
+          <b-col
+            sm="8"
+            md="6"
+            lg="12"
+            class="px-xl-2 mx-auto  border rounded"
+          />
+
+          <h5 class="mt-2">
+            © Copyright Tập đoàn Công nghiệp Viễn thông Quân đội
+          </h5>
         </b-col>
       </b-col>
     <!-- /Login-->
     </b-row>
+    <change-password :visible="valueShowModalChangPass" />
+    <popup-success
+      :visible="valueShowModalSuccess"
+      :username="username"
+      :password="password"
+      :validate="validate"
+    />
   </div>
 </template>
 
@@ -143,13 +177,12 @@ import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
   BRow, BCol, BLink, BFormGroup, BFormInput, BInputGroupAppend, BInputGroup, BFormCheckbox, BImg, BForm, BButton, VBTooltip,
 } from 'bootstrap-vue'
-import useJwt from '@/auth/jwt/useJwt'
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
-import { getHomeRouteForLoggedInUser } from '@/auth/utils'
-
-import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import axios from 'axios'
+import ChangePassword from './ChangePassword.vue'
+import PopupSuccess from './PopupSuccess.vue'
 
 export default {
   directives: {
@@ -170,6 +203,9 @@ export default {
     VuexyLogo,
     ValidationProvider,
     ValidationObserver,
+
+    ChangePassword,
+    PopupSuccess,
   },
   mixins: [togglePasswordVisibility],
   data() {
@@ -182,6 +218,11 @@ export default {
       // validation rules
       required,
       email,
+
+      errored: true,
+      valueShowModalChangPass: false,
+      valueShowModalSuccess: false,
+      valuaLogin: String,
     }
   },
   computed: {
@@ -198,62 +239,32 @@ export default {
     },
   },
   methods: {
+    showModalChangePass() {
+      if (this.valueShowModalChangPass === true) {
+        this.valueShowModalChangPass = false
+      } else {
+        this.valueShowModalChangPass = true
+      }
+    },
+    error() {
+      this.errored = true
+    },
     login() {
-      this.$refs.loginForm.validate().then(success => {
-        if (success) {
-          useJwt.login({
-            username: this.username,
-            password: this.password,
-          })
-            .then(response => {
-              const { data } = response.data
-              const userData = {
-                id: 1,
-                fullName: `${data.firstName} ${data.lastName}`,
-                username: this.username,
-                // eslint-disable-next-line global-require
-                avatar: require('@/assets/images/avatars/13-small.png'),
-                email: data.email,
-                role: 'admin',
-                ability: [
-                  {
-                    action: 'manage',
-                    subject: 'all',
-                  },
-                ],
-                extras: {
-                  eCommerceCartItemsCount: 5,
-                },
-              }
-              useJwt.setToken(response.data.token.replace('Bearer ', ''))
-              useJwt.setRefreshToken(response.data.token.replace('Bearer ', ''))
-              localStorage.setItem('userData', JSON.stringify(userData))
-              this.$ability.update(userData.ability)
-
-              // ? This is just for demo purpose as well.
-              // ? Because we are showing eCommerce app's cart items count in navbar
-              this.$store.commit('app-ecommerce/UPDATE_CART_ITEMS_COUNT', userData.extras.eCommerceCartItemsCount)
-
-              // ? This is just for demo purpose. Don't think CASL is role based in this case, we used role in if condition just for ease
-              this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
-                .then(() => {
-                  this.$toast({
-                    component: ToastificationContent,
-                    position: 'top-right',
-                    props: {
-                      title: `Welcome ${userData.fullName || userData.username}`,
-                      icon: 'CoffeeIcon',
-                      variant: 'success',
-                      text: `You have successfully logged in as ${userData.role}. Now you can start to explore!`,
-                    },
-                  })
-                })
-                .catch(error => {
-                  this.$refs.loginForm.setErrors(error.response)
-                })
-            })
-        }
-      })
+      axios
+        .post('http://192.168.100.112:2407/api/user/preLogin', {
+          username: this.username,
+          password: this.password,
+        })
+        // eslint-disable-next-line no-return-assign
+        .then(response => ([
+          this.data = response, // Data
+          this.errored = response.data.success, // Show text error username password
+          this.valueShowModalSuccess = this.errored, // Show popup login success
+          this.valuaLogin = response.data.statusValue,
+        ]))
+        .catch(error => {
+          console.log(error)
+        })
     },
   },
 }
