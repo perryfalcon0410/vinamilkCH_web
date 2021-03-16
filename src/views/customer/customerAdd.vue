@@ -1,9 +1,12 @@
 <template>
-  <b-container fluid>
+  <b-container
+    fluid
+    class="px-0"
+  >
     <!-- START - Header -->
     <b-row
       align-v="center"
-      class="justify-content-between p-1"
+      class="justify-content-between mx-0 pb-1"
     >
       <!-- START - Back -->
       <b-row
@@ -52,7 +55,7 @@
     <!-- END - Header -->
 
     <!-- START - Form Container-->
-    <b-row class="px-1 pb-1">
+    <b-row class="mx-0 pb-1">
 
       <!-- START - Form Personal information -->
       <b-col
@@ -70,7 +73,7 @@
             <b-form-group
               label="Mã khách hàng"
               label-for="customerID"
-              :state="stateInputID"
+              :state="stateInputCustomerID"
               invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
             >
               <b-form-input

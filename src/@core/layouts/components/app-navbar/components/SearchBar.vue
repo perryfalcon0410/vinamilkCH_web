@@ -5,10 +5,9 @@
     <a
       href="javascript:void(0)"
       class="nav-link nav-link-search"
-      @click="showSearchBar = true"
     >
       <feather-icon
-        icon="SearchIcon"
+        icon="RepeatIcon"
         size="21"
       />
     </a>

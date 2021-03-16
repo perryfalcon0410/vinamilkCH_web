@@ -93,7 +93,7 @@ export default [
     name: 'auth-reset-password-v1',
     component: () => import('@/views/pages/authentication/ResetPassword-v1.vue'),
     meta: {
-      layout: 'full',
+      layout: 'main',
     },
   },
   {

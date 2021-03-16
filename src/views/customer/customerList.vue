@@ -141,6 +141,7 @@
               <b-button
                 id="form-button-search"
                 variant="primary"
+                @click="search()"
               >
                 <b-icon-search />
                 Tìm kiếm
@@ -373,6 +374,13 @@ export default {
         customerDate: data.customerCreateDate,
         customerFeature: 'Chỉnh sửa',
       }))
+    },
+    search() {
+      axios
+        .get('customer/search?idCardNumber=2123&phoneNumber=qweqe&name=sds&code=wewe')
+        .then(response => {
+          console.log(response)
+        })
     },
     selectionChanged(params) {
       const listId = params.selectedRows.map(data => (data.id))
