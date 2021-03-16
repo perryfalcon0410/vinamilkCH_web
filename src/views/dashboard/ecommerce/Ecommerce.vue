@@ -1,7 +1,6 @@
 <template>
   <section
     id="dashboard-ecommerce"
-    class="mt-1 mx-1"
   >
     <b-row class="match-height">
       <b-col
