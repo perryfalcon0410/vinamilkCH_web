@@ -26,18 +26,6 @@
         />
       </b-avatar>
     </template>
-
-    <b-dropdown-item
-      :to="{ name: 'auth-reset-password-v1'}"
-      link-class="d-flex align-items-center"
-    >
-      <feather-icon
-        size="16"
-        icon="UserIcon"
-        class="mr-50"
-      />
-      <span>Đổi mật khẩu</span>
-    </b-dropdown-item>
     <b-dropdown-item
       link-class="d-flex align-items-center"
       @click="logout"
