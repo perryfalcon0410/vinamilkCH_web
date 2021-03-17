@@ -136,19 +136,10 @@
     </validation-observer>
 
     <b-col>
-      <b-col
-        class="my-3 pl-2 "
-      >
-        {{ data.statusValue }}
-      </b-col>
-    </b-col>
-
-    <b-col>
       <b-button
         class="mt-4"
         variant="primary"
         block
-        :disabled="invalid"
         @click="changePassword"
       >
         ĐỔI MẬT KHẨU
@@ -174,7 +165,7 @@
       class="mt-2"
     >
       <img
-        src="../../../assets/images/banner/banner-27.jpg"
+        src="@/assets/images/banner/banner-27.jpg"
         width="60"
         height="50"
         class="mr-2"
@@ -195,6 +186,7 @@ import {
   ValidationProvider,
   ValidationObserver,
 } from 'vee-validate'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 export default {
   components: {
@@ -212,7 +204,6 @@ export default {
       password: '',
       newPassword: '',
       reconfirmPassword: '',
-
       data: '',
     }
   },
@@ -229,14 +220,44 @@ export default {
           confirmPassword: this.reconfirmPassword,
         })
         // eslint-disable-next-line no-return-assign
-        .then(response => ([
-          this.data = response.data, // Data
-          console.log(this.data),
-        ]))
+        .then(response => {
+          if (response.data.success) {
+            this.$toast({
+              component: ToastificationContent,
+              position: 'top-right',
+              props: {
+                title: 'Mật khẩu đã thay đổi thành công',
+                icon: 'CoffeeIcon',
+                variant: 'success',
+                text: 'Mật khẩu đã thay đổi thành công',
+              },
+            })
+          } else {
+            this.$toast({
+              component: ToastificationContent,
+              position: 'top-right',
+              props: {
+                title: 'Mật khẩu thay đổi không thành công',
+                icon: 'CoffeeIcon',
+                variant: 'danger',
+                text: 'Mật khẩu thay đổi không thành công',
+              },
+            })
+          }
+        })
         .catch(error => {
+          this.$toast({
+            component: ToastificationContent,
+            position: 'top-right',
+            props: {
+              title: 'Lỗi hệ thống',
+              icon: 'CoffeeIcon',
+              variant: 'danger',
+              text: 'Lỗi hệ thống',
+            },
+          })
           console.log(error)
         })
-      console.log('data')
     },
   },
 }
