@@ -224,9 +224,9 @@ export default {
       axios
         .put('user/change-password', {
           username: this.username,
-          password: this.password,
+          oldPassword: this.password,
           newPassword: this.newPassword,
-          reconfirmPassword: this.reconfirmPassword,
+          confirmPassword: this.reconfirmPassword,
         })
         // eslint-disable-next-line no-return-assign
         .then(response => ([
