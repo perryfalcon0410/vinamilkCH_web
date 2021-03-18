@@ -4,7 +4,7 @@
     size="xl"
     title="Chọn voucher"
     :visible="visible"
-    busy="false"
+    hide-footer="true"
   >
     <p class="ml-3">
       Voucher
@@ -67,6 +67,23 @@
       </template>
     </vue-good-table>
     <!-- End table -->
+
+    <b-row
+      align-h="center"
+      class="mt-2"
+    >
+      <b-button
+        @click="visible = !visible"
+      >
+        <b-row>
+          <b-icon-x />
+          <h5 class="text-white ">
+            Đóng
+          </h5>
+        </b-row>
+      </b-button>
+    </b-row>
+
   </b-modal>
   <!-- POPUP VOUCHER End -->
 </template>
@@ -90,6 +107,7 @@ export default {
   },
   data() {
     return {
+      modalShow: false,
       searchTerm: '',
       columns: [
         {
@@ -264,7 +282,6 @@ export default {
   },
   methods: {
     onPress() {
-
     },
   },
 }
