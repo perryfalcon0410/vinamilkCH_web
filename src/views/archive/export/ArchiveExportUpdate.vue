@@ -28,9 +28,7 @@
           </b-row>
           <!-- END - Header Form -->
 
-          <b-col
-            class="bg-white shadow rounded"
-          >
+          <b-col class="bg-white shadow rounded">
             <!-- START - Archive Export Date  -->
             <b-row class="my-1">
               <b-col cols="4">
@@ -92,9 +90,7 @@
               label="Kho hàng"
               label-for="archiveExportArchive"
             >
-              <b-form-select
-                id="archiveExportArchive"
-              />
+              <b-form-select id="archiveExportArchive" />
             </b-form-group>
             <!-- END - Archive Export Archive -->
 
@@ -127,7 +123,11 @@
                     v-model="inputValueDate"
                     required
                     locale="vi"
-                    :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
+                    :date-format-options="{
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                    }"
                   />
                 </b-form-group>
               </b-col>
@@ -162,9 +162,7 @@
                     id="archiveExportPoNo"
                     class="input-group-merge"
                   >
-                    <b-form-input
-                      required
-                    />
+                    <b-form-input required />
                     <b-input-group-append is-text>
                       <b-icon-three-dots-vertical />
                     </b-input-group-append>
@@ -197,9 +195,7 @@
           </div>
           <!-- END - Header list -->
 
-          <b-col
-            class="bg-white shadow rounded"
-          >
+          <b-col class="bg-white shadow rounded">
             <!-- START - Table Product -->
             <b-form-checkbox class="float-right m-1">
               Trả nguyên đơn
@@ -218,14 +214,16 @@
                 slot-scope="props"
               >
                 <div v-if="props.column.field === 'ProductReturnAmount'">
-                  <b-input size="sm" :value="props.row.ProductReturnAmount" />
+                  <b-input
+                    size="sm"
+                    :value="props.row.ProductReturnAmount"
+                  />
                 </div>
                 <div v-else>
                   {{ props.formattedRow[props.column.field] }}
                 </div>
               </template>
               <!-- END - Table Customize ProductReturnAmount -->
-
             </vue-good-table>
             <!-- END - Table Product -->
 
@@ -260,7 +258,6 @@
               </b-button-group>
             </b-row>
             <!-- END - Button -->
-
           </b-col>
         </b-col>
         <!-- END - List -->

@@ -218,7 +218,10 @@
                 slot-scope="props"
               >
                 <div v-if="props.column.field === 'ProductReturnAmount'">
-                  <b-input size="sm" :value="props.row.ProductReturnAmount" />
+                  <b-input
+                    size="sm"
+                    :value="props.row.ProductReturnAmount"
+                  />
                 </div>
                 <div v-else>
                   {{ props.formattedRow[props.column.field] }}
