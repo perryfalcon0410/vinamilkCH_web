@@ -8,11 +8,8 @@
     footer-border-variant="light"
   >
     <!-- START - Body -->
-    <b-container
-      fluid
-    >
+    <b-container fluid>
       <b-row>
-
         <!-- START - Import/Export List -->
         <b-col
           xl="4"
@@ -20,13 +17,13 @@
         >
           <label
             for="tableList"
-            class="text-dark font-weight-bold p-1"
+            class="text-dark font-weight-bold px-1 pb-1 "
           >Danh sách nhập/xuất hàng
           </label>
 
           <b-col
             id="tableList"
-            class="bg-info rounded pb-4 text-dark d-flex flex-column"
+            class="bg-info rounded text-dark d-flex flex-column"
           >
             <!-- START - Header -->
             <b-row class="py-1">
@@ -73,7 +70,7 @@
         <b-col class="px-0 ml-xl-1 mt-1 mt-xl-0">
           <label
             for="tableDetail"
-            class="text-dark font-weight-bold p-1"
+            class="text-dark font-weight-bold pb-1 px-1"
           >Chi tiết nhập/xuất hàng
           </label>
           <b-col
@@ -99,6 +96,7 @@
       <b-button
         variant="primary"
         class="d-flex align-items-center"
+        size="sm"
         @click="ok()"
       >
         <b-icon
@@ -112,6 +110,7 @@
       <b-button
         variant="secondary"
         class="d-flex align-items-center"
+        size="sm"
         @click="cancel()"
       >
         <b-icon

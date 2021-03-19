@@ -58,21 +58,22 @@
         <!-- END -  Import/Export List -->
 
         <!-- START - List -->
-        <b-col class="ml-xl-1 mt-1 mt-xl-0 bg-white shadow rounded pt-1">
+        <b-col class="ml-xl-1 mt-1 mt-xl-0 pt-1 bg-white shadow rounded">
 
           <!-- START - Table Product -->
           <!-- START - Title Product -->
           <b-row
             align-v="end"
-            class="justify-content-between mx-0 "
+            class="justify-content-between mx-0"
           >
 
-            <div class="bg-info d-flex h-25 align-items-center text-primary rounded-top font-weight-bold px-1">
+            <div class="bg-light d-flex h-25 align-items-center text-primary rounded-top font-weight-bold px-1">
               Sản phẩm
             </div>
             <b-button
               variant="primary"
               class="d-flex align-items-center"
+              size="sm"
             >
               <b-icon
                 icon="arrow-repeat"
@@ -91,13 +92,13 @@
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
-            class="py-1 mb-1"
+            class="py-1"
           />
           <!-- END - Table Product -->
 
           <!-- START - Table Product promotion -->
           <!-- START - Title Product promotion -->
-          <div class="bg-info d-inline-flex text-primary rounded-top font-weight-bold px-1">
+          <div class="bg-light d-inline-flex text-primary rounded-top font-weight-bold px-1">
             Hàng khuyến mãi
           </div>
           <!-- END - Title Product promotion -->
@@ -122,6 +123,7 @@
       <b-button
         variant="primary"
         class="d-flex align-items-center text-uppercase"
+        size="sm"
         @click="ok()"
       >
         <b-icon
@@ -135,6 +137,7 @@
       <b-button
         variant="danger"
         class="d-flex align-items-center text-uppercase"
+        size="sm"
         @click="cancel()"
       >
         <b-icon
@@ -148,6 +151,7 @@
       <b-button
         variant="primary"
         class="d-flex align-items-center text-uppercase"
+        size="sm"
         @click="cancel()"
       >
         <b-icon
@@ -161,6 +165,7 @@
       <b-button
         variant="secondary"
         class="d-flex align-items-center text-uppercase"
+        size="sm"
         @click="cancel()"
       >
         <b-icon

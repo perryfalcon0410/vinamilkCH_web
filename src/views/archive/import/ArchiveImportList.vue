@@ -1,7 +1,7 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column"
+    class="d-flex flex-column p-0"
   >
     <!-- START - Search -->
     <b-form class="bg-white shadow rounded">
@@ -152,7 +152,7 @@
             slot="table-column"
             slot-scope="props"
           >
-            <div v-if="props.column.label === 'Chức năng'">
+            <div v-if="props.column.field === 'ArchiveImportFeature'">
               <b-icon-bricks />
             </div>
             <div v-else>
@@ -199,7 +199,6 @@
             </div>
           </template>
           <!-- END - Feature -->
-
         </vue-good-table>
       </b-col>
       <!-- END - Table -->

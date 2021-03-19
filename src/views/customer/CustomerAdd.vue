@@ -60,13 +60,13 @@
       <!-- START - Form Personal information -->
       <b-col
         lg
-        class="shadow bg-white rounded"
+        class="d-flex shadow bg-white rounded"
       >
         <b-row>
           <!-- START - Section 1 -->
           <b-col
             sm="7"
-            class="rounded"
+            class="rounded bg-white"
           >
             <label class="font-weight-bold w-100 text-center mb-2">Thông tin cá nhân</label>
             <!-- START - Customer ID -->
@@ -324,6 +324,21 @@
         </b-form-group>
         <!-- END - Customer Apartment number -->
 
+        <!-- START - Customer province -->
+        <b-form-row>
+          <b-col>
+            <b-form-group
+              label="Tỉnh/ thành"
+              label-for="customerProvince"
+            >
+              <b-form-select
+                id="customerDistrict"
+              />
+            </b-form-group>
+          </b-col>
+        </b-form-row>
+        <!-- END - Customer province -->
+
         <!-- START - Customer District and Wards -->
         <b-form-row>
           <b-col>
@@ -400,7 +415,7 @@
         md
         lg="6"
         xl="3"
-        class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
+        class="shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
       >
         <label class="font-weight-bold w-100 text-center mb-2">Thẻ thành viên</label>
         <!-- START - Customer Membership card -->

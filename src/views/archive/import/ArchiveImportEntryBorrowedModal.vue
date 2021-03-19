@@ -8,11 +8,8 @@
     footer-border-variant="light"
   >
     <!-- START - Body -->
-    <b-container
-      fluid
-    >
+    <b-container fluid>
       <b-row>
-
         <!-- START - Import/Export List -->
         <b-col
           xl="4"
@@ -26,7 +23,7 @@
 
           <b-col
             id="tableList"
-            class="bg-info pb-4 rounded text-dark"
+            class="bg-info rounded text-dark"
           >
             <!-- START - Title -->
             <b-row class="py-1">

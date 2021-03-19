@@ -1,10 +1,10 @@
 <template>
   <b-container
     fluid
-    class="p-1"
+    class="p-0"
   >
     <!-- START - Header -->
-    <b-col class="py-1">
+    <b-col class="pb-1">
       <b-row
         align-v="center"
       >
@@ -195,7 +195,7 @@
           class="bg-white shadow rounded mt-1 mt-xl-0"
         >
           <!-- START - Table Product -->
-          <div class="bg-info d-inline-flex text-primary rounded-top font-weight-bold px-1 my-1">
+          <div class="bg-light d-inline-flex text-primary rounded-top font-weight-bold px-1 my-1">
             Sản phẩm
           </div>
 
@@ -209,7 +209,7 @@
           <!-- END - Table Product -->
 
           <!-- START - Table Product promotion -->
-          <div class="bg-info d-inline-flex text-primary rounded-top font-weight-bold px-1 my-1">
+          <div class="bg-light d-inline-flex text-primary rounded-top font-weight-bold px-1 my-1">
             Hàng khuyến mãi
           </div>
 
@@ -227,7 +227,7 @@
             >
               <div v-if="props.column.field === 'ArchiveImportFeature'">
                 <b-button
-                  variant="info"
+                  variant="light"
                   class="rounded-circle ml-1 p-0"
                 >
                   <b-icon-x
@@ -246,13 +246,12 @@
           <!-- END - Table Product promotion -->
 
           <!-- START - Button -->
-
           <b-row class="m-1 justify-content-end">
             <b-button-group>
               <b-button
                 variant="primary"
                 size="sm"
-                class="rounded text-uppercase"
+                class="d-flex align-items-center rounded text-uppercase"
               >
                 <b-icon
                   icon="download"
@@ -265,7 +264,7 @@
 
               <b-button
                 size="sm"
-                class="ml-1 rounded text-uppercase"
+                class="d-flex align-items-center ml-1 rounded text-uppercase"
                 @click="routeBack"
               >
                 <b-icon

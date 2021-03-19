@@ -54,7 +54,7 @@
       <!-- START - Form Personal information -->
       <b-col
         lg
-        class="shadow bg-white rounded"
+        class="d-flex shadow bg-white rounded"
       >
         <b-row>
           <!-- START - Section 1 -->
@@ -387,6 +387,21 @@
           />
         </b-form-group>
         <!-- END - Customer Apartment number -->
+
+        <!-- START - Customer province -->
+        <b-form-row>
+          <b-col>
+            <b-form-group
+              label="Tỉnh/ thành"
+              label-for="customerProvince"
+            >
+              <b-form-select
+                id="customerDistrict"
+              />
+            </b-form-group>
+          </b-col>
+        </b-form-row>
+        <!-- END - Customer province -->
 
         <!-- START - Customer District and Wards -->
         <b-form-row>
