@@ -1,7 +1,7 @@
 <template>
   <b-container
     fluid
-    class="p-1"
+    class="p-0"
   >
     <!-- START - Form and list -->
     <b-col>
@@ -14,7 +14,7 @@
           <!-- START - Header Form -->
           <b-row
             align-v="center"
-            class="mx-0 py-1"
+            class="mx-0 pb-1"
           >
             <b-icon-arrow-left
               font-scale="1.5"
@@ -72,16 +72,14 @@
                     id="archiveExportType"
                     v-model="selected"
                   >
-                    <b-form-select-option value="loại xuất">
-                      loại xuất
+                    <b-form-select-option value="phiếu nhập">
+                      phiếu nhập
                     </b-form-select-option>
-                    <b-form-select-option
-                      value="xuất điều chỉnh"
-                    >
-                      xuất điều chỉnh
+                    <b-form-select-option value="phiếu điều chỉnh">
+                      phiếu điều chỉnh
                     </b-form-select-option>
-                    <b-form-select-option value="xuất vay mượn">
-                      xuất vay mượn
+                    <b-form-select-option value="phiếu vay mượn">
+                      phiếu vay mượn
                     </b-form-select-option>
                   </b-form-select>
                 </b-form-group>
@@ -194,7 +192,7 @@
         <!-- START - List -->
         <b-col class="d-flex flex-column mt-1 mt-xl-0 px-0">
           <!-- START - Header list -->
-          <div class="font-weight-bold text-dark py-1">
+          <div class="font-weight-bold text-dark pb-1">
             Danh sách sản phẩm
           </div>
           <!-- END - Header list -->
@@ -213,7 +211,22 @@
               style-class="vgt-table striped"
               compact-mode
               line-numbers
-            />
+            >
+              <!-- START - Table Customize ProductReturnAmount -->
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <div v-if="props.column.field === 'ProductReturnAmount'">
+                  <b-input size="sm" :value="props.row.ProductReturnAmount" />
+                </div>
+                <div v-else>
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+              </template>
+              <!-- END - Table Customize ProductReturnAmount -->
+
+            </vue-good-table>
             <!-- END - Table Product -->
 
             <!-- START - Button -->
@@ -268,7 +281,7 @@ export default {
   },
   data() {
     return {
-      selected: 'loại xuất',
+      selected: 'phiếu nhập',
       EntryAdjustmentModalVisible: false,
       EntryBorrowedModalVisible: false,
       PoConfirmListModalVisible: false,
@@ -279,79 +292,79 @@ export default {
       columns: [
         {
           label: 'Mã sản phẩm',
-          field: 'ArchiveExportProductID',
+          field: 'ProductID',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'ArchiveExportProductName',
+          field: 'ProductName',
           sortable: false,
         },
         {
           label: 'Giá',
-          field: 'ArchiveExportProductPrice',
+          field: 'ProductPrice',
           type: 'number',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'ArchiveExportProductDVT',
+          field: 'ProductDVT',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Thành tiền',
-          field: 'ArchiveExportProductPriceTotal',
+          field: 'ProductPriceTotal',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Đã xuất trả/tổng nhập',
-          field: 'ArchiveExportProductExported',
+          field: 'ProductExported',
           sortable: false,
         },
         {
           label: 'Số lượng trả',
-          field: 'ArchiveExportProductReturnAmount',
+          field: 'ProductReturnAmount',
           sortable: false,
         },
       ],
       rowsProduct: [
         {
-          ArchiveExportProductID: '04AA10',
-          ArchiveExportProductReturnAmount: '12',
-          ArchiveExportProductPrice: '6,300',
-          ArchiveExportProductName: 'STT Dâu ADM GOLD 180ml',
-          ArchiveExportProductDVT: 'Hộp',
-          ArchiveExportProductPriceTotal: '2,531,000',
-          ArchiveExportProductExported: '1/5',
+          ProductID: '04AA10',
+          ProductPrice: '6,300',
+          ProductName: 'STT Dâu ADM GOLD 180ml',
+          ProductDVT: 'Hộp',
+          ProductPriceTotal: '2,531,000',
+          ProductExported: '1/5',
+          ProductReturnAmount: '0',
         },
         {
-          ArchiveExportProductID: '04AA10',
-          ArchiveExportProductReturnAmount: '12',
-          ArchiveExportProductPrice: '6,300',
-          ArchiveExportProductName: 'STT Dâu ADM GOLD 180ml',
-          ArchiveExportProductDVT: 'Hộp',
-          ArchiveExportProductPriceTotal: '2,531,000',
-          ArchiveExportProductExported: '1/5',
+          ProductID: '04AA10',
+          ProductPrice: '6,300',
+          ProductName: 'STT Dâu ADM GOLD 180ml',
+          ProductDVT: 'Hộp',
+          ProductPriceTotal: '2,531,000',
+          ProductExported: '1/5',
+          ProductReturnAmount: '0',
         },
         {
-          ArchiveExportProductID: '04AA10',
-          ArchiveExportProductReturnAmount: '12',
-          ArchiveExportProductPrice: '6,300',
-          ArchiveExportProductName: 'STT Dâu ADM GOLD 180ml',
-          ArchiveExportProductDVT: 'Hộp',
-          ArchiveExportProductPriceTotal: '2,531,000',
-          ArchiveExportProductExported: '1/5',
+          ProductID: '04AA10',
+          ProductPrice: '6,300',
+          ProductName: 'STT Dâu ADM GOLD 180ml',
+          ProductDVT: 'Hộp',
+          ProductPriceTotal: '2,531,000',
+          ProductExported: '1/5',
+          ProductReturnAmount: '0',
         },
         {
-          ArchiveExportProductID: '04AA10',
-          ArchiveExportProductReturnAmount: '12',
-          ArchiveExportProductPrice: '6,300',
-          ArchiveExportProductName: 'STT Dâu ADM GOLD 180ml',
-          ArchiveExportProductDVT: 'Hộp',
-          ArchiveExportProductPriceTotal: '2,531,000',
-          ArchiveExportProductExported: '1/5',
+          ProductID: '04AA10',
+          ProductPrice: '6,300',
+          ProductName: 'STT Dâu ADM GOLD 180ml',
+          ProductDVT: 'Hộp',
+          ProductPriceTotal: '2,531,000',
+          ProductExported: '1/5',
+          ProductReturnAmount: '0',
         },
       ],
     }
