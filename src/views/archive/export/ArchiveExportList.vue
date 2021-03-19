@@ -1,10 +1,10 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column p-1"
+    class="d-flex flex-column p-0"
   >
     <!-- START - Search -->
-    <b-form class="bg-white rounded shadow">
+    <b-form class="bg-white shadow rounded">
       <label
         for="v-search-form"
         class="m-1 text-primary"
@@ -78,7 +78,7 @@
         >
           <b-form-group
             class="ml-lg-1"
-            label="Loại xuất "
+            label="Loại xuất"
             label-for="form-input-customer-group"
           >
             <b-form-select
@@ -110,7 +110,7 @@
     </b-form>
     <!-- END - Search -->
 
-    <!-- START - Product Export list -->
+    <!-- START - Product export list -->
     <b-form class="bg-white rounded shadow my-1">
       <!-- START - Title -->
       <b-form-row class="justify-content-between align-items-center border-bottom p-1">
@@ -169,15 +169,31 @@
             <div v-if="props.column.field === 'ArchiveExportFeature'">
               <b-button
                 variant="info"
+                class="rounded-circle p-1 ml-1"
+              >
+                <b-icon-printer
+                  color="blue"
+                />
+              </b-button>
+              <b-button
+                variant="info"
                 class="rounded-circle ml-1 p-1"
-                @click="routeArchiveExportAddNew"
+                @click="routeArchiveExportUpdate"
               >
                 <b-icon-pencil-fill
                   color="blue"
                 />
               </b-button>
+              <b-button
+                v-b-modal.modal-delete
+                variant="info"
+                class="rounded-circle ml-1 p-1"
+              >
+                <b-icon-x
+                  color="red"
+                />
+              </b-button>
             </div>
-
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -190,18 +206,30 @@
 
     </b-form>
     <!-- END - Product Export list -->
+
+    <!-- START - Export Product Modal Delete -->
+    <b-modal
+      id="modal-delete"
+      title="Thông báo"
+    >
+      Bạn có muốn xóa đợt xuất hàng?
+    </b-modal>
+    <!-- END - Export Product Modal Delete -->
   </b-container>
 </template>
 
 <script>
-import { VueGoodTable } from 'vue-good-table'
+import Vue from 'vue'
+
+import VueGoodTablePlugin from 'vue-good-table'
 // import the styles
 import 'vue-good-table/dist/vue-good-table.css'
+
+Vue.use(VueGoodTablePlugin)
 
 export default {
   name: 'ArchiveExportList',
   components: {
-    VueGoodTable,
   },
   data() {
     return {
@@ -340,6 +368,9 @@ export default {
   methods: {
     routeArchiveExportAddNew() {
       this.$router.push({ name: 'archive-exportAddNew' })
+    },
+    routeArchiveExportUpdate() {
+      this.$router.push({ name: 'archive-exportUpdate' })
     },
   },
 }
