@@ -28,5 +28,10 @@ export default [
     name: 'archive-exportAddNew',
     component: () => import('@/views/archive/export/ArchiveExportAddNew.vue'),
   },
+  {
+    path: '/archive/exportUpdate',
+    name: 'archive-exportUpdate',
+    component: () => import('@/views/archive/export/ArchiveExportUpdate.vue'),
+  },
   // END - Export
 ]
