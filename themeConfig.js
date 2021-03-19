@@ -17,7 +17,7 @@ export const $themeConfig = {
     isRTL: false,
     skin: 'light', // light, dark, bordered, semi-dark
     routerTransition: 'zoom-fade', // zoom-fade, slide-fade, fade-bottom, fade, zoom-out, none
-    type: 'main', // vertical, horizontal
+    type: 'main', // vertical, horizontal, main
     contentWidth: 'full', // full, boxed
     menu: {
       hidden: false,
@@ -31,7 +31,7 @@ export const $themeConfig = {
     footer: {
       type: 'static', // static, sticky, hidden
     },
-    customizer: false,
+    customizer: true,
     enableScrollToTop: true,
   },
 }

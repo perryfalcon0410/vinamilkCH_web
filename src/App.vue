@@ -39,7 +39,7 @@ Vue.use(BootstrapVueIcons)
 const LayoutVertical = () => import('@/layouts/vertical/LayoutVertical.vue')
 const LayoutHorizontal = () => import('@/layouts/horizontal/LayoutHorizontal.vue')
 const LayoutFull = () => import('@/layouts/full/LayoutFull.vue')
-const LayoutMain = () => import('@/@core/layouts/layout-main/LayoutMain.vue')
+const LayoutMain = () => import('@/layouts/main/LayoutMain.vue')
 
 export default {
   name: 'App',

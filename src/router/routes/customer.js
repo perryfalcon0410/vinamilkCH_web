@@ -2,7 +2,7 @@ export default [
   {
     path: '/home/customerList',
     name: 'home-customerList',
-    component: () => import('@/views/customer/CustomerList.vue'),
+    component: () => import('@/views/customer/CustomerList/CustomerList.vue'),
   },
   {
     path: '/home/customerList/customerAdd',
