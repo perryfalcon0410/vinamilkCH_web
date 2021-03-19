@@ -1,0 +1,7 @@
+export const CUSTOMER = 'customer'
+export const GET_ALL = 'GET_ALL'
+export const CREATE = 'CREATE'
+export const DELETE = 'DELETE'
+export const SEARCH = 'SEARCH'
+export const LIST_CUSTOMER = 'LIST_CUSTOMER'
+export const LOADING_STATUS = 'LOADING_STATUS'

@@ -4,152 +4,7 @@
     class="d-flex flex-column"
   >
     <!-- START - Search -->
-    <b-form class="bg-white rounded shadow">
-      <label
-        for="v-search-form"
-        class="text-primary m-1"
-      >
-        Tìm kiếm
-      </label>
-
-      <b-form-row
-        class="v-search-form border-top mx-0 p-1"
-      >
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Khách hàng"
-            label-for="form-input-customer"
-          >
-            <b-form-input
-              id="form-input-customer"
-              placeholder=" Nhập họ tên/mã"
-              trim
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Từ ngày"
-            label-for="form-input-date-from"
-          >
-            <b-form-datepicker
-              id="form-input-date-from"
-              v-model="valueDateFrom"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Đến ngày"
-            label-for="form-input-date-to"
-          >
-            <b-form-datepicker
-              id="form-input-date-to"
-              v-model="valueDateTo"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Nhóm khách hàng"
-            label-for="form-input-customer-group"
-          >
-            <b-form-select
-              id="form-input-customer-group"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Trạng thái"
-            label-for="form-input-customer-group"
-          >
-            <b-form-select
-              id="form-input-customer-group"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Giới tính"
-            label-for="form-input-customer-group"
-          >
-            <b-form-select
-              id="form-input-customer-group"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Khu vực"
-            label-for="form-input-customer-group"
-          >
-            <b-form-select
-              id="form-input-customer-group"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Tìm kiếm"
-            label-for="form-button-search"
-          >
-            <b-button
-              id="form-button-search"
-              variant="primary"
-              @click="search()"
-            >
-              <b-icon-search />
-              Tìm kiếm
-            </b-button>
-          </b-form-group>
-        </b-col>
-
-      </b-form-row>
-    </b-form>
+    <customer-list-search />
     <!-- END - Search -->
 
     <!-- START - Customer list -->
@@ -194,7 +49,7 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="rowsFormatted()"
+          :rows="rowsFormatted"
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true
@@ -275,25 +130,29 @@
 
 <script>
 import Vue from 'vue'
-
+// import { mapGetters, mapActions } from 'vuex'
 import VueGoodTablePlugin from 'vue-good-table'
 // import the styles
 import 'vue-good-table/dist/vue-good-table.css'
-
-import axios from '@axios'
+import CustomerListSearch from '@/views/customer/CustomerList/CustomerListSearch.vue'
+// import {
+//   LIST_CUSTOMER,
+//   DELETE,
+//   GET_ALL,
+//   CUSTOMER,
+// } from '@/store/customer/type'
 
 Vue.use(VueGoodTablePlugin)
 
 export default {
-  name: 'Cusomter',
+  name: 'CusomterList',
   components: {
+    CustomerListSearch,
   },
   data() {
     return {
       isModalShow: false,
-      valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      valueDateTo: new Date(),
-      customerData: [],
+      list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
 
       columns: [
@@ -349,16 +208,16 @@ export default {
       ],
     }
   },
-  mounted() {
-    axios
-      .get('customer/all')
-      .then(response => {
-        this.customerData = response.data.data.content
-      })
-  },
-  methods: {
+  computed: {
+    // ...mapGetters(CUSTOMER, [
+    //   LIST_CUSTOMER,
+    // ]),
+    // ...mapActions(CUSTOMER, [
+    //   GET_ALL,
+    //   DELETE,
+    // ]),
     rowsFormatted() {
-      return this.customerData.map(data => ({
+      return this.list.map(data => ({
         id: data.id,
         customerID: data.cusCode,
         customerName: `${data.lastName} ${data.firstName}`,
@@ -371,30 +230,17 @@ export default {
         customerFeature: 'Chỉnh sửa',
       }))
     },
-    // search() {
-    //   axios
-    //     .get('customer/search?idCardNumber=2123&phoneNumber=qweqe&name=sds&code=wewe')
-    //     .then(response => {
-    //       console.log(response)
-    //     })
-    // },
+  },
+  mounted() {
+    this.$store.dispatch('customer/GET_ALL')
+  },
+  methods: {
     selectionChanged(params) {
       params.selectedRows.map(data => (this.listDelete.push(data.id)))
     },
+
     deleteRow(listId) {
-      axios
-        .delete('customer/delete', {
-          data: {
-            listId,
-          },
-        })
-        .then(() => {
-          axios
-            .get('customer/all')
-            .then(response => {
-              this.customerData = response.data.data.content
-            })
-        })
+      this.$store.dispatch(this.DELETE, listId)
       this.isModalShow = false
     },
     routeCustomerAdd() {
