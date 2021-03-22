@@ -23,12 +23,14 @@
               @click="routeBack"
             />
             <b-col class="font-weight-bold text-dark">
-              Chỉnh sửa phiếu xuất
+              Tạo phiếu xuất hàng
             </b-col>
           </b-row>
           <!-- END - Header Form -->
 
-          <b-col class="bg-white shadow rounded">
+          <b-col
+            class="bg-white shadow rounded"
+          >
             <!-- START - Archive Export Date  -->
             <b-row class="my-1">
               <b-col cols="4">
@@ -90,7 +92,9 @@
               label="Kho hàng"
               label-for="archiveExportArchive"
             >
-              <b-form-select id="archiveExportArchive" />
+              <b-form-select
+                id="archiveExportArchive"
+              />
             </b-form-group>
             <!-- END - Archive Export Archive -->
 
@@ -123,11 +127,7 @@
                     v-model="inputValueDate"
                     required
                     locale="vi"
-                    :date-format-options="{
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                    }"
+                    :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
                   />
                 </b-form-group>
               </b-col>
@@ -162,9 +162,11 @@
                     id="archiveExportPoNo"
                     class="input-group-merge"
                   >
-                    <b-form-input required />
+                    <b-form-input
+                      required
+                    />
                     <b-input-group-append is-text>
-                      <b-icon-three-dots-vertical />
+                      <b-icon-three-dots-vertical @click="showModal" />
                     </b-input-group-append>
                   </b-input-group>
                 </b-form-group>
@@ -195,7 +197,9 @@
           </div>
           <!-- END - Header list -->
 
-          <b-col class="bg-white shadow rounded">
+          <b-col
+            class="bg-white shadow rounded"
+          >
             <!-- START - Table Product -->
             <b-form-checkbox class="float-right m-1">
               Trả nguyên đơn
@@ -224,6 +228,7 @@
                 </div>
               </template>
               <!-- END - Table Customize ProductReturnAmount -->
+
             </vue-good-table>
             <!-- END - Table Product -->
 
@@ -258,12 +263,20 @@
               </b-button-group>
             </b-row>
             <!-- END - Button -->
+
           </b-col>
         </b-col>
         <!-- END - List -->
       </b-row>
     </b-col>
     <!-- END - Form and list -->
+
+    <!-- START - Modal -->
+    <entry-coupon-modal :visible="EntryCouponModalVisible" />
+    <entry-adjustment-modal :visible="EntryAdjustmentModalVisible" />
+    <entry-borrowed-modal :visible="EntryBorrowedModalVisible" />
+    <!-- END - Modal -->
+
   </b-container>
 </template>
 
@@ -272,16 +285,23 @@ import { VueGoodTable } from 'vue-good-table'
 // import the styles
 import 'vue-good-table/dist/vue-good-table.css'
 
+import EntryAdjustmentModal from './EntryAdjustmentModal.vue'
+import EntryBorrowedModal from './EntryBorrowedModal.vue'
+import EntryCouponModal from './EntryCouponModal.vue'
+
 export default {
   components: {
     VueGoodTable,
+    EntryAdjustmentModal,
+    EntryBorrowedModal,
+    EntryCouponModal,
   },
   data() {
     return {
       selected: 'phiếu nhập',
       EntryAdjustmentModalVisible: false,
       EntryBorrowedModalVisible: false,
-      PoConfirmListModalVisible: false,
+      EntryCouponModalVisible: false,
       inputValueID: '',
       inputValueBillNumber: '',
       inputValueInternalNumber: '',
@@ -395,6 +415,14 @@ export default {
   methods: {
     routeBack() {
       this.$router.back()
+    },
+
+    showModal() {
+      const ShowEntryCouponModal = this.selected === 'phiếu nhập' ? this.EntryCouponModalVisible = !this.EntryCouponModalVisible : this.EntryCouponModalVisible = false
+      const ShowEntryAdjustmentModal = this.selected === 'phiếu điều chỉnh' ? this.EntryAdjustmentModalVisible = !this.EntryAdjustmentModalVisible : this.EntryAdjustmentModalVisible = false
+      const ShowEntryBorrowedModal = this.selected === 'phiếu vay mượn' ? this.EntryBorrowedModalVisible = !this.EntryBorrowedModalVisible : this.EntryBorrowedModalVisible = false
+
+      return ShowEntryCouponModal && ShowEntryAdjustmentModal && ShowEntryBorrowedModal
     },
   },
 }

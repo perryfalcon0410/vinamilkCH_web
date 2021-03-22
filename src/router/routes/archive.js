@@ -8,12 +8,12 @@ export default [
   {
     path: '/archive/importAddNew',
     name: 'archive-importAddNew',
-    component: () => import('@/views/archive/import/ArchiveImportAddNew.vue'),
+    component: () => import('@/views/archive/import/ArchiveImportComponent/ArchiveImportAddNew.vue'),
   },
   {
     path: '/archive/importUpdate',
     name: 'archive-importUpdate',
-    component: () => import('@/views/archive/import/ArchiveImportUpdate.vue'),
+    component: () => import('@/views/archive/import/ArchiveImportComponent/ArchiveImportUpdate.vue'),
   },
   // END - Import
 
@@ -26,12 +26,12 @@ export default [
   {
     path: '/archive/exportAddNew',
     name: 'archive-exportAddNew',
-    component: () => import('@/views/archive/export/ArchiveExportAddNew.vue'),
+    component: () => import('@/views/archive/export/ArchiveExportComponent/ExportAddNew.vue'),
   },
   {
     path: '/archive/exportUpdate',
     name: 'archive-exportUpdate',
-    component: () => import('@/views/archive/export/ArchiveExportUpdate.vue'),
+    component: () => import('@/views/archive/export/ArchiveExportComponent/ExportUpdate.vue'),
   },
   // END - Export
 ]

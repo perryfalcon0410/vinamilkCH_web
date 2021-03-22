@@ -23,7 +23,7 @@
               @click="routeBack"
             />
             <b-col class="font-weight-bold text-dark">
-              Tạo phiếu xuất hàng
+              Chỉnh sửa phiếu xuất hàng
             </b-col>
           </b-row>
           <!-- END - Header Form -->
@@ -166,7 +166,7 @@
                       required
                     />
                     <b-input-group-append is-text>
-                      <b-icon-three-dots-vertical />
+                      <b-icon-three-dots-vertical @click="showModal" />
                     </b-input-group-append>
                   </b-input-group>
                 </b-form-group>
@@ -270,6 +270,13 @@
       </b-row>
     </b-col>
     <!-- END - Form and list -->
+
+    <!-- START - Modal -->
+    <entry-coupon-modal :visible="EntryCouponModalVisible" />
+    <entry-adjustment-modal :visible="EntryAdjustmentModalVisible" />
+    <entry-borrowed-modal :visible="EntryBorrowedModalVisible" />
+    <!-- END - Modal -->
+
   </b-container>
 </template>
 
@@ -278,16 +285,23 @@ import { VueGoodTable } from 'vue-good-table'
 // import the styles
 import 'vue-good-table/dist/vue-good-table.css'
 
+import EntryAdjustmentModal from './EntryAdjustmentModal.vue'
+import EntryBorrowedModal from './EntryBorrowedModal.vue'
+import EntryCouponModal from './EntryCouponModal.vue'
+
 export default {
   components: {
     VueGoodTable,
+    EntryAdjustmentModal,
+    EntryBorrowedModal,
+    EntryCouponModal,
   },
   data() {
     return {
       selected: 'phiếu nhập',
       EntryAdjustmentModalVisible: false,
       EntryBorrowedModalVisible: false,
-      PoConfirmListModalVisible: false,
+      EntryCouponModalVisible: false,
       inputValueID: '',
       inputValueBillNumber: '',
       inputValueInternalNumber: '',
@@ -401,6 +415,14 @@ export default {
   methods: {
     routeBack() {
       this.$router.back()
+    },
+
+    showModal() {
+      const ShowEntryCouponModal = this.selected === 'phiếu nhập' ? this.EntryCouponModalVisible = !this.EntryCouponModalVisible : this.EntryCouponModalVisible = false
+      const ShowEntryAdjustmentModal = this.selected === 'phiếu điều chỉnh' ? this.EntryAdjustmentModalVisible = !this.EntryAdjustmentModalVisible : this.EntryAdjustmentModalVisible = false
+      const ShowEntryBorrowedModal = this.selected === 'phiếu vay mượn' ? this.EntryBorrowedModalVisible = !this.EntryBorrowedModalVisible : this.EntryBorrowedModalVisible = false
+
+      return ShowEntryCouponModal && ShowEntryAdjustmentModal && ShowEntryBorrowedModal
     },
   },
 }

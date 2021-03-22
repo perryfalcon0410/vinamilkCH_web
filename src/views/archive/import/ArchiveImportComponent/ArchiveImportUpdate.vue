@@ -15,7 +15,7 @@
           @click="routeBack"
         />
         <b-col class="font-weight-bold text-dark">
-          Tạo phiếu nhập hàng
+          Chỉnh sửa phiếu nhập hàng
         </b-col>
       </b-row>
     </b-col>
@@ -295,9 +295,9 @@
 </template>
 
 <script>
-import ArchiveImportEntryAdjustmentModal from './ArchiveImportEntryAdjustmentModal.vue'
-import ArchiveImportEntryBorrowedModal from './ArchiveImportEntryBorrowedModal.vue'
-import ArchiveImportPoConfirmModal from './ArchiveImportPoConfirmModal.vue'
+import ArchiveImportEntryAdjustmentModal from './EntryAdjustmentModal.vue'
+import ArchiveImportEntryBorrowedModal from './EntryBorrowedModal.vue'
+import ArchiveImportPoConfirmModal from './PoConfirmModal.vue'
 
 export default {
   components: {
