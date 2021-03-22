@@ -130,17 +130,23 @@
 
 <script>
 import Vue from 'vue'
-// import { mapGetters, mapActions } from 'vuex'
+import {
+  mapActions,
+  mapGetters,
+  mapState,
+} from 'vuex'
 import VueGoodTablePlugin from 'vue-good-table'
 // import the styles
 import 'vue-good-table/dist/vue-good-table.css'
 import CustomerListSearch from '@/views/customer/CustomerList/CustomerListSearch.vue'
-// import {
-//   LIST_CUSTOMER,
-//   DELETE,
-//   GET_ALL,
-//   CUSTOMER,
-// } from '@/store/customer/type'
+import {
+  LIST_CUSTOMER,
+  DELETE,
+  GET_ALL,
+  CUSTOMER,
+} from '@/store/customer/type'
+
+// import ToastificationContent from '@/@core/components/toastification/ToastificationContent.vue'
 
 Vue.use(VueGoodTablePlugin)
 
@@ -152,7 +158,6 @@ export default {
   data() {
     return {
       isModalShow: false,
-      list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
 
       columns: [
@@ -209,40 +214,102 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters(CUSTOMER, [
-    //   LIST_CUSTOMER,
-    // ]),
-    // ...mapActions(CUSTOMER, [
-    //   GET_ALL,
-    //   DELETE,
-    // ]),
+    ...mapState(CUSTOMER, {
+      successStatusDelete: state => state.delete.success,
+    }),
+    ...mapGetters(CUSTOMER, [
+      LIST_CUSTOMER,
+    ]),
+    ...mapActions(CUSTOMER, [
+      GET_ALL,
+      DELETE,
+    ]),
+
     rowsFormatted() {
-      return this.list.map(data => ({
+      return this.LIST_CUSTOMER.map(data => ({
         id: data.id,
-        customerID: data.cusCode,
+        customerID: data.customerCode,
         customerName: `${data.lastName} ${data.firstName}`,
         customerPhone: data.phoneNumber,
-        customerBirthDay: data.issueDate,
-        customerGender: data.gender,
-        customerStatus: data.status,
-        customerGroup: data.cusType,
-        customerDate: data.customerCreateDate,
+        customerBirthDay: new Date(data.birthday).toLocaleDateString(),
+        customerGender: this.formatGender(data.gender),
+        customerStatus: this.formatStatus(data.status),
+        customerGroup: data.customerGroupId,
+        customerDate: new Date(data.createdAt).toLocaleDateString(),
         customerFeature: 'Chỉnh sửa',
       }))
     },
+
+    // DELETE_STATUS() {
+    //   return this.successStatusDelete
+    // },
+
   },
+  // watch: {
+  //   DELETE_STATUS() {
+  //     console.log(`${this.DELETE_STATUS} hhaha`)
+  //     if (this.DELETE_STATUS) {
+  //       this.$toast({
+  //         component: ToastificationContent,
+  //         props: {
+  //           title: 'Thông báo',
+  //           icon: 'BellIcon',
+  //           variant: 'success',
+  //           text: 'Xóa thành công!',
+  //         },
+  //       })
+  //     } else {
+  //       this.$toast({
+  //         component: ToastificationContent,
+  //         props: {
+  //           title: 'Thông báo',
+  //           icon: 'BellIcon',
+  //           variant: 'success',
+  //           text: 'Xóa thất bại!',
+  //         },
+  //       })
+  //     }
+  //   },
+  // },
+
   mounted() {
-    this.$store.dispatch('customer/GET_ALL')
+    this.GET_ALL()
   },
+
   methods: {
     selectionChanged(params) {
-      params.selectedRows.map(data => (this.listDelete.push(data.id)))
+      const selectedList = params.selectedRows.map(data => data.id)
+      this.listDelete = selectedList
     },
 
-    deleteRow(listId) {
-      this.$store.dispatch(this.DELETE, listId)
+    deleteRow(customerIds) {
       this.isModalShow = false
+      // this.DELETE(customerIds)
+      this.$store.dispatch(`${CUSTOMER}/${DELETE}`, customerIds)
     },
+
+    formatGender(gender) {
+      switch (gender) {
+        case 0:
+          return 'Nữ'
+        case 1:
+          return 'Nam'
+        default:
+          return 'Khác'
+      }
+    },
+
+    formatStatus(staus) {
+      switch (staus) {
+        case 0:
+          return 'Ngừng hoạt động'
+        case 1:
+          return 'Hoạt động'
+        default:
+          return ''
+      }
+    },
+
     routeCustomerAdd() {
       this.$router.push({ name: 'customerList-customerAdd' })
     },

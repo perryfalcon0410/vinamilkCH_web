@@ -1,7 +1,8 @@
 const CUSTOMER = '/customer'
 
 // Endpoints
-export const getCustomerEndpoint = `${CUSTOMER}/all`
+export const getCustomerEndpoint = `${CUSTOMER}/index`
 export const createCustomerEndpoint = `${CUSTOMER}/create`
-export const deleteCustomerEndpoint = `${CUSTOMER}/delete`
-export const searchCustomerEndpoint = `${CUSTOMER}/search`
+export const editCustomerEndpoint = `${CUSTOMER}/edit`
+export const updateCustomerEndpoint = `${CUSTOMER}/update`
+export const deleteCustomerEndpoint = `${CUSTOMER}/delete-bulk`
