@@ -228,14 +228,14 @@ export default {
     rowsFormatted() {
       return this.LIST_CUSTOMER.map(data => ({
         id: data.id,
-        customerID: data.cusCode,
+        customerID: data.customerCode,
         customerName: `${data.lastName} ${data.firstName}`,
         customerPhone: data.phoneNumber,
-        customerBirthDay: data.issueDate,
-        customerGender: data.gender,
-        customerStatus: data.status,
-        customerGroup: data.cusType,
-        customerDate: data.customerCreateDate,
+        customerBirthDay: new Date(data.birthday).toLocaleDateString(),
+        customerGender: this.formatGender(data.gender),
+        customerStatus: this.formatStatus(data.status),
+        customerGroup: data.customerGroupId,
+        customerDate: new Date(data.createdAt).toLocaleDateString(),
         customerFeature: 'Chỉnh sửa',
       }))
     },
@@ -286,6 +286,28 @@ export default {
       this.isModalShow = false
       // this.DELETE(customerIds)
       this.$store.dispatch(`${CUSTOMER}/${DELETE}`, customerIds)
+    },
+
+    formatGender(gender) {
+      switch (gender) {
+        case 0:
+          return 'Nữ'
+        case 1:
+          return 'Nam'
+        default:
+          return 'Khác'
+      }
+    },
+
+    formatStatus(staus) {
+      switch (staus) {
+        case 0:
+          return 'Ngừng hoạt động'
+        case 1:
+          return 'Hoạt động'
+        default:
+          return ''
+      }
     },
 
     routeCustomerAdd() {
