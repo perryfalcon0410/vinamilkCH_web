@@ -5,8 +5,8 @@ import {
 } from './defaultConfig/customer.config'
 
 export default {
-  getAll() {
-    return axios.get(`${getCustomerEndpoint}`)
+  getAll(args) {
+    return axios.get(`${getCustomerEndpoint}${args}`)
   },
 
   delete(args) {

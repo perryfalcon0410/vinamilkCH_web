@@ -22,25 +22,27 @@ export default {
       errorCode: null,
     },
   },
+
   // Getters
   getters: {
     [LIST_CUSTOMER](state) {
       return state.getAll.list
     },
   },
+
   // Mutations
   mutations: {
     [LOADING_STATUS](state, val) {
       state.loading = val
     },
   },
+
   // Actions
   actions: {
     // START - Get all
-    [GET_ALL]({ commit, state }) {
+    [GET_ALL]({ commit, state }, val) {
       commit(LOADING_STATUS, true)
-
-      ServiceCustomer.getAll().then(response => {
+      ServiceCustomer.getAll(val).then(response => {
         const res = response.data
         commit(LOADING_STATUS, false)
 
@@ -65,7 +67,7 @@ export default {
 
         if (res.success) {
           state.delete.success = true
-          dispatch(GET_ALL)
+          dispatch(GET_ALL, '')
         } else {
           state.delete.success = false
           state.delete.errorCode = res.statusCode
