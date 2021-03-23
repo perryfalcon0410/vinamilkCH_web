@@ -2,6 +2,7 @@ import axios from '@/libs/axios'
 import {
   getCustomerEndpoint,
   deleteCustomerEndpoint,
+  locationCustomerEndpoint,
 } from './defaultConfig/customer.config'
 
 export default {
@@ -15,5 +16,9 @@ export default {
         customerIds: args,
       },
     })
+  },
+
+  getLocationShop(args) {
+    return axios.get(`${locationCustomerEndpoint}?shopId=${args}`)
   },
 }

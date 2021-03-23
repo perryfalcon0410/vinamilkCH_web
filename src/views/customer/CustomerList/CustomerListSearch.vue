@@ -175,7 +175,16 @@
           >
             <b-form-select
               id="form-input-customer-group"
-            />
+              v-model="areaAddress"
+            >
+              <b-form-select-option
+                v-for="item in listLocationShop"
+                :key="item.value"
+                :value="item.value"
+              >
+                {{ item.text }}
+              </b-form-select-option>
+            </b-form-select>
           </b-form-group>
         </b-col>
         <!-- END - Location -->
@@ -212,10 +221,13 @@
 import {
   GET_ALL,
   CUSTOMER,
+  GET_LOCATION_SHOP,
+  LIST_LOCATION_SHOP,
 } from '@/store/customer/type'
 
 import {
   mapActions,
+  mapGetters,
 } from 'vuex'
 
 export default {
@@ -227,11 +239,32 @@ export default {
       groupId: '',
       status: '',
       gender: '',
+      areaAddress: '',
     }
   },
+
+  computed: {
+    listLocationShop() {
+      const location = this.LIST_LOCATION_SHOP().map(data => ({
+        value: data.value,
+        text: data.name,
+      }))
+
+      return location
+    },
+  },
+
+  mounted() {
+    this.GET_LOCATION_SHOP('1')
+  },
+
   methods: {
     ...mapActions(CUSTOMER, [
       GET_ALL,
+      GET_LOCATION_SHOP,
+    ]),
+    ...mapGetters(CUSTOMER, [
+      LIST_LOCATION_SHOP,
     ]),
 
     formatDate(date) {
@@ -264,6 +297,11 @@ export default {
         const sQuery = (query ? '&' : '?')
         query += `${sQuery}status=${this.status}`
       }
+      if (this.areaAddress) {
+        const sQuery = (query ? '&' : '?')
+        query += `${sQuery}areaAddress=${this.areaAddress}`
+      }
+
       this.GET_ALL(query)
     },
   },

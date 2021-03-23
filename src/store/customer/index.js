@@ -4,6 +4,8 @@ import {
   DELETE,
   GET_ALL,
   LOADING_STATUS,
+  GET_LOCATION_SHOP,
+  LIST_LOCATION_SHOP,
 } from '@/store/customer/type'
 
 export default {
@@ -21,12 +23,21 @@ export default {
       listDelete: [],
       errorCode: null,
     },
+    locationShop: {
+      success: false,
+      list: [],
+      errorCode: null,
+    },
   },
 
   // Getters
   getters: {
     [LIST_CUSTOMER](state) {
       return state.getAll.list
+    },
+
+    [LIST_LOCATION_SHOP](state) {
+      return state.locationShop.list
     },
   },
 
@@ -77,6 +88,23 @@ export default {
       })
     },
     // END - Delete
+
+    // START - Get location shop
+    [GET_LOCATION_SHOP]({ commit, state }, val) {
+      commit(LOADING_STATUS, true)
+      ServiceCustomer.getLocationShop(val).then(response => {
+        const res = response.data
+        commit(LOADING_STATUS, false)
+        if (res.success) {
+          state.locationShop.list = res.data
+        } else {
+          state.locationShop.errorCode = res.statusCode
+        }
+      }).catch(error => {
+        state.locationShop.errorCode = error.response.status
+      })
+    },
+    // END - Get location shop
 
   },
 }
