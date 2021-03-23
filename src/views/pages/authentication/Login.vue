@@ -165,6 +165,7 @@
       :visible="valueShowModalSuccess"
       :username="username"
       :password="password"
+      :role="role"
     />
   </div>
 </template>
@@ -179,7 +180,7 @@ import {
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
-import axios from '@axios'
+import useJwt from '@/auth/jwt/useJwt'
 import ChangePassword from './ChangePassword.vue'
 import PopupSuccess from './PopupSuccess.vue'
 
@@ -222,6 +223,7 @@ export default {
       valueShowModalChangPass: false,
       valueShowModalSuccess: false,
       valuaLogin: String,
+      role: [],
     }
   },
   computed: {
@@ -249,14 +251,13 @@ export default {
       this.errored = true
     },
     login() {
-      axios
-        .post('user/preLogin', {
-          username: this.username,
-          password: this.password,
-        })
+      useJwt.preLogin({
+        username: this.username,
+        password: this.password,
+      })
         // eslint-disable-next-line no-return-assign
         .then(response => ([
-          this.data = response, // Data
+          this.role = response.data.data.roles, // Role
           this.errored = response.data.success, // Show text error username password
           this.valueShowModalSuccess = this.errored, // Show popup login success
           this.valuaLogin = response.data.statusValue,

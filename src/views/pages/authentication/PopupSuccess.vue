@@ -1,9 +1,98 @@
+<template>
+  <!-- POPUP LOGIN START -->
+  <b-modal
+    id="modal-scoped"
+    :visible="visible"
+  >
+    <template #modal-header="{ close }">
+      <h3 class="w-100">
+        Chọn vai trò và cửa hàng thao tác
+      </h3>
+      <b-button
+        class="bg-light"
+        size="sm"
+        variant="light"
+        @click="close()"
+      >
+        <b-icon
+          icon="x"
+          class="round"
+          variant="danger"
+          aria-hidden="true"
+        />
+      </b-button>
+    </template>
+    <b-row class="p-1">
+      Vai trò (
+      <b-card-text class="text-danger">
+        *
+      </b-card-text>
+      )
+    </b-row>
+
+    <b-form-select
+      v-model="selectedRole"
+      :options="optionsRole"
+      class="mb-3"
+    >
+      <template #first>
+        <b-form-select-option
+          :value="null"
+          disabled
+        >
+          Chọn vai trò
+        </b-form-select-option>
+      </template>
+    </b-form-select>
+
+    <b-row class="p-1">
+      Cửa hàng (
+      <b-card-text class="text-danger">
+        *
+      </b-card-text>
+      )
+    </b-row>
+    <b-form-select
+      v-model="selectedStore"
+      :options="optionsStore"
+      class="mb-3"
+    >
+      <template #first>
+        <b-form-select-option
+          :value="null"
+          disabled
+        >
+          Chọn cửa hàng
+        </b-form-select-option>
+      </template>
+    </b-form-select>
+
+    <template #modal-footer="{ cancel}">
+      <div class="d-flex align-items-end justify-content-center w-100">
+        <b-button
+          variant="primary"
+          class="text-white mr-3"
+          @click="login()"
+        >
+          Đồng ý
+        </b-button>
+        <b-button
+          class="text-white"
+          @click="cancel()"
+        >
+          Đóng
+        </b-button>
+      </div>
+    </template>
+  </b-modal>
+  <!-- POPUP LOGIN END -->
+</template>
+
 <script>
 import useJwt from '@/auth/jwt/useJwt'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import { required, email } from '@validations'
-// import store from '@/store/index'
 
 export default {
   components: {
@@ -24,7 +113,10 @@ export default {
       type: String,
       default: '',
     },
-
+    role: {
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
@@ -42,31 +134,26 @@ export default {
         { text: 'Cửa hàng B' },
       ],
       selectedRole: null,
-      optionsRole: [
-        { text: 'Quản lý 1 cửa hàng' },
-        { text: 'Quản lý nhiều cửa hàng' },
-      ],
+      valueShowModalChangPass: false,
     }
   },
   computed: {
     passwordToggleIcon() {
       return this.passwordFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
     },
+    optionsRole() {
+      return this.role.map(e => (
+        { text: e.role, value: e.id }
+      ))
+    },
   },
   methods: {
-    toggleModal() {
-      this.$refs['my-modal'].toggle('#toggle-btn')
-    },
-    ok() {
-      this.$router.push({ name: 'navbar' })
-    },
     login() {
-      useJwt.login({
+      useJwt.login(this.selectedRole, {
         username: this.username,
         password: this.password,
       })
         .then(response => {
-          console.log(this.username)
           const { data } = response.data
           this.data = response.data
           const userData = {
@@ -118,83 +205,3 @@ export default {
   },
 }
 </script>
-
-<template>
-  <!-- POPUP LOGIN START -->
-  <b-modal
-    id="modal-scoped"
-    :visible="visible"
-  >
-    <template #modal-header="{ close }">
-      <h3 class="w-100">
-        Chọn vai trò và cửa hàng thao tác
-      </h3>
-      <b-button
-        class="bg-light"
-        size="sm"
-        variant="light"
-        @click="close()"
-      >
-        <b-icon
-          icon="x"
-          class="round"
-          variant="danger"
-          aria-hidden="true"
-        />
-      </b-button>
-    </template>
-    <p>Vai trò (*)</p>
-    <b-form-select
-      v-model="selectedRole"
-      :options="optionsRole"
-      class="mb-3"
-    >
-      <template #first>
-        <b-form-select-option
-          :value="null"
-          disabled
-        >
-          Chọn vai trò
-        </b-form-select-option>
-      </template>
-    </b-form-select>
-    <p>Cửa hàng (*)</p>
-    <b-form-select
-      v-model="selectedStore"
-      :options="optionsStore"
-      class="mb-3"
-    >
-      <template #first>
-        <b-form-select-option
-          :value="null"
-          disabled
-        >
-          Chọn cửa hàng
-        </b-form-select-option>
-      </template>
-    </b-form-select>
-    <template #modal-footer="{ cancel}">
-      <div class="d-flex align-items-end justify-content-center w-100">
-        <b-button
-          size="md"
-          variant="primary"
-          @click="login()"
-        >
-          <h5 class="text-white">
-            Đồng ý
-          </h5>
-        </b-button>
-        <div class="w-25 bg-error" />
-        <b-button
-          size="md"
-          @click="cancel()"
-        >
-          <h5 class="text-white">
-            Đóng
-          </h5>
-        </b-button>
-      </div>
-    </template>
-  </b-modal>
-  <!-- POPUP LOGIN END -->
-</template>
