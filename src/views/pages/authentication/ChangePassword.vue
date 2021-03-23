@@ -131,6 +131,10 @@
             />
           </b-input-group>
           <small class="text-danger">{{ errors[0] }}</small>
+          <small
+            v-if="alert"
+            class="text-danger"
+          >Mật khẩu khác nhau. Vui lòng nhập lại</small>
         </validation-provider>
       </b-form-group>
     </validation-observer>
@@ -205,6 +209,7 @@ export default {
       newPassword: '',
       reconfirmPassword: '',
       data: '',
+      alert: false,
     }
   },
   methods: {
@@ -212,6 +217,11 @@ export default {
       this.$refs['my-modal'].toggle('#toggle-btn')
     },
     changePassword() {
+      if (this.newPassword === this.reconfirmPassword) {
+        this.alert = false
+      } else {
+        this.alert = true
+      }
       axios
         .put('user/change-password', {
           username: this.username,
@@ -232,6 +242,7 @@ export default {
                 text: 'Mật khẩu đã thay đổi thành công',
               },
             })
+            this.visible = false
           } else {
             this.$toast({
               component: ToastificationContent,
