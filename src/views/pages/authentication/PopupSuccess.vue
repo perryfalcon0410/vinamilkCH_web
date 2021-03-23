@@ -67,11 +67,12 @@
       </template>
     </b-form-select>
 
-    <template #modal-footer="{ cancel}">
+    <template #modal-footer="{}">
       <div class="d-flex align-items-end justify-content-center w-100">
         <b-button
           variant="primary"
           class="text-white mr-3"
+          :disabled="selectedRole !=null ? false:true"
           @click="login()"
         >
           Đồng ý
@@ -120,7 +121,6 @@ export default {
   },
   data() {
     return {
-      status: '',
       // eslint-disable-next-line global-require
       sideImg: require('@/assets/images/pages/login-v2.svg'),
 
@@ -148,6 +148,12 @@ export default {
     },
   },
   methods: {
+    // reloads the page, bringing the user back to the login page
+    cancel() {
+      // eslint-disable-next-line no-restricted-globals
+      location.reload()
+    },
+
     login() {
       useJwt.login(this.selectedRole, {
         username: this.username,

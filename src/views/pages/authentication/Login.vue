@@ -126,12 +126,6 @@
                 </b-link>
               </div>
               <!-- submit buttons -->
-              <b-col
-                v-show="!errored"
-                class="text-danger my-3 pl-2 "
-              >
-                {{ valuaLogin }}
-              </b-col>
               <b-button
                 type="submit"
                 variant="primary"
@@ -181,6 +175,7 @@ import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
 import useJwt from '@/auth/jwt/useJwt'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import ChangePassword from './ChangePassword.vue'
 import PopupSuccess from './PopupSuccess.vue'
 
@@ -222,7 +217,6 @@ export default {
       errored: true,
       valueShowModalChangPass: false,
       valueShowModalSuccess: false,
-      valuaLogin: String,
       role: [],
     }
   },
@@ -255,15 +249,25 @@ export default {
         username: this.username,
         password: this.password,
       })
-        // eslint-disable-next-line no-return-assign
+      // eslint-disable-next-line no-return-assign
         .then(response => ([
           this.role = response.data.data.roles, // Role
           this.errored = response.data.success, // Show text error username password
           this.valueShowModalSuccess = this.errored, // Show popup login success
-          this.valuaLogin = response.data.statusValue,
         ]))
         .catch(error => {
           console.log(error)
+          // alert('Thất bại')
+          this.$toast({
+            component: ToastificationContent,
+            position: 'top-right',
+            props: {
+              title: 'Tài khoảng mật khẩu không chính xác',
+              icon: 'CoffeeIcon',
+              variant: 'danger',
+              text: 'Vui lòng đăng nhập lại',
+            },
+          })
         })
     },
   },
