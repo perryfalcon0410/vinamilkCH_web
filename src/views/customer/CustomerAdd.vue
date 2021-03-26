@@ -30,6 +30,7 @@
         <b-button
           variant="primary"
           class="rounded mr-1"
+          @click="create()"
         >
           <b-icon
             icon="download"
@@ -72,17 +73,10 @@
             <!-- START - Customer ID -->
             <b-form-group
               label="Mã khách hàng"
-              label-for="customerID"
-              :state="stateInputCustomerID"
-              invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
+              label-for="ID"
             >
               <b-form-input
-                id="customerID"
-                v-model="inputValueCustomerID"
-                maxlength="40"
-                :state="stateInputCustomerID"
-                required
-                trim
+                id="ID"
                 disabled
               />
             </b-form-group>
@@ -93,11 +87,13 @@
               <b-col>
                 <b-form-group
                   label="Họ và tên đệm"
-                  label-for="customerSurnameAndMiddleName"
+                  label-for="FullName"
+                  :state="stateInputFullName"
                 >
                   <b-form-input
-                    id="customerSurnameAndMiddleName"
-                    required
+                    id="FullName"
+                    v-model="inputValueFullName"
+                    :state="stateInputFullName"
                     trim
                     maxlength="200"
                   />
@@ -107,11 +103,13 @@
               <b-col>
                 <b-form-group
                   label="Tên"
-                  label-for="customerName"
+                  label-for="Name"
+                  :state="stateInputName"
                 >
                   <b-form-input
-                    id="customerName"
-                    required
+                    id="Name"
+                    v-model="inputValueName"
+                    :state="stateInputName"
                     trim
                     maxlength="200"
                   />
@@ -123,12 +121,16 @@
             <!-- START - Customer Barcode -->
             <b-form-group
               label="Mã vạch"
-              label-for="customerBarcode"
+              label-for="Barcode"
+              :state="stateInputBarCode"
+              invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
             >
               <b-form-input
-                id="customerBarcode"
+                id="Barcode"
+                v-model="inputValueBarCode"
                 trim
                 maxlength="200"
+                :state="stateInputBarCode"
               />
             </b-form-group>
             <!-- END - Customer Barcode -->
@@ -138,10 +140,11 @@
               <b-col>
                 <b-form-group
                   label="Ngày sinh"
-                  label-for="customerBirthDay"
+                  label-for="BirthDay"
                 >
                   <b-form-datepicker
-                    id="customerBirthDay"
+                    id="BirthDay"
+                    v-model="inputValueBirthDay"
                     placeholder="chọn ngày"
                     :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
                     locale="vi"
@@ -152,13 +155,22 @@
               <b-col>
                 <b-form-group
                   label="Giới tính"
-                  label-for="customerGender"
+                  label-for="Gender"
                 >
                   <b-form-select
-                    id="customerGender"
-                    v-model="selectedCustomerGender"
-                    :options="optionsCustomerGender"
-                  />
+                    id="Gender"
+                    v-model="selectedGender"
+                  >
+                    <b-form-select-option value="2">
+                      Khác
+                    </b-form-select-option>
+                    <b-form-select-option value="1">
+                      Nam
+                    </b-form-select-option>
+                    <b-form-select-option value="0">
+                      Nữ
+                    </b-form-select-option>
+                  </b-form-select>
                 </b-form-group>
               </b-col>
             </b-form-row>
@@ -169,35 +181,52 @@
               <b-col>
                 <b-form-group
                   label="Nhóm khách hàng"
-                  label-for="customerGroup"
+                  label-for="Group"
                 >
                   <b-form-select
-                    id="customerGroup"
-                    v-model="selectedCustomerGroup"
+                    id="Group"
+                    v-model="selectedGroup"
+                    :state="stateSelectGroup"
                     required
-                    :options="optionsCustomerGroup"
-                  />
+                  >
+                    <b-form-select-option value="">
+                      Chọn giá trị
+                    </b-form-select-option>
+                    <b-form-select-option value="0">
+                      Khách hàng thường
+                    </b-form-select-option>
+                    <b-form-select-option value="1">
+                      Khách hàng thân thiết
+                    </b-form-select-option>
+                  </b-form-select>
                 </b-form-group>
               </b-col>
 
               <b-col>
                 <b-form-group
                   label="Trạng thái"
-                  label-for="customerState"
+                  label-for="State"
                 >
                   <b-form-select
-                    id="customerState"
-                    v-model="selectedCustomerState"
-                    :options="optionsCustomerState"
+                    id="State"
+                    v-model="selectedStatus"
                     disabled
-                  />
+                  >
+                    <b-form-select-option value="1">
+                      Hoạt động
+                    </b-form-select-option>
+                  </b-form-select>
                 </b-form-group>
               </b-col>
             </b-form-row>
             <!-- END - Customer Group and State -->
 
             <!-- START - Customer loyal -->
-            <b-form-checkbox>
+            <b-form-checkbox
+              v-model="ownCustomer"
+              value="1"
+              unchecked-value="0"
+            >
               Khách hàng riêng của cửa hàng
             </b-form-checkbox>
             <!-- END - Customer loyal -->
@@ -205,11 +234,12 @@
             <!-- START - Customer Note -->
             <b-form-group
               label="Ghi chú"
-              label-for="customerNote"
+              label-for="Note"
               class="mt-1"
             >
               <b-form-textarea
-                id="customerNote"
+                id="Note"
+                v-model="inputValueNote"
                 maxlength="4000"
               />
             </b-form-group>
@@ -225,46 +255,48 @@
             <!-- START - Customer IdentityCard -->
             <b-form-group
               label="CMND"
-              label-for="customerIdentityCard"
-              :state="stateInputIdentityCard"
-              invalid-feedback="Chỉ nhập ký tự số"
+              label-for="IdentityCard"
+              :state="stateInputValueID"
+              :invalid-feedback="invalidFeedbackID"
             >
               <b-form-input
-                id="customerIdentityCard"
+                id="IdentityCard"
                 v-model="inputValueIdentityCard"
                 maxlength="15"
-                :state="stateInputIdentityCard"
+                :state="stateInputValueID"
                 trim
               />
             </b-form-group>
             <!-- END - Customer IdentityCard -->
 
-            <!-- START - Customer Date -->
+            <!-- START - Customer ID Date -->
             <b-form-group
               label="Ngày cấp"
-              label-for="customerIdDate"
+              label-for="IdDate"
             >
               <b-form-datepicker
-                id="customerIdDate"
+                id="IdDate"
+                v-model="inputValueIDDate"
                 placeholder="chọn ngày"
                 :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
                 locale="vi"
               />
             </b-form-group>
-            <!-- END - Customer Date -->
+            <!-- END - Customer ID Date -->
 
-            <!-- START - Customer Location -->
+            <!-- START - Customer ID Location -->
             <b-form-group
               label="Nơi cấp"
-              label-for="customerIdLocation"
+              label-for="IdLocation"
             >
               <b-form-input
-                id="customerIdLocation"
+                id="IdLocation"
+                v-model="inputValueIDLocation"
                 maxlength="200"
                 trim
               />
             </b-form-group>
-          <!-- END - Customer Location -->
+          <!-- END - Customer ID Location -->
           </b-col>
           <!-- END - Section 2 -->
         </b-row>
@@ -282,14 +314,13 @@
         <!-- START - Customer Phone Number -->
         <b-form-group
           label="Di động"
-          label-for="customerPhoneNumber"
+          label-for="PhoneNumber"
           :state="stateInputPhoneNumber"
-          invalid-feedback="Chỉ nhập ký tự số"
+          :invalid-feedback="inputValuePhoneNumber.length >= 1 ? 'Chỉ nhập ký tự số' : ''"
         >
           <b-form-input
-            id="customerPhoneNumber"
+            id="PhoneNumber"
             v-model="inputValuePhoneNumber"
-            required
             trim
             maxlength="15"
             :state="stateInputPhoneNumber"
@@ -300,10 +331,11 @@
         <!-- START - Customer Email -->
         <b-form-group
           label="Email"
-          label-for="customerEmail"
+          label-for="Email"
         >
           <b-form-input
-            id="customerEmail"
+            id="Email"
+            v-model="inputValueEmail"
             trim
             maxlength="200"
           />
@@ -313,93 +345,108 @@
         <!-- START - Customer Apartment number -->
         <b-form-group
           label="Số nhà"
-          label-for="customerApartmentNumber"
+          label-for="ApartmentNumber"
+          :state="stateInputApartmentNumber"
         >
           <b-form-input
-            id="customerApartmentNumber"
-            required
+            id="ApartmentNumber"
+            v-model="inputValueApartmentNumber"
             trim
             maxlength="200"
+            :state="stateInputApartmentNumber"
           />
         </b-form-group>
         <!-- END - Customer Apartment number -->
 
         <!-- START - Customer province -->
-        <b-form-row>
-          <b-col>
-            <b-form-group
-              label="Tỉnh/ thành"
-              label-for="customerProvince"
-            >
-              <b-form-select
-                id="customerDistrict"
-              />
-            </b-form-group>
-          </b-col>
-        </b-form-row>
+        <b-form-group
+          label="Tỉnh/ thành"
+          label-for="Province"
+        >
+          <b-form-select
+            id="District"
+            v-model="selectedProvince"
+          >
+            <b-form-select-option value="">
+              TP.Hồ Chí Minh
+            </b-form-select-option>
+          </b-form-select>
+        </b-form-group>
         <!-- END - Customer province -->
 
         <!-- START - Customer District and Wards -->
         <b-form-row>
           <b-col>
             <b-form-group
-              label="Quận/ Huyện"
-              label-for="customerDistrict"
+              label="Quận/Huyện"
+              label-for="District"
             >
               <b-form-select
-                id="customerDistrict"
-              />
+                id="District"
+                v-model="selectedDistrict"
+              >
+                <b-form-select-option value="">
+                  Quận 1
+                </b-form-select-option>
+              </b-form-select>
             </b-form-group>
           </b-col>
 
           <b-col>
             <b-form-group
-              label="Phường/ Xã"
-              label-for="customerWards"
+              label="Phường/Xã"
+              label-for="Wards"
             >
               <b-form-select
-                id="customerWards"
-              />
+                id="Wards"
+                v-model="selectedWard"
+              >
+                <b-form-select-option value="">
+                  Phường 9
+                </b-form-select-option>
+              </b-form-select>
             </b-form-group>
           </b-col>
         </b-form-row>
         <!-- END - Customer District and Wards -->
 
-        <!-- START - Customer Organ-->
+        <!-- START - Customer Company-->
         <b-form-group
           label="Cơ quan"
-          label-for="customerOrgan"
+          label-for="Company"
         >
           <b-form-input
-            id="customerOrgan"
+            id="Company"
+            v-model="inputValueCompany"
             trim
             maxlength="200"
           />
         </b-form-group>
-        <!-- END - Customer Organ-->
+        <!-- END - Customer Company-->
 
-        <!-- START - Customer Organ Address-->
+        <!-- START - Customer Company Address-->
         <b-form-group
           label="Địa chỉ cơ quan"
-          label-for="customerOrganAddress"
+          label-for="CompanyAddress"
         >
           <b-form-input
-            id="customerOrganAddress"
+            id="CompanyAddress"
+            v-model="inputValueCompanyAddress"
             trim
             maxlength="200"
           />
         </b-form-group>
-        <!-- END - Customer Organ Address-->
+        <!-- END - Customer Company Address-->
 
         <!-- START - Customer Tax code-->
         <b-form-group
           label="Mã số thuế"
-          label-for="customerTaxCode"
+          label-for="TaxCode"
           :state="stateInputTaxCode"
           invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
         >
           <b-form-input
-            id="customerTaxCode"
+            id="TaxCode"
             v-model="inputValueTaxCode"
             maxlength="40"
             trim
@@ -421,23 +468,27 @@
         <!-- START - Customer Membership card -->
         <b-form-group
           label="Thẻ thành viên"
-          label-for="customerMembershipCard"
+          label-for="MembershipCard"
         >
           <b-form-select
-            id="customerMembershipCard"
+            id="MembershipCard"
             v-model="selectedMembershipCard"
-            :options="optionsMembershipCard"
-          />
+          >
+            <b-form-select-option value="">
+              Chọn thẻ thành viên
+            </b-form-select-option>
+          </b-form-select>
         </b-form-group>
         <!-- END - Customer Membership card  -->
 
         <!-- START - Customer Card Date -->
         <b-form-group
           label="Ngày cấp thẻ"
-          label-for="customerCardDate"
+          label-for="CardDate"
         >
           <b-form-datepicker
-            id="customerCardDate"
+            id="CardDate"
+            v-model="inputValueCardDate"
             placeholder="chọn ngày"
             :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
             locale="vi"
@@ -448,26 +499,32 @@
         <!-- START - Customer Card type -->
         <b-form-group
           label="Loại thẻ"
-          label-for="customerCardType"
+          label-for="CardType"
         >
           <b-form-select
-            id="customerCardType"
+            id="CardType"
             v-model="selectedCardType"
-            :options="optionsCardType"
-          />
+          >
+            <b-form-select-option value="">
+              Chọn loại thẻ
+            </b-form-select-option>
+          </b-form-select>
         </b-form-group>
         <!-- END - Customer Card type -->
 
         <!-- START - Customer Type -->
         <b-form-group
           label="Loại khách hàng"
-          label-for="customerType"
+          label-for="Type"
         >
           <b-form-select
-            id="customerType"
-            v-model="selectedCustomerType"
-            :options="optionsCustomerType"
-          />
+            id="Type"
+            v-model="selectedType"
+          >
+            <b-form-select-option value="">
+              Chọn loại khách hàng
+            </b-form-select-option>
+          </b-form-select>
         </b-form-group>
         <!-- END - Customer Type -->
       </b-col>
@@ -499,57 +556,80 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
+import {
+  CUSTOMER,
+  CREATE,
+  CREATE_CODE_ERROR,
+} from '@/store/customer/type'
+
 export default {
+  // START - Data
   data() {
     return {
+      // START - Personal
+      inputValueFullName: '',
+      inputValueName: '',
+      inputValueBarCode: '',
+      inputValueBirthDay: '',
+      selectedGender: 2,
+      selectedGroup: '',
+      selectedStatus: '1',
+      ownCustomer: 0,
+      inputValueNote: '',
       inputValueIdentityCard: '',
-      inputValueCustomerID: '',
+      stateInputValueID: null,
+      invalidFeedbackID: '',
+      inputValueIDDate: '',
+      inputValueIDLocation: '',
+      // END - Personal
+
+      // START - Contact
       inputValuePhoneNumber: '',
+      inputValueEmail: '',
+      inputValueApartmentNumber: '',
+      selectedProvince: '',
+      selectedDistrict: '',
+      selectedWard: '',
+      inputValueCompany: '',
+      inputValueCompanyAddress: '',
       inputValueTaxCode: '',
+      // END - Contact
+
+      // START - MembershipCard
+      selectedMembershipCard: '',
+      inputValueCardDate: '',
+      selectedCardType: '',
+      selectedType: '',
+      // END - MembershipCard
 
       isModalShow: false,
-
-      selectedCustomerGender: null,
-      optionsCustomerGender: [
-        { value: null, text: 'Khác' },
-        { value: 'Male', text: 'Nam' },
-        { value: 'Female', text: 'Nữ' },
-      ],
-
-      selectedCustomerGroup: null,
-      optionsCustomerGroup: [
-        { value: null, text: '--Chọn giá trị--' },
-      ],
-
-      selectedCustomerState: 'active',
-      optionsCustomerState: [
-        { value: 'active', text: 'Hoạt động' },
-      ],
-
-      selectedMembershipCard: null,
-      optionsMembershipCard: [
-        { value: null, text: '--Chọn thẻ thành viên--' },
-      ],
-
-      selectedCardType: null,
-      optionsCardType: [
-        { value: null, text: '--Chọn loại thẻ--' },
-      ],
-
-      selectedCustomerType: null,
-      optionsCustomerType: [
-        { value: null, text: '--Chọn loại khách hàng--' },
-      ],
     }
   },
+  // END - Data
+
+  // START - Computed
   computed: {
-    stateInputCustomerID() {
+    stateInputFullName() {
+      return this.inputValueFullName !== ''
+    },
+
+    stateInputName() {
+      return this.inputValueName !== ''
+    },
+
+    stateInputBarCode() {
       const valid = /^([\w\\.]{0,40})$/
-      const result = valid.test(this.inputValueCustomerID)
-      if (this.inputValueCustomerID.length >= 1) {
+      const result = valid.test(this.inputValueBarCode)
+      if (this.inputValueBarCode.length >= 1) {
         return result
       }
       return null
+    },
+
+    stateSelectGroup() {
+      return this.selectedGroup !== ''
     },
 
     stateInputIdentityCard() {
@@ -562,12 +642,13 @@ export default {
     },
 
     stateInputPhoneNumber() {
-      const valid = /^(\d{0,15})$/
+      const valid = /^(\d{1,15})$/
       const result = valid.test(this.inputValuePhoneNumber)
-      if (this.inputValuePhoneNumber.length >= 1) {
-        return result
-      }
-      return null
+      return result
+    },
+
+    stateInputApartmentNumber() {
+      return this.inputValueApartmentNumber !== ''
     },
 
     stateInputTaxCode() {
@@ -578,12 +659,104 @@ export default {
       }
       return null
     },
+
+    ...mapGetters(CUSTOMER, {
+      CREATE_CODE_ERROR,
+    }),
   },
+  // END - Computed
+
+  watch: {
+    inputValueIdentityCard() {
+      this.stateInputValueID = this.stateInputIdentityCard
+      this.invalidFeedbackID = this.stateInputValueID ? null : 'Chỉ nhập ký tự số'
+    },
+    CREATE_CODE_ERROR() {
+      this.checkDuplicationID(this.CREATE_CODE_ERROR)
+    },
+    inputValueBirthDay() {
+      console.log(this.inputValueBirthDay)
+      console.log('--------------')
+      console.log(new Date(this.inputValueIDDate).toISOString())
+    },
+  },
+
+  mounted() {
+    this.inputValueIdentityCard = this.randomStr(15, '1234567890')
+  },
+
+  // START - Methods
   methods: {
+    ...mapActions(CUSTOMER, [
+      CREATE,
+    ]),
+
+    randomStr(len, arr) {
+      let ans = ''
+      for (let i = len; i > 0; i) {
+        ans += arr[Math.floor(Math.random() * arr.length)]
+        i -= 1
+      }
+      return ans
+    },
+
+    checkDuplicationID(errCode) {
+      switch (errCode) {
+        case 65000:
+          this.stateInputValueID = false
+          this.invalidFeedbackID = 'Số CMND đã tồn tại'
+          break
+        case 200:
+          this.stateInputValueID = true
+          break
+        default:
+          this.stateInputValueID = true
+          break
+      }
+    },
+
+    create() {
+      const customerId = Math.random()
+      this.checkDuplicationID(this.CREATE_CODE_ERROR)
+
+      this.CREATE({
+        customerCode: customerId,
+        barCode: this.inputValueBarCode,
+        firstName: this.inputValueFullName,
+        lastName: this.inputValueName,
+        phoneNumber: this.inputValuePhoneNumber,
+        gender: this.selectedGender,
+        status: this.selectedStatus,
+        birthday: this.inputValueBirthDay !== '' ? (new Date(this.inputValueBirthDay).toISOString()) : '',
+        customerGroupId: this.selectedGroup,
+        specialCustomer: this.ownCustomer,
+        noted: this.inputValueNote,
+        email: this.inputValueEmail,
+        countryId: 0,
+        areaId: 0,
+        provinceId: 0,
+        districtId: 0,
+        wardId: 0,
+        address: this.inputValueApartmentNumber,
+        shopId: 0,
+        identityCardCode: this.inputValueIdentityCard,
+        identityCardIssueDate: this.inputValueIDDate !== '' ? new Date(this.inputValueIDDate).toISOString() : '',
+        identityCardIssuePlace: this.inputValueIDLocation,
+        identityCardExpiryDate: '2021-03-23T12:11:40.781Z',
+        identityCardType: 0,
+        companyName: this.inputValueCompany,
+        companyAddress: this.inputValueCompanyAddress,
+        taxCode: this.inputValueTaxCode,
+        cardMemberId: 0,
+      })
+    },
+
     routeBack() {
       this.isModalShow = !this.isModalShow
       this.$router.back()
     },
   },
+  // END - Methods
+
 }
 </script>

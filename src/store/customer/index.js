@@ -4,6 +4,8 @@ import {
   DELETE,
   GET_ALL,
   LOADING_STATUS,
+  CREATE,
+  CREATE_CODE_ERROR,
 } from '@/store/customer/type'
 
 export default {
@@ -16,6 +18,12 @@ export default {
       success: false,
       errorCode: null,
     },
+    create: {
+      success: false,
+      errorCode: null,
+      // 65000 - IDENTITY_CARD_CODE_HAVE_EXISTED
+      // 40005 - CUSTOMER_CODE_HAVE_EXISTED
+    },
     delete: {
       success: false,
       listDelete: [],
@@ -26,6 +34,10 @@ export default {
   getters: {
     [LIST_CUSTOMER](state) {
       return state.getAll.list
+    },
+
+    [CREATE_CODE_ERROR](state) {
+      return state.create.errorCode
     },
   },
   // Mutations
@@ -54,6 +66,25 @@ export default {
       })
     },
     // END - Get all
+
+    // START - Create
+    [CREATE]({ commit, state }, val) {
+      commit(LOADING_STATUS, true)
+
+      ServiceCustomer.create(val).then(response => {
+        const res = response.data
+        commit(LOADING_STATUS, false)
+        console.log(`${res.statusCode}abc`)
+        if (res.success) {
+          state.create.errorCode = res.statusCode
+        } else {
+          state.create.errorCode = res.statusCode
+        }
+      }).catch(() => {
+        // state.getAll.errorCode = error.response.status
+      })
+    },
+    // END - Create
 
     // START - Delete
     [DELETE]({ dispatch, commit, state }, val) {
