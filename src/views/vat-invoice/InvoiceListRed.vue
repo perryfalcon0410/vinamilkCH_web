@@ -39,7 +39,7 @@
         <!-- START - Search -->
         <b-card-body>
           <b-form-row
-            class="v-search-form border-top"
+            class="border-top"
           >
             <b-col
               xl
@@ -121,9 +121,8 @@
                 label-for="form-button-search"
               >
                 <b-button
-                  id="form-button-search"
                   variant="primary"
-                  @click="search()"
+                  @click="showModalChangePass()"
                 >
                   <b-icon-search />
                   Tìm kiếm
@@ -138,7 +137,7 @@
     <!-- END - Search -->
 
     <!-- START - Customer list -->
-    <b-form class="v-search bg-white rounded shadow rounded my-1">
+    <b-form class=" bg-white rounded shadow rounded my-1">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
@@ -160,7 +159,6 @@
           <b-button
             class="rounded"
             variant="danger"
-            @click="routeCustomerAdd"
           >
             <b-icon-printer-fill />
             IN HĐ
@@ -223,6 +221,7 @@
       <!-- END - Table -->
     </b-form>
     <!-- END - Customer list -->
+    <popup-bill-of-sale-list :visible="valueShowModalChangPass" />
   </b-container>
 </template>
 
@@ -230,18 +229,21 @@
 import Vue from 'vue'
 import VueGoodTablePlugin from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
+import PopupBillOfSaleList from './PopupBillOfSaleList.vue'
 
 Vue.use(VueGoodTablePlugin)
 
 export default {
   name: 'CusomterList',
   components: {
+    PopupBillOfSaleList,
   },
   data() {
     return {
       valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       valueDateTo: new Date(),
       searchTerm: '',
+      valueShowModalChangPass: false,
       selected: 'A',
       options: [
         { item: 'A', name: 'Mẫu DVKH' },
@@ -354,11 +356,12 @@ export default {
   computed: {
   },
   methods: {
-    tdClassFunc(row) {
-      if (row.field > 5) {
-        return 'red-class'
+    showModalChangePass() {
+      if (this.valueShowModalChangPass === true) {
+        this.valueShowModalChangPass = false
+      } else {
+        this.valueShowModalChangPass = true
       }
-      return 'green-class'
     },
   },
 }
