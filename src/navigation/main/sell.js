@@ -1,7 +1,7 @@
 export default [
   {
-    header: 'Bán hàng',
+    title: 'Bán hàng',
     icon: 'ShoppingCartIcon',
-    children: [{}],
+    route: 'salesMain',
   },
 ]

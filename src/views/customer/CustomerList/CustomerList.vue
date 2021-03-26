@@ -129,13 +129,12 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import {
   mapActions,
   mapGetters,
   mapState,
 } from 'vuex'
-import VueGoodTablePlugin from 'vue-good-table'
+import { VueGoodTable } from 'vue-good-table'
 // import the styles
 import 'vue-good-table/dist/vue-good-table.css'
 import CustomerListSearch from '@/views/customer/CustomerList/CustomerListSearch.vue'
@@ -148,12 +147,11 @@ import {
 
 // import ToastificationContent from '@/@core/components/toastification/ToastificationContent.vue'
 
-Vue.use(VueGoodTablePlugin)
-
 export default {
   name: 'CusomterList',
   components: {
     CustomerListSearch,
+    VueGoodTable,
   },
   data() {
     return {

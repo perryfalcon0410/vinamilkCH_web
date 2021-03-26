@@ -155,18 +155,15 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import VueGoodTablePlugin from 'vue-good-table'
+import { VueGoodTable } from 'vue-good-table'
 // import the styles
 import 'vue-good-table/dist/vue-good-table.css'
 import AddNewSearch from '@/views/archive/export/ArchiveExportComponent/EntryCouponModalSearch.vue'
 
-Vue.use(VueGoodTablePlugin)
-
 export default {
-  name: 'CusomterList',
   components: {
     AddNewSearch,
+    VueGoodTable,
   },
   props: {
     visible: {

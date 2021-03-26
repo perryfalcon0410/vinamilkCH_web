@@ -165,15 +165,12 @@
 </template>
 
 <script>
-
-import VueGoodTablePlugin from 'vue-good-table'
+import { VueGoodTable } from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
-import Vue from 'vue'
-
-Vue.use(VueGoodTablePlugin)
 
 export default {
   components: {
+    VueGoodTable,
   },
   props: {
     visible: {
