@@ -36,7 +36,7 @@
           <b-button
             class="ml-1 rounded"
             variant="danger"
-            @click="isModalShow = true"
+            @click="listDelete.length >= 1 ? isModalShow = true : null"
           >
             <b-icon-trash-fill />
             Xóa
@@ -214,19 +214,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(CUSTOMER, {
-      successStatusDelete: state => state.delete.success,
-    }),
-    ...mapGetters(CUSTOMER, [
-      LIST_CUSTOMER,
-    ]),
-    ...mapActions(CUSTOMER, [
-      GET_ALL,
-      DELETE,
-    ]),
-
     rowsFormatted() {
-      return this.LIST_CUSTOMER.map(data => ({
+      return this.LIST_CUSTOMER().map(data => ({
         id: data.id,
         customerID: data.customerCode,
         customerName: `${data.lastName} ${data.firstName}`,
@@ -273,10 +262,21 @@ export default {
   // },
 
   mounted() {
-    this.GET_ALL()
+    this.GET_ALL('')
   },
 
   methods: {
+    ...mapState(CUSTOMER, {
+      successStatusDelete: state => state.delete.success,
+    }),
+    ...mapGetters(CUSTOMER, [
+      LIST_CUSTOMER,
+    ]),
+    ...mapActions(CUSTOMER, [
+      GET_ALL,
+      DELETE,
+    ]),
+
     selectionChanged(params) {
       const selectedList = params.selectedRows.map(data => data.id)
       this.listDelete = selectedList
@@ -284,8 +284,7 @@ export default {
 
     deleteRow(customerIds) {
       this.isModalShow = false
-      // this.DELETE(customerIds)
-      this.$store.dispatch(`${CUSTOMER}/${DELETE}`, customerIds)
+      this.DELETE(customerIds)
     },
 
     formatGender(gender) {
@@ -302,7 +301,7 @@ export default {
     formatStatus(staus) {
       switch (staus) {
         case 0:
-          return 'Ngừng hoạt động'
+          return 'Ngưng hoạt động'
         case 1:
           return 'Hoạt động'
         default:

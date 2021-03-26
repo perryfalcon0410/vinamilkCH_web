@@ -3,11 +3,12 @@ import {
   getCustomerEndpoint,
   deleteCustomerEndpoint,
   createCustomerEndpoint,
+  locationCustomerEndpoint,
 } from './defaultConfig/customer.config'
 
 export default {
-  getAll() {
-    return axios.get(`${getCustomerEndpoint}`)
+  getAll(args) {
+    return axios.get(`${getCustomerEndpoint}${args}`)
   },
 
   create(args) {
@@ -51,5 +52,9 @@ export default {
         customerIds: args,
       },
     })
+  },
+
+  getLocationShop(args) {
+    return axios.get(`${locationCustomerEndpoint}?shopId=${args}`)
   },
 }

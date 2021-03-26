@@ -6,6 +6,8 @@ import {
   LOADING_STATUS,
   CREATE,
   CREATE_CODE_ERROR,
+  GET_LOCATION_SHOP,
+  LIST_LOCATION_SHOP,
 } from '@/store/customer/type'
 
 export default {
@@ -29,7 +31,13 @@ export default {
       listDelete: [],
       errorCode: null,
     },
+    locationShop: {
+      success: false,
+      list: [],
+      errorCode: null,
+    },
   },
+
   // Getters
   getters: {
     [LIST_CUSTOMER](state) {
@@ -39,20 +47,24 @@ export default {
     [CREATE_CODE_ERROR](state) {
       return state.create.errorCode
     },
+    [LIST_LOCATION_SHOP](state) {
+      return state.locationShop.list
+    },
   },
+
   // Mutations
   mutations: {
     [LOADING_STATUS](state, val) {
       state.loading = val
     },
   },
+
   // Actions
   actions: {
     // START - Get all
-    [GET_ALL]({ commit, state }) {
+    [GET_ALL]({ commit, state }, val) {
       commit(LOADING_STATUS, true)
-
-      ServiceCustomer.getAll().then(response => {
+      ServiceCustomer.getAll(val).then(response => {
         const res = response.data
         commit(LOADING_STATUS, false)
 
@@ -96,7 +108,7 @@ export default {
 
         if (res.success) {
           state.delete.success = true
-          dispatch(GET_ALL)
+          dispatch(GET_ALL, '')
         } else {
           state.delete.success = false
           state.delete.errorCode = res.statusCode
@@ -106,6 +118,23 @@ export default {
       })
     },
     // END - Delete
+
+    // START - Get location shop
+    [GET_LOCATION_SHOP]({ commit, state }, val) {
+      commit(LOADING_STATUS, true)
+      ServiceCustomer.getLocationShop(val).then(response => {
+        const res = response.data
+        commit(LOADING_STATUS, false)
+        if (res.success) {
+          state.locationShop.list = res.data
+        } else {
+          state.locationShop.errorCode = res.statusCode
+        }
+      }).catch(error => {
+        state.locationShop.errorCode = error.response.status
+      })
+    },
+    // END - Get location shop
 
   },
 }
