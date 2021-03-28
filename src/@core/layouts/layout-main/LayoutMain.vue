@@ -83,16 +83,6 @@
     <!--/ Content -->
     <!--/ CONTENT -->
 
-    <!-- Footer -->
-    <footer
-      class="footer footer-light"
-      :class="[footerTypeClass]"
-    >
-      <slot name="footer">
-        <app-footer />
-      </slot>
-    </footer>
-
     <slot name="customizer" />
   </div>
 </template>
@@ -101,7 +91,6 @@
 import AppBreadcrumb from '@core/layouts/components/AppBreadcrumb.vue'
 import AppNavbarMainLayout from '@core/layouts/components/app-navbar/AppNavbarMainLayout.vue'
 import AppNavbarHorizontalLayoutBrand from '@core/layouts/components/app-navbar/AppNavbarHorizontalLayoutBrand.vue'
-import AppFooter from '@core/layouts/components/AppFooter.vue'
 import useAppConfig from '@core/app-config/useAppConfig'
 import { BNavbar } from 'bootstrap-vue'
 import { useScrollListener } from '@core/comp-functions/misc/event-listeners'
@@ -127,7 +116,6 @@ export default {
     AppBreadcrumb,
     AppNavbarMainLayout,
     AppNavbarHorizontalLayoutBrand,
-    AppFooter,
     HorizontalNavMenu,
 
     BNavbar,

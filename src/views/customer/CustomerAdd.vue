@@ -63,12 +63,9 @@
         lg
         class="d-flex shadow bg-white rounded"
       >
-        <b-row>
+        <b-row class="flex-grow-1">
           <!-- START - Section 1 -->
-          <b-col
-            sm="7"
-            class="rounded bg-white"
-          >
+          <b-col sm="8">
             <label class="font-weight-bold w-100 text-center mb-2">Thông tin cá nhân</label>
             <!-- START - Customer ID -->
             <b-form-group
@@ -250,7 +247,7 @@
           <!-- START - Section 2 -->
           <b-col
             sm
-            class="bg-light rounded py-2"
+            class="bg-light py-2"
           >
             <!-- START - Customer IdentityCard -->
             <b-form-group
