@@ -86,7 +86,6 @@ export default {
       ServiceCustomer.create(val).then(response => {
         const res = response.data
         commit(LOADING_STATUS, false)
-        console.log(`${res.statusCode}abc`)
         if (res.success) {
           state.create.errorCode = res.statusCode
         } else {
