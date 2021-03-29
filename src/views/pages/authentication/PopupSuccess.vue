@@ -114,7 +114,11 @@ export default {
       type: String,
       default: '',
     },
-    role: {
+    roles: {
+      type: Array,
+      default: null,
+    },
+    shops: {
       type: Array,
       default: null,
     },
@@ -127,12 +131,7 @@ export default {
       // validation rules
       required,
       email,
-
       selectedStore: null,
-      optionsStore: [
-        { text: 'Cửa hàng A' },
-        { text: 'Cửa hàng B' },
-      ],
       selectedRole: null,
       valueShowModalChangPass: false,
     }
@@ -142,8 +141,15 @@ export default {
       return this.passwordFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
     },
     optionsRole() {
-      return this.role.map(e => (
+      if (!this.roles) return []
+      return this.roles.map(e => (
         { text: e.role, value: e.id }
+      ))
+    },
+    optionsStore() {
+      if (!this.shops) return []
+      return this.shops.map(e => (
+        { text: e.shopName, value: e.shopId }
       ))
     },
   },
@@ -155,9 +161,11 @@ export default {
     },
 
     login() {
-      useJwt.login(this.selectedRole, {
+      useJwt.login({
         username: this.username,
         password: this.password,
+        shopId: this.selectedStore,
+        roleId: this.selectedRole,
       })
         .then(response => {
           const { data } = response.data

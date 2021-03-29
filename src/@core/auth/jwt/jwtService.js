@@ -99,8 +99,8 @@ export default class JwtService {
     return this.axiosIns.post(this.jwtConfig.preLoginEndpoint, ...args)
   }
 
-  login(roleId, ...args) {
-    return this.axiosIns.post(`${this.jwtConfig.loginEndpoint}/${roleId}`, ...args)
+  login(...args) {
+    return this.axiosIns.post(this.jwtConfig.loginEndpoint, ...args)
   }
 
   register(...args) {

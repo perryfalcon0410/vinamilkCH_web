@@ -159,7 +159,8 @@
       :visible="valueShowModalSuccess"
       :username="username"
       :password="password"
-      :role="role"
+      :roles="roles"
+      :shops="shops"
     />
   </div>
 </template>
@@ -217,7 +218,8 @@ export default {
       errored: true,
       valueShowModalChangPass: false,
       valueShowModalSuccess: false,
-      role: [],
+      roles: [],
+      shops: [],
     }
   },
   computed: {
@@ -251,7 +253,8 @@ export default {
       })
       // eslint-disable-next-line no-return-assign
         .then(response => ([
-          this.role = response.data.data.roles, // Role
+          this.roles = response.data.data.roles, // Role
+          this.shops = response.data.data.shops, // Role
           this.errored = response.data.success, // Show text error username password
           this.valueShowModalSuccess = this.errored, // Show popup login success
         ]))
