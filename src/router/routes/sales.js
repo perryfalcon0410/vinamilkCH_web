@@ -29,7 +29,7 @@ export default [
     },
   },
   {
-    path: 'sales/customers/create',
+    path: '/sales/customers/create',
     name: 'sales-customers-create',
     component: () => import('@/views/sales/sales-customers/sales-customers-create/SalesCustomersCreate.vue'),
     meta: {
