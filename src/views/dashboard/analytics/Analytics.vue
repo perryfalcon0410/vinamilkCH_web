@@ -55,11 +55,6 @@
       </b-col>
     </b-row>
 
-    <b-row>
-      <b-col cols="12">
-        <invoice-list />
-      </b-col>
-    </b-row>
   </section>
 </template>
 
@@ -68,7 +63,6 @@ import { BRow, BCol } from 'bootstrap-vue'
 
 import StatisticCardWithAreaChart from '@core/components/statistics-cards/StatisticCardWithAreaChart.vue'
 import { kFormatter } from '@core/utils/filter'
-import InvoiceList from '@/views/apps/invoice/invoice-list/InvoiceList.vue'
 import AnalyticsCongratulation from './AnalyticsCongratulation.vue'
 import AnalyticsAvgSessions from './AnalyticsAvgSessions.vue'
 import AnalyticsSupportTracker from './AnalyticsSupportTracker.vue'
@@ -87,7 +81,6 @@ export default {
     AnalyticsTimeline,
     AnalyticsSalesRadarChart,
     AnalyticsAppDesign,
-    InvoiceList,
   },
   data() {
     return {

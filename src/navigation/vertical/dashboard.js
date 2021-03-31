@@ -1,16 +1,16 @@
 export default [
   {
-    title: 'Dashboards',
+    title: 'Trang chủ',
     icon: 'HomeIcon',
     tag: '2',
     tagVariant: 'light-warning',
     children: [
       {
-        title: 'eCommerce',
+        title: 'Thương mại điện tử',
         route: 'dashboard-ecommerce',
       },
       {
-        title: 'Analytics',
+        title: 'Phân tích',
         route: 'dashboard-analytics',
       },
     ],

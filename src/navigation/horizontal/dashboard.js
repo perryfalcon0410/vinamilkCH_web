@@ -1,15 +1,15 @@
 export default [
   {
-    header: 'Dashboards',
+    header: 'Trang chủ',
     icon: 'HomeIcon',
     children: [
       {
-        title: 'eCommerce',
+        title: 'Thương mại điện tử',
         route: 'dashboard-ecommerce',
         icon: 'ShoppingCartIcon',
       },
       {
-        title: 'Analytics',
+        title: 'Phân tích',
         route: 'dashboard-analytics',
         icon: 'ActivityIcon',
       },

@@ -1,7 +1,5 @@
 <template>
-  <section
-    id="dashboard-ecommerce"
-  >
+  <section id="dashboard-ecommerce">
     <b-row class="match-height">
       <b-col
         xl="4"

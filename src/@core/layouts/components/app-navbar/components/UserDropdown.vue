@@ -26,6 +26,7 @@
         />
       </b-avatar>
     </template>
+
     <b-dropdown-item
       link-class="d-flex align-items-center"
       @click="logout"
@@ -35,17 +36,23 @@
         icon="LogOutIcon"
         class="mr-50"
       />
-      <span>Đăng xuất</span>
+      <span>Logout</span>
     </b-dropdown-item></b-nav-item-dropdown>
 </template>
 
 <script>
+import {
+  BNavItemDropdown, BDropdownItem, BAvatar,
+} from 'bootstrap-vue'
 import { initialAbility } from '@/libs/acl/config'
 import useJwt from '@/auth/jwt/useJwt'
 import { avatarText } from '@core/utils/filter'
 
 export default {
   components: {
+    BNavItemDropdown,
+    BDropdownItem,
+    BAvatar,
   },
   data() {
     return {

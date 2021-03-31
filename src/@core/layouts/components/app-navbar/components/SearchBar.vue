@@ -5,9 +5,10 @@
     <a
       href="javascript:void(0)"
       class="nav-link nav-link-search"
+      @click="showSearchBar = true"
     >
       <feather-icon
-        icon="RepeatIcon"
+        icon="SearchIcon"
         size="21"
       />
     </a>
@@ -26,7 +27,7 @@
       <b-form-input
         v-if="showSearchBar"
         v-model="searchQuery"
-        placeholder="Explore Vuexy"
+        placeholder="Tìm kiếm..."
         autofocus
         autocomplete="off"
         @keyup.up="increaseIndex(false)"
@@ -116,7 +117,7 @@
               v-if="!suggestion_list.length && searchQuery"
               class="suggestion-group-suggestion no-results"
             >
-              <p>No Results Found.</p>
+              <p>Không tìm thấy kết quả.</p>
             </li>
           </ul>
         </li>
