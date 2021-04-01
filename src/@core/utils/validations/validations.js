@@ -13,11 +13,10 @@ import {
   alpha_num as rule_alpha_num,
   length as rule_length,
 } from 'vee-validate/dist/rules'
-import ar from 'vee-validate/dist/locale/ar.json'
-import en from 'vee-validate/dist/locale/en.json'
+import vi from 'vee-validate/dist/locale/vi.json'
 
 // eslint-disable-next-line object-curly-newline
-import { validatorPositive, validatorUrlValidator, validatorPassword, validatorCreditCard } from './validators'
+import { validatorPositive, validatorUrlValidator, validatorPassword, validatorCreditCard, validatorNotEqual } from './validators'
 
 // ////////////////////////////////////////////////////////
 // General
@@ -62,36 +61,20 @@ export const password = extend('password', {
   message: 'Your {_field_} must contain at least one uppercase, one lowercase, one special character and one digit',
 })
 
+export const notEqual = extend('not-equal', {
+  validate: validatorNotEqual,
+  params: ['target'],
+  message: '{_field_} phải khác với {target}',
+})
+
 export const url = extend('url', {
   validate: validatorUrlValidator,
   message: 'URL is invalid',
 })
 
-// Install English and Arabic localizations.
 localize({
   en: {
-    messages: en.messages,
-    names: {
-      email: 'Email',
-      password: 'Password',
-    },
-    fields: {
-      password: {
-        min: '{_field_} is too short, you want to get hacked?',
-      },
-    },
-  },
-  ar: {
-    messages: ar.messages,
-    names: {
-      email: 'البريد الإلكتروني',
-      password: 'كلمة السر',
-    },
-    fields: {
-      password: {
-        min: 'كلمة السر قصيرة جداً سيتم اختراقك',
-      },
-    },
+    messages: vi.messages,
   },
 })
 // ////////////////////////////////////////////////////////

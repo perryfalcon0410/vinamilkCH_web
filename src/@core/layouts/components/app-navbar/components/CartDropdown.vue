@@ -7,7 +7,7 @@
   >
     <template #button-content>
       <feather-icon
-        :badge="$store.state['app-ecommerce'].cartItemsCount"
+        :badge="10"
         class="text-body"
         icon="ShoppingCartIcon"
         size="21"
@@ -24,7 +24,7 @@
           pill
           variant="light-primary"
         >
-          {{ $store.state['app-ecommerce'].cartItemsCount }} Items
+          10 Items
         </b-badge>
       </div>
     </li>

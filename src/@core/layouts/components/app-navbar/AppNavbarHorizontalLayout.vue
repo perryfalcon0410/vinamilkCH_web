@@ -23,7 +23,7 @@
 
     <!-- Right Col -->
     <b-navbar-nav class="nav align-items-center ml-auto">
-      <locale />
+      <!-- <locale /> -->
       <dark-Toggler class="d-none d-lg-block" />
       <search-bar />
       <cart-dropdown />
@@ -38,7 +38,7 @@ import {
   BLink, BNavbarNav,
 } from 'bootstrap-vue'
 import Bookmarks from './components/Bookmarks.vue'
-import Locale from './components/Locale.vue'
+// import Locale from './components/Locale.vue'
 import DarkToggler from './components/DarkToggler.vue'
 import SearchBar from './components/SearchBar.vue'
 import CartDropdown from './components/CartDropdown.vue'
@@ -52,7 +52,7 @@ export default {
     // Navbar Components
     BNavbarNav,
     Bookmarks,
-    Locale,
+    // Locale,
     DarkToggler,
     SearchBar,
     CartDropdown,

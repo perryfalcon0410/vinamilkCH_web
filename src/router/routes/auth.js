@@ -2,7 +2,7 @@ export default [
   {
     path: '/login',
     name: 'auth-login',
-    component: () => import('@/views/auth/Login.vue'),
+    component: () => import('@/views/auth/login/Login.vue'),
     meta: {
       layout: 'full',
       resource: 'Auth',
@@ -12,15 +12,16 @@ export default [
   {
     path: '/reset-password',
     name: 'auth-reset-password',
-    component: () => import('@/views/auth/ResetPassword.vue'),
+    component: () => import('@/views/auth/reset-password/ResetPassword.vue'),
     meta: {
       layout: 'full',
+      resource: 'Auth',
     },
   },
   {
     path: '/not-authorized',
     name: 'auth-not-authorized',
-    component: () => import('@/views/auth/NotAuthorized.vue'),
+    component: () => import('@/views/auth/not-authorized/NotAuthorized.vue'),
     meta: {
       layout: 'full',
       resource: 'Auth',

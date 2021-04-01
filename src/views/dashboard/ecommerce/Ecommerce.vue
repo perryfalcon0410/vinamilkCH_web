@@ -100,17 +100,17 @@
 import { BRow, BCol } from 'bootstrap-vue'
 
 import { getUserData } from '@/auth/utils'
-import EcommerceMedal from './EcommerceMedal.vue'
-import EcommerceStatistics from './EcommerceStatistics.vue'
-import EcommerceRevenueReport from './EcommerceRevenueReport.vue'
-import EcommerceOrderChart from './EcommerceOrderChart.vue'
-import EcommerceProfitChart from './EcommerceProfitChart.vue'
-import EcommerceEarningsChart from './EcommerceEarningsChart.vue'
-import EcommerceCompanyTable from './EcommerceCompanyTable.vue'
-import EcommerceMeetup from './EcommerceMeetup.vue'
-import EcommerceBrowserStates from './EcommerceBrowserStates.vue'
-import EcommerceGoalOverview from './EcommerceGoalOverview.vue'
-import EcommerceTransactions from './EcommerceTransactions.vue'
+import EcommerceMedal from './components/EcommerceMedal.vue'
+import EcommerceStatistics from './components/EcommerceStatistics.vue'
+import EcommerceRevenueReport from './components/EcommerceRevenueReport.vue'
+import EcommerceOrderChart from './components/EcommerceOrderChart.vue'
+import EcommerceProfitChart from './components/EcommerceProfitChart.vue'
+import EcommerceEarningsChart from './components/EcommerceEarningsChart.vue'
+import EcommerceCompanyTable from './components/EcommerceCompanyTable.vue'
+import EcommerceMeetup from './components/EcommerceMeetup.vue'
+import EcommerceBrowserStates from './components/EcommerceBrowserStates.vue'
+import EcommerceGoalOverview from './components/EcommerceGoalOverview.vue'
+import EcommerceTransactions from './components/EcommerceTransactions.vue'
 
 export default {
   components: {

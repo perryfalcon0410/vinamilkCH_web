@@ -2,7 +2,7 @@ export default [
   {
     path: '/sales/sales',
     name: 'sales-sales',
-    component: () => import('@/views/sales/sales-list/SalesList.vue'),
+    component: () => import('@/views/sales/sales/sales-list/SalesList.vue'),
     meta: {
       pageTitle: 'Bán hàng',
       breadcrumb: [

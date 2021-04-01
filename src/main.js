@@ -41,6 +41,7 @@ require('@core/scss/core.scss')
 require('@/assets/scss/style.scss')
 
 Vue.config.productionTip = false
+Vue.config.silent = true
 
 new Vue({
   router,

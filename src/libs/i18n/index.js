@@ -18,4 +18,5 @@ export default new VueI18n({
   locale: 'vi',
   fallbackLocale: 'vi',
   messages: loadLocaleMessages(),
+  silentTranslationWarn: true,
 })

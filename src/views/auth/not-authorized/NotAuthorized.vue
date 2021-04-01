@@ -10,20 +10,20 @@
     <div class="misc-inner p-2 p-sm-3">
       <div class="w-100 text-center">
         <h2 class="mb-1">
-          You are not authorized! 🔐
+          Bạn không được ủy quyền! 🔐
         </h2>
         <p class="mb-2">
-          You don’t have permission to access this page. Go Home!!
+          Bạn không có quyền truy cập trang này. Trở về!!
         </p>
         <b-button
           variant="primary"
           class="mb-1 btn-sm-block"
           :to="loginRoute()"
-        >Back to Home</b-button>
+        >Trở về Trang chủ</b-button>
         <b-img
           fluid
           :src="imgUrl"
-          alt="Not authorized page"
+          alt="Trang không được ủy quyền"
         />
       </div>
     </div>

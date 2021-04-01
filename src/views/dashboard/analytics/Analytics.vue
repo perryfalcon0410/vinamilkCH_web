@@ -63,12 +63,12 @@ import { BRow, BCol } from 'bootstrap-vue'
 
 import StatisticCardWithAreaChart from '@core/components/statistics-cards/StatisticCardWithAreaChart.vue'
 import { kFormatter } from '@core/utils/filter'
-import AnalyticsCongratulation from './AnalyticsCongratulation.vue'
-import AnalyticsAvgSessions from './AnalyticsAvgSessions.vue'
-import AnalyticsSupportTracker from './AnalyticsSupportTracker.vue'
-import AnalyticsTimeline from './AnalyticsTimeline.vue'
-import AnalyticsSalesRadarChart from './AnalyticsSalesRadarChart.vue'
-import AnalyticsAppDesign from './AnalyticsAppDesign.vue'
+import AnalyticsCongratulation from './components/AnalyticsCongratulation.vue'
+import AnalyticsAvgSessions from './components/AnalyticsAvgSessions.vue'
+import AnalyticsSupportTracker from './components/AnalyticsSupportTracker.vue'
+import AnalyticsTimeline from './components/AnalyticsTimeline.vue'
+import AnalyticsSalesRadarChart from './components/AnalyticsSalesRadarChart.vue'
+import AnalyticsAppDesign from './components/AnalyticsAppDesign.vue'
 
 export default {
   components: {

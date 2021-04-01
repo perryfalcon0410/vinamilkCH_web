@@ -1,0 +1,291 @@
+<template>
+  <div class="auth-wrapper auth-v1 px-2">
+    <div class="auth-inner py-2">
+      <!-- Reset Password -->
+      <b-card class="mb-0">
+
+        <!-- logo -->
+        <b-link class="brand-logo">
+          <vuexy-logo />
+
+          <h2 class="brand-text text-primary ml-1">
+            Kênh Cửa Hàng
+          </h2>
+        </b-link>
+
+        <b-card-title class="mb-1">
+          Đổi Mật Khẩu 🔒
+        </b-card-title>
+        <b-card-text class="mb-2">
+          Mật khẩu mới của bạn phải khác với các mật khẩu đã sử dụng trước đó
+        </b-card-text>
+
+        <!-- form -->
+        <validation-observer
+          ref="resetPasswordForm"
+          #default="{invalid}"
+        >
+          <b-form
+            method="POST"
+            class="auth-reset-password-form mt-2"
+            @submit.prevent="validationForm"
+          >
+
+            <!-- username -->
+            <b-form-group>
+              <validation-provider
+                #default="{ errors }"
+                name="Tên đăng nhập"
+                vid="username"
+                rules="required"
+              >
+                <b-form-input
+                  id="login-username"
+                  v-model="username"
+                  :state="errors.length > 0 ? false:null"
+                  class="form-control-merge"
+                  name="reset-password-username"
+                  placeholder="Tên đăng nhập"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-form-group>
+
+            <!-- old password -->
+            <b-form-group>
+              <validation-provider
+                #default="{ errors }"
+                name="Mật khẩu cũ"
+                vid="oPassword"
+                rules="required"
+              >
+                <b-input-group
+                  class="input-group-merge"
+                  :class="errors.length > 0 ? 'is-invalid':null"
+                >
+                  <b-form-input
+                    id="reset-password-old"
+                    v-model="oPassword"
+                    :type="passwordOFieldType"
+                    :state="errors.length > 0 ? false:null"
+                    class="form-control-merge"
+                    name="reset-password-old"
+                    placeholder="Mật khẩu cũ"
+                  />
+                  <b-input-group-append is-text>
+                    <feather-icon
+                      class="cursor-pointer"
+                      :icon="passwordOToggleIcon"
+                      @click="togglePasswordOVisibility"
+                    />
+                  </b-input-group-append>
+                </b-input-group>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-form-group>
+
+            <!-- new password -->
+            <b-form-group>
+              <validation-provider
+                #default="{ errors }"
+                name="Mật khẩu mới"
+                vid="nPassword"
+                rules="required|not-equal:@oPassword"
+              >
+                <b-input-group
+                  class="input-group-merge"
+                  :class="errors.length > 0 ? 'is-invalid':null"
+                >
+                  <b-form-input
+                    id="reset-password-new"
+                    v-model="nPassword"
+                    :type="passwordNFieldType"
+                    :state="errors.length > 0 ? false:null"
+                    class="form-control-merge"
+                    name="reset-password-new"
+                    placeholder="Mật khẩu mới"
+                  />
+                  <b-input-group-append is-text>
+                    <feather-icon
+                      class="cursor-pointer"
+                      :icon="passwordNToggleIcon"
+                      @click="togglePasswordNVisibility"
+                    />
+                  </b-input-group-append>
+                </b-input-group>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-form-group>
+
+            <!-- confirm password -->
+            <b-form-group>
+              <validation-provider
+                #default="{ errors }"
+                name="Xác nhận mật khẩu"
+                rules="required|confirmed:nPassword"
+              >
+                <b-input-group
+                  class="input-group-merge"
+                  :class="errors.length > 0 ? 'is-invalid':null"
+                >
+                  <b-form-input
+                    id="reset-password-confirm"
+                    v-model="cPassword"
+                    :type="password2FieldType"
+                    class="form-control-merge"
+                    :state="errors.length > 0 ? false:null"
+                    name="reset-password-confirm"
+                    placeholder="Xác nhận mật khẩu"
+                  />
+                  <b-input-group-append is-text>
+                    <feather-icon
+                      class="cursor-pointer"
+                      :icon="passwordCToggleIcon"
+                      @click="togglePasswordCVisibility"
+                    />
+                  </b-input-group-append>
+                </b-input-group>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-form-group>
+
+            <!-- submit button -->
+            <b-button
+              block
+              type="submit"
+              :disabled="invalid"
+              variant="primary"
+            >
+              Đổi Mật Khẩu
+            </b-button>
+          </b-form>
+        </validation-observer>
+
+        <p class="text-center mt-2">
+          <b-link :to="{name:'auth-login'}">
+            <feather-icon icon="ChevronLeftIcon" /> Huỷ bỏ
+          </b-link>
+        </p>
+
+      </b-card>
+    <!-- /Reset Password -->
+    </div>
+  </div>
+
+</template>
+
+<script>
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import VuexyLogo from '@core/layouts/components/Logo.vue'
+import {
+  BCard, BCardTitle, BCardText, BForm, BFormGroup, BInputGroup, BInputGroupAppend, BLink, BFormInput, BButton,
+} from 'bootstrap-vue'
+import { required, notEqual } from '@validations'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+
+import useJwt from '@/auth/jwt/useJwt'
+
+export default {
+  components: {
+    VuexyLogo,
+    BCard,
+    BButton,
+    BCardTitle,
+    BCardText,
+    BForm,
+    BFormGroup,
+    BInputGroup,
+    BLink,
+    BFormInput,
+    BInputGroupAppend,
+    ValidationProvider,
+    ValidationObserver,
+  },
+  data() {
+    return {
+      username: '',
+      oPassword: '',
+      nPassword: '',
+      cPassword: '',
+
+      // validation
+      required,
+      notEqual,
+
+      // Toggle Password
+      passwordOFieldType: 'password',
+      passwordNFieldType: 'password',
+      passwordCFieldType: 'password',
+    }
+  },
+  computed: {
+    passwordOToggleIcon() {
+      return this.passwordOFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
+    },
+    passwordNToggleIcon() {
+      return this.passwordNFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
+    },
+    passwordCToggleIcon() {
+      return this.passwordCFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
+    },
+  },
+  methods: {
+    togglePasswordOVisibility() {
+      this.passwordOFieldType = this.passwordOFieldType === 'password' ? 'text' : 'password'
+    },
+    togglePasswordNVisibility() {
+      this.passwordNFieldType = this.passwordNFieldType === 'password' ? 'text' : 'password'
+    },
+    togglePasswordCVisibility() {
+      this.passwordCFieldType = this.passwordCFieldType === 'password' ? 'text' : 'password'
+    },
+    validationForm() {
+      this.$refs.resetPasswordForm.validate().then(success => {
+        if (success) {
+          useJwt
+            .changePassword({
+              username: this.username,
+              oldPassword: this.oPassword,
+              newPassword: this.nPassword,
+              confirmPassword: this.cPassword,
+            })
+            .then(response => response.data)
+            .then(response => {
+              console.log(response)
+              if (response.success) {
+                this.$toast({
+                  component: ToastificationContent,
+                  position: 'top-right',
+                  props: {
+                    title: 'Thông báo',
+                    icon: 'AlertCircleIcon',
+                    variant: 'success',
+                    text: 'Mật khẩu đã thay đổi thành công',
+                  },
+                })
+              } else {
+                throw new Error('Mật khẩu thay đổi không thành công')
+              }
+            })
+            .catch(error => {
+              this.$toast({
+                component: ToastificationContent,
+                position: 'top-right',
+                props: {
+                  title: 'Thông báo',
+                  icon: 'AlertCircleIcon',
+                  variant: 'danger',
+                  text: error.message,
+                },
+              })
+            })
+        }
+      })
+    },
+  },
+}
+</script>
+
+<style lang="scss">
+@import '@core/scss/vue/pages/page-auth.scss';
+</style>
