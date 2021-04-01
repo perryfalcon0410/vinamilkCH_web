@@ -23,6 +23,8 @@ import '@/libs/tour'
 // Axios Mock Adapter
 import '@/@fake-db/db'
 
+import 'vue-loading-overlay/dist/vue-loading.css'
+
 // BSV Plugin Registration
 Vue.use(ToastPlugin)
 Vue.use(ModalPlugin)

@@ -3,6 +3,7 @@ import { $themeBreakpoints } from '@themeConfig'
 export default {
   namespaced: true,
   state: {
+    isLoading: false,
     windowWidth: 0,
     shallShowOverlay: false,
   },
@@ -17,6 +18,9 @@ export default {
     },
   },
   mutations: {
+    UPDATE_IS_LOADING(state, val) {
+      state.isLoading = val
+    },
     UPDATE_WINDOW_WIDTH(state, val) {
       state.windowWidth = val
     },

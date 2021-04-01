@@ -9,11 +9,21 @@
     </component>
 
     <scroll-to-top v-if="enableScrollToTop" />
+
+    <loading
+      :active.sync="isLoading"
+      :can-cancel="false"
+      :is-full-page="true"
+      loader="spinner"
+      color="#7367f0"
+      opacity="0"
+    />
   </div>
 </template>
 
 <script>
 import ScrollToTop from '@core/components/scroll-to-top/ScrollToTop.vue'
+import Loading from 'vue-loading-overlay'
 
 // This will be populated in `beforeCreate` hook
 import { $themeColors, $themeBreakpoints, $themeConfig } from '@themeConfig'
@@ -38,6 +48,8 @@ export default {
     LayoutFull,
 
     ScrollToTop,
+
+    Loading,
   },
   // ! We can move this computed: layout & contentLayoutType once we get to use Vue 3
   // Currently, router.currentRoute is not reactive and doesn't trigger any change
@@ -48,6 +60,9 @@ export default {
     },
     contentLayoutType() {
       return this.$store.state.appConfig.layout.type
+    },
+    isLoading() {
+      return this.$store.state.app.isLoading
     },
   },
   beforeCreate() {

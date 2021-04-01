@@ -251,7 +251,6 @@ export default {
             })
             .then(response => response.data)
             .then(response => {
-              console.log(response)
               if (response.success) {
                 this.$toast({
                   component: ToastificationContent,
