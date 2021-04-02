@@ -1,5 +1,10 @@
 import Vue from 'vue'
-import { ToastPlugin, ModalPlugin } from 'bootstrap-vue'
+import {
+  ToastPlugin,
+  ModalPlugin,
+  BootstrapVue,
+  BootstrapVueIcons,
+} from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
 
 import i18n from '@/libs/i18n'
@@ -37,6 +42,8 @@ Vue.use(ModalPlugin)
 Vue.use(VueCompositionAPI)
 
 Vue.use(VueGoodTablePlugin)
+Vue.use(BootstrapVue)
+Vue.use(BootstrapVueIcons)
 
 // Feather font icon - For form-wizard
 // * Shall remove it if not using font-icons of feather-icons - For form-wizard
