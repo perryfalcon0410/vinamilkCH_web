@@ -190,7 +190,7 @@
               slot-scope="props"
             >
               <span v-if="props.column.field == 'number'">
-                <span style="font-weight: bold; color: black;">{{ props.row.number }}</span>
+                <span>{{ props.row.number }}</span>
               </span>
               <span v-else>
                 {{ props.formattedRow[props.column.field] }}
@@ -199,7 +199,6 @@
           </vue-good-table>
         </b-col>
       <!-- END - Table Products-->
-
       </b-form>
       <!-- END - Product list -->
     </b-container>
@@ -207,14 +206,8 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import VueGoodTablePlugin from 'vue-good-table'
-import 'vue-good-table/dist/vue-good-table.css'
-
-Vue.use(VueGoodTablePlugin)
 
 export default {
-  name: 'CusomterList',
   components: {
 
   },
@@ -229,10 +222,6 @@ export default {
     return {
       valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       valueDateTo: new Date(),
-      isModalShow: false,
-      list: this.$store.getters['customer/LIST_CUSTOMER'],
-      listDelete: [],
-
       columns: [
         {
           label: 'STT',

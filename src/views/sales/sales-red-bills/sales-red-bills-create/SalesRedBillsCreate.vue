@@ -41,17 +41,40 @@
                 <b-form-group
                   label="Mã xuất hàng"
                   label-for="archiveExportID"
-                  :state="stateInputID"
-                  invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
                 >
                   <b-form-input
                     id="archiveExportID"
                     v-model="inputValueID"
                     maxlength="40"
-                    :state="stateInputID"
                     required
                     trim
+                    @focus="inputSearchFocusedKH = true"
+                    @blur="inputSearchFocusedKH = false"
                   />
+                  <b-collapse
+                    v-model="inputSearchFocusedKH"
+                    class="position-absolute mr-lg-0"
+                    style="zIndex:1"
+                  >
+                    <b-container
+                      class="my-1 bg-white rounded border border-primary shadow-lg"
+                    >
+                      <b-col
+                        v-for="(n,index) in 6"
+                        :key="index"
+                        class="px-0 my-1"
+                      >
+                        <b-col
+                          class="text-dark font-weight-bold px-0"
+                        >
+                          Nguyễn Xuân Điểm
+                        </b-col>
+                        <b-col class="text-dark px-0">
+                          CUS.BN40011.0001 - 0979604450
+                        </b-col>
+                      </b-col>
+                    </b-container>
+                  </b-collapse>
                 </b-form-group>
               </b-col>
 
@@ -59,14 +82,11 @@
                 <b-form-group
                   label="Tên khách hàng"
                   label-for="archiveExportID"
-                  :state="stateInputID"
-                  invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
                 >
                   <b-form-input
                     id="archiveExportID"
                     v-model="inputValueID"
                     maxlength="40"
-                    :state="stateInputID"
                     required
                     disabled
                   />
@@ -81,14 +101,11 @@
                 <b-form-group
                   label="Số hóa đơn"
                   label-for="archiveExportBillNumber"
-                  :state="stateInputBillNumber"
-                  invalid-feedback="Chỉ bao gồm ký tự [0-9]"
                 >
                   <b-form-input
                     id="archiveExportBillNumber"
                     v-model="inputValueBillNumber"
                     maxlength="20"
-                    :state="stateInputBillNumber"
                     required
                   />
                 </b-form-group>
@@ -117,14 +134,11 @@
                 <b-form-group
                   label="Tên đơn vị*"
                   label-for="archiveExportID"
-                  :state="stateInputID"
-                  invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
                 >
                   <b-form-input
                     id="archiveExportID"
                     v-model="inputValueID"
                     maxlength="40"
-                    :state="stateInputID"
                     required
                   />
                 </b-form-group>
@@ -134,14 +148,11 @@
                 <b-form-group
                   label="Mã số thuế*"
                   label-for="archiveExportID"
-                  :state="stateInputID"
-                  invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
                 >
                   <b-form-input
                     id="archiveExportID"
                     v-model="inputValueID"
                     maxlength="40"
-                    :state="stateInputID"
                     required
                   />
                 </b-form-group>
@@ -153,14 +164,11 @@
             <b-form-group
               label="Địa chỉ cơ quan*"
               label-for="archiveExportID"
-              :state="stateInputID"
-              invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
             >
               <b-form-input
                 id="archiveExportID"
                 v-model="inputValueID"
                 maxlength="40"
-                :state="stateInputID"
                 required
               />
             </b-form-group>
@@ -172,14 +180,11 @@
                 <b-form-group
                   label="Người mua hàng"
                   label-for="archiveExportInternalNumber"
-                  :state="stateInputInternalNumber"
-                  invalid-feedback="Chỉ bao gồm ký tự [0-9]"
                 >
                   <b-form-input
                     id="archiveExportInternalNumber"
                     v-model="inputValueInternalNumber"
                     maxlength="20"
-                    :state="stateInputInternalNumber"
                     required
                   />
                 </b-form-group>
@@ -223,12 +228,9 @@
           <div class="font-weight-bold text-dark pb-1">
             Danh sách sản phẩm
           </div>
-          <!-- END - Header list -->
-
           <b-col
             class="bg-white shadow rounded"
           >
-
             <!-- START - Table Product -->
             <b-row class="d-flex px-1 pt-2">
               <b-card-text class="mr-auto">
@@ -250,45 +252,71 @@
               line-numbers
               class="mt-2"
             >
+              <div
+                slot="table-actions-bottom"
+                class="mx-1 my-2 px-2"
+              >
+                <b-form-input
+                  class="w-25"
+                  placeholder="Nhập mã hoặc tên sản phẩm"
+                  type="text"
+                  @focus="inputSearchFocusedSP = true"
+                  @blur="inputSearchFocusedSP = false"
+                />
+                <b-collapse
+                  v-model="inputSearchFocusedSP"
+                  class="position-absolute mr-lg-0 mb-3"
+                  style="zIndex:1"
+                >
+                  <b-container
+                    class="my-1 bg-white rounded border border-primary shadow-lg"
+                  >
+                    <b-col
+                      v-for="(n,index) in 2"
+                      :key="index"
+                      class="px-0 my-1 border-bottom"
+                    >
+                      <b-col
+                        class="text-dark font-weight-bold px-0"
+                      >
+                        Sữa Bột Dielac Grow Plus Có Tổ Yến 850g
+                      </b-col>
+                      <b-col class="text-dark px-0 mb-1">
+                        SP007
+                      </b-col>
+                    </b-col>
+                  </b-container>
+                </b-collapse>
+              </div>
 
               <template
                 slot="table-row"
                 slot-scope="props"
               >
                 <span v-if="props.column.field == 'Number'">
-                  <span style="font-weight: bold; color: blue;">
-                    <!-- <div v-if="props.row.Number == '1'"> -->
-                    <b-form-input
-                      v-model="props.row.Number"
-                      type="text"
-                      debounce="500"
-                    />
-                    <!-- </div> -->
-                  </span>
+                  <b-form-input
+                    v-model="props.row.Number"
+                    type="text"
+                  />
                 </span>
-
                 <span v-else-if="props.column.field == 'ProductPrice'">
                   <div v-if="props.row.ProductPrice != ''">
                     <b-form-input
                       v-model="props.row.ProductPrice"
                       type="text"
-                      debounce="500"
                     />
                   </div>
                 </span>
-
                 <span v-else-if="props.column.field == 'VAT'">
                   <div v-if="props.row.VAT != ''">
                     <b-col>
                       <b-form-input
                         v-model="props.row.VAT"
                         type="text"
-                        debounce="500"
                       />
                     </b-col>
                   </div>
                 </span>
-
                 <span v-else-if="props.column.field == 'button'">
                   <div v-if="props.row.button == '1'">
                     <b-button
@@ -299,17 +327,15 @@
                     </b-button>
                   </div>
                 </span>
-
                 <span v-else>
                   {{ props.formattedRow[props.column.field] }}
                 </span>
               </template>
-
             </vue-good-table>
             <!-- END - Table Product -->
 
             <!-- START - Button -->
-            <b-row class="m-1 justify-content-end">
+            <b-row class="justify-content-end mt-4 mr-1">
               <b-button-group>
                 <b-button
                   variant="primary"
@@ -353,30 +379,31 @@
               </b-button-group>
             </b-row>
             <!-- END - Button -->
-
           </b-col>
         </b-col>
         <!-- END - List -->
       </b-row>
     </b-col>
     <!-- END - Form and list -->
-    <bill-of-sale-list :visible="valueShowBillOfSaleList" />
+    <bill-receipts-modal :visible="isShowBillReceiptsModal " />
   </b-container>
 </template>
 
 <script>
 import { VueGoodTable } from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
-import BillOfSaleList from './pop-up/BillOfSaleList.vue'
+import BillReceiptsModal from './components/BillReceiptsModal.vue'
 
 export default {
   components: {
     VueGoodTable,
-    BillOfSaleList,
+    BillReceiptsModal,
   },
   data() {
     return {
-      valueShowBillOfSaleList: false,
+      isShowBillReceiptsModal: false,
+      inputSearchFocusedSP: false,
+      inputSearchFocusedKH: false,
       selected: 'A',
       options: [
         { value: 'A', text: 'Tiền mặt' },
@@ -494,41 +521,13 @@ export default {
     }
   },
   computed: {
-    stateInputID() {
-      const validID = /^([\w\\.]{0,40})$/
-      const result = validID.test(this.inputValueID)
-      if (this.inputValueID.length >= 1) {
-        return result
-      }
-      return null
-    },
-    stateInputBillNumber() {
-      const validBillNumber = /^(\d{0,20})$/
-      const result = validBillNumber.test(this.inputValueBillNumber)
-      if (this.inputValueBillNumber.length >= 1) {
-        return result
-      }
-      return null
-    },
-    stateInputInternalNumber() {
-      const validInternalNumber = /^(\d{0,20})$/
-      const result = validInternalNumber.test(this.inputValueInternalNumber)
-      if (this.inputValueInternalNumber.length >= 1) {
-        return result
-      }
-      return null
-    },
   },
   methods: {
     routeBack() {
       this.$router.back()
     },
     showBillOfSaleList() {
-      if (this.valueShowBillOfSaleList === true) {
-        this.valueShowBillOfSaleList = false
-      } else {
-        this.valueShowBillOfSaleList = true
-      }
+      this.isShowBillReceiptsModal = !this.isShowBillReceiptsModal
     },
   },
 }
