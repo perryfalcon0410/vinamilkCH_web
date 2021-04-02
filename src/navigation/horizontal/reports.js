@@ -5,7 +5,7 @@ export default [
     children: [
       {
         title: 'Hàng trả lại',
-        route: '',
+        route: 'reports-returned-goods',
         icon: 'ArrowLeftCircleIcon',
       },
       {
