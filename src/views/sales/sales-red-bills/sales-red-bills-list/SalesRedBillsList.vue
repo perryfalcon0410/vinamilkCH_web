@@ -116,7 +116,6 @@
     </b-card>
     <!-- END - Search -->
 
-    <!-- START - Customer list -->
     <b-form class=" bg-white rounded shadow rounded my-1">
       <!-- START - Header -->
       <b-row
@@ -201,20 +200,12 @@
       </b-col>
       <!-- END - Table -->
     </b-form>
-    <!-- END - Customer list -->
     <bill-of-sale-list :visible="valueShowModalBillOfSaleList" />
   </b-container>
 </template>
 
 <script>
-import Vue from 'vue'
-import VueGoodTablePlugin from 'vue-good-table'
-import 'vue-good-table/dist/vue-good-table.css'
-
-Vue.use(VueGoodTablePlugin)
-
 export default {
-  name: 'CusomterList',
   components: {
   },
   data() {

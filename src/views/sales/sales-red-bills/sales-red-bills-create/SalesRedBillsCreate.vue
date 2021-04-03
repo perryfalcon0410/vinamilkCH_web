@@ -390,13 +390,10 @@
 </template>
 
 <script>
-import { VueGoodTable } from 'vue-good-table'
-import 'vue-good-table/dist/vue-good-table.css'
 import BillReceiptsModal from './components/BillReceiptsModal.vue'
 
 export default {
   components: {
-    VueGoodTable,
     BillReceiptsModal,
   },
   data() {

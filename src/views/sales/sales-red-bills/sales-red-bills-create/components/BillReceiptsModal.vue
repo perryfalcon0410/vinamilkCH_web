@@ -150,7 +150,9 @@
               slot-scope="props"
             >
               <span v-if="props.column.field == 'billNumber'">
-                <span style="font-weight: bold; color: black;">{{ props.row.billNumber }}</span>
+                <span>
+                  {{ props.row.billNumber }}
+                </span>
               </span>
               <span v-else>
                 {{ props.formattedRow[props.column.field] }}
@@ -169,10 +171,7 @@
           class="justify-content-between border-bottom p-1 mx-0"
           align-v="center"
         >
-          <h2>
-            Danh sách sản phẩm
-          </h2>
-
+          <h2>Danh sách sản phẩm</h2>
         </b-row>
         <!-- END - Header -->
 
@@ -209,7 +208,6 @@
 
 export default {
   components: {
-
   },
   props: {
     visible: {
