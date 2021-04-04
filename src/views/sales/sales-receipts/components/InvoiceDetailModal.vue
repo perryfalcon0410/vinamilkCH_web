@@ -2,39 +2,156 @@
   <!-- POPUP Invoice Details START -->
   <b-modal
     size="xl"
-    title="Chi tiết hóa đơn"
+    title="Thông tin chi tiết hóa đơn"
     :visible="visible"
     hide-footer="true"
   >
-    <!-- <div> -->
-    <!-- <b-card no-body> -->
-    <b-tabs card>
-      <b-tab
-        title="Chi tiết hóa đơn"
-        active
+
+    <!-- Start Billing Information -->
+    <b-row>
+      <b-col
+        cols="2"
       >
-        <b-card-text>
-          <InvoiceDetail />
-        </b-card-text>
-      </b-tab>
-      <b-tab title="Thông tin thanh toán">
-        <b-card-text>
-          <BillingInformation />
-        </b-card-text>
-      </b-tab>
-      <b-tab title="Giảm giá & chiết khấu">
-        <b-card-text>
-          <Discounts />
-        </b-card-text>
-      </b-tab>
-      <b-tab title="Khuyến mãi">
-        <b-card-text>
-          <Promotion />
-        </b-card-text>
-      </b-tab>
-    </b-tabs>
-    <!-- </b-card> -->
-    <!-- </div> -->
+        <b-row class="bg-light h-25 w-75 rounded-right border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1">
+          Thông tin thanh toán
+        </b-row>
+      </b-col>
+      <b-col
+        cols="4"
+      >
+        <b-row class="mt-1">
+          <b-col>
+            Số hóa đơn:
+          </b-col>
+          <b-col>
+            <h2 class="text-center">
+              HD.001
+            </h2>
+          </b-col>
+        </b-row>
+
+        <b-row class="mt-1">
+          <b-col>
+            Khách hàng:
+          </b-col>
+          <b-col>
+            <h3 class="text-center">
+              Trần Hoàng minh
+            </h3>
+          </b-col>
+        </b-row>
+
+        <b-row class="mt-1">
+          <b-col>
+            Ngày thanh toán:
+          </b-col>
+          <b-col>
+            <h3 class="text-center">
+              26/03/2021
+            </h3>
+          </b-col>
+        </b-row>
+
+        <b-row class="mt-1">
+          <b-col>
+            Nhân viên:
+          </b-col>
+          <b-col>
+            <h3 class="text-center">
+              Ngô Thị Lan Hương
+            </h3>
+          </b-col>
+        </b-row>
+      </b-col>
+
+      <b-col
+        cols="4"
+        align-self="end"
+      >
+        <b-row class="mt-1">
+          <b-col>
+            Phải thanh toán:
+          </b-col>
+          <b-col>
+            <h3>
+              400,000
+            </h3>
+          </b-col>
+        </b-row>
+
+        <b-row class="mt-1">
+          <b-col>
+            Đã thanh toán:
+          </b-col>
+          <b-col>
+            <h3>
+              400,000
+            </h3>
+          </b-col>
+        </b-row>
+
+        <b-row class="mt-1">
+          <b-col>
+            Tiền trả lại:
+          </b-col>
+          <b-col>
+            <h3>
+              200,000
+            </h3>
+          </b-col>
+        </b-row>
+      </b-col>
+    </b-row>
+    <!-- End Billing Information -->
+
+    <!-- Start Invoice details -->
+    <b-row>
+      <b-col
+        cols="2"
+      >
+        <b-row class="bg-light p-1 w-75 rounded-right  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1">
+          Chi tiết hóa đơn
+        </b-row>
+      </b-col>
+      <b-col
+        cols="8"
+      />
+    </b-row>
+    <InvoiceDetail />
+    <!-- End Invoice details -->
+
+    <!-- Start Discounts and discounts -->
+    <b-row>
+      <b-col
+        cols="2"
+      >
+        <b-row class="bg-light p-1 w-75 rounded-right  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mt-2 mb-1">
+          Giảm giá & chiết khấu
+        </b-row>
+      </b-col>
+      <b-col
+        cols="8"
+      />
+    </b-row>
+    <Discounts />
+
+    <!-- Start Discounts and discounts -->
+
+    <!-- Start promotion -->
+    <b-row>
+      <b-col
+        cols="2"
+      >
+        <b-row class="bg-light p-1 w-75 rounded-right  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mt-2 mb-1">
+          Khuyến mãi
+        </b-row>
+      </b-col>
+      <b-col
+        cols="8"
+      />
+    </b-row>
+    <Promotion />
+    <!-- Start promotion -->
 
     <b-row
       align-h="center"
@@ -57,14 +174,12 @@
 
 <script>
 import InvoiceDetail from './invoice-detail-modal/InvoiceDetail.vue'
-import BillingInformation from './invoice-detail-modal/BillingInformation.vue'
 import Discounts from './invoice-detail-modal/Discount.vue'
 import Promotion from './invoice-detail-modal/Promotion.vue'
 
 export default {
   components: {
     InvoiceDetail,
-    BillingInformation,
     Discounts,
     Promotion,
   },
