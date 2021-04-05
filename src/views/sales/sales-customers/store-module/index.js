@@ -68,18 +68,18 @@ export default {
         .getCustomers(val)
         .then(response => response.data)
         .then(res => {
-          console.log(res)
+          // console.log(res)
 
           if (res.success) {
             state.customers = res.data.content
           } else {
             // Temp
-            console.log(res)
+            // console.log(res)
           }
         })
-        .catch(error => {
+        .catch(() => {
           // Temp
-          console.log(error)
+          // console.log(error)
         })
     },
     [CREATE_CUSTOMER_ACTION]({ state }, val) {
@@ -90,15 +90,15 @@ export default {
           state.errorCode = res.statusCode
           if (res.success) {
             // Temp
-            console.log('Temp')
+            // console.log('Temp')
           } else {
             // Temp
-            console.log('Temp')
+            // console.log('Temp')
           }
         })
-        .catch(error => {
+        .catch(() => {
           // Temp
-          console.log(error)
+          // console.log(error)
         })
     },
     [DELETE_CUSTOMERS_ACTION]({ dispatch }, val) {
@@ -108,15 +108,15 @@ export default {
         .then(res => {
           if (res.success) {
             dispatch(GET_CUSTOMERS_ACTION, '')
-            console.log('Temp')
+            // console.log('Temp')
           } else {
             // Temp
-            console.log('Temp')
+            // console.log('Temp')
           }
         })
         .catch(() => {
           // Temp
-          console.log('Temp')
+          // console.log('Temp')
         })
     },
     [GET_SHOP_LOCATIONS_ACTION]({ state }, val) {
@@ -128,12 +128,12 @@ export default {
             state.shopLocations = res.data
           } else {
             // Temp
-            console.log(res)
+            // console.log(res)
           }
         })
         .catch(() => {
           // Temp
-          console.log('Temp')
+          // console.log('Temp')
         })
     },
     [GET_CUSTOMER_TYPES_ACTION]({ state }) {
@@ -145,12 +145,12 @@ export default {
             state.customerTypes = res.data
           } else {
             // Temp
-            console.log(res)
+            // console.log(res)
           }
         })
         .catch(() => {
           // Temp
-          console.log('Temp')
+          // console.log('Temp')
         })
     },
     [GET_PROVINCES_ACTION]({ state }) {
@@ -162,12 +162,12 @@ export default {
             state.provinces = res.data
           } else {
             // Temp
-            console.log(res)
+            // console.log(res)
           }
         })
         .catch(() => {
           // Temp
-          console.log('Temp')
+          // console.log('Temp')
         })
     },
     [GET_DISTRICTS_ACTION]({ state }, val) {
@@ -179,12 +179,12 @@ export default {
             state.districts = res.data
           } else {
             // Temp
-            console.log(res)
+            // console.log(res)
           }
         })
         .catch(() => {
           // Temp
-          console.log('Temp')
+          // console.log('Temp')
         })
     },
     [GET_PRECINCTS_ACTION]({ state }, val) {
@@ -196,12 +196,12 @@ export default {
             state.precincts = res.data
           } else {
             // Temp
-            console.log(res)
+            // console.log(res)
           }
         })
         .catch(() => {
           // Temp
-          console.log('Temp')
+          // console.log('Temp')
         })
     },
   },
