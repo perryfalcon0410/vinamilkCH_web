@@ -277,9 +277,9 @@
 </template>
 
 <script>
-import AdjustmentModal from '../warehouse-input-modal/adjustment-modal/WarehouseInputAdjustmentModal.vue'
-import BorrowedModal from '../warehouse-input-modal/borrowed-modal/WarehouseInputBorrowedModal.vue'
-import PoConfirmModal from '../warehouse-input-modal/po-confirm-modal/WarehouseInputPoConfirmModal.vue'
+import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
+import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
+import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
 
 export default {
   components: {

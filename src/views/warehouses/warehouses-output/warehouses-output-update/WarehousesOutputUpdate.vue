@@ -260,9 +260,9 @@ import { VueGoodTable } from 'vue-good-table'
 // import the styles
 import 'vue-good-table/dist/vue-good-table.css'
 
-import EntryModal from '../warehouse-output-modal/entry-modal/WarehouseOutputEntryModal.vue'
-import AdjustmentModal from '../warehouse-output-modal/adjustment-modal/WarehouseOutputAdjustmentModal.vue'
-import BorrowedModal from '../warehouse-output-modal/borrowed-modal/WarehouseOutputBorrowedModal.vue'
+import EntryModal from '../components/entry-modal/OutputEntryModal.vue'
+import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
+import BorrowedModal from '../components/borrowed-modal/OutputBorrowedModal.vue'
 
 export default {
   components: {
