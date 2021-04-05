@@ -135,7 +135,6 @@ import {
   mapState,
 } from 'vuex'
 import 'vue-good-table/dist/vue-good-table.css'
-import { getGenderLabel } from '@core/utils/utils'
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
   CUSTOMER,
@@ -212,11 +211,11 @@ export default {
         id: data.id,
         code: data.customerCode,
         fullName: `${data.lastName} ${data.firstName}`,
-        phoneNumber: data.phoneNumber,
-        birthDay: new Date(data.birthday).toLocaleDateString(),
-        gender: getGenderLabel(data.gender),
+        phoneNumber: data.phone,
+        birthDay: new Date(data.dob).toLocaleDateString(),
+        gender: data.gender,
         status: this.resolveStatus(data.status),
-        group: data.customerGroupId,
+        group: data.customerType,
         date: new Date(data.createdAt).toLocaleDateString(),
         feature: 'Chỉnh sửa',
       }))

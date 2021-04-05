@@ -32,3 +32,16 @@ export const validatorUrlValidator = val => {
   /* eslint-enable no-useless-escape */
   return re.test(val)
 }
+
+export const validatorCode = val => {
+  if (val === undefined || val === null || val.length === 0) {
+    return true
+  }
+  const regex = /^([\w\\.]{0,40})$/
+  return regex.test(val)
+}
+
+export const validatorNumber = val => {
+  const regex = /^(\d{1,15})$/
+  return regex.test(val)
+}

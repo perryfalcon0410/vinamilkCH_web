@@ -15,8 +15,15 @@ import {
 } from 'vee-validate/dist/rules'
 import vi from 'vee-validate/dist/locale/vi.json'
 
-// eslint-disable-next-line object-curly-newline
-import { validatorPositive, validatorUrlValidator, validatorPassword, validatorCreditCard, validatorNotEqual } from './validators'
+import {
+  validatorPositive,
+  validatorUrlValidator,
+  validatorPassword,
+  validatorCreditCard,
+  validatorNotEqual,
+  validatorCode,
+  validatorNumber,
+} from './validators'
 
 // ////////////////////////////////////////////////////////
 // General
@@ -70,6 +77,16 @@ export const notEqual = extend('not-equal', {
 export const url = extend('url', {
   validate: validatorUrlValidator,
   message: 'URL is invalid',
+})
+
+export const code = extend('code', {
+  validate: validatorCode,
+  message: 'Chỉ nhập các ký tự [0-9][a-Z] dấu chấm(.), dấu gạch dưới (_).',
+})
+
+export const number = extend('number', {
+  validate: validatorNumber,
+  message: 'Chỉ nhập ký tự số',
 })
 
 localize({

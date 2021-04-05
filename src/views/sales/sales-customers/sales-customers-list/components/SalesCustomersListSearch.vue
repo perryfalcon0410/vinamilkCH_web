@@ -202,7 +202,7 @@
             <b-button
               id="form-button-search"
               variant="primary"
-              @click="search()"
+              @click="onClickSearchButton()"
             >
               <b-icon-search />
               Tìm kiếm
@@ -244,8 +244,8 @@ export default {
   computed: {
     shopLocations() {
       return this.SHOP_LOCATIONS_GETTER().map(data => ({
-        value: data.value,
-        text: data.name,
+        value: data.id,
+        text: data.areaName,
       }))
     },
   },
@@ -265,15 +265,15 @@ export default {
     resolveDate(date) {
       return new Date(date).toISOString().slice(0, 10).replaceAll('-', '/')
     },
-    search() {
+    onClickSearchButton() {
       const searchData = {
         searchKeywords: this.searchKeywords,
-        fromDate: this.fromDate,
-        toDate: this.toDate,
-        groupId: this.groupId,
-        gender: this.gender,
+        fromDate: this.resolveDate(this.fromDate),
+        toDate: this.resolveDate(this.toDate),
+        customerTypeId: this.groupId,
         status: this.status,
-        areaAddress: this.areaAddress,
+        genderId: this.gender,
+        areaId: this.areaAddress,
       }
 
       this.GET_CUSTOMERS_ACTION(searchData)
