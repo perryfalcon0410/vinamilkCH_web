@@ -1,19 +1,33 @@
 import axios from '@axios'
+import { formatURLParams } from '@/@core/utils/utils'
 import {
   getCustomersEndpoint,
-  deleteCustomersEndpoint,
+  getCustomerByIdEndpoint,
   createCustomerEndpoint,
+  updateCustomerEndpoint,
   getShopLocationsEndpoint,
   getCustomerTypesEndpoint,
   getPrecinctsEndpoint,
   getDistrictsEndpoint,
   getProvincesEndpoint,
+  getMemberCardsEndpoint,
+  getCardTypesEndpoint,
+  getCloselyTypesEndpoint,
 } from './defaultConfig'
 
 export default {
+  // getCustomers(args) {
+  //   return axios.get(getCustomersEndpoint, {
+  //     params: formatURLParams(args),
+  //   })
+  // },
   getCustomers(args) {
-    const queryString = new URLSearchParams(args).toString()
-    return axios.get(`${getCustomersEndpoint}?${queryString}`)
+    return axios.get(getCustomersEndpoint, {
+      data: formatURLParams(args),
+    })
+  },
+  getCustomerById(args) {
+    return axios.get(`${getCustomerByIdEndpoint}/${args}`)
   },
   getCustomerTypes() {
     return axios.get(`${getCustomerTypesEndpoint}`)
@@ -21,12 +35,8 @@ export default {
   createCustomer(args) {
     return axios.post(createCustomerEndpoint, args)
   },
-  deleteCustomers(args) {
-    return axios.delete(deleteCustomersEndpoint, {
-      data: {
-        customerIds: args,
-      },
-    })
+  updateCustomer(id, args) {
+    return axios.patch(`${updateCustomerEndpoint}/${id}`, args)
   },
   getShopLocations(args) {
     const queryString = new URLSearchParams(args).toString()
@@ -40,5 +50,14 @@ export default {
   },
   getPrecincts(args) {
     return axios.get(`${getPrecinctsEndpoint}?districtId=${args}`)
+  },
+  getMemberCards(args) {
+    return axios.get(`${getMemberCardsEndpoint}/${args}`)
+  },
+  getCardTypes() {
+    return axios.get(`${getCardTypesEndpoint}`)
+  },
+  getCloselyTypes() {
+    return axios.get(`${getCloselyTypesEndpoint}`)
   },
 }

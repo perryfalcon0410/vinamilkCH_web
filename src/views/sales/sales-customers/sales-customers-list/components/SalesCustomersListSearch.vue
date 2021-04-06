@@ -88,7 +88,7 @@
           >
             <b-form-select
               id="form-input-customer-group"
-              v-model="groupId"
+              v-model="customerTypeId"
             >
               <b-form-select-option value="">
                 Tất cả
@@ -144,7 +144,7 @@
           >
             <b-form-select
               id="form-input-customer-group"
-              v-model="gender"
+              v-model="genderId"
             >
               <b-form-select-option value="">
                 Tất cả
@@ -175,8 +175,11 @@
           >
             <b-form-select
               id="form-input-customer-group"
-              v-model="areaAddress"
+              v-model="areaId"
             >
+              <b-form-select-option value="">
+                Tất cả
+              </b-form-select-option>
               <b-form-select-option
                 v-for="item in shopLocations"
                 :key="item.value"
@@ -222,6 +225,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import { formatDate } from '@/@core/utils/utils'
 import {
   CUSTOMER,
   GET_CUSTOMERS_ACTION,
@@ -235,10 +239,10 @@ export default {
       searchKeywords: '',
       fromDate: '',
       toDate: '',
-      groupId: '',
+      customerTypeId: '',
       status: '',
-      gender: '',
-      areaAddress: '',
+      genderId: '',
+      areaId: '',
     }
   },
   computed: {
@@ -262,18 +266,15 @@ export default {
     ...mapGetters(CUSTOMER, [
       SHOP_LOCATIONS_GETTER,
     ]),
-    resolveDate(date) {
-      return new Date(date).toISOString().slice(0, 10).replaceAll('-', '/')
-    },
     onClickSearchButton() {
       const searchData = {
         searchKeywords: this.searchKeywords,
-        fromDate: this.resolveDate(this.fromDate),
-        toDate: this.resolveDate(this.toDate),
-        customerTypeId: this.groupId,
+        fromDate: formatDate(this.fromDate),
+        toDate: formatDate(this.toDate),
+        customerTypeId: this.customerTypeId,
         status: this.status,
-        genderId: this.gender,
-        areaId: this.areaAddress,
+        genderId: this.genderId,
+        areaId: this.areaId,
       }
 
       this.GET_CUSTOMERS_ACTION(searchData)

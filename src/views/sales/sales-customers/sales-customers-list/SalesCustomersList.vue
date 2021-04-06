@@ -33,14 +33,6 @@
             <b-icon-file-earmark-x-fill />
             Xuất Excel
           </b-button>
-          <b-button
-            class="ml-1 rounded"
-            variant="danger"
-            @click="customersSelected.length >= 1 ? isShowDeleteModal = true : null"
-          >
-            <b-icon-trash-fill />
-            Xóa
-          </b-button>
         </b-button-group>
       </b-row>
       <!-- END - Header -->
@@ -55,17 +47,7 @@
             enabled: true
           }"
           compact-mode
-          :select-options="{
-            enabled: true,
-            selectOnCheckboxOnly: true,
-            selectionInfoClass: 'custom-class',
-            selectionText: 'rows selected',
-            clearSelectionText: 'clear',
-            disableSelectInfo: true,
-            selectAllByGroup: true,
-          }"
           line-numbers
-          @on-selected-rows-change="selectedRowsChange"
         >
           <!-- START - label -->
           <template
@@ -103,28 +85,6 @@
       <!-- END - Table -->
     </b-form>
     <!-- END - Customer list -->
-
-    <!-- START - Customer Modal Delete -->
-    <b-modal
-      id="modal-delete"
-      v-model="isShowDeleteModal"
-      title="Thông báo"
-    >
-      Bạn có chắc muốn xóa hàng này không?
-      <template #modal-footer>
-        <b-button
-          variant="primary"
-          @click="deleteCustomers"
-        >
-          Đồng ý
-        </b-button>
-        <b-button @click="isShowDeleteModal = !isShowDeleteModal">
-          Đóng
-        </b-button>
-      </template>
-    </b-modal>
-    <!-- END - Customer Modal Delete -->
-
   </b-container>
 </template>
 
@@ -132,7 +92,6 @@
 import {
   mapActions,
   mapGetters,
-  mapState,
 } from 'vuex'
 import 'vue-good-table/dist/vue-good-table.css'
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
@@ -140,7 +99,6 @@ import {
   CUSTOMER,
   CUSTOMERS_GETTER,
   GET_CUSTOMERS_ACTION,
-  DELETE_CUSTOMERS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -151,7 +109,6 @@ export default {
   data() {
     return {
       isShowDeleteModal: false,
-      customersSelected: [],
       columns: [
         {
           label: 'Mã khách hàng',
@@ -225,23 +182,12 @@ export default {
     this.GET_CUSTOMERS_ACTION({})
   },
   methods: {
-    ...mapState(CUSTOMER, {
-      successStatusDelete: state => state.delete.success,
-    }),
     ...mapGetters(CUSTOMER, [
       CUSTOMERS_GETTER,
     ]),
     ...mapActions(CUSTOMER, [
       GET_CUSTOMERS_ACTION,
-      DELETE_CUSTOMERS_ACTION,
     ]),
-    selectedRowsChange(params) {
-      this.customersSelected = params.selectedRows.map(data => data.id)
-    },
-    deleteCustomers() {
-      this.isShowDeleteModal = false
-      this.DELETE_CUSTOMERS_ACTION(this.customersSelected)
-    },
     resolveStatus(staus) {
       switch (staus) {
         case 0:
@@ -256,7 +202,12 @@ export default {
       this.$router.push({ name: 'sales-customers-create' })
     },
     navigateToUpdate() {
-      this.$router.push({ name: 'sales-customers-update' })
+      this.$router.push({
+        name: 'sales-customers-update',
+        params: {
+          customerId: 4,
+        },
+      })
     },
   },
 }
