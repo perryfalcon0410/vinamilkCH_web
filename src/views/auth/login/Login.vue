@@ -236,7 +236,47 @@ export default {
             .then(response => {
               if (response.success) {
                 this.roles = response.data.roles
-                this.isShowRoleAndShopSelectionModal = true
+                // Check show popup
+                if (response.data.roles.length === 1 && response.data.roles[0].shops.length === 1) {
+                  const userData = {
+                    id: response.data.userId,
+                    fullName: `${response.data.firstName} ${response.data.lastName}`,
+                    username: response.data.username,
+                    email: response.data.email,
+                    usedRole: response.data.usedRole,
+                    usedShop: response.data.usedShop,
+                    phoneNumber: response.data.phoneNumber,
+                    permissions: response.data.permissions,
+
+                    // Other
+                    avatar: require('@/assets/images/avatars/13-small.png'),
+                    role: 'admin',
+                    ability: [
+                      {
+                        action: 'manage',
+                        subject: 'all',
+                      },
+                    ],
+                    extras: {
+                      eCommerceCartItemsCount: 0,
+                    },
+                  }
+
+                  useJwt.setToken(response.token.replace('Bearer ', ''))
+                  useJwt.setRefreshToken(response.token.replace('Bearer ', ''))
+                  localStorage.setItem('userData', JSON.stringify(userData))
+                  this.$ability.update(userData.ability)
+
+                  this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
+                    .then(() => {
+                      toasts.success(`Bạn đã đăng nhập thành công với quyền ${userData.role}. Bây giờ bạn có thể bắt đầu khám phá!`)
+                    })
+                    .catch(error => {
+                      this.$refs.loginForm.setErrors(error.response)
+                    })
+                } else {
+                  this.isShowRoleAndShopSelectionModal = true
+                }
               } else {
                 throw new Error(response.statusValue)
               }
