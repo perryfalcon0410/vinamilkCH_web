@@ -19,6 +19,7 @@
           v-model="roleSelected"
           placeholder="Chọn vai trò"
           :options="roleDatasource"
+          @input="onRoleChange"
         />
       </b-form-group>
       <b-form-group
@@ -63,13 +64,11 @@ export default {
       type: Array,
       default: () => [],
     },
-    shops: {
-      type: Array,
-      default: () => [],
-    },
   },
   data() {
     return {
+      shops: [],
+
       roleSelected: null,
       shopSelected: null,
     }
@@ -80,18 +79,29 @@ export default {
     },
     roleDatasource() {
       return this.roles.map(e => ({
-        label: e.role,
+        label: e.roleName,
         value: e.id,
       }))
     },
     shopDatasource() {
-      return this.shops.map(e => ({
-        label: e.shopName,
-        value: e.shopId,
-      }))
+      if (this.roleSelected) {
+        const roleFound = this.roles.find(item => item.id === this.roleSelected.value)
+
+        if (roleFound) {
+          return roleFound.shops.map(e => ({
+            label: e.shopName,
+            value: e.shopId,
+          }))
+        }
+      }
+
+      return []
     },
   },
   methods: {
+    onRoleChange() {
+      this.shopSelected = null
+    },
     onModalHidden() {
       this.$emit('onModalHidden')
     },

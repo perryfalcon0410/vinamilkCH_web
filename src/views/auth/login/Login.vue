@@ -146,7 +146,6 @@
     <role-and-shop-selection-modal
       :visible="isShowRoleAndShopSelectionModal"
       :roles="roles"
-      :shops="shops"
       @onModalHidden="onModalHidden"
       @login="login"
     />
@@ -163,8 +162,8 @@ import {
 import { required } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
+import toasts from '@core/utils/toasts/toasts'
 
-import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import useJwt from '@/auth/jwt/useJwt'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
 import RoleAndShopSelectionModal from './components/RoleAndShopSelectionModal.vue'
@@ -206,7 +205,6 @@ export default {
       // state
       isShowRoleAndShopSelectionModal: false,
       roles: [],
-      shops: [],
     }
   },
   computed: {
@@ -238,23 +236,13 @@ export default {
             .then(response => {
               if (response.success) {
                 this.roles = response.data.roles
-                this.shops = response.data.shops
                 this.isShowRoleAndShopSelectionModal = true
               } else {
-                throw new Error('Tài khoản hoặc mật khẩu không chính xác')
+                throw new Error(response.statusValue)
               }
             })
             .catch(error => {
-              this.$toast({
-                component: ToastificationContent,
-                position: 'top-right',
-                props: {
-                  title: 'Thông báo',
-                  icon: 'AlertCircleIcon',
-                  variant: 'danger',
-                  text: error.message,
-                },
-              })
+              toasts.warning(error.message)
             })
         }
       })
@@ -270,7 +258,11 @@ export default {
           shopId: shopSelected.value,
         })
         .then(response => {
-          const { success, data, token } = response.data
+          const {
+            success, data, token, statusValue,
+          } = response.data
+
+          console.log(JSON.stringify(response))
 
           if (success) {
             const userData = {
@@ -304,35 +296,17 @@ export default {
 
             this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
               .then(() => {
-                this.$toast({
-                  component: ToastificationContent,
-                  position: 'top-right',
-                  props: {
-                    title: `Welcome ${userData.fullName || userData.username}`,
-                    icon: 'CoffeeIcon',
-                    variant: 'success',
-                    text: `Bạn đã đăng nhập thành công với quyền ${userData.role}. Bây giờ bạn có thể bắt đầu khám phá!`,
-                  },
-                })
+                toasts.success(`Bạn đã đăng nhập thành công với quyền ${userData.role}. Bây giờ bạn có thể bắt đầu khám phá!`)
               })
               .catch(error => {
                 this.$refs.loginForm.setErrors(error.response)
               })
           } else {
-            throw new Error('Thông tin đăng nhập không chính xác')
+            throw new Error(statusValue)
           }
         })
         .catch(error => {
-          this.$toast({
-            component: ToastificationContent,
-            position: 'top-right',
-            props: {
-              title: 'Thông báo',
-              icon: 'AlertCircleIcon',
-              variant: 'danger',
-              text: error.message,
-            },
-          })
+          toasts.error(error.message)
         })
     },
   },

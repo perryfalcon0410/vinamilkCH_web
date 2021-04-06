@@ -181,8 +181,7 @@ import {
   BCard, BCardTitle, BCardText, BForm, BFormGroup, BInputGroup, BInputGroupAppend, BLink, BFormInput, BButton,
 } from 'bootstrap-vue'
 import { required, notEqual } from '@validations'
-import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
-
+import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
 
 export default {
@@ -252,31 +251,13 @@ export default {
             .then(response => response.data)
             .then(response => {
               if (response.success) {
-                this.$toast({
-                  component: ToastificationContent,
-                  position: 'top-right',
-                  props: {
-                    title: 'Thông báo',
-                    icon: 'AlertCircleIcon',
-                    variant: 'success',
-                    text: 'Mật khẩu đã thay đổi thành công',
-                  },
-                })
+                toasts.success(response.statusValue)
               } else {
-                throw new Error('Mật khẩu thay đổi không thành công')
+                throw new Error(response.statusValue)
               }
             })
             .catch(error => {
-              this.$toast({
-                component: ToastificationContent,
-                position: 'top-right',
-                props: {
-                  title: 'Thông báo',
-                  icon: 'AlertCircleIcon',
-                  variant: 'danger',
-                  text: error.message,
-                },
-              })
+              toasts.error(error.message)
             })
         }
       })
