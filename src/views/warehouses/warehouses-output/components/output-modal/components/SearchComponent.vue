@@ -2,15 +2,14 @@
   <div>
     <!-- START - Search -->
     <b-form class="bg-white rounded shadow">
-      <label
-        for="v-search-form"
-        class="text-primary m-1"
-      >
-        Tìm kiếm
-      </label>
+      <div class="text-primary p-1">
+        <strong>
+          Tìm kiếm
+        </strong>
+      </div>
 
       <b-form-row
-        class="v-search-form border-top mx-0 p-1"
+        class="border-top mx-0 p-1"
       >
         <b-col
           xl
@@ -122,7 +121,6 @@
             <b-button
               id="form-button-search"
               variant="primary"
-              @click="search()"
             >
               <b-icon-search />
               Tìm kiếm

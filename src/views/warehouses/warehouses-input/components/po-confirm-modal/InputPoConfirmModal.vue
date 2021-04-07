@@ -73,7 +73,7 @@
             class="justify-content-between mx-0"
           >
 
-            <strong class="bg-light d-flex h-25 align-items-center text-primary rounded-top px-1">
+            <strong class="d-flex h-25 align-items-center rounded-top px-1">
               Sản phẩm
             </strong>
             <b-button
@@ -103,7 +103,7 @@
 
           <!-- START - Table Product promotion -->
           <!-- START - Title Product promotion -->
-          <strong class="bg-light d-inline-flex text-primary rounded-top px-1">
+          <strong class="d-inline-flex rounded-top px-1">
             Hàng khuyến mãi
           </strong>
           <!-- END - Title Product promotion -->

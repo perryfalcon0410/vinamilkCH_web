@@ -11,32 +11,28 @@
           xl="4"
           class="bg-white shadow rounded mr-xl-1"
         >
-          <!-- START - Archive Export Date  -->
-          <b-form-row class="my-1">
+          <!-- START - Date -->
+          <b-row class="my-1">
             <b-col cols="4">
               Ngày xuất:
             </b-col>
             <b-col class="font-weight-bold">
               29/10/2020 lúc 16:16
             </b-col>
-          </b-form-row>
-          <!-- END - Archive Export Date -->
+          </b-row>
+          <!-- END - Date -->
 
-          <!-- START - Archive Export ID and Type -->
+          <!-- START - ID and Type -->
           <b-form-row>
             <b-col>
               <b-form-group
                 label="Mã xuất hàng"
-                label-for="archiveExportID"
-                :state="stateInputID"
-                invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
+                label-for="id"
               >
                 <b-form-input
-                  id="archiveExportID"
-                  v-model="inputValueID"
+                  id="id"
+                  v-model="id"
                   maxlength="40"
-                  :state="stateInputID"
-                  required
                   trim
                   disabled
                 />
@@ -46,135 +42,135 @@
             <b-col>
               <b-form-group
                 label="Loại xuất"
-                label-for="archiveExportType"
+                label-for="outputType"
               >
                 <b-form-select
-                  id="archiveExportType"
-                  v-model="selected"
+                  id="outputType"
+                  v-model="outputType"
+                  disabled
                 >
-                  <b-form-select-option value="phiếu nhập">
-                    phiếu nhập
+                  <b-form-select-option value="1">
+                    xuất trả PO
                   </b-form-select-option>
-                  <b-form-select-option value="phiếu điều chỉnh">
-                    phiếu điều chỉnh
+                  <b-form-select-option
+                    value="2"
+                  >
+                    xuất điều chỉnh
                   </b-form-select-option>
-                  <b-form-select-option value="phiếu vay mượn">
-                    phiếu vay mượn
+                  <b-form-select-option value="3">
+                    xuất vay mượn
                   </b-form-select-option>
                 </b-form-select>
               </b-form-group>
             </b-col>
           </b-form-row>
-          <!-- END - Archive Export ID and Type -->
+          <!-- END - ID and Type -->
 
-          <!-- START - Archive Export Archive -->
+          <!-- START -  Stock  -->
           <b-form-group
             label="Kho hàng"
-            label-for="archiveExportArchive"
+            label-for="warehouse"
           >
             <b-form-select
-              id="archiveExportArchive"
+              id="warehouse"
+              disabled
             />
           </b-form-group>
-          <!-- END - Archive Export Archive -->
+          <!-- END -  Stock  -->
 
-          <!-- START - Archive Export Bill Number and Date -->
+          <!-- START - Bill Number and Date -->
           <b-form-row>
             <b-col>
-              <b-form-group
-                label="Số hóa đơn"
-                label-for="archiveExportBillNumber"
-                :state="stateInputBillNumber"
-                invalid-feedback="Chỉ bao gồm ký tự [0-9]"
-              >
-                <b-form-input
-                  id="archiveExportBillNumber"
-                  v-model="inputValueBillNumber"
-                  maxlength="20"
-                  :state="stateInputBillNumber"
-                  required
-                />
-              </b-form-group>
+              <div>
+                Số hóa đơn
+              </div>
+              <b-form-input
+                v-model="billNumber"
+                trim
+                :state="touched ? passed : null"
+                disabled
+              />
             </b-col>
 
             <b-col>
-              <b-form-group
-                label="Ngày hóa đơn"
-                label-for="archiveExportBillDate"
-              >
-                <b-form-datepicker
-                  id="archiveExportBillDate"
-                  v-model="inputValueDate"
-                  required
-                  locale="vi"
-                  :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                />
-              </b-form-group>
+              <div>
+                Ngày hóa đơn
+              </div>
+              <b-form-datepicker
+                v-model="billDate"
+                locale="vi"
+                :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
+                disabled
+              />
             </b-col>
           </b-form-row>
-          <!-- END - Archive Export Bill Number and Date -->
+          <!-- END -   Bill Number and Date -->
 
-          <!-- START - Archive Export Internal number and PO no -->
+          <!-- START -   Internal number and PO no -->
           <b-form-row>
             <b-col>
-              <b-form-group
-                label="Số nội bộ"
-                label-for="archiveExportInternalNumber"
-                :state="stateInputInternalNumber"
-                invalid-feedback="Chỉ bao gồm ký tự [0-9]"
-              >
-                <b-form-input
-                  id="archiveExportInternalNumber"
-                  v-model="inputValueInternalNumber"
-                  maxlength="20"
-                  :state="stateInputInternalNumber"
-                  required
-                />
-              </b-form-group>
+              <div class="mt-1">
+                Số nội bộ
+              </div>
+              <b-form-input
+                v-model="internalNumber"
+                trim
+                :state="touched ? passed : null"
+                disabled
+              />
             </b-col>
 
             <b-col>
-              <b-form-group
-                label="PO No"
-                label-for="archiveExportPoNo"
+              <div class="mt-1">
+                PO No
+              </div>
+              <b-input-group
+                id="PoNo"
+                class="input-group-merge"
               >
-                <b-input-group
-                  id="archiveExportPoNo"
-                  class="input-group-merge"
-                >
-                  <b-form-input
-                    required
-                  />
-                  <b-input-group-append is-text>
-                    <b-icon-three-dots-vertical @click="showModal" />
-                  </b-input-group-append>
-                </b-input-group>
-              </b-form-group>
+                <b-form-input
+                  v-model="internalNumber"
+                  trim
+                  :state="outputType === '1' && touched ? passed : null"
+                  disabled
+                />
+                <b-input-group-append is-text>
+                  <b-icon-three-dots-vertical />
+                </b-input-group-append>
+              </b-input-group>
             </b-col>
           </b-form-row>
-          <!-- END - Archive Export Internal number and PO no -->
+          <!-- END - Internal number and PO no -->
 
-          <!-- START - Archive Export Note -->
+          <!-- START - Note -->
           <b-form-group
             label="Ghi chú"
-            label-for="customerType"
+            label-for="note"
+            class="mt-1"
           >
             <b-form-textarea
-              id="customerType"
+              id="note"
               maxlength="4000"
             />
           </b-form-group>
-          <!-- END - Archive Export Note -->
-
+        <!-- END - Note -->
         </b-col>
         <!-- END - Form -->
 
         <!-- START - List -->
-        <b-col class="bg-white shadow rounded mt-1 mt-xl-0 py-1">
-          <!-- START - Table Product -->
+        <b-col
+          class="bg-white shadow rounded mt-1 mt-xl-0"
+        >
+          <!-- START - Table Product promotion -->
+          <div class="d-inline-flex rounded-top px-1 my-1">
+            <strong>
+              Danh sách sản phẩm
+            </strong>
+          </div>
+
           <vue-good-table
             :columns="columns"
-            :rows="rowsProduct"
+            :rows="rows"
             style-class="vgt-table striped"
             compact-mode
             line-numbers
@@ -213,8 +209,7 @@
             <b-button-group>
               <b-button
                 variant="primary"
-                size="sm"
-                class="rounded text-uppercase"
+                class="d-flex align-items-center rounded text-uppercase"
               >
                 <b-icon
                   icon="download"
@@ -226,11 +221,11 @@
               </b-button>
 
               <b-button
-                size="sm"
-                class="ml-1 rounded text-uppercase"
-                @click="routeBack"
+                class="d-flex align-items-center ml-1 rounded text-uppercase"
+                @click="navigateBack"
               >
-                <b-icon-x
+                <b-icon
+                  icon="x"
                   width="20"
                   height="20"
                 />
@@ -238,49 +233,48 @@
               </b-button>
             </b-button-group>
           </b-row>
-          <!-- END - Button -->
+        <!-- END - Button -->
 
         </b-col>
-        <!-- END - List -->
+      <!-- END - List -->
+
       </b-row>
     </b-col>
     <!-- END - Form and list -->
 
     <!-- START - Modal -->
-    <entry-modal :visible="EntryModalVisible" />
     <adjustment-modal :visible="AdjustmentModalVisible" />
     <borrowed-modal :visible="BorrowedModalVisible" />
+    <output-modal :visible="OutputModalVisible" />
     <!-- END - Modal -->
 
   </b-container>
 </template>
 
 <script>
-import { VueGoodTable } from 'vue-good-table'
-// import the styles
-import 'vue-good-table/dist/vue-good-table.css'
-
-import EntryModal from '../components/entry-modal/OutputEntryModal.vue'
+import OutputModal from '../components/output-modal/OutputModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/OutputBorrowedModal.vue'
 
 export default {
   components: {
-    VueGoodTable,
-    EntryModal,
     AdjustmentModal,
     BorrowedModal,
+    OutputModal,
   },
   data() {
     return {
-      selected: 'phiếu nhập',
       AdjustmentModalVisible: false,
       BorrowedModalVisible: false,
-      EntryModalVisible: false,
-      inputValueID: '',
-      inputValueBillNumber: '',
-      inputValueInternalNumber: '',
-      inputValueDate: new Date(),
+      OutputModalVisible: false,
+
+      id: '',
+      billNumber: '',
+      outputType: '1',
+      internalNumber: '',
+      billDate: new Date(),
+      poNo: '',
+
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -321,7 +315,7 @@ export default {
           sortable: false,
         },
       ],
-      rowsProduct: [
+      rows: [
         {
           ProductID: '04AA10',
           ProductPrice: '6,300',
@@ -361,44 +355,20 @@ export default {
       ],
     }
   },
-  computed: {
-    stateInputID() {
-      const validID = /^([\w\\.]{0,40})$/
-      const result = validID.test(this.inputValueID)
-      if (this.inputValueID.length >= 1) {
-        return result
-      }
-      return null
-    },
-    stateInputBillNumber() {
-      const validBillNumber = /^(\d{0,20})$/
-      const result = validBillNumber.test(this.inputValueBillNumber)
-      if (this.inputValueBillNumber.length >= 1) {
-        return result
-      }
-      return null
-    },
-    stateInputInternalNumber() {
-      const validInternalNumber = /^(\d{0,20})$/
-      const result = validInternalNumber.test(this.inputValueInternalNumber)
-      if (this.inputValueInternalNumber.length >= 1) {
-        return result
-      }
-      return null
-    },
-  },
+
   methods: {
-    routeBack() {
+    showModal() {
+      const Output = this.outputType === '1' ? this.OutputModalVisible = !this.OutputModalVisible : this.OutputModalVisible = false
+      const Adjustment = this.outputType === '2' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
+      const Borrowed = this.outputType === '3' ? this.BorrowedModalVisible = !this.BorrowedModalVisible : this.BorrowedModalVisible = false
+
+      return Output && Adjustment && Borrowed
+    },
+    navigateBack() {
       this.$router.back()
     },
 
-    showModal() {
-      const ShowEntryCouponModal = this.selected === 'phiếu nhập' ? this.EntryModalVisible = !this.EntryModalVisible : this.EntryModalVisible = false
-      const ShowEntryAdjustmentModal = this.selected === 'phiếu điều chỉnh' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
-      const ShowEntryBorrowedModal = this.selected === 'phiếu vay mượn' ? this.BorrowedModalVisible = !this.BorrowedModalVisible : this.BorrowedModalVisible = false
-
-      return ShowEntryCouponModal && ShowEntryAdjustmentModal && ShowEntryBorrowedModal
-    },
   },
+
 }
 </script>

@@ -18,9 +18,11 @@
           class="justify-content-between border-bottom p-1 mx-0"
           align-v="center"
         >
-          <label class="text-primary">
-            Danh sách phiếu xuất điều chỉnh
-          </label>
+          <div class="text-primary">
+            <strong>
+              Danh sách phiếu xuất điều chỉnh
+            </strong>
+          </div>
 
         </b-row>
         <!-- END - Header -->
@@ -87,9 +89,11 @@
           class="justify-content-between border-bottom p-1 mx-0"
           align-v="center"
         >
-          <label class="text-primary">
-            Danh sách sản phẩm
-          </label>
+          <div class="text-primary">
+            <strong>
+              Danh sách sản phẩm
+            </strong>
+          </div>
 
         </b-row>
         <!-- END - Header -->
