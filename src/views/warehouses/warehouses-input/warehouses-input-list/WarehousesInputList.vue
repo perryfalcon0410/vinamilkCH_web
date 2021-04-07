@@ -13,8 +13,8 @@
         </strong>
       </div>
 
-      <b-row
-        class="border-top py-1 mx-0"
+      <b-form-row
+        class="border-top p-1"
       >
         <b-col
           lg="2"
@@ -80,7 +80,21 @@
           >
             <b-form-select
               id="InputType"
-            />
+              v-model="inputTypes"
+            >
+              <b-form-select-option value="">
+                Tất cả
+              </b-form-select-option>
+              <b-form-select-option value="1">
+                nhập hàng
+              </b-form-select-option>
+              <b-form-select-option value="2">
+                nhập điều chỉnh
+              </b-form-select-option>
+              <b-form-select-option value="3">
+                nhập vay mượn
+              </b-form-select-option>
+            </b-form-select>
           </b-form-group>
         </b-col>
 
@@ -103,11 +117,11 @@
           </b-form-group>
         </b-col>
 
-      </b-row>
+      </b-form-row>
     </b-form>
     <!-- END - Search -->
 
-    <!-- START - Product Import list -->
+    <!-- START - Product  list -->
     <b-form class="bg-white rounded shadow my-1">
       <!-- START - Title -->
       <b-form-row class="justify-content-between align-items-center border-bottom p-1">
@@ -227,16 +241,16 @@
       <!-- END - Table -->
 
     </b-form>
-    <!-- END - Product Import list -->
+    <!-- END - Product  list -->
 
-    <!-- START - Import Product Modal Delete -->
+    <!-- START - Product Modal Delete -->
     <b-modal
       id="DeleteModal"
       title="Thông báo"
     >
       Bạn có muốn xóa đợt nhập hàng?
     </b-modal>
-    <!-- END - Import Product Modal Delete -->
+    <!-- END - Product Modal Delete -->
   </b-container>
 </template>
 
@@ -253,6 +267,8 @@ export default {
       fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       toDate: new Date(),
       billNumber: '',
+      inputTypes: '',
+
       columns: [
         {
           label: 'Ngày',

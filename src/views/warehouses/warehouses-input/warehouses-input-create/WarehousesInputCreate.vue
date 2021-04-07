@@ -11,7 +11,7 @@
           xl="4"
           class="bg-white shadow rounded mr-xl-1"
         >
-          <!-- START -Import Date -->
+          <!-- START - Date -->
           <b-row class="my-1">
             <b-col cols="4">
               Ngày nhập:
@@ -20,9 +20,9 @@
               29/10/2020 lúc 16:16
             </b-col>
           </b-row>
-          <!-- END - Import Date -->
+          <!-- END - Date -->
 
-          <!-- START - ID and Import Type -->
+          <!-- START - ID and Type -->
           <b-form-row>
             <b-col>
               <b-form-group
