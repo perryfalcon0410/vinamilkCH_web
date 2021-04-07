@@ -10,7 +10,6 @@ import {
   getPrecinctsEndpoint,
   getDistrictsEndpoint,
   getProvincesEndpoint,
-  getMemberCardsEndpoint,
   getCardTypesEndpoint,
   getCloselyTypesEndpoint,
 } from './defaultConfig'
@@ -50,9 +49,6 @@ export default {
   },
   getPrecincts(args) {
     return axios.get(`${getPrecinctsEndpoint}?districtId=${args}`)
-  },
-  getMemberCards(args) {
-    return axios.get(`${getMemberCardsEndpoint}/${args}`)
   },
   getCardTypes() {
     return axios.get(`${getCardTypesEndpoint}`)

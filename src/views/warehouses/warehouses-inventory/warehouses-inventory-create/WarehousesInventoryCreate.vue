@@ -27,15 +27,11 @@
           <b-form-group
             label="Mã kiểm kê"
             label-for="form-input-inventoryCode"
-            :state="validatorCode"
-            invalid-feedback="Chỉ bao gồm các ký tự [0-9][a-Z] dấu chấm(.), dấu gạch dưới (_)"
           >
             <b-form-input
               id="form-input-inventoryCode"
               v-model="InventoryCode"
               maxlength="20"
-              :state="validatorCode"
-              required
               trim
             />
           </b-form-group>
@@ -434,17 +430,6 @@ export default {
         },
       ],
     }
-  },
-
-  computed: {
-    validatorCode() {
-      const validID = /^([\w\\.]{0,40})$/
-      const result = validID.test(this.InventoryCode)
-      if (this.InventoryCode.length >= 1) {
-        return result
-      }
-      return null
-    },
   },
 
   methods: {

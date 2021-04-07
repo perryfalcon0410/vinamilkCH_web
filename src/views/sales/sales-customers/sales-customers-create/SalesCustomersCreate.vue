@@ -8,16 +8,15 @@
       ref="formContainer"
       v-slot="{invalid}"
     >
-      <b-form-row
+      <b-row
         class="mx-0"
-        @submit.prevent="onClickSaveButton"
       >
         <!-- START - Form Personal information -->
         <b-col
           lg
-          class="d-flex shadow bg-white rounded"
+          class="d-flex shadow bg-white rounded px-0"
         >
-          <b-row class="flex-grow-1">
+          <b-row class="flex-grow-1 mx-0">
             <!-- START - Section 1 -->
             <b-col sm="8">
               <label class="font-weight-bold w-100 text-center mb-2">Thông tin cá nhân</label>
@@ -111,14 +110,14 @@
                   <b-form-select
                     v-model="gender"
                   >
-                    <b-form-select-option value="2">
-                      Khác
-                    </b-form-select-option>
-                    <b-form-select-option value="1">
+                    <b-form-select-option value="0">
                       Nam
                     </b-form-select-option>
-                    <b-form-select-option value="0">
+                    <b-form-select-option value="1">
                       Nữ
+                    </b-form-select-option>
+                    <b-form-select-option value="2">
+                      Khác
                     </b-form-select-option>
                   </b-form-select>
                 </b-col>
@@ -460,43 +459,6 @@
           class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
         >
           <label class="font-weight-bold w-100 text-center mb-2">Thẻ thành viên</label>
-          <!-- START - Customer Membership card -->
-          <b-form-group
-            label="Thẻ thành viên"
-            label-for="MembershipCard"
-          >
-            <b-form-select
-              id="MembershipCard"
-              v-model="selectedMemberCards"
-            >
-              <b-form-select-option value="">
-                Chọn thẻ thành viên
-              </b-form-select-option>
-              <b-form-select-option
-                v-for="item in memberCards"
-                :key="item.value"
-                :value="item.value"
-              >
-                {{ item.text }}
-              </b-form-select-option>
-            </b-form-select>
-          </b-form-group>
-          <!-- END - Customer Membership card  -->
-
-          <!-- START - Customer Card Date -->
-          <b-form-group
-            label="Ngày cấp thẻ"
-            label-for="CardDate"
-          >
-            <b-form-datepicker
-              id="CardDate"
-              v-model="memberCardDate"
-              placeholder="chọn ngày"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
-          <!-- END - Customer Card Date -->
 
           <!-- START - Customer Card type -->
           <b-form-group
@@ -546,7 +508,7 @@
         </b-col>
       <!-- START - Form Membership card -->
 
-      </b-form-row>
+      </b-row>
 
       <!-- START - Group Button -->
       <b-row
@@ -619,7 +581,6 @@ import {
   PROVINCES_GETTER,
   DISTRICTS_GETTER,
   PRECINCTS_GETTER,
-  MEMBER_CARDS_GETTER,
   CARD_TYPES_GETTER,
   CLOSELY_TYPES_GETTER,
   // ACTIONS
@@ -628,7 +589,6 @@ import {
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
   GET_PRECINCTS_ACTION,
-  GET_MEMBER_CARDS_ACTION,
   GET_CARD_TYPES_ACTION,
   GET_CLOSELY_TYPES_ACTION,
 } from '../store-module/type'
@@ -680,8 +640,6 @@ export default {
       // END - Contact
 
       // START - MembershipCard
-      selectedMemberCards: '',
-      memberCardDate: '',
       selectedCardTypes: '',
       selectedCloselyTypes: '',
       // END - MembershipCard
@@ -717,13 +675,6 @@ export default {
       }))
     },
 
-    memberCards() {
-      return this.MEMBER_CARDS_GETTER().map(data => ({
-        value: data.id,
-        text: data.memberCardName,
-      }))
-    },
-
     cardTypes() {
       return this.CARD_TYPES_GETTER().map(data => ({
         value: data.id,
@@ -752,10 +703,6 @@ export default {
       this.customerPrecincts = ''
       this.GET_PRECINCTS_ACTION(this.customerDistricts)
     },
-    customerGroup() {
-      this.selectedMemberCards = ''
-      this.GET_MEMBER_CARDS_ACTION(this.customerGroup)
-    },
   },
 
   mounted() {
@@ -774,7 +721,6 @@ export default {
       PROVINCES_GETTER,
       DISTRICTS_GETTER,
       PRECINCTS_GETTER,
-      MEMBER_CARDS_GETTER,
       CARD_TYPES_GETTER,
       CLOSELY_TYPES_GETTER,
     }),
@@ -784,7 +730,6 @@ export default {
       GET_PROVINCES_ACTION,
       GET_DISTRICTS_ACTION,
       GET_PRECINCTS_ACTION,
-      GET_MEMBER_CARDS_ACTION,
       GET_CARD_TYPES_ACTION,
       GET_CLOSELY_TYPES_ACTION,
     ]),
@@ -845,8 +790,6 @@ export default {
             noted: this.note,
             memberCard: {
               id: this.selectedMemberCards,
-              memberCardCode: this.selectedMemberCards,
-              memberCardIssueDate: this.memberCardDate !== '' ? new Date(this.customerIDDate).toISOString() : '',
               closelyTypeId: this.selectedCloselyTypes,
               status: this.selectedMemberCards,
               cardTypeId: this.selectedCardTypes,

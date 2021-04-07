@@ -1,4 +1,6 @@
 import CustomerService from '@/views/sales/sales-customers/api-service'
+import toasts from '@core/utils/toasts/toasts'
+
 import {
   // GETTERS
   CUSTOMERS_GETTER,
@@ -9,7 +11,6 @@ import {
   PROVINCES_GETTER,
   DISTRICTS_GETTER,
   PRECINCTS_GETTER,
-  MEMBER_CARDS_GETTER,
   CARD_TYPES_GETTER,
   CLOSELY_TYPES_GETTER,
   // ACTIONS
@@ -22,7 +23,6 @@ import {
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
   GET_PRECINCTS_ACTION,
-  GET_MEMBER_CARDS_ACTION,
   GET_CARD_TYPES_ACTION,
   GET_CLOSELY_TYPES_ACTION,
 
@@ -41,7 +41,6 @@ export default {
     provinces: [],
     districts: [],
     precincts: [],
-    memberCards: [],
     cardTypes: [],
     closelyTypes: [],
   },
@@ -72,9 +71,6 @@ export default {
     [PRECINCTS_GETTER](state) {
       return state.precincts
     },
-    [MEMBER_CARDS_GETTER](state) {
-      return state.memberCards
-    },
     [CARD_TYPES_GETTER](state) {
       return state.cardTypes
     },
@@ -96,12 +92,11 @@ export default {
           if (res.success) {
             state.customers = res.data.content
           } else {
-            // Temp
-
+            throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          // Temp
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_CUSTOMER_BY_ID_ACTION]({ state }, val) {
@@ -111,45 +106,42 @@ export default {
         .then(res => {
           if (res.success) {
             state.customerById = res.data
-            console.log(res.data)
           } else {
-            // Temp
+            throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          // Temp
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
-    [CREATE_CUSTOMER_ACTION]({ state }, val) {
+    [CREATE_CUSTOMER_ACTION](val) {
       CustomerService
         .createCustomer(val)
         .then(response => response.data)
         .then(res => {
-          state.errorCode = res.statusCode
           if (res.success) {
-            // Temp
+            toasts.success(res.statusValue)
           } else {
-            // Temp
+            throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          // Temp
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
-    [UPDATE_CUSTOMER_ACTION]({ state }, id, val) {
+    [UPDATE_CUSTOMER_ACTION](id, val) {
       CustomerService
         .updateCustomer(id, val)
         .then(response => response.data)
         .then(res => {
-          state.errorCode = res.statusCode
           if (res.success) {
-            // Temp
+            toasts.success(res.statusValue)
           } else {
-            // Temp
+            throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          // Temp
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_SHOP_LOCATIONS_ACTION]({ state }, val) {
@@ -160,13 +152,11 @@ export default {
           if (res.success) {
             state.shopLocations = res.data
           } else {
-            // Temp
-
+            throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          // Temp
-
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_CUSTOMER_TYPES_ACTION]({ state }) {
@@ -176,14 +166,13 @@ export default {
         .then(res => {
           if (res.success) {
             state.customerTypes = res.data
+            console.log(res)
           } else {
-            // Temp
-
+            throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          // Temp
-
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_PROVINCES_ACTION]({ state }) {
@@ -194,13 +183,11 @@ export default {
           if (res.success) {
             state.provinces = res.data
           } else {
-            // Temp
-
+            throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          // Temp
-
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_DISTRICTS_ACTION]({ state }, val) {
@@ -211,13 +198,11 @@ export default {
           if (res.success) {
             state.districts = res.data
           } else {
-            // Temp
-
+            throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          // Temp
-
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_PRECINCTS_ACTION]({ state }, val) {
@@ -228,30 +213,11 @@ export default {
           if (res.success) {
             state.precincts = res.data
           } else {
-            // Temp
-
+            throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          // Temp
-
-        })
-    },
-    [GET_MEMBER_CARDS_ACTION]({ state }, val) {
-      CustomerService
-        .getMemberCards(val)
-        .then(response => response.data)
-        .then(res => {
-          if (res.success) {
-            state.memberCards = res.data
-          } else {
-            // Temp
-
-          }
-        })
-        .catch(() => {
-          // Temp
-
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_CARD_TYPES_ACTION]({ state }) {
@@ -262,13 +228,11 @@ export default {
           if (res.success) {
             state.cardTypes = res.data
           } else {
-            // Temp
-
+            throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          // Temp
-
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_CLOSELY_TYPES_ACTION]({ state }) {
@@ -279,13 +243,11 @@ export default {
           if (res.success) {
             state.closelyTypes = res.data
           } else {
-            // Temp
-
+            throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          // Temp
-
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },

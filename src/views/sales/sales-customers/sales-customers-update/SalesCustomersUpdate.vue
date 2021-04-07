@@ -668,7 +668,6 @@ import {
   PROVINCES_GETTER,
   DISTRICTS_GETTER,
   PRECINCTS_GETTER,
-  MEMBER_CARDS_GETTER,
   CARD_TYPES_GETTER,
   CLOSELY_TYPES_GETTER,
   CUSTOMER_BY_ID_GETTER,
@@ -677,7 +676,6 @@ import {
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
   GET_PRECINCTS_ACTION,
-  GET_MEMBER_CARDS_ACTION,
   GET_CARD_TYPES_ACTION,
   GET_CLOSELY_TYPES_ACTION,
   UPDATE_CUSTOMER_ACTION,
@@ -769,13 +767,6 @@ export default {
       }))
     },
 
-    memberCards() {
-      return this.MEMBER_CARDS_GETTER().map(data => ({
-        value: data.id,
-        text: data.memberCardName,
-      }))
-    },
-
     cardTypes() {
       return this.CARD_TYPES_GETTER().map(data => ({
         value: data.id,
@@ -804,10 +795,6 @@ export default {
       this.customerPrecincts = ''
       this.GET_PRECINCTS_ACTION(this.customerDistricts)
     },
-    customerGroup() {
-      this.selectedMemberCards = ''
-      this.GET_MEMBER_CARDS_ACTION(this.customerGroup)
-    },
   },
 
   mounted() {
@@ -829,7 +816,6 @@ export default {
       PROVINCES_GETTER,
       DISTRICTS_GETTER,
       PRECINCTS_GETTER,
-      MEMBER_CARDS_GETTER,
       CARD_TYPES_GETTER,
       CLOSELY_TYPES_GETTER,
       CUSTOMER_BY_ID_GETTER,
@@ -839,7 +825,6 @@ export default {
       GET_PROVINCES_ACTION,
       GET_DISTRICTS_ACTION,
       GET_PRECINCTS_ACTION,
-      GET_MEMBER_CARDS_ACTION,
       GET_CARD_TYPES_ACTION,
       GET_CLOSELY_TYPES_ACTION,
       UPDATE_CUSTOMER_ACTION,
