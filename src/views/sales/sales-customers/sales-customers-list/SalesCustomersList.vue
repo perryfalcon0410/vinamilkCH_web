@@ -29,6 +29,7 @@
           <b-button
             class="ml-1 rounded"
             variant="primary"
+            @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill />
             Xuất Excel
@@ -99,6 +100,7 @@ import {
   CUSTOMER,
   CUSTOMERS_GETTER,
   GET_CUSTOMERS_ACTION,
+  EXPORT_CUSTOMERS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -187,6 +189,7 @@ export default {
     ]),
     ...mapActions(CUSTOMER, [
       GET_CUSTOMERS_ACTION,
+      EXPORT_CUSTOMERS_ACTION,
     ]),
     resolveStatus(staus) {
       switch (staus) {
@@ -208,6 +211,9 @@ export default {
           customerId: 4,
         },
       })
+    },
+    onClickExcelExportButton() {
+      this.EXPORT_CUSTOMERS_ACTION()
     },
   },
 }

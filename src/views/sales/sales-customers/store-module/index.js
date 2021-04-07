@@ -18,11 +18,14 @@ import {
   GET_CUSTOMER_BY_ID_ACTION,
   CREATE_CUSTOMER_ACTION,
   UPDATE_CUSTOMER_ACTION,
-  GET_SHOP_LOCATIONS_ACTION,
   GET_CUSTOMER_TYPES_ACTION,
+  EXPORT_CUSTOMERS_ACTION,
+
+  GET_SHOP_LOCATIONS_ACTION,
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
   GET_PRECINCTS_ACTION,
+
   GET_CARD_TYPES_ACTION,
   GET_CLOSELY_TYPES_ACTION,
 
@@ -144,6 +147,7 @@ export default {
           toasts.error(error.message)
         })
     },
+
     [GET_SHOP_LOCATIONS_ACTION]({ state }, val) {
       CustomerService
         .getShopLocations(val)
@@ -159,6 +163,23 @@ export default {
           toasts.error(error.message)
         })
     },
+
+    [EXPORT_CUSTOMERS_ACTION]({ state }) {
+      CustomerService
+        .exportCustomers()
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.customers = res.data.content
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+
     [GET_CUSTOMER_TYPES_ACTION]({ state }) {
       CustomerService
         .getCustomerTypes()

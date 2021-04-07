@@ -5,11 +5,14 @@ import {
   getCustomerByIdEndpoint,
   createCustomerEndpoint,
   updateCustomerEndpoint,
+  exportCustomersEndpoint,
+
   getShopLocationsEndpoint,
   getCustomerTypesEndpoint,
   getPrecinctsEndpoint,
   getDistrictsEndpoint,
   getProvincesEndpoint,
+
   getCardTypesEndpoint,
   getCloselyTypesEndpoint,
 } from './defaultConfig'
@@ -36,6 +39,9 @@ export default {
   },
   updateCustomer(id, args) {
     return axios.patch(`${updateCustomerEndpoint}/${id}`, args)
+  },
+  exportCustomers() {
+    return axios.get(`${exportCustomersEndpoint}`)
   },
   getShopLocations(args) {
     const queryString = new URLSearchParams(args).toString()
