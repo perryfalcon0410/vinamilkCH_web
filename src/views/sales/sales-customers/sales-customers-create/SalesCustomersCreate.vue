@@ -572,6 +572,7 @@ import {
   number,
   required,
   email,
+  code,
 } from '@/@core/utils/validations/validations'
 import {
   CUSTOMER,
@@ -609,7 +610,7 @@ export default {
       number,
       required,
       email,
-
+      code,
       // START - Personal
       middleName: '',
       name: '',

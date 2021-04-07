@@ -13,7 +13,7 @@
         <!-- START - Import/Export List -->
         <b-col
           xl="4"
-          class="bg-info pb-4 rounded text-dark"
+          class="bg-white pb-4 rounded shadow text-dark"
         >
           <!-- START - Title -->
           <b-row class="py-1">
@@ -21,13 +21,19 @@
               cols="1"
             />
             <b-col>
-              PO No
+              <strong>
+                PO No
+              </strong>
             </b-col>
             <b-col>
-              Số nội bộ
+              <strong>
+                Số nội bộ
+              </strong>
             </b-col>
             <b-col>
-              Ngày
+              <strong>
+                Ngày
+              </strong>
             </b-col>
           </b-row>
           <!-- END - Title -->
@@ -67,13 +73,12 @@
             class="justify-content-between mx-0"
           >
 
-            <div class="bg-light d-flex h-25 align-items-center text-primary rounded-top font-weight-bold px-1">
+            <strong class="bg-light d-flex h-25 align-items-center text-primary rounded-top px-1">
               Sản phẩm
-            </div>
+            </strong>
             <b-button
               variant="primary"
               class="d-flex align-items-center"
-              size="sm"
             >
               <b-icon
                 icon="arrow-repeat"
@@ -98,9 +103,9 @@
 
           <!-- START - Table Product promotion -->
           <!-- START - Title Product promotion -->
-          <div class="bg-light d-inline-flex text-primary rounded-top font-weight-bold px-1">
+          <strong class="bg-light d-inline-flex text-primary rounded-top px-1">
             Hàng khuyến mãi
-          </div>
+          </strong>
           <!-- END - Title Product promotion -->
 
           <vue-good-table
@@ -123,7 +128,6 @@
       <b-button
         variant="primary"
         class="d-flex align-items-center text-uppercase"
-        size="sm"
         @click="ok()"
       >
         <b-icon
@@ -137,7 +141,6 @@
       <b-button
         variant="danger"
         class="d-flex align-items-center text-uppercase"
-        size="sm"
         @click="cancel()"
       >
         <b-icon
@@ -151,7 +154,6 @@
       <b-button
         variant="primary"
         class="d-flex align-items-center text-uppercase"
-        size="sm"
         @click="cancel()"
       >
         <b-icon
@@ -165,7 +167,6 @@
       <b-button
         variant="secondary"
         class="d-flex align-items-center text-uppercase"
-        size="sm"
         @click="cancel()"
       >
         <b-icon
@@ -212,29 +213,29 @@ export default {
         },
         {
           label: 'Mã sản phẩm',
-          field: 'IdProduct',
+          field: 'ProductId',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'NameProduct',
+          field: 'Name',
           sortable: false,
         },
         {
           label: 'Giá',
-          field: 'PriceProduct',
+          field: 'Price',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Số lượng',
-          field: 'AmountProduct',
+          field: 'Quantity',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Thành tiền',
-          field: 'TotalMoney',
+          field: 'TotalPrice',
           sortable: false,
           type: 'number',
         },
@@ -242,69 +243,69 @@ export default {
       rowsProduct: [
         {
           SoNo: '',
-          IdProduct: '',
-          NameProduct: '',
-          PriceProduct: '',
-          AmountProduct: '360',
-          TotalMoney: '1,860,720',
+          ProductId: '',
+          Name: '',
+          Price: '',
+          Quantity: '360',
+          TotalPrice: '1,860,720',
         },
         {
           SoNo: '290365412',
-          IdProduct: '04DC10',
-          NameProduct: 'Thức uống cacao lúa mạch 180ml',
-          PriceProduct: '5,000',
-          AmountProduct: '240',
-          TotalMoney: '1,200,000',
+          ProductId: '04DC10',
+          Name: 'Thức uống cacao lúa mạch 180ml',
+          Price: '5,000',
+          Quantity: '240',
+          TotalPrice: '1,200,000',
         },
         {
           SoNo: '290365412',
-          IdProduct: '04DC10',
-          NameProduct: 'Thức uống cacao lúa mạch 180ml',
-          PriceProduct: '5,000',
-          AmountProduct: '240',
-          TotalMoney: '1,200,000',
+          ProductId: '04DC10',
+          Name: 'Thức uống cacao lúa mạch 180ml',
+          Price: '5,000',
+          Quantity: '240',
+          TotalPrice: '1,200,000',
         },
         {
           SoNo: '290365412',
-          IdProduct: '04DC10',
-          NameProduct: 'Thức uống cacao lúa mạch 180ml',
-          PriceProduct: '5,000',
-          AmountProduct: '240',
-          TotalMoney: '1,200,000',
+          ProductId: '04DC10',
+          Name: 'Thức uống cacao lúa mạch 180ml',
+          Price: '5,000',
+          Quantity: '240',
+          TotalPrice: '1,200,000',
         },
       ],
       rowsProductPromotion: [
         {
           SoNo: '',
-          IdProduct: '',
-          NameProduct: '',
-          PriceProduct: '',
-          AmountProduct: '360',
-          TotalMoney: '1,860,720',
+          ProductId: '',
+          Name: '',
+          Price: '',
+          Quantity: '360',
+          TotalPrice: '1,860,720',
         },
         {
           SoNo: '290365412',
-          IdProduct: '04DC10',
-          NameProduct: 'Thức uống cacao lúa mạch 180ml',
-          PriceProduct: '5,000',
-          AmountProduct: '240',
-          TotalMoney: '1,200,000',
+          ProductId: '04DC10',
+          Name: 'Thức uống cacao lúa mạch 180ml',
+          Price: '5,000',
+          Quantity: '240',
+          TotalPrice: '1,200,000',
         },
         {
           SoNo: '290365412',
-          IdProduct: '04DC10',
-          NameProduct: 'Thức uống cacao lúa mạch 180ml',
-          PriceProduct: '5,000',
-          AmountProduct: '240',
-          TotalMoney: '1,200,000',
+          ProductId: '04DC10',
+          Name: 'Thức uống cacao lúa mạch 180ml',
+          Price: '5,000',
+          Quantity: '240',
+          TotalPrice: '1,200,000',
         },
         {
           SoNo: '290365412',
-          IdProduct: '04DC10',
-          NameProduct: 'Thức uống cacao lúa mạch 180ml',
-          PriceProduct: '5,000',
-          AmountProduct: '240',
-          TotalMoney: '1,200,000',
+          ProductId: '04DC10',
+          Name: 'Thức uống cacao lúa mạch 180ml',
+          Price: '5,000',
+          Quantity: '240',
+          TotalPrice: '1,200,000',
         },
       ],
     }

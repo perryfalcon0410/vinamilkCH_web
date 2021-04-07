@@ -9,36 +9,40 @@
   >
     <!-- START - Body -->
     <b-container fluid>
-      <b-row>
+      <b-row class="mx-0 ">
         <!-- START - Import/Export List -->
         <b-col
           xl="4"
           class="d-flex flex-column px-0"
         >
-          <label
-            for="tableList"
-            class="p-1 text-dark font-weight-bold"
+          <strong
+            class="text-dark mx-1 mb-1 "
           >Danh sách nhập/xuất hàng
-          </label>
+          </strong>
 
           <b-col
-            id="tableList"
-            class="bg-info rounded text-dark"
+            class="bg-white shadow rounded text-dark"
           >
-            <!-- START - Title -->
+            <!-- START - Header -->
             <b-row class="py-1">
               <b-col cols="1" />
               <b-col>
-                Số chứng từ
+                <strong>
+                  Số chứng từ
+                </strong>
               </b-col>
               <b-col>
-                Ngày
+                <strong>
+                  Ngày
+                </strong>
               </b-col>
               <b-col>
-                Ghi chú
+                <strong>
+                  Ghi chú
+                </strong>
               </b-col>
             </b-row>
-            <!-- END - Title -->
+            <!-- END - Header -->
 
             <!-- START - List -->
             <b-row
@@ -59,7 +63,6 @@
                 class="text-wrap"
               >
                 {{ item.note }}
-
               </b-col>
             </b-row>
             <!-- END - List -->
@@ -68,15 +71,16 @@
         <!-- END -  Import/Export List -->
 
         <!-- START -  Import/Export Detail -->
-        <b-col class="px-0 ml-xl-1 mt-1 mt-xl-0">
-          <label
-            for="tableDetail"
-            class="p-1 text-dark font-weight-bold"
+        <b-col class="d-flex flex-column  px-0 ml-xl-1 mt-1 mt-xl-0">
+          <strong
+            class="text-dark mb-1 mx-1"
           >Chi tiết nhập/xuất hàng
-          </label>
-          <b-col class="bg-white py-1 rounded shadow">
+          </strong>
+
+          <b-col
+            class="bg-white rounded shadow py-1"
+          >
             <vue-good-table
-              id="tableDetail"
               :columns="columns"
               :rows="rows"
               style-class="vgt-table bordered"
@@ -86,6 +90,7 @@
           </b-col>
         </b-col>
         <!-- END -  Import/Export Detail -->
+
       </b-row>
     </b-container>
     <!-- END - Body -->
@@ -154,29 +159,29 @@ export default {
         },
         {
           label: 'Mã sản phẩm',
-          field: 'IdProduct',
+          field: 'ProductId',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'NameProduct',
+          field: 'Name',
           sortable: false,
         },
         {
           label: 'Giá',
-          field: 'PriceProduct',
+          field: 'Price',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Số lượng',
-          field: 'AmountProduct',
+          field: 'Quantity',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Thành tiền',
-          field: 'TotalMoney',
+          field: 'TotalPrice',
           sortable: false,
           type: 'number',
         },
@@ -184,27 +189,27 @@ export default {
       rows: [
         {
           LincenseNumber: '290365412',
-          IdProduct: '04DC10',
-          NameProduct: 'Thức uống cacao lúa mạch 180ml',
-          PriceProduct: '5,000',
-          AmountProduct: '240',
-          TotalMoney: '1,200,000',
+          ProductId: '04DC10',
+          Name: 'Thức uống cacao lúa mạch 180ml',
+          Price: '5,000',
+          Quantity: '240',
+          TotalPrice: '1,200,000',
         },
         {
           LincenseNumber: '290365412',
-          IdProduct: '04DC10',
-          NameProduct: 'Thức uống cacao lúa mạch 180ml',
-          PriceProduct: '5,000',
-          AmountProduct: '240',
-          TotalMoney: '1,200,000',
+          ProductId: '04DC10',
+          Name: 'Thức uống cacao lúa mạch 180ml',
+          Price: '5,000',
+          Quantity: '240',
+          TotalPrice: '1,200,000',
         },
         {
           LincenseNumber: '290365412',
-          IdProduct: '04DC10',
-          NameProduct: 'Thức uống cacao lúa mạch 180ml',
-          PriceProduct: '5,000',
-          AmountProduct: '240',
-          TotalMoney: '1,200,000',
+          ProductId: '04DC10',
+          Name: 'Thức uống cacao lúa mạch 180ml',
+          Price: '5,000',
+          Quantity: '240',
+          TotalPrice: '1,200,000',
         },
       ],
     }

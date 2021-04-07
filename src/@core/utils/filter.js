@@ -33,6 +33,11 @@ export const formatDate = (value, formatting = { month: 'short', day: 'numeric',
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
 }
 
+export const formatDateToVNI = (value, formatting = { month: '2-digit', day: '2-digit', year: '2-digit' }) => {
+  if (!value) return value
+  return new Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
+}
+
 /**
  * Return short human friendly month representation of date
  * Can also convert date to only time if date is of today (Better UX)

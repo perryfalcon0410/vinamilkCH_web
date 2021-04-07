@@ -11,7 +11,7 @@
           xl="4"
           class="bg-white shadow rounded mr-xl-1"
         >
-          <!-- START - Archive Import Date  -->
+          <!-- START -Import Date -->
           <b-row class="my-1">
             <b-col cols="4">
               Ngày nhập:
@@ -20,23 +20,19 @@
               29/10/2020 lúc 16:16
             </b-col>
           </b-row>
-          <!-- END - Archive Import Date -->
+          <!-- END - Import Date -->
 
-          <!-- START - Archive Import ID and Type -->
+          <!-- START - ID and Import Type -->
           <b-form-row>
             <b-col>
               <b-form-group
                 label="Mã nhập hàng"
-                label-for="archiveImportID"
-                :state="stateInputID"
-                invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
+                label-for="id"
               >
                 <b-form-input
-                  id="archiveImportID"
-                  v-model="inputValueID"
+                  id="id"
+                  v-model="id"
                   maxlength="40"
-                  :state="stateInputID"
-                  required
                   trim
                   disabled
                 />
@@ -46,106 +42,127 @@
             <b-col>
               <b-form-group
                 label="Loại nhập"
-                label-for="archiveImportType"
+                label-for="importType"
               >
                 <b-form-select
-                  id="archiveImportType"
-                  v-model="selected"
+                  id="importType"
+                  v-model="importType"
+                  disabled
                 >
-                  <b-form-select-option value="loại nhập">
+                  <b-form-select-option value="">
                     loại nhập
                   </b-form-select-option>
+                  <b-form-select-option value="1">
+                    nhập hàng
+                  </b-form-select-option>
                   <b-form-select-option
-                    value="nhập điều chỉnh"
+                    value="2"
                   >
                     nhập điều chỉnh
                   </b-form-select-option>
-                  <b-form-select-option value="nhập vay mượn">
+                  <b-form-select-option value="3">
                     nhập vay mượn
                   </b-form-select-option>
                 </b-form-select>
               </b-form-group>
             </b-col>
           </b-form-row>
-          <!-- END - Archive Import ID and Type -->
+          <!-- END - ID and Type -->
 
-          <!-- START - Archive Import Archive -->
+          <!-- START -  Stock  -->
           <b-form-group
             label="Kho hàng"
-            label-for="archiveImportArchive"
+            label-for="warehouse"
           >
             <b-form-select
-              id="archiveImportArchive"
+              id="warehouse"
+              disabled
             />
           </b-form-group>
-          <!-- END - Archive Import Archive -->
+          <!-- END -  Stock  -->
 
-          <!-- START - Archive Import Bill Number and Date -->
+          <!-- START - Bill Number and Date -->
           <b-form-row>
             <b-col>
-              <b-form-group
-                label="Số hóa đơn"
-                label-for="archiveImportBillNumber"
-                :state="stateInputBillNumber"
-                invalid-feedback="Chỉ bao gồm ký tự [0-9]"
+              <validation-provider
+                v-slot="{ errors, passed, touched }"
+                rules="required"
+                name="Số hóa đơn"
               >
+                <div>
+                  Số hóa đơn <sup class="text-danger">*</sup>
+                </div>
                 <b-form-input
-                  id="archiveImportBillNumber"
-                  v-model="inputValueBillNumber"
-                  maxlength="20"
-                  :state="stateInputBillNumber"
-                  required
+                  v-model="billNumber"
+                  trim
+                  :state="touched ? passed : null"
                 />
-              </b-form-group>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
             </b-col>
 
             <b-col>
-              <b-form-group
-                label="Ngày hóa đơn"
-                label-for="archiveImportBillDate"
+              <validation-provider
+                v-slot="{ errors }"
+                rules="required"
+                name="Ngày hóa đơn"
               >
+                <div>
+                  Ngày hóa đơn <sup class="text-danger">*</sup>
+                </div>
                 <b-form-datepicker
-                  id="archiveImportBillDate"
-                  v-model="inputValueDate"
-                  required
+                  v-model="billDate"
                   locale="vi"
+                  disabled
                   :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
                 />
-              </b-form-group>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
             </b-col>
           </b-form-row>
-          <!-- END - Archive Import Bill Number and Date -->
+          <!-- END -   Bill Number and Date -->
 
-          <!-- START - Archive Import Internal number and PO no -->
+          <!-- START -   Internal number and PO no -->
           <b-form-row>
             <b-col>
-              <b-form-group
-                label="Số nội bộ"
-                label-for="archiveImportInternalNumber"
-                :state="stateInputInternalNumber"
-                invalid-feedback="Chỉ bao gồm ký tự [0-9]"
+              <validation-provider
+                v-slot="{ errors, passed, touched }"
+                rules="required"
+                name="Số nội bộ"
               >
+                <div class="mt-1">
+                  Số nội bộ <sup class="text-danger">*</sup>
+                </div>
                 <b-form-input
-                  id="archiveImportInternalNumber"
-                  v-model="inputValueInternalNumber"
-                  maxlength="20"
-                  :state="stateInputInternalNumber"
-                  required
+                  v-model="internalNumber"
+                  trim
+                  :state="touched ? passed : null"
                 />
-              </b-form-group>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
             </b-col>
 
             <b-col>
-              <b-form-group
-                label="PO No"
-                label-for="archiveImportPoNo"
+              <validation-provider
+                v-slot="{ errors, passed, touched }"
+                :rules="importType === '1' ? 'required' : ''"
+                name="PO No"
               >
+                <div class="mt-1">
+                  PO No
+                  <sup
+                    v-show="importType === '1'"
+                    class="text-danger"
+                  >*</sup>
+                </div>
                 <b-input-group
-                  id="archiveImportPoNo"
+                  id="PoNo"
                   class="input-group-merge"
                 >
                   <b-form-input
-                    required
+                    v-model="internalNumber"
+                    trim
+                    :state="importType === '1' && touched ? passed : null"
                   />
                   <b-input-group-append is-text>
                     <b-icon-three-dots-vertical
@@ -153,22 +170,23 @@
                     />
                   </b-input-group-append>
                 </b-input-group>
-              </b-form-group>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
             </b-col>
           </b-form-row>
-          <!-- END - Archive Import Internal number and PO no -->
+          <!-- END -   Internal number and PO no -->
 
-          <!-- START - Archive Import Note -->
+          <!-- START -   Note -->
           <b-form-group
             label="Ghi chú"
-            label-for="customerType"
+            label-for="note"
           >
             <b-form-textarea
-              id="customerType"
+              id="note"
               maxlength="4000"
             />
           </b-form-group>
-        <!-- END - Archive Import Note -->
+        <!-- END -   Note -->
         </b-col>
         <!-- END - Form -->
 
@@ -177,8 +195,10 @@
           class="bg-white shadow rounded mt-1 mt-xl-0"
         >
           <!-- START - Table Product -->
-          <div class="bg-light d-inline-flex text-primary rounded-top font-weight-bold px-1 my-1">
-            Sản phẩm
+          <div class="bg-light d-inline-flex text-primary rounded-top px-1 my-1">
+            <strong>
+              Sản phẩm
+            </strong>
           </div>
 
           <vue-good-table
@@ -187,12 +207,44 @@
             style-class="vgt-table striped"
             compact-mode
             line-numbers
-          />
+          >
+            <!-- START - Column filter -->
+            <template
+              slot="column-filter"
+              slot-scope="props"
+            >
+              <b-row
+                v-if="props.column.field === 'ProductId'"
+                class="mx-0"
+                align-h="start"
+              >
+                23
+              </b-row>
+              <b-row
+                v-if="props.column.field === 'Quantity'"
+                class="mx-0"
+                align-h="start"
+              >
+                48
+              </b-row>
+
+              <b-row
+                v-else-if="props.column.field === 'TotalPrice'"
+                class="mx-0"
+                align-h="end"
+              >
+                25,123,000
+              </b-row>
+            </template>
+          <!-- START - Column filter -->
+          </vue-good-table>
           <!-- END - Table Product -->
 
           <!-- START - Table Product promotion -->
-          <div class="bg-light d-inline-flex text-primary rounded-top font-weight-bold px-1 my-1">
-            Hàng khuyến mãi
+          <div class="bg-light d-inline-flex text-primary rounded-top px-1 my-1">
+            <strong>
+              Hàng khuyến mãi
+            </strong>
           </div>
 
           <vue-good-table
@@ -202,28 +254,35 @@
             compact-mode
             line-numbers
           >
-            <!-- START - Feature -->
+            <!-- START - Column filter -->
             <template
-              slot="table-row"
+              slot="column-filter"
               slot-scope="props"
             >
-              <div v-if="props.column.field === 'ArchiveImportFeature'">
-                <b-button
-                  variant="light"
-                  class="rounded-circle ml-1 p-0"
-                >
-                  <b-icon-x
-                    color="red"
-                    width="30"
-                    height="30"
-                  />
-                </b-button>
-              </div>
-              <div v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </div>
+              <b-row
+                v-if="props.column.field === 'ProductId'"
+                class="mx-0"
+                align-h="start"
+              >
+                23
+              </b-row>
+              <b-row
+                v-if="props.column.field === 'Quantity'"
+                class="mx-0"
+                align-h="start"
+              >
+                48
+              </b-row>
+
+              <b-row
+                v-else-if="props.column.field === 'TotalPrice'"
+                class="mx-0"
+                align-h="end"
+              >
+                25,123,000
+              </b-row>
             </template>
-          <!-- END - Feature -->
+          <!-- START - Column filter -->
           </vue-good-table>
           <!-- END - Table Product promotion -->
 
@@ -232,7 +291,6 @@
             <b-button-group>
               <b-button
                 variant="primary"
-                size="sm"
                 class="d-flex align-items-center rounded text-uppercase"
               >
                 <b-icon
@@ -245,9 +303,8 @@
               </b-button>
 
               <b-button
-                size="sm"
                 class="d-flex align-items-center ml-1 rounded text-uppercase"
-                @click="routeBack"
+                @click="navigateBack"
               >
                 <b-icon
                   icon="x"
@@ -277,6 +334,13 @@
 </template>
 
 <script>
+import {
+  ValidationProvider,
+} from 'vee-validate'
+import {
+  number,
+  required,
+} from '@/@core/utils/validations/validations'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
 import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
@@ -286,178 +350,146 @@ export default {
     AdjustmentModal,
     BorrowedModal,
     PoConfirmModal,
+    ValidationProvider,
   },
   data() {
     return {
-      selected: 'loại nhập',
       AdjustmentModalVisible: false,
       BorrowedModalVisible: false,
       PoConfirmModalVisible: false,
-      inputValueID: '',
-      inputValueBillNumber: '',
-      inputValueInternalNumber: '',
-      inputValueDate: new Date(),
+
+      id: '',
+      billNumber: '',
+      importType: '',
+      internalNumber: '',
+      billDate: new Date(),
+      poNo: '',
+
+      // validation rules
+      number,
+      required,
+
       columns: [
         {
           label: 'Mã hàng',
-          field: 'ArchiveImportProductID',
+          field: 'ProductId',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Số lượng',
-          field: 'ArchiveImportProductAmount',
+          field: 'Quantity',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Giá',
-          field: 'ArchiveImportProductPrice',
+          field: 'Price',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Tên hàng',
-          field: 'ArchiveImportProductName',
+          field: 'Name',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'ArchiveImportProductDVT',
+          field: 'Unit',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Thành tiền',
-          field: 'ArchiveImportProductMoney',
+          field: 'TotalPrice',
           type: 'number',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'SO No',
-          field: 'ArchiveImportProductSONo',
-          sortable: false,
-        },
-        {
-          label: '',
-          field: 'ArchiveImportFeature',
+          field: 'SONo',
           sortable: false,
         },
       ],
       rowsProduct: [
         {
-          ArchiveImportProductID: '23',
-          ArchiveImportProductAmount: '48',
-          ArchiveImportProductPrice: '',
-          ArchiveImportProductName: '',
-          ArchiveImportProductDVT: '',
-          ArchiveImportProductMoney: '25,123,000',
-          ArchiveImportProductSONo: '',
+          ProductId: '04AA10',
+          Quantity: '12',
+          Price: '6,300',
+          Name: 'STT Dâu ADM GOLD 180ml',
+          Unit: 'Hộp',
+          TotalPrice: '2,531,000',
+          SONo: 'SO.1345',
         },
         {
-          ArchiveImportProductID: '04AA10',
-          ArchiveImportProductAmount: '12',
-          ArchiveImportProductPrice: '6,300',
-          ArchiveImportProductName: 'STT Dâu ADM GOLD 180ml',
-          ArchiveImportProductDVT: 'Hộp',
-          ArchiveImportProductMoney: '2,531,000',
-          ArchiveImportProductSONo: 'SO.1345',
+          ProductId: '04AA10',
+          Quantity: '12',
+          Price: '6,300',
+          Name: 'STT Dâu ADM GOLD 180ml',
+          Unit: 'Hộp',
+          TotalPrice: '2,531,000',
+          SONo: 'SO.1345',
         },
         {
-          ArchiveImportProductID: '04AA10',
-          ArchiveImportProductAmount: '12',
-          ArchiveImportProductPrice: '6,300',
-          ArchiveImportProductName: 'STT Dâu ADM GOLD 180ml',
-          ArchiveImportProductDVT: 'Hộp',
-          ArchiveImportProductMoney: '2,531,000',
-          ArchiveImportProductSONo: 'SO.1345',
+          ProductId: '04AA10',
+          Quantity: '12',
+          Price: '6,300',
+          Name: 'STT Dâu ADM GOLD 180ml',
+          Unit: 'Hộp',
+          TotalPrice: '2,531,000',
+          SONo: 'SO.1345',
         },
         {
-          ArchiveImportProductID: '04AA10',
-          ArchiveImportProductAmount: '12',
-          ArchiveImportProductPrice: '6,300',
-          ArchiveImportProductName: 'STT Dâu ADM GOLD 180ml',
-          ArchiveImportProductDVT: 'Hộp',
-          ArchiveImportProductMoney: '2,531,000',
-          ArchiveImportProductSONo: 'SO.1345',
-        },
-        {
-          ArchiveImportProductID: '04AA10',
-          ArchiveImportProductAmount: '12',
-          ArchiveImportProductPrice: '6,300',
-          ArchiveImportProductName: 'STT Dâu ADM GOLD 180ml',
-          ArchiveImportProductDVT: 'Hộp',
-          ArchiveImportProductMoney: '2,531,000',
-          ArchiveImportProductSONo: 'SO.1345',
+          ProductId: '04AA10',
+          Quantity: '12',
+          Price: '6,300',
+          Name: 'STT Dâu ADM GOLD 180ml',
+          Unit: 'Hộp',
+          TotalPrice: '2,531,000',
+          SONo: 'SO.1345',
         },
       ],
       rowsProductPromotion: [
         {
-          ArchiveImportProductID: '23',
-          ArchiveImportProductAmount: '24',
-          ArchiveImportProductPrice: '',
-          ArchiveImportProductName: '',
-          ArchiveImportProductDVT: '',
-          ArchiveImportProductMoney: '5,062,000',
-          ArchiveImportProductSONo: '',
-          ArchiveImportFeature: 'Xóa',
+          ProductId: '04AA10',
+          Quantity: '12',
+          Price: '6,300',
+          Name: 'STT Dâu ADM GOLD 180ml',
+          Unit: 'Hộp',
+          TotalPrice: '2,531,000',
+          SONo: 'SO.1345',
+          Feature: 'Xóa',
         },
         {
-          ArchiveImportProductID: '04AA10',
-          ArchiveImportProductAmount: '12',
-          ArchiveImportProductPrice: '6,300',
-          ArchiveImportProductName: 'STT Dâu ADM GOLD 180ml',
-          ArchiveImportProductDVT: 'Hộp',
-          ArchiveImportProductMoney: '2,531,000',
-          ArchiveImportProductSONo: 'SO.1345',
-          ArchiveImportFeature: 'Xóa',
-        },
-        {
-          ArchiveImportProductID: '04AA10',
-          ArchiveImportProductAmount: '12',
-          ArchiveImportProductPrice: '6,300',
-          ArchiveImportProductName: 'STT Dâu ADM GOLD 180ml',
-          ArchiveImportProductDVT: 'Hộp',
-          ArchiveImportProductMoney: '2,531,000',
-          ArchiveImportProductSONo: 'SO.1345',
-          ArchiveImportFeature: 'Xóa',
+          ProductId: '04AA10',
+          Quantity: '12',
+          Price: '6,300',
+          Name: 'STT Dâu ADM GOLD 180ml',
+          Unit: 'Hộp',
+          TotalPrice: '2,531,000',
+          SONo: 'SO.1345',
+          Feature: 'Xóa',
         },
       ],
     }
   },
-  computed: {
-    stateInputID() {
-      const validID = /^([\w\\.]{0,40})$/
-      const result = validID.test(this.inputValueID)
-      if (this.inputValueID.length >= 1) {
-        return result
-      }
-      return null
-    },
-    stateInputBillNumber() {
-      const validBillNumber = /^(\d{0,20})$/
-      const result = validBillNumber.test(this.inputValueBillNumber)
-      if (this.inputValueBillNumber.length >= 1) {
-        return result
-      }
-      return null
-    },
-    stateInputInternalNumber() {
-      const validInternalNumber = /^(\d{0,20})$/
-      const result = validInternalNumber.test(this.inputValueInternalNumber)
-      if (this.inputValueInternalNumber.length >= 1) {
-        return result
-      }
-      return null
-    },
-  },
+
   methods: {
     showModal() {
-      const PoConfirm = this.selected === 'loại nhập' ? this.PoConfirmModalVisible = !this.PoConfirmModalVisible : this.PoConfirmModalVisible = false
-      const Adjustment = this.selected === 'nhập điều chỉnh' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
-      const Borrowed = this.selected === 'nhập vay mượn' ? this.BorrowedModalVisible = !this.BorrowedModalVisible : this.BorrowedModalVisible = false
+      const PoConfirm = this.importType === '1' ? this.PoConfirmModalVisible = !this.PoConfirmModalVisible : this.PoConfirmModalVisible = false
+      const Adjustment = this.importType === '2' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
+      const Borrowed = this.importType === '3' ? this.BorrowedModalVisible = !this.BorrowedModalVisible : this.BorrowedModalVisible = false
 
       return PoConfirm && Adjustment && Borrowed
     },
-    routeBack() {
+    navigateBack() {
       this.$router.back()
     },
 
