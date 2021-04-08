@@ -33,7 +33,7 @@ export default {
     return axios.post(createCustomerEndpoint, args)
   },
   updateCustomer(args) {
-    return axios.patch(`${updateCustomerEndpoint}/${args.id}`, args.val)
+    return axios.patch(`${updateCustomerEndpoint}/${args.id}`, args)
   },
   exportCustomers() {
     return axios.get(`${exportCustomersEndpoint}`)
