@@ -50,7 +50,7 @@
           compact-mode
           line-numbers
         >
-          <!-- START - label -->
+          <!-- START - Columns -->
           <template
             slot="table-column"
             slot-scope="props"
@@ -62,9 +62,9 @@
               {{ props.column.label }}
             </div>
           </template>
-          <!-- END - label -->
+          <!-- END - Columns -->
 
-          <!-- START - Edit -->
+          <!-- START - Rows -->
           <template
             slot="table-row"
             slot-scope="props"
@@ -72,14 +72,14 @@
             <div v-if="props.column.field === 'feature'">
               <b-icon-pencil-fill
                 class="cursor-pointer"
-                @click="navigateToUpdate"
+                @click="navigateToUpdate(props.row.id)"
               />
             </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
           </template>
-          <!-- END - Edit -->
+          <!-- END - Rows -->
 
         </vue-good-table>
       </b-col>
@@ -95,6 +95,8 @@ import {
   mapGetters,
 } from 'vuex'
 import 'vue-good-table/dist/vue-good-table.css'
+import { getGenderLabel } from '@core/utils/utils'
+import { formatDateToVNI } from '@core/utils/filter'
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
   CUSTOMER,
@@ -172,11 +174,11 @@ export default {
         fullName: `${data.lastName} ${data.firstName}`,
         phoneNumber: data.phone,
         birthDay: new Date(data.dob).toLocaleDateString(),
-        gender: data.gender,
+        gender: getGenderLabel(data.genderId),
         status: this.resolveStatus(data.status),
         group: data.customerType,
-        date: new Date(data.createdAt).toLocaleDateString(),
-        feature: 'Chỉnh sửa',
+        date: formatDateToVNI(data.createdAt),
+        feature: '',
       }))
     },
   },
@@ -204,11 +206,11 @@ export default {
     navigateToCreate() {
       this.$router.push({ name: 'sales-customers-create' })
     },
-    navigateToUpdate() {
+    navigateToUpdate(id) {
       this.$router.push({
         name: 'sales-customers-update',
         params: {
-          customerId: 4,
+          customerId: id,
         },
       })
     },

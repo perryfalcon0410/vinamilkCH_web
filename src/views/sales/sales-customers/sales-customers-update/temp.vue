@@ -8,15 +8,13 @@
       ref="formContainer"
       v-slot="{invalid}"
     >
-      <b-row
-        class="mx-0"
-      >
+      <b-row class="mx-0">
         <!-- START - Form Personal information -->
         <b-col
           lg
-          class="d-flex shadow bg-white rounded px-0"
+          class="d-flex shadow bg-white rounded"
         >
-          <b-row class="flex-grow-1 mx-0">
+          <b-row class="flex-grow-1">
             <!-- START - Section 1 -->
             <b-col sm="8">
               <label class="font-weight-bold w-100 text-center mb-2">Thông tin cá nhân</label>
@@ -110,14 +108,14 @@
                   <b-form-select
                     v-model="gender"
                   >
-                    <b-form-select-option value="0">
-                      Nam
-                    </b-form-select-option>
-                    <b-form-select-option value="1">
-                      Nữ
-                    </b-form-select-option>
                     <b-form-select-option value="2">
                       Khác
+                    </b-form-select-option>
+                    <b-form-select-option value="1">
+                      Nam
+                    </b-form-select-option>
+                    <b-form-select-option value="0">
+                      Nữ
                     </b-form-select-option>
                   </b-form-select>
                 </b-col>
@@ -162,8 +160,10 @@
                   </div>
                   <b-form-select
                     v-model="customerStatus"
-                    disabled
                   >
+                    <b-form-select-option value="0">
+                      Ngưng hoạt động
+                    </b-form-select-option>
                     <b-form-select-option value="1">
                       Hoạt động
                     </b-form-select-option>
@@ -175,6 +175,8 @@
               <!-- START - Customer loyal -->
               <b-form-checkbox
                 v-model="customerSpecial"
+                value="1"
+                unchecked-value="0"
                 class="mt-1"
               >
                 Khách hàng riêng của cửa hàng
@@ -194,6 +196,13 @@
                 />
               </b-form-group>
               <!-- END - Customer Note -->
+
+              <!-- START - Customer Date Created -->
+              <div>
+                Ngày tạo: <strong>01/08/2018 (2 năm 3 tháng)</strong>
+              </div>
+            <!-- END - Customer Date Created -->
+
             </b-col>
             <!-- END - Section 1 -->
 
@@ -254,9 +263,51 @@
                 />
               </b-form-group>
               <!-- END - Customer ID Location -->
-            </b-col>
-          <!-- END - Section 2 -->
-          </b-row>
+
+              <!-- START - Customer Sales -->
+              <b-col class="bg-light py-1 px-0">
+                <!-- START - Sales -->
+                <b-row>
+                  <!-- START - 1 -->
+                  <b-col>
+                    Doanh số tháng này
+                    <strong>
+                      3,500,000
+                    </strong>
+                  </b-col>
+                  <!-- END - 1 -->
+
+                  <!-- START - 2 -->
+                  <b-col>
+                    Doanh số tổng
+                    <strong>
+                      13,123,000
+                    </strong>
+                  </b-col>
+                <!-- END - 2 -->
+                </b-row>
+                <!-- END - Customer Sales -->
+
+                <!-- START - Customer Favorite product -->
+                <b-col class="px-0 my-1">
+                  Sản phẩm yêu thích
+                  <div
+                    v-for="(n, index ) in 3"
+                    :key="index"
+                    class="text-primary my-1"
+                  >
+                    Sữa đặc Ngôi Sao Phương Nam xanh lá - 1284g
+                  </div>
+                </b-col>
+
+                <div>
+                  Ngày mua hàng cuối: <strong>31/10/2020</strong>
+                </div>
+              <!-- END - Customer Favorite product -->
+
+              </b-col>
+              <!-- END - Section 2 -->
+            </b-col></b-row>
         </b-col>
         <!-- END - Form Personal information -->
 
@@ -270,18 +321,18 @@
           <label class="font-weight-bold w-100 text-center mb-2">Thông tin liên hệ</label>
           <!-- START - Customer Phone Number -->
           <validation-provider
-            v-slot="{ errors, passed,}"
-            rules="number|phoneNumber"
+            v-slot="{ errors, passed, touched }"
+            rules="number|required"
             name="Di động"
           >
             <div class="mt-1">
-              Di động
+              Di động <sup class="text-danger">*</sup>
             </div>
             <b-form-input
               v-model="phoneNumber"
               trim
-              :state="phoneNumber.length > 0 ? passed : null"
-              maxlength="10"
+              :state="touched ? passed : null"
+              maxlength="15"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -457,7 +508,6 @@
           class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
         >
           <label class="font-weight-bold w-100 text-center mb-2">Thẻ thành viên</label>
-
           <!-- START - Customer Card type -->
           <b-form-group
             label="Loại thẻ"
@@ -570,7 +620,6 @@ import {
   number,
   required,
   email,
-  code,
 } from '@/@core/utils/validations/validations'
 import {
   CUSTOMER,
@@ -582,14 +631,16 @@ import {
   PRECINCTS_GETTER,
   CARD_TYPES_GETTER,
   CLOSELY_TYPES_GETTER,
+  CUSTOMER_BY_ID_GETTER,
   // ACTIONS
-  CREATE_CUSTOMER_ACTION,
   GET_CUSTOMER_TYPES_ACTION,
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
   GET_PRECINCTS_ACTION,
   GET_CARD_TYPES_ACTION,
   GET_CLOSELY_TYPES_ACTION,
+  UPDATE_CUSTOMER_ACTION,
+  GET_CUSTOMER_BY_ID_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -603,45 +654,45 @@ export default {
     return {
       isModalShow: false,
       isFieldPassed: false,
+      customerId: this.$route.params,
 
       // validation rules
       number,
       required,
       email,
-      code,
 
       // START - Personal
-      middleName: '',
-      name: '',
-      barCode: '',
-      birthDay: '',
-      gender: '2',
-      customerGroup: '',
-      customerStatus: '1',
-      customerSpecial: false,
-      note: '',
-      customerID: '',
+      middleName: this.CUSTOMER_BY_ID_GETTER().map(e => e.firstName),
+      name: this.CUSTOMER_BY_ID_GETTER().map(e => e.lastName),
+      barCode: this.CUSTOMER_BY_ID_GETTER().map(e => e.barCode),
+      birthDay: this.CUSTOMER_BY_ID_GETTER().map(e => e.dob),
+      gender: this.CUSTOMER_BY_ID_GETTER().map(e => e.genderId),
+      customerGroup: this.CUSTOMER_BY_ID_GETTER().map(e => e.customerTypeId),
+      customerStatus: this.CUSTOMER_BY_ID_GETTER().map(e => e.status),
+      customerSpecial: this.CUSTOMER_BY_ID_GETTER().map(e => e.isPrivate),
+      note: this.CUSTOMER_BY_ID_GETTER().map(e => e.noted),
+      customerID: this.CUSTOMER_BY_ID_GETTER().map(e => e.idNo),
       stateInputValueID: null,
       invalidFeedbackID: '',
-      customerIDDate: '',
-      customerIDLocation: '',
+      customerIDDate: this.CUSTOMER_BY_ID_GETTER().map(e => e.idNoIssuedDate),
+      customerIDLocation: this.CUSTOMER_BY_ID_GETTER().map(e => e.idNoIssuedPlace),
       // END - Personal
 
       // START - Contact
-      phoneNumber: '',
-      customerEmail: '',
-      homeNumber: '',
-      customerProvinces: '',
-      customerDistricts: '',
-      customerPrecincts: '',
-      workingOffice: '',
-      officeAddress: '',
-      taxCode: '',
+      phoneNumber: this.CUSTOMER_BY_ID_GETTER().map(e => e.mobiPhone),
+      customerEmail: this.CUSTOMER_BY_ID_GETTER().map(e => e.email),
+      homeNumber: this.CUSTOMER_BY_ID_GETTER().map(e => e.street),
+      customerProvinces: this.CUSTOMER_BY_ID_GETTER().map(e => e.provinceId),
+      customerDistricts: this.CUSTOMER_BY_ID_GETTER().map(e => e.districtId),
+      customerPrecincts: this.CUSTOMER_BY_ID_GETTER().map(e => e.precinctId),
+      workingOffice: this.CUSTOMER_BY_ID_GETTER().map(e => e.workingOffice),
+      officeAddress: this.CUSTOMER_BY_ID_GETTER().map(e => e.officeAddress),
+      taxCode: this.CUSTOMER_BY_ID_GETTER().map(e => e.taxCode),
       // END - Contact
 
       // START - MembershipCard
-      selectedCardTypes: '',
-      selectedCloselyTypes: '',
+      selectedCardTypes: this.CUSTOMER_BY_ID_GETTER().map(e => e.memberCard),
+      selectedCloselyTypes: this.CUSTOMER_BY_ID_GETTER().map(e => e.closelyTypes),
       // END - MembershipCard
     }
   },
@@ -711,6 +762,7 @@ export default {
     this.GET_PROVINCES_ACTION()
     this.GET_CARD_TYPES_ACTION()
     this.GET_CLOSELY_TYPES_ACTION()
+    this.GET_CUSTOMER_BY_ID_ACTION(this.customerId)
   },
 
   // START - Methods
@@ -723,15 +775,17 @@ export default {
       PRECINCTS_GETTER,
       CARD_TYPES_GETTER,
       CLOSELY_TYPES_GETTER,
+      CUSTOMER_BY_ID_GETTER,
     }),
     ...mapActions(CUSTOMER, [
-      CREATE_CUSTOMER_ACTION,
       GET_CUSTOMER_TYPES_ACTION,
       GET_PROVINCES_ACTION,
       GET_DISTRICTS_ACTION,
       GET_PRECINCTS_ACTION,
       GET_CARD_TYPES_ACTION,
       GET_CLOSELY_TYPES_ACTION,
+      UPDATE_CUSTOMER_ACTION,
+      GET_CUSTOMER_BY_ID_ACTION,
     ]),
 
     randomStr(len, arr) {
@@ -760,33 +814,39 @@ export default {
 
     create() {
       this.checkDuplicationID(this.CREATE_CODE_ERROR)
+
       this.$refs.formContainer.validate().then(success => {
         if (success) {
-          this.CREATE_CUSTOMER_ACTION({
-            firstName: this.middleName,
-            lastName: this.name,
-            genderId: this.gender,
-            barCode: this.barCode,
-            dob: this.birthDay !== '' ? (new Date(this.birthDay).toISOString()) : '',
-            customerTypeId: this.customerGroup,
-            status: this.customerStatus,
-            isPrivate: this.customerSpecial,
-            idNo: this.customerID,
-            idNoIssuedDate: this.customerIDDate !== '' ? new Date(this.customerIDDate).toISOString() : '',
-            idNoIssuedPlace: this.customerIDLocation,
-            phoneNumber: this.phoneNumber,
-            mobiPhone: this.phoneNumber,
-            email: this.customerEmail,
-            areaId: this.customerPrecincts,
-            street: this.homeNumber,
-            address: null,
-            workingOffice: this.workingOffice,
-            officeAddress: this.officeAddress,
-            taxCode: this.taxCode,
-            isDefault: true,
-            noted: this.note,
-            closelyTypeId: this.selectedCloselyTypes,
-            cardTypeId: this.selectedCardTypes,
+          this.UPDATE_CUSTOMER_ACTION({
+            id: this.customerId,
+            val: {
+              id: this.customerId,
+              firstName: this.name,
+              lastName: this.middleName,
+              genderId: this.gender,
+              barCode: this.barCode,
+              dob: this.birthDay !== '' ? (new Date(this.birthDay).toISOString()) : '',
+              customerTypeId: this.customerGroup,
+              status: this.customerStatus,
+              shopId: 1,
+              isPrivate: this.customerSpecial,
+              idNo: this.customerID,
+              idNoIssuedDate: this.customerIDDate !== '' ? new Date(this.customerIDDate).toISOString() : '',
+              idNoIssuedPlace: this.customerIDLocation,
+              phoneNumber: this.phoneNumber,
+              mobiPhone: this.phoneNumber,
+              email: this.customerEmail,
+              areaId: this.customerPrecincts,
+              street: this.homeNumber,
+              address: null,
+              workingOffice: this.workingOffice,
+              officeAddress: this.officeAddress,
+              taxCode: this.taxCode,
+              isDefault: true,
+              noted: this.note,
+              closelyTypeId: this.selectedCloselyTypes,
+              cardTypeId: this.selectedCardTypes,
+            },
           })
         }
       })

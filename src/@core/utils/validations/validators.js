@@ -42,6 +42,11 @@ export const validatorCode = val => {
 }
 
 export const validatorNumber = val => {
-  const regex = /^(\d{1,15})$/
+  const regex = /^(\d{0,15})$/
+  return regex.test(val)
+}
+
+export const validatorPhoneNumber = val => {
+  const regex = /(0[3|5|7|8|9])+([0-9]{8})\b/
   return regex.test(val)
 }

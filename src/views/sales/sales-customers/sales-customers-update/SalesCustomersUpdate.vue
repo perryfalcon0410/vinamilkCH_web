@@ -8,10 +8,7 @@
       ref="formContainer"
       v-slot="{invalid}"
     >
-      <b-form-row
-        class="mx-0"
-        @submit.prevent="onClickSaveButton"
-      >
+      <b-row class="mx-0">
         <!-- START - Form Personal information -->
         <b-col
           lg
@@ -163,8 +160,10 @@
                   </div>
                   <b-form-select
                     v-model="customerStatus"
-                    disabled
                   >
+                    <b-form-select-option value="0">
+                      Ngưng hoạt động
+                    </b-form-select-option>
                     <b-form-select-option value="1">
                       Hoạt động
                     </b-form-select-option>
@@ -323,11 +322,11 @@
           <!-- START - Customer Phone Number -->
           <validation-provider
             v-slot="{ errors, passed, touched }"
-            rules="number|required"
+            rules="number|phoneNumber"
             name="Di động"
           >
             <div class="mt-1">
-              Di động <sup class="text-danger">*</sup>
+              Di động
             </div>
             <b-form-input
               v-model="phoneNumber"
@@ -394,7 +393,7 @@
               <b-form-select-option
                 v-for="item in provinces"
                 :key="item.value"
-                :value="`${item.value},${item.text}`"
+                :value="item.value"
               >
                 {{ item.text }}
               </b-form-select-option>
@@ -419,7 +418,7 @@
                   <b-form-select-option
                     v-for="item in districts"
                     :key="item.value"
-                    :value="`${item.value},${item.text}`"
+                    :value="item.value"
                   >
                     {{ item.text }}
                   </b-form-select-option>
@@ -442,7 +441,7 @@
                   <b-form-select-option
                     v-for="item in precincts"
                     :key="item.value"
-                    :value="`${item.value},${item.text}`"
+                    :value="item.value"
                   >
                     {{ item.text }}
                   </b-form-select-option>
@@ -509,44 +508,6 @@
           class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
         >
           <label class="font-weight-bold w-100 text-center mb-2">Thẻ thành viên</label>
-          <!-- START - Customer Membership card -->
-          <b-form-group
-            label="Thẻ thành viên"
-            label-for="MembershipCard"
-          >
-            <b-form-select
-              id="MembershipCard"
-              v-model="selectedMemberCards"
-            >
-              <b-form-select-option value="">
-                Chọn thẻ thành viên
-              </b-form-select-option>
-              <b-form-select-option
-                v-for="item in memberCards"
-                :key="item.value"
-                :value="item.value"
-              >
-                {{ item.text }}
-              </b-form-select-option>
-            </b-form-select>
-          </b-form-group>
-          <!-- END - Customer Membership card  -->
-
-          <!-- START - Customer Card Date -->
-          <b-form-group
-            label="Ngày cấp thẻ"
-            label-for="CardDate"
-          >
-            <b-form-datepicker
-              id="CardDate"
-              v-model="memberCardDate"
-              placeholder="chọn ngày"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
-          <!-- END - Customer Card Date -->
-
           <!-- START - Customer Card type -->
           <b-form-group
             label="Loại thẻ"
@@ -595,7 +556,7 @@
         </b-col>
       <!-- START - Form Membership card -->
 
-      </b-form-row>
+      </b-row>
 
       <!-- START - Group Button -->
       <b-row
@@ -693,7 +654,7 @@ export default {
     return {
       isModalShow: false,
       isFieldPassed: false,
-      customerId: this.$route.params.id,
+      customerId: `${this.$route.params.customerId}L`,
 
       // validation rules
       number,
@@ -803,9 +764,8 @@ export default {
     this.GET_PROVINCES_ACTION()
     this.GET_CARD_TYPES_ACTION()
     this.GET_CLOSELY_TYPES_ACTION()
-    this.GET_CUSTOMER_BY_ID_ACTION(4)
-    console.log(this.$router.params)
-    // console.log(this.CUSTOMER_BY_ID_GETTER().map(e => e))
+    this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
+    // console.log(this.CUSTOMER_BY_ID_GETTER().map(e => e.lastName))
   },
 
   // START - Methods
@@ -857,39 +817,37 @@ export default {
 
     create() {
       this.checkDuplicationID(this.CREATE_CODE_ERROR)
+
       this.$refs.formContainer.validate().then(success => {
         if (success) {
-          this.UPDATE_CUSTOMER_ACTION(this.customerId, {
+          this.UPDATE_CUSTOMER_ACTION({
             id: this.customerId,
-            firstName: this.middleName,
-            lastName: this.name,
-            genderId: this.gender,
-            customerCode: this.customerId,
-            barCode: this.barCode,
-            dob: this.birthDay !== '' ? (new Date(this.birthDay).toISOString()) : '',
-            customerTypeId: this.customerGroup,
-            status: this.customerStatus,
-            shopId: 1,
-            isPrivate: this.customerSpecial,
-            idNo: this.customerID,
-            idNoIssuedDate: this.customerIDDate !== '' ? new Date(this.customerIDDate).toISOString() : '',
-            idNoIssuedPlace: this.customerIDLocation,
-            phoneNumber: this.phoneNumber,
-            email: this.customerEmail,
-            areaId: this.customerPrecincts,
-            street: this.homeNumber,
-            address: null,
-            workingOffice: this.workingOffice,
-            officeAddress: this.officeAddress,
-            taxCode: this.taxCode,
-            isDefault: true,
-            noted: this.note,
-            memberCard: {
-              id: 0,
-              memberCardCode: this.selectedMemberCards,
-              memberCardIssueDate: this.memberCardDate !== '' ? new Date(this.customerIDDate).toISOString() : '',
+            val: {
+              id: this.customerId,
+              firstName: this.name,
+              lastName: this.middleName,
+              genderId: this.gender,
+              barCode: this.barCode,
+              dob: this.birthDay !== '' ? (new Date(this.birthDay).toISOString()) : '',
+              customerTypeId: this.customerGroup,
+              status: this.customerStatus,
+              shopId: 1,
+              isPrivate: this.customerSpecial,
+              idNo: this.customerID,
+              idNoIssuedDate: this.customerIDDate !== '' ? new Date(this.customerIDDate).toISOString() : '',
+              idNoIssuedPlace: this.customerIDLocation,
+              phoneNumber: this.phoneNumber,
+              mobiPhone: this.phoneNumber,
+              email: this.customerEmail,
+              areaId: this.customerPrecincts,
+              street: this.homeNumber,
+              address: null,
+              workingOffice: this.workingOffice,
+              officeAddress: this.officeAddress,
+              taxCode: this.taxCode,
+              isDefault: true,
+              noted: this.note,
               closelyTypeId: this.selectedCloselyTypes,
-              status: 0,
               cardTypeId: this.selectedCardTypes,
             },
           })

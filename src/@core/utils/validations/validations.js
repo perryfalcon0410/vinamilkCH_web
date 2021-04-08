@@ -23,6 +23,7 @@ import {
   validatorNotEqual,
   validatorCode,
   validatorNumber,
+  validatorPhoneNumber,
 } from './validators'
 
 // ////////////////////////////////////////////////////////
@@ -87,6 +88,11 @@ export const code = extend('code', {
 export const number = extend('number', {
   validate: validatorNumber,
   message: 'Chỉ nhập ký tự số',
+})
+
+export const phoneNumber = extend('phoneNumber', {
+  validate: validatorPhoneNumber,
+  message: 'Vui lòng nhập đúng số điện thoại Việt Nam (10 số)',
 })
 
 localize({

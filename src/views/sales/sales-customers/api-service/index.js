@@ -18,18 +18,13 @@ import {
 } from './defaultConfig'
 
 export default {
-  // getCustomers(args) {
-  //   return axios.get(getCustomersEndpoint, {
-  //     params: formatURLParams(args),
-  //   })
-  // },
   getCustomers(args) {
     return axios.get(getCustomersEndpoint, {
-      data: formatURLParams(args),
+      params: formatURLParams(args),
     })
   },
   getCustomerById(args) {
-    return axios.get(`${getCustomerByIdEndpoint}/${args}`)
+    return axios.get((`${getCustomerByIdEndpoint}/${args}`))
   },
   getCustomerTypes() {
     return axios.get(`${getCustomerTypesEndpoint}`)
@@ -37,8 +32,8 @@ export default {
   createCustomer(args) {
     return axios.post(createCustomerEndpoint, args)
   },
-  updateCustomer(id, args) {
-    return axios.patch(`${updateCustomerEndpoint}/${id}`, args)
+  updateCustomer(args) {
+    return axios.patch(`${updateCustomerEndpoint}/${args.id}`, args.val)
   },
   exportCustomers() {
     return axios.get(`${exportCustomersEndpoint}`)

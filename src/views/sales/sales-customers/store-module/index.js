@@ -117,7 +117,7 @@ export default {
           toasts.error(error.message)
         })
     },
-    [CREATE_CUSTOMER_ACTION](val) {
+    [CREATE_CUSTOMER_ACTION]({}, val) {
       CustomerService
         .createCustomer(val)
         .then(response => response.data)
@@ -132,9 +132,9 @@ export default {
           toasts.error(error.message)
         })
     },
-    [UPDATE_CUSTOMER_ACTION](id, val) {
+    [UPDATE_CUSTOMER_ACTION]({}, val) {
       CustomerService
-        .updateCustomer(id, val)
+        .updateCustomer(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -187,7 +187,6 @@ export default {
         .then(res => {
           if (res.success) {
             state.customerTypes = res.data
-            console.log(res)
           } else {
             throw new Error(res.statusValue)
           }
