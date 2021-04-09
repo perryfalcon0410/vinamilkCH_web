@@ -186,6 +186,7 @@
                 <b-button
                   variant="light"
                   class="rounded-circle p-1 ml-1"
+                  @click="onClickPrintButton(props.index)"
                 >
                   <b-icon-printer
                     color="blue"
@@ -247,6 +248,7 @@ import {
   RECEIPTEXPORT,
   RECEIPTEXPORTS_GETTER,
   GET_RECEIPTEXPORTS_ACTION,
+  PRINT_RECEIPTEXPORT_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -313,6 +315,11 @@ export default {
           field: 'Feature',
           sortable: false,
         },
+        {
+          label: 'Receipt Type',
+          field: 'ArchiveExportReceiptType',
+          hidden: true,
+        },
       ],
     }
   },
@@ -371,6 +378,7 @@ export default {
     ]),
     ...mapActions(RECEIPTEXPORT, [
       GET_RECEIPTEXPORTS_ACTION,
+      PRINT_RECEIPTEXPORT_ACTION,
     ]),
     selectedRowsChange(params) {
       this.receiptExportSelected = params.selectedRows.map(data => data.id)
@@ -381,6 +389,22 @@ export default {
     onClickUpdateButton() {
       this.$router.push({ name: 'warehouses-output-update' })
     },
+<<<<<<< HEAD
+=======
+    onClickPrintButton(itemIndex) {
+      const params = {
+        shopId: 1,
+        transCode: this.receiptExports[itemIndex].ArchiveExportID,
+      }
+      this.PRINT_RECEIPTEXPORT_ACTION(params)
+    },
+    // navigateToCreate() {
+    //   this.$router.push({ name: 'sales-customers-create' })
+    // },
+    // navigateToUpdate() {
+    //   this.$router.push({ name: 'sales-customers-update' })
+    // },
+>>>>>>> print pdf
   },
 }
 </script>
