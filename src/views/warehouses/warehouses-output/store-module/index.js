@@ -38,18 +38,13 @@ export default {
         .getReceiptExports(val)
         .then(response => response.data)
         .then(res => {
-          // console.log(res)
-
           if (res.success) {
             state.receiptExports = res.data.content
-            // console.log(state.receiptexports)
           } else {
-            // Temp
             throw new Error(res.statusValue)
           }
         })
         .catch(error => {
-          // Temp
           toasts.error(error.message)
         })
     },
