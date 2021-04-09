@@ -1,5 +1,5 @@
 import WarehousesService from '@/views/warehouses/warehouses-output/api-service'
-// import FileSaver from 'file-saver'
+import FileSaver from 'file-saver'
 import {
   // GETTERS
   RECEIPTEXPORTS_GETTER,
@@ -42,12 +42,10 @@ export default {
           if (res.success) {
             state.receiptExports = res.data.content
           } else {
-            // Temp
             throw new Error(res.statusValue)
           }
         })
         .catch(error => {
-          // Temp
           toasts.error(error.message)
         })
     },
@@ -67,7 +65,7 @@ export default {
           if (res.success) {
             // console.log(res.data)
             // response.data is a blob type
-            // FileSaver.saveAs(res.data, fileName)
+            FileSaver.saveAs(res.data, fileName)
             // state.receiptExports = res.data.content
             // console.log(state.receiptexports)
           } else {

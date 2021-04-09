@@ -217,28 +217,6 @@
             </div>
           </template>
           <!-- END - Row -->
-          <!-- START - Column filter -->
-          <template
-            slot="column-filter"
-            slot-scope="props"
-          >
-            <b-row
-              v-if="props.column.field === 'Quantity'"
-              class="mx-0"
-              align-h="end"
-            >
-              6800
-            </b-row>
-
-            <b-row
-              v-else-if="props.column.field === 'Price'"
-              class="mx-0"
-              align-h="end"
-            >
-              250.300.000
-            </b-row>
-          </template>
-          <!-- START - Column filter -->
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
@@ -411,12 +389,6 @@ export default {
       }
       this.PRINT_RECEIPTEXPORT_ACTION(params)
     },
-    // navigateToCreate() {
-    //   this.$router.push({ name: 'sales-customers-create' })
-    // },
-    // navigateToUpdate() {
-    //   this.$router.push({ name: 'sales-customers-update' })
-    // },
   },
 }
 </script>
