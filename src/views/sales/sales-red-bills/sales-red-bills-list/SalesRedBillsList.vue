@@ -180,7 +180,7 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="rows"
+          :rows="redInvoices"
           class="pb-1"
           style-class="vgt-table striped"
           :pagination-options="{
@@ -205,6 +205,17 @@
 </template>
 
 <script>
+import {
+  mapActions,
+  mapGetters,
+  mapState,
+} from 'vuex'
+import {
+  REDINVOICE,
+  REDINVOICES_GETTER,
+  GET_REDINVOICES_ACTION,
+} from '../store-module/type'
+
 export default {
   components: {
   },
@@ -271,61 +282,58 @@ export default {
           sortable: false,
         },
       ],
-      rows: [
-        {
-          NumberBill: '',
-          Company: '',
-          Address: '',
-          VATCode: '',
-          Number: '192',
-          GoodsMoney: '102,900',
-          GTGT: '794,484',
-          TotalMoney: '794,484',
-          Date: '',
-          NoteHĐĐ: '',
-        },
-        {
-          NumberBill: 'HD001',
-          Company: 'Công ty TNHH Teks',
-          Address: 'Sô 10, đường Tân Trào, Phường Tân Phú, Quận 7',
-          VATCode: '1000023687',
-          Number: '16',
-          GoodsMoney: '8,400',
-          GTGT: '16,800',
-          TotalMoney: '16,800',
-          Date: '',
-          NoteHĐĐ: '',
-        },
-        {
-          NumberBill: 'HD002',
-          Company: 'Công ty TNHH Teks',
-          Address: 'Sô 10, đường Tân Trào, Phường Tân Phú, Quận 7',
-          VATCode: '1000023687',
-          Number: '16',
-          GoodsMoney: '8,400',
-          GTGT: '16,800',
-          TotalMoney: '16,800',
-          Date: '',
-          NoteHĐĐ: '',
-        },
-        {
-          NumberBill: 'HD003',
-          Company: 'Công ty TNHH Teks',
-          Address: 'Sô 10, đường Tân Trào, Phường Tân Phú, Quận 7',
-          VATCode: '1000023687',
-          Number: '16',
-          GoodsMoney: '8,400',
-          GTGT: '16,800',
-          TotalMoney: '16,800',
-          Date: '',
-          NoteHĐĐ: '',
-        },
-      ],
     }
   },
   computed: {
+    redInvoices() {
+      const datas = this.REDINVOICES_GETTER()
+      // const options = {
+      //   year: 'numeric',
+      //   month: '2-digit',
+      //   day: '2-digit',
+      // }
+      // const totalQuantity = datas.reduce((accum, item) => accum + Number(item.totalQuantity), 0)
+      // const totalMoney = datas.reduce((accum, item) => accum + Number(item.totalAmount), 0)
+      // const firstItem = {
+      //   id: '',
+      //   transDate: '',
+      //   transCode: '',
+      //   redInvoiceNo: '',
+      //   internalNumber: '',
+      //   totalQuantity,
+      //   totalAmount: totalMoney,
+      //   note: '',
+      // }
+
+      // datas.unshift(firstItem)
+      // console.log(datas)
+      return datas.map(data => ({
+        ID: data.id,
+        NumberBill: data.invoiceNumber,
+        Company: data.officeWorking,
+        Address: data.officeAddress,
+        VATCode: data.taxCode,
+        Number: Number(data.totalQuantity).toLocaleString('vi-VN'),
+        GoodsMoney: Number(data.totalMoney).toLocaleString('vi-VN'),
+        GTGT: data.amountGTGT,
+        TotalMoney: data.amountNotVat,
+        NoteHĐĐ: data.note,
+      }))
+    },
+  },
+  mounted() {
+    this.GET_REDINVOICES_ACTION({})
   },
   methods: {
+    ...mapState(REDINVOICE, {
+      successStatusDelete: state => state.delete.success,
+    }),
+    ...mapGetters(REDINVOICE, [
+      REDINVOICES_GETTER,
+    ]),
+    ...mapActions(REDINVOICE, [
+      GET_REDINVOICES_ACTION,
+    ]),
     addSaleRedBillsCreate() {
       this.$router.push({ name: 'sales-red-bills-create' })
     },
