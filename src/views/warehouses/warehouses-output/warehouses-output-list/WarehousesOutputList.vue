@@ -5,16 +5,15 @@
   >
     <!-- START - Search -->
     <b-form class="bg-white shadow rounded">
-      <div
+      <label
+        for="v-search-form"
         class="m-1 text-primary"
       >
-        <strong>
-          Tìm kiếm
-        </strong>
-      </div>
+        Tìm kiếm
+      </label>
 
       <b-form-row
-        class="border-top p-1"
+        class="v-search-form border-top p-1"
       >
         <b-col
           lg="2"
@@ -22,12 +21,16 @@
         >
           <b-form-group
             label="Số hóa đơn"
-            label-for="BillNumber"
+            label-for="form-input-customer"
+            :state="stateInputBillNumber"
+            invalid-feedback="Chỉ bao gồm ký tự [0-9]"
           >
             <b-form-input
-              id="BillNumber"
-              v-model="billNumber"
+              id="form-input-customer"
+              v-model="inputValueBillNumber"
               maxlength="20"
+              :state="stateInputBillNumber"
+              required
               trim
             />
           </b-form-group>
@@ -40,11 +43,11 @@
           <b-form-group
             class="ml-lg-1"
             label="Từ ngày"
-            label-for="FromDate"
+            label-for="form-input-date-from"
           >
             <b-form-datepicker
-              id="FromDate"
-              v-model="fromDate"
+              id="form-input-date-from"
+              v-model="valueDateFrom"
               :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
               locale="vi"
             />
@@ -58,11 +61,11 @@
           <b-form-group
             class="ml-lg-1"
             label="Đến ngày"
-            label-for="ToDate"
+            label-for="form-input-date-to"
           >
             <b-form-datepicker
-              id="ToDate"
-              v-model="toDate"
+              id="form-input-date-to"
+              v-model="valueDateTo"
               :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
               locale="vi"
             />
@@ -76,23 +79,22 @@
           <b-form-group
             class="ml-lg-1"
             label="Loại xuất"
-            label-for="InputType"
+            label-for="form-input-customer-group"
           >
             <b-form-select
-              id="InputType"
-              v-model="inputTypes"
+              id="form-input-customer-group"
             >
               <b-form-select-option value="">
                 Tất cả
               </b-form-select-option>
+              <b-form-select-option value="0">
+                Xuất trả hàng
+              </b-form-select-option>
               <b-form-select-option value="1">
-                xuất trả hàng
+                Xuất điều chỉnh
               </b-form-select-option>
-              <b-form-select-option value="2">
-                xuất điều chỉnh
-              </b-form-select-option>
-              <b-form-select-option value="3">
-                xuất vay mượn
+              <b-form-select-option value="1">
+                Xuất vay mượn
               </b-form-select-option>
             </b-form-select>
           </b-form-group>
@@ -105,10 +107,10 @@
           <b-form-group
             class="ml-lg-1"
             label="Tìm kiếm"
-            label-for="SearchButton"
+            label-for="form-button-search"
           >
             <b-button
-              id="SearchButton"
+              id="form-button-search"
               variant="primary"
             >
               <b-icon-search class="mr-1" />
@@ -121,15 +123,16 @@
     </b-form>
     <!-- END - Search -->
 
-    <!-- START - Product  list -->
+    <!-- START - Product export list -->
     <b-form class="bg-white rounded shadow my-1">
       <!-- START - Title -->
       <b-form-row class="justify-content-between align-items-center border-bottom p-1">
-        <strong
+        <label
+          for="listProduct"
           class="text-primary"
         >
           Danh sách phiếu xuất hàng
-        </strong>
+        </label>
         <b-button
           class="rounded"
           size="md"
@@ -144,11 +147,12 @@
 
       <!-- START - Table -->
       <b-col
+        id="listProduct"
         class="py-1"
       >
         <vue-good-table
           :columns="columns"
-          :rows="rows"
+          :rows="receiptExports"
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true
@@ -156,107 +160,92 @@
           compact-mode
           line-numbers
         >
-          <!-- START - Column -->
+          <!-- START - label -->
           <template
             slot="table-column"
             slot-scope="props"
           >
-            <b-row
-              v-if="props.column.field === 'Feature'"
-              align-h="center"
-            >
+            <div v-if="props.column.label === 'Chức năng'">
               <b-icon-bricks />
-            </b-row>
+            </div>
             <div v-else>
               {{ props.column.label }}
             </div>
           </template>
-          <!-- END - Column -->
+          <!-- END - label -->
 
-          <!-- START - Row -->
+          <!-- START - Feature -->
           <template
             slot="table-row"
             slot-scope="props"
           >
-            <b-row
-              v-if="props.column.field === 'Feature'"
-              align-h="center"
-            >
-              <b-button
-                variant="light"
-                class="rounded-circle p-1 ml-1"
-              >
-                <b-icon-printer
-                  color="blue"
-                />
-              </b-button>
-              <b-button
-                variant="light"
-                class="rounded-circle ml-1 p-1"
-                @click="onClickUpdateButton"
-              >
-                <b-icon-pencil-fill
-                  color="blue"
-                />
-              </b-button>
-              <b-button
-                v-b-modal.DeleteModal
-                variant="light"
-                class="rounded-circle ml-1 p-1"
-              >
-                <b-icon-trash-fill
-                  color="red"
-                />
-              </b-button>
-            </b-row>
+            <div v-if="props.column.field === 'ArchiveExportFeature'">
+              <div v-show="props.index > 0">
+                <b-button
+                  variant="info"
+                  class="rounded-circle p-1 ml-1"
+                >
+                  <b-icon-printer
+                    color="blue"
+                  />
+                </b-button>
+                <b-button
+                  variant="info"
+                  class="rounded-circle ml-1 p-1"
+                  @click="onClickUpdateButton"
+                >
+                  <b-icon-pencil-fill
+                    color="blue"
+                  />
+                </b-button>
+                <b-button
+                  v-b-modal.modal-delete
+                  variant="info"
+                  class="rounded-circle ml-1 p-1"
+                >
+                  <b-icon-x
+                    color="red"
+                  />
+                </b-button>
+              </div>
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
           </template>
-          <!-- END - Row -->
-          <!-- START - Column filter -->
-          <template
-            slot="column-filter"
-            slot-scope="props"
-          >
-            <b-row
-              v-if="props.column.field === 'Quantity'"
-              class="mx-0"
-              align-h="end"
-            >
-              6800
-            </b-row>
+          <!-- END - Feature -->
 
-            <b-row
-              v-else-if="props.column.field === 'Price'"
-              class="mx-0"
-              align-h="end"
-            >
-              250.300.000
-            </b-row>
-          </template>
-          <!-- START - Column filter -->
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
 
     </b-form>
-    <!-- END - Product  list -->
+    <!-- END - Product Export list -->
 
-    <!-- START - Product Modal Delete -->
+    <!-- START - Export Product Modal Delete -->
     <b-modal
-      id="DeleteModal"
+      id="modal-delete"
       title="Thông báo"
     >
       Bạn có muốn xóa đợt xuất hàng?
     </b-modal>
-    <!-- END - Product Modal Delete -->
+    <!-- END - Export Product Modal Delete -->
   </b-container>
 </template>
 
 <script>
+import {
+  mapActions,
+  mapGetters,
+  mapState,
+} from 'vuex'
 import { VueGoodTable } from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
+import {
+  RECEIPTEXPORT,
+  RECEIPTEXPORTS_GETTER,
+  GET_RECEIPTEXPORTS_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -264,135 +253,133 @@ export default {
   },
   data() {
     return {
-      fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      toDate: new Date(),
-      billNumber: '',
-      inputTypes: '',
-
+      valueDateFrom: new Date(),
+      valueDateTo: new Date(),
+      inputValueBillNumber: '',
       columns: [
         {
+          label: 'ID',
+          field: 'ID',
+          hidden: true,
+        },
+        {
           label: 'Ngày',
-          field: 'Date',
+          field: 'ArchiveExportDate',
           sortable: false,
         },
         {
           label: 'Mã xuất hàng',
-          field: 'Id',
+          field: 'ArchiveExportID',
           sortable: false,
         },
         {
           label: 'Số hóa đơn',
-          field: 'BillNumber',
+          field: 'ArchiveExportBillNumber',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Số nội bộ',
-          field: 'InternalNumber',
+          field: 'ArchiveExportInternalNumber',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'ArchiveExportQuantity',
           type: 'number',
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
         },
         {
           label: 'Số tiền',
-          field: 'Price',
+          field: 'ArchiveExportMoney',
           type: 'number',
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
         },
         {
           label: 'Ghi chú',
-          field: 'Note',
+          field: 'ArchiveExportNote',
           sortable: false,
         },
         {
-          label: 'Thao tác',
-          field: 'Feature',
+          label: 'Chức năng',
+          field: 'ArchiveExportFeature',
           sortable: false,
-        },
-      ],
-      rows: [
-
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
         },
       ],
     }
   },
+  computed: {
+    receiptExports() {
+      const datas = this.RECEIPTEXPORTS_GETTER()
+      const options = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }
+      const totalQuantity = datas.reduce((accum, item) => accum + Number(item.totalQuantity), 0)
+      const totalMoney = datas.reduce((accum, item) => accum + Number(item.totalAmount), 0)
+      const firstItem = {
+        id: '',
+        transDate: '',
+        transCode: '',
+        redInvoiceNo: '',
+        internalNumber: '',
+        totalQuantity,
+        totalAmount: totalMoney,
+        note: '',
+      }
 
+      datas.unshift(firstItem)
+      console.log(datas)
+      return datas.map(data => ({
+        ID: data.id,
+        ArchiveExportDate: data.transDate === '' ? '' : new Date(data.transDate).toLocaleDateString('vi-VN', options),
+        ArchiveExportID: data.transCode,
+        ArchiveExportBillNumber: data.redInvoiceNo,
+        ArchiveExportInternalNumber: data.internalNumber,
+        ArchiveExportQuantity: Number(data.totalQuantity).toLocaleString('vi-VN'),
+        ArchiveExportMoney: Number(data.totalAmount).toLocaleString('vi-VN'),
+        ArchiveExportNote: data.note,
+        ArchiveExportFeature: 'Chỉnh sửa',
+      }))
+    },
+  },
+  stateInputBillNumber() {
+    const validBillNumber = /^(\d{0,20})$/
+    const result = validBillNumber.test(this.inputValueBillNumber)
+    if (this.inputValueBillNumber.length >= 1) {
+      return result
+    }
+    return null
+  },
+  mounted() {
+    this.GET_RECEIPTEXPORTS_ACTION({})
+  },
   methods: {
+    ...mapState(RECEIPTEXPORT, {
+      successStatusDelete: state => state.delete.success,
+    }),
+    ...mapGetters(RECEIPTEXPORT, [
+      RECEIPTEXPORTS_GETTER,
+    ]),
+    ...mapActions(RECEIPTEXPORT, [
+      GET_RECEIPTEXPORTS_ACTION,
+    ]),
+    selectedRowsChange(params) {
+      this.receiptExportSelected = params.selectedRows.map(data => data.id)
+    },
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-output-create' })
     },
     onClickUpdateButton() {
       this.$router.push({ name: 'warehouses-output-update' })
     },
+    // navigateToCreate() {
+    //   this.$router.push({ name: 'sales-customers-create' })
+    // },
+    // navigateToUpdate() {
+    //   this.$router.push({ name: 'sales-customers-update' })
+    // },
   },
 }
 </script>

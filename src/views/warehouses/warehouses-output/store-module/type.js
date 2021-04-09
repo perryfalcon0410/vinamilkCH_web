@@ -1,0 +1,8 @@
+export const RECEIPTEXPORT = 'warehousesOutput'
+
+// Getters
+export const RECEIPTEXPORTS_GETTER = 'RECEIPTEXPORTS_GETTER'
+export const ERROR_CODE_GETTER = 'ERROR_CODE_GETTER'
+
+// Actions
+export const GET_RECEIPTEXPORTS_ACTION = 'GET_RECEIPTEXPORTS_ACTION'
