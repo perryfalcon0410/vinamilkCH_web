@@ -22,10 +22,10 @@
         >
           <b-form-group
             label="Số hóa đơn"
-            label-for="BillNumber"
+            label-for="RedInvoiceNo"
           >
             <b-form-input
-              id="BillNumber"
+              id="RedInvoiceNo"
               v-model="billNumber"
               maxlength="20"
               trim
@@ -148,7 +148,7 @@
       >
         <vue-good-table
           :columns="columns"
-          :rows="rows"
+          :rows="receipts"
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true
@@ -185,6 +185,7 @@
               <b-button
                 variant="light"
                 class="rounded-circle p-1 ml-1"
+                @click="onClickPrintButton(props.row.id)"
               >
                 <b-icon-printer
                   color="blue"
@@ -200,9 +201,9 @@
                 />
               </b-button>
               <b-button
-                v-b-modal.DeleteModal
                 variant="light"
                 class="rounded-circle ml-1 p-1"
+                @click="onClickDeleteButton(props.row.TransDate)"
               >
                 <b-icon-trash-fill
                   color="red"
@@ -245,7 +246,7 @@
 
     <!-- START - Product Modal Delete -->
     <b-modal
-      id="DeleteModal"
+      v-model="isDeleteModalShow"
       title="Thông báo"
     >
       Bạn có muốn xóa đợt nhập hàng?
@@ -257,6 +258,20 @@
 <script>
 import { VueGoodTable } from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
+import {
+  mapGetters,
+  mapActions,
+} from 'vuex'
+import { formatDateToVNI } from '@core/utils/filter'
+import toasts from '@core/utils/toasts/toasts'
+import {
+  WAREHOUSEINPUT,
+  // GETTERS
+  RECEIPTS_GETTER,
+  // ACTIONS
+  GET_RECEIPTS_ACTION,
+  EXPORT_RECEIPTS_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -264,6 +279,8 @@ export default {
   },
   data() {
     return {
+      isDeleteModalShow: false,
+
       fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       toDate: new Date(),
       billNumber: '',
@@ -272,17 +289,17 @@ export default {
       columns: [
         {
           label: 'Ngày',
-          field: 'Date',
+          field: 'TransDate',
           sortable: false,
         },
         {
           label: 'Mã nhập hàng',
-          field: 'Id',
+          field: 'TransCode',
           sortable: false,
         },
         {
           label: 'Số hóa đơn',
-          field: 'BillNumber',
+          field: 'RedInvoiceNo',
           type: 'number',
           sortable: false,
         },
@@ -320,78 +337,53 @@ export default {
           sortable: false,
         },
       ],
-      rows: [
-
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          Date: '01/10/2020',
-          Id: 'CA.CH40235.002',
-          BillNumber: 'IN20201028',
-          InternalNumber: 'IN.CH40235.001',
-          Quantity: '1020',
-          Price: '25.300.000',
-          Note: '',
-          Feature: 'Chỉnh sửa',
-        },
-      ],
     }
   },
 
+  computed: {
+    receipts() {
+      return this.RECEIPTS_GETTER().map(data => ({
+        id: data.id,
+        TransDate: formatDateToVNI(data.transDate),
+        TransCode: data.TransCode,
+        RedInvoiceNo: data.redInvoiceNo,
+        InternalNumber: data.internalNumber,
+        Quantity: data.totalQuantity,
+        Price: data.totalAmount,
+        Note: data.note,
+        Feature: '',
+      }))
+    },
+  },
+
+  mounted() {
+    this.GET_RECEIPTS_ACTION()
+  },
+
   methods: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      RECEIPTS_GETTER,
+    ]),
+    ...mapActions(WAREHOUSEINPUT, [
+      GET_RECEIPTS_ACTION,
+      EXPORT_RECEIPTS_ACTION,
+    ]),
+
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-input-create' })
     },
     onClickUpdateButton() {
       this.$router.push({ name: 'warehouses-input-update' })
+    },
+    onClickPrintButton(id) {
+      this.EXPORT_RECEIPTS_ACTION(id)
+    },
+    onClickDeleteButton(date) {
+      if (date === formatDateToVNI(new Date())) {
+        this.isDeleteModalShow = !this.isDeleteModalShow
+      } else {
+        toasts.error('Đã quá thời hạn chỉnh sửa')
+      }
     },
   },
 }

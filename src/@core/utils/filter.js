@@ -33,7 +33,7 @@ export const formatDate = (value, formatting = { month: 'short', day: 'numeric',
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
 }
 
-export const formatDateToVNI = (value, formatting = { month: '2-digit', day: '2-digit', year: '2-digit' }) => {
+export const formatDateToVNI = (value, formatting = { month: '2-digit', day: '2-digit', year: 'numeric' }) => {
   if (!value) return value
   return new Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
 }
