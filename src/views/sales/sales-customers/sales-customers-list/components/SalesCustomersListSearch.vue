@@ -24,7 +24,6 @@
               id="form-input-customer"
               v-model="searchKeywords"
               placeholder="Nhập họ tên/mã"
-              trim
             />
           </b-form-group>
         </b-col>

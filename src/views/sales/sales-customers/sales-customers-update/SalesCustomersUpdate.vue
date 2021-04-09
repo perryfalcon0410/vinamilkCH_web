@@ -40,7 +40,6 @@
                     </div>
                     <b-form-input
                       v-model="middleName"
-                      trim
                       :state="touched ? passed : null"
                       maxlength="200"
                     />
@@ -59,7 +58,6 @@
                     </div>
                     <b-form-input
                       v-model="name"
-                      trim
                       :state="touched ? passed : null"
                       maxlength="200"
                     />
@@ -80,7 +78,6 @@
                 </div>
                 <b-form-input
                   v-model="barCode"
-                  trim
                   :state="touched ? passed : null"
                   maxlength="40"
                 />
@@ -225,7 +222,6 @@
                     id="IdentityCard"
                     v-model="customerID"
                     maxlength="15"
-                    trim
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </b-form-group>
@@ -256,7 +252,6 @@
                   id="IdLocation"
                   v-model="customerIDLocation"
                   maxlength="200"
-                  trim
                 />
               </b-form-group>
               <!-- END - Customer ID Location -->
@@ -327,7 +322,7 @@
             </div>
             <b-form-input
               v-model="phoneNumber"
-              trim
+
               :state="touched ? passed : null"
               maxlength="15"
             />
@@ -347,7 +342,7 @@
             <b-form-input
               id="Email"
               v-model="customerEmail"
-              trim
+
               maxlength="200"
               autocomplete="email"
               :state="touched ? passed : null"
@@ -367,7 +362,7 @@
             </div>
             <b-form-input
               v-model="homeNumber"
-              trim
+
               :state="touched ? passed : null"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -456,7 +451,7 @@
             <b-form-input
               id="Office"
               v-model="workingOffice"
-              trim
+
               maxlength="200"
             />
           </b-form-group>
@@ -470,7 +465,7 @@
             <b-form-input
               id="OfficeAddress"
               v-model="officeAddress"
-              trim
+
               maxlength="200"
             />
           </b-form-group>
@@ -487,7 +482,6 @@
             </div>
             <b-form-input
               v-model="taxCode"
-              trim
               :state="touched ? passed : null"
               maxlength="40"
             />
