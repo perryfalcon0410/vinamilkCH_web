@@ -88,15 +88,23 @@
               <!-- START - Customer BirthDay and Gender -->
               <b-form-row>
                 <b-col>
-                  <div class="mt-1">
-                    Ngày sinh
-                  </div>
-                  <b-form-datepicker
-                    v-model="birthDay"
-                    placeholder="chọn ngày"
-                    :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                    locale="vi"
-                  />
+                  <validation-provider
+                    v-slot="{ errors, passed, touched }"
+                    rules="required"
+                    name="Ngày sinh"
+                  >
+                    <div class="mt-1">
+                      Ngày sinh <sup class="text-danger">*</sup>
+                    </div>
+                    <b-form-datepicker
+                      v-model="birthDay"
+                      placeholder="chọn ngày"
+                      :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
+                      locale="vi"
+                      :state="touched ? passed : null"
+                    />
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
                 </b-col>
 
                 <b-col>
@@ -318,13 +326,13 @@
             name="Di động"
           >
             <div class="mt-1">
-              Di động
+              Di động <sup class="text-danger">*</sup>
             </div>
             <b-form-input
               v-model="phoneNumber"
 
               :state="touched ? passed : null"
-              maxlength="15"
+              maxlength="10"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
