@@ -41,7 +41,6 @@
                     </div>
                     <b-form-input
                       v-model="middleName"
-                      trim
                       :state="touched ? passed : null"
                       maxlength="200"
                     />
@@ -60,7 +59,6 @@
                     </div>
                     <b-form-input
                       v-model="name"
-                      trim
                       :state="touched ? passed : null"
                       maxlength="200"
                     />
@@ -74,7 +72,7 @@
               <validation-provider
                 v-slot="{ errors, passed }"
                 rules="code"
-                name="Mã vach"
+                name="Mã vạch"
               >
                 <div class="mt-1">
                   Mã vạch
@@ -92,15 +90,23 @@
               <!-- START - Customer BirthDay and Gender -->
               <b-form-row>
                 <b-col>
-                  <div class="mt-1">
-                    Ngày sinh
-                  </div>
-                  <b-form-datepicker
-                    v-model="birthDay"
-                    placeholder="chọn ngày"
-                    :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                    locale="vi"
-                  />
+                  <validation-provider
+                    v-slot="{ errors, passed, touched }"
+                    rules="required"
+                    name="Ngày sinh"
+                  >
+                    <div class="mt-1">
+                      Ngày sinh <sup class="text-danger">*</sup>
+                    </div>
+                    <b-form-datepicker
+                      v-model="birthDay"
+                      placeholder="chọn ngày"
+                      :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
+                      locale="vi"
+                      :state="touched ? passed : null"
+                    />
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
                 </b-col>
 
                 <b-col>
@@ -237,6 +243,8 @@
                   placeholder="chọn ngày"
                   :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
                   locale="vi"
+                  reset-button
+                  label-reset-button="Xóa"
                 />
               </b-form-group>
               <!-- END - Customer ID Date -->
@@ -271,11 +279,11 @@
           <!-- START - Customer Phone Number -->
           <validation-provider
             v-slot="{ errors, passed,}"
-            rules="number|phoneNumber"
+            rules="number|phoneNumber|required"
             name="Di động"
           >
             <div class="mt-1">
-              Di động
+              Di động <sup class="text-danger">*</sup>
             </div>
             <b-form-input
               v-model="phoneNumber"
@@ -706,7 +714,6 @@ export default {
   },
 
   mounted() {
-    this.customerID = this.randomStr(11, '1234567890')
     this.GET_CUSTOMER_TYPES_ACTION()
     this.GET_PROVINCES_ACTION()
     this.GET_CARD_TYPES_ACTION()
@@ -763,8 +770,8 @@ export default {
       this.$refs.formContainer.validate().then(success => {
         if (success) {
           this.CREATE_CUSTOMER_ACTION({
-            firstName: this.middleName,
-            lastName: this.name,
+            firstName: this.name,
+            lastName: this.middleName,
             genderId: this.gender,
             barCode: this.barCode,
             dob: this.birthDay !== '' ? (new Date(this.birthDay).toISOString()) : '',
@@ -774,7 +781,7 @@ export default {
             idNo: this.customerID,
             idNoIssuedDate: this.customerIDDate !== '' ? new Date(this.customerIDDate).toISOString() : '',
             idNoIssuedPlace: this.customerIDLocation,
-            phoneNumber: this.phoneNumber,
+            phone: this.phoneNumber,
             mobiPhone: this.phoneNumber,
             email: this.customerEmail,
             areaId: this.customerPrecincts,
@@ -786,7 +793,7 @@ export default {
             isDefault: true,
             noted: this.note,
             closelyTypeId: this.selectedCloselyTypes,
-            cardTypeId: this.selectedCardTypes,
+            cardType: this.selectedCardTypes,
           })
         }
       })

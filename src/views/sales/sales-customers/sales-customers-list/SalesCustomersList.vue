@@ -172,8 +172,8 @@ export default {
         id: data.id,
         code: data.customerCode,
         fullName: `${data.lastName} ${data.firstName}`,
-        phoneNumber: data.phone,
-        birthDay: new Date(data.dob).toLocaleDateString(),
+        phoneNumber: data.mobiPhone,
+        birthDay: formatDateToVNI(data.dob),
         gender: getGenderLabel(data.genderId),
         status: this.resolveStatus(data.status),
         group: data.customerType,
@@ -210,7 +210,7 @@ export default {
       this.$router.push({
         name: 'sales-customers-update',
         params: {
-          customerId: id,
+          id,
         },
       })
     },

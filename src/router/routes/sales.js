@@ -47,7 +47,7 @@ export default [
     },
   },
   {
-    path: '/sales/customers/update',
+    path: '/sales/customers/:id/update',
     name: 'sales-customers-update',
     component: () => import('@/views/sales/sales-customers/sales-customers-update/SalesCustomersUpdate.vue'),
     meta: {
