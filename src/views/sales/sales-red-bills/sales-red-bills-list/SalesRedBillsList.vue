@@ -287,26 +287,25 @@ export default {
   computed: {
     redInvoices() {
       const datas = this.REDINVOICES_GETTER()
-      // const options = {
-      //   year: 'numeric',
-      //   month: '2-digit',
-      //   day: '2-digit',
-      // }
-      // const totalQuantity = datas.reduce((accum, item) => accum + Number(item.totalQuantity), 0)
-      // const totalMoney = datas.reduce((accum, item) => accum + Number(item.totalAmount), 0)
-      // const firstItem = {
-      //   id: '',
-      //   transDate: '',
-      //   transCode: '',
-      //   redInvoiceNo: '',
-      //   internalNumber: '',
-      //   totalQuantity,
-      //   totalAmount: totalMoney,
-      //   note: '',
-      // }
+      const totalQuantity = datas.reduce((accum, item) => accum + Number(item.totalQuantity), 0)
+      const totalMoney = datas.reduce((accum, item) => accum + Number(item.totalMoney), 0)
+      const totalGTGT = datas.reduce((accum, item) => accum + Number(item.amountGTGT), 0)
+      const totalNotVat = datas.reduce((accum, item) => accum + Number(item.amountNotVat), 0)
+      const firstItem = {
+        id: '',
+        invoiceNumber: '',
+        officeWorking: '',
+        officeAddress: '',
+        taxCode: '',
+        totalQuantity,
+        totalMoney,
+        amountGTGT: totalGTGT,
+        amountNotVat: totalNotVat,
+        note: '',
+      }
 
-      // datas.unshift(firstItem)
-      // console.log(datas)
+      datas.unshift(firstItem)
+
       return datas.map(data => ({
         ID: data.id,
         NumberBill: data.invoiceNumber,
@@ -315,8 +314,8 @@ export default {
         VATCode: data.taxCode,
         Number: Number(data.totalQuantity).toLocaleString('vi-VN'),
         GoodsMoney: Number(data.totalMoney).toLocaleString('vi-VN'),
-        GTGT: data.amountGTGT,
-        TotalMoney: data.amountNotVat,
+        GTGT: Number(data.amountGTGT).toLocaleString('vi-VN'),
+        TotalMoney: Number(data.amountNotVat).toLocaleString('vi-VN'),
         NoteHĐĐ: data.note,
       }))
     },
