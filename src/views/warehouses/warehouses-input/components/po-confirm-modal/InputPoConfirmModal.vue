@@ -6,6 +6,7 @@
     title-class="text-uppercase font-weight-bold text-primary"
     content-class="bg-light"
     footer-border-variant="light"
+    hide-header-close
   >
     <!-- START - Body -->
     <b-container fluid>
