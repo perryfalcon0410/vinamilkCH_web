@@ -86,13 +86,13 @@
                 Tất cả
               </b-form-select-option>
               <b-form-select-option value="1">
-                nhập hàng
+                Nhập hàng
               </b-form-select-option>
               <b-form-select-option value="2">
-                nhập điều chỉnh
+                Nhập điều chỉnh
               </b-form-select-option>
               <b-form-select-option value="3">
-                nhập vay mượn
+                Nhập vay mượn
               </b-form-select-option>
             </b-form-select>
           </b-form-group>

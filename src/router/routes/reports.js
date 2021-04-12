@@ -13,4 +13,20 @@ export default [
       ],
     },
   },
+
+  // Bao cao Xuat hang
+  {
+    path: '/reports/warehouses-output',
+    name: 'reports-warehouses-output',
+    component: () => import('@/views/reports/reports-warehouses/reports-warehouses-output/reports-warehouses-output-list/ReportsWarehousesOutputList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo xuất hàng',
+      breadcrumb: [
+        {
+          text: 'Danh sách báo cáo xuất hàng',
+          active: true,
+        },
+      ],
+    },
+  },
 ]
