@@ -67,7 +67,7 @@ export const credit = extend('credit-card', {
 
 export const password = extend('password', {
   validate: validatorPassword,
-  message: 'Your {_field_} must contain at least one uppercase, one lowercase, one special character and one digit',
+  message: '{_field_} phải có độ dài tối thiểu 8 ký tự, bao gồm: chữ hoa, thường, số và ký tự đặc biệt',
 })
 
 export const notEqual = extend('not-equal', {

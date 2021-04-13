@@ -17,7 +17,7 @@
           Đổi Mật Khẩu 🔒
         </b-card-title>
         <b-card-text class="mb-2">
-          Mật khẩu mới của bạn phải khác với các mật khẩu đã sử dụng trước đó
+          Để đảm bảo an toàn, Khách hàng nên sử dụng mật khẩu mạnh: độ dài tối thiểu 8 ký tự, bao gồm: chữ hoa, thường, số và ký tự đặc biệt
         </b-card-text>
 
         <!-- form -->
@@ -40,12 +40,10 @@
                 rules="required"
               >
                 <b-form-input
-                  id="login-username"
                   v-model="username"
                   :state="errors.length > 0 ? false:null"
-                  class="form-control-merge"
-                  name="reset-password-username"
                   placeholder="Tên đăng nhập"
+                  maxlength="20"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
@@ -56,7 +54,7 @@
               <validation-provider
                 #default="{ errors }"
                 name="Mật khẩu cũ"
-                vid="oPassword"
+                vid="oldPassword"
                 rules="required"
               >
                 <b-input-group
@@ -64,12 +62,10 @@
                   :class="errors.length > 0 ? 'is-invalid':null"
                 >
                   <b-form-input
-                    id="reset-password-old"
-                    v-model="oPassword"
+                    v-model="oldPassword"
                     :type="passwordOFieldType"
                     :state="errors.length > 0 ? false:null"
                     class="form-control-merge"
-                    name="reset-password-old"
                     placeholder="Mật khẩu cũ"
                   />
                   <b-input-group-append is-text>
@@ -89,21 +85,20 @@
               <validation-provider
                 #default="{ errors }"
                 name="Mật khẩu mới"
-                vid="nPassword"
-                rules="required|not-equal:@oPassword"
+                vid="newPassword"
+                rules="required|not-equal:@oldPassword|password"
               >
                 <b-input-group
                   class="input-group-merge"
                   :class="errors.length > 0 ? 'is-invalid':null"
                 >
                   <b-form-input
-                    id="reset-password-new"
-                    v-model="nPassword"
+                    v-model="newPassword"
                     :type="passwordNFieldType"
                     :state="errors.length > 0 ? false:null"
                     class="form-control-merge"
-                    name="reset-password-new"
                     placeholder="Mật khẩu mới"
+                    maxlength="20"
                   />
                   <b-input-group-append is-text>
                     <feather-icon
@@ -121,21 +116,20 @@
             <b-form-group>
               <validation-provider
                 #default="{ errors }"
-                name="Xác nhận mật khẩu"
-                rules="required|confirmed:nPassword"
+                name="Xác nhận mật khẩu mới"
+                rules="required|confirmed:newPassword"
               >
                 <b-input-group
                   class="input-group-merge"
                   :class="errors.length > 0 ? 'is-invalid':null"
                 >
                   <b-form-input
-                    id="reset-password-confirm"
                     v-model="cPassword"
                     :type="password2FieldType"
                     class="form-control-merge"
                     :state="errors.length > 0 ? false:null"
-                    name="reset-password-confirm"
                     placeholder="Xác nhận mật khẩu"
+                    maxlength="20"
                   />
                   <b-input-group-append is-text>
                     <feather-icon
@@ -178,38 +172,29 @@
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
-  BCard, BCardTitle, BCardText, BForm, BFormGroup, BInputGroup, BInputGroupAppend, BLink, BFormInput, BButton,
-} from 'bootstrap-vue'
-import { required, notEqual } from '@validations'
+  required, notEqual, confirmed, password,
+} from '@core/utils/validations/validations'
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
 
 export default {
   components: {
     VuexyLogo,
-    BCard,
-    BButton,
-    BCardTitle,
-    BCardText,
-    BForm,
-    BFormGroup,
-    BInputGroup,
-    BLink,
-    BFormInput,
-    BInputGroupAppend,
     ValidationProvider,
     ValidationObserver,
   },
   data() {
     return {
       username: '',
-      oPassword: '',
-      nPassword: '',
+      oldPassword: '',
+      newPassword: '',
       cPassword: '',
 
       // validation
       required,
       notEqual,
+      confirmed,
+      password,
 
       // Toggle Password
       passwordOFieldType: 'password',
@@ -244,13 +229,14 @@ export default {
           useJwt
             .changePassword({
               username: this.username,
-              oldPassword: this.oPassword,
-              newPassword: this.nPassword,
+              oldPassword: this.oldPassword,
+              newPassword: this.newPassword,
               confirmPassword: this.cPassword,
             })
             .then(response => response.data)
             .then(response => {
               if (response.success) {
+                this.navigateToLoginPage()
                 toasts.success(response.statusValue)
               } else {
                 throw new Error(response.statusValue)
@@ -261,6 +247,9 @@ export default {
             })
         }
       })
+    },
+    navigateToLoginPage() {
+      this.$router.push({ name: 'auth-login' })
     },
   },
 }

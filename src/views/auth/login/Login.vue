@@ -65,11 +65,10 @@
                   rules="required"
                 >
                   <b-form-input
-                    id="login-username"
                     v-model="username"
                     :state="errors.length > 0 ? false:null"
-                    name="login-username"
                     placeholder="Tên đăng nhập"
+                    maxlength="20"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -88,13 +87,12 @@
                     :class="errors.length > 0 ? 'is-invalid':null"
                   >
                     <b-form-input
-                      id="login-password"
                       v-model="password"
                       :state="errors.length > 0 ? false:null"
                       class="form-control-merge"
                       :type="passwordFieldType"
-                      name="login-password"
                       placeholder="Mật khẩu"
+                      maxlength="20"
                     />
                     <b-input-group-append is-text>
                       <feather-icon
@@ -108,13 +106,42 @@
                 </validation-provider>
               </b-form-group>
 
+              <!-- Captcha -->
+              <b-row
+                v-if="captchaStatus"
+                class="mb-1"
+              >
+                <b-col>
+                  <b-form-input
+                    v-model="captchaCodeResponse"
+                    disabled
+                    class="text-center"
+                  />
+                </b-col>
+
+                <b-col>
+                  <validation-provider
+                    #default="{ errors }"
+                    name="Captcha"
+                    rules="required"
+                  >
+                    <b-form-input
+                      v-model="captchaCodePost"
+                      :state="errors.length > 0 ? false : null"
+                      placeholder="Mã Captcha"
+                      maxlength="20"
+                    />
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
+
+                </b-col>
+              </b-row>
+
               <!-- checkbox -->
               <b-form-group>
                 <div class="d-flex flex-direction-row justify-content-between">
                   <b-form-checkbox
-                    id="remember-me"
-                    v-model="status"
-                    name="checkbox-1"
+                    v-model="saveStatus"
                   >
                     Ghi nhớ mật khẩu
                   </b-form-checkbox>
@@ -157,7 +184,7 @@
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
-  BRow, BCol, BLink, BFormGroup, BFormInput, BInputGroupAppend, BInputGroup, BFormCheckbox, BCardText, BCardTitle, BImg, BForm, BButton, VBTooltip,
+  VBTooltip,
 } from 'bootstrap-vue'
 import { required } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
@@ -173,19 +200,6 @@ export default {
     'b-tooltip': VBTooltip,
   },
   components: {
-    BRow,
-    BCol,
-    BLink,
-    BFormGroup,
-    BFormInput,
-    BInputGroupAppend,
-    BInputGroup,
-    BFormCheckbox,
-    BCardText,
-    BCardTitle,
-    BImg,
-    BForm,
-    BButton,
     VuexyLogo,
     ValidationProvider,
     ValidationObserver,
@@ -194,10 +208,13 @@ export default {
   mixins: [togglePasswordVisibility],
   data() {
     return {
-      status: '',
-      username: '',
-      password: '',
+      saveStatus: JSON.parse(localStorage.getItem('saveStatus')),
+      username: JSON.parse(localStorage.getItem('username')),
+      password: JSON.parse(localStorage.getItem('password')),
       sideImg: require('@/assets/images/pages/login-v2.svg'),
+      captchaStatus: false,
+      captchaCodeResponse: '',
+      captchaCodePost: '',
 
       // validation rules
       required,
@@ -220,9 +237,41 @@ export default {
       return this.sideImg
     },
   },
+
+  watch: {
+    username() {
+      if (this.saveStatus) {
+        // Save account
+        localStorage.setItem('username', JSON.stringify(this.username))
+        localStorage.setItem('saveStatus', JSON.stringify(this.saveStatus))
+      } else {
+        // Clean account
+        localStorage.setItem('username', JSON.stringify(''))
+        localStorage.setItem('saveStatus', JSON.stringify(''))
+      }
+    },
+    password() {
+      if (this.saveStatus) {
+        // Save account
+        localStorage.setItem('password', JSON.stringify(this.password))
+        localStorage.setItem('saveStatus', JSON.stringify(this.saveStatus))
+      } else {
+        // Clean account
+        localStorage.setItem('password', JSON.stringify(''))
+        localStorage.setItem('saveStatus', JSON.stringify(''))
+      }
+    },
+  },
+
   methods: {
     onModalHidden() {
       this.isShowRoleAndShopSelectionModal = false
+    },
+    checkCaptchaExist(captcha) {
+      if (captcha) {
+        this.captchaCodeResponse = captcha
+        this.captchaStatus = !this.captchaStatus
+      }
     },
     preLogin() {
       this.$refs.loginForm.validate().then(success => {
@@ -231,21 +280,25 @@ export default {
             .preLogin({
               username: this.username,
               password: this.password,
+              captchaCode: this.captchaCodePost,
             })
             .then(response => response.data)
-            .then(response => {
-              if (response.success) {
-                if (response.data.roles.length === 1 && response.data.roles[0].shops.length === 1) {
+            .then(res => {
+              if (res.success) {
+                this.checkCaptchaExist(res.data.captcha)
+
+                if (res.data.roles.length === 1 && res.data.roles[0].shops.length === 1) {
                   this.login({
-                    roleSelected: { value: response.data.roles[0].id },
-                    shopSelected: { value: response.data.roles[0].shops[0].shopId },
+                    roleSelected: { value: res.data.roles[0].id },
+                    shopSelected: { value: res.data.roles[0].shops[0].shopId },
                   })
                 } else {
-                  this.roles = response.data.roles
+                  this.roles = res.data.roles
                   this.isShowRoleAndShopSelectionModal = true
                 }
               } else {
-                throw new Error(response.statusValue)
+                this.checkCaptchaExist(res.data.captcha)
+                throw new Error(res.statusValue)
               }
             })
             .catch(error => {

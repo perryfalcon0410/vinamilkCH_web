@@ -217,7 +217,6 @@
             selectAllByGroup: true,
             multipleColumns: true,
           }"
-          @on-selected-rows-change="onSelectionChanged"
         >
           <!-- START - Column -->
           <template
@@ -313,7 +312,6 @@
 <script>
 import { VueGoodTable } from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
-import toasts from '@core/utils/toasts/toasts'
 import PoDetailModal from './components/PODetailModal.vue'
 
 export default {
@@ -413,12 +411,6 @@ export default {
   },
 
   methods: {
-    onSelectionChanged(params) {
-      if (params.selectedRows.map(e => e.Status === 'Đã hủy')[0]) {
-        this.$set(this.rows[params.selectedRows.map(e => e.originalIndex)[0]], 'vgtSelected', false)
-        toasts.error('Không thể chọn đơn có trạng thái ĐÃ HỦY')
-      }
-    },
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-input-create' })
     },
