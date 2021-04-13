@@ -11,6 +11,9 @@ export default {
   },
   printReceiptExports(args) {
     const queryString = new URLSearchParams(args).toString()
-    return axios.get(`${printReceiptExportEndpoint}?${queryString}`)
+    return axios(`${printReceiptExportEndpoint}?${queryString}`, {
+      method: 'GET',
+      responseType: 'blob', // Force to receive data in a Blob Format
+    })
   },
 }

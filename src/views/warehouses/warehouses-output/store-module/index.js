@@ -51,26 +51,14 @@ export default {
     },
     [PRINT_RECEIPTEXPORT_ACTION]({ state }, val) {
       console.log(state)
-      const fileName = `${val.transCode}${val.shopId}.pdf`
+      const fileName = `${val.transCode}.pdf`
       console.log(fileName)
       WarehousesService
         .printReceiptExports(val)
-        .then(response => {
-          console.log(response)
-          return response.data
-        })
+        .then(response => response.data)
         .then(res => {
-          console.log(res)
-
-          if (res.success) {
-            // console.log(res.data)
-            // response.data is a blob type
-            FileSaver.saveAs(res.data, fileName)
-            // state.receiptExports = res.data.content
-            // console.log(state.receiptexports)
-          } else {
-            throw new Error(res.statusValue)
-          }
+          const blob = new Blob([res], { type: 'application/pdf' })
+          FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
           toasts.error(error.message)
