@@ -14,9 +14,9 @@
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
       >
-        <label class="text-primary">
+        <strong class="text-primary">
           Danh sách khách hàng
-        </label>
+        </strong>
         <b-button-group>
           <b-button
             class="rounded"
@@ -50,13 +50,22 @@
           compact-mode
           line-numbers
         >
+          <!-- START - Empty rows -->
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
+          <!-- END - Empty rows -->
+
           <!-- START - Columns -->
           <template
             slot="table-column"
             slot-scope="props"
           >
             <div v-if="props.column.label === 'Chức năng'">
-              <b-icon-bricks />
+              <b-icon-bricks v-b-popover.hover="'Thao tác'" />
             </div>
             <div v-else>
               {{ props.column.label }}
@@ -71,6 +80,7 @@
           >
             <div v-if="props.column.field === 'feature'">
               <b-icon-pencil-fill
+                v-b-popover.hover.top="'Chỉnh sửa'"
                 class="cursor-pointer"
                 @click="navigateToUpdate(props.row.id)"
               />

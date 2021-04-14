@@ -45,9 +45,9 @@ export const useRouter = () => {
 
 export const getGenderLabel = gender => {
   switch (gender) {
-    case 0:
-      return 'Nam'
     case 1:
+      return 'Nam'
+    case 2:
       return 'Nữ'
     default:
       return 'Khác'

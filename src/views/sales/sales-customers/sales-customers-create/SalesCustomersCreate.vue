@@ -245,6 +245,7 @@
                   reset-button
                   label-reset-button="Xóa"
                 />
+
               </b-form-group>
               <!-- END - Customer ID Date -->
 
@@ -285,7 +286,7 @@
             </div>
             <b-form-input
               v-model="phoneNumber"
-
+              type="tel"
               :state="phoneNumber.length > 0 ? passed : null"
               maxlength="10"
             />
@@ -305,9 +306,8 @@
             <b-form-input
               id="Email"
               v-model="customerEmail"
-
+              type="email"
               maxlength="200"
-              autocomplete="email"
               :state="customerEmail.length > 0 ? passed : null"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -325,7 +325,7 @@
             </div>
             <b-form-input
               v-model="homeNumber"
-
+              maxlength="200"
               :state="touched ? passed : null"
             />
             <small class="text-danger">{{ errors[0] }}</small>

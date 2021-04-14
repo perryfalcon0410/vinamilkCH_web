@@ -38,6 +38,13 @@ export const formatDateToVNI = (value, formatting = { month: '2-digit', day: '2-
   return new Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
 }
 
+export const formatVniDateToISO = value => {
+  if (!value) return value
+  const arrayDate = value.split('/')
+  // eslint-disable-next-line radix
+  return new Date(parseInt(arrayDate[2]), parseInt(arrayDate[1]) - 1, parseInt(arrayDate[0]) + 1).toISOString()
+}
+
 /**
  * Return short human friendly month representation of date
  * Can also convert date to only time if date is of today (Better UX)

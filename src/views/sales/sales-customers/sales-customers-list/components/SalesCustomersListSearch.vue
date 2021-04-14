@@ -1,230 +1,239 @@
 <template>
   <div>
     <!-- START - Search -->
-    <b-form class="bg-white rounded shadow">
-      <label
-        for="v-search-form"
-        class="text-primary m-1"
+    <b-form
+      class="bg-white rounded shadow"
+      @submit.prevent="onClickSearchButton"
+    >
+      <b-row
+        v-b-toggle.collapseDelivery
+        class="text-primary mx-0 p-1"
+        align-v="center"
+        align-h="between"
       >
-        Tìm kiếm
-      </label>
+        <strong>Tìm kiếm</strong>
 
-      <b-form-row class="v-search-form border-top mx-0 p-1">
-        <!-- START - Full Name -->
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Khách hàng"
-            label-for="form-input-customer"
-          >
-            <b-form-input
-              id="form-input-customer"
-              v-model="searchKeywords"
-              placeholder="Nhập họ tên/mã"
-            />
-          </b-form-group>
-        </b-col>
-        <!-- END - Full Name -->
+        <b-icon-chevron-down
+          scale="2"
+          color="blue"
+        />
+      </b-row>
 
-        <!-- START - Date From -->
-        <b-col
-          xl
-          sm="4"
-          md="3"
+      <b-collapse
+        id="collapseDelivery"
+        visible
+      >
+        <b-form-row
+          class="border-top mx-0 p-1"
         >
-          <b-form-group
-            label="Từ ngày"
-            label-for="form-input-date-from"
+          <!-- START - Full Name -->
+          <b-col
+            xl
+            sm="4"
+            md="3"
           >
-            <b-form-datepicker
-              id="form-input-date-from"
-              v-model="fromDate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-              reset-button
-              label-reset-button="Xóa"
-              placeholder="chọn ngày"
-            />
-          </b-form-group>
-        </b-col>
-        <!-- END - Date From -->
-
-        <!-- START - Date To -->
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Đến ngày"
-            label-for="form-input-date-to"
-          >
-            <b-form-datepicker
-              id="form-input-date-to"
-              v-model="toDate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-              reset-button
-              label-reset-button="Xóa"
-              placeholder="chọn ngày"
-            />
-          </b-form-group>
-        </b-col>
-        <!-- END - Date To -->
-
-        <!-- START - Group -->
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Nhóm khách hàng"
-            label-for="form-input-customer-group"
-          >
-            <b-form-select
-              id="form-input-customer-group"
-              v-model="customerTypeId"
+            <b-form-group
+              label="Khách hàng"
+              label-for="form-input-customer"
             >
-              <b-form-select-option value="">
-                Tất cả
-              </b-form-select-option>
-              <b-form-select-option value="1">
-                Khách hàng thân thiết
-              </b-form-select-option>
-              <b-form-select-option value="2">
-                Khách hàng thường
-              </b-form-select-option>
-            </b-form-select>
-          </b-form-group>
-        </b-col>
-        <!-- END - Group -->
+              <b-form-input
+                id="form-input-customer"
+                v-model="searchKeywords"
+                placeholder="Nhập họ tên/mã"
+              />
+            </b-form-group>
+          </b-col>
+          <!-- END - Full Name -->
 
-        <!-- START - Status -->
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Trạng thái"
-            label-for="form-input-customer-group"
+          <!-- START - Date From -->
+          <b-col
+            xl
+            sm="4"
+            md="3"
           >
-            <b-form-select
-              id="form-input-customer-group"
-              v-model="status"
+            <b-form-group
+              label="Từ ngày"
+              label-for="form-input-date-from"
             >
-              <b-form-select-option value="">
-                Tất cả
-              </b-form-select-option>
-              <b-form-select-option value="0">
-                Ngưng hoạt động
-              </b-form-select-option>
-              <b-form-select-option value="1">
-                Hoạt động
-              </b-form-select-option>
-            </b-form-select>
-          </b-form-group>
-        </b-col>
-        <!-- END - Status -->
+              <b-input-group class="input-group-merge">
+                <flat-pickr
+                  id="form-input-date-from"
+                  v-model="fromDate"
+                  :config="configDate"
+                  class="form-control"
+                  placeholder="chọn ngày"
+                />
+                <b-input-group-append
+                  is-text
+                  data-toggle
+                >
+                  <b-icon-calendar />
+                </b-input-group-append>
+              </b-input-group>
 
-        <!-- START - Gender -->
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Giới tính"
-            label-for="form-input-customer-group"
-          >
-            <b-form-select
-              id="form-input-customer-group"
-              v-model="genderId"
-            >
-              <b-form-select-option value="">
-                Tất cả
-              </b-form-select-option>
-              <b-form-select-option value="0">
-                Nữ
-              </b-form-select-option>
-              <b-form-select-option value="1">
-                Nam
-              </b-form-select-option>
-              <b-form-select-option value="2">
-                Khác
-              </b-form-select-option>
-            </b-form-select>
-          </b-form-group>
-        </b-col>
-        <!-- END - Gender -->
+            </b-form-group>
+          </b-col>
+          <!-- END - Date From -->
 
-        <!-- START - Location -->
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Khu vực"
-            label-for="form-input-customer-group"
+          <!-- START - Date To -->
+          <b-col
+            xl
+            sm="4"
+            md="3"
           >
-            <b-form-select
-              id="form-input-customer-group"
-              v-model="areaId"
+            <b-form-group
+              label="Đến ngày"
+              label-for="form-input-date-to"
             >
-              <b-form-select-option value="">
-                Tất cả
-              </b-form-select-option>
-              <b-form-select-option
-                v-for="item in shopLocations"
-                :key="item.value"
-                :value="item.value"
+              <b-input-group class="input-group-merge">
+                <flat-pickr
+                  id="form-input-date-from"
+                  v-model="toDate"
+                  :config="configDate"
+                  class="form-control"
+                  placeholder="chọn ngày"
+                />
+                <b-input-group-append
+                  is-text
+                  data-toggle
+                >
+                  <b-icon-calendar />
+                </b-input-group-append>
+              </b-input-group>
+            </b-form-group>
+          </b-col>
+          <!-- END - Date To -->
+
+          <!-- START - Group -->
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
+            <b-form-group
+              label="Nhóm khách hàng"
+              label-for="form-input-customer-group"
+            >
+              <v-select
+                id="form-input-customer-group"
+                v-model="customerTypes"
+                :options="[{name: 'Khách hàng thân thiết', id: '1'},{name: 'Khách hàng thường', id: '2'},{name: 'Khách hàng VIP', id: '3'}]"
+                label="name"
+                placeholder="Tất cả"
+                :searchable="false"
               >
-                {{ item.text }}
-              </b-form-select-option>
-            </b-form-select>
-          </b-form-group>
-        </b-col>
-        <!-- END - Location -->
+                <template #selected-option="{ name }">
+                  {{ truncate(name,16) }}
+                </template>
+              </v-select>
+            </b-form-group>
+          </b-col>
+          <!-- END - Group -->
 
-        <!-- START - Search button -->
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Tìm kiếm"
-            label-for="form-button-search"
+          <!-- START - Status -->
+          <b-col
+            xl
+            sm="4"
+            md="3"
           >
-            <b-button
-              id="form-button-search"
-              variant="primary"
-              @click="onClickSearchButton()"
+            <b-form-group
+              label="Trạng thái"
+              label-for="form-input-customer-group"
             >
-              <b-icon-search />
-              Tìm kiếm
-            </b-button>
-          </b-form-group>
-        </b-col>
+              <v-select
+                id="form-input-customer-group"
+                v-model="status"
+                :options="[{name: 'Hoạt động', id: '1'},{name: 'Ngưng hoạt động', id: '0'}]"
+                label="name"
+                placeholder="Tất cả"
+                :searchable="false"
+              />
+            </b-form-group>
+          </b-col>
+          <!-- END - Status -->
+
+          <!-- START - Gender -->
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
+            <b-form-group
+              label="Giới tính"
+              label-for="form-input-customer-group"
+            >
+              <v-select
+                id="form-input-customer-group"
+                v-model="genders"
+                :options="[{name: 'Nam', id: '1'},{name: 'Nữ', id: '2'},{name: 'Khác', id: '3'}]"
+                label="name"
+                placeholder="Tất cả"
+                :searchable="false"
+              />
+            </b-form-group>
+          </b-col>
+          <!-- END - Gender -->
+
+          <!-- START - Location -->
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
+            <b-form-group
+              label="Khu vực"
+              label-for="form-input-customer-group"
+            >
+              <v-select
+                id="form-input-customer-group"
+                v-model="areas"
+                :options="shopLocations"
+                label="name"
+                autocomplete="on"
+                placeholder="Tất cả"
+              />
+            </b-form-group>
+          </b-col>
+          <!-- END - Location -->
+
+          <!-- START - Search button -->
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
+            <b-form-group
+              label="Tìm kiếm"
+              label-for="form-button-search"
+            >
+              <b-button
+                id="form-button-search"
+                variant="primary"
+                @click="onClickSearchButton()"
+              >
+                <b-icon-search />
+                Tìm kiếm
+              </b-button>
+            </b-form-group>
+          </b-col>
         <!-- END - Search button -->
 
-      </b-form-row>
+        </b-form-row>
+      </b-collapse>
     </b-form>
     <!-- END - Search -->
   </div>
 </template>
 
 <script>
+/* eslint-disable vue/attribute-hyphenation */
 import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatDate } from '@/@core/utils/utils'
+import vSelect from 'vue-select'
+import flatPickr from 'vue-flatpickr-component'
+import { formatVniDateToISO } from '@/@core/utils/filter'
 import {
   CUSTOMER,
   GET_CUSTOMERS_ACTION,
@@ -233,25 +242,36 @@ import {
 } from '../../store-module/type'
 
 export default {
+  components: {
+    vSelect,
+    flatPickr,
+  },
   data() {
     return {
       searchKeywords: '',
       fromDate: '',
       toDate: '',
-      customerTypeId: '',
+      customerTypes: '',
       status: '',
-      genderId: '',
-      areaId: '',
+      genders: '',
+      areas: '',
+
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
     }
   },
   computed: {
     shopLocations() {
       return this.SHOP_LOCATIONS_GETTER().map(data => ({
-        value: data.id,
-        text: data.areaName,
+        id: data.id,
+        name: data.areaName,
       }))
     },
   },
+
   mounted() {
     this.GET_SHOP_LOCATIONS_ACTION({
       shopId: 1, // Hard code
@@ -267,17 +287,26 @@ export default {
     ]),
     onClickSearchButton() {
       const searchData = {
-        searchKeywords: this.searchKeywords,
-        fromDate: formatDate(this.fromDate),
-        toDate: formatDate(this.toDate),
-        customerTypeId: this.customerTypeId,
-        status: this.status,
-        genderId: this.genderId,
-        areaId: this.areaId,
+        searchKeywords: this.searchKeywords.trim(),
+        fromDate: formatVniDateToISO(this.fromDate),
+        toDate: formatVniDateToISO(this.toDate),
+        customerTypes: this.customerTypes.id,
+        status: this.status.id,
+        genders: this.genders.id,
+        areas: this.areas.id,
       }
 
       this.GET_CUSTOMERS_ACTION(searchData)
     },
+
+    truncate(str, n) {
+      return (str.length > n) ? `${str.substr(0, n - 2)}...` : str
+    },
+
   },
 }
 </script>
+
+<style lang="scss">
+@import '@core/scss/vue/libs/vue-flatpicker.scss';
+</style>

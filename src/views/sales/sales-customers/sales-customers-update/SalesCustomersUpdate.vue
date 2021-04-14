@@ -288,23 +288,6 @@
                 </b-row>
                 <!-- END - Customer Sales -->
 
-                <!-- START - Customer Favorite product -->
-                <b-col class="px-0 my-1">
-                  Sản phẩm yêu thích
-                  <div
-                    v-for="(n, index ) in 3"
-                    :key="index"
-                    class="text-primary my-1"
-                  >
-                    Sữa đặc Ngôi Sao Phương Nam xanh lá - 1284g
-                  </div>
-                </b-col>
-
-                <div>
-                  Ngày mua hàng cuối: <strong>31/10/2020</strong>
-                </div>
-              <!-- END - Customer Favorite product -->
-
               </b-col>
               <!-- END - Section 2 -->
             </b-col></b-row>
@@ -370,7 +353,7 @@
             </div>
             <b-form-input
               v-model="homeNumber"
-
+              maxlength="200"
               :state="touched ? passed : null"
             />
             <small class="text-danger">{{ errors[0] }}</small>
