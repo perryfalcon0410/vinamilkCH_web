@@ -22,6 +22,7 @@
               <!-- START - Customer Code -->
               Mã khách hàng
               <b-form-input
+                v-model="customerCode"
                 disabled
               />
               <!-- END - Customer Code -->
@@ -39,7 +40,6 @@
                     </div>
                     <b-form-input
                       v-model="middleName"
-                      trim
                       :state="touched ? passed : null"
                       maxlength="200"
                     />
@@ -58,7 +58,6 @@
                     </div>
                     <b-form-input
                       v-model="name"
-                      trim
                       :state="touched ? passed : null"
                       maxlength="200"
                     />
@@ -70,7 +69,7 @@
 
               <!-- START - Customer Barcode -->
               <validation-provider
-                v-slot="{ errors, passed }"
+                v-slot="{ errors, touched, passed }"
                 rules="code"
                 name="Mã vach"
               >
@@ -79,8 +78,7 @@
                 </div>
                 <b-form-input
                   v-model="barCode"
-                  trim
-                  :state="barCode.length > 0 ? passed : null"
+                  :state="touched ? passed : null"
                   maxlength="40"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -90,15 +88,31 @@
               <!-- START - Customer BirthDay and Gender -->
               <b-form-row>
                 <b-col>
-                  <div class="mt-1">
-                    Ngày sinh
-                  </div>
-                  <b-form-datepicker
-                    v-model="birthDay"
-                    placeholder="chọn ngày"
-                    :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                    locale="vi"
-                  />
+                  <validation-provider
+                    v-slot="{ errors }"
+                    rules="required"
+                    name="Ngày sinh"
+                  >
+                    <div class="mt-1">
+                      Ngày sinh <sup class="text-danger">*</sup>
+                    </div>
+                    <b-input-group class="input-group-merge">
+                      <flat-pickr
+                        id="form-input-date-from"
+                        v-model="birthDay"
+                        :config="configDate"
+                        class="form-control"
+                        placeholder="chọn ngày"
+                      />
+                      <b-input-group-append
+                        is-text
+                        data-toggle
+                      >
+                        <b-icon-calendar />
+                      </b-input-group-append>
+                    </b-input-group>
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
                 </b-col>
 
                 <b-col>
@@ -108,14 +122,14 @@
                   <b-form-select
                     v-model="gender"
                   >
-                    <b-form-select-option value="2">
-                      Khác
-                    </b-form-select-option>
                     <b-form-select-option value="1">
                       Nam
                     </b-form-select-option>
-                    <b-form-select-option value="0">
+                    <b-form-select-option value="2">
                       Nữ
+                    </b-form-select-option>
+                    <b-form-select-option value="3">
+                      Khác
                     </b-form-select-option>
                   </b-form-select>
                 </b-col>
@@ -175,8 +189,6 @@
               <!-- START - Customer loyal -->
               <b-form-checkbox
                 v-model="customerSpecial"
-                value="1"
-                unchecked-value="0"
                 class="mt-1"
               >
                 Khách hàng riêng của cửa hàng
@@ -199,7 +211,7 @@
 
               <!-- START - Customer Date Created -->
               <div>
-                Ngày tạo: <strong>01/08/2018 (2 năm 3 tháng)</strong>
+                Ngày tạo: <strong>{{ createdAt }}</strong>
               </div>
             <!-- END - Customer Date Created -->
 
@@ -213,22 +225,19 @@
             >
               <!-- START - Customer IdentityCard -->
               <validation-provider
-                v-slot="{ errors, passed }"
+                v-slot="{ errors, }"
                 rules="number"
                 name="CMND"
               >
                 <b-form-group
                   label="CMND"
                   label-for="IdentityCard"
-                  :state="customerID.length > 0 ? stateInputValueID = passed : null"
                   :invalid-feedback="invalidFeedbackID"
                 >
                   <b-form-input
                     id="IdentityCard"
                     v-model="customerID"
                     maxlength="15"
-                    :state="customerID.length > 0 ? stateInputValueID = passed : null"
-                    trim
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </b-form-group>
@@ -259,7 +268,6 @@
                   id="IdLocation"
                   v-model="customerIDLocation"
                   maxlength="200"
-                  trim
                 />
               </b-form-group>
               <!-- END - Customer ID Location -->
@@ -272,7 +280,7 @@
                   <b-col>
                     Doanh số tháng này
                     <strong>
-                      3,500,000
+                      {{ monthOrderNumber }}
                     </strong>
                   </b-col>
                   <!-- END - 1 -->
@@ -281,29 +289,12 @@
                   <b-col>
                     Doanh số tổng
                     <strong>
-                      13,123,000
+                      {{ totalBill }}
                     </strong>
                   </b-col>
                 <!-- END - 2 -->
                 </b-row>
                 <!-- END - Customer Sales -->
-
-                <!-- START - Customer Favorite product -->
-                <b-col class="px-0 my-1">
-                  Sản phẩm yêu thích
-                  <div
-                    v-for="(n, index ) in 3"
-                    :key="index"
-                    class="text-primary my-1"
-                  >
-                    Sữa đặc Ngôi Sao Phương Nam xanh lá - 1284g
-                  </div>
-                </b-col>
-
-                <div>
-                  Ngày mua hàng cuối: <strong>31/10/2020</strong>
-                </div>
-              <!-- END - Customer Favorite product -->
 
               </b-col>
               <!-- END - Section 2 -->
@@ -322,7 +313,7 @@
           <!-- START - Customer Phone Number -->
           <validation-provider
             v-slot="{ errors, passed, touched }"
-            rules="number|required"
+            rules="number|phoneNumber"
             name="Di động"
           >
             <div class="mt-1">
@@ -330,9 +321,9 @@
             </div>
             <b-form-input
               v-model="phoneNumber"
-              trim
+
               :state="touched ? passed : null"
-              maxlength="15"
+              maxlength="10"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -340,7 +331,7 @@
 
           <!-- START - Customer Email -->
           <validation-provider
-            v-slot="{ errors, passed }"
+            v-slot="{ errors, passed, touched }"
             rules="email"
             name="Email"
           >
@@ -350,10 +341,10 @@
             <b-form-input
               id="Email"
               v-model="customerEmail"
-              trim
+
               maxlength="200"
               autocomplete="email"
-              :state="customerEmail.length > 0 ? passed : null"
+              :state="touched ? passed : null"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -370,7 +361,7 @@
             </div>
             <b-form-input
               v-model="homeNumber"
-              trim
+              maxlength="200"
               :state="touched ? passed : null"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -387,7 +378,7 @@
               id="Province"
               v-model="customerProvinces"
             >
-              <b-form-select-option value="">
+              <b-form-select-option value="null">
                 Unknown
               </b-form-select-option>
               <b-form-select-option
@@ -412,7 +403,7 @@
                   id="District"
                   v-model="customerDistricts"
                 >
-                  <b-form-select-option value="">
+                  <b-form-select-option value="null">
                     Unknown
                   </b-form-select-option>
                   <b-form-select-option
@@ -435,7 +426,7 @@
                   id="Wards"
                   v-model="customerPrecincts"
                 >
-                  <b-form-select-option value="">
+                  <b-form-select-option value="null">
                     Unknown
                   </b-form-select-option>
                   <b-form-select-option
@@ -459,7 +450,7 @@
             <b-form-input
               id="Office"
               v-model="workingOffice"
-              trim
+
               maxlength="200"
             />
           </b-form-group>
@@ -473,7 +464,7 @@
             <b-form-input
               id="OfficeAddress"
               v-model="officeAddress"
-              trim
+
               maxlength="200"
             />
           </b-form-group>
@@ -481,7 +472,7 @@
 
           <!-- START - Customer Tax code-->
           <validation-provider
-            v-slot="{ errors, passed }"
+            v-slot="{ errors, passed, touched }"
             rules="code"
             name="Mã số thuế"
           >
@@ -490,8 +481,7 @@
             </div>
             <b-form-input
               v-model="taxCode"
-              trim
-              :state="taxCode.length > 0 ? passed : null"
+              :state="touched ? passed : null"
               maxlength="40"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -517,7 +507,7 @@
               id="CardType"
               v-model="selectedCardTypes"
             >
-              <b-form-select-option value="">
+              <b-form-select-option value="null">
                 Chọn loại thẻ
               </b-form-select-option>
               <b-form-select-option
@@ -540,7 +530,7 @@
               id="Type"
               v-model="selectedCloselyTypes"
             >
-              <b-form-select-option value="">
+              <b-form-select-option value="null">
                 Chọn loại khách hàng
               </b-form-select-option>
               <b-form-select-option
@@ -621,6 +611,7 @@ import {
   required,
   email,
 } from '@/@core/utils/validations/validations'
+import { formatDateToVNI } from '@/@core/utils/filter'
 import {
   CUSTOMER,
   // GETTERS
@@ -654,7 +645,7 @@ export default {
     return {
       isModalShow: false,
       isFieldPassed: false,
-      customerId: this.$route.params,
+      customerId: `${this.$route.params.id}`,
 
       // validation rules
       number,
@@ -662,37 +653,41 @@ export default {
       email,
 
       // START - Personal
-      middleName: this.CUSTOMER_BY_ID_GETTER().map(e => e.firstName),
-      name: this.CUSTOMER_BY_ID_GETTER().map(e => e.lastName),
-      barCode: this.CUSTOMER_BY_ID_GETTER().map(e => e.barCode),
-      birthDay: this.CUSTOMER_BY_ID_GETTER().map(e => e.dob),
-      gender: this.CUSTOMER_BY_ID_GETTER().map(e => e.genderId),
-      customerGroup: this.CUSTOMER_BY_ID_GETTER().map(e => e.customerTypeId),
-      customerStatus: this.CUSTOMER_BY_ID_GETTER().map(e => e.status),
-      customerSpecial: this.CUSTOMER_BY_ID_GETTER().map(e => e.isPrivate),
-      note: this.CUSTOMER_BY_ID_GETTER().map(e => e.noted),
-      customerID: this.CUSTOMER_BY_ID_GETTER().map(e => e.idNo),
-      stateInputValueID: null,
+      customerCode: '',
+      middleName: '',
+      name: '',
+      barCode: '',
+      birthDay: '',
+      gender: '',
+      customerGroup: '',
+      customerStatus: '',
+      customerSpecial: '',
+      note: '',
+      createdAt: '',
+      customerID: '',
+      stateInputValueID: '',
       invalidFeedbackID: '',
-      customerIDDate: this.CUSTOMER_BY_ID_GETTER().map(e => e.idNoIssuedDate),
-      customerIDLocation: this.CUSTOMER_BY_ID_GETTER().map(e => e.idNoIssuedPlace),
+      customerIDDate: '',
+      customerIDLocation: '',
+      totalBill: '',
+      monthOrderNumber: '',
       // END - Personal
 
       // START - Contact
-      phoneNumber: this.CUSTOMER_BY_ID_GETTER().map(e => e.mobiPhone),
-      customerEmail: this.CUSTOMER_BY_ID_GETTER().map(e => e.email),
-      homeNumber: this.CUSTOMER_BY_ID_GETTER().map(e => e.street),
-      customerProvinces: this.CUSTOMER_BY_ID_GETTER().map(e => e.provinceId),
-      customerDistricts: this.CUSTOMER_BY_ID_GETTER().map(e => e.districtId),
-      customerPrecincts: this.CUSTOMER_BY_ID_GETTER().map(e => e.precinctId),
-      workingOffice: this.CUSTOMER_BY_ID_GETTER().map(e => e.workingOffice),
-      officeAddress: this.CUSTOMER_BY_ID_GETTER().map(e => e.officeAddress),
-      taxCode: this.CUSTOMER_BY_ID_GETTER().map(e => e.taxCode),
+      phoneNumber: '',
+      customerEmail: '',
+      homeNumber: '',
+      customerProvinces: 'null',
+      customerDistricts: 'null',
+      customerPrecincts: 'null',
+      workingOffice: '',
+      officeAddress: '',
+      taxCode: '',
       // END - Contact
 
       // START - MembershipCard
-      selectedCardTypes: this.CUSTOMER_BY_ID_GETTER().map(e => e.memberCard),
-      selectedCloselyTypes: this.CUSTOMER_BY_ID_GETTER().map(e => e.closelyTypes),
+      selectedCardTypes: 'null',
+      selectedCloselyTypes: 'null',
       // END - MembershipCard
     }
   },
@@ -700,6 +695,9 @@ export default {
 
   // START - Computed
   computed: {
+    customer() {
+      return this.CUSTOMER_BY_ID_GETTER()
+    },
     customerTypes() {
       return this.CUSTOMER_TYPES_GETTER().map(data => ({
         value: data.id,
@@ -747,22 +745,60 @@ export default {
       this.checkDuplicationID(this.ERROR_CODE_GETTER())
     },
     customerProvinces() {
-      this.customerDistricts = ''
+      this.customerDistricts = 'null'
       this.GET_DISTRICTS_ACTION(this.customerProvinces)
+      this.customerDistricts = this.CUSTOMER_BY_ID_GETTER().areaDTO.districtId
     },
     customerDistricts() {
-      this.customerPrecincts = ''
+      this.customerPrecincts = 'null'
       this.GET_PRECINCTS_ACTION(this.customerDistricts)
+      this.customerPrecincts = this.CUSTOMER_BY_ID_GETTER().areaDTO.precinctId
+    },
+    customer() {
+      // START - Personal
+      this.customerCode = this.CUSTOMER_BY_ID_GETTER().customerCode
+      this.middleName = this.CUSTOMER_BY_ID_GETTER().firstName
+      this.name = this.CUSTOMER_BY_ID_GETTER().lastName
+      this.barCode = this.CUSTOMER_BY_ID_GETTER().barCode
+      this.birthDay = this.CUSTOMER_BY_ID_GETTER().dob
+      this.gender = this.CUSTOMER_BY_ID_GETTER().genderId
+      this.customerGroup = this.CUSTOMER_BY_ID_GETTER().customerTypeId
+      this.customerStatus = this.CUSTOMER_BY_ID_GETTER().status
+      this.customerSpecial = this.CUSTOMER_BY_ID_GETTER().isPrivate
+      this.note = this.CUSTOMER_BY_ID_GETTER().noted
+      this.createdAt = formatDateToVNI(this.CUSTOMER_BY_ID_GETTER().createdAt)
+      this.customerID = this.CUSTOMER_BY_ID_GETTER().idNo
+      this.stateInputValueID = null
+      this.invalidFeedbackID = ''
+      this.customerIDDate = this.CUSTOMER_BY_ID_GETTER().idNoIssuedDate
+      this.customerIDLocation = this.CUSTOMER_BY_ID_GETTER().idNoIssuedPlace
+      this.totalBill = this.CUSTOMER_BY_ID_GETTER().totalBill
+      this.monthOrderNumber = this.CUSTOMER_BY_ID_GETTER().monthOrderNumber
+      // END - Personal
+
+      // START - Contact
+      this.phoneNumber = this.CUSTOMER_BY_ID_GETTER().mobiPhone
+      this.customerEmail = this.CUSTOMER_BY_ID_GETTER().email
+      this.homeNumber = this.CUSTOMER_BY_ID_GETTER().street
+      this.customerProvinces = this.CUSTOMER_BY_ID_GETTER().areaDTO.provinceId
+      this.workingOffice = this.CUSTOMER_BY_ID_GETTER().workingOffice
+      this.officeAddress = this.CUSTOMER_BY_ID_GETTER().officeAddress
+      this.taxCode = this.CUSTOMER_BY_ID_GETTER().taxCode
+      // END - Contact
+
+      // START - MembershipCard
+      this.selectedCardTypes = this.CUSTOMER_BY_ID_GETTER().cardType
+      this.selectedCloselyTypes = this.CUSTOMER_BY_ID_GETTER().closelyTypeId
+      // END - MembershipCard
     },
   },
 
   mounted() {
-    this.customerID = this.randomStr(11, '1234567890')
     this.GET_CUSTOMER_TYPES_ACTION()
     this.GET_PROVINCES_ACTION()
     this.GET_CARD_TYPES_ACTION()
     this.GET_CLOSELY_TYPES_ACTION()
-    this.GET_CUSTOMER_BY_ID_ACTION(this.customerId)
+    this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
   },
 
   // START - Methods
@@ -819,34 +855,32 @@ export default {
         if (success) {
           this.UPDATE_CUSTOMER_ACTION({
             id: this.customerId,
-            val: {
-              id: this.customerId,
-              firstName: this.name,
-              lastName: this.middleName,
-              genderId: this.gender,
-              barCode: this.barCode,
-              dob: this.birthDay !== '' ? (new Date(this.birthDay).toISOString()) : '',
-              customerTypeId: this.customerGroup,
-              status: this.customerStatus,
-              shopId: 1,
-              isPrivate: this.customerSpecial,
-              idNo: this.customerID,
-              idNoIssuedDate: this.customerIDDate !== '' ? new Date(this.customerIDDate).toISOString() : '',
-              idNoIssuedPlace: this.customerIDLocation,
-              phoneNumber: this.phoneNumber,
-              mobiPhone: this.phoneNumber,
-              email: this.customerEmail,
-              areaId: this.customerPrecincts,
-              street: this.homeNumber,
-              address: null,
-              workingOffice: this.workingOffice,
-              officeAddress: this.officeAddress,
-              taxCode: this.taxCode,
-              isDefault: true,
-              noted: this.note,
-              closelyTypeId: this.selectedCloselyTypes,
-              cardTypeId: this.selectedCardTypes,
-            },
+            customerCode: this.customerCode,
+            firstName: this.name,
+            lastName: this.middleName,
+            genderId: this.gender,
+            barCode: this.barCode,
+            dob: this.birthDay !== '' ? (new Date(this.birthDay).toISOString()) : '',
+            customerTypeId: this.customerGroup,
+            status: this.customerStatus,
+            shopId: 1,
+            isPrivate: this.customerSpecial,
+            idNo: this.customerID,
+            idNoIssuedDate: this.customerIDDate !== '' ? new Date(this.customerIDDate).toISOString() : '',
+            idNoIssuedPlace: this.customerIDLocation,
+            phone: this.phoneNumber,
+            mobiPhone: this.phoneNumber,
+            email: this.customerEmail,
+            areaId: this.customerPrecincts,
+            street: this.homeNumber,
+            address: null,
+            workingOffice: this.workingOffice,
+            officeAddress: this.officeAddress,
+            taxCode: this.taxCode,
+            isDefault: true,
+            noted: this.note,
+            closelyTypeId: this.selectedCloselyTypes,
+            cardType: this.selectedCardTypes,
           })
         }
       })

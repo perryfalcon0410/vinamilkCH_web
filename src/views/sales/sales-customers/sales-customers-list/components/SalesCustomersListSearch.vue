@@ -51,27 +51,34 @@
             sm="4"
             md="3"
           >
-            <b-form-group
-              label="Từ ngày"
-              label-for="form-input-date-from"
+            <validation-provider
+              v-slot="{ errors }"
+              rules="dateFormatVNI"
             >
-              <b-input-group class="input-group-merge">
-                <flat-pickr
+              <b-form-group
+                label="Từ ngày"
+                label-for="form-input-date-from"
+              >
+                <b-input-group
                   id="form-input-date-from"
-                  v-model="fromDate"
-                  :config="configDate"
-                  class="form-control"
-                  placeholder="chọn ngày"
-                />
-                <b-input-group-append
-                  is-text
-                  data-toggle
+                  class="input-group-merge"
                 >
-                  <b-icon-calendar />
-                </b-input-group-append>
-              </b-input-group>
-
-            </b-form-group>
+                  <flat-pickr
+                    v-model="fromDate"
+                    :config="configDate"
+                    class="form-control"
+                    placeholder="chọn ngày"
+                  />
+                  <b-input-group-append
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-append>
+                </b-input-group>
+              </b-form-group>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
           </b-col>
           <!-- END - Date From -->
 
@@ -81,26 +88,32 @@
             sm="4"
             md="3"
           >
-            <b-form-group
-              label="Đến ngày"
-              label-for="form-input-date-to"
+            <validation-provider
+              v-slot="{ errors }"
+              rules="dateFormatVNI"
             >
-              <b-input-group class="input-group-merge">
-                <flat-pickr
-                  id="form-input-date-from"
-                  v-model="toDate"
-                  :config="configDate"
-                  class="form-control"
-                  placeholder="chọn ngày"
-                />
-                <b-input-group-append
-                  is-text
-                  data-toggle
-                >
-                  <b-icon-calendar />
-                </b-input-group-append>
-              </b-input-group>
-            </b-form-group>
+              <b-form-group
+                label="Đến ngày"
+                label-for="form-input-date-to"
+              >
+                <b-input-group class="input-group-merge">
+                  <flat-pickr
+                    id="form-input-date-from"
+                    v-model="toDate"
+                    :config="configDate"
+                    class="form-control"
+                    placeholder="chọn ngày"
+                  />
+                  <b-input-group-append
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-append>
+                </b-input-group>
+              </b-form-group>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
           </b-col>
           <!-- END - Date To -->
 
@@ -233,7 +246,14 @@ import {
 } from 'vuex'
 import vSelect from 'vue-select'
 import flatPickr from 'vue-flatpickr-component'
+import '@core/scss/vue/libs/vue-flatpicker.scss'
 import { formatVniDateToISO } from '@/@core/utils/filter'
+import {
+  ValidationProvider,
+} from 'vee-validate'
+import {
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
 import {
   CUSTOMER,
   GET_CUSTOMERS_ACTION,
@@ -243,11 +263,15 @@ import {
 
 export default {
   components: {
+    ValidationProvider,
     vSelect,
     flatPickr,
   },
   data() {
     return {
+      // validation rules
+      dateFormatVNI,
+
       searchKeywords: '',
       fromDate: '',
       toDate: '',
@@ -260,6 +284,7 @@ export default {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
+        allowInvalidPreload: false,
       },
     }
   },
@@ -306,7 +331,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import '@core/scss/vue/libs/vue-flatpicker.scss';
-</style>

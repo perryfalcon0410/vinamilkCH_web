@@ -24,6 +24,7 @@ import {
   validatorCode,
   validatorNumber,
   validatorPhoneNumber,
+  validatorDateFormatVNI,
 } from './validators'
 
 // ////////////////////////////////////////////////////////
@@ -93,6 +94,11 @@ export const number = extend('number', {
 export const phoneNumber = extend('phoneNumber', {
   validate: validatorPhoneNumber,
   message: 'Vui lòng nhập đúng số điện thoại Việt Nam (10 số)',
+})
+
+export const dateFormatVNI = extend('dateFormatVNI', {
+  validate: validatorDateFormatVNI,
+  message: 'Vui lòng nhập đúng định dạng Việt Nam (dd/mm/yyyy)',
 })
 
 localize({

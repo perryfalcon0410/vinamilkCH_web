@@ -8,13 +8,15 @@
       ref="formContainer"
       v-slot="{invalid}"
     >
-      <b-row class="mx-0">
+      <b-row
+        class="mx-0"
+      >
         <!-- START - Form Personal information -->
         <b-col
           lg
-          class="d-flex shadow bg-white rounded"
+          class="d-flex shadow bg-white rounded px-0"
         >
-          <b-row class="flex-grow-1">
+          <b-row class="flex-grow-1 mx-0">
             <!-- START - Section 1 -->
             <b-col sm="8">
               <label class="font-weight-bold w-100 text-center mb-2">Thông tin cá nhân</label>
@@ -39,9 +41,10 @@
                       Họ và tên đệm <sup class="text-danger">*</sup>
                     </div>
                     <b-form-input
-                      v-model="middleName"
+                      v-model="lastName"
                       :state="touched ? passed : null"
                       maxlength="200"
+                      autocomplete="on"
                     />
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
@@ -57,9 +60,10 @@
                       Tên <sup class="text-danger">*</sup>
                     </div>
                     <b-form-input
-                      v-model="name"
+                      v-model="firstName"
                       :state="touched ? passed : null"
                       maxlength="200"
+                      autocomplete="on"
                     />
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
@@ -69,16 +73,17 @@
 
               <!-- START - Customer Barcode -->
               <validation-provider
-                v-slot="{ errors, touched, passed }"
+                v-slot="{ errors, passed }"
                 rules="code"
-                name="Mã vach"
+                name="Mã vạch"
               >
                 <div class="mt-1">
                   Mã vạch
                 </div>
                 <b-form-input
                   v-model="barCode"
-                  :state="touched ? passed : null"
+
+                  :state="barCode.length > 0 ? passed : null"
                   maxlength="40"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -89,20 +94,28 @@
               <b-form-row>
                 <b-col>
                   <validation-provider
-                    v-slot="{ errors, passed, touched }"
-                    rules="required"
+                    v-slot="{ errors }"
+                    rules="required|dateFormatVNI"
                     name="Ngày sinh"
                   >
                     <div class="mt-1">
                       Ngày sinh <sup class="text-danger">*</sup>
                     </div>
-                    <b-form-datepicker
-                      v-model="birthDay"
-                      placeholder="chọn ngày"
-                      :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                      locale="vi"
-                      :state="touched ? passed : null"
-                    />
+                    <b-input-group class="input-group-merge">
+                      <flat-pickr
+                        id="form-input-date-from"
+                        v-model="birthDay"
+                        :config="configDate"
+                        class="form-control"
+                        placeholder="chọn ngày"
+                      />
+                      <b-input-group-append
+                        is-text
+                        data-toggle
+                      >
+                        <b-icon-calendar />
+                      </b-input-group-append>
+                    </b-input-group>
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
                 </b-col>
@@ -111,19 +124,12 @@
                   <div class="mt-1">
                     Giới tính
                   </div>
-                  <b-form-select
-                    v-model="gender"
-                  >
-                    <b-form-select-option value="2">
-                      Khác
-                    </b-form-select-option>
-                    <b-form-select-option value="1">
-                      Nam
-                    </b-form-select-option>
-                    <b-form-select-option value="0">
-                      Nữ
-                    </b-form-select-option>
-                  </b-form-select>
+                  <v-select
+                    v-model="genders"
+                    :options="[{name: 'Nam', id: '1'},{name: 'Nữ', id: '2'},{name: 'Khác', id: '3'},]"
+                    label="name"
+                    :searchable="false"
+                  />
                 </b-col>
               </b-form-row>
               <!-- END - Customer BirthDay and Gender -->
@@ -139,22 +145,17 @@
                     <div class="mt-1">
                       Nhóm khách hàng <sup class="text-danger">*</sup>
                     </div>
-                    <b-form-select
-                      id="Group"
-                      v-model="customerGroup"
-                      :state="errors.length > 0 ? false : null"
+                    <v-select
+                      v-model="customerGroups"
+                      :options="customerTypes"
+                      label="name"
+                      :searchable="false"
+                      placeholder="Chọn loại khách hàng"
                     >
-                      <b-form-select-option value="">
-                        Chọn giá trị
-                      </b-form-select-option>
-                      <b-form-select-option
-                        v-for="item in customerTypes"
-                        :key="item.value"
-                        :value="item.value"
-                      >
-                        {{ item.text }}
-                      </b-form-select-option>
-                    </b-form-select>
+                      <template #no-options="{}">
+                        Không có dữ liệu
+                      </template>
+                    </v-select>
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
 
@@ -164,16 +165,13 @@
                   <div class="mt-1">
                     Trạng thái
                   </div>
-                  <b-form-select
+                  <v-select
                     v-model="customerStatus"
-                  >
-                    <b-form-select-option value="0">
-                      Ngưng hoạt động
-                    </b-form-select-option>
-                    <b-form-select-option value="1">
-                      Hoạt động
-                    </b-form-select-option>
-                  </b-form-select>
+                    :options="[{name: 'Hoạt động', id: '1'}, {name: 'Ngưng hoạt động', id: '0'}]"
+                    label="name"
+                    :searchable="false"
+                    disabled
+                  />
                 </b-col>
               </b-form-row>
               <!-- END - Customer Group and State -->
@@ -205,7 +203,7 @@
               <div>
                 Ngày tạo: <strong>{{ createdAt }}</strong>
               </div>
-            <!-- END - Customer Date Created -->
+              <!-- END - Customer Date Created -->
 
             </b-col>
             <!-- END - Section 1 -->
@@ -217,19 +215,21 @@
             >
               <!-- START - Customer IdentityCard -->
               <validation-provider
-                v-slot="{ errors, }"
+                v-slot="{ errors, passed }"
                 rules="number"
                 name="CMND"
               >
                 <b-form-group
                   label="CMND"
                   label-for="IdentityCard"
+                  :state="customerID.length > 0 ? stateInputValueID = passed : null"
                   :invalid-feedback="invalidFeedbackID"
                 >
                   <b-form-input
                     id="IdentityCard"
                     v-model="customerID"
                     maxlength="15"
+                    :state="customerID.length > 0 ? stateInputValueID = passed : null"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </b-form-group>
@@ -237,24 +237,37 @@
               <!-- END - Customer IdentityCard -->
 
               <!-- START - Customer ID Date -->
-              <b-form-group
-                label="Ngày cấp"
-                label-for="IdDate"
+              <validation-provider
+                v-slot="{ errors }"
+                rules="dateFormatVNI"
+                name="Ngày cấp"
               >
-                <b-form-datepicker
-                  id="IdDate"
-                  v-model="customerIDDate"
-                  placeholder="chọn ngày"
-                  :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                  locale="vi"
-                />
-              </b-form-group>
+                <div class="mt-1">
+                  Ngày cấp
+                </div>
+                <b-input-group class="input-group-merge">
+                  <flat-pickr
+                    v-model="customerIDDate"
+                    :config="configDate"
+                    class="form-control"
+                    placeholder="chọn ngày"
+                  />
+                  <b-input-group-append
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-append>
+                </b-input-group>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
               <!-- END - Customer ID Date -->
 
               <!-- START - Customer ID Location -->
               <b-form-group
                 label="Nơi cấp"
                 label-for="IdLocation"
+                class="mt-1"
               >
                 <b-form-input
                   id="IdLocation"
@@ -287,10 +300,10 @@
                 <!-- END - 2 -->
                 </b-row>
                 <!-- END - Customer Sales -->
-
               </b-col>
               <!-- END - Section 2 -->
-            </b-col></b-row>
+            </b-col>
+          </b-row>
         </b-col>
         <!-- END - Form Personal information -->
 
@@ -304,8 +317,8 @@
           <label class="font-weight-bold w-100 text-center mb-2">Thông tin liên hệ</label>
           <!-- START - Customer Phone Number -->
           <validation-provider
-            v-slot="{ errors, passed, touched }"
-            rules="number|phoneNumber"
+            v-slot="{ errors, passed,}"
+            rules="phoneNumber|required"
             name="Di động"
           >
             <div class="mt-1">
@@ -313,8 +326,9 @@
             </div>
             <b-form-input
               v-model="phoneNumber"
-
-              :state="touched ? passed : null"
+              type="tel"
+              autocomplete="on"
+              :state="phoneNumber.length > 0 ? passed : null"
               maxlength="10"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -323,7 +337,7 @@
 
           <!-- START - Customer Email -->
           <validation-provider
-            v-slot="{ errors, passed, touched }"
+            v-slot="{ errors, passed }"
             rules="email"
             name="Email"
           >
@@ -333,10 +347,10 @@
             <b-form-input
               id="Email"
               v-model="customerEmail"
-
+              type="email"
               maxlength="200"
-              autocomplete="email"
-              :state="touched ? passed : null"
+              autocomplete="on"
+              :state="customerEmail.length > 0 ? passed : null"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -362,25 +376,18 @@
 
           <!-- START - Customer customerProvinces -->
           <b-form-group
-            label="Tỉnh/ thành"
+            label="Tỉnh/ Thành"
             label-for="Province"
             class="mt-1"
           >
-            <b-form-select
+            <v-select
               id="Province"
               v-model="customerProvinces"
-            >
-              <b-form-select-option value="null">
-                Unknown
-              </b-form-select-option>
-              <b-form-select-option
-                v-for="item in provinces"
-                :key="item.value"
-                :value="item.value"
-              >
-                {{ item.text }}
-              </b-form-select-option>
-            </b-form-select>
+              :options="provinces"
+              label="name"
+              autocomplete="on"
+              placeholder="Chọn tỉnh/ thành"
+            />
           </b-form-group>
           <!-- END - Customer customerProvinces -->
 
@@ -388,47 +395,41 @@
           <b-form-row>
             <b-col>
               <b-form-group
-                label="Quận/Huyện"
+                label="Quận/ Huyện"
                 label-for="District"
               >
-                <b-form-select
+                <v-select
                   id="District"
                   v-model="customerDistricts"
+                  :options="districts"
+                  label="name"
+                  autocomplete="on"
+                  placeholder="Chọn quận/ huyện"
                 >
-                  <b-form-select-option value="null">
-                    Unknown
-                  </b-form-select-option>
-                  <b-form-select-option
-                    v-for="item in districts"
-                    :key="item.value"
-                    :value="item.value"
-                  >
-                    {{ item.text }}
-                  </b-form-select-option>
-                </b-form-select>
+                  <template #no-options="{}">
+                    Vui lòng chọn tỉnh/ thành trước
+                  </template>
+                </v-select>
               </b-form-group>
             </b-col>
 
             <b-col>
               <b-form-group
-                label="Phường/Xã"
+                label="Phường/ Xã"
                 label-for="Wards"
               >
-                <b-form-select
+                <v-select
                   id="Wards"
                   v-model="customerPrecincts"
+                  :options="precincts"
+                  label="name"
+                  autocomplete="on"
+                  placeholder="Chọn phường/ xã"
                 >
-                  <b-form-select-option value="null">
-                    Unknown
-                  </b-form-select-option>
-                  <b-form-select-option
-                    v-for="item in precincts"
-                    :key="item.value"
-                    :value="item.value"
-                  >
-                    {{ item.text }}
-                  </b-form-select-option>
-                </b-form-select>
+                  <template #no-options="{}">
+                    Vui lòng chọn quận/ huyện trước
+                  </template>
+                </v-select>
               </b-form-group>
             </b-col>
           </b-form-row>
@@ -442,7 +443,6 @@
             <b-form-input
               id="Office"
               v-model="workingOffice"
-
               maxlength="200"
             />
           </b-form-group>
@@ -456,7 +456,6 @@
             <b-form-input
               id="OfficeAddress"
               v-model="officeAddress"
-
               maxlength="200"
             />
           </b-form-group>
@@ -464,7 +463,7 @@
 
           <!-- START - Customer Tax code-->
           <validation-provider
-            v-slot="{ errors, passed, touched }"
+            v-slot="{ errors, passed }"
             rules="code"
             name="Mã số thuế"
           >
@@ -473,7 +472,7 @@
             </div>
             <b-form-input
               v-model="taxCode"
-              :state="touched ? passed : null"
+              :state="taxCode.length > 0 ? passed : null"
               maxlength="40"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -490,26 +489,24 @@
           class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
         >
           <label class="font-weight-bold w-100 text-center mb-2">Thẻ thành viên</label>
+
           <!-- START - Customer Card type -->
           <b-form-group
             label="Loại thẻ"
             label-for="CardType"
           >
-            <b-form-select
+            <v-select
               id="CardType"
               v-model="selectedCardTypes"
+              :options="cardTypes"
+              label="name"
+              autocomplete="on"
+              placeholder="Chọn loại thẻ"
             >
-              <b-form-select-option value="null">
-                Chọn loại thẻ
-              </b-form-select-option>
-              <b-form-select-option
-                v-for="item in cardTypes"
-                :key="item.value"
-                :value="item.value"
-              >
-                {{ item.text }}
-              </b-form-select-option>
-            </b-form-select>
+              <template #no-options="{}">
+                Không có dữ liệu
+              </template>
+            </v-select>
           </b-form-group>
           <!-- END - Customer Card type -->
 
@@ -518,21 +515,18 @@
             label="Loại khách hàng"
             label-for="Type"
           >
-            <b-form-select
+            <v-select
               id="Type"
               v-model="selectedCloselyTypes"
+              :options="closelyTypes"
+              label="name"
+              autocomplete="on"
+              placeholder="Chọn loại khách hàng"
             >
-              <b-form-select-option value="null">
-                Chọn loại khách hàng
-              </b-form-select-option>
-              <b-form-select-option
-                v-for="item in closelyTypes"
-                :key="item.value"
-                :value="item.value"
-              >
-                {{ item.text }}
-              </b-form-select-option>
-            </b-form-select>
+              <template #no-options="{}">
+                Không có dữ liệu
+              </template>
+            </v-select>
           </b-form-group>
         <!-- END - Customer Type -->
         </b-col>
@@ -602,8 +596,13 @@ import {
   number,
   required,
   email,
+  code,
+  dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { formatDateToVNI } from '@/@core/utils/filter'
+import { formatDateToVNI, formatVniDateToISO } from '@/@core/utils/filter'
+import flatPickr from 'vue-flatpickr-component'
+import '@core/scss/vue/libs/vue-flatpicker.scss'
+import vSelect from 'vue-select'
 import {
   CUSTOMER,
   // GETTERS
@@ -630,6 +629,8 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
+    flatPickr,
+    vSelect,
   },
 
   // START - Data
@@ -638,22 +639,29 @@ export default {
       isModalShow: false,
       isFieldPassed: false,
       customerId: `${this.$route.params.id}`,
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
 
       // validation rules
       number,
       required,
       email,
+      code,
+      dateFormatVNI,
 
       // START - Personal
       customerCode: '',
-      middleName: '',
-      name: '',
+      lastName: '',
+      firstName: '',
       barCode: '',
       birthDay: '',
-      gender: '',
-      customerGroup: '',
-      customerStatus: '',
-      customerSpecial: '',
+      genders: { name: 'Khác', id: '3' },
+      customerGroups: '',
+      customerStatus: { name: 'Hoạt động', id: '1' },
+      customerSpecial: false,
       note: '',
       createdAt: '',
       customerID: '',
@@ -692,41 +700,41 @@ export default {
     },
     customerTypes() {
       return this.CUSTOMER_TYPES_GETTER().map(data => ({
-        value: data.id,
-        text: data.name,
+        id: data.id,
+        name: data.name,
       }))
     },
     provinces() {
       return this.PROVINCES_GETTER().map(data => ({
-        value: data.id,
-        text: data.areaName,
+        id: data.id,
+        name: data.areaName,
       }))
     },
     districts() {
       return this.DISTRICTS_GETTER().map(data => ({
-        value: data.id,
-        text: data.areaName,
+        id: data.id,
+        name: data.areaName,
       }))
     },
 
     precincts() {
       return this.PRECINCTS_GETTER().map(data => ({
-        value: data.id,
-        text: data.areaName,
+        id: data.id,
+        name: data.areaName,
       }))
     },
 
     cardTypes() {
       return this.CARD_TYPES_GETTER().map(data => ({
-        value: data.id,
-        text: data.apParamName,
+        id: data.id,
+        name: data.apParamName,
       }))
     },
 
     closelyTypes() {
       return this.CLOSELY_TYPES_GETTER().map(data => ({
-        value: data.id,
-        text: data.apParamName,
+        id: data.id,
+        name: data.apParamName,
       }))
     },
   },
@@ -752,7 +760,7 @@ export default {
       this.middleName = this.CUSTOMER_BY_ID_GETTER().firstName
       this.name = this.CUSTOMER_BY_ID_GETTER().lastName
       this.barCode = this.CUSTOMER_BY_ID_GETTER().barCode
-      this.birthDay = this.CUSTOMER_BY_ID_GETTER().dob
+      this.birthDay = formatDateToVNI(this.CUSTOMER_BY_ID_GETTER().dob)
       this.gender = this.CUSTOMER_BY_ID_GETTER().genderId
       this.customerGroup = this.CUSTOMER_BY_ID_GETTER().customerTypeId
       this.customerStatus = this.CUSTOMER_BY_ID_GETTER().status
@@ -762,7 +770,7 @@ export default {
       this.customerID = this.CUSTOMER_BY_ID_GETTER().idNo
       this.stateInputValueID = null
       this.invalidFeedbackID = ''
-      this.customerIDDate = this.CUSTOMER_BY_ID_GETTER().idNoIssuedDate
+      this.customerIDDate = formatDateToVNI(this.CUSTOMER_BY_ID_GETTER().idNoIssuedDate)
       this.customerIDLocation = this.CUSTOMER_BY_ID_GETTER().idNoIssuedPlace
       this.totalBill = this.CUSTOMER_BY_ID_GETTER().totalBill
       this.monthOrderNumber = this.CUSTOMER_BY_ID_GETTER().monthOrderNumber
@@ -816,15 +824,6 @@ export default {
       GET_CUSTOMER_BY_ID_ACTION,
     ]),
 
-    randomStr(len, arr) {
-      let ans = ''
-      for (let i = len; i > 0; i) {
-        ans += arr[Math.floor(Math.random() * arr.length)]
-        i -= 1
-      }
-      return ans
-    },
-
     checkDuplicationID(errCode) {
       switch (errCode) {
         case 65000:
@@ -848,22 +847,22 @@ export default {
           this.UPDATE_CUSTOMER_ACTION({
             id: this.customerId,
             customerCode: this.customerCode,
-            firstName: this.name,
-            lastName: this.middleName,
-            genderId: this.gender,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            genderId: this.genders.id,
             barCode: this.barCode,
-            dob: this.birthDay !== '' ? (new Date(this.birthDay).toISOString()) : '',
-            customerTypeId: this.customerGroup,
-            status: this.customerStatus,
+            dob: formatVniDateToISO(this.birthDay),
+            customerTypeId: this.customerGroups.id,
+            status: this.customerStatus.id,
             shopId: 1,
             isPrivate: this.customerSpecial,
             idNo: this.customerID,
-            idNoIssuedDate: this.customerIDDate !== '' ? new Date(this.customerIDDate).toISOString() : '',
+            idNoIssuedDate: formatVniDateToISO(this.customerIDDate),
             idNoIssuedPlace: this.customerIDLocation,
             phone: this.phoneNumber,
             mobiPhone: this.phoneNumber,
             email: this.customerEmail,
-            areaId: this.customerPrecincts,
+            areaId: this.customerPrecincts.id,
             street: this.homeNumber,
             address: null,
             workingOffice: this.workingOffice,
@@ -871,8 +870,8 @@ export default {
             taxCode: this.taxCode,
             isDefault: true,
             noted: this.note,
-            closelyTypeId: this.selectedCloselyTypes,
-            cardType: this.selectedCardTypes,
+            closelyTypeId: this.selectedCloselyTypes.id,
+            cardType: this.selectedCardTypes.id,
           })
         }
       })

@@ -50,3 +50,9 @@ export const validatorPhoneNumber = val => {
   const regex = /(0[3|5|7|8|9])+([0-9]{8})\b/
   return regex.test(val)
 }
+
+export const validatorDateFormatVNI = val => {
+  // dd/mm/yyyy
+  const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/
+  return regex.test(val)
+}
