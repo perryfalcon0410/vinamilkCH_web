@@ -19,7 +19,6 @@ export default {
   // GETTERS
   getters: {
     [RECEIPTEXPORTS_GETTER](state) {
-      console.log(state)
       return state.receiptExports
     },
     [ERROR_CODE_GETTER](state) {
@@ -33,7 +32,6 @@ export default {
   // ACTIONS
   actions: {
     [GET_RECEIPTEXPORTS_ACTION]({ state }, val) {
-      console.log(state)
       WarehousesService
         .getReceiptExports(val)
         .then(response => response.data)

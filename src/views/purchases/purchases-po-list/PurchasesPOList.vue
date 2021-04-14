@@ -418,8 +418,6 @@ export default {
         this.$set(this.rows[params.selectedRows.map(e => e.originalIndex)[0]], 'vgtSelected', false)
         toasts.error('Không thể chọn đơn có trạng thái ĐÃ HỦY')
       }
-      // toasts.success('Không thể chọn đơn có trạng thái ĐÃ HỦY')
-      console.log(params.selectedRows.map(e => e.originalIndex)[0])
     },
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-input-create' })

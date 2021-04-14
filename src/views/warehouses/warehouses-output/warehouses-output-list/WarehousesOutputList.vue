@@ -338,7 +338,6 @@ export default {
       }
 
       datas.unshift(firstItem)
-      console.log(datas)
       return datas.map(data => ({
         ID: data.id,
         Date: data.transDate === '' ? '' : new Date(data.transDate).toLocaleDateString('vi-VN', options),
