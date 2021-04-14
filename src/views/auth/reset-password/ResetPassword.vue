@@ -202,27 +202,8 @@ export default {
       isConfirmPasswordShow: false,
     }
   },
-  computed: {
-    passwordOToggleIcon() {
-      return this.isOldPasswordShow === 'password' ? 'EyeIcon' : 'EyeOffIcon'
-    },
-    passwordNToggleIcon() {
-      return this.isNewPasswordShow === 'password' ? 'EyeIcon' : 'EyeOffIcon'
-    },
-    passwordCToggleIcon() {
-      return this.isConfirmPasswordShow === 'password' ? 'EyeIcon' : 'EyeOffIcon'
-    },
-  },
+
   methods: {
-    togglePasswordOVisibility() {
-      this.isOldPasswordShow = this.isOldPasswordShow === 'password' ? 'text' : 'password'
-    },
-    togglePasswordNVisibility() {
-      this.isNewPasswordShow = this.isNewPasswordShow === 'password' ? 'text' : 'password'
-    },
-    togglePasswordCVisibility() {
-      this.isConfirmPasswordShow = this.isConfirmPasswordShow === 'password' ? 'text' : 'password'
-    },
     validationForm() {
       this.$refs.resetPasswordForm.validate().then(success => {
         if (success) {
