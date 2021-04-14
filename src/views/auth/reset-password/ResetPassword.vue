@@ -63,7 +63,7 @@
                 >
                   <b-form-input
                     v-model="oldPassword"
-                    :type="passwordOFieldType"
+                    :type="isOldPasswordShow ? 'password' : 'text'"
                     :state="errors.length > 0 ? false:null"
                     class="form-control-merge"
                     placeholder="Mật khẩu cũ"
@@ -71,8 +71,8 @@
                   <b-input-group-append is-text>
                     <feather-icon
                       class="cursor-pointer"
-                      :icon="passwordOToggleIcon"
-                      @click="togglePasswordOVisibility"
+                      :icon="isOldPasswordShow ? 'EyeIcon' : 'EyeOffIcon'"
+                      @click="isOldPasswordShow = !isOldPasswordShow"
                     />
                   </b-input-group-append>
                 </b-input-group>
@@ -94,7 +94,7 @@
                 >
                   <b-form-input
                     v-model="newPassword"
-                    :type="passwordNFieldType"
+                    :type="isNewPasswordShow ? 'password' : 'text'"
                     :state="errors.length > 0 ? false:null"
                     class="form-control-merge"
                     placeholder="Mật khẩu mới"
@@ -103,8 +103,8 @@
                   <b-input-group-append is-text>
                     <feather-icon
                       class="cursor-pointer"
-                      :icon="passwordNToggleIcon"
-                      @click="togglePasswordNVisibility"
+                      :icon="isNewPasswordShow ? 'EyeIcon' : 'EyeOffIcon'"
+                      @click="isNewPasswordShow = !isNewPasswordShow"
                     />
                   </b-input-group-append>
                 </b-input-group>
@@ -124,8 +124,8 @@
                   :class="errors.length > 0 ? 'is-invalid':null"
                 >
                   <b-form-input
-                    v-model="cPassword"
-                    :type="password2FieldType"
+                    v-model="confirmPassword"
+                    :type="isConfirmPasswordShow ? 'password' : 'text'"
                     class="form-control-merge"
                     :state="errors.length > 0 ? false:null"
                     placeholder="Xác nhận mật khẩu"
@@ -134,8 +134,8 @@
                   <b-input-group-append is-text>
                     <feather-icon
                       class="cursor-pointer"
-                      :icon="passwordCToggleIcon"
-                      @click="togglePasswordCVisibility"
+                      :icon="isConfirmPasswordShow ? 'EyeIcon' : 'EyeOffIcon'"
+                      @click="isConfirmPasswordShow = !isConfirmPasswordShow"
                     />
                   </b-input-group-append>
                 </b-input-group>
@@ -188,7 +188,7 @@ export default {
       username: '',
       oldPassword: '',
       newPassword: '',
-      cPassword: '',
+      confirmPassword: '',
 
       // validation
       required,
@@ -196,32 +196,32 @@ export default {
       confirmed,
       password,
 
-      // Toggle Password
-      passwordOFieldType: 'password',
-      passwordNFieldType: 'password',
-      passwordCFieldType: 'password',
+      // Toggle Password Status
+      isOldPasswordShow: false,
+      isNewPasswordShow: false,
+      isConfirmPasswordShow: false,
     }
   },
   computed: {
     passwordOToggleIcon() {
-      return this.passwordOFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
+      return this.isOldPasswordShow === 'password' ? 'EyeIcon' : 'EyeOffIcon'
     },
     passwordNToggleIcon() {
-      return this.passwordNFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
+      return this.isNewPasswordShow === 'password' ? 'EyeIcon' : 'EyeOffIcon'
     },
     passwordCToggleIcon() {
-      return this.passwordCFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
+      return this.isConfirmPasswordShow === 'password' ? 'EyeIcon' : 'EyeOffIcon'
     },
   },
   methods: {
     togglePasswordOVisibility() {
-      this.passwordOFieldType = this.passwordOFieldType === 'password' ? 'text' : 'password'
+      this.isOldPasswordShow = this.isOldPasswordShow === 'password' ? 'text' : 'password'
     },
     togglePasswordNVisibility() {
-      this.passwordNFieldType = this.passwordNFieldType === 'password' ? 'text' : 'password'
+      this.isNewPasswordShow = this.isNewPasswordShow === 'password' ? 'text' : 'password'
     },
     togglePasswordCVisibility() {
-      this.passwordCFieldType = this.passwordCFieldType === 'password' ? 'text' : 'password'
+      this.isConfirmPasswordShow = this.isConfirmPasswordShow === 'password' ? 'text' : 'password'
     },
     validationForm() {
       this.$refs.resetPasswordForm.validate().then(success => {
@@ -231,7 +231,7 @@ export default {
               username: this.username,
               oldPassword: this.oldPassword,
               newPassword: this.newPassword,
-              confirmPassword: this.cPassword,
+              confirmPassword: this.confirmPassword,
             })
             .then(response => response.data)
             .then(response => {
