@@ -7,6 +7,7 @@
     <validation-observer
       ref="formContainer"
       v-slot="{invalid}"
+      slim
     >
       <b-row
         class="mx-0"
@@ -94,7 +95,7 @@
                 <b-col>
                   <validation-provider
                     v-slot="{ errors }"
-                    rules="required|dateFormatVNI"
+                    rules="required|dateFormatVNI|age"
                     name="Ngày sinh"
                   >
                     <div class="mt-1">
@@ -518,7 +519,7 @@
 
         <b-button
           class="ml-1 my-1"
-          @click="isModalShow = !isModalShow"
+          @click="checkFieldsValueLength()"
         >
           <b-icon-x class="mr-1" />
           Đóng
@@ -565,6 +566,7 @@ import {
   email,
   code,
   dateFormatVNI,
+  age,
 } from '@/@core/utils/validations/validations'
 import flatPickr from 'vue-flatpickr-component'
 import '@core/scss/vue/libs/vue-flatpicker.scss'
@@ -603,7 +605,6 @@ export default {
   data() {
     return {
       isModalShow: false,
-      isFieldPassed: false,
       configDate: {
         wrap: true,
         allowInput: true,
@@ -616,6 +617,7 @@ export default {
       email,
       code,
       dateFormatVNI,
+      age,
 
       // START - Personal
       lastName: '',
@@ -674,21 +676,18 @@ export default {
         name: data.areaName,
       }))
     },
-
     precincts() {
       return this.PRECINCTS_GETTER().map(data => ({
         id: data.id,
         name: data.areaName,
       }))
     },
-
     cardTypes() {
       return this.CARD_TYPES_GETTER().map(data => ({
         id: data.id,
         name: data.apParamName,
       }))
     },
-
     closelyTypes() {
       return this.CLOSELY_TYPES_GETTER().map(data => ({
         id: data.id,
@@ -709,6 +708,9 @@ export default {
     customerDistricts() {
       this.customerPrecincts = ''
       this.GET_PRECINCTS_ACTION(this.customerDistricts)
+    },
+    customerGroups() {
+      console.log(this.customerGroups.id)
     },
   },
 
@@ -796,6 +798,40 @@ export default {
           })
         }
       })
+    },
+
+    checkFieldsValueLength() {
+      if (
+      // START - Personal
+        this.lastName
+        || this.firstName
+        || this.barCode
+        || this.birthDay
+        || this.genders.name !== 'Khác'
+        || this.customerGroups
+        || this.customerSpecial
+        || this.note
+        || this.customerID
+        || this.customerIDDate
+        || this.customerIDLocation
+        // START - Contact
+        || this.phoneNumber
+        || this.customerEmail
+        || this.homeNumber
+        || this.customerProvinces
+        || this.customerDistricts
+        || this.customerPrecincts
+        || this.workingOffice
+        || this.officeAddress
+        || this.taxCode
+        // START - MembershipCard
+        || this.selectedCardTypes
+        || this.selectedCloselyTypes
+      ) {
+        this.isModalShow = !this.isModalShow
+      } else {
+        this.$router.back()
+      }
     },
 
     onClickAgreeButton() {

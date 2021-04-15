@@ -95,7 +95,7 @@
                 <b-col>
                   <validation-provider
                     v-slot="{ errors }"
-                    rules="required|dateFormatVNI"
+                    rules="required|dateFormatVNI|age"
                     name="Ngày sinh"
                   >
                     <div class="mt-1">
@@ -201,7 +201,7 @@
 
               <!-- START - Customer Date Created -->
               <div>
-                Ngày tạo: <strong>{{ createdAt }}</strong>
+                Ngày tạo: <strong>{{ `${createdAt} (${countDays} ngày)` }}</strong>
               </div>
               <!-- END - Customer Date Created -->
 
@@ -551,7 +551,7 @@
 
         <b-button
           class="ml-1 my-1"
-          @click="isModalShow = !isModalShow"
+          @click="checkFieldsValueLength()"
         >
           <b-icon-x class="mr-1" />
           Đóng
@@ -598,8 +598,11 @@ import {
   email,
   code,
   dateFormatVNI,
+  age,
 } from '@/@core/utils/validations/validations'
 import { formatDateToVNI, formatVniDateToISO } from '@/@core/utils/filter'
+import { dateDiffIndays } from '@/@core/utils/utils'
+
 import flatPickr from 'vue-flatpickr-component'
 import '@core/scss/vue/libs/vue-flatpicker.scss'
 import vSelect from 'vue-select'
@@ -651,6 +654,7 @@ export default {
       email,
       code,
       dateFormatVNI,
+      age,
 
       // START - Personal
       customerCode: '',
@@ -716,14 +720,12 @@ export default {
         name: data.areaName,
       }))
     },
-
     precincts() {
       return this.PRECINCTS_GETTER().map(data => ({
         id: data.id,
         name: data.areaName,
       }))
     },
-
     cardTypes() {
       return this.CARD_TYPES_GETTER().map(data => ({
         id: data.id,
@@ -736,6 +738,9 @@ export default {
         id: data.id,
         name: data.apParamName,
       }))
+    },
+    countDays() {
+      return dateDiffIndays(this.createdAt, new Date())
     },
   },
   // END - Computed
@@ -875,6 +880,41 @@ export default {
           })
         }
       })
+    },
+
+    checkFieldsValueLength() {
+      if (
+      // START - Personal
+        this.lastName
+        || this.firstName
+        || this.barCode
+        || this.birthDay
+        || this.genders.name !== 'Khác'
+        || this.customerGroups
+        || this.customerStatus.name !== 'Hoạt động'
+        || this.customerSpecial
+        || this.note
+        || this.customerID
+        || this.customerIDDate
+        || this.customerIDLocation
+        // START - Contact
+        || this.phoneNumber
+        || this.customerEmail
+        || this.homeNumber
+        || this.customerProvinces
+        || this.customerDistricts
+        || this.customerPrecincts
+        || this.workingOffice
+        || this.officeAddress
+        || this.taxCode
+        // START - MembershipCard
+        || this.selectedCardTypes
+        || this.selectedCloselyTypes
+      ) {
+        this.isModalShow = !this.isModalShow
+      } else {
+        this.$router.back()
+      }
     },
 
     onClickAgreeButton() {

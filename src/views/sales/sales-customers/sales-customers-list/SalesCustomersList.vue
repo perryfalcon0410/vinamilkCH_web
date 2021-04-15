@@ -105,7 +105,7 @@ import {
   mapGetters,
 } from 'vuex'
 import 'vue-good-table/dist/vue-good-table.css'
-import { getGenderLabel } from '@core/utils/utils'
+import { getGenderLabel, getCustomerTypeLabel } from '@core/utils/utils'
 import { formatDateToVNI } from '@core/utils/filter'
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
@@ -186,7 +186,7 @@ export default {
         birthDay: formatDateToVNI(data.dob),
         gender: getGenderLabel(data.genderId),
         status: this.resolveStatus(data.status),
-        group: data.customerType,
+        group: getCustomerTypeLabel(data.customerTypeId),
         date: formatDateToVNI(data.createdAt),
         feature: '',
       }))

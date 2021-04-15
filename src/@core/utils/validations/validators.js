@@ -1,3 +1,5 @@
+import { formatVniDateToGlobal } from '@/@core/utils/filter'
+
 export const validatorPositive = value => {
   if (value >= 0) {
     return true
@@ -55,4 +57,12 @@ export const validatorDateFormatVNI = val => {
   // dd/mm/yyyy
   const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/
   return regex.test(val)
+}
+
+// Must be over or equal to 15 years old (15 years = 5479 days)
+export const validatorAge = val => {
+  const dt1 = new Date(formatVniDateToGlobal(val))
+  const dt2 = new Date()
+  const dtResult = Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) / (1000 * 60 * 60 * 24))
+  return dtResult >= 5479
 }

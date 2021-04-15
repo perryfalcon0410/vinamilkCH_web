@@ -54,6 +54,17 @@ export const getGenderLabel = gender => {
   }
 }
 
+export const getCustomerTypeLabel = type => {
+  switch (type) {
+    case 1:
+      return 'Khách hàng thân thiết'
+    case 2:
+      return 'Khách hàng thường'
+    default:
+      return 'Khách hàng VIP'
+  }
+}
+
 export const formatURLParams = obj => {
   // eslint-disable-next-line no-restricted-syntax
   for (const propName in obj) {
@@ -70,4 +81,11 @@ export const formatDate = date => {
     return new Date(date).toISOString().slice(0, 10).replaceAll('-', '/')
   }
   return ''
+}
+// The date format must be a "date global (yyyy-mm-dd)"
+export const dateDiffIndays = (date1, date2) => {
+  const dt1 = new Date(date1)
+  const dt2 = new Date(date2)
+  const dtResult = Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) / (1000 * 60 * 60 * 24))
+  return dtResult
 }
