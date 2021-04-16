@@ -290,7 +290,7 @@ export default {
                 if (res.data.roles.length === 1 && res.data.roles[0].shops.length === 1) {
                   this.login({
                     roleSelected: { value: res.data.roles[0].id },
-                    shopSelected: { value: res.data.roles[0].shops[0].shopId },
+                    shopSelected: { value: res.data.roles[0].shops[0].id },
                   })
                 } else {
                   this.roles = res.data.roles

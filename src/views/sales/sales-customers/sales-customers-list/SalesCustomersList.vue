@@ -182,7 +182,7 @@ export default {
         id: data.id,
         code: data.customerCode,
         fullName: `${data.lastName} ${data.firstName}`,
-        phoneNumber: data.mobiPhone,
+        phoneNumber: data.mobiPhone || data.phone,
         birthDay: formatDateToVNI(data.dob),
         gender: getGenderLabel(data.genderId),
         status: this.resolveStatus(data.status),

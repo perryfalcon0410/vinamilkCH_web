@@ -33,7 +33,7 @@
               <b-form-row>
                 <b-col>
                   <validation-provider
-                    v-slot="{ errors, passed, touched }"
+                    v-slot="{ errors, valid }"
                     rules="required"
                     name="Họ và tên đệm"
                   >
@@ -42,7 +42,7 @@
                     </div>
                     <b-form-input
                       v-model="lastName"
-                      :state="touched ? passed : null"
+                      :state="errors.length > 0 ? valid : null"
                       maxlength="200"
                       autocomplete="on"
                     />
@@ -52,7 +52,7 @@
 
                 <b-col>
                   <validation-provider
-                    v-slot="{ errors, passed, touched }"
+                    v-slot="{ errors, valid }"
                     rules="required"
                     name="Tên"
                   >
@@ -61,7 +61,7 @@
                     </div>
                     <b-form-input
                       v-model="firstName"
-                      :state="touched ? passed : null"
+                      :state="errors.length > 0 ? valid : null"
                       maxlength="200"
                       autocomplete="on"
                     />
@@ -73,7 +73,7 @@
 
               <!-- START - Customer Barcode -->
               <validation-provider
-                v-slot="{ errors, passed }"
+                v-slot="{ errors, valid }"
                 rules="code"
                 name="Mã vạch"
               >
@@ -83,7 +83,7 @@
                 <b-form-input
                   v-model="barCode"
 
-                  :state="barCode.length > 0 ? passed : null"
+                  :state="barCode.length > 0 ? valid : false"
                   maxlength="40"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -126,9 +126,10 @@
                   </div>
                   <v-select
                     v-model="genders"
-                    :options="[{name: 'Nam', id: '1'},{name: 'Nữ', id: '2'},{name: 'Khác', id: '3'},]"
+                    :options="[{ name: 'Nam', id: 1 }, { name: 'Nữ', id: 2 }, { name: 'Khác', id: 3 }]"
                     label="name"
                     :searchable="false"
+                    :reduce="options => options.id"
                   />
                 </b-col>
               </b-form-row>
@@ -151,6 +152,7 @@
                       label="name"
                       :searchable="false"
                       placeholder="Chọn loại khách hàng"
+                      :reduce="options => options.id"
                     >
                       <template #no-options="{}">
                         Không có dữ liệu
@@ -167,10 +169,10 @@
                   </div>
                   <v-select
                     v-model="customerStatus"
-                    :options="[{name: 'Hoạt động', id: '1'}, {name: 'Ngưng hoạt động', id: '0'}]"
+                    :options="[{name: 'Hoạt động', id: 1}, {name: 'Ngưng hoạt động', id: 0}]"
                     label="name"
                     :searchable="false"
-                    disabled
+                    :reduce="options => options.id"
                   />
                 </b-col>
               </b-form-row>
@@ -215,21 +217,21 @@
             >
               <!-- START - Customer IdentityCard -->
               <validation-provider
-                v-slot="{ errors, passed }"
+                v-slot="{ errors, valid }"
                 rules="number"
                 name="CMND"
               >
                 <b-form-group
                   label="CMND"
                   label-for="IdentityCard"
-                  :state="customerID.length > 0 ? stateInputValueID = passed : null"
+                  :state="customerID.length > 0 ? stateInputValueID = valid : null"
                   :invalid-feedback="invalidFeedbackID"
                 >
                   <b-form-input
                     id="IdentityCard"
                     v-model="customerID"
                     maxlength="15"
-                    :state="customerID.length > 0 ? stateInputValueID = passed : null"
+                    :state="customerID.length > 0 ? stateInputValueID = valid : null"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </b-form-group>
@@ -283,18 +285,18 @@
                 <b-row>
                   <!-- START - 1 -->
                   <b-col>
-                    Doanh số tháng này
+                    <div>Doanh số tháng này</div>
                     <strong>
-                      {{ monthOrderNumber }}
+                      {{ monthOrderNumber || 0 }}
                     </strong>
                   </b-col>
                   <!-- END - 1 -->
 
                   <!-- START - 2 -->
                   <b-col>
-                    Doanh số tổng
+                    <div> Doanh số tổng</div>
                     <strong>
-                      {{ totalBill }}
+                      {{ totalBill || 0 }}
                     </strong>
                   </b-col>
                 <!-- END - 2 -->
@@ -317,7 +319,7 @@
           <label class="font-weight-bold w-100 text-center mb-2">Thông tin liên hệ</label>
           <!-- START - Customer Phone Number -->
           <validation-provider
-            v-slot="{ errors, passed,}"
+            v-slot="{ errors, valid}"
             rules="phoneNumber|required"
             name="Di động"
           >
@@ -328,7 +330,7 @@
               v-model="phoneNumber"
               type="tel"
               autocomplete="on"
-              :state="phoneNumber.length > 0 ? passed : null"
+              :state="phoneNumber.length > 0 ? valid : null"
               maxlength="10"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -337,7 +339,7 @@
 
           <!-- START - Customer Email -->
           <validation-provider
-            v-slot="{ errors, passed }"
+            v-slot="{ errors, valid }"
             rules="email"
             name="Email"
           >
@@ -350,7 +352,7 @@
               type="email"
               maxlength="200"
               autocomplete="on"
-              :state="customerEmail.length > 0 ? passed : null"
+              :state="customerEmail.length > 0 ? valid : null"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -387,6 +389,8 @@
               label="name"
               autocomplete="on"
               placeholder="Chọn tỉnh/ thành"
+              :reduce="options => options.id"
+              @change="whenProvincesChaneOnce()"
             />
           </b-form-group>
           <!-- END - Customer customerProvinces -->
@@ -404,7 +408,9 @@
                   :options="districts"
                   label="name"
                   autocomplete="on"
+                  :reduce="options => options.id"
                   placeholder="Chọn quận/ huyện"
+                  @change="whenDistrictsChaneOnce()"
                 >
                   <template #no-options="{}">
                     Vui lòng chọn tỉnh/ thành trước
@@ -424,6 +430,7 @@
                   :options="precincts"
                   label="name"
                   autocomplete="on"
+                  :reduce="options => options.id"
                   placeholder="Chọn phường/ xã"
                 >
                   <template #no-options="{}">
@@ -463,7 +470,7 @@
 
           <!-- START - Customer Tax code-->
           <validation-provider
-            v-slot="{ errors, passed }"
+            v-slot="{ errors, valid }"
             rules="code"
             name="Mã số thuế"
           >
@@ -472,7 +479,7 @@
             </div>
             <b-form-input
               v-model="taxCode"
-              :state="taxCode.length > 0 ? passed : null"
+              :state="taxCode.length > 0 ? valid : null"
               maxlength="40"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -502,6 +509,7 @@
               label="name"
               autocomplete="on"
               placeholder="Chọn loại thẻ"
+              :reduce="options => options.id"
             >
               <template #no-options="{}">
                 Không có dữ liệu
@@ -522,6 +530,7 @@
               label="name"
               autocomplete="on"
               placeholder="Chọn loại khách hàng"
+              :reduce="options => options.id"
             >
               <template #no-options="{}">
                 Không có dữ liệu
@@ -600,7 +609,7 @@ import {
   dateFormatVNI,
   age,
 } from '@/@core/utils/validations/validations'
-import { formatDateToVNI, formatVniDateToISO } from '@/@core/utils/filter'
+import { formatDateToVNI, formatVniDateToISO, formatVniDateToGlobal } from '@/@core/utils/filter'
 import { dateDiffIndays } from '@/@core/utils/utils'
 
 import flatPickr from 'vue-flatpickr-component'
@@ -662,9 +671,9 @@ export default {
       firstName: '',
       barCode: '',
       birthDay: '',
-      genders: { name: 'Khác', id: '3' },
-      customerGroups: '',
-      customerStatus: { name: 'Hoạt động', id: '1' },
+      genders: null,
+      customerGroups: null,
+      customerStatus: null,
       customerSpecial: false,
       note: '',
       createdAt: '',
@@ -681,9 +690,9 @@ export default {
       phoneNumber: '',
       customerEmail: '',
       homeNumber: '',
-      customerProvinces: 'null',
-      customerDistricts: 'null',
-      customerPrecincts: 'null',
+      customerProvinces: null,
+      customerDistricts: null,
+      customerPrecincts: null,
       workingOffice: '',
       officeAddress: '',
       taxCode: '',
@@ -740,7 +749,7 @@ export default {
       }))
     },
     countDays() {
-      return dateDiffIndays(this.createdAt, new Date())
+      return dateDiffIndays(formatVniDateToGlobal(this.createdAt), new Date())
     },
   },
   // END - Computed
@@ -750,51 +759,46 @@ export default {
       this.checkDuplicationID(this.ERROR_CODE_GETTER())
     },
     customerProvinces() {
-      this.customerDistricts = 'null'
-      this.GET_DISTRICTS_ACTION(this.customerProvinces)
-      this.customerDistricts = this.CUSTOMER_BY_ID_GETTER().areaDTO.districtId
+      if (this.customerProvinces) {
+        this.customerDistricts = null
+        this.GET_DISTRICTS_ACTION(this.customerProvinces)
+      }
     },
     customerDistricts() {
-      this.customerPrecincts = 'null'
-      this.GET_PRECINCTS_ACTION(this.customerDistricts)
-      this.customerPrecincts = this.CUSTOMER_BY_ID_GETTER().areaDTO.precinctId
+      if (this.customerDistricts) {
+        this.customerPrecincts = null
+        this.GET_PRECINCTS_ACTION(this.customerDistricts)
+      }
     },
     customer() {
       // START - Personal
-      this.customerCode = this.CUSTOMER_BY_ID_GETTER().customerCode
-      this.middleName = this.CUSTOMER_BY_ID_GETTER().firstName
-      this.name = this.CUSTOMER_BY_ID_GETTER().lastName
-      this.barCode = this.CUSTOMER_BY_ID_GETTER().barCode
-      this.birthDay = formatDateToVNI(this.CUSTOMER_BY_ID_GETTER().dob)
-      this.gender = this.CUSTOMER_BY_ID_GETTER().genderId
-      this.customerGroup = this.CUSTOMER_BY_ID_GETTER().customerTypeId
-      this.customerStatus = this.CUSTOMER_BY_ID_GETTER().status
-      this.customerSpecial = this.CUSTOMER_BY_ID_GETTER().isPrivate
-      this.note = this.CUSTOMER_BY_ID_GETTER().noted
-      this.createdAt = formatDateToVNI(this.CUSTOMER_BY_ID_GETTER().createdAt)
-      this.customerID = this.CUSTOMER_BY_ID_GETTER().idNo
-      this.stateInputValueID = null
-      this.invalidFeedbackID = ''
-      this.customerIDDate = formatDateToVNI(this.CUSTOMER_BY_ID_GETTER().idNoIssuedDate)
-      this.customerIDLocation = this.CUSTOMER_BY_ID_GETTER().idNoIssuedPlace
-      this.totalBill = this.CUSTOMER_BY_ID_GETTER().totalBill
-      this.monthOrderNumber = this.CUSTOMER_BY_ID_GETTER().monthOrderNumber
-      // END - Personal
-
+      this.customerCode = this.customer.customerCode
+      this.firstName = this.customer.firstName
+      this.lastName = this.customer.lastName
+      this.barCode = this.customer.barCode
+      this.birthDay = formatDateToVNI(this.customer.dob)
+      this.genders = this.customer.genderId
+      this.customerGroups = this.customer.customerTypeId
+      this.customerStatus = this.customer.status
+      this.customerSpecial = this.customer.isPrivate
+      this.note = this.customer.noted
+      this.createdAt = formatDateToVNI(this.customer.createdAt)
+      this.customerID = this.customer.idNo
+      this.customerIDDate = formatDateToVNI(this.customer.idNoIssuedDate)
+      this.customerIDLocation = this.customer.idNoIssuedPlace
+      this.totalBill = this.customer.totalBill
+      this.monthOrderNumber = this.customer.monthOrderNumber
       // START - Contact
-      this.phoneNumber = this.CUSTOMER_BY_ID_GETTER().mobiPhone
-      this.customerEmail = this.CUSTOMER_BY_ID_GETTER().email
-      this.homeNumber = this.CUSTOMER_BY_ID_GETTER().street
-      this.customerProvinces = this.CUSTOMER_BY_ID_GETTER().areaDTO.provinceId
-      this.workingOffice = this.CUSTOMER_BY_ID_GETTER().workingOffice
-      this.officeAddress = this.CUSTOMER_BY_ID_GETTER().officeAddress
-      this.taxCode = this.CUSTOMER_BY_ID_GETTER().taxCode
-      // END - Contact
-
+      this.phoneNumber = this.customer.mobiPhone
+      this.customerEmail = this.customer.email
+      this.homeNumber = this.customer.street
+      this.customerProvinces = this.customer.areaDTO.provinceId
+      this.workingOffice = this.customer.workingOffice
+      this.officeAddress = this.customer.officeAddress
+      this.taxCode = this.customer.taxCode
       // START - MembershipCard
-      this.selectedCardTypes = this.CUSTOMER_BY_ID_GETTER().cardType
-      this.selectedCloselyTypes = this.CUSTOMER_BY_ID_GETTER().closelyTypeId
-      // END - MembershipCard
+      this.selectedCardTypes = this.customer.cardTypeId
+      this.selectedCloselyTypes = this.customer.closelyTypeId
     },
   },
 
@@ -829,6 +833,15 @@ export default {
       GET_CUSTOMER_BY_ID_ACTION,
     ]),
 
+    whenProvincesChaneOnce() {
+      this.GET_DISTRICTS_ACTION(this.customerProvinces)
+      this.customerDistricts = this.customer.areaDTO.districtId
+    },
+    whenDistrictsChaneOnce() {
+      this.GET_PRECINCTS_ACTION(this.customerDistricts)
+      this.customerPrecincts = this.customer.areaDTO.precinctId
+    },
+
     checkDuplicationID(errCode) {
       switch (errCode) {
         case 65000:
@@ -854,11 +867,11 @@ export default {
             customerCode: this.customerCode,
             firstName: this.firstName,
             lastName: this.lastName,
-            genderId: this.genders.id,
+            genderId: this.genders,
             barCode: this.barCode,
             dob: formatVniDateToISO(this.birthDay),
-            customerTypeId: this.customerGroups.id,
-            status: this.customerStatus.id,
+            customerTypeId: this.customerGroups,
+            status: this.customerStatus,
             shopId: 1,
             isPrivate: this.customerSpecial,
             idNo: this.customerID,
@@ -867,7 +880,7 @@ export default {
             phone: this.phoneNumber,
             mobiPhone: this.phoneNumber,
             email: this.customerEmail,
-            areaId: this.customerPrecincts.id,
+            areaId: this.customerPrecincts,
             street: this.homeNumber,
             address: null,
             workingOffice: this.workingOffice,
@@ -875,8 +888,8 @@ export default {
             taxCode: this.taxCode,
             isDefault: true,
             noted: this.note,
-            closelyTypeId: this.selectedCloselyTypes.id,
-            cardType: this.selectedCardTypes.id,
+            closelyTypeId: this.selectedCloselyTypes,
+            cardTypeId: this.selectedCardTypes,
           })
         }
       })
@@ -885,31 +898,29 @@ export default {
     checkFieldsValueLength() {
       if (
       // START - Personal
-        this.lastName
-        || this.firstName
-        || this.barCode
-        || this.birthDay
-        || this.genders.name !== 'Khác'
-        || this.customerGroups
-        || this.customerStatus.name !== 'Hoạt động'
-        || this.customerSpecial
-        || this.note
-        || this.customerID
-        || this.customerIDDate
-        || this.customerIDLocation
+        this.firstName !== this.customer.firstName
+     || this.lastName !== this.customer.lastName
+     || this.barCode !== this.customer.barCode
+     || this.birthDay !== formatDateToVNI(this.customer.dob)
+     || this.genders !== this.customer.genderId
+     || this.customerGroups !== this.customer.customerTypeId
+     || this.customerStatus !== this.customer.status
+     || this.customerSpecial !== this.customer.isPrivate
+     || this.note !== this.customer.noted
+     || this.customerID !== this.customer.idNo
+     || this.customerIDDate !== formatDateToVNI(this.customer.idNoIssuedDate)
+     || this.customerIDLocation !== this.customer.idNoIssuedPlace
         // START - Contact
-        || this.phoneNumber
-        || this.customerEmail
-        || this.homeNumber
-        || this.customerProvinces
-        || this.customerDistricts
-        || this.customerPrecincts
-        || this.workingOffice
-        || this.officeAddress
-        || this.taxCode
+     || this.phoneNumber !== this.customer.mobiPhone
+     || this.customerEmail !== this.customer.email
+     || this.homeNumber !== this.customer.street
+     || this.customerProvinces !== this.customer.areaDTO.provinceId
+     || this.workingOffice !== this.customer.workingOffice
+     || this.officeAddress !== this.customer.officeAddress
+     || this.taxCode !== this.customer.taxCode
         // START - MembershipCard
-        || this.selectedCardTypes
-        || this.selectedCloselyTypes
+     || this.selectedCardTypes !== this.customer.cardTypeId
+     || this.selectedCloselyTypes !== this.customer.closelyTypeId
       ) {
         this.isModalShow = !this.isModalShow
       } else {

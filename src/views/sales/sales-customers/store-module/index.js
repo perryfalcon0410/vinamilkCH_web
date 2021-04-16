@@ -1,5 +1,6 @@
 import CustomerService from '@/views/sales/sales-customers/api-service'
 import toasts from '@core/utils/toasts/toasts'
+import router from '@/router/index'
 
 import {
   // GETTERS
@@ -124,7 +125,7 @@ export default {
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
-            this.$router.push({ name: 'sales-customers' })
+            router.back()
           } else {
             throw new Error(res.statusValue)
           }
@@ -140,7 +141,7 @@ export default {
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
-            this.$router.push({ name: 'sales-customers' })
+            router.back()
           } else {
             throw new Error(res.statusValue)
           }

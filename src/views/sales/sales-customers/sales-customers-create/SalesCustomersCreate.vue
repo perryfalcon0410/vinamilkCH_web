@@ -703,11 +703,11 @@ export default {
     },
     customerProvinces() {
       this.customerDistricts = ''
-      this.GET_DISTRICTS_ACTION(this.customerProvinces)
+      this.GET_DISTRICTS_ACTION(this.customerProvinces.id)
     },
     customerDistricts() {
       this.customerPrecincts = ''
-      this.GET_PRECINCTS_ACTION(this.customerDistricts)
+      this.GET_PRECINCTS_ACTION(this.customerDistricts.id)
     },
     customerGroups() {
       console.log(this.customerGroups.id)

@@ -247,7 +247,7 @@ import {
 import vSelect from 'vue-select'
 import flatPickr from 'vue-flatpickr-component'
 import '@core/scss/vue/libs/vue-flatpicker.scss'
-import { formatVniDateToISO } from '@/@core/utils/filter'
+import { reverseVniDate } from '@/@core/utils/filter'
 import {
   ValidationProvider,
 } from 'vee-validate'
@@ -313,8 +313,8 @@ export default {
     onClickSearchButton() {
       const searchData = {
         searchKeywords: this.searchKeywords.trim(),
-        fromDate: formatVniDateToISO(this.fromDate),
-        toDate: formatVniDateToISO(this.toDate),
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
         customerTypes: this.customerTypes.id,
         status: this.status.id,
         genders: this.genders.id,

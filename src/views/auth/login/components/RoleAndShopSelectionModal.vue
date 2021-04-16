@@ -90,7 +90,7 @@ export default {
         if (roleFound) {
           return roleFound.shops.map(e => ({
             label: e.shopName,
-            value: e.shopId,
+            value: e.id,
           }))
         }
       }
