@@ -376,7 +376,7 @@
           </validation-provider>
           <!-- END - Customer Home number -->
 
-          <!-- START - Customer customerProvinces -->
+          <!-- START - Customer Province -->
           <b-form-group
             label="Tỉnh/ Thành"
             label-for="Province"
@@ -384,7 +384,7 @@
           >
             <v-select
               id="Province"
-              v-model="customerProvinces"
+              v-model="customerProvince"
               :options="provinces"
               label="name"
               autocomplete="on"
@@ -393,7 +393,7 @@
               @change="whenProvincesChaneOnce()"
             />
           </b-form-group>
-          <!-- END - Customer customerProvinces -->
+          <!-- END - Customer Province -->
 
           <!-- START - Customer District and Wards -->
           <b-form-row>
@@ -404,7 +404,7 @@
               >
                 <v-select
                   id="District"
-                  v-model="customerDistricts"
+                  v-model="customerDistrict"
                   :options="districts"
                   label="name"
                   autocomplete="on"
@@ -426,7 +426,7 @@
               >
                 <v-select
                   id="Wards"
-                  v-model="customerPrecincts"
+                  v-model="customerPrecinct"
                   :options="precincts"
                   label="name"
                   autocomplete="on"
@@ -690,9 +690,9 @@ export default {
       phoneNumber: '',
       customerEmail: '',
       homeNumber: '',
-      customerProvinces: null,
-      customerDistricts: null,
-      customerPrecincts: null,
+      customerProvince: null,
+      customerDistrict: null,
+      customerPrecinct: null,
       workingOffice: '',
       officeAddress: '',
       taxCode: '',
@@ -758,16 +758,16 @@ export default {
     ERROR_CODE_GETTER() {
       this.checkDuplicationID(this.ERROR_CODE_GETTER())
     },
-    customerProvinces() {
-      if (this.customerProvinces) {
-        this.customerDistricts = null
-        this.GET_DISTRICTS_ACTION(this.customerProvinces)
+    customerProvince() {
+      if (this.customerProvince) {
+        this.customerDistrict = null
+        this.GET_DISTRICTS_ACTION(this.customerProvince)
       }
     },
-    customerDistricts() {
-      if (this.customerDistricts) {
-        this.customerPrecincts = null
-        this.GET_PRECINCTS_ACTION(this.customerDistricts)
+    customerDistrict() {
+      if (this.customerDistrict) {
+        this.customerPrecinct = null
+        this.GET_PRECINCTS_ACTION(this.customerDistrict)
       }
     },
     customer() {
@@ -792,7 +792,7 @@ export default {
       this.phoneNumber = this.customer.mobiPhone
       this.customerEmail = this.customer.email
       this.homeNumber = this.customer.street
-      this.customerProvinces = this.customer.areaDTO.provinceId
+      this.customerProvince = this.customer.areaDTO.provinceId
       this.workingOffice = this.customer.workingOffice
       this.officeAddress = this.customer.officeAddress
       this.taxCode = this.customer.taxCode
@@ -834,12 +834,12 @@ export default {
     ]),
 
     whenProvincesChaneOnce() {
-      this.GET_DISTRICTS_ACTION(this.customerProvinces)
-      this.customerDistricts = this.customer.areaDTO.districtId
+      this.GET_DISTRICTS_ACTION(this.customerProvince)
+      this.customerDistrict = this.customer.areaDTO.districtId
     },
     whenDistrictsChaneOnce() {
-      this.GET_PRECINCTS_ACTION(this.customerDistricts)
-      this.customerPrecincts = this.customer.areaDTO.precinctId
+      this.GET_PRECINCTS_ACTION(this.customerDistrict)
+      this.customerPrecinct = this.customer.areaDTO.precinctId
     },
 
     checkDuplicationID(errCode) {
@@ -880,7 +880,7 @@ export default {
             phone: this.phoneNumber,
             mobiPhone: this.phoneNumber,
             email: this.customerEmail,
-            areaId: this.customerPrecincts,
+            areaId: this.customerPrecinct,
             street: this.homeNumber,
             address: null,
             workingOffice: this.workingOffice,
@@ -914,7 +914,7 @@ export default {
      || this.phoneNumber !== this.customer.mobiPhone
      || this.customerEmail !== this.customer.email
      || this.homeNumber !== this.customer.street
-     || this.customerProvinces !== this.customer.areaDTO.provinceId
+     || this.customerProvince !== this.customer.areaDTO.provinceId
      || this.workingOffice !== this.customer.workingOffice
      || this.officeAddress !== this.customer.officeAddress
      || this.taxCode !== this.customer.taxCode
