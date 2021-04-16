@@ -42,7 +42,7 @@
                     </div>
                     <b-form-input
                       v-model="lastName"
-                      :state="errors.length > 0 ? valid : null"
+                      :state="lastName ? valid : null"
                       maxlength="200"
                       autocomplete="on"
                     />
@@ -61,7 +61,7 @@
                     </div>
                     <b-form-input
                       v-model="firstName"
-                      :state="errors.length > 0 ? valid : null"
+                      :state="firstName ? valid : null"
                       maxlength="200"
                       autocomplete="on"
                     />
@@ -82,8 +82,7 @@
                 </div>
                 <b-form-input
                   v-model="barCode"
-
-                  :state="barCode.length > 0 ? valid : false"
+                  :state="barCode ? valid : null"
                   maxlength="40"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -224,14 +223,14 @@
                 <b-form-group
                   label="CMND"
                   label-for="IdentityCard"
-                  :state="customerID.length > 0 ? stateInputValueID = valid : null"
+                  :state="customerID ? stateInputValueID = valid : null"
                   :invalid-feedback="invalidFeedbackID"
                 >
                   <b-form-input
                     id="IdentityCard"
                     v-model="customerID"
                     maxlength="15"
-                    :state="customerID.length > 0 ? stateInputValueID = valid : null"
+                    :state="customerID ? stateInputValueID = valid : null"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </b-form-group>
@@ -330,7 +329,7 @@
               v-model="phoneNumber"
               type="tel"
               autocomplete="on"
-              :state="phoneNumber.length > 0 ? valid : null"
+              :state="phoneNumber ? valid : null"
               maxlength="10"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -352,7 +351,7 @@
               type="email"
               maxlength="200"
               autocomplete="on"
-              :state="customerEmail.length > 0 ? valid : null"
+              :state="customerEmail ? valid : null"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -360,7 +359,7 @@
 
           <!-- START - Customer Home number -->
           <validation-provider
-            v-slot="{ errors, passed, touched }"
+            v-slot="{ errors, valid }"
             rules="required"
             name="Số nhà"
           >
@@ -370,7 +369,7 @@
             <b-form-input
               v-model="homeNumber"
               maxlength="200"
-              :state="touched ? passed : null"
+              :state="homeNumber ? valid : null"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -390,7 +389,6 @@
               autocomplete="on"
               placeholder="Chọn tỉnh/ thành"
               :reduce="options => options.id"
-              @change="whenProvincesChaneOnce()"
             />
           </b-form-group>
           <!-- END - Customer Province -->
@@ -410,7 +408,6 @@
                   autocomplete="on"
                   :reduce="options => options.id"
                   placeholder="Chọn quận/ huyện"
-                  @change="whenDistrictsChaneOnce()"
                 >
                   <template #no-options="{}">
                     Vui lòng chọn tỉnh/ thành trước
@@ -479,7 +476,7 @@
             </div>
             <b-form-input
               v-model="taxCode"
-              :state="taxCode.length > 0 ? valid : null"
+              :state="taxCode ? valid : null"
               maxlength="40"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -560,7 +557,7 @@
 
         <b-button
           class="ml-1 my-1"
-          @click="checkFieldsValueLength()"
+          @click="navigateBack()"
         >
           <b-icon-x class="mr-1" />
           Đóng
@@ -579,7 +576,7 @@
       <template #modal-footer>
         <b-button
           variant="primary"
-          @click="onClickAgreeButton"
+          @click="onClickAgreeButton()"
         >
           Đồng ý
         </b-button>
@@ -649,13 +646,14 @@ export default {
   data() {
     return {
       isModalShow: false,
-      isFieldPassed: false,
+      isFieldCheck: true,
       customerId: `${this.$route.params.id}`,
       configDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
+      goNext: () => {},
 
       // validation rules
       number,
@@ -762,43 +760,18 @@ export default {
       if (this.customerProvince) {
         this.customerDistrict = null
         this.GET_DISTRICTS_ACTION(this.customerProvince)
+        this.customerDistrict = this.customer.areaDTO.districtId
       }
     },
     customerDistrict() {
       if (this.customerDistrict) {
         this.customerPrecinct = null
         this.GET_PRECINCTS_ACTION(this.customerDistrict)
+        this.customerPrecinct = this.customer.areaDTO.precinctId
       }
     },
     customer() {
-      // START - Personal
-      this.customerCode = this.customer.customerCode
-      this.firstName = this.customer.firstName
-      this.lastName = this.customer.lastName
-      this.barCode = this.customer.barCode
-      this.birthDay = formatDateToVNI(this.customer.dob)
-      this.genders = this.customer.genderId
-      this.customerGroups = this.customer.customerTypeId
-      this.customerStatus = this.customer.status
-      this.customerSpecial = this.customer.isPrivate
-      this.note = this.customer.noted
-      this.createdAt = formatDateToVNI(this.customer.createdAt)
-      this.customerID = this.customer.idNo
-      this.customerIDDate = formatDateToVNI(this.customer.idNoIssuedDate)
-      this.customerIDLocation = this.customer.idNoIssuedPlace
-      this.totalBill = this.customer.totalBill
-      this.monthOrderNumber = this.customer.monthOrderNumber
-      // START - Contact
-      this.phoneNumber = this.customer.mobiPhone
-      this.customerEmail = this.customer.email
-      this.homeNumber = this.customer.street
-      this.customerProvince = this.customer.areaDTO.provinceId
-      this.workingOffice = this.customer.workingOffice
-      this.officeAddress = this.customer.officeAddress
-      this.taxCode = this.customer.taxCode
-      // START - MembershipCard
-      this.selectedCardTypes = this.customer.cardTypeId
-      this.selectedCloselyTypes = this.customer.closelyTypeId
+      this.getCustomer()
     },
   },
 
@@ -808,6 +781,19 @@ export default {
     this.GET_CARD_TYPES_ACTION()
     this.GET_CLOSELY_TYPES_ACTION()
     this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
+  },
+
+  beforeRouteLeave(to, from, next) {
+    if (this.isFieldCheck) {
+      if (this.checkFieldsValueLength()) {
+        this.isModalShow = !this.isModalShow
+        this.goNext = next
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
   },
 
   // START - Methods
@@ -833,15 +819,6 @@ export default {
       GET_CUSTOMER_BY_ID_ACTION,
     ]),
 
-    whenProvincesChaneOnce() {
-      this.GET_DISTRICTS_ACTION(this.customerProvince)
-      this.customerDistrict = this.customer.areaDTO.districtId
-    },
-    whenDistrictsChaneOnce() {
-      this.GET_PRECINCTS_ACTION(this.customerDistrict)
-      this.customerPrecinct = this.customer.areaDTO.precinctId
-    },
-
     checkDuplicationID(errCode) {
       switch (errCode) {
         case 65000:
@@ -855,6 +832,39 @@ export default {
           this.stateInputValueID = true
           break
       }
+    },
+
+    getCustomer() {
+      // START - Personal
+      this.customerCode = this.customer.customerCode
+      this.firstName = this.customer.firstName
+      this.lastName = this.customer.lastName
+      this.barCode = this.customer.barCode
+      this.birthDay = formatDateToVNI(this.customer.dob)
+      this.genders = this.customer.genderId
+      this.customerGroups = this.customer.customerTypeId
+      this.customerStatus = this.customer.status
+      this.customerSpecial = this.customer.isPrivate
+      this.note = this.customer.noted
+      this.createdAt = formatDateToVNI(this.customer.createdAt)
+      this.customerID = this.customer.idNo
+      this.customerIDDate = formatDateToVNI(this.customer.idNoIssuedDate)
+      this.customerIDLocation = this.customer.idNoIssuedPlace
+      this.totalBill = this.customer.totalBill
+      this.monthOrderNumber = this.customer.monthOrderNumber
+      // START - Contact
+      this.phoneNumber = this.customer.mobiPhone
+      this.customerEmail = this.customer.email
+      this.homeNumber = this.customer.street
+      this.customerProvince = this.customer.areaDTO.provinceId
+      this.customerDistrict = this.customer.areaDTO.districtId
+      this.customerPrecinct = this.customer.areaDTO.precinctId
+      this.workingOffice = this.customer.workingOffice
+      this.officeAddress = this.customer.officeAddress
+      this.taxCode = this.customer.taxCode
+      // START - MembershipCard
+      this.selectedCardTypes = this.customer.cardTypeId
+      this.selectedCloselyTypes = this.customer.closelyTypeId
     },
 
     create() {
@@ -915,6 +925,8 @@ export default {
      || this.customerEmail !== this.customer.email
      || this.homeNumber !== this.customer.street
      || this.customerProvince !== this.customer.areaDTO.provinceId
+     || this.customerDistrict !== this.customer.areaDTO.districtId
+     || this.customerPrecinct !== this.customer.areaDTO.precinctId
      || this.workingOffice !== this.customer.workingOffice
      || this.officeAddress !== this.customer.officeAddress
      || this.taxCode !== this.customer.taxCode
@@ -922,19 +934,23 @@ export default {
      || this.selectedCardTypes !== this.customer.cardTypeId
      || this.selectedCloselyTypes !== this.customer.closelyTypeId
       ) {
-        this.isModalShow = !this.isModalShow
-      } else {
-        this.$router.back()
+        return true
       }
+      return false
     },
 
     onClickAgreeButton() {
       this.isModalShow = !this.isModalShow
-      this.$router.back()
+      this.goNext()
     },
 
     onClickSaveButton() {
+      this.isFieldCheck = false
       this.create()
+    },
+
+    navigateBack() {
+      this.$router.back()
     },
   },
   // END - Methods

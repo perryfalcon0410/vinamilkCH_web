@@ -83,7 +83,7 @@
                 <b-form-input
                   v-model="barCode"
 
-                  :state="barCode.length > 0 ? passed : null"
+                  :state="barCode ? passed : null"
                   maxlength="40"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -215,14 +215,14 @@
                 <b-form-group
                   label="CMND"
                   label-for="IdentityCard"
-                  :state="customerID.length > 0 ? stateInputValueID = passed : null"
+                  :state="customerID ? stateInputValueID = passed : null"
                   :invalid-feedback="invalidFeedbackID"
                 >
                   <b-form-input
                     id="IdentityCard"
                     v-model="customerID"
                     maxlength="15"
-                    :state="customerID.length > 0 ? stateInputValueID = passed : null"
+                    :state="customerID ? stateInputValueID = passed : null"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </b-form-group>
@@ -296,7 +296,7 @@
               v-model="phoneNumber"
               autocomplete="on"
               type="tel"
-              :state="phoneNumber.length > 0 ? passed : null"
+              :state="phoneNumber ? passed : null"
               maxlength="10"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -318,7 +318,7 @@
               type="email"
               autocomplete="on"
               maxlength="200"
-              :state="customerEmail.length > 0 ? passed : null"
+              :state="customerEmail ? passed : null"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -342,7 +342,7 @@
           </validation-provider>
           <!-- END - Customer Home number -->
 
-          <!-- START - Customer customerProvinces -->
+          <!-- START - Customer Province -->
           <b-form-group
             label="Tỉnh/ Thành"
             label-for="Province"
@@ -350,14 +350,14 @@
           >
             <v-select
               id="Province"
-              v-model="customerProvinces"
+              v-model="customerProvince"
               :options="provinces"
               label="name"
               autocomplete="on"
               placeholder="Chọn tỉnh/ thành"
             />
           </b-form-group>
-          <!-- END - Customer customerProvinces -->
+          <!-- END - Customer Province -->
 
           <!-- START - Customer District and Wards -->
           <b-form-row>
@@ -368,7 +368,7 @@
               >
                 <v-select
                   id="District"
-                  v-model="customerDistricts"
+                  v-model="customerDistrict"
                   :options="districts"
                   label="name"
                   autocomplete="on"
@@ -388,7 +388,7 @@
               >
                 <v-select
                   id="Wards"
-                  v-model="customerPrecincts"
+                  v-model="customerPrecinct"
                   :options="precincts"
                   label="name"
                   autocomplete="on"
@@ -440,7 +440,7 @@
             </div>
             <b-form-input
               v-model="taxCode"
-              :state="taxCode.length > 0 ? passed : null"
+              :state="taxCode ? passed : null"
               maxlength="40"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -519,7 +519,7 @@
 
         <b-button
           class="ml-1 my-1"
-          @click="checkFieldsValueLength()"
+          @click="navigateBack()"
         >
           <b-icon-x class="mr-1" />
           Đóng
@@ -538,7 +538,7 @@
       <template #modal-footer>
         <b-button
           variant="primary"
-          @click="onClickAgreeButton"
+          @click="onClickAgreeButton()"
         >
           Đồng ý
         </b-button>
@@ -605,11 +605,13 @@ export default {
   data() {
     return {
       isModalShow: false,
+      isFieldCheck: true,
       configDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
+      goNext: () => {},
 
       // validation rules
       number,
@@ -625,7 +627,7 @@ export default {
       barCode: '',
       birthDay: '',
       genders: { name: 'Khác', id: '3' },
-      customerGroups: '',
+      customerGroups: null,
       customerStatus: { name: 'Hoạt động', id: '1' },
       customerSpecial: false,
       note: '',
@@ -640,9 +642,9 @@ export default {
       phoneNumber: '',
       customerEmail: '',
       homeNumber: '',
-      customerProvinces: '',
-      customerDistricts: '',
-      customerPrecincts: '',
+      customerProvince: null,
+      customerDistrict: null,
+      customerPrecinct: null,
       workingOffice: '',
       officeAddress: '',
       taxCode: '',
@@ -701,16 +703,13 @@ export default {
     ERROR_CODE_GETTER() {
       this.checkDuplicationID(this.ERROR_CODE_GETTER())
     },
-    customerProvinces() {
-      this.customerDistricts = ''
-      this.GET_DISTRICTS_ACTION(this.customerProvinces.id)
+    customerProvince() {
+      this.customerDistrict = null
+      this.GET_DISTRICTS_ACTION(this.customerProvince.id)
     },
-    customerDistricts() {
-      this.customerPrecincts = ''
-      this.GET_PRECINCTS_ACTION(this.customerDistricts.id)
-    },
-    customerGroups() {
-      console.log(this.customerGroups.id)
+    customerDistrict() {
+      this.customerPrecinct = null
+      this.GET_PRECINCTS_ACTION(this.customerDistrict.id)
     },
   },
 
@@ -719,6 +718,19 @@ export default {
     this.GET_PROVINCES_ACTION()
     this.GET_CARD_TYPES_ACTION()
     this.GET_CLOSELY_TYPES_ACTION()
+  },
+
+  beforeRouteLeave(to, from, next) {
+    if (this.isFieldCheck) {
+      if (this.checkFieldsValueLength()) {
+        this.isModalShow = !this.isModalShow
+        this.goNext = next
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
   },
 
   // START - Methods
@@ -741,15 +753,6 @@ export default {
       GET_CARD_TYPES_ACTION,
       GET_CLOSELY_TYPES_ACTION,
     ]),
-
-    randomStr(len, arr) {
-      let ans = ''
-      for (let i = len; i > 0; i) {
-        ans += arr[Math.floor(Math.random() * arr.length)]
-        i -= 1
-      }
-      return ans
-    },
 
     checkDuplicationID(errCode) {
       switch (errCode) {
@@ -785,7 +788,7 @@ export default {
             phone: this.phoneNumber,
             mobiPhone: this.phoneNumber,
             email: this.customerEmail,
-            areaId: this.customerPrecincts.id,
+            areaId: this.customerPrecinct.id,
             street: this.homeNumber,
             address: null,
             workingOffice: this.workingOffice,
@@ -794,7 +797,7 @@ export default {
             isDefault: true,
             noted: this.note,
             closelyTypeId: this.selectedCloselyTypes.id,
-            cardType: this.selectedCardTypes.id,
+            cardTypeId: this.selectedCardTypes.id,
           })
         }
       })
@@ -818,9 +821,9 @@ export default {
         || this.phoneNumber
         || this.customerEmail
         || this.homeNumber
-        || this.customerProvinces
-        || this.customerDistricts
-        || this.customerPrecincts
+        || this.customerProvince
+        || this.customerDistrict
+        || this.customerPrecinct
         || this.workingOffice
         || this.officeAddress
         || this.taxCode
@@ -828,19 +831,23 @@ export default {
         || this.selectedCardTypes
         || this.selectedCloselyTypes
       ) {
-        this.isModalShow = !this.isModalShow
-      } else {
-        this.$router.back()
+        return true
       }
+      return false
     },
 
     onClickAgreeButton() {
       this.isModalShow = !this.isModalShow
-      this.$router.back()
+      this.goNext()
     },
 
     onClickSaveButton() {
+      this.isFieldCheck = false
       this.create()
+    },
+
+    navigateBack() {
+      this.$router.back()
     },
   },
   // END - Methods

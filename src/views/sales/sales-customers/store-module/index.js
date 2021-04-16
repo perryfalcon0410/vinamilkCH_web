@@ -125,7 +125,7 @@ export default {
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
-            router.back()
+            router.push({ name: 'sales-customers' })
           } else {
             throw new Error(res.statusValue)
           }
@@ -141,7 +141,7 @@ export default {
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
-            router.back()
+            router.push({ name: 'sales-customers' })
           } else {
             throw new Error(res.statusValue)
           }

@@ -3,7 +3,7 @@
     <!-- START - Search -->
     <b-form
       class="bg-white rounded shadow"
-      @submit.prevent="onClickSearchButton"
+      @keyup.enter="onClickSearchButton"
     >
       <b-row
         v-b-toggle.collapseDelivery
@@ -130,7 +130,7 @@
               <v-select
                 id="form-input-customer-group"
                 v-model="customerTypes"
-                :options="[{name: 'Khách hàng thân thiết', id: '1'},{name: 'Khách hàng thường', id: '2'},{name: 'Khách hàng VIP', id: '3'}]"
+                :options="[{name: 'Khách hàng thân thiết', id: '1'},{name: 'Khách hàng thường', id: '2'},{name: 'Khách hàng VIP', id: '21'}]"
                 label="name"
                 placeholder="Tất cả"
                 :searchable="false"
@@ -302,6 +302,7 @@ export default {
       shopId: 1, // Hard code
     })
   },
+
   methods: {
     ...mapActions(CUSTOMER, [
       GET_CUSTOMERS_ACTION,
@@ -315,10 +316,10 @@ export default {
         searchKeywords: this.searchKeywords.trim(),
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        customerTypes: this.customerTypes.id,
-        status: this.status.id,
-        genders: this.genders.id,
-        areas: this.areas.id,
+        customerTypeId: this.customerTypes?.id,
+        status: this.status?.id,
+        genderId: this.genders?.id,
+        areaId: this.areas?.id,
       }
 
       this.GET_CUSTOMERS_ACTION(searchData)
