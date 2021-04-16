@@ -17,6 +17,8 @@ export const validatorPassword = password => {
 
 export const validatorNotEqual = (val, { target }) => val !== target
 
+export const validatorEqual = (val, { target }) => val === target
+
 export const validatorCreditCard = creditnum => {
   /* eslint-disable no-useless-escape */
   const cRegExp = /^(?:3[47][0-9]{13})$/

@@ -297,7 +297,9 @@ export default {
                   this.isShowRoleAndShopSelectionModal = true
                 }
               } else {
-                this.checkCaptchaExist(res.data.captcha)
+                if (res.data) {
+                  this.checkCaptchaExist(res.data.captcha)
+                }
                 throw new Error(res.statusValue)
               }
             })

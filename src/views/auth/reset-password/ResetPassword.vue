@@ -67,6 +67,7 @@
                     :state="errors.length > 0 ? false:null"
                     class="form-control-merge"
                     placeholder="Mật khẩu cũ"
+                    maxlength="20"
                   />
                   <b-input-group-append is-text>
                     <feather-icon
@@ -116,8 +117,8 @@
             <b-form-group>
               <validation-provider
                 #default="{ errors }"
-                name="Xác nhận mật khẩu mới"
-                rules="required|confirmed:newPassword"
+                name="Xác nhận mật khẩu"
+                rules="required|equal:@newPassword"
               >
                 <b-input-group
                   class="input-group-merge"
@@ -172,7 +173,7 @@
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
-  required, notEqual, confirmed, password,
+  required, notEqual, confirmed, password, equal,
 } from '@core/utils/validations/validations'
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
@@ -195,6 +196,7 @@ export default {
       notEqual,
       confirmed,
       password,
+      equal,
 
       // Toggle Password Status
       isOldPasswordShow: false,
@@ -215,12 +217,12 @@ export default {
               confirmPassword: this.confirmPassword,
             })
             .then(response => response.data)
-            .then(response => {
-              if (response.success) {
+            .then(res => {
+              if (res.success) {
                 this.navigateToLoginPage()
-                toasts.success(response.statusValue)
+                toasts.success(res.statusValue)
               } else {
-                throw new Error(response.statusValue)
+                throw new Error(res.statusValue)
               }
             })
             .catch(error => {

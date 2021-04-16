@@ -26,6 +26,7 @@ import {
   validatorPhoneNumber,
   validatorDateFormatVNI,
   validatorAge,
+  validatorEqual,
 } from './validators'
 
 // ////////////////////////////////////////////////////////
@@ -77,6 +78,12 @@ export const notEqual = extend('not-equal', {
   message: '{_field_} phải khác với {target}',
 })
 
+export const equal = extend('equal', {
+  validate: validatorEqual,
+  params: ['target'],
+  message: '{target} và {_field_} phải giống nhau ',
+})
+
 export const url = extend('url', {
   validate: validatorUrlValidator,
   message: 'URL is invalid',
@@ -107,11 +114,15 @@ export const age = extend('age', {
   message: 'Khách hàng không được dưới 15 tuổi',
 })
 
+localize('vi', vi)
 localize({
-  en: {
-    messages: vi.messages,
+  vi: {
+    messages: {
+      required: field => `Vui lòng nhập ${field}`,
+    },
   },
 })
+
 // ////////////////////////////////////////////////////////
 // NOTE:
 // Quasar validation for reference only
