@@ -29,4 +29,20 @@ export default [
       ],
     },
   },
+
+  // Bao cao Ton kho
+  {
+    path: '/reports/warehouses-inventory',
+    name: 'reports-warehouses-inventory',
+    component: () => import('@/views/reports/reports-warehouses/reports-warehouses-inventory/reports-warehouses-inventory-list/ReportsWarehousesInventoryList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo tồn kho',
+      breadcrumb: [
+        {
+          text: 'Danh sách sản phẩm tồn kho',
+          active: true,
+        },
+      ],
+    },
+  },
 ]
