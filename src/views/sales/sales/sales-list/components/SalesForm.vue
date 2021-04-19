@@ -69,7 +69,8 @@
               @blur="inputSearchFocused = false"
             />
             <b-input-group-append is-text>
-              <b-icon-plus />
+              <b-icon-plus @click="showModal" />
+              <sales-create-modal ref="salesCreateModal" />
             </b-input-group-append>
           </b-input-group>
           <!-- END - Search -->
@@ -296,12 +297,24 @@
 </template>
 
 <script>
+// eslint-disable-next-line import/extensions
+import SalesCreateModal from './SalesCreateModal'
+
 export default {
+  components: {
+    SalesCreateModal,
+  },
   data() {
     return {
       inputSearchFocused: false,
     }
   },
-
+  methods: {
+    showModal() {
+      if (!undefined) {
+        this.$refs.salesCreateModal.$refs.myModal.show()
+      }
+    },
+  },
 }
 </script>
