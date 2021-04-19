@@ -182,6 +182,7 @@
             >
               <b-form-textarea
                 id="note"
+                v-model="note"
                 maxlength="4000"
               />
             </b-form-group>
@@ -390,6 +391,7 @@ export default {
       internalNumber: '',
       billDate: new Date(),
       poNo: '',
+      note: '',
 
       // validation rules
       number,
@@ -578,7 +580,6 @@ export default {
       })
       this.AdjustmentModalVisible = importAdjustModalState
       this.poNo = null
-      this.internalNumber = 'null'
       this.status = 1
       this.tableRender()
     },
@@ -586,13 +587,14 @@ export default {
 
     // ------------------------------Nhap vay muon----------------------------
     dataFromInputBorrwo(data) {
-      const [importBorrowsDetail, importBorrowModalState] = data
+      const [importBorrowsDetail, importBorrowModalState, borrowCode] = data
       importBorrowsDetail.forEach(element => {
         this.BorrowColumns.push(element)
       })
       this.BorrowedModalVisible = importBorrowModalState
       this.poNo = null
-      this.internalNumber = 'null'
+      this.internalNumber = null
+      this.billNumber = borrowCode
       this.status = 2
       this.tableRender()
     },
@@ -610,14 +612,17 @@ export default {
       }
     },
     create() {
-       this.$refs.formContainer.validate().then(success => {
-         if (success) {
-           this.POST_SALE_IMPORT_ACTION({
-             'importType': this.status,
-             'poNumber': this.poNo,
-           })
+      this.$refs.formContainer.validate().then(success => {
+        if (success) {
+          this.POST_SALE_IMPORT_ACTION({
+            importType: this.status,
+            poNo: this.poNo,
+            internalNumber: this.internalNumber,
+            billNumber: this.billNumber,
+            note: this.note,
+          })
         }
-      }
+      })
     },
   },
 }

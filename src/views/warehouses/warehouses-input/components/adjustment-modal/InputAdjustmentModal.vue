@@ -50,7 +50,7 @@
               :key="item.id"
               class="border-bottom border-white bg-light py-1"
               :class="{ 'text-primary': current == item.id }"
-              @click="PoSelected(item.id)"
+              @click="PoSelected(item.id, item.poBorrowCode)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
@@ -156,6 +156,7 @@ export default {
   data() {
     return {
       current: null,
+      borrowCode: null,
       columns: [
         {
           label: 'Số chứng từ',
@@ -230,12 +231,13 @@ export default {
     hoverHandler(hovered) {
       this.isHover = hovered
     },
-    PoSelected(id) {
+    PoSelected(id, code) {
       this.current = id
+      this.borrowCode = code
       this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION(this.current)
     },
     inputAdjustmentConfirm() {
-      this.$emit('inputAdjust', [this.importAdjustmentsDetailList, false])
+      this.$emit('inputAdjust', [this.importAdjustmentsDetailList, false, this.borrowCode])
     },
   },
 }
