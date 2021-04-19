@@ -45,7 +45,9 @@
               v-model="product"
             />
             <b-input-group-append is-text>
-              <b-icon-three-dots-vertical />
+              <b-icon-three-dots-vertical
+                @click="showFindProductModal"
+              />
             </b-input-group-append>
           </b-input-group>
 
@@ -74,11 +76,27 @@
       </b-col>
       <!-- END - Search button -->
     </b-form-row>
+    <find-product-modal :visible="isShowFindProductModal" />
   </b-form>
 </template>
 
 <script>
-export default {
+import FindProductModal from './FindProductModal.vue'
 
+export default {
+  components: {
+    FindProductModal,
+  },
+  data() {
+    return {
+      isShowFindProductModal: false,
+    }
+  },
+  methods: {
+    showFindProductModal() {
+      this.isShowFindProductModal = !this.isShowFindProductModal
+      console.log('click')
+    },
+  },
 }
 </script>

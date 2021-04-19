@@ -7,8 +7,7 @@
     title-class="text-uppercase font-weight-bold text-primary"
     content-class="bg-light"
     footer-border-variant="light"
-    :ok-disabled="true"
-    :cancel-disabled="true"
+    hide-footer="true"
   >
     <b-card>
       <!--START search form-->
@@ -111,21 +110,21 @@
       </b-form>
       <b-row class="m-1 justify-content-center">
         <b-button-group>
-          <button
+          <b-button
             variant="primary"
             class="d-flex align-items-center rounded text-uppercase"
           >
             <b-icon
-              icon="ear-mark-x"
+              icon="download"
               width="20"
               height="20"
               class="mr-1"
             />
             lưu
-          </button>
+          </b-button>
           <b-button
             class="d-flex align-items-center ml-1 rounded text-uppercase"
-            @click="this.$bvModal.hide('modal')"
+            @click="$bvModal.hide('modal')"
           >
             <b-icon
               icon="x"

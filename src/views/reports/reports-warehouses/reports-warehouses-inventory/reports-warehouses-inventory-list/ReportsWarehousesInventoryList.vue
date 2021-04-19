@@ -114,7 +114,6 @@
             </b-row>
           </template>
           <!-- START - Column filter -->
-
         </vue-good-table>
       </b-col>
     </b-form>
