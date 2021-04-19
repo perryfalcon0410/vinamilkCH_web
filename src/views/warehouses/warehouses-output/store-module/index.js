@@ -49,10 +49,8 @@ export default {
           toasts.error(error.message)
         })
     },
-    [PRINT_RECEIPTEXPORT_ACTION]({ state }, val) {
-      console.log(state)
+    [PRINT_RECEIPTEXPORT_ACTION]({ }, val) {
       const fileName = `${val.transCode}.pdf`
-      console.log(fileName)
       WarehousesService
         .printReceiptExports(val)
         .then(response => response.data)

@@ -19,7 +19,6 @@ export default {
   // GETTERS
   getters: {
     [REDINVOICES_GETTER](state) {
-      console.log(state)
       return state.redInvoices
     },
     [ERROR_CODE_GETTER](state) {
@@ -33,7 +32,6 @@ export default {
   // ACTIONS
   actions: {
     [GET_REDINVOICES_ACTION]({ state }, val) {
-      console.log(state)
       RedInvoiceService
         .getRedInvoices(val)
         .then(response => response.data)
