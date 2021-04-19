@@ -1,5 +1,6 @@
 <template>
   <b-modal
+    id="modal"
     size="xl"
     :visible="visible"
     title="Chọn sản phẩm"
@@ -108,6 +109,33 @@
         </b-col>
         <!--END table-->
       </b-form>
+      <b-row class="m-1 justify-content-center">
+        <b-button-group>
+          <button
+            variant="primary"
+            class="d-flex align-items-center rounded text-uppercase"
+          >
+            <b-icon
+              icon="ear-mark-x"
+              width="20"
+              height="20"
+              class="mr-1"
+            />
+            lưu
+          </button>
+          <b-button
+            class="d-flex align-items-center ml-1 rounded text-uppercase"
+            @click="this.$bvModal.hide('modal')"
+          >
+            <b-icon
+              icon="x"
+              width="20"
+              height="20"
+            />
+            Đóng
+          </b-button>
+        </b-button-group>
+      </b-row>
     </b-card>
   </b-modal>
 </template>

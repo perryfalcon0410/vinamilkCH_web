@@ -46,9 +46,10 @@
             />
             <b-input-group-append
               is-text
-              @click="showFindProductModal"
             >
-              <b-icon-three-dots-vertical />
+              <b-icon-three-dots-vertical
+                @click="showFindProductModal"
+              />
             </b-input-group-append>
           </b-input-group>
 
@@ -97,7 +98,6 @@ export default {
   },
   methods: {
     showFindProductModal() {
-      console.log('click')
       this.isShowFindProductModal = !this.isShowFindProductModal
     },
   },
