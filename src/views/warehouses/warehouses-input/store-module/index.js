@@ -1,5 +1,6 @@
 import ReceiptImportService from '@/views/warehouses/warehouses-input/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
+import router from '@/router/index'
 
 import {
   // GETTERS
@@ -23,6 +24,7 @@ import {
   GET_IMPORT_BORROWINGS_ACTION,
   GET_IMPORT_BORROWINGS_DETAIL_ACTION,
   PUT_NOT_IMPORT_ACTION,
+  POST_SALE_IMPORT_ACTION,
 } from './type'
 
 export default {
@@ -210,6 +212,22 @@ export default {
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [POST_SALE_IMPORT_ACTION]({}, val) {
+      ReceiptImportService
+        .postSaleImport(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+            router.push({ name: 'warehouses-input' })
           } else {
             throw new Error(res.statusValue)
           }

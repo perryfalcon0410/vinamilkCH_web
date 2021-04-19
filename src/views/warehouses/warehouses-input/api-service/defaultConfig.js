@@ -9,5 +9,6 @@ export const getImportAdjustmentsDetailEndpoint = `${SALE}/adjustment-detail`
 export const getImportBorrowingsEndpoint = `${SALE}/borrowing`
 export const getImportBorrwingsDetailEndpoint = `${SALE}/borrowing-detail`
 export const putNotImportEndpoint = `${SALE}/not-import`
+export const postSaleImportEndpoint = `${SALE}`
 export const getReceiptsEndpoint = `${SALE}`
 export const exportReceiptsEndpoint = `${SALE}/excel/`

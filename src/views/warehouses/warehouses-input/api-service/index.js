@@ -12,6 +12,7 @@ import {
   putNotImportEndpoint,
   getReceiptsEndpoint,
   exportReceiptsEndpoint,
+  postSaleImportEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -49,5 +50,8 @@ export default {
   },
   exportReceiptImport(args) {
     return axios.get(`${exportReceiptsEndpoint}${args}`)
+  },
+  postSaleImport(args) {
+    return axios.post(postSaleImportEndpoint, args)
   },
 }

@@ -354,9 +354,14 @@ import {
   number,
   required,
 } from '@/@core/utils/validations/validations'
+import { mapActions } from 'vuex'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
 import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
+import {
+  WAREHOUSEINPUT,
+  POST_SALE_IMPORT_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -528,6 +533,9 @@ export default {
     this.getNow()
   },
   methods: {
+    ...mapActions(WAREHOUSEINPUT, [
+      POST_SALE_IMPORT_ACTION,
+    ]),
     getNow() {
       const today = new Date()
       const date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
@@ -599,6 +607,16 @@ export default {
       } else if (this.status === 2) {
         this.columns = this.BorrowColumns
         this.rows = this.BorrowRows
+      }
+    },
+    create() {
+       this.$refs.formContainer.validate().then(success => {
+         if (success) {
+           this.POST_SALE_IMPORT_ACTION({
+             'importType': this.status,
+             'poNumber': this.poNo,
+           })
+        }
       }
     },
   },
