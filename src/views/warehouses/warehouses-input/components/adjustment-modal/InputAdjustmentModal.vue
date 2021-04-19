@@ -46,15 +46,17 @@
 
             <!-- START - List -->
             <b-row
-              v-for="item in productsList"
+              v-for="(item, index) in importAdjustmentsList"
               :key="item.id"
               class="border-bottom border-white bg-light py-1"
+              :class="{ 'text-primary': current == item.id }"
+              @click="PoSelected(item.id)"
             >
               <b-col cols="1">
-                {{ item.id }}
+                {{ index + 1 }}
               </b-col>
               <b-col>
-                {{ item.lincenseNumber }}
+                {{ item.LicenseNumber }}
               </b-col>
               <b-col>
                 {{ item.date }}
@@ -82,7 +84,7 @@
           >
             <vue-good-table
               :columns="columns"
-              :rows="rows"
+              :rows="importAdjustmentsDetailList"
               style-class="vgt-table bordered"
               compact-mode
               line-numbers
@@ -96,11 +98,11 @@
     <!-- END - Body -->
 
     <!-- START - Footer -->
-    <template #modal-footer="{ ok, cancel }">
+    <template #modal-footer="{ cancel }">
       <b-button
         variant="primary"
         class="d-flex align-items-center"
-        @click="ok()"
+        @click="inputAdjustmentConfirm"
       >
         <b-icon
           icon="download"
@@ -129,6 +131,20 @@
 </template>
 
 <script>
+import {
+  mapGetters,
+  mapActions,
+} from 'vuex'
+import {
+  WAREHOUSEINPUT,
+  // GETTER
+  IMPORT_ADJUSTMENTS_GETTER,
+  IMPORT_ADJUSTMENTS_DETAIL_GETTER,
+  // ACTION
+  GET_IMPORT_ADJUSTMENTS_ACTION,
+  GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION,
+} from '../../store-module/type'
+
 export default {
   props: {
     visible: {
@@ -139,23 +155,12 @@ export default {
   },
   data() {
     return {
-      productsList: [
-        {
-          id: '1', lincenseNumber: '24300196', date: '15/10/2020', note: 'Sai lệch',
-        },
-        {
-          id: '2', lincenseNumber: '24300610', date: '15/10/2020', note: 'Sai lệch',
-        },
-        {
-          id: '3', lincenseNumber: '24300650', date: '15/10/2020', note: 'Sai lệch',
-        },
-      ],
+      current: null,
       columns: [
         {
           label: 'Số chứng từ',
-          field: 'LincenseNumber',
+          field: 'LicenseNumber',
           sortable: false,
-          type: 'number',
         },
         {
           label: 'Mã sản phẩm',
@@ -186,37 +191,52 @@ export default {
           type: 'number',
         },
       ],
-      rows: [
-        {
-          LincenseNumber: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
-        },
-        {
-          LincenseNumber: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
-        },
-        {
-          LincenseNumber: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
-        },
-      ],
     }
   },
+  computed: {
+    importAdjustmentsList() {
+      return this.IMPORT_ADJUSTMENTS_GETTER().map(data => ({
+        id: data.id,
+        LicenseNumber: data.adjustmentCode,
+        date: new Date(data.adjustmentDate).toLocaleDateString(),
+        note: data.description,
+        status: data.status,
+      }))
+    },
+    importAdjustmentsDetailList() {
+      return this.IMPORT_ADJUSTMENTS_DETAIL_GETTER().map(data => ({
+        id: data.id,
+        ProductId: data.productCode,
+        Name: data.productName,
+        Price: data.price,
+        Quantity: data.quantity,
+        LicenseNumber: data.licenseNumber,
+        TotalPrice: data.totalPrice,
+      }))
+    },
+  },
+  mounted() {
+    this.GET_IMPORT_ADJUSTMENTS_ACTION()
+  },
   methods: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      IMPORT_ADJUSTMENTS_GETTER,
+      IMPORT_ADJUSTMENTS_DETAIL_GETTER,
+    ]),
+    ...mapActions(WAREHOUSEINPUT, [
+      GET_IMPORT_ADJUSTMENTS_ACTION,
+      GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION,
+    ]),
     hoverHandler(hovered) {
       this.isHover = hovered
+    },
+    PoSelected(id) {
+      this.current = id
+      this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION(this.current)
+      console.log(this.importAdjustmentsDetailList)
+    },
+    inputAdjustmentConfirm() {
+      this.$emit('inputAdjust', [this.importAdjustmentsDetailList, false])
     },
   },
 }

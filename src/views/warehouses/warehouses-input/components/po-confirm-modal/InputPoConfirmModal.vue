@@ -6,7 +6,6 @@
     title-class="text-uppercase font-weight-bold text-primary"
     content-class="bg-light"
     footer-border-variant="light"
-    hide-header-close
   >
     <!-- START - Body -->
     <b-container fluid>
@@ -38,14 +37,16 @@
             </b-col>
           </b-row>
           <!-- END - Title -->
-
+          <!-- START - Po Confirm List -->
           <b-row
-            v-for="item in productsList"
+            v-for="(item, index) in poConfirm"
             :key="item.id"
-            class="border-bottom border-white bg-light py-1"
+            class="border-bottom border-white py-1"
+            :class="{ 'text-primary': current == item.id }"
+            @click="poSelected(item.id, item.internalNumber)"
           >
             <b-col cols="1">
-              {{ item.id }}
+              {{ index + 1 }}
             </b-col>
             <b-col>
               {{ item.poNo }}
@@ -58,11 +59,10 @@
               class="text-wrap"
             >
               {{ item.date }}
-
             </b-col>
           </b-row>
         </b-col>
-        <!-- END -  Import/Export List -->
+        <!-- END -  Po Confirm List -->
 
         <!-- START - List -->
         <b-col class="ml-xl-1 mt-1 mt-xl-0 pt-1 bg-white shadow rounded">
@@ -80,6 +80,7 @@
             <b-button
               variant="primary"
               class="d-flex align-items-center"
+              @click="syncPo"
             >
               <b-icon
                 icon="arrow-repeat"
@@ -91,15 +92,34 @@
             </b-button>
           </b-row>
           <!-- END - Title Product -->
-
           <vue-good-table
             :columns="columns"
-            :rows="rowsProduct"
+            :rows="poProducts"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
             class="py-1"
-          />
+          >
+            <template
+              slot="table-row"
+              slot-scope="props"
+            >
+              <b-row
+                v-if="props.column.field === 'Quantity'"
+                class="mx-0"
+                align-h="end"
+              >
+                6800
+              </b-row>
+              <b-row
+                v-if="props.column.field === 'TotalPrice'"
+                class="mx-0"
+                align-h="end"
+              >
+                6800
+              </b-row>
+            </template>
+          </vue-good-table>
           <!-- END - Table Product -->
 
           <!-- START - Table Product promotion -->
@@ -111,7 +131,7 @@
 
           <vue-good-table
             :columns="columns"
-            :rows="rowsProductPromotion"
+            :rows="PoPromotionProducts"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
@@ -125,11 +145,11 @@
     <!-- END - Body -->
 
     <!-- START - Footer -->
-    <template #modal-footer="{ ok, cancel }">
+    <template #modal-footer="{ cancel }">
       <b-button
         variant="primary"
         class="d-flex align-items-center text-uppercase"
-        @click="ok()"
+        @click="confirmImportButton"
       >
         <b-icon
           icon="download"
@@ -142,7 +162,7 @@
       <b-button
         variant="danger"
         class="d-flex align-items-center text-uppercase"
-        @click="cancel()"
+        @click="ShowModal()"
       >
         <b-icon
           icon="slash-circle"
@@ -155,7 +175,7 @@
       <b-button
         variant="primary"
         class="d-flex align-items-center text-uppercase"
-        @click="cancel()"
+        @click="exportExcel"
       >
         <b-icon
           icon="file-earmark-excel-fill"
@@ -178,13 +198,37 @@
         Đóng
       </b-button>
     </template>
-  <!-- END - Footer -->
-
+    <!-- END - Footer -->
+    <deny-modal
+      :id="denyId"
+      :visible="DenyModalVisible"
+    />
   </b-modal>
 </template>
 
 <script>
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import DenyModal from './components/inputPoDenyModal.vue'
+import {
+  WAREHOUSEINPUT,
+  // GETTER
+  POCONFIRM_GETTER,
+  PODETAIL_0_GETTER,
+  PODETAIL_1_GETTER,
+  // ACTION
+  GET_POCONFIRMS_ACTION,
+  GET_PODETAIL_0_ACTION,
+  GET_PODETAIL_1_ACTION,
+  GET_IMPORTEXCEL_ACTION,
+} from '../../store-module/type'
+
 export default {
+  components: {
+    DenyModal,
+  },
   props: {
     visible: {
       type: Boolean,
@@ -194,17 +238,10 @@ export default {
   },
   data() {
     return {
-      productsList: [
-        {
-          id: 1, poNo: '24300196', internalNumber: '3934880', date: '15/10/2020',
-        },
-        {
-          id: 2, poNo: '24300196', internalNumber: '3934880', date: '15/10/2020', note: 'Sai lệch',
-        },
-        {
-          id: 3, poNo: '24300196', internalNumber: '3934880', date: '15/10/2020',
-        },
-      ],
+      denyId: null,
+      DenyModalVisible: false,
+      current: null,
+      Snb: null,
       columns: [
         {
           label: 'SO No',
@@ -214,7 +251,7 @@ export default {
         },
         {
           label: 'Mã sản phẩm',
-          field: 'ProductId',
+          field: 'productId',
           sortable: false,
         },
         {
@@ -239,6 +276,9 @@ export default {
           field: 'TotalPrice',
           sortable: false,
           type: 'number',
+          filterOptions: {
+            customFilter: true,
+          },
         },
       ],
       rowsProduct: [
@@ -311,7 +351,98 @@ export default {
       ],
     }
   },
+  computed: {
+    // get poConfirm list
+    poConfirm() {
+      return this.POCONFIRM_GETTER().map(data => ({
+        id: data.id,
+        poNo: data.poCode,
+        shopId: data.shopId,
+        poNumber: data.poNumber,
+        internalNumber: data.internalNumber,
+        soNo: data.saleOferNumber,
+        date: new Date(data.orderDate).toLocaleDateString(),
+        status: data.status,
+      }))
+    },
+  },
+  watch: {
+    // get products from selected Po
+    poProducts() {
+      const po0Getter = this.PODETAIL_0_GETTER().response
+      return po0Getter.response.map(data => ({
+        SoNo: data.soNo,
+        productId: data.productCode,
+        Name: data.productName,
+        Price: data.price,
+        Quantity: data.quantity,
+        TotalPrice: data.totalPrice,
+      }))
+    },
+    poProductInfo() {
+      const infos = this.PODETAIL_0_GETTER().info
+      return infos.response.map(data => ({
+        totalQuantity: data.totalQuantity,
+        totalPrice: data.totalPrice,
+      }))
+    },
+    // get promotion produtcs from selected Po
+    poPromotionProducts() {
+      const poDetail1getter = this.PODETAIL_0_GETTER().response
+      return poDetail1getter.response.map(data => ({
+        SoNo: data.soNo,
+        productId: data.productCode,
+        Name: data.productName,
+        Price: data.price,
+        Quantity: data.quantity,
+        TotalPrice: data.totalPrice,
+      }))
+    },
+    poPromotionProductsInfo() {
+      const infos = this.PODETAIL_1_GETTER().info
+      return infos.response.map(data => ({
+        totalQuantity: data.totalQuantity,
+        totalPrice: data.totalPrice,
+      }))
+    },
+  },
+  mounted() {
+    this.GET_POCONFIRMS_ACTION()
+  },
   methods: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      POCONFIRM_GETTER,
+      PODETAIL_0_GETTER,
+      PODETAIL_1_GETTER,
+    ]),
+    ...mapActions(WAREHOUSEINPUT, [
+      GET_POCONFIRMS_ACTION,
+      GET_PODETAIL_0_ACTION,
+      GET_PODETAIL_1_ACTION,
+      GET_IMPORTEXCEL_ACTION,
+    ]),
+    // invidual select event for poconfrim list
+    poSelected(id, internalNumber) {
+      this.current = id
+      this.Snb = internalNumber
+      this.GET_PODETAIL_0_ACTION(this.current)
+      this.GET_PODETAIL_1_ACTION(this.current)
+    },
+    // Sync PoConfirms list
+    syncPo() {
+      this.GET_POCONFIRMS_ACTION()
+    },
+    // Confirm import product from selected Po
+    confirmImportButton() {
+      this.$emit('import', [this.poProducts, this.poPromotionProducts, this.current, false, this.Snb])
+    },
+    exportExcel() {
+      this.GET_IMPORTEXCEL_ACTION(this.current)
+    },
+    ShowModal() {
+      this.denyId = this.current
+      this.DenyModalVisible = !this.DenyModalVisible
+    },
   },
 }
 </script>

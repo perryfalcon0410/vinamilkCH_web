@@ -21,7 +21,7 @@
                 Ngày nhập:
               </b-col>
               <b-col class="font-weight-bold">
-                29/10/2020 lúc 16:16
+                {{ dateStamp }} lúc {{ timeStamp }}
               </b-col>
             </b-row>
             <!-- END - Date -->
@@ -201,8 +201,9 @@
             </div>
 
             <vue-good-table
+              v-if="status != null"
               :columns="columns"
-              :rows="rowsProduct"
+              :rows="rows"
               style-class="vgt-table striped"
               compact-mode
               line-numbers
@@ -245,9 +246,10 @@
                 Hàng khuyến mãi
               </strong>
             </div>
-
+            <!--if-PoConfirm-->
             <vue-good-table
-              :columns="columns"
+              v-if="status == 0"
+              :columns="PoColumns"
               :rows="rowsProductPromotion"
               style-class="vgt-table striped"
               compact-mode
@@ -281,8 +283,9 @@
                   25,123,000
                 </b-row>
               </template>
-              <!-- START - Column filter -->
             </vue-good-table>
+            <!--if-PoConfirm-->
+
             <!-- END - Table Product promotion -->
 
             <!-- START - Button -->
@@ -326,9 +329,18 @@
     <!-- END - Form and list -->
 
     <!-- START - Modal -->
-    <adjustment-modal :visible="AdjustmentModalVisible" />
-    <borrowed-modal :visible="BorrowedModalVisible" />
-    <po-confirm-modal :visible="PoConfirmModalVisible" />
+    <adjustment-modal
+      :visible="AdjustmentModalVisible"
+      @inputAdjust="dataFromInputAdjust($event)"
+    />
+    <borrowed-modal
+      :visible="BorrowedModalVisible"
+      @inputBorrow="dataFormInputBorrow($event)"
+    />
+    <po-confirm-modal
+      :visible="PoConfirmModalVisible"
+      @import="dataFromPoConfirm($event)"
+    />
     <!-- END - Modal -->
   </b-container>
 </template>
@@ -359,8 +371,17 @@ export default {
       AdjustmentModalVisible: false,
       BorrowedModalVisible: false,
       PoConfirmModalVisible: false,
+      // ngay nhap
+      dateStamp: '',
+      timeStamp: '',
+      // so noi bo
+      Snb: '',
+      // loai nhap
+      status: null,
 
-      id: '',
+      columns: null,
+      rows: null,
+
       billNumber: '',
       importType: '1',
       internalNumber: '',
@@ -370,11 +391,11 @@ export default {
       // validation rules
       number,
       required,
-
-      columns: [
+      // -------------------------PoConfirm--------------------------
+      PoColumns: [
         {
           label: 'Mã hàng',
-          field: 'ProductId',
+          field: 'productId',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -416,74 +437,106 @@ export default {
         },
         {
           label: 'SO No',
-          field: 'SONo',
+          field: 'SoNo',
           sortable: false,
         },
       ],
-      rowsProduct: [
+      rowsProduct: [],
+      rowsProductPromotion: [],
+      // -------------------------PoConfirm--------------------------
+
+      // -------------------------InputAdjust--------------------------
+      AdjustColumns: [
         {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
+          label: 'Số chứng từ',
+          field: 'LicenseNumber',
+          sortable: false,
+          type: 'number',
         },
         {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
+          label: 'Mã sản phẩm',
+          field: 'ProductId',
+          sortable: false,
         },
         {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
+          label: 'Tên sản phẩm',
+          field: 'Name',
+          sortable: false,
         },
         {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
-        },
-      ],
-      rowsProductPromotion: [
-        {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
-          Feature: 'Xóa',
+          label: 'Giá',
+          field: 'Price',
+          sortable: false,
+          type: 'number',
         },
         {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
-          Feature: 'Xóa',
+          label: 'Số lượng',
+          field: 'Quantity',
+          sortable: false,
+          type: 'number',
+        },
+        {
+          label: 'Thành tiền',
+          field: 'TotalPrice',
+          sortable: false,
+          type: 'number',
         },
       ],
+      AdjustRows: [],
+      // -------------------------InputAdjust--------------------------
+
+      // -------------------------InputBorrow--------------------------
+      BorrowColumns: [
+        {
+          label: 'Số chứng từ',
+          field: 'LicenseNumber',
+          sortable: false,
+          type: 'number',
+        },
+        {
+          label: 'Mã sản phẩm',
+          field: 'ProductId',
+          sortable: false,
+        },
+        {
+          label: 'Tên sản phẩm',
+          field: 'Name',
+          sortable: false,
+        },
+        {
+          label: 'Giá',
+          field: 'Price',
+          sortable: false,
+          type: 'number',
+        },
+        {
+          label: 'Số lượng',
+          field: 'Quantity',
+          sortable: false,
+          type: 'number',
+        },
+        {
+          label: 'Thành tiền',
+          field: 'TotalPrice',
+          sortable: false,
+          type: 'number',
+        },
+      ],
+      BorrowRows: [],
+      // -------------------------InputAdjust--------------------------
     }
   },
-
+  created() {
+    this.getNow()
+  },
   methods: {
+    getNow() {
+      const today = new Date()
+      const date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
+      const time = `${today.getHours()}:${today.getMinutes()}`
+      this.dateStamp = date
+      this.timeStamp = time
+    },
     showModal() {
       const PoConfirm = this.importType === '1' ? this.PoConfirmModalVisible = !this.PoConfirmModalVisible : this.PoConfirmModalVisible = false
       const Adjustment = this.importType === '2' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
@@ -494,8 +547,62 @@ export default {
     navigateBack() {
       this.$router.back()
     },
+    // ---------------------------Nhap hang-----------------------
+    dataFromPoConfirm(data) {
+      const [poProducts, poPromotionProducts, Id, PoConfirmModalState, Snb] = data
+      poProducts.forEach(element => {
+        this.rowsProduct.push(element)
+      })
+      poPromotionProducts.forEach(element => {
+        this.rowsProductPromotion.push(element)
+      })
+      this.poNo = Id
+      this.PoConfirmModalVisible = PoConfirmModalState
+      this.internalNumber = Snb
+      this.status = 0
+      this.tableRender()
+    },
+    // ----------------------------Nhap hang-----------------------
 
+    // -----------------------------Nhap dieu chinh------------------------
+    dataFromInputAdjust(data) {
+      const [importAdjustsDetail, importAdjustModalState] = data
+      importAdjustsDetail.forEach(element => {
+        this.AdjustRows.push(element)
+      })
+      this.AdjustmentModalVisible = importAdjustModalState
+      this.poNo = null
+      this.internalNumber = 'null'
+      this.status = 1
+      this.tableRender()
+    },
+    // -----------------------------Nhap dieu chinh------------------------
+
+    // ------------------------------Nhap vay muon----------------------------
+    dataFromInputBorrwo(data) {
+      const [importBorrowsDetail, importBorrowModalState] = data
+      importBorrowsDetail.forEach(element => {
+        this.BorrowColumns.push(element)
+      })
+      this.BorrowedModalVisible = importBorrowModalState
+      this.poNo = null
+      this.internalNumber = 'null'
+      this.status = 2
+      this.tableRender()
+    },
+    // ------------------------------Nhap vay muon----------------------------
+    tableRender() {
+      if (this.status === 0) {
+        this.columns = this.PoColumns
+        this.rows = this.rowsProduct
+      } else if (this.status === 1) {
+        this.columns = this.AdjustColumns
+        this.rows = this.AdjustRows
+      } else if (this.status === 2) {
+        this.columns = this.BorrowColumns
+        this.rows = this.BorrowRows
+      }
+    },
   },
-
 }
 </script>

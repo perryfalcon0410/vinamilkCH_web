@@ -46,12 +46,14 @@
 
             <!-- START - List -->
             <b-row
-              v-for="item in productsList"
+              v-for="(item, index) in importBorrowingslist"
               :key="item.id"
+              :class="{ 'text-primary': current == item.id }"
               class="border-bottom border-white bg-light py-1"
+              @click="PoSelect(item.id)"
             >
               <b-col cols="1">
-                {{ item.id }}
+                {{ index + 1 }}
               </b-col>
               <b-col>
                 {{ item.lincenseNumber }}
@@ -82,7 +84,7 @@
           >
             <vue-good-table
               :columns="columns"
-              :rows="rows"
+              :rows="importBorrowingsDetailList"
               style-class="vgt-table bordered"
               compact-mode
               line-numbers
@@ -96,11 +98,11 @@
     <!-- END - Body -->
 
     <!-- START - Footer -->
-    <template #modal-footer="{ ok, cancel }">
+    <template #modal-footer="{ cancel }">
       <b-button
         variant="primary"
         class="d-flex align-items-center"
-        @click="ok()"
+        @click="inputBorrow"
       >
         <b-icon
           icon="download"
@@ -129,6 +131,20 @@
 </template>
 
 <script>
+import {
+  mapGetters,
+  mapActions,
+} from 'vuex'
+import {
+  WAREHOUSEINPUT,
+  // GETTERS
+  IMPORT_BORROWINGS_GETTER,
+  IMPORT_BORROWINGS_DETAIL_GETTER,
+  // ACTIONS
+  GET_IMPORT_BORROWINGS_ACTION,
+  GET_IMPORT_BORROWINGS_DETAIL_ACTION,
+} from '../../store-module/type'
+
 export default {
   props: {
     visible: {
@@ -139,17 +155,7 @@ export default {
   },
   data() {
     return {
-      productsList: [
-        {
-          id: '1', lincenseNumber: '24300196', date: '15/10/2020', note: 'Sai lệch',
-        },
-        {
-          id: '2', lincenseNumber: '24300610', date: '15/10/2020', note: 'Sai lệch',
-        },
-        {
-          id: '3', lincenseNumber: '24300650', date: '15/10/2020', note: 'Sai lệch',
-        },
-      ],
+      current: null,
       columns: [
         {
           label: 'Số chứng từ',
@@ -186,37 +192,50 @@ export default {
           type: 'number',
         },
       ],
-      rows: [
-        {
-          LincenseNumber: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
-        },
-        {
-          LincenseNumber: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
-        },
-        {
-          LincenseNumber: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
-        },
-      ],
     }
   },
+  computed: {
+    importBorrowingslist() {
+      return this.IMPORT_BORROWINGS_GETTER().map(data => ({
+        id: data.id,
+        LincenseNumber: data.poBorrowCode,
+        date: new Date(data.borrowDate).toLocaleDateString(),
+        note: data.note,
+      }))
+    },
+    importBorrowingsDetailList() {
+      return this.IMPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
+        id: data.id,
+        LincenseNumber: data.lincenseNumber,
+        ProductId: data.productCode,
+        Name: data.productName,
+        Price: data.price,
+        Quantity: data.quantity,
+        TotalPrice: data.totalPrice,
+      }))
+    },
+  },
+  mounted() {
+    this.GET_IMPORT_BORROWINGS_ACTION()
+  },
   methods: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      IMPORT_BORROWINGS_GETTER,
+      IMPORT_BORROWINGS_DETAIL_GETTER,
+    ]),
+    ...mapActions(WAREHOUSEINPUT, [
+      GET_IMPORT_BORROWINGS_ACTION,
+      GET_IMPORT_BORROWINGS_DETAIL_ACTION,
+    ]),
     hoverHandler(hovered) {
       this.isHover = hovered
+    },
+    PoSelected(id) {
+      this.current = id
+      this.GET_IMPORT_BORROWINGS_DETAIL_ACTION(this.current)
+    },
+    inputBorrow() {
+      this.$emit('inputBorrow', [this.importBorrowingsDetailList, false])
     },
   },
 }
