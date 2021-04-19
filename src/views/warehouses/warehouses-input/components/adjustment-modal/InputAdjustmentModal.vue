@@ -233,7 +233,6 @@ export default {
     PoSelected(id) {
       this.current = id
       this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION(this.current)
-      console.log(this.importAdjustmentsDetailList)
     },
     inputAdjustmentConfirm() {
       this.$emit('inputAdjust', [this.importAdjustmentsDetailList, false])

@@ -374,8 +374,6 @@ export default {
       // ngay nhap
       dateStamp: '',
       timeStamp: '',
-      // so noi bo
-      Snb: '',
       // loai nhap
       status: null,
 
