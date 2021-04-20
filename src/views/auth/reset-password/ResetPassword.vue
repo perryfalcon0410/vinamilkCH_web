@@ -211,7 +211,7 @@ export default {
         if (success) {
           useJwt
             .changePassword({
-              username: this.username,
+              username: this.username.toLowerCase(),
               oldPassword: this.oldPassword,
               newPassword: this.newPassword,
               confirmPassword: this.confirmPassword,

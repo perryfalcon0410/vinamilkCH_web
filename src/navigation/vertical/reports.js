@@ -11,6 +11,40 @@ export default [
     title: 'Kho',
     route: '',
     icon: 'ArchiveIcon',
+    children: [
+      {
+        title: 'Nhập hàng',
+        route: '',
+      },
+      {
+        title: 'Xuất hàng',
+        route: '',
+      },
+      {
+        title: 'Tồn kho',
+        route: '',
+      },
+      {
+        title: 'Xuất nhập tồn',
+        route: '',
+      },
+      {
+        title: 'Hàng khuyến mãi',
+        route: '',
+      },
+      {
+        title: 'Chênh lệch giá',
+        route: '',
+      },
+      {
+        title: 'Đổi hàng hỏng',
+        route: '',
+      },
+      {
+        title: 'Nhập xuất điều chỉnh',
+        route: '',
+      },
+    ],
   },
   {
     title: 'Bảng kê chi tiết đơn nhập hàng',

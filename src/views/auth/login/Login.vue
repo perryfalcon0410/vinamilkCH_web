@@ -190,7 +190,6 @@ import { required } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
 import toasts from '@core/utils/toasts/toasts'
-
 import useJwt from '@/auth/jwt/useJwt'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
 import RoleAndShopSelectionModal from './components/RoleAndShopSelectionModal.vue'
@@ -278,7 +277,7 @@ export default {
         if (success) {
           useJwt
             .preLogin({
-              username: this.username,
+              username: this.username.toLowerCase(),
               password: this.password,
               captchaCode: this.captchaCodePost,
             })
@@ -304,7 +303,7 @@ export default {
               }
             })
             .catch(error => {
-              toasts.error(error.message)
+              toasts.error(JSON.stringify(error))
             })
         }
       })
@@ -314,7 +313,7 @@ export default {
 
       useJwt
         .login({
-          username: this.username,
+          username: this.username.toLowerCase(),
           password: this.password,
           roleId: roleSelected.value,
           shopId: shopSelected.value,
