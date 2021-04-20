@@ -39,17 +39,21 @@
             <b-form-row>
               <b-col>
                 <b-form-group
-                  label="Mã xuất hàng"
-                  label-for="archiveExportID"
+                  label="Mã khách hàng"
+                  label-for="customer-code"
                 >
                   <b-form-input
-                    id="archiveExportID"
-                    v-model="inputValueID"
+                    id="customer-code"
+                    v-model="redBill.customerCode"
                     maxlength="40"
                     required
                     trim
-                    @focus="inputSearchFocusedKH = true"
+                    @focus="focus"
                     @blur="inputSearchFocusedKH = false"
+                    @input="loadCustomers"
+                    @keyup.enter="keyEnter"
+                    @keydown.up="keyUp"
+                    @keydown.down="keyDown"
                   />
                   <b-collapse
                     v-model="inputSearchFocusedKH"
@@ -59,19 +63,19 @@
                     <b-container
                       class="my-1 bg-white rounded border border-primary shadow-lg"
                     >
-                      <b-col
-                        v-for="(n,index) in 6"
-                        :key="index"
-                        class="px-0 my-1"
-                      >
-                        <b-col
-                          class="text-dark font-weight-bold px-0"
+                      <b-col>
+                        <b-row
+                          v-for="(customer, index) in customers"
+                          :key="index"
+                          class="my-1 cursor-pointer"
+                          :class="{'item-active': index === cursor}"
+                          @click="selectCustomer(customer)"
+                          @mouseover="$event.target.classList.add('item-active')"
+                          @mouseout="$event.target.classList.remove('item-active')"
                         >
-                          Nguyễn Xuân Điểm
-                        </b-col>
-                        <b-col class="text-dark px-0">
-                          CUS.BN40011.0001 - 0979604450
-                        </b-col>
+                          <b>{{ customer.customerName }}</b>
+                          {{ customer.customerCode }} - {{ customer.mobiPhone }}
+                        </b-row>
                       </b-col>
                     </b-container>
                   </b-collapse>
@@ -81,11 +85,11 @@
               <b-col>
                 <b-form-group
                   label="Tên khách hàng"
-                  label-for="archiveExportID"
+                  label-for="customerName"
                 >
                   <b-form-input
-                    id="archiveExportID"
-                    v-model="inputValueID"
+                    id="customerName"
+                    v-model="redBill.customerName"
                     maxlength="40"
                     required
                     disabled
@@ -133,11 +137,11 @@
               <b-col>
                 <b-form-group
                   label="Tên đơn vị*"
-                  label-for="archiveExportID"
+                  label-for="working-office"
                 >
                   <b-form-input
-                    id="archiveExportID"
-                    v-model="inputValueID"
+                    id="working-office"
+                    v-model="redBill.workingOffice"
                     maxlength="40"
                     required
                   />
@@ -147,11 +151,11 @@
               <b-col>
                 <b-form-group
                   label="Mã số thuế*"
-                  label-for="archiveExportID"
+                  label-for="tax-code"
                 >
                   <b-form-input
-                    id="archiveExportID"
-                    v-model="inputValueID"
+                    id="tax-code"
+                    v-model="redBill.taxCode"
                     maxlength="40"
                     required
                   />
@@ -163,11 +167,11 @@
             <!-- START - Archive Export Archive -->
             <b-form-group
               label="Địa chỉ cơ quan*"
-              label-for="archiveExportID"
+              label-for="office-address"
             >
               <b-form-input
-                id="archiveExportID"
-                v-model="inputValueID"
+                id="office-address"
+                v-model="redBill.officeAddress"
                 maxlength="40"
                 required
               />
@@ -390,7 +394,16 @@
 </template>
 
 <script>
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
 import BillReceiptsModal from './components/BillReceiptsModal.vue'
+import {
+  REDINVOICE,
+  CUSTOMERS_GETTER,
+  GET_CUSTOMERS_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -413,6 +426,15 @@ export default {
       inputValueBillNumber: '',
       inputValueInternalNumber: '',
       inputValueDate: new Date(),
+      redBill: {
+        customerCode: '',
+        customerName: '',
+        workingOffice: '',
+        officeAddress: '',
+        taxCode: '',
+        mobiPhone: '',
+      },
+      cursor: -1,
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -518,14 +540,74 @@ export default {
     }
   },
   computed: {
+    customers() {
+      return this.CUSTOMERS_GETTER().map(data => ({
+        id: data.id,
+        customerCode: data.customerCode,
+        customerName: `${data.lastName} ${data.firstName}`,
+        workingOffice: data.workingOffice,
+        officeAddress: data.officeAddress,
+        taxCode: data.taxCode,
+        mobiPhone: data.mobiPhone,
+      }))
+    },
+  },
+  mounted() {
+    this.GET_CUSTOMERS_ACTION()
   },
   methods: {
+    ...mapGetters(REDINVOICE, [
+      CUSTOMERS_GETTER,
+    ]),
+    ...mapActions(REDINVOICE, [
+      GET_CUSTOMERS_ACTION,
+    ]),
     routeBack() {
       this.$router.back()
     },
     showBillOfSaleList() {
       this.isShowBillReceiptsModal = !this.isShowBillReceiptsModal
     },
+    loadCustomers() {
+      this.cursor = -1
+      const searchData = {
+        searchKeywords: this.redBill.customerCode.trim(),
+      }
+
+      this.GET_CUSTOMERS_ACTION(searchData)
+    },
+    selectCustomer(customer) {
+      this.redBill.customerCode = customer.customerCode
+      this.redBill.customerName = customer.customerName
+      this.redBill.workingOffice = customer.workingOffice
+      this.redBill.officeAddress = customer.officeAddress
+      this.redBill.taxCode = customer.taxCode
+    },
+    focus() {
+      this.cursor = -1
+      this.inputSearchFocusedKH = true
+    },
+    keyUp() {
+      if (this.cursor > 0) {
+        this.cursor -= 1
+      }
+    },
+    keyDown() {
+      if (this.cursor < this.customers.length) {
+        this.cursor += 1
+      }
+    },
+    keyEnter() {
+      if (this.inputSearchFocusedKH && this.customers[this.cursor]) {
+        this.selectCustomer(this.customers[this.cursor])
+        this.inputSearchFocusedKH = false
+      }
+    },
   },
 }
 </script>
+<style>
+  .item-active {
+    padding-left: 5px;
+  }
+</style>
