@@ -82,10 +82,20 @@ export const formatDate = date => {
   }
   return ''
 }
+
 // The date format must be a "date global (yyyy-mm-dd)"
 export const dateDiffIndays = (date1, date2) => {
   const dt1 = new Date(date1)
   const dt2 = new Date(date2)
   const dtResult = Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) / (1000 * 60 * 60 * 24))
   return dtResult
+}
+
+export const CapitalizeFirstLetter = string => {
+  if (string) {
+    const sentence = string.toLowerCase()
+    const titleCaseSentence = sentence.replace(/^[a-zA-Z]/, string[0].toUpperCase())
+    return titleCaseSentence
+  }
+  return string
 }

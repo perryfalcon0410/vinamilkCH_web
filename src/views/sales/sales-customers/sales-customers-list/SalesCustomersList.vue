@@ -106,7 +106,7 @@ import {
 } from 'vuex'
 import 'vue-good-table/dist/vue-good-table.css'
 import { getGenderLabel, getCustomerTypeLabel } from '@core/utils/utils'
-import { formatDateToVNI } from '@core/utils/filter'
+import { formatIsoDateToVNI } from '@core/utils/filter'
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
   CUSTOMER,
@@ -116,7 +116,6 @@ import {
 } from '../store-module/type'
 
 export default {
-  name: 'SalesCustomersList',
   components: {
     SalesCustomersListSearch,
   },
@@ -176,25 +175,28 @@ export default {
       ],
     }
   },
+
   computed: {
     customers() {
       return this.CUSTOMERS_GETTER().map(data => ({
         id: data.id,
         code: data.customerCode,
         fullName: `${data.lastName} ${data.firstName}`,
-        phoneNumber: data.mobiPhone || data.phone,
-        birthDay: formatDateToVNI(data.dob),
+        phoneNumber: data.mobiPhone,
+        birthDay: formatIsoDateToVNI(data.dob),
         gender: getGenderLabel(data.genderId),
         status: this.resolveStatus(data.status),
         group: getCustomerTypeLabel(data.customerTypeId),
-        date: formatDateToVNI(data.createdAt),
+        date: formatIsoDateToVNI(data.createdAt),
         feature: '',
       }))
     },
   },
+
   mounted() {
     this.GET_CUSTOMERS_ACTION({})
   },
+
   methods: {
     ...mapGetters(CUSTOMER, [
       CUSTOMERS_GETTER,

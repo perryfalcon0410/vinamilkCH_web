@@ -47,6 +47,13 @@ export const formatVniDateToISO = value => {
   return new Date(parseInt(arrayDate[2]), parseInt(arrayDate[1]) - 1, parseInt(arrayDate[0])).toISOString()
 }
 
+// Format 2021-04-15T03:32:47.519Z to dd/mm/yyyy
+export const formatIsoDateToVNI = value => {
+  if (!value) return value
+  const arrayDate = value.split('T')[0]
+  return arrayDate.split('-').reverse().join('/')
+}
+
 // Format from dd/mm/yyyy to yyyy-mm-dd
 export const formatVniDateToGlobal = value => value.split('/').reverse().join('-')
 

@@ -225,7 +225,7 @@ export default {
   },
   computed: {
     passwordToggleIcon() {
-      return this.passwordFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
+      return this.passwordFieldType === 'password' ? 'EyeOffIcon' : 'EyeIcon'
     },
     imgUrl() {
       if (store.state.appConfig.layout.skin === 'dark') {

@@ -63,18 +63,18 @@
                   id="form-input-date-from"
                   class="input-group-merge"
                 >
+                  <b-input-group-prepend
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-prepend>
                   <flat-pickr
                     v-model="fromDate"
                     :config="configDate"
                     class="form-control"
                     placeholder="chọn ngày"
                   />
-                  <b-input-group-append
-                    is-text
-                    data-toggle
-                  >
-                    <b-icon-calendar />
-                  </b-input-group-append>
                 </b-input-group>
               </b-form-group>
               <small class="text-danger">{{ errors[0] }}</small>
@@ -97,6 +97,12 @@
                 label-for="form-input-date-to"
               >
                 <b-input-group class="input-group-merge">
+                  <b-input-group-prepend
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-prepend>
                   <flat-pickr
                     id="form-input-date-from"
                     v-model="toDate"
@@ -104,12 +110,6 @@
                     class="form-control"
                     placeholder="chọn ngày"
                   />
-                  <b-input-group-append
-                    is-text
-                    data-toggle
-                  >
-                    <b-icon-calendar />
-                  </b-input-group-append>
                 </b-input-group>
               </b-form-group>
               <small class="text-danger">{{ errors[0] }}</small>
@@ -218,6 +218,7 @@
             <b-form-group
               label="Tìm kiếm"
               label-for="form-button-search"
+              label-class="text-white"
             >
               <b-button
                 id="form-button-search"

@@ -606,7 +606,7 @@ import {
   dateFormatVNI,
   age,
 } from '@/@core/utils/validations/validations'
-import { formatDateToVNI, formatVniDateToISO, formatVniDateToGlobal } from '@/@core/utils/filter'
+import { formatIsoDateToVNI, formatVniDateToISO, formatVniDateToGlobal } from '@/@core/utils/filter'
 import { dateDiffIndays } from '@/@core/utils/utils'
 
 import flatPickr from 'vue-flatpickr-component'
@@ -664,41 +664,41 @@ export default {
       age,
 
       // START - Personal
-      customerCode: '',
-      lastName: '',
-      firstName: '',
-      barCode: '',
-      birthDay: '',
+      customerCode: null,
+      lastName: null,
+      firstName: null,
+      barCode: null,
+      birthDay: null,
       genders: null,
       customerGroups: null,
       customerStatus: null,
       customerSpecial: false,
-      note: '',
-      createdAt: '',
-      customerID: '',
-      stateInputValueID: '',
-      invalidFeedbackID: '',
-      customerIDDate: '',
-      customerIDLocation: '',
-      totalBill: '',
-      monthOrderNumber: '',
+      note: null,
+      createdAt: null,
+      customerID: null,
+      stateInputValueID: null,
+      invalidFeedbackID: null,
+      customerIDDate: null,
+      customerIDLocation: null,
+      totalBill: null,
+      monthOrderNumber: null,
       // END - Personal
 
       // START - Contact
-      phoneNumber: '',
-      customerEmail: '',
-      homeNumber: '',
+      phoneNumber: null,
+      customerEmail: null,
+      homeNumber: null,
       customerProvince: null,
       customerDistrict: null,
       customerPrecinct: null,
-      workingOffice: '',
-      officeAddress: '',
-      taxCode: '',
+      workingOffice: null,
+      officeAddress: null,
+      taxCode: null,
       // END - Contact
 
       // START - MembershipCard
-      selectedCardTypes: 'null',
-      selectedCloselyTypes: 'null',
+      selectedCardTypes: null,
+      selectedCloselyTypes: null,
       // END - MembershipCard
     }
   },
@@ -747,7 +747,7 @@ export default {
       }))
     },
     countDays() {
-      return dateDiffIndays(formatVniDateToGlobal(this.createdAt), new Date())
+      return dateDiffIndays(formatVniDateToGlobal(this.createdAt || ''), new Date())
     },
   },
   // END - Computed
@@ -760,14 +760,18 @@ export default {
       if (this.customerProvince) {
         this.customerDistrict = null
         this.GET_DISTRICTS_ACTION(this.customerProvince)
-        this.customerDistrict = this.customer.areaDTO.districtId
+        if (this.customer.areaDTO) {
+          this.customerDistrict = this.customer.areaDTO.districtId // TODO: Cần tối ưu lại (Chỉ nên chạy 1 lần đầu)
+        }
       }
     },
     customerDistrict() {
       if (this.customerDistrict) {
         this.customerPrecinct = null
         this.GET_PRECINCTS_ACTION(this.customerDistrict)
-        this.customerPrecinct = this.customer.areaDTO.precinctId
+        if (this.customer.areaDTO) {
+          this.customerPrecinct = this.customer.areaDTO.precinctId // TODO: Cần tối ưu lại
+        }
       }
     },
     customer() {
@@ -835,36 +839,40 @@ export default {
     },
 
     getCustomer() {
+      if (this.customer) {
       // START - Personal
-      this.customerCode = this.customer.customerCode
-      this.firstName = this.customer.firstName
-      this.lastName = this.customer.lastName
-      this.barCode = this.customer.barCode
-      this.birthDay = formatDateToVNI(this.customer.dob)
-      this.genders = this.customer.genderId
-      this.customerGroups = this.customer.customerTypeId
-      this.customerStatus = this.customer.status
-      this.customerSpecial = this.customer.isPrivate
-      this.note = this.customer.noted
-      this.createdAt = formatDateToVNI(this.customer.createdAt)
-      this.customerID = this.customer.idNo
-      this.customerIDDate = formatDateToVNI(this.customer.idNoIssuedDate)
-      this.customerIDLocation = this.customer.idNoIssuedPlace
-      this.totalBill = this.customer.totalBill
-      this.monthOrderNumber = this.customer.monthOrderNumber
-      // START - Contact
-      this.phoneNumber = this.customer.mobiPhone
-      this.customerEmail = this.customer.email
-      this.homeNumber = this.customer.street
-      this.customerProvince = this.customer.areaDTO.provinceId
-      this.customerDistrict = this.customer.areaDTO.districtId
-      this.customerPrecinct = this.customer.areaDTO.precinctId
-      this.workingOffice = this.customer.workingOffice
-      this.officeAddress = this.customer.officeAddress
-      this.taxCode = this.customer.taxCode
-      // START - MembershipCard
-      this.selectedCardTypes = this.customer.cardTypeId
-      this.selectedCloselyTypes = this.customer.closelyTypeId
+        this.customerCode = this.customer.customerCode
+        this.firstName = this.customer.firstName
+        this.lastName = this.customer.lastName
+        this.barCode = this.customer.barCode
+        this.birthDay = formatIsoDateToVNI(this.customer.dob)
+        this.genders = this.customer.genderId
+        this.customerGroups = this.customer.customerTypeId
+        this.customerStatus = this.customer.status
+        this.customerSpecial = this.customer.isPrivate
+        this.note = this.customer.noted
+        this.createdAt = formatIsoDateToVNI(this.customer.createdAt)
+        this.customerID = this.customer.idNo
+        this.customerIDDate = formatIsoDateToVNI(this.customer.idNoIssuedDate)
+        this.customerIDLocation = this.customer.idNoIssuedPlace
+        this.totalBill = this.customer.totalBill
+        this.monthOrderNumber = this.customer.monthOrderNumber
+        // START - Contact
+        this.phoneNumber = this.customer.mobiPhone
+        this.customerEmail = this.customer.email
+        this.homeNumber = this.customer.street
+        if (this.customer.areaDTO) {
+          this.customerProvince = this.customer.areaDTO.provinceId
+          this.customerDistrict = this.customer.areaDTO.districtId
+          this.customerPrecinct = this.customer.areaDTO.precinctId
+        }
+        this.workingOffice = this.customer.workingOffice
+        this.officeAddress = this.customer.officeAddress
+        this.taxCode = this.customer.taxCode
+        // START - MembershipCard
+        this.selectedCardTypes = this.customer.cardTypeId
+        this.selectedCloselyTypes = this.customer.closelyTypeId
+      }
     },
 
     create() {
@@ -887,7 +895,6 @@ export default {
             idNo: this.customerID,
             idNoIssuedDate: formatVniDateToISO(this.customerIDDate),
             idNoIssuedPlace: this.customerIDLocation,
-            phone: this.phoneNumber,
             mobiPhone: this.phoneNumber,
             email: this.customerEmail,
             areaId: this.customerPrecinct,
@@ -911,22 +918,22 @@ export default {
         this.firstName !== this.customer.firstName
      || this.lastName !== this.customer.lastName
      || this.barCode !== this.customer.barCode
-     || this.birthDay !== formatDateToVNI(this.customer.dob)
+     || this.birthDay !== formatIsoDateToVNI(this.customer.dob)
      || this.genders !== this.customer.genderId
      || this.customerGroups !== this.customer.customerTypeId
      || this.customerStatus !== this.customer.status
      || this.customerSpecial !== this.customer.isPrivate
      || this.note !== this.customer.noted
      || this.customerID !== this.customer.idNo
-     || this.customerIDDate !== formatDateToVNI(this.customer.idNoIssuedDate)
+     || this.customerIDDate !== formatIsoDateToVNI(this.customer.idNoIssuedDate)
      || this.customerIDLocation !== this.customer.idNoIssuedPlace
         // START - Contact
      || this.phoneNumber !== this.customer.mobiPhone
      || this.customerEmail !== this.customer.email
      || this.homeNumber !== this.customer.street
-     || this.customerProvince !== this.customer.areaDTO.provinceId
-     || this.customerDistrict !== this.customer.areaDTO.districtId
-     || this.customerPrecinct !== this.customer.areaDTO.precinctId
+     || this.customerProvince !== this.customer.areaDTO?.provinceId // TODO: Cần fix lại chỗ này, dữ liệu ban đầu ko có nhưng vẫn lấy ra để so sánh!
+     || this.customerDistrict !== this.customer.areaDTO?.districtId // TODO: cái này nữa
+     || this.customerPrecinct !== this.customer.areaDTO?.precinctId // TODO: cái này nốt
      || this.workingOffice !== this.customer.workingOffice
      || this.officeAddress !== this.customer.officeAddress
      || this.taxCode !== this.customer.taxCode

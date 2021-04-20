@@ -45,7 +45,7 @@
                   placeholder="Tên đăng nhập"
                   maxlength="20"
                 />
-                <small class="text-danger">{{ errors[0] }}</small>
+                <small class="text-danger">{{ capFirstString(errors[0]) }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -72,12 +72,12 @@
                   <b-input-group-append is-text>
                     <feather-icon
                       class="cursor-pointer"
-                      :icon="isOldPasswordShow ? 'EyeIcon' : 'EyeOffIcon'"
+                      :icon="isOldPasswordShow ? 'EyeOffIcon' : 'EyeIcon'"
                       @click="isOldPasswordShow = !isOldPasswordShow"
                     />
                   </b-input-group-append>
                 </b-input-group>
-                <small class="text-danger">{{ errors[0] }}</small>
+                <small class="text-danger">{{ capFirstString(errors[0]) }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -104,12 +104,12 @@
                   <b-input-group-append is-text>
                     <feather-icon
                       class="cursor-pointer"
-                      :icon="isNewPasswordShow ? 'EyeIcon' : 'EyeOffIcon'"
+                      :icon="isNewPasswordShow ? 'EyeOffIcon' : 'EyeIcon'"
                       @click="isNewPasswordShow = !isNewPasswordShow"
                     />
                   </b-input-group-append>
                 </b-input-group>
-                <small class="text-danger">{{ errors[0] }}</small>
+                <small class="text-danger">{{ capFirstString(errors[0]) }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -135,12 +135,12 @@
                   <b-input-group-append is-text>
                     <feather-icon
                       class="cursor-pointer"
-                      :icon="isConfirmPasswordShow ? 'EyeIcon' : 'EyeOffIcon'"
+                      :icon="isConfirmPasswordShow ? 'EyeOffIcon' : 'EyeIcon'"
                       @click="isConfirmPasswordShow = !isConfirmPasswordShow"
                     />
                   </b-input-group-append>
                 </b-input-group>
-                <small class="text-danger">{{ errors[0] }}</small>
+                <small class="text-danger">{{ capFirstString(errors[0]) }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -175,6 +175,7 @@ import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
   required, notEqual, confirmed, password, equal,
 } from '@core/utils/validations/validations'
+import { CapitalizeFirstLetter } from '@core/utils/utils'
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
 
@@ -231,8 +232,13 @@ export default {
         }
       })
     },
+
     navigateToLoginPage() {
       this.$router.push({ name: 'auth-login' })
+    },
+
+    capFirstString(string) {
+      return CapitalizeFirstLetter(string)
     },
   },
 }
