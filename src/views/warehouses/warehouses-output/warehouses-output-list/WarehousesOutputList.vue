@@ -22,10 +22,10 @@
         >
           <b-form-group
             label="Số hóa đơn"
-            label-for="BillNumber"
+            label-for="billNumber"
           >
             <b-form-input
-              id="BillNumber"
+              id="billNumber"
               v-model="billNumber"
               maxlength="20"
               trim
@@ -43,7 +43,7 @@
             label-for="FromDate"
           >
             <b-form-datepicker
-              id="FromDate"
+              id="fromDate"
               v-model="fromDate"
               :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
               locale="vi"
@@ -58,7 +58,7 @@
           <b-form-group
             class="ml-lg-1"
             label="Đến ngày"
-            label-for="ToDate"
+            label-for="toDate"
           >
             <b-form-datepicker
               id="ToDate"
@@ -76,10 +76,10 @@
           <b-form-group
             class="ml-lg-1"
             label="Loại xuất"
-            label-for="InputType"
+            label-for="inputType"
           >
             <b-form-select
-              id="InputType"
+              id="inputType"
               v-model="inputTypes"
             >
               <b-form-select-option value="">
@@ -105,10 +105,10 @@
           <b-form-group
             class="ml-lg-1"
             label="Tìm kiếm"
-            label-for="SearchButton"
+            label-for="searchButton"
           >
             <b-button
-              id="SearchButton"
+              id="searchButton"
               variant="primary"
             >
               <b-icon-search class="mr-1" />
@@ -148,7 +148,7 @@
       >
         <vue-good-table
           :columns="columns"
-          :rows="receiptExports"
+          :rows="exportWarehouses"
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true
@@ -162,7 +162,7 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'Feature'"
+              v-if="props.column.field === 'feature'"
               align-h="center"
             >
               <b-icon-bricks />
@@ -179,7 +179,7 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'Feature'"
+              v-if="props.column.field === 'feature'"
               align-h="center"
             >
               <div v-show="props.index > 0">
@@ -195,7 +195,7 @@
                 <b-button
                   variant="light"
                   class="rounded-circle ml-1 p-1"
-                  @click="onClickUpdateButton"
+                  @click="onClickUpdateButton(props.row.id,props.row.type)"
                 >
                   <b-icon-pencil-fill
                     color="blue"
@@ -226,7 +226,7 @@
 
     <!-- START - Product Modal Delete -->
     <b-modal
-      id="DeleteModal"
+      id="deleteModal"
       title="Thông báo"
     >
       Bạn có muốn xóa đợt xuất hàng?
@@ -241,54 +241,50 @@ import {
   mapGetters,
   mapState,
 } from 'vuex'
-import { VueGoodTable } from 'vue-good-table'
-import 'vue-good-table/dist/vue-good-table.css'
+
 import {
-  RECEIPTEXPORT,
-  RECEIPTEXPORTS_GETTER,
-  GET_RECEIPTEXPORTS_ACTION,
-  PRINT_RECEIPTEXPORT_ACTION,
+  EXPORT,
+  GET_EXPORTS_GETTER,
+  GET_EXPORTS_ACTION,
+  PRINT_EXPORT_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
-    VueGoodTable,
   },
   data() {
     return {
-      valueDateFrom: new Date(),
-      valueDateTo: new Date(),
       inputValueBillNumber: '',
       columns: [
         {
           label: 'ID',
-          field: 'ID',
+          field: 'id',
           hidden: true,
         },
         {
           label: 'Ngày',
-          field: 'Date',
+          field: 'date',
           sortable: false,
         },
         {
           label: 'Mã xuất hàng',
-          field: 'Id',
+          field: 'code',
           sortable: false,
         },
         {
           label: 'Số hóa đơn',
-          field: 'BillNumber',
+          field: 'billNumber',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Số nội bộ',
-          field: 'InternalNumber',
+          field: 'internalNumber',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'quantity',
           type: 'number',
           sortable: false,
           filterOptions: {
@@ -297,7 +293,7 @@ export default {
         },
         {
           label: 'Số tiền',
-          field: 'Price',
+          field: 'price',
           type: 'number',
           sortable: false,
           filterOptions: {
@@ -306,20 +302,29 @@ export default {
         },
         {
           label: 'Ghi chú',
-          field: 'Note',
+          field: 'note',
           sortable: false,
         },
         {
           label: 'Thao tác',
-          field: 'Feature',
+          field: 'feature',
           sortable: false,
         },
       ],
+      searchOptions: {
+        redInvoiceNo: '',
+        fromDate: '',
+        toDate: '',
+        type: '',
+        pageSize: 10,
+        pageNumber: 1,
+      },
+      exportWarehouses: [],
     }
   },
   computed: {
     receiptExports() {
-      const datas = this.RECEIPTEXPORTS_GETTER()
+      const datas = this.GET_EXPORTS_GETTER()
       const options = {
         year: 'numeric',
         month: '2-digit',
@@ -337,18 +342,18 @@ export default {
         totalAmount: totalMoney,
         note: '',
       }
-
       datas.unshift(firstItem)
       return datas.map(data => ({
-        ID: data.id,
-        Date: data.transDate === '' ? '' : new Date(data.transDate).toLocaleDateString('vi-VN', options),
-        Id: data.transCode,
-        BillNumber: data.redInvoiceNo,
-        InternalNumber: data.internalNumber,
-        Quantity: Number(data.totalQuantity).toLocaleString('vi-VN'),
-        Price: Number(data.totalAmount).toLocaleString('vi-VN'),
-        Note: data.note,
-        Feature: 'Chỉnh sửa',
+        id: data.id,
+        date: data.transDate === '' ? '' : new Date(data.transDate).toLocaleDateString('vi-VN', options),
+        code: data.transCode,
+        billNumber: data.redInvoiceNo,
+        internalNumber: data.internalNumber,
+        quantity: Number(data.totalQuantity).toLocaleString('vi-VN'),
+        price: Number(data.totalAmount).toLocaleString('vi-VN'),
+        note: data.note,
+        feature: 'Chỉnh sửa',
+        type: data.receiptType,
       }))
     },
   },
@@ -360,19 +365,24 @@ export default {
     }
     return null
   },
+  watch: {
+    receiptExports() {
+      this.exportWarehouses = [...this.receiptExports]
+    },
+  },
   mounted() {
-    this.GET_RECEIPTEXPORTS_ACTION({})
+    this.GET_EXPORTS_ACTION(this.searchOptions)
   },
   methods: {
-    ...mapState(RECEIPTEXPORT, {
+    ...mapState(EXPORT, {
       successStatusDelete: state => state.delete.success,
     }),
-    ...mapGetters(RECEIPTEXPORT, [
-      RECEIPTEXPORTS_GETTER,
+    ...mapGetters(EXPORT, [
+      GET_EXPORTS_GETTER,
     ]),
-    ...mapActions(RECEIPTEXPORT, [
-      GET_RECEIPTEXPORTS_ACTION,
-      PRINT_RECEIPTEXPORT_ACTION,
+    ...mapActions(EXPORT, [
+      GET_EXPORTS_ACTION,
+      PRINT_EXPORT_ACTION,
     ]),
     selectedRowsChange(params) {
       this.receiptExportSelected = params.selectedRows.map(data => data.id)
@@ -380,14 +390,20 @@ export default {
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-output-create' })
     },
-    onClickUpdateButton() {
-      this.$router.push({ name: 'warehouses-output-update' })
+    onClickUpdateButton(id, type) {
+      this.$router.push({
+        name: 'warehouses-output-update',
+        params: {
+          id,
+          type,
+        },
+      })
     },
     onClickPrintButton(itemIndex) {
       const params = {
         transCode: this.receiptExports[itemIndex].Id,
       }
-      this.PRINT_RECEIPTEXPORT_ACTION(params)
+      this.PRINT_EXPORT_ACTION(params)
     },
   },
 }

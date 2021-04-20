@@ -48,15 +48,13 @@
                   id="outputType"
                   v-model="outputType"
                 >
-                  <b-form-select-option value="1">
+                  <b-form-select-option value="output">
                     xuất trả PO
                   </b-form-select-option>
-                  <b-form-select-option
-                    value="2"
-                  >
+                  <b-form-select-option value="adjustment">
                     xuất điều chỉnh
                   </b-form-select-option>
-                  <b-form-select-option value="3">
+                  <b-form-select-option value="borrowed">
                     xuất vay mượn
                   </b-form-select-option>
                 </b-form-select>
@@ -243,9 +241,9 @@
     <!-- END - Form and list -->
 
     <!-- START - Modal -->
-    <adjustment-modal :visible="AdjustmentModalVisible" />
-    <borrowed-modal :visible="BorrowedModalVisible" />
-    <output-modal :visible="OutputModalVisible" />
+    <adjustment-modal :visible="visibleAdjustmentModal" />
+    <borrowed-modal :visible="visibleBorrowedModal" />
+    <output-modal :visible="visibleOutputModal" />
     <!-- END - Modal -->
 
   </b-container>
@@ -264,17 +262,15 @@ export default {
   },
   data() {
     return {
-      AdjustmentModalVisible: false,
-      BorrowedModalVisible: false,
-      OutputModalVisible: false,
-
+      visibleAdjustmentModal: false,
+      visibleBorrowedModal: false,
+      visibleOutputModal: false,
       id: '',
       billNumber: '',
-      outputType: '1',
+      outputType: 'output',
       internalNumber: '',
       billDate: new Date(),
       poNo: '',
-
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -358,11 +354,28 @@ export default {
 
   methods: {
     showModal() {
-      const Output = this.outputType === '1' ? this.OutputModalVisible = !this.OutputModalVisible : this.OutputModalVisible = false
-      const Adjustment = this.outputType === '2' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
-      const Borrowed = this.outputType === '3' ? this.BorrowedModalVisible = !this.BorrowedModalVisible : this.BorrowedModalVisible = false
-
-      return Output && Adjustment && Borrowed
+      switch (this.outputType) {
+        case 'output':
+          this.visibleOutputModal = true
+          this.visibleAdjustmentModal = false
+          this.visibleBorrowedModal = false
+          break
+        case 'adjustment':
+          this.visibleOutputModal = false
+          this.visibleAdjustmentModal = true
+          this.visibleBorrowedModal = false
+          break
+        case 'borrowed':
+          this.visibleOutputModal = false
+          this.visibleAdjustmentModal = false
+          this.visibleBorrowedModal = true
+          break
+        default:
+          this.visibleOutputModal = false
+          this.visibleAdjustmentModal = false
+          this.visibleBorrowedModal = false
+          break
+      }
     },
     navigateBack() {
       this.$router.back()

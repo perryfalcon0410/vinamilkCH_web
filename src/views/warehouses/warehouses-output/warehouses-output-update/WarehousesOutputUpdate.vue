@@ -17,7 +17,7 @@
               Ngày xuất:
             </b-col>
             <b-col class="font-weight-bold">
-              29/10/2020 lúc 16:16
+              {{ this.export.orderDate }}
             </b-col>
           </b-row>
           <!-- END - Date -->
@@ -27,11 +27,11 @@
             <b-col>
               <b-form-group
                 label="Mã xuất hàng"
-                label-for="id"
+                label-for="code"
               >
                 <b-form-input
-                  id="id"
-                  v-model="id"
+                  id="code"
+                  v-model="this.export.code"
                   maxlength="40"
                   trim
                   disabled
@@ -42,10 +42,10 @@
             <b-col>
               <b-form-group
                 label="Loại xuất"
-                label-for="outputType"
+                label-for="type"
               >
                 <b-form-select
-                  id="outputType"
+                  id="type"
                   v-model="outputType"
                   disabled
                 >
@@ -69,10 +69,13 @@
           <!-- START -  Stock  -->
           <b-form-group
             label="Kho hàng"
-            label-for="warehouse"
+            label-for="stock"
           >
-            <b-form-select
-              id="warehouse"
+            <b-form-input
+              id="stock"
+              v-model="this.export.wareHouseTypeName"
+              maxlength="40"
+              trim
               disabled
             />
           </b-form-group>
@@ -85,7 +88,7 @@
                 Số hóa đơn
               </div>
               <b-form-input
-                v-model="billNumber"
+                v-model="this.export.redInvoiceNo"
                 trim
                 :state="touched ? passed : null"
                 disabled
@@ -97,7 +100,7 @@
                 Ngày hóa đơn
               </div>
               <b-form-datepicker
-                v-model="billDate"
+                v-model="this.export.transDate"
                 locale="vi"
                 :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
                 disabled
@@ -113,7 +116,7 @@
                 Số nội bộ
               </div>
               <b-form-input
-                v-model="internalNumber"
+                v-model="this.export.internalNumber"
                 trim
                 :state="touched ? passed : null"
                 disabled
@@ -129,9 +132,9 @@
                 class="input-group-merge"
               >
                 <b-form-input
-                  v-model="internalNumber"
+                  v-model="this.export.poNumber"
                   trim
-                  :state="outputType === '1' && touched ? passed : null"
+                  :state="this.export.type === '1' && touched ? passed : null"
                   disabled
                 />
                 <b-input-group-append is-text>
@@ -150,6 +153,7 @@
           >
             <b-form-textarea
               id="note"
+              v-model="this.export.note"
               maxlength="4000"
             />
           </b-form-group>
@@ -170,7 +174,7 @@
 
           <vue-good-table
             :columns="columns"
-            :rows="rows"
+            :rows="this.export.products"
             style-class="vgt-table striped"
             compact-mode
             line-numbers
@@ -189,10 +193,10 @@
               slot="table-row"
               slot-scope="props"
             >
-              <div v-if="props.column.field === 'ProductReturnAmount'">
+              <div v-if="props.column.field === 'productReturnAmount'">
                 <b-input
                   size="sm"
-                  :value="props.row.ProductReturnAmount"
+                  :value="props.row.productReturnAmount"
                 />
               </div>
               <div v-else>
@@ -241,133 +245,146 @@
       </b-row>
     </b-col>
     <!-- END - Form and list -->
-
-    <!-- START - Modal -->
-    <adjustment-modal :visible="AdjustmentModalVisible" />
-    <borrowed-modal :visible="BorrowedModalVisible" />
-    <output-modal :visible="OutputModalVisible" />
-    <!-- END - Modal -->
-
   </b-container>
 </template>
 
 <script>
-import OutputModal from '../components/output-modal/OutputModal.vue'
-import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
-import BorrowedModal from '../components/borrowed-modal/OutputBorrowedModal.vue'
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+
+import {
+  EXPORT,
+  // Getter
+  GET_EXPORT_BY_ID_GETTER,
+  GET_PRODUCTS_OF_EXPORT_GETTER,
+  // Action
+  GET_EXPORT_BY_ID_ACTION,
+  GET_PRODUCTS_OF_EXPORT_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
-    AdjustmentModal,
-    BorrowedModal,
-    OutputModal,
   },
   data() {
     return {
-      AdjustmentModalVisible: false,
-      BorrowedModalVisible: false,
-      OutputModalVisible: false,
-
-      id: '',
-      billNumber: '',
-      outputType: '1',
-      internalNumber: '',
-      billDate: new Date(),
-      poNo: '',
+      outputType: 1, // Use b-form-select (prop type)
+      getOption: {
+        id: 0,
+        type: 0,
+      },
 
       columns: [
         {
           label: 'Mã sản phẩm',
-          field: 'ProductID',
+          field: 'productID',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'ProductName',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'Giá',
-          field: 'ProductPrice',
+          field: 'productPrice',
           type: 'number',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'ProductDVT',
+          field: 'productDVT',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Thành tiền',
-          field: 'ProductPriceTotal',
+          field: 'productPriceTotal',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Đã xuất trả/tổng nhập',
-          field: 'ProductExported',
+          field: 'productExported',
           sortable: false,
         },
         {
           label: 'Số lượng trả',
-          field: 'ProductReturnAmount',
+          field: 'productReturnAmount',
           sortable: false,
         },
       ],
-      rows: [
-        {
-          ProductID: '04AA10',
-          ProductPrice: '6,300',
-          ProductName: 'STT Dâu ADM GOLD 180ml',
-          ProductDVT: 'Hộp',
-          ProductPriceTotal: '2,531,000',
-          ProductExported: '1/5',
-          ProductReturnAmount: '0',
-        },
-        {
-          ProductID: '04AA10',
-          ProductPrice: '6,300',
-          ProductName: 'STT Dâu ADM GOLD 180ml',
-          ProductDVT: 'Hộp',
-          ProductPriceTotal: '2,531,000',
-          ProductExported: '1/5',
-          ProductReturnAmount: '0',
-        },
-        {
-          ProductID: '04AA10',
-          ProductPrice: '6,300',
-          ProductName: 'STT Dâu ADM GOLD 180ml',
-          ProductDVT: 'Hộp',
-          ProductPriceTotal: '2,531,000',
-          ProductExported: '1/5',
-          ProductReturnAmount: '0',
-        },
-        {
-          ProductID: '04AA10',
-          ProductPrice: '6,300',
-          ProductName: 'STT Dâu ADM GOLD 180ml',
-          ProductDVT: 'Hộp',
-          ProductPriceTotal: '2,531,000',
-          ProductExported: '1/5',
-          ProductReturnAmount: '0',
-        },
-      ],
+
+      export: {
+        id: `${this.$route.params.id}`,
+        receiptType: `${this.$route.params.type}`,
+        code: '',
+        type: '',
+        wareHouseTypeId: '',
+        wareHouseTypeName: '',
+        redInvoiceNo: '', // số hoá đơn
+        internalNumber: '', // số nội bộ
+        poNumber: '',
+        note: '',
+        orderDate: '',
+        transDate: '',
+        products: [],
+      },
     }
   },
-
-  methods: {
-    showModal() {
-      const Output = this.outputType === '1' ? this.OutputModalVisible = !this.OutputModalVisible : this.OutputModalVisible = false
-      const Adjustment = this.outputType === '2' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
-      const Borrowed = this.outputType === '3' ? this.BorrowedModalVisible = !this.BorrowedModalVisible : this.BorrowedModalVisible = false
-
-      return Output && Adjustment && Borrowed
+  computed: {
+    getExport() {
+      return this.GET_EXPORT_BY_ID_GETTER()
     },
+    getProductOfExport() {
+      return this.GET_PRODUCTS_OF_EXPORT_GETTER().map(data => ({
+        productID: data.id,
+        productPrice: data.price,
+        productName: data.productName,
+        productDVT: data.unit,
+        productPriceTotal: data.totalPrice,
+        productExported: data.export,
+        productReturnAmount: data.amount,
+      }))
+    },
+  },
+  watch: {
+    getExport() {
+      const dataGetExport = { ...this.getExport }
+      this.export = {
+        id: dataGetExport.id,
+        code: dataGetExport.transCode,
+        type: dataGetExport.type,
+        wareHouseTypeId: dataGetExport.wareHouseTypeId,
+        wareHouseTypeName: dataGetExport.wareHouseTypeName,
+        redInvoiceNo: dataGetExport.redInvoiceNo, // số hoá đơn
+        internalNumber: dataGetExport.internalNumber, // số nội bộ
+        poNumber: dataGetExport.poNumber,
+        note: dataGetExport.note,
+        orderDate: dataGetExport.orderDate,
+        transDate: dataGetExport.transDate,
+        products: [...this.getProductOfExport],
+      }
+      this.outputType = dataGetExport.type
+    },
+  },
+  mounted() {
+    this.GET_EXPORT_BY_ID_ACTION(`${this.export.id}?type=${this.export.receiptType}`)
+    this.GET_PRODUCTS_OF_EXPORT_ACTION(`${this.export.id}?type=${this.export.receiptType}`)
+  },
+  methods: {
+    ...mapGetters(EXPORT, [
+      GET_EXPORT_BY_ID_GETTER,
+      GET_PRODUCTS_OF_EXPORT_GETTER,
+    ]),
+    ...mapActions(EXPORT, [
+      GET_EXPORT_BY_ID_ACTION,
+      GET_PRODUCTS_OF_EXPORT_ACTION,
+    ]),
     navigateBack() {
       this.$router.back()
     },
-
   },
 }
 </script>

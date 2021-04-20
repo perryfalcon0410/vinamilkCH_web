@@ -1,6 +1,8 @@
 /* eslint-disable import/prefer-default-export */
-const RECEIPTEXPORT = '/sale/export'
-const RECEIPTEXPORTPRINT = '/sale/report/stock/invoice'
+const SALE = '/sale'
 
-export const getReceiptExportEndpoint = `${RECEIPTEXPORT}`
-export const printReceiptExportEndpoint = `${RECEIPTEXPORTPRINT}`
+export const getExportsEndpoint = `${SALE}/export`
+export const printExportEndpoint = `${SALE}/report/stock/invoice`
+export const getExportByIdEndpoint = `${SALE}/import/stock`
+export const updateExportEndpoint = `${SALE}/export/update`
+export const getProductsOfExportEndpoint = `${SALE}/import/trans-detail`
