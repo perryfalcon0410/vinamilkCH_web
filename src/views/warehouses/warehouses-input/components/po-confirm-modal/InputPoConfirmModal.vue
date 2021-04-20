@@ -101,7 +101,7 @@
             class="py-1"
           >
             <template
-              slot="table-row"
+              slot="column-filter"
               slot-scope="props"
             >
               <b-row
@@ -109,7 +109,7 @@
                 class="mx-0"
                 align-h="end"
               >
-                6800
+                {{ poProductInfo }}
               </b-row>
               <b-row
                 v-if="props.column.field === 'TotalPrice'"
@@ -270,6 +270,9 @@ export default {
           field: 'Quantity',
           sortable: false,
           type: 'number',
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Thành tiền',
@@ -277,7 +280,7 @@ export default {
           sortable: false,
           type: 'number',
           filterOptions: {
-            customFilter: true,
+            enabled: true,
           },
         },
       ],
