@@ -152,6 +152,7 @@
           <b-button
             class="rounded"
             variant="primary"
+            @click="test()"
           >
             <b-icon-printer-fill />
             In
@@ -164,7 +165,7 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="rows"
+          :rows="salesReceiptList"
           class="pb-1"
           style-class="vgt-table striped"
           :pagination-options="{
@@ -252,6 +253,16 @@
 </template>
 
 <script>
+import {
+  mapGetters,
+  mapActions,
+} from 'vuex'
+import { formatDateToVNI } from '@core/utils/filter'
+import {
+  SALESRECEIPTS,
+  SALES_RECEIPT_GETTER,
+  GET_SALES_RECEIPT_ACTION,
+} from '../store-module/type'
 import InvoiceDetailModal from '../components/InvoiceDetailModal.vue'
 
 export default {
@@ -402,8 +413,35 @@ export default {
     }
   },
   computed: {
+    salesReceiptList() {
+      return this.SALES_RECEIPT_GETTER().map(data => ({
+        NumberBill: data.orderNumber,
+        CustomerCode: data.customerNumber,
+        Name: data.customerName,
+        DayTime: formatDateToVNI(data.orderDate),
+        TotalValue: data.total,
+        DiscountMoney: data.discount,
+        MoneyAccumulated: data.accumulation,
+        Payments: data.total,
+        Note: data.note,
+        In: (data.redReceipt === true) ? 'Đã in' : 'Chưa in',
+        Company: data.comName,
+        TaxCode: data.taxCode,
+        Address: data.address,
+        NoteHĐĐ: data.noteRed,
+      }))
+    },
+  },
+  mounted() {
+    this.GET_SALES_RECEIPT_ACTION()
   },
   methods: {
+    ...mapGetters(SALESRECEIPTS, [
+      SALES_RECEIPT_GETTER,
+    ]),
+    ...mapActions(SALESRECEIPTS, [
+      GET_SALES_RECEIPT_ACTION,
+    ]),
     showInvoiceDetailModal() {
       this.isInvoiceDetailModal = !this.isInvoiceDetailModal
     },

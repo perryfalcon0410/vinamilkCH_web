@@ -1,0 +1,7 @@
+export const SALESRECEIPTS = 'salesReceipts'
+
+// GETTER
+export const SALES_RECEIPT_GETTER = 'SALES_RECEIPT_GETTER'
+
+// ACTION
+export const GET_SALES_RECEIPT_ACTION = 'GET_SALES_RECEIPT_ACTION'
