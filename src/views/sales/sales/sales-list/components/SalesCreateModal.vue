@@ -276,7 +276,8 @@ import {
 } from 'vee-validate'
 import Ripple from 'vue-ripple-directive'
 import vSelect from 'vue-select'
-import customer from '../../../../../@db/customer'
+import customerData from '@/@db/customer'
+import commonData from '@/@db/common'
 import {
   CUSTOMER,
   // GETTERS
@@ -313,12 +314,12 @@ export default {
       firstName: '',
       birthDay: '',
       genders: { name: 'Khác', id: '3' },
-      genderOptions: customer.customer.genders,
+      genderOptions: commonData.genders,
       phoneNumber: '',
       address: '',
       customerSpecial: false,
       note: '',
-      customerStatus: customer.customer.status,
+      customerStatus: customerData.status,
       customerGroups: null,
       customerProvince: null,
       customerDistrict: null,
