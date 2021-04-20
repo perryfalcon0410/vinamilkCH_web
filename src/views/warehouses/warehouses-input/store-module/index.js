@@ -5,8 +5,10 @@ import router from '@/router/index'
 import {
   // GETTERS
   POCONFIRM_GETTER,
-  PODETAIL_0_GETTER,
-  PODETAIL_1_GETTER,
+  PODETAIL_0_GETTER_RES,
+  PODETAIL_1_GETTER_RES,
+  PODETAIL_0_GETTER_INFO,
+  PODETAIL_1_GETTER_INFO,
   IMPORT_ADJUSTMENTS_GETTER,
   IMPORT_ADJUSTMENTS_DETAIL_GETTER,
   IMPORT_BORROWINGS_GETTER,
@@ -33,8 +35,10 @@ export default {
   // START - STATE
   state: {
     poConfirm: [],
-    podetail_0: {},
-    podetail_1: {},
+    podetail_0_res: [],
+    podetail_0_info: {},
+    podetail_1_res: [],
+    podetail_1_info: {},
     importAdjustments: [],
     importAdjustmentsDetail: [],
     importBorrowings: [],
@@ -47,11 +51,17 @@ export default {
     [POCONFIRM_GETTER](state) {
       return state.poConfirm
     },
-    [PODETAIL_0_GETTER](state) {
-      return state.podetail_0
+    [PODETAIL_0_GETTER_RES](state) {
+      return state.podetail_0_res
     },
-    [PODETAIL_1_GETTER](state) {
-      return state.podetail_1
+    [PODETAIL_1_GETTER_RES](state) {
+      return state.podetail_1_res
+    },
+    [PODETAIL_0_GETTER_INFO](state) {
+      return state.podetail_0_info
+    },
+    [PODETAIL_1_GETTER_INFO](state) {
+      return state.podetail_1_info
     },
     [IMPORT_ADJUSTMENTS_GETTER](state) {
       return state.importAdjustments
@@ -97,7 +107,8 @@ export default {
         .then(res => {
           if (res.success) {
             console.log(res.data)
-            state.podetail_0 = res.data
+            state.podetail_0_res = res.data.response
+            state.podetail_0_info = res.data.info
           } else {
             throw new Error(res.statusValue)
           }
@@ -112,7 +123,8 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.podetail_1 = res.data
+            state.podetail_1_res = res.data.response
+            state.podetail_1_info = res.data.info
           } else {
             throw new Error(res.statusValue)
           }
@@ -192,7 +204,7 @@ export default {
     },
     [GET_IMPORT_BORROWINGS_DETAIL_ACTION]({ state }, val) {
       ReceiptImportService
-        .getImportBorrowingsDetail(val)
+        .getImportBorrwingsDetail(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {

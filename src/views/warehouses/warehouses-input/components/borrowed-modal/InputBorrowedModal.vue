@@ -50,13 +50,13 @@
               :key="item.id"
               :class="{ 'text-primary': current == item.id }"
               class="border-bottom border-white bg-light py-1"
-              @click="PoSelect(item.id)"
+              @click="poSelect(item.id)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
               </b-col>
               <b-col>
-                {{ item.lincenseNumber }}
+                {{ item.LincenseNumber }}
               </b-col>
               <b-col>
                 {{ item.date }}
@@ -206,7 +206,7 @@ export default {
     importBorrowingsDetailList() {
       return this.IMPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
         id: data.id,
-        LincenseNumber: data.lincenseNumber,
+        LincenseNumber: data.licenseNumber,
         ProductId: data.productCode,
         Name: data.productName,
         Price: data.price,
@@ -230,12 +230,12 @@ export default {
     hoverHandler(hovered) {
       this.isHover = hovered
     },
-    PoSelected(id) {
+    inputBorrow() {
+      this.$emit('inputBorrows', [this.importBorrowingsDetailList, false])
+    },
+    poSelect(id) {
       this.current = id
       this.GET_IMPORT_BORROWINGS_DETAIL_ACTION(this.current)
-    },
-    inputBorrow() {
-      this.$emit('inputBorrow', [this.importBorrowingsDetailList, false])
     },
   },
 }

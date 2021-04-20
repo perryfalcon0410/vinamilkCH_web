@@ -5,7 +5,6 @@
   >
     <!-- START - Form and list -->
     <validation-observer
-      v-slot="{invalid}"
       ref="formContainer"
     >
       <b-col>
@@ -215,18 +214,11 @@
                 slot-scope="props"
               >
                 <b-row
-                  v-if="props.column.field === 'ProductId'"
-                  class="mx-0"
-                  align-h="start"
-                >
-                  23
-                </b-row>
-                <b-row
                   v-if="props.column.field === 'Quantity'"
                   class="mx-0"
                   align-h="start"
                 >
-                  48
+                  {{ poProductInfo.totalQuantity }}
                 </b-row>
 
                 <b-row
@@ -234,7 +226,7 @@
                   class="mx-0"
                   align-h="end"
                 >
-                  25,123,000
+                  {{ poProductInfo.totalPrice }}
                 </b-row>
               </template>
               <!-- START - Column filter -->
@@ -262,18 +254,11 @@
                 slot-scope="props"
               >
                 <b-row
-                  v-if="props.column.field === 'ProductId'"
-                  class="mx-0"
-                  align-h="start"
-                >
-                  23
-                </b-row>
-                <b-row
                   v-if="props.column.field === 'Quantity'"
                   class="mx-0"
                   align-h="start"
                 >
-                  48
+                  {{ poPromotionProductsInfo.totalQuantity }}
                 </b-row>
 
                 <b-row
@@ -281,7 +266,7 @@
                   class="mx-0"
                   align-h="end"
                 >
-                  25,123,000
+                  {{ poPromotionProductsInfo.totalPrice }}
                 </b-row>
               </template>
             </vue-good-table>
@@ -295,7 +280,7 @@
                 <b-button
                   variant="primary"
                   class="d-flex align-items-center rounded text-uppercase"
-                  :disabled="invalid"
+                  @click="create()"
                 >
                   <b-icon
                     icon="download"
@@ -336,7 +321,7 @@
     />
     <borrowed-modal
       :visible="BorrowedModalVisible"
-      @inputBorrow="dataFormInputBorrow($event)"
+      @inputBorrows="dataFormInputBorrow($event)"
     />
     <po-confirm-modal
       :visible="PoConfirmModalVisible"
@@ -393,6 +378,8 @@ export default {
       poNo: '',
       note: '',
 
+      poProductInfo: {},
+      poPromotionProductsInfo: {},
       // validation rules
       number,
       required,
@@ -482,7 +469,7 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'TotalPrice',
+          field: 'Po_TotalPrice',
           sortable: false,
           type: 'number',
         },
@@ -557,13 +544,15 @@ export default {
     },
     // ---------------------------Nhap hang-----------------------
     dataFromPoConfirm(data) {
-      const [poProducts, poPromotionProducts, Id, PoConfirmModalState, Snb] = data
+      const [poProducts, ProductInfo, poPromotionProducts, PromotionProductsInfo, Id, PoConfirmModalState, Snb] = data
       poProducts.forEach(element => {
         this.rowsProduct.push(element)
       })
       poPromotionProducts.forEach(element => {
         this.rowsProductPromotion.push(element)
       })
+      this.poProductInfo = ProductInfo
+      this.poPromotionProductsInfo = PromotionProductsInfo
       this.poNo = Id
       this.PoConfirmModalVisible = PoConfirmModalState
       this.internalNumber = Snb
@@ -586,10 +575,10 @@ export default {
     // -----------------------------Nhap dieu chinh------------------------
 
     // ------------------------------Nhap vay muon----------------------------
-    dataFromInputBorrwo(data) {
+    dataFormInputBorrow(data) {
       const [importBorrowsDetail, importBorrowModalState, borrowCode] = data
       importBorrowsDetail.forEach(element => {
-        this.BorrowColumns.push(element)
+        this.BorrowRows.push(element)
       })
       this.BorrowedModalVisible = importBorrowModalState
       this.poNo = null
@@ -620,6 +609,7 @@ export default {
             internalNumber: this.internalNumber,
             billNumber: this.billNumber,
             note: this.note,
+            lst: this.rows,
           })
         }
       })

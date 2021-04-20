@@ -43,7 +43,7 @@
             :key="item.id"
             class="border-bottom border-white py-1"
             :class="{ 'text-primary': current == item.id }"
-            @click="poSelected(item.id, item.internalNumber)"
+            @click="poSelected(item.id, item.internalNumber, item.poNo)"
           >
             <b-col cols="1">
               {{ index + 1 }}
@@ -109,14 +109,14 @@
                 class="mx-0"
                 align-h="end"
               >
-                {{ poProductInfo }}
+                {{ poProductInfo.totalQuantity }}
               </b-row>
               <b-row
                 v-if="props.column.field === 'TotalPrice'"
                 class="mx-0"
                 align-h="end"
               >
-                6800
+                {{ poProductInfo.totalPrice }}
               </b-row>
             </template>
           </vue-good-table>
@@ -136,7 +136,27 @@
             compact-mode
             line-numbers
             class="py-1"
-          />
+          >
+            <template
+              slot="column-filter"
+              slot-scope="props"
+            >
+              <b-row
+                v-if="props.column.field === 'Quantity'"
+                class="mx-0"
+                align-h="end"
+              >
+                {{ poPromotionProductsInfo.totalQuantity }}
+              </b-row>
+              <b-row
+                v-if="props.column.field === 'TotalPrice'"
+                class="mx-0"
+                align-h="end"
+              >
+                {{ poPromotionProductsInfo.totalPrice }}
+              </b-row>
+            </template>
+          </vue-good-table>
           <!-- END - Table Product promotion -->
         </b-col>
         <!-- END - List -->
@@ -216,8 +236,10 @@ import {
   WAREHOUSEINPUT,
   // GETTER
   POCONFIRM_GETTER,
-  PODETAIL_0_GETTER,
-  PODETAIL_1_GETTER,
+  PODETAIL_0_GETTER_RES,
+  PODETAIL_1_GETTER_RES,
+  PODETAIL_0_GETTER_INFO,
+  PODETAIL_1_GETTER_INFO,
   // ACTION
   GET_POCONFIRMS_ACTION,
   GET_PODETAIL_0_ACTION,
@@ -242,6 +264,7 @@ export default {
       DenyModalVisible: false,
       current: null,
       Snb: null,
+      poNumber: null,
       columns: [
         {
           label: 'SO No',
@@ -368,12 +391,9 @@ export default {
         status: data.status,
       }))
     },
-  },
-  watch: {
     // get products from selected Po
     poProducts() {
-      const po0Getter = this.PODETAIL_0_GETTER().response
-      return po0Getter.response.map(data => ({
+      return this.PODETAIL_0_GETTER_RES().map(data => ({
         SoNo: data.soNo,
         productId: data.productCode,
         Name: data.productName,
@@ -383,16 +403,11 @@ export default {
       }))
     },
     poProductInfo() {
-      const infos = this.PODETAIL_0_GETTER().info
-      return infos.response.map(data => ({
-        totalQuantity: data.totalQuantity,
-        totalPrice: data.totalPrice,
-      }))
+      return this.PODETAIL_0_GETTER_INFO()
     },
     // get promotion produtcs from selected Po
     poPromotionProducts() {
-      const poDetail1getter = this.PODETAIL_0_GETTER().response
-      return poDetail1getter.response.map(data => ({
+      return this.PODETAIL_1_GETTER_RES().map(data => ({
         SoNo: data.soNo,
         productId: data.productCode,
         Name: data.productName,
@@ -402,11 +417,7 @@ export default {
       }))
     },
     poPromotionProductsInfo() {
-      const infos = this.PODETAIL_1_GETTER().info
-      return infos.response.map(data => ({
-        totalQuantity: data.totalQuantity,
-        totalPrice: data.totalPrice,
-      }))
+      return this.PODETAIL_1_GETTER_INFO()
     },
   },
   mounted() {
@@ -415,8 +426,10 @@ export default {
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
       POCONFIRM_GETTER,
-      PODETAIL_0_GETTER,
-      PODETAIL_1_GETTER,
+      PODETAIL_0_GETTER_RES,
+      PODETAIL_1_GETTER_RES,
+      PODETAIL_0_GETTER_INFO,
+      PODETAIL_1_GETTER_INFO,
     ]),
     ...mapActions(WAREHOUSEINPUT, [
       GET_POCONFIRMS_ACTION,
@@ -425,8 +438,9 @@ export default {
       GET_IMPORTEXCEL_ACTION,
     ]),
     // invidual select event for poconfrim list
-    poSelected(id, internalNumber) {
+    poSelected(id, internalNumber, poNum) {
       this.current = id
+      this.poNumber = poNum
       this.Snb = internalNumber
       this.GET_PODETAIL_0_ACTION(this.current)
       this.GET_PODETAIL_1_ACTION(this.current)
@@ -437,7 +451,7 @@ export default {
     },
     // Confirm import product from selected Po
     confirmImportButton() {
-      this.$emit('import', [this.poProducts, this.poPromotionProducts, this.current, false, this.Snb])
+      this.$emit('import', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, this.poNumber, false, this.Snb])
     },
     exportExcel() {
       this.GET_IMPORTEXCEL_ACTION(this.current)
