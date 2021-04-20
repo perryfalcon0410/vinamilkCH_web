@@ -40,7 +40,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.receiptExports = res.data.content
+            state.receiptExports = res.data.response.content
           } else {
             throw new Error(res.statusValue)
           }
