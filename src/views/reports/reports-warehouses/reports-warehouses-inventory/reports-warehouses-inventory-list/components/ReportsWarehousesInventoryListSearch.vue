@@ -95,7 +95,6 @@ export default {
   methods: {
     showFindProductModal() {
       this.isShowFindProductModal = !this.isShowFindProductModal
-      console.log('click')
     },
   },
 }

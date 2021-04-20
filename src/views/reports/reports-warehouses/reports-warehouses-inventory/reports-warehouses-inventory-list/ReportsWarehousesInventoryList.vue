@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import ReportsWarehousesInventorySearch from './components/ReportsWarehousesInputListSearch.vue'
+import ReportsWarehousesInventorySearch from './components/ReportsWarehousesInventoryListSearch.vue'
 
 export default {
   components: {
