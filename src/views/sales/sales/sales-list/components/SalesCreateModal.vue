@@ -3,7 +3,7 @@
     ref="formContainer"
   >
     <b-modal
-      ref="myModal"
+      ref="salesCreateModal"
       modal-class="modal-primary"
       hide-footer
       title="Thêm khách hàng"
@@ -276,6 +276,7 @@ import {
 } from 'vee-validate'
 import Ripple from 'vue-ripple-directive'
 import vSelect from 'vue-select'
+import customer from '../../../../../@db/customer'
 import {
   CUSTOMER,
   // GETTERS
@@ -312,14 +313,12 @@ export default {
       firstName: '',
       birthDay: '',
       genders: { name: 'Khác', id: '3' },
-      genderOptions: [
-        { name: 'Nam', id: '1' }, { name: 'Nữ', id: '2' }, { name: 'Khác', id: '3' },
-      ],
+      genderOptions: customer.customer.genders,
       phoneNumber: '',
       address: '',
       customerSpecial: false,
       note: '',
-      customerStatus: { id: '1', name: 'Hoạt động' },
+      customerStatus: customer.customer.status,
       customerGroups: null,
       customerProvince: null,
       customerDistrict: null,
@@ -409,7 +408,7 @@ export default {
     },
 
     onClickCloseButton() {
-      this.$refs.myModal.hide()
+      this.$refs.salesCreateModal.hide()
     },
 
     onClickSaveButton() {

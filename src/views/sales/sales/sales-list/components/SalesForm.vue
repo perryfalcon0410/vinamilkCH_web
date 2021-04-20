@@ -69,7 +69,7 @@
               @blur="inputSearchFocused = false"
             />
             <b-input-group-append is-text>
-              <b-icon-plus @click="showModal" />
+              <b-icon-plus @click="showModalCreate" />
               <sales-create-modal ref="salesCreateModal" />
             </b-input-group-append>
           </b-input-group>
@@ -310,10 +310,8 @@ export default {
     }
   },
   methods: {
-    showModal() {
-      if (!undefined) {
-        this.$refs.salesCreateModal.$refs.myModal.show()
-      }
+    showModalCreate() {
+      this.$refs.salesCreateModal.$refs.salesCreateModal.show()
     },
   },
 }
