@@ -25,7 +25,7 @@
           </b-col>
           <b-col>
             <h2 class="text-center">
-              HD.001
+              {{ infomation.orderNumber }}
             </h2>
           </b-col>
         </b-row>
@@ -36,7 +36,7 @@
           </b-col>
           <b-col>
             <h3 class="text-center">
-              Trần Hoàng minh
+              {{ infomation.customerName }}
             </h3>
           </b-col>
         </b-row>
@@ -47,7 +47,7 @@
           </b-col>
           <b-col>
             <h3 class="text-center">
-              26/03/2021
+              {{ infomation.orderDate }}
             </h3>
           </b-col>
         </b-row>
@@ -58,7 +58,7 @@
           </b-col>
           <b-col>
             <h3 class="text-center">
-              Ngô Thị Lan Hương
+              {{ infomation.saleMan }}
             </h3>
           </b-col>
         </b-row>
@@ -74,7 +74,7 @@
           </b-col>
           <b-col>
             <h3>
-              400,000
+              {{ infomation.total }}
             </h3>
           </b-col>
         </b-row>
@@ -85,7 +85,7 @@
           </b-col>
           <b-col>
             <h3>
-              400,000
+              {{ infomation.totalPaid }}
             </h3>
           </b-col>
         </b-row>
@@ -96,7 +96,7 @@
           </b-col>
           <b-col>
             <h3>
-              200,000
+              {{ infomation.balance }}
             </h3>
           </b-col>
         </b-row>
@@ -117,7 +117,9 @@
         cols="8"
       />
     </b-row>
-    <InvoiceDetail />
+    <InvoiceDetail
+      :detail="details"
+    />
     <!-- End Invoice details -->
 
     <!-- Start Discounts and discounts -->
@@ -150,7 +152,9 @@
         cols="8"
       />
     </b-row>
-    <Promotion />
+    <Promotion
+      :promotiontable="promotiondetails"
+    />
     <!-- Start promotion -->
 
     <b-row
@@ -161,6 +165,11 @@
         @click="visible = !visible"
       >
         <b-row>
+          <b-button
+            @click="onPress()"
+          >
+            click
+          </b-button>
           <b-icon-x />
           <h5 class="text-white ">
             Đóng
@@ -187,10 +196,22 @@ export default {
     visible: {
       type: Boolean,
     },
-
+    details: {
+      type: Array,
+      default: null,
+    },
+    promotiondetails: {
+      type: Array,
+      default: null,
+    },
+    infomation: {
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
+      tableDetailValue: null,
       columns: [
         {
           label: 'Mã chương trình voucher',
@@ -364,6 +385,9 @@ export default {
   },
   methods: {
     onPress() {
+      console.log(this.details)
+      console.log(this.promotiondetails)
+      console.log(this.name)
     },
   },
 }

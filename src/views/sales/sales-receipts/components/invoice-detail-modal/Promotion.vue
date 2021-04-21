@@ -2,7 +2,7 @@
   <!-- Start table -->
   <vue-good-table
     :columns="columns"
-    :rows="rows"
+    :rows="promotiontable"
     style-class="vgt-table striped"
     :pagination-options="{
       enabled: true
@@ -24,7 +24,10 @@ export default {
     visible: {
       type: Boolean,
     },
-
+    promotiontable: {
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
@@ -41,22 +44,14 @@ export default {
           sortable: false,
         },
         {
-          label: 'Tên in hóa đơn',
+          label: 'Số lượng',
           field: 'Number',
           sortable: false,
         },
         {
-          label: 'Số lượng CTKM',
-          field: 'Price',
+          label: 'CTKM',
+          field: 'promotionProgram',
           sortable: false,
-        },
-      ],
-      rows: [
-        {
-          ProductCode: '01CX01',
-          ProductName: 'SĐCĐ Ông Thọ chữ xanh 380g',
-          Number: 'Nguyễn Văn A',
-          Price: '2 Combo 2 SĐCĐ Ông thọ Chữ xanh 380g',
         },
       ],
     }

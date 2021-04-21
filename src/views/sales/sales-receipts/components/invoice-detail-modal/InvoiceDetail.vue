@@ -2,7 +2,7 @@
   <!-- Start table -->
   <vue-good-table
     :columns="columns"
-    :rows="rows"
+    :rows="detail"
     style-class="vgt-table striped"
     :pagination-options="{
       enabled: true
@@ -24,7 +24,10 @@ export default {
     visible: {
       type: Boolean,
     },
-
+    detail: {
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
@@ -85,7 +88,7 @@ export default {
           Bill: '41,624',
         },
         {
-          ProductCode: '01CX01',
+          ProductCode: this.invoiceDetail,
           ProductName: 'SĐCĐ Ông Thọ chữ xanh 380g',
           ĐVT: 'Hộp',
           Number: '2',

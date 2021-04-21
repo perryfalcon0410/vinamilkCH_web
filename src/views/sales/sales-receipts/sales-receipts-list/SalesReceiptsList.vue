@@ -1,7 +1,7 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column  p-0"
+    class="d-flex flex-column p-0"
   >
     <b-card
       no-body
@@ -157,7 +157,6 @@
           <b-button
             class="rounded"
             variant="primary"
-            @click="test()"
           >
             <b-icon-printer-fill />
             in
@@ -258,8 +257,8 @@
               <span>
                 <b-button
                   variant="light"
-                  class="rounded-circle px-1"
-                  @click="showInvoiceDetailModal"
+                  class="rounded-circle p-1 ml-1"
+                  @click="showInvoiceDetailModal(props.row.id, props.row.NumberBill)"
                 >
                   <b-icon-eye-fill
                     color="blue"
@@ -288,9 +287,13 @@ import {
 import { formatDateToLocale } from '@core/utils/filter'
 import {
   SALESRECEIPTS,
-  SALES_RECEIPTS_GETTER,
-  SALES_RECEIPTS_INFO_GETTER,
-  GET_SALES_RECEIPTS_ACTION,
+  SALES_RECEIPT_GETTER,
+  SALES_RECEIPT_DETAIL_GETTER,
+  SALES_RECEIPT_DISCOUNT_GETTER,
+  SALES_RECEIPT_PROMOTION_GETTER,
+  SALES_RECEIPT_DETAIL_INFOS_GETTER,
+  GET_SALES_RECEIPT_ACTION,
+  GET_SALES_RECEIPT_DETAIL_ACTION,
 } from '../store-module/type'
 import InvoiceDetailModal from '../components/InvoiceDetailModal.vue'
 
@@ -416,20 +419,59 @@ export default {
     salesReceiptsTotal() {
       return this.SALES_RECEIPTS_INFO_GETTER()
     },
+    detailTable() {
+      return this.SALES_RECEIPT_DETAIL_GETTER().map(data => ({
+        ProductCode: data.productCode,
+        ProductName: data.productName,
+        ĐVT: data.unit,
+        Number: data.quantity,
+        Price: data.pricePerUnit,
+        IntoMoney: data.totalPrice,
+        Discount: data.discount,
+        Bill: data.payment,
+      }))
+    },
+    discountTable() {
+      return this.SALES_RECEIPT_DISCOUNT_GETTER()
+    },
+    promotionTable() {
+      return this.SALES_RECEIPT_PROMOTION_GETTER().map(data => ({
+        ProductCode: data.productNumber,
+        ProductName: data.productName,
+        Number: data.quantity,
+        promotionProgram: data.promotionProgramName,
+      }))
+    },
+    info() {
+      return this.SALES_RECEIPT_DETAIL_INFOS_GETTER().map(data => ({
+        orderNumber: data.orderNumber,
+        customerName: data.customerName,
+        saleMan: data.saleMan,
+        orderDate: data.orderDate,
+        total: data.total,
+        totalPaid: data.totalPaid,
+        balance: data.balance,
+      }))
+    },
   },
   mounted() {
     this.GET_SALES_RECEIPTS_ACTION()
   },
   methods: {
     ...mapGetters(SALESRECEIPTS, [
-      SALES_RECEIPTS_GETTER,
-      SALES_RECEIPTS_INFO_GETTER,
+      SALES_RECEIPT_GETTER,
+      SALES_RECEIPT_DETAIL_GETTER,
+      SALES_RECEIPT_DISCOUNT_GETTER,
+      SALES_RECEIPT_PROMOTION_GETTER,
+      SALES_RECEIPT_DETAIL_INFOS_GETTER,
     ]),
     ...mapActions(SALESRECEIPTS, [
-      GET_SALES_RECEIPTS_ACTION,
+      GET_SALES_RECEIPT_ACTION,
+      GET_SALES_RECEIPT_DETAIL_ACTION,
     ]),
-    showInvoiceDetailModal() {
+    showInvoiceDetailModal(id, orderNumber) {
       this.isInvoiceDetailModal = !this.isInvoiceDetailModal
+      this.GET_SALES_RECEIPT_DETAIL_ACTION({ saleOrderId: id, orderNumber })
     },
   },
 }
