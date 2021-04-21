@@ -152,7 +152,6 @@
           <b-button
             class="rounded"
             variant="primary"
-            @click="test()"
           >
             <b-icon-printer-fill />
             In
