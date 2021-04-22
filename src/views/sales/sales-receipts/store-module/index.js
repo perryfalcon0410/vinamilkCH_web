@@ -1,8 +1,8 @@
 import SaleReceiptService from '@/views/sales/sales-receipts/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
 import {
-  SALES_RECEIPT_GETTER,
-  GET_SALES_RECEIPT_ACTION,
+  SALES_RECEIPTS_GETTER,
+  GET_SALES_RECEIPTS_ACTION,
 } from './type'
 
 export default {
@@ -12,15 +12,15 @@ export default {
   },
 
   getters: {
-    [SALES_RECEIPT_GETTER](state) {
+    [SALES_RECEIPTS_GETTER](state) {
       return state.saleReceipt
     },
   },
   mutations: {},
   actions: {
-    [GET_SALES_RECEIPT_ACTION]({ state }) {
+    [GET_SALES_RECEIPTS_ACTION]({ state }) {
       SaleReceiptService
-        .getSalesOrderList()
+        .getSalesReceipts()
         .then(response => response.data)
         .then(res => {
           if (res.success) {

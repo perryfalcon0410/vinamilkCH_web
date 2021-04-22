@@ -1,4 +1,3 @@
-const SALERECEIPT = '/sale/sale-order'
+const SALE_RECEIPT = '/sale'
 
-export const getSalesOrderListEndpoint = `${SALERECEIPT}`
-export const getSaderListEndpoint = 'f'
+export const getSalesReceiptsEndpoint = `${SALE_RECEIPT}/sale-order`

@@ -1,10 +1,10 @@
 import axios from '@axios'
 import {
-  getSalesOrderListEndpoint,
+  getSalesReceiptsEndpoint,
 } from './defaultConfig'
 
 export default {
-  getSalesOrderList() {
-    return axios.get(`${getSalesOrderListEndpoint}`)
+  getSalesReceipts() {
+    return axios.get(`${getSalesReceiptsEndpoint}`)
   },
 }

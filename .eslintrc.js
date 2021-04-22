@@ -9,6 +9,7 @@ module.exports = {
   },
   rules: {
     'import/no-cycle': 'off',
+    "import/prefer-default-export": "off",
     'no-empty-pattern': 'off',
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',

@@ -154,7 +154,7 @@
             variant="primary"
           >
             <b-icon-printer-fill />
-            In
+            print
           </b-button>
         </b-button-group>
       </b-row>
@@ -187,7 +187,7 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'TotalValue'"
+              v-if="props.column.field === 'totalValue'"
               class="mx-0"
               align-h="end"
             >
@@ -195,7 +195,7 @@
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'Payments'"
+              v-else-if="props.column.field === 'payments'"
               class="mx-0"
               align-h="end"
             >
@@ -218,7 +218,7 @@
             slot="table-row"
             slot-scope="props"
           >
-            <span v-if="props.column.field == 'Note'">
+            <span v-if="props.column.field == 'note'">
               <span>
                 <b-button
                   variant="light"
@@ -229,7 +229,7 @@
               </span>
             </span>
 
-            <span v-else-if="props.column.field == 'NoteHĐĐ'">
+            <span v-else-if="props.column.field == 'noteHdd'">
               <span>
                 <b-button
                   variant="light"
@@ -240,7 +240,7 @@
               </span>
             </span>
 
-            <span v-else-if="props.column.field == 'Press'">
+            <span v-else-if="props.column.field == 'press'">
               <span>
                 <b-button
                   variant="light"
@@ -272,8 +272,8 @@ import {
 import { formatDateToVNI } from '@core/utils/filter'
 import {
   SALESRECEIPTS,
-  SALES_RECEIPT_GETTER,
-  GET_SALES_RECEIPT_ACTION,
+  SALES_RECEIPTS_GETTER,
+  GET_SALES_RECEIPTS_ACTION,
 } from '../store-module/type'
 import InvoiceDetailModal from '../components/InvoiceDetailModal.vue'
 
@@ -289,33 +289,33 @@ export default {
       selected: null,
       options: [
         { value: 1, text: 'Tất cả' },
-        { value: 2, text: 'Đã in' },
-        { value: 3, text: 'Chưa in' },
+        { value: 2, text: 'Đã print' },
+        { value: 3, text: 'Chưa print' },
       ],
       columns: [
         {
           label: 'Số hóa đơn',
-          field: 'NumberBill',
+          field: 'numberBill',
           sortable: false,
         },
         {
           label: 'Mã khách hàng',
-          field: 'CustomerCode',
+          field: 'customerCode',
           sortable: false,
         },
         {
           label: 'Họ tên',
-          field: 'Name',
+          field: 'name',
           sortable: false,
         },
         {
           label: 'Ngày bán',
-          field: 'DayTime',
+          field: 'dayTime',
           sortable: false,
         },
         {
           label: 'Tổng giá trị',
-          field: 'TotalValue',
+          field: 'totalValue',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -323,17 +323,17 @@ export default {
         },
         {
           label: 'Tiển giảm giá',
-          field: 'DiscountMoney',
+          field: 'discountMoney',
           sortable: false,
         },
         {
           label: 'Tiền tích lũy',
-          field: 'MoneyAccumulated',
+          field: 'moneyAccumulated',
           sortable: false,
         },
         {
           label: 'Tiền phải trả',
-          field: 'Payments',
+          field: 'payments',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -341,111 +341,111 @@ export default {
         },
         {
           label: 'Ghi chú',
-          field: 'Note',
+          field: 'note',
           sortable: false,
         },
         {
-          label: 'In HĐ đỏ',
-          field: 'In',
+          label: 'print HĐ đỏ',
+          field: 'print',
           sortable: false,
         },
         {
           label: 'Công ty',
-          field: 'Company',
+          field: 'company',
           sortable: false,
         },
         {
           label: 'Mã số thuế',
-          field: 'TaxCode',
+          field: 'taxCode',
           sortable: false,
         },
         {
           label: 'Địa chỉ',
-          field: 'Address',
+          field: 'address',
           sortable: false,
         },
         {
           label: 'Ghi chú HĐĐ',
-          field: 'NoteHĐĐ',
+          field: 'noteHdd',
           sortable: false,
         },
         {
           label: 'Chức năng',
-          field: 'Press',
+          field: 'press',
           sortable: false,
         },
       ],
       rows: [
         {
-          NumberBill: 'HD001',
-          CustomerCode: 'CUS.CH40235.001',
-          Name: 'Phan Bảo Châu',
-          DayTime: '01/10/2020',
-          TotalValue: '16,800',
-          DiscountMoney: '01/10/2020',
-          MoneyAccumulated: '794,484',
-          Payments: '16,800',
-          Note: '',
-          In: '',
-          Company: '',
-          TaxCode: '',
-          Address: '',
-          NoteHĐĐ: '',
-          Press: '1',
+          numberBill: 'HD001',
+          customerCode: 'CUS.CH40235.001',
+          name: 'Phan Bảo Châu',
+          dayTime: '01/10/2020',
+          totalValue: '16,800',
+          discountMoney: '01/10/2020',
+          moneyAccumulated: '794,484',
+          payments: '16,800',
+          note: '',
+          print: '',
+          company: '',
+          taxCode: '',
+          address: '',
+          noteHdd: '',
+          press: '1',
         },
         {
-          NumberBill: 'HD001',
-          CustomerCode: 'CUS.CH40235.001',
-          Name: 'Phan Bảo Châu',
-          DayTime: '01/10/2020',
-          TotalValue: '200,812',
-          DiscountMoney: '01/10/2020',
-          MoneyAccumulated: '794,484',
-          Payments: '200,812',
-          Note: '',
-          In: 'Đã in',
-          Company: 'Công ty TNHH Tekc',
-          TaxCode: '1000023687',
-          Address: 'Sô 10, đường Tân Trào, Phường Tân Phú, Quận 7',
-          NoteHĐĐ: '1',
-          Press: '',
+          numberBill: 'HD001',
+          customerCode: 'CUS.CH40235.001',
+          name: 'Phan Bảo Châu',
+          dayTime: '01/10/2020',
+          totalValue: '200,812',
+          discountMoney: '01/10/2020',
+          moneyAccumulated: '794,484',
+          payments: '200,812',
+          note: '',
+          print: 'Đã print',
+          company: 'Công ty TNHH Tekc',
+          taxCode: '1000023687',
+          address: 'Sô 10, đường Tân Trào, Phường Tân Phú, Quận 7',
+          noteHdd: '1',
+          press: '',
         },
       ],
     }
   },
   computed: {
     salesReceiptList() {
-      return this.SALES_RECEIPT_GETTER().map(data => ({
-        NumberBill: data.orderNumber,
-        CustomerCode: data.customerNumber,
-        Name: data.customerName,
-        DayTime: formatDateToVNI(data.orderDate),
-        TotalValue: data.total,
-        DiscountMoney: data.discount,
-        MoneyAccumulated: data.accumulation,
-        Payments: data.total,
-        In: (data.redReceipt === true) ? 'Đã in' : 'Chưa in',
-        Company: data.comName,
-        TaxCode: data.taxCode,
-        Address: data.address,
+      return this.SALES_RECEIPTS_GETTER().map(data => ({
+        numberBill: data.orderNumber,
+        customerCode: data.customerNumber,
+        name: data.customerName,
+        dayTime: formatDateToVNI(data.orderDate),
+        totalValue: data.total,
+        discountMoney: data.discount,
+        moneyAccumulated: data.accumulation,
+        payments: data.total,
+        print: (data.redReceipt === true) ? 'Đã print' : 'Chưa print',
+        company: data.comName,
+        taxCode: data.taxCode,
+        address: data.address,
       }))
     },
     salesReceiptNote() {
-      return this.SALES_RECEIPT_GETTER().map(data => ({
-        Note: data.note,
-        NoteHĐĐ: data.noteRed,
+      return this.SALES_RECEIPTS_GETTER().map(data => ({
+        note: data.note,
+        noteHdd: data.noteRed,
       }))
     },
   },
   mounted() {
-    this.GET_SALES_RECEIPT_ACTION()
+    this.GET_SALES_RECEIPTS_ACTION()
   },
   methods: {
     ...mapGetters(SALESRECEIPTS, [
-      SALES_RECEIPT_GETTER,
+      SALES_RECEIPTS_GETTER,
     ]),
     ...mapActions(SALESRECEIPTS, [
-      GET_SALES_RECEIPT_ACTION,
+      GET_SALES_RECEIPTS_ACTION,
     ]),
     showInvoiceDetailModal() {
       this.isInvoiceDetailModal = !this.isInvoiceDetailModal
