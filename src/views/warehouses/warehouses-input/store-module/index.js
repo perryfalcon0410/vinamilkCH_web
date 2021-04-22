@@ -106,7 +106,6 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            console.log(res.data)
             state.podetail_0_res = res.data.response
             state.podetail_0_info = res.data.info
           } else {
@@ -138,7 +137,6 @@ export default {
         .getImportExcel(val)
         .then(res => {
           // temp
-          console.log(res)
           if (res.status === 200 && res.data != null) {
             const blob = new Blob([res.data], { type: 'data:attachment/xlsx' })
             if (window.navigator.msSaveOrOpenBlob) {

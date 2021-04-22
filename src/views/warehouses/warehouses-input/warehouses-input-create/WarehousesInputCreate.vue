@@ -469,7 +469,7 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'Po_TotalPrice',
+          field: 'TotalPrice',
           sortable: false,
           type: 'number',
         },
@@ -607,7 +607,7 @@ export default {
             importType: this.status,
             poNo: this.poNo,
             internalNumber: this.internalNumber,
-            billNumber: this.billNumber,
+            redInvoiceNo: this.billNumber,
             note: this.note,
             lst: this.rows,
           })
