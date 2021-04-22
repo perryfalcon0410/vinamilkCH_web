@@ -74,7 +74,7 @@
           </b-col>
           <b-col>
             <h3>
-              {{ infomation.total }}
+              {{ (information.total) }}
             </h3>
           </b-col>
         </b-row>
@@ -85,7 +85,7 @@
           </b-col>
           <b-col>
             <h3>
-              {{ infomation.totalPaid }}
+              {{ (information.totalPaid) }}
             </h3>
           </b-col>
         </b-row>
@@ -96,7 +96,7 @@
           </b-col>
           <b-col>
             <h3>
-              {{ infomation.balance }}
+              {{ (information.balance) }}
             </h3>
           </b-col>
         </b-row>
@@ -119,6 +119,7 @@
     </b-row>
     <InvoiceDetail
       :detail="details"
+      :total="detailsTotal"
     />
     <!-- End Invoice details -->
 
@@ -135,7 +136,7 @@
         cols="8"
       />
     </b-row>
-    <Discounts />
+    <Discounts :discounts="discountDetails" />
 
     <!-- Start Discounts and discounts -->
 
@@ -162,14 +163,9 @@
       class="mt-2"
     >
       <b-button
-        @click="visible = !visible"
+        @click="turnoffModal"
       >
         <b-row>
-          <b-button
-            @click="onPress()"
-          >
-            click
-          </b-button>
           <b-icon-x />
           <h5 class="text-white ">
             Đóng
@@ -200,6 +196,10 @@ export default {
       type: Array,
       default: null,
     },
+    detailsTotal: {
+      type: Array,
+      default: null,
+    },
     promotiondetails: {
       type: Array,
       default: null,
@@ -211,183 +211,15 @@ export default {
   },
   data() {
     return {
-      tableDetailValue: null,
-      columns: [
-        {
-          label: 'Mã chương trình voucher',
-          field: 'Code',
-          sortable: false,
-        },
-        {
-          label: 'Tên chương trình voucher',
-          field: 'ProgramName',
-          sortable: false,
-        },
-        {
-          label: 'Mã voucher',
-          field: 'VoucherCode',
-          sortable: false,
-        },
-        {
-          label: 'Tên voucher',
-          field: 'VoucherName',
-          sortable: false,
-        },
-        {
-          label: 'Số serial',
-          field: 'ArchiveExportAmount',
-          type: 'number',
-          sortable: false,
-        },
-        {
-          label: 'Mệnh giá',
-          field: 'Denominations',
-          type: 'number',
-          sortable: false,
-        },
-        {
-          label: 'Thời gian hiệu lực',
-          field: 'Time',
-          sortable: false,
-        },
-        {
-          label: 'Chức năng',
-          field: 'Press',
-          sortable: false,
-        },
-      ],
-      rows: [
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0002',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '649268',
-          Denominations: '50,000',
-          Time: '01/11/2020 - 30/11/2020',
-          Press: 'Chỉnh sửa',
-        },
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0003',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '54349268',
-          Denominations: '50,000',
-          Time: '01/11/2020 - 30/11/2020',
-          Press: 'Chỉnh sửa',
-        },
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0004',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '4549268',
-          Denominations: '50,000',
-          Time: '01/11/2020 - 30/11/2020',
-          Press: 'Chỉnh sửa',
-        },
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0001',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '3549268',
-          Denominations: '50,000',
-          Time: '01/11/2021 - 30/11/2021',
-          Press: 'Chỉnh sửa',
-        },
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0001',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '43249268',
-          Denominations: '50,000',
-          Time: '01/11/2020 - 30/11/2020',
-          Press: 'Chỉnh sửa',
-        },
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0001',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '454268',
-          Denominations: '50,000',
-          Time: '01/11/2020 - 30/11/2020',
-          Press: 'Chỉnh sửa',
-        },
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0001',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '49368',
-          Denominations: '50,000',
-          Time: '01/11/2020 - 30/11/2020',
-          Press: 'Chỉnh sửa',
-        },
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0001',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '49368',
-          Denominations: '50,000',
-          Time: '01/11/2020 - 30/11/2020',
-          Press: 'Chỉnh sửa',
-        },
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0001',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '49368',
-          Denominations: '50,000',
-          Time: '01/11/2020 - 30/11/2020',
-          Press: 'Chỉnh sửa',
-        },
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0001',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '49368',
-          Denominations: '50,000',
-          Time: '01/11/2020 - 30/11/2020',
-          Press: 'Chỉnh sửa',
-        },
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0001',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '49368',
-          Denominations: '50,000',
-          Time: '01/11/2020 - 30/11/2020',
-          Press: 'Chỉnh sửa',
-        },
-        {
-          Code: 'PHVC0001',
-          ProgramName: 'PHVC0001',
-          VoucherCode: 'HO6FEFV70A',
-          VoucherName: 'HO6FEFV70A',
-          ArchiveExportAmount: '49368',
-          Denominations: '50,000',
-          Time: '01/11/2020 - 30/11/2020',
-          Press: 'Chỉnh sửa',
-        },
-      ],
+      date: null,
     }
   },
   computed: {
-
   },
   methods: {
-    onPress() {
-      console.log(this.details)
-      console.log(this.promotiondetails)
-      console.log(this.name)
+    turnoffModal() {
+      this.visible = !this.visible
+      this.$emit('modalIsOff', false)
     },
   },
 }

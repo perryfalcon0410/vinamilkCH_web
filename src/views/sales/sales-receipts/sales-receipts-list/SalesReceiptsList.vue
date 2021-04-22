@@ -71,7 +71,7 @@
               >
                 <b-form-select
                   v-model="selected"
-                  :options="options"
+                  :options="state"
                 />
               </b-form-group>
             </b-col>
@@ -275,7 +275,15 @@
     <!-- End table -->
 
     </b-form>
-    <invoice-detail-modal :visible="isInvoiceDetailModal " />
+    <invoice-detail-modal
+      :visible="isInvoiceDetailModal"
+      :information="info"
+      :details="detailTable"
+      :details-total="detailTableTotal"
+      :promotiondetails="promotionTable"
+      :discount-details="discountTable"
+      @modalIsOff="isOff"
+    />
   </b-container>
 </template>
 
@@ -285,16 +293,20 @@ import {
   mapActions,
 } from 'vuex'
 import { formatDateToLocale } from '@core/utils/filter'
+import printOptions from '@/@db/receipt'
 import {
   SALESRECEIPTS,
-  SALES_RECEIPT_GETTER,
-  SALES_RECEIPT_DETAIL_GETTER,
-  SALES_RECEIPT_DISCOUNT_GETTER,
-  SALES_RECEIPT_PROMOTION_GETTER,
-  SALES_RECEIPT_DETAIL_INFOS_GETTER,
-  GET_SALES_RECEIPT_ACTION,
-  GET_SALES_RECEIPT_DETAIL_ACTION,
+  SALES_RECEIPTS_GETTER,
+  SALES_RECEIPTS_DETAIL_GETTER,
+  SALES_RECEIPTS_DETAIL_TOTAL_GETTER,
+  SALES_RECEIPTS_DISCOUNT_GETTER,
+  SALES_RECEIPTS_PROMOTION_GETTER,
+  SALES_RECEIPTS_DETAIL_INFOS_GETTER,
+  SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
+  GET_SALES_RECEIPTS_ACTION,
+  GET_SALES_RECEIPTS_DETAIL_ACTION,
 } from '../store-module/type'
+
 import InvoiceDetailModal from '../components/InvoiceDetailModal.vue'
 
 export default {
@@ -303,15 +315,11 @@ export default {
   },
   data() {
     return {
+      state: printOptions.printOptions,
       isInvoiceDetailModal: false,
       valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       valueDateTo: new Date(),
       selected: null,
-      options: [
-        { value: 1, text: 'Tất cả' },
-        { value: 2, text: 'Đã in' },
-        { value: 3, text: 'Chưa in' },
-      ],
       columns: [
         {
           label: 'Số hóa đơn',
@@ -399,7 +407,8 @@ export default {
   },
   computed: {
     salesReceiptList() {
-      return this.SALES_RECEIPTS_GETTER().map(data => ({
+      return this.SALES_RECEIPT_GETTER().map(data => ({
+        id: data.id,
         numberBill: data.orderNumber,
         customerCode: data.customerNumber,
         name: data.customerName,
@@ -419,18 +428,23 @@ export default {
     salesReceiptsTotal() {
       return this.SALES_RECEIPTS_INFO_GETTER()
     },
+
     detailTable() {
-      return this.SALES_RECEIPT_DETAIL_GETTER().map(data => ({
-        ProductCode: data.productCode,
-        ProductName: data.productName,
-        ĐVT: data.unit,
-        Number: data.quantity,
-        Price: data.pricePerUnit,
-        IntoMoney: data.totalPrice,
-        Discount: data.discount,
-        Bill: data.payment,
+      return this.SALES_RECEIPTS_DETAIL_GETTER().map(data => ({
+        productCode: data.productCode,
+        productName: data.productName,
+        unit: data.unit,
+        number: data.quantity,
+        price: Number(data.pricePerUnit).toLocaleString('vi-VN'),
+        intoMoney: Number(data.amount).toLocaleString('vi-VN'),
+        discount: Number(data.discount).toLocaleString('vi-VN'),
+        bill: Number(data.payment).toLocaleString('vi-VN'),
       }))
     },
+    detailTableTotal() {
+      return this.SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER()
+    },
+
     discountTable() {
       return this.SALES_RECEIPT_DISCOUNT_GETTER()
     },
@@ -442,6 +456,8 @@ export default {
         promotionProgram: data.promotionProgramName,
       }))
     },
+
+    // common info in receipt
     info() {
       return this.SALES_RECEIPT_DETAIL_INFOS_GETTER().map(data => ({
         orderNumber: data.orderNumber,
@@ -459,19 +475,24 @@ export default {
   },
   methods: {
     ...mapGetters(SALESRECEIPTS, [
-      SALES_RECEIPT_GETTER,
-      SALES_RECEIPT_DETAIL_GETTER,
-      SALES_RECEIPT_DISCOUNT_GETTER,
-      SALES_RECEIPT_PROMOTION_GETTER,
-      SALES_RECEIPT_DETAIL_INFOS_GETTER,
+      SALES_RECEIPTS_GETTER,
+      SALES_RECEIPTS_DETAIL_GETTER,
+      SALES_RECEIPTS_DETAIL_TOTAL_GETTER,
+      SALES_RECEIPTS_DISCOUNT_GETTER,
+      SALES_RECEIPTS_PROMOTION_GETTER,
+      SALES_RECEIPTS_DETAIL_INFOS_GETTER,
+      SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
     ]),
     ...mapActions(SALESRECEIPTS, [
-      GET_SALES_RECEIPT_ACTION,
-      GET_SALES_RECEIPT_DETAIL_ACTION,
+      GET_SALES_RECEIPTS_ACTION,
+      GET_SALES_RECEIPTS_DETAIL_ACTION,
     ]),
     showInvoiceDetailModal(id, orderNumber) {
       this.isInvoiceDetailModal = !this.isInvoiceDetailModal
-      this.GET_SALES_RECEIPT_DETAIL_ACTION({ saleOrderId: id, orderNumber })
+      this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber })
+    },
+    isOff(state) {
+      this.isInvoiceDetailModal = state
     },
   },
 }

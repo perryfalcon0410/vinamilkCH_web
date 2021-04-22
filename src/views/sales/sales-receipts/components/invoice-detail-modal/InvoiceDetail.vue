@@ -12,7 +12,41 @@
       enabled: true,
       externalQuery: searchTerm
     }"
-  />
+  >
+    <template
+      slot="column-filter"
+      slot-scope="props"
+    >
+      <b-row
+        v-if="props.column.field === 'number'"
+        class="mx-0"
+        align-h="end"
+      >
+        {{ total.totalQuantity }}
+      </b-row>
+      <b-row
+        v-if="props.column.field === 'intoMoney'"
+        class="mx-0"
+        align-h="end"
+      >
+        {{ total.totalAmount }}
+      </b-row>
+      <b-row
+        v-else-if="props.column.field === 'discount'"
+        class="mx-0"
+        align-h="end"
+      >
+        {{ total.totalDiscount }}
+      </b-row>
+      <b-row
+        v-else-if="props.column.field === 'bill'"
+        class="mx-0"
+        align-h="end"
+      >
+        {{ total.totalPayment }}
+      </b-row>
+    </template>
+  </vue-good-table>
   <!-- End table -->
 </template>
 
@@ -26,6 +60,10 @@ export default {
     },
     detail: {
       type: Array,
+      default: null,
+    },
+    total: {
+      type: Object,
       default: null,
     },
   },
@@ -52,6 +90,9 @@ export default {
           label: 'Số lượng',
           field: 'Number',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Giá bán',
@@ -64,16 +105,25 @@ export default {
           field: 'IntoMoney',
           type: 'number',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Giảm giá',
           field: 'Discount ',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Thanh toán',
           field: 'Bill',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
       ],
       rows: [

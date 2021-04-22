@@ -2,7 +2,7 @@
   <!-- Start table -->
   <vue-good-table
     :columns="columns"
-    :rows="rows"
+    :rows="discounts"
     style-class="vgt-table striped"
     :pagination-options="{
       enabled: true
@@ -24,6 +24,10 @@ export default {
     visible: {
       type: Boolean,
     },
+    discounts: {
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
@@ -31,22 +35,22 @@ export default {
       columns: [
         {
           label: 'Phiếu/thẻ/Chương trình',
-          field: 'Program',
+          field: 'promotionName',
           sortable: false,
         },
         {
           label: 'Loại',
-          field: 'Type',
+          field: 'voucherType',
           sortable: false,
         },
         {
           label: 'Tiền chiết khấu/ giảm',
-          field: 'DiscountMoney',
+          field: 'discountPrice',
           sortable: false,
         },
         {
           label: '%Chiết khấu/ giảm',
-          field: 'Discount',
+          field: 'discountPercent',
           sortable: false,
         },
         {
