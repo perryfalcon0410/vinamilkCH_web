@@ -102,7 +102,7 @@
                       Ngày sinh <sup class="text-danger">*</sup>
                     </div>
                     <b-input-group class="input-group-merge">
-                      <flat-pickr
+                      <vue-flat-pickr
                         id="form-input-date-from"
                         v-model="birthDay"
                         :config="configDate"
@@ -239,7 +239,7 @@
                   Ngày cấp
                 </div>
                 <b-input-group class="input-group-merge">
-                  <flat-pickr
+                  <vue-flat-pickr
                     v-model="customerIDDate"
                     :config="configDate"
                     class="form-control"
@@ -568,10 +568,8 @@ import {
   dateFormatVNI,
   age,
 } from '@/@core/utils/validations/validations'
-import flatPickr from 'vue-flatpickr-component'
 import '@core/scss/vue/libs/vue-flatpicker.scss'
 import { formatVniDateToISO } from '@/@core/utils/filter'
-import vSelect from 'vue-select'
 
 import {
   CUSTOMER,
@@ -597,8 +595,6 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
-    flatPickr,
-    vSelect,
   },
 
   // START - Data
@@ -786,6 +782,7 @@ export default {
             idNoIssuedDate: formatVniDateToISO(this.customerIDDate),
             idNoIssuedPlace: this.customerIDLocation,
             mobiPhone: this.phoneNumber,
+            phone: this.phoneNumber, // temp
             email: this.customerEmail,
             areaId: this.customerPrecinct?.id,
             street: this.homeNumber,

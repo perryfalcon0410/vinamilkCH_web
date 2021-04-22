@@ -159,15 +159,11 @@
 </template>
 
 <script>
-import { VueGoodTable } from 'vue-good-table'
-// import the styles
-import 'vue-good-table/dist/vue-good-table.css'
 import SearchComponent from './components/SearchComponent.vue'
 
 export default {
   components: {
     SearchComponent,
-    VueGoodTable,
   },
   props: {
     visible: {

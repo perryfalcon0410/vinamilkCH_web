@@ -101,7 +101,7 @@
                       Ngày sinh <sup class="text-danger">*</sup>
                     </div>
                     <b-input-group class="input-group-merge">
-                      <flat-pickr
+                      <vue-flat-pickr
                         id="form-input-date-from"
                         v-model="birthDay"
                         :config="configDate"
@@ -202,7 +202,7 @@
 
               <!-- START - Customer Date Created -->
               <div>
-                Ngày tạo: <strong>{{ `${createdAt} (${countDays} ngày)` }}</strong>
+                Ngày tạo: <strong>{{ `${createdAt} (${countDays})` }}</strong>
               </div>
               <!-- END - Customer Date Created -->
 
@@ -247,7 +247,7 @@
                   Ngày cấp
                 </div>
                 <b-input-group class="input-group-merge">
-                  <flat-pickr
+                  <vue-flat-pickr
                     v-model="customerIDDate"
                     :config="configDate"
                     class="form-control"
@@ -590,6 +590,7 @@
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
 import {
   mapActions,
   mapGetters,
@@ -606,12 +607,7 @@ import {
   dateFormatVNI,
   age,
 } from '@/@core/utils/validations/validations'
-import { formatIsoDateToVNI, formatVniDateToISO, formatVniDateToGlobal } from '@/@core/utils/filter'
-import { dateDiffIndays } from '@/@core/utils/utils'
-
-import flatPickr from 'vue-flatpickr-component'
-import '@core/scss/vue/libs/vue-flatpicker.scss'
-import vSelect from 'vue-select'
+import { formatVniDateToISO, formatDateToVNI } from '@/@core/utils/filter'
 import {
   CUSTOMER,
   // GETTERS
@@ -638,8 +634,6 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
-    flatPickr,
-    vSelect,
   },
 
   // START - Data
@@ -747,7 +741,8 @@ export default {
       }))
     },
     countDays() {
-      return dateDiffIndays(formatVniDateToGlobal(this.createdAt || ''), new Date())
+      if (this.createdAt) return this.$moment(this.createdAt, 'L').fromNow(true)
+      return ''
     },
   },
   // END - Computed
@@ -845,15 +840,15 @@ export default {
         this.firstName = this.customer.firstName
         this.lastName = this.customer.lastName
         this.barCode = this.customer.barCode
-        this.birthDay = formatIsoDateToVNI(this.customer.dob)
+        this.birthDay = formatDateToVNI(this.customer.dob)
         this.genders = this.customer.genderId
         this.customerGroups = this.customer.customerTypeId
         this.customerStatus = this.customer.status
         this.customerSpecial = this.customer.isPrivate
         this.note = this.customer.noted
-        this.createdAt = formatIsoDateToVNI(this.customer.createdAt)
+        this.createdAt = formatDateToVNI(this.customer.createdAt)
         this.customerID = this.customer.idNo
-        this.customerIDDate = formatIsoDateToVNI(this.customer.idNoIssuedDate)
+        this.customerIDDate = formatDateToVNI(this.customer.idNoIssuedDate)
         this.customerIDLocation = this.customer.idNoIssuedPlace
         this.totalBill = this.customer.totalBill
         this.monthOrderNumber = this.customer.monthOrderNumber
@@ -918,14 +913,14 @@ export default {
         this.firstName !== this.customer.firstName
      || this.lastName !== this.customer.lastName
      || this.barCode !== this.customer.barCode
-     || this.birthDay !== formatIsoDateToVNI(this.customer.dob)
+     || this.birthDay !== formatDateToVNI(this.customer.dob)
      || this.genders !== this.customer.genderId
      || this.customerGroups !== this.customer.customerTypeId
      || this.customerStatus !== this.customer.status
      || this.customerSpecial !== this.customer.isPrivate
      || this.note !== this.customer.noted
      || this.customerID !== this.customer.idNo
-     || this.customerIDDate !== formatIsoDateToVNI(this.customer.idNoIssuedDate)
+     || this.customerIDDate !== formatDateToVNI(this.customer.idNoIssuedDate)
      || this.customerIDLocation !== this.customer.idNoIssuedPlace
         // START - Contact
      || this.phoneNumber !== this.customer.mobiPhone

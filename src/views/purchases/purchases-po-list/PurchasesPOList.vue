@@ -310,13 +310,11 @@
 </template>
 
 <script>
-import { VueGoodTable } from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
 import PoDetailModal from './components/PODetailModal.vue'
 
 export default {
   components: {
-    VueGoodTable,
     PoDetailModal,
   },
   data() {

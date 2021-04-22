@@ -241,7 +241,6 @@ import {
   mapGetters,
   mapState,
 } from 'vuex'
-
 import {
   WAREHOUSES_OUTPUT,
   GET_WAREHOUSES_OUTPUT_LIST_GETTER,

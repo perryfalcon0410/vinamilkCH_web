@@ -1,7 +1,7 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column"
+    class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
     <sales-customers-list-search />
@@ -45,7 +45,8 @@
           :rows="customers"
           style-class="vgt-table striped"
           :pagination-options="{
-            enabled: true
+            enabled: true,
+            perPage: elementSize
           }"
           compact-mode
           line-numbers
@@ -91,6 +92,58 @@
           </template>
           <!-- END - Rows -->
 
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              class="p-1 mx-0"
+              align-h="between"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span class="text-nowrap ">
+                  Hiển thị 1 đến
+                </span>
+                <b-form-select
+                  v-model="elementSize"
+                  :options="[5,10,20]"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span class="text-nowrap"> trong {{ customerPagination.totalElements }} mục </span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="customerPagination.totalElements"
+                :per-page="elementSize"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="my-auto"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
+
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
@@ -104,13 +157,15 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import 'vue-good-table/dist/vue-good-table.css'
 import { getGenderLabel, getCustomerTypeLabel } from '@core/utils/utils'
-import { formatIsoDateToVNI } from '@core/utils/filter'
+import { formatDateToVNI } from '@core/utils/filter'
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
   CUSTOMER,
+  // GETTERS
   CUSTOMERS_GETTER,
+  CUSTOMER_PAGINATION_GETTER,
+  // ACTIONS
   GET_CUSTOMERS_ACTION,
   EXPORT_CUSTOMERS_ACTION,
 } from '../store-module/type'
@@ -122,6 +177,8 @@ export default {
   data() {
     return {
       isShowDeleteModal: false,
+      elementSize: 20,
+      pageNumber: 1,
       columns: [
         {
           label: 'Mã khách hàng',
@@ -183,13 +240,27 @@ export default {
         code: data.customerCode,
         fullName: `${data.lastName} ${data.firstName}`,
         phoneNumber: data.mobiPhone,
-        birthDay: formatIsoDateToVNI(data.dob),
+        birthDay: formatDateToVNI(data.dob),
         gender: getGenderLabel(data.genderId),
         status: this.resolveStatus(data.status),
         group: getCustomerTypeLabel(data.customerTypeId),
-        date: formatIsoDateToVNI(data.createdAt),
+        date: formatDateToVNI(data.createdAt),
         feature: '',
       }))
+    },
+    customerPagination() {
+      return this.CUSTOMER_PAGINATION_GETTER()
+    },
+  },
+
+  watch: {
+    pageNumber() {
+      this.onPaginationChange()
+      console.log(this.customerPagination)
+    },
+    elementSize() {
+      this.onPaginationChange()
+      console.log(this.customerPagination)
     },
   },
 
@@ -200,6 +271,7 @@ export default {
   methods: {
     ...mapGetters(CUSTOMER, [
       CUSTOMERS_GETTER,
+      CUSTOMER_PAGINATION_GETTER,
     ]),
     ...mapActions(CUSTOMER, [
       GET_CUSTOMERS_ACTION,
@@ -228,6 +300,14 @@ export default {
     },
     onClickExcelExportButton() {
       this.EXPORT_CUSTOMERS_ACTION()
+    },
+    onPaginationChange() {
+      const paginationData = {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+      }
+
+      this.GET_CUSTOMERS_ACTION(paginationData)
     },
   },
 }

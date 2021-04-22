@@ -236,13 +236,7 @@
 </template>
 
 <script>
-import { VueGoodTable } from 'vue-good-table'
-import 'vue-good-table/dist/vue-good-table.css'
-
 export default {
-  components: {
-    VueGoodTable,
-  },
   data() {
     return {
       fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),

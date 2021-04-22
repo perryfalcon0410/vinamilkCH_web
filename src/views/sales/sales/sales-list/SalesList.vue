@@ -220,16 +220,11 @@
 </template>
 
 <script>
-import { VueGoodTable } from 'vue-good-table'
-// import the styles
-import 'vue-good-table/dist/vue-good-table.css'
-
 import SalesForm from './components/SalesForm.vue'
 import SalesProducts from './components/SalesProducts.vue'
 
 export default {
   components: {
-    VueGoodTable,
     SalesForm,
     SalesProducts,
   },

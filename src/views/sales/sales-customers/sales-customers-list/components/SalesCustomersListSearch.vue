@@ -69,7 +69,7 @@
                   >
                     <b-icon-calendar />
                   </b-input-group-prepend>
-                  <flat-pickr
+                  <vue-flat-pickr
                     v-model="fromDate"
                     :config="configDate"
                     class="form-control"
@@ -103,7 +103,7 @@
                   >
                     <b-icon-calendar />
                   </b-input-group-prepend>
-                  <flat-pickr
+                  <vue-flat-pickr
                     id="form-input-date-from"
                     v-model="toDate"
                     :config="configDate"
@@ -240,14 +240,10 @@
 </template>
 
 <script>
-/* eslint-disable vue/attribute-hyphenation */
 import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import vSelect from 'vue-select'
-import flatPickr from 'vue-flatpickr-component'
-import '@core/scss/vue/libs/vue-flatpicker.scss'
 import { reverseVniDate } from '@/@core/utils/filter'
 import {
   ValidationProvider,
@@ -265,8 +261,7 @@ import {
 export default {
   components: {
     ValidationProvider,
-    vSelect,
-    flatPickr,
+
   },
   data() {
     return {

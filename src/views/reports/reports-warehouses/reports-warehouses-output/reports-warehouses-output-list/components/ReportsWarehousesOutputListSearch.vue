@@ -203,7 +203,7 @@
 </template>
 
 <script>
-import { formatDate } from '@/@core/utils/utils'
+import { formatDateToVNI } from '@/@core/utils/filter'
 
 export default {
   data() {
@@ -234,8 +234,8 @@ export default {
     onClickSearchButton() {
       const searchData = {
         searchKeywords: this.searchKeywords,
-        fromDate: formatDate(this.fromDate),
-        toDate: formatDate(this.toDate),
+        fromDate: formatDateToVNI(this.fromDate),
+        toDate: formatDateToVNI(this.toDate),
         customerTypeId: this.customerTypeId,
         status: this.status,
         genderId: this.genderId,

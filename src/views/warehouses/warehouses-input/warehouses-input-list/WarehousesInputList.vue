@@ -256,13 +256,11 @@
 </template>
 
 <script>
-import { VueGoodTable } from 'vue-good-table'
-import 'vue-good-table/dist/vue-good-table.css'
 import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatIsoDateToVNI } from '@core/utils/filter'
+import { formatDateToVNI } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
@@ -274,9 +272,6 @@ import {
 } from '../store-module/type'
 
 export default {
-  components: {
-    VueGoodTable,
-  },
   data() {
     return {
       isDeleteModalShow: false,
@@ -344,7 +339,7 @@ export default {
     receipts() {
       return this.RECEIPTS_GETTER().map(data => ({
         id: data.id,
-        TransDate: formatIsoDateToVNI(data.transDate),
+        TransDate: formatDateToVNI(data.transDate),
         TransCode: data.TransCode,
         RedInvoiceNo: data.redInvoiceNo,
         InternalNumber: data.internalNumber,
@@ -379,7 +374,7 @@ export default {
       this.EXPORT_RECEIPTS_ACTION(id)
     },
     onClickDeleteButton(date) {
-      if (date === formatIsoDateToVNI(new Date())) {
+      if (date === formatDateToVNI(new Date())) {
         this.isDeleteModalShow = !this.isDeleteModalShow
       } else {
         toasts.error('Đã quá thời hạn chỉnh sửa')

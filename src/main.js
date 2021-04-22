@@ -9,6 +9,11 @@ import VueCompositionAPI from '@vue/composition-api'
 
 import i18n from '@/libs/i18n'
 import VueGoodTablePlugin from 'vue-good-table'
+import moment from 'moment'
+import VueFlatPickr from 'vue-flatpickr-component'
+import flatPickr from 'flatpickr'
+import { Vietnamese } from 'flatpickr/dist/l10n/vn'
+import vSelect from 'vue-select'
 import router from './router'
 import store from './store'
 import App from './App.vue'
@@ -33,6 +38,8 @@ import 'vue-loading-overlay/dist/vue-loading.css'
 
 // import the styles
 import 'vue-good-table/dist/vue-good-table.css'
+import '@core/scss/vue/libs/vue-flatpicker.scss'
+import '@core/scss/vue/libs/vue-select.scss'
 
 // BSV Plugin Registration
 Vue.use(ToastPlugin)
@@ -44,6 +51,14 @@ Vue.use(VueCompositionAPI)
 Vue.use(VueGoodTablePlugin)
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
+
+Vue.prototype.$moment = moment
+moment.locale('vi')
+
+flatPickr.localize(Vietnamese)
+Vue.component('vue-flat-pickr', VueFlatPickr)
+
+Vue.component('v-select', vSelect)
 
 // Feather font icon - For form-wizard
 // * Shall remove it if not using font-icons of feather-icons - For form-wizard

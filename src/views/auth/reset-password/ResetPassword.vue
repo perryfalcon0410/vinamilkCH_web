@@ -175,7 +175,7 @@ import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
   required, notEqual, confirmed, password, equal,
 } from '@core/utils/validations/validations'
-import { CapitalizeFirstLetter } from '@core/utils/utils'
+import { capitalizeFirstLetter } from '@core/utils/utils'
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
 
@@ -238,7 +238,7 @@ export default {
     },
 
     capFirstString(string) {
-      return CapitalizeFirstLetter(string)
+      return capitalizeFirstLetter(string)
     },
   },
 }

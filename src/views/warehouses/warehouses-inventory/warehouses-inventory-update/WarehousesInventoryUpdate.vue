@@ -262,13 +262,10 @@
 </template>
 
 <script>
-import { VueGoodTable } from 'vue-good-table'
-import 'vue-good-table/dist/vue-good-table.css'
 import ImportModal from '../components/ImportModal.vue'
 
 export default {
   components: {
-    VueGoodTable,
     ImportModal,
   },
 

@@ -5,6 +5,7 @@ import router from '@/router/index'
 import {
   // GETTERS
   CUSTOMERS_GETTER,
+  CUSTOMER_PAGINATION_GETTER,
   CUSTOMER_BY_ID_GETTER,
   SHOP_LOCATIONS_GETTER,
   ERROR_CODE_GETTER,
@@ -39,6 +40,7 @@ export default {
     errorCode: null,
 
     customers: [],
+    customerPagination: {},
     customerById: {},
     shopLocations: [],
     customerTypes: [],
@@ -53,6 +55,9 @@ export default {
   getters: {
     [CUSTOMERS_GETTER](state) {
       return state.customers
+    },
+    [CUSTOMER_PAGINATION_GETTER](state) {
+      return state.customerPagination
     },
     [CUSTOMER_BY_ID_GETTER](state) {
       return state.customerById
@@ -95,6 +100,7 @@ export default {
         .then(res => {
           if (res.success) {
             state.customers = res.data.content
+            state.customerPagination = res.data
           } else {
             throw new Error(res.statusValue)
           }
