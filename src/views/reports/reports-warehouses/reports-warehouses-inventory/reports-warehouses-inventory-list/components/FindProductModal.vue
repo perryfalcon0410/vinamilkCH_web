@@ -15,7 +15,7 @@
         <label class="text-primary">
           Tìm kiếm sản phẩm
         </label>
-        <b-form-row class="v-search-form mx-0 p-1">
+        <b-form-row class="v-search-form mx-0 pt-1">
           <b-col
             xs
             sm="4"

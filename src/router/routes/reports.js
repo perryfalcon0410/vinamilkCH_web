@@ -32,7 +32,7 @@ export default [
 
   // Bao cao Ton kho
   {
-    path: '/reports/warehouses-inventory',
+    path: '/reports/warehouses/inventory',
     name: 'reports-warehouses-inventory',
     component: () => import('@/views/reports/reports-warehouses/reports-warehouses-inventory/reports-warehouses-inventory-list/ReportsWarehousesInventoryList.vue'),
     meta: {

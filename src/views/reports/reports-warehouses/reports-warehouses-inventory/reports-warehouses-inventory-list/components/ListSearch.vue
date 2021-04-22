@@ -7,7 +7,7 @@
         Điều kiện
       </strong>
     </div>
-    <b-form-row class="v-search-form border-top mx-0 p-1">
+    <b-form-row class="v-search-form border-top mx-0 pt-1">
       <!--START-date-form-->
       <b-col
         xl

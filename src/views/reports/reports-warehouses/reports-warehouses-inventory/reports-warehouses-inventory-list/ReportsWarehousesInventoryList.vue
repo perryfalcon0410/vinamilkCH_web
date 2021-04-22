@@ -77,7 +77,7 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'Quantity'"
+              v-if="props.column.field === 'quantity'"
               class="mx-0"
               align-h="end"
             >
@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import ReportsWarehousesInventorySearch from './components/ReportsWarehousesInventoryListSearch.vue'
+import ReportsWarehousesInventorySearch from './components/ListSearch.vue'
 
 export default {
   components: {
@@ -147,7 +147,7 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'quantity',
           type: 'number',
           sortable: false,
           filterOptions: {
@@ -227,7 +227,7 @@ export default {
           group: 'E',
           productId: '04AA10',
           productName: 'STT Dâu ADM GOLD 180ml',
-          Quantity: '1000',
+          quantity: '1000',
           packetQuantity: '41',
           outpacketQuantity: '16',
           price: '8,400',
@@ -244,7 +244,7 @@ export default {
           group: 'E',
           productId: '04AA10',
           productName: 'STT Dâu ADM GOLD 180ml',
-          Quantity: '1000',
+          quantity: '1000',
           packetQuantity: '41',
           outpacketQuantity: '16',
           price: '8,400',
