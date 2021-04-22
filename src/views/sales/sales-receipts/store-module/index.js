@@ -17,7 +17,7 @@ export default {
     saleReceiptDetail: [],
     saleReceiptDiscount: [],
     saleReceiptPromotion: [],
-    saleReceiptInfos: '',
+    saleReceiptInfos: [],
   },
 
   getters: {
