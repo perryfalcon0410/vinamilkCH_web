@@ -389,9 +389,6 @@ export default {
           label: 'Mã hàng',
           field: 'productId',
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
         },
         {
           label: 'Số lượng',
