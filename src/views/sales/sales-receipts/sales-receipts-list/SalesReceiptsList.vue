@@ -182,7 +182,26 @@
             multipleColumns: true,
           }"
         >
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-row
+              v-if="props.column.field === 'TotalValue'"
+              class="mx-0"
+              align-h="end"
+            >
+              6800
+            </b-row>
 
+            <b-row
+              v-else-if="props.column.field === 'Payments'"
+              class="mx-0"
+              align-h="end"
+            >
+              250.300.000
+            </b-row>
+          </template>
           <template
             slot="table-column"
             slot-scope="props"
@@ -201,41 +220,35 @@
           >
             <span v-if="props.column.field == 'Note'">
               <span>
-                <div v-if="props.row.Note == '1'">
-                  <b-button
-                    variant="light"
-                    class="rounded-circle px-1"
-                  >
-                    <b-icon-search />
-                  </b-button>
-                </div>
+                <b-button
+                  variant="light"
+                  class="rounded-circle px-1"
+                >
+                  <b-icon-search />
+                </b-button>
               </span>
             </span>
 
             <span v-else-if="props.column.field == 'NoteHĐĐ'">
               <span>
-                <div v-if="props.row.NoteHĐĐ == '1'">
-                  <b-button
-                    variant="light"
-                    class="rounded-circle px-1"
-                  >
-                    <b-icon-search />
-                  </b-button>
-                </div>
+                <b-button
+                  variant="light"
+                  class="rounded-circle px-1"
+                >
+                  <b-icon-search />
+                </b-button>
               </span>
             </span>
 
             <span v-else-if="props.column.field == 'Press'">
               <span>
-                <div v-if="props.row.Press == '1'">
-                  <b-button
-                    variant="light"
-                    class="rounded-circle px-1"
-                    @click="showInvoiceDetailModal"
-                  >
-                    <b-icon-hand-index-thumb />
-                  </b-button>
-                </div>
+                <b-button
+                  variant="light"
+                  class="rounded-circle px-1"
+                  @click="showInvoiceDetailModal"
+                >
+                  <b-icon-hand-index-thumb />
+                </b-button>
               </span>
             </span>
             <span v-else>
@@ -304,6 +317,9 @@ export default {
           label: 'Tổng giá trị',
           field: 'TotalValue',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Tiển giảm giá',
@@ -319,6 +335,9 @@ export default {
           label: 'Tiền phải trả',
           field: 'Payments',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Ghi chú',
@@ -358,23 +377,6 @@ export default {
       ],
       rows: [
         {
-          NumberBill: '',
-          CustomerCode: '',
-          Name: '',
-          DayTime: '',
-          TotalValue: '794,484',
-          DiscountMoney: '',
-          MoneyAccumulated: '',
-          Payments: '794,484',
-          Note: '',
-          In: '',
-          Company: '',
-          TaxCode: '',
-          Address: '',
-          NoteHĐĐ: '',
-          Press: '',
-        },
-        {
           NumberBill: 'HD001',
           CustomerCode: 'CUS.CH40235.001',
           Name: 'Phan Bảo Châu',
@@ -383,7 +385,7 @@ export default {
           DiscountMoney: '01/10/2020',
           MoneyAccumulated: '794,484',
           Payments: '16,800',
-          Note: '1',
+          Note: '',
           In: '',
           Company: '',
           TaxCode: '',
@@ -422,11 +424,15 @@ export default {
         DiscountMoney: data.discount,
         MoneyAccumulated: data.accumulation,
         Payments: data.total,
-        Note: data.note,
         In: (data.redReceipt === true) ? 'Đã in' : 'Chưa in',
         Company: data.comName,
         TaxCode: data.taxCode,
         Address: data.address,
+      }))
+    },
+    salesReceiptNote() {
+      return this.SALES_RECEIPT_GETTER().map(data => ({
+        Note: data.note,
         NoteHĐĐ: data.noteRed,
       }))
     },
