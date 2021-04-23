@@ -236,6 +236,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
+            console.log(res)
             toasts.success(res.statusValue)
             router.push({ name: 'warehouses-input' })
           } else {
@@ -253,7 +254,8 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.receipts = res.data.content
+            console.log(res)
+            state.receipts = res.data.response.content
           } else {
             throw new Error(res.statusValue)
           }

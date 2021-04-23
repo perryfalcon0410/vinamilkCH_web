@@ -591,7 +591,16 @@ export default {
     },
     create() {
       this.$refs.formContainer.validate().then(success => {
+        const test = {
+          importType: this.status,
+          poNo: this.poNo,
+          internalNumber: this.internalNumber,
+          redInvoiceNo: this.billNumber,
+          note: this.note,
+          lst: this.rows,
+        }
         if (success) {
+          console.log(test)
           this.CREATE_SALE_IMPORT_ACTION({
             importType: this.status,
             poNo: this.poNo,
