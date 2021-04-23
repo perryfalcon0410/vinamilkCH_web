@@ -1,18 +1,19 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column"
+    class="d-flex flex-column  p-0"
   >
     <b-card
       no-body
       class="mb-1"
     >
-      <label
-        for="v-search-form"
-        class="text-primary m-1"
+      <div
+        class="m-1 text-primary"
       >
-        Tìm kiếm
-      </label>
+        <strong>
+          Tìm kiếm
+        </strong>
+      </div>
 
       <b-collapse
         id="accordion-2"
@@ -145,9 +146,13 @@
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
       >
-        <label class="text-primary">
-          Danh sách đơn trả hàng
-        </label>
+        <div
+          class="m-1 text-primary"
+        >
+          <strong>
+            Danh sách hóa đơn bán hàng
+          </strong>
+        </div>
         <b-button-group>
           <b-button
             class="rounded"
@@ -191,7 +196,7 @@
               class="mx-0"
               align-h="end"
             >
-              6800
+              {{ salesReceiptsTotal.totalAmount }}
             </b-row>
 
             <b-row
@@ -199,7 +204,7 @@
               class="mx-0"
               align-h="end"
             >
-              250.300.000
+              {{ salesReceiptsTotal.allTotal }}
             </b-row>
           </template>
           <template
@@ -222,9 +227,11 @@
               <span>
                 <b-button
                   variant="light"
-                  class="rounded-circle px-1"
+                  class="rounded-circle p-1 ml-1"
                 >
-                  <b-icon-search />
+                  <b-icon-file-earmark-excel
+                    color="blue"
+                  />
                 </b-button>
               </span>
             </span>
@@ -233,9 +240,11 @@
               <span>
                 <b-button
                   variant="light"
-                  class="rounded-circle px-1"
+                  class="rounded-circle p-1 ml-1"
                 >
-                  <b-icon-search />
+                  <b-icon-file-earmark-excel
+                    color="blue"
+                  />
                 </b-button>
               </span>
             </span>
@@ -247,7 +256,9 @@
                   class="rounded-circle px-1"
                   @click="showInvoiceDetailModal"
                 >
-                  <b-icon-hand-index-thumb />
+                  <b-icon-eye-fill
+                    color="blue"
+                  />
                 </b-button>
               </span>
             </span>
@@ -273,6 +284,7 @@ import { formatDateToVNI } from '@core/utils/filter'
 import {
   SALESRECEIPTS,
   SALES_RECEIPTS_GETTER,
+  SALES_RECEIPTS_INFO_GETTER,
   GET_SALES_RECEIPTS_ACTION,
 } from '../store-module/type'
 import InvoiceDetailModal from '../components/InvoiceDetailModal.vue'
@@ -436,6 +448,9 @@ export default {
         noteHdd: data.noteRed,
       }))
     },
+    salesReceiptsTotal() {
+      return this.SALES_RECEIPTS_INFO_GETTER()
+    },
   },
   mounted() {
     this.GET_SALES_RECEIPTS_ACTION()
@@ -443,6 +458,7 @@ export default {
   methods: {
     ...mapGetters(SALESRECEIPTS, [
       SALES_RECEIPTS_GETTER,
+      SALES_RECEIPTS_INFO_GETTER,
     ]),
     ...mapActions(SALESRECEIPTS, [
       GET_SALES_RECEIPTS_ACTION,
