@@ -44,7 +44,7 @@
           >
             <b-form-datepicker
               id="fromDate"
-              v-model="fromDate"
+              v-model="searchOptions.fromDate"
               :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
               locale="vi"
             />
@@ -62,7 +62,7 @@
           >
             <b-form-datepicker
               id="ToDate"
-              v-model="toDate"
+              v-model="searchOptions.toDate"
               :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
               locale="vi"
             />
@@ -148,7 +148,7 @@
       >
         <vue-good-table
           :columns="columns"
-          :rows="exportWarehouses"
+          :rows="warehousesOutputList"
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true
@@ -243,10 +243,10 @@ import {
 } from 'vuex'
 
 import {
-  EXPORT,
-  GET_EXPORTS_GETTER,
-  GET_EXPORTS_ACTION,
-  PRINT_EXPORT_ACTION,
+  WAREHOUSES_OUTPUT,
+  GET_WAREHOUSES_OUTPUT_LIST_GETTER,
+  GET_WAREHOUSES_OUTPUT_LIST_ACTION,
+  PRINT_WAREHOUSES_OUTPUT_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -255,6 +255,7 @@ export default {
   data() {
     return {
       inputValueBillNumber: '',
+      billNumber: '',
       columns: [
         {
           label: 'ID',
@@ -319,12 +320,12 @@ export default {
         pageSize: 10,
         pageNumber: 1,
       },
-      exportWarehouses: [],
+      warehousesOutputList: [],
     }
   },
   computed: {
-    receiptExports() {
-      const datas = this.GET_EXPORTS_GETTER()
+    getWarehousesOutputList() {
+      const datas = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
       const options = {
         year: 'numeric',
         month: '2-digit',
@@ -357,32 +358,24 @@ export default {
       }))
     },
   },
-  stateInputBillNumber() {
-    const validBillNumber = /^(\d{0,20})$/
-    const result = validBillNumber.test(this.inputValueBillNumber)
-    if (this.inputValueBillNumber.length >= 1) {
-      return result
-    }
-    return null
-  },
   watch: {
-    receiptExports() {
-      this.exportWarehouses = [...this.receiptExports]
+    getWarehousesOutputList() {
+      this.warehousesOutputList = [...this.getWarehousesOutputList]
     },
   },
   mounted() {
-    this.GET_EXPORTS_ACTION(this.searchOptions)
+    this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(this.searchOptions)
   },
   methods: {
-    ...mapState(EXPORT, {
+    ...mapState(WAREHOUSES_OUTPUT, {
       successStatusDelete: state => state.delete.success,
     }),
-    ...mapGetters(EXPORT, [
-      GET_EXPORTS_GETTER,
+    ...mapGetters(WAREHOUSES_OUTPUT, [
+      GET_WAREHOUSES_OUTPUT_LIST_GETTER,
     ]),
-    ...mapActions(EXPORT, [
-      GET_EXPORTS_ACTION,
-      PRINT_EXPORT_ACTION,
+    ...mapActions(WAREHOUSES_OUTPUT, [
+      GET_WAREHOUSES_OUTPUT_LIST_ACTION,
+      PRINT_WAREHOUSES_OUTPUT_ACTION,
     ]),
     selectedRowsChange(params) {
       this.receiptExportSelected = params.selectedRows.map(data => data.id)
@@ -401,9 +394,9 @@ export default {
     },
     onClickPrintButton(itemIndex) {
       const params = {
-        transCode: this.receiptExports[itemIndex].Id,
+        transCode: this.warehousesOutputList[itemIndex].Id,
       }
-      this.PRINT_EXPORT_ACTION(params)
+      this.PRINT_WAREHOUSES_OUTPUT_ACTION(params)
     },
   },
 }

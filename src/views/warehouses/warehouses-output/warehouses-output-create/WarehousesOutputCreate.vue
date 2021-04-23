@@ -354,28 +354,9 @@ export default {
 
   methods: {
     showModal() {
-      switch (this.outputType) {
-        case 'output':
-          this.visibleOutputModal = true
-          this.visibleAdjustmentModal = false
-          this.visibleBorrowedModal = false
-          break
-        case 'adjustment':
-          this.visibleOutputModal = false
-          this.visibleAdjustmentModal = true
-          this.visibleBorrowedModal = false
-          break
-        case 'borrowed':
-          this.visibleOutputModal = false
-          this.visibleAdjustmentModal = false
-          this.visibleBorrowedModal = true
-          break
-        default:
-          this.visibleOutputModal = false
-          this.visibleAdjustmentModal = false
-          this.visibleBorrowedModal = false
-          break
-      }
+      this.visibleOutputModal = this.outputType === 'output'
+      this.visibleAdjustmentModal = this.outputType === 'adjustment'
+      this.visibleBorrowedModal = this.outputType === 'borrowed'
     },
     navigateBack() {
       this.$router.back()

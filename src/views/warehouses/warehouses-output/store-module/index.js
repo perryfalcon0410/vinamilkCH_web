@@ -1,16 +1,17 @@
 import WarehousesService from '@/views/warehouses/warehouses-output/api-service'
 import FileSaver from 'file-saver'
+import router from '@/router/index'
 import {
   // GETTERS
-  GET_EXPORTS_GETTER,
-  ERROR_CODE_GETTER,
-  GET_EXPORT_BY_ID_GETTER,
-  GET_PRODUCTS_OF_EXPORT_GETTER,
+  GET_WAREHOUSES_OUTPUT_LIST_GETTER,
+  GET_WAREHOUSES_OUTPUT_BY_ID_GETTER,
+  GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER,
   // ACTIONS
-  GET_EXPORTS_ACTION,
-  PRINT_EXPORT_ACTION,
-  GET_EXPORT_BY_ID_ACTION,
-  GET_PRODUCTS_OF_EXPORT_ACTION,
+  GET_WAREHOUSES_OUTPUT_LIST_ACTION,
+  PRINT_WAREHOUSES_OUTPUT_ACTION,
+  GET_WAREHOUSES_OUTPUT_BY_ID_ACTION,
+  GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION,
+  UPDATE_WAREHOUSES_OUTPUT_ACTION,
 } from './type'
 import toasts from '../../../../@core/utils/toasts/toasts'
 
@@ -18,26 +19,21 @@ export default {
   namespaced: true,
   // STATE
   state: {
-    receiptExports: [],
-    printReceipt: [],
-    errorCode: null,
-    export: {},
-    exportProducts: [],
+    warehousesOutputs: [],
+    warehousesOutput: {},
+    products: [], // list product of warehouses output
   },
 
   // GETTERS
   getters: {
-    [GET_EXPORTS_GETTER](state) {
-      return state.receiptExports
+    [GET_WAREHOUSES_OUTPUT_LIST_GETTER](state) {
+      return state.warehousesOutputs
     },
-    [ERROR_CODE_GETTER](state) {
-      return state.errorCode
+    [GET_WAREHOUSES_OUTPUT_BY_ID_GETTER](state) {
+      return state.warehousesOutput
     },
-    [GET_EXPORT_BY_ID_GETTER](state) {
-      return state.export
-    },
-    [GET_PRODUCTS_OF_EXPORT_GETTER](state) {
-      return state.exportProducts
+    [GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER](state) {
+      return state.products
     },
   },
 
@@ -46,13 +42,13 @@ export default {
 
   // ACTIONS
   actions: {
-    [GET_EXPORTS_ACTION]({ state }, val) {
+    [GET_WAREHOUSES_OUTPUT_LIST_ACTION]({ state }, val) {
       WarehousesService
-        .getReceiptExports(val)
+        .getWarehouseOutputs(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.receiptExports = res.data.response.content
+            state.warehousesOutputs = res.data.response.content
           } else {
             throw new Error(res.statusValue)
           }
@@ -61,10 +57,10 @@ export default {
           toasts.error(error.message)
         })
     },
-    [PRINT_EXPORT_ACTION]({ }, val) {
+    [PRINT_WAREHOUSES_OUTPUT_ACTION]({ }, val) {
       const fileName = `${val.transCode}.pdf`
       WarehousesService
-        .printReceiptExports(val)
+        .printWarehouseOutput(val)
         .then(response => response.data)
         .then(res => {
           const blob = new Blob([res], { type: 'application/pdf' })
@@ -74,13 +70,13 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_EXPORT_BY_ID_ACTION]({ state }, val) {
+    [GET_WAREHOUSES_OUTPUT_BY_ID_ACTION]({ state }, val) {
       WarehousesService
-        .getExportById(val)
+        .getWarehouseOutputById(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.export = res.data
+            state.warehousesOutput = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -89,13 +85,29 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_PRODUCTS_OF_EXPORT_ACTION]({ state }, val) {
+    [GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION]({ state }, val) {
       WarehousesService
-        .getProductsOfExport(val)
+        .getProductsOfWarehouseOutput(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.exportProducts = res.data.response
+            state.products = res.data.response
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [UPDATE_WAREHOUSES_OUTPUT_ACTION]({}, val) {
+      WarehousesService
+        .updateWarehouseOutput(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+            router.push({ name: 'warehouses-output-list' })
           } else {
             throw new Error(res.statusValue)
           }

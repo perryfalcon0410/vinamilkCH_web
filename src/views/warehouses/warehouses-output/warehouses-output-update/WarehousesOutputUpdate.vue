@@ -17,7 +17,7 @@
               Ngày xuất:
             </b-col>
             <b-col class="font-weight-bold">
-              {{ this.export.orderDate }}
+              {{ warehousesOutput.orderDate }}
             </b-col>
           </b-row>
           <!-- END - Date -->
@@ -31,7 +31,7 @@
               >
                 <b-form-input
                   id="code"
-                  v-model="this.export.code"
+                  v-model="warehousesOutput.code"
                   maxlength="40"
                   trim
                   disabled
@@ -73,7 +73,7 @@
           >
             <b-form-input
               id="stock"
-              v-model="this.export.wareHouseTypeName"
+              v-model="warehousesOutput.wareHouseTypeName"
               maxlength="40"
               trim
               disabled
@@ -88,7 +88,7 @@
                 Số hóa đơn
               </div>
               <b-form-input
-                v-model="this.export.redInvoiceNo"
+                v-model="warehousesOutput.redInvoiceNo"
                 trim
                 :state="touched ? passed : null"
                 disabled
@@ -100,7 +100,7 @@
                 Ngày hóa đơn
               </div>
               <b-form-datepicker
-                v-model="this.export.transDate"
+                v-model="warehousesOutput .transDate"
                 locale="vi"
                 :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
                 disabled
@@ -116,7 +116,7 @@
                 Số nội bộ
               </div>
               <b-form-input
-                v-model="this.export.internalNumber"
+                v-model="warehousesOutput.internalNumber"
                 trim
                 :state="touched ? passed : null"
                 disabled
@@ -132,9 +132,9 @@
                 class="input-group-merge"
               >
                 <b-form-input
-                  v-model="this.export.poNumber"
+                  v-model="warehousesOutput.poNumber"
                   trim
-                  :state="this.export.type === '1' && touched ? passed : null"
+                  :state="warehousesOutput.type === '1' && touched ? passed : null"
                   disabled
                 />
                 <b-input-group-append is-text>
@@ -153,7 +153,7 @@
           >
             <b-form-textarea
               id="note"
-              v-model="this.export.note"
+              v-model="warehousesOutput.note"
               maxlength="4000"
             />
           </b-form-group>
@@ -174,7 +174,7 @@
 
           <vue-good-table
             :columns="columns"
-            :rows="this.export.products"
+            :rows="warehousesOutput.products"
             style-class="vgt-table striped"
             compact-mode
             line-numbers
@@ -255,13 +255,14 @@ import {
 } from 'vuex'
 
 import {
-  EXPORT,
+  WAREHOUSES_OUTPUT,
   // Getter
-  GET_EXPORT_BY_ID_GETTER,
-  GET_PRODUCTS_OF_EXPORT_GETTER,
+  GET_WAREHOUSES_OUTPUT_BY_ID_GETTER,
+  GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER,
   // Action
-  GET_EXPORT_BY_ID_ACTION,
-  GET_PRODUCTS_OF_EXPORT_ACTION,
+  GET_WAREHOUSES_OUTPUT_BY_ID_ACTION,
+  GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION,
+  UPDATE_WAREHOUSES_OUTPUT_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -316,7 +317,7 @@ export default {
         },
       ],
 
-      export: {
+      warehousesOutput: {
         id: `${this.$route.params.id}`,
         receiptType: `${this.$route.params.type}`,
         code: '',
@@ -334,11 +335,11 @@ export default {
     }
   },
   computed: {
-    getExport() {
-      return this.GET_EXPORT_BY_ID_GETTER()
+    getWarehousesOutput() {
+      return this.GET_WAREHOUSES_OUTPUT_BY_ID_GETTER()
     },
-    getProductOfExport() {
-      return this.GET_PRODUCTS_OF_EXPORT_GETTER().map(data => ({
+    getProductOfWarehouseOutput() {
+      return this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER().map(data => ({
         productID: data.id,
         productPrice: data.price,
         productName: data.productName,
@@ -350,40 +351,61 @@ export default {
     },
   },
   watch: {
-    getExport() {
-      const dataGetExport = { ...this.getExport }
-      this.export = {
-        id: dataGetExport.id,
-        code: dataGetExport.transCode,
-        type: dataGetExport.type,
-        wareHouseTypeId: dataGetExport.wareHouseTypeId,
-        wareHouseTypeName: dataGetExport.wareHouseTypeName,
-        redInvoiceNo: dataGetExport.redInvoiceNo, // số hoá đơn
-        internalNumber: dataGetExport.internalNumber, // số nội bộ
-        poNumber: dataGetExport.poNumber,
-        note: dataGetExport.note,
-        orderDate: dataGetExport.orderDate,
-        transDate: dataGetExport.transDate,
-        products: [...this.getProductOfExport],
+    getWarehousesOutput() {
+      const dataWarehousesOutput = { ...this.getWarehousesOutput }
+      this.warehousesOutput = {
+        id: dataWarehousesOutput.id,
+        code: dataWarehousesOutput.transCode,
+        type: dataWarehousesOutput.type,
+        wareHouseTypeId: dataWarehousesOutput.wareHouseTypeId,
+        wareHouseTypeName: dataWarehousesOutput.wareHouseTypeName,
+        redInvoiceNo: dataWarehousesOutput.redInvoiceNo, // số hoá đơn
+        internalNumber: dataWarehousesOutput.internalNumber, // số nội bộ
+        poNumber: dataWarehousesOutput.poNumber,
+        note: dataWarehousesOutput.note,
+        orderDate: dataWarehousesOutput.orderDate,
+        transDate: dataWarehousesOutput.transDate,
+        products: [...this.getProductOfWarehouseOutput],
       }
-      this.outputType = dataGetExport.type
+      console.log(this.warehousesOutput)
+      this.outputType = dataWarehousesOutput.type
     },
   },
   mounted() {
-    this.GET_EXPORT_BY_ID_ACTION(`${this.export.id}?type=${this.export.receiptType}`)
-    this.GET_PRODUCTS_OF_EXPORT_ACTION(`${this.export.id}?type=${this.export.receiptType}`)
+    this.GET_WAREHOUSES_OUTPUT_BY_ID_ACTION(`${this.warehousesOutput.id}?type=${this.warehousesOutput.receiptType}`)
+    this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION(`${this.warehousesOutput.id}?type=${this.warehousesOutput.receiptType}`)
   },
   methods: {
-    ...mapGetters(EXPORT, [
-      GET_EXPORT_BY_ID_GETTER,
-      GET_PRODUCTS_OF_EXPORT_GETTER,
+    ...mapGetters(WAREHOUSES_OUTPUT, [
+      GET_WAREHOUSES_OUTPUT_BY_ID_GETTER,
+      GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER,
     ]),
-    ...mapActions(EXPORT, [
-      GET_EXPORT_BY_ID_ACTION,
-      GET_PRODUCTS_OF_EXPORT_ACTION,
+    ...mapActions(WAREHOUSES_OUTPUT, [
+      GET_WAREHOUSES_OUTPUT_BY_ID_ACTION,
+      GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION,
+      UPDATE_WAREHOUSES_OUTPUT_ACTION,
     ]),
     navigateBack() {
       this.$router.back()
+    },
+    updateWarehousesOutput() {
+      // const options = {
+      //   year: 'numeric',
+      //   month: '2-digit',
+      //   day: '2-digit',
+      // }
+      const updateWarehouseOutput = {
+        id: this.warehousesOutput.id,
+        createdAt: '2021-04-23T08:50:19.253Z',
+        updatedAt: '2021-04-23T08:50:19.253Z',
+        deletedAt: '2021-04-23T08:50:19.253Z',
+        type: this.warehousesOutput.receiptType,
+        note: this.warehousesOutput.note,
+        litQuantityRemain: [
+          0,
+        ],
+      }
+      this.UPDATE_WAREHOUSES_OUTPUT_ACTION(updateWarehouseOutput)
     },
   },
 }

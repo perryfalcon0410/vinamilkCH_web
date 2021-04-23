@@ -1,33 +1,33 @@
 import axios from '@axios'
 import { formatURLParams } from '@/@core/utils/utils'
 import {
-  getExportsEndpoint,
-  printExportEndpoint,
-  getExportByIdEndpoint,
-  updateExportEndpoint,
-  getProductsOfExportEndpoint,
+  getWarehousesOutputsEndpoint,
+  printWarehousesOutputEndpoint,
+  getWarehousesOutputByIdEndpoint,
+  updateWarehousesOutputEndpoint,
+  getProductsOfWarehousesOutputEndpoint,
 } from './defaultConfig'
 
 export default {
-  getReceiptExports(args) {
-    return axios.get(getExportsEndpoint, {
+  getWarehouseOutputs(args) {
+    return axios.get(getWarehousesOutputsEndpoint, {
       params: formatURLParams(args),
     })
   },
-  printReceiptExports(args) {
+  printWarehouseOutput(args) {
     const queryString = new URLSearchParams(args).toString()
-    return axios(`${printExportEndpoint}?${queryString}`, {
+    return axios(`${printWarehousesOutputEndpoint}?${queryString}`, {
       method: 'GET',
       responseType: 'blob', // Force to receive data in a Blob Format
     })
   },
-  getExportById(args) {
-    return axios.get(`${getExportByIdEndpoint}/${args}`)
+  getWarehouseOutputById(args) {
+    return axios.get(`${getWarehousesOutputByIdEndpoint}/${args}`)
   },
-  getProductsOfExport(args) {
-    return axios.get(`${getProductsOfExportEndpoint}/${args}`)
+  getProductsOfWarehouseOutput(args) {
+    return axios.get(`${getProductsOfWarehousesOutputEndpoint}/${args}`)
   },
-  UpdateExport(args) {
-    return axios.patch(`${updateExportEndpoint}/${args.id}`, args)
+  updateWarehouseOutput(args) {
+    return axios.patch(`${updateWarehousesOutputEndpoint}/${args.id}`, args)
   },
 }

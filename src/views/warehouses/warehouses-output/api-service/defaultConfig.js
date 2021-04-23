@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 const SALE = '/sale'
 
-export const getExportsEndpoint = `${SALE}/export`
-export const printExportEndpoint = `${SALE}/report/stock/invoice`
-export const getExportByIdEndpoint = `${SALE}/import/stock`
-export const updateExportEndpoint = `${SALE}/export/update`
-export const getProductsOfExportEndpoint = `${SALE}/import/trans-detail`
+export const getWarehousesOutputsEndpoint = `${SALE}/export`
+export const printWarehousesOutputEndpoint = `${SALE}/report/stock/invoice`
+export const getWarehousesOutputByIdEndpoint = `${SALE}/import/trans`
+export const updateWarehousesOutputEndpoint = `${SALE}/export/update`
+export const getProductsOfWarehousesOutputEndpoint = `${SALE}/import/trans-detail`
