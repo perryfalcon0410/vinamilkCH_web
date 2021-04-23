@@ -2,6 +2,7 @@ import SaleReceiptService from '@/views/sales/sales-receipts/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
 import {
   SALES_RECEIPTS_GETTER,
+  SALES_RECEIPTS_INFO_GETTER,
   GET_SALES_RECEIPTS_ACTION,
 } from './type'
 
@@ -9,11 +10,15 @@ export default {
   namespaced: true,
   state: {
     saleReceipt: [],
+    saleReceiptInfo: [],
   },
 
   getters: {
     [SALES_RECEIPTS_GETTER](state) {
       return state.saleReceipt
+    },
+    [SALES_RECEIPTS_INFO_GETTER](state) {
+      return state.saleReceiptInfo
     },
   },
   mutations: {},
@@ -24,7 +29,8 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.saleReceipt = res.data.content
+            console.log(res)
+            state.saleReceipt = res.data.response.content
           } else {
             throw new Error(res.statusValue)
           }
