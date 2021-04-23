@@ -55,7 +55,7 @@ import {
 import {
   WAREHOUSEINPUT,
   GET_POCONFIRMS_ACTION,
-  PUT_NOT_IMPORT_ACTION,
+  UPDATE_NOT_IMPORT_ACTION,
 } from '../../../store-module/type'
 
 export default {
@@ -81,11 +81,11 @@ export default {
   },
   methods: {
     ...mapActions(WAREHOUSEINPUT, [
-      PUT_NOT_IMPORT_ACTION,
+      UPDATE_NOT_IMPORT_ACTION,
       GET_POCONFIRMS_ACTION,
     ]),
     denyImport() {
-      this.PUT_NOT_IMPORT_ACTION(this.$props.id)
+      this.UPDATE_NOT_IMPORT_ACTION(this.$props.id)
       this.GET_POCONFIRMS_ACTION()
     },
   },

@@ -5,10 +5,10 @@ import router from '@/router/index'
 import {
   // GETTERS
   POCONFIRM_GETTER,
-  PODETAIL_0_GETTER_RES,
-  PODETAIL_1_GETTER_RES,
-  PODETAIL_0_GETTER_INFO,
-  PODETAIL_1_GETTER_INFO,
+  PODETAIL_PRODUCTS_RES_GETTER,
+  PODETAIL_PRODUCTS_PROMO_RES_GETTER,
+  PODETAIL_PRODUCTS_INFO_GETTER,
+  PODETAIL_PRODUCTS_PROMO_INFO_GETTER,
   IMPORT_ADJUSTMENTS_GETTER,
   IMPORT_ADJUSTMENTS_DETAIL_GETTER,
   IMPORT_BORROWINGS_GETTER,
@@ -18,15 +18,15 @@ import {
   GET_RECEIPTS_ACTION,
   EXPORT_RECEIPTS_ACTION,
   GET_POCONFIRMS_ACTION,
-  GET_PODETAIL_0_ACTION,
-  GET_PODETAIL_1_ACTION,
+  GET_PODETAIL_PRODUCTS_ACTION,
+  GET_PODETAIL_PRODUCTS_PROMO_ACTION,
   GET_IMPORTEXCEL_ACTION,
   GET_IMPORT_ADJUSTMENTS_ACTION,
   GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION,
   GET_IMPORT_BORROWINGS_ACTION,
   GET_IMPORT_BORROWINGS_DETAIL_ACTION,
-  PUT_NOT_IMPORT_ACTION,
-  POST_SALE_IMPORT_ACTION,
+  UPDATE_NOT_IMPORT_ACTION,
+  CREATE_SALE_IMPORT_ACTION,
 } from './type'
 
 export default {
@@ -35,10 +35,10 @@ export default {
   // START - STATE
   state: {
     poConfirm: [],
-    podetail_0_res: [],
-    podetail_0_info: {},
-    podetail_1_res: [],
-    podetail_1_info: {},
+    podetail_products_res: [],
+    podetail_products_info: {},
+    podetail_products_promo_res: [],
+    podetail_product_promo_info: {},
     importAdjustments: [],
     importAdjustmentsDetail: [],
     importBorrowings: [],
@@ -51,17 +51,17 @@ export default {
     [POCONFIRM_GETTER](state) {
       return state.poConfirm
     },
-    [PODETAIL_0_GETTER_RES](state) {
-      return state.podetail_0_res
+    [PODETAIL_PRODUCTS_RES_GETTER](state) {
+      return state.podetail_products_res
     },
-    [PODETAIL_1_GETTER_RES](state) {
-      return state.podetail_1_res
+    [PODETAIL_PRODUCTS_PROMO_RES_GETTER](state) {
+      return state.podetail_products_promo_res
     },
-    [PODETAIL_0_GETTER_INFO](state) {
-      return state.podetail_0_info
+    [PODETAIL_PRODUCTS_INFO_GETTER](state) {
+      return state.podetail_products_info
     },
-    [PODETAIL_1_GETTER_INFO](state) {
-      return state.podetail_1_info
+    [PODETAIL_PRODUCTS_PROMO_INFO_GETTER](state) {
+      return state.podetail_product_promo_info
     },
     [IMPORT_ADJUSTMENTS_GETTER](state) {
       return state.importAdjustments
@@ -100,14 +100,14 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_PODETAIL_0_ACTION]({ state }, val) {
+    [GET_PODETAIL_PRODUCTS_ACTION]({ state }, val) {
       ReceiptImportService
         .getPoProducts(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.podetail_0_res = res.data.response
-            state.podetail_0_info = res.data.info
+            state.podetail_products_res = res.data.response
+            state.podetail_products_info = res.data.info
           } else {
             throw new Error(res.statusValue)
           }
@@ -116,14 +116,14 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_PODETAIL_1_ACTION]({ state }, val) {
+    [GET_PODETAIL_PRODUCTS_PROMO_ACTION]({ state }, val) {
       ReceiptImportService
         .getPoPromotionProducts(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.podetail_1_res = res.data.response
-            state.podetail_1_info = res.data.info
+            state.podetail_products_promo_res = res.data.response
+            state.podetail_product_promo_info = res.data.info
           } else {
             throw new Error(res.statusValue)
           }
@@ -215,7 +215,7 @@ export default {
           toasts.error(error.message)
         })
     },
-    [PUT_NOT_IMPORT_ACTION]({}, val) {
+    [UPDATE_NOT_IMPORT_ACTION]({}, val) {
       ReceiptImportService
         .putNotImport(val)
         .then(response => response.data)
@@ -230,7 +230,7 @@ export default {
           toasts.error(error.message)
         })
     },
-    [POST_SALE_IMPORT_ACTION]({}, val) {
+    [CREATE_SALE_IMPORT_ACTION]({}, val) {
       ReceiptImportService
         .postSaleImport(val)
         .then(response => response.data)

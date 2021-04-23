@@ -20,7 +20,7 @@
                 Ngày nhập:
               </b-col>
               <b-col class="font-weight-bold">
-                {{ dateStamp }} lúc {{ timeStamp }}
+                {{ now }}
               </b-col>
             </b-row>
             <!-- END - Date -->
@@ -341,12 +341,13 @@ import {
   required,
 } from '@/@core/utils/validations/validations'
 import { mapActions } from 'vuex'
+import { getNow } from '@core/utils/utils'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
 import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
 import {
   WAREHOUSEINPUT,
-  POST_SALE_IMPORT_ACTION,
+  CREATE_SALE_IMPORT_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -359,6 +360,7 @@ export default {
   },
   data() {
     return {
+      now: getNow(),
       AdjustmentModalVisible: false,
       BorrowedModalVisible: false,
       PoConfirmModalVisible: false,
@@ -515,20 +517,10 @@ export default {
       // -------------------------InputAdjust--------------------------
     }
   },
-  created() {
-    this.getNow()
-  },
   methods: {
     ...mapActions(WAREHOUSEINPUT, [
-      POST_SALE_IMPORT_ACTION,
+      CREATE_SALE_IMPORT_ACTION,
     ]),
-    getNow() {
-      const today = new Date()
-      const date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
-      const time = `${today.getHours()}:${today.getMinutes()}`
-      this.dateStamp = date
-      this.timeStamp = time
-    },
     showModal() {
       const PoConfirm = this.importType === '1' ? this.PoConfirmModalVisible = !this.PoConfirmModalVisible : this.PoConfirmModalVisible = false
       const Adjustment = this.importType === '2' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
@@ -600,7 +592,7 @@ export default {
     create() {
       this.$refs.formContainer.validate().then(success => {
         if (success) {
-          this.POST_SALE_IMPORT_ACTION({
+          this.CREATE_SALE_IMPORT_ACTION({
             importType: this.status,
             poNo: this.poNo,
             internalNumber: this.internalNumber,

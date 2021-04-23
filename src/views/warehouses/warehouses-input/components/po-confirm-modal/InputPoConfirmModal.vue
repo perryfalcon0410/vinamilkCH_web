@@ -236,14 +236,14 @@ import {
   WAREHOUSEINPUT,
   // GETTER
   POCONFIRM_GETTER,
-  PODETAIL_0_GETTER_RES,
-  PODETAIL_1_GETTER_RES,
-  PODETAIL_0_GETTER_INFO,
-  PODETAIL_1_GETTER_INFO,
+  PODETAIL_PRODUCTS_RES_GETTER,
+  PODETAIL_PRODUCTS_PROMO_RES_GETTER,
+  PODETAIL_PRODUCTS_INFO_GETTER,
+  PODETAIL_PRODUCTS_PROMO_INFO_GETTER,
   // ACTION
   GET_POCONFIRMS_ACTION,
-  GET_PODETAIL_0_ACTION,
-  GET_PODETAIL_1_ACTION,
+  GET_PODETAIL_PRODUCTS_ACTION,
+  GET_PODETAIL_PRODUCTS_PROMO_ACTION,
   GET_IMPORTEXCEL_ACTION,
 } from '../../store-module/type'
 
@@ -393,7 +393,7 @@ export default {
     },
     // get products from selected Po
     poProducts() {
-      return this.PODETAIL_0_GETTER_RES().map(data => ({
+      return this.PODETAIL_PRODUCTS_RES_GETTER().map(data => ({
         SoNo: data.soNo,
         productId: data.productCode,
         Name: data.productName,
@@ -403,11 +403,11 @@ export default {
       }))
     },
     poProductInfo() {
-      return this.PODETAIL_0_GETTER_INFO()
+      return this.PODETAIL_PRODUCTS_INFO_GETTER()
     },
     // get promotion produtcs from selected Po
     poPromotionProducts() {
-      return this.PODETAIL_1_GETTER_RES().map(data => ({
+      return this.PODETAIL_PRODUCTS_PROMO_RES_GETTER().map(data => ({
         SoNo: data.soNo,
         productId: data.productCode,
         Name: data.productName,
@@ -417,7 +417,7 @@ export default {
       }))
     },
     poPromotionProductsInfo() {
-      return this.PODETAIL_1_GETTER_INFO()
+      return this.PODETAIL_PRODUCTS_PROMO_INFO_GETTER()
     },
   },
   mounted() {
@@ -426,15 +426,15 @@ export default {
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
       POCONFIRM_GETTER,
-      PODETAIL_0_GETTER_RES,
-      PODETAIL_1_GETTER_RES,
-      PODETAIL_0_GETTER_INFO,
-      PODETAIL_1_GETTER_INFO,
+      PODETAIL_PRODUCTS_RES_GETTER,
+      PODETAIL_PRODUCTS_PROMO_RES_GETTER,
+      PODETAIL_PRODUCTS_INFO_GETTER,
+      PODETAIL_PRODUCTS_PROMO_INFO_GETTER,
     ]),
     ...mapActions(WAREHOUSEINPUT, [
       GET_POCONFIRMS_ACTION,
-      GET_PODETAIL_0_ACTION,
-      GET_PODETAIL_1_ACTION,
+      GET_PODETAIL_PRODUCTS_ACTION,
+      GET_PODETAIL_PRODUCTS_PROMO_ACTION,
       GET_IMPORTEXCEL_ACTION,
     ]),
     // invidual select event for poconfrim list
@@ -442,8 +442,8 @@ export default {
       this.current = id
       this.poNumber = poNum
       this.Snb = internalNumber
-      this.GET_PODETAIL_0_ACTION(this.current)
-      this.GET_PODETAIL_1_ACTION(this.current)
+      this.GET_PODETAIL_PRODUCTS_ACTION(this.current)
+      this.GET_PODETAIL_PRODUCTS_PROMO_ACTION(this.current)
     },
     // Sync PoConfirms list
     syncPo() {

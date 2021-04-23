@@ -1,6 +1,7 @@
 import router from '@/router'
 // eslint-disable-next-line object-curly-newline
 import { reactive, getCurrentInstance, watch, toRefs } from '@vue/composition-api'
+import moment from 'moment'
 
 export const isObject = obj => typeof obj === 'object' && obj !== null
 
@@ -83,4 +84,11 @@ export const capitalizeFirstLetter = string => {
     return titleCaseSentence
   }
   return string
+}
+
+export const getNow = () => {
+  const date = moment().format('DD/MM/YYYY')
+  const time = moment().format('hh:mm')
+  const dateTime = `${date} lúc ${time}`
+  return dateTime
 }
