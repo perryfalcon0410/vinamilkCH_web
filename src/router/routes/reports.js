@@ -16,7 +16,7 @@ export default [
 
   // Bao cao Xuat hang
   {
-    path: '/reports/warehouses-output',
+    path: '/reports/warehouses/output',
     name: 'reports-warehouses-output',
     component: () => import('@/views/reports/reports-warehouses/reports-warehouses-output/reports-warehouses-output-list/ReportsWarehousesOutputList.vue'),
     meta: {

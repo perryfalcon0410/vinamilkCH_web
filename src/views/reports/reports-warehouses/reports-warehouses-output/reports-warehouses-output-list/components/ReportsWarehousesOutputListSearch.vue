@@ -68,9 +68,12 @@
               <b-form-input
                 id="form-input-product"
                 v-model="product"
+                trim
               />
               <b-input-group-append is-text>
-                <b-icon-three-dots-vertical />
+                <b-icon-three-dots-vertical
+                  @click="PoChooseModalVisible=!PoChooseModalVisible"
+                />
               </b-input-group-append>
             </b-input-group>
 
@@ -187,7 +190,6 @@
             <b-button
               id="form-button-search"
               variant="primary"
-              @click="onClickSearchButton()"
             >
               <b-icon-search />
               Tìm kiếm
@@ -199,15 +201,23 @@
       </b-form-row>
     </b-form>
     <!-- END - Search -->
+    <!-- START - Modal -->
+    <po-choose-modal :visible="PoChooseModalVisible" />
+    <!-- END - Modal -->
   </div>
 </template>
 
 <script>
-import { formatDateToLocale } from '@/@core/utils/filter'
+import PoChooseModal from '../../components/po-choose-modal/OutputPoChooseModal.vue'
 
 export default {
+  components: {
+    PoChooseModal,
+  },
   data() {
     return {
+      PoChooseModalVisible: false,
+
       fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       toDate: new Date(),
       product: '',
@@ -218,32 +228,12 @@ export default {
     }
   },
   computed: {
-    shopLocations() {
-      return this.SHOP_LOCATIONS_GETTER().map(data => ({
-        value: data.id,
-        text: data.areaName,
-      }))
-    },
+
   },
   mounted() {
-    this.GET_SHOP_LOCATIONS_ACTION({
-      shopId: 1, // Hard code
-    })
+
   },
   methods: {
-    onClickSearchButton() {
-      const searchData = {
-        searchKeywords: this.searchKeywords,
-        fromDate: formatDateToLocale(this.fromDate),
-        toDate: formatDateToLocale(this.toDate),
-        customerTypeId: this.customerTypeId,
-        status: this.status,
-        genderId: this.genderId,
-        areaId: this.areaId,
-      }
-
-      this.GET_CUSTOMERS_ACTION(searchData)
-    },
   },
 }
 </script>
