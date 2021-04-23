@@ -217,7 +217,7 @@ export default {
     },
     [UPDATE_NOT_IMPORT_ACTION]({}, val) {
       ReceiptImportService
-        .putNotImport(val)
+        .updateNotImport(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -232,7 +232,7 @@ export default {
     },
     [CREATE_SALE_IMPORT_ACTION]({}, val) {
       ReceiptImportService
-        .postSaleImport(val)
+        .createSaleImport(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {

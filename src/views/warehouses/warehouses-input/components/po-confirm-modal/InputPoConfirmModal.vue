@@ -105,14 +105,14 @@
               slot-scope="props"
             >
               <b-row
-                v-if="props.column.field === 'Quantity'"
+                v-if="props.column.field === 'quantity'"
                 class="mx-0"
                 align-h="end"
               >
                 {{ poProductInfo.totalQuantity }}
               </b-row>
               <b-row
-                v-if="props.column.field === 'TotalPrice'"
+                v-if="props.column.field === 'totalPrice'"
                 class="mx-0"
                 align-h="end"
               >
@@ -142,14 +142,14 @@
               slot-scope="props"
             >
               <b-row
-                v-if="props.column.field === 'Quantity'"
+                v-if="props.column.field === 'quantity'"
                 class="mx-0"
                 align-h="end"
               >
                 {{ poPromotionProductsInfo.totalQuantity }}
               </b-row>
               <b-row
-                v-if="props.column.field === 'TotalPrice'"
+                v-if="props.column.field === 'totalPrice'"
                 class="mx-0"
                 align-h="end"
               >
@@ -274,23 +274,23 @@ export default {
         },
         {
           label: 'Mã sản phẩm',
-          field: 'productId',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'Name',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'Giá',
-          field: 'Price',
+          field: 'price',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'quantity',
           sortable: false,
           type: 'number',
           filterOptions: {
@@ -299,7 +299,7 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'TotalPrice',
+          field: 'totalPrice',
           sortable: false,
           type: 'number',
           filterOptions: {
@@ -310,69 +310,69 @@ export default {
       rowsProduct: [
         {
           SoNo: '',
-          ProductId: '',
-          Name: '',
-          Price: '',
-          Quantity: '360',
-          TotalPrice: '1,860,720',
+          productCode: '',
+          productName: '',
+          price: '',
+          quantity: '360',
+          totalPrice: '1,860,720',
         },
         {
           SoNo: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
+          productCode: '04DC10',
+          productName: 'Thức uống cacao lúa mạch 180ml',
+          price: '5,000',
+          quantity: '240',
+          totalPrice: '1,200,000',
         },
         {
           SoNo: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
+          productCode: '04DC10',
+          productName: 'Thức uống cacao lúa mạch 180ml',
+          price: '5,000',
+          quantity: '240',
+          totalPrice: '1,200,000',
         },
         {
           SoNo: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
+          productCode: '04DC10',
+          productName: 'Thức uống cacao lúa mạch 180ml',
+          price: '5,000',
+          quantity: '240',
+          totalPrice: '1,200,000',
         },
       ],
       rowsProductPromotion: [
         {
           SoNo: '',
-          ProductId: '',
-          Name: '',
-          Price: '',
-          Quantity: '360',
-          TotalPrice: '1,860,720',
+          productCode: '',
+          productName: '',
+          price: '',
+          quantity: '360',
+          totalPrice: '1,860,720',
         },
         {
           SoNo: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
+          productCode: '04DC10',
+          productName: 'Thức uống cacao lúa mạch 180ml',
+          price: '5,000',
+          quantity: '240',
+          totalPrice: '1,200,000',
         },
         {
           SoNo: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
+          productCode: '04DC10',
+          productName: 'Thức uống cacao lúa mạch 180ml',
+          price: '5,000',
+          quantity: '240',
+          totalPrice: '1,200,000',
         },
         {
           SoNo: '290365412',
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
-          Price: '5,000',
-          Quantity: '240',
-          TotalPrice: '1,200,000',
+          productCode: '04DC10',
+          productName: 'Thức uống cacao lúa mạch 180ml',
+          price: '5,000',
+          quantity: '240',
+          totalPrice: '1,200,000',
         },
       ],
     }
@@ -395,11 +395,12 @@ export default {
     poProducts() {
       return this.PODETAIL_PRODUCTS_RES_GETTER().map(data => ({
         SoNo: data.soNo,
-        productId: data.productCode,
-        Name: data.productName,
-        Price: data.price,
-        Quantity: data.quantity,
-        TotalPrice: data.totalPrice,
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        unit: data.unit,
+        quantity: data.quantity,
+        totalPrice: data.totalPrice,
       }))
     },
     poProductInfo() {
@@ -409,15 +410,32 @@ export default {
     poPromotionProducts() {
       return this.PODETAIL_PRODUCTS_PROMO_RES_GETTER().map(data => ({
         SoNo: data.soNo,
-        productId: data.productCode,
-        Name: data.productName,
-        Price: data.price,
-        Quantity: data.quantity,
-        TotalPrice: data.totalPrice,
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        quantity: data.quantity,
+        totalPrice: data.totalPrice,
       }))
     },
     poPromotionProductsInfo() {
       return this.PODETAIL_PRODUCTS_PROMO_INFO_GETTER()
+    },
+    lst() {
+      const product = this.PODETAIL_PRODUCTS_RES_GETTER().map(data => ({
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        quantity: data.quantity,
+        totalPrice: data.totalPrice,
+      }))
+      const promo = this.PODETAIL_PRODUCTS_PROMO_RES_GETTER().map(data => ({
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        quantity: data.quantity,
+        totalPrice: data.totalPrice,
+      }))
+      return product.concat(promo)
     },
   },
   mounted() {
@@ -451,7 +469,7 @@ export default {
     },
     // Confirm import product from selected Po
     confirmImportButton() {
-      this.$emit('import', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, this.poNumber, false, this.Snb])
+      this.$emit('import', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, false, this.Snb, this.lst, this.current])
     },
     exportExcel() {
       this.GET_IMPORTEXCEL_ACTION(this.current)

@@ -56,7 +56,7 @@
                 {{ index + 1 }}
               </b-col>
               <b-col>
-                {{ item.LincenseNumber }}
+                {{ item.licenseNumber }}
               </b-col>
               <b-col>
                 {{ item.date }}
@@ -159,35 +159,35 @@ export default {
       columns: [
         {
           label: 'Số chứng từ',
-          field: 'LincenseNumber',
+          field: 'licenseNumber',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Mã sản phẩm',
-          field: 'ProductId',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'Name',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'Giá',
-          field: 'Price',
+          field: 'price',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'quantity',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Thành tiền',
-          field: 'TotalPrice',
+          field: 'totalPrice',
           sortable: false,
           type: 'number',
         },
@@ -198,7 +198,7 @@ export default {
     importBorrowingslist() {
       return this.IMPORT_BORROWINGS_GETTER().map(data => ({
         id: data.id,
-        LincenseNumber: data.poBorrowCode,
+        licenseNumber: data.poBorrowCode,
         date: new Date(data.borrowDate).toLocaleDateString(),
         note: data.note,
       }))
@@ -206,12 +206,21 @@ export default {
     importBorrowingsDetailList() {
       return this.IMPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
         id: data.id,
-        LincenseNumber: data.licenseNumber,
-        ProductId: data.productCode,
-        Name: data.productName,
-        Price: data.price,
-        Quantity: data.quantity,
-        TotalPrice: data.totalPrice,
+        licenseNumber: data.licenseNumber,
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        quantity: data.quantity,
+        totalPrice: data.totalPrice,
+      }))
+    },
+    lst() {
+      return this.IMPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        quantity: data.quantity,
+        totalPrice: data.totalPrice,
       }))
     },
   },
@@ -231,7 +240,7 @@ export default {
       this.isHover = hovered
     },
     inputBorrow() {
-      this.$emit('inputBorrows', [this.importBorrowingsDetailList, false])
+      this.$emit('inputBorrows', [this.importBorrowingsDetailList, false, this.lst, this.current])
     },
     poSelect(id) {
       this.current = id

@@ -50,13 +50,13 @@
               :key="item.id"
               class="border-bottom border-white bg-light py-1"
               :class="{ 'text-primary': current == item.id }"
-              @click="PoSelected(item.id, item.poBorrowCode)"
+              @click="PoSelected(item.id)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
               </b-col>
               <b-col>
-                {{ item.LicenseNumber }}
+                {{ item.licenseNumber }}
               </b-col>
               <b-col>
                 {{ item.date }}
@@ -156,38 +156,37 @@ export default {
   data() {
     return {
       current: null,
-      borrowCode: null,
       columns: [
         {
           label: 'Số chứng từ',
-          field: 'LicenseNumber',
+          field: 'licenseNumber',
           sortable: false,
         },
         {
           label: 'Mã sản phẩm',
-          field: 'ProductId',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'Name',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'Giá',
-          field: 'Price',
+          field: 'price',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'quantity',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Thành tiền',
-          field: 'TotalPrice',
+          field: 'totalPrice',
           sortable: false,
           type: 'number',
         },
@@ -198,7 +197,7 @@ export default {
     importAdjustmentsList() {
       return this.IMPORT_ADJUSTMENTS_GETTER().map(data => ({
         id: data.id,
-        LicenseNumber: data.adjustmentCode,
+        licenseNumber: data.adjustmentCode,
         date: new Date(data.adjustmentDate).toLocaleDateString(),
         note: data.description,
         status: data.status,
@@ -207,12 +206,21 @@ export default {
     importAdjustmentsDetailList() {
       return this.IMPORT_ADJUSTMENTS_DETAIL_GETTER().map(data => ({
         id: data.id,
-        ProductId: data.productCode,
-        Name: data.productName,
-        Price: data.price,
-        Quantity: data.quantity,
-        LicenseNumber: data.licenseNumber,
-        TotalPrice: data.totalPrice,
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        quantity: data.quantity,
+        licenseNumber: data.licenseNumber,
+        totalPrice: data.totalPrice,
+      }))
+    },
+    lst() {
+      return this.IMPORT_ADJUSTMENTS_DETAIL_GETTER().map(data => ({
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        quantity: data.quantity,
+        totalPrice: data.totalPrice,
       }))
     },
   },
@@ -231,13 +239,12 @@ export default {
     hoverHandler(hovered) {
       this.isHover = hovered
     },
-    PoSelected(id, code) {
+    PoSelected(id) {
       this.current = id
-      this.borrowCode = code
       this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION(this.current)
     },
     inputAdjustmentConfirm() {
-      this.$emit('inputAdjust', [this.importAdjustmentsDetailList, false, this.borrowCode])
+      this.$emit('inputAdjust', [this.importAdjustmentsDetailList, false, this.lst, this.current])
     },
   },
 }

@@ -85,7 +85,7 @@
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
                   rules="required"
-                  name="Số hóa đơn"
+                  product-name="Số hóa đơn"
                 >
                   <div>
                     Số hóa đơn <sup class="text-danger">*</sup>
@@ -103,7 +103,7 @@
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
-                  name="Ngày hóa đơn"
+                  product-name="Ngày hóa đơn"
                 >
                   <div>
                     Ngày hóa đơn <sup class="text-danger">*</sup>
@@ -126,7 +126,7 @@
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
                   rules="required"
-                  name="Số nội bộ"
+                  product-name="Số nội bộ"
                 >
                   <div class="mt-1">
                     Số nội bộ <sup class="text-danger">*</sup>
@@ -144,7 +144,7 @@
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
                   :rules="importType === '1' ? 'required' : ''"
-                  name="PO No"
+                  product-name="PO No"
                 >
                   <div class="mt-1">
                     PO No
@@ -214,7 +214,7 @@
                 slot-scope="props"
               >
                 <b-row
-                  v-if="props.column.field === 'Quantity'"
+                  v-if="props.column.field === 'quantity'"
                   class="mx-0"
                   align-h="start"
                 >
@@ -222,7 +222,7 @@
                 </b-row>
 
                 <b-row
-                  v-else-if="props.column.field === 'TotalPrice'"
+                  v-else-if="props.column.field === 'totalPrice'"
                   class="mx-0"
                   align-h="end"
                 >
@@ -254,7 +254,7 @@
                 slot-scope="props"
               >
                 <b-row
-                  v-if="props.column.field === 'Quantity'"
+                  v-if="props.column.field === 'quantity'"
                   class="mx-0"
                   align-h="start"
                 >
@@ -262,7 +262,7 @@
                 </b-row>
 
                 <b-row
-                  v-else-if="props.column.field === 'TotalPrice'"
+                  v-else-if="props.column.field === 'totalPrice'"
                   class="mx-0"
                   align-h="end"
                 >
@@ -379,7 +379,8 @@ export default {
       billDate: new Date(),
       poNo: '',
       note: '',
-
+      lst: null,
+      poId: null,
       poProductInfo: {},
       poPromotionProductsInfo: {},
       // validation rules
@@ -389,12 +390,12 @@ export default {
       PoColumns: [
         {
           label: 'Mã hàng',
-          field: 'productId',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'quantity',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -402,24 +403,24 @@ export default {
         },
         {
           label: 'Giá',
-          field: 'Price',
+          field: 'price',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Tên hàng',
-          field: 'Name',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'Unit',
+          field: 'unit',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Thành tiền',
-          field: 'TotalPrice',
+          field: 'totalPrice',
           type: 'number',
           sortable: false,
           filterOptions: {
@@ -440,35 +441,35 @@ export default {
       AdjustColumns: [
         {
           label: 'Số chứng từ',
-          field: 'LicenseNumber',
+          field: 'licenseNumber',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Mã sản phẩm',
-          field: 'ProductId',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'Name',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'Giá',
-          field: 'Price',
+          field: 'price',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'quantity',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Thành tiền',
-          field: 'TotalPrice',
+          field: 'totalPrice',
           sortable: false,
           type: 'number',
         },
@@ -480,35 +481,35 @@ export default {
       BorrowColumns: [
         {
           label: 'Số chứng từ',
-          field: 'LicenseNumber',
+          field: 'licenseNumber',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Mã sản phẩm',
-          field: 'ProductId',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'Name',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'Giá',
-          field: 'Price',
+          field: 'price',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'quantity',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Thành tiền',
-          field: 'TotalPrice',
+          field: 'totalPrice',
           sortable: false,
           type: 'number',
         },
@@ -533,47 +534,68 @@ export default {
     },
     // ---------------------------Nhap hang-----------------------
     dataFromPoConfirm(data) {
-      const [poProducts, ProductInfo, poPromotionProducts, PromotionProductsInfo, Id, PoConfirmModalState, Snb] = data
+      const [poProducts, ProductInfo, poPromotionProducts, PromotionProductsInfo, PoConfirmModalState, Snb, list, id] = data
       poProducts.forEach(element => {
         this.rowsProduct.push(element)
       })
       poPromotionProducts.forEach(element => {
         this.rowsProductPromotion.push(element)
       })
+      this.PoConfirmModalVisible = PoConfirmModalState
       this.poProductInfo = ProductInfo
       this.poPromotionProductsInfo = PromotionProductsInfo
-      this.poNo = Id
-      this.PoConfirmModalVisible = PoConfirmModalState
-      this.internalNumber = Snb
       this.status = 0
+      this.internalNumber = Snb
+      this.poNo = null
+      this.poId = id
+      this.lst = list
       this.tableRender()
     },
     // ----------------------------Nhap hang-----------------------
-
+    /*
+    {
+    "importType":1,
+    "poNumber":"213",
+    "redInvoiceNo":"123123",
+    "internalNumber":"12312",
+    "note":"ghi chu",
+    "poId":1,
+    "lst":[{
+        "productCode":"SP0006",
+        "quantity":10,
+        "productName":"con bo",
+        "price": 6500,
+        "totalPrice":65000
+    }]
+    }
+    */
     // -----------------------------Nhap dieu chinh------------------------
     dataFromInputAdjust(data) {
-      const [importAdjustsDetail, importAdjustModalState] = data
+      const [importAdjustsDetail, importAdjustModalState, list, id] = data
       importAdjustsDetail.forEach(element => {
         this.AdjustRows.push(element)
       })
       this.AdjustmentModalVisible = importAdjustModalState
-      this.poNo = null
-      this.status = 1
+      this.status = 1 // importType
+      this.poNo = null // poNumber
+      this.poId = id // poId
+      this.lst = list // lst
       this.tableRender()
     },
     // -----------------------------Nhap dieu chinh------------------------
 
     // ------------------------------Nhap vay muon----------------------------
     dataFormInputBorrow(data) {
-      const [importBorrowsDetail, importBorrowModalState, borrowCode] = data
+      const [importBorrowsDetail, importBorrowModalState, list, id] = data
       importBorrowsDetail.forEach(element => {
         this.BorrowRows.push(element)
       })
       this.BorrowedModalVisible = importBorrowModalState
+      this.status = 2
       this.poNo = null
       this.internalNumber = null
-      this.billNumber = borrowCode
-      this.status = 2
+      this.poId = id
+      this.lst = list
       this.tableRender()
     },
     // ------------------------------Nhap vay muon----------------------------
@@ -593,21 +615,23 @@ export default {
       this.$refs.formContainer.validate().then(success => {
         const test = {
           importType: this.status,
-          poNo: this.poNo,
+          poNumber: this.poNo,
           internalNumber: this.internalNumber,
           redInvoiceNo: this.billNumber,
+          poId: this.poId,
           note: this.note,
-          lst: this.rows,
+          lst: this.lst,
         }
         if (success) {
           console.log(test)
           this.CREATE_SALE_IMPORT_ACTION({
             importType: this.status,
-            poNo: this.poNo,
+            poNumber: this.poNo,
             internalNumber: this.internalNumber,
             redInvoiceNo: this.billNumber,
+            poId: this.poId,
             note: this.note,
-            lst: this.rows,
+            lst: this.lst,
           })
         }
       })

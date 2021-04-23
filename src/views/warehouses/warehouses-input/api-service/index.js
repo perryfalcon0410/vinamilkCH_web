@@ -40,7 +40,7 @@ export default {
   getImportBorrwingsDetail(args) {
     return axios.get(`${getImportBorrwingsDetailEndpoint}/${args}`)
   },
-  putNotImport(args) {
+  updateNotImport(args) {
     return axios.put(`${updateNotImportEndpoint}/${args}`)
   },
   getReceiptImport(args) {
@@ -51,7 +51,7 @@ export default {
   exportReceiptImport(args) {
     return axios.get(`${exportReceiptsEndpoint}${args}`)
   },
-  postSaleImport(args) {
+  createSaleImport(args) {
     return axios.post(createSaleImportEndpoint, args)
   },
 }
