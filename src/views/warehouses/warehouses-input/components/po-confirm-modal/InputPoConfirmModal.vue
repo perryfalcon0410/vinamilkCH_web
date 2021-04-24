@@ -268,7 +268,7 @@ export default {
       columns: [
         {
           label: 'SO No',
-          field: 'SoNo',
+          field: 'soNo',
           sortable: false,
           type: 'number',
         },
@@ -326,7 +326,7 @@ export default {
     // get products from selected Po
     poProducts() {
       return this.PODETAIL_PRODUCTS_RES_GETTER().map(data => ({
-        SoNo: data.soNo,
+        soNo: data.soNo,
         productCode: data.productCode,
         productName: data.productName,
         price: data.price,
@@ -341,7 +341,7 @@ export default {
     // get promotion produtcs from selected Po
     poPromotionProducts() {
       return this.PODETAIL_PRODUCTS_PROMO_RES_GETTER().map(data => ({
-        SoNo: data.soNo,
+        soNo: data.soNo,
         productCode: data.productCode,
         productName: data.productName,
         price: data.price,
