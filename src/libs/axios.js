@@ -8,7 +8,8 @@ import store from '@/store'
 const axiosIns = axios.create({
   // You can add your headers here
   // ================================
-  baseURL: 'http://192.168.100.112:2407/api',
+  baseURL: 'https://kch-testing.imt-soft.com/api',
+  // baseURL: 'http://192.168.100.112:2407/api',
   // timeout: 1000,
   // headers: {'X-Custom-Header': 'foobar'}
 })

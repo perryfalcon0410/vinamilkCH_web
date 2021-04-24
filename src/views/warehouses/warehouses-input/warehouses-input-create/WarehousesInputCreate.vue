@@ -535,12 +535,8 @@ export default {
     // ---------------------------Nhap hang-----------------------
     dataFromPoConfirm(data) {
       const [poProducts, ProductInfo, poPromotionProducts, PromotionProductsInfo, PoConfirmModalState, Snb, list, id] = data
-      poProducts.forEach(element => {
-        this.rowsProduct.push(element)
-      })
-      poPromotionProducts.forEach(element => {
-        this.rowsProductPromotion.push(element)
-      })
+      this.rowsProduct = [...poProducts]
+      this.rowsProductPromotion = [...poPromotionProducts]
       this.PoConfirmModalVisible = PoConfirmModalState
       this.poProductInfo = ProductInfo
       this.poPromotionProductsInfo = PromotionProductsInfo
@@ -572,9 +568,7 @@ export default {
     // -----------------------------Nhap dieu chinh------------------------
     dataFromInputAdjust(data) {
       const [importAdjustsDetail, importAdjustModalState, list, id] = data
-      importAdjustsDetail.forEach(element => {
-        this.AdjustRows.push(element)
-      })
+      this.AdjustRows = [...importAdjustsDetail]
       this.AdjustmentModalVisible = importAdjustModalState
       this.status = 1 // importType
       this.poNo = null // poNumber
@@ -587,9 +581,7 @@ export default {
     // ------------------------------Nhap vay muon----------------------------
     dataFormInputBorrow(data) {
       const [importBorrowsDetail, importBorrowModalState, list, id] = data
-      importBorrowsDetail.forEach(element => {
-        this.BorrowRows.push(element)
-      })
+      this.BorrowRows = [...importBorrowsDetail]
       this.BorrowedModalVisible = importBorrowModalState
       this.status = 2
       this.poNo = null
@@ -613,17 +605,7 @@ export default {
     },
     create() {
       this.$refs.formContainer.validate().then(success => {
-        const test = {
-          importType: this.status,
-          poNumber: this.poNo,
-          internalNumber: this.internalNumber,
-          redInvoiceNo: this.billNumber,
-          poId: this.poId,
-          note: this.note,
-          lst: this.lst,
-        }
         if (success) {
-          console.log(test)
           this.CREATE_SALE_IMPORT_ACTION({
             importType: this.status,
             poNumber: this.poNo,
