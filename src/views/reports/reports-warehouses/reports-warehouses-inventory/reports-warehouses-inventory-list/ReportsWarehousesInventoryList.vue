@@ -3,7 +3,7 @@
     fluid
     class="d-flex flex-column"
   >
-    <reports-warehouses-inventory-search />
+    <list-search />
 
     <b-form class="v-search bg-white rounded shadow rounded my-1">
       <b-row
@@ -121,11 +121,11 @@
 </template>
 
 <script>
-import ReportsWarehousesInventorySearch from './components/ListSearch.vue'
+import ListSearch from './components/ListSearch.vue'
 
 export default {
   components: {
-    ReportsWarehousesInventorySearch,
+    ListSearch,
   },
   data() {
     return {
