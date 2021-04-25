@@ -159,7 +159,7 @@
             variant="primary"
           >
             <b-icon-printer-fill />
-            print
+            in
           </b-button>
         </b-button-group>
       </b-row>
@@ -226,6 +226,8 @@
             <span v-if="props.column.field == 'note'">
               <span>
                 <b-button
+                  v-b-tooltip.hover
+                  :title="props.row.note"
                   variant="light"
                   class="rounded-circle p-1 ml-1"
                 >
@@ -239,6 +241,8 @@
             <span v-else-if="props.column.field == 'noteHdd'">
               <span>
                 <b-button
+                  v-b-tooltip.hover
+                  :title="props.row.noteHdd"
                   variant="light"
                   class="rounded-circle p-1 ml-1"
                 >
@@ -301,8 +305,8 @@ export default {
       selected: null,
       options: [
         { value: 1, text: 'Tất cả' },
-        { value: 2, text: 'Đã print' },
-        { value: 3, text: 'Chưa print' },
+        { value: 2, text: 'Đã in' },
+        { value: 3, text: 'Chưa in' },
       ],
       columns: [
         {
@@ -357,7 +361,7 @@ export default {
           sortable: false,
         },
         {
-          label: 'print HĐ đỏ',
+          label: 'In HĐ đỏ',
           field: 'print',
           sortable: false,
         },
@@ -387,42 +391,6 @@ export default {
           sortable: false,
         },
       ],
-      rows: [
-        {
-          numberBill: 'HD001',
-          customerCode: 'CUS.CH40235.001',
-          name: 'Phan Bảo Châu',
-          dayTime: '01/10/2020',
-          totalValue: '16,800',
-          discountMoney: '01/10/2020',
-          moneyAccumulated: '794,484',
-          payments: '16,800',
-          note: '',
-          print: '',
-          company: '',
-          taxCode: '',
-          address: '',
-          noteHdd: '',
-          press: '1',
-        },
-        {
-          numberBill: 'HD001',
-          customerCode: 'CUS.CH40235.001',
-          name: 'Phan Bảo Châu',
-          dayTime: '01/10/2020',
-          totalValue: '200,812',
-          discountMoney: '01/10/2020',
-          moneyAccumulated: '794,484',
-          payments: '200,812',
-          note: '',
-          print: 'Đã print',
-          company: 'Công ty TNHH Tekc',
-          taxCode: '1000023687',
-          address: 'Sô 10, đường Tân Trào, Phường Tân Phú, Quận 7',
-          noteHdd: '1',
-          press: '',
-        },
-      ],
     }
   },
   computed: {
@@ -433,19 +401,15 @@ export default {
         name: data.customerName,
         dayTime: formatDateToVNI(data.orderDate),
         totalValue: data.total,
+        note: data.note,
         discountMoney: data.discount,
         moneyAccumulated: data.accumulation,
         payments: data.total,
-        print: (data.redReceipt === true) ? 'Đã print' : 'Chưa print',
+        print: (data.redReceipt === true) ? 'Đã in' : 'Chưa in',
+        noteHdd: data.noteRed,
         company: data.comName,
         taxCode: data.taxCode,
         address: data.address,
-      }))
-    },
-    salesReceiptNote() {
-      return this.SALES_RECEIPTS_GETTER().map(data => ({
-        note: data.note,
-        noteHdd: data.noteRed,
       }))
     },
     salesReceiptsTotal() {
