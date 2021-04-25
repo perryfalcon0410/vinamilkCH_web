@@ -241,7 +241,7 @@
             </div>
             <!--if-PoConfirm-->
             <vue-good-table
-              v-if="status == 0"
+              v-if="status === 0"
               :columns="PoColumns"
               :rows="rowsProductPromotion"
               style-class="vgt-table striped"
@@ -270,6 +270,67 @@
                 </b-row>
               </template>
             </vue-good-table>
+            <!--START input Po-->
+            <vue-good-table
+              v-if="status === null"
+              :columns="PoPromotionColumns"
+              :rows="rowsProductPromotion"
+              style-class="vgt-table striped"
+              compact-mode
+              line-numbers
+            >
+              <template
+                slot="table-column"
+                slot-scope="props"
+              >
+                <span v-if="props.column.label =='Function'">
+                  <b-button
+                    variant="light"
+                    class="rounded-circle p-1 ml-1"
+                    size="lg"
+                    @click="newRow"
+                  >
+                    <b-icon
+                      icon="plus"
+                    />
+                  </b-button>
+                </span>
+                <span v-else>
+                  {{ props.column.label }}
+                </span>
+              </template>
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <span v-if="props.column.field == 'productCode'">
+                  <b-form-input
+                    v-model="rowsProductPromotion[props.row.count].productCode"
+                  />
+                </span>
+                <span v-if="props.column.field == 'productName'">
+                  <b-input
+                    v-model="rowsProductPromotion[props.row.count].productName"
+                  />
+                </span>
+                <span v-if="props.column.field == 'quantity'">
+                  <b-input
+                    v-model="rowsProductPromotion[props.row.count].quantity"
+                  />
+                </span>
+                <span v-if="props.column.field == 'price'">
+                  <b-input
+                    v-model="rowsProductPromotion[props.row.count].price"
+                  />
+                </span>
+                <span v-if="props.column.field == 'totalPrice'">
+                  <b-input
+                    v-model="rowsProductPromotion[props.row.count].totalPrice"
+                  />
+                </span>
+              </template>
+            </vue-good-table>
+            <!--END input Po-->
             <!--if-PoConfirm-->
 
             <!-- END - Table Product promotion -->
@@ -383,10 +444,57 @@ export default {
       poId: null,
       poProductInfo: {},
       poPromotionProductsInfo: {},
+      length: 1,
       // validation rules
       number,
       required,
       // -------------------------PoConfirm--------------------------
+      PoPromotionColumns: [
+        {
+          label: 'Mã hàng',
+          field: 'productCode',
+          sortable: false,
+        },
+        {
+          label: 'Số lượng',
+          field: 'quantity',
+          sortable: false,
+        },
+        {
+          label: 'Giá',
+          field: 'price',
+          type: 'number',
+          sortable: false,
+        },
+        {
+          label: 'Tên hàng',
+          field: 'productName',
+          sortable: false,
+        },
+        {
+          label: 'ĐVT',
+          field: 'unit',
+          type: 'number',
+          sortable: false,
+        },
+        {
+          label: 'Thành tiền',
+          field: 'totalPrice',
+          type: 'number',
+          sortable: false,
+        },
+        {
+          label: 'SO No',
+          field: 'SoNo',
+          sortable: false,
+        },
+        {
+          label: 'Function',
+          field: 'function',
+          sortable: false,
+        },
+      ],
+      rowsProduct: [],
       PoColumns: [
         {
           label: 'Mã hàng',
@@ -433,8 +541,13 @@ export default {
           sortable: false,
         },
       ],
-      rowsProduct: [],
-      rowsProductPromotion: [],
+      rowsProductPromotion: [{
+        count: 0,
+        productCode: '',
+        quantity: '',
+        productName: '',
+        totalPrice: '',
+      }],
       // -------------------------PoConfirm--------------------------
 
       // -------------------------InputAdjust--------------------------
@@ -518,10 +631,38 @@ export default {
       // -------------------------InputAdjust--------------------------
     }
   },
+  computed: {
+    promotionRow() {
+      return this.rowsProductPromotion.map(data => ({
+        productCode: data.productCode,
+        quantity: data.quantity,
+        productName: data.productName,
+        price: data.price,
+        totalPrice: data.totalPrice,
+      }))
+    },
+  },
   methods: {
     ...mapActions(WAREHOUSEINPUT, [
       CREATE_SALE_IMPORT_ACTION,
     ]),
+    log() {
+      this.log(this.rowsProductPromotion)
+    },
+    newRow() {
+      if (this.status === null) {
+        this.rowsProductPromotion = [
+          ...this.rowsProductPromotion,
+          {
+            count: this.rowsProductPromotion.length,
+            productCode: '',
+            quantity: '',
+            productName: '',
+            totalPrice: '',
+          },
+        ]
+      }
+    },
     showModal() {
       const PoConfirm = this.importType === '1' ? this.PoConfirmModalVisible = !this.PoConfirmModalVisible : this.PoConfirmModalVisible = false
       const Adjustment = this.importType === '2' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
@@ -604,19 +745,35 @@ export default {
       }
     },
     create() {
-      this.$refs.formContainer.validate().then(success => {
-        if (success) {
-          this.CREATE_SALE_IMPORT_ACTION({
-            importType: this.status,
-            poNumber: this.poNo,
-            internalNumber: this.internalNumber,
-            redInvoiceNo: this.billNumber,
-            poId: this.poId,
-            note: this.note,
-            lst: this.lst,
-          })
-        }
-      })
+      if (this.status !== null) {
+        this.$refs.formContainer.validate().then(success => {
+          if (success) {
+            this.CREATE_SALE_IMPORT_ACTION({
+              importType: this.status,
+              poNumber: this.poNo,
+              internalNumber: this.internalNumber,
+              redInvoiceNo: this.billNumber,
+              poId: this.poId,
+              note: this.note,
+              lst: this.lst,
+            })
+          }
+        })
+      } else {
+        this.$refs.formContainer.validate().then(success => {
+          if (success) {
+            this.CREATE_SALE_IMPORT_ACTION({
+              importType: 0,
+              poNumber: this.poNo,
+              internalNumber: this.internalNumber,
+              redInvoiceNo: this.billNumber,
+              poId: this.poId,
+              note: this.note,
+              lst: this.promotionRow,
+            })
+          }
+        })
+      }
     },
   },
 }
