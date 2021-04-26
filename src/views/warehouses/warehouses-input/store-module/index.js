@@ -1,6 +1,7 @@
-import ReceiptImportService from '@/views/warehouses/warehouses-input/api-service/index'
+import ReceiptImportService from '@/views/warehouses/warehouses-input/api-service'
 import toasts from '@core/utils/toasts/toasts'
 import router from '@/router/index'
+import FileSaver from 'file-saver'
 
 import {
   // GETTERS
@@ -27,6 +28,8 @@ import {
   GET_IMPORT_BORROWINGS_DETAIL_ACTION,
   UPDATE_NOT_IMPORT_ACTION,
   CREATE_SALE_IMPORT_ACTION,
+  REMOVE_RECEIPT_ACTION,
+  PRINT_WAREHOUSES_INPUT_ACTION,
 } from './type'
 
 export default {
@@ -281,6 +284,33 @@ export default {
         })
     },
     // END - EXPORT RECEIPTS
+    [REMOVE_RECEIPT_ACTION]({}, val) {
+      ReceiptImportService
+        .removeReceipt(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success('Xóa phiếu nhập hàng thành công')
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_WAREHOUSES_INPUT_ACTION]({ }, val) {
+      const fileName = `${val.transCode}.pdf`
+      ReceiptImportService
+        .printWarehouseInput(val)
+        .then(response => response.data)
+        .then(res => {
+          const blob = new Blob([res], { type: 'application/pdf' })
+          FileSaver.saveAs(blob, fileName)
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
   },
-
 }

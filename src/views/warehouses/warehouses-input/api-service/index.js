@@ -13,6 +13,8 @@ import {
   getReceiptsEndpoint,
   exportReceiptsEndpoint,
   createSaleImportEndpoint,
+  removeReceiptEndpoint,
+  printWarehousesInputEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -53,5 +55,15 @@ export default {
   },
   createSaleImport(args) {
     return axios.post(createSaleImportEndpoint, args)
+  },
+  removeReceipt(args) {
+    return axios.patch(`${removeReceiptEndpoint}/${args}`)
+  },
+  printWarehouseInput(args) {
+    const queryString = new URLSearchParams(args).toString()
+    return axios(`${printWarehousesInputEndpoint}?${queryString}`, {
+      method: 'GET',
+      responseType: 'blob', // Force to receive data in a Blob Format
+    })
   },
 }
