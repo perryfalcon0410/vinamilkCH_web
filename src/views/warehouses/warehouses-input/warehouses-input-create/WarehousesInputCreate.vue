@@ -242,7 +242,7 @@
             <!--if-PoConfirm-->
             <vue-good-table
               v-if="status === 0"
-              :columns="PoColumns"
+              :columns="poColumns"
               :rows="rowsProductPromotion"
               style-class="vgt-table striped"
               compact-mode
@@ -273,7 +273,7 @@
             <!--START input Po-->
             <vue-good-table
               v-if="status === null"
-              :columns="PoPromotionColumns"
+              :columns="poPromotionColumns"
               :rows="rowsProductPromotion"
               style-class="vgt-table striped"
               compact-mode
@@ -378,15 +378,15 @@
     <!-- START - Modal -->
     <adjustment-modal
       :visible="AdjustmentModalVisible"
-      @inputAdjust="dataFromInputAdjust($event)"
+      @inputAdjustChange="dataFromInputAdjust($event)"
     />
     <borrowed-modal
       :visible="BorrowedModalVisible"
-      @inputBorrows="dataFormInputBorrow($event)"
+      @inputBorrowsChange="dataFormInputBorrow($event)"
     />
     <po-confirm-modal
       :visible="PoConfirmModalVisible"
-      @import="dataFromPoConfirm($event)"
+      @inpurChange="dataFromPoConfirm($event)"
     />
     <!-- END - Modal -->
   </b-container>
@@ -440,7 +440,7 @@ export default {
       billDate: new Date(),
       poNo: '',
       note: '',
-      lst: null,
+      list: null,
       poId: null,
       poProductInfo: {},
       poPromotionProductsInfo: {},
@@ -449,7 +449,7 @@ export default {
       number,
       required,
       // -------------------------PoConfirm--------------------------
-      PoPromotionColumns: [
+      poPromotionColumns: [
         {
           label: 'Mã hàng',
           field: 'productCode',
@@ -495,7 +495,7 @@ export default {
         },
       ],
       rowsProduct: [],
-      PoColumns: [
+      poColumns: [
         {
           label: 'Mã hàng',
           field: 'productCode',
@@ -551,7 +551,7 @@ export default {
       // -------------------------PoConfirm--------------------------
 
       // -------------------------InputAdjust--------------------------
-      AdjustColumns: [
+      adjustColumns: [
         {
           label: 'Số chứng từ',
           field: 'licenseNumber',
@@ -587,11 +587,11 @@ export default {
           type: 'number',
         },
       ],
-      AdjustRows: [],
+      adjustRows: [],
       // -------------------------InputAdjust--------------------------
 
       // -------------------------InputBorrow--------------------------
-      BorrowColumns: [
+      borrowColumns: [
         {
           label: 'Số chứng từ',
           field: 'licenseNumber',
@@ -627,7 +627,7 @@ export default {
           type: 'number',
         },
       ],
-      BorrowRows: [],
+      borrowRows: [],
       // -------------------------InputAdjust--------------------------
     }
   },
@@ -646,9 +646,6 @@ export default {
     ...mapActions(WAREHOUSEINPUT, [
       CREATE_SALE_IMPORT_ACTION,
     ]),
-    log() {
-      this.log(this.rowsProductPromotion)
-    },
     newRow() {
       if (this.status === null) {
         this.rowsProductPromotion = [
@@ -675,7 +672,7 @@ export default {
     },
     // ---------------------------Nhap hang-----------------------
     dataFromPoConfirm(data) {
-      const [poProducts, ProductInfo, poPromotionProducts, PromotionProductsInfo, PoConfirmModalState, Snb, list, id] = data
+      const [poProducts, ProductInfo, poPromotionProducts, PromotionProductsInfo, PoConfirmModalState, Snb, listData, id] = data
       this.rowsProduct = [...poProducts]
       this.rowsProductPromotion = [...poPromotionProducts]
       this.PoConfirmModalVisible = PoConfirmModalState
@@ -685,7 +682,7 @@ export default {
       this.internalNumber = Snb
       this.poNo = null
       this.poId = id
-      this.lst = list
+      this.list = listData
       this.tableRender()
     },
     // ----------------------------Nhap hang-----------------------
@@ -697,7 +694,7 @@ export default {
     "internalNumber":"12312",
     "note":"ghi chu",
     "poId":1,
-    "lst":[{
+    "list":[{
         "productCode":"SP0006",
         "quantity":10,
         "productName":"con bo",
@@ -708,40 +705,40 @@ export default {
     */
     // -----------------------------Nhap dieu chinh------------------------
     dataFromInputAdjust(data) {
-      const [importAdjustsDetail, importAdjustModalState, list, id] = data
-      this.AdjustRows = [...importAdjustsDetail]
+      const [importAdjustsDetail, importAdjustModalState, listData, id] = data
+      this.adjustRows = [...importAdjustsDetail]
       this.AdjustmentModalVisible = importAdjustModalState
       this.status = 1 // importType
       this.poNo = null // poNumber
       this.poId = id // poId
-      this.lst = list // lst
+      this.list = listData // list
       this.tableRender()
     },
     // -----------------------------Nhap dieu chinh------------------------
 
     // ------------------------------Nhap vay muon----------------------------
     dataFormInputBorrow(data) {
-      const [importBorrowsDetail, importBorrowModalState, list, id] = data
-      this.BorrowRows = [...importBorrowsDetail]
+      const [importBorrowsDetail, importBorrowModalState, listData, id] = data
+      this.borrowRows = [...importBorrowsDetail]
       this.BorrowedModalVisible = importBorrowModalState
       this.status = 2
       this.poNo = null
       this.internalNumber = null
       this.poId = id
-      this.lst = list
+      this.list = listData
       this.tableRender()
     },
     // ------------------------------Nhap vay muon----------------------------
     tableRender() {
       if (this.status === 0) {
-        this.columns = this.PoColumns
+        this.columns = this.poColumns
         this.rows = this.rowsProduct
       } else if (this.status === 1) {
-        this.columns = this.AdjustColumns
-        this.rows = this.AdjustRows
+        this.columns = this.adjustColumns
+        this.rows = this.adjustRows
       } else if (this.status === 2) {
-        this.columns = this.BorrowColumns
-        this.rows = this.BorrowRows
+        this.columns = this.borrowColumns
+        this.rows = this.borrowRows
       }
     },
     create() {
@@ -755,7 +752,7 @@ export default {
               redInvoiceNo: this.billNumber,
               poId: this.poId,
               note: this.note,
-              lst: this.lst,
+              lst: this.list,
             })
           }
         })

@@ -43,7 +43,7 @@
             :key="item.id"
             class="border-bottom border-white py-1"
             :class="{ 'text-primary': current == item.id }"
-            @click="poSelected(item.id, item.internalNumber, item.poNo)"
+            @click="select(item.id, item.internalNumber, item.poNo)"
           >
             <b-col cols="1">
               {{ index + 1 }}
@@ -182,7 +182,7 @@
       <b-button
         variant="danger"
         class="d-flex align-items-center text-uppercase"
-        @click="ShowModal()"
+        @click="showModal()"
       >
         <b-icon
           icon="slash-circle"
@@ -352,7 +352,7 @@ export default {
     poPromotionProductsInfo() {
       return this.PODETAIL_PRODUCTS_PROMO_INFO_GETTER()
     },
-    lst() {
+    list() {
       const product = this.PODETAIL_PRODUCTS_RES_GETTER().map(data => ({
         productCode: data.productCode,
         productName: data.productName,
@@ -388,7 +388,7 @@ export default {
       GET_IMPORTEXCEL_ACTION,
     ]),
     // invidual select event for poconfrim list
-    poSelected(id, internalNumber, poNum) {
+    select(id, internalNumber, poNum) {
       this.current = id
       this.poNumber = poNum
       this.Snb = internalNumber
@@ -401,12 +401,12 @@ export default {
     },
     // Confirm import product from selected Po
     confirmImportButton() {
-      this.$emit('import', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, false, this.Snb, this.lst, this.current])
+      this.$emit('inpurChange', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, false, this.Snb, this.list, this.current])
     },
     exportExcel() {
       this.GET_IMPORTEXCEL_ACTION(this.current)
     },
-    ShowModal() {
+    showModal() {
       this.denyId = this.current
       this.DenyModalVisible = !this.DenyModalVisible
     },

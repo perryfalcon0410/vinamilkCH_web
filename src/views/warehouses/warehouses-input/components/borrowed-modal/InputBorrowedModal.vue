@@ -50,7 +50,7 @@
               :key="item.id"
               :class="{ 'text-primary': current == item.id }"
               class="border-bottom border-white bg-light py-1"
-              @click="poSelect(item.id)"
+              @click="select(item.id)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
@@ -214,7 +214,7 @@ export default {
         totalPrice: data.totalPrice,
       }))
     },
-    lst() {
+    list() {
       return this.IMPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
         productCode: data.productCode,
         productName: data.productName,
@@ -240,9 +240,9 @@ export default {
       this.isHover = hovered
     },
     inputBorrow() {
-      this.$emit('inputBorrows', [this.importBorrowingsDetailList, false, this.lst, this.current])
+      this.$emit('inputBorrowsChange', [this.importBorrowingsDetailList, false, this.list, this.current])
     },
-    poSelect(id) {
+    select(id) {
       this.current = id
       this.GET_IMPORT_BORROWINGS_DETAIL_ACTION(this.current)
     },
