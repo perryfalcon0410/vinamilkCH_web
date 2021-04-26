@@ -203,7 +203,7 @@
 </template>
 
 <script>
-import { formatDateToVNI } from '@/@core/utils/filter'
+import { formatDateToLocale } from '@/@core/utils/filter'
 
 export default {
   data() {
@@ -234,8 +234,8 @@ export default {
     onClickSearchButton() {
       const searchData = {
         searchKeywords: this.searchKeywords,
-        fromDate: formatDateToVNI(this.fromDate),
-        toDate: formatDateToVNI(this.toDate),
+        fromDate: formatDateToLocale(this.fromDate),
+        toDate: formatDateToLocale(this.toDate),
         customerTypeId: this.customerTypeId,
         status: this.status,
         genderId: this.genderId,

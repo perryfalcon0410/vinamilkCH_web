@@ -239,27 +239,30 @@ export default {
 
   watch: {
     username() {
-      if (this.saveStatus && this.username && this.password) {
+      if (this.saveStatus) {
         // Save account
         localStorage.setItem('username', JSON.stringify(this.username))
-        localStorage.setItem('password', JSON.stringify(this.password))
-        localStorage.setItem('saveStatus', JSON.stringify(this.saveStatus))
       } else {
         // Clean account
-        localStorage.setItem('username', JSON.stringify(''))
-        localStorage.setItem('password', JSON.stringify(''))
-        localStorage.setItem('saveStatus', JSON.stringify(''))
+        localStorage.removeItem('username')
       }
     },
     password() {
       if (this.saveStatus) {
         // Save account
         localStorage.setItem('password', JSON.stringify(this.password))
+      } else {
+        // Clean account
+        localStorage.removeItem('password')
+      }
+    },
+    saveStatus() {
+      if (this.saveStatus) {
+        // Save account
         localStorage.setItem('saveStatus', JSON.stringify(this.saveStatus))
       } else {
         // Clean account
-        localStorage.setItem('password', JSON.stringify(''))
-        localStorage.setItem('saveStatus', JSON.stringify(''))
+        localStorage.removeItem('saveStatus')
       }
     },
   },

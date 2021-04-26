@@ -14,21 +14,23 @@
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
       >
-        <strong class="text-primary">
+        <strong class="txtHeaderTable">
           Danh sách khách hàng
         </strong>
         <b-button-group>
           <b-button
             class="rounded"
-            variant="primary"
+            variant="someThing"
+            size="sm"
             @click="navigateToCreate"
           >
-            <b-icon-plus />
+            <b-icon-plus scale="2" />
             Thêm mới
           </b-button>
           <b-button
             class="ml-1 rounded"
-            variant="primary"
+            variant="someThing"
+            size="sm"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill />
@@ -50,7 +52,10 @@
           }"
           compact-mode
           line-numbers
+          :row-style-class="rowStyleClassFn"
+          @on-row-mouseenter="onRowMouseover"
         >
+          >
           <!-- START - Empty rows -->
           <div
             slot="emptystate"
@@ -158,7 +163,7 @@ import {
   mapGetters,
 } from 'vuex'
 import { getGenderLabel, getCustomerTypeLabel } from '@core/utils/utils'
-import { formatDateToVNI } from '@core/utils/filter'
+import { formatDateToLocale } from '@core/utils/filter'
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
   CUSTOMER,
@@ -177,6 +182,7 @@ export default {
   data() {
     return {
       isShowDeleteModal: false,
+      selectedRow: 0,
       elementSize: 20,
       pageNumber: 1,
       columns: [
@@ -240,11 +246,11 @@ export default {
         code: data.customerCode,
         fullName: `${data.lastName} ${data.firstName}`,
         phoneNumber: data.mobiPhone,
-        birthDay: formatDateToVNI(data.dob),
+        birthDay: formatDateToLocale(data.dob),
         gender: getGenderLabel(data.genderId),
         status: this.resolveStatus(data.status),
         group: getCustomerTypeLabel(data.customerTypeId),
-        date: formatDateToVNI(data.createdAt),
+        date: formatDateToLocale(data.createdAt),
         feature: '',
       }))
     },
@@ -256,11 +262,9 @@ export default {
   watch: {
     pageNumber() {
       this.onPaginationChange()
-      console.log(this.customerPagination)
     },
     elementSize() {
       this.onPaginationChange()
-      console.log(this.customerPagination)
     },
   },
 
@@ -301,6 +305,7 @@ export default {
     onClickExcelExportButton() {
       this.EXPORT_CUSTOMERS_ACTION()
     },
+
     onPaginationChange() {
       const paginationData = {
         size: this.elementSize,
@@ -309,6 +314,32 @@ export default {
 
       this.GET_CUSTOMERS_ACTION(paginationData)
     },
+
+    onRowMouseover(row) {
+      console.log(row.pageIndex)
+      this.selectedRow = row.pageIndex
+    },
+
+    rowStyleClassFn(row) {
+      console.log('--------------------------')
+      console.log(row.originalIndex === this.selectedRow)
+      console.log('--------------------------')
+
+      return row.originalIndex === this.selectedRow ? 'selectedRow' : ''
+    },
   },
 }
 </script>
+<style scoped>
+  button {
+    background: #203181;
+    color: white;
+  }
+  .txtHeaderTable {
+    color: #203181;
+  }
+
+  .selectedRow{
+  background-color: greenyellow;
+}
+</style>

@@ -607,7 +607,7 @@ import {
   dateFormatVNI,
   age,
 } from '@/@core/utils/validations/validations'
-import { formatVniDateToISO, formatDateToVNI } from '@/@core/utils/filter'
+import { formatVniDateToISO, formatDateToLocale } from '@/@core/utils/filter'
 import {
   CUSTOMER,
   // GETTERS
@@ -756,7 +756,7 @@ export default {
         this.customerDistrict = null
         this.GET_DISTRICTS_ACTION(this.customerProvince)
         if (this.customer.areaDTO) {
-          this.customerDistrict = this.customer.areaDTO.districtId // TODO: Cần tối ưu lại (Chỉ nên chạy 1 lần đầu)
+          this.customerDistrict = Number(this.customer.areaDTO.district) // TODO: Cần tối ưu lại (Chỉ nên chạy 1 lần đầu)
         }
       }
     },
@@ -765,7 +765,7 @@ export default {
         this.customerPrecinct = null
         this.GET_PRECINCTS_ACTION(this.customerDistrict)
         if (this.customer.areaDTO) {
-          this.customerPrecinct = this.customer.areaDTO.precinctId // TODO: Cần tối ưu lại
+          this.customerPrecinct = Number(this.customer.areaDTO.precinct) // TODO: Cần tối ưu lại
         }
       }
     },
@@ -840,15 +840,15 @@ export default {
         this.firstName = this.customer.firstName
         this.lastName = this.customer.lastName
         this.barCode = this.customer.barCode
-        this.birthDay = formatDateToVNI(this.customer.dob)
+        this.birthDay = formatDateToLocale(this.customer.dob)
         this.genders = this.customer.genderId
         this.customerGroups = this.customer.customerTypeId
         this.customerStatus = this.customer.status
         this.customerSpecial = this.customer.isPrivate
         this.note = this.customer.noted
-        this.createdAt = formatDateToVNI(this.customer.createdAt)
+        this.createdAt = formatDateToLocale(this.customer.createdAt)
         this.customerID = this.customer.idNo
-        this.customerIDDate = formatDateToVNI(this.customer.idNoIssuedDate)
+        this.customerIDDate = formatDateToLocale(this.customer.idNoIssuedDate)
         this.customerIDLocation = this.customer.idNoIssuedPlace
         this.totalBill = this.customer.totalBill
         this.monthOrderNumber = this.customer.monthOrderNumber
@@ -857,9 +857,9 @@ export default {
         this.customerEmail = this.customer.email
         this.homeNumber = this.customer.street
         if (this.customer.areaDTO) {
-          this.customerProvince = this.customer.areaDTO.provinceId
-          this.customerDistrict = this.customer.areaDTO.districtId
-          this.customerPrecinct = this.customer.areaDTO.precinctId
+          this.customerProvince = Number(this.customer.areaDTO.province)
+          this.customerDistrict = Number(this.customer.areaDTO.district)
+          this.customerPrecinct = Number(this.customer.areaDTO.precinct)
         }
         this.workingOffice = this.customer.workingOffice
         this.officeAddress = this.customer.officeAddress
@@ -913,22 +913,22 @@ export default {
         this.firstName !== this.customer.firstName
      || this.lastName !== this.customer.lastName
      || this.barCode !== this.customer.barCode
-     || this.birthDay !== formatDateToVNI(this.customer.dob)
+     || this.birthDay !== formatDateToLocale(this.customer.dob)
      || this.genders !== this.customer.genderId
      || this.customerGroups !== this.customer.customerTypeId
      || this.customerStatus !== this.customer.status
      || this.customerSpecial !== this.customer.isPrivate
      || this.note !== this.customer.noted
      || this.customerID !== this.customer.idNo
-     || this.customerIDDate !== formatDateToVNI(this.customer.idNoIssuedDate)
+     || this.customerIDDate !== formatDateToLocale(this.customer.idNoIssuedDate)
      || this.customerIDLocation !== this.customer.idNoIssuedPlace
         // START - Contact
      || this.phoneNumber !== this.customer.mobiPhone
      || this.customerEmail !== this.customer.email
      || this.homeNumber !== this.customer.street
-     || this.customerProvince !== this.customer.areaDTO?.provinceId // TODO: Cần fix lại chỗ này, dữ liệu ban đầu ko có nhưng vẫn lấy ra để so sánh!
-     || this.customerDistrict !== this.customer.areaDTO?.districtId // TODO: cái này nữa
-     || this.customerPrecinct !== this.customer.areaDTO?.precinctId // TODO: cái này nốt
+     || this.customerProvince !== Number(this.customer.areaDTO?.province) // TODO: Cần fix lại chỗ này, dữ liệu ban đầu ko có nhưng vẫn lấy ra để so sánh!
+     || this.customerDistrict !== Number(this.customer.areaDTO?.district)// TODO: cái này nữa
+     || this.customerPrecinct !== Number(this.customer.areaDTO?.precinct) // TODO: cái này nốt
      || this.workingOffice !== this.customer.workingOffice
      || this.officeAddress !== this.customer.officeAddress
      || this.taxCode !== this.customer.taxCode

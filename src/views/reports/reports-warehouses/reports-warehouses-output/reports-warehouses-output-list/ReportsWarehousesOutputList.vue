@@ -135,7 +135,7 @@
 <script>
 import 'vue-good-table/dist/vue-good-table.css'
 import { getGenderLabel } from '@core/utils/utils'
-import { formatDateToVNI } from '@core/utils/filter'
+import { formatDateToLocale } from '@core/utils/filter'
 import ReportsWarehousesOutputListSearch from './components/ReportsWarehousesOutputListSearch.vue'
 
 export default {
@@ -369,11 +369,11 @@ export default {
         code: data.customerCode,
         fullName: `${data.lastName} ${data.firstName}`,
         phoneNumber: data.mobiPhone,
-        birthDay: formatDateToVNI(data.dob),
+        birthDay: formatDateToLocale(data.dob),
         gender: getGenderLabel(data.genderId),
         status: this.resolveStatus(data.status),
         group: data.customerType,
-        date: formatDateToVNI(data.createdAt),
+        date: formatDateToLocale(data.createdAt),
         feature: '',
       }))
     },

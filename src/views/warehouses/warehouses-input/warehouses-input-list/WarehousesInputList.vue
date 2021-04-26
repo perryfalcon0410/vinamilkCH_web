@@ -260,7 +260,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToVNI } from '@core/utils/filter'
+import { formatDateToLocale } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
@@ -339,7 +339,7 @@ export default {
     receipts() {
       return this.RECEIPTS_GETTER().map(data => ({
         id: data.id,
-        TransDate: formatDateToVNI(data.transDate),
+        TransDate: formatDateToLocale(data.transDate),
         TransCode: data.TransCode,
         RedInvoiceNo: data.redInvoiceNo,
         InternalNumber: data.internalNumber,
@@ -374,7 +374,7 @@ export default {
       this.EXPORT_RECEIPTS_ACTION(id)
     },
     onClickDeleteButton(date) {
-      if (date === formatDateToVNI(new Date())) {
+      if (date === formatDateToLocale(new Date())) {
         this.isDeleteModalShow = !this.isDeleteModalShow
       } else {
         toasts.error('Đã quá thời hạn chỉnh sửa')

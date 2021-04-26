@@ -34,9 +34,15 @@ export const formatDate = (value, formatting = { month: 'short', day: 'numeric',
 }
 
 // Format yyyy-mm-dd|iso|timestamp to dd/mm/yyyy
-export const formatDateToVNI = (value, formatting = { day: '2-digit', month: '2-digit', year: 'numeric' }) => {
+export const formatDateToLocale = (value, formatting = { day: '2-digit', month: '2-digit', year: 'numeric' }) => {
   if (!value) return value
   return new Date(value).toLocaleDateString('vi-VN', formatting)
+}
+
+// Format number to locale
+export const formatNumberToLocale = value => {
+  if (!value) return value
+  return value.toLocaleString('vi-VN')
 }
 
 // Format dd/mm/yyyy to 2021-04-15T03:32:47.519Z

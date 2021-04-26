@@ -11,11 +11,11 @@
         align-v="center"
         align-h="between"
       >
-        <strong>Tìm kiếm</strong>
+        <strong class="txtHeaderSearch">Tìm kiếm</strong>
 
         <b-icon-chevron-down
-          scale="2"
-          color="blue"
+          scale="1.3"
+          color="#203181"
         />
       </b-row>
 
@@ -24,7 +24,7 @@
         visible
       >
         <b-form-row
-          class="border-top mx-0 p-1"
+          class="border-top mx-0 pt-1 px-1"
         >
           <!-- START - Full Name -->
           <b-col
@@ -214,6 +214,7 @@
             xl
             sm="4"
             md="3"
+            class="h-25"
           >
             <b-form-group
               label="Tìm kiếm"
@@ -222,7 +223,7 @@
             >
               <b-button
                 id="form-button-search"
-                variant="primary"
+                variant="someThing"
                 @click="onClickSearchButton()"
               >
                 <b-icon-search />
@@ -328,3 +329,12 @@ export default {
   },
 }
 </script>
+<style scoped>
+  button {
+    background: #203181;
+    color: white;
+  }
+  .txtHeaderSearch {
+    color: #203181;
+  }
+</style>

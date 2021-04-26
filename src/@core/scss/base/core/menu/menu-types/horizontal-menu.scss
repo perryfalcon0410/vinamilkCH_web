@@ -9,11 +9,11 @@
 	Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 
-@import '../../../bootstrap-extended/include'; // Bootstrap includes
-@import '../../../components/include'; // Components includes
+@import "../../../bootstrap-extended/include"; // Bootstrap includes
+@import "../../../components/include"; // Components includes
 
 // Import first main menu mixin
-@import '../../mixins/main-menu-mixin';
+@import "../../mixins/main-menu-mixin";
 
 // Horizontal Menu
 //=========================
@@ -114,14 +114,22 @@
         &.dropdown-toggle {
           &::after {
             left: 0.4rem;
-            background-image: url(str-replace(str-replace($chevron-down, 'currentColor', $body-color), '#', '%23'));
+            background-image: url(str-replace(
+              str-replace($chevron-down, "currentColor", $white),
+              "#",
+              "%23"
+            ));
           }
         }
       }
       .sidebar-group-active {
         .dropdown-toggle {
           &::after {
-            background-image: url(str-replace(str-replace($chevron-down, 'currentColor', $white), '#', '%23'));
+            background-image: url(str-replace(
+              str-replace($chevron-down, "currentColor", $white),
+              "#",
+              "%23"
+            ));
           }
         }
       }
@@ -146,7 +154,11 @@
           margin-top: -7px;
           right: 1rem;
           // content: '\e844' !important;
-          background-image: url(str-replace(str-replace($chevron-right, 'currentColor', $body-color), '#', '%23'));
+          background-image: url(str-replace(
+            str-replace($chevron-right, "currentColor", $white),
+            "#",
+            "%23"
+          ));
         }
         .dropdown-item {
           font-size: 1rem;
@@ -183,8 +195,8 @@
         }
       }
       ul#main-menu-navigation > li {
-        padding-top: 0.857rem;
-        padding-bottom: 0.857rem;
+        padding-top: 0.4rem;
+        padding-bottom: 0.4rem;
 
         > .dropdown-menu {
           a {
@@ -192,8 +204,8 @@
               transition: all 0.2s ease;
             }
             &:hover {
-              background-color: transparent;
-              color: $body-color;
+              background-color: rgba($greenVinamilk, 0.5);
+              color: $white;
               & > * {
                 transform: translateX(5px);
                 transition: transform 0.2s ease;
@@ -201,14 +213,14 @@
             }
           }
           .active > a {
-            background: $body-bg;
-            color: $primary;
+            background: $greenVinamilk;
+            color: $white;
             font-weight: 500;
           }
           .open {
             &.active {
               > a {
-                color: $body-color;
+                color: $white;
                 font-weight: normal;
               }
             }
@@ -222,20 +234,26 @@
           font-size: 1.2rem;
         }
         > a {
-          padding: 0.715rem 1.25rem;
+          padding: 0.515rem 1rem;
           display: flex;
           margin-right: 0.715rem;
+          color: $white;
+          font-weight: bold;
         }
         &:hover {
           > a {
-            background: $body-bg;
+            background: $greenVinamilk;
             border-radius: 4px;
           }
         }
         &.active {
           > a {
-            background: linear-gradient(118deg, rgba($primary, 1), rgba($primary, 0.7));
-            box-shadow: 0px 0px 6px 1px rgba($primary, 0.6);
+            background: linear-gradient(
+              118deg,
+              rgba($greenVinamilk, 1),
+              rgba($greenVinamilk, 0.7)
+            );
+            box-shadow: 0px 0px 6px 1px rgba($greenVinamilk, 0.6);
             color: $white;
             border-radius: 4px;
           }
@@ -245,7 +263,7 @@
   }
 
   .navigation-header {
-    font-family: inherit;
+    font-family: "Montserrat", sans-serif;
     color: #929292;
     padding: 8px 20px;
     font-size: 1rem;
@@ -277,7 +295,10 @@
     &:not(.blank-page) {
       .app-content {
         // padding-top: 9.75rem;
-        padding: calc(#{$content-padding} + #{$navbar-height}* 2 + #{$floating-nav-margin}) #{$content-padding} 0 #{$content-padding}; // * 2  as we have 2 navbar (menu + navbar)  in horizontal layout.
+        padding: calc(
+            #{$content-padding} + #{$navbar-height}* 2 + #{$floating-nav-margin}
+          )
+          #{$content-padding} 0 #{$content-padding}; // * 2  as we have 2 navbar (menu + navbar)  in horizontal layout.
       }
     }
     .horizontal-menu-wrapper {
@@ -347,7 +368,8 @@
   // navbar sticky
   &.navbar-sticky {
     .app-content {
-      padding: calc(#{$content-padding} + #{$navbar-height}* 2) #{$content-padding} 0 #{$content-padding};
+      padding: calc(#{$content-padding} + #{$navbar-height}* 2) #{$content-padding}
+        0 #{$content-padding};
     }
     .header-navbar {
       background-color: $body-bg;
@@ -357,7 +379,7 @@
       .navbar-horizontal.header-navbar.fixed-top {
         left: 0;
         top: 62px;
-        background-color: $white;
+        background-color: $blueVinamilk;
         box-shadow: 0 4px 24px 0 rgba($black, 0.1);
       }
     }
@@ -415,13 +437,17 @@
   // navbar static
   &.navbar-static {
     .app-content {
-      padding: calc(#{$content-padding} + #{$horizontal-menu-height}) #{$content-padding} 0 #{$content-padding};
+      padding: calc(#{$content-padding} + #{$horizontal-menu-height}) #{$content-padding}
+        0 #{$content-padding};
     }
     .content {
-      min-height: calc(100% - calc(#{$horizontal-menu-height} + calc(#{$footer-height} + 0.2rem)));
+      min-height: calc(
+        100% -
+          calc(#{$horizontal-menu-height} + calc(#{$footer-height} + 0.2rem))
+      );
     }
     .header-navbar {
-      background-color: $body-bg;
+      background-color: $blueVinamilk;
       box-shadow: none;
     }
     .horizontal-menu-wrapper {
@@ -572,8 +598,8 @@
       background: $white;
     }
     .app-content {
-      padding: calc(#{$navbar-height} + calc(#{$content-padding} - 0.8rem)) calc(#{$content-padding} - 0.8rem) 0
-        calc(#{$content-padding} - 0.8rem) !important;
+      padding: calc(#{$navbar-height} + calc(#{$content-padding} - 0.8rem))
+        calc(#{$content-padding} - 0.8rem) 0 calc(#{$content-padding} - 0.8rem) !important;
     }
   }
 }
@@ -581,9 +607,9 @@
 @include media-breakpoint-down(xs) {
   // For static navbar
   html body.horizontal-layout.navbar-static .app-content {
-    padding: calc(#{$content-padding} - 0.8rem + #{$navbar-height}) calc(#{$content-padding} - 0.8rem) 0
-      calc(#{$content-padding} - 0.8rem) !important; // - 0.8rem to reduce padding in small screen
+    padding: calc(#{$content-padding} - 0.8rem + #{$navbar-height})
+      calc(#{$content-padding} - 0.8rem) 0 calc(#{$content-padding} - 0.8rem) !important; // - 0.8rem to reduce padding in small screen
   }
 }
 // Import vertical-overlay-menu.scss for small screen support
-@import 'vertical-overlay-menu.scss';
+@import "vertical-overlay-menu.scss";
