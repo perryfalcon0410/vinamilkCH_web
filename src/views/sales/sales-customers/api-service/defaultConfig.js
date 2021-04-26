@@ -1,6 +1,7 @@
 const CUSTOMER = '/customers'
+const COMMON = '/common'
 // const PROMOTION = '/promotion'
-const SALE = '/sale'
+// const SALE = '/sale'
 
 export const getCustomersEndpoint = `${CUSTOMER}`
 export const getCustomerByIdEndpoint = `${CUSTOMER}`
@@ -9,10 +10,10 @@ export const updateCustomerEndpoint = `${CUSTOMER}/update`
 export const getCustomerTypesEndpoint = `${CUSTOMER}/customer-types`
 export const exportCustomersEndpoint = `${CUSTOMER}/export`
 
-export const getShopLocationsEndpoint = `${CUSTOMER}/areas/provinces`
-export const getProvincesEndpoint = `${CUSTOMER}/areas/provinces`
-export const getDistrictsEndpoint = `${CUSTOMER}/areas/districts`
-export const getPrecinctsEndpoint = `${CUSTOMER}/areas/precincts`
+export const getShopLocationsEndpoint = `${COMMON}/areas/provinces`
+export const getProvincesEndpoint = `${COMMON}/areas/provinces`
+export const getDistrictsEndpoint = `${COMMON}/areas/districts`
+export const getPrecinctsEndpoint = `${COMMON}/areas/precincts`
 
-export const getCardTypesEndpoint = `${SALE}/apparam/cardtypes`
-export const getCloselyTypesEndpoint = `${SALE}/apparam/closelytypes`
+export const getCardTypesEndpoint = `${COMMON}/apparam/cardtypes`
+export const getCloselyTypesEndpoint = `${COMMON}/apparam/closelytypes`

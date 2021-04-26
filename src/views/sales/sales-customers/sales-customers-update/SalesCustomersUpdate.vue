@@ -285,7 +285,7 @@
                   <!-- START - 1 -->
                   <b-col>
                     <div>Doanh số tháng này</div>
-                    <strong>
+                    <strong style="font-size: 20px;">
                       {{ monthOrderNumber || 0 }}
                     </strong>
                   </b-col>
@@ -294,7 +294,7 @@
                   <!-- START - 2 -->
                   <b-col>
                     <div> Doanh số tổng</div>
-                    <strong>
+                    <strong style="font-size: 20px;">
                       {{ totalBill || 0 }}
                     </strong>
                   </b-col>

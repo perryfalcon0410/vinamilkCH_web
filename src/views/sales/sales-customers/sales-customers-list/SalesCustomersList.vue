@@ -52,8 +52,6 @@
           }"
           compact-mode
           line-numbers
-          :row-style-class="rowStyleClassFn"
-          @on-row-mouseenter="onRowMouseover"
         >
           >
           <!-- START - Empty rows -->
@@ -217,8 +215,6 @@ export default {
           field: 'status',
           type: 'boolean',
           sortable: false,
-          formatFn: this.formatFn,
-          html: true,
         },
         {
           label: 'Nhóm',
@@ -234,6 +230,7 @@ export default {
           label: 'Chức năng',
           field: 'feature',
           sortable: false,
+          width: '30px',
         },
       ],
     }
@@ -313,19 +310,6 @@ export default {
       }
 
       this.GET_CUSTOMERS_ACTION(paginationData)
-    },
-
-    onRowMouseover(row) {
-      console.log(row.pageIndex)
-      this.selectedRow = row.pageIndex
-    },
-
-    rowStyleClassFn(row) {
-      console.log('--------------------------')
-      console.log(row.originalIndex === this.selectedRow)
-      console.log('--------------------------')
-
-      return row.originalIndex === this.selectedRow ? 'selectedRow' : ''
     },
   },
 }
