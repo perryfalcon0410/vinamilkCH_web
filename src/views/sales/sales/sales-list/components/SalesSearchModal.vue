@@ -155,18 +155,8 @@
             Đóng
           </b-button>
         </b-col>
-        <div class="mt-1">
-          Di động <sup class="text-danger">*</sup>
-        </div>
-        <b-form-input
-          v-model="phoneNumber"
-          type="tel"
-          autocomplete="on"
-          maxlength="10"
-        />
-      </b-form>
-      <!-- END - Coupon list -->
-    </b-container>
+        <!-- END - Coupon list -->
+      </b-form></b-container>
   </b-modal>
 </template>
 
