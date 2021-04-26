@@ -1,11 +1,34 @@
 // Core variables and mixins
-@import '~@core/scss/base/bootstrap-extended/include';
+@import "~@core/scss/base/bootstrap-extended/include";
 // Overrides user variable
-@import '~@core/scss/base/components/include';
+@import "~@core/scss/base/components/include";
 // good table variable override to change the color of table
 $text-color: $body-color;
 $thead-bg-color-1: transparent;
 $thead-bg-color-2: transparent;
+
+// START - Layout Table
+#vgt-table {
+  thead {
+    tr:first-child {
+      background: $blueVinamilk;
+    }
+    tr:first-child {
+      th {
+        div {
+          color: white;
+        }
+      }
+    }
+  }
+
+  tbody {
+    tr:hover {
+      background: rgba($greenVinamilk, 0.3);
+    }
+  }
+}
+// END - Layout Table
 
 // sorting icons
 .vgt-wrap {
@@ -112,7 +135,7 @@ body {
 // RTL
 // ------------------------------------------------
 
-html[dir='rtl'] {
+html[dir="rtl"] {
   .b-pagination {
     .page-item {
       &.prev-item {
@@ -170,4 +193,4 @@ html[dir='rtl'] {
     }
   }
 }
-@import '~vue-good-table/src/styles/style.scss';
+@import "~vue-good-table/src/styles/style.scss";

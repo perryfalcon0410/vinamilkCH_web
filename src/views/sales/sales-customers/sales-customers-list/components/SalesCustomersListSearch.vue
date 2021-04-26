@@ -11,7 +11,7 @@
         align-v="center"
         align-h="between"
       >
-        <strong class="txtHeaderSearch">Tìm kiếm</strong>
+        <strong class="text-blue-vinamilk">Tìm kiếm</strong>
 
         <b-icon-chevron-down
           scale="1.3"
@@ -130,7 +130,7 @@
               <v-select
                 id="form-input-customer-group"
                 v-model="customerTypes"
-                :options="[{name: 'Khách hàng thân thiết', id: '1'},{name: 'Khách hàng thường', id: '2'},{name: 'Khách hàng VIP', id: '21'}]"
+                :options="customerTypeOptions"
                 label="name"
                 placeholder="Tất cả"
                 :searchable="false"
@@ -156,7 +156,7 @@
               <v-select
                 id="form-input-customer-group"
                 v-model="status"
-                :options="[{name: 'Hoạt động', id: '1'},{name: 'Ngưng hoạt động', id: '0'}]"
+                :options="statuOptions"
                 label="name"
                 placeholder="Tất cả"
                 :searchable="false"
@@ -178,7 +178,7 @@
               <v-select
                 id="form-input-customer-group"
                 v-model="genders"
-                :options="[{name: 'Nam', id: '1'},{name: 'Nữ', id: '2'},{name: 'Khác', id: '3'}]"
+                :options="genderOptions"
                 label="name"
                 placeholder="Tất cả"
                 :searchable="false"
@@ -223,7 +223,9 @@
             >
               <b-button
                 id="form-button-search"
+                class="bg-blue-vinamilk text-white"
                 variant="someThing"
+                style="max-height: 38px;"
                 @click="onClickSearchButton()"
               >
                 <b-icon-search />
@@ -252,6 +254,9 @@ import {
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
+import commonData from '@/@db/common'
+import customerData from '@/@db/customer'
+
 import {
   CUSTOMER,
   GET_CUSTOMERS_ACTION,
@@ -273,8 +278,11 @@ export default {
       fromDate: '',
       toDate: '',
       customerTypes: '',
+      customerTypeOptions: customerData.customerTypes,
       status: '',
+      statuOptions: customerData.status,
       genders: '',
+      genderOptions: commonData.genders,
       areas: '',
 
       configDate: {
@@ -329,12 +337,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-  button {
-    background: #203181;
-    color: white;
-  }
-  .txtHeaderSearch {
-    color: #203181;
-  }
-</style>

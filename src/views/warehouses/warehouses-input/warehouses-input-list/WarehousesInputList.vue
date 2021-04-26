@@ -162,7 +162,7 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'Feature'"
+              v-if="props.column.field === 'feature'"
               align-h="center"
             >
               <b-icon-bricks />
@@ -179,7 +179,7 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'Feature'"
+              v-if="props.column.field === 'feature'"
               align-h="center"
             >
               <b-button
@@ -203,7 +203,7 @@
               <b-button
                 variant="light"
                 class="rounded-circle ml-1 p-1"
-                @click="onClickDeleteButton(props.row.TransDate)"
+                @click="onClickDeleteButton(props.row.transDate)"
               >
                 <b-icon-trash-fill
                   color="red"
@@ -221,7 +221,7 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'Quantity'"
+              v-if="props.column.field === 'quantity'"
               class="mx-0"
               align-h="end"
             >
@@ -229,7 +229,7 @@
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'Price'"
+              v-else-if="props.column.field === 'price'"
               class="mx-0"
               align-h="end"
             >
@@ -284,28 +284,28 @@ export default {
       columns: [
         {
           label: 'Ngày',
-          field: 'TransDate',
+          field: 'transDate',
           sortable: false,
         },
         {
           label: 'Mã nhập hàng',
-          field: 'TransCode',
+          field: 'transCode',
           sortable: false,
         },
         {
           label: 'Số hóa đơn',
-          field: 'RedInvoiceNo',
+          field: 'redInvoiceNo',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Số nội bộ',
-          field: 'InternalNumber',
+          field: 'internalNumber',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'quantity',
           type: 'number',
           sortable: false,
           filterOptions: {
@@ -314,7 +314,7 @@ export default {
         },
         {
           label: 'Số tiền',
-          field: 'Price',
+          field: 'price',
           type: 'number',
           sortable: false,
           filterOptions: {
@@ -323,12 +323,12 @@ export default {
         },
         {
           label: 'Ghi chú',
-          field: 'Note',
+          field: 'note',
           sortable: false,
         },
         {
           label: 'Thao tác',
-          field: 'Feature',
+          field: 'feature',
           sortable: false,
         },
       ],
@@ -339,13 +339,13 @@ export default {
     receipts() {
       return this.RECEIPTS_GETTER().map(data => ({
         id: data.id,
-        TransDate: formatDateToLocale(data.transDate),
-        TransCode: data.TransCode,
+        transDate: formatDateToLocale(data.transDate),
+        transCode: data.transCode,
         RedInvoiceNo: data.redInvoiceNo,
-        InternalNumber: data.internalNumber,
-        Quantity: data.totalQuantity,
+        internalNumber: data.internalNumber,
+        Quantity: data.totalquantity,
         Price: data.totalAmount,
-        Note: data.note,
+        note: data.note,
         Feature: '',
       }))
     },

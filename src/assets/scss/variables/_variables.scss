@@ -1,3 +1,32 @@
 //  ================================================================================================
 //  ? TIP:  It is recommended to use this file for overriding bootstrap variables.
 //  ================================================================================================
+@import "~@core/scss/base/bootstrap-extended/variables";
+
+.bg-blue-vinamilk {
+  background: $blueVinamilk;
+}
+
+.text-blue-vinamilk {
+  color: $blueVinamilk;
+}
+
+.bg-green-vinamilk {
+  background-color: $greenVinamilk;
+}
+
+.text-green-vinamilk {
+  color: $greenVinamilk;
+}
+
+.h7 {
+  font-size: 14px;
+}
+
+.h8 {
+  font-size: 13px;
+}
+
+.h9 {
+  font-size: 12px;
+}

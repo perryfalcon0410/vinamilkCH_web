@@ -14,12 +14,12 @@
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
       >
-        <strong class="txtHeaderTable">
+        <strong class="text-blue-vinamilk">
           Danh sách khách hàng
         </strong>
         <b-button-group>
           <b-button
-            class="rounded"
+            class="rounded bg-blue-vinamilk text-white"
             variant="someThing"
             size="sm"
             @click="navigateToCreate"
@@ -28,7 +28,7 @@
             Thêm mới
           </b-button>
           <b-button
-            class="ml-1 rounded"
+            class="ml-1 rounded bg-blue-vinamilk text-white"
             variant="someThing"
             size="sm"
             @click="onClickExcelExportButton"
@@ -68,9 +68,16 @@
             slot="table-column"
             slot-scope="props"
           >
-            <div v-if="props.column.label === 'Chức năng'">
+            <div v-if="props.column.field === 'feature'">
               <b-icon-bricks v-b-popover.hover="'Thao tác'" />
             </div>
+
+            <div v-else-if="props.column">
+              <div class="h8">
+                {{ props.column.label }}
+              </div>
+            </div>
+
             <div v-else>
               {{ props.column.label }}
             </div>
@@ -89,6 +96,13 @@
                 @click="navigateToUpdate(props.row.id)"
               />
             </div>
+
+            <div v-else-if="props.row">
+              <div class="h9">
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+            </div>
+
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -101,22 +115,28 @@
             slot-scope="props"
           >
             <b-row
-              class="p-1 mx-0"
+              class="px-1 mx-0"
               align-h="between"
+              align-v="center"
             >
               <div
                 class="d-flex align-items-center"
               >
-                <span class="text-nowrap ">
+                <span
+                  class="text-nowrap h8"
+                >
                   Hiển thị 1 đến
                 </span>
                 <b-form-select
                   v-model="elementSize"
+                  size="sm"
                   :options="[5,10,20]"
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span class="text-nowrap"> trong {{ customerPagination.totalElements }} mục </span>
+                <span
+                  class="text-nowrap h8"
+                > trong {{ customerPagination.totalElements }} mục </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -127,7 +147,7 @@
                 align="right"
                 prev-class="prev-item"
                 next-class="next-item"
-                class="my-auto"
+                class="mt-1"
                 @input="(value)=>props.pageChanged({currentPage: value})"
               >
                 <template slot="prev-text">
@@ -314,16 +334,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-  button {
-    background: #203181;
-    color: white;
-  }
-  .txtHeaderTable {
-    color: #203181;
-  }
-
-  .selectedRow{
-  background-color: greenyellow;
-}
-</style>

@@ -37,7 +37,7 @@ import '@/@fake-db/db'
 import 'vue-loading-overlay/dist/vue-loading.css'
 
 // import the styles
-import 'vue-good-table/dist/vue-good-table.css'
+import '@core/scss/vue/libs/vue-good-table.scss'
 import '@core/scss/vue/libs/vue-flatpicker.scss'
 import '@core/scss/vue/libs/vue-select.scss'
 

@@ -21,7 +21,7 @@
                 <feather-icon
                   icon="HomeIcon"
                   size="16"
-                  class="align-text-top"
+                  class="align-text-top text-blue-vinamilk"
                 />
               </b-breadcrumb-item>
               <b-breadcrumb-item
@@ -41,20 +41,12 @@
 </template>
 
 <script>
-import {
-  BBreadcrumb, BBreadcrumbItem, BRow, BCol,
-} from 'bootstrap-vue'
+
 import Ripple from 'vue-ripple-directive'
 
 export default {
   directives: {
     Ripple,
-  },
-  components: {
-    BBreadcrumb,
-    BBreadcrumbItem,
-    BRow,
-    BCol,
   },
 }
 </script>

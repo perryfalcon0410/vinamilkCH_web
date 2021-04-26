@@ -8,6 +8,7 @@
     <template #button-content>
       <feather-icon
         :badge="10"
+        badge-classes="badge"
         class="text-body"
         icon="ShoppingCartIcon"
         size="21"
@@ -109,22 +110,12 @@
 </template>
 
 <script>
-import {
-  BNavItemDropdown, BBadge, BMedia, BLink, BImg, BFormSpinbutton, BButton,
-} from 'bootstrap-vue'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import Ripple from 'vue-ripple-directive'
 
 export default {
   components: {
-    BNavItemDropdown,
-    BBadge,
-    BMedia,
-    BLink,
-    BImg,
-    BFormSpinbutton,
     VuePerfectScrollbar,
-    BButton,
   },
   directives: {
     Ripple,
@@ -173,5 +164,9 @@ export default {
       align-items: center;
     }
   }
+}
+
+.badge {
+  background-color: #203181
 }
 </style>

@@ -45,14 +45,18 @@
       border-radius: 50%;
 
       &:before {
-        background-image: url(str-replace(str-replace($chevron-left, 'currentColor', $pagination-color), '#', '%23'));
+        background-image: url(str-replace(
+          str-replace($chevron-left, "currentColor", $pagination-color),
+          "#",
+          "%23"
+        ));
         background-repeat: no-repeat;
         background-position: center;
         background-size: 14px;
         color: $body-color;
         width: 8px;
         height: 18px;
-        content: '';
+        content: "";
       }
 
       &:hover {
@@ -61,9 +65,13 @@
       }
       &:active,
       &:hover {
-        background-color: $primary !important;
+        background-color: $blueVinamilk !important;
         &:before {
-          background-image: url(str-replace(str-replace($chevron-left, 'currentColor', $white), '#', '%23')) !important;
+          background-image: url(str-replace(
+            str-replace($chevron-left, "currentColor", $white),
+            "#",
+            "%23"
+          )) !important;
         }
       }
     }
@@ -71,9 +79,13 @@
       .page-link {
         &:before {
           background-image: url(str-replace(
-            str-replace($chevron-left, 'currentColor', $pagination-disabled-color),
-            '#',
-            '%23'
+            str-replace(
+              $chevron-left,
+              "currentColor",
+              $pagination-disabled-color
+            ),
+            "#",
+            "%23"
           ));
         }
       }
@@ -105,13 +117,17 @@
       border-radius: 50%;
 
       &:after {
-        background-image: url(str-replace(str-replace($chevron-right, 'currentColor', $pagination-color), '#', '%23'));
+        background-image: url(str-replace(
+          str-replace($chevron-right, "currentColor", $pagination-color),
+          "#",
+          "%23"
+        ));
         background-repeat: no-repeat;
         background-position: center;
         background-size: 14px;
         width: 8px;
         height: 18px;
-        content: '';
+        content: "";
       }
 
       &:hover {
@@ -120,12 +136,12 @@
       }
       &:active,
       &:hover {
-        background-color: $primary !important;
+        background-color: $blueVinamilk !important;
         &:after {
           background-image: url(str-replace(
-            str-replace($chevron-right, 'currentColor', $white),
-            '#',
-            '%23'
+            str-replace($chevron-right, "currentColor", $white),
+            "#",
+            "%23"
           )) !important;
         }
       }
@@ -134,9 +150,13 @@
       .page-link {
         &:after {
           background-image: url(str-replace(
-            str-replace($chevron-right, 'currentColor', $pagination-disabled-color),
-            '#',
-            '%23'
+            str-replace(
+              $chevron-right,
+              "currentColor",
+              $pagination-disabled-color
+            ),
+            "#",
+            "%23"
           ));
         }
       }
@@ -148,22 +168,30 @@
   &.previous {
     .page-link {
       &:before {
-        background-image: url(str-replace(str-replace($chevron-left, 'currentColor', $pagination-color), '#', '%23'));
+        background-image: url(str-replace(
+          str-replace($chevron-left, "currentColor", $pagination-color),
+          "#",
+          "%23"
+        ));
         background-repeat: no-repeat;
         background-position: center;
         background-size: 14px;
         color: $body-color;
         width: 12px;
         height: 18px;
-        content: '';
+        content: "";
       }
       // &:active,
       &:hover {
         &:before {
           background-image: url(str-replace(
-            str-replace($chevron-left, 'currentColor', $pagination-active-color),
-            '#',
-            '%23'
+            str-replace(
+              $chevron-left,
+              "currentColor",
+              $pagination-active-color
+            ),
+            "#",
+            "%23"
           )) !important;
         }
       }
@@ -172,9 +200,13 @@
       .page-link {
         &:before {
           background-image: url(str-replace(
-            str-replace($chevron-left, 'currentColor', $pagination-disabled-color),
-            '#',
-            '%23'
+            str-replace(
+              $chevron-left,
+              "currentColor",
+              $pagination-disabled-color
+            ),
+            "#",
+            "%23"
           ));
         }
       }
@@ -183,22 +215,26 @@
   &.next {
     .page-link {
       &:after {
-        background-image: url(str-replace(str-replace($chevron-right, 'currentColor', $pagination-color), '#', '%23'));
+        background-image: url(str-replace(
+          str-replace($chevron-right, "currentColor", $pagination-color),
+          "#",
+          "%23"
+        ));
         background-repeat: no-repeat;
         background-position: center;
         background-size: 14px;
         color: $body-color;
         width: 12px;
         height: 18px;
-        content: '';
+        content: "";
       }
       // &:active,
       &:hover {
         &:after {
           background-image: url(str-replace(
-            str-replace($chevron-right, 'currentColor', $primary),
-            '#',
-            '%23'
+            str-replace($chevron-right, "currentColor", $primary),
+            "#",
+            "%23"
           )) !important;
         }
       }
@@ -207,9 +243,13 @@
       .page-link {
         &:after {
           background-image: url(str-replace(
-            str-replace($chevron-right, 'currentColor', $pagination-disabled-color),
-            '#',
-            '%23'
+            str-replace(
+              $chevron-right,
+              "currentColor",
+              $pagination-disabled-color
+            ),
+            "#",
+            "%23"
           ));
         }
       }
@@ -247,7 +287,7 @@
     .page-link {
       z-index: 3;
       border-radius: 5rem;
-      background-color: $primary;
+      background-color: $blueVinamilk;
       color: $white !important;
       font-weight: 600;
     }
