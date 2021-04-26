@@ -292,6 +292,7 @@ import {
 } from '../../../sales-customers/store-module/type'
 
 export default {
+  name: 'SalesCreateModal',
   components: {
     BFormInput,
     ValidationProvider,

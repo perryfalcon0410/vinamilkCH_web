@@ -65,9 +65,9 @@
             </b-input-group-prepend>
             <b-form-input
               placeholder="Tìm khách hàng (F4)"
-              @focus="inputSearchFocused = true"
-              @blur="inputSearchFocused = false"
+              @click="showSearchModal"
             />
+            <sales-search-modal ref="salesSearchModal" />
             <b-input-group-append is-text>
               <b-icon-plus @click="showModalCreate" />
               <sales-create-modal ref="salesCreateModal" />
@@ -113,7 +113,7 @@
               Điện thoại
             </b-col>
             <b-col>
-              0979811236
+              {{ phoneNumber }}
             </b-col>
           </b-row>
           <!-- END - Phone Number -->
@@ -297,21 +297,77 @@
 </template>
 
 <script>
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import {
+  CUSTOMER,
+  // GETTERS
+  ERROR_CODE_GETTER,
+  CUSTOMER_BY_ID_GETTER,
+  // ACTIONS
+  GET_CUSTOMER_BY_ID_ACTION,
+} from '../../../sales-customers/store-module/type'
 // eslint-disable-next-line import/extensions
 import SalesCreateModal from './SalesCreateModal'
+// eslint-disable-next-line import/extensions
+import SalesSearchModal from './SalesSearchModal'
 
 export default {
   components: {
     SalesCreateModal,
+    SalesSearchModal,
   },
   data() {
     return {
       inputSearchFocused: false,
+      isShowSalesSearchModal: false,
+
+      lastName: '',
+      firstName: '',
+      phoneNumber: '',
+      address: '',
+      customerId: `${this.$route.params.id}`,
     }
   },
+  computed: {
+    customer() {
+      return this.CUSTOMER_BY_ID_GETTER()
+    },
+  },
+  watch: {
+    ERROR_CODE_GETTER() {
+      this.checkDuplicationID(this.ERROR_CODE_GETTER())
+    },
+    customer() {
+      this.getCustomer()
+      console.log(this.getCustomer())
+    },
+  },
+  mounted() {
+    this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
+  },
   methods: {
+    ...mapGetters(CUSTOMER, {
+      ERROR_CODE_GETTER,
+      CUSTOMER_BY_ID_GETTER,
+    }),
+    ...mapActions(CUSTOMER, [
+      GET_CUSTOMER_BY_ID_ACTION,
+    ]),
+    getCustomer() {
+      // START - Personal
+      this.firstName = this.customer.firstName
+      this.lastName = this.customer.lastName
+      // START - Contact
+      this.phoneNumber = this.customer.mobiPhone
+    },
     showModalCreate() {
       this.$refs.salesCreateModal.$refs.salesCreateModal.show()
+    },
+    showSearchModal() {
+      this.$refs.salesSearchModal.$refs.salesSearchModal.show()
     },
   },
 }
