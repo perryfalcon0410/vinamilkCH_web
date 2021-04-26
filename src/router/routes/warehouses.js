@@ -84,7 +84,7 @@ export default [
     },
   },
   {
-    path: '/warehouses/output/update',
+    path: '/warehouses/output/:id/type/:type/update',
     name: 'warehouses-output-update',
     component: () => import('@/views/warehouses/warehouses-output/warehouses-output-update/WarehousesOutputUpdate.vue'),
     meta: {

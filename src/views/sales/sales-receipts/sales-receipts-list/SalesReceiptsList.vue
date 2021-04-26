@@ -284,7 +284,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToVNI } from '@core/utils/filter'
+import { formatDateToLocale } from '@core/utils/filter'
 import {
   SALESRECEIPTS,
   SALES_RECEIPTS_GETTER,
@@ -399,7 +399,7 @@ export default {
         numberBill: data.orderNumber,
         customerCode: data.customerNumber,
         name: data.customerName,
-        dayTime: formatDateToVNI(data.orderDate),
+        dayTime: formatDateToLocale(data.orderDate),
         totalValue: data.total,
         note: data.note,
         discountMoney: data.discount,

@@ -46,21 +46,10 @@
               >
                 <b-form-select
                   id="type"
-                  v-model="outputType"
+                  v-model="warehousesTypeSelected"
                   disabled
-                >
-                  <b-form-select-option value="1">
-                    xuất trả PO
-                  </b-form-select-option>
-                  <b-form-select-option
-                    value="2"
-                  >
-                    xuất điều chỉnh
-                  </b-form-select-option>
-                  <b-form-select-option value="3">
-                    xuất vay mượn
-                  </b-form-select-option>
-                </b-form-select>
+                  :options="warehousesOptions"
+                />
               </b-form-group>
             </b-col>
           </b-form-row>
@@ -100,7 +89,7 @@
                 Ngày hóa đơn
               </div>
               <b-form-datepicker
-                v-model="warehousesOutput .transDate"
+                v-model="warehousesOutput.transDate"
                 locale="vi"
                 :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
                 disabled
@@ -194,9 +183,11 @@
               slot-scope="props"
             >
               <div v-if="props.column.field === 'productReturnAmount'">
-                <b-input
+                <b-form-input
+                  v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
+                  type="number"
+                  :number="true"
                   size="sm"
-                  :value="props.row.productReturnAmount"
                 />
               </div>
               <div v-else>
@@ -214,6 +205,7 @@
               <b-button
                 variant="primary"
                 class="d-flex align-items-center rounded text-uppercase"
+                @click="onClickUpdateWarehousesOutput"
               >
                 <b-icon
                   icon="download"
@@ -221,7 +213,7 @@
                   height="20"
                   class="mr-1"
                 />
-                Trả hàng
+                Lưu
               </b-button>
 
               <b-button
@@ -254,6 +246,7 @@ import {
   mapGetters,
 } from 'vuex'
 
+import warehousesData from '@/@db/warehouses'
 import {
   WAREHOUSES_OUTPUT,
   // Getter
@@ -270,12 +263,8 @@ export default {
   },
   data() {
     return {
-      outputType: 1, // Use b-form-select (prop type)
-      getOption: {
-        id: 0,
-        type: 0,
-      },
-
+      warehousesTypeSelected: null,
+      warehousesOptions: warehousesData.outputTypes,
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -346,12 +335,12 @@ export default {
         productDVT: data.unit,
         productPriceTotal: data.totalPrice,
         productExported: data.export,
-        productReturnAmount: data.amount,
+        productReturnAmount: data.quantity,
       }))
     },
   },
   watch: {
-    getWarehousesOutput() {
+    getProductOfWarehouseOutput() {
       const dataWarehousesOutput = { ...this.getWarehousesOutput }
       this.warehousesOutput = {
         id: dataWarehousesOutput.id,
@@ -367,8 +356,7 @@ export default {
         transDate: dataWarehousesOutput.transDate,
         products: [...this.getProductOfWarehouseOutput],
       }
-      console.log(this.warehousesOutput)
-      this.outputType = dataWarehousesOutput.type
+      this.warehousesTypeSelected = dataWarehousesOutput.type
     },
   },
   mounted() {
@@ -388,22 +376,17 @@ export default {
     navigateBack() {
       this.$router.back()
     },
-    updateWarehousesOutput() {
-      // const options = {
-      //   year: 'numeric',
-      //   month: '2-digit',
-      //   day: '2-digit',
-      // }
+    onClickUpdateWarehousesOutput() {
+      const products = this.warehousesOutput.products.map(data => ({
+        id: data.productID,
+        quantity: data.productReturnAmount,
+      }))
+
       const updateWarehouseOutput = {
         id: this.warehousesOutput.id,
-        createdAt: '2021-04-23T08:50:19.253Z',
-        updatedAt: '2021-04-23T08:50:19.253Z',
-        deletedAt: '2021-04-23T08:50:19.253Z',
-        type: this.warehousesOutput.receiptType,
+        type: this.outputType,
         note: this.warehousesOutput.note,
-        litQuantityRemain: [
-          0,
-        ],
+        listProductRemain: products,
       }
       this.UPDATE_WAREHOUSES_OUTPUT_ACTION(updateWarehouseOutput)
     },

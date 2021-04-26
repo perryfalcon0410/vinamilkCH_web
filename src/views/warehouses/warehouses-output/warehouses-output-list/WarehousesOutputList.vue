@@ -22,11 +22,11 @@
         >
           <b-form-group
             label="Số hóa đơn"
-            label-for="billNumber"
+            label-for="redInvoiceNo"
           >
             <b-form-input
-              id="billNumber"
-              v-model="billNumber"
+              id="redInvoiceNo"
+              v-model="searchOptions.redInvoiceNo"
               maxlength="20"
               trim
             />
@@ -34,39 +34,71 @@
         </b-col>
 
         <b-col
+          xl
           lg="2"
           md
         >
-          <b-form-group
-            class="ml-lg-1"
-            label="Từ ngày"
-            label-for="FromDate"
+          <validation-provider
+            v-slot="{ errors }"
+            rules="dateFormatVNI"
           >
-            <b-form-datepicker
-              id="fromDate"
-              v-model="searchOptions.fromDate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
+            <b-form-group
+              label="Từ ngày"
+              label-for="form-input-date-from"
+            >
+              <b-input-group
+                id="form-input-date-from"
+                class="input-group-merge"
+              >
+                <b-input-group-prepend
+                  is-text
+                  data-toggle
+                >
+                  <b-icon-calendar />
+                </b-input-group-prepend>
+                <vue-flat-pickr
+                  v-model="searchOptions.fromDate"
+                  :config="configDate"
+                  class="form-control"
+                  placeholder="chọn ngày"
+                />
+              </b-input-group>
+            </b-form-group>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
         </b-col>
 
         <b-col
+          xl
           lg="2"
           md
         >
-          <b-form-group
-            class="ml-lg-1"
-            label="Đến ngày"
-            label-for="toDate"
+          <validation-provider
+            v-slot="{ errors }"
+            rules="dateFormatVNI"
           >
-            <b-form-datepicker
-              id="ToDate"
-              v-model="searchOptions.toDate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
+            <b-form-group
+              label="Đến ngày"
+              label-for="form-input-date-to"
+            >
+              <b-input-group class="input-group-merge">
+                <b-input-group-prepend
+                  is-text
+                  data-toggle
+                >
+                  <b-icon-calendar />
+                </b-input-group-prepend>
+                <vue-flat-pickr
+                  id="form-input-date-from"
+                  v-model="searchOptions.toDate"
+                  :config="configDate"
+                  class="form-control"
+                  placeholder="chọn ngày"
+                />
+              </b-input-group>
+            </b-form-group>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
         </b-col>
 
         <b-col
@@ -76,25 +108,13 @@
           <b-form-group
             class="ml-lg-1"
             label="Loại xuất"
-            label-for="inputType"
+            label-for="type"
           >
             <b-form-select
-              id="inputType"
-              v-model="inputTypes"
-            >
-              <b-form-select-option value="">
-                Tất cả
-              </b-form-select-option>
-              <b-form-select-option value="1">
-                xuất trả hàng
-              </b-form-select-option>
-              <b-form-select-option value="2">
-                xuất điều chỉnh
-              </b-form-select-option>
-              <b-form-select-option value="3">
-                xuất vay mượn
-              </b-form-select-option>
-            </b-form-select>
+              id="type"
+              v-model="warehousesTypeSelected"
+              :options="warehousesOptions"
+            />
           </b-form-group>
         </b-col>
 
@@ -110,6 +130,7 @@
             <b-button
               id="searchButton"
               variant="primary"
+              @click="onClickSearchWarehousesOutput"
             >
               <b-icon-search class="mr-1" />
               Tìm kiếm
@@ -241,6 +262,15 @@ import {
   mapGetters,
   mapState,
 } from 'vuex'
+import { reverseVniDate, formatDateToLocale, formatNumberToLocale } from '@/@core/utils/filter'
+import {
+  ValidationProvider,
+} from 'vee-validate'
+import {
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
+import warehousesData from '@/@db/warehouses'
+
 import {
   WAREHOUSES_OUTPUT,
   GET_WAREHOUSES_OUTPUT_LIST_GETTER,
@@ -250,11 +280,14 @@ import {
 
 export default {
   components: {
+    ValidationProvider,
   },
   data() {
     return {
+      dateFormatVNI,
       inputValueBillNumber: '',
-      billNumber: '',
+      warehousesTypeSelected: null,
+      warehousesOptions: warehousesData.outputTypes,
       columns: [
         {
           label: 'ID',
@@ -312,7 +345,7 @@ export default {
         },
       ],
       searchOptions: {
-        redInvoiceNo: '',
+        redInvoiceNo: '', // số hóa đơn
         fromDate: '',
         toDate: '',
         type: '',
@@ -320,16 +353,17 @@ export default {
         pageNumber: 1,
       },
       warehousesOutputList: [],
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        allowInvalidPreload: false,
+      },
     }
   },
   computed: {
     getWarehousesOutputList() {
       const datas = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
-      const options = {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      }
       const totalQuantity = datas.reduce((accum, item) => accum + Number(item.totalQuantity), 0)
       const totalMoney = datas.reduce((accum, item) => accum + Number(item.totalAmount), 0)
       const firstItem = {
@@ -345,12 +379,12 @@ export default {
       datas.unshift(firstItem)
       return datas.map(data => ({
         id: data.id,
-        date: data.transDate === '' ? '' : new Date(data.transDate).toLocaleDateString('vi-VN', options),
+        date: data.transDate === '' ? '' : formatDateToLocale(data.transDate),
         code: data.transCode,
         billNumber: data.redInvoiceNo,
         internalNumber: data.internalNumber,
-        quantity: Number(data.totalQuantity).toLocaleString('vi-VN'),
-        price: Number(data.totalAmount).toLocaleString('vi-VN'),
+        quantity: formatNumberToLocale(Number(data.totalQuantity)),
+        price: formatNumberToLocale(Number(data.totalAmount)),
         note: data.note,
         feature: 'Chỉnh sửa',
         type: data.receiptType,
@@ -396,6 +430,13 @@ export default {
         transCode: this.warehousesOutputList[itemIndex].Id,
       }
       this.PRINT_WAREHOUSES_OUTPUT_ACTION(params)
+    },
+    onClickSearchWarehousesOutput() {
+      this.searchOptions.type = this.warehousesTypeSelected
+      this.searchOptions.fromDate = reverseVniDate(this.searchOptions.fromDate)
+      this.searchOptions.toDate = reverseVniDate(this.searchOptions.toDate)
+      this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(this.searchOptions)
+      this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
     },
   },
 }
