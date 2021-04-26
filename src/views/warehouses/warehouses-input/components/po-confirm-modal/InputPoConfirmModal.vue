@@ -43,7 +43,7 @@
             :key="item.id"
             class="border-bottom border-white py-1"
             :class="{ 'text-primary': current == item.id }"
-            @click="select(item.id, item.internalNumber, item.poNo)"
+            @click="selectOrder(item.id, item.internalNumber, item.poNo)"
           >
             <b-col cols="1">
               {{ index + 1 }}
@@ -352,7 +352,7 @@ export default {
     poPromotionProductsInfo() {
       return this.PODETAIL_PRODUCTS_PROMO_INFO_GETTER()
     },
-    list() {
+    listImportProduct() {
       const product = this.PODETAIL_PRODUCTS_RES_GETTER().map(data => ({
         productCode: data.productCode,
         productName: data.productName,
@@ -387,8 +387,8 @@ export default {
       GET_PODETAIL_PRODUCTS_PROMO_ACTION,
       GET_IMPORTEXCEL_ACTION,
     ]),
-    // invidual select event for poconfrim list
-    select(id, internalNumber, poNum) {
+    // invidual selectOrder event for poconfrim list
+    selectOrder(id, internalNumber, poNum) {
       this.current = id
       this.poNumber = poNum
       this.Snb = internalNumber
@@ -401,7 +401,7 @@ export default {
     },
     // Confirm import product from selected Po
     confirmImportButton() {
-      this.$emit('inpurChange', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, false, this.Snb, this.list, this.current])
+      this.$emit('inputChange', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, false, this.Snb, this.listImportProduct, this.current])
     },
     exportExcel() {
       this.GET_IMPORTEXCEL_ACTION(this.current)

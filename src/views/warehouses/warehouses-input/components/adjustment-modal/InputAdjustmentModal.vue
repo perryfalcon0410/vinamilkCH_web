@@ -50,7 +50,7 @@
               :key="item.id"
               class="border-bottom border-white bg-light py-1"
               :class="{ 'text-primary': current == item.id }"
-              @click="select(item.id)"
+              @click="selectOrder(item.id)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
@@ -214,7 +214,7 @@ export default {
         totalPrice: data.totalPrice,
       }))
     },
-    list() {
+    listImportProduct() {
       return this.IMPORT_ADJUSTMENTS_DETAIL_GETTER().map(data => ({
         productCode: data.productCode,
         productName: data.productName,
@@ -239,12 +239,12 @@ export default {
     hoverHandler(hovered) {
       this.isHover = hovered
     },
-    select(id) {
+    selectOrder(id) {
       this.current = id
       this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION(this.current)
     },
     inputAdjustmentConfirm() {
-      this.$emit('inputAdjustChange', [this.importAdjustmentsDetailList, false, this.list, this.current])
+      this.$emit('inputAdjustChange', [this.importAdjustmentsDetailList, false, this.listImportProduct, this.current])
     },
   },
 }

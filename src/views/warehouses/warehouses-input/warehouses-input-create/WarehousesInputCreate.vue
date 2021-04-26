@@ -386,7 +386,7 @@
     />
     <po-confirm-modal
       :visible="PoConfirmModalVisible"
-      @inpurChange="dataFromPoConfirm($event)"
+      @inputChange="dataFromPoConfirm($event)"
     />
     <!-- END - Modal -->
   </b-container>
@@ -440,7 +440,7 @@ export default {
       billDate: new Date(),
       poNo: '',
       note: '',
-      list: null,
+      listImportProduct: null,
       poId: null,
       poProductInfo: {},
       poPromotionProductsInfo: {},
@@ -682,7 +682,7 @@ export default {
       this.internalNumber = Snb
       this.poNo = null
       this.poId = id
-      this.list = listData
+      this.listImportProduct = listData
       this.tableRender()
     },
     // ----------------------------Nhap hang-----------------------
@@ -711,7 +711,7 @@ export default {
       this.status = 1 // importType
       this.poNo = null // poNumber
       this.poId = id // poId
-      this.list = listData // list
+      this.listImportProduct = listData // list
       this.tableRender()
     },
     // -----------------------------Nhap dieu chinh------------------------
@@ -725,7 +725,7 @@ export default {
       this.poNo = null
       this.internalNumber = null
       this.poId = id
-      this.list = listData
+      this.listImportProduct = listData
       this.tableRender()
     },
     // ------------------------------Nhap vay muon----------------------------
@@ -752,7 +752,7 @@ export default {
               redInvoiceNo: this.billNumber,
               poId: this.poId,
               note: this.note,
-              lst: this.list,
+              lst: this.listImportProduct,
             })
           }
         })
