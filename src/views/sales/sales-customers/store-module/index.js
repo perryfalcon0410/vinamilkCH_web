@@ -157,9 +157,9 @@ export default {
         })
     },
 
-    [GET_SHOP_LOCATIONS_ACTION]({ state }, val) {
+    [GET_SHOP_LOCATIONS_ACTION]({ state }) {
       CustomerService
-        .getShopLocations(val)
+        .getShopLocations()
         .then(response => response.data)
         .then(res => {
           if (res.success) {

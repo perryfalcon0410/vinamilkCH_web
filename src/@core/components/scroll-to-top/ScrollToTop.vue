@@ -7,13 +7,14 @@
     <!-- Hence due to that our btn get lost -->
     <b-button
       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-      variant="primary"
-      class="btn-icon"
+      variant="someThing"
+      class="btn-icon bg-blue-vinamilk"
       @click="scrollToTop"
     >
       <feather-icon
         icon="ArrowUpIcon"
         size="16"
+        class="text-white"
       />
     </b-button>
   </div>

@@ -19,7 +19,7 @@
         </strong>
         <b-button-group>
           <b-button
-            class="rounded bg-blue-vinamilk text-white"
+            class="rounded bg-blue-vinamilk text-white h9"
             variant="someThing"
             size="sm"
             @click="navigateToCreate"
@@ -28,7 +28,7 @@
             Thêm mới
           </b-button>
           <b-button
-            class="ml-1 rounded bg-blue-vinamilk text-white"
+            class="ml-1 rounded bg-blue-vinamilk text-white h9"
             variant="someThing"
             size="sm"
             @click="onClickExcelExportButton"

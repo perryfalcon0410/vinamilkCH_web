@@ -6,7 +6,8 @@
 
     <!-- Content Left -->
     <b-col
-      class="content-header-left mb-2"
+      class="content-header-left"
+      style="margin-bottom: 5px"
       cols="12"
       md="9"
     >

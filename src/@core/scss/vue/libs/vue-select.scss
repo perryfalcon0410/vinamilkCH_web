@@ -1,17 +1,17 @@
 $options-padding-x: 20px;
 $options-padding-y: 7px;
 
-@import '~@core/scss/base/bootstrap-extended/include';
+@import "~@core/scss/base/bootstrap-extended/include";
 // Overrides user variable
-@import '~@core/scss/base/components/include';
-@import 'vue-select/src/scss/global/_variables.scss';
+@import "~@core/scss/base/components/include";
+@import "vue-select/src/scss/global/_variables.scss";
 
 //  Global Component Variables
 $vs-component-line-height: 1.8;
 $vs-component-placeholder-color: $body-color;
 
 //  Active State
-$vs-state-active-bg: rgba($primary, 0.12);
+$vs-state-active-bg: rgba($blueVinamilk, 0.12);
 $vs-state-active-color: $primary !important;
 
 // Border
@@ -20,13 +20,13 @@ $vs-border-radius: $input-border-radius;
 $vs-border-color: $input-border-color;
 
 //  Selected
-$vs-selected-bg: $primary;
+$vs-selected-bg: $blueVinamilk;
 $vs-selected-border-width: 0;
 
 // Dropdown
 $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
 
-@import 'vue-select/src/scss/vue-select.scss';
+@import "vue-select/src/scss/vue-select.scss";
 
 .vs__open-indicator {
   fill: none;
@@ -45,7 +45,7 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
 
 .vs__dropdown-option--disabled {
   &.vs__dropdown-option--selected {
-    background: $primary !important;
+    background: $blueVinamilk !important;
   }
   opacity: 0.5;
 }
@@ -62,12 +62,12 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
 
 /* rtl:begin:ignore */
 .vs__dropdown-option--selected {
-  background-color: $primary;
+  background-color: $blueVinamilk;
   color: $white;
   position: relative;
 
   &::after {
-    content: '';
+    content: "";
     height: 1.1rem;
     width: 1.1rem;
     display: inline-block;
@@ -78,13 +78,17 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
     transform: translateY(-50%);
     right: $options-padding-x;
 
-    [dir='rtl'] & {
+    [dir="rtl"] & {
       left: $options-padding-x;
       right: unset;
     }
 
     // Icon
-    background-image: url(str-replace(str-replace($check, 'currentColor', $white), '#', '%23'));
+    background-image: url(str-replace(
+      str-replace($check, "currentColor", $white),
+      "#",
+      "%23"
+    ));
     background-repeat: no-repeat;
     background-position: center;
     background-size: 1.1rem;
@@ -93,7 +97,7 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
   // Because, highlight get primary color and if item is selected we want to keep white color even if it's hovered/highlighted
   &.vs__dropdown-option--highlight {
     color: $white !important;
-    background-color: $primary !important;
+    background-color: $blueVinamilk !important;
   }
 }
 /* rtl:end:ignore */
@@ -175,7 +179,7 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
 // .v-select:not(.vs--single) {
 //   .vs__selected-options {
 //     .vs__selected {
-//       background-color: $primary;
+//       background-color: $blueVinamilk;
 //       border: none;
 //       color: #fff;
 //       button {
@@ -255,7 +259,7 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
 
   // Remove mt from search
   .vs__search {
-    margin-top: 0;
+    margin: 0;
   }
 
   // Selected options size
@@ -314,7 +318,7 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
   .v-select {
     &:not(.vs--single) {
       .vs__selected {
-        background-color: rgba($primary, 0.12);
+        background-color: rgba($blueVinamilk, 0.12);
         color: $primary;
       }
     }

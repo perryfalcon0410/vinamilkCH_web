@@ -38,9 +38,8 @@ export default {
   exportCustomers() {
     return axios.get(`${exportCustomersEndpoint}`)
   },
-  getShopLocations(args) {
-    const queryString = new URLSearchParams(args).toString()
-    return axios.get(`${getShopLocationsEndpoint}?${queryString}`)
+  getShopLocations() {
+    return axios.get(getShopLocationsEndpoint)
   },
   getProvinces() {
     return axios.get(`${getProvincesEndpoint}`)

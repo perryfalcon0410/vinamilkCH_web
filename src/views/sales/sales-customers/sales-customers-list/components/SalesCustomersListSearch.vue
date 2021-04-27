@@ -34,11 +34,14 @@
           >
             <b-form-group
               label="Khách hàng"
+              label-class="h8"
               label-for="form-input-customer"
             >
               <b-form-input
                 id="form-input-customer"
                 v-model="searchKeywords"
+                class="h9"
+                size="sm"
                 placeholder="Nhập họ tên/mã"
               />
             </b-form-group>
@@ -57,11 +60,13 @@
             >
               <b-form-group
                 label="Từ ngày"
+                label-class="h8"
                 label-for="form-input-date-from"
               >
                 <b-input-group
                   id="form-input-date-from"
                   class="input-group-merge"
+                  size="sm"
                 >
                   <b-input-group-prepend
                     is-text
@@ -72,8 +77,8 @@
                   <vue-flat-pickr
                     v-model="fromDate"
                     :config="configDate"
-                    class="form-control"
-                    placeholder="chọn ngày"
+                    class="form-control h9"
+                    placeholder="Chọn ngày"
                   />
                 </b-input-group>
               </b-form-group>
@@ -94,9 +99,13 @@
             >
               <b-form-group
                 label="Đến ngày"
+                label-class="h8"
                 label-for="form-input-date-to"
               >
-                <b-input-group class="input-group-merge">
+                <b-input-group
+                  class="input-group-merge"
+                  size="sm"
+                >
                   <b-input-group-prepend
                     is-text
                     data-toggle
@@ -107,8 +116,8 @@
                     id="form-input-date-from"
                     v-model="toDate"
                     :config="configDate"
-                    class="form-control"
-                    placeholder="chọn ngày"
+                    class="form-control h9"
+                    placeholder="Chọn ngày"
                   />
                 </b-input-group>
               </b-form-group>
@@ -125,6 +134,7 @@
           >
             <b-form-group
               label="Nhóm khách hàng"
+              label-class="h8"
               label-for="form-input-customer-group"
             >
               <v-select
@@ -132,11 +142,12 @@
                 v-model="customerTypes"
                 :options="customerTypeOptions"
                 label="name"
+                class="h9"
                 placeholder="Tất cả"
                 :searchable="false"
               >
                 <template #selected-option="{ name }">
-                  {{ truncate(name,16) }}
+                  {{ truncate(name,7) }}
                 </template>
               </v-select>
             </b-form-group>
@@ -151,6 +162,7 @@
           >
             <b-form-group
               label="Trạng thái"
+              label-class="h8"
               label-for="form-input-customer-group"
             >
               <v-select
@@ -158,9 +170,14 @@
                 v-model="status"
                 :options="statuOptions"
                 label="name"
+                class="h9"
                 placeholder="Tất cả"
                 :searchable="false"
-              />
+              >
+                <template #selected-option="{ name }">
+                  {{ truncate(name,7) }}
+                </template>
+              </v-select>
             </b-form-group>
           </b-col>
           <!-- END - Status -->
@@ -173,6 +190,7 @@
           >
             <b-form-group
               label="Giới tính"
+              label-class="h8"
               label-for="form-input-customer-group"
             >
               <v-select
@@ -180,6 +198,7 @@
                 v-model="genders"
                 :options="genderOptions"
                 label="name"
+                class="h9"
                 placeholder="Tất cả"
                 :searchable="false"
               />
@@ -195,16 +214,22 @@
           >
             <b-form-group
               label="Khu vực"
+              label-class="h8"
               label-for="form-input-customer-group"
             >
               <v-select
                 id="form-input-customer-group"
                 v-model="areas"
-                :options="shopLocations"
+                :options="shopLocations()"
                 label="name"
+                class="h9"
                 autocomplete="on"
                 placeholder="Tất cả"
-              />
+              >
+                <template #selected-option="{ name }">
+                  {{ truncate(name,7) }}
+                </template>
+              </v-select>
             </b-form-group>
           </b-col>
           <!-- END - Location -->
@@ -223,9 +248,9 @@
             >
               <b-button
                 id="form-button-search"
-                class="bg-blue-vinamilk text-white"
+                class="bg-blue-vinamilk text-white h9"
                 variant="someThing"
-                style="max-height: 38px;"
+                style="max-height: 35px;"
                 @click="onClickSearchButton()"
               >
                 <b-icon-search />
@@ -271,6 +296,8 @@ export default {
   },
   data() {
     return {
+      isSearchFocus: false,
+
       // validation rules
       dateFormatVNI,
 
@@ -283,7 +310,7 @@ export default {
       statuOptions: customerData.status,
       genders: '',
       genderOptions: commonData.genders,
-      areas: '',
+      areas: this.shopLocationsDefault(),
 
       configDate: {
         wrap: true,
@@ -293,19 +320,18 @@ export default {
       },
     }
   },
-  computed: {
-    shopLocations() {
-      return this.SHOP_LOCATIONS_GETTER().map(data => ({
-        id: data.id,
-        name: data.areaName,
-      }))
+
+  watch: {
+    areas() {
+      if (this.areas.length > 1) {
+        this.isSearchFocus = true
+      }
+      this.isSearchFocus = false
     },
   },
 
   mounted() {
-    this.GET_SHOP_LOCATIONS_ACTION({
-      shopId: 1, // Hard code
-    })
+    this.GET_SHOP_LOCATIONS_ACTION()
   },
 
   methods: {
@@ -326,12 +352,23 @@ export default {
         genderId: this.genders?.id,
         areaId: this.areas?.id,
       }
-
       this.GET_CUSTOMERS_ACTION(searchData)
     },
 
     truncate(str, n) {
       return (str.length > n) ? `${str.substr(0, n - 2)}...` : str
+    },
+
+    shopLocations() {
+      return this.SHOP_LOCATIONS_GETTER().map(data => ({
+        id: data.areaCode,
+        name: data.provinceAndDistrictName,
+        default: data.default,
+      }))
+    },
+
+    shopLocationsDefault() {
+      return this.shopLocations().find(locations => locations.default === true)
     },
 
   },
