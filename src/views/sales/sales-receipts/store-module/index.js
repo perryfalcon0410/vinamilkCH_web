@@ -29,7 +29,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            console.log(res)
+            // console.log(res)
             state.saleReceipt = res.data.response.content
           } else {
             throw new Error(res.statusValue)
