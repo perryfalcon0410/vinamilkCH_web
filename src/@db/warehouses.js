@@ -5,8 +5,8 @@ export default {
     { id: '2', name: 'Xuất vay mượn' },
   ],
   inputTypes: [
-    { id: '1', name: 'Nhập hàng' },
-    { id: '2', name: 'Nhập điều chỉnh' },
-    { id: '3', name: 'Nhập vay mượn' },
+    { value: '0', text: 'Nhập hàng' },
+    { value: '1', text: 'Nhập điều chỉnh' },
+    { value: '2', text: 'Nhập vay mượn' },
   ],
 }

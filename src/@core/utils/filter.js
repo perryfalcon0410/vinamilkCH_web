@@ -78,3 +78,9 @@ export const formatDateToMonthShort = (value, toTimeForCurrentDay = true) => {
 
 // Strip all the tags from markup and return plain text
 export const filterTags = value => value.replace(/<\/?[^>]+(>|$)/g, '')
+
+export const getTimeOfDate = value => {
+  const formatting = { hour: 'numeric', minute: 'numeric', hour12: false }
+
+  return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
+}

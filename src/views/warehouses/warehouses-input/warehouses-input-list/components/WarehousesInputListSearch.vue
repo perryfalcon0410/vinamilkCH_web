@@ -83,19 +83,12 @@
             <b-form-select
               id="form-input-input-type"
               v-model="inputType"
+              :options="warehousesInputOptions"
+              placeholder="Tất cả"
             >
-              <b-form-select-option value="">
-                Tất cả
-              </b-form-select-option>
-              <b-form-select-option value="0">
-                Nhập hàng
-              </b-form-select-option>
-              <b-form-select-option value="1">
-                Nhập điều chỉnh
-              </b-form-select-option>
-              <b-form-select-option value="2">
-                Nhập vay mượn
-              </b-form-select-option>
+              <template #first>
+                <b-form-select-option value="">Tất cả</b-form-select-option>
+              </template>
             </b-form-select>
           </b-form-group>
         </b-col>
@@ -131,6 +124,7 @@ import {
   mapActions,
 } from 'vuex'
 import { formatDate } from '@/@core/utils/filter'
+import warehousesData from '@/@db/warehouses'
 import {
   WAREHOUSEINPUT,
   GET_RECEIPTS_ACTION,
@@ -143,6 +137,7 @@ export default {
       fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       toDate: new Date(),
       inputType: '',
+      warehousesInputOptions: warehousesData.inputTypes,
     }
   },
   computed: {

@@ -1,5 +1,6 @@
 const SALE = '/sales/import'
 const REPORT = '/sales/report'
+const PRODUCT = '/sales/products'
 
 export const getPoConfirmEndpoint = `${SALE}/po-confirm`
 export const getPoProductsEndpoint = `${SALE}/po-detail0`
@@ -15,3 +16,7 @@ export const getReceiptsEndpoint = `${SALE}`
 export const exportReceiptsEndpoint = `${SALE}/excel/`
 export const removeReceiptEndpoint = `${SALE}/remove`
 export const printWarehousesInputEndpoint = `${REPORT}/stock/invoice`
+export const getReceiptByIdEndpoint = `${SALE}/trans`
+export const getProductsByIdEndpoint = `${SALE}/trans-detail`
+export const getProductsEndPoint = `${PRODUCT}/find`
+export const updateReceiptEndpoint = `${SALE}/update`

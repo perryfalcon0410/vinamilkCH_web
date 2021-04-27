@@ -15,6 +15,10 @@ import {
   IMPORT_BORROWINGS_GETTER,
   IMPORT_BORROWINGS_DETAIL_GETTER,
   RECEIPTS_GETTER,
+  RECEIPT_BY_ID_GETTER,
+  PRODUCTS_BY_ID_GETTER,
+  PROMOTIONS_BY_ID_GETTER,
+  PRODUCTS_GETTER,
   // ACTIONS
   GET_RECEIPTS_ACTION,
   EXPORT_RECEIPTS_ACTION,
@@ -29,6 +33,10 @@ import {
   UPDATE_NOT_IMPORT_ACTION,
   CREATE_SALE_IMPORT_ACTION,
   REMOVE_RECEIPT_ACTION,
+  GET_RECEIPT_BY_ID_ACTION,
+  GET_PRODUCTS_BY_ID_ACTION,
+  GET_PRODUCTS_ACTION,
+  UPDATE_RECEIPT_ACTION,
   PRINT_WAREHOUSES_INPUT_ACTION,
 } from './type'
 
@@ -47,6 +55,10 @@ export default {
     importBorrowings: [],
     importBorrowingsDetail: [],
     receipts: [],
+    receiptById: {},
+    products: [],
+    promotions: [],
+    allProducts: [],
   },
 
   // START - GETTERS
@@ -80,6 +92,18 @@ export default {
     },
     [RECEIPTS_GETTER](state) {
       return state.receipts
+    },
+    [RECEIPT_BY_ID_GETTER](state) {
+      return state.receiptById
+    },
+    [PRODUCTS_BY_ID_GETTER](state) {
+      return state.products
+    },
+    [PROMOTIONS_BY_ID_GETTER](state) {
+      return state.promotions
+    },
+    [PRODUCTS_GETTER](state) {
+      return state.allProducts
     },
   },
 
@@ -284,13 +308,74 @@ export default {
         })
     },
     // END - EXPORT RECEIPTS
+    [GET_RECEIPT_BY_ID_ACTION]({ state }, val) {
+      ReceiptImportService
+        .getReceiptImportById(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.receiptById = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_PRODUCTS_BY_ID_ACTION]({ state }, val) {
+      ReceiptImportService
+        .getProductsById(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.products = res.data.response
+            state.promotions = res.data.info
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_PRODUCTS_ACTION]({ state }, val) {
+      ReceiptImportService
+        .getProducts(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.allProducts = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
     [REMOVE_RECEIPT_ACTION]({}, val) {
       ReceiptImportService
         .removeReceipt(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success('Xóa phiếu nhập hàng thành công')
+            toasts.success(res.statusValue)
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [UPDATE_RECEIPT_ACTION]({}, val) {
+      ReceiptImportService
+        .updateReceipt(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
           } else {
             throw new Error(res.statusValue)
           }

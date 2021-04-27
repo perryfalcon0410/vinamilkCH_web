@@ -5,7 +5,6 @@
   >
     <!-- START - Form and list -->
     <validation-observer
-      v-slot="{invalid}"
       ref="formContainer"
     >
       <b-col>
@@ -21,7 +20,7 @@
                 Ngày nhập:
               </b-col>
               <b-col class="font-weight-bold">
-                29/10/2020 lúc 16:16
+                {{ transDate }} lúc {{ transTime }}
               </b-col>
             </b-row>
             <!-- END - Date -->
@@ -31,11 +30,11 @@
               <b-col>
                 <b-form-group
                   label="Mã nhập hàng"
-                  label-for="id"
+                  label-for="transCode"
                 >
                   <b-form-input
-                    id="id"
-                    v-model="id"
+                    id="transCode"
+                    v-model="transCode"
                     maxlength="40"
                     trim
                     disabled
@@ -53,16 +52,14 @@
                     v-model="importType"
                     disabled
                   >
+                    <b-form-select-option value="0">
+                      Nhập hàng
+                    </b-form-select-option>
                     <b-form-select-option value="1">
-                      nhập hàng
+                      Nhập điều chỉnh
                     </b-form-select-option>
-                    <b-form-select-option
-                      value="2"
-                    >
-                      nhập điều chỉnh
-                    </b-form-select-option>
-                    <b-form-select-option value="3">
-                      nhập vay mượn
+                    <b-form-select-option value="2">
+                      Nhập vay mượn
                     </b-form-select-option>
                   </b-form-select>
                 </b-form-group>
@@ -75,8 +72,9 @@
               label="Kho hàng"
               label-for="warehouse"
             >
-              <b-form-select
+              <b-form-input
                 id="warehouse"
+                v-model="wareHouseTypeName"
                 disabled
               />
             </b-form-group>
@@ -97,6 +95,7 @@
                     v-model="billNumber"
                     trim
                     :state="touched ? passed : null"
+                    disabled
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -162,7 +161,7 @@
                     class="input-group-merge"
                   >
                     <b-form-input
-                      v-model="internalNumber"
+                      v-model="poNumber"
                       trim
                       :state="importType === '1' && touched ? passed : null"
                       disabled
@@ -184,6 +183,7 @@
             >
               <b-form-textarea
                 id="note"
+                v-model="note"
                 maxlength="4000"
               />
             </b-form-group>
@@ -195,51 +195,46 @@
           <b-col
             class="bg-white shadow rounded mt-1 mt-xl-0"
           >
-            <!-- START - Table Product -->
-            <div class="d-inline-flex rounded-top px-1 my-1">
-              <strong>
-                Sản phẩm
-              </strong>
-            </div>
+            <div v-if="totalProductQuantity > 0">
+              <!-- START - Table Product -->
+              <div class="d-inline-flex rounded-top px-1 my-1">
+                <strong>
+                  Sản phẩm
+                </strong>
+              </div>
 
-            <vue-good-table
-              :columns="columns"
-              :rows="rowsProduct"
-              style-class="vgt-table striped"
-              compact-mode
-              line-numbers
-            >
-              <!-- START - Column filter -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
+              <vue-good-table
+                :columns="columns"
+                :rows="products"
+                style-class="vgt-table striped"
+                compact-mode
+                line-numbers
               >
-                <b-row
-                  v-if="props.column.field === 'ProductId'"
-                  class="mx-0"
-                  align-h="start"
+                <!-- START - Column filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
                 >
-                  23
-                </b-row>
-                <b-row
-                  v-if="props.column.field === 'Quantity'"
-                  class="mx-0"
-                  align-h="start"
-                >
-                  48
-                </b-row>
+                  <b-row
+                    v-if="props.column.field === 'quantity'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    {{ totalProductQuantity }}
+                  </b-row>
 
-                <b-row
-                  v-else-if="props.column.field === 'TotalPrice'"
-                  class="mx-0"
-                  align-h="end"
-                >
-                  25,123,000
-                </b-row>
-              </template>
-              <!-- START - Column filter -->
-            </vue-good-table>
-            <!-- END - Table Product -->
+                  <b-row
+                    v-else-if="props.column.field === 'totalPrice'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    {{ totalProductPrice }}
+                  </b-row>
+                </template>
+                <!-- START - Column filter -->
+              </vue-good-table>
+              <!-- END - Table Product -->
+            </div>
 
             <!-- START - Table Product promotion -->
             <div class="d-inline-flex rounded-top px-1 my-1">
@@ -250,7 +245,7 @@
 
             <vue-good-table
               :columns="columns"
-              :rows="rowsProductPromotion"
+              :rows="promotions"
               style-class="vgt-table striped"
               compact-mode
               line-numbers
@@ -261,30 +256,79 @@
                 slot-scope="props"
               >
                 <b-row
-                  v-if="props.column.field === 'ProductId'"
-                  class="mx-0"
-                  align-h="start"
-                >
-                  23
-                </b-row>
-                <b-row
-                  v-if="props.column.field === 'Quantity'"
-                  class="mx-0"
-                  align-h="start"
-                >
-                  48
-                </b-row>
-
-                <b-row
-                  v-else-if="props.column.field === 'TotalPrice'"
+                  v-if="props.column.field === 'quantity'"
                   class="mx-0"
                   align-h="end"
                 >
-                  25,123,000
+                  {{ totalPromotionQuantity }}
                 </b-row>
+
+                <b-row
+                  v-else-if="props.column.field === 'totalPrice'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  {{ totalPromotionPrice }}
+                </b-row>
+              </template>
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <div v-if="props.column.field === 'quantity'">
+                  <b-input
+                    size="sm"
+                    :number="true"
+                    :value="props.row.quantity"
+                    v-model="props.row.quantity"
+                    @change="updateQuantity(props.row.originalIndex, props.row.quantity)"
+                  />
+                </div>
               </template>
               <!-- START - Column filter -->
             </vue-good-table>
+            <div v-if="importType === 0 && totalProductQuantity === 0">
+              <div
+                slot="table-actions-bottom"
+                class="mx-1 my-2 px-2"
+              >
+                <b-form-input
+                  class="w-25"
+                  v-model="productSearch"
+                  placeholder="Nhập mã hoặc tên sản phẩm"
+                  type="text"
+                  @focus="focus"
+                  @blur="inputSearchFocusedSP = false"
+                  @input="loadProducts"
+                  @keyup.enter="keyEnter"
+                  @keydown.up="keyUp"
+                  @keydown.down="keyDown"
+                />
+                <b-collapse
+                  v-model="inputSearchFocusedSP"
+                  class="position-absolute mr-lg-0 mb-3"
+                  style="zIndex:1"
+                >
+                  <b-container
+                    class="my-1 bg-white rounded border border-primary shadow-lg"
+                  >
+                    <b-col>
+                        <b-row
+                          v-for="(product, index) in allProducts"
+                          :key="index"
+                          class="my-1 cursor-pointer"
+                          :class="{'item-active': index === cursor}"
+                          @click="selectProduct(product)"
+                          @mouseover="$event.target.classList.add('item-active')"
+                          @mouseout="$event.target.classList.remove('item-active')"
+                        >
+                          <b>{{ product.productCode }}</b> - {{ product.productName }}
+                        </b-row>
+                    </b-col>
+                  </b-container>
+                </b-collapse>
+              </div>
+            </div>
             <!-- END - Table Product promotion -->
 
             <!-- START - Button -->
@@ -293,7 +337,8 @@
                 <b-button
                   variant="primary"
                   class="d-flex align-items-center rounded text-uppercase"
-                  :disabled="invalid"
+                  :disabled="transDate !== today"
+                  @click="updateReceipt"
                 >
                   <b-icon
                     icon="download"
@@ -339,6 +384,10 @@
 
 <script>
 import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import {
   ValidationProvider,
   ValidationObserver,
 } from 'vee-validate'
@@ -346,9 +395,23 @@ import {
   number,
   required,
 } from '@/@core/utils/validations/validations'
+import { formatDateToLocale, getTimeOfDate } from '@core/utils/filter'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
 import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
+import {
+  WAREHOUSEINPUT,
+  // GETTERS
+  RECEIPT_BY_ID_GETTER,
+  PRODUCTS_BY_ID_GETTER,
+  PROMOTIONS_BY_ID_GETTER,
+  PRODUCTS_GETTER,
+  // ACTIONS
+  GET_RECEIPT_BY_ID_ACTION,
+  GET_PRODUCTS_BY_ID_ACTION,
+  GET_PRODUCTS_ACTION,
+  UPDATE_RECEIPT_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -364,12 +427,18 @@ export default {
       BorrowedModalVisible: false,
       PoConfirmModalVisible: false,
 
-      id: '',
+      warehouse: '',
       billNumber: '',
-      importType: '1',
+      billDate: '',
       internalNumber: '',
-      billDate: new Date(),
-      poNo: '',
+      poNumber: '',
+      poId: '',
+      note: '',
+      transCode: '',
+      transDate: '',
+      transTime: '',
+      wareHouseTypeName: '',
+      today: formatDateToLocale(new Date()),
 
       // validation rules
       number,
@@ -378,15 +447,13 @@ export default {
       columns: [
         {
           label: 'Mã hàng',
-          field: 'ProductId',
+          field: 'productId',
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'quantity',
+          type: 'number',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -394,100 +461,155 @@ export default {
         },
         {
           label: 'Giá',
-          field: 'Price',
+          field: 'price',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Tên hàng',
-          field: 'Name',
+          field: 'name',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'Unit',
+          field: 'unit',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Thành tiền',
-          field: 'TotalPrice',
+          field: 'totalPrice',
           type: 'number',
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
         },
         {
           label: 'SO No',
-          field: 'SONo',
+          field: 'soNo',
           sortable: false,
         },
       ],
-      rowsProduct: [
-        {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
-        },
-        {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
-        },
-        {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
-        },
-        {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
-        },
-      ],
-      rowsProductPromotion: [
-        {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
-          Feature: 'Xóa',
-        },
-        {
-          ProductId: '04AA10',
-          Quantity: '12',
-          Price: '6,300',
-          Name: 'STT Dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          TotalPrice: '2,531,000',
-          SONo: 'SO.1345',
-          Feature: 'Xóa',
-        },
-      ],
+      promotions: [],
+      cursor: -1,
+      productSearch: '',
+      inputSearchFocusedSP: false,
+      totalPromotionQuantity: 0,
     }
   },
 
+  computed: {
+    receipt() {
+      return this.RECEIPT_BY_ID_GETTER()
+    },
+    products() {
+      return this.PRODUCTS_BY_ID_GETTER().map(data => ({
+        productId: data.productCode,
+        quantity: data.quantity,
+        price: data.price,
+        name: data.productName,
+        unit: data.unit,
+        totalPrice: data.totalPrice,
+        soNo: data.soNo,
+      }))
+    },
+    totalProductQuantity() {
+      let totalQuantity = 0
+      this.products.forEach(item => {
+        totalQuantity += item.quantity
+      })
+
+      return totalQuantity
+    },
+    totalProductPrice() {
+      let totalPrice = 0
+      this.products.forEach(item => {
+        totalPrice += item.totalPrice
+      })
+
+      return totalPrice
+    },
+    getPromotions() {
+      return this.PROMOTIONS_BY_ID_GETTER().map(data => ({
+        id: data.id,
+        productId: data.productCode,
+        quantity: data.quantity,
+        price: data.price,
+        name: data.productName,
+        unit: data.unit,
+        totalPrice: data.totalPrice,
+        soNo: data.soNo,
+      }))
+    },
+    getTotalPromotionQuantity() {
+      let totalQuantity = 0
+      this.promotions.forEach(item => {
+        totalQuantity += item.quantity
+      })
+
+      return totalQuantity
+    },
+    totalPromotionPrice() {
+      return 0
+    },
+    id() {
+      return this.$route.params.id
+    },
+    importType() {
+      return this.$route.params.type
+    },
+    allProducts() {
+      return this.PRODUCTS_GETTER().map(data => ({
+        productCode: data.productCode,
+        quantity: 1,
+        price: 0,
+        productName: data.productName,
+        unit: data.uom1,
+        totalPrice: 0,
+        soNo: '',
+      }))
+    },
+  },
+
+  watch: {
+    receipt() {
+      this.transCode = this.RECEIPT_BY_ID_GETTER().transCode
+      this.transDate = formatDateToLocale(this.RECEIPT_BY_ID_GETTER().transDate)
+      this.transTime = getTimeOfDate(this.RECEIPT_BY_ID_GETTER().transDate)
+      this.wareHouseTypeName = this.RECEIPT_BY_ID_GETTER().wareHouseTypeName
+      this.billNumber = this.RECEIPT_BY_ID_GETTER().redInvoiceNo
+      this.billDate = this.RECEIPT_BY_ID_GETTER().orderDate || this.RECEIPT_BY_ID_GETTER().adjustmentDate || this.RECEIPT_BY_ID_GETTER().adjustmentDate
+      this.internalNumber = this.RECEIPT_BY_ID_GETTER().internalNumber
+      this.poNumber = this.RECEIPT_BY_ID_GETTER().poNumber
+      this.note = this.RECEIPT_BY_ID_GETTER().note
+      this.poId = this.RECEIPT_BY_ID_GETTER().poId
+    },
+    getPromotions() {
+      this.promotions = [...this.getPromotions]
+    },
+    getTotalPromotionQuantity() {
+      this.totalPromotionQuantity = this.getTotalPromotionQuantity
+    },
+  },
+
+  mounted() {
+    this.GET_RECEIPT_BY_ID_ACTION(`${this.id}?type=${this.importType}`)
+    this.GET_PRODUCTS_BY_ID_ACTION(`${this.id}?type=${this.importType}`)
+    this.GET_PRODUCTS_ACTION()
+  },
+
   methods: {
+    ...mapGetters(WAREHOUSEINPUT, {
+      RECEIPT_BY_ID_GETTER,
+      PRODUCTS_BY_ID_GETTER,
+      PROMOTIONS_BY_ID_GETTER,
+      PRODUCTS_GETTER,
+    }),
+    ...mapActions(WAREHOUSEINPUT, [
+      GET_RECEIPT_BY_ID_ACTION,
+      GET_PRODUCTS_BY_ID_ACTION,
+      GET_PRODUCTS_ACTION,
+      UPDATE_RECEIPT_ACTION,
+    ]),
+
     showModal() {
       const PoConfirm = this.importType === '1' ? this.PoConfirmModalVisible = !this.PoConfirmModalVisible : this.PoConfirmModalVisible = false
       const Adjustment = this.importType === '2' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
@@ -498,8 +620,66 @@ export default {
     navigateBack() {
       this.$router.back()
     },
+    loadProducts() {
+      this.cursor = -1
+      const searchData = {
+        searchKeywords: this.productSearch.trim(),
+      }
 
+      this.GET_PRODUCTS_ACTION(searchData)
+    },
+    selectProduct(product) {
+      this.promotions.push({
+        productId: product.productCode,
+        quantity: 1,
+        price: product.price,
+        name: product.productName,
+        unit: product.unit,
+        totalPrice: 0,
+        soNo: '',
+      })
+    },
+    focus() {
+      this.cursor = -1
+      this.inputSearchFocusedSP = true
+    },
+    keyUp() {
+      if (this.cursor > 0) {
+        this.cursor -= 1
+      }
+    },
+    keyDown() {
+      if (this.cursor < this.allProducts.length) {
+        this.cursor += 1
+      }
+    },
+    keyEnter() {
+      if (this.inputSearchFocusedSP && this.allProducts[this.cursor]) {
+        this.selectProduct(this.allProducts[this.cursor])
+        this.inputSearchFocusedSP = false
+      }
+    },
+    updateQuantity(index, value) {
+      this.promotions[index].quantity = value + 0
+    },
+    updateReceipt() {
+      const updatedPromotions = this.promotions.map(data => ({
+        productCode: data.productId,
+        quantity: data.quantity,
+      }))
+      this.UPDATE_RECEIPT_ACTION({
+        id: this.id,
+        type: this.importType,
+        note: this.note,
+        lstUpdate: updatedPromotions,
+      })
+    },
   },
 
 }
 </script>
+<style>
+  .item-active {
+    padding-left: 5px;
+  }
+</style>

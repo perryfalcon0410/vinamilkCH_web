@@ -15,6 +15,9 @@ import {
   createSaleImportEndpoint,
   removeReceiptEndpoint,
   printWarehousesInputEndpoint,
+  getReceiptByIdEndpoint,
+  getProductsByIdEndpoint,
+  getProductsEndPoint,
 } from './defaultConfig'
 
 export default {
@@ -65,5 +68,19 @@ export default {
       method: 'GET',
       responseType: 'blob', // Force to receive data in a Blob Format
     })
+  },
+  getReceiptImportById(args) {
+    return axios.get(`${getReceiptByIdEndpoint}/${args}`)
+  },
+  getProductsById(args) {
+    return axios.get(`${getProductsByIdEndpoint}/${args}`)
+  },
+  getProducts(args) {
+    return axios.get(getProductsEndPoint, {
+      params: formatURLParams(args),
+    })
+  },
+  removeReceipt(args) {
+    return axios.patch(`${removeReceiptEndpoint}/${args}`)
   },
 }
