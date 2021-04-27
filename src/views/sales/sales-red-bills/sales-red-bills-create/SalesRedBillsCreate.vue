@@ -85,10 +85,10 @@
               <b-col>
                 <b-form-group
                   label="Tên khách hàng"
-                  label-for="customerName"
+                  label-for="customer-name"
                 >
                   <b-form-input
-                    id="customerName"
+                    id="customer-name"
                     v-model="redBill.customerName"
                     maxlength="40"
                     required
@@ -104,11 +104,11 @@
               <b-col>
                 <b-form-group
                   label="Số hóa đơn"
-                  label-for="archiveExportBillNumber"
+                  label-for="bill-number"
                 >
                   <b-form-input
-                    id="archiveExportBillNumber"
-                    v-model="inputValueBillNumber"
+                    id="bill-number"
+                    v-model="redBill.billNumber"
                     maxlength="20"
                     required
                   />
@@ -118,11 +118,11 @@
               <b-col>
                 <b-form-group
                   label="Ngày in"
-                  label-for="archiveExportBillDate"
+                  label-for="bill-date"
                 >
                   <b-form-datepicker
-                    id="archiveExportBillDate"
-                    v-model="inputValueDate"
+                    id="bill-date"
+                    v-model="redBill.billDate"
                     required
                     locale="vi"
                     :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
@@ -183,11 +183,11 @@
               <b-col>
                 <b-form-group
                   label="Người mua hàng"
-                  label-for="archiveExportInternalNumber"
+                  label-for="customer-id"
                 >
                   <b-form-input
-                    id="archiveExportInternalNumber"
-                    v-model="inputValueInternalNumber"
+                    id="customer-id"
+                    v-model="redBill.customerId"
                     maxlength="20"
                     required
                   />
@@ -198,11 +198,11 @@
 
                 <b-form-group
                   label="Hình thức thanh toán"
-                  label-for="archiveExportArchive"
+                  label-for="payment-type"
                 >
                   <b-form-select
-                    id="archiveExportArchive"
-                    v-model="selected"
+                    id="payment-type"
+                    v-model="redBill.paymentType"
                     :options="options"
                   />
                 </b-form-group>
@@ -214,10 +214,11 @@
             <!-- START - Archive Export Note -->
             <b-form-group
               label="Ghi chú"
-              label-for="customerType"
+              label-for="note"
             >
               <b-form-textarea
-                id="customerType"
+                id="note"
+                v-model="redBill.note"
                 maxlength="4000"
               />
             </b-form-group>
@@ -419,13 +420,9 @@ export default {
         { value: 'A', text: 'Tiền mặt' },
         { value: 'B', text: 'Chuyển khoản' },
       ],
-      EntryAdjustmentModalVisible: false,
-      EntryBorrowedModalVisible: false,
-      EntryCouponModalVisible: false,
-      inputValueID: '',
-      inputValueBillNumber: '',
-      inputValueInternalNumber: '',
-      inputValueDate: new Date(),
+      entryAdjustmentModalVisible: false,
+      entryBorrowedModalVisible: false,
+      entryCouponModalVisible: false,
       redBill: {
         customerCode: '',
         customerName: '',
@@ -433,6 +430,11 @@ export default {
         officeAddress: '',
         taxCode: '',
         mobiPhone: '',
+        billNumber: '',
+        billDate: new Date(),
+        customerId: '',
+        paymentType: '',
+        note: '',
       },
       cursor: -1,
       columns: [
