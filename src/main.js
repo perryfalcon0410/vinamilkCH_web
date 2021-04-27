@@ -14,6 +14,7 @@ import VueFlatPickr from 'vue-flatpickr-component'
 import flatPickr from 'flatpickr'
 import { Vietnamese } from 'flatpickr/dist/l10n/vn'
 import vSelect from 'vue-select'
+import dotenv from 'dotenv'
 import router from './router'
 import store from './store'
 import App from './App.vue'
@@ -40,6 +41,8 @@ import 'vue-loading-overlay/dist/vue-loading.css'
 import '@core/scss/vue/libs/vue-good-table.scss'
 import '@core/scss/vue/libs/vue-flatpicker.scss'
 import '@core/scss/vue/libs/vue-select.scss'
+
+dotenv.config()
 
 // BSV Plugin Registration
 Vue.use(ToastPlugin)

@@ -236,7 +236,6 @@ export default {
       return this.sideImg
     },
   },
-
   watch: {
     username() {
       if (this.saveStatus) {
@@ -266,7 +265,6 @@ export default {
       }
     },
   },
-
   methods: {
     onModalHidden() {
       this.isShowRoleAndShopSelectionModal = false
