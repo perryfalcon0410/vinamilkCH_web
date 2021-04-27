@@ -31,18 +31,32 @@
             sm="4"
             md="3"
           >
-            <b-form-group
-              class="ml-lg-1"
-              label="Từ ngày xuất"
-              label-for="form-input-date-from"
+            <validation-provider
+              v-slot="{ errors }"
+              rules="dateFormatVNI"
             >
-              <b-form-datepicker
-                id="form-input-date-from"
-                v-model="fromDate"
-                :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                locale="vi"
-              />
-            </b-form-group>
+              <b-form-group
+                label="Từ ngày xuất"
+                label-for="form-input-date-to"
+              >
+                <b-input-group class="input-group-merge">
+                  <b-input-group-prepend
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-prepend>
+                  <vue-flat-pickr
+                    id="form-input-date-from"
+                    v-model="fromDate"
+                    :config="configDate"
+                    class="form-control"
+                    placeholder="chọn ngày"
+                  />
+                </b-input-group>
+              </b-form-group>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
           </b-col>
           <!-- END - Date From -->
 
@@ -52,18 +66,32 @@
             sm="4"
             md="3"
           >
-            <b-form-group
-              class="ml-lg-1"
-              label="Đến ngày xuất"
-              label-for="form-input-date-to"
+            <validation-provider
+              v-slot="{ errors }"
+              rules="dateFormatVNI"
             >
-              <b-form-datepicker
-                id="form-input-date-to"
-                v-model="toDate"
-                :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                locale="vi"
-              />
-            </b-form-group>
+              <b-form-group
+                label="Đến ngày"
+                label-for="form-input-date-to"
+              >
+                <b-input-group class="input-group-merge">
+                  <b-input-group-prepend
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-prepend>
+                  <vue-flat-pickr
+                    id="form-input-date-to"
+                    v-model="toDate"
+                    :config="configDate"
+                    class="form-control"
+                    placeholder="chọn ngày"
+                  />
+                </b-input-group>
+              </b-form-group>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
           </b-col>
           <!-- END - Date To -->
 
@@ -141,20 +169,32 @@
             sm="4"
             md="3"
           >
-            <b-form-group
-              label="Từ ngày hóa đơn"
-              label-for="form-bill-date-from"
+            <validation-provider
+              v-slot="{ errors }"
+              rules="dateFormatVNI"
             >
-              <b-form-datepicker
-                id="form-bill-date-from"
-                v-model="billFromDate"
-                :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                locale="vi"
-                reset-button
-                label-reset-button="Xóa"
-                placeholder="chọn ngày"
-              />
-            </b-form-group>
+              <b-form-group
+                label="Hóa đơn từ ngày"
+                label-for="form-bill-date-from"
+              >
+                <b-input-group class="bill-group-merge">
+                  <b-input-group-prepend
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-prepend>
+                  <vue-flat-pickr
+                    id="form-bill-date-from"
+                    v-model="billFromDate"
+                    :config="configDate"
+                    class="form-control"
+                    placeholder="chọn ngày"
+                  />
+                </b-input-group>
+              </b-form-group>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
           </b-col>
           <!-- END - Bill Date From -->
 
@@ -164,45 +204,32 @@
             sm="4"
             md="3"
           >
-            <b-form-group
-              label="Đến ngày hóa đơn"
-              label-for="form-bill-date-to"
+            <validation-provider
+              v-slot="{ errors }"
+              rules="dateFormatVNI"
             >
-              <b-form-datepicker
-                id="form-bill-date-to"
-                v-model="billToDate"
-                :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                locale="vi"
-                reset-button
-                label-reset-button="Xóa"
-                placeholder="chọn ngày"
-              />
-            </b-form-group>
-          </b-col>
-          <!-- END - Bill Date To -->
-
-          <!-- START - Search button -->
-          <b-col
-            xl
-            sm="4"
-            md="3"
-            class="h-25"
-          >
-            <b-form-group
-              label="Tìm kiếm"
-              label-for="form-button-search"
-              label-class="text-white"
-            >
-              <b-button
-                id="form-button-search"
-                class="bg-blue-vinamilk text-white"
-                variant="someThing"
-                style="max-height: 38px;"
+              <b-form-group
+                label="Hóa đơn đến ngày"
+                label-for="form-bill-date-to"
               >
-                <b-icon-search />
-                Tìm kiếm
-              </b-button>
-            </b-form-group>
+                <b-input-group class="bill-group-merge">
+                  <b-input-group-prepend
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-prepend>
+                  <vue-flat-pickr
+                    id="form-bill-date-to"
+                    v-model="billToDate"
+                    :config="configDate"
+                    class="form-control"
+                    placeholder="chọn ngày"
+                  />
+                </b-input-group>
+              </b-form-group>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
           </b-col>
         <!-- END - Search button -->
 
@@ -216,15 +243,24 @@
 </template>
 
 <script>
+import {
+  ValidationProvider,
+} from 'vee-validate'
+import {
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
 import outputData from '@/@db/warehouses'
 import PoChooseModal from '../../components/po-choose-modal/OutputPoChooseModal.vue'
 
 export default {
   components: {
     PoChooseModal,
+    ValidationProvider,
   },
   data() {
     return {
+      // validation rules
+      dateFormatVNI,
       PoChooseModalVisible: false,
 
       fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -235,6 +271,13 @@ export default {
       license: '',
       billFromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       billToDate: new Date(),
+
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        allowInvalidPreload: false,
+      },
     }
   },
   computed: {
