@@ -1,12 +1,12 @@
 export default {
   outputTypes: [
-    { value: '1', text: 'Xuất trả PO' },
-    { value: '2', text: 'Xuất điều chỉnh' },
-    { value: '3', text: 'Xuất vay mượn' },
+    { id: '1', name: 'Xuất trả PO' },
+    { id: '2', name: 'Xuất điều chỉnh' },
+    { id: '3', name: 'Xuất vay mượn' },
   ],
   inputTypes: [
-    { value: '1', text: 'Nhập hàng' },
-    { value: '2', text: 'Nhập điều chỉnh' },
-    { value: '3', text: 'Nhập vay mượn' },
+    { id: '1', name: 'Nhập hàng' },
+    { id: '2', name: 'Nhập điều chỉnh' },
+    { id: '3', name: 'Nhập vay mượn' },
   ],
 }

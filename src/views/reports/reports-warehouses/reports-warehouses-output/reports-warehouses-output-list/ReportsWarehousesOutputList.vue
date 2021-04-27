@@ -1,7 +1,7 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column"
+    class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
     <reports-warehouses-output-list-search />
@@ -14,21 +14,23 @@
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
       >
-        <strong class="text-primary">
+        <strong class="text-blue-vinamilk">
           Danh sách phiếu xuất hàng
         </strong>
         <b-button-group>
           <b-button
-            class="rounded"
-            variant="primary"
+            class="rounded bg-blue-vinamilk text-white"
+            variant="someThing"
+            size="sm"
             @click="onClickPrintExportButton"
           >
             <b-icon-printer-fill />
             In
           </b-button>
           <b-button
-            class="ml-1 rounded"
-            variant="primary"
+            class="ml-1 rounded bg-blue-vinamilk text-white"
+            variant="someThing"
+            size="sm"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill />
@@ -45,7 +47,8 @@
           :rows="rows"
           style-class="vgt-table striped"
           :pagination-options="{
-            enabled: true
+            enabled: true,
+            perPage: elementSize
           }"
           compact-mode
           line-numbers
@@ -80,6 +83,7 @@
             </div>
           </template>
           <!-- END - Rows -->
+
           <!-- START - Column filter -->
           <template
             slot="column-filter"
@@ -122,7 +126,7 @@
               3,852,069,000
             </b-row>
           </template>
-          <!-- START - Column filter -->
+          <!-- END - Column filter -->
 
         </vue-good-table>
       </b-col>
@@ -133,9 +137,6 @@
 </template>
 
 <script>
-import 'vue-good-table/dist/vue-good-table.css'
-import { getGenderLabel } from '@core/utils/utils'
-import { formatDateToLocale } from '@core/utils/filter'
 import ReportsWarehousesOutputListSearch from './components/ReportsWarehousesOutputListSearch.vue'
 
 export default {
@@ -363,23 +364,10 @@ export default {
     }
   },
   computed: {
-    customers() {
-      return this.CUSTOMERS_GETTER().map(data => ({
-        id: data.id,
-        code: data.customerCode,
-        fullName: `${data.lastName} ${data.firstName}`,
-        phoneNumber: data.mobiPhone,
-        birthDay: formatDateToLocale(data.dob),
-        gender: getGenderLabel(data.genderId),
-        status: this.resolveStatus(data.status),
-        group: data.customerType,
-        date: formatDateToLocale(data.createdAt),
-        feature: '',
-      }))
-    },
+
   },
   mounted() {
-    this.GET_CUSTOMERS_ACTION({})
+
   },
   methods: {
     navigateToCreate() {
