@@ -110,10 +110,12 @@
             label="Loại xuất"
             label-for="type"
           >
-            <b-form-select
+            <v-select
               id="type"
               v-model="warehousesTypeSelected"
               :options="warehousesOptions"
+              label="name"
+              placeholder="Tất cả"
             />
           </b-form-group>
         </b-col>

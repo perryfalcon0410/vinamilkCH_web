@@ -44,11 +44,12 @@
                 label="Loại xuất"
                 label-for="type"
               >
-                <b-form-select
+                <v-select
                   id="type"
                   v-model="warehousesTypeSelected"
-                  disabled
                   :options="warehousesOptions"
+                  label="name"
+                  disabled
                 />
               </b-form-group>
             </b-col>
@@ -346,6 +347,7 @@ export default {
         id: dataWarehousesOutput.id,
         code: dataWarehousesOutput.transCode,
         type: dataWarehousesOutput.type,
+        receiptType: Number(this.warehousesOutput.receiptType),
         wareHouseTypeId: dataWarehousesOutput.wareHouseTypeId,
         wareHouseTypeName: dataWarehousesOutput.wareHouseTypeName,
         redInvoiceNo: dataWarehousesOutput.redInvoiceNo, // số hoá đơn
@@ -356,7 +358,7 @@ export default {
         transDate: dataWarehousesOutput.transDate,
         products: [...this.getProductOfWarehouseOutput],
       }
-      this.warehousesTypeSelected = dataWarehousesOutput.type
+      this.warehousesTypeSelected = this.warehousesOptions[this.warehousesOutput.receiptType].name
     },
   },
   mounted() {
@@ -384,7 +386,7 @@ export default {
 
       const updateWarehouseOutput = {
         id: this.warehousesOutput.id,
-        type: this.outputType,
+        type: this.warehousesOutput.receiptType,
         note: this.warehousesOutput.note,
         listProductRemain: products,
       }
