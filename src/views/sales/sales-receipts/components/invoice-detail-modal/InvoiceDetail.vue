@@ -73,22 +73,22 @@ export default {
       columns: [
         {
           label: 'Mã sản phẩm',
-          field: 'ProductCode',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'ProductName',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'ĐVT',
+          field: 'unit',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Number',
+          field: 'number',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -96,13 +96,13 @@ export default {
         },
         {
           label: 'Giá bán',
-          field: 'Price',
+          field: 'price',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Thành tiền',
-          field: 'IntoMoney',
+          field: 'intoMoney',
           type: 'number',
           sortable: false,
           filterOptions: {
@@ -111,7 +111,8 @@ export default {
         },
         {
           label: 'Giảm giá',
-          field: 'Discount ',
+          field: 'discount',
+          type: 'number',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -119,33 +120,11 @@ export default {
         },
         {
           label: 'Thanh toán',
-          field: 'Bill',
+          field: 'bill',
           sortable: false,
           filterOptions: {
             enabled: true,
           },
-        },
-      ],
-      rows: [
-        {
-          ProductCode: '',
-          ProductName: '',
-          ĐVT: '',
-          Number: '2',
-          Price: '',
-          IntoMoney: '41,624',
-          Discount: '0',
-          Bill: '41,624',
-        },
-        {
-          ProductCode: this.invoiceDetail,
-          ProductName: 'SĐCĐ Ông Thọ chữ xanh 380g',
-          ĐVT: 'Hộp',
-          Number: '2',
-          Price: '20,812',
-          IntoMoney: '41,624',
-          Discount: '0',
-          Bill: '41,624',
         },
       ],
     }

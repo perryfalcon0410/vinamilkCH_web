@@ -18,8 +18,6 @@
 
 <script>
 export default {
-  components: {
-  },
   props: {
     visible: {
       type: Boolean,
@@ -55,31 +53,13 @@ export default {
         },
         {
           label: 'Thực hiện bởi',
-          field: 'Made',
+          field: 'made',
           sortable: false,
         },
         {
           label: 'Xác thực bởi',
-          field: 'Authentication',
+          field: 'authentication',
           sortable: false,
-        },
-      ],
-      rows: [
-        {
-          Program: '',
-          Type: '',
-          DiscountMoney: '100,00',
-          Discount: '50',
-          Made: '',
-          Authentication: '',
-        },
-        {
-          Program: 'Tết Nguyên Đán',
-          Type: ' km giảm tiền',
-          DiscountMoney: '100,000',
-          Discount: '50',
-          Made: 'AH20041',
-          Authentication: 'AH20041',
         },
       ],
     }

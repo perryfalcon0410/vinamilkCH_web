@@ -35,17 +35,17 @@ export default {
       columns: [
         {
           label: 'Mã sản phẩm',
-          field: 'ProductCode',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'ProductName',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Number',
+          field: 'number',
           sortable: false,
         },
         {

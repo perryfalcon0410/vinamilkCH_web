@@ -163,7 +163,7 @@
           </b-button>
         </b-button-group>
       </b-row>
-      <!-- End Add Bill -->
+      <!-- End Add bill -->
 
       <!-- Start table -->
       <b-col class="py-1">
@@ -204,7 +204,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ salesReceiptsTotal.allTotal }}
+              {{ (salesReceiptsTotal.allTotal) }}
             </b-row>
           </template>
           <template
@@ -252,13 +252,12 @@
                 </b-button>
               </span>
             </span>
-
             <span v-else-if="props.column.field == 'press'">
               <span>
                 <b-button
                   variant="light"
                   class="rounded-circle p-1 ml-1"
-                  @click="showInvoiceDetailModal(props.row.id, props.row.NumberBill)"
+                  @click="showInvoiceDetailModal(props.row.id, props.row.numberBill)"
                 >
                   <b-icon-eye-fill
                     color="blue"
@@ -282,7 +281,7 @@
       :details-total="detailTableTotal"
       :promotiondetails="promotionTable"
       :discount-details="discountTable"
-      @modalIsOff="isOff"
+      @invisible="hide"
     />
   </b-container>
 </template>
@@ -292,8 +291,12 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale } from '@core/utils/filter'
+import {
+  formatDateToLocale,
+  formatNumberToLocale,
+} from '@core/utils/filter'
 import printOptions from '@/@db/receipt'
+import lodash from 'lodash'
 import {
   // GETTERS
   SALESRECEIPTS,
@@ -308,7 +311,6 @@ import {
   GET_SALES_RECEIPTS_ACTION,
   GET_SALES_RECEIPTS_DETAIL_ACTION,
 } from '../store-module/type'
-
 import InvoiceDetailModal from '../components/InvoiceDetailModal.vue'
 
 export default {
@@ -409,17 +411,17 @@ export default {
   },
   computed: {
     salesReceiptList() {
-      return this.SALES_RECEIPT_GETTER().map(data => ({
+      return this.SALES_RECEIPTS_GETTER().map(data => ({
         id: data.id,
         numberBill: data.orderNumber,
         customerCode: data.customerNumber,
         name: data.customerName,
         dayTime: formatDateToLocale(data.orderDate),
-        totalValue: data.total,
+        totalValue: formatNumberToLocale(data.total),
         note: data.note,
-        discountMoney: data.discount,
+        discountMoney: formatNumberToLocale(data.discount),
         moneyAccumulated: data.accumulation,
-        payments: data.total,
+        payments: formatNumberToLocale(data.total),
         print: (data.redReceipt === true) ? 'Đã in' : 'Chưa in',
         noteHdd: data.noteRed,
         company: data.comName,
@@ -428,7 +430,7 @@ export default {
       }))
     },
     salesReceiptsTotal() {
-      return this.SALES_RECEIPTS_INFO_GETTER()
+      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_GETTER(), value => formatNumberToLocale(value))
     },
 
     detailTable() {
@@ -437,43 +439,35 @@ export default {
         productName: data.productName,
         unit: data.unit,
         number: data.quantity,
-        price: Number(data.pricePerUnit).toLocaleString('vi-VN'),
-        intoMoney: Number(data.amount).toLocaleString('vi-VN'),
-        discount: Number(data.discount).toLocaleString('vi-VN'),
-        bill: Number(data.payment).toLocaleString('vi-VN'),
+        price: formatNumberToLocale(data.pricePerUnit),
+        intoMoney: formatNumberToLocale(data.amount),
+        discount: formatNumberToLocale(data.discount),
+        bill: formatNumberToLocale(data.payment),
       }))
     },
     detailTableTotal() {
-      return this.SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER()
+      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER(), value => formatNumberToLocale(value))
     },
 
     discountTable() {
-      return this.SALES_RECEIPT_DISCOUNT_GETTER()
+      return this.SALES_RECEIPTS_DISCOUNT_GETTER()
     },
     promotionTable() {
-      return this.SALES_RECEIPT_PROMOTION_GETTER().map(data => ({
-        ProductCode: data.productNumber,
-        ProductName: data.productName,
-        Number: data.quantity,
+      return this.SALES_RECEIPTS_PROMOTION_GETTER().map(data => ({
+        productCode: data.productNumber,
+        productName: data.productName,
+        number: data.quantity,
         promotionProgram: data.promotionProgramName,
       }))
     },
 
     // common info in receipt
     info() {
-      return this.SALES_RECEIPT_DETAIL_INFOS_GETTER().map(data => ({
-        orderNumber: data.orderNumber,
-        customerName: data.customerName,
-        saleMan: data.saleMan,
-        orderDate: data.orderDate,
-        total: data.total,
-        totalPaid: data.totalPaid,
-        balance: data.balance,
-      }))
+      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_INFOS_GETTER(), value => formatNumberToLocale(value))
     },
   },
   mounted() {
-    this.GET_SALES_RECEIPTS_ACTION()
+    this.GET_SALES_RECEIPT_ACTION()
   },
   methods: {
     ...mapGetters(SALESRECEIPTS, [
@@ -489,11 +483,11 @@ export default {
       GET_SALES_RECEIPTS_ACTION,
       GET_SALES_RECEIPTS_DETAIL_ACTION,
     ]),
-    showInvoiceDetailModal(id, orderNumber) {
+    showInvoiceDetailModal(id, numberBill) {
       this.isInvoiceDetailModal = !this.isInvoiceDetailModal
-      this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber })
+      this.GET_SALES_RECEIPT_DETAIL_ACTION({ saleOrderId: id, orderNumber: numberBill })
     },
-    isOff(state) {
+    hide(state) {
       this.isInvoiceDetailModal = state
     },
   },

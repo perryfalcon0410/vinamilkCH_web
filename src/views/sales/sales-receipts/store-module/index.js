@@ -7,6 +7,7 @@ import {
   SALES_RECEIPTS_DETAIL_TOTAL_GETTER,
   SALES_RECEIPTS_DISCOUNT_GETTER,
   SALES_RECEIPTS_PROMOTION_GETTER,
+  SALES_RECEIPTS_DETAIL_INFOS_GETTER,
   SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
   // ACTIONS
   GET_SALES_RECEIPTS_DETAIL_ACTION,
@@ -27,19 +28,22 @@ export default {
 
   getters: {
     [SALES_RECEIPTS_GETTER](state) {
-      return state.saleReceipt
+      return state.saleReceipts
     },
     [SALES_RECEIPTS_DETAIL_GETTER](state) {
-      return state.saleReceiptDetail
+      return state.saleReceiptsDetail
     },
     [SALES_RECEIPTS_DETAIL_TOTAL_GETTER](state) {
-      return state.saleReceiptDiscount
+      return state.saleReceiptsTotal
     },
     [SALES_RECEIPTS_DISCOUNT_GETTER](state) {
-      return state.saleReceiptPromotion
+      return state.saleReceiptsDiscount
     },
     [SALES_RECEIPTS_PROMOTION_GETTER](state) {
-      return state.saleReceiptInfos
+      return state.saleReceiptsPromotion
+    },
+    [SALES_RECEIPTS_DETAIL_INFOS_GETTER](state) {
+      return state.saleReceiptsInfos
     },
     [SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER](state) {
       return state.saleReceiptsDetailTotal
@@ -53,7 +57,8 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.saleReceipt = res.data.response.content
+            state.saleReceipts = res.data.response.content
+            state.saleReceiptsTotal = res.data.info
           } else {
             throw new Error(res.statusValue)
           }
@@ -64,7 +69,7 @@ export default {
     },
     [GET_SALES_RECEIPTS_DETAIL_ACTION]({ state }, val) {
       SaleReceiptService
-        .getSaleOrderDetail(val)
+        .getSalesReceiptsDetail(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {

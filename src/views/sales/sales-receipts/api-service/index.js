@@ -2,15 +2,15 @@ import axios from '@axios'
 import { formatURLParams } from '@/@core/utils/utils'
 import {
   getSalesReceiptsEndpoint,
-  getSaleOrderDetailEndpoint,
+  getSalesReceiptsDetailEndpoint,
 } from './defaultConfig'
 
 export default {
   getSalesReceipts() {
     return axios.get(`${getSalesReceiptsEndpoint}`)
   },
-  getSaleOrderDetail(args) {
-    return axios.get(getSaleOrderDetailEndpoint, {
+  getSalesReceiptsDetail(args) {
+    return axios.get(getSalesReceiptsDetailEndpoint, {
       params: formatURLParams(args),
     })
   },

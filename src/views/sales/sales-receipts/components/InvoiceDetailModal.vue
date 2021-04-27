@@ -25,7 +25,7 @@
           </b-col>
           <b-col>
             <h2 class="text-center">
-              {{ infomation.orderNumber }}
+              {{ information.orderNumber }}
             </h2>
           </b-col>
         </b-row>
@@ -36,7 +36,7 @@
           </b-col>
           <b-col>
             <h3 class="text-center">
-              {{ infomation.customerName }}
+              {{ information.customerName }}
             </h3>
           </b-col>
         </b-row>
@@ -47,7 +47,7 @@
           </b-col>
           <b-col>
             <h3 class="text-center">
-              {{ infomation.orderDate }}
+              {{ paidDate }}
             </h3>
           </b-col>
         </b-row>
@@ -58,7 +58,7 @@
           </b-col>
           <b-col>
             <h3 class="text-center">
-              {{ infomation.saleMan }}
+              {{ information.saleMan }}
             </h3>
           </b-col>
         </b-row>
@@ -163,7 +163,7 @@
       class="mt-2"
     >
       <b-button
-        @click="turnoffModal"
+        @click="hideModal"
       >
         <b-row>
           <b-icon-x />
@@ -178,6 +178,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import InvoiceDetail from './invoice-detail-modal/InvoiceDetail.vue'
 import Discounts from './invoice-detail-modal/Discount.vue'
 import Promotion from './invoice-detail-modal/Promotion.vue'
@@ -204,7 +205,11 @@ export default {
       type: Array,
       default: null,
     },
-    infomation: {
+    information: {
+      type: Array,
+      default: null,
+    },
+    discountDetails: {
       type: Array,
       default: null,
     },
@@ -215,11 +220,14 @@ export default {
     }
   },
   computed: {
+    paidDate() {
+      return moment(this.information.orderDate).format('DD/MM/YYYY')
+    },
   },
   methods: {
-    turnoffModal() {
+    hideModal() {
       this.visible = !this.visible
-      this.$emit('modalIsOff', false)
+      this.$emit('invisible', false)
     },
   },
 }
