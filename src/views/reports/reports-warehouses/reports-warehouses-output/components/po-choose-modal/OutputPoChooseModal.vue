@@ -374,16 +374,16 @@ export default {
       ],
       rowsProduct: [
         {
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
+          productId: '04DC10',
+          name: 'Thức uống cacao lúa mạch 180ml',
         },
         {
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
+          productId: '04DC10',
+          name: 'Thức uống cacao lúa mạch 180ml',
         },
         {
-          ProductId: '04DC10',
-          Name: 'Thức uống cacao lúa mạch 180ml',
+          productId: '04DC10',
+          name: 'Thức uống cacao lúa mạch 180ml',
         },
       ],
     }
