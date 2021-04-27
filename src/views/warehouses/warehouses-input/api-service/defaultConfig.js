@@ -1,4 +1,4 @@
-const SALE = '/sale/import'
+const SALE = '/sales/import'
 
 export const getPoConfirmEndpoint = `${SALE}/po-confirm`
 export const getPoProductsEndpoint = `${SALE}/po-detail0`

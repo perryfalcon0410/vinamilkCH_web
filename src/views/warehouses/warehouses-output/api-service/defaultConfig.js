@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-const SALE = '/sale'
+const SALE = '/sales'
 
 export const getWarehousesOutputsEndpoint = `${SALE}/export`
 export const printWarehousesOutputEndpoint = `${SALE}/report/stock/invoice`

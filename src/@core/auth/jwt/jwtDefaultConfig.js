@@ -1,11 +1,11 @@
 export default {
   // Endpoints
-  preLoginEndpoint: '/user/preLogin',
-  loginEndpoint: '/user/login',
-  registerEndpoint: '/user/register',
-  changePasswordEndpoint: '/user/change-password',
-  refreshEndpoint: '/user/refresh-token',
-  logoutEndpoint: '/user/logout',
+  preLoginEndpoint: '/users/preLogin',
+  loginEndpoint: '/users/login',
+  registerEndpoint: '/users/register',
+  changePasswordEndpoint: '/users/change-password',
+  refreshEndpoint: '/users/refresh-token',
+  logoutEndpoint: '/users/logout',
 
   // This will be prefixed in authorization header with token
   // e.g. Authorization: Bearer <token>

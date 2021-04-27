@@ -1,5 +1,5 @@
 const CUSTOMER = '/customers'
-const COMMON = '/common'
+const COMMON = '/commons'
 // const PROMOTION = '/promotion'
 // const SALE = '/sale'
 
@@ -15,5 +15,5 @@ export const getProvincesEndpoint = `${COMMON}/areas/provinces`
 export const getDistrictsEndpoint = `${COMMON}/areas/districts`
 export const getPrecinctsEndpoint = `${COMMON}/areas/precincts`
 
-export const getCardTypesEndpoint = `${COMMON}/apparam/cardtypes`
-export const getCloselyTypesEndpoint = `${COMMON}/apparam/closelytypes`
+export const getCardTypesEndpoint = `${COMMON}/apparams/cardtypes`
+export const getCloselyTypesEndpoint = `${COMMON}/apparams/closelytypes`
