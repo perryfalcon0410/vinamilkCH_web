@@ -13,7 +13,7 @@
         </strong>
       </div>
       <b-form-row
-        class="border-top p-2"
+        class="align-items-center border-bottom p-1"
       >
         <b-col
           lg="2"
@@ -42,15 +42,19 @@
       </b-form-row>
     </b-form>
     <!-- END - Common infomations -->
-    <b-form class="v-search bg-white rounded shadow rounded my-1">
+    <b-form class="bg-white rounded shadow my-1">
       <!-- START - Select Po type -->
       <b-row
-        class="border-bottom p-1 mx-0"
+        class="border-bottom pr-1 mx-0"
         align-v="center"
       >
-        <label class="text-primary">
-          Đơn đặt hàng
-        </label>
+        <div
+          class="m-1 text-primary"
+        >
+          <strong>
+            Đơn đặt hàng
+          </strong>
+        </div>
         <b-form-radio-group
           v-model="selected"
           :options="options"
@@ -72,7 +76,7 @@
             :pagination-options="{
               enabled: true
             }"
-            class="mx-1"
+            class="pb-1 mx-1"
           />
           <!--END - Recommend Po-->
           <!--START - Manual Po-->
@@ -121,9 +125,7 @@
                   variant="light"
                   class="rounded-circle px-1"
                 >
-                  <b-icon-x
-                    font-scale="1.5"
-                  />
+                  <b-icon-x />
                 </b-button>
               </span>
               <span v-else>
@@ -136,16 +138,46 @@
         </b-col>
       </b-row>
     </b-form>
-    <b-row class="justify-content-center mt-4 mr-1">
-      <b-button-group>
+    <b-row class="justify-content-center mt-2 pb-2">
+      <b-button-group
+        v-if="selected == 'A'"
+      >
         <!--START - Manual Po Button Group-->
         <b-button
-          v-if="selected == 'B'"
+          class="ml-1 rounded"
+          variant="primary"
+        >
+          <b-icon
+            icon="download"
+            width="20"
+            height="20"
+            class="mr-1"
+          />
+          Lưu
+        </b-button>
+        <b-button
           class="ml-1 rounded"
           variant="primary"
         >
           <b-icon
             icon="file-earmark-text-fill"
+            width="20"
+            height="20"
+            class="mr-1"
+          />
+          Xuất excel
+        </b-button>
+      </b-button-group>
+      <b-button-group
+        v-if="selected == 'B'"
+      >
+        <!--START - Manual Po Button Group-->
+        <b-button
+          class="ml-1 rounded"
+          variant="primary"
+        >
+          <b-icon
+            icon="download"
             width="20"
             height="20"
             class="mr-1"
@@ -178,7 +210,7 @@ export default {
       A_Columns: [
         {
           label: 'Mã SP',
-          field: 'NumberBill',
+          field: 'NumberBill', // custom filed name
           sortable: false,
         },
         {
@@ -242,37 +274,37 @@ export default {
           sortable: false,
         },
         {
-          label: 'Tồn kho(Min)',
+          label: 'Y/c tồn SL',
           field: 'NumberBill',
           sortable: false,
         },
         {
-          label: 'Tồn kho(Min)',
+          label: 'PO nhập hàng',
           field: 'NumberBill',
           sortable: false,
         },
         {
-          label: 'Tồn kho(Min)',
+          label: 'Yêu cầu(QC)',
           field: 'NumberBill',
           sortable: false,
         },
         {
-          label: 'Tồn kho(Min)',
+          label: 'Yêu cầu(SLT)',
           field: 'NumberBill',
           sortable: false,
         },
         {
-          label: 'Tồn kho(Min)',
+          label: 'Yêu cầu(Thành tiền)',
           field: 'NumberBill',
           sortable: false,
         },
         {
-          label: 'Tồn kho(Min)',
+          label: 'Yêu cầu(Trọng lượng)',
           field: 'NumberBill',
           sortable: false,
         },
         {
-          label: 'Tồn kho(Min)',
+          label: 'CB',
           field: 'NumberBill',
           sortable: false,
         },
@@ -286,7 +318,7 @@ export default {
       B_columns: [
         {
           label: 'Mã SP',
-          field: 'ProductCode',
+          field: 'ProductCode', // custom filed name
           sortable: false,
         },
         {
