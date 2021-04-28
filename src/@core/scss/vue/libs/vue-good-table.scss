@@ -8,29 +8,38 @@ $thead-bg-color-1: transparent;
 $thead-bg-color-2: transparent;
 
 // START - Layout Table
-#vgt-table {
-  thead {
-    tr:first-child {
-      background: $blueVinamilk;
+.vgt-wrap {
+  #vgt-table {
+    thead {
+      tr:first-child {
+        background: $blueVinamilk;
+      }
+      tr:first-child {
+        th {
+          div {
+            color: white;
+            font-size: 13px;
+          }
+        }
+      }
     }
-    tr:first-child {
-      th {
-        div {
-          color: white;
+
+    tbody {
+      tr:hover {
+        background: rgba($secondary, 0.5);
+      }
+      tr {
+        color: $dark;
+        font-size: 12px;
+        th {
+          font-weight: normal;
         }
       }
     }
   }
 
-  tbody {
-    tr:hover {
-      background: rgba($secondary, 0.5);
-    }
-    td {
-      div {
-        color: $dark;
-      }
-    }
+  .v-pagination {
+    font-size: 13px;
   }
 }
 // END - Layout Table

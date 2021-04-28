@@ -72,12 +72,6 @@
               <b-icon-bricks v-b-popover.hover="'Thao tác'" />
             </div>
 
-            <div v-else-if="props.column">
-              <div class="h8">
-                {{ props.column.label }}
-              </div>
-            </div>
-
             <div v-else>
               {{ props.column.label }}
             </div>
@@ -96,13 +90,6 @@
                 @click="navigateToUpdate(props.row.id)"
               />
             </div>
-
-            <div v-else-if="props.row">
-              <div class="h9">
-                {{ props.formattedRow[props.column.field] }}
-              </div>
-            </div>
-
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -115,7 +102,7 @@
             slot-scope="props"
           >
             <b-row
-              class="px-1 mx-0"
+              class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
             >
@@ -123,7 +110,7 @@
                 class="d-flex align-items-center"
               >
                 <span
-                  class="text-nowrap h8"
+                  class="text-nowrap"
                 >
                   Hiển thị 1 đến
                 </span>
@@ -135,7 +122,7 @@
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
                 <span
-                  class="text-nowrap h8"
+                  class="text-nowrap"
                 > trong {{ customerPagination.totalElements }} mục </span>
               </div>
               <b-pagination

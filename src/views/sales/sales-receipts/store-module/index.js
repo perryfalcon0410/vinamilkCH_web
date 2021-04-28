@@ -1,28 +1,16 @@
 import SaleReceiptService from '@/views/sales/sales-receipts/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
 import {
+  // GETTERS
   SALES_RECEIPTS_GETTER,
   SALES_RECEIPTS_DETAIL_GETTER,
-<<<<<<< HEAD
-  SALES_RECEIPTS_DISCOUNT_GETTER,
-  SALES_RECEIPTS_PROMOTION_GETTER,
-  SALES_RECEIPTS_DETAIL_INFOS_GETTER,
-  SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
-<<<<<<< HEAD
-  GET_SALES_RECEIPTS_ACTION,
-  GET_SALES_RECEIPT_DETAIL_ACTION,
-=======
   SALES_RECEIPTS_DETAIL_TOTAL_GETTER,
   SALES_RECEIPTS_DISCOUNT_GETTER,
   SALES_RECEIPTS_PROMOTION_GETTER,
   SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
-  GET_SALES_RECEIPTS_ACTION,
+  // ACTIONS
   GET_SALES_RECEIPTS_DETAIL_ACTION,
->>>>>>> b99cf2a (- Update code complete task 281)
-=======
-  GET_SALES_RECEIPT_ACTION,
-  GET_SALES_RECEIPT_DETAIL_ACTION,
->>>>>>> 5b840e4 (+ change currency format)
+  GET_SALES_RECEIPTS_ACTION,
 } from './type'
 
 export default {
@@ -59,13 +47,12 @@ export default {
   },
   mutations: {},
   actions: {
-    [GET_SALES_RECEIPT_ACTION]({ state }) {
+    [GET_SALES_RECEIPTS_ACTION]({ state }) {
       SaleReceiptService
         .getSalesReceipts()
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            // console.log(res)
             state.saleReceipt = res.data.response.content
           } else {
             throw new Error(res.statusValue)
@@ -75,7 +62,7 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_SALES_RECEIPT_DETAIL_ACTION]({ state }, val) {
+    [GET_SALES_RECEIPTS_DETAIL_ACTION]({ state }, val) {
       SaleReceiptService
         .getSaleOrderDetail(val)
         .then(response => response.data)

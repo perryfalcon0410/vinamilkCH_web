@@ -295,6 +295,7 @@ import {
 import { formatDateToLocale } from '@core/utils/filter'
 import printOptions from '@/@db/receipt'
 import {
+  // GETTERS
   SALESRECEIPTS,
   SALES_RECEIPTS_GETTER,
   SALES_RECEIPTS_DETAIL_GETTER,
@@ -303,6 +304,7 @@ import {
   SALES_RECEIPTS_PROMOTION_GETTER,
   SALES_RECEIPTS_DETAIL_INFOS_GETTER,
   SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
+  // ACTIONS
   GET_SALES_RECEIPTS_ACTION,
   GET_SALES_RECEIPTS_DETAIL_ACTION,
 } from '../store-module/type'
