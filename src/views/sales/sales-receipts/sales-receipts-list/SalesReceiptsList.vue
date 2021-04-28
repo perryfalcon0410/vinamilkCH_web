@@ -305,7 +305,7 @@ import {
   SALES_RECEIPTS_DETAIL_TOTAL_GETTER,
   SALES_RECEIPTS_DISCOUNT_GETTER,
   SALES_RECEIPTS_PROMOTION_GETTER,
-  SALES_RECEIPTS_DETAIL_INFOS_GETTER,
+  SALES_RECEIPT_DETAIL_INFOS_GETTER,
   SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
   // ACTIONS
   GET_SALES_RECEIPTS_ACTION,
@@ -463,11 +463,11 @@ export default {
 
     // common info in receipt
     info() {
-      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_INFOS_GETTER(), value => formatNumberToLocale(value))
+      return lodash.mapValues(this.SALES_RECEIPT_DETAIL_INFOS_GETTER(), value => formatNumberToLocale(value))
     },
   },
   mounted() {
-    this.GET_SALES_RECEIPT_ACTION()
+    this.GET_SALES_RECEIPTS_ACTION()
   },
   methods: {
     ...mapGetters(SALESRECEIPTS, [
@@ -476,7 +476,7 @@ export default {
       SALES_RECEIPTS_DETAIL_TOTAL_GETTER,
       SALES_RECEIPTS_DISCOUNT_GETTER,
       SALES_RECEIPTS_PROMOTION_GETTER,
-      SALES_RECEIPTS_DETAIL_INFOS_GETTER,
+      SALES_RECEIPT_DETAIL_INFOS_GETTER,
       SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
     ]),
     ...mapActions(SALESRECEIPTS, [
@@ -485,7 +485,7 @@ export default {
     ]),
     showInvoiceDetailModal(id, numberBill) {
       this.isInvoiceDetailModal = !this.isInvoiceDetailModal
-      this.GET_SALES_RECEIPT_DETAIL_ACTION({ saleOrderId: id, orderNumber: numberBill })
+      this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber: numberBill })
     },
     hide(state) {
       this.isInvoiceDetailModal = state

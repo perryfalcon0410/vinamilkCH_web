@@ -8,7 +8,7 @@ import store from '@/store'
 const axiosIns = axios.create({
   // You can add your headers here
   // ================================
-  baseURL: process.env.VUE_APP_BASE_URL,
+  baseURL: 'https://kch-testing.imt-soft.com/api/v1',
   // timeout: 1000,
   // headers: {'X-Custom-Header': 'foobar'}
 })

@@ -7,7 +7,7 @@ import {
   SALES_RECEIPTS_DETAIL_TOTAL_GETTER,
   SALES_RECEIPTS_DISCOUNT_GETTER,
   SALES_RECEIPTS_PROMOTION_GETTER,
-  SALES_RECEIPTS_DETAIL_INFOS_GETTER,
+  SALES_RECEIPT_DETAIL_INFOS_GETTER,
   SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
   // ACTIONS
   GET_SALES_RECEIPTS_DETAIL_ACTION,
@@ -23,7 +23,7 @@ export default {
     saleReceiptsDetailTotal: [],
     saleReceiptsDiscount: [],
     saleReceiptsPromotion: [],
-    saleReceiptsInfos: {},
+    saleReceiptInfos: {},
   },
 
   getters: {
@@ -42,8 +42,8 @@ export default {
     [SALES_RECEIPTS_PROMOTION_GETTER](state) {
       return state.saleReceiptsPromotion
     },
-    [SALES_RECEIPTS_DETAIL_INFOS_GETTER](state) {
-      return state.saleReceiptsInfos
+    [SALES_RECEIPT_DETAIL_INFOS_GETTER](state) {
+      return state.saleReceiptInfos
     },
     [SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER](state) {
       return state.saleReceiptsDetailTotal
@@ -77,7 +77,7 @@ export default {
             state.saleReceiptsDetailTotal = res.data.orderDetail.info
             state.saleReceiptsDiscount = res.data.discount
             state.saleReceiptsPromotion = res.data.promotion
-            state.saleReceiptsInfos = res.data.infos
+            state.saleReceiptInfos = res.data.infos
           } else {
             throw new Error(res.statusValue)
           }
