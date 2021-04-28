@@ -8,7 +8,7 @@
       <div
         class="m-1 text-primary"
       >
-        <strong>
+        <strong class="text-blue-vinamilk">
           Tìm kiếm
         </strong>
       </div>
@@ -51,7 +51,7 @@
         <div
           class="m-1 text-primary"
         >
-          <strong>
+          <strong class="text-blue-vinamilk">
             Đơn đặt hàng
           </strong>
         </div>
