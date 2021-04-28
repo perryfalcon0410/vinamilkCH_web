@@ -46,8 +46,8 @@
               >
                 <v-select
                   id="type"
-                  v-model="outputType"
-                  :options="warehousesOptions"
+                  v-model="outputTypeSelected"
+                  :options="outputTypesOptions"
                   label="name"
                   :clearable="false"
                 />
@@ -122,7 +122,7 @@
                 <b-form-input
                   v-model="poNumber"
                   trim
-                  :state="outputType.id === '0' && touched ? passed : null"
+                  :state="outputTypeSelected.id === '0' && touched ? passed : null"
                   disabled
                 />
                 <b-input-group-append is-text>
@@ -200,7 +200,7 @@
                   :class="amount[props.row.originalIndex].number > props.row.amountQuantity ||amount[props.row.originalIndex].number < 0 ? 'border-danger' : ''"
                   size="sm"
                   type="number"
-                  :readonly="exportAll && outputType.id !== '0'"
+                  :readonly="exportAll && outputTypeSelected.id !== '0'"
                 />
               </div>
               <div v-else>
@@ -276,6 +276,7 @@ import warehousesData from '@/@db/warehouses'
 import {
   mapGetters,
   mapActions,
+  mapMutations,
 } from 'vuex'
 import { isEmpty, getNow } from '@core/utils/utils'
 import OutputModal from '../components/output-modal/OutputModal.vue'
@@ -286,7 +287,7 @@ import {
   GET_EXPORT_PO_TRANS_DETAIL_GETTER,
   GET_EXPORT_PO_TRANS_DETAIL_ACTION,
   GET_WAREHOUSE_TYPE_GETTER,
-  CLEAR_EXPORT_PRODUCTS_ACTION,
+  CLEAR_EXPORT_PRODUCTS_MUTATION,
   GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
   GET_EXPORT_BORROWINGS_DETAIL_ACTION,
   GET_WAREHOUSE_TYPE_ACTION,
@@ -302,14 +303,14 @@ export default {
   },
   data() {
     return {
-      warehousesOptions: warehousesData.outputTypes,
+      outputTypesOptions: warehousesData.outputTypes,
       visibleAdjustmentModal: false,
       visibleBorrowedModal: false,
       visibleOutputModal: false,
       exportAll: false,
       id: '',
       transCode: '',
-      outputType: warehousesData.outputTypes[0],
+      outputTypeSelected: warehousesData.outputTypes[0],
       internalNumber: '',
       transDate: '',
       poNumber: '',
@@ -372,8 +373,8 @@ export default {
         price: data.price,
         unit: data.unit,
         totalPrice: data.totalPrice,
-        export: this.outputType.id === '0' ? `${data.export}/${data.quantity}` : 0,
-        quantity: this.outputType.id === '0' ? `${data.quantity - data.export}/${data.quantity}` : data.quantity,
+        export: this.outputTypeSelected.id === '0' ? `${data.export}/${data.quantity}` : 0,
+        quantity: this.outputTypeSelected.id === '0' ? `${data.quantity - data.export}/${data.quantity}` : data.quantity,
         productReturnAmount: 0,
         amountQuantity: data.quantity,
       }))
@@ -388,12 +389,12 @@ export default {
       this.amount = []
       this.poProducts.forEach(item => {
         this.amount.push({
-          number: this.outputType.id === '0' ? 0 : item.amountQuantity,
+          number: this.outputTypeSelected.id === '0' ? 0 : item.amountQuantity,
         })
       })
     },
-    outputType() {
-      this.CLEAR_EXPORT_PRODUCTS_ACTION()
+    outputTypeSelected() {
+      this.CLEAR_EXPORT_PRODUCTS_MUTATION()
       this.internalNumber = ''
       this.internalNumber = ''
       this.transCode = ''
@@ -401,31 +402,34 @@ export default {
       this.transDate = ''
       this.note = ''
       this.amount = []
-      console.log(this.outputType)
     },
     exportAll() {
       if (this.exportAll) {
-        this.poProducts.forEach((i, d) => {
-          this.amount[d].number = i.amountQuantity
+        this.poProducts.forEach((item, index) => {
+          this.amount[index].number = item.amountQuantity
         })
       } else {
-        this.poProducts.forEach((i, d) => {
-          this.amount[d].number = 0
+        this.poProducts.forEach((item, index) => {
+          this.amount[index].number = 0
         })
       }
     },
   },
+
   mounted() {
     this.GET_WAREHOUSE_TYPE_ACTION()
   },
+
   methods: {
     ...mapGetters(WAREHOUSES_OUTPUT, [
       GET_EXPORT_PO_TRANS_DETAIL_GETTER,
       GET_WAREHOUSE_TYPE_GETTER,
     ]),
+    ...mapMutations(WAREHOUSES_OUTPUT, [
+      CLEAR_EXPORT_PRODUCTS_MUTATION,
+    ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_EXPORT_PO_TRANS_DETAIL_ACTION,
-      CLEAR_EXPORT_PRODUCTS_ACTION,
       GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
       GET_EXPORT_BORROWINGS_DETAIL_ACTION,
       GET_WAREHOUSE_TYPE_ACTION,
@@ -433,8 +437,8 @@ export default {
     ]),
 
     showModal() {
-      this.CLEAR_EXPORT_PRODUCTS_ACTION()
-      switch (this.outputType.id) {
+      this.CLEAR_EXPORT_PRODUCTS_MUTATION()
+      switch (this.outputTypeSelected.id) {
         case '0':
           this.visibleOutputModal = true
           break
@@ -453,21 +457,20 @@ export default {
     },
     onModalHidden(id) {
       if (!id && isEmpty(this.id)) {
-        this.CLEAR_EXPORT_PRODUCTS_ACTION()
+        this.CLEAR_EXPORT_PRODUCTS_MUTATION()
       }
 
-      switch (this.outputType.id) {
-        case '0':
+      switch (this.outputTypeSelected.id) {
+        case '0': // Xuất trả PO
           this.visibleOutputModal = false
-          this.exportAll = false
           if (id) {
+            this.exportAll = false
             this.GET_EXPORT_PO_TRANS_DETAIL_ACTION(id)
-          }
-          if (!id && !isEmpty(this.id)) {
+          } else if (!isEmpty(this.id)) {
             this.GET_EXPORT_PO_TRANS_DETAIL_ACTION(this.id)
           }
           break
-        case '1':
+        case '1': // Xuất điều chỉnh
           this.visibleAdjustmentModal = false
           if (id) {
             this.exportAll = true
@@ -476,7 +479,7 @@ export default {
             this.GET_EXPORT_AJUSTMENT_DETAIL_ACTION(this.id)
           }
           break
-        case '2':
+        case '2': // Xuất vay mượn
           this.visibleBorrowedModal = false
           if (id) {
             this.exportAll = true
@@ -502,42 +505,28 @@ export default {
       this.id = id
     },
     createExport() {
-      const productTemp = []
+      const poProductIndexFound = this.poProducts.findIndex((item, index) => this.amount[index].number > item.amountQuantity || this.amount[index].number < 0)
 
-      const failedFound = this.poProducts.findIndex((item, index) => this.amount[index].number > item.amountQuantity || this.amount[index].number < 0)
-
-      if (failedFound > -1) {
+      if (poProductIndexFound > -1) {
         toasts.error('Số lượng xuất không chính xác')
 
         return
       }
 
-      this.poProducts.forEach((item, index) => {
-        if (this.outputType.id === '0') {
-          productTemp.push({
-            id: item.id,
-            quantity: this.amount[index].number,
-          })
-        } else {
-          productTemp.push({
-            id: item.id,
-            quantity: item.amountQuantity,
-          })
-        }
-      })
-
       this.CREATE_EXPORT_ACTION(
         {
-          importType: this.outputType.id,
+          importType: this.outputTypeSelected.id,
           isRemainAll: this.exportAll,
           receiptImportId: this.id,
           note: this.note,
-          litQuantityRemain: productTemp,
+          litQuantityRemain: [...this.poProducts.map((item, index) => ({
+            id: item.id,
+            quantity: this.outputTypeSelected.id === '0' ? this.amount[index].number : item.amountQuantity,
+          }))],
         },
       )
-      this.CLEAR_EXPORT_PRODUCTS_ACTION()
+      this.CLEAR_EXPORT_PRODUCTS_MUTATION()
     },
   },
-
 }
 </script>

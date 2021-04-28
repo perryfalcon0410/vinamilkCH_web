@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 const SALE = '/sales'
 
 export const getWarehousesOutputsEndpoint = `${SALE}/export`

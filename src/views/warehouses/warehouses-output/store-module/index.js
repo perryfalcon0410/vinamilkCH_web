@@ -25,7 +25,7 @@ import {
   GET_EXPORT_BORROWINGS_DETAIL_ACTION,
   GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
   GET_EXPORT_PO_TRANS_DETAIL_ACTION,
-  CLEAR_EXPORT_PRODUCTS_ACTION,
+  CLEAR_EXPORT_PRODUCTS_MUTATION,
   GET_WAREHOUSE_TYPE_ACTION,
   CREATE_EXPORT_ACTION,
 } from './type'
@@ -80,7 +80,11 @@ export default {
   },
 
   // MUTATIONS
-  mutations: {},
+  mutations: {
+    [CLEAR_EXPORT_PRODUCTS_MUTATION]({ state }) {
+      state.poProducts = []
+    },
+  },
 
   // ACTIONS
   actions: {
@@ -247,9 +251,6 @@ export default {
         .catch(error => {
           toasts.error(error.message)
         })
-    },
-    [CLEAR_EXPORT_PRODUCTS_ACTION]({ state }) {
-      state.poProducts = []
     },
     [GET_WAREHOUSE_TYPE_ACTION]({ state }, val) {
       WarehousesService
