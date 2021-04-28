@@ -48,20 +48,28 @@
           <b-form-row>
             <b-col>
               <validation-provider
-                v-slot="{ errors, passed, touched }"
-                rules="required"
+                v-slot="{ errors }"
+                rules="required|dateFormatVNI|age"
                 name="Ngày sinh"
               >
                 <div class="mt-1">
                   Ngày sinh <sup class="text-danger">*</sup>
                 </div>
-                <b-form-datepicker
-                  v-model="birthDay"
-                  placeholder="chọn ngày"
-                  :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                  locale="vi"
-                  :state="touched ? passed : null"
-                />
+                <b-input-group class="input-group-merge">
+                  <vue-flat-pickr
+                    id="form-input-birth-date"
+                    v-model="birthDay"
+                    :config="configDate"
+                    class="form-control"
+                    placeholder="chọn ngày"
+                  />
+                  <b-input-group-append
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-append>
+                </b-input-group>
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
             </b-col>
@@ -276,7 +284,7 @@ import {
 } from 'vee-validate'
 import Ripple from 'vue-ripple-directive'
 import vSelect from 'vue-select'
-import customerData from '@/@db/customer'
+import { formatVniDateToISO } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import {
   CUSTOMER,
@@ -305,6 +313,13 @@ export default {
   },
   data() {
     return {
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
+      goNext: () => {},
+
       // validation rules
       number,
       required,
@@ -320,7 +335,7 @@ export default {
       address: '',
       customerSpecial: false,
       note: '',
-      customerStatus: customerData.status,
+      customerStatus: { name: 'Hoạt động', id: '1' },
       customerGroups: null,
       customerProvince: null,
       customerDistrict: null,
@@ -395,15 +410,16 @@ export default {
             firstName: this.firstName,
             lastName: this.lastName,
             genderId: this.genders.id,
-            dob: this.birthDay,
+            dob: formatVniDateToISO(this.birthDay),
             status: this.customerStatus.id,
             isPrivate: this.customerSpecial,
-            phone: this.phoneNumber,
+            mobiPhone: this.phoneNumber,
+            phone: this.phoneNumber, // temp
             email: this.customerEmail,
             address: this.address,
             isDefault: true,
             noted: this.note,
-            customerTypeId: 1,
+            customerTypeId: 2,
           })
         }
       })

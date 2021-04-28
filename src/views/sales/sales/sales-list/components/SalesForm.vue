@@ -31,7 +31,7 @@
             font-scale="2"
             class="mr-1"
           />
-          Mặc Nguyễn Hồng
+          {{ fullName }}
         </b-row>
         <!-- END - Name  -->
 
@@ -67,7 +67,10 @@
               placeholder="Tìm khách hàng (F4)"
               @click="showSearchModal"
             />
-            <sales-search-modal ref="salesSearchModal" />
+            <sales-search-modal
+              ref="salesSearchModal"
+              @getCustomerInfo="getCustomerInfo"
+            />
             <b-input-group-append is-text>
               <b-icon-plus @click="showModalCreate" />
               <sales-create-modal ref="salesCreateModal" />
@@ -127,7 +130,7 @@
               Điểm tích lũy
             </b-col>
             <b-col>
-              36,000
+              {{ totalBill }}
             </b-col>
           </b-row>
           <!-- END - Cumulative points -->
@@ -141,7 +144,7 @@
               Điạ chỉ
             </b-col>
             <b-col>
-              285 Cách Mạng Tháng Tám, Phường 12, Quận 10
+              {{ address }}
             </b-col>
           <!-- END - Address -->
 
@@ -324,11 +327,10 @@ export default {
       inputSearchFocused: false,
       isShowSalesSearchModal: false,
 
-      lastName: '',
-      firstName: '',
-      phoneNumber: '',
-      address: '',
-      customerId: `${this.$route.params.id}`,
+      fullName: null,
+      phoneNumber: null,
+      address: null,
+      totalBill: null ?? 0,
     }
   },
   computed: {
@@ -353,9 +355,11 @@ export default {
       ERROR_CODE_GETTER,
       CUSTOMER_BY_ID_GETTER,
     }),
+
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_BY_ID_ACTION,
     ]),
+
     getCustomer() {
       // START - Personal
       this.firstName = this.customer.firstName
@@ -363,11 +367,20 @@ export default {
       // START - Contact
       this.phoneNumber = this.customer.mobiPhone
     },
+
     showModalCreate() {
       this.$refs.salesCreateModal.$refs.salesCreateModal.show()
     },
+
     showSearchModal() {
       this.$refs.salesSearchModal.$refs.salesSearchModal.show()
+    },
+
+    getCustomerInfo(val) {
+      this.fullName = val.data.fullName
+      this.phoneNumber = val.data.phoneNumber
+      this.address = val.data.address
+      this.totalBill = val.data.totalBill ?? 0
     },
   },
 }

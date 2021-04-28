@@ -136,7 +136,7 @@
               <div v-if="props.column.field === 'feature'">
                 <b-button
                   variant="primary"
-                  @click="getId(props.row.id)"
+                  @click="getCustomerInfo(props.row)"
                 >
                   Chọn
                 </b-button>
@@ -165,9 +165,13 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatDateToVNI } from '@core/utils/filter'
+import { formatDateToLocale } from '@core/utils/filter'
 import {
   CUSTOMER,
+  // GETTERS
+  CUSTOMER_BY_ID_GETTER,
+  GET_CUSTOMER_BY_ID_ACTION,
+  // ACTIONS
   CUSTOMERS_GETTER,
   GET_CUSTOMERS_ACTION,
 } from '../../../sales-customers/store-module/type'
@@ -189,6 +193,7 @@ export default {
       searchKeywords: '',
       phone: '',
       idNo: '',
+
       columns: [
         {
           label: 'Mã khách hàng',
@@ -225,6 +230,10 @@ export default {
           field: 'feature',
           sortable: false,
         },
+        {
+          label: '',
+          field: 'totalBill',
+        },
       ],
     }
   },
@@ -234,13 +243,17 @@ export default {
         id: data.id,
         code: data.customerCode,
         fullName: `${data.lastName} ${data.firstName}`,
-        phoneNumber: data.mobiPhone || data.phone,
-        birthDay: formatDateToVNI(data.dob),
-        date: formatDateToVNI(data.createdAt),
+        phoneNumber: data.mobiPhone,
+        birthDay: formatDateToLocale(data.dob),
+        date: formatDateToLocale(data.createdAt),
         address: data.address,
         idNo: data.idNo,
         feature: '',
+        totalBill: data.totalBill,
       }))
+    },
+    customerInfo() {
+      return this.CUSTOMER_BY_ID_GETTER()
     },
   },
   mounted() {
@@ -256,25 +269,32 @@ export default {
   methods: {
     ...mapGetters(CUSTOMER, [
       CUSTOMERS_GETTER,
+      CUSTOMER_BY_ID_GETTER,
     ]),
     ...mapActions(CUSTOMER, [
       GET_CUSTOMERS_ACTION,
+      GET_CUSTOMER_BY_ID_ACTION,
     ]),
+
     onClickSearchButton() {
       const searchData = {
         searchKeywords: this.searchKeywords.trim(),
-        phone: this.phone.trim(),
+        phone: this.mobiPhone || this.phone,
         idNo: this.idNo.trim(),
       }
 
       this.GET_CUSTOMERS_ACTION(searchData)
     },
+
     onClickCloseButton() {
       this.$refs.salesSearchModal.hide()
     },
-    getId(event) {
+
+    getCustomerInfo(obj) {
       this.onClickCloseButton()
-      console.log('id customer: ', event)
+      this.$emit('getCustomerInfo', {
+        data: obj,
+      })
     },
   },
 }
