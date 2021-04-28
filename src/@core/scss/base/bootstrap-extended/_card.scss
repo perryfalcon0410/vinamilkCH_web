@@ -7,8 +7,9 @@
     box-shadow: none !important;
   }
   .card-title {
-    font-weight: 500;
-    font-size: 1.285rem;
+    font-weight: 600;
+    font-size: 14px;
+    color: $blueVinamilk;
     margin-bottom: 1.53rem; // Considering sub-title minus margin
   }
   .card-bordered {
@@ -34,7 +35,7 @@
     bottom: 0;
     overflow: auto;
   }
-  .card-body[class*='border-bottom-'] {
+  .card-body[class*="border-bottom-"] {
     border-bottom-width: 2px !important;
   }
   .card-img-overlay {
@@ -57,7 +58,8 @@
     flex-wrap: wrap;
     justify-content: space-between;
     border-bottom: none;
-    padding: 1.5rem;
+    padding-top: 5px;
+    padding-bottom: 5px;
     background-color: transparent;
     .card-title {
       margin-bottom: 0;
@@ -82,7 +84,7 @@
           width: 1rem;
           font-size: 1rem;
         }
-        &[data-action='collapse'] {
+        &[data-action="collapse"] {
           i,
           svg {
             transition: all 0.25s ease-out;
@@ -456,10 +458,10 @@
 
     #revenue-report-chart {
       .apexcharts-series {
-        &[seriesName='Earning'] {
+        &[seriesName="Earning"] {
           transform: scaleY(0.965);
         }
-        &[seriesName='Expense'] {
+        &[seriesName="Expense"] {
           transform: scaleY(1.035);
         }
       }

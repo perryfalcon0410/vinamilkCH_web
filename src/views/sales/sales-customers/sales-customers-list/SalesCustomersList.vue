@@ -117,7 +117,7 @@
                 <b-form-select
                   v-model="elementSize"
                   size="sm"
-                  :options="[5,10,20]"
+                  :options="paginationOptions"
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
@@ -163,6 +163,7 @@
 </template>
 
 <script>
+import customerData from '@/@db/customer'
 import {
   mapActions,
   mapGetters,
@@ -190,6 +191,9 @@ export default {
       selectedRow: 0,
       elementSize: 20,
       pageNumber: 1,
+
+      paginationOptions: customerData.pagination,
+
       columns: [
         {
           label: 'Mã khách hàng',

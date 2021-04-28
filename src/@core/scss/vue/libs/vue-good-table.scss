@@ -12,7 +12,7 @@ $thead-bg-color-2: transparent;
   #vgt-table {
     thead {
       tr:first-child {
-        background: $blueVinamilk;
+        background: $blueVinamilk-500;
       }
       tr:first-child {
         th {
@@ -29,7 +29,7 @@ $thead-bg-color-2: transparent;
         background: rgba($secondary, 0.5);
       }
       tr {
-        color: $dark;
+        color: $blackVinamilk;
         font-size: 12px;
         th {
           font-weight: normal;
