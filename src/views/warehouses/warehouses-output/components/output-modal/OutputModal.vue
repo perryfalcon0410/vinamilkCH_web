@@ -176,7 +176,6 @@ export default {
       isModalShow: false,
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
-
       columns: [
         {
           label: 'Ngày nhập',

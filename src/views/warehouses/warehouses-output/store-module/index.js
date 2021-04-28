@@ -81,7 +81,7 @@ export default {
 
   // MUTATIONS
   mutations: {
-    [CLEAR_EXPORT_PRODUCTS_MUTATION]({ state }) {
+    [CLEAR_EXPORT_PRODUCTS_MUTATION](state) {
       state.poProducts = []
     },
   },
