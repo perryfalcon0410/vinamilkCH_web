@@ -267,10 +267,10 @@
               >
                 <div v-if="props.column.field === 'quantity'">
                   <b-input
+                    v-model="props.row.quantity"
                     size="sm"
                     :number="true"
                     :value="props.row.quantity"
-                    v-model="props.row.quantity"
                     @change="updateQuantity(props.row.originalIndex, props.row.quantity)"
                   />
                 </div>
@@ -297,8 +297,8 @@
                 class="mx-1 my-2 px-2"
               >
                 <b-form-input
-                  class="w-25"
                   v-model="productSearch"
+                  class="w-25"
                   placeholder="Nhập mã hoặc tên sản phẩm"
                   type="text"
                   autocomplete="off"
@@ -319,17 +319,17 @@
                     class="my-1 bg-white rounded border border-primary shadow-lg"
                   >
                     <b-col>
-                        <b-row
-                          v-for="(product, index) in allProducts"
-                          :key="index"
-                          class="my-1 cursor-pointer"
-                          :class="{'item-active': index === cursor}"
-                          @click="selectProduct(product)"
-                          @mouseover="$event.target.classList.add('item-active')"
-                          @mouseout="$event.target.classList.remove('item-active')"
-                        >
-                          <b>{{ product.productCode }}</b> - {{ product.productName }}
-                        </b-row>
+                      <b-row
+                        v-for="(product, index) in allProducts"
+                        :key="index"
+                        class="my-1 cursor-pointer"
+                        :class="{'item-active': index === cursor}"
+                        @click="selectProduct(product)"
+                        @mouseover="$event.target.classList.add('item-active')"
+                        @mouseout="$event.target.classList.remove('item-active')"
+                      >
+                        <b>{{ product.productCode }}</b> - {{ product.productName }}
+                      </b-row>
                     </b-col>
                   </b-container>
                 </b-collapse>
@@ -526,20 +526,10 @@ export default {
       }))
     },
     totalProductQuantity() {
-      let totalQuantity = 0
-      this.products.forEach(item => {
-        totalQuantity += item.quantity
-      })
-
-      return totalQuantity
+      return this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.quantity), 0)
     },
     totalProductPrice() {
-      let totalPrice = 0
-      this.products.forEach(item => {
-        totalPrice += item.totalPrice
-      })
-
-      return totalPrice
+      return this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.totalPrice), 0)
     },
     getPromotions() {
       return this.PROMOTIONS_BY_ID_GETTER().map(data => ({
@@ -555,12 +545,7 @@ export default {
       }))
     },
     getTotalPromotionQuantity() {
-      let totalQuantity = 0
-      this.promotions.forEach(item => {
-        totalQuantity += item.quantity
-      })
-
-      return totalQuantity
+      return this.promotions.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
     totalPromotionPrice() {
       return 0

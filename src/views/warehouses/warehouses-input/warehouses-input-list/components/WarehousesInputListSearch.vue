@@ -107,12 +107,12 @@
             label-for="form-input-input-type"
           >
             <v-select
-                id="form-input-input-type"
-                v-model="inputType"
-                :options="warehousesInputOptions"
-                label="name"
-                autocomplete="on"
-                placeholder="Tất cả"
+              id="form-input-input-type"
+              v-model="inputType"
+              :options="warehousesInputOptions"
+              label="name"
+              autocomplete="on"
+              placeholder="Tất cả"
             />
           </b-form-group>
         </b-col>

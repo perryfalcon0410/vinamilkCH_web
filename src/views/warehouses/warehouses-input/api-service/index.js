@@ -79,9 +79,6 @@ export default {
   getProducts(args) {
     return axios.post(getProductsEndPoint, args)
   },
-  removeReceipt(args) {
-    return axios.patch(`${removeReceiptEndpoint}/${args}`)
-  },
   updateReceipt(args) {
     return axios.patch(`${updateReceiptEndpoint}/${args.id}`, args)
   },

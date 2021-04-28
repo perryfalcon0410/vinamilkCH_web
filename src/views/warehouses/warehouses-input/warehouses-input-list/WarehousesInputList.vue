@@ -262,20 +262,10 @@ export default {
       }))
     },
     totalQuantity() {
-      let totalQuantity = 0
-      this.receipts.forEach(item => {
-        totalQuantity += item.quantity
-      })
-
-      return totalQuantity
+      return this.receipts.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
     totalPrice() {
-      let totalPrice = 0
-      this.receipts.forEach(item => {
-        totalPrice += item.price
-      })
-
-      return totalPrice
+      return this.receipts.reduce((accum, item) => accum + Number(item.price), 0)
     },
   },
 
@@ -315,7 +305,7 @@ export default {
     onClickDeleteButton(id, type, date) {
       this.selectedReceiptId = id
       this.selectedReceiptType = type
-      if (type === 1) {
+      if (type === 1) { // Loại giao dịch nhập điều chỉnh
         toasts.error('Bạn không được phép xóa giao dịch nhập điều chỉnh')
       } else if (date === formatDateToLocale(new Date())) {
         this.isDeleteModalShow = !this.isDeleteModalShow
