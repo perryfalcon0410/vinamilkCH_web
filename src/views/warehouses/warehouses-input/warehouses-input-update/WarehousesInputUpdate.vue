@@ -47,21 +47,11 @@
                   label="Loại nhập"
                   label-for="importType"
                 >
-                  <b-form-select
-                    id="importType"
-                    v-model="importType"
+                  <b-form-input
+                    id="import-type"
+                    v-model="importTypeName"
                     disabled
-                  >
-                    <b-form-select-option value="0">
-                      Nhập hàng
-                    </b-form-select-option>
-                    <b-form-select-option value="1">
-                      Nhập điều chỉnh
-                    </b-form-select-option>
-                    <b-form-select-option value="2">
-                      Nhập vay mượn
-                    </b-form-select-option>
-                  </b-form-select>
+                  />
                 </b-form-group>
               </b-col>
             </b-form-row>
@@ -284,6 +274,20 @@
                     @change="updateQuantity(props.row.originalIndex, props.row.quantity)"
                   />
                 </div>
+                <div
+                  v-else-if="props.column.field === 'feature'"
+                  align-h="center"
+                >
+                  <b-button
+                    variant="light"
+                    class="rounded-circle ml-1 p-1"
+                    @click="onClickDeleteButton(props.row.originalIndex)"
+                  >
+                    <b-icon-x-circle
+                      color="black"
+                    />
+                  </b-button>
+                </div>
               </template>
               <!-- START - Column filter -->
             </vue-good-table>
@@ -297,12 +301,14 @@
                   v-model="productSearch"
                   placeholder="Nhập mã hoặc tên sản phẩm"
                   type="text"
+                  autocomplete="off"
                   @focus="focus"
                   @blur="inputSearchFocusedSP = false"
                   @input="loadProducts"
                   @keyup.enter="keyEnter"
                   @keydown.up="keyUp"
                   @keydown.down="keyDown"
+                  @click="click"
                 />
                 <b-collapse
                   v-model="inputSearchFocusedSP"
@@ -396,6 +402,7 @@ import {
   required,
 } from '@/@core/utils/validations/validations'
 import { formatDateToLocale, getTimeOfDate } from '@core/utils/filter'
+import warehousesData from '@/@db/warehouses'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
 import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
@@ -439,6 +446,8 @@ export default {
       transTime: '',
       wareHouseTypeName: '',
       today: formatDateToLocale(new Date()),
+      importTypeName: '',
+      warehousesInputOptions: warehousesData.inputTypes,
 
       // validation rules
       number,
@@ -447,7 +456,7 @@ export default {
       columns: [
         {
           label: 'Mã hàng',
-          field: 'productId',
+          field: 'productCode',
           sortable: false,
         },
         {
@@ -487,6 +496,11 @@ export default {
           field: 'soNo',
           sortable: false,
         },
+        {
+          label: 'Thao tác',
+          field: 'feature',
+          sortable: false,
+        },
       ],
       promotions: [],
       cursor: -1,
@@ -502,7 +516,7 @@ export default {
     },
     products() {
       return this.PRODUCTS_BY_ID_GETTER().map(data => ({
-        productId: data.productCode,
+        productCode: data.productCode,
         quantity: data.quantity,
         price: data.price,
         name: data.productName,
@@ -530,7 +544,8 @@ export default {
     getPromotions() {
       return this.PROMOTIONS_BY_ID_GETTER().map(data => ({
         id: data.id,
-        productId: data.productCode,
+        productId: data.productId,
+        productCode: data.productCode,
         quantity: data.quantity,
         price: data.price,
         name: data.productName,
@@ -558,6 +573,7 @@ export default {
     },
     allProducts() {
       return this.PRODUCTS_GETTER().map(data => ({
+        productId: data.id,
         productCode: data.productCode,
         quantity: 1,
         price: 0,
@@ -581,6 +597,7 @@ export default {
       this.poNumber = this.RECEIPT_BY_ID_GETTER().poNumber
       this.note = this.RECEIPT_BY_ID_GETTER().note
       this.poId = this.RECEIPT_BY_ID_GETTER().poId
+      this.importTypeName = this.warehousesInputOptions[this.$route.params.type].name
     },
     getPromotions() {
       this.promotions = [...this.getPromotions]
@@ -593,7 +610,6 @@ export default {
   mounted() {
     this.GET_RECEIPT_BY_ID_ACTION(`${this.id}?type=${this.importType}`)
     this.GET_PRODUCTS_BY_ID_ACTION(`${this.id}?type=${this.importType}`)
-    this.GET_PRODUCTS_ACTION()
   },
 
   methods: {
@@ -622,15 +638,17 @@ export default {
     },
     loadProducts() {
       this.cursor = -1
-      const searchData = {
-        searchKeywords: this.productSearch.trim(),
-      }
-
-      this.GET_PRODUCTS_ACTION(searchData)
+      const test = this.promotions.map(data => data.productId)
+      this.GET_PRODUCTS_ACTION({
+        keyWord: this.productSearch.trim(),
+        productIds: test,
+      })
     },
     selectProduct(product) {
       this.promotions.push({
-        productId: product.productCode,
+        id: -1,
+        productId: product.productId,
+        productCode: product.productCode,
         quantity: 1,
         price: product.price,
         name: product.productName,
@@ -664,7 +682,8 @@ export default {
     },
     updateReceipt() {
       const updatedPromotions = this.promotions.map(data => ({
-        productCode: data.productId,
+        id: data.id,
+        productId: data.productId,
         quantity: data.quantity,
       }))
       this.UPDATE_RECEIPT_ACTION({
@@ -673,6 +692,15 @@ export default {
         note: this.note,
         lstUpdate: updatedPromotions,
       })
+    },
+    click() {
+      this.GET_PRODUCTS_ACTION({
+        keyWord: this.productSearch.trim(),
+        productIds: this.promotions.map(data => data.productId),
+      })
+    },
+    onClickDeleteButton(index) {
+      this.promotions.splice(index, 1)
     },
   },
 

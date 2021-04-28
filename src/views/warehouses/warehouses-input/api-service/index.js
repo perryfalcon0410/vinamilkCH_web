@@ -18,6 +18,7 @@ import {
   getReceiptByIdEndpoint,
   getProductsByIdEndpoint,
   getProductsEndPoint,
+  updateReceiptEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -76,11 +77,12 @@ export default {
     return axios.get(`${getProductsByIdEndpoint}/${args}`)
   },
   getProducts(args) {
-    return axios.get(getProductsEndPoint, {
-      params: formatURLParams(args),
-    })
+    return axios.post(getProductsEndPoint, args)
   },
   removeReceipt(args) {
     return axios.patch(`${removeReceiptEndpoint}/${args}`)
+  },
+  updateReceipt(args) {
+    return axios.patch(`${updateReceiptEndpoint}/${args.id}`, args)
   },
 }
