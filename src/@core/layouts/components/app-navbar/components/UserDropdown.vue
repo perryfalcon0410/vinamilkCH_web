@@ -75,6 +75,7 @@ export default {
 
       // Redirect to login page
       this.$router.push({ name: 'auth-login' })
+      this.$router.go()
     },
   },
 }

@@ -1,3 +1,4 @@
+import store from '@/store'
 import jwtDefaultConfig from './jwtDefaultConfig'
 
 export default class JwtService {
@@ -17,27 +18,33 @@ export default class JwtService {
     this.axiosIns = axiosIns
     this.jwtConfig = { ...this.jwtConfig, ...jwtOverrideConfig }
 
-    // Request Interceptor
     this.axiosIns.interceptors.request.use(
       config => {
-        // Get token from localStorage
+        store.commit('app/UPDATE_IS_LOADING', true)
+
         const accessToken = this.getToken()
 
-        // If token is present add it to request's Authorization Header
         if (accessToken) {
           // eslint-disable-next-line no-param-reassign
           config.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`
         }
         return config
       },
-      error => Promise.reject(error),
+      error => {
+        store.commit('app/UPDATE_IS_LOADING', false)
+        return Promise.reject(error)
+      },
     )
 
-    // Add request/response interceptor
     this.axiosIns.interceptors.response.use(
-      response => response,
-      error => Promise.resolve(error.response),
-      // error => Promise.reject(error),
+      response => {
+        store.commit('app/UPDATE_IS_LOADING', false)
+        return response
+      },
+      error => {
+        store.commit('app/UPDATE_IS_LOADING', false)
+        return Promise.resolve(error.response)
+      },
     )
   }
 
