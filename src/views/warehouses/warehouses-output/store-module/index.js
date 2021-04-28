@@ -25,7 +25,7 @@ import {
   GET_EXPORT_BORROWINGS_DETAIL_ACTION,
   GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
   GET_EXPORT_PO_TRANS_DETAIL_ACTION,
-  CLEAR_EXPORT_PRODUCTS,
+  CLEAR_EXPORT_PRODUCTS_ACTION,
   GET_WAREHOUSE_TYPE_ACTION,
   CREATE_EXPORT_ACTION,
 } from './type'
@@ -194,7 +194,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poTrans = res.data.content
+            state.poTrans = res.data.content || []
           } else {
             throw new Error(res.statusValue)
           }
@@ -224,7 +224,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poProducts = res.data
+            state.poProducts = res.data || []
           } else {
             throw new Error(res.statusValue)
           }
@@ -239,7 +239,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poProducts = res.data
+            state.poProducts = res.data || []
           } else {
             throw new Error(res.statusValue)
           }
@@ -248,7 +248,7 @@ export default {
           toasts.error(error.message)
         })
     },
-    [CLEAR_EXPORT_PRODUCTS]({ state }) {
+    [CLEAR_EXPORT_PRODUCTS_ACTION]({ state }) {
       state.poProducts = []
     },
     [GET_WAREHOUSE_TYPE_ACTION]({ state }, val) {

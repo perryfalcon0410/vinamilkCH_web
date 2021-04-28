@@ -197,7 +197,7 @@
               <div v-if="props.column.field === 'ProductReturnAmount' ">
                 <b-form-input
                   v-model="amount[props.row.originalIndex].number"
-                  :class="amount[props.row.originalIndex].number > props.row.amountQuantity ? 'border-danger' : ''"
+                  :class="amount[props.row.originalIndex].number > props.row.amountQuantity ||amount[props.row.originalIndex].number < 0 ? 'border-danger' : ''"
                   size="sm"
                   type="number"
                   :readonly="exportAll && outputType.id !== '0'"
@@ -286,7 +286,7 @@ import {
   GET_EXPORT_PO_TRANS_DETAIL_GETTER,
   GET_EXPORT_PO_TRANS_DETAIL_ACTION,
   GET_WAREHOUSE_TYPE_GETTER,
-  CLEAR_EXPORT_PRODUCTS,
+  CLEAR_EXPORT_PRODUCTS_ACTION,
   GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
   GET_EXPORT_BORROWINGS_DETAIL_ACTION,
   GET_WAREHOUSE_TYPE_ACTION,
@@ -393,7 +393,7 @@ export default {
       })
     },
     outputType() {
-      this.CLEAR_EXPORT_PRODUCTS()
+      this.CLEAR_EXPORT_PRODUCTS_ACTION()
       this.internalNumber = ''
       this.internalNumber = ''
       this.transCode = ''
@@ -425,7 +425,7 @@ export default {
     ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_EXPORT_PO_TRANS_DETAIL_ACTION,
-      CLEAR_EXPORT_PRODUCTS,
+      CLEAR_EXPORT_PRODUCTS_ACTION,
       GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
       GET_EXPORT_BORROWINGS_DETAIL_ACTION,
       GET_WAREHOUSE_TYPE_ACTION,
@@ -433,7 +433,7 @@ export default {
     ]),
 
     showModal() {
-      this.CLEAR_EXPORT_PRODUCTS()
+      this.CLEAR_EXPORT_PRODUCTS_ACTION()
       switch (this.outputType.id) {
         case '0':
           this.visibleOutputModal = true
@@ -452,6 +452,10 @@ export default {
       this.$router.back()
     },
     onModalHidden(id) {
+      if (!id && isEmpty(this.id)) {
+        this.CLEAR_EXPORT_PRODUCTS_ACTION()
+      }
+
       switch (this.outputType.id) {
         case '0':
           this.visibleOutputModal = false
@@ -501,7 +505,7 @@ export default {
       console.log(this.amount)
       const productTemp = []
 
-      const failedFound = this.poProducts.findIndex((item, index) => this.amount[index].number > item.amountQuantity)
+      const failedFound = this.poProducts.findIndex((item, index) => this.amount[index].number > item.amountQuantity || this.amount[index].number < 0)
 
       if (failedFound > -1) {
         toasts.error('Số lượng xuất không chính xác')
@@ -532,6 +536,7 @@ export default {
           litQuantityRemain: productTemp,
         },
       )
+      this.CLEAR_EXPORT_PRODUCTS_ACTION()
     },
   },
 
