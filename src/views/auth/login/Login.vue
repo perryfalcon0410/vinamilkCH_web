@@ -306,7 +306,7 @@ export default {
               }
             })
             .catch(error => {
-              toasts.error(JSON.stringify(error))
+              toasts.error(error.message)
             })
         }
       })

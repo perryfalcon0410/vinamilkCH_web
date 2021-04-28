@@ -16,15 +16,11 @@ const axiosIns = axios.create({
 axiosIns.interceptors.request.use(config => {
   store.commit('app/UPDATE_IS_LOADING', true)
   return config
-}, () => {
-  store.commit('app/UPDATE_IS_LOADING', false)
 })
 
 axiosIns.interceptors.response.use(response => {
   store.commit('app/UPDATE_IS_LOADING', false)
   return response
-}, () => {
-  store.commit('app/UPDATE_IS_LOADING', false)
 })
 
 Vue.prototype.$http = axiosIns
