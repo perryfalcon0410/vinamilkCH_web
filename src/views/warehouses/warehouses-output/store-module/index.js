@@ -224,7 +224,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poProducts = res.data || []
+            state.poProducts = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -239,7 +239,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poProducts = res.data || []
+            state.poProducts = res.data
           } else {
             throw new Error(res.statusValue)
           }

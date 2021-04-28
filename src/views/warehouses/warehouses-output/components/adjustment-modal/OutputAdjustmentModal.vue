@@ -115,7 +115,7 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columnsProducts"
-            :rows="rowsProducts"
+            :rows="poProducts"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
@@ -313,7 +313,7 @@ export default {
     },
     choonsenTrans(trans) {
       this.$emit('choonsenTrans', trans)
-      this.$emit('onModalHidden', trans.id - 1)
+      this.$emit('onModalHidden', trans.id)
     },
   },
 }
