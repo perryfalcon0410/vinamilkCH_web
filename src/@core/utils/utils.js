@@ -92,3 +92,5 @@ export const getNow = () => {
   const dateTime = `${date} lúc ${time}`
   return dateTime
 }
+
+export const isEmpty = value => value === undefined || value === '' || value === null

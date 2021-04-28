@@ -21,6 +21,7 @@
           >
             <b-form-input
               id="form-input-customer"
+              v-model="transCode"
               placeholder="Nhập mã"
               trim
             />
@@ -37,6 +38,7 @@
           >
             <b-form-input
               id="form-input-customer-group"
+              v-model="redInvoiceNo"
               placeholder="Nhập số hóa đơn"
               trim
             />
@@ -53,6 +55,7 @@
           >
             <b-form-input
               id="form-input-customer-group"
+              v-model="internalNumber"
               placeholder="Nhập số nội bộ"
               trim
             />
@@ -69,6 +72,7 @@
           >
             <b-form-input
               id="form-input-customer-group"
+              v-model="poNo"
               placeholder="Nhập PO No"
               trim
             />
@@ -121,6 +125,7 @@
             <b-button
               id="form-button-search"
               variant="primary"
+              @click="onSearchClick"
             >
               <b-icon-search />
               Tìm kiếm
@@ -140,7 +145,23 @@ export default {
     return {
       valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       valueDateTo: new Date(),
+      transCode: '',
+      redInvoiceNo: '',
+      internalNumber: '',
+      poNo: '',
+      fromDate: '',
+      toDate: '',
     }
+  },
+  methods: {
+    onSearchClick() {
+      this.$emit('onSearch', {
+        transCode: this.transCode,
+        redInvoiceNo: this.redInvoiceNo,
+        internalNumber: this.internalNumber,
+        poNo: this.poNo,
+      })
+    },
   },
 }
 </script>

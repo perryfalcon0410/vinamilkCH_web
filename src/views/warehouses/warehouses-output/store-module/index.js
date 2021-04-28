@@ -6,12 +6,28 @@ import {
   GET_WAREHOUSES_OUTPUT_LIST_GETTER,
   GET_WAREHOUSES_OUTPUT_BY_ID_GETTER,
   GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER,
+  GET_EXPORT_AJUSTMENTS_GETTER,
+  GET_EXPORT_PO_TRANS_GETTER,
+  GET_EXPORT_BORROWINGS_GETTER,
+  GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
+  GET_EXPORT_BORROWINGS_DETAIL_GETTER,
+  GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+  GET_WAREHOUSE_TYPE_GETTER,
   // ACTIONS
   GET_WAREHOUSES_OUTPUT_LIST_ACTION,
   PRINT_WAREHOUSES_OUTPUT_ACTION,
   GET_WAREHOUSES_OUTPUT_BY_ID_ACTION,
   GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION,
   UPDATE_WAREHOUSES_OUTPUT_ACTION,
+  GET_EXPORT_AJUSTMENT_ACTION,
+  GET_EXPORT_PO_TRANS_ACTION,
+  GET_EXPORT_BORROWINGS_ACTION,
+  GET_EXPORT_BORROWINGS_DETAIL_ACTION,
+  GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
+  GET_EXPORT_PO_TRANS_DETAIL_ACTION,
+  CLEAR_EXPORT_PRODUCTS,
+  GET_WAREHOUSE_TYPE_ACTION,
+  CREATE_EXPORT_ACTION,
 } from './type'
 import toasts from '../../../../@core/utils/toasts/toasts'
 
@@ -22,6 +38,11 @@ export default {
     warehousesOutputs: [],
     warehousesOutput: {},
     products: [], // list product of warehouses output
+    poTrans: [],
+    ajustments: [],
+    borrowing: [],
+    poProducts: [],
+    wareHouseType: {},
   },
 
   // GETTERS
@@ -34,6 +55,27 @@ export default {
     },
     [GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER](state) {
       return state.products
+    },
+    [GET_EXPORT_AJUSTMENTS_GETTER](state) {
+      return state.ajustments
+    },
+    [GET_EXPORT_PO_TRANS_GETTER](state) {
+      return state.poTrans
+    },
+    [GET_EXPORT_BORROWINGS_GETTER](state) {
+      return state.borrowing
+    },
+    [GET_EXPORT_AJUSTMENTS_DETAIL_GETTER](state) {
+      return state.poProducts
+    },
+    [GET_EXPORT_BORROWINGS_DETAIL_GETTER](state) {
+      return state.poProducts
+    },
+    [GET_EXPORT_PO_TRANS_DETAIL_GETTER](state) {
+      return state.poProducts
+    },
+    [GET_WAREHOUSE_TYPE_GETTER](state) {
+      return state.wareHouseType
     },
   },
 
@@ -100,7 +142,7 @@ export default {
           toasts.error(error.message)
         })
     },
-    [UPDATE_WAREHOUSES_OUTPUT_ACTION]({}, val) {
+    [UPDATE_WAREHOUSES_OUTPUT_ACTION]({ }, val) {
       WarehousesService
         .updateWarehouseOutput(val)
         .then(response => response.data)
@@ -108,6 +150,130 @@ export default {
           if (res.success) {
             toasts.success(res.statusValue)
             router.push({ name: 'warehouses-output-list' })
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_EXPORT_BORROWINGS_ACTION]({ state }, val) {
+      WarehousesService
+        .getExportBorrowing(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.borrowing = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_EXPORT_AJUSTMENT_ACTION]({ state }, val) {
+      WarehousesService
+        .getExportAdjustment(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.ajustments = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_EXPORT_PO_TRANS_ACTION]({ state }, val) {
+      WarehousesService
+        .getExportPoTrans(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.poTrans = res.data.content
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_EXPORT_PO_TRANS_DETAIL_ACTION]({ state }, val) {
+      WarehousesService
+        .getExportPoTransDetail(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.poProducts = res.data.info
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_EXPORT_BORROWINGS_DETAIL_ACTION]({ state }, val) {
+      WarehousesService
+        .getExportBorrowingDetail(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.poProducts = res.data || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_EXPORT_AJUSTMENT_DETAIL_ACTION]({ state }, val) {
+      WarehousesService
+        .getExportAdjustmentDetail(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.poProducts = res.data || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [CLEAR_EXPORT_PRODUCTS]({ state }) {
+      state.poProducts = []
+    },
+    [GET_WAREHOUSE_TYPE_ACTION]({ state }, val) {
+      WarehousesService
+        .getWareHouseType(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.wareHouseType = res.data || {}
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [CREATE_EXPORT_ACTION]({ }, val) {
+      WarehousesService
+        .createExport(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+            router.push({ name: 'warehouses-output' })
           } else {
             throw new Error(res.statusValue)
           }

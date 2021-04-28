@@ -17,7 +17,7 @@
               Ngày xuất:
             </b-col>
             <b-col class="font-weight-bold">
-              29/10/2020 lúc 16:16
+              {{ dateNow }}
             </b-col>
           </b-row>
           <!-- END - Date -->
@@ -42,22 +42,15 @@
             <b-col>
               <b-form-group
                 label="Loại xuất"
-                label-for="outputType"
+                label-for="type"
               >
-                <b-form-select
-                  id="outputType"
+                <v-select
+                  id="type"
                   v-model="outputType"
-                >
-                  <b-form-select-option value="output">
-                    xuất trả PO
-                  </b-form-select-option>
-                  <b-form-select-option value="adjustment">
-                    xuất điều chỉnh
-                  </b-form-select-option>
-                  <b-form-select-option value="borrowed">
-                    xuất vay mượn
-                  </b-form-select-option>
-                </b-form-select>
+                  :options="warehousesOptions"
+                  label="name"
+                  :clearable="false"
+                />
               </b-form-group>
             </b-col>
           </b-form-row>
@@ -68,8 +61,10 @@
             label="Kho hàng"
             label-for="warehouse"
           >
-            <b-form-select
+            <b-form-input
               id="warehouse"
+              v-model="wareHouseType.wareHouseTypeName"
+              readonly
             />
           </b-form-group>
           <!-- END -  Stock  -->
@@ -81,7 +76,7 @@
                 Số hóa đơn
               </div>
               <b-form-input
-                v-model="billNumber"
+                v-model="transCode"
                 trim
                 :state="touched ? passed : null"
                 disabled
@@ -93,7 +88,7 @@
                 Ngày hóa đơn
               </div>
               <b-form-datepicker
-                v-model="billDate"
+                v-model="transDate"
                 locale="vi"
                 :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
                 disabled
@@ -125,13 +120,14 @@
                 class="input-group-merge"
               >
                 <b-form-input
-                  v-model="internalNumber"
+                  v-model="poNumber"
                   trim
-                  :state="outputType === '1' && touched ? passed : null"
+                  :state="outputType.id === '0' && touched ? passed : null"
                   disabled
                 />
                 <b-input-group-append is-text>
                   <b-icon-three-dots-vertical
+                    class="cursor-pointer"
                     @click="showModal()"
                   />
                 </b-input-group-append>
@@ -148,6 +144,7 @@
           >
             <b-form-textarea
               id="note"
+              v-model="note"
               maxlength="4000"
             />
           </b-form-group>
@@ -168,15 +165,25 @@
 
           <vue-good-table
             :columns="columns"
-            :rows="rows"
+            :rows="poProducts"
             style-class="vgt-table striped"
             compact-mode
             line-numbers
           >
-
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
             <!-- START - Header slot -->
             <div slot="table-actions">
-              <b-form-checkbox class="m-1">
+              <b-form-checkbox
+                v-model="exportAll"
+                class="m-1"
+              >
                 Trả nguyên đơn
               </b-form-checkbox>
             </div>
@@ -187,10 +194,13 @@
               slot="table-row"
               slot-scope="props"
             >
-              <div v-if="props.column.field === 'ProductReturnAmount'">
-                <b-input
+              <div v-if="props.column.field === 'ProductReturnAmount' ">
+                <b-form-input
+                  v-model="amount[props.row.originalIndex].number"
+                  :class="amount[props.row.originalIndex].number > props.row.amountQuantity ? 'border-danger' : ''"
                   size="sm"
-                  :value="props.row.ProductReturnAmount"
+                  type="number"
+                  :readonly="exportAll && outputType.id !== '0'"
                 />
               </div>
               <div v-else>
@@ -208,6 +218,7 @@
               <b-button
                 variant="primary"
                 class="d-flex align-items-center rounded text-uppercase"
+                @click="createExport"
               >
                 <b-icon
                   icon="download"
@@ -241,18 +252,47 @@
     <!-- END - Form and list -->
 
     <!-- START - Modal -->
-    <adjustment-modal :visible="visibleAdjustmentModal" />
-    <borrowed-modal :visible="visibleBorrowedModal" />
-    <output-modal :visible="visibleOutputModal" />
+    <adjustment-modal
+      :visible="visibleAdjustmentModal"
+      @onModalHidden="onModalHidden"
+      @choonsenTrans="choonsenTrans"
+    />
+    <borrowed-modal
+      :visible="visibleBorrowedModal"
+      @onModalHidden="onModalHidden"
+      @choonsenTrans="choonsenTrans"
+    />
+    <output-modal
+      :visible="visibleOutputModal"
+      @onModalHidden="onModalHidden"
+      @choonsenTrans="choonsenTrans"
+    />
     <!-- END - Modal -->
-
   </b-container>
 </template>
 
 <script>
+import warehousesData from '@/@db/warehouses'
+import {
+  mapGetters,
+  mapActions,
+} from 'vuex'
+import { isEmpty, getNow } from '@core/utils/utils'
 import OutputModal from '../components/output-modal/OutputModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/OutputBorrowedModal.vue'
+import {
+  WAREHOUSES_OUTPUT,
+  GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+  GET_EXPORT_PO_TRANS_DETAIL_ACTION,
+  GET_WAREHOUSE_TYPE_GETTER,
+  CLEAR_EXPORT_PRODUCTS,
+  GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
+  GET_EXPORT_BORROWINGS_DETAIL_ACTION,
+  GET_WAREHOUSE_TYPE_ACTION,
+  CREATE_EXPORT_ACTION,
+} from '../store-module/type'
+import toasts from '../../../../@core/utils/toasts/toasts'
 
 export default {
   components: {
@@ -262,47 +302,55 @@ export default {
   },
   data() {
     return {
+      warehousesOptions: warehousesData.outputTypes,
       visibleAdjustmentModal: false,
       visibleBorrowedModal: false,
       visibleOutputModal: false,
+      exportAll: false,
       id: '',
-      billNumber: '',
-      outputType: 'output',
+      transCode: '',
+      outputType: warehousesData.outputTypes[0],
       internalNumber: '',
-      billDate: new Date(),
-      poNo: '',
+      transDate: '',
+      poNumber: '',
+      note: '',
+      dateNow: getNow(),
       columns: [
         {
           label: 'Mã sản phẩm',
-          field: 'ProductID',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'ProductName',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'Giá',
-          field: 'ProductPrice',
+          field: 'price',
           type: 'number',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'ProductDVT',
-          type: 'number',
+          field: 'unit',
           sortable: false,
         },
         {
           label: 'Thành tiền',
-          field: 'ProductPriceTotal',
+          field: 'totalPrice',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Đã xuất trả/tổng nhập',
-          field: 'ProductExported',
+          field: 'export',
+          sortable: false,
+        },
+        {
+          label: 'Còn lại/Tổng nhập',
+          field: 'quantity',
           sortable: false,
         },
         {
@@ -311,57 +359,180 @@ export default {
           sortable: false,
         },
       ],
-      rows: [
-        {
-          ProductID: '04AA10',
-          ProductPrice: '6,300',
-          ProductName: 'STT Dâu ADM GOLD 180ml',
-          ProductDVT: 'Hộp',
-          ProductPriceTotal: '2,531,000',
-          ProductExported: '1/5',
-          ProductReturnAmount: '0',
-        },
-        {
-          ProductID: '04AA10',
-          ProductPrice: '6,300',
-          ProductName: 'STT Dâu ADM GOLD 180ml',
-          ProductDVT: 'Hộp',
-          ProductPriceTotal: '2,531,000',
-          ProductExported: '1/5',
-          ProductReturnAmount: '0',
-        },
-        {
-          ProductID: '04AA10',
-          ProductPrice: '6,300',
-          ProductName: 'STT Dâu ADM GOLD 180ml',
-          ProductDVT: 'Hộp',
-          ProductPriceTotal: '2,531,000',
-          ProductExported: '1/5',
-          ProductReturnAmount: '0',
-        },
-        {
-          ProductID: '04AA10',
-          ProductPrice: '6,300',
-          ProductName: 'STT Dâu ADM GOLD 180ml',
-          ProductDVT: 'Hộp',
-          ProductPriceTotal: '2,531,000',
-          ProductExported: '1/5',
-          ProductReturnAmount: '0',
-        },
-      ],
+      amount: [],
     }
   },
 
+  computed: {
+    poProducts() {
+      return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER().map(data => ({
+        id: data.id,
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        unit: data.unit,
+        totalPrice: data.totalPrice,
+        export: this.outputType.id === '0' ? `${data.export}/${data.quantity}` : 0,
+        quantity: this.outputType.id === '0' ? `${data.quantity - data.export}/${data.quantity}` : data.quantity,
+        productReturnAmount: 0,
+        amountQuantity: data.quantity,
+      }))
+    },
+    wareHouseType() {
+      return this.GET_WAREHOUSE_TYPE_GETTER()
+    },
+  },
+
+  watch: {
+    poProducts() {
+      this.amount = []
+      this.poProducts.forEach(item => {
+        this.amount.push({
+          number: this.outputType.id === '0' ? 0 : item.amountQuantity,
+        })
+      })
+    },
+    outputType() {
+      this.CLEAR_EXPORT_PRODUCTS()
+      this.internalNumber = ''
+      this.internalNumber = ''
+      this.transCode = ''
+      this.poNumber = ''
+      this.transDate = ''
+      this.note = ''
+      this.amount = []
+      console.log(this.outputType)
+    },
+    exportAll() {
+      if (this.exportAll) {
+        this.poProducts.forEach((i, d) => {
+          this.amount[d].number = i.amountQuantity
+        })
+      } else {
+        this.poProducts.forEach((i, d) => {
+          this.amount[d].number = 0
+        })
+      }
+    },
+  },
+  mounted() {
+    this.GET_WAREHOUSE_TYPE_ACTION()
+  },
   methods: {
+    ...mapGetters(WAREHOUSES_OUTPUT, [
+      GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+      GET_WAREHOUSE_TYPE_GETTER,
+    ]),
+    ...mapActions(WAREHOUSES_OUTPUT, [
+      GET_EXPORT_PO_TRANS_DETAIL_ACTION,
+      CLEAR_EXPORT_PRODUCTS,
+      GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
+      GET_EXPORT_BORROWINGS_DETAIL_ACTION,
+      GET_WAREHOUSE_TYPE_ACTION,
+      CREATE_EXPORT_ACTION,
+    ]),
+
     showModal() {
-      this.visibleOutputModal = this.outputType === 'output'
-      this.visibleAdjustmentModal = this.outputType === 'adjustment'
-      this.visibleBorrowedModal = this.outputType === 'borrowed'
+      this.CLEAR_EXPORT_PRODUCTS()
+      switch (this.outputType.id) {
+        case '0':
+          this.visibleOutputModal = true
+          break
+        case '1':
+          this.visibleAdjustmentModal = true
+          break
+        case '2':
+          this.visibleBorrowedModal = true
+          break
+        default:
+          break
+      }
     },
     navigateBack() {
       this.$router.back()
     },
+    onModalHidden(id) {
+      switch (this.outputType.id) {
+        case '0':
+          this.visibleOutputModal = false
+          this.exportAll = false
+          if (id) {
+            this.GET_EXPORT_PO_TRANS_DETAIL_ACTION(id)
+          }
+          if (!id && !isEmpty(this.id)) {
+            this.GET_EXPORT_PO_TRANS_DETAIL_ACTION(this.id)
+          }
+          break
+        case '1':
+          this.visibleAdjustmentModal = false
+          if (id) {
+            this.exportAll = true
+            this.GET_EXPORT_AJUSTMENT_DETAIL_ACTION(id)
+          } else if (!isEmpty(this.id)) {
+            this.GET_EXPORT_AJUSTMENT_DETAIL_ACTION(this.id)
+          }
+          break
+        case '2':
+          this.visibleBorrowedModal = false
+          if (id) {
+            this.exportAll = true
+            this.GET_EXPORT_BORROWINGS_DETAIL_ACTION(id)
+          } else if (!isEmpty(this.id)) {
+            this.GET_EXPORT_BORROWINGS_DETAIL_ACTION(this.id)
+          }
+          break
+        default:
+          break
+      }
+    },
+    choonsenTrans(trans) {
+      const {
+        internalNumber, transCode, poNumber, billDate, adjustmentCode, note, poBorrowCode, description, id,
+      } = trans
 
+      this.internalNumber = internalNumber
+      this.transCode = transCode || adjustmentCode || poBorrowCode
+      this.poNumber = poNumber
+      this.transDate = billDate
+      this.note = note || description
+      this.id = id
+    },
+    createExport() {
+      console.log(this.amount)
+      const productTemp = []
+
+      const failedFound = this.poProducts.findIndex((item, index) => this.amount[index].number > item.amountQuantity)
+
+      if (failedFound > -1) {
+        toasts.error('Số lượng xuất không chính xác')
+
+        return
+      }
+
+      this.poProducts.forEach((item, index) => {
+        if (this.outputType.id === '0') {
+          productTemp.push({
+            id: item.id,
+            quantity: this.amount[index].number,
+          })
+        } else {
+          productTemp.push({
+            id: item.id,
+            quantity: item.amountQuantity,
+          })
+        }
+      })
+
+      this.CREATE_EXPORT_ACTION(
+        {
+          importType: this.outputType.id,
+          isRemainAll: this.exportAll,
+          receiptImportId: this.id,
+          note: this.note,
+          litQuantityRemain: productTemp,
+        },
+      )
+    },
   },
 
 }

@@ -6,13 +6,14 @@
     title-class="text-uppercase font-weight-bold text-primary"
     content-class="bg-light"
     footer-border-variant="light"
+    @hidden="onModalHidden"
   >
     <b-container
       fluid
       class="d-flex flex-column"
     >
       <!-- START - Search -->
-      <search-component />
+      <search-component @onSearch="onSearch" />
       <!-- END - Search -->
 
       <!-- START - Coupon list -->
@@ -35,7 +36,7 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columns"
-            :rows="rows"
+            :rows="poTrans"
             style-class="vgt-table bordered"
             :pagination-options="{
               enabled: true
@@ -65,11 +66,13 @@
               <div v-if="props.column.field === 'manipulation'">
                 <b-icon-search
                   class="cursor-pointer"
+                  @click="() => onPoItemSelected(props.row.id)"
                 />
                 <b-button
                   size="sm"
                   variant="info"
                   class="ml-1"
+                  @click="() => choonsenTrans(props.row)"
                 >
                   Chọn
                 </b-button>
@@ -106,11 +109,19 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columnsProducts"
-            :rows="rowsProducts"
+            :rows="poProducts"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
           >
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
             <!-- START - Column  -->
             <template
               slot="table-column"
@@ -124,30 +135,6 @@
               </div>
             </template>
             <!-- END - Column -->
-
-            <!-- START - Row -->
-            <template
-              slot="table-row"
-              slot-scope="props"
-            >
-              <div v-if="props.column.field === 'manipulation'">
-                <b-icon-search
-                  class="cursor-pointer"
-                />
-                <b-button
-                  size="sm"
-                  variant="info"
-                  class="ml-1"
-                >
-                  Chọn
-                </b-button>
-              </div>
-              <div v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </div>
-            </template>
-          <!-- END - Row -->
-
           </vue-good-table>
         </b-col>
       <!-- END - Table Products-->
@@ -159,7 +146,19 @@
 </template>
 
 <script>
+import {
+  mapGetters,
+  mapActions,
+} from 'vuex'
+import { formatDateToLocale } from '@core/utils/filter'
 import SearchComponent from './components/SearchComponent.vue'
+import {
+  WAREHOUSES_OUTPUT,
+  GET_EXPORT_PO_TRANS_GETTER,
+  GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+  GET_EXPORT_PO_TRANS_DETAIL_ACTION,
+  GET_EXPORT_PO_TRANS_ACTION,
+} from '../../store-module/type'
 
 export default {
   components: {
@@ -181,23 +180,23 @@ export default {
       columns: [
         {
           label: 'Ngày nhập',
-          field: 'entryDate',
+          field: 'createdAt',
           sortable: false,
         },
         {
           label: 'Mã nhập hàng',
-          field: 'entryId',
+          field: 'transCode',
           sortable: false,
         },
         {
           label: 'Số hóa đơn',
-          field: 'billNumber',
+          field: 'redInvoiceNo',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Ngày hóa đơn',
-          field: 'billDate',
+          field: 'transDate',
           sortable: false,
         },
         {
@@ -208,7 +207,7 @@ export default {
         },
         {
           label: 'PO No',
-          field: 'poNo',
+          field: 'poNumber',
           sortable: false,
         },
         {
@@ -218,40 +217,10 @@ export default {
         },
       ],
 
-      rows: [
-        {
-          entryDate: '02/03/2021',
-          entryId: '290365412',
-          billNumber: '04DC10',
-          billDate: '02/03/2021',
-          internalNumber: '1232',
-          poNo: '1232',
-          manipulation: '',
-        },
-        {
-          entryDate: '02/03/2021',
-          entryId: '290365412',
-          billNumber: '04DC10',
-          billDate: '02/03/2021',
-          internalNumber: '1232',
-          poNo: '1232',
-          manipulation: '',
-        },
-        {
-          entryDate: '02/03/2021',
-          entryId: '290365412',
-          billNumber: '04DC10',
-          billDate: '02/03/2021',
-          internalNumber: '1232',
-          poNo: '1232',
-          manipulation: '',
-        },
-      ],
-
       columnsProducts: [
         {
           label: 'Mã sản phẩm',
-          field: 'productId',
+          field: 'productCode',
           sortable: false,
         },
         {
@@ -261,13 +230,13 @@ export default {
         },
         {
           label: 'Giá',
-          field: 'productPrice',
+          field: 'price',
           type: 'number',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'productUnit',
+          field: 'unit',
           sortable: false,
         },
         {
@@ -278,48 +247,69 @@ export default {
         },
         {
           label: 'Đã xuất trả/tổng nhập',
-          field: 'ProductExported',
+          field: 'export',
           sortable: false,
         },
         {
           label: 'Còn lại/Tổng nhập',
-          field: 'remainder',
+          field: 'quantity',
           sortable: false,
-        },
-      ],
-
-      rowsProducts: [
-        {
-          productId: '02/03/2021',
-          productName: '290365412',
-          productPrice: '04DC10',
-          productUnit: '02/03/2021',
-          totalPrice: '1232',
-          ProductExported: '1/5',
-          remainder: '4/5',
-        },
-        {
-          productId: '02/03/2021',
-          productName: '290365412',
-          productPrice: '04DC10',
-          productUnit: '02/03/2021',
-          totalPrice: '1232',
-          ProductExported: '1/5',
-          remainder: '4/5',
-        },
-        {
-          productId: '02/03/2021',
-          productName: '290365412',
-          productPrice: '04DC10',
-          productUnit: '02/03/2021',
-          totalPrice: '1232',
-          ProductExported: '1/5',
-          remainder: '4/5',
         },
       ],
     }
   },
+  computed: {
+    poTrans() {
+      return this.GET_EXPORT_PO_TRANS_GETTER().map(data => ({
+        id: data.id,
+        productCode: formatDateToLocale(data.formatDateToLocale),
+        transDate: formatDateToLocale(data.transDate),
+        transCode: data.transCode,
+        redInvoiceNo: data.redInvoiceNo,
+        internalNumber: data.internalNumber,
+        poNumber: data.poNumber,
+        billDate: data.transDate,
+      }))
+    },
+
+    poProducts() {
+      return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER().map(data => ({
+        id: data.id,
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        unit: data.unit,
+        totalPrice: data.totalPrice,
+        export: `${data.export}/${data.quantity}`,
+        quantity: `${data.quantity - data.export}/${data.quantity}`,
+      }))
+    },
+  },
+  mounted() {
+    this.GET_EXPORT_PO_TRANS_ACTION()
+  },
   methods: {
+    ...mapGetters(WAREHOUSES_OUTPUT, [
+      GET_EXPORT_PO_TRANS_GETTER,
+      GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+    ]),
+    ...mapActions(WAREHOUSES_OUTPUT, [
+      GET_EXPORT_PO_TRANS_ACTION,
+      GET_EXPORT_PO_TRANS_DETAIL_ACTION,
+    ]),
+    onSearch(search) {
+      this.GET_EXPORT_PO_TRANS_ACTION(search)
+    },
+    onPoItemSelected(id) {
+      this.GET_EXPORT_PO_TRANS_DETAIL_ACTION(id)
+    },
+    onModalHidden() {
+      this.$emit('onModalHidden')
+    },
+    choonsenTrans(trans) {
+      this.$emit('choonsenTrans', trans)
+      this.$emit('onModalHidden', trans.id)
+    },
   },
 }
 </script>

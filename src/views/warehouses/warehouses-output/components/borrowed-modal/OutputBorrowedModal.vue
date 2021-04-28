@@ -6,6 +6,7 @@
     title-class="text-uppercase font-weight-bold text-primary"
     content-class="bg-light"
     footer-border-variant="light"
+    @hidden="onModalHidden"
   >
     <b-container
       fluid
@@ -31,7 +32,7 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columns"
-            :rows="rows"
+            :rows="borrowing"
             style-class="vgt-table bordered"
             :pagination-options="{
               enabled: true
@@ -39,6 +40,14 @@
             compact-mode
             line-numbers
           >
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
             <!-- START - Column  -->
             <template
               slot="table-column"
@@ -61,11 +70,13 @@
               <div v-if="props.column.field === 'manipulation'">
                 <b-icon-search
                   class="cursor-pointer"
+                  @click="() => viewProduct(props.row.id)"
                 />
                 <b-button
                   size="sm"
                   variant="info"
                   class="ml-1"
+                  @click="() => choonsenTrans(props.row)"
                 >
                   Chọn
                 </b-button>
@@ -102,11 +113,19 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columnsProducts"
-            :rows="rowsProducts"
+            :rows="poProducts"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
           >
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
             <!-- START - Column  -->
             <template
               slot="table-column"
@@ -156,6 +175,19 @@
 </template>
 
 <script>
+import {
+  mapGetters,
+  mapActions,
+} from 'vuex'
+import { formatDateToLocale } from '@core/utils/filter'
+import {
+  WAREHOUSES_OUTPUT,
+  GET_EXPORT_BORROWINGS_ACTION,
+  GET_EXPORT_BORROWINGS_DETAIL_ACTION,
+  GET_EXPORT_BORROWINGS_DETAIL_GETTER,
+  GET_EXPORT_BORROWINGS_GETTER,
+} from '../../store-module/type'
+
 export default {
   props: {
     visible: {
@@ -173,12 +205,12 @@ export default {
       columns: [
         {
           label: 'Số chứng từ',
-          field: 'licenseNumber',
+          field: 'poBorrowCode',
           sortable: false,
         },
         {
           label: 'Ngày',
-          field: 'date',
+          field: 'borrowDate',
           sortable: false,
         },
         {
@@ -193,32 +225,10 @@ export default {
           sortable: false,
         },
       ],
-
-      rows: [
-        {
-          licenseNumber: 'DCG_0000069',
-          date: '02/03/2021',
-          note: '04DC10',
-          manipulation: '',
-        },
-        {
-          licenseNumber: 'DCG_0000069',
-          date: '02/03/2021',
-          note: '04DC10',
-          manipulation: '',
-        },
-        {
-          licenseNumber: 'DCG_0000069',
-          date: '02/03/2021',
-          note: '04DC10',
-          manipulation: '',
-        },
-      ],
-
       columnsProducts: [
         {
           label: 'Mã sản phẩm',
-          field: 'productId',
+          field: 'productCode',
           sortable: false,
         },
         {
@@ -228,19 +238,19 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'productAmount',
+          field: 'quantity',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Giá',
-          field: 'productPrice',
+          field: 'price',
           type: 'number',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'productUnit',
+          field: 'unit',
           sortable: false,
         },
         {
@@ -250,36 +260,53 @@ export default {
           sortable: false,
         },
       ],
-
-      rowsProducts: [
-        {
-          productId: '04DC10',
-          productName: '290365412',
-          productAmount: '1',
-          productPrice: '1000',
-          productUnit: 'Hộp',
-          totalPrice: '1000',
-        },
-        {
-          productId: '04DC10',
-          productName: '290365412',
-          productAmount: '1',
-          productPrice: '1000',
-          productUnit: 'Hộp',
-          totalPrice: '1000',
-        },
-        {
-          productId: '04DC10',
-          productName: '290365412',
-          productAmount: '1',
-          productPrice: '1000',
-          productUnit: 'Hộp',
-          totalPrice: '1000',
-        },
-      ],
     }
   },
+  computed: {
+    borrowing() {
+      return this.GET_EXPORT_BORROWINGS_GETTER().map(data => ({
+        id: data.id,
+        poBorrowCode: data.poBorrowCode,
+        borrowDate: formatDateToLocale(data.borrowDate),
+        billDate: data.borrowDate,
+        note: data.note,
+      }))
+    },
+
+    poProducts() {
+      return this.GET_EXPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
+        id: data.id,
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        unit: data.unit,
+        totalPrice: data.totalPrice,
+        quantity: data.quantity,
+      }))
+    },
+  },
+  mounted() {
+    this.GET_EXPORT_BORROWINGS_ACTION()
+  },
   methods: {
+    ...mapGetters(WAREHOUSES_OUTPUT, [
+      GET_EXPORT_BORROWINGS_GETTER,
+      GET_EXPORT_BORROWINGS_DETAIL_GETTER,
+    ]),
+    ...mapActions(WAREHOUSES_OUTPUT, [
+      GET_EXPORT_BORROWINGS_ACTION,
+      GET_EXPORT_BORROWINGS_DETAIL_ACTION,
+    ]),
+    viewProduct(id) {
+      this.GET_EXPORT_BORROWINGS_DETAIL_ACTION(id)
+    },
+    onModalHidden() {
+      this.$emit('onModalHidden')
+    },
+    choonsenTrans(trans) {
+      this.$emit('choonsenTrans', trans)
+      this.$emit('onModalHidden', trans.id)
+    },
   },
 }
 </script>
