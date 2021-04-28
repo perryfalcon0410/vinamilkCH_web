@@ -1,4 +1,7 @@
 import store from '@/store'
+import Vue from 'vue'
+import { initialAbility } from '@/libs/acl/config'
+import router from '@/router/index'
 import jwtDefaultConfig from './jwtDefaultConfig'
 
 export default class JwtService {
@@ -39,13 +42,34 @@ export default class JwtService {
     this.axiosIns.interceptors.response.use(
       response => {
         store.commit('app/UPDATE_IS_LOADING', false)
+        if (response.data && response.data.statusCode === 408) {
+          this.logout()
+        }
         return response
       },
       error => {
+        const { response } = error
         store.commit('app/UPDATE_IS_LOADING', false)
-        return Promise.resolve(error.response)
+        return Promise.resolve(response || error)
       },
     )
+  }
+
+  logout() {
+    // Remove userData from localStorage
+    // ? You just removed token from localStorage. If you like, you can also make API call to backend to blacklist used token
+    localStorage.removeItem(this.jwtConfig.storageTokenKeyName)
+    localStorage.removeItem(this.jwtConfig.storageRefreshTokenKeyName)
+
+    // Remove userData from localStorage
+    localStorage.removeItem('userData')
+
+    // Reset ability
+    Vue.prototype.$ability.update(initialAbility)
+
+    // Redirect to login page
+    router.push({ name: 'auth-login' })
+    router.go()
   }
 
   onAccessTokenFetched(accessToken) {
