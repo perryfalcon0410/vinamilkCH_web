@@ -502,7 +502,6 @@ export default {
       this.id = id
     },
     createExport() {
-      console.log(this.amount)
       const productTemp = []
 
       const failedFound = this.poProducts.findIndex((item, index) => this.amount[index].number > item.amountQuantity || this.amount[index].number < 0)

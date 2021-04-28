@@ -49,14 +49,12 @@ export default {
     return axios.get(`${getExportPoTransEndpoint}?${queryString}`)
   },
   getExportPoTransDetail(args) {
-    console.log(`${getExportPoTransDetailEndpoint}/${args}?type=0`)
     return axios.get(`${getExportPoTransDetailEndpoint}/${args}?type=0`)
   },
   getExportAdjustmentDetail(args) {
     return axios.get(`${getExportAdjustmentDetailEndpoint}/${args}`)
   },
   getExportBorrowingDetail(args) {
-    console.log(`${getExportBorrowingDetailEndpoint}/${args}`)
     return axios.get(`${getExportBorrowingDetailEndpoint}/${args}`)
   },
   getWareHouseType() {
