@@ -48,7 +48,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.warehousesOutputs = res.data.response.content
+            state.warehousesOutputs = res.data.response.content || []
           } else {
             throw new Error(res.statusValue)
           }
@@ -76,7 +76,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.warehousesOutput = res.data
+            state.warehousesOutput = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }
@@ -91,7 +91,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.products = res.data.response
+            state.products = res.data.response || []
           } else {
             throw new Error(res.statusValue)
           }
