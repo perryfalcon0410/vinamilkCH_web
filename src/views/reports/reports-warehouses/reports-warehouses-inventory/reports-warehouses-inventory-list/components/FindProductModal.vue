@@ -12,79 +12,82 @@
     <b-card>
       <!--START search form-->
       <b-form>
-        <label class="text-primary">
-          Tìm kiếm sản phẩm
-        </label>
+        <div class="bg-light w-25 h-25 rounded-right border-top-info border-bottom-info border-right-info">
+          <strong class="text-blue-vinamilk">
+            Tìm kiếm sản phẩm
+          </strong>
+        </div>
         <b-form-row class="v-search-form mx-0 pt-1">
           <b-col
-            xs
-            sm="4"
+            lg
             md="3"
+            sm="4"
           >
-            <b-form-group
-              class="ml-lg-1"
-              label="Mã sản phẩm"
-              label-for="ProductCode"
+            <div>
+              Mã sản phẩm
+            </div>
+            <b-input-group
+              class="input-group-merge"
+              size="sm"
             >
-              <b-input
-                id="ProductCode"
+              <b-input />
+            </b-input-group>
+          </b-col>
+          <b-col
+            lg
+            md="3"
+            sm="4"
+          >
+            <div>
+              Tên sản phẩm
+            </div>
+            <b-input-group
+              class="input-group-merge"
+              size="sm"
+            >
+              <b-input />
+            </b-input-group>
+          </b-col>
+          <b-col
+            lg
+            md="3"
+            sm="4"
+          >
+            <b-input-group>
+              <v-input-select
+                :title="'Ngành hàng'"
+                :placeholder="' '"
               />
-            </b-form-group>
+            </b-input-group>
           </b-col>
+          <!-- START - Search button -->
           <b-col
             xl
             sm="4"
             md="3"
           >
-            <b-form-group
-              label="Tên sản phẩm"
-              label-for="ProductName"
+            <div
+              class="h8 text-white"
             >
-              <b-input
-                id="ProductName"
-              /></b-form-group>
-          </b-col>
-          <b-col
-            xl
-            sm="4"
-            md="3"
-          >
-            <b-form-group
-              label="Ngành hàng"
-              label-for="group"
+              Tìm kiếm
+            </div>
+            <b-button
+              class="bg-blue-vinamilk text-white h9 d-flex justify-content-center align-items-center"
+              variant="someThing"
+              style="height: 30px;"
             >
-              <b-form-select
-                id="group"
-              />
-            </b-form-group>
+              <b-icon-search class="mr-1" />
+              Tìm kiếm
+            </b-button>
           </b-col>
-          <b-col
-            xl
-            sm="4"
-            md="3"
-          >
-            <b-form-group
-              label="Tìm kiếm"
-              label-for="form-button-search"
-            >
-              <b-button
-                id="form-button-search"
-                variant="primary"
-              >
-                <b-icon-search />
-                Tìm kiếm
-              </b-button>
-            </b-form-group>
-          </b-col>
+          <!-- END - Search button -->
         </b-form-row>
         <!--END search form-->
-
-        <b-form-row>
-          <strong>
+        <div class="pt-2">
+          <strong class="text-blue-vinamilk pt-2">
             Tổng cộng:
           </strong>
-        </b-form-row>
-
+        </div>
         <!-- START - Table -->
         <b-col
           class="py-1"
@@ -104,26 +107,26 @@
               selectAllByGroup: true,
               multipleColumns: true,
             }"
-          />
-        </b-col>
+          /></b-col>
         <!--END table-->
       </b-form>
       <b-row class="m-1 justify-content-center">
         <b-button-group>
           <b-button
-            variant="primary"
-            class="d-flex align-items-center rounded text-uppercase"
+            class="d-flex justify-content-center align-items-center ml-1 rounded text-uppercase bg-blue-vinamilk text-white h9"
+            variant="someThing"
           >
             <b-icon
               icon="download"
-              width="20"
-              height="20"
+              width="15"
+              height="15"
               class="mr-1"
             />
             lưu
           </b-button>
           <b-button
-            class="d-flex align-items-center ml-1 rounded text-uppercase"
+            class="d-flex justify-content-center align-items-center ml-1 rounded text-uppercase bg-blue-vinamilk text-white h9"
+            variant="someThing"
             @click="$bvModal.hide('modal')"
           >
             <b-icon
@@ -140,7 +143,12 @@
 </template>
 
 <script>
+import VInputSelect from '@/@core/components/v-input-select/VInputSelect.vue'
+
 export default {
+  components: {
+    VInputSelect,
+  },
   props: {
     visible: {
       type: Boolean,

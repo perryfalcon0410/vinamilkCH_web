@@ -10,20 +10,22 @@
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
       >
-        <strong class="text-primary">
+        <strong class="text-blue-vinamilk">
           Tồn kho sản phẩm
         </strong>
         <b-button-group>
           <b-button
-            class="rounded"
-            variant="primary"
+            class="rounded bg-blue-vinamilk text-white h9 mr-1"
+            variant="someThing"
+            size="sm"
           >
             <b-icon-printer-fill />
             In
           </b-button>
           <b-button
-            class="ml-1 rounded"
-            variant="primary"
+            class="rounded bg-blue-vinamilk text-white h9"
+            variant="someThing"
+            size="sm"
           >
             <b-icon-file-earmark-x-fill />
             Xuất Excel

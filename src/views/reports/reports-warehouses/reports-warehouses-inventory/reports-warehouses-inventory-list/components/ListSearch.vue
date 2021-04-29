@@ -1,95 +1,108 @@
 <template>
-  <b-form class="bg-white rounded shadow">
-    <div
-      class="text-primary p-1 "
+  <b-form>
+    <v-card-actions
+      title="Điều kiện"
     >
-      <strong>
-        Điều kiện
-      </strong>
-    </div>
-    <b-form-row class="v-search-form border-top mx-0 pt-1">
-      <!--START-date-form-->
       <b-col
         xl
-        sm="4"
         md="3"
+        sm="4"
       >
-        <b-form-group
-          class="ml-lg-1"
-          label="Ngày"
-          label-for="form-input-date"
+        <validation-provider
+          rules="dateFormatVNI"
         >
-          <b-form-datepicker
+          <div
+            class="h8 mt-lg-1 mt-xl-0"
+          >
+            Ngày
+          </div>
+          <b-input-group
             id="form-input-date"
-            v-model="fromDate"
-            :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-            locale="vi"
-          />
-        </b-form-group>
+            class="input-group-merge"
+            size="sm"
+          >
+            <b-input-group-prepend
+              is-text
+              data-toggle
+            >
+              <b-icon-calendar />
+            </b-input-group-prepend>
+            <vue-flat-pickr
+              v-model="date"
+              :config="configDate"
+              class="form-control h9"
+              placeholder="Chọn ngày"
+            />
+          </b-input-group>
+        </validation-provider>
       </b-col>
-      <!--END-date-form-->
 
-      <!--START-Product-form-->
       <b-col
         xl
-        sm="4"
         md="3"
+        sm="4"
       >
-        <b-form-group
-          label="Sản phẩm"
-          label-for="form-input-product"
+        <div class="h8 mt-lg-1 mt-xl-0">
+          Sản phẩm
+        </div>
+        <b-input-group
+          class="input-group-merge"
+          size="sm"
         >
-          <b-input-group class="input-group-merge ">
-            <b-form-input
-              id="form-input-product"
-              v-model="product"
+          <b-input />
+          <b-input-group-append is-text>
+            <b-icon-three-dots-vertical
+              @click="showFindProductModal"
             />
-            <b-input-group-append is-text>
-              <b-icon-three-dots-vertical
-                @click="showFindProductModal"
-              />
-            </b-input-group-append>
-          </b-input-group>
-
-        </b-form-group>
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
-      <!--START-Product-form-->
       <!-- START - Search button -->
       <b-col
         xl
         sm="4"
         md="3"
+        class="h-25"
       >
-        <b-form-group
-          label="Tìm kiếm"
-          label-for="form-button-search"
+        <div
+          class="h8 text-white"
         >
-          <b-button
-            id="form-button-search"
-            variant="primary"
-            @click="onClickSearchButton()"
-          >
-            <b-icon-search />
-            Tìm kiếm
-          </b-button>
-        </b-form-group>
+          Tìm kiếm
+        </div>
+        <b-button
+          id="form-button-search"
+          class="bg-blue-vinamilk text-white h9 d-flex justify-content-center align-items-center"
+          variant="someThing"
+          style="height: 30px;"
+          @click="onClickSearchButton()"
+        >
+          <b-icon-search class="mr-1" />
+          Tìm kiếm
+        </b-button>
       </b-col>
       <!-- END - Search button -->
-    </b-form-row>
+    </v-card-actions>
     <find-product-modal :visible="isShowFindProductModal" />
   </b-form>
 </template>
 
 <script>
+import VCardActions from '@/@core/components/v-card-actions/VCardActions.vue'
+import {
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
 import FindProductModal from './FindProductModal.vue'
 
 export default {
   components: {
     FindProductModal,
+    VCardActions,
   },
   data() {
     return {
       isShowFindProductModal: false,
+      dateFormatVNI,
+      date: null,
     }
   },
   methods: {
