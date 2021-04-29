@@ -28,7 +28,7 @@
         is-text
       >
         <b-icon-x
-          v-if="clearAble"
+          v-if="clearAble && !$isEmpty(selection)"
           scale="1.3"
           class="cursor-pointer"
           style="margin-right: 5px;"

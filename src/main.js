@@ -6,6 +6,7 @@ import {
   BootstrapVueIcons,
 } from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
+import { isEmpty } from '@core/utils/utils'
 
 import i18n from '@/libs/i18n'
 import VueGoodTablePlugin from 'vue-good-table'
@@ -57,6 +58,8 @@ Vue.use(BootstrapVueIcons)
 
 Vue.prototype.$moment = moment
 moment.locale('vi')
+
+Vue.prototype.$isEmpty = isEmpty
 
 flatPickr.localize(Vietnamese)
 Vue.component('vue-flat-pickr', VueFlatPickr)
