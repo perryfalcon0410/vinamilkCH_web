@@ -342,10 +342,6 @@ export default {
     ERROR_CODE_GETTER() {
       this.checkDuplicationID(this.ERROR_CODE_GETTER())
     },
-    customer() {
-      this.getCustomer()
-      console.log(this.getCustomer())
-    },
   },
   mounted() {
     this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
@@ -359,14 +355,6 @@ export default {
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_BY_ID_ACTION,
     ]),
-
-    getCustomer() {
-      // START - Personal
-      this.firstName = this.customer.firstName
-      this.lastName = this.customer.lastName
-      // START - Contact
-      this.phoneNumber = this.customer.mobiPhone
-    },
 
     showModalCreate() {
       this.$refs.salesCreateModal.$refs.salesCreateModal.show()

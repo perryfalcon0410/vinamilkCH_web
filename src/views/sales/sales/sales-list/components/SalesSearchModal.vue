@@ -25,10 +25,13 @@
             <b-form-group
               label="Khách hàng"
               label-for="form-input-customer"
+              label-class="h8"
             >
               <b-form-input
                 id="form-input-customer"
                 v-model="searchKeywords"
+                class="h9"
+                size="sm"
                 placeholder="Nhập mã/ họ tên"
                 trim
               />
@@ -43,10 +46,13 @@
             <b-form-group
               label="Số điện thoại"
               label-for="form-input-phoneNumber"
+              label-class="h8"
             >
               <b-form-input
                 id="form-input-phoneNumber"
                 v-model="phone"
+                class="h9"
+                size="sm"
                 trim
               />
             </b-form-group>
@@ -59,10 +65,13 @@
             <b-form-group
               label="CMND"
               label-for="form-input-idNo"
+              label-class="h8"
             >
               <b-form-input
                 id="form-input-idNo"
                 v-model="idNo"
+                class="h9"
+                size="sm"
                 trim
               />
             </b-form-group>
@@ -76,10 +85,13 @@
             <b-form-group
               label="Tìm kiếm"
               label-for="form-button-search"
+              label-class="text-white"
             >
               <b-button
                 id="form-button-search"
-                variant="primary"
+                class="bg-blue-vinamilk text-white h9"
+                variant="someThing"
+                style="max-height: 35px;"
                 @click="onClickSearchButton()"
               >
                 <b-icon-search />
@@ -114,6 +126,7 @@
               Không có dữ liệu
             </div>
             <!-- END - Empty rows -->
+
             <!-- START - Columns -->
             <template
               slot="table-column"
@@ -135,7 +148,9 @@
             >
               <div v-if="props.column.field === 'feature'">
                 <b-button
-                  variant="primary"
+                  class="bg-blue-vinamilk text-white h9"
+                  variant="someThing"
+                  style="max-height: 35px;"
                   @click="getCustomerInfo(props.row)"
                 >
                   Chọn
@@ -145,13 +160,75 @@
                 {{ props.formattedRow[props.column.field] }}
               </div>
             </template>
-          <!-- END - Rows -->
+            <!-- END - Rows -->
+
+            <!-- START - Pagination -->
+            <template
+              slot="pagination-bottom"
+              slot-scope="props"
+            >
+              <b-row
+                class="v-pagination px-1 mx-0"
+                align-h="between"
+                align-v="center"
+              >
+                <div
+                  class="d-flex align-items-center"
+                >
+                  <span
+                    class="text-nowrap"
+                  >
+                    Hiển thị 1 đến
+                  </span>
+                  <b-form-select
+                    v-model="elementSize"
+                    size="sm"
+                    :options="[5,10,20]"
+                    class="mx-1"
+                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                  />
+                  <span
+                    class="text-nowrap"
+                  > trong {{ customerPagination.totalElements }} mục </span>
+                </div>
+                <b-pagination
+                  v-model="pageNumber"
+                  :total-rows="customerPagination.totalElements"
+                  :per-page="elementSize"
+                  first-number
+                  last-number
+                  align="right"
+                  prev-class="prev-item"
+                  next-class="next-item"
+                  class="mt-1"
+                  @input="(value)=>props.pageChanged({currentPage: value})"
+                >
+                  <template slot="prev-text">
+                    <feather-icon
+                      icon="ChevronLeftIcon"
+                      size="18"
+                    />
+                  </template>
+                  <template slot="next-text">
+                    <feather-icon
+                      icon="ChevronRightIcon"
+                      size="18"
+                    />
+                  </template>
+                </b-pagination>
+              </b-row>
+            </template>
+          <!-- END - Pagination -->
 
           </vue-good-table>
         </b-col>
         <!-- END - Table -->
         <b-col class="text-center mb-2">
           <b-button @click="onClickCloseButton()">
+            <b-icon-x
+              width="20"
+              height="20"
+            />
             Đóng
           </b-button>
         </b-col>
@@ -171,6 +248,7 @@ import {
   // GETTERS
   CUSTOMER_BY_ID_GETTER,
   GET_CUSTOMER_BY_ID_ACTION,
+  CUSTOMER_PAGINATION_GETTER,
   // ACTIONS
   CUSTOMERS_GETTER,
   GET_CUSTOMERS_ACTION,
@@ -188,8 +266,10 @@ export default {
   },
   data() {
     return {
-      valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      valueDateTo: new Date(),
+      selectedRow: 0,
+      elementSize: 20,
+      pageNumber: 1,
+
       searchKeywords: '',
       phone: '',
       idNo: '',
@@ -230,10 +310,6 @@ export default {
           field: 'feature',
           sortable: false,
         },
-        {
-          label: '',
-          field: 'totalBill',
-        },
       ],
     }
   },
@@ -255,6 +331,17 @@ export default {
     customerInfo() {
       return this.CUSTOMER_BY_ID_GETTER()
     },
+    customerPagination() {
+      return this.CUSTOMER_PAGINATION_GETTER()
+    },
+  },
+  watch: {
+    pageNumber() {
+      this.onPaginationChange()
+    },
+    elementSize() {
+      this.onPaginationChange()
+    },
   },
   mounted() {
     this.GET_CUSTOMERS_ACTION({})
@@ -270,6 +357,7 @@ export default {
     ...mapGetters(CUSTOMER, [
       CUSTOMERS_GETTER,
       CUSTOMER_BY_ID_GETTER,
+      CUSTOMER_PAGINATION_GETTER,
     ]),
     ...mapActions(CUSTOMER, [
       GET_CUSTOMERS_ACTION,
@@ -295,6 +383,15 @@ export default {
       this.$emit('getCustomerInfo', {
         data: obj,
       })
+    },
+
+    onPaginationChange() {
+      const paginationData = {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+      }
+
+      this.GET_CUSTOMERS_ACTION(paginationData)
     },
   },
 }
