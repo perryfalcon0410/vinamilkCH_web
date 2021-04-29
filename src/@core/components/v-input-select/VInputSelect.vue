@@ -13,12 +13,12 @@
     >
       <b-input
         ref="input"
-        v-model="selection"
+        v-model="dataInput"
         class="vis_input cursor-pointer"
         :class="{'vis_input_disable': !typeAble, inputClass}"
         :placeholder="placeholder"
         :size="size"
-        autocomplete="off"
+        :autocomplete="autocomplete ? 'on' : 'off'"
         @keypress="disableKeypress"
         @focus="isCollapse = true"
         @blur="isCollapse = false"
@@ -28,7 +28,7 @@
         is-text
       >
         <b-icon-x
-          v-if="clearAble && !$isEmpty(selection)"
+          v-if="clearAble && !$isEmpty(dataInput)"
           scale="1.3"
           class="cursor-pointer"
           style="margin-right: 5px;"
@@ -73,12 +73,11 @@ export default {
     suggestions: {
       type: Array,
       required: true,
-      default: () => ['Không có dữ liệu'],
+      default: () => [{ name: 'Không có dữ liệu', id: null }],
     },
-    selection: {
+    dataInput: {
       type: Object,
       required: true,
-      twoWay: true,
     },
     title: {
       type: String,
@@ -87,7 +86,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: 'Mặc định',
+      default: 'Nhập . . .',
     },
     size: {
       type: String,
@@ -117,6 +116,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    autocomplete: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
@@ -127,8 +130,8 @@ export default {
 
   computed: {
     matches() {
-      if (this.selection !== null && this.selection !== undefined && this.filterAble) {
-        return this.suggestions.filter(item => item.name.toLowerCase().indexOf(this.selection.toLowerCase()) > -1)
+      if (this.dataInput !== null && this.dataInput !== undefined && this.filterAble) {
+        return this.suggestions.filter(item => item.name.toLowerCase().indexOf(this.dataInput.toLowerCase()) > -1)
       }
       return this.suggestions
     },
@@ -156,7 +159,7 @@ export default {
     },
 
     onDeleteButtonClick() {
-      if (this.selection !== '') {
+      if (this.dataInput !== '') {
         this.$emit('updateSelection', { name: null, id: null })
         this.$refs.input.focus()
       }

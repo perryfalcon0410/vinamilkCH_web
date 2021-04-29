@@ -61,6 +61,9 @@ moment.locale('vi')
 
 Vue.prototype.$isEmpty = isEmpty
 
+Vue.prototype.$earlyMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+Vue.prototype.$nowDate = new Date()
+
 flatPickr.localize(Vietnamese)
 Vue.component('vue-flat-pickr', VueFlatPickr)
 

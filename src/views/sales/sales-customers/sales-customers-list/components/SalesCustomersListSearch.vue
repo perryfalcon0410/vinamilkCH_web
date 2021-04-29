@@ -114,7 +114,7 @@
         <v-input-select
           title="Nhóm khách hàng"
           :suggestions="customerTypeOptions"
-          :selection="customerTypesSelected.name"
+          :data-input="customerTypesSelected.name"
           placeholder="Tất cả"
           title-class="h8 mt-lg-1 mt-xl-0"
           input-class="h9"
@@ -134,7 +134,7 @@
         <v-input-select
           title="Trạng thái"
           :suggestions="statuOptions"
-          :selection="statusSelected.name"
+          :data-input="statusSelected.name"
           placeholder="Tất cả"
           title-class="h8 mt-lg-1 mt-xl-0"
           input-class="h9"
@@ -154,7 +154,7 @@
         <v-input-select
           title="Giới tính"
           :suggestions="genderOptions"
-          :selection="gendersSelected.name"
+          :data-input="gendersSelected.name"
           placeholder="Tất cả"
           title-class="h8 mt-lg-1 mt-xl-0"
           input-class="h9"
@@ -174,7 +174,7 @@
         <v-input-select
           title="Khu vực"
           :suggestions="shopLocations()"
-          :selection="areas.name"
+          :data-input="areas.name"
           placeholder="Tất cả"
           title-class="h8 mt-lg-1 mt-xl-0"
           input-class="h9"
@@ -255,8 +255,8 @@ export default {
       dateFormatVNI,
 
       searchKeywords: null,
-      fromDate: null,
-      toDate: null,
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
       customerTypesSelected: { id: null, name: null },
       customerTypeOptions: customerData.customerTypes,
       statusSelected: { id: null, name: null },
@@ -274,12 +274,6 @@ export default {
     }
   },
 
-  watch: {
-    shopLocations() {
-      this.areas = this.shopLocations().find(locations => locations.default === true)
-    },
-  },
-
   mounted() {
     this.GET_SHOP_LOCATIONS_ACTION()
   },
@@ -294,7 +288,7 @@ export default {
     ]),
     onClickSearchButton() {
       const searchData = {
-        searchKeywords: this.searchKeywords.trim(),
+        searchKeywords: this.searchKeywords?.trim(),
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         customerTypeId: this.customerTypesSelected?.id,
