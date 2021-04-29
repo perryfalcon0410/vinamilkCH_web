@@ -10,7 +10,7 @@
         align-v="center"
         align-h="between"
       >
-        <strong class="text-blue-vinamilk">
+        <strong class="text-brand-1">
           Tìm kiếm
         </strong>
         <b-icon-chevron-down

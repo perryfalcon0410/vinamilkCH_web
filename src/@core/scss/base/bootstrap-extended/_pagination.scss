@@ -65,7 +65,7 @@
       }
       &:active,
       &:hover {
-        background-color: $blueVinamilk !important;
+        background-color: $brand-1 !important;
         &:before {
           background-image: url(str-replace(
             str-replace($chevron-left, "currentColor", $white),
@@ -136,7 +136,7 @@
       }
       &:active,
       &:hover {
-        background-color: $blueVinamilk !important;
+        background-color: $brand-1 !important;
         &:after {
           background-image: url(str-replace(
             str-replace($chevron-right, "currentColor", $white),
@@ -287,7 +287,7 @@
     .page-link {
       z-index: 3;
       border-radius: 5rem;
-      background-color: $blueVinamilk;
+      background-color: $brand-1;
       color: $white !important;
       font-weight: 600;
     }

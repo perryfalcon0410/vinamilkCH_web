@@ -14,12 +14,12 @@
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
       >
-        <strong class="text-blue-vinamilk">
+        <strong class="text-brand-1">
           Danh sách khách hàng
         </strong>
         <b-button-group>
           <b-button
-            class="rounded bg-blue-vinamilk text-white h9"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
             variant="someThing"
             size="sm"
             @click="navigateToCreate"
@@ -28,7 +28,7 @@
             Thêm mới
           </b-button>
           <b-button
-            class="ml-1 rounded bg-blue-vinamilk text-white h9"
+            class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
             variant="someThing"
             size="sm"
             @click="onClickExcelExportButton"
@@ -85,7 +85,7 @@
           >
             <div v-if="props.column.field === 'feature'">
               <b-icon-pencil-fill
-                v-b-popover.hover.top="'Chỉnh sửa'"
+                v-b-popover.hover="'Chỉnh sửa'"
                 class="cursor-pointer"
                 @click="navigateToUpdate(props.row.id)"
               />
@@ -168,7 +168,11 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { getGenderLabel, getCustomerTypeLabel } from '@core/utils/utils'
+import {
+  getGenderLabel,
+  getCustomerTypeLabel,
+  getCustomerStatusLabel,
+} from '@core/utils/utils'
 import { formatDateToLocale } from '@core/utils/filter'
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
@@ -199,49 +203,67 @@ export default {
           label: 'Mã khách hàng',
           field: 'code',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'fullName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Điện thoại',
           field: 'phoneNumber',
           type: 'number',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Ngày sinh',
           field: 'birthDay',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Giới tính',
           field: 'gender',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Trạng thái',
           field: 'status',
           type: 'boolean',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Nhóm',
           field: 'group',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Ngày tạo',
           field: 'date',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Chức năng',
           field: 'feature',
           sortable: false,
           width: '30px',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
     }
@@ -256,7 +278,7 @@ export default {
         phoneNumber: data.mobiPhone,
         birthDay: formatDateToLocale(data.dob),
         gender: getGenderLabel(data.genderId),
-        status: this.resolveStatus(data.status),
+        status: getCustomerStatusLabel(data.status),
         group: getCustomerTypeLabel(data.customerTypeId),
         date: formatDateToLocale(data.createdAt),
         feature: '',
@@ -289,16 +311,6 @@ export default {
       GET_CUSTOMERS_ACTION,
       EXPORT_CUSTOMERS_ACTION,
     ]),
-    resolveStatus(staus) {
-      switch (staus) {
-        case 0:
-          return 'Ngưng hoạt động'
-        case 1:
-          return 'Hoạt động'
-        default:
-          return ''
-      }
-    },
     navigateToCreate() {
       this.$router.push({ name: 'sales-customers-create' })
     },

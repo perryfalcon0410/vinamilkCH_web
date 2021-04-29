@@ -11,7 +11,7 @@ $vs-component-line-height: 1.8;
 $vs-component-placeholder-color: $body-color;
 
 //  Active State
-$vs-state-active-bg: rgba($blueVinamilk, 0.12);
+$vs-state-active-bg: rgba($brand-1, 0.12);
 $vs-state-active-color: $primary !important;
 
 // Border
@@ -20,7 +20,7 @@ $vs-border-radius: $input-border-radius;
 $vs-border-color: $input-border-color;
 
 //  Selected
-$vs-selected-bg: $blueVinamilk;
+$vs-selected-bg: $brand-1;
 $vs-selected-border-width: 0;
 
 // Dropdown
@@ -45,7 +45,7 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
 
 .vs__dropdown-option--disabled {
   &.vs__dropdown-option--selected {
-    background: $blueVinamilk !important;
+    background: $brand-1 !important;
   }
   opacity: 0.5;
 }
@@ -62,7 +62,7 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
 
 /* rtl:begin:ignore */
 .vs__dropdown-option--selected {
-  background-color: $blueVinamilk;
+  background-color: $brand-1;
   color: $white;
   position: relative;
 
@@ -97,7 +97,7 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
   // Because, highlight get primary color and if item is selected we want to keep white color even if it's hovered/highlighted
   &.vs__dropdown-option--highlight {
     color: $white !important;
-    background-color: $blueVinamilk !important;
+    background-color: $brand-1 !important;
   }
 }
 /* rtl:end:ignore */
@@ -179,7 +179,7 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
 // .v-select:not(.vs--single) {
 //   .vs__selected-options {
 //     .vs__selected {
-//       background-color: $blueVinamilk;
+//       background-color: $brand-1;
 //       border: none;
 //       color: #fff;
 //       button {
@@ -318,7 +318,7 @@ $vs-dropdown-box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.1);
   .v-select {
     &:not(.vs--single) {
       .vs__selected {
-        background-color: rgba($blueVinamilk, 0.12);
+        background-color: rgba($brand-1, 0.12);
         color: $primary;
       }
     }

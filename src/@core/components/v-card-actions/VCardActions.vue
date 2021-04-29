@@ -3,17 +3,18 @@
     <!-- START - Title -->
     <b-col>
       <b-row
-        v-b-toggle.collapseDelivery
         class="v-card-header text-primary mx-0"
-        :class="{ rotate: visible }"
+        :class="{ rotate: visible, 'cursor-pointer': canCollapse }"
         align-v="center"
         align-h="between"
+        @click="onCollapseClick()"
       >
-        <strong class="text-blue-vinamilk">{{ title }}</strong>
+        <strong class="text-brand-1">{{ title }}</strong>
 
         <b-icon-chevron-down
+          v-if="canCollapse"
           scale="1.1"
-          color="text-blue-vinamilk"
+          color="text-brand-1"
         />
       </b-row>
     </b-col>
@@ -25,15 +26,13 @@
       v-model="visible"
       class="border-top"
     >
-      <b-col>
-        <b-form-row
-          class="mx-0 py-1"
-        >
-          <!-- START - Content -->
-          <slot />
+      <b-form-row
+        class="p-1"
+      >
+        <!-- START - Content -->
+        <slot />
         <!-- END - Content -->
-        </b-form-row>
-      </b-col>
+      </b-form-row>
     </b-collapse>
     <!-- END - Body -->
 
@@ -42,16 +41,29 @@
 <script>
 export default {
   props: {
+    // title of component
     title: {
       type: String,
       requried: true,
       default: 'Tiêu dề',
+    },
+    // can or can't collapse component
+    canCollapse: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
     return {
       visible: true,
     }
+  },
+  methods: {
+    onCollapseClick() {
+      if (this.canCollapse) {
+        this.visible = !this.visible
+      }
+    },
   },
 }
 </script>

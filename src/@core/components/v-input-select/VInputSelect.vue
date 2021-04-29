@@ -7,35 +7,38 @@
       {{ title }}
     </div>
     <b-input-group
-      class="input-group-merge"
+      class="input-group-merge cursor-pointer"
       size="sm"
-      @click="onInputClick()"
     >
       <b-input
         ref="input"
         v-model="dataInput"
-        class="vis_input cursor-pointer"
-        :class="{'vis_input_disable': !typeAble, inputClass}"
+        class="vis_input"
+        :class="{'vis_input_disable': !typeAble, 'cursor-pointer': !typeAble, inputClass}"
         :placeholder="placeholder"
         :size="size"
         :autocomplete="autocomplete ? 'on' : 'off'"
         @keypress="disableKeypress"
         @focus="isCollapse = true"
         @blur="isCollapse = false"
-        @change="onInputChange"
       />
       <b-input-group-append
         is-text
       >
         <b-icon-x
-          v-if="clearAble && !$isEmpty(dataInput)"
+          v-show="clearAble && !$isEmpty(dataInput)"
           scale="1.3"
-          class="cursor-pointer"
           style="margin-right: 5px;"
           @click="onDeleteButtonClick()"
         />
-        <b-icon-chevron-down v-if="!isCollapse" />
-        <b-icon-chevron-up v-if="isCollapse" />
+        <b-icon-chevron-down
+          v-show="!isCollapse"
+          @click="onIconChervonDownClick()"
+        />
+        <b-icon-chevron-up
+          v-show="isCollapse"
+          @click="onIconChervonUpClick()"
+        />
       </b-input-group-append>
     </b-input-group>
 
@@ -70,52 +73,64 @@
 <script>
 export default {
   props: {
+    // Data list to show like popup
     suggestions: {
       type: Array,
       required: true,
       default: () => [{ name: 'Không có dữ liệu', id: null }],
     },
+    // Value input for input field
     dataInput: {
       type: Object,
       required: true,
     },
+    // Title for input field
     title: {
       type: String,
       require: true,
       default: 'Tiêu đề',
     },
+    // Placeholder for input field
     placeholder: {
       type: String,
       default: 'Nhập . . .',
     },
+    // size for input field (sm,md,lg)
     size: {
       type: String,
       default: 'md',
     },
+    // class for title of input field
     titleClass: {
       type: String,
       default: '',
     },
+    // class for input field
     inputClass: {
       type: String,
       default: '',
     },
+    // class for suggestions field
     suggestionsClass: {
       type: String,
       default: '',
     },
+    // Can be type in the input field
     typeAble: {
       type: Boolean,
       default: false,
     },
+    // Can be filter in the input field
     filterAble: {
       type: Boolean,
       default: false,
     },
+    // X button
     clearAble: {
       type: Boolean,
       default: false,
     },
+    // Auto complete data
     autocomplete: {
       type: Boolean,
       default: false,
@@ -125,6 +140,7 @@ export default {
   data() {
     return {
       isCollapse: false,
+      isInputClick: false,
     }
   },
 
@@ -138,13 +154,6 @@ export default {
   },
 
   methods: {
-    // When the user changes input
-    onInputChange() {
-      if (this.isCollapse === false) {
-        this.isCollapse = true
-      }
-    },
-
     // prevent type in input field
     disableKeypress(e) {
       if (!this.typeAble) {
@@ -161,12 +170,14 @@ export default {
     onDeleteButtonClick() {
       if (this.dataInput !== '') {
         this.$emit('updateSelection', { name: null, id: null })
-        this.$refs.input.focus()
       }
     },
 
-    onInputClick() {
+    onIconChervonDownClick() {
       this.$refs.input.focus()
+    },
+    onIconChervonUpClick() {
+      this.$refs.input.blur()
     },
   },
 }
@@ -179,7 +190,7 @@ export default {
   .vis_container{
     .vis_dropdown_item:hover {
       background: #E4E6F0;
-      color: $color-brand;
+      color: $color-brand-1;
       border-radius: 5px;
     }
     .vis_input_disable:focus {

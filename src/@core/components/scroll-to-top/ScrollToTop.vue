@@ -8,7 +8,7 @@
     <b-button
       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
       variant="someThing"
-      class="btn-icon bg-blue-vinamilk"
+      class="btn-icon bg-brand-1"
       @click="scrollToTop"
     >
       <feather-icon

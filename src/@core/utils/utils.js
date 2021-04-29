@@ -66,6 +66,17 @@ export const getCustomerTypeLabel = type => {
   }
 }
 
+export const getCustomerStatusLabel = staus => {
+  switch (staus) {
+    case 0:
+      return 'Ngưng hoạt động'
+    case 1:
+      return 'Hoạt động'
+    default:
+      return ''
+  }
+}
+
 export const formatURLParams = obj => {
   // eslint-disable-next-line no-restricted-syntax
   for (const propName in obj) {

@@ -14,7 +14,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-lg-1 mt-xl-0"
+          class="h8 mt-sm-1 mt-xl-0"
         >
           Khách hàng
         </div>
@@ -39,7 +39,7 @@
           rules="dateFormatVNI"
         >
           <div
-            class="h8 mt-lg-1 mt-xl-0"
+            class="h8 mt-sm-1 mt-xl-0"
           >
             Từ ngày
           </div>
@@ -77,7 +77,7 @@
           rules="dateFormatVNI"
         >
           <div
-            class="h8 mt-lg-1 mt-xl-0"
+            class="h8 mt-sm-1 mt-xl-0"
           >
             Đến ngày
           </div>
@@ -116,7 +116,7 @@
           :suggestions="customerTypeOptions"
           :data-input="customerTypesSelected.name"
           placeholder="Tất cả"
-          title-class="h8 mt-lg-1 mt-xl-0"
+          title-class="h8 mt-sm-1 mt-xl-0"
           input-class="h9"
           suggestions-class="h9"
           :clear-able="true"
@@ -136,7 +136,7 @@
           :suggestions="statuOptions"
           :data-input="statusSelected.name"
           placeholder="Tất cả"
-          title-class="h8 mt-lg-1 mt-xl-0"
+          title-class="h8 mt-sm-1 mt-xl-0"
           input-class="h9"
           suggestions-class="h9"
           :clear-able="true"
@@ -156,7 +156,7 @@
           :suggestions="genderOptions"
           :data-input="gendersSelected.name"
           placeholder="Tất cả"
-          title-class="h8 mt-lg-1 mt-xl-0"
+          title-class="h8 mt-sm-1 mt-xl-0"
           input-class="h9"
           suggestions-class="h9"
           :clear-able="true"
@@ -176,7 +176,7 @@
           :suggestions="shopLocations()"
           :data-input="areas.name"
           placeholder="Tất cả"
-          title-class="h8 mt-lg-1 mt-xl-0"
+          title-class="h8 mt-sm-1 mt-xl-0"
           input-class="h9"
           suggestions-class="h9"
           :type-able="true"
@@ -201,12 +201,12 @@
         </div>
         <b-button
           id="form-button-search"
-          class="bg-blue-vinamilk text-white h9 d-flex justify-content-center align-items-center"
+          class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
           variant="someThing"
           style="height: 30px;"
           @click="onClickSearchButton()"
         >
-          <b-icon-search class="mr-1" />
+          <b-icon-search />
           Tìm kiếm
         </b-button>
       </b-col>
@@ -214,7 +214,6 @@
     </v-card-actions>
   </b-form>
   <!-- END - Search -->
-
 </template>
 
 <script>
@@ -255,8 +254,8 @@ export default {
       dateFormatVNI,
 
       searchKeywords: null,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: null,
+      toDate: null,
       customerTypesSelected: { id: null, name: null },
       customerTypeOptions: customerData.customerTypes,
       statusSelected: { id: null, name: null },
@@ -276,6 +275,8 @@ export default {
 
   mounted() {
     this.GET_SHOP_LOCATIONS_ACTION()
+    this.fromDate = this.$earlyMonth
+    this.toDate = this.$nowDate
   },
 
   methods: {

@@ -54,10 +54,20 @@ export const formatVniDateToISO = value => {
 }
 
 // Format from dd/mm/yyyy to yyyy-mm-dd
-export const formatVniDateToGlobal = value => value?.split('/').reverse().join('-')
+export const formatVniDateToGlobal = value => {
+  if (value) {
+    value.split('/').reverse().join('-')
+  }
+  return null
+}
 
 // Format from dd/mm/yyyy to yyyy/mm/dd
-export const reverseVniDate = value => value?.split('/').reverse().join('/')
+export const reverseVniDate = value => {
+  if (value) {
+    value.split('/').reverse().join('/')
+  }
+  return null
+}
 
 /**
  * Return short human friendly month representation of date

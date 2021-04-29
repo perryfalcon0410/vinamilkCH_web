@@ -34,10 +34,9 @@ $info: $blue !default;
 $warning: $orange !default;
 $light: $gray-50 !default;
 $dark: #4b4b4b !default;
-$blackVinamilk: #202124 !default;
-$blueVinamilk: #203181 !default;
-$blueVinamilk-500: #315899 !default;
-$greenVinamilk: #83ba47 !default;
+$brand-1: #315899 !default;
+$brand-2: #83ba47 !default;
+$brand-3: #202124 !default;
 
 // Spacing
 //
@@ -51,7 +50,7 @@ $container-max-widths: (
   md: 720px,
   lg: 960px,
   xl: 1140px,
-  xxl: 1440px // Custom xxl size,,,,,,,,,,
+  xxl: 1440px // Custom xxl size,,,,,,,,,,,,,
 ) !default;
 // scss-docs-end container-max-widths
 

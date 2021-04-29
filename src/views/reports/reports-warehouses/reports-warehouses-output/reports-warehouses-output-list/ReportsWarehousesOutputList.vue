@@ -14,12 +14,12 @@
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
       >
-        <strong class="text-blue-vinamilk">
+        <strong class="text-brand-1">
           Danh sách phiếu xuất hàng
         </strong>
         <b-button-group>
           <b-button
-            class="rounded bg-blue-vinamilk text-white"
+            class="rounded bg-brand-1 text-white"
             variant="someThing"
             size="sm"
             @click="onClickPrintExportButton"
@@ -28,7 +28,7 @@
             In
           </b-button>
           <b-button
-            class="ml-1 rounded bg-blue-vinamilk text-white"
+            class="ml-1 rounded bg-brand-1 text-white"
             variant="someThing"
             size="sm"
             @click="onClickExcelExportButton"

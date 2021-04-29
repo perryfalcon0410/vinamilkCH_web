@@ -3,20 +3,24 @@
 //  ================================================================================================
 @import "~@core/scss/base/bootstrap-extended/variables";
 
-.bg-blue-vinamilk {
-  background: $blueVinamilk;
+// brand-1: blue
+// brand-2: green
+// brand-3: black
+
+.bg-brand-1 {
+  background: $brand-1;
 }
 
-.text-blue-vinamilk {
-  color: $blueVinamilk;
+.text-brand-1 {
+  color: $brand-1;
 }
 
-.bg-green-vinamilk {
-  background-color: $greenVinamilk;
+.bg-brand-2 {
+  background-color: $brand-2;
 }
 
-.text-green-vinamilk {
-  color: $greenVinamilk;
+.text-brand-2 {
+  color: $brand-2;
 }
 
 .h7 {

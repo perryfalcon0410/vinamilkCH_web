@@ -18,7 +18,7 @@
               <feather-icon
                 icon="HomeIcon"
                 size="16"
-                class="align-text-top text-blue-vinamilk"
+                class="align-text-top text-brand-1"
               />
             </b-breadcrumb-item>
             <b-breadcrumb-item
