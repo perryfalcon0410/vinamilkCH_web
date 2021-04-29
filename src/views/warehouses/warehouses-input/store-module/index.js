@@ -19,6 +19,7 @@ import {
   PRODUCTS_BY_ID_GETTER,
   PROMOTIONS_BY_ID_GETTER,
   PRODUCTS_GETTER,
+  RECEIPT_PAGINATION_GETTER,
   // ACTIONS
   GET_RECEIPTS_ACTION,
   EXPORT_RECEIPTS_ACTION,
@@ -59,6 +60,7 @@ export default {
     products: [],
     promotions: [],
     allProducts: [],
+    receiptPagination: {},
   },
 
   // START - GETTERS
@@ -104,6 +106,9 @@ export default {
     },
     [PRODUCTS_GETTER](state) {
       return state.allProducts
+    },
+    [RECEIPT_PAGINATION_GETTER](state) {
+      return state.receiptPagination
     },
   },
 
@@ -281,6 +286,7 @@ export default {
         .then(res => {
           if (res.success) {
             state.receipts = res.data.response.content
+            state.receiptPagination = res.data.response
           } else {
             throw new Error(res.statusValue)
           }

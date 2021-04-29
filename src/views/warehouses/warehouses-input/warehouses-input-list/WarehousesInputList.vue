@@ -12,14 +12,14 @@
       <!-- START - Title -->
       <b-form-row class="justify-content-between align-items-center border-bottom p-1">
         <strong
-          class="text-primary"
+          class="text-brand-1"
         >
           Danh sách phiếu nhập hàng
         </strong>
         <b-button
-          class="rounded"
-          size="md"
-          variant="primary"
+          class="rounded bg-blue-vinamilk text-white h9"
+          variant="someThing"
+          size="sm"
           @click="onClickCreateButton"
         >
           <b-icon-plus />
@@ -42,6 +42,12 @@
           compact-mode
           line-numbers
         >
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
           <!-- START - Column -->
           <template
             slot="table-column"
@@ -49,9 +55,11 @@
           >
             <b-row
               v-if="props.column.field === 'feature'"
-              align-h="center"
             >
-              <b-icon-bricks />
+              <b-icon-bricks
+                v-b-popover.hover="'Thao tác'"
+                class="ml-3"
+              />
             </b-row>
             <div v-else>
               {{ props.column.label }}
@@ -66,37 +74,23 @@
           >
             <b-row
               v-if="props.column.field === 'feature'"
-              align-h="center"
             >
-              <b-button
-                variant="light"
-                class="rounded-circle p-1 ml-1"
+              <b-icon-printer
+                v-b-popover.hover.top="'In phiếu'"
+                class="cursor-pointer ml-1"
                 @click="onClickPrintButton(props.row.id)"
-              >
-                <b-icon-printer
-                  color="blue"
-                />
-              </b-button>
-              <b-button
-                variant="light"
-                class="rounded-circle ml-1 p-1"
+              />
+              <b-icon-eye-fill
+                v-b-popover.hover.top="'Xem chi tiết'"
+                class="cursor-pointer ml-1"
                 @click="onClickUpdateButton(props.row.id, props.row.receiptType)"
-              >
-                <div>
-                  <b-icon-eye-fill
-                    color="blue"
-                  />
-                </div>
-              </b-button>
-              <b-button
-                variant="light"
-                class="rounded-circle ml-1 p-1"
+              />
+              <b-icon-trash-fill
+                v-b-popover.hover.top="'Xóa'"
+                class="cursor-pointer ml-1"
+                color="red"
                 @click="onClickDeleteButton(props.row.id, props.row.receiptType, props.row.transDate)"
-              >
-                <b-icon-trash-fill
-                  color="red"
-                />
-              </b-button>
+              />
             </b-row>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
@@ -125,6 +119,63 @@
             </b-row>
           </template>
           <!-- START - Column filter -->
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Hiển thị 1 đến
+                </span>
+                <b-form-select
+                  v-model="elementSize"
+                  size="sm"
+                  :options="paginationOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span
+                  class="text-nowrap"
+                > trong {{ receiptPagination.totalElements }} mục </span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="receiptPagination.totalElements"
+                :per-page="elementSize"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
@@ -158,17 +209,19 @@
 </template>
 
 <script>
+import warehousesData from '@/@db/common'
 import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale } from '@core/utils/filter'
+import { formatDateToLocale, formatNumberToLocale, reverseVniDate } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import WarehousesInputListSearch from './components/WarehousesInputListSearch.vue'
 import {
   WAREHOUSEINPUT,
   // GETTERS
   RECEIPTS_GETTER,
+  RECEIPT_PAGINATION_GETTER,
   // ACTIONS
   GET_RECEIPTS_ACTION,
   EXPORT_RECEIPTS_ACTION,
@@ -184,34 +237,45 @@ export default {
     return {
       isDeleteModalShow: false,
 
-      fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      toDate: new Date(),
+      fromDate: formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
+      toDate: formatDateToLocale(new Date()),
       billNumber: '',
       inputTypes: '',
       selectedReceiptId: '',
       selectedReceiptType: '',
+      elementSize: warehousesData.pagination[0],
+      pageNumber: 1,
+      paginationOptions: warehousesData.pagination,
 
       columns: [
         {
           label: 'Ngày',
           field: 'transDate',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Mã nhập hàng',
           field: 'transCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
           type: 'number',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
@@ -221,6 +285,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Số tiền',
@@ -230,16 +296,22 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Ghi chú',
           field: 'note',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Thao tác',
           field: 'feature',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
     }
@@ -253,8 +325,10 @@ export default {
         transCode: data.transCode,
         redInvoiceNo: data.redInvoiceNo,
         internalNumber: data.internalNumber,
-        quantity: data.totalQuantity,
-        price: data.totalAmount,
+        quantity: formatNumberToLocale(Number(data.totalQuantity)),
+        receiptQuantity: data.totalQuantity,
+        price: formatNumberToLocale(Number(data.totalAmount)),
+        receiptPrice: data.totalAmount,
         note: data.note,
         feature: '',
         receiptType: data.receiptType,
@@ -262,20 +336,29 @@ export default {
       }))
     },
     totalQuantity() {
-      return this.receipts.reduce((accum, item) => accum + Number(item.quantity), 0)
+      return formatNumberToLocale(Number(this.receipts.reduce((accum, item) => accum + Number(item.receiptQuantity), 0)))
     },
     totalPrice() {
-      return this.receipts.reduce((accum, item) => accum + Number(item.price), 0)
+      return formatNumberToLocale(Number(this.receipts.reduce((accum, item) => accum + Number(item.receiptPrice), 0)))
+    },
+    receiptPagination() {
+      return this.RECEIPT_PAGINATION_GETTER()
     },
   },
 
   mounted() {
-    this.GET_RECEIPTS_ACTION()
+    this.GET_RECEIPTS_ACTION({
+      fromDate: reverseVniDate(this.fromDate),
+      toDate: reverseVniDate(this.toDate),
+      formId: 5,
+      ctrlId: 7,
+    })
   },
 
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
       RECEIPTS_GETTER,
+      RECEIPT_PAGINATION_GETTER,
     ]),
     ...mapActions(WAREHOUSEINPUT, [
       GET_RECEIPTS_ACTION,
@@ -310,11 +393,11 @@ export default {
       } else if (date === formatDateToLocale(new Date())) {
         this.isDeleteModalShow = !this.isDeleteModalShow
       } else {
-        toasts.error('Đã quá thời hạn chỉnh sửa')
+        toasts.error('Đã quá thời hạn xóa')
       }
     },
     confirmDelete() {
-      this.REMOVE_RECEIPT_ACTION(`${this.selectedReceiptId}?type=${this.selectedReceiptType}`)
+      this.REMOVE_RECEIPT_ACTION(`${this.selectedReceiptId}?type=${this.selectedReceiptType}&formId=5&ctrlId=7`)
       this.isDeleteModalShow = !this.isDeleteModalShow
     },
   },

@@ -85,7 +85,7 @@
                     v-model="billNumber"
                     trim
                     :state="touched ? passed : null"
-                    disabled
+                    :disabled="!(importType === 0) || !(importType === 0 && totalProductQuantity === 0)"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -127,7 +127,7 @@
                     v-model="internalNumber"
                     trim
                     :state="touched ? passed : null"
-                    disabled
+                    :disabled="!(importType === 0) || !(importType === 0 && totalProductQuantity === 0)"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -169,6 +169,7 @@
             <!-- START -   Note -->
             <b-form-group
               label="Ghi chú"
+              label-class="mt-1"
               label-for="note"
             >
               <b-form-textarea
@@ -200,6 +201,28 @@
                 compact-mode
                 line-numbers
               >
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
+                <template
+                  slot="table-column"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'feature'"
+                  >
+                    <b-icon-bricks
+                      v-b-popover.hover="'Thao tác'"
+                      class="ml-3"
+                    />
+                  </b-row>
+                  <div v-else>
+                    {{ props.column.label }}
+                  </div>
+                </template>
                 <!-- START - Column filter -->
                 <template
                   slot="column-filter"
@@ -226,71 +249,91 @@
               <!-- END - Table Product -->
             </div>
 
-            <!-- START - Table Product promotion -->
-            <div class="d-inline-flex rounded-top px-1 my-1">
-              <strong>
-                Hàng khuyến mãi
-              </strong>
-            </div>
+            <div v-if="(importType === 0 && totalProductQuantity === 0) || (totalPromotionQuantity > 0)">
+              <!-- START - Table Product promotion -->
+              <div class="d-inline-flex rounded-top px-1 my-1">
+                <strong>
+                  Hàng khuyến mãi
+                </strong>
+              </div>
 
-            <vue-good-table
-              :columns="columns"
-              :rows="promotions"
-              style-class="vgt-table striped"
-              compact-mode
-              line-numbers
-            >
-              <!-- START - Column filter -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
+              <vue-good-table
+                :columns="columns"
+                :rows="promotions"
+                style-class="vgt-table striped"
+                compact-mode
+                line-numbers
               >
-                <b-row
-                  v-if="props.column.field === 'quantity'"
-                  class="mx-0"
-                  align-h="end"
-                >
-                  {{ totalPromotionQuantity }}
-                </b-row>
-
-                <b-row
-                  v-else-if="props.column.field === 'totalPrice'"
-                  class="mx-0"
-                  align-h="end"
-                >
-                  {{ totalPromotionPrice }}
-                </b-row>
-              </template>
-              <template
-                slot="table-row"
-                slot-scope="props"
-              >
-                <div v-if="props.column.field === 'quantity'">
-                  <b-input
-                    v-model="props.row.quantity"
-                    size="sm"
-                    :number="true"
-                    :value="props.row.quantity"
-                    @change="updateQuantity(props.row.originalIndex, props.row.quantity)"
-                  />
-                </div>
                 <div
-                  v-else-if="props.column.field === 'feature'"
-                  align-h="center"
+                  slot="emptystate"
+                  class="text-center"
                 >
-                  <b-button
-                    variant="light"
-                    class="rounded-circle ml-1 p-1"
-                    @click="onClickDeleteButton(props.row.originalIndex)"
-                  >
-                    <b-icon-x-circle
-                      color="black"
-                    />
-                  </b-button>
+                  Không có dữ liệu
                 </div>
-              </template>
-              <!-- START - Column filter -->
-            </vue-good-table>
+                <template
+                  slot="table-column"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'feature'"
+                  >
+                    <b-icon-bricks
+                      v-b-popover.hover="'Thao tác'"
+                      class="ml-3"
+                    />
+                  </b-row>
+                  <div v-else>
+                    {{ props.column.label }}
+                  </div>
+                </template>
+                <!-- START - Column filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'quantity'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    {{ totalPromotionQuantity }}
+                  </b-row>
+
+                  <b-row
+                    v-else-if="props.column.field === 'totalPrice'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    {{ totalPromotionPrice }}
+                  </b-row>
+                </template>
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div v-if="props.column.field === 'quantity'">
+                    <b-input
+                      v-model="props.row.quantity"
+                      size="sm"
+                      :number="true"
+                      :value="props.row.quantity"
+                      @change="updateQuantity(props.row.originalIndex, props.row.quantity)"
+                    />
+                  </div>
+                  <div
+                    v-else-if="props.column.field === 'feature'"
+                    align-h="center"
+                  >
+                    <b-icon-x
+                      v-b-popover.hover.top="'Xóa'"
+                      class="cursor-pointer ml-1"
+                      @click="onClickDeleteButton(props.row.originalIndex)"
+                    />
+                  </div>
+                </template>
+                <!-- START - Column filter -->
+              </vue-good-table>
+            </div>
             <div v-if="importType === 0 && totalProductQuantity === 0">
               <div
                 slot="table-actions-bottom"
@@ -342,7 +385,7 @@
               <b-button-group>
                 <b-button
                   variant="primary"
-                  class="d-flex align-items-center rounded text-uppercase"
+                  class="d-flex align-items-center rounded text-uppercase bg-blue-vinamilk text-white"
                   :disabled="transDate !== today"
                   @click="updateReceipt"
                 >
@@ -379,12 +422,6 @@
 
     <!-- END - Form and list -->
 
-    <!-- START - Modal -->
-    <adjustment-modal :visible="AdjustmentModalVisible" />
-    <borrowed-modal :visible="BorrowedModalVisible" />
-    <po-confirm-modal :visible="PoConfirmModalVisible" />
-    <!-- END - Modal -->
-
   </b-container>
 </template>
 
@@ -401,11 +438,8 @@ import {
   number,
   required,
 } from '@/@core/utils/validations/validations'
-import { formatDateToLocale, getTimeOfDate } from '@core/utils/filter'
+import { formatDateToLocale, getTimeOfDate, formatNumberToLocale } from '@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
-import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
-import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
-import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
 import {
   WAREHOUSEINPUT,
   // GETTERS
@@ -422,18 +456,11 @@ import {
 
 export default {
   components: {
-    AdjustmentModal,
-    BorrowedModal,
-    PoConfirmModal,
     ValidationProvider,
     ValidationObserver,
   },
   data() {
     return {
-      AdjustmentModalVisible: false,
-      BorrowedModalVisible: false,
-      PoConfirmModalVisible: false,
-
       warehouse: '',
       billNumber: '',
       billDate: '',
@@ -458,6 +485,8 @@ export default {
           label: 'Mã hàng',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Số lượng',
@@ -467,39 +496,53 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giá',
           field: 'price',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tên hàng',
           field: 'name',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           type: 'number',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'SO No',
           field: 'soNo',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Thao tác',
           field: 'feature',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
       promotions: [],
@@ -517,19 +560,19 @@ export default {
     products() {
       return this.PRODUCTS_BY_ID_GETTER().map(data => ({
         productCode: data.productCode,
-        quantity: data.quantity,
-        price: data.price,
+        quantity: formatNumberToLocale(Number(data.quantity)),
+        price: formatNumberToLocale(Number(data.price)),
         name: data.productName,
         unit: data.unit,
-        totalPrice: data.totalPrice,
+        totalPrice: formatNumberToLocale(Number(data.totalPrice)),
         soNo: data.soNo,
       }))
     },
     totalProductQuantity() {
-      return this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.quantity), 0)
+      return formatNumberToLocale(Number(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.quantity), 0)))
     },
     totalProductPrice() {
-      return this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.totalPrice), 0)
+      return formatNumberToLocale(Number(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.totalPrice), 0)))
     },
     getPromotions() {
       return this.PROMOTIONS_BY_ID_GETTER().map(data => ({
@@ -545,7 +588,7 @@ export default {
       }))
     },
     getTotalPromotionQuantity() {
-      return this.promotions.reduce((accum, item) => accum + Number(item.quantity), 0)
+      return formatNumberToLocale(Number(this.promotions.reduce((accum, item) => accum + Number(item.quantity), 0)))
     },
     totalPromotionPrice() {
       return 0
@@ -577,7 +620,7 @@ export default {
       this.transTime = getTimeOfDate(this.RECEIPT_BY_ID_GETTER().transDate)
       this.wareHouseTypeName = this.RECEIPT_BY_ID_GETTER().wareHouseTypeName
       this.billNumber = this.RECEIPT_BY_ID_GETTER().redInvoiceNo
-      this.billDate = this.RECEIPT_BY_ID_GETTER().orderDate || this.RECEIPT_BY_ID_GETTER().adjustmentDate || this.RECEIPT_BY_ID_GETTER().adjustmentDate
+      this.billDate = this.RECEIPT_BY_ID_GETTER().orderDate || this.RECEIPT_BY_ID_GETTER().adjustmentDate || this.RECEIPT_BY_ID_GETTER().borrowDate
       this.internalNumber = this.RECEIPT_BY_ID_GETTER().internalNumber
       this.poNumber = this.RECEIPT_BY_ID_GETTER().poNumber
       this.note = this.RECEIPT_BY_ID_GETTER().note
@@ -593,8 +636,8 @@ export default {
   },
 
   mounted() {
-    this.GET_RECEIPT_BY_ID_ACTION(`${this.id}?type=${this.importType}`)
-    this.GET_PRODUCTS_BY_ID_ACTION(`${this.id}?type=${this.importType}`)
+    this.GET_RECEIPT_BY_ID_ACTION(`${this.id}?type=${this.importType}&formId=5&ctrlId=7`)
+    this.GET_PRODUCTS_BY_ID_ACTION(`${this.id}?type=${this.importType}&formId=5&ctrlId=7`)
   },
 
   methods: {
@@ -611,22 +654,17 @@ export default {
       UPDATE_RECEIPT_ACTION,
     ]),
 
-    showModal() {
-      const PoConfirm = this.importType === '1' ? this.PoConfirmModalVisible = !this.PoConfirmModalVisible : this.PoConfirmModalVisible = false
-      const Adjustment = this.importType === '2' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
-      const Borrowed = this.importType === '3' ? this.BorrowedModalVisible = !this.BorrowedModalVisible : this.BorrowedModalVisible = false
-
-      return PoConfirm && Adjustment && Borrowed
-    },
     navigateBack() {
       this.$router.back()
     },
     loadProducts() {
       this.cursor = -1
-      const test = this.promotions.map(data => data.productId)
+      const productIds = this.promotions.map(data => data.productId)
       this.GET_PRODUCTS_ACTION({
         keyWord: this.productSearch.trim(),
-        productIds: test,
+        productIds,
+        formId: 5,
+        ctrlId: 7,
       })
     },
     selectProduct(product) {
@@ -675,13 +713,19 @@ export default {
         id: this.id,
         type: this.importType,
         note: this.note,
+        redInvoiceNo: this.billNumber,
+        internalNumber: this.internalNumber,
         lstUpdate: updatedPromotions,
+        formId: 5,
+        ctrlId: 7,
       })
     },
     click() {
       this.GET_PRODUCTS_ACTION({
         keyWord: this.productSearch.trim(),
         productIds: this.promotions.map(data => data.productId),
+        formId: 5,
+        ctrlId: 7,
       })
     },
     onClickDeleteButton(index) {

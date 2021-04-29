@@ -77,9 +77,9 @@ export default {
     return axios.get(`${getProductsByIdEndpoint}/${args}`)
   },
   getProducts(args) {
-    return axios.post(getProductsEndPoint, args)
+    return axios.post(`${getProductsEndPoint}?formId=${args.formId}&ctrlId=${args.ctrlId}`, args)
   },
   updateReceipt(args) {
-    return axios.patch(`${updateReceiptEndpoint}/${args.id}`, args)
+    return axios.patch(`${updateReceiptEndpoint}/${args.id}?formId=${args.formId}&ctrlId=${args.ctrlId}`, args)
   },
 }
