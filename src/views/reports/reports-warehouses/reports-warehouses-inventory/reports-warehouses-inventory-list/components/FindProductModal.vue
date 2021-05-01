@@ -13,7 +13,7 @@
       <!--START search form-->
       <b-form>
         <div class="bg-light w-25 h-25 rounded-right border-top-info border-bottom-info border-right-info">
-          <strong class="text-blue-vinamilk">
+          <strong class="text-brand-1">
             Tìm kiếm sản phẩm
           </strong>
         </div>
@@ -72,8 +72,9 @@
               Tìm kiếm
             </div>
             <b-button
-              class="bg-blue-vinamilk text-white h9 d-flex justify-content-center align-items-center"
+              class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
               variant="someThing"
+              size="sm"
               style="height: 30px;"
             >
               <b-icon-search class="mr-1" />
@@ -113,8 +114,9 @@
       <b-row class="m-1 justify-content-center">
         <b-button-group>
           <b-button
-            class="d-flex justify-content-center align-items-center ml-1 rounded text-uppercase bg-blue-vinamilk text-white h9"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center"
             variant="someThing"
+            size="sm"
           >
             <b-icon
               icon="download"
@@ -122,11 +124,12 @@
               height="15"
               class="mr-1"
             />
-            lưu
+            Lưu
           </b-button>
           <b-button
-            class="d-flex justify-content-center align-items-center ml-1 rounded text-uppercase bg-blue-vinamilk text-white h9"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center ml-1"
             variant="someThing"
+            size="sm"
             @click="$bvModal.hide('modal')"
           >
             <b-icon

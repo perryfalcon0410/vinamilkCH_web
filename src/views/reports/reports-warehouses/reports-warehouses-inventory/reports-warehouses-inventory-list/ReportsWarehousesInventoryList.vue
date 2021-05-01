@@ -10,12 +10,12 @@
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
       >
-        <strong class="text-blue-vinamilk">
+        <strong class="text-brand-1">
           Tồn kho sản phẩm
         </strong>
         <b-button-group>
           <b-button
-            class="rounded bg-blue-vinamilk text-white h9 mr-1"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
             variant="someThing"
             size="sm"
           >
@@ -23,7 +23,7 @@
             In
           </b-button>
           <b-button
-            class="rounded bg-blue-vinamilk text-white h9"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
             variant="someThing"
             size="sm"
           >
@@ -38,7 +38,8 @@
           :rows="rows"
           style-class="vgt-table striped"
           :pagination-options="{
-            enabled: true
+            enabled: true,
+            perPage: elementSize,
           }"
           compact-mode
           line-numbers
@@ -115,6 +116,61 @@
               3,852,069,000
             </b-row>
           </template>
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Hiển thị 1 đến
+                </span>
+                <b-form-select
+                  v-model="elementSize"
+                  size="sm"
+                  :options="paginationOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span
+                  class="text-nowrap"
+                > trong 69 mục </span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="1"
+                :per-page="elementSize"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
           <!-- START - Column filter -->
         </vue-good-table>
       </b-col>
@@ -123,6 +179,7 @@
 </template>
 
 <script>
+import reportData from '@/@db/report'
 import ListSearch from './components/ListSearch.vue'
 
 export default {
@@ -131,6 +188,10 @@ export default {
   },
   data() {
     return {
+      pageNumber: 1,
+      elementSize: 20,
+      paginationOptions: reportData.pagination,
+
       columns: [
         {
           label: 'Ngành hàng',

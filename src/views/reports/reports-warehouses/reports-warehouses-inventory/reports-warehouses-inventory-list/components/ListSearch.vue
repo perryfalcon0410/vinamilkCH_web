@@ -71,8 +71,9 @@
         </div>
         <b-button
           id="form-button-search"
-          class="bg-blue-vinamilk text-white h9 d-flex justify-content-center align-items-center"
+          class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
           variant="someThing"
+          size="sm"
           style="height: 30px;"
           @click="onClickSearchButton()"
         >
