@@ -13,26 +13,26 @@ $thead-bg-color-2: transparent;
     thead {
       tr:first-child {
         background: $brand-1;
-      }
-      tr:first-child {
+
         th {
-          div {
-            color: white;
-            font-size: 13px;
-          }
+          color: white;
+          font-size: 13px;
         }
       }
     }
 
     tbody {
-      tr:hover {
-        background: rgba($secondary, 0.5);
-      }
       tr {
-        color: $brand-3;
         font-size: 12px;
-        th {
+
+        &:hover {
+          background: rgba($secondary, 0.5);
+        }
+
+        th,
+        td {
           font-weight: normal;
+          color: $brand-3;
         }
       }
     }

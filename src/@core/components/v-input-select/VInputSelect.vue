@@ -4,11 +4,14 @@
     class="vis_container p-0"
   >
     <div :class="titleClass">
-      {{ title }}
+      {{ title }} <sup
+        v-if="isRequire"
+        class="text-danger"
+      >*</sup>
     </div>
     <b-input-group
       class="input-group-merge cursor-pointer"
-      size="sm"
+      :size="size"
     >
       <b-input
         ref="input"
@@ -16,7 +19,6 @@
         class="vis_input"
         :class="{'vis_input_disable': !typeAble, 'cursor-pointer': !typeAble, inputClass}"
         :placeholder="placeholder"
-        :size="size"
         :autocomplete="autocomplete ? 'on' : 'off'"
         @keypress="disableKeypress"
         @focus="isCollapse = true"
@@ -50,6 +52,7 @@
     >
       <b-container
         class="my-1 p-0 bg-white rounded shadow-lg"
+        fluid
       >
         <b-row
           v-for="(item,index) in matches"
@@ -59,7 +62,12 @@
           @click="suggestionClick(index)"
         >
           <!-- START - Label -->
-          <b-col class="py-1">
+          <!-- <div v-if="isListEmpty(item)">
+            Không có dữ liệu
+          </div> -->
+          <b-col
+            class="py-1"
+          >
             {{ item.name }}
           </b-col>
           <!-- END - Label -->
@@ -87,7 +95,6 @@ export default {
     // Title for input field
     title: {
       type: String,
-      require: true,
       default: 'Tiêu đề',
     },
     // Placeholder for input field
@@ -135,6 +142,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    // Require field
+    isRequire: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
@@ -176,8 +188,15 @@ export default {
     onIconChervonDownClick() {
       this.$refs.input.focus()
     },
+
     onIconChervonUpClick() {
       this.$refs.input.blur()
+    },
+
+    isListEmpty(value) {
+      console.log(value)
+      console.log(this.$isEmpty(value))
+      return this.$isEmpty(value)
     },
   },
 }
@@ -186,7 +205,6 @@ export default {
 <style lang="scss" scoped>
 
 @import '@/assets/scss/style.scss';
-
   .vis_container{
     .vis_dropdown_item:hover {
       background: #E4E6F0;

@@ -139,16 +139,22 @@
 
               <!-- checkbox -->
               <b-form-group>
-                <div class="d-flex flex-direction-row justify-content-between">
+                <b-row
+                  class="mx-0"
+                  align-h="between"
+                  align-v="center"
+                >
                   <b-form-checkbox
                     v-model="saveStatus"
                   >
                     Ghi nhớ mật khẩu
                   </b-form-checkbox>
+
                   <b-link :to="{name:'auth-reset-password'}">
-                    <small>Đổi mật khẩu</small>
+                    <small class="h7">Đổi mật khẩu</small>
                   </b-link>
-                </div>
+
+                </b-row>
               </b-form-group>
 
               <!-- submit buttons -->
@@ -163,7 +169,10 @@
             </b-form>
           </validation-observer>
           <hr>
-          <span>Liên hệ: ch.support@vinamilk.com.vn</span>
+          <div>Liên hệ: ch.support@vinamilk.com.vn</div>
+          <div class="my-1">
+            © Copyright Tập đoàn Công nghiệp Viễn thông Quân đội
+          </div>
         </b-col>
       </b-col>
     <!-- /Login-->
@@ -318,8 +327,8 @@ export default {
         .login({
           username: this.username.toLowerCase(),
           password: this.password,
-          roleId: roleSelected.value,
-          shopId: shopSelected.value,
+          roleId: roleSelected.id,
+          shopId: shopSelected.id,
         })
         .then(response => {
           const {

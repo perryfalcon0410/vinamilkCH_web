@@ -162,6 +162,31 @@
           </b-link>
         </p>
 
+        <hr>
+        <b-row
+          class="mx-0"
+          style="font-size: 10px"
+          align-h="between"
+          align-v="center"
+        >
+          <b-row
+            class="mx-0"
+            align-v="center"
+          >
+            <b-img
+              src="@/assets/images/logo/viettel-logo.svg"
+              alt="Viettel logo"
+              width="100px"
+              fluid
+            />
+            <div class="mx-1">
+              Copyright © Viettel
+            </div>
+          </b-row>
+
+          <a href="https://viettel.com.vn">https://viettel.com.vn</a>
+        </b-row>
+
       </b-card>
     <!-- /Reset Password -->
     </div>

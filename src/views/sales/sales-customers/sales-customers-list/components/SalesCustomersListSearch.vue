@@ -120,6 +120,7 @@
           input-class="h9"
           suggestions-class="h9"
           :clear-able="true"
+          size="sm"
           @updateSelection="customerTypesSelected = $event"
         />
       </b-col>
@@ -140,6 +141,7 @@
           input-class="h9"
           suggestions-class="h9"
           :clear-able="true"
+          size="sm"
           @updateSelection="statusSelected = $event"
         />
       </b-col>
@@ -160,6 +162,7 @@
           input-class="h9"
           suggestions-class="h9"
           :clear-able="true"
+          size="sm"
           @updateSelection="gendersSelected = $event"
         />
       </b-col>
@@ -182,6 +185,7 @@
           :type-able="true"
           :clear-able="true"
           :filter-able="true"
+          size="sm"
           @updateSelection="areas = $event"
         />
       </b-col>
@@ -298,10 +302,6 @@ export default {
         areaId: this.areas?.id,
       }
       this.GET_CUSTOMERS_ACTION(searchData)
-    },
-
-    truncate(str, n) {
-      return (str.length > n) ? `${str.substr(0, n - 2)}...` : str
     },
 
     shopLocations() {

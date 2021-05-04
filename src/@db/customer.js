@@ -8,13 +8,4 @@ export default {
     { name: 'Khách hàng thường', id: '2' },
     { name: 'Khách hàng VIP', id: '21' },
   ],
-  pagination: [
-    20,
-    40,
-    60,
-    80,
-    100,
-    200,
-    500,
-  ],
 }

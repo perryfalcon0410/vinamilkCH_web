@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import customerData from '@/@db/customer'
+import commonData from '@/@db/common'
 import {
   mapActions,
   mapGetters,
@@ -193,10 +193,10 @@ export default {
     return {
       isShowDeleteModal: false,
       selectedRow: 0,
-      elementSize: 20,
+      elementSize: commonData.pagination[0],
       pageNumber: 1,
 
-      paginationOptions: customerData.pagination,
+      paginationOptions: commonData.pagination,
 
       columns: [
         {

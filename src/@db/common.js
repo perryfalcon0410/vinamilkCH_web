@@ -4,4 +4,13 @@ export default {
     { id: '2', name: 'Nữ' },
     { id: '3', name: 'Khác' },
   ],
+  pagination: [
+    20,
+    40,
+    60,
+    80,
+    100,
+    200,
+    500,
+  ],
 }

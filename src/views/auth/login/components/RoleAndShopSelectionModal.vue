@@ -10,46 +10,44 @@
     @ok="login"
   >
     <b-form>
-      <b-form-group
-        label="Vai trò"
-        label-for="role-select"
-      >
-        <v-select
-          id="role-select"
-          v-model="roleSelected"
-          placeholder="Chọn vai trò"
-          :options="roleDatasource"
-          @input="onRoleChange"
-        />
-      </b-form-group>
-      <b-form-group
-        label="Cửa hàng"
-        label-for="shop-select"
-      >
-        <v-select
-          id="shop-select"
-          v-model="shopSelected"
-          placeholder="Chọn cửa hàng"
-          :options="shopDatasource"
-        />
-      </b-form-group>
+      <v-input-select
+        title="Vai trò"
+        :suggestions="roleDatasource"
+        :data-input="roleSelected.name"
+        placeholder="Chọn vai trò"
+        title-class="h7"
+        input-class="h9"
+        suggestions-class="h9"
+        clear-able
+        is-require
+        @updateSelection="roleSelected = $event"
+      />
+      <v-input-select
+        title="Cửa hàng"
+        :suggestions="shopDatasource"
+        :data-input="shopSelected.name"
+        placeholder="Chọn cửa hàng"
+        title-class="h7 mt-1"
+        input-class="h8"
+        suggestions-class="h8"
+        clear-able
+        is-require
+        @updateSelection="shopSelected = $event"
+      />
     </b-form>
   </b-modal>
 </template>
 
 <script>
 import {
-  BModal, VBModal, BForm, BFormGroup,
+  VBModal,
 } from 'bootstrap-vue'
-import vSelect from 'vue-select'
+import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import Ripple from 'vue-ripple-directive'
 
 export default {
   components: {
-    BModal,
-    BForm,
-    BFormGroup,
-    vSelect,
+    VInputSelect,
   },
   directives: {
     'b-modal': VBModal,
@@ -69,8 +67,8 @@ export default {
     return {
       shops: [],
 
-      roleSelected: null,
-      shopSelected: null,
+      roleSelected: { id: null, name: null },
+      shopSelected: { id: null, name: null },
     }
   },
   computed: {
@@ -79,32 +77,48 @@ export default {
     },
     roleDatasource() {
       return this.roles.map(e => ({
-        label: e.roleName,
-        value: e.id,
+        name: e.roleName,
+        id: e.id,
       }))
     },
     shopDatasource() {
       if (this.roleSelected) {
-        const roleFound = this.roles.find(item => item.id === this.roleSelected.value)
+        const roleFound = this.roles.find(item => item.id === this.roleSelected.id)
 
         if (roleFound) {
           return roleFound.shops.map(e => ({
-            label: e.shopName,
-            value: e.id,
+            name: e.shopName,
+            id: e.id,
           }))
         }
       }
 
       return []
     },
-  },
-  methods: {
-    onRoleChange() {
-      this.shopSelected = null
+
+    getFirstShop() {
+      if (this.roleSelected) {
+        const roleFound = this.roles.find(item => item.id === this.roleSelected.id)
+
+        if (roleFound) {
+          return roleFound.shops[0]
+        }
+      }
+      return { id: null, shopName: null }
     },
+  },
+
+  watch: {
+    roleSelected() {
+      this.shopSelected = { id: this.getFirstShop.id, name: this.getFirstShop.shopName }
+    },
+  },
+
+  methods: {
     onModalHidden() {
       this.$emit('onModalHidden')
     },
+
     login() {
       this.$emit('login', {
         roleSelected: this.roleSelected,
