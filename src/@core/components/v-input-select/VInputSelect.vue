@@ -193,11 +193,11 @@ export default {
       this.$refs.input.blur()
     },
 
-    isListEmpty(value) {
-      console.log(value)
-      console.log(this.$isEmpty(value))
-      return this.$isEmpty(value)
-    },
+    // isListEmpty(value) {
+    //   console.log(value)
+    //   console.log(this.$isEmpty(value))
+    //   return this.$isEmpty(value)
+    // },
   },
 }
 </script>

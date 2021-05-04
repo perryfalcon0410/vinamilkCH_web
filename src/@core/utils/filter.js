@@ -56,7 +56,7 @@ export const formatVniDateToISO = value => {
 // Format from dd/mm/yyyy to yyyy-mm-dd
 export const formatVniDateToGlobal = value => {
   if (value) {
-    value.split('/').reverse().join('-')
+    return value.split('/').reverse().join('-')
   }
   return null
 }
@@ -64,7 +64,7 @@ export const formatVniDateToGlobal = value => {
 // Format from dd/mm/yyyy to yyyy/mm/dd
 export const reverseVniDate = value => {
   if (value) {
-    value.split('/').reverse().join('/')
+    return value.split('/').reverse().join('/')
   }
   return null
 }
