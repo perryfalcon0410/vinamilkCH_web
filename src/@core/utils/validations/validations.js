@@ -27,6 +27,7 @@ import {
   validatorDateFormatVNI,
   validatorAge,
   validatorEqual,
+  validatorIdentifyCard,
 } from './validators'
 
 // ////////////////////////////////////////////////////////
@@ -112,6 +113,11 @@ export const dateFormatVNI = extend('dateFormatVNI', {
 export const age = extend('age', {
   validate: validatorAge,
   message: 'Khách hàng không được dưới 15 tuổi',
+})
+
+export const identifyCard = extend('identifyCard', {
+  validate: validatorIdentifyCard,
+  message: 'CMND phải là số và có từ 9 đến 12 ký tự',
 })
 
 localize('vi', vi)

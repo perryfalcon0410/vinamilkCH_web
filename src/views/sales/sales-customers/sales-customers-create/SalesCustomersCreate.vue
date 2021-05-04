@@ -20,7 +20,7 @@
           <b-row class="flex-grow-1 mx-0">
             <!-- START - Section 1 -->
             <b-col sm="8">
-              <label class="font-weight-bold w-100 text-center mb-2">Thông tin cá nhân</label>
+              <label class="font-weight-bold w-100 text-center mb-2 h5">Thông tin cá nhân</label>
 
               <!-- START - Customer Code -->
               Mã khách hàng
@@ -105,9 +105,9 @@
                       <vue-flat-pickr
                         id="form-input-date-from"
                         v-model="birthDay"
-                        :config="configDate"
+                        :config="configBitrhDay"
                         class="form-control"
-                        placeholder="chọn ngày"
+                        placeholder="Chọn ngày"
                       />
                       <b-input-group-append
                         is-text
@@ -121,14 +121,13 @@
                 </b-col>
 
                 <b-col>
-                  <div class="mt-1">
-                    Giới tính
-                  </div>
-                  <v-select
-                    v-model="genders"
-                    :options="[{name: 'Nam', id: '1'},{name: 'Nữ', id: '2'},{name: 'Khác', id: '3'},]"
-                    label="name"
-                    :searchable="false"
+                  <v-input-select
+                    title="Giới tính"
+                    :suggestions="genderOptions"
+                    :data-input="gendersSelected.name"
+                    placeholder="Chọn giới tính"
+                    title-class="mt-1"
+                    @updateSelection="gendersSelected = $event"
                   />
                 </b-col>
               </b-form-row>
@@ -136,41 +135,36 @@
 
               <!-- START - Customer Group and State -->
               <b-form-row>
-                <b-col cols="8">
+                <b-col>
                   <validation-provider
                     v-slot="{ errors }"
                     rules="required"
                     name="Nhóm khách hàng"
                   >
-                    <div class="mt-1">
-                      Nhóm khách hàng <sup class="text-danger">*</sup>
-                    </div>
-                    <v-select
-                      v-model="customerGroups"
-                      :options="customerTypes"
-                      label="name"
-                      :searchable="false"
-                      placeholder="Chọn loại khách hàng"
-                    >
-                      <template #no-options="{}">
-                        Không có dữ liệu
-                      </template>
-                    </v-select>
+                    <v-input-select
+                      title="Nhóm khách hàng"
+                      :suggestions="customerTypeOptions"
+                      :data-input="customerTypesSelected.name"
+                      placeholder="Chọn nhóm khách hàng"
+                      title-class="mt-1"
+                      is-require
+                      clear-able
+                      @updateSelection="customerTypesSelected = $event"
+                    />
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
 
                 </b-col>
 
                 <b-col>
-                  <div class="mt-1">
-                    Trạng thái
-                  </div>
-                  <v-select
-                    v-model="customerStatus"
-                    :options="[{name: 'Hoạt động', id: '1'}]"
-                    label="name"
-                    :searchable="false"
+                  <v-input-select
+                    title="Trạng thái"
+                    :suggestions="customerStatusOptions"
+                    :data-input="customerStatusSelected.name"
+                    title-class="mt-1"
+                    is-require
                     disabled
+                    @updateSelection="customerStatusSelected = $event"
                   />
                 </b-col>
               </b-form-row>
@@ -178,7 +172,7 @@
 
               <!-- START - Customer loyal -->
               <b-form-checkbox
-                v-model="customerSpecial"
+                v-model="customerPrivate"
                 class="mt-1"
               >
                 Khách hàng riêng của cửa hàng
@@ -186,17 +180,13 @@
               <!-- END - Customer loyal -->
 
               <!-- START - Customer Note -->
-              <b-form-group
-                label="Ghi chú"
-                label-for="Note"
-                class="mt-1"
-              >
-                <b-form-textarea
-                  id="Note"
-                  v-model="note"
-                  maxlength="4000"
-                />
-              </b-form-group>
+              <div class="mt-1">
+                Ghi chú
+              </div>
+              <b-form-textarea
+                v-model="note"
+                maxlength="4000"
+              />
               <!-- END - Customer Note -->
             </b-col>
             <!-- END - Section 1 -->
@@ -209,7 +199,7 @@
               <!-- START - Customer IdentityCard -->
               <validation-provider
                 v-slot="{ errors, passed }"
-                rules="number"
+                rules="identifyCard"
                 name="CMND"
               >
                 <b-form-group
@@ -221,7 +211,8 @@
                   <b-form-input
                     id="IdentityCard"
                     v-model="customerID"
-                    maxlength="15"
+                    maxlength="12"
+                    minlength="9"
                     :state="customerID ? stateInputValueID = passed : null"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -241,9 +232,9 @@
                 <b-input-group class="input-group-merge">
                   <vue-flat-pickr
                     v-model="customerIDDate"
-                    :config="configDate"
+                    :config="configIDDate"
                     class="form-control"
-                    placeholder="chọn ngày"
+                    placeholder="Chọn ngày"
                   />
                   <b-input-group-append
                     is-text
@@ -257,17 +248,13 @@
               <!-- END - Customer ID Date -->
 
               <!-- START - Customer ID Location -->
-              <b-form-group
-                label="Nơi cấp"
-                label-for="IdLocation"
-                class="mt-1"
-              >
-                <b-form-input
-                  id="IdLocation"
-                  v-model="customerIDLocation"
-                  maxlength="200"
-                />
-              </b-form-group>
+              <div class="mt-1">
+                Nơi cấp
+              </div>
+              <b-form-input
+                v-model="customerIDLocation"
+                maxlength="200"
+              />
               <!-- END - Customer ID Location -->
             </b-col>
           <!-- END - Section 2 -->
@@ -282,7 +269,7 @@
           xl="3"
           class="bg-white shadow rounded ml-lg-1 mt-1 mt-lg-0 pb-1"
         >
-          <label class="font-weight-bold w-100 text-center mb-2">Thông tin liên hệ</label>
+          <label class="font-weight-bold w-100 text-center mb-2 h5">Thông tin liên hệ</label>
           <!-- START - Customer Phone Number -->
           <validation-provider
             v-slot="{ errors, passed,}"
@@ -342,91 +329,71 @@
           </validation-provider>
           <!-- END - Customer Home number -->
 
+          <!-- TODO: Cần xử lý logic khúc tình,quận,phường -->
           <!-- START - Customer Province -->
-          <b-form-group
-            label="Tỉnh/ Thành"
-            label-for="Province"
-            class="mt-1"
-          >
-            <v-select
-              id="Province"
-              v-model="customerProvince"
-              :options="provinces"
-              label="name"
-              autocomplete="on"
-              placeholder="Chọn tỉnh/ thành"
-            />
-          </b-form-group>
+          <v-input-select
+            title="Tỉnh/ Thành"
+            :suggestions="provinceOptions"
+            :data-input="provincesSelected.name"
+            title-class="mt-1"
+            placeholder="Chọn tỉnh/ thành"
+            :type-able="true"
+            :filter-able="true"
+            :clear-able="true"
+            @updateSelection="provincesSelected = $event"
+          />
           <!-- END - Customer Province -->
 
           <!-- START - Customer District and Wards -->
           <b-form-row>
             <b-col>
-              <b-form-group
-                label="Quận/ Huyện"
-                label-for="District"
-              >
-                <v-select
-                  id="District"
-                  v-model="customerDistrict"
-                  :options="districts"
-                  label="name"
-                  autocomplete="on"
-                  placeholder="Chọn quận/ huyện"
-                >
-                  <template #no-options="{}">
-                    Vui lòng chọn tỉnh/ thành trước
-                  </template>
-                </v-select>
-              </b-form-group>
+              <v-input-select
+                title="Quận/ Huyện"
+                :suggestions="districtOptions"
+                :data-input="districtsSelected.name"
+                title-class="mt-1"
+                placeholder="Chọn quận/ huyện"
+                :type-able="true"
+                :filter-able="true"
+                :clear-able="true"
+                @updateSelection="districtsSelected = $event"
+              />
             </b-col>
 
             <b-col>
-              <b-form-group
-                label="Phường/ Xã"
-                label-for="Wards"
-              >
-                <v-select
-                  id="Wards"
-                  v-model="customerPrecinct"
-                  :options="precincts"
-                  label="name"
-                  autocomplete="on"
-                  placeholder="Chọn phường/ xã"
-                >
-                  <template #no-options="{}">
-                    Vui lòng chọn quận/ huyện trước
-                  </template>
-                </v-select>
-              </b-form-group>
+              <v-input-select
+                title="Quận/ Huyện"
+                :suggestions="precinctOptions"
+                :data-input="precinctsSelected.name"
+                title-class="mt-1"
+                placeholder="Chọn quận/ huyện"
+                :type-able="true"
+                :filter-able="true"
+                :clear-able="true"
+                @updateSelection="precinctsSelected = $event"
+              />
             </b-col>
           </b-form-row>
           <!-- END - Customer District and Wards -->
 
           <!-- START - Office-->
-          <b-form-group
-            label="Cơ quan"
-            label-for="Office"
-          >
-            <b-form-input
-              id="Office"
-              v-model="workingOffice"
-              maxlength="200"
-            />
-          </b-form-group>
+          <div class="mt-1">
+            Cơ quan
+          </div>
+          <b-form-input
+            v-model="workingOffice"
+            maxlength="200"
+          />
           <!-- END - Office-->
 
           <!-- START - Office Address-->
-          <b-form-group
-            label="Địa chỉ cơ quan"
-            label-for="OfficeAddress"
-          >
-            <b-form-input
-              id="OfficeAddress"
-              v-model="officeAddress"
-              maxlength="200"
-            />
-          </b-form-group>
+          <div class="mt-1">
+            Địa chỉ cơ quan
+          </div>
+          <b-form-input
+            v-model="officeAddress"
+            maxlength="200"
+          />
           <!-- END - Office Address-->
 
           <!-- START - Customer Tax code-->
@@ -435,7 +402,7 @@
             rules="code"
             name="Mã số thuế"
           >
-            <div>
+            <div class="mt-1">
               Mã số thuế
             </div>
             <b-form-input
@@ -456,28 +423,24 @@
           xl="3"
           class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
         >
-          <label class="font-weight-bold w-100 text-center mb-2">Thẻ thành viên</label>
+          <label class="font-weight-bold w-100 text-center mb-2 h5">Thẻ thành viên</label>
 
+          <!-- TODO: Type và filter bằng true thì ko chọn option được (lỗi do hàm filter) -->
           <!-- START - Customer Card type -->
-          <b-form-group
-            label="Loại thẻ"
-            label-for="CardType"
-          >
-            <v-select
-              id="CardType"
-              v-model="selectedCardTypes"
-              :options="cardTypes"
-              label="name"
-              autocomplete="on"
-              placeholder="Chọn loại thẻ"
-            >
-              <template #no-options="{}">
-                Không có dữ liệu
-              </template>
-            </v-select>
-          </b-form-group>
+          <v-input-select
+            title="Loại thẻ"
+            :suggestions="cardTypeOptions"
+            :data-input="cardTypesSelected.name"
+            title-class="mt-1"
+            placeholder="Chọn loại thẻ"
+            :type-able="true"
+            :filter-able="true"
+            :clear-able="true"
+            @updateSelection="cardTypesSelected = $event"
+          />
           <!-- END - Customer Card type -->
 
+          <!-- TODO: Thay đổi v-select thành v-i-s -->
           <!-- START - Customer Type -->
           <b-form-group
             label="Loại khách hàng"
@@ -567,10 +530,13 @@ import {
   code,
   dateFormatVNI,
   age,
+  identifyCard,
 } from '@/@core/utils/validations/validations'
 import '@core/scss/vue/libs/vue-flatpicker.scss'
 import { formatVniDateToISO } from '@/@core/utils/filter'
-
+import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
+import commonData from '@/@db/common'
+import customerData from '@/@db/customer'
 import {
   CUSTOMER,
   // GETTERS
@@ -595,6 +561,7 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
+    VInputSelect,
   },
 
   // START - Data
@@ -602,10 +569,17 @@ export default {
     return {
       isModalShow: false,
       isFieldCheck: true,
-      configDate: {
+      configBitrhDay: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
+        maxDate: new Date().fp_incr(-5479),
+      },
+      configIDDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        maxDate: 'today',
       },
       goNext: () => {},
 
@@ -616,16 +590,19 @@ export default {
       code,
       dateFormatVNI,
       age,
+      identifyCard,
 
       // START - Personal
       lastName: '',
       firstName: '',
       barCode: '',
       birthDay: '',
-      genders: { name: 'Khác', id: '3' },
-      customerGroups: null,
-      customerStatus: { name: 'Hoạt động', id: '1' },
-      customerSpecial: false,
+      genderOptions: commonData.genders,
+      gendersSelected: { name: null, id: null },
+      customerTypesSelected: { name: null, id: null },
+      customerStatusOptions: customerData.status,
+      customerStatusSelected: customerData.status[0],
+      customerPrivate: false,
       note: '',
       customerID: '',
       stateInputValueID: null,
@@ -638,16 +615,16 @@ export default {
       phoneNumber: '',
       customerEmail: '',
       homeNumber: '',
-      customerProvince: null,
-      customerDistrict: null,
-      customerPrecinct: null,
+      provincesSelected: { name: '', id: '' },
+      districtsSelected: { name: '', id: '' },
+      precinctsSelected: { name: '', id: '' },
       workingOffice: '',
       officeAddress: '',
       taxCode: '',
       // END - Contact
 
       // START - MembershipCard
-      selectedCardTypes: '',
+      cardTypesSelected: '',
       selectedCloselyTypes: '',
       // END - MembershipCard
     }
@@ -656,31 +633,31 @@ export default {
 
   // START - Computed
   computed: {
-    customerTypes() {
+    customerTypeOptions() {
       return this.CUSTOMER_TYPES_GETTER().map(data => ({
         id: data.id,
         name: data.name,
       }))
     },
-    provinces() {
+    provinceOptions() {
       return this.PROVINCES_GETTER().map(data => ({
         id: data.id,
         name: data.areaName,
       }))
     },
-    districts() {
+    districtOptions() {
       return this.DISTRICTS_GETTER().map(data => ({
         id: data.id,
         name: data.areaName,
       }))
     },
-    precincts() {
+    precinctOptions() {
       return this.PRECINCTS_GETTER().map(data => ({
         id: data.id,
         name: data.areaName,
       }))
     },
-    cardTypes() {
+    cardTypeOptions() {
       return this.CARD_TYPES_GETTER().map(data => ({
         id: data.id,
         name: data.apParamName,
@@ -699,13 +676,24 @@ export default {
     ERROR_CODE_GETTER() {
       this.checkDuplicationID(this.ERROR_CODE_GETTER())
     },
-    customerProvince() {
-      this.customerDistrict = null
-      this.GET_DISTRICTS_ACTION(this.customerProvince.id)
+    provincesSelected() {
+      console.log('---------provinces---------')
+      console.log(this.provincesSelected)
+      console.log('---------provinces---------')
+
+      this.districtsSelected = null
+      this.GET_DISTRICTS_ACTION(this.provincesSelected?.id)
     },
-    customerDistrict() {
-      this.customerPrecinct = null
-      this.GET_PRECINCTS_ACTION(this.customerDistrict.id)
+    districtsSelected() {
+      console.log('---------districts---------')
+      console.log(this.districtsSelected)
+      console.log('---------districts---------')
+
+      this.precinctsSelected = null
+      this.GET_PRECINCTS_ACTION(this.districtsSelected?.id)
+    },
+    customerIDDate() {
+      console.log(this.customerIDDate)
     },
   },
 
@@ -772,19 +760,19 @@ export default {
           this.CREATE_CUSTOMER_ACTION({
             firstName: this.firstName,
             lastName: this.lastName,
-            genderId: this.genders?.id,
+            genderId: this.gendersSelected?.id,
             barCode: this.barCode,
             dob: formatVniDateToISO(this.birthDay),
-            customerTypeId: this.customerGroups?.id,
-            status: this.customerStatus?.id,
-            isPrivate: this.customerSpecial,
+            customerTypeId: this.customerTypesSelected?.id,
+            status: this.customerStatusSelected?.id,
+            isPrivate: this.customerPrivate,
             idNo: this.customerID,
             idNoIssuedDate: formatVniDateToISO(this.customerIDDate),
             idNoIssuedPlace: this.customerIDLocation,
             mobiPhone: this.phoneNumber,
             phone: this.phoneNumber, // temp
             email: this.customerEmail,
-            areaId: this.customerPrecinct?.id,
+            areaId: this.precinctsSelected?.id,
             street: this.homeNumber,
             address: null,
             workingOffice: this.workingOffice,
@@ -793,7 +781,7 @@ export default {
             isDefault: true,
             noted: this.note,
             closelyTypeId: this.selectedCloselyTypes?.id,
-            cardTypeId: this.selectedCardTypes?.id,
+            cardTypeId: this.cardTypesSelected?.id,
           })
         }
       })
@@ -806,9 +794,9 @@ export default {
         || this.firstName
         || this.barCode
         || this.birthDay
-        || this.genders.name !== 'Khác'
-        || this.customerGroups
-        || this.customerSpecial
+        || this.gendersSelected.name !== 'Khác'
+        || this.customerTypesSelected
+        || this.customerPrivate
         || this.note
         || this.customerID
         || this.customerIDDate
@@ -817,14 +805,14 @@ export default {
         || this.phoneNumber
         || this.customerEmail
         || this.homeNumber
-        || this.customerProvince
-        || this.customerDistrict
-        || this.customerPrecinct
+        || this.provincesSelected
+        || this.districtsSelected
+        || this.precinctsSelected
         || this.workingOffice
         || this.officeAddress
         || this.taxCode
         // START - MembershipCard
-        || this.selectedCardTypes
+        || this.cardTypesSelected
         || this.selectedCloselyTypes
       ) {
         return true

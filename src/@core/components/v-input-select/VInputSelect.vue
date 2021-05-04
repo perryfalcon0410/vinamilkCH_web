@@ -10,37 +10,41 @@
       >*</sup>
     </div>
     <b-input-group
-      class="input-group-merge cursor-pointer"
+      class="vis_input_group input-group-merge"
+      :class="{'cursor-pointer': !disabled}"
       :size="size"
     >
       <b-input
         ref="input"
         v-model="dataInput"
         class="vis_input"
-        :class="{'vis_input_disable': !typeAble, 'cursor-pointer': !typeAble, inputClass}"
-        :placeholder="placeholder"
+        :disabled="disabled"
+        :class="{'vis_input_disable': !typeAble, 'cursor-pointer': !typeAble && !disabled, inputClass}"
+        :placeholder="currentResults.name ? currentResults.name : placeholder"
         :autocomplete="autocomplete ? 'on' : 'off'"
+        :state="state"
+        :maxlength="maxlength"
         @keypress="disableKeypress"
-        @focus="isCollapse = true"
-        @blur="isCollapse = false"
+        @focus="isFocus = true"
+        @blur="isFocus = false"
       />
-      <b-input-group-append
-        is-text
-      >
-        <b-icon-x
-          v-show="clearAble && !$isEmpty(dataInput)"
-          scale="1.3"
-          style="margin-right: 5px;"
-          @click="onDeleteButtonClick()"
-        />
-        <b-icon-chevron-down
-          v-show="!isCollapse"
-          @click="onIconChervonDownClick()"
-        />
-        <b-icon-chevron-up
-          v-show="isCollapse"
-          @click="onIconChervonUpClick()"
-        />
+      <b-input-group-append>
+        <b-input-group-text :class="{'vis_input_group_disable': disabled}">
+          <b-icon-x
+            v-show="clearAble && !$isEmpty(dataInput)"
+            scale="1.3"
+            style="margin-right: 5px;"
+            @click="onDeleteButtonClick()"
+          />
+          <b-icon-chevron-down
+            v-show="!isCollapse"
+            @click="onIconChervonDownClick()"
+          />
+          <b-icon-chevron-up
+            v-show="isCollapse"
+            @click="onIconChervonUpClick()"
+          />
+        </b-input-group-text>
       </b-input-group-append>
     </b-input-group>
 
@@ -48,7 +52,7 @@
     <b-collapse
       v-model="isCollapse"
       class="position-absolute w-100"
-      style="zIndex:1"
+      style="zIndex:1000"
     >
       <b-container
         class="my-1 p-0 bg-white rounded shadow-lg"
@@ -147,21 +151,53 @@ export default {
       type: Boolean,
       default: false,
     },
+    // Disabled field
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    // state validate
+    state: {
+      type: Boolean,
+      default: null,
+    },
+    // maxlength validate
+    maxlength: {
+      type: Number,
+      default: null,
+    },
   },
 
   data() {
     return {
       isCollapse: false,
-      isInputClick: false,
+      isFocus: false,
+      currentResults: {},
     }
   },
 
   computed: {
     matches() {
       if (this.dataInput !== null && this.dataInput !== undefined && this.filterAble) {
-        return this.suggestions.filter(item => item.name.toLowerCase().indexOf(this.dataInput.toLowerCase()) > -1)
+        return this.suggestions.filter(item => item.name.toLowerCase().indexOf(this.dataInput.toLowerCase()) !== -1)
       }
       return this.suggestions
+    },
+  },
+
+  watch: {
+    isFocus() {
+      if (this.isFocus) {
+        this.isCollapse = true
+        if (this.dataInput && this.typeAble) {
+          this.$emit('updateSelection', { name: null, id: null })
+        }
+      } else {
+        this.isCollapse = false
+        if (this.currentResults && this.typeAble) {
+          this.$emit('updateSelection', this.currentResults)
+        }
+      }
     },
   },
 
@@ -175,12 +211,14 @@ export default {
 
     // When one of the suggestion is clicked
     suggestionClick(index) {
+      this.currentResults = this.matches[index]
       this.$emit('updateSelection', this.matches[index])
-      this.isCollapse = false
+      this.isFocus = false
     },
 
     onDeleteButtonClick() {
       if (this.dataInput !== '') {
+        this.currentResults = { name: null, id: null }
         this.$emit('updateSelection', { name: null, id: null })
       }
     },
@@ -192,7 +230,7 @@ export default {
     onIconChervonUpClick() {
       this.$refs.input.blur()
     },
-
+    // temp
     // isListEmpty(value) {
     //   console.log(value)
     //   console.log(this.$isEmpty(value))
@@ -212,8 +250,11 @@ export default {
       border-radius: 5px;
     }
     .vis_input_disable:focus {
-    color: transparent;
-    text-shadow: 0px 0px 0px #666;
-  }
+      color: transparent;
+      text-shadow: 0px 0px 0px #666;
+    }
+    .vis_input_group_disable {
+      background: #EFEFEF;
+    }
   }
 </style>

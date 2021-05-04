@@ -130,6 +130,7 @@
                       :state="errors.length > 0 ? false : null"
                       placeholder="Mã Captcha"
                       maxlength="20"
+                      @paste.prevent
                     />
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
@@ -278,12 +279,16 @@ export default {
     onModalHidden() {
       this.isShowRoleAndShopSelectionModal = false
     },
+
     checkCaptchaExist(captcha) {
       if (captcha) {
         this.captchaCodeResponse = captcha
-        this.captchaStatus = !this.captchaStatus
+        this.captchaStatus = true
+      } else {
+        this.captchaStatus = false
       }
     },
+
     preLogin() {
       this.$refs.loginForm.validate().then(success => {
         if (success) {
@@ -296,7 +301,9 @@ export default {
             .then(response => response.data)
             .then(res => {
               if (res.success) {
-                this.checkCaptchaExist(res.data.captcha)
+                if (res.data) {
+                  this.checkCaptchaExist(res.data.captcha)
+                }
 
                 if (res.data.roles.length === 1 && res.data.roles[0].shops.length === 1) {
                   this.login({

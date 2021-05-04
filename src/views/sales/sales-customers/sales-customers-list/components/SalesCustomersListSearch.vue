@@ -272,7 +272,6 @@ export default {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
-        allowInvalidPreload: false,
       },
     }
   },
