@@ -1,46 +1,10 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column"
+    class="d-flex flex-column px-0"
   >
     <!-- START - Common infomations -->
-    <b-form class="bg-white shadow rounded">
-      <div
-        class="m-1 text-primary"
-      >
-        <strong class="text-blue-vinamilk">
-          Tìm kiếm
-        </strong>
-      </div>
-      <b-form-row
-        class="align-items-center border-bottom p-1"
-      >
-        <b-col
-          lg="2"
-          md
-        >
-          <label>
-            Thời gian:
-          </label>
-        </b-col>
-        <b-col
-          lg="2"
-          md
-        >
-          <label>
-            Số ngày bán hàng thực tế:
-          </label>
-        </b-col>
-        <b-col
-          lg="2"
-          md
-        >
-          <label>
-            Số ngày bán hàng trong tháng:
-          </label>
-        </b-col>
-      </b-form-row>
-    </b-form>
+    <common-info />
     <!-- END - Common infomations -->
     <b-form class="bg-white rounded shadow my-1">
       <!-- START - Select Po type -->
@@ -51,7 +15,7 @@
         <div
           class="m-1 text-primary"
         >
-          <strong class="text-blue-vinamilk">
+          <strong class="text-brand-1">
             Đơn đặt hàng
           </strong>
         </div>
@@ -60,7 +24,7 @@
           :options="options"
           value-field="type"
           text-field="value"
-          class="ml-5"
+          class="ml-5 text-brand-1"
         />
       </b-row>
       <!--  - Select Po type -->
@@ -69,21 +33,97 @@
           <!--START - Recommend Po-->
           <vue-good-table
             v-if="selected == 'A'"
-            :columns="A_Columns"
-            :rows="A_rows"
+            :columns="recommendPoColumns"
+            :rows="recommendPoRows"
             style-class="vgt-table striped"
             line-numbers
             :pagination-options="{
-              enabled: true
+              enabled: true,
+              perPage: elementSize
             }"
             class="pb-1 mx-1"
-          />
+          >
+
+            <template
+              slot="table-row"
+              slot-scope="props"
+            >
+              <div v-if="props.column.field === 'slt'">
+                <b-input
+                  type="number"
+                  size="sm"
+                />
+              </div>
+              <div v-else>
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+            </template>
+
+            <!-- START - Pagination -->
+            <template
+              slot="pagination-bottom"
+              slot-scope="props"
+            >
+              <b-row
+                class="v-pagination px-1 mx-0"
+                align-h="between"
+                align-v="center"
+              >
+                <div
+                  class="d-flex align-items-center"
+                >
+                  <span
+                    class="text-nowrap"
+                  >
+                    Hiển thị 1 đến
+                  </span>
+                  <b-form-select
+                    v-model="elementSize"
+                    size="sm"
+                    :options="paginationOptions"
+                    class="mx-1"
+                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                  />
+                  <span
+                    class="text-nowrap"
+                  > trong 69 mục </span>
+                </div>
+                <b-pagination
+                  v-model="pageNumber"
+                  :total-rows="69"
+                  :per-page="elementSize"
+                  first-number
+                  last-number
+                  align="right"
+                  prev-class="prev-item"
+                  next-class="next-item"
+                  class="mt-1"
+                  @input="(value)=>props.pageChanged({currentPage: value})"
+                >
+                  <template slot="prev-text">
+                    <feather-icon
+                      icon="ChevronLeftIcon"
+                      size="18"
+                    />
+                  </template>
+                  <template slot="next-text">
+                    <feather-icon
+                      icon="ChevronRightIcon"
+                      size="18"
+                    />
+                  </template>
+                </b-pagination>
+              </b-row>
+            </template>
+          <!-- END - Pagination -->
+          </vue-good-table>
           <!--END - Recommend Po-->
+
           <!--START - Manual Po-->
           <vue-good-table
             v-if="selected == 'B'"
-            :columns="B_columns"
-            :rows="B_rows"
+            :columns="manualPoColumns"
+            :rows="manualRows"
             style-class="vgt-table striped"
             line-numbers
             :pagination-options="{
@@ -98,13 +138,11 @@
             >
               <span v-if="props.column.label === 'Chức năng'">
                 <b-button
-                  variant="light"
-                  class="rounded-circle px-1"
+                  variant="someThing"
+                  class="rounded-circle p-1 ml-2"
                   @click="showChooseProductsModal"
                 >
-                  <b-icon-plus
-                    font-scale="1.5"
-                  />
+                  <b-icon-plus scale="2" />
                 </b-button>
               </span>
               <span v-else>
@@ -112,20 +150,26 @@
               </span>
             </template>
             <!--END-Create Po-->
+
             <!--START-Delete-Create Po-->
             <template
               slot="table-row"
               slot-scope="props"
             >
               <span v-if="props.column.label === 'Số lượng đặt'">
-                <b-input />
+                <b-input
+                  size="sm"
+                />
               </span>
               <span v-if="props.column.label === 'Chức năng'">
                 <b-button
                   variant="light"
-                  class="rounded-circle px-1"
+                  class="rounded-circle p-1 ml-1"
+                  size="sm"
                 >
-                  <b-icon-x />
+                  <b-icon-x
+                    scale="1.5"
+                  />
                 </b-button>
               </span>
               <span v-else>
@@ -133,60 +177,125 @@
               </span>
             </template>
             <!--END-Delete-Create Po-->
+
+            <!-- START - Pagination -->
+            <template
+              slot="pagination-bottom"
+              slot-scope="props"
+            >
+              <b-row
+                class="v-pagination px-1 mx-0"
+                align-h="between"
+                align-v="center"
+              >
+                <div
+                  class="d-flex align-items-center"
+                >
+                  <span
+                    class="text-nowrap"
+                  >
+                    Hiển thị 1 đến
+                  </span>
+                  <b-form-select
+                    v-model="elementSize"
+                    size="sm"
+                    :options="paginationOptions"
+                    class="mx-1"
+                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                  />
+                  <span
+                    class="text-nowrap"
+                  > trong 69 mục </span>
+                </div>
+                <b-pagination
+                  v-model="pageNumber"
+                  :total-rows="69"
+                  :per-page="elementSize"
+                  first-number
+                  last-number
+                  align="right"
+                  prev-class="prev-item"
+                  next-class="next-item"
+                  class="mt-1"
+                  @input="(value)=>props.pageChanged({currentPage: value})"
+                >
+                  <template slot="prev-text">
+                    <feather-icon
+                      icon="ChevronLeftIcon"
+                      size="18"
+                    />
+                  </template>
+                  <template slot="next-text">
+                    <feather-icon
+                      icon="ChevronRightIcon"
+                      size="18"
+                    />
+                  </template>
+                </b-pagination>
+              </b-row>
+            </template>
+          <!-- END - Pagination -->
           </vue-good-table>
           <!--END - Manual Po-->
         </b-col>
       </b-row>
+
+      <b-row class="d-flex flex-row justify-content-end pr-2">
+        <label class="px-1">
+          Tổng SL:<strong class="text-brand-1"> 45</strong>
+        </label>
+        <label class="px-1">
+          Tổng tiền(bao gồm VAT):<strong class="text-brand-1"> 45</strong>
+        </label>
+        <label class="px-1">
+          Tổng trọng lượng:<strong class="text-brand-1"> 45</strong>
+        </label>
+      </b-row>
+
+      <!--START-BUTTON-GROUP-->
+      <b-row class="justify-content-center mt-2 pb-2">
+        <!--START - Recommend Po Button Group-->
+        <b-button-group
+          v-if="selected == 'A'"
+        >
+          <b-button
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            variant="someThing"
+          >
+            <b-icon
+              icon="download"
+            />
+            Lưu
+          </b-button>
+          <b-button
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder ml-1"
+            variant="someThing"
+          >
+            <b-icon
+              icon="file-earmark-text-fill"
+            />
+            Xuất excel
+          </b-button>
+        </b-button-group>
+        <!--END - Recommend Po Button Group-->
+
+        <!--START - Manual Po Button Group-->
+        <b-button-group
+          v-if="selected == 'B'"
+        >
+          <b-button
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            variant="someThing"
+          >
+            <b-icon-download />
+            Lưu
+          </b-button>
+        </b-button-group>
+      <!--END - Manual Po Button Group-->
+      </b-row>
+    <!--END-BUTTON-GROUP-->
     </b-form>
-    <b-row class="justify-content-center mt-2 pb-2">
-      <b-button-group
-        v-if="selected == 'A'"
-      >
-        <!--START - Manual Po Button Group-->
-        <b-button
-          class="ml-1 rounded"
-          variant="primary"
-        >
-          <b-icon
-            icon="download"
-            width="20"
-            height="20"
-            class="mr-1"
-          />
-          Lưu
-        </b-button>
-        <b-button
-          class="ml-1 rounded"
-          variant="primary"
-        >
-          <b-icon
-            icon="file-earmark-text-fill"
-            width="20"
-            height="20"
-            class="mr-1"
-          />
-          Xuất excel
-        </b-button>
-      </b-button-group>
-      <b-button-group
-        v-if="selected == 'B'"
-      >
-        <!--START - Manual Po Button Group-->
-        <b-button
-          class="ml-1 rounded"
-          variant="primary"
-        >
-          <b-icon
-            icon="download"
-            width="20"
-            height="20"
-            class="mr-1"
-          />
-          Lưu
-        </b-button>
-      </b-button-group>
-    </b-row>
-    <!-- END - List of orders returned -->
+
     <choose-products-modal
       :visible="isChooseProductsModal"
       @closeModal="closeChooseProductsModal($event)"
@@ -195,170 +304,231 @@
 </template>
 
 <script>
-import options from '@/@db/purchase'
+import purchaseData from '@/@db/purchase'
 import ChooseProductsModal from './components/ChooseProductModal.vue'
+import CommonInfo from './components/CommonInfo.vue'
 
 export default {
   components: {
     ChooseProductsModal,
+    CommonInfo,
   },
   data() {
     return {
+      elementSize: 20,
+      pageNumber: 1,
+      paginationOptions: purchaseData.pagination,
+      //
       isChooseProductsModal: false,
       selected: 'A',
-      options: options.poType,
-      A_Columns: [
+      options: purchaseData.poType,
+      recommendPoColumns: [
         {
           label: 'Mã SP',
-          field: 'NumberBill', // custom filed name
+          field: 'productCode', // custom filed name
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên SP',
-          field: 'NumberBill',
+          field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Đầu kỳ',
-          field: 'NumberBill',
+          field: 'firstPeriod',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Nhập',
-          field: 'NumberBill',
+          field: 'input',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Xuất',
-          field: 'NumberBill',
+          field: 'output',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'LKTTT',
-          field: 'NumberBill',
+          field: 'lkttt',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'KHTTT',
-          field: 'NumberBill',
+          field: 'khttt',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'DMKH',
-          field: 'NumberBill',
+          field: 'dmkh',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Dự trữ(KH)',
-          field: 'NumberBill',
+          field: 'kh',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Dự trữ(TT)',
-          field: 'NumberBill',
+          field: 'tt',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Tồn kho(Min)',
-          field: 'NumberBill',
+          field: 'min',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Tồn kho(Max)',
-          field: 'NumberBill',
+          field: 'max',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Tồn kho(Lead)',
-          field: 'NumberBill',
+          field: 'lead',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Y/c tồn SL',
-          field: 'NumberBill',
+          field: 'amountInventory',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'PO nhập hàng',
-          field: 'NumberBill',
+          field: 'poInput',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Yêu cầu(QC)',
-          field: 'NumberBill',
+          field: 'qc',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Yêu cầu(SLT)',
-          field: 'NumberBill',
+          field: 'slt',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Yêu cầu(Thành tiền)',
-          field: 'NumberBill',
+          field: 'totalPaid',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Yêu cầu(Trọng lượng)',
-          field: 'NumberBill',
+          field: 'weight',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'CB',
-          field: 'NumberBill',
+          field: 'cb',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
-      A_rows: [
+      recommendPoRows: [
         {
-          NumberBill: '123',
+          productCode: '04AA10',
+          productName: 'STT dâu ADM GOLD 180ml',
         },
       ],
       // Manual Po
-      B_columns: [
+      manualPoColumns: [
         {
           label: 'Mã SP',
-          field: 'ProductCode', // custom filed name
+          field: 'productCode', // custom filed name
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên SP',
-          field: 'ProductName',
+          field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên kho',
-          field: 'WarehouseName',
+          field: 'warehouseName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng đặt',
-          field: 'Quantity',
+          field: 'quantity',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Đơn giá',
-          field: 'Price',
+          field: 'price',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Thành tiền',
-          field: 'TotalPrice',
+          field: 'totalPrice',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Chức năng',
-          field: 'Button',
+          field: 'button',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
-      B_rows: [
+      manualRows: [
         {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          WarehouseName: '1500',
-          Price: '20.333',
-          Button: '',
+          productCode: '04AA10',
+          productName: 'STT dâu ADM GOLD 180ml',
+          warehouseName: '1500',
+          price: '20.333',
+          button: '',
         },
       ],
     }
