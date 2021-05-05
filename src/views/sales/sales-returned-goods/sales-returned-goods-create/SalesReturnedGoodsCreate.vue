@@ -28,7 +28,7 @@
             </b-col>
             <b-col>
               <b-card-text class="font-weight-bold">
-                29/10/2020 lúc 16:16
+                {{ billInfo.dateReturn }}
               </b-card-text>
             </b-col>
           </b-row>
@@ -40,54 +40,56 @@
             </b-col>
             <b-col>
               <b-card-text class="font-weight-bold">
-                1234
+                {{ billInfo.oderNumber }}
               </b-card-text>
             </b-col>
           </b-row>
           <b-input-group class="input-group-merge">
             <b-form-input
-              v-model="checkbill"
+              v-model="billInfo.oderNumber"
+              readonly
             />
             <b-input-group-append
+              class="cursor-pointer"
               is-text
-              @click="onClick"
+              @click="showSelectReceptModal()"
             >
               <b-icon-three-dots-vertical />
             </b-input-group-append>
           </b-input-group>
 
           <!-- Start List Item -->
-          <b-list-group>
+          <b-list-group v-if="billInfo.id !== ''">
             <b-list-group-item
               variant="secondary"
             >
               Ngày mua hàng
               <span class="font-weight-bold">
-                : 27/10/2020
+                {{ `: ${billInfo.oderDate}` }}
               </span>
             </b-list-group-item>
             <b-list-group-item
               variant="secondary"
             >
-              Nhân viên bán hàng:
+              Nhân viên bán hàng
               <span class="font-weight-bold">
-                Ngô Thị Lan Hương
+                {{ `: ${billInfo.employeeName}` }}
               </span>
             </b-list-group-item>
             <b-list-group-item
               variant="secondary"
             >
-              Khách hàng:
+              Khách hàng
               <span class="font-weight-bold">
-                Nguyễn Xuân Diễm
+                {{ `: ${billInfo.customerName}` }}
               </span>
             </b-list-group-item>
             <b-list-group-item
               variant="secondary"
             >
-              Tiền trả lại:
+              Tiền trả lại
               <span class="font-weight-bold">
-                815,666
+                {{ `: ${billInfo.moneyPayback}` }}
               </span>
             </b-list-group-item>
           </b-list-group>
@@ -103,8 +105,9 @@
                 label="Lý do trả hàng"
               >
                 <b-form-select
-                  v-model="option"
-                  :options="options"
+                  v-model="selectedReason"
+                  :options="reasonReturn"
+                  class="form-control"
                 />
               </b-form-group>
             </b-col>
@@ -114,6 +117,7 @@
               align-self="start"
             >
               <b-form-group
+                v-model="reasonDescription"
                 label="Thông tin phản hồi"
               >
                 <b-form-textarea />
@@ -128,39 +132,72 @@
       <b-col
         class="bg-white shadow rounded"
       >
-        <b-nav tabs>
-          <b-nav-item active>
-            Sản phẩm
-          </b-nav-item>
-          <b-nav-item>
-            Hàng khuyến mãi
-          </b-nav-item>
-        </b-nav>
-
-        <!-- Start Table -->
-        <b-card-body class="text-center">
-          <vue-good-table
-            :columns="columns"
-            :rows="rows"
-            class="pb-1"
-            style-class="vgt-table striped"
-            :pagination-options="{
-              enabled: true
-            }"
-            line-numbers
-            :search-options="{
-              enabled: true,
-              externalQuery: searchTerm
-            }"
-          />
-        </b-card-body>
-        <!-- End table -->
+        <!-- Start Tab -->
+        <b-tabs>
+          <b-tab
+            title="Sản phẩm"
+            active
+          >
+            <!-- Start Table -->
+            <vue-good-table
+              :columns="columns"
+              :rows="products"
+              class="pb-1"
+              style-class="vgt-table striped"
+              :pagination-options="{
+                enabled: true
+              }"
+              line-numbers
+              :search-options="{
+                enabled: true,
+                externalQuery: searchTerm
+              }"
+            >
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+            </vue-good-table>
+            <!-- End table -->
+          </b-tab>
+          <b-tab
+            title="Hàng khuyến mãi"
+          >
+            <vue-good-table
+              :columns="columns"
+              :rows="promotions"
+              class="pb-1"
+              style-class="vgt-table striped"
+              :pagination-options="{
+                enabled: true
+              }"
+              line-numbers
+              :search-options="{
+                enabled: true,
+                externalQuery: searchTerm
+              }"
+            >
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+            </vue-good-table>
+          </b-tab>
+        </b-tabs>
+        <!-- End Tab -->
 
         <!-- Start Button -->
         <b-row class="px-3 mt-4 mb-2 d-flex justify-content-end">
           <b-button
             variant="primary"
             class="mr-2"
+            @click="onSubmit"
           >
             <b-icon-arrow90deg-left />
             TRẢ HÀNG
@@ -175,159 +212,191 @@
       </b-col>
       <!-- End Container Right -->
     </b-row>
+    <!-- START - Modal -->
+    <select-recept-modal
+      :visible="isShowSelectReceptModal"
+      @choosenRecept="choosenRecept"
+      @onCloseModal="onCloseModal"
+    />
+    <!-- END - Modal -->
   </b-container>
 </template>
 
 <script>
+
+import { getDateNow } from '@/@core/utils/utils'
+import {
+  mapGetters,
+  mapActions,
+  mapMutations,
+} from 'vuex'
+import toasts from '@core/utils/toasts/toasts'
+import SelectReceptModal from './components/SelectReceptModal.vue'
+import {
+  RETURNEDGOODS, RETURNED_GOOD_CHOOSEN_DETAIL_GETTER, GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION, CREATE_RETURNED_GOOD_ACTION, CLEAR_RETURNED_GOODS_DATA,
+} from '../store-module/type'
+
 export default {
   components: {
+    SelectReceptModal,
   },
   data() {
     return {
-      checkbill: ' SAL.BN40011.20230012253',
-      option: null,
-      options: [
-        { text: 'Hàng lỗi' },
-        'Mua thêm hàng',
-        'Đổi hàng',
-        'Lý do khác',
-      ],
+      isShowSelectReceptModal: false,
+      selectedReason: '',
+      billInfo: {
+        id: '',
+        oderDate: '',
+        employeeName: '',
+        customerName: '',
+        moneyPayback: '',
+        oderNumber: '',
+        dateReturn: getDateNow(),
+        reasonDescription: '',
+      },
       searchTerm: '',
       columns: [
         {
           label: 'Mã sản phẩm',
-          field: 'ProductCode',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'ProductName',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'Unit',
+          field: 'unit',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Amount',
+          field: 'quantity',
           sortable: false,
         },
         {
           label: 'Giá bán',
-          field: 'Price',
+          field: 'pricePerUnit',
           sortable: false,
         },
         {
           label: 'Tổng tiền',
-          field: 'TotalMoney',
+          field: 'totalPrice',
           sortable: false,
         },
         {
           label: 'Giảm giá',
-          field: 'Discount',
+          field: 'discount',
           sortable: false,
         },
         {
           label: 'Tiền trả lại',
-          field: 'Refunds',
+          field: 'payment',
           sortable: false,
         },
         {
           label: 'Ghi chú',
-          field: 'Note',
+          field: 'note',
           sortable: false,
-        },
-      ],
-      rows: [
-        {
-          ProductCode: '',
-          ProductName: '',
-          Unit: '',
-          Amount: '44',
-          Price: '',
-          TotalMoney: '815,666',
-          Discount: '',
-          Refunds: '815,666',
-          Note: '',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          Amount: '2',
-          Price: '8,400',
-          TotalMoney: '16,800',
-          Discount: '0',
-          Refunds: '16,800',
-          Note: '',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          Amount: '2',
-          Price: '8,400',
-          TotalMoney: '16,800',
-          Discount: '0',
-          Refunds: '16,800',
-          Note: '',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          Amount: '2',
-          Price: '8,400',
-          TotalMoney: '16,800',
-          Discount: '0',
-          Refunds: '16,800',
-          Note: '',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          Amount: '2',
-          Price: '8,400',
-          TotalMoney: '16,800',
-          Discount: '0',
-          Refunds: '16,800',
-          Note: '',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          Amount: '2',
-          Price: '8,400',
-          TotalMoney: '16,800',
-          Discount: '0',
-          Refunds: '16,800',
-          Note: '',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          Unit: 'Hộp',
-          Amount: '2',
-          Price: '8,400',
-          TotalMoney: '16,800',
-          Discount: '0',
-          Refunds: '16,800',
-          Note: '',
         },
       ],
     }
   },
   computed: {
+    products() {
+      return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER().products.map(data => ({
+        productCode: data.productCode,
+        productName: data.productName,
+        unit: data.unit,
+        quantity: data.quantity,
+        pricePerUnit: data.pricePerUnit,
+        totalPrice: data.totalPrice,
+        discount: data.discount,
+        payment: data.payment,
+        note: data.note,
+      }))
+    },
+    promotions() {
+      return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER().promotions.map(data => ({
+        productCode: data.productCode,
+        productName: data.productName,
+        unit: data.unit,
+        quantity: data.quantity,
+        pricePerUnit: data.pricePerUnit,
+        totalPrice: data.totalPrice,
+        discount: data.discount,
+        payment: data.payment,
+        note: data.note,
+      }))
+    },
+    reasonReturn() {
+      return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER().reasonReturn.map(data => ({
+        value: data.apCode,
+        text: data.apName,
+      }))
+    },
+  },
+  watch: {
+    reasonReturn() {
+      this.selectedReason = this.reasonReturn[0].value || ''
+    },
+  },
+  destroyed() {
+    this.CLEAR_RETURNED_GOODS_DATA()
   },
   methods: {
     onBack() {
       this.$router.back()
     },
     onClick: {
+    },
+    showSelectReceptModal() {
+      this.isShowSelectReceptModal = true
+    },
+    onCloseModal() {
+      this.isShowSelectReceptModal = false
+    },
+    choosenRecept(data) {
+      const {
+        oderDate, id, orderNumber, customerName, total, salesManName,
+      } = data.value
+
+      this.GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION({
+        id,
+      })
+
+      this.billInfo.oderDate = oderDate
+      this.billInfo.id = id
+      this.billInfo.employeeName = salesManName
+      this.billInfo.customerName = customerName
+      this.billInfo.moneyPayback = total
+      this.billInfo.oderNumber = orderNumber
+    },
+    ...mapGetters(RETURNEDGOODS, [
+      RETURNED_GOOD_CHOOSEN_DETAIL_GETTER,
+    ]),
+    ...mapMutations(RETURNEDGOODS, [
+      CLEAR_RETURNED_GOODS_DATA,
+    ]),
+    ...mapActions(RETURNEDGOODS, [
+      GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION,
+      CREATE_RETURNED_GOOD_ACTION,
+    ]),
+    onSubmit() {
+      if (this.billInfo.oderNumber === '') {
+        toasts.error('Xin vui lòng chọn đơn hàng muốn trả!')
+        return
+      }
+
+      this.CREATE_RETURNED_GOOD_ACTION({
+        dateReturn: new Date(),
+        orderNumber: this.billInfo.oderNumber,
+        reasonId: this.selectedReason,
+        reasonDescription: this.billInfo.oderNumber,
+        createUser: localStorage.getItem('username') || '',
+      })
     },
   },
 }

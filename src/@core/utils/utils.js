@@ -105,3 +105,30 @@ export const getNow = () => {
 }
 
 export const isEmpty = value => value === undefined || value === '' || value === null
+
+export const getDateNow = () => {
+  const date = new Date()
+
+  const yyyy = date.getFullYear()
+  let MM = date.getMonth() + 1
+  let dd = date.getDate()
+  let mm = date.getMinutes()
+  let hh = date.getHours()
+
+  if (dd < 10) {
+    dd = `0${dd}`
+  }
+  if (MM < 10) {
+    MM = `0${MM}`
+  }
+
+  if (mm < 10) {
+    mm = `0${mm}`
+  }
+
+  if (hh < 10) {
+    hh = `0${hh}`
+  }
+
+  return `${yyyy}-${MM}-${dd} lúc ${hh}:${mm}`
+}
