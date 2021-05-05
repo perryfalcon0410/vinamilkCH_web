@@ -17,9 +17,9 @@
       <b-input
         ref="input"
         v-model="dataInput"
-        class="vis_input"
+        class="vis_input text-brand-3"
         :disabled="disabled"
-        :class="{'vis_input_disable': !typeAble, 'cursor-pointer': !typeAble && !disabled, inputClass}"
+        :class="({'vis_input_disable': !typeAble, 'cursor-pointer': !typeAble && !disabled}, inputClass)"
         :placeholder="currentResults.name ? currentResults.name : placeholder"
         :autocomplete="autocomplete ? 'on' : 'off'"
         :state="state"
@@ -51,24 +51,28 @@
     <!-- START - Popup -->
     <b-collapse
       v-model="isCollapse"
-      class="position-absolute w-100"
-      style="zIndex:1000"
+      class="position-absolute"
+      style="zIndex:1000; width:95%;"
     >
       <b-container
         class="my-1 p-0 bg-white rounded shadow-lg"
         fluid
       >
+        <div
+          v-if="isListEmpty(matches)"
+          class="p-1 text-center text-brand-3"
+        >
+          {{ noOptions }}
+        </div>
+
         <b-row
           v-for="(item,index) in matches"
           :key="index"
-          class="vis_dropdown_item mx-0 cursor-pointer"
+          class="vis_dropdown_item mx-0 cursor-pointer text-brand-3"
           :class="suggestionsClass"
           @click="suggestionClick(index)"
         >
           <!-- START - Label -->
-          <!-- <div v-if="isListEmpty(item)">
-            Không có dữ liệu
-          </div> -->
           <b-col
             class="py-1"
           >
@@ -166,6 +170,11 @@ export default {
       type: Number,
       default: null,
     },
+    // content for no options
+    noOptions: {
+      type: String,
+      default: 'Không có dữ liệu',
+    },
   },
 
   data() {
@@ -230,12 +239,10 @@ export default {
     onIconChervonUpClick() {
       this.$refs.input.blur()
     },
-    // temp
-    // isListEmpty(value) {
-    //   console.log(value)
-    //   console.log(this.$isEmpty(value))
-    //   return this.$isEmpty(value)
-    // },
+
+    isListEmpty(value) {
+      return value.length === 0
+    },
   },
 }
 </script>

@@ -14,7 +14,7 @@
         <b-icon-chevron-down
           v-if="canCollapse"
           scale="1.1"
-          color="text-brand-1"
+          class="text-brand-1"
         />
       </b-row>
     </b-col>

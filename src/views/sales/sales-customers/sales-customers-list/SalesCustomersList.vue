@@ -24,7 +24,10 @@
             size="sm"
             @click="navigateToCreate"
           >
-            <b-icon-plus scale="2" />
+            <b-icon-plus
+              scale="2"
+              class="mr-1"
+            />
             Thêm mới
           </b-button>
           <b-button
@@ -33,7 +36,7 @@
             size="sm"
             @click="onClickExcelExportButton"
           >
-            <b-icon-file-earmark-x-fill />
+            <b-icon-file-earmark-x-fill class="mr-1" />
             Xuất Excel
           </b-button>
         </b-button-group>
@@ -102,6 +105,7 @@
             slot-scope="props"
           >
             <b-row
+              v-show="customerPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -218,44 +222,44 @@ export default {
           field: 'phoneNumber',
           type: 'number',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ngày sinh',
           field: 'birthDay',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Giới tính',
           field: 'gender',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Trạng thái',
           field: 'status',
           type: 'boolean',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Nhóm',
           field: 'group',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ngày tạo',
           field: 'date',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Chức năng',
@@ -299,7 +303,7 @@ export default {
   },
 
   mounted() {
-    this.GET_CUSTOMERS_ACTION({})
+    this.GET_CUSTOMERS_ACTION({ formId: 9, ctrlId: 6 })
   },
 
   methods: {

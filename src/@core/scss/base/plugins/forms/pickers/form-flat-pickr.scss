@@ -1,11 +1,28 @@
-@import '../../../bootstrap-extended/include'; // Bootstrap includes
-@import '../../../components/include'; // Components includes
+@import "../../../bootstrap-extended/include"; // Bootstrap includes
+@import "../../../components/include"; // Components includes
+
+$font-size-defalut: 13px;
+// $dayWidth: 32px; /*pixel square for each day - default is 39 */
+// $width: $dayWidth * 7;
 
 .flatpickr-calendar {
+  font-size: $font-size-defalut;
+  // width: $width;
+  // .dayContainer {
+  //   width: $width;
+  //   min-width: $width;
+  //   max-width: $width;
+  // }
+  // .flatpickr-days {
+  //   width: $width;
+  // }
   .flatpickr-day {
+    // max-width: $dayWidth;
+    // height: $dayWidth;
+    // line-height: $dayWidth;
     color: $body-color;
     &.today {
-      border-color: $primary;
+      border-color: $brand-1;
       &:hover {
         background: transparent;
         color: $body-color;
@@ -14,16 +31,17 @@
 
     &.selected,
     &.selected:hover {
-      background: $primary;
+      background: $brand-1;
       color: $white;
-      border-color: $primary;
+      border-color: $brand-1;
     }
 
     &.inRange,
     &.inRange:hover {
       background: lighten($color: $primary, $amount: 30%);
       border-color: lighten($color: $primary, $amount: 30%);
-      box-shadow: -5px 0 0 lighten($color: $primary, $amount: 30%), 5px 0 0 lighten($color: $primary, $amount: 30%);
+      box-shadow: -5px 0 0 lighten($color: $primary, $amount: 30%),
+        5px 0 0 lighten($color: $primary, $amount: 30%);
     }
     &.startRange,
     &.endRange,
@@ -179,7 +197,7 @@
 
   .flatpickr-monthDropdown-months,
   .numInputWrapper {
-    font-size: 1.1rem;
+    font-size: $font-size-defalut;
     border-radius: 4px;
     padding: 2px;
     transition: all 0.15s ease-out;

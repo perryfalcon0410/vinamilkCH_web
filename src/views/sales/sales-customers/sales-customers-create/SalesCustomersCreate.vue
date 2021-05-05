@@ -127,6 +127,7 @@
                     :data-input="gendersSelected.name"
                     placeholder="Chọn giới tính"
                     title-class="mt-1"
+                    clear-able
                     @updateSelection="gendersSelected = $event"
                   />
                 </b-col>
@@ -356,20 +357,22 @@
                 :type-able="true"
                 :filter-able="true"
                 :clear-able="true"
+                no-options="Vui lòng chọn tỉnh/ thành trước"
                 @updateSelection="districtsSelected = $event"
               />
             </b-col>
 
             <b-col>
               <v-input-select
-                title="Quận/ Huyện"
+                title="Phường/ Xã"
                 :suggestions="precinctOptions"
                 :data-input="precinctsSelected.name"
                 title-class="mt-1"
-                placeholder="Chọn quận/ huyện"
+                placeholder="Chọn phường/ xã"
                 :type-able="true"
                 :filter-able="true"
                 :clear-able="true"
+                no-options="Vui lòng chọn quận/ huyện trước"
                 @updateSelection="precinctsSelected = $event"
               />
             </b-col>
@@ -532,7 +535,6 @@ import {
   age,
   identifyCard,
 } from '@/@core/utils/validations/validations'
-import '@core/scss/vue/libs/vue-flatpicker.scss'
 import { formatVniDateToISO } from '@/@core/utils/filter'
 import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import commonData from '@/@db/common'
@@ -682,7 +684,7 @@ export default {
       console.log('---------provinces---------')
 
       this.districtsSelected = null
-      this.GET_DISTRICTS_ACTION(this.provincesSelected?.id)
+      this.GET_DISTRICTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.provincesSelected.id })
     },
     districtsSelected() {
       console.log('---------districts---------')
@@ -690,7 +692,7 @@ export default {
       console.log('---------districts---------')
 
       this.precinctsSelected = null
-      this.GET_PRECINCTS_ACTION(this.districtsSelected?.id)
+      this.GET_PRECINCTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.districtsSelected.id })
     },
     customerIDDate() {
       console.log(this.customerIDDate)
@@ -698,10 +700,10 @@ export default {
   },
 
   mounted() {
-    this.GET_CUSTOMER_TYPES_ACTION()
-    this.GET_PROVINCES_ACTION()
-    this.GET_CARD_TYPES_ACTION()
-    this.GET_CLOSELY_TYPES_ACTION()
+    this.GET_CUSTOMER_TYPES_ACTION({ formId: 9, ctrlId: 6 })
+    this.GET_PROVINCES_ACTION({ formId: 9, ctrlId: 6 })
+    this.GET_CARD_TYPES_ACTION({ formId: 9, ctrlId: 6 })
+    this.GET_CLOSELY_TYPES_ACTION({ formId: 9, ctrlId: 6 })
   },
 
   beforeRouteLeave(to, from, next) {

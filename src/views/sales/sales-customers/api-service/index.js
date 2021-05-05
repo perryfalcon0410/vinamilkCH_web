@@ -26,8 +26,10 @@ export default {
   getCustomerById(args) {
     return axios.get((`${getCustomerByIdEndpoint}/${args}`))
   },
-  getCustomerTypes() {
-    return axios.get(`${getCustomerTypesEndpoint}`)
+  getCustomerTypes(args) {
+    return axios.get(getCustomerTypesEndpoint, {
+      params: formatURLParams(args),
+    })
   },
   createCustomer(args) {
     return axios.post(createCustomerEndpoint, args)
@@ -38,22 +40,34 @@ export default {
   exportCustomers() {
     return axios.get(`${exportCustomersEndpoint}`)
   },
-  getShopLocations() {
-    return axios.get(getShopLocationsEndpoint)
+  getShopLocations(args) {
+    return axios.get(getShopLocationsEndpoint, {
+      params: formatURLParams(args),
+    })
   },
-  getProvinces() {
-    return axios.get(`${getProvincesEndpoint}`)
+  getProvinces(args) {
+    return axios.get(getProvincesEndpoint, {
+      params: formatURLParams(args),
+    })
   },
   getDistricts(args) {
-    return axios.get(`${getDistrictsEndpoint}?provinceId=${args}`)
+    return axios.get(getDistrictsEndpoint, {
+      params: formatURLParams(args),
+    })
   },
   getPrecincts(args) {
-    return axios.get(`${getPrecinctsEndpoint}?districtId=${args}`)
+    return axios.get(getPrecinctsEndpoint, {
+      params: formatURLParams(args),
+    })
   },
-  getCardTypes() {
-    return axios.get(`${getCardTypesEndpoint}`)
+  getCardTypes(args) {
+    return axios.get(getCardTypesEndpoint, {
+      params: formatURLParams(args),
+    })
   },
-  getCloselyTypes() {
-    return axios.get(`${getCloselyTypesEndpoint}`)
+  getCloselyTypes(args) {
+    return axios.get(getCloselyTypesEndpoint, {
+      params: formatURLParams(args),
+    })
   },
 }

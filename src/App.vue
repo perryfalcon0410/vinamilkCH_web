@@ -15,7 +15,7 @@
       :can-cancel="false"
       :is-full-page="true"
       loader="spinner"
-      color="#7367f0"
+      color="#315899"
       opacity="0"
     />
   </div>

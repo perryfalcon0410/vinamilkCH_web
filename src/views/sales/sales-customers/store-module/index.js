@@ -157,9 +157,9 @@ export default {
         })
     },
 
-    [GET_SHOP_LOCATIONS_ACTION]({ state }) {
+    [GET_SHOP_LOCATIONS_ACTION]({ state }, val) {
       CustomerService
-        .getShopLocations()
+        .getShopLocations(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -189,9 +189,9 @@ export default {
         })
     },
 
-    [GET_CUSTOMER_TYPES_ACTION]({ state }) {
+    [GET_CUSTOMER_TYPES_ACTION]({ state }, val) {
       CustomerService
-        .getCustomerTypes()
+        .getCustomerTypes(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -204,9 +204,9 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_PROVINCES_ACTION]({ state }) {
+    [GET_PROVINCES_ACTION]({ state }, val) {
       CustomerService
-        .getProvinces()
+        .getProvinces(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -249,9 +249,9 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_CARD_TYPES_ACTION]({ state }) {
+    [GET_CARD_TYPES_ACTION]({ state }, val) {
       CustomerService
-        .getCardTypes()
+        .getCardTypes(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -264,9 +264,9 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_CLOSELY_TYPES_ACTION]({ state }) {
+    [GET_CLOSELY_TYPES_ACTION]({ state }, val) {
       CustomerService
-        .getCloselyTypes()
+        .getCloselyTypes(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
