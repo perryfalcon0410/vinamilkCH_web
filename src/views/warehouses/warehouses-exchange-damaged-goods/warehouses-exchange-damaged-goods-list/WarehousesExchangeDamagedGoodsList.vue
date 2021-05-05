@@ -1,100 +1,136 @@
 <template>
   <b-container
     fluid
-    class=" p-0"
+    class="d-flex flex-column p-0"
   >
     <!-- START - Search -->
     <b-form class="bg-white shadow rounded">
-      <!-- START - Label -->
-      <label
-        for="v-search-form"
-        class="m-1 text-primary"
-      >
-        Tìm kiếm
-      </label>
-      <!-- END - Label -->
-
-      <!-- START - Section form input -->
-      <b-form-row
-        class="v-search-form border-top p-1"
+      <v-card-actions
+        title="Tìm kiếm"
       >
         <!-- START - Minute Code -->
         <b-col
-          lg="2"
-          md
+          xl
+          md="3"
+          sm="4"
         >
-          <b-form-group
-            label="Số biên bản"
-            label-for="form-input-minuteCode"
-            :state="validatorCode"
-            invalid-feedback="Chỉ bao gồm các ký tự [0-9][a-Z] dấu chấm(.), dấu gạch dưới (_)"
+          <validation-provider
+            v-slot="{ errors, passed }"
+            rules="code"
+            name="Số biên bản"
           >
+            <div
+              class="h8 mt-lg-1 mt-xl-0"
+            >
+              Số biên bản
+            </div>
             <b-form-input
               id="form-input-minuteCode"
-              v-model="MinuteCode"
+              v-model="minuteCode"
+              :state="minuteCode ? passed : null"
               maxlength="20"
-              :state="validatorCode"
-              required
-              trim
+              class="h9"
+              size="sm"
             />
-          </b-form-group>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
         </b-col>
         <!-- END - Minute Code -->
 
-        <!-- START - Date to -->
-        <b-col
-          lg="2"
-          md
-        >
-          <b-form-group
-            class="ml-lg-1"
-            label="Từ ngày"
-            label-for="form-input-date-from"
-          >
-            <b-form-datepicker
-              id="form-input-date-from"
-              v-model="fromDate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
-        </b-col>
-        <!-- END - Date to -->
-
         <!-- START - Date from -->
         <b-col
-          lg="2"
-          md
+          xl
+          md="3"
+          sm="4"
         >
-          <b-form-group
-            class="ml-lg-1"
-            label="Đến ngày"
-            label-for="form-input-date-to"
+          <validation-provider
+            v-slot="{ errors }"
+            rules="dateFormatVNI"
           >
-            <b-form-datepicker
-              id="form-input-date-to"
-              v-model="toDate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
+            <div
+              class="h8 mt-lg-1 mt-xl-0"
+            >
+              Từ ngày
+            </div>
+            <b-input-group
+              id="form-input-date-from"
+              class="input-group-merge"
+              size="sm"
+            >
+              <b-input-group-prepend
+                is-text
+                data-toggle
+              >
+                <b-icon-calendar />
+              </b-input-group-prepend>
+              <vue-flat-pickr
+                v-model="fromDate"
+                :config="configDate"
+                class="form-control h9"
+                placeholder="Chọn ngày"
+              />
+            </b-input-group>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
         </b-col>
         <!-- END - Date from -->
 
+        <!-- START - Date to -->
+        <b-col
+          xl
+          md="3"
+          sm="4"
+        >
+          <validation-provider
+            v-slot="{ errors }"
+            rules="dateFormatVNI"
+          >
+            <div
+              class="h8 mt-lg-1 mt-xl-0"
+            >
+              Đến ngày
+            </div>
+            <b-input-group
+              class="input-group-merge"
+              size="sm"
+            >
+              <b-input-group-prepend
+                is-text
+                data-toggle
+              >
+                <b-icon-calendar />
+              </b-input-group-prepend>
+              <vue-flat-pickr
+                id="form-input-date-from"
+                v-model="toDate"
+                :config="configDate"
+                class="form-control h9"
+                placeholder="Chọn ngày"
+              />
+            </b-input-group>
+
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+        </b-col>
+        <!-- END - Date to -->
+
         <!-- START - Reason -->
         <b-col
-          lg="2"
-          md
+          xxl
+          md="3"
+          sm="4"
         >
-          <b-form-group
-            class="ml-lg-1"
-            label="Lý do"
-            label-for="form-select-reason"
-          >
-            <b-form-select
-              id="form-select-reason"
-            />
-          </b-form-group>
+          <v-input-select
+            title="Lý do"
+            :suggestions="reasonTypeOptions"
+            :data-input="reasonTypesSelected.name"
+            placeholder="Tất cả"
+            title-class="h8 mt-lg-1 mt-xl-0"
+            input-class="h9"
+            suggestions-class="h9"
+            :clear-able="true"
+            @updateSelection="reasonTypesSelected = $event"
+          />
         </b-col>
         <!-- END - Reason -->
 
@@ -102,47 +138,48 @@
         <b-col
           md="12"
           lg="4"
+          class="h-25"
         >
-          <b-form-group
-            class="ml-lg-1"
-            label="Tìm kiếm"
-            label-for="form-button-search"
+          <div
+            class="h8 text-white"
           >
-            <b-button
-              id="form-button-search"
-              variant="primary"
-            >
-              <b-icon-search class="mr-1" />
-              Tìm kiếm
-            </b-button>
-          </b-form-group>
+            Tìm kiếm
+          </div>
+          <b-button
+            id="form-button-search"
+            class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
+            variant="someThing"
+            style="height: 30px;"
+          >
+            <b-icon-search class="mr-1" />
+            Tìm kiếm
+          </b-button>
         </b-col>
         <!-- END - Search Button -->
-
-      </b-form-row>
-      <!-- END - Section form input -->
-
+      </v-card-actions>
     </b-form>
     <!-- END - Search -->
 
     <!-- START - Product Import list -->
     <b-form class="bg-white rounded shadow my-1">
       <!-- START - Title -->
-      <b-form-row class="justify-content-between align-items-center border-bottom p-1">
-        <label
+      <b-form-row class="justify-content-between align-items-center border-bottom p-2">
+        <strong
           for="listProduct"
-          class="text-primary"
+          class="text-brand-1"
         >
           Danh sách phiếu đổi hàng hỏng
-        </label>
+        </strong>
 
         <b-button
-          class="rounded"
+          class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
           size="sm"
-          variant="primary"
+          variant="someThing"
           @click="onClickAddNewButton"
         >
-          <b-icon-plus scale="1.5" />
+          <b-icon-plus
+            scale="2"
+          />
           Thêm mới
         </b-button>
       </b-form-row>
@@ -155,10 +192,11 @@
       >
         <vue-good-table
           :columns="columns"
-          :rows="rows"
+          :rows="getExchangeDamagedGoods"
           style-class="vgt-table striped"
           :pagination-options="{
-            enabled: true
+            enabled: true,
+            perPage: elementSize
           }"
           compact-mode
           line-numbers
@@ -169,7 +207,7 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'Feature'"
+              v-if="props.column.field === 'feature'"
               align-h="center"
             >
               <b-icon-bricks />
@@ -186,26 +224,85 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'Feature'"
+              v-if="props.column.field === 'feature'"
               class="mx-0"
               align-h="around"
             >
               <b-icon-pencil-fill
+                v-b-popover.hover="'Chỉnh sửa'"
                 class="cursor-pointer"
                 @click="onClickUpdateButton"
               />
 
               <b-icon-trash-fill
+                v-b-popover.hover="'Xóa'"
                 class="cursor-pointer"
                 color="red"
               />
             </b-row>
-
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
           </template>
           <!-- END - Row -->
+
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Hiển thị 1 đến
+                </span>
+                <b-form-select
+                  v-model="elementSize"
+                  size="sm"
+                  :options="paginationOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span
+                  class="text-nowrap"
+                > trong {{ exchangeDamagedGoodPagination.totalElements }} mục </span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="exchangeDamagedGoodPagination.totalElements"
+                :per-page="elementSize"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
 
           <!-- START - Filter -->
           <template
@@ -213,14 +310,14 @@
             slot-scope="props"
           >
             <div
-              v-if="props.column.field === 'Amount'"
+              v-if="props.column.field === 'quantity'"
             >
-              0
+              {{ totalQuantity }}
             </div>
             <div
-              v-else-if="props.column.field === 'Price'"
+              v-else-if="props.column.field === 'price'"
             >
-              0
+              {{ totalMoney }}
             </div>
           </template>
           <!-- END - Filter -->
@@ -231,31 +328,73 @@
 
     </b-form>
     <!-- END - Product Import list -->
-
   </b-container>
 </template>
 
 <script>
+import warehousesData from '@/@db/warehouses'
+import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import {
+  ValidationProvider,
+} from 'vee-validate'
+import {
+  code,
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
+import { formatDateToLocale, formatNumberToLocale } from '@/@core/utils/filter'
+import {
+  WAREHOUSESEXCHANGEDAMAGEDGOODS,
+  // Getters
+  EXCHANGE_DAMAGED_GOODS_GETTER,
+  EXCHANGE_DAMAGED_GOOD_PAGINATION_GETTER,
+  // Actions
+  GET_EXCHANGE_DAMAGED_GOODS_ACTION,
+} from '../store-module/type'
+
 export default {
+  components: {
+    ValidationProvider,
+    VCardActions,
+    VInputSelect,
+  },
   data() {
     return {
-      fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      toDate: new Date(),
-      MinuteCode: '',
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
+      minuteCode: '',
+
+      elementSize: 20,
+      pageNumber: 1,
+      paginationOptions: warehousesData.pagination,
+
+      reasonTypesSelected: { id: null, name: null },
+      reasonTypeOptions: warehousesData.reasonTypes,
+
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        allowInvalidPreload: false,
+      },
       columns: [
         {
           label: 'Ngày',
-          field: 'Date',
+          field: 'date',
           sortable: false,
         },
         {
           label: 'Số biên bản',
-          field: 'MinuteCode',
+          field: 'minuteCode',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Amount',
+          field: 'quantity',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -263,7 +402,7 @@ export default {
         },
         {
           label: 'Số tiền',
-          field: 'Price',
+          field: 'price',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -271,55 +410,40 @@ export default {
         },
         {
           label: 'Lý do',
-          field: 'Reason',
+          field: 'reason',
           sortable: false,
         },
         {
           label: 'Chức năng',
-          field: 'Feature',
+          field: 'feature',
           sortable: false,
           width: '100px',
-        },
-      ],
-      rows: [
-        {
-          Date: '12/03/2021',
-          MinuteCode: 'CA.CH40235.002',
-          Amount: '1020',
-          Price: '25.300.000',
-          Reason: 'Hàng hỏng do khách hàng mua tại cửa hàng',
-          Feature: '',
-        },
-        {
-          Date: '12/03/2021',
-          MinuteCode: 'CA.CH40235.002',
-          Amount: '1020',
-          Price: '25.300.000',
-          Reason: 'Hàng hỏng do khách hàng mua tại cửa hàng',
-          Feature: '',
-        },
-        {
-          Date: '12/03/2021',
-          MinuteCode: 'CA.CH40235.002',
-          Amount: '1020',
-          Price: '25.300.000',
-          Reason: 'Hàng hỏng do khách hàng mua tại cửa hàng',
-          Feature: '',
         },
       ],
     }
   },
   computed: {
-    validatorCode() {
-      const validID = /^([\w\\.]{0,40})$/
-      const result = validID.test(this.MinuteCode)
-      if (this.MinuteCode.length >= 1) {
-        return result
-      }
-      return null
+    getExchangeDamagedGoods() {
+      return this.EXCHANGE_DAMAGED_GOODS_GETTER().map(data => ({
+        id: data.id,
+        Date: formatDateToLocale(data.transDate),
+        MinuteCode: data.transCode,
+        Amount: data.quantity,
+        Price: data.totalAmount,
+        Reason: data.reason,
+        Feature: '',
+      }))
     },
   },
   methods: {
+    ...mapGetters(WAREHOUSESEXCHANGEDAMAGEDGOODS, [
+      EXCHANGE_DAMAGED_GOODS_GETTER,
+      EXCHANGE_DAMAGED_GOOD_PAGINATION_GETTER,
+    ]),
+    ...mapActions(WAREHOUSESEXCHANGEDAMAGEDGOODS, [
+      GET_EXCHANGE_DAMAGED_GOODS_ACTION,
+    ]),
+    // ...mapGetters(EXCHANGE)
     onClickAddNewButton() {
       this.$router.push({ name: 'warehouses-exchange-damaged-goods-create' })
     },
