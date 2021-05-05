@@ -129,10 +129,10 @@
             input-class="h9"
             suggestions-class="h9"
             :clear-able="true"
+            size="sm"
             @updateSelection="reasonTypesSelected = $event"
           />
         </b-col>
-        <!-- END - Reason -->
 
         <!-- START - Search Button -->
         <b-col
@@ -156,6 +156,9 @@
           </b-button>
         </b-col>
         <!-- END - Search Button -->
+
+        <!-- END - Section form input -->
+
       </v-card-actions>
     </b-form>
     <!-- END - Search -->
@@ -273,11 +276,11 @@
                 />
                 <span
                   class="text-nowrap"
-                > trong {{ exchangeDamagedGoodPagination.totalElements }} mục </span>
+                > trong {{ exchangeDamagedGoodsPagination.totalElements }} mục </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="exchangeDamagedGoodPagination.totalElements"
+                :total-rows="exchangeDamagedGoodsPagination.totalElements"
                 :per-page="elementSize"
                 first-number
                 last-number
@@ -333,6 +336,7 @@
 
 <script>
 import warehousesData from '@/@db/warehouses'
+import commonData from '@/@db/common'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import {
@@ -351,7 +355,7 @@ import {
   WAREHOUSESEXCHANGEDAMAGEDGOODS,
   // Getters
   EXCHANGE_DAMAGED_GOODS_GETTER,
-  EXCHANGE_DAMAGED_GOOD_PAGINATION_GETTER,
+  EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER,
   // Actions
   GET_EXCHANGE_DAMAGED_GOODS_ACTION,
 } from '../store-module/type'
@@ -370,7 +374,7 @@ export default {
 
       elementSize: 20,
       pageNumber: 1,
-      paginationOptions: warehousesData.pagination,
+      paginationOptions: commonData.pagination,
 
       reasonTypesSelected: { id: null, name: null },
       reasonTypeOptions: warehousesData.reasonTypes,
@@ -386,11 +390,15 @@ export default {
           label: 'Ngày',
           field: 'date',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Số biên bản',
           field: 'minuteCode',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng',
@@ -399,6 +407,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-center',
+          tdClass: 'text-right',
         },
         {
           label: 'Số tiền',
@@ -407,11 +417,15 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-center',
+          tdClass: 'text-right',
         },
         {
           label: 'Lý do',
           field: 'reason',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-left',
         },
         {
           label: 'Chức năng',
@@ -420,35 +434,60 @@ export default {
           width: '100px',
         },
       ],
+      // validation rules
+      code,
+      dateFormatVNI,
     }
   },
   computed: {
     getExchangeDamagedGoods() {
       return this.EXCHANGE_DAMAGED_GOODS_GETTER().map(data => ({
         id: data.id,
-        Date: formatDateToLocale(data.transDate),
-        MinuteCode: data.transCode,
-        Amount: data.quantity,
-        Price: data.totalAmount,
-        Reason: data.reason,
-        Feature: '',
+        date: data.transDate === '' ? '' : formatDateToLocale(data.transDate),
+        minuteCode: data.transCode,
+        quantity: formatNumberToLocale(Number(data.quantity)),
+        price: formatNumberToLocale(Number(data.totalAmount)),
+        reason: data.reason,
+        feature: 'Chỉnh sửa',
       }))
     },
+    totalQuantity() {
+      return this.getExchangeDamagedGoods.reduce((accum, item) => accum + Number(item.quantity), 0)
+    },
+    totalMoney() {
+      return this.getExchangeDamagedGoods.reduce((accum, item) => accum + Number(item.price), 0)
+    },
+    exchangeDamagedGoodsPagination() {
+      return this.EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER()
+    },
+  },
+  mounted() {
+    this.GET_EXCHANGE_DAMAGED_GOODS_ACTION({
+      formId: 5, // Hard code
+      ctrlId: 7, // Hard code
+    })
   },
   methods: {
     ...mapGetters(WAREHOUSESEXCHANGEDAMAGEDGOODS, [
       EXCHANGE_DAMAGED_GOODS_GETTER,
-      EXCHANGE_DAMAGED_GOOD_PAGINATION_GETTER,
+      EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER,
     ]),
     ...mapActions(WAREHOUSESEXCHANGEDAMAGEDGOODS, [
       GET_EXCHANGE_DAMAGED_GOODS_ACTION,
     ]),
-    // ...mapGetters(EXCHANGE)
     onClickAddNewButton() {
       this.$router.push({ name: 'warehouses-exchange-damaged-goods-create' })
     },
     onClickUpdateButton() {
       this.$router.push({ name: 'archive-changeProductsUpdate' })
+    },
+    onPaginationChange() {
+      const paginationData = {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+      }
+
+      this.GET_EXCHANGE_DAMAGED_GOODS_ACTION(paginationData)
     },
   },
 }
