@@ -13,6 +13,7 @@ import {
   GET_EXPORT_BORROWINGS_DETAIL_GETTER,
   GET_EXPORT_PO_TRANS_DETAIL_GETTER,
   GET_WAREHOUSE_TYPE_GETTER,
+  GET_WAREHOUSES_OUTPUT_DATA_GETTER,
   // ACTIONS
   GET_WAREHOUSES_OUTPUT_LIST_ACTION,
   PRINT_WAREHOUSES_OUTPUT_ACTION,
@@ -43,6 +44,7 @@ export default {
     borrowing: [],
     poProducts: [],
     wareHouseType: {},
+    dataWarehousesOutput: {},
   },
 
   // GETTERS
@@ -77,6 +79,9 @@ export default {
     [GET_WAREHOUSE_TYPE_GETTER](state) {
       return state.wareHouseType
     },
+    [GET_WAREHOUSES_OUTPUT_DATA_GETTER](state) {
+      return state.dataWarehousesOutput
+    },
   },
 
   // MUTATIONS
@@ -95,6 +100,7 @@ export default {
         .then(res => {
           if (res.success) {
             state.warehousesOutputs = res.data.response.content || []
+            state.dataWarehousesOutput = res.data.response || {}
           } else {
             throw new Error(res.statusValue)
           }

@@ -155,50 +155,58 @@
         <b-col
           class="bg-white shadow rounded mt-1 mt-xl-0"
         >
-          <!-- START - Table Product promotion -->
-          <div class="d-inline-flex rounded-top px-1 my-1">
-            <strong>
-              Danh sách sản phẩm
-            </strong>
-          </div>
-
-          <vue-good-table
-            :columns="columns"
-            :rows="warehousesOutput.products"
-            style-class="vgt-table striped"
-            compact-mode
-            line-numbers
-          >
-
-            <!-- START - Header slot -->
-            <div slot="table-actions">
-              <b-form-checkbox class="m-1">
-                Trả nguyên đơn
-              </b-form-checkbox>
-            </div>
-            <!-- END - Header slot -->
-
-            <!-- START - Rows -->
-            <template
-              slot="table-row"
-              slot-scope="props"
+          <b-form class="v-search bg-white rounded shadow rounded my-1">
+            <b-row
+              class="justify-content-between border-bottom p-1 mx-0"
+              align-v="center"
             >
-              <div v-if="props.column.field === 'productReturnAmount'">
-                <b-form-input
-                  v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
-                  type="number"
-                  :number="true"
-                  size="sm"
-                />
+              <div class="d-inline-flex rounded-top px-1 my-1">
+                <strong class="text-blue-vinamilk">
+                  Danh sách sản phẩm
+                </strong>
               </div>
-              <div v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </div>
-            </template>
-            <!-- END - Rows -->
+            </b-row>
+            <b-col class="py-1">
+              <!-- START - Table Product promotion -->
+              <vue-good-table
+                :columns="columns"
+                :rows="warehousesOutput.products"
+                style-class="vgt-table striped"
+                compact-mode
+                line-numbers
+              >
 
-          </vue-good-table>
-          <!-- END - Table Product -->
+                <!-- START - Header slot -->
+                <div slot="table-actions">
+                  <b-form-checkbox class="m-1">
+                    Trả nguyên đơn
+                  </b-form-checkbox>
+                </div>
+                <!-- END - Header slot -->
+
+                <!-- START - Rows -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div v-if="props.column.field === 'productReturnAmount'">
+                    <b-form-input
+                      v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
+                      type="number"
+                      :number="true"
+                      size="sm"
+                    />
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
+                <!-- END - Rows -->
+              </vue-good-table>
+              <!-- END - Table Product -->
+
+            </b-col>
+          </b-form>
 
           <!-- START - Button -->
           <b-row class="m-1 justify-content-end">
@@ -271,39 +279,53 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productID',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Giá',
           field: 'productPrice',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
           type: 'number',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Đã xuất trả/tổng nhập',
           field: 'productExported',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
       ],
 
@@ -362,8 +384,14 @@ export default {
     },
   },
   mounted() {
-    this.GET_WAREHOUSES_OUTPUT_BY_ID_ACTION(`${this.warehousesOutput.id}?type=${this.warehousesOutput.receiptType}`)
-    this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION(`${this.warehousesOutput.id}?type=${this.warehousesOutput.receiptType}`)
+    const paramGetDetailsWarehousesOutput = {
+      id: this.warehousesOutput.id,
+      type: this.warehousesOutput.receiptType,
+      formId: 5,
+      ctrlId: 1,
+    }
+    this.GET_WAREHOUSES_OUTPUT_BY_ID_ACTION(paramGetDetailsWarehousesOutput)
+    this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION(paramGetDetailsWarehousesOutput)
   },
   methods: {
     ...mapGetters(WAREHOUSES_OUTPUT, [

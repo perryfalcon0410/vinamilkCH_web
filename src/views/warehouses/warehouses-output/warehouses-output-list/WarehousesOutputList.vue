@@ -4,48 +4,60 @@
     class="d-flex flex-column p-0"
   >
     <!-- START - Search -->
-    <b-form class="bg-white shadow rounded">
-      <div
-        class="m-1 text-primary"
+    <b-form
+      class="bg-white shadow rounded"
+    >
+      <b-row
+        v-b-toggle.collapseDelivery
+        class="text-primary mx-0 p-1"
+        align-v="center"
+        align-h="between"
       >
-        <strong>
-          Tìm kiếm
-        </strong>
-      </div>
+        <strong class="text-brand-1">Tìm kiếm</strong>
 
-      <b-form-row
-        class="border-top p-1"
+        <b-icon-chevron-down
+          scale="1.3"
+          color="#203181"
+        />
+      </b-row>
+      <b-collapse
+        id="collapseDelivery"
+        visible
       >
-        <b-col
-          lg="2"
-          md
+        <b-form-row
+          class="border-top p-1"
         >
-          <b-form-group
-            label="Số hóa đơn"
-            label-for="redInvoiceNo"
-          >
-            <b-form-input
-              id="redInvoiceNo"
-              v-model="searchOptions.redInvoiceNo"
-              maxlength="20"
-              trim
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          lg="2"
-          md
-        >
-          <validation-provider
-            v-slot="{ errors }"
-            rules="dateFormatVNI"
+          <b-col
+            lg="2"
+            md
           >
             <b-form-group
-              label="Từ ngày"
-              label-for="form-input-date-from"
+              label="Số hóa đơn"
+              label-for="redInvoiceNo"
             >
+              <b-form-input
+                id="redInvoiceNo"
+                v-model="searchOptions.redInvoiceNo"
+                maxlength="20"
+                trim
+              />
+            </b-form-group>
+          </b-col>
+
+          <b-col
+            xl
+            lg="2"
+            md
+          >
+            <validation-provider
+              v-slot="{ errors }"
+              rules="dateFormatVNI"
+            >
+              <div
+                class="h8 mt-sm-1 mt-xl-0"
+              >
+                Từ ngày
+              </div>
               <b-input-group
                 id="form-input-date-from"
                 class="input-group-merge"
@@ -59,28 +71,28 @@
                 <vue-flat-pickr
                   v-model="searchOptions.fromDate"
                   :config="configDate"
-                  class="form-control"
+                  class="form-control h9"
                   placeholder="chọn ngày"
                 />
               </b-input-group>
-            </b-form-group>
-            <small class="text-danger">{{ errors[0] }}</small>
-          </validation-provider>
-        </b-col>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-col>
 
-        <b-col
-          xl
-          lg="2"
-          md
-        >
-          <validation-provider
-            v-slot="{ errors }"
-            rules="dateFormatVNI"
+          <b-col
+            xl
+            lg="2"
+            md
           >
-            <b-form-group
-              label="Đến ngày"
-              label-for="form-input-date-to"
+            <validation-provider
+              v-slot="{ errors }"
+              rules="dateFormatVNI"
             >
+              <div
+                class="h8 mt-sm-1 mt-xl-0"
+              >
+                Đến ngày
+              </div>
               <b-input-group class="input-group-merge">
                 <b-input-group-prepend
                   is-text
@@ -92,104 +104,115 @@
                   id="form-input-date-from"
                   v-model="searchOptions.toDate"
                   :config="configDate"
-                  class="form-control"
+                  class="form-control h9"
                   placeholder="chọn ngày"
                 />
               </b-input-group>
-            </b-form-group>
-            <small class="text-danger">{{ errors[0] }}</small>
-          </validation-provider>
-        </b-col>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-col>
 
-        <b-col
-          lg="2"
-          md
-        >
-          <b-form-group
-            class="ml-lg-1"
-            label="Loại xuất"
-            label-for="type"
+          <b-col
+            lg="2"
+            md
           >
+            <div
+              class="h8 mt-sm-1 mt-xl-0"
+            >
+              Loại xuất
+            </div>
             <v-select
               id="type"
               v-model="warehousesTypeSelected"
               :options="warehousesOptions"
               label="name"
               placeholder="Tất cả"
+              class="h9"
             />
-          </b-form-group>
-        </b-col>
 
-        <b-col
-          md="12"
-          lg="4"
-        >
-          <b-form-group
-            class="ml-lg-1"
-            label="Tìm kiếm"
-            label-for="searchButton"
+          </b-col>
+
+          <b-col
+            md="12"
+            lg="4"
           >
-            <b-button
-              id="searchButton"
-              variant="primary"
-              @click="onClickSearchWarehousesOutput"
+            <b-form-group
+              label="Tìm kiếm"
+              label-for="form-button-search"
+              label-class="text-white"
             >
-              <b-icon-search class="mr-1" />
-              Tìm kiếm
-            </b-button>
-          </b-form-group>
-        </b-col>
-
-      </b-form-row>
+              <b-button
+                id="form-button-search"
+                class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
+                variant="someThing"
+                style="max-height: 35px;"
+                @click="onClickSearchWarehousesOutput"
+              >
+                <b-icon-search class="mr-1" />
+                Tìm kiếm
+              </b-button>
+            </b-form-group>
+          </b-col>
+        </b-form-row>
+      </b-collapse>
     </b-form>
     <!-- END - Search -->
 
     <!-- START - Product  list -->
-    <b-form class="bg-white rounded shadow my-1">
+    <b-form class="v-search bg-white rounded shadow rounded my-1">
       <!-- START - Title -->
-      <b-form-row class="justify-content-between align-items-center border-bottom p-1">
-        <strong
-          class="text-primary"
-        >
+      <b-row
+        class="justify-content-between border-bottom p-1 mx-0"
+        align-v="center"
+      >
+        <strong class="text-brand-1">
           Danh sách phiếu xuất hàng
         </strong>
-        <b-button
-          class="rounded"
-          size="md"
-          variant="primary"
-          @click="onClickCreateButton"
-        >
-          <b-icon-plus />
-          Thêm mới
-        </b-button>
-      </b-form-row>
+        <b-button-group>
+          <b-button
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            variant="someThing"
+            size="sm"
+            @click="onClickCreateButton"
+          >
+            <b-icon-plus scale="2" />
+            Thêm mới
+          </b-button>
+        </b-button-group>
+
+      </b-row>
       <!-- END - Title -->
 
       <!-- START - Table -->
-      <b-col
-        class="py-1"
-      >
+      <b-col class="py-1">
         <vue-good-table
           :columns="columns"
           :rows="warehousesOutputList"
           style-class="vgt-table striped"
           :pagination-options="{
-            enabled: true
+            enabled: true,
+            perPage: elementSize
           }"
           compact-mode
           line-numbers
         >
+          <!-- START - Empty rows -->
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
+          <!-- END - Empty rows -->
           <!-- START - Column -->
           <template
             slot="table-column"
             slot-scope="props"
           >
-            <b-row
-              v-if="props.column.field === 'feature'"
-              align-h="center"
-            >
-              <b-icon-bricks />
-            </b-row>
+            <div v-if="props.column.field === 'feature'">
+              <b-icon-bricks v-b-popover.hover="'Thao tác'" />
+            </div>
+
             <div v-else>
               {{ props.column.label }}
             </div>
@@ -201,45 +224,107 @@
             slot="table-row"
             slot-scope="props"
           >
-            <b-row
-              v-if="props.column.field === 'feature'"
-              align-h="center"
-            >
-              <div v-show="props.index > 0">
-                <b-button
-                  variant="light"
-                  class="rounded-circle p-1 ml-1"
-                  @click="onClickPrintButton(props.index)"
-                >
-                  <b-icon-printer
-                    color="blue"
-                  />
-                </b-button>
-                <b-button
-                  variant="light"
-                  class="rounded-circle ml-1 p-1"
-                  @click="onClickUpdateButton(props.row.id,props.row.type)"
-                >
-                  <b-icon-pencil-fill
-                    color="blue"
-                  />
-                </b-button>
-                <b-button
-                  v-b-modal.DeleteModal
-                  variant="light"
-                  class="rounded-circle ml-1 p-1"
-                >
-                  <b-icon-trash-fill
-                    color="red"
-                  />
-                </b-button>
-              </div>
-            </b-row>
+            <div v-if="props.column.field === 'feature'">
+              <b-icon-printer-fill
+                v-b-popover.hover.top="'In phiếu'"
+                class="cursor-pointer text-brand-1"
+                @click="onClickPrintButton(props.index)"
+              />
+              <b-icon-pencil-fill
+                v-b-popover.hover.top="'Chỉnh sửa'"
+                class="cursor-pointer ml-2 text-brand-3"
+                @click="onClickUpdateButton(props.row.id,props.row.type)"
+              />
+              <b-icon-trash-fill
+                v-b-popover.hover.top="'Xóa'"
+                class="cursor-pointer ml-2 text-brand-3"
+                @click="onClickUpdateButton(props.row.id,props.row.type)"
+              />
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
           </template>
           <!-- END - Row -->
+
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Hiển thị 1 đến
+                </span>
+                <b-form-select
+                  v-model="paginationSelected"
+                  size="sm"
+                  :options="paginationOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span
+                  class="text-nowrap"
+                > trong {{ totalElements }} mục </span>
+              </div>
+              <b-pagination
+                v-model="searchOptions.page"
+                :total-rows="totalElements"
+                :per-page="paginationSelected"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-row
+              v-if="props.column.field === 'quantity'"
+              class="h7"
+              align-h="center"
+            >
+              {{ totalQuantity }}
+            </b-row>
+
+            <b-row
+              v-else-if="props.column.field === 'price'"
+              class="h7 px-0 mx-0"
+              align-h="end"
+            >
+              {{ totalPrice }}
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
@@ -272,12 +357,14 @@ import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
 import warehousesData from '@/@db/warehouses'
+import commonData from '@/@db/common'
 
 import {
   WAREHOUSES_OUTPUT,
   GET_WAREHOUSES_OUTPUT_LIST_GETTER,
   GET_WAREHOUSES_OUTPUT_LIST_ACTION,
   PRINT_WAREHOUSES_OUTPUT_ACTION,
+  GET_WAREHOUSES_OUTPUT_DATA_GETTER,
 } from '../store-module/type'
 
 export default {
@@ -288,8 +375,11 @@ export default {
     return {
       dateFormatVNI,
       inputValueBillNumber: '',
-      warehousesTypeSelected: null,
       warehousesOptions: warehousesData.outputTypes,
+      paginationOptions: commonData.pagination,
+      warehousesTypeSelected: null,
+      paginationSelected: commonData.pagination[0],
+      totalElements: null,
       columns: [
         {
           label: 'ID',
@@ -300,28 +390,38 @@ export default {
           label: 'Ngày',
           field: 'date',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Mã xuất hàng',
           field: 'code',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
           field: 'billNumber',
           type: 'number',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
           filterOptions: {
             enabled: true,
           },
@@ -331,6 +431,8 @@ export default {
           field: 'price',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
           filterOptions: {
             enabled: true,
           },
@@ -339,20 +441,26 @@ export default {
           label: 'Ghi chú',
           field: 'note',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Thao tác',
           field: 'feature',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
       searchOptions: {
         redInvoiceNo: '', // số hóa đơn
-        fromDate: '',
-        toDate: '',
+        fromDate: null,
+        toDate: null,
         type: '',
-        pageSize: 10,
-        pageNumber: 1,
+        page: 0,
+        size: commonData.pagination[0],
+        formId: 5,
+        ctrlId: 1,
       },
       warehousesOutputList: [],
       configDate: {
@@ -365,21 +473,7 @@ export default {
   },
   computed: {
     getWarehousesOutputList() {
-      const datas = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
-      const totalQuantity = datas.reduce((accum, item) => accum + Number(item.totalQuantity), 0)
-      const totalMoney = datas.reduce((accum, item) => accum + Number(item.totalAmount), 0)
-      const firstItem = {
-        id: '',
-        transDate: '',
-        transCode: '',
-        redInvoiceNo: '',
-        internalNumber: '',
-        totalQuantity,
-        totalAmount: totalMoney,
-        note: '',
-      }
-      datas.unshift(firstItem)
-      return datas.map(data => ({
+      return this.GET_WAREHOUSES_OUTPUT_LIST_GETTER().map(data => ({
         id: data.id,
         date: data.transDate === '' ? '' : formatDateToLocale(data.transDate),
         code: data.transCode,
@@ -387,19 +481,36 @@ export default {
         internalNumber: data.internalNumber,
         quantity: formatNumberToLocale(Number(data.totalQuantity)),
         price: formatNumberToLocale(Number(data.totalAmount)),
+        totalAmount: Number(data.totalAmount),
         note: data.note,
-        feature: 'Chỉnh sửa',
         type: data.receiptType,
       }))
+    },
+    // Get data totalElement
+    warehousesOutputPagination() {
+      return this.GET_WAREHOUSES_OUTPUT_DATA_GETTER()
+    },
+    // FilterOptions of column quantity
+    totalQuantity() {
+      return this.warehousesOutputList.reduce((accum, item) => accum + Number(item.quantity), 0)
+    },
+    // FilterOptions of column price
+    totalPrice() {
+      return formatNumberToLocale(this.warehousesOutputList.reduce((accum, item) => accum + Number(item.totalAmount), 0))
     },
   },
   watch: {
     getWarehousesOutputList() {
       this.warehousesOutputList = [...this.getWarehousesOutputList]
     },
+    warehousesOutputPagination() {
+      this.totalElements = this.warehousesOutputPagination.totalElements
+    },
   },
   mounted() {
     this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(this.searchOptions)
+    this.searchOptions.fromDate = this.$earlyMonth
+    this.searchOptions.toDate = this.$nowDate
   },
   methods: {
     ...mapState(WAREHOUSES_OUTPUT, {
@@ -407,6 +518,7 @@ export default {
     }),
     ...mapGetters(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_LIST_GETTER,
+      GET_WAREHOUSES_OUTPUT_DATA_GETTER,
     ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_LIST_ACTION,
@@ -434,10 +546,15 @@ export default {
       this.PRINT_WAREHOUSES_OUTPUT_ACTION(params)
     },
     onClickSearchWarehousesOutput() {
-      this.searchOptions.type = this.warehousesTypeSelected
-      this.searchOptions.fromDate = reverseVniDate(this.searchOptions.fromDate)
-      this.searchOptions.toDate = reverseVniDate(this.searchOptions.toDate)
-      this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(this.searchOptions)
+      const searchData = {
+        redInvoiceNo: null,
+        fromDate: reverseVniDate(this.searchOptions.fromDate),
+        toDate: reverseVniDate(this.searchOptions.toDate),
+        type: this.warehousesTypeSelected,
+        formId: this.searchOptions.formId,
+        ctrlId: this.searchOptions.ctrlId,
+      }
+      this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
     },
   },
