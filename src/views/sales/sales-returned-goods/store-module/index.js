@@ -64,7 +64,7 @@ export default {
     // START - GET RETURN GOODS
     [GET_RETURNED_GOODS_ACTION]({ state }, val) {
       OderReturnService
-        .getOderReturns(val)
+        .getOrderReturnedGoods(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -90,7 +90,7 @@ export default {
     // START - GET SALE ODERS
     [GET_RETURNED_GOOD_CHOOSE_ACTION]({ state }, val) {
       OderReturnService
-        .getSaleOders(val)
+        .getSaleOrders(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -108,7 +108,7 @@ export default {
     // START - GET SALE ODERS DETAIL
     [GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION]({ state }, val) {
       OderReturnService
-        .getSaleOderDetail(val)
+        .getSaleOrderDetail(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -130,7 +130,7 @@ export default {
     // START - CREATE_SALE_ODER
     [CREATE_RETURNED_GOOD_ACTION]({ }, val) {
       OderReturnService
-        .createOderReturn(val)
+        .createOrderReturn(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {

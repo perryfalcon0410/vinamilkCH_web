@@ -1,28 +1,28 @@
 import axios from '@axios'
 import {
   getReturnedGoodsEndPoint,
-  getSaleOdersEndPoint,
-  getSaleOderDetailEndPoint,
+  getSaleOrdersEndPoint,
+  getSaleOrderDetailEndPoint,
   createReturnOrderEndPoint,
 } from './defaultConfig'
 
 export default {
-  getOderReturns(args) {
+  getOrderReturnedGoods(args) {
     const queryString = new URLSearchParams(args).toString()
     return axios.get(`${getReturnedGoodsEndPoint}?formId=5&ctrlId=1&${queryString}`)
   },
 
-  getSaleOders(args) {
+  getSaleOrders(args) {
     const queryString = new URLSearchParams(args).toString()
-    return axios.get(`${getSaleOdersEndPoint}?formId=5&ctrlId=1&${queryString}`)
+    return axios.get(`${getSaleOrdersEndPoint}?formId=5&ctrlId=1&${queryString}`)
   },
 
-  getSaleOderDetail(args) {
+  getSaleOrderDetail(args) {
     const queryString = new URLSearchParams(args).toString()
-    return axios.get(`${getSaleOderDetailEndPoint}/${args.id}?formId=5&ctrlId=1&${queryString}`)
+    return axios.get(`${getSaleOrderDetailEndPoint}/${args.id}?formId=5&ctrlId=1&${queryString}`)
   },
 
-  createOderReturn(args) {
+  createOrderReturn(args) {
     return axios.post(`${createReturnOrderEndPoint}?formId=5&ctrlId=1`, args)
   },
 }
