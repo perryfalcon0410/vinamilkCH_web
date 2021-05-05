@@ -1,4 +1,4 @@
-import exchangeDamagedGoodsService from '@/views/warehouses/warehouses-exchange-damaged-goods/api-service/index'
+import ExchangeDamagedGoodsService from '@/views/warehouses/warehouses-exchange-damaged-goods/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
 
 import {
@@ -35,7 +35,7 @@ export default {
   actions: {
     // GET EXCHANGE DAMAGED GOODS
     [GET_EXCHANGE_DAMAGED_GOODS_ACTION]({ state }, val) {
-      exchangeDamagedGoodsService
+      ExchangeDamagedGoodsService
         .getExchangeDamagedGoods(val)
         .then(response => response.data)
         .then(res => {

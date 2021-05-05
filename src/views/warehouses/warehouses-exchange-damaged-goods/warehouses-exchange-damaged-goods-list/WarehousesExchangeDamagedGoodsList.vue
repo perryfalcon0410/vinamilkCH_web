@@ -123,14 +123,14 @@
           <v-input-select
             title="Lý do"
             :suggestions="reasonTypeOptions"
-            :data-input="reasonTypesSelected.name"
+            :data-input="reasonTypeSelected.name"
             placeholder="Tất cả"
             title-class="h8 mt-lg-1 mt-xl-0"
             input-class="h9"
             suggestions-class="h9"
             :clear-able="true"
             size="sm"
-            @updateSelection="reasonTypesSelected = $event"
+            @updateSelection="reasonTypeSelected = $event"
           />
         </b-col>
 
@@ -352,7 +352,7 @@ import {
 } from '@/@core/utils/validations/validations'
 import { formatDateToLocale, formatNumberToLocale } from '@/@core/utils/filter'
 import {
-  WAREHOUSESEXCHANGEDAMAGEDGOODS,
+  WAREHOUSES_EXCHANGE_DAMAGED_GOODS,
   // Getters
   EXCHANGE_DAMAGED_GOODS_GETTER,
   EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER,
@@ -376,7 +376,7 @@ export default {
       pageNumber: 1,
       paginationOptions: commonData.pagination,
 
-      reasonTypesSelected: { id: null, name: null },
+      reasonTypeSelected: { id: null, name: null },
       reasonTypeOptions: warehousesData.reasonTypes,
 
       configDate: {
@@ -468,11 +468,11 @@ export default {
     })
   },
   methods: {
-    ...mapGetters(WAREHOUSESEXCHANGEDAMAGEDGOODS, [
+    ...mapGetters(WAREHOUSES_EXCHANGE_DAMAGED_GOODS, [
       EXCHANGE_DAMAGED_GOODS_GETTER,
       EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER,
     ]),
-    ...mapActions(WAREHOUSESEXCHANGEDAMAGEDGOODS, [
+    ...mapActions(WAREHOUSES_EXCHANGE_DAMAGED_GOODS, [
       GET_EXCHANGE_DAMAGED_GOODS_ACTION,
     ]),
     onClickAddNewButton() {

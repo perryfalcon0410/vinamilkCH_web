@@ -1,4 +1,4 @@
-export const WAREHOUSESEXCHANGEDAMAGEDGOODS = 'warehousesExchangeDamagedGoods'
+export const WAREHOUSES_EXCHANGE_DAMAGED_GOODS = 'warehousesExchangeDamagedGoods'
 
 // Getters
 
