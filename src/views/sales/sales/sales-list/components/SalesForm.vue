@@ -214,7 +214,11 @@
               <b-input-group class="input-group-merge">
                 <b-form-input />
                 <b-input-group-append is-text>
-                  <b-icon-three-dots-vertical />
+                  <b-icon-three-dots-vertical @click="showSearchOnlineModal" />
+                  <sales-online-order-modal
+                    ref="salesOnlineOrderModal"
+                    @getOnlineOrderInfo="getOnlineOrderInfo"
+                  />
                 </b-input-group-append>
               </b-input-group>
             </b-col>
@@ -247,7 +251,7 @@
             Số lượng sản phẩm
           </b-col>
           <b-col class="text-center text-dark font-weight-bold bg-light rounded py-1">
-            12
+            {{ quantity }}
           </b-col>
         </b-row>
         <!-- END - Product amount -->
@@ -261,7 +265,7 @@
             Tạm tính
           </b-col>
           <b-col class="text-center text-dark font-weight-bold bg-light rounded py-1">
-            1,100,100
+            {{ totalPrice }}
           </b-col>
         </b-row>
         <!-- END - Temporary calculation -->
@@ -316,21 +320,29 @@ import {
 import SalesCreateModal from './SalesCreateModal'
 // eslint-disable-next-line import/extensions
 import SalesSearchModal from './SalesSearchModal'
+// eslint-disable-next-line import/extensions
+import SalesOnlineOrderModal from './SalesOnlineOrderModal'
 
 export default {
   components: {
     SalesCreateModal,
     SalesSearchModal,
+    SalesOnlineOrderModal,
   },
   data() {
     return {
       inputSearchFocused: false,
       isShowSalesSearchModal: false,
 
+      // customer
       fullName: null,
       phoneNumber: null,
       address: null,
       totalBill: null ?? 0,
+
+      // online order
+      quantity: null,
+      totalPrice: null,
     }
   },
   computed: {
@@ -364,11 +376,20 @@ export default {
       this.$refs.salesSearchModal.$refs.salesSearchModal.show()
     },
 
+    showSearchOnlineModal() {
+      this.$refs.salesOnlineOrderModal.$refs.salesOnlineOrderModal.show()
+    },
+
     getCustomerInfo(val) {
       this.fullName = val.data.fullName
       this.phoneNumber = val.data.phoneNumber
       this.address = val.data.address
       this.totalBill = val.data.totalBill ?? 0
+    },
+
+    getOnlineOrderInfo(val) {
+      this.quantity = val.data.quantity
+      this.totalPrice = val.data.totalPrice
     },
   },
 }

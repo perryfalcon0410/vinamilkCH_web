@@ -59,7 +59,7 @@
                   <vue-flat-pickr
                     id="form-input-birth-date"
                     v-model="birthDay"
-                    :config="configDate"
+                    :config="configBitrhDay"
                     class="form-control"
                     placeholder="chọn ngày"
                   />
@@ -75,7 +75,7 @@
             </b-col>
 
             <b-col>
-              <div class="mt-1">
+              <!-- <div class="mt-1">
                 Giới tính
               </div>
               <v-select
@@ -83,6 +83,15 @@
                 :options="genderOptions"
                 label="name"
                 :searchable="false"
+              /> -->
+              <v-input-select
+                title="Giới tính"
+                :suggestions="genderOptions"
+                :data-input="gendersSelected.name"
+                placeholder="Chọn giới tính"
+                title-class="mt-1"
+                clear-able
+                @updateSelection="gendersSelected = $event"
               />
             </b-col>
           </b-form-row>
@@ -284,8 +293,10 @@ import {
 } from 'vee-validate'
 import Ripple from 'vue-ripple-directive'
 import vSelect from 'vue-select'
+import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import { formatVniDateToISO } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
+import customerData from '@/@db/customer'
 import {
   CUSTOMER,
   // GETTERS
@@ -306,6 +317,7 @@ export default {
     ValidationProvider,
     ValidationObserver,
     vSelect,
+    VInputSelect,
   },
   directives: {
     'b-modal': VBModal,
@@ -313,10 +325,11 @@ export default {
   },
   data() {
     return {
-      configDate: {
+      configBitrhDay: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
+        maxDate: new Date().fp_incr(-5479),
       },
       goNext: () => {},
 
@@ -329,13 +342,13 @@ export default {
       lastName: '',
       firstName: '',
       birthDay: '',
-      genders: { name: 'Khác', id: '3' },
       genderOptions: commonData.genders,
+      gendersSelected: { name: null, id: null },
       phoneNumber: '',
       address: '',
       customerSpecial: false,
       note: '',
-      customerStatus: { name: 'Hoạt động', id: '1' },
+      customerStatus: customerData.status[0],
       customerGroups: null,
       customerProvince: null,
       customerDistrict: null,
@@ -409,9 +422,9 @@ export default {
           this.CREATE_CUSTOMER_ACTION({
             firstName: this.firstName,
             lastName: this.lastName,
-            genderId: this.genders.id,
+            genderId: this.gendersSelected?.id,
             dob: formatVniDateToISO(this.birthDay),
-            status: this.customerStatus.id,
+            status: this.customerStatus?.id, // Hard
             isPrivate: this.customerSpecial,
             mobiPhone: this.phoneNumber,
             phone: this.phoneNumber, // temp
@@ -419,7 +432,7 @@ export default {
             address: this.address,
             isDefault: true,
             noted: this.note,
-            customerTypeId: 2,
+            customerTypeId: 2, // Hard
           })
         }
       })

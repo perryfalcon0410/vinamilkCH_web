@@ -1,8 +1,8 @@
 <template>
   <b-modal
-    ref="salesSearchModal"
+    ref="salesOnlineOrderModal"
     size="xl"
-    title="Tìm kiếm khách hàng"
+    title="Chọn đơn hàng Online"
     title-class="font-weight-bold text-primary"
     content-class="bg-light"
     hide-footer
@@ -22,60 +22,115 @@
             sm="6"
           >
             <!-- START - Full Name -->
-            <b-form-group
-              label="Khách hàng"
-              label-for="form-input-customer"
-              label-class="h8"
+            <div
+              class="h8 mt-lg-1 mt-xl-0"
             >
-              <b-form-input
-                id="form-input-customer"
-                v-model="searchKeywords"
-                class="h9"
-                size="sm"
-                placeholder="Nhập mã/ họ tên"
-                trim
-              />
-            </b-form-group>
+              Số hóa đơn
+            </div>
+            <b-form-input
+              id="form-input-sales"
+              v-model="orderNumber"
+              class="h9"
+              size="sm"
+              trim
+            />
             <!-- END - Full Name -->
           </b-col>
 
+          <!-- START - Status -->
           <b-col
             xl
             sm="6"
           >
-            <b-form-group
-              label="Số điện thoại"
-              label-for="form-input-phoneNumber"
-              label-class="h8"
-            >
-              <b-form-input
-                id="form-input-phoneNumber"
-                v-model="phone"
-                class="h9"
-                size="sm"
-                trim
-              />
-            </b-form-group>
+            <v-input-select
+              title="Trạng thái"
+              :suggestions="synStatusOptions"
+              :data-input="synStatusSelected.name"
+              placeholder="Tất cả"
+              title-class="h8 mt-sm-1 mt-xl-0"
+              input-class="h8"
+              suggestions-class="h9"
+              :clear-able="true"
+              size="sm"
+              @updateSelection="synStatusSelected = $event"
+            />
           </b-col>
+          <!-- END - Status -->
 
+          <!-- START - Date From -->
           <b-col
             xl
             sm="6"
           >
-            <b-form-group
-              label="CMND"
-              label-for="form-input-idNo"
-              label-class="h8"
+            <validation-provider
+              v-slot="{ errors }"
+              rules="dateFormatVNI"
             >
-              <b-form-input
-                id="form-input-idNo"
-                v-model="idNo"
-                class="h9"
+              <div
+                class="h8 mt-lg-1 mt-xl-0"
+              >
+                Từ ngày
+              </div>
+              <b-input-group
+                id="form-input-date-from"
+                class="input-group-merge"
                 size="sm"
-                trim
-              />
-            </b-form-group>
+              >
+                <b-input-group-prepend
+                  is-text
+                  data-toggle
+                >
+                  <b-icon-calendar />
+                </b-input-group-prepend>
+                <vue-flat-pickr
+                  v-model="fromDate"
+                  :config="configDate"
+                  class="form-control h9"
+                  placeholder="Chọn ngày"
+                />
+              </b-input-group>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
           </b-col>
+          <!-- END - Date From -->
+
+          <!-- START - Date To -->
+          <b-col
+            xl
+            sm="6"
+          >
+            <validation-provider
+              v-slot="{ errors }"
+              rules="dateFormatVNI"
+            >
+              <div
+                class="h8 mt-lg-1 mt-xl-0"
+              >
+                Đến ngày
+              </div>
+              <b-input-group
+                class="input-group-merge"
+                size="sm"
+              >
+                <b-input-group-prepend
+                  is-text
+                  data-toggle
+                >
+                  <b-icon-calendar />
+                </b-input-group-prepend>
+                <vue-flat-pickr
+                  id="form-input-date-from"
+                  v-model="toDate"
+                  :config="configDate"
+                  class="form-control h9"
+                  placeholder="Chọn ngày"
+                />
+              </b-input-group>
+
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-col>
+          <!-- END - Date To -->
 
           <b-col
             xl
@@ -110,7 +165,7 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columns"
-            :rows="customers"
+            :rows="onlineOrders"
             style-class="vgt-table bordered"
             :pagination-options="{
               enabled: true
@@ -151,9 +206,9 @@
                   class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
                   variant="someThing"
                   style="max-height: 30px;"
-                  @click="getCustomerInfo(props.row)"
+                  @click="getOnlineOrderInfo(props.row)"
                 >
-                  CHỌN
+                  CHỌN ĐƠN
                 </b-button>
               </div>
               <div v-else>
@@ -189,11 +244,11 @@
                   />
                   <span
                     class="text-nowrap"
-                  > trong {{ customerPagination.totalElements }} mục </span>
+                  > trong {{ onlineOrderPagination.totalElements }} mục </span>
                 </div>
                 <b-pagination
                   v-model="pageNumber"
-                  :total-rows="customerPagination.totalElements"
+                  :total-rows="onlineOrderPagination.totalElements"
                   :per-page="elementSize"
                   first-number
                   last-number
@@ -238,25 +293,33 @@
 </template>
 
 <script>
-import commonData from '@/@db/common'
 import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatDateToLocale } from '@core/utils/filter'
 import {
-  CUSTOMER,
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
+import { formatDateToLocale, reverseVniDate } from '@core/utils/filter'
+import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
+import {
+  ValidationProvider,
+} from 'vee-validate'
+import saleData from '@/@db/sale'
+import commonData from '@/@db/common'
+import {
+  SALES,
   // GETTERS
-  CUSTOMERS_GETTER,
-  CUSTOMER_BY_ID_GETTER,
-  CUSTOMER_PAGINATION_GETTER,
+  ONLINEORDERS_GETTER,
+  ONLINEORDERS_PAGINATION_GETTER,
   // ACTIONS
-  GET_CUSTOMER_BY_ID_ACTION,
-  GET_CUSTOMERS_ACTION,
-} from '../../../sales-customers/store-module/type'
+  GET_ONLINEORDERS_ACTION,
+} from '../../store-module/type'
 
 export default {
   components: {
+    ValidationProvider,
+    VInputSelect,
   },
   props: {
     visible: {
@@ -267,55 +330,46 @@ export default {
   },
   data() {
     return {
+      // validation rules
+      dateFormatVNI,
+
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        allowInvalidPreload: false,
+      },
+
       selectedRow: 0,
       elementSize: commonData.pagination[0],
       pageNumber: 1,
       paginationOptions: commonData.pagination,
 
       // search
-      searchKeywords: '',
-      phone: '',
-      idNo: '',
+      synStatusSelected: { id: null, name: null },
+      synStatusOptions: saleData.synStatus,
+      orderNumber: null,
+      fromDate: null,
+      toDate: null,
 
       columns: [
         {
-          label: 'Mã khách hàng',
-          field: 'code',
+          label: 'Số hóa đơn',
+          field: 'orderNumber',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
-          label: 'Tên khách hàng',
-          field: 'fullName',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Địa chỉ',
-          field: 'address',
+          label: 'Ngày đơn hàng',
+          field: 'createdAt',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
-          label: 'Số điện thoại',
-          field: 'phoneNumber',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Ngày sinh',
-          field: 'birthDay',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Số CMND',
-          field: 'idNo',
+          label: 'Thông tin đơn hàng',
+          field: 'orderInfo',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -324,7 +378,7 @@ export default {
           label: '',
           field: 'feature',
           sortable: false,
-          width: '30px',
+          width: '125px',
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -332,25 +386,21 @@ export default {
     }
   },
   computed: {
-    customers() {
-      return this.CUSTOMERS_GETTER().map(data => ({
+    onlineOrders() {
+      return this.ONLINEORDERS_GETTER().map(data => ({
         id: data.id,
-        code: data.customerCode,
-        fullName: `${data.lastName} ${data.firstName}`,
-        phoneNumber: data.mobiPhone,
-        birthDay: formatDateToLocale(data.dob),
-        date: formatDateToLocale(data.createdAt),
-        address: data.address,
-        idNo: data.idNo,
+        orderNumber: data.orderNumber,
+        createdAt: formatDateToLocale(data.createdAt),
+        orderInfo: data.orderInfo,
+        quantity: data.quantity,
+        totalPrice: data.totalPrice,
+        products: data.products,
+        customer: data.customer,
         feature: '',
-        totalBill: data.totalBill,
       }))
     },
-    customerInfo() {
-      return this.CUSTOMER_BY_ID_GETTER()
-    },
-    customerPagination() {
-      return this.CUSTOMER_PAGINATION_GETTER()
+    onlineOrderPagination() {
+      return this.ONLINEORDERS_PAGINATION_GETTER()
     },
   },
   watch: {
@@ -362,45 +412,29 @@ export default {
     },
   },
   mounted() {
-    this.GET_CUSTOMERS_ACTION({ formId: 9, ctrlId: 6 })
-  },
-  created() {
-    window.addEventListener('keydown', e => {
-      if (e.key === 'F4') {
-        this.$refs.salesSearchModal.show()
-      }
-    })
+    this.GET_ONLINEORDERS_ACTION({ formId: 1, ctrlId: 4 })
   },
   methods: {
-    ...mapGetters(CUSTOMER, [
-      CUSTOMERS_GETTER,
-      CUSTOMER_BY_ID_GETTER,
-      CUSTOMER_PAGINATION_GETTER,
+    ...mapGetters(SALES, [
+      ONLINEORDERS_GETTER,
+      ONLINEORDERS_PAGINATION_GETTER,
     ]),
-    ...mapActions(CUSTOMER, [
-      GET_CUSTOMERS_ACTION,
-      GET_CUSTOMER_BY_ID_ACTION,
+    ...mapActions(SALES, [
+      GET_ONLINEORDERS_ACTION,
     ]),
 
     onClickSearchButton() {
       const searchData = {
-        searchKeywords: this.searchKeywords.trim(),
-        phone: this.mobiPhone || this.phone,
-        idNo: this.idNo.trim(),
+        orderNumber: this.orderNumber?.trim(),
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
+        synStatus: this.synStatusSelected?.id,
       }
-
-      this.GET_CUSTOMERS_ACTION(searchData)
+      this.GET_ONLINEORDERS_ACTION(searchData)
     },
 
     onClickCloseButton() {
-      this.$refs.salesSearchModal.hide()
-    },
-
-    getCustomerInfo(obj) {
-      this.onClickCloseButton()
-      this.$emit('getCustomerInfo', {
-        data: obj,
-      })
+      this.$refs.salesOnlineOrderModal.hide()
     },
 
     onPaginationChange() {
@@ -409,7 +443,14 @@ export default {
         page: this.pageNumber - 1,
       }
 
-      this.GET_CUSTOMERS_ACTION(paginationData)
+      this.GET_ONLINEORDERS_ACTION(paginationData)
+    },
+
+    getOnlineOrderInfo(obj) {
+      this.onClickCloseButton()
+      this.$emit('getOnlineOrderInfo', {
+        data: obj,
+      })
     },
   },
 }
