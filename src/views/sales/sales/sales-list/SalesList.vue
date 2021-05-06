@@ -14,9 +14,11 @@
         class="px-0 mr-1 shadow mb-1 mb-sm-0"
       >
         <b-input
+          v-model="searchOptions.keyWord"
           placeholder="Tìm sản phẩm (F3)"
           @focus="inputSearchFocused = true"
           @blur="inputSearchFocused = false"
+          @keyup="onChangeKeyWord"
         />
 
         <!-- START - Product Popup -->
@@ -29,7 +31,7 @@
             class="my-1 px-1 bg-white rounded border border-primary shadow-lg"
           >
             <b-row
-              v-for="(n,index) in 6"
+              v-for="(value,index) in productsSearch"
               :key="index"
               class="mx-0 my-1"
             >
@@ -51,15 +53,15 @@
                 <b-col
                   class="text-dark"
                 >
-                  Sữa dinh dưỡng Vinamilk không đường- Bịch 220m
+                  {{ value.productName }}
                 </b-col>
                 <b-col
                   class="my-1"
                 >
-                  SP002
+                  {{ value.productCode }}
                 </b-col>
                 <b-col class="text-dark font-weight-bold">
-                  7.000
+                  {{ value.productPrice }}
                 </b-col>
               </b-col>
             <!-- END - Section Label -->
@@ -116,7 +118,7 @@
         <!-- START - Table product -->
         <vue-good-table
           :columns="columns"
-          :rows="rows"
+          :rows="products"
           style-class="vgt-table striped"
           compact-mode
           line-numbers
@@ -171,13 +173,13 @@
               <b-icon-caret-down-fill
                 class="cursor-pointer mr-1"
                 font-scale="1.5"
-                @click="props.row.tableProductAmount --"
+                @click="decreaseAmount(props.row.tableProductId)"
               />
               {{ props.row.tableProductAmount }}
               <b-icon-caret-up-fill
                 class="cursor-pointer ml-1"
                 font-scale="1.5"
-                @click="props.row.tableProductAmount ++"
+                @click="increaseAmount(props.row.tableProductId)"
               />
             </b-row>
             <!-- END - tableProductAmount -->
@@ -203,7 +205,7 @@
         <!-- END - Table product -->
 
         <!-- START - List suggestion -->
-        <sales-products />
+        <sales-products :product-infos="productInfos" />
         <!-- END - List suggestion -->
 
       </b-col>
@@ -220,8 +222,21 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+import saleData from '@/@db/sale'
 import SalesForm from './components/SalesForm.vue'
 import SalesProducts from './components/SalesProducts.vue'
+import {
+  SALES,
+  // Getter
+  GET_PRODUCTS_GETTER,
+  GET_PRODUCT_INFOS_GETTER,
+  GET_PRODUCTS_TOP_SALE_GETTER,
+  // Action
+  GET_PRODUCTS_ACTION,
+  GET_PRODUCT_INFOS_ACTION,
+  GET_PRODUCTS_TOP_SALE_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -280,68 +295,111 @@ export default {
           sortable: false,
         },
       ],
-
-      rows: [
-        {
-          tableProductId: 'SP001',
-          tableProductName: 'Hộp STTT Vinamilk 100% Ít Đường 180ml',
-          tableProductUnit: 'Hộp',
-          tableProductInventory: 10,
-          tableProductAmount: 12,
-          tableProductUnitPrice: 15.000,
-          tableProductTotalPrice: 120.145,
-        },
-        {
-          tableProductId: 'SP002',
-          tableProductName: 'Hộp STTT Vinamilk 100% Ít Đường 180ml',
-          tableProductUnit: 'Hộp',
-          tableProductInventory: 10,
-          tableProductAmount: 12,
-          tableProductUnitPrice: 15.000,
-          tableProductTotalPrice: 120.145,
-        },
-        {
-          tableProductId: 'SP003',
-          tableProductName: 'Hộp STTT Vinamilk 100% Ít Đường 180ml',
-          tableProductUnit: 'Hộp',
-          tableProductInventory: 10,
-          tableProductAmount: 12,
-          tableProductUnitPrice: 15.000,
-          tableProductTotalPrice: 120.145,
-        },
-        {
-          tableProductId: 'SP004',
-          tableProductName: 'Hộp STTT Vinamilk 100% Ít Đường 180ml',
-          tableProductUnit: 'Hộp',
-          tableProductInventory: 10,
-          tableProductAmount: 12,
-          tableProductUnitPrice: 15.000,
-          tableProductTotalPrice: 120.145,
-        },
-        {
-          tableProductId: 'SP005',
-          tableProductName: 'Hộp STTT Vinamilk 100% Ít Đường 180ml',
-          tableProductUnit: 'Hộp',
-          tableProductInventory: 10,
-          tableProductAmount: 12,
-          tableProductUnitPrice: 15.000,
-          tableProductTotalPrice: 120.145,
-        },
-        {
-          tableProductId: 'SP006',
-          tableProductName: 'Hộp STTT Vinamilk 100% Ít Đường 180ml',
-          tableProductUnit: 'Hộp',
-          tableProductInventory: 10,
-          tableProductAmount: 12,
-          tableProductUnitPrice: 15.000,
-          tableProductTotalPrice: 120.145,
-        },
-      ],
+      searchOptions: {
+        keyWord: '',
+        catId: null,
+        customerTypeId: 1,
+        status: null,
+        size: 10,
+        page: 0,
+        formId: 5, // Hard code
+        ctrlId: 7, // Hard code
+      },
+      products: [],
+      productInfos: [],
+      productInfoTypeOptions: saleData.productInfoType,
+      productsSearch: [],
     }
+  },
+  computed: {
+    getProducts() {
+      return this.GET_PRODUCTS_GETTER().map(data => ({
+        tableProductId: data.id,
+        tableProductName: data.productName,
+        tableProductUnit: data.uom1,
+        tableProductInventory: data.stockTotal,
+        tableProductAmount: 1,
+        tableProductUnitPrice: data.price,
+        tableProductTotalPrice: this.totalPrice(1, Number(data.price)),
+        tableProductCode: data.productCode,
+      }))
+    },
+    getProductInfos() {
+      return this.GET_PRODUCT_INFOS_GETTER().map(data => ({
+        productInfoId: data.productInfoId,
+        productInfoCode: data.productInfoCode,
+        productInfoName: data.productInfoName,
+
+      }))
+    },
+  },
+  watch: {
+    getProducts() {
+      this.products = [...this.getProducts]
+    },
+    getProductInfos() {
+      this.productInfos = [...this.getProductInfos]
+    },
+  },
+  mounted() {
+    this.GET_PRODUCTS_ACTION(this.searchOptions)
+    const index = this.productInfoTypeOptions.findIndex(i => i.name === 'Ngành hàng')
+    const paramGetProductInfo = {
+      type: Number(this.productInfoTypeOptions[index].id),
+      formId: 5, // Hard code
+      ctrlId: 7, // Hard code
+    }
+    this.GET_PRODUCT_INFOS_ACTION(paramGetProductInfo)
+
+    // const paramGetProductsTopSale = {
+    //   keyWord: '',
+    //   customerTypeId: 1, // Hard code
+    //   page: 0,
+    //   size: 10,
+    //   formId: 5, // Hard code
+    //   ctrlId: 7, // Hard code
+    // }
+    // this.GET_PRODUCTS_TOP_SALE_ACTION(paramGetProductsTopSale)
+  },
+  methods: {
+    ...mapGetters(SALES, [
+      GET_PRODUCTS_GETTER,
+      GET_PRODUCT_INFOS_GETTER,
+      GET_PRODUCTS_TOP_SALE_GETTER,
+    ]),
+    ...mapActions(SALES, [
+      GET_PRODUCTS_ACTION,
+      GET_PRODUCT_INFOS_ACTION,
+      GET_PRODUCTS_TOP_SALE_ACTION,
+    ]),
+    totalPrice(amount, price) {
+      return amount * (price || 0)
+    },
+    increaseAmount(productId) {
+      const index = this.products.findIndex(i => i.tableProductId === productId)
+      this.products[index].tableProductAmount += 1
+      this.products[index].tableProductTotalPrice = this.totalPrice(Number(this.products[index].tableProductAmount), Number(this.products[index].tableProductUnitPrice))
+    },
+    decreaseAmount(productId) {
+      const index = this.products.findIndex(i => i.tableProductId === productId)
+      this.products[index].tableProductAmount -= 1
+      if (this.products[index].tableProductAmount < 0) {
+        this.products[index].tableProductAmount = 0
+      }
+
+      this.products[index].tableProductTotalPrice = this.totalPrice(Number(this.products[index].tableProductAmount), Number(this.products[index].tableProductUnitPrice))
+    },
+    onChangeKeyWord() {
+      console.log(this.searchOptions)
+      this.GET_PRODUCTS_TOP_SALE_ACTION(this.searchOptions)
+      const resultSearch = this.GET_PRODUCTS_TOP_SALE_GETTER().map(data => ({
+        productName: data.productName,
+        productPrice: data.price,
+        productCode: data.productCode,
+      }))
+      this.productsSearch = resultSearch
+      console.log(this.productsSearch)
+    },
   },
 }
 </script>
-
-<style>
-
-</style>

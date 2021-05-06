@@ -7,11 +7,11 @@
       <b-col class="px-0">
         <b-row class="mx-0">
           <div
-            v-for="(item,index) in 12"
+            v-for="(value,index) in productInfos"
             :key="index"
             class="bg-info text-white mt-1 mr-1 px-1 rounded-pill"
           >
-            Hay mua
+            {{ value.productInfoName }}
           </div>
         </b-row>
       </b-col>
@@ -75,6 +75,12 @@
 
 <script>
 export default {
+  props: {
+    productInfos: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
 

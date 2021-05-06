@@ -460,7 +460,7 @@ export default {
         page: 0,
         size: commonData.pagination[0],
         formId: 5,
-        ctrlId: 1,
+        ctrlId: 7,
       },
       warehousesOutputList: [],
       configDate: {
