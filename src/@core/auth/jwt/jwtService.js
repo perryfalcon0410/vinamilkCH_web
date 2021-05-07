@@ -30,6 +30,12 @@ export default class JwtService {
         if (accessToken) {
           // eslint-disable-next-line no-param-reassign
           config.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`
+          // eslint-disable-next-line no-param-reassign
+          config.params = {
+            ...config.params,
+            formId: 1,
+            ctrlId: 1,
+          }
         }
         return config
       },
