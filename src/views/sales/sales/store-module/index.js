@@ -4,12 +4,12 @@ import toasts from '@core/utils/toasts/toasts'
 import {
   // GETTERS
   VOUCHERS_GETTER,
-  ONLINEORDERS_GETTER,
-  ONLINEORDERS_PAGINATION_GETTER,
+  ONLINE_ORDERS_GETTER,
+  ONLINE_ORDERS_PAGINATION_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
-  GET_ONLINEORDERS_ACTION,
+  GET_ONLINE_ORDERS_ACTION,
 
 } from './type'
 
@@ -26,10 +26,10 @@ export default {
     [VOUCHERS_GETTER](state) {
       return state.vouchers
     },
-    [ONLINEORDERS_GETTER](state) {
+    [ONLINE_ORDERS_GETTER](state) {
       return state.onlineOrders
     },
-    [ONLINEORDERS_PAGINATION_GETTER](state) {
+    [ONLINE_ORDERS_PAGINATION_GETTER](state) {
       return state.onlineOrderPagination
     },
   },
@@ -53,7 +53,7 @@ export default {
         })
     },
 
-    [GET_ONLINEORDERS_ACTION]({ state }, val) {
+    [GET_ONLINE_ORDERS_ACTION]({ state }, val) {
       SalesServices
         .getOnlineOrder(val)
         .then(response => response.data)

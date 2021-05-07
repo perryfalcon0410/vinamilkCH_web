@@ -215,7 +215,7 @@
                 <b-form-input />
                 <b-input-group-append is-text>
                   <b-icon-three-dots-vertical @click="showSearchOnlineModal" />
-                  <sales-online-order-modal
+                  <sales-online-orders-modal
                     ref="salesOnlineOrderModal"
                     @getOnlineOrderInfo="getOnlineOrderInfo"
                   />
@@ -321,13 +321,13 @@ import SalesCreateModal from './SalesCreateModal'
 // eslint-disable-next-line import/extensions
 import SalesSearchModal from './SalesSearchModal'
 // eslint-disable-next-line import/extensions
-import SalesOnlineOrderModal from './SalesOnlineOrderModal'
+import SalesOnlineOrdersModal from './SalesOnlineOrdersModal'
 
 export default {
   components: {
     SalesCreateModal,
     SalesSearchModal,
-    SalesOnlineOrderModal,
+    SalesOnlineOrdersModal,
   },
   data() {
     return {

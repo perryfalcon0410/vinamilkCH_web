@@ -1,7 +1,7 @@
 const PROMOTION = '/promotions'
 const VOUCHERS = '/vouchers'
 const SALES = '/sales'
-const ONLINEORDER = '/online-orders?ctrlId=1&formId=4' // HARD
+const ONLINE_ORDERS = '/online-orders'
 
 export const getVouchersEndpoint = `${PROMOTION}/${VOUCHERS}`
-export const getOnlineOrderEndpoint = `${SALES}/${ONLINEORDER}`
+export const getOnlineOrdersEndpoint = `${SALES}/${ONLINE_ORDERS}`

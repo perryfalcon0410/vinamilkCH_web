@@ -362,7 +362,7 @@ export default {
     },
   },
   mounted() {
-    this.GET_CUSTOMERS_ACTION({ formId: 9, ctrlId: 6 })
+    this.GET_CUSTOMERS_ACTION({ formId: 9, ctrlId: 6 }) // HARD
   },
   created() {
     window.addEventListener('keydown', e => {
@@ -387,6 +387,8 @@ export default {
         searchKeywords: this.searchKeywords.trim(),
         phone: this.mobiPhone || this.phone,
         idNo: this.idNo.trim(),
+        formId: 9, // HARD
+        ctrlId: 6, // HARD
       }
 
       this.GET_CUSTOMERS_ACTION(searchData)

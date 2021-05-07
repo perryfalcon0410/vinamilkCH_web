@@ -310,10 +310,10 @@ import commonData from '@/@db/common'
 import {
   SALES,
   // GETTERS
-  ONLINEORDERS_GETTER,
-  ONLINEORDERS_PAGINATION_GETTER,
+  ONLINE_ORDERS_GETTER,
+  ONLINE_ORDERS_PAGINATION_GETTER,
   // ACTIONS
-  GET_ONLINEORDERS_ACTION,
+  GET_ONLINE_ORDERS_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -387,7 +387,7 @@ export default {
   },
   computed: {
     onlineOrders() {
-      return this.ONLINEORDERS_GETTER().map(data => ({
+      return this.ONLINE_ORDERS_GETTER().map(data => ({
         id: data.id,
         orderNumber: data.orderNumber,
         createdAt: formatDateToLocale(data.createdAt),
@@ -400,7 +400,7 @@ export default {
       }))
     },
     onlineOrderPagination() {
-      return this.ONLINEORDERS_PAGINATION_GETTER()
+      return this.ONLINE_ORDERS_PAGINATION_GETTER()
     },
   },
   watch: {
@@ -412,15 +412,15 @@ export default {
     },
   },
   mounted() {
-    this.GET_ONLINEORDERS_ACTION({ formId: 1, ctrlId: 4 })
+    this.GET_ONLINE_ORDERS_ACTION({ formId: 1, ctrlId: 4 }) // HARD
   },
   methods: {
     ...mapGetters(SALES, [
-      ONLINEORDERS_GETTER,
-      ONLINEORDERS_PAGINATION_GETTER,
+      ONLINE_ORDERS_GETTER,
+      ONLINE_ORDERS_PAGINATION_GETTER,
     ]),
     ...mapActions(SALES, [
-      GET_ONLINEORDERS_ACTION,
+      GET_ONLINE_ORDERS_ACTION,
     ]),
 
     onClickSearchButton() {
@@ -429,8 +429,10 @@ export default {
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         synStatus: this.synStatusSelected?.id,
+        formId: 1, // Hard
+        ctrlId: 4, // Hard
       }
-      this.GET_ONLINEORDERS_ACTION(searchData)
+      this.GET_ONLINE_ORDERS_ACTION(searchData)
     },
 
     onClickCloseButton() {
@@ -443,7 +445,7 @@ export default {
         page: this.pageNumber - 1,
       }
 
-      this.GET_ONLINEORDERS_ACTION(paginationData)
+      this.GET_ONLINE_ORDERS_ACTION(paginationData)
     },
 
     getOnlineOrderInfo(obj) {
