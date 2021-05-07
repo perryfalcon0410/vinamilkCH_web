@@ -1,6 +1,4 @@
-/* eslint-disable import/prefer-default-export */
-const REDINVOICE = '/sales/red-invoices'
-const CUSTOMER = '/customers'
-
-export const getRedInvoiceEndpoint = `${REDINVOICE}`
-export const getCustomersEndpoint = `${CUSTOMER}`
+export const getRedInvoiceEndpoint = '/sales/red-invoices'
+export const getCustomersEndpoint = '/customers'
+export const getBillOfSalesEndPoint = '/sales/bill-of-sale-list'
+export const getBillOfSaleProductEndPoint = '/sales/show-info-product'

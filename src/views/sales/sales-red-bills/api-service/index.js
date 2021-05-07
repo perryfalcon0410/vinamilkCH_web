@@ -3,6 +3,8 @@ import { formatURLParams } from '@/@core/utils/utils'
 import {
   getRedInvoiceEndpoint,
   getCustomersEndpoint,
+  getBillOfSalesEndPoint,
+  getBillOfSaleProductEndPoint,
 } from './defaultConfig'
 
 export default {
@@ -10,9 +12,17 @@ export default {
     const queryString = new URLSearchParams(args).toString()
     return axios.get(`${getRedInvoiceEndpoint}?${queryString}`)
   },
+  getBillOfSales(args) {
+    const queryString = new URLSearchParams(args).toString()
+    return axios.get(`${getBillOfSalesEndPoint}?${queryString}`)
+  },
   getCustomers(args) {
     return axios.get(getCustomersEndpoint, {
       params: formatURLParams(args),
     })
+  },
+  getBillOfSaleProduct(args) {
+    const queryString = new URLSearchParams(args).toString()
+    return axios.get(`${getBillOfSaleProductEndPoint}?${queryString}`)
   },
 }

@@ -22,70 +22,87 @@
         <b-form-row
           class="v-search-form border-top mx-0 p-1"
         >
+
           <b-col
             xl
-            sm="6"
+            sm="4"
+            md="3"
           >
-            <b-form-group
-              label="Mã nhập hàng"
-              label-for="form-input-customer"
-            >
-              <b-form-input
-                id="form-input-customer"
-                placeholder="Nhập mã"
-                trim
-              />
-            </b-form-group>
+            <div>
+              {{ 'Mã nhập hàng' }}
+            </div>
+            <b-form-input
+              v-model="customer"
+              trim
+            />
+          </b-col>
+
+          <b-col
+            xl
+            sm="4"
+            md="3"
+          >
+            <div>
+              {{ 'Số hóa đơn' }}
+            </div>
+            <b-form-input
+              v-model="customer"
+              trim
+            />
           </b-col>
 
           <b-col
             xl
             sm="6"
           >
-            <b-form-group
-              label="Số hóa đơn"
-              label-for="form-input-customer-group"
+            <div
+              class="h8 mt-sm-1 mt-xl-0"
             >
-              <b-form-input
-                id="form-input-customer-group"
-                placeholder="Nhập số hóa đơn"
-                trim
+              Từ ngày
+            </div>
+            <b-input-group
+              class="input-group-merge"
+            >
+              <vue-flat-pickr
+                v-model="fromDate"
+                :config="configDate"
+                class="form-control h8 text-brand-3"
+                placeholder="Chọn ngày"
               />
-            </b-form-group>
+              <b-input-group-append
+                is-text
+                data-toggle
+              >
+                <b-icon-calendar />
+              </b-input-group-append>
+            </b-input-group>
           </b-col>
 
           <b-col
             xl
             sm="6"
           >
-            <b-form-group
-              label="Từ ngày"
-              label-for="form-input-date-from"
+            <div
+              class="h8 mt-sm-1 mt-xl-0"
             >
-              <b-form-datepicker
-                id="form-input-date-from"
-                v-model="valueDateFrom"
-                :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                locale="vi"
-              />
-            </b-form-group>
-          </b-col>
-
-          <b-col
-            xl
-            sm="6"
-          >
-            <b-form-group
-              label="Đến ngày"
-              label-for="form-input-date-to"
+              Đến ngày
+            </div>
+            <b-input-group
+              class="input-group-merge"
             >
-              <b-form-datepicker
-                id="form-input-date-to"
-                v-model="valueDateTo"
-                :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                locale="vi"
+              <vue-flat-pickr
+                v-model="toDate"
+                :config="configDate"
+                class="form-control h8 text-brand-3"
+                placeholder="Chọn ngày"
               />
-            </b-form-group>
+              <b-input-group-append
+                is-text
+                data-toggle
+              >
+                <b-icon-calendar />
+              </b-input-group-append>
+            </b-input-group>
           </b-col>
 
           <b-col
@@ -93,19 +110,20 @@
             sm="6"
             md="12"
           >
-            <b-form-group
-              label="Tìm kiếm"
-              label-for="form-button-search"
+            <div
+              class="h8 text-white"
             >
-              <b-button
-                id="form-button-search"
-                variant="primary"
-                @click="search()"
-              >
-                <b-icon-search />
-                Tìm kiếm
-              </b-button>
-            </b-form-group>
+              Tìm kiếm
+            </div>
+            <b-button
+              id="form-button-search"
+              class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+              variant="someThing"
+              @click="onClickSearchButton()"
+            >
+              <b-icon-search class="mr-05" />
+              Tìm kiếm
+            </b-button>
           </b-col>
 
         </b-form-row>
@@ -128,11 +146,13 @@
         <!-- START - Table -->
         <b-col class="py-1">
           <vue-good-table
+            ref="bill-of-sales-table"
             :columns="columns"
-            :rows="rows"
+            :rows="billOfSales"
             style-class="vgt-table bordered"
             :pagination-options="{
-              enabled: true
+              enabled: true,
+              perPage: elementSize
             }"
             compact-mode
             :select-options="{
@@ -144,6 +164,7 @@
               selectAllByGroup: true,
               multipleColumns: true,
             }"
+            @on-selected-rows-change="selectionChanged"
           >
             <template
               slot="table-row"
@@ -158,6 +179,71 @@
                 {{ props.formattedRow[props.column.field] }}
               </span>
             </template>
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
+            <!-- START - Pagination -->
+            <template
+              slot="pagination-bottom"
+              slot-scope="props"
+            >
+              <b-row
+                class="v-pagination px-1 mx-0"
+                align-h="between"
+                align-v="center"
+              >
+                <div
+                  class="d-flex align-items-center"
+                >
+                  <span
+                    class="text-nowrap"
+                  >
+                    Hiển thị 1 đến
+                  </span>
+                  <b-form-select
+                    v-model="elementSize"
+                    size="sm"
+                    :options="paginationOptions"
+                    class="mx-1 mt-1 mb-1"
+                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                  />
+                  <span
+                    class="text-nowrap"
+                  > trong {{ paging.totalElements }} mục </span>
+                </div>
+                <b-pagination
+                  v-model="pageNumber"
+                  :total-rows="paging.totalElements"
+                  :per-page="elementSize"
+                  first-number
+                  last-number
+                  align="right"
+                  prev-class="prev-item"
+                  next-class="next-item"
+                  class="mt-1"
+                  @input="(value)=>props.pageChanged({currentPage: value})"
+                >
+                  <template slot="prev-text">
+                    <feather-icon
+                      icon="ChevronLeftIcon"
+                      size="18"
+                    />
+                  </template>
+                  <template slot="next-text">
+                    <feather-icon
+                      icon="ChevronRightIcon"
+                      size="18"
+                    />
+                  </template>
+                </b-pagination>
+              </b-row>
+            </template>
+          <!-- END - Pagination -->
           </vue-good-table>
         </b-col>
         <!-- END - Table -->
@@ -179,23 +265,15 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columnsProducts"
-            :rows="rowsProducts"
-            style-class="vgt-table bordered"
+            :rows="products"
+            style-class="vgt-table striped"
+            :pagination-options="{
+              enabled: true,
+              perPage: elementSize
+            }"
             compact-mode
             line-numbers
-          >
-            <template
-              slot="table-row"
-              slot-scope="props"
-            >
-              <span v-if="props.column.field == 'number'">
-                <span>{{ props.row.number }}</span>
-              </span>
-              <span v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </span>
-            </template>
-          </vue-good-table>
+          />
         </b-col>
       <!-- END - Table Products-->
       </b-form>
@@ -205,6 +283,25 @@
 </template>
 
 <script>
+import {
+  mapActions,
+  mapGetters,
+  mapMutations,
+} from 'vuex'
+import { formatDateToLocale, reverseVniDate } from '@/@core/utils/filter'
+import commonData from '@/@db/common'
+import {
+  REDINVOICE,
+  // GETTER
+  GET_BILL_OF_SALES_GETTER,
+  GET_BILL_OF_SALES_SELECTED_PRODUCTS_GETTER,
+  // MUTATIONS
+  CLEAR_BILL_OF_SALE_PRODUCTS_UNCHECKED,
+  CLEAR_ALL_BILL_OF_SALES_PRODUCTS,
+  // ACTION
+  GET_BILL_OF_SALES_ACTION,
+  GET_BILL_OF_SALE_SELECTED_PRODUCT_ACTION,
+} from '../../store-module/type'
 
 export default {
   components: {
@@ -218,8 +315,14 @@ export default {
   },
   data() {
     return {
-      valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      valueDateTo: new Date(),
+      elementSize: commonData.pagination[0],
+      pageNumber: 1,
+      paginationOptions: commonData.pagination,
+      fromDate: null,
+      toDate: null,
+      searchKeywords: '',
+      BillOfSalesSelectedRows: [],
+      orderCode: '',
       columns: [
         {
           label: 'STT',
@@ -228,80 +331,47 @@ export default {
         },
         {
           label: 'Số hóa đơn',
-          field: 'billNumber',
+          field: 'orderNumber',
           sortable: false,
         },
         {
           label: 'Mã khách hàng',
-          field: 'customerCode',
+          field: 'customerNumber',
           sortable: false,
         },
         {
           label: 'Họ tên',
-          field: 'name',
+          field: 'customerName',
           sortable: false,
         },
         {
           label: 'Ngày bán',
-          field: 'billDate',
+          field: 'orderDate',
           sortable: false,
         },
         {
           label: 'Tiền giảm giá',
-          field: 'discountMoney',
+          field: 'totalPromotion',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Tiền tích lũy',
-          field: 'accumulation',
+          field: 'customerPurchase',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Tiền phải trả',
-          field: 'totalMoney',
+          field: 'total',
           type: 'number',
           sortable: false,
         },
       ],
-      rows: [
-        {
-          stt: '1',
-          billNumber: 'HD001',
-          customerCode: 'CUS.CH40235.001',
-          name: 'Phan Bảo Châu',
-          billDate: '01/10/2020',
-          discountMoney: '16,800',
-          accumulation: '16,800',
-          totalMoney: '16,800',
-        },
-        {
-          stt: '2',
-          billNumber: 'HD001',
-          customerCode: 'CUS.CH40235.001',
-          name: 'Phan Bảo Châu',
-          billDate: '01/10/2020',
-          discountMoney: '16,800',
-          accumulation: '16,800',
-          totalMoney: '16,800',
-        },
-        {
-          stt: '3',
-          billNumber: 'HD001',
-          customerCode: 'CUS.CH40235.001',
-          name: 'Phan Bảo Châu',
-          billDate: '01/10/2020',
-          discountMoney: '16,800',
-          accumulation: '16,800',
-          totalMoney: '16,800',
-        },
-      ],
-
       columnsProducts: [
         {
           label: 'Mã sản phẩm',
-          field: 'productId',
+          field: 'productCode',
           sortable: false,
         },
         {
@@ -316,7 +386,7 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'number',
+          field: 'quantity',
           sortable: false,
         },
         {
@@ -326,40 +396,129 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'money',
+          field: 'intoMoney',
           sortable: false,
         },
       ],
-
-      rowsProducts: [
-        {
-          productId: 'A02546',
-          productName: 'Sữa chua Dâu',
-          productUnit: 'Hũ',
-          number: '12',
-          unitPrice: '1000',
-          money: '12000',
-        },
-        {
-          productId: 'A02546',
-          productName: 'Sữa chua Dâu',
-          productUnit: 'Hũ',
-          number: '12',
-          unitPrice: '1000',
-          money: '12000',
-        },
-        {
-          productId: 'A02546',
-          productName: 'Sữa chua Dâu',
-          productUnit: 'Hũ',
-          number: '12',
-          unitPrice: '1000',
-          money: '12000',
-        },
-      ],
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
     }
   },
+  computed: {
+    billOfSales() {
+      return this.GET_BILL_OF_SALES_GETTER().billOfSales.map((data, index) => ({
+        orderNumber: data.orderNumber,
+        customerNumber: data.customerNumber,
+        customerName: data.customerName,
+        orderDate: formatDateToLocale(data.orderDate),
+        totalPromotion: data.totalPromotion,
+        customerPurchase: data.customerPurchase,
+        amount: data.amount,
+        total: data.total,
+        stt: index + 1,
+      }))
+    },
+    paging() {
+      return this.GET_BILL_OF_SALES_GETTER().billOfSalesPaging
+    },
+    products() {
+      return this.GET_BILL_OF_SALES_SELECTED_PRODUCTS_GETTER().map(data => ({
+        productCode: data.item.productCode,
+        productName: data.item.productName,
+        quantity: data.item.quantity,
+        unitPrice: data.item.unitPrice,
+        intoMoney: data.item.intoMoney,
+      }))
+    },
+  },
+  watch: {
+    pageNumber() {
+      this.onPaginationChange()
+    },
+    elementSize() {
+      this.onPaginationChange()
+    },
+  },
+  mounted() {
+    this.GET_BILL_OF_SALES_ACTION({
+      formId: 1, // hard code
+      ctrlId: 7, // hard code
+    })
+    this.fromDate = new Date(this.$earlyMonth).toLocaleDateString()
+    this.toDate = new Date(this.$nowDate).toLocaleDateString()
+  },
   methods: {
+    ...mapGetters(REDINVOICE, [
+      GET_BILL_OF_SALES_GETTER,
+      GET_BILL_OF_SALES_SELECTED_PRODUCTS_GETTER,
+    ]),
+    ...mapActions(REDINVOICE, [
+      GET_BILL_OF_SALES_ACTION,
+      GET_BILL_OF_SALE_SELECTED_PRODUCT_ACTION,
+    ]),
+    ...mapMutations(REDINVOICE, [
+      CLEAR_ALL_BILL_OF_SALES_PRODUCTS,
+      CLEAR_BILL_OF_SALE_PRODUCTS_UNCHECKED,
+    ]),
+    onPaginationChange() {
+      const searchStr = {
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
+        searchKeywords: this.searchKeywords,
+        invoiceNumber: this.orderCode,
+      }
+
+      this.GET_BILL_OF_SALES_ACTION({
+        ...searchStr,
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        formId: 1, // hard code
+        ctrlId: 7, // hard code
+      })
+    },
+    onClickSearchButton() {
+      const searchStr = {
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
+        searchKeywords: this.searchKeywords,
+        invoiceNumber: this.orderCode,
+      }
+
+      this.GET_BILL_OF_SALES_ACTION({
+        ...searchStr,
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        formId: 1, // hard code
+        ctrlId: 7, // hard code
+      })
+    },
+    selectionChanged() {
+      if (this.$refs['bill-of-sales-table'].selectedRows.length === 0) {
+        this.CLEAR_ALL_BILL_OF_SALES_PRODUCTS()
+      }
+      if (this.BillOfSalesSelectedRows.length < this.$refs['bill-of-sales-table'].selectedRows.length) {
+        this.$refs['bill-of-sales-table'].selectedRows.forEach(item => {
+          if (!this.BillOfSalesSelectedRows.find(i => i.orderNumber === item.orderNumber)) {
+            this.GET_BILL_OF_SALE_SELECTED_PRODUCT_ACTION({
+              orderCode: item.orderNumber,
+              formId: 1, // hard code
+              ctrlId: 7, // hard code
+            })
+          }
+        })
+      } else {
+        this.BillOfSalesSelectedRows.forEach(item => {
+          if (!this.$refs['bill-of-sales-table'].selectedRows.find(i => i.orderNumber === item.orderNumber)) {
+            this.CLEAR_BILL_OF_SALE_PRODUCTS_UNCHECKED(item.orderNumber)
+          }
+        })
+      }
+
+      this.BillOfSalesSelectedRows = this.$refs['bill-of-sales-table'].selectedRows
+    },
   },
 }
 </script>

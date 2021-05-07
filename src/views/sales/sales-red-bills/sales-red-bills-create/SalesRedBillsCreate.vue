@@ -555,7 +555,7 @@ export default {
     },
   },
   mounted() {
-    this.GET_CUSTOMERS_ACTION()
+    // this.GET_CUSTOMERS_ACTION()
   },
   methods: {
     ...mapGetters(REDINVOICE, [
