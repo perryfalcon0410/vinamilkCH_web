@@ -11,7 +11,8 @@
     <b-form class="v-search bg-white rounded shadow rounded my-1">
       <!-- START - Header -->
       <b-row
-        class="justify-content-between border-bottom p-1 mx-0"
+        class="justify-content-between border-bottom px-1 mx-0"
+        style="padding: 5px 0"
         align-v="center"
       >
         <strong class="text-brand-1">
@@ -19,25 +20,23 @@
         </strong>
         <b-button-group>
           <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
-            size="sm"
             @click="navigateToCreate"
           >
             <b-icon-plus
               scale="2"
-              class="mr-1"
+              class="mr-05"
             />
             Thêm mới
           </b-button>
           <b-button
-            class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
-            size="sm"
             @click="onClickExcelExportButton"
           >
-            <b-icon-file-earmark-x-fill class="mr-1" />
-            Xuất Excel
+            <b-icon-file-earmark-x-fill class="mr-05" />
+            Xuất excel
           </b-button>
         </b-button-group>
       </b-row>
@@ -72,7 +71,10 @@
             slot-scope="props"
           >
             <div v-if="props.column.field === 'feature'">
-              <b-icon-bricks v-b-popover.hover="'Thao tác'" />
+              <b-icon-bricks
+                v-b-popover.hover="'Thao tác'"
+                scale="1.3"
+              />
             </div>
 
             <div v-else>
@@ -303,7 +305,7 @@ export default {
   },
 
   mounted() {
-    this.GET_CUSTOMERS_ACTION({ formId: 9, ctrlId: 6 })
+    this.GET_CUSTOMERS_ACTION({ formId: 5, ctrlId: 7 })
   },
 
   methods: {

@@ -36,37 +36,42 @@ import '@/libs/tour'
 // Axios Mock Adapter
 import '@/@fake-db/db'
 
-import 'vue-loading-overlay/dist/vue-loading.css'
-
 // import the styles
 import '@core/scss/vue/libs/vue-good-table.scss'
 import '@core/scss/vue/libs/vue-flatpicker.scss'
 import '@core/scss/vue/libs/vue-select.scss'
+import 'vue-loading-overlay/dist/vue-loading.css'
 
 dotenv.config()
 
 // BSV Plugin Registration
 Vue.use(ToastPlugin)
 Vue.use(ModalPlugin)
+Vue.use(BootstrapVue)
+Vue.use(BootstrapVueIcons)
 
 // Composition API
 Vue.use(VueCompositionAPI)
 
+// vue-good-table
 Vue.use(VueGoodTablePlugin)
-Vue.use(BootstrapVue)
-Vue.use(BootstrapVueIcons)
 
+// moment
 Vue.prototype.$moment = moment
 moment.locale('vi')
 
+// isEmpty validate
 Vue.prototype.$isEmpty = isEmpty
 
+// get earlyMonth and now date
 Vue.prototype.$earlyMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
 Vue.prototype.$nowDate = new Date()
 
+// flatPickr
 flatPickr.localize(Vietnamese)
 Vue.component('vue-flat-pickr', VueFlatPickr)
 
+// vue-select
 Vue.component('v-select', vSelect)
 
 // Feather font icon - For form-wizard

@@ -21,7 +21,7 @@
         <b-form-input
           id="form-input-customer"
           v-model="searchKeywords"
-          class="h8 text-brand-3"
+          class="h8 text-brand-3 height-button-brand-1"
           placeholder="Nhập họ tên/mã"
         />
       </b-col>
@@ -33,34 +33,28 @@
         md="3"
         sm="4"
       >
-        <validation-provider
-          v-slot="{ errors }"
-          rules="dateFormatVNI"
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
         >
-          <div
-            class="h8 mt-sm-1 mt-xl-0"
+          Từ ngày
+        </div>
+        <b-input-group
+          id="form-input-date-from"
+          class="input-group-merge"
+        >
+          <vue-flat-pickr
+            v-model="fromDate"
+            :config="configDate"
+            class="form-control h8 text-brand-3 height-button-brand-1"
+            placeholder="Chọn ngày"
+          />
+          <b-input-group-append
+            is-text
+            data-toggle
           >
-            Từ ngày
-          </div>
-          <b-input-group
-            id="form-input-date-from"
-            class="input-group-merge"
-          >
-            <vue-flat-pickr
-              v-model="fromDate"
-              :config="configDate"
-              class="form-control h8 text-brand-3"
-              placeholder="Chọn ngày"
-            />
-            <b-input-group-append
-              is-text
-              data-toggle
-            >
-              <b-icon-calendar />
-            </b-input-group-append>
-          </b-input-group>
-          <small class="text-danger">{{ errors[0] }}</small>
-        </validation-provider>
+            <b-icon-calendar />
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
       <!-- END - Date From -->
 
@@ -70,35 +64,28 @@
         md="3"
         sm="4"
       >
-        <validation-provider
-          v-slot="{ errors }"
-          rules="dateFormatVNI"
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
         >
-          <div
-            class="h8 mt-sm-1 mt-xl-0"
+          Đến ngày
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <vue-flat-pickr
+            id="form-input-date-from"
+            v-model="toDate"
+            :config="configDate"
+            class="form-control h8 text-brand-3 height-button-brand-1"
+            placeholder="Chọn ngày"
+          />
+          <b-input-group-append
+            is-text
+            data-toggle
           >
-            Đến ngày
-          </div>
-          <b-input-group
-            class="input-group-merge"
-          >
-            <vue-flat-pickr
-              id="form-input-date-from"
-              v-model="toDate"
-              :config="configDate"
-              class="form-control h8 text-brand-3"
-              placeholder="Chọn ngày"
-            />
-            <b-input-group-append
-              is-text
-              data-toggle
-            >
-              <b-icon-calendar />
-            </b-input-group-append>
-          </b-input-group>
-
-          <small class="text-danger">{{ errors[0] }}</small>
-        </validation-provider>
+            <b-icon-calendar />
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
       <!-- END - Date To -->
 
@@ -114,7 +101,7 @@
           :data-input="customerTypesSelected.name"
           placeholder="Tất cả"
           title-class="h8 mt-sm-1 mt-xl-0"
-          input-class="h8"
+          input-class="h8 height-button-brand-1"
           suggestions-class="h9"
           :clear-able="true"
           @updateSelection="customerTypesSelected = $event"
@@ -134,9 +121,10 @@
           :data-input="statusSelected.name"
           placeholder="Tất cả"
           title-class="h8 mt-sm-1 mt-xl-0"
-          input-class="h8"
+          input-class="h8 height-button-brand-1"
           suggestions-class="h9"
           :clear-able="true"
+          :type-able="true"
           @updateSelection="statusSelected = $event"
         />
       </b-col>
@@ -154,9 +142,10 @@
           :data-input="gendersSelected.name"
           placeholder="Tất cả"
           title-class="h8 mt-sm-1 mt-xl-0"
-          input-class="h8"
+          input-class="h8 height-button-brand-1"
           suggestions-class="h9"
           :clear-able="true"
+          :type-able="true"
           @updateSelection="gendersSelected = $event"
         />
       </b-col>
@@ -174,7 +163,7 @@
           :data-input="areas.name"
           placeholder="Tất cả"
           title-class="h8 mt-sm-1 mt-xl-0"
-          input-class="h8"
+          input-class="h8 height-button-brand-1"
           suggestions-class="h9"
           :type-able="true"
           :clear-able="true"
@@ -197,12 +186,11 @@
         </div>
         <b-button
           id="form-button-search"
-          class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
+          class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
           variant="someThing"
-          style="height: 37px;"
           @click="onClickSearchButton()"
         >
-          <b-icon-search class="mr-1" />
+          <b-icon-search class="mr-05" />
           Tìm kiếm
         </b-button>
       </b-col>
@@ -221,9 +209,6 @@ import {
 } from 'vuex'
 import { reverseVniDate } from '@/@core/utils/filter'
 import {
-  ValidationProvider,
-} from 'vee-validate'
-import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
 import commonData from '@/@db/common'
@@ -238,7 +223,6 @@ import {
 
 export default {
   components: {
-    ValidationProvider,
     VCardActions,
     VInputSelect,
   },
@@ -269,7 +253,7 @@ export default {
   },
 
   mounted() {
-    this.GET_SHOP_LOCATIONS_ACTION({ formId: 9, ctrlId: 6 })
+    this.GET_SHOP_LOCATIONS_ACTION({ formId: 5, ctrlId: 7 })
     this.fromDate = this.$earlyMonth
     this.toDate = this.$nowDate
   },

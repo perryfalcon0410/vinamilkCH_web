@@ -27,7 +27,8 @@
       class="border-top"
     >
       <b-form-row
-        class="p-1"
+        class="px-1"
+        style="padding: 10px 0"
       >
         <!-- START - Content -->
         <slot />

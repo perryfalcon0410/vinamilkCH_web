@@ -1,7 +1,22 @@
 // Color palettes
-@import '~@core/scss/base/core/colors/palette-variables.scss';
+@import "~@core/scss/base/core/colors/palette-variables.scss";
+@import "@/assets/scss/style.scss";
 
 .popover.b-popover {
+  // popover container
+  background: transparent;
+  box-shadow: none;
+
+  // START - popover-body
+  .popover-body {
+    color: $brand-1;
+    border-radius: 10px;
+    background: $white;
+    font-size: 13px;
+    box-shadow: 2px 10px 20px 1px rgba(gray, 0.3);
+  }
+  // END - popover-body
+
   //popover top position
   &.bs-popover-top {
     .arrow {
@@ -40,7 +55,7 @@
 //--------- popover variant ---------//
 @each $color_name, $color in $colors {
   @each $color_type, $color_value in $color {
-    @if $color_type== 'base' {
+    @if $color_type== "base" {
       .popover.b-popover {
         &.b-popover-#{$color_name} {
           background-color: $white;

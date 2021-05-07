@@ -171,8 +171,8 @@
           </validation-observer>
           <hr>
           <div>Liên hệ: ch.support@vinamilk.com.vn</div>
-          <div class="my-1">
-            © Copyright Tập đoàn Công nghiệp Viễn thông Quân đội
+          <div class="my-1 text-center">
+            © Tập đoàn Công nghiệp Viễn thông Quân đội
           </div>
         </b-col>
       </b-col>

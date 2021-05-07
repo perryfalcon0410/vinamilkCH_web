@@ -210,17 +210,4 @@ export default {
 
 <style lang="scss">
 @import "~@core/scss/base/themes/bordered-layout.scss";
-@import "@/assets/scss/style.scss";
-
-body {
-  .shadow-brand-1:hover {
-      box-shadow: 2px 10px 20px 1px rgba($color-brand-1, 0.3);
-  }
-  .shadow-brand-2:hover {
-      box-shadow: 2px 10px 20px 1px rgba($color-brand-2, 0.3);
-  }
-  .shadow-brand-3:hover {
-      box-shadow: 2px 10px 20px 1px rgba($color-brand-3, 0.3);
-  }
-}
 </style>

@@ -16,15 +16,15 @@
     >
       <b-input
         ref="input"
-        v-model="dataInput"
+        v-model="valueInput"
         class="vis_input text-brand-3"
         :disabled="disabled"
-        :class="({'vis_input_disable': !typeAble, 'cursor-pointer': !typeAble && !disabled}, inputClass)"
-        :placeholder="currentResults.name ? currentResults.name : placeholder"
+        :class="[{'vis_input_disable': !typeAble, 'cursor-pointer': !typeAble && !disabled}, inputClass]"
+        :placeholder="currentResults ? currentResults : placeholder"
         :autocomplete="autocomplete ? 'on' : 'off'"
         :state="state"
         :maxlength="maxlength"
-        @keypress="disableKeypress"
+        @keydown.prevent="!typeAble"
         @focus="isFocus = true"
         @blur="isFocus = false"
       />
@@ -66,11 +66,11 @@
         </div>
 
         <b-row
-          v-for="(item,index) in matches"
-          :key="index"
+          v-for="(item) in matches"
+          :key="item.id"
           class="vis_dropdown_item mx-0 cursor-pointer text-brand-3"
           :class="suggestionsClass"
-          @click="suggestionClick(index)"
+          @click="suggestionClick(item.id)"
         >
           <!-- START - Label -->
           <b-col
@@ -135,11 +135,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    // Can be filter in the input field
-    filterAble: {
-      type: Boolean,
-      default: false,
-    },
     // X button
     clearAble: {
       type: Boolean,
@@ -179,56 +174,70 @@ export default {
 
   data() {
     return {
+      valueInput: '',
       isCollapse: false,
       isFocus: false,
-      currentResults: {},
+      currentResults: '',
     }
   },
 
   computed: {
     matches() {
-      if (this.dataInput !== null && this.dataInput !== undefined && this.filterAble) {
-        return this.suggestions.filter(item => item.name.toLowerCase().indexOf(this.dataInput.toLowerCase()) !== -1)
+      if (this.dataInput !== null && this.dataInput !== undefined && this.typeAble) {
+        return this.suggestions.filter(item => item.name.toLowerCase().indexOf(this.valueInput.toLowerCase()) !== -1)
       }
       return this.suggestions
     },
   },
 
   watch: {
+    dataInput() {
+      console.log(`dataInput: ${this.dataInput}`)
+      this.valueInput = this.dataInput
+    },
+    valueInput() {
+      console.log(`value: ${this.valueInput}`)
+    },
+
     isFocus() {
       if (this.isFocus) {
         this.isCollapse = true
         if (this.dataInput && this.typeAble) {
-          this.$emit('updateSelection', { name: null, id: null })
+          this.updateSelection({ name: '', id: '' })
+          // this.valueInput = ''
+          // this.$emit('updateSelection', { name: null, id: null })
         }
       } else {
         this.isCollapse = false
         if (this.currentResults && this.typeAble) {
-          this.$emit('updateSelection', this.currentResults)
+          this.valueInput = this.currentResults
+          // this.$emit('updateSelection', this.currentResults)
         }
       }
     },
   },
 
   methods: {
-    // prevent type in input field
-    disableKeypress(e) {
-      if (!this.typeAble) {
-        e.preventDefault()
-      }
-    },
-
     // When one of the suggestion is clicked
-    suggestionClick(index) {
-      this.currentResults = this.matches[index]
-      this.$emit('updateSelection', this.matches[index])
+    suggestionClick(id) {
+      console.log('-------------------items-------------------')
+      console.log(this.matches.find(item => item.id === id).name)
+      console.log('-------------------items-------------------')
+
+      this.currentResults = this.matches.find(item => item.id === id).name
+      this.updateSelection(this.matches.find(item => item.id === id))
       this.isFocus = false
     },
 
+    updateSelection(data) {
+      console.log(`updateSelection: ${JSON.stringify(data)}`)
+      this.$emit('updateSelection', data)
+    },
+
     onDeleteButtonClick() {
-      if (this.dataInput !== '') {
-        this.currentResults = { name: null, id: null }
-        this.$emit('updateSelection', { name: null, id: null })
+      if (this.valueInput !== '') {
+        this.currentResults = ''
+        this.$emit('updateSelection', { name: '', id: '' })
       }
     },
 
@@ -248,12 +257,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 @import '@/assets/scss/style.scss';
+
   .vis_container{
     .vis_dropdown_item:hover {
       background: #E4E6F0;
-      color: $color-brand-1;
+      color: $brand-1;
       border-radius: 5px;
     }
     .vis_input_disable:focus {

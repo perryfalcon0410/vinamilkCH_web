@@ -36,7 +36,7 @@
         icon="LogOutIcon"
         class="mr-50"
       />
-      <span>Logout</span>
+      <span>Đăng xuất</span>
     </b-dropdown-item></b-nav-item-dropdown>
 </template>
 

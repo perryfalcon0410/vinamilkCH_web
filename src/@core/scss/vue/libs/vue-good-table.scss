@@ -29,7 +29,7 @@ $background-odd: #edf2f7;
         font-size: 12px;
 
         &:nth-of-type(odd) {
-          background: $background-odd;
+          background: rgba($background-odd, 0.5);
         }
 
         &:hover {

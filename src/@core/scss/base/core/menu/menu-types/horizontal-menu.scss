@@ -263,7 +263,7 @@
   }
 
   .navigation-header {
-    font-family: "Montserrat", sans-serif;
+    font-family: "Roboto", sans-serif;
     color: #929292;
     padding: 8px 20px;
     font-size: 1rem;
@@ -368,17 +368,18 @@
   // navbar sticky
   &.navbar-sticky {
     .app-content {
-      padding: calc(#{$content-padding} + #{$navbar-height}* 1.4) #{$content-padding}
+      padding: calc(#{$content-padding} + #{$navbar-height}) #{$content-padding}
         0 #{$content-padding};
     }
     .header-navbar {
       background-color: $body-bg;
       box-shadow: none;
+      height: 45px;
     }
     .horizontal-menu-wrapper {
       .navbar-horizontal.header-navbar.fixed-top {
         left: 0;
-        top: 62px;
+        top: 45px;
         background-color: $brand-1;
         box-shadow: 0 4px 24px 0 rgba($black, 0.1);
       }
