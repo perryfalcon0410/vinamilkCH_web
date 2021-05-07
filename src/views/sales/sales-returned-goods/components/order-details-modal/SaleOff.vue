@@ -1,17 +1,20 @@
 <template>
-  <vue-good-table
-    :columns="columns"
-    :rows="rows"
-    style-class="vgt-table striped"
-    :pagination-options="{
-      enabled: true
-    }"
-    line-numbers
-    :search-options="{
-      enabled: true,
-      externalQuery: searchTerm
-    }"
-  />
+  <b-col class="py-1">
+    <vue-good-table
+      :columns="columns"
+      :rows="saleOffTable"
+      class="pb-1"
+      style-class="vgt-table striped"
+      :pagination-options="{
+        enabled: false
+      }"
+      line-numbers
+      :search-options="{
+        enabled: true,
+        externalQuery: searchTerm
+      }"
+    />
+  </b-col>
 </template>
 
 <script>
@@ -22,6 +25,10 @@ export default {
     visible: {
       type: Boolean,
     },
+    saleOffTable: {
+      type: Array,
+      default: null,
+    },
 
   },
   data() {
@@ -31,69 +38,59 @@ export default {
       columns: [
         {
           label: 'Mã sản phẩm',
-          field: 'ProductCode',
+          field: 'productCode',
+          thClass: 'text-left',
+          tdClass: 'text-left',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'ProductName',
+          field: 'productName',
+          thClass: 'text-left',
+          tdClass: 'text-left',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'ĐVT',
+          field: 'unit',
+          thClass: 'text-left',
+          tdClass: 'text-left',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Number',
+          field: 'quantity',
+          thClass: 'text-right',
+          tdClass: 'text-right',
           sortable: false,
         },
         {
           label: 'Giá bán',
-          field: 'Price',
-          type: 'number',
+          field: 'pricePerUnit',
+          thClass: 'text-right',
+          tdClass: 'text-right',
           sortable: false,
         },
         {
           label: 'Tổng tiền',
-          field: 'IntoMoney',
-          type: 'number',
+          field: 'totalPrice',
+          thClass: 'text-right',
+          tdClass: 'text-right',
           sortable: false,
         },
         {
           label: 'Giảm giá',
-          field: 'Discount',
-          type: 'number',
+          field: 'discount',
+          thClass: 'text-right',
+          tdClass: 'text-right',
           sortable: false,
         },
         {
           label: 'Tiền trả lại',
-          field: 'Bill',
+          field: 'paymentReturn',
+          thClass: 'text-right',
+          tdClass: 'text-right',
           sortable: false,
-          type: 'number',
-        },
-      ],
-      rows: [
-        {
-          ProductCode: '',
-          ProductName: '',
-          ĐVT: '',
-          Number: '2',
-          Price: '',
-          IntoMoney: '41,624',
-          Discount: '0',
-          Bill: '41,624',
-        },
-        {
-          ProductCode: '01CX01',
-          ProductName: 'SĐCĐ Ông Thọ chữ xanh 380g',
-          ĐVT: 'Hộp',
-          Number: '2',
-          Price: '20,812',
-          IntoMoney: '41,624',
-          Discount: '0',
-          Bill: '41,624',
         },
       ],
     }

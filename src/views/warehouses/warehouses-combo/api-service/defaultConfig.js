@@ -1,3 +1,5 @@
-const SALE = '/sales'
+const SALES = '/sales'
 
-export const getWareHouseComboDetailEndPoint = `${SALE}/combo-product-trans`
+export const getWareHouseComboDetailEndPoint = `${SALES}/combo-product-trans`
+
+export const getWarehousesComboEndPoint = `${SALES}/combo-product-trans`

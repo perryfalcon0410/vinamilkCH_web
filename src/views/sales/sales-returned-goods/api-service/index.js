@@ -1,9 +1,11 @@
+import { formatURLParams } from '@/@core/utils/utils'
 import axios from '@axios'
 import {
   getReturnedGoodsEndPoint,
   getSaleOrdersEndPoint,
   getSaleOrderDetailEndPoint,
   createReturnOrderEndPoint,
+  getReturnGoodDetailEnpoint,
 } from './defaultConfig'
 
 export default {
@@ -24,5 +26,11 @@ export default {
 
   createOrderReturn(args) {
     return axios.post(`${createReturnOrderEndPoint}?formId=5&ctrlId=1`, args)
+  },
+
+  getReturnGoodDetail(args) {
+    return axios.get(`${getReturnGoodDetailEnpoint}/${args.id}`, {
+      params: formatURLParams(args),
+    })
   },
 }

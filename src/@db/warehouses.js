@@ -18,4 +18,8 @@ export default {
     { id: '0', name: 'Nhập chuyển đổi' },
     { id: '1', name: 'Xuất chuyển đổi' },
   ],
+  transType: [
+    { id: '1', name: 'Nhập chuyển đổi' },
+    { id: '', name: 'Xuất chuyển đổi' },
+  ],
 }

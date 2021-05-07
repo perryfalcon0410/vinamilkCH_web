@@ -32,7 +32,7 @@
             class="font-weight-bold"
             cols="6"
           >
-            Nguyễn Xuân Diễm
+            {{ (information.customerName) }}
           </b-col>
         </b-row>
         <b-row class="mt-2">
@@ -43,7 +43,7 @@
             class="font-weight-bold"
             cols="6"
           >
-            Hàng hỏng
+            {{ (information.reason) }}
           </b-col>
         </b-row>
       </b-col>
@@ -59,7 +59,7 @@
             class="font-weight-bold"
             cols="6"
           >
-            29/10/2020 lúc 16:16
+            {{ paidDate }}
           </b-col>
         </b-row>
         <b-row class="mt-2">
@@ -70,7 +70,7 @@
             class="font-weight-bold"
             cols="6"
           >
-            Ngô Thị Lan Hương
+            {{ (information.userName) }}
           </b-col>
         </b-row>
         <b-row class="mt-2">
@@ -98,14 +98,18 @@
         active
       >
         <b-card-text>
-          <Product />
+          <Product
+            :producttable="productdetails"
+          />
         </b-card-text>
       </b-tab>
       <b-tab
         title="Hàng khuyến mãi"
       >
         <b-card-text>
-          <SaleOff />
+          <SaleOff
+            :sale-off-table="saleOffDetails"
+          />
         </b-card-text>
       </b-tab>
     </b-tabs>
@@ -116,6 +120,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import Product from './order-details-modal/Product.vue'
 import SaleOff from './order-details-modal/SaleOff.vue'
 
@@ -127,6 +132,18 @@ export default {
   props: {
     visible: {
       type: Boolean,
+    },
+    productdetails: {
+      type: Array,
+      default: null,
+    },
+    saleOffDetails: {
+      type: Array,
+      default: null,
+    },
+    information: {
+      type: Array,
+      default: null,
     },
 
   },
@@ -303,7 +320,9 @@ export default {
     }
   },
   computed: {
-
+    paidDate() {
+      return moment(this.information.returnDate).format('DD/MM/YYYY')
+    },
   },
   methods: {
     onPress() {

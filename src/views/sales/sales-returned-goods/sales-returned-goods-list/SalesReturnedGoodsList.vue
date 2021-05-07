@@ -172,16 +172,16 @@
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field == 'Press'">
-              <div v-if="props.row.Press == 'Chỉnh sửa'">
-                <b-button
-                  variant="light"
-                  class="rounded-circle px-1"
-                  @click="showOrderDetailsModal"
-                >
-                  <b-icon-hand-index-thumb />
-                </b-button>
-              </div>
+            <div v-if="props.column.field == 'feature'">
+              <b-button
+                variant="light"
+                class="rounded-circle px-1"
+                @click="showOrderDetailsModal(props.row.idDetail)"
+              >
+                <b-icon-eye-fill
+                  color="blue"
+                />
+              </b-button>
             </div>
           </template>
           <!-- START - Column filter -->
@@ -269,7 +269,12 @@
     <!-- End table -->
     </b-form>
     <!-- END - List of orders returned -->
-    <order-details-modal :visible="isOrderDetailsModal " />
+    <order-details-modal
+      :productdetails="productReturns"
+      :sale-off-details="promotionReturns"
+      :information="totalInfo"
+      :visible="isOrderDetailsModal"
+    />
   </b-container>
 </template>
 
@@ -280,8 +285,20 @@ import {
 } from 'vuex'
 import { formatDateToLocale, formatNumberToLocale } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
+import lodash from 'lodash'
 import OrderDetailsModal from '../components/OrderDetailsModal.vue'
-import { RETURNEDGOODS, RETURNED_GOODS_GETTER, GET_RETURNED_GOODS_ACTION } from '../store-module/type'
+import {
+  // GETTERS
+  RETURNEDGOODS,
+  RETURNED_GOODS_GETTER,
+  RETURN_GOODS_DETAIL_PRODUCTS_GETTER,
+  RETURN_GOODS_DETAIL_SALES_OFF_GETTER,
+  RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER,
+
+  // ACTION
+  GET_RETURNED_GOODS_ACTION,
+  GET_RETURN_GOODS_DETAIL_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -371,7 +388,7 @@ export default {
         },
         {
           label: 'Chức năng',
-          field: 'Press',
+          field: 'feature',
           sortable: false,
         },
       ],
@@ -383,7 +400,8 @@ export default {
     },
     oderReturns() {
       return this.RETURNED_GOODS_GETTER().oderReturns.map(data => ({
-        id: data.Id,
+        id: data.id,
+        idDetail: data.id,
         createdAt: formatDateToLocale(data.createdAt),
         orderReturnNumber: data.orderReturnNumber,
         orderNumber: data.orderNumber,
@@ -395,6 +413,7 @@ export default {
         total: formatNumberToLocale(Number(data.total)),
         discount: formatNumberToLocale(Number(data.discount)),
         amount: formatNumberToLocale(Number(data.amount)),
+        feature: '',
       }))
     },
     totalPayment() {
@@ -402,6 +421,38 @@ export default {
     },
     totalAmount() {
       return formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER().info.totalAmount))
+    },
+
+    // return goods detail
+    productReturns() {
+      return this.RETURN_GOODS_DETAIL_PRODUCTS_GETTER().map(data => ({
+        productCode: data.productCode,
+        productName: data.ProductName,
+        unit: data.unit,
+        quantity: formatNumberToLocale(data.quantity),
+        pricePerUnit: formatNumberToLocale(data.pricePerUnit),
+        totalPrice: formatNumberToLocale(data.totalPrice),
+        discount: formatNumberToLocale(data.discount),
+        paymentReturn: formatNumberToLocale(data.paymentReturn),
+      }))
+    },
+
+    promotionReturns() {
+      return this.RETURN_GOODS_DETAIL_SALES_OFF_GETTER().map(data => ({
+        productCode: data.productCode,
+        productName: data.ProductName,
+        unit: data.unit,
+        quantity: formatNumberToLocale(data.quantity),
+        pricePerUnit: formatNumberToLocale(data.pricePerUnit),
+        totalPrice: formatNumberToLocale(data.totalPrice),
+        discount: formatNumberToLocale(data.discount),
+        paymentReturn: formatNumberToLocale(data.paymentReturn),
+
+      }))
+    },
+
+    totalInfo() {
+      return lodash.mapValues(this.RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER(), value => formatNumberToLocale(value))
     },
   },
   watch: {
@@ -418,9 +469,13 @@ export default {
   methods: {
     ...mapGetters(RETURNEDGOODS, [
       RETURNED_GOODS_GETTER,
+      RETURN_GOODS_DETAIL_PRODUCTS_GETTER,
+      RETURN_GOODS_DETAIL_SALES_OFF_GETTER,
+      RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER,
     ]),
     ...mapActions(RETURNEDGOODS, [
       GET_RETURNED_GOODS_ACTION,
+      GET_RETURN_GOODS_DETAIL_ACTION,
     ]),
     showSalesReturnedGoodsCreate() {
       this.$router.push({ name: 'sales-returned-goods-create' })
@@ -428,8 +483,9 @@ export default {
     formatter(value) {
       return value.toLowerCase()
     },
-    showOrderDetailsModal() {
+    showOrderDetailsModal(idDetail) {
       this.isOrderDetailsModal = !this.isOrderDetailsModal
+      this.GET_RETURN_GOODS_DETAIL_ACTION({ id: idDetail, formId: 4, ctrlId: 1 })
     },
     onClickSearchButton() {
       this.GET_RETURNED_GOODS_ACTION({

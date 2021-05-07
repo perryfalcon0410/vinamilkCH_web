@@ -7,11 +7,16 @@ import {
   RETURNED_GOODS_GETTER,
   RETURNED_GOOD_CHOOSE_GETTER,
   RETURNED_GOOD_CHOOSEN_DETAIL_GETTER,
+  RETURN_GOODS_DETAIL_PRODUCTS_GETTER,
+  RETURN_GOODS_DETAIL_SALES_OFF_GETTER,
+  RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER,
+
   // ACTIONS
   GET_RETURNED_GOODS_ACTION,
   GET_RETURNED_GOOD_CHOOSE_ACTION,
   GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION,
   CREATE_RETURNED_GOOD_ACTION,
+  GET_RETURN_GOODS_DETAIL_ACTION,
   // MUTATION
   CLEAR_RETURNED_GOODS_DATA,
 } from './type'
@@ -27,6 +32,9 @@ export default {
     paging: {},
     promotions: [],
     reasonReturn: [],
+    productReturns: [],
+    promotionReturns: [],
+    totalInfo: {},
   },
   getters: {
     [RETURNED_GOODS_GETTER](state) {
@@ -48,6 +56,16 @@ export default {
         reasonReturn: state.reasonReturn,
         promotions: state.promotions,
       }
+    },
+    // reutrn goods detail
+    [RETURN_GOODS_DETAIL_PRODUCTS_GETTER](state) {
+      return state.productReturns
+    },
+    [RETURN_GOODS_DETAIL_SALES_OFF_GETTER](state) {
+      return state.promotionReturns
+    },
+    [RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER](state) {
+      return state.totalInfos
     },
   },
   // MUTATIONS
@@ -148,5 +166,24 @@ export default {
         })
     },
     // END - CREATE_SALE_ODER
+
+    // START - RETURN GOODS DETAIL
+    [GET_RETURN_GOODS_DETAIL_ACTION]({ state }, val) {
+      OderReturnService
+        .getReturnGoodDetail(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.productReturns = res.data.productReturn || []
+            state.promotionReturns = res.data.promotionReturn || []
+            state.totalInfo = res.data.infos || {}
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
   },
 }

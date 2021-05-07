@@ -1,26 +1,34 @@
 <template>
-  <vue-good-table
-    :columns="columns"
-    :rows="rows"
-    style-class="vgt-table striped"
-    :pagination-options="{
-      enabled: true
-    }"
-    line-numbers
-    :search-options="{
-      enabled: true,
-      externalQuery: searchTerm
-    }"
-  />
+  <b-col class="py-1">
+    <vue-good-table
+      :columns="columns"
+      :rows="producttable"
+      class="pb-1"
+      style-class="vgt-table striped "
+      :pagination-options="{
+        enabled: false
+      }"
+      line-numbers
+      :search-options="{
+        enabled: true,
+        externalQuery: searchTerm
+      }"
+    />
+  </b-col>
 </template>
 
 <script>
+
 export default {
   components: {
   },
   props: {
     visible: {
       type: Boolean,
+    },
+    producttable: {
+      type: Array,
+      default: null,
     },
 
   },
@@ -31,115 +39,64 @@ export default {
       columns: [
         {
           label: 'Mã sản phẩm',
-          field: 'ProductCode',
+          field: 'productCode',
+          thClass: 'text-left',
+          tdClass: 'text-left',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'ProductName',
+          field: 'productName',
+          thClass: 'text-left',
+          tdClass: 'text-left',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'ĐVT',
+          field: 'unit',
+          thClass: 'text-left',
+          tdClass: 'text-left',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Number',
+          field: 'quantity',
+          thClass: 'text-right',
+          tdClass: 'text-right',
           sortable: false,
         },
         {
           label: 'Giá bán',
-          field: 'Price',
-          type: 'number',
+          field: 'pricePerUnit',
+          thClass: 'text-right',
+          tdClass: 'text-right',
           sortable: false,
         },
         {
           label: 'Tổng tiền',
-          field: 'IntoMoney',
-          type: 'number',
+          field: 'totalPrice',
+          thClass: 'text-right',
+          tdClass: 'text-right',
           sortable: false,
         },
         {
           label: 'Giảm giá',
-          field: 'Discount',
+          field: 'discount',
+          thClass: 'text-right',
+          tdClass: 'text-right',
           sortable: false,
-          type: 'number',
         },
         {
           label: 'Tiền trả lại',
-          field: 'Bill',
+          field: 'paymentReturn',
+          thClass: 'text-right',
+          tdClass: 'text-right',
           sortable: false,
-          type: 'number',
-        },
-      ],
-      rows: [
-        {
-          ProductCode: '',
-          ProductName: '',
-          ĐVT: '',
-          Number: '44',
-          Price: '',
-          IntoMoney: '815,666',
-          Discount: '',
-          Bill: '815,666',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          ĐVT: 'Hộp',
-          Number: '2',
-          Price: '8,400',
-          IntoMoney: '16,800',
-          Discount: '0',
-          Bill: '16,800',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          ĐVT: 'Hộp',
-          Number: '2',
-          Price: '8,400',
-          IntoMoney: '16,800',
-          Discount: '0',
-          Bill: '16,800',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          ĐVT: 'Hộp',
-          Number: '2',
-          Price: '8,400',
-          IntoMoney: '16,800',
-          Discount: '0',
-          Bill: '16,800',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          ĐVT: 'Hộp',
-          Number: '2',
-          Price: '8,400',
-          IntoMoney: '16,800',
-          Discount: '0',
-          Bill: '16,800',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          ĐVT: 'Hộp',
-          Number: '2',
-          Price: '8,400',
-          IntoMoney: '16,800',
-          Discount: '0',
-          Bill: '16,800',
         },
       ],
     }
   },
-  computed: {
-
+  mounted() {
   },
   methods: {
     onPress() {
