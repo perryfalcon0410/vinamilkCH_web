@@ -85,7 +85,7 @@
                     v-model="billNumber"
                     trim
                     :state="touched ? passed : null"
-                    :disabled="!(importType === 0) || !(importType === 0 && totalProductQuantity === 0)"
+                    :disabled="receipt.poId !== null"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -127,7 +127,7 @@
                     v-model="internalNumber"
                     trim
                     :state="touched ? passed : null"
-                    :disabled="!(importType === 0) || !(importType === 0 && totalProductQuantity === 0)"
+                    :disabled="receipt.poId !== null"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -249,7 +249,7 @@
               <!-- END - Table Product -->
             </div>
 
-            <div v-if="(importType === 0 && totalProductQuantity === 0) || (totalPromotionQuantity > 0)">
+            <div v-if="showPromotionsTable">
               <!-- START - Table Product promotion -->
               <div class="d-inline-flex rounded-top px-1 my-1">
                 <strong>
@@ -334,7 +334,7 @@
                 <!-- START - Column filter -->
               </vue-good-table>
             </div>
-            <div v-if="importType === 0 && totalProductQuantity === 0">
+            <div v-if="receipt.poId === null">
               <div
                 slot="table-actions-bottom"
                 class="mx-1 my-2 px-2"
@@ -610,6 +610,9 @@ export default {
         totalPrice: 0,
         soNo: '',
       }))
+    },
+    showPromotionsTable() {
+      return this.totalPromotionQuantity > 0 || this.receipt.poId == null // hiện table hàng khuyến mãi nếu số lượng > 0 hoặc là phiếu nhập tay khuyến mãi
     },
   },
 
