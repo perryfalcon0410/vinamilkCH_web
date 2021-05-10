@@ -6,6 +6,7 @@ import {
   getProductsEndpoint,
   getProductInfosEndpoint,
   getProductsTopSaleEndpoint,
+  getProductsHotEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -25,9 +26,6 @@ export default {
       params: formatURLParams(args),
     })
   },
-  getProductById(args) {
-    return axios.get(`${getProductsEndpoint}/${args}`)
-  },
   getProductsTopSale(args) {
     return axios.get(getProductsTopSaleEndpoint, {
       params: formatURLParams(args),
@@ -37,5 +35,8 @@ export default {
     return axios.get(getProductInfosEndpoint, {
       params: formatURLParams(args),
     })
+  },
+  getProductsHot(args) {
+    return axios.get(`${getProductsHotEndpoint}/${args.customerId}`)
   },
 }

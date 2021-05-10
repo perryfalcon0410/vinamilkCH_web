@@ -12,4 +12,6 @@ export default {
     { id: '6', name: 'Group cat' },
     { id: '7', name: 'Ngành hàng con phụ' },
   ],
+  pageSizeRecommendProducts: 8,
+  pageNumberRecommendProducts: 0,
 }

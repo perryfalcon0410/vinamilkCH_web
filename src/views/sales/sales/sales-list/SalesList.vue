@@ -231,11 +231,11 @@ import {
   // Getter
   GET_PRODUCTS_GETTER,
   GET_PRODUCT_INFOS_GETTER,
-  GET_PRODUCTS_TOP_SALE_GETTER,
+  GET_TOP_SALE_PRODUCTS_GETTER,
   // Action
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
-  GET_PRODUCTS_TOP_SALE_ACTION,
+  GET_TOP_SALE_PRODUCTS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -326,10 +326,17 @@ export default {
     },
     getProductInfos() {
       return this.GET_PRODUCT_INFOS_GETTER().map(data => ({
-        productInfoId: data.productInfoId,
+        catId: data.id,
         productInfoCode: data.productInfoCode,
         productInfoName: data.productInfoName,
 
+      }))
+    },
+    getProductSearch() {
+      return this.GET_TOP_SALE_PRODUCTS_GETTER().map(data => ({
+        productName: data.productName,
+        productPrice: data.price,
+        productCode: data.productCode,
       }))
     },
   },
@@ -340,37 +347,40 @@ export default {
     getProductInfos() {
       this.productInfos = [...this.getProductInfos]
     },
+    getProductSearch() {
+      this.productsSearch = [...this.getProductSearch]
+    },
   },
   mounted() {
     this.GET_PRODUCTS_ACTION(this.searchOptions)
     const index = this.productInfoTypeOptions.findIndex(i => i.name === 'Ngành hàng')
     const paramGetProductInfo = {
       type: Number(this.productInfoTypeOptions[index].id),
-      formId: 5, // Hard code
-      ctrlId: 7, // Hard code
+      // formId: 5, // Hard code
+      // ctrlId: 7, // Hard code
     }
     this.GET_PRODUCT_INFOS_ACTION(paramGetProductInfo)
 
-    // const paramGetProductsTopSale = {
-    //   keyWord: '',
-    //   customerTypeId: 1, // Hard code
-    //   page: 0,
-    //   size: 10,
-    //   formId: 5, // Hard code
-    //   ctrlId: 7, // Hard code
-    // }
-    // this.GET_PRODUCTS_TOP_SALE_ACTION(paramGetProductsTopSale)
+    const paramGetProductsTopSale = {
+      keyWord: '',
+      customerTypeId: 1, // Hard code
+      page: 0,
+      size: 10,
+      // formId: 5, // Hard code
+      // ctrlId: 7, // Hard code
+    }
+    this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetProductsTopSale)
   },
   methods: {
     ...mapGetters(SALES, [
       GET_PRODUCTS_GETTER,
       GET_PRODUCT_INFOS_GETTER,
-      GET_PRODUCTS_TOP_SALE_GETTER,
+      GET_TOP_SALE_PRODUCTS_GETTER,
     ]),
     ...mapActions(SALES, [
       GET_PRODUCTS_ACTION,
       GET_PRODUCT_INFOS_ACTION,
-      GET_PRODUCTS_TOP_SALE_ACTION,
+      GET_TOP_SALE_PRODUCTS_ACTION,
     ]),
     totalPrice(amount, price) {
       return amount * (price || 0)
@@ -390,15 +400,7 @@ export default {
       this.products[index].tableProductTotalPrice = this.totalPrice(Number(this.products[index].tableProductAmount), Number(this.products[index].tableProductUnitPrice))
     },
     onChangeKeyWord() {
-      console.log(this.searchOptions)
-      this.GET_PRODUCTS_TOP_SALE_ACTION(this.searchOptions)
-      const resultSearch = this.GET_PRODUCTS_TOP_SALE_GETTER().map(data => ({
-        productName: data.productName,
-        productPrice: data.price,
-        productCode: data.productCode,
-      }))
-      this.productsSearch = resultSearch
-      console.log(this.productsSearch)
+      this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
     },
   },
 }

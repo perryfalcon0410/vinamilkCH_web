@@ -8,14 +8,18 @@ import {
   ONLINE_ORDERS_PAGINATION_GETTER,
   GET_PRODUCTS_GETTER,
   GET_PRODUCT_INFOS_GETTER,
-  GET_PRODUCTS_TOP_SALE_GETTER,
+  GET_TOP_SALE_PRODUCTS_GETTER,
+  GET_HOT_PRODUCTS_GETTER,
+  GET_ALL_PRODUCT_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
   GET_ONLINE_ORDERS_ACTION,
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
-  GET_PRODUCTS_TOP_SALE_ACTION,
+  GET_TOP_SALE_PRODUCTS_ACTION,
+  GET_HOT_PRODUCTS_ACTION,
+  GET_ALL_PRODUCT_ACTION,
 } from './type'
 
 export default {
@@ -27,7 +31,9 @@ export default {
     onlineOrderPagination: {},
     products: [],
     productInfos: [],
-    productsTopSale: [],
+    topSaleProducts: [],
+    hotProducts: [],
+    allProduct: [],
   },
 
   getters: {
@@ -46,8 +52,14 @@ export default {
     [GET_PRODUCT_INFOS_GETTER](state) {
       return state.productInfos
     },
-    [GET_PRODUCTS_TOP_SALE_GETTER](state) {
-      return state.productsTopSale
+    [GET_TOP_SALE_PRODUCTS_GETTER](state) {
+      return state.topSaleProducts
+    },
+    [GET_HOT_PRODUCTS_GETTER](state) {
+      return state.hotProducts
+    },
+    [GET_ALL_PRODUCT_GETTER](state) {
+      return state.allProduct
     },
   },
 
@@ -115,13 +127,43 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_PRODUCTS_TOP_SALE_ACTION]({ state }, val) {
+    [GET_TOP_SALE_PRODUCTS_ACTION]({ state }, val) {
       SalesServices
         .getProductsTopSale(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.productsTopSale = res.data.content || []
+            state.topSaleProducts = res.data.content || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_HOT_PRODUCTS_ACTION]({ state }, val) {
+      SalesServices
+        .getProductsHot(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.hotProducts = res.data.content || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_ALL_PRODUCT_ACTION]({ state }, val) {
+      SalesServices
+        .getProducts(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.allProduct = res.data.content || []
           } else {
             throw new Error(res.statusValue)
           }
