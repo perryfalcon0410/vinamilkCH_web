@@ -4,170 +4,65 @@
     class="d-flex flex-column p-0"
   >
     <!-- START - Search -->
-    <b-form class="bg-white shadow rounded">
-      <!-- START - Label -->
-      <label
-        for="v-search-form"
-        class="m-1 text-primary"
-      >
-        Tìm kiếm
-      </label>
-      <!-- END - Label -->
-
-      <!-- START - Section form input -->
-      <b-form-row
-        class="v-search-form border-top p-1"
-      >
-        <!-- START - Inventory Code -->
-        <b-col
-          lg="2"
-          md
-        >
-          <b-form-group
-            label="Mã kiểm kê"
-            label-for="form-input-inventoryId"
-          >
-            <b-form-input
-              id="form-input-inventoryId"
-              v-model="InventoryCode"
-              maxlength="20"
-
-              trim
-            />
-          </b-form-group>
-        </b-col>
-        <!-- END - Inventory Code -->
-
-        <!-- START - Date to -->
-        <b-col
-          lg="2"
-          md
-        >
-          <b-form-group
-            class="ml-lg-1"
-            label="Từ ngày"
-            label-for="form-input-date-from"
-          >
-            <b-form-datepicker
-              id="form-input-date-from"
-              v-model="fromDate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
-        </b-col>
-        <!-- END - Date to -->
-
-        <!-- START - Date from -->
-        <b-col
-          lg="2"
-          md
-        >
-          <b-form-group
-            class="ml-lg-1"
-            label="Đến ngày"
-            label-for="form-input-date-to"
-          >
-            <b-form-datepicker
-              id="form-input-date-to"
-              v-model="toDate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
-        </b-col>
-        <!-- END - Date from -->
-
-        <!-- START - Warehouse -->
-        <b-col
-          lg="2"
-          md
-        >
-          <b-form-group
-            class="ml-lg-1"
-            label="Kho"
-            label-for="form-input-customer-group"
-          >
-            <b-form-select
-              id="form-input-customer-group"
-            />
-          </b-form-group>
-        </b-col>
-        <!-- END - Warehouse -->
-
-        <!-- START - Search Button -->
-        <b-col
-          md="12"
-          lg="4"
-        >
-          <b-form-group
-            class="ml-lg-1"
-            label="Tìm kiếm"
-            label-for="form-button-search"
-          >
-            <b-button
-              id="form-button-search"
-              variant="primary"
-            >
-              <b-icon-search class="mr-1" />
-              Tìm kiếm
-            </b-button>
-          </b-form-group>
-        </b-col>
-        <!-- END - Search Button -->
-
-      </b-form-row>
-      <!-- END - Section form input -->
-
-    </b-form>
+    <warehouses-inventory-list-search />
     <!-- END - Search -->
 
-    <!-- START - Product Import list -->
-    <b-form class="bg-white rounded shadow my-1">
+    <!-- START - Warehouses Inventory List -->
+    <b-form class="v-search bg-white rounded shadow my-1">
       <!-- START - Title -->
       <b-form-row class="justify-content-between align-items-center border-bottom p-1">
-        <label
-          for="listProduct"
-          class="text-primary"
+        <strong
+          class="text-brand-1"
         >
           Danh sách đợt kiểm kê
-        </label>
-
-        <b-button
-          class="rounded"
-          size="md"
-          variant="primary"
-          @click="onClickAddNewButton"
-        >
-          <b-icon-plus />
-          Thêm mới
-        </b-button>
+        </strong>
+        <b-button-group>
+          <b-button
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            variant="someThing"
+            size="sm"
+            @click="onClickCreateButton"
+          >
+            <b-icon-plus />
+            Thêm mới
+          </b-button>
+        </b-button-group>
       </b-form-row>
       <!-- END - Title -->
 
       <!-- START - Table -->
       <b-col
-        id="listProduct"
         class="py-1"
       >
         <vue-good-table
           :columns="columns"
-          :rows="rows"
+          :rows="warehouseInventories"
           style-class="vgt-table striped"
           :pagination-options="{
-            enabled: true
+            enabled: true,
+            perPage: elementSize
           }"
           compact-mode
           line-numbers
         >
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
           <!-- START - Column -->
           <template
             slot="table-column"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'Feature'">
-              <b-icon-bricks />
-            </div>
+            <b-row
+              v-if="props.column.field === 'feature'"
+            >
+              <b-icon-bricks
+                v-b-popover.hover="'Thao tác'"
+              />
+            </b-row>
             <div v-else>
               {{ props.column.label }}
             </div>
@@ -179,110 +74,215 @@
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'Feature'">
+            <b-row
+              v-if="props.column.field === 'feature'"
+            >
               <b-icon-pencil-fill
+                v-b-popover.hover.top="'Chỉnh sửa'"
                 class="cursor-pointer"
-                @click="onClickUpdateButton"
+                @click="onClickUpdateButton(props.row.id)"
               />
-            </div>
+            </b-row>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
           </template>
           <!-- END - Row -->
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Hiển thị 1 đến
+                </span>
+                <b-form-select
+                  v-model="elementSize"
+                  size="sm"
+                  :options="paginationOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span
+                  class="text-nowrap"
+                > trong {{ warehouseInventoryPagination.totalElements }} mục </span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="warehouseInventoryPagination.totalElements"
+                :per-page="elementSize"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
 
     </b-form>
-    <!-- END - Product Import list -->
-
+    <!-- END - Warehouses Inventory List -->
   </b-container>
 </template>
 
 <script>
+import commonData from '@/@db/common'
+import {
+  mapGetters,
+  mapActions,
+} from 'vuex'
+import { formatDateToLocale, reverseVniDate } from '@core/utils/filter'
+import WarehousesInventoryListSearch from './components/WarehousesInventoryListSearch.vue'
+import { // Sua lai
+  WAREHOUSEINVENTORY,
+  // GETTERS
+  WAREHOUSE_INVENTORIES_GETTER,
+  WAREHOUSE_INVENTORY_PAGINATION_GETTER,
+  // ACTIONS
+  GET_WAREHOUSE_INVENTORIES_ACTION,
+} from '../store-module/type'
+
 export default {
+  components: {
+    WarehousesInventoryListSearch,
+  },
   data() {
     return {
-      fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      toDate: new Date(),
-      InventoryCode: '',
+      fromDate: formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
+      toDate: formatDateToLocale(new Date()),
+      elementSize: commonData.pagination[0],
+      pageNumber: 1,
+      paginationOptions: commonData.pagination,
+
       columns: [
         {
           label: 'Ngày',
-          field: 'Date',
+          field: 'countingDate',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Mã kiểm kê',
-          field: 'InventoryId',
+          field: 'stockCountingCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Kho',
-          field: 'Warehouse',
+          field: 'warehouseType',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Người tạo',
-          field: 'Creator',
+          field: 'createUser',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Chỉnh sửa lần cuối',
-          field: 'LastEditDate',
+          field: 'updateDate',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Người chỉnh sửa',
-          field: 'Editor',
-          type: 'number',
+          field: 'updateUser',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
-          label: 'Chức năng',
-          field: 'Feature',
+          label: 'Thao tác',
+          field: 'feature',
           sortable: false,
-        },
-      ],
-      rows: [
-        {
-          Date: '12/03/2021',
-          InventoryId: 'KKI.20210312.002',
-          Warehouse: 'Cửa hàng',
-          Creator: 'Ngô Lan Hương',
-          LastEditDate: '12/03/2021',
-          Editor: 'Nguyễn Bích',
-          Feature: '',
-        },
-        {
-          Date: '12/03/2021',
-          InventoryId: 'KKI.20210312.002',
-          Warehouse: 'Cửa hàng',
-          Creator: 'Ngô Lan Hương',
-          LastEditDate: '12/03/2021',
-          Editor: 'Nguyễn Bích',
-          Feature: '',
-        },
-        {
-          Date: '12/03/2021',
-          InventoryId: 'KKI.20210312.002',
-          Warehouse: 'Cửa hàng',
-          Creator: 'Ngô Lan Hương',
-          LastEditDate: '12/03/2021',
-          Editor: 'Nguyễn Bích',
-          Feature: '',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
     }
   },
 
+  computed: {
+    warehouseInventories() {
+      return this.WAREHOUSE_INVENTORIES_GETTER().map(data => ({
+        id: data.id,
+        countingDate: formatDateToLocale(data.countingDate),
+        stockCountingCode: data.stockCountingCode,
+        warehouseType: data.wareHouseTypeId,
+        createUser: data.createUser,
+        createDate: formatDateToLocale(data.createdAt),
+        updateUser: data.createUser,
+        updateDate: formatDateToLocale(data.updatedAt),
+      }))
+    },
+    warehouseInventoryPagination() {
+      return this.WAREHOUSE_INVENTORY_PAGINATION_GETTER()
+    },
+  },
+
+  mounted() {
+    this.GET_WAREHOUSE_INVENTORIES_ACTION({
+      fromDate: reverseVniDate(this.fromDate),
+      toDate: reverseVniDate(this.toDate),
+      formId: 5,
+      ctrlId: 7,
+    })
+  },
+
   methods: {
-    onClickAddNewButton() {
+    ...mapGetters(WAREHOUSEINVENTORY, [
+      WAREHOUSE_INVENTORIES_GETTER,
+      WAREHOUSE_INVENTORY_PAGINATION_GETTER,
+    ]),
+    ...mapActions(WAREHOUSEINVENTORY, [
+      GET_WAREHOUSE_INVENTORIES_ACTION,
+    ]),
+
+    onClickCreateButton() {
       this.$router.push({ name: 'warehouses-inventory-create' })
     },
-    onClickUpdateButton() {
-      this.$router.push({ name: 'warehouses-inventory-update' })
+    onClickUpdateButton(id) {
+      this.$router.push({
+        name: 'warehouses-inventory-update',
+        params: {
+          id,
+        },
+      })
     },
   },
 }
