@@ -20,6 +20,6 @@ export default {
   ],
   transType: [
     { id: '1', name: 'Nhập chuyển đổi' },
-    { id: '', name: 'Xuất chuyển đổi' },
+    { id: '2', name: 'Xuất chuyển đổi' },
   ],
 }

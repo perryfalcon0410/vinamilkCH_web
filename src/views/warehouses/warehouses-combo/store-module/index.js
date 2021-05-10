@@ -5,6 +5,8 @@ import {
   // getter
   GET_WAREHOUSE_COMBO_DETAIL_GETTER,
   WAREHOUSES_COMBO_GETTER,
+  WAREHOUSES_COMBO_PAGINATION_GETTER,
+  WAREHOUSES_COMBO_TOTAL_INFO_GETTER,
 
   // Action
   GET_WAREHOUSES_COMBO_ACTIONS,
@@ -16,6 +18,8 @@ export default {
   state: {
     wareHouseComboDetail: {},
     warehousesComboLists: [],
+    warehousesComboPagination: {},
+    totalInfo: {},
   },
 
   // getter
@@ -25,6 +29,12 @@ export default {
     },
     [WAREHOUSES_COMBO_GETTER](state) {
       return state.warehousesComboLists
+    },
+    [WAREHOUSES_COMBO_PAGINATION_GETTER](state) {
+      return state.warehousesComboPagination
+    },
+    [WAREHOUSES_COMBO_TOTAL_INFO_GETTER](state) {
+      return state.totalInfo
     },
   },
 
@@ -55,7 +65,9 @@ export default {
         .then(res => {
           if (res.success) {
             state.warehousesComboLists = res.data.response.content
-            console.log(state.warehousesComboLists)
+            state.warehousesComboPagination = res.data.response
+            state.totalInfo = res.data.info
+            console.log(state.totalInfo.totalQuantity)
           } else {
             throw new Error(res.statusValue)
           }

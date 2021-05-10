@@ -93,6 +93,87 @@
           </template>
           <!-- END - Rows -->
 
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="warehousesComboPagination.totalElements"
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Hiển thị 1 đến
+                </span>
+                <b-form-select
+                  v-model="elementSize"
+                  size="sm"
+                  :options="paginationOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span
+                  class="text-nowrap"
+                > trong {{ warehousesComboPagination.totalElements }} mục </span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="warehousesComboPagination.totalElements"
+                :per-page="elementSize"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
+
+          <!-- START - Column filter -->
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-row
+              v-if="props.column.field === 'quantity'"
+              class="h7"
+              align-h="center"
+            >
+              {{ totalQuantity }}
+            </b-row>
+            <b-row
+              v-else-if="props.column.field === 'price'"
+              class="h7"
+              align-h="end"
+            >
+              {{ totalPrice }}
+            </b-row>
+          </template>
+          <!-- START - Column filter -->
+
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
@@ -102,11 +183,12 @@
 </template>
 
 <script>
+import commonData from '@/@db/common'
 import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale } from '@core/utils/filter'
+import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
 import { getWarehousesStatuslabel } from '@core/utils/utils'
 import WarehousesComboListSearch from './components/WarehousesComboListSearch.vue'
 import {
@@ -114,6 +196,8 @@ import {
 
   // GETTERS
   WAREHOUSES_COMBO_GETTER,
+  WAREHOUSES_COMBO_PAGINATION_GETTER,
+  WAREHOUSES_COMBO_TOTAL_INFO_GETTER,
 
   // ACTIONS
   GET_WAREHOUSES_COMBO_ACTIONS,
@@ -126,6 +210,10 @@ export default {
   },
   data() {
     return {
+      elementSize: commonData.pagination[0],
+      pageNumber: 1,
+      paginationOptions: commonData.pagination,
+
       columns: [
         {
           label: 'Ngày',
@@ -143,7 +231,7 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'totalQuantity',
+          field: 'quantity',
           type: 'number',
           sortable: false,
           thClass: 'text-right',
@@ -151,7 +239,8 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'totalAmount',
+          field: 'price',
+          type: 'number',
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
@@ -179,10 +268,31 @@ export default {
       return this.WAREHOUSES_COMBO_GETTER().map(data => ({
         transDate: formatDateToLocale(data.transDate),
         transCode: data.transCode,
-        totalQuantity: data.totalQuantity,
-        totalAmount: data.totalAmount,
+        quantity: formatNumberToLocale(Number(data.totalQuantity)),
+        price: formatNumberToLocale(Number(data.totalAmount)),
         transType: getWarehousesStatuslabel(data.transType),
+        feature: '',
       }))
+    },
+
+    totalQuantity() {
+      return formatNumberToLocale(Number(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalQuantity))
+    },
+    totalPrice() {
+      return formatNumberToLocale(Number(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalPrice))
+    },
+
+    warehousesComboPagination() {
+      return this.WAREHOUSES_COMBO_PAGINATION_GETTER()
+    },
+  },
+
+  watch: {
+    pageNumber() {
+      this.onPaginationChange()
+    },
+    elementSize() {
+      this.onPaginationChange()
     },
   },
   mounted() {
@@ -192,10 +302,20 @@ export default {
   methods: {
     ...mapGetters(WAREHOUSES_COMBO, [
       WAREHOUSES_COMBO_GETTER,
+      WAREHOUSES_COMBO_PAGINATION_GETTER,
+      WAREHOUSES_COMBO_TOTAL_INFO_GETTER,
     ]),
     ...mapActions(WAREHOUSES_COMBO, [
       GET_WAREHOUSES_COMBO_ACTIONS,
     ]),
+    onPaginationChange() {
+      const paginationData = {
+        sie: this.elementSize,
+        page: this.pageNumber - 1,
+      }
+
+      this.GET_WAREHOUSES_COMBO_ACTIONS(paginationData)
+    },
   },
 }
 </script>
