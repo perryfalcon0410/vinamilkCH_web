@@ -298,7 +298,7 @@ import {
 } from 'vuex'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'
-import { reverseVniDate } from '@/@core/utils/filter'
+import { reverseVniDate, formatNumberToLocale } from '@/@core/utils/filter'
 import {
   REDINVOICE,
   RED_INVOICES_GETTER,
@@ -318,7 +318,7 @@ export default {
       invoiceNumber: '',
       customer: '',
       valueShowModalBillOfSaleList: false,
-      templateOptionSelected: '1',
+      templateOptionSelected: redBillData.templateOptions[0].item,
       configDate: {
         wrap: true,
         allowInput: true,
@@ -390,10 +390,10 @@ export default {
         company: data.officeWorking,
         address: data.officeaddress,
         VATCode: data.taxCode,
-        amount: Number(data.totalQuantity).toLocaleString('vi-VN'),
-        goodsMoney: Number(data.totalMoney).toLocaleString('vi-VN'),
-        GTGT: Number(data.amountGTGT).toLocaleString('vi-VN'),
-        totalMoney: Number(data.amountNotVat).toLocaleString('vi-VN'),
+        amount: formatNumberToLocale(Number(data.totalQuantity)),
+        goodsMoney: formatNumberToLocale(Number(data.totalMoney)),
+        GTGT: formatNumberToLocale(Number(data.amountGTGT)),
+        totalMoney: formatNumberToLocale(Number(data.amountNotVat)),
         note: data.note,
       }))
     },
