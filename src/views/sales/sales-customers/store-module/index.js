@@ -131,7 +131,6 @@ export default {
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
-            router.push({ name: 'sales-customers' })
           } else {
             throw new Error(res.statusValue)
           }

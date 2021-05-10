@@ -75,15 +75,6 @@
             </b-col>
 
             <b-col>
-              <!-- <div class="mt-1">
-                Giới tính
-              </div>
-              <v-select
-                v-model="genders"
-                :options="genderOptions"
-                label="name"
-                :searchable="false"
-              /> -->
               <v-input-select
                 title="Giới tính"
                 :suggestions="genderOptions"
@@ -400,6 +391,7 @@ export default {
 
   mounted() {
     this.GET_PROVINCES_ACTION()
+    this.CREATE_CUSTOMER_ACTION({ formId: 4, ctrlId: 1 }) // Hard
   },
 
   // START - Methods
@@ -430,10 +422,12 @@ export default {
             phone: this.phoneNumber, // temp
             email: this.customerEmail,
             address: this.address,
-            isDefault: true,
             noted: this.note,
             customerTypeId: 2, // Hard
           })
+          this.getCreateInfo()
+          this.onClickCloseButton()
+          this.resetInput()
         }
       })
     },
@@ -444,6 +438,29 @@ export default {
 
     onClickSaveButton() {
       this.create()
+    },
+
+    getCreateInfo() {
+      this.onClickCloseButton()
+      this.$emit('getCreateInfo', {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        phoneNumber: this.phoneNumber,
+        address: this.address,
+      })
+    },
+
+    resetInput() {
+      this.firstName = ''
+      this.lastName = ''
+      this.birthDay = ''
+      this.phoneNumber = ''
+      this.customerEmail = ''
+      this.address = ''
+      this.note = ''
+      this.customerProvince = null
+      this.customerDistrict = null
+      this.customerPrecinct = null
     },
   },
   // END - Methods

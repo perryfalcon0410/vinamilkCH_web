@@ -73,7 +73,10 @@
             />
             <b-input-group-append is-text>
               <b-icon-plus @click="showModalCreate" />
-              <sales-create-modal ref="salesCreateModal" />
+              <sales-create-modal
+                ref="salesCreateModal"
+                @getCreateInfo="getCreateInfo"
+              />
             </b-input-group-append>
           </b-input-group>
           <!-- END - Search -->
@@ -214,7 +217,7 @@
               <b-input-group class="input-group-merge">
                 <b-form-input />
                 <b-input-group-append is-text>
-                  <b-icon-three-dots-vertical @click="showSearchOnlineModal" />
+                  <b-icon-three-dots-vertical @click="showNotifyModal" />
                   <sales-online-orders-modal
                     ref="salesOnlineOrderModal"
                     @getOnlineOrderInfo="getOnlineOrderInfo"
@@ -295,6 +298,26 @@
           Thanh toán (F8)
         </b-button>
         <!-- END - Button pay -->
+
+        <!-- START - Notify Modal Close -->
+        <b-modal
+          ref="salesNotifyModal"
+          title="Thông báo"
+        >
+          Chọn đơn online sẽ xóa dữ liệu đơn hàng hiện tại
+          <template #modal-footer>
+            <b-button
+              variant="primary"
+              @click="onClickAgreeButton()"
+            >
+              Đồng ý
+            </b-button>
+            <b-button @click="closeNotifyModal">
+              Đóng
+            </b-button>
+          </template>
+        </b-modal>
+        <!-- END - Notify Modal Close -->
 
       </b-col>
       <!-- END - Section pay -->
@@ -380,6 +403,14 @@ export default {
       this.$refs.salesOnlineOrderModal.$refs.salesOnlineOrderModal.show()
     },
 
+    showNotifyModal() {
+      this.$refs.salesNotifyModal.show()
+    },
+
+    closeNotifyModal() {
+      this.$refs.salesNotifyModal.hide()
+    },
+
     getCustomerInfo(val) {
       this.fullName = val.data.fullName
       this.phoneNumber = val.data.phoneNumber
@@ -390,6 +421,19 @@ export default {
     getOnlineOrderInfo(val) {
       this.quantity = val.data.quantity
       this.totalPrice = val.data.totalPrice
+    },
+
+    getCreateInfo(val) {
+      console.log(val)
+      this.fullName = `${val.lastName} ${val.firstName}`
+      this.phoneNumber = val.phoneNumber
+      this.address = val.address
+      this.totalBill = val.totalBill ?? 0
+    },
+
+    onClickAgreeButton() {
+      this.showSearchOnlineModal()
+      this.closeNotifyModal()
     },
   },
 }

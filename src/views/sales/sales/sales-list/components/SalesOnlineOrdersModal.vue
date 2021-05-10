@@ -166,7 +166,7 @@
           <vue-good-table
             :columns="columns"
             :rows="onlineOrders"
-            style-class="vgt-table bordered"
+            style-class="vgt-table striped"
             :pagination-options="{
               enabled: true
             }"
@@ -208,6 +208,10 @@
                   style="max-height: 30px;"
                   @click="getOnlineOrderInfo(props.row)"
                 >
+                  <b-icon-hand-index-thumb
+                    class="mr-1"
+                    scale="1.3"
+                  />
                   CHỌN ĐƠN
                 </b-button>
               </div>
@@ -378,7 +382,7 @@ export default {
           label: '',
           field: 'feature',
           sortable: false,
-          width: '125px',
+          width: '155px',
           thClass: 'text-center',
           tdClass: 'text-center',
         },

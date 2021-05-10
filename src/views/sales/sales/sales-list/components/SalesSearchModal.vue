@@ -111,7 +111,7 @@
           <vue-good-table
             :columns="columns"
             :rows="customers"
-            style-class="vgt-table bordered"
+            style-class="vgt-table striped"
             :pagination-options="{
               enabled: true
             }"
@@ -153,6 +153,10 @@
                   style="max-height: 30px;"
                   @click="getCustomerInfo(props.row)"
                 >
+                  <b-icon-hand-index-thumb
+                    class="mr-1"
+                    scale="1.3"
+                  />
                   CHỌN
                 </b-button>
               </div>

@@ -522,6 +522,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import router from '@/router/index'
 import {
   ValidationProvider,
   ValidationObserver,
@@ -785,6 +786,7 @@ export default {
             closelyTypeId: this.selectedCloselyTypes?.id,
             cardTypeId: this.cardTypesSelected?.id,
           })
+          router.push({ name: 'sales-customers' })
         }
       })
     },
