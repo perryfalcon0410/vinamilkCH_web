@@ -149,7 +149,7 @@
         <!-- Start Button Head -->
         <b-button-group>
           <b-form-radio-group
-            v-model="selected"
+            v-model="templateOptionSelected"
             :options="options"
             class="mt-1 "
             value-field="item"
@@ -297,11 +297,12 @@ import {
   mapState,
 } from 'vuex'
 import commonData from '@/@db/common'
+import redBillData from '@/@db/redBill'
 import { reverseVniDate } from '@/@core/utils/filter'
 import {
   REDINVOICE,
-  REDINVOICES_GETTER,
-  GET_REDINVOICES_ACTION,
+  RED_INVOICES_GETTER,
+  GET_RED_INVOICES_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -317,16 +318,13 @@ export default {
       invoiceNumber: '',
       customer: '',
       valueShowModalBillOfSaleList: false,
-      selected: 'A',
+      templateOptionSelected: '1',
       configDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
-      options: [
-        { item: 'A', name: 'Mẫu DVKH' },
-        { item: 'B', name: 'Mẫu HĐĐT' },
-      ],
+      options: redBillData.templateOptions,
       columns: [
         {
           label: 'Số hóa đơn đỏ',
@@ -375,7 +373,7 @@ export default {
         },
         {
           label: 'Ghi chú HĐĐ đỏ',
-          field: 'noteHĐĐ',
+          field: 'note',
           sortable: false,
         },
       ],
@@ -383,10 +381,10 @@ export default {
   },
   computed: {
     info() {
-      return this.REDINVOICES_GETTER().info
+      return this.RED_INVOICES_GETTER().info
     },
     redInvoices() {
-      return this.REDINVOICES_GETTER().redInvoices.map(data => ({
+      return this.RED_INVOICES_GETTER().redInvoices.map(data => ({
         id: data.id,
         numberBill: data.invoiceNumber,
         company: data.officeWorking,
@@ -396,11 +394,11 @@ export default {
         goodsMoney: Number(data.totalMoney).toLocaleString('vi-VN'),
         GTGT: Number(data.amountGTGT).toLocaleString('vi-VN'),
         totalMoney: Number(data.amountNotVat).toLocaleString('vi-VN'),
-        noteHĐĐ: data.note,
+        note: data.note,
       }))
     },
     paging() {
-      return this.REDINVOICES_GETTER().paging
+      return this.RED_INVOICES_GETTER().paging
     },
   },
   watch: {
@@ -412,7 +410,7 @@ export default {
     },
   },
   mounted() {
-    this.GET_REDINVOICES_ACTION({
+    this.GET_RED_INVOICES_ACTION({
       formId: 1,
       ctrlId: 7,
     })
@@ -424,10 +422,10 @@ export default {
       successStatusDelete: state => state.delete.success,
     }),
     ...mapGetters(REDINVOICE, [
-      REDINVOICES_GETTER,
+      RED_INVOICES_GETTER,
     ]),
     ...mapActions(REDINVOICE, [
-      GET_REDINVOICES_ACTION,
+      GET_RED_INVOICES_ACTION,
     ]),
     addSaleRedBillsCreate() {
       this.$router.push({ name: 'sales-red-bills-create' })
@@ -440,7 +438,7 @@ export default {
         invoiceNumber: this.invoiceNumber,
       }
 
-      this.GET_REDINVOICES_ACTION({
+      this.GET_RED_INVOICES_ACTION({
         ...searchStr,
         size: this.elementSize,
         page: this.pageNumber - 1,
@@ -456,7 +454,7 @@ export default {
         invoiceNumber: this.invoiceNumber,
       }
 
-      this.GET_REDINVOICES_ACTION({
+      this.GET_RED_INVOICES_ACTION({
         ...searchStr,
         formId: 1,
         ctrlId: 7,

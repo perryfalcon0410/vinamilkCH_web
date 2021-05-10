@@ -1,13 +1,13 @@
 import RedInvoiceService from '@/views/sales/sales-red-bills/api-service'
 import {
   // GETTERS
-  REDINVOICES_GETTER,
+  RED_INVOICES_GETTER,
   ERROR_CODE_GETTER,
   CUSTOMERS_GETTER,
   GET_BILL_OF_SALES_GETTER,
   GET_BILL_OF_SALES_SELECTED_PRODUCTS_GETTER,
   // ACTIONS
-  GET_REDINVOICES_ACTION,
+  GET_RED_INVOICES_ACTION,
   GET_CUSTOMERS_ACTION,
   GET_BILL_OF_SALES_ACTION,
   GET_BILL_OF_SALE_SELECTED_PRODUCT_ACTION,
@@ -32,7 +32,7 @@ export default {
 
   // GETTERS
   getters: {
-    [REDINVOICES_GETTER](state) {
+    [RED_INVOICES_GETTER](state) {
       return {
         redInvoices: state.redInvoices,
         paging: state.paging,
@@ -68,7 +68,7 @@ export default {
 
   // ACTIONS
   actions: {
-    [GET_REDINVOICES_ACTION]({ state }, val) {
+    [GET_RED_INVOICES_ACTION]({ state }, val) {
       RedInvoiceService
         .getRedInvoices(val)
         .then(response => response.data)
