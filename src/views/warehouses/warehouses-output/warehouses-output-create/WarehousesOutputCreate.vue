@@ -420,6 +420,10 @@ export default {
     this.GET_WAREHOUSE_TYPE_ACTION()
   },
 
+  destroyed() {
+    this.CLEAR_EXPORT_PRODUCTS_MUTATION()
+  },
+
   methods: {
     ...mapGetters(WAREHOUSES_OUTPUT, [
       GET_EXPORT_PO_TRANS_DETAIL_GETTER,
@@ -505,7 +509,7 @@ export default {
       this.id = id
     },
     createExport() {
-      const poProductIndexFound = this.poProducts.findIndex((item, index) => this.amount[index].number > item.amountQuantity || this.amount[index].number < 0)
+      const poProductIndexFound = this.poProducts.findIndex((item, index) => this.amount[index].number > item.amountQuantity || this.amount[index].number <= 0)
 
       if (poProductIndexFound > -1) {
         toasts.error('Số lượng xuất không chính xác')
@@ -525,7 +529,6 @@ export default {
           }))],
         },
       )
-      this.CLEAR_EXPORT_PRODUCTS_MUTATION()
     },
   },
 }

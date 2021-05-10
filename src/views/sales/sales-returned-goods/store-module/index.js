@@ -21,6 +21,7 @@ export default {
   state: {
     oderReturns: [],
     saleOders: [],
+    saleOdersInfo: {},
     products: [],
     info: {},
     paging: {},
@@ -38,6 +39,7 @@ export default {
     [RETURNED_GOOD_CHOOSE_GETTER](state) {
       return {
         saleOders: state.saleOders,
+        saleOdersInfo: state.saleOdersInfo,
       }
     },
     [RETURNED_GOOD_CHOOSEN_DETAIL_GETTER](state) {
@@ -94,7 +96,8 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.saleOders = res.data || []
+            state.saleOders = res.data.response || []
+            state.saleOdersInfo = res.data.info || {}
           } else {
             throw new Error(res.statusValue)
           }

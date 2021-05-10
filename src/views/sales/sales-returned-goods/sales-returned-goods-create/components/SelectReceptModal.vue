@@ -177,7 +177,7 @@ export default {
       }))
     },
     totalAmount() {
-      return formatNumberToLocale(Number(this.RETURNED_GOOD_CHOOSE_GETTER().saleOders.reduce((accum, item) => accum + Number(item.total), 0)))
+      return formatNumberToLocale(Number(this.RETURNED_GOOD_CHOOSE_GETTER().saleOdersInfo.allTotal || ''))
     },
   },
   mounted() {
