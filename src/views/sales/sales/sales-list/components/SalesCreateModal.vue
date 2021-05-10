@@ -412,22 +412,26 @@ export default {
       this.$refs.formContainer.validate().then(success => {
         if (success) {
           this.CREATE_CUSTOMER_ACTION({
-            firstName: this.firstName,
-            lastName: this.lastName,
-            genderId: this.gendersSelected?.id,
-            dob: formatVniDateToISO(this.birthDay),
-            status: this.customerStatus?.id, // Hard
-            isPrivate: this.customerSpecial,
-            mobiPhone: this.phoneNumber,
-            phone: this.phoneNumber, // temp
-            email: this.customerEmail,
-            address: this.address,
-            noted: this.note,
-            customerTypeId: 2, // Hard
+            customer: {
+              firstName: this.firstName,
+              lastName: this.lastName,
+              genderId: this.gendersSelected?.id,
+              dob: formatVniDateToISO(this.birthDay),
+              status: this.customerStatus?.id, // Hard
+              isPrivate: this.customerSpecial,
+              mobiPhone: this.phoneNumber,
+              phone: this.phoneNumber, // temp
+              email: this.customerEmail,
+              address: this.address,
+              noted: this.note,
+              customerTypeId: 2, // Hard
+            },
+            onSuccess: () => {
+              this.getCreateInfo()
+              this.onClickCloseButton()
+              this.resetInput()
+            },
           })
-          this.getCreateInfo()
-          this.onClickCloseButton()
-          this.resetInput()
         }
       })
     },

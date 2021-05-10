@@ -126,11 +126,12 @@ export default {
     },
     [CREATE_CUSTOMER_ACTION]({}, val) {
       CustomerService
-        .createCustomer(val)
+        .createCustomer(val.customer)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

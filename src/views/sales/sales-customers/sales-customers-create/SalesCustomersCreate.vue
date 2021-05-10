@@ -761,32 +761,36 @@ export default {
       this.$refs.formContainer.validate().then(success => {
         if (success) {
           this.CREATE_CUSTOMER_ACTION({
-            firstName: this.firstName,
-            lastName: this.lastName,
-            genderId: this.gendersSelected?.id,
-            barCode: this.barCode,
-            dob: formatVniDateToISO(this.birthDay),
-            customerTypeId: this.customerTypesSelected?.id,
-            status: this.customerStatusSelected?.id,
-            isPrivate: this.customerPrivate,
-            idNo: this.customerID,
-            idNoIssuedDate: formatVniDateToISO(this.customerIDDate),
-            idNoIssuedPlace: this.customerIDLocation,
-            mobiPhone: this.phoneNumber,
-            phone: this.phoneNumber, // temp
-            email: this.customerEmail,
-            areaId: this.precinctsSelected?.id,
-            street: this.homeNumber,
-            address: null,
-            workingOffice: this.workingOffice,
-            officeAddress: this.officeAddress,
-            taxCode: this.taxCode,
-            isDefault: true,
-            noted: this.note,
-            closelyTypeId: this.selectedCloselyTypes?.id,
-            cardTypeId: this.cardTypesSelected?.id,
+            customer: {
+              firstName: this.firstName,
+              lastName: this.lastName,
+              genderId: this.gendersSelected?.id,
+              barCode: this.barCode,
+              dob: formatVniDateToISO(this.birthDay),
+              customerTypeId: this.customerTypesSelected?.id,
+              status: this.customerStatusSelected?.id,
+              isPrivate: this.customerPrivate,
+              idNo: this.customerID,
+              idNoIssuedDate: formatVniDateToISO(this.customerIDDate),
+              idNoIssuedPlace: this.customerIDLocation,
+              mobiPhone: this.phoneNumber,
+              phone: this.phoneNumber, // temp
+              email: this.customerEmail,
+              areaId: this.precinctsSelected?.id,
+              street: this.homeNumber,
+              address: null,
+              workingOffice: this.workingOffice,
+              officeAddress: this.officeAddress,
+              taxCode: this.taxCode,
+              isDefault: true,
+              noted: this.note,
+              closelyTypeId: this.selectedCloselyTypes?.id,
+              cardTypeId: this.cardTypesSelected?.id,
+            },
+            onSuccess: () => {
+              router.push({ name: 'sales-customers' })
+            },
           })
-          router.push({ name: 'sales-customers' })
         }
       })
     },
