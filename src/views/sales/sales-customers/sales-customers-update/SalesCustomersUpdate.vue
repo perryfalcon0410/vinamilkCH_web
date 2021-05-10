@@ -898,7 +898,6 @@ export default {
             workingOffice: this.workingOffice,
             officeAddress: this.officeAddress,
             taxCode: this.taxCode,
-            isDefault: true,
             noted: this.note,
             closelyTypeId: this.selectedCloselyTypes,
             cardTypeId: this.selectedCardTypes,

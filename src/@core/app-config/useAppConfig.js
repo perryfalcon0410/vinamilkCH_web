@@ -87,7 +87,14 @@ export default function usAppConfig() {
   const isNavMenuHidden = computed({
     get: () => store.state.appConfig.layout.menu.hidden,
     set: val => {
-      store.commit('appConfig/UPDATE_NAV_MENU_HIDDEN', val)
+      store.commit('appConfig/UPDATE_NAV_MENU_CONFIG', { hidden: val })
+    },
+  })
+
+  const navMenuType = computed({
+    get: () => store.state.appConfig.layout.menu.type,
+    set: val => {
+      store.commit('appConfig/UPDATE_NAV_MENU_CONFIG', { type: val })
     },
   })
 
@@ -138,5 +145,6 @@ export default function usAppConfig() {
     layoutType,
     contentWidth,
     isNavMenuHidden,
+    navMenuType,
   }
 }

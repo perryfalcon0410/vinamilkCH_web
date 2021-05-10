@@ -16,15 +16,15 @@
     >
       <b-input
         ref="input"
-        v-model="valueInput"
+        v-model="dataInput"
         class="vis_input text-brand-3"
         :disabled="disabled"
         :class="[{'vis_input_disable': !typeAble, 'cursor-pointer': !typeAble && !disabled}, inputClass]"
-        :placeholder="currentResults ? currentResults : placeholder"
+        :placeholder="currentResults.name ? currentResults.name : placeholder"
         :autocomplete="autocomplete ? 'on' : 'off'"
         :state="state"
         :maxlength="maxlength"
-        @keydown.prevent="!typeAble"
+        @keydown="preventType"
         @focus="isFocus = true"
         @blur="isFocus = false"
       />
@@ -51,36 +51,31 @@
     <!-- START - Popup -->
     <b-collapse
       v-model="isCollapse"
-      class="position-absolute"
+      class="position-absolute my-1 p-0 bg-white rounded shadow-lg"
       style="zIndex:1000; width:95%;"
     >
-      <b-container
-        class="my-1 p-0 bg-white rounded shadow-lg"
-        fluid
+      <div
+        v-if="isListEmpty(suggestions)"
+        class="p-1 text-center text-brand-3"
       >
-        <div
-          v-if="isListEmpty(matches)"
-          class="p-1 text-center text-brand-3"
-        >
-          {{ noOptions }}
-        </div>
+        {{ noOptions }}
+      </div>
 
-        <b-row
-          v-for="(item) in matches"
-          :key="item.id"
-          class="vis_dropdown_item mx-0 cursor-pointer text-brand-3"
-          :class="suggestionsClass"
-          @click="suggestionClick(item.id)"
+      <b-row
+        v-for="(item) in matches"
+        :key="item.id"
+        class="vis_dropdown_item mx-0 cursor-pointer text-brand-3"
+        :class="suggestionsClass"
+        @click="suggestionClick(item.id)"
+      >
+        <!-- START - Label -->
+        <b-col
+          class="py-1"
         >
-          <!-- START - Label -->
-          <b-col
-            class="py-1"
-          >
-            {{ item.name }}
-          </b-col>
-          <!-- END - Label -->
-        </b-row>
-      </b-container>
+          {{ item.name }}
+        </b-col>
+        <!-- END - Label -->
+      </b-row>
     </b-collapse>
     <!-- END - Popup -->
   </b-container>
@@ -93,11 +88,10 @@ export default {
     suggestions: {
       type: Array,
       required: true,
-      default: () => [{ name: 'Không có dữ liệu', id: null }],
     },
     // Value input for input field
     dataInput: {
-      type: Object,
+      type: String,
       required: true,
     },
     // Title for input field
@@ -174,70 +168,64 @@ export default {
 
   data() {
     return {
-      valueInput: '',
       isCollapse: false,
       isFocus: false,
-      currentResults: '',
+      currentResults: { name: null, id: null },
     }
   },
 
   computed: {
     matches() {
-      if (this.dataInput !== null && this.dataInput !== undefined && this.typeAble) {
-        return this.suggestions.filter(item => item.name.toLowerCase().indexOf(this.valueInput.toLowerCase()) !== -1)
+      if (this.dataInput !== null && this.dataInput !== undefined && this.typeAble && this.isFocus) {
+        return this.suggestions.filter(item => item.name.toLowerCase().indexOf(this.dataInput.toLowerCase()) !== -1)
       }
       return this.suggestions
     },
   },
 
   watch: {
-    dataInput() {
-      console.log(`dataInput: ${this.dataInput}`)
-      this.valueInput = this.dataInput
-    },
-    valueInput() {
-      console.log(`value: ${this.valueInput}`)
-    },
-
     isFocus() {
       if (this.isFocus) {
         this.isCollapse = true
-        if (this.dataInput && this.typeAble) {
-          this.updateSelection({ name: '', id: '' })
-          // this.valueInput = ''
-          // this.$emit('updateSelection', { name: null, id: null })
+
+        if (this.typeAble) {
+          this.dataInput = null
         }
       } else {
         this.isCollapse = false
+
         if (this.currentResults && this.typeAble) {
-          this.valueInput = this.currentResults
-          // this.$emit('updateSelection', this.currentResults)
+          console.log(`currentResults: ${this.suggestions.find(item => item.id === this.currentResults.id).name}`)
+          this.dataInput = this.suggestions.find(item => item.id === this.currentResults.id).name
+          // this.dataInput = this.currentResults.name
         }
       }
     },
   },
 
   methods: {
+    // prevent input
+    preventType(e) {
+      if (!this.typeAble) {
+        e.preventDefault()
+      }
+    },
+
     // When one of the suggestion is clicked
     suggestionClick(id) {
-      console.log('-------------------items-------------------')
-      console.log(this.matches.find(item => item.id === id).name)
-      console.log('-------------------items-------------------')
-
-      this.currentResults = this.matches.find(item => item.id === id).name
-      this.updateSelection(this.matches.find(item => item.id === id))
-      this.isFocus = false
+      console.log(id)
+      this.currentResults = this.suggestions.find(item => item.id === id)
+      this.updateSelection(this.suggestions.find(item => item.id === id))
     },
 
     updateSelection(data) {
-      console.log(`updateSelection: ${JSON.stringify(data)}`)
       this.$emit('updateSelection', data)
     },
 
     onDeleteButtonClick() {
-      if (this.valueInput !== '') {
-        this.currentResults = ''
-        this.$emit('updateSelection', { name: '', id: '' })
+      if (this.dataInput !== '') {
+        this.currentResults = { name: null, id: null }
+        this.updateSelection({ name: null, id: null })
       }
     },
 
@@ -258,6 +246,9 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/style.scss';
+    // .collapsing {
+    //   transition: none !important;
+    // }
 
   .vis_container{
     .vis_dropdown_item:hover {

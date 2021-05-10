@@ -11,6 +11,11 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 
 @import "~@core/scss/base/bootstrap-extended/variables";
 
+// START - Common
+.height-button-brand-1 {
+  height: 34px;
+}
+
 // Background
 .bg-brand-1 {
   background: $brand-1;
@@ -50,7 +55,12 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   font-size: 12px;
 }
 
-// Button Shadow
+.mr-05 {
+  margin-right: 7px;
+}
+// END - Common
+
+// START - Button
 .shadow-brand-1:hover {
   box-shadow: 2px 10px 20px 1px rgba($brand-1, 0.3);
 }
@@ -61,19 +71,18 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   box-shadow: 2px 10px 20px 1px rgba($brand-3, 0.3);
 }
 
-// Height
-.height-button-brand-1 {
-  height: 34px;
+.btn {
+  padding: 7px 14px;
 }
 
-// align item inside button
 .align-items-button-center {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+// END - Button
 
-// input
+// START - Input
 input:focus {
   border-color: $brand-1 !important;
 }
@@ -82,8 +91,4 @@ input:focus {
 .input-group:not(.bootstrap-touchspin):focus-within .input-group-text {
   border-color: $brand-1 !important;
 }
-
-// margin
-.mr-05 {
-  margin-right: 7px;
-}
+// END - Input

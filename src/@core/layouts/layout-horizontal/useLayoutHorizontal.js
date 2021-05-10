@@ -20,6 +20,7 @@ export default function useLayoutHorizontal(navbarMenuType, footerType, isVertic
 
     // Footer
     if (footerType.value === 'sticky') classes.push('footer-fixed')
+    if (footerType.value === 'collapse') classes.push('footer-static')
     if (footerType.value === 'static') classes.push('footer-static')
     if (footerType.value === 'hidden') classes.push('footer-hidden')
 
@@ -38,6 +39,7 @@ export default function useLayoutHorizontal(navbarMenuType, footerType, isVertic
 
   const navbarMenuTypeClass = computed(() => {
     if (navbarMenuType.value === 'sticky') return 'fixed-top'
+    if (navbarMenuType.value === 'collapse') return ''
     if (navbarMenuType.value === 'static') return ''
     if (navbarMenuType.value === 'hidden') return 'd-none'
     return 'floating-nav'

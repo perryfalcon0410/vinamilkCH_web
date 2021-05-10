@@ -39,9 +39,17 @@
           Từ ngày
         </div>
         <b-input-group
-          id="form-input-date-from"
           class="input-group-merge"
         >
+          <b-input-group-prepend
+            ref="prependIconRef"
+            is-text
+            data-toggle
+          >
+            <b-icon-calendar
+              class="cursor-pointer"
+            />
+          </b-input-group-prepend>
           <vue-flat-pickr
             v-model="fromDate"
             :config="configDate"
@@ -50,9 +58,13 @@
           />
           <b-input-group-append
             is-text
-            data-toggle
           >
-            <b-icon-calendar />
+            <b-icon-x
+              v-show="fromDate"
+              scale="1.3"
+              class="cursor-pointer"
+              @click="fromDate = null"
+            />
           </b-input-group-append>
         </b-input-group>
       </b-col>
@@ -72,6 +84,14 @@
         <b-input-group
           class="input-group-merge"
         >
+          <b-input-group-prepend
+            is-text
+            data-toggle
+          >
+            <b-icon-calendar
+              class="cursor-pointer"
+            />
+          </b-input-group-prepend>
           <vue-flat-pickr
             id="form-input-date-from"
             v-model="toDate"
@@ -81,11 +101,16 @@
           />
           <b-input-group-append
             is-text
-            data-toggle
           >
-            <b-icon-calendar />
+            <b-icon-x
+              v-show="toDate"
+              scale="1.3"
+              class="cursor-pointer"
+              @click="toDate = null"
+            />
           </b-input-group-append>
         </b-input-group>
+
       </b-col>
       <!-- END - Date To -->
 
@@ -167,7 +192,6 @@
           suggestions-class="h9"
           :type-able="true"
           :clear-able="true"
-          :filter-able="true"
           @updateSelection="areas = $event"
         />
       </b-col>

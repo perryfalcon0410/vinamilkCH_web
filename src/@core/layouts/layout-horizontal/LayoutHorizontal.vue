@@ -8,6 +8,7 @@
 
     <!-- NAVBAR -->
     <b-navbar
+      v-if="navbarType === 'collapse' && heightToHideOfScrollDown"
       :style="{
         backgroundColor: navbarType === 'static' && scrolledTo && skin === 'light' ? 'white' : null,
         boxShadow: navbarType === 'static' && scrolledTo ? 'rgba(0, 0, 0, 0.05) 0px 4px 20px 0px' : null,
@@ -27,13 +28,15 @@
     <!--/ NAVBAR -->
 
     <div class="horizontal-menu-wrapper">
+      <!-- Horizontal Nav Menu -->
       <div
-        v-if="!isNavMenuHidden"
+        v-if="isNavMenuShow"
         class="header-navbar navbar-expand-sm navbar navbar-horizontal navbar-light navbar-shadow menu-border d-none d-xl-block"
         :class="[navbarMenuTypeClass]"
       >
         <horizontal-nav-menu />
       </div>
+      <!-- Horizontal Nav Menu -->
 
       <!-- Vertical Nav Menu -->
       <vertical-nav-menu
@@ -98,6 +101,7 @@
 </template>
 
 <script>
+/* eslint-disable import/order */
 import AppBreadcrumb from '@core/layouts/components/AppBreadcrumb.vue'
 import AppNavbarHorizontalLayout from '@core/layouts/components/app-navbar/AppNavbarHorizontalLayout.vue'
 import AppNavbarHorizontalLayoutBrand from '@core/layouts/components/app-navbar/AppNavbarHorizontalLayoutBrand.vue'
@@ -115,11 +119,11 @@ import useLayoutHorizontal from './useLayoutHorizontal'
 import HorizontalNavMenu from './components/horizontal-nav-menu/HorizontalNavMenu.vue'
 
 // Vertical Menu
-/* eslint-disable import/order */
 import VerticalNavMenu from '@core/layouts/layout-vertical/components/vertical-nav-menu/VerticalNavMenu.vue'
 import useVerticalLayout from '@core/layouts/layout-vertical/useVerticalLayout'
 import mixinLayoutHorizontal from './mixinLayoutHorizontal'
-/* eslint-enable import/order */
+
+import { useWindowScroll } from '@vueuse/core'
 
 export default {
   components: {
@@ -145,6 +149,20 @@ export default {
       if (rendererType === 'sidebar-left-detached') return 'layout-content-renderer-left-detached'
       return 'layout-content-renderer-default'
     },
+    isNavMenuShow() {
+      switch (this.navMenuType) {
+        case 'collapse':
+          if (this.heightToHideOfScrollDown) {
+            return true
+          }
+          return false
+        default:
+          return true
+      }
+    },
+    heightToHideOfScrollDown() {
+      return this.y <= 1
+    },
   },
   setup() {
     const {
@@ -153,12 +171,15 @@ export default {
       footerType,
       routerTransition,
       isNavMenuHidden,
+      navMenuType,
     } = useAppConfig()
 
     // Vertical Menu
     const {
       isVerticalMenuActive, toggleVerticalMenuActive, overlayClasses, resizeHandler,
     } = useVerticalLayout(navbarType, footerType)
+
+    const { y } = useWindowScroll()
 
     // Resize handler
     resizeHandler()
@@ -189,6 +210,7 @@ export default {
 
       // Menu Hidden
       isNavMenuHidden,
+      navMenuType,
 
       // Router Transition
       routerTransition,
@@ -203,6 +225,8 @@ export default {
       isVerticalMenuActive,
       toggleVerticalMenuActive,
       overlayClasses,
+
+      y,
     }
   },
 }

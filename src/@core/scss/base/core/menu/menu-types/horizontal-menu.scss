@@ -84,7 +84,7 @@
     &.navbar-brand-center {
       .navbar-header {
         position: absolute;
-        left: calc(50% - 56px); // left 50% - branding width
+        left: calc(1.5%); // left 50% - branding width
         padding: 0;
         z-index: 1000;
         .navbar-brand {
@@ -435,10 +435,10 @@
       }
     }
   }
-  // navbar static
-  &.navbar-static {
+  // navbar collapse
+  &.navbar-collapse {
     .app-content {
-      padding: calc(#{$content-padding} + #{$horizontal-menu-height}) #{$content-padding}
+      padding: calc(#{$content-padding} - #{$horizontal-menu-height}) #{$content-padding}
         0 #{$content-padding};
     }
     .content {
@@ -448,13 +448,96 @@
       );
     }
     .header-navbar {
-      background-color: $brand-1;
+      background-color: $body-bg;
+      height: 45px;
+      position: relative;
       box-shadow: none;
     }
     .horizontal-menu-wrapper {
       position: relative;
+      top: 0;
       .navbar-horizontal.header-navbar {
-        background: $white;
+        background: $brand-1;
+        // ? Added for angular fix as it adds this class to navbar in hz layout
+        &.navbar-static-top {
+          left: 0;
+          width: 100%;
+        }
+      }
+    }
+    // App content area wrapper height
+    &.footer-static {
+      .app-content {
+        .content-area-wrapper,
+        .kanban-wrapper {
+          @include content-area-wrapper-height(
+            #{$content-padding},
+            #{$navbar-height},
+            calc(#{$footer-height} + 0.2rem),
+            0rem,
+            #{$horizontal-menu-height},
+            1,
+            $horizontalLayout: true
+          );
+        }
+      }
+    }
+    &.footer-hidden {
+      .app-content {
+        .content-area-wrapper,
+        .kanban-wrapper {
+          @include content-area-wrapper-height(
+            #{$content-padding},
+            #{$navbar-height},
+            0rem,
+            0rem,
+            #{$horizontal-menu-height},
+            2,
+            $horizontalLayout: true
+          );
+        }
+      }
+    }
+    &.footer-fixed {
+      .app-content {
+        .content-area-wrapper,
+        .kanban-wrapper {
+          @include content-area-wrapper-height(
+            #{$content-padding},
+            #{$navbar-height},
+            #{$footer-height},
+            0rem,
+            #{$horizontal-menu-height},
+            2,
+            $horizontalLayout: true
+          );
+        }
+      }
+    }
+  }
+  // navbar static
+  &.navbar-static {
+    .app-content {
+      padding: calc(#{$content-padding} - #{$horizontal-menu-height}) #{$content-padding}
+        0 #{$content-padding};
+    }
+    .content {
+      min-height: calc(
+        100% -
+          calc(#{$horizontal-menu-height} + calc(#{$footer-height} + 0.2rem))
+      );
+    }
+    .header-navbar {
+      background-color: $body-bg;
+      height: 45px;
+      position: relative;
+      box-shadow: none;
+    }
+    .horizontal-menu-wrapper {
+      position: relative;
+      top: 0;
+      .navbar-horizontal.header-navbar {
+        background: $brand-1;
         // ? Added for angular fix as it adds this class to navbar in hz layout
         &.navbar-static-top {
           left: 0;

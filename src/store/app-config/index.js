@@ -11,6 +11,7 @@ export default {
       contentWidth: $themeConfig.layout.contentWidth,
       menu: {
         hidden: $themeConfig.layout.menu.hidden,
+        type: $themeConfig.layout.menu.type,
       },
       navbar: {
         type: $themeConfig.layout.navbar.type,
@@ -46,8 +47,8 @@ export default {
     UPDATE_CONTENT_WIDTH(state, val) {
       state.layout.contentWidth = val
     },
-    UPDATE_NAV_MENU_HIDDEN(state, val) {
-      state.layout.menu.hidden = val
+    UPDATE_NAV_MENU_CONFIG(state, obj) {
+      Object.assign(state.layout.menu, obj)
     },
     UPDATE_NAVBAR_CONFIG(state, obj) {
       Object.assign(state.layout.navbar, obj)

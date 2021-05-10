@@ -51,6 +51,11 @@ router.beforeEach((to, _, next) => {
     next(getHomeRouteForLoggedInUser(userData ? userData.role : null))
   }
 
+  if (to.meta.breadcrumb || to.meta.pageTitle) {
+    const lastItemBreadcrumb = to.meta.breadcrumb.length - 1
+    document.title = `${to.meta.pageTitle} | ${to.meta.breadcrumb[lastItemBreadcrumb].text}` || 'Kênh cửa hàng'
+  }
+
   return next()
 })
 
