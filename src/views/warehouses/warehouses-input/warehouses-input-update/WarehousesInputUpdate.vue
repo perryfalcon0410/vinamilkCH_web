@@ -85,7 +85,7 @@
                     v-model="billNumber"
                     trim
                     :state="touched ? passed : null"
-                    :disabled="receipt.poId !== null"
+                    :disabled="!canEdit"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -127,7 +127,7 @@
                     v-model="internalNumber"
                     trim
                     :state="touched ? passed : null"
-                    :disabled="receipt.poId !== null"
+                    :disabled="!canEdit"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -176,6 +176,7 @@
                 id="note"
                 v-model="note"
                 maxlength="4000"
+                :disabled="!isTransDate"
               />
             </b-form-group>
             <!-- END -   Note -->
@@ -311,7 +312,7 @@
                   slot="table-row"
                   slot-scope="props"
                 >
-                  <div v-if="props.column.field === 'quantity'">
+                  <div v-if="props.column.field === 'quantity' && canEdit">
                     <b-input
                       v-model="props.row.quantity"
                       size="sm"
@@ -321,7 +322,7 @@
                     />
                   </div>
                   <div
-                    v-else-if="props.column.field === 'feature'"
+                    v-else-if="props.column.field === 'feature' && canEdit"
                     align-h="center"
                   >
                     <b-icon-x
@@ -334,7 +335,7 @@
                 <!-- START - Column filter -->
               </vue-good-table>
             </div>
-            <div v-if="receipt.poId === null">
+            <div v-if="canEdit">
               <div
                 slot="table-actions-bottom"
                 class="mx-1 my-2 px-2"
@@ -386,7 +387,7 @@
                 <b-button
                   variant="primary"
                   class="d-flex align-items-center rounded text-uppercase bg-blue-vinamilk text-white"
-                  :disabled="transDate !== today"
+                  :disabled="isTransDate"
                   @click="updateReceipt"
                 >
                   <b-icon
@@ -612,7 +613,13 @@ export default {
       }))
     },
     showPromotionsTable() {
-      return this.totalPromotionQuantity > 0 || this.receipt.poId == null // hiện table hàng khuyến mãi nếu số lượng > 0 hoặc là phiếu nhập tay khuyến mãi
+      return this.totalPromotionQuantity > 0 || (this.$route.params.type === 0 && this.receipt.poId == null) // hiện table hàng khuyến mãi nếu số lượng > 0 hoặc là phiếu nhập tay khuyến mãi
+    },
+    isTransDate() {
+      return this.today === this.transDate
+    },
+    canEdit() {
+      return this.today === this.transDate && this.receipt.poId == null
     },
   },
 

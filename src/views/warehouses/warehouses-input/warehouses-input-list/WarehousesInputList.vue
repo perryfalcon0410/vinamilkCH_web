@@ -17,7 +17,7 @@
           Danh sách phiếu nhập hàng
         </strong>
         <b-button
-          class="rounded bg-blue-vinamilk text-white h9"
+          class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
           variant="someThing"
           size="sm"
           @click="onClickCreateButton"
@@ -89,7 +89,7 @@
                 v-b-popover.hover.top="'Xóa'"
                 class="cursor-pointer ml-1"
                 color="red"
-                @click="onClickDeleteButton(props.row.id, props.row.receiptType, props.row.transDate)"
+                @click="onClickDeleteButton(props.row.id, props.row.receiptType, props.row.transDate, props.row.originalIndex)"
               />
             </b-row>
             <div v-else>
@@ -243,9 +243,11 @@ export default {
       inputTypes: '',
       selectedReceiptId: '',
       selectedReceiptType: '',
+      selectedReceiptIndex: '',
       elementSize: warehousesData.pagination[0],
       pageNumber: 1,
       paginationOptions: warehousesData.pagination,
+      receipts: [],
 
       columns: [
         {
@@ -318,7 +320,7 @@ export default {
   },
 
   computed: {
-    receipts() {
+    getReceipts() {
       return this.RECEIPTS_GETTER().map(data => ({
         id: data.id,
         transDate: formatDateToLocale(data.transDate),
@@ -343,6 +345,12 @@ export default {
     },
     receiptPagination() {
       return this.RECEIPT_PAGINATION_GETTER()
+    },
+  },
+
+  watch: {
+    getReceipts() {
+      this.receipts = [...this.getReceipts]
     },
   },
 
@@ -385,9 +393,10 @@ export default {
       }
       this.PRINT_WAREHOUSES_INPUT_ACTION(params)
     },
-    onClickDeleteButton(id, type, date) {
+    onClickDeleteButton(id, type, date, index) {
       this.selectedReceiptId = id
       this.selectedReceiptType = type
+      this.selectedReceiptIndex = index
       if (type === 1) { // Loại giao dịch nhập điều chỉnh
         toasts.error('Bạn không được phép xóa giao dịch nhập điều chỉnh')
       } else if (date === formatDateToLocale(new Date())) {
@@ -399,6 +408,7 @@ export default {
     confirmDelete() {
       this.REMOVE_RECEIPT_ACTION(`${this.selectedReceiptId}?type=${this.selectedReceiptType}&formId=5&ctrlId=7`)
       this.isDeleteModalShow = !this.isDeleteModalShow
+      this.receipts.splice(this.selectedReceiptIndex, 1)
     },
   },
 }
