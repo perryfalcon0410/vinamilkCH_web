@@ -189,7 +189,7 @@ import {
   mapActions,
 } from 'vuex'
 import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
-import { getWarehousesStatuslabel } from '@core/utils/utils'
+import { getWarehousesStatuslabel } from '@/@db/warehouses'
 import WarehousesComboListSearch from './components/WarehousesComboListSearch.vue'
 import {
   WAREHOUSES_COMBO,

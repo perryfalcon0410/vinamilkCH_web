@@ -23,3 +23,14 @@ export default {
     { id: '2', name: 'Xuất chuyển đổi' },
   ],
 }
+
+export const getWarehousesStatuslabel = status => {
+  switch (status) {
+    case 1:
+      return 'Nhập chuyển đổi'
+    case 2:
+      return 'Xuất chuyển đổi'
+    default:
+      return ''
+  }
+}
