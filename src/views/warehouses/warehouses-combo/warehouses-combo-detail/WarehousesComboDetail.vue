@@ -177,11 +177,11 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  WAREHOUSECOMBO,
+  WAREHOUSESCOMBO,
   // GETTERS
-  GET_WARE_HOUSE_COMBO_DETAIL_GETTER,
+  GET_WAREHOUSE_COMBO_DETAIL_GETTER,
   // ACTIONS
-  GET_WARE_HOUSE_COMBO_DETAIL_ACTION,
+  GET_WAREHOUSE_COMBO_DETAIL_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -276,8 +276,8 @@ export default {
   },
   computed: {
     combos() {
-      if (this.GET_WARE_HOUSE_COMBO_DETAIL_GETTER().combos) {
-        return this.GET_WARE_HOUSE_COMBO_DETAIL_GETTER().combos.map(data => ({
+      if (this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().combos) {
+        return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().combos.map(data => ({
           productCode: data.productCode,
           productName: data.productName,
           quantity: data.quantity,
@@ -287,8 +287,8 @@ export default {
       return []
     },
     products() {
-      if (this.GET_WARE_HOUSE_COMBO_DETAIL_GETTER().products) {
-        return this.GET_WARE_HOUSE_COMBO_DETAIL_GETTER().products.map(data => ({
+      if (this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().products) {
+        return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().products.map(data => ({
           comboProductCode: data.comboProductCode,
           productCode: data.productCode,
           productName: data.productName,
@@ -300,7 +300,7 @@ export default {
       return []
     },
     detail() {
-      return this.GET_WARE_HOUSE_COMBO_DETAIL_GETTER()
+      return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER()
     },
   },
   watch: {
@@ -311,18 +311,18 @@ export default {
     },
   },
   mounted() {
-    this.GET_WARE_HOUSE_COMBO_DETAIL_ACTION({
+    this.GET_WAREHOUSE_COMBO_DETAIL_ACTION({
       id: this.$route.params.id,
       formId: 5,
       ctrlId: 1,
     })
   },
   methods: {
-    ...mapGetters(WAREHOUSECOMBO, [
-      GET_WARE_HOUSE_COMBO_DETAIL_GETTER,
+    ...mapGetters(WAREHOUSESCOMBO, [
+      GET_WAREHOUSE_COMBO_DETAIL_GETTER,
     ]),
-    ...mapActions(WAREHOUSECOMBO, [
-      GET_WARE_HOUSE_COMBO_DETAIL_ACTION,
+    ...mapActions(WAREHOUSESCOMBO, [
+      GET_WAREHOUSE_COMBO_DETAIL_ACTION,
     ]),
     navigateBack() {
       router.push({ name: 'warehouses-combo' })
