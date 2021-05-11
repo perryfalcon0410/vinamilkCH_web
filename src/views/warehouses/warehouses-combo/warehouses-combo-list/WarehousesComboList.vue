@@ -81,8 +81,8 @@
             slot-scope="props"
           >
             <div v-if="props.column.field === 'feature'">
-              <b-icon-pencil-fill
-                v-b-popover.hover="'Chi tiết'"
+              <b-icon-eye-fill
+                v-b-popover.hover="'Xem chi tiết'"
                 class="cursor-pointer"
                 @click="navigateToUpdate()"
               />
@@ -159,8 +159,8 @@
           >
             <b-row
               v-if="props.column.field === 'quantity'"
-              class="h7"
-              align-h="center"
+              class="h7 text-right"
+              align-h="end"
             >
               {{ totalQuantity }}
             </b-row>
@@ -232,8 +232,10 @@ export default {
         {
           label: 'Số lượng',
           field: 'quantity',
-          type: 'number',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-right',
           tdClass: 'text-right',
         },

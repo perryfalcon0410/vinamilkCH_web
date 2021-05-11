@@ -64,10 +64,9 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.warehousesComboLists = res.data.response.content
-            state.warehousesComboPagination = res.data.response
-            state.totalInfo = res.data.info
-            console.log(state.totalInfo.totalQuantity)
+            state.warehousesComboLists = res.data.response.content || []
+            state.warehousesComboPagination = res.data.response || {}
+            state.totalInfo = res.data.info || {}
           } else {
             throw new Error(res.statusValue)
           }
