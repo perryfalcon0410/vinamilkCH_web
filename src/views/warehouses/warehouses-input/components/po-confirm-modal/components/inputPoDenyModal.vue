@@ -10,34 +10,29 @@
     <v-input-select
       :title="'Lý do'"
       :placeholder="''"
-      :data-input="reasonSelected.name"
+      :data-input="reasonSelected.label"
       :suggestions="reasonOptions"
       @updateSelection="reasonSelected = $event"
     />
-    <span> {{ reasonOptions }}</span>
-    <template #modal-footer="{ cancel }">
+    <template #modal-footer="{}">
       <b-button
-        variant="danger"
-        class="d-flex align-items-center text-uppercase"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
+        variant="someThing"
         @click="denyImport"
       >
         <b-icon
           icon="slash-circle"
-          width="20"
-          height="20"
-          class="mr-1"
         />
         Không nhập
       </b-button>
       <b-button
-        variant="secondary"
-        class="d-flex align-items-center text-uppercase"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
+        variant="someThing"
         @click="cancel()"
       >
         <b-icon
           icon="x"
-          width="20"
-          height="20"
+          scale="1.5"
         />
         Đóng
       </b-button>
@@ -76,15 +71,20 @@ export default {
   },
   data() {
     return {
-      reasonSelected: { id: null, name: null },
+      reasonSelected: { id: null, label: null },
     }
   },
   computed: {
     reasonOptions() {
       return this.NOT_IMPORT_REASONS_GETTER().map((data, index) => ({
         id: index + 1,
-        name: data.apParamName,
+        label: data.apParamName,
       }))
+    },
+  },
+  watch: {
+    reasonOptions() {
+      this.reasonSelected = { id: this.reasonOptions[0].id, label: this.reasonOptions[0].label }
     },
   },
   mounted() {
@@ -93,6 +93,7 @@ export default {
       ctrlId: 7, // hard code
     })
   },
+
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
       NOT_IMPORT_REASONS_GETTER,
@@ -103,8 +104,19 @@ export default {
       GET_NOT_IMPORT_REASONS_ACTION,
     ]),
     denyImport() {
-      this.UPDATE_NOT_IMPORT_ACTION(this.$props.id)
-      this.GET_POCONFIRMS_ACTION()
+      this.$emit('close')
+      this.UPDATE_NOT_IMPORT_ACTION({
+        id: this.reasonSelected.id,
+        formId: 5, // hard code
+        ctrlId: 7, // hard code
+      })
+      this.GET_POCONFIRMS_ACTION({
+        formId: 5, // hard code
+        ctrlId: 7, // hard code
+      })
+    },
+    cancel() {
+      this.$emit('close')
     },
   },
 }

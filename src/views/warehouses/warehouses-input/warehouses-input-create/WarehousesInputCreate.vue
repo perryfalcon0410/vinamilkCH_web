@@ -20,7 +20,9 @@
                 Ngày nhập:
               </b-col>
               <b-col class="font-weight-bold">
-                {{ now }}
+                <strong>
+                  {{ now }}
+                </strong>
               </b-col>
             </b-row>
             <!-- END - Date -->
@@ -45,24 +47,14 @@
               <b-col>
                 <b-form-group
                   label="Loại nhập"
-                  label-for="importType"
+                  label-for="id"
                 >
-                  <b-form-select
-                    id="importType"
-                    v-model="importType"
-                  >
-                    <b-form-select-option value="1">
-                      nhập hàng
-                    </b-form-select-option>
-                    <b-form-select-option
-                      value="2"
-                    >
-                      nhập điều chỉnh
-                    </b-form-select-option>
-                    <b-form-select-option value="3">
-                      nhập vay mượn
-                    </b-form-select-option>
-                  </b-form-select>
+                  <v-input-select
+                    :suggestions="inputTypeOptions"
+                    :data-input="inputTypeSelected.name"
+                    :title="''"
+                    @updateSelection="inputTypeSelected = $event"
+                  />
                 </b-form-group>
               </b-col>
             </b-form-row>
@@ -89,13 +81,14 @@
                   rules="required"
                   product-name="Số hóa đơn"
                 >
-                  <div>
+                  <div class="h9">
                     Số hóa đơn <sup class="text-danger">*</sup>
                   </div>
                   <b-form-input
                     v-model="billNumber"
                     trim
                     :state="touched ? passed : null"
+                    :disabled="importType != '1' ? true : false"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -103,20 +96,29 @@
 
               <b-col>
                 <validation-provider
-                  v-slot="{ errors }"
                   rules="required"
-                  product-name="Ngày hóa đơn"
                 >
-                  <div>
+                  <div class="h9">
                     Ngày hóa đơn <sup class="text-danger">*</sup>
                   </div>
-                  <b-form-datepicker
-                    v-model="billDate"
-                    locale="vi"
-                    :disabled="importType != '1' ? true : false"
-                    :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                  />
-                  <small class="text-danger">{{ errors[0] }}</small>
+                  <b-input-group
+                    class="input-group-merge"
+                  >
+                    <vue-flat-pickr
+                      id="form-input-date-from"
+                      v-model="billDate"
+                      :disabled="importType != '1' ? true : false"
+                      :config="configDate"
+                      class="form-control h8 text-brand-3"
+                      placeholder="Chọn ngày"
+                    />
+                    <b-input-group-append
+                      is-text
+                      data-toggle
+                    >
+                      <b-icon-calendar />
+                    </b-input-group-append>
+                  </b-input-group>
                 </validation-provider>
               </b-col>
             </b-form-row>
@@ -130,25 +132,25 @@
                   rules="required"
                   product-name="Số nội bộ"
                 >
-                  <div class="mt-1">
+                  <div class="mt-1 h9">
                     Số nội bộ <sup class="text-danger">*</sup>
                   </div>
                   <b-form-input
                     v-model="internalNumber"
                     trim
                     :state="touched ? passed : null"
+                    :disabled="importType != '1' ? true : false"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
               </b-col>
-
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
                   :rules="importType === '1' ? 'required' : ''"
                   product-name="PO No"
                 >
-                  <div class="mt-1">
+                  <div class="mt-1 h9">
                     PO No
                     <sup
                       v-show="importType === '1'"
@@ -163,6 +165,7 @@
                       v-model="poNo"
                       trim
                       :state="importType === '1' && touched ? passed : null"
+                      :disabled="importType != '1' ? true : false"
                     />
                     <b-input-group-append is-text>
                       <b-icon-three-dots-vertical
@@ -179,6 +182,7 @@
             <!-- START -   Note -->
             <b-form-group
               label="Ghi chú"
+              class="mt-1"
               label-for="note"
             >
               <b-form-textarea
@@ -301,16 +305,12 @@
                 slot-scope="props"
               >
                 <span v-if="props.column.label =='Function'">
-                  <b-button
-                    variant="light"
-                    class="rounded-circle p-1 ml-1"
-                    size="sm"
+                  <b-icon
+                    class="cursor-pointer text-justify-center"
+                    scale="2.5"
+                    icon="plus"
                     @click="newRow"
-                  >
-                    <b-icon
-                      icon="plus"
-                    />
-                  </b-button>
+                  />
                 </span>
                 <span v-else>
                   {{ props.column.label }}
@@ -331,6 +331,16 @@
                     v-model="rowsProductPromotion[props.row.count].quantity"
                     size="sm"
                   />
+                </span>
+                <span v-if="props.column.field == 'function'">
+                  <b-icon-trash-fill
+                    v-b-popover.hover.top="'Xóa'"
+                    class="cursor-pointer mt-05"
+                    scale="1.5"
+                    color="red"
+                    @click="onClickDeleteButton(props.row.count)"
+                  />
+                  {{ count }}
                 </span>
               </template>
               <!-- START - Empty rows -->
@@ -388,14 +398,17 @@
     <adjustment-modal
       :visible="AdjustmentModalVisible"
       @inputAdjustChange="dataFromInputAdjust($event)"
+      @close="AdjustmentModalVisible = false"
     />
     <borrowed-modal
       :visible="BorrowedModalVisible"
       @inputBorrowsChange="dataFormInputBorrow($event)"
+      @close="BorrowedModalVisible = false"
     />
     <po-confirm-modal
       :visible="PoConfirmModalVisible"
       @inputChange="dataFromPoConfirm($event)"
+      @close="PoConfirmModalVisible = false"
     />
     <confirm-close-modal
       :visible="showConfirmCloseModal"
@@ -416,6 +429,9 @@ import {
 } from '@/@core/utils/validations/validations'
 import { mapGetters, mapActions } from 'vuex'
 import { getNow } from '@core/utils/utils'
+import { formatDateToLocale } from '@/@core/utils/filter'
+import warehousesData from '@/@db/warehouses'
+import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
 import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
@@ -435,9 +451,17 @@ export default {
     ConfirmCloseModal,
     ValidationProvider,
     ValidationObserver,
+    VInputSelect,
   },
   data() {
     return {
+      inputTypeOptions: warehousesData.inputTypes,
+      inputTypeSelected: { id: null, name: null },
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
       now: getNow(),
       AdjustmentModalVisible: false,
       BorrowedModalVisible: false,
@@ -455,7 +479,7 @@ export default {
       billNumber: '',
       importType: '1',
       internalNumber: '',
-      billDate: new Date(),
+      billDate: formatDateToLocale(new Date()),
       poNo: '',
       note: '',
       listImportProduct: null,
@@ -702,13 +726,11 @@ export default {
     }
   },
   computed: {
+    // filter count from newRow
     promotionRow() {
       return this.rowsProductPromotion.map(data => ({
-        productCode: data.productCode,
+        productId: data.productCode,
         quantity: data.quantity,
-        productName: data.productName,
-        price: data.price,
-        totalPrice: data.totalPrice,
       }))
     },
     warehousesType() {
@@ -716,6 +738,7 @@ export default {
     },
   },
   mounted() {
+    this.inputTypeSelected = { id: this.inputTypeOptions[0].id, name: this.inputTypeOptions[0].name }
     this.GET_WAREHOUSES_TYPE_ACTION({
       formId: 5, // hard code
       ctrlId: 7, // hard code
@@ -729,6 +752,9 @@ export default {
       CREATE_SALE_IMPORT_ACTION,
       GET_WAREHOUSES_TYPE_ACTION,
     ]),
+    onClickDeleteButton(index) {
+      this.rowsProductPromotion.splice(index, 1)
+    },
     newRow() {
       if (this.status === null) {
         this.rowsProductPromotion = [
@@ -742,10 +768,20 @@ export default {
       }
     },
     showModal() {
-      const PoConfirm = this.importType === '1' ? this.PoConfirmModalVisible = !this.PoConfirmModalVisible : this.PoConfirmModalVisible = false
-      const Adjustment = this.importType === '2' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
-      const Borrowed = this.importType === '3' ? this.BorrowedModalVisible = !this.BorrowedModalVisible : this.BorrowedModalVisible = false
-      return PoConfirm && Adjustment && Borrowed
+      console.log(this.inputTypeSelected)
+      switch (this.inputTypeSelected.id) {
+        case '0':
+          this.PoConfirmModalVisible = true
+          break
+        case '1':
+          this.AdjustmentModalVisible = true
+          break
+        case '2':
+          this.BorrowedModalVisible = true
+          break
+        default:
+          break
+      }
     },
     navigateBack() {
       if (this.status === null) {
@@ -756,11 +792,9 @@ export default {
     },
     // ---------------------------Nhap hang-----------------------
     dataFromPoConfirm(data) {
-      console.log(data)
-      const [poProducts, ProductInfo, poPromotionProducts, PromotionProductsInfo, PoConfirmModalState, Snb, poNum, id] = data
+      const [poProducts, ProductInfo, poPromotionProducts, PromotionProductsInfo, Snb, poNum, id] = data
       this.rowsProduct = [...poProducts]
       this.rowsProductPromotion = [...poPromotionProducts]
-      this.PoConfirmModalVisible = PoConfirmModalState
       this.poProductInfo = ProductInfo
       this.poPromotionProductsInfo = PromotionProductsInfo
       this.status = 0
@@ -770,46 +804,28 @@ export default {
       this.tableRender()
     },
     // ----------------------------Nhap hang-----------------------
-    /*
-    {
-    "importType":1,
-    "poNumber":"213",
-    "redInvoiceNo":"123123",
-    "internalNumber":"12312",
-    "note":"ghi chu",
-    "poId":1,
-    "list":[{
-        "productCode":"SP0006",
-        "quantity":10,
-        "productName":"con bo",
-        "price": 6500,
-        "totalPrice":65000
-    }]
-    }
-    */
+
     // -----------------------------Nhap dieu chinh------------------------
     dataFromInputAdjust(data) {
-      const [importAdjustsDetail, importAdjustModalState, listData, id] = data
+      const [importAdjustsDetail, importAdjustModalState, id] = data
       this.adjustRows = [...importAdjustsDetail]
       this.AdjustmentModalVisible = importAdjustModalState
       this.status = 1 // importType
       this.poNo = null // poNumber
       this.poId = id // poId
-      this.listImportProduct = listData // list
       this.tableRender()
     },
     // -----------------------------Nhap dieu chinh------------------------
 
     // ------------------------------Nhap vay muon----------------------------
     dataFormInputBorrow(data) {
-      const [importBorrowsDetail, importBorrowModalState, listData, id] = data
+      const [importBorrowsDetail, importBorrowModalState, id] = data
       this.borrowRows = [...importBorrowsDetail]
       this.BorrowedModalVisible = importBorrowModalState
       this.status = 2
       this.poNo = null
       this.internalNumber = null
       this.poId = id
-      this.listImportProduct = listData
       this.tableRender()
     },
     // ------------------------------Nhap vay muon----------------------------
@@ -827,17 +843,13 @@ export default {
     },
     create() {
       if (this.status !== null) {
-        this.$refs.formContainer.validate().then(success => {
-          if (success) {
-            this.CREATE_SALE_IMPORT_ACTION({
-              importType: this.status,
-              poNumber: this.poNo,
-              internalNumber: this.internalNumber,
-              redInvoiceNo: this.billNumber,
-              poId: this.poId,
-              note: this.note,
-            })
-          }
+        this.CREATE_SALE_IMPORT_ACTION({
+          importType: this.status,
+          poNumber: this.poNo,
+          internalNumber: this.internalNumber,
+          redInvoiceNo: this.billNumber,
+          poId: this.poId,
+          note: this.note,
         })
       } else {
         this.$refs.formContainer.validate().then(success => {
@@ -849,7 +861,7 @@ export default {
               redInvoiceNo: this.billNumber,
               poId: this.poId,
               note: this.note,
-              lst: this.promotionRow,
+              lst: this.promotionRow || null,
             })
           }
         })

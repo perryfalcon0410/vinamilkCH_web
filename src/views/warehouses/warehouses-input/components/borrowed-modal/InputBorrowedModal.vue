@@ -48,7 +48,7 @@
             <b-row
               v-for="(item, index) in importBorrowingslist"
               :key="item.id"
-              :class="{ 'text-primary': current == item.id }"
+              :class="{ 'text-brand-1': current == item.id }"
               class="border-bottom border-white bg-light py-1"
               @click="selectOrder(item.id)"
             >
@@ -107,29 +107,25 @@
     <!-- END - Body -->
 
     <!-- START - Footer -->
-    <template #modal-footer="{ cancel }">
+    <template #modal-footer="{}">
       <b-button
-        variant="primary"
-        class="d-flex align-items-center"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-center"
+        variant="someThing"
         @click="inputBorrow"
       >
         <b-icon
           icon="download"
-          width="20"
-          height="20"
-          class="mr-1"
         />
         Lưu ĐC
       </b-button>
       <b-button
-        variant="secondary"
-        class="d-flex align-items-center"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+        variant="someThing"
         @click="cancel()"
       >
         <b-icon
           icon="x"
-          width="20"
-          height="20"
+          scale="1.5"
         />
         Đóng
       </b-button>
@@ -172,34 +168,46 @@ export default {
           field: 'licenseNumber',
           sortable: false,
           type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Giá',
           field: 'price',
           sortable: false,
           type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
           type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           sortable: false,
           type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
       ],
     }
@@ -230,15 +238,6 @@ export default {
         totalPrice: formatNumberToLocale(data.totalPrice),
       }))
     },
-    listImportProduct() {
-      return this.IMPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
-        productCode: data.productCode,
-        productName: data.productName,
-        price: formatNumberToLocale(data.price),
-        quantity: data.quantity,
-        totalPrice: formatNumberToLocale(data.totalPrice),
-      }))
-    },
   },
   watch: {
     importBorrowingslist() {
@@ -260,15 +259,16 @@ export default {
       GET_IMPORT_BORROWINGS_ACTION,
       GET_IMPORT_BORROWINGS_DETAIL_ACTION,
     ]),
-    hoverHandler(hovered) {
-      this.isHover = hovered
-    },
     inputBorrow() {
-      this.$emit('inputBorrowsChange', [this.importBorrowingsDetailList, false, this.listImportProduct, this.current])
+      this.$emit('inputBorrowsChange', [this.importBorrowingsDetailList, false, this.current])
+      this.$emit('close')
     },
     selectOrder(id) {
       this.current = id
       this.GET_IMPORT_BORROWINGS_DETAIL_ACTION({ id: this.current, formId: 5, ctrlId: 7 })// hard code
+    },
+    cancel() {
+      this.$emit('close')
     },
   },
 }

@@ -42,7 +42,7 @@
             v-for="(item, index) in poConfirm"
             :key="item.id"
             class="border-bottom border-white py-1"
-            :class="{ 'text-primary': current == item.id }"
+            :class="{ 'text-brand-1': current == item.id }"
             @click="selectOrder(item.id, item.internalNumber, item.poNo)"
           >
             <b-col cols="1">
@@ -78,15 +78,14 @@
               Sản phẩm
             </strong>
             <b-button
-              variant="primary"
-              class="d-flex align-items-center"
+              class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+              variant="someThing"
               @click="syncPo"
             >
               <b-icon
                 icon="arrow-repeat"
                 width="20"
                 height="20"
-                class="mr-1"
               />
               Tải PO
             </b-button>
@@ -130,7 +129,6 @@
           </vue-good-table>
           <!-- END - Table Product -->
 
-          <!-- START - Table Product promotion -->
           <!-- START - Title Product promotion -->
           <strong class="d-inline-flex rounded-top px-1">
             Hàng khuyến mãi
@@ -181,55 +179,45 @@
     <!-- END - Body -->
 
     <!-- START - Footer -->
-    <template #modal-footer="{ cancel }">
+    <template #modal-footer="{}">
       <b-button
-        variant="primary"
-        class="d-flex align-items-center text-uppercase"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-center"
+        variant="someThing"
         @click="confirmImportButton"
       >
         <b-icon
           icon="download"
-          width="20"
-          height="20"
-          class="mr-1"
         />
         Nhập hàng
       </b-button>
       <b-button
-        variant="danger"
-        class="d-flex align-items-center text-uppercase"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-center"
+        variant="someThing"
         @click="showModal()"
       >
         <b-icon
           icon="slash-circle"
-          width="20"
-          height="20"
-          class="mr-1"
         />
         Không nhập
       </b-button>
       <b-button
-        variant="primary"
-        class="d-flex align-items-center text-uppercase"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-center"
+        variant="someThing"
         @click="exportExcel"
       >
         <b-icon
           icon="file-earmark-excel-fill"
-          width="20"
-          height="20"
-          class="mr-1"
         />
         Xuất excel
       </b-button>
       <b-button
-        variant="secondary"
-        class="d-flex align-items-center text-uppercase"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+        variant="someThing"
         @click="cancel()"
       >
         <b-icon
           icon="x"
-          width="20"
-          height="20"
+          scale="1.5"
         />
         Đóng
       </b-button>
@@ -238,7 +226,7 @@
     <deny-modal
       :id="denyId"
       :visible="DenyModalVisible"
-      :reason-options="denyReason"
+      @close="DenyModalVisible = false"
     />
   </b-modal>
 </template>
@@ -425,8 +413,10 @@ export default {
       this.current = id
       this.poNumber = poNum
       this.Snb = internalNumber
-      this.GET_PODETAIL_PRODUCTS_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
-      this.GET_PODETAIL_PRODUCTS_PROMO_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
+      if (this.poConfirm.length > 0) {
+        this.GET_PODETAIL_PRODUCTS_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
+        this.GET_PODETAIL_PRODUCTS_PROMO_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
+      }
     },
     // Sync PoConfirms list
     syncPo() {
@@ -435,9 +425,10 @@ export default {
     // Confirm import product from selected Po
     confirmImportButton() {
       if (this.poConfirm.length > 0) {
-        this.$emit('inputChange', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, false, this.Snb, this.poNumber, this.current])
+        this.$emit('inputChange', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, this.Snb, this.poNumber, this.current])
+        this.$emit('close')
       } else {
-        toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi PO')
+        toasts.error('Bạn cần chọn tối thiểu 1 bản ghi PO')
       }
     },
     exportExcel() {
@@ -448,13 +439,15 @@ export default {
       }
     },
     showModal() {
-      console.log(this.poConfirm.length)
       if (this.poConfirm.length > 0) {
         this.denyId = this.current
         this.DenyModalVisible = !this.DenyModalVisible
       } else {
-        toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi PO')
+        toasts.error('Bạn cần chọn tối thiểu 1 bản ghi PO')
       }
+    },
+    cancel() {
+      this.$emit('close')
     },
   },
 }
