@@ -396,26 +396,27 @@
 
     <!-- START - Modal -->
     <adjustment-modal
-      :visible="AdjustmentModalVisible"
+      :visible="adjustmentModalVisible"
       @inputAdjustChange="dataFromInputAdjust($event)"
-      @close="AdjustmentModalVisible = false"
+      @close="adjustmentModalVisible = false"
     />
     <borrowed-modal
-      :visible="BorrowedModalVisible"
+      :visible="borrowedModalVisible"
       @inputBorrowsChange="dataFormInputBorrow($event)"
-      @close="BorrowedModalVisible = false"
+      @close="borrowedModalVisible = false"
     />
     <po-confirm-modal
-      :visible="PoConfirmModalVisible"
+      :visible="poConfirmModalVisible"
       @inputChange="dataFromPoConfirm($event)"
-      @close="PoConfirmModalVisible = false"
+      @close="poConfirmModalVisible = false"
     />
     <confirm-close-modal
       :visible="showConfirmCloseModal"
       @close="showConfirmCloseModal = false"
     >
     <!-- END - Modal -->
-    </confirm-close-modal></b-container>
+    </confirm-close-modal>
+  </b-container>
 </template>
 
 <script>
@@ -432,10 +433,10 @@ import { getNow } from '@core/utils/utils'
 import { formatDateToLocale } from '@/@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
 import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
+import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
 import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
-import ConfirmCloseModal from '../components/confirm-close-modal/ConfirmCloseModal.vue'
 import {
   WAREHOUSEINPUT,
   WAREHOUSES_TYPE_GETTER,
@@ -463,9 +464,9 @@ export default {
         dateFormat: 'd/m/Y',
       },
       now: getNow(),
-      AdjustmentModalVisible: false,
-      BorrowedModalVisible: false,
-      PoConfirmModalVisible: false,
+      adjustmentModalVisible: false,
+      borrowedModalVisible: false,
+      poConfirmModalVisible: false,
       showConfirmCloseModal: false,
       // ngay nhap
       dateStamp: '',
@@ -771,13 +772,13 @@ export default {
       console.log(this.inputTypeSelected)
       switch (this.inputTypeSelected.id) {
         case '0':
-          this.PoConfirmModalVisible = true
+          this.poConfirmModalVisible = true
           break
         case '1':
-          this.AdjustmentModalVisible = true
+          this.adjustmentModalVisible = true
           break
         case '2':
-          this.BorrowedModalVisible = true
+          this.borrowedModalVisible = true
           break
         default:
           break
@@ -807,9 +808,8 @@ export default {
 
     // -----------------------------Nhap dieu chinh------------------------
     dataFromInputAdjust(data) {
-      const [importAdjustsDetail, importAdjustModalState, id] = data
+      const [importAdjustsDetail, id] = data
       this.adjustRows = [...importAdjustsDetail]
-      this.AdjustmentModalVisible = importAdjustModalState
       this.status = 1 // importType
       this.poNo = null // poNumber
       this.poId = id // poId
@@ -819,9 +819,8 @@ export default {
 
     // ------------------------------Nhap vay muon----------------------------
     dataFormInputBorrow(data) {
-      const [importBorrowsDetail, importBorrowModalState, id] = data
+      const [importBorrowsDetail, id] = data
       this.borrowRows = [...importBorrowsDetail]
-      this.BorrowedModalVisible = importBorrowModalState
       this.status = 2
       this.poNo = null
       this.internalNumber = null

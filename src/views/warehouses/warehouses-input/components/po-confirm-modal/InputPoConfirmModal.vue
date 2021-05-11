@@ -225,8 +225,8 @@
     <!-- END - Footer -->
     <deny-modal
       :id="denyId"
-      :visible="DenyModalVisible"
-      @close="DenyModalVisible = false"
+      :visible="denyModalVisible"
+      @close="denyModalVisible = false"
     />
   </b-modal>
 </template>
@@ -268,7 +268,7 @@ export default {
   data() {
     return {
       denyId: null,
-      DenyModalVisible: false,
+      denyModalVisible: false,
       current: null,
       Snb: null,
       poNumber: null,
@@ -441,7 +441,7 @@ export default {
     showModal() {
       if (this.poConfirm.length > 0) {
         this.denyId = this.current
-        this.DenyModalVisible = !this.DenyModalVisible
+        this.denyModalVisible = !this.denyModalVisible
       } else {
         toasts.error('Bạn cần chọn tối thiểu 1 bản ghi PO')
       }
