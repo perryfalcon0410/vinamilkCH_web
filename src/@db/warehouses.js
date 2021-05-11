@@ -14,4 +14,8 @@ export default {
     { id: '1', name: 'Hàng hỏng do khách hàng mua tại cửa hàng' },
     { id: '2', name: 'Hàng hỏng do khách hàng mua tại điểm lẻ' },
   ],
+  tradingTypes: [
+    { id: '0', name: 'Nhập chuyển đổi' },
+    { id: '1', name: 'Xuất chuyển đổi' },
+  ],
 }

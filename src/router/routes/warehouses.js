@@ -218,4 +218,22 @@ export default [
       ],
     },
   },
+  {
+    path: '/warehouses/combo/detail/:id',
+    name: 'warehouses-combo-detail',
+    component: () => import('@/views/warehouses/warehouses-combo/warehouses-combo-detail/WarehousesComboDetail.vue'),
+    meta: {
+      pageTitle: 'Kho',
+      breadcrumb: [
+        {
+          text: 'Danh sách combo',
+          to: '/warehouses/combo',
+        },
+        {
+          text: 'Chi tiết nhập xuất combo',
+          active: true,
+        },
+      ],
+    },
+  },
 ]
