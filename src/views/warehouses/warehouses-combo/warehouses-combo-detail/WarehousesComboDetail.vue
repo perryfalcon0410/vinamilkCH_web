@@ -177,7 +177,7 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  WAREHOUSESCOMBO,
+  WAREHOUSES_COMBO,
   // GETTERS
   GET_WAREHOUSE_COMBO_DETAIL_GETTER,
   // ACTIONS
@@ -318,10 +318,10 @@ export default {
     })
   },
   methods: {
-    ...mapGetters(WAREHOUSESCOMBO, [
+    ...mapGetters(WAREHOUSES_COMBO, [
       GET_WAREHOUSE_COMBO_DETAIL_GETTER,
     ]),
-    ...mapActions(WAREHOUSESCOMBO, [
+    ...mapActions(WAREHOUSES_COMBO, [
       GET_WAREHOUSE_COMBO_DETAIL_ACTION,
     ]),
     navigateBack() {

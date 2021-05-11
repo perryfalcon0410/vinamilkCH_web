@@ -1,4 +1,4 @@
-export const WAREHOUSESCOMBO = 'warehousesCombo'
+export const WAREHOUSES_COMBO = 'warehousesCombo'
 
 // Getters
 export const GET_WAREHOUSE_COMBO_DETAIL_GETTER = 'GET_WAREHOUSE_COMBO_DETAIL_GETTER'
