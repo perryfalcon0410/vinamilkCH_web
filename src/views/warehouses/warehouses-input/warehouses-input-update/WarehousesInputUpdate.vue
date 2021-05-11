@@ -619,7 +619,7 @@ export default {
       return this.today === this.transDate
     },
     canEdit() {
-      return this.today === this.transDate && this.receipt.poId == null
+      return this.today === this.transDate && this.$route.params.type === 0 && this.receipt.poId == null
     },
   },
 
