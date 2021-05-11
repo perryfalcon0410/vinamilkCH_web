@@ -104,6 +104,12 @@
                       Ngày sinh <sup class="text-danger">*</sup>
                     </div>
                     <b-input-group class="input-group-merge">
+                      <b-input-group-prepend
+                        is-text
+                        data-toggle
+                      >
+                        <b-icon-calendar />
+                      </b-input-group-prepend>
                       <vue-flat-pickr
                         id="form-input-date-from"
                         v-model="birthDay"
@@ -252,6 +258,12 @@
                   Ngày cấp
                 </div>
                 <b-input-group class="input-group-merge">
+                  <b-input-group-prepend
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-prepend>
                   <vue-flat-pickr
                     v-model="customerIDDate"
                     :config="configIDDate"
@@ -263,8 +275,7 @@
                   >
                     <b-icon-x
                       v-show="customerIDDate"
-                      scale="1.1"
-                      class="cursor-pointer"
+                      class="cursor-pointer text-gray"
                       @click="customerIDDate = null"
                     />
                   </b-input-group-append>
@@ -625,9 +636,10 @@ export default {
   // START - Data
   data() {
     return {
+      customerId: `${this.$route.params.id}`,
       isModalShow: false,
       isFieldCheck: true,
-      customerId: `${this.$route.params.id}`,
+      isFirstTimeGetLocations: true,
 
       configBitrhDay: {
         wrap: true,
@@ -666,10 +678,10 @@ export default {
       customerPrivate: false,
       note: null,
       createdAt: null,
-      customerID: null,
+      customerID: '',
       stateInputValueID: null,
       invalidFeedbackID: null,
-      customerIDDate: null,
+      customerIDDate: '',
       customerIDLocation: null,
       totalBill: null,
       monthOrderNumber: null,
@@ -763,20 +775,24 @@ export default {
     ERROR_CODE_GETTER() {
       this.checkDuplicationID(this.ERROR_CODE_GETTER)
     },
+
     provincesSelected() {
       this.districtsSelected = null
-      this.GET_DISTRICTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.provincesSelected })
-      if (this.customer.areaDTO) {
-        this.districtsSelected = Number(this.customer.areaDTO.district) // TODO: Cần tối ưu lại (Chỉ nên chạy 1 lần đầu)
+      this.GET_DISTRICTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.provincesSelected || -1 })
+      if (this.customer.areaDTO && this.isFirstTimeGetLocations) {
+        this.districtsSelected = this.customer.areaDTO.district
       }
     },
+
     districtsSelected() {
       this.precinctsSelected = null
-      this.GET_PRECINCTS_ACTION({ formId: 9, ctrlId: 6, districtId: this.districtsSelected })
-      if (this.customer.areaDTO) {
-        this.precinctsSelected = Number(this.customer.areaDTO.precinct) // TODO: Cần tối ưu lại
+      this.GET_PRECINCTS_ACTION({ formId: 9, ctrlId: 6, districtId: this.districtsSelected || -1 })
+      if (this.customer.areaDTO && this.isFirstTimeGetLocations) {
+        this.precinctsSelected = this.customer.areaDTO.precinct
+        this.isFirstTimeGetLocations = false
       }
     },
+
     customer() {
       this.getCustomerById()
     },
@@ -793,8 +809,8 @@ export default {
   // before page leave, this will check
   beforeRouteLeave(to, from, next) {
     if (this.isFieldCheck) {
-      if (this.checkFieldsValueLength()) {
-        this.isModalShow = !this.isModalShow
+      if (!this.checkFieldsValueLength()) {
+        this.isModalShow = true
         this.goNext = next
       } else {
         next()
@@ -843,26 +859,26 @@ export default {
         this.gendersSelected = this.customer.genderId
         this.customerTypesSelected = this.customer.customerTypeId
         this.customerStatusSelected = this.customer.status
-        this.customerPrivate = this.customer.isPrivate
-        this.note = this.customer.noted
+        this.customerPrivate = this.customer.isPrivate || false
+        this.note = this.customer.noted || ''
         this.createdAt = this.customer.createdAt
-        this.customerID = this.customer.idNo
+        this.customerID = this.customer.idNo || ''
         this.customerIDDate = formatDateToLocale(this.customer.idNoIssuedDate)
-        this.customerIDLocation = this.customer.idNoIssuedPlace
+        this.customerIDLocation = this.customer.idNoIssuedPlace || ''
         this.totalBill = this.customer.totalBill
         this.monthOrderNumber = this.customer.monthOrderNumber
         // START - Contact
-        this.phoneNumber = this.customer.mobiPhone
-        this.customerEmail = this.customer.email
-        this.homeNumber = this.customer.street
+        this.phoneNumber = this.customer.mobiPhone || ''
+        this.customerEmail = this.customer.email || ''
+        this.homeNumber = this.customer.street || ''
         if (this.customer.areaDTO) {
-          this.provincesSelected = Number(this.customer.areaDTO.province)
-          this.districtsSelected = Number(this.customer.areaDTO.district)
-          this.precinctsSelected = Number(this.customer.areaDTO.precinct)
+          this.provincesSelected = this.customer.areaDTO.province
+          this.districtsSelected = this.customer.areaDTO.district
+          this.precinctsSelected = this.customer.areaDTO.precinct
         }
-        this.workingOffice = this.customer.workingOffice
-        this.officeAddress = this.customer.officeAddress
-        this.taxCode = this.customer.taxCode
+        this.workingOffice = this.customer.workingOffice || ''
+        this.officeAddress = this.customer.officeAddress || ''
+        this.taxCode = this.customer.taxCode || ''
         // START - MembershipCard
         this.cardTypesSelected = this.customer.cardTypeId
         this.closelyTypesSelected = this.customer.closelyTypeId
@@ -901,7 +917,7 @@ export default {
               cardTypeId: this.cardTypesSelected,
             },
             onSuccess: () => {
-              router.push({ name: 'sales-customers' })
+              router.replace({ name: 'sales-customers' })
             },
           })
         }
@@ -909,32 +925,58 @@ export default {
     },
 
     checkFieldsValueLength() {
+      // WARNING: đừng xóa mấy cái log này, sau này sẽ cần để check lại
+      // console.log(`${this.firstName}-${this.customer.firstName}`)
+      // console.log(`${this.lastName}-${this.customer.lastName}`)
+      // console.log(`${this.barCode}-${this.customer.barCode}`)
+      // console.log(`${this.birthDay}-${formatDateToLocale(this.customer.dob)}`)
+      // console.log(`${Number(this.gendersSelected) || null}-${this.customer.genderId}`)
+      // console.log(`${Number(this.customerTypesSelected || null)}-${this.customer.customerTypeId}`)
+      // console.log(`${Number(this.customerStatusSelected || null)}-${this.customer.status}`)
+      // console.log(`${this.customerPrivate}-${(this.customer.isPrivate || false)}`)
+      // console.log(`${this.note}-${(this.customer.noted || '')}`)
+      // console.log(`${this.customerID}-${(this.customer.idNo || '')}`)
+      // console.log(`${this.customerIDDate}-${(formatDateToLocale(this.customer.idNoIssuedDate) || '')}`)
+      // console.log(`${this.customerIDLocation}-${(this.customer.idNoIssuedPlace || '')}`)
+      // console.log(`${this.phoneNumber}-${(this.customer.mobiPhone || '')}`)
+      // console.log(`${this.customerEmail}-${(this.customer.email || '')}`)
+      // console.log(`${this.homeNumber}-${(this.customer.street || '')}`)
+      // console.log(`${Number(this.provincesSelected || null)}-${this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0}`)
+      // console.log(`${Number(this.districtsSelected || null)}-${(this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)}`)
+      // console.log(`${Number(this.precinctsSelected || null)}-${(this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)}`)
+      // console.log(`${this.workingOffice}-${(this.customer.workingOffice || '')}`)
+      // console.log(`${this.officeAddress}-${(this.customer.officeAddress || '')}`)
+      // console.log(`${this.taxCode}-${(this.customer.taxCode || '')}`)
+      // console.log(`${Number(this.cardTypesSelected || null)}-${(this.customer.cardTypeId || 0)}`)
+      // console.log(`${Number(this.closelyTypesSelected || null)}-${(this.customer.closelyTypeId || 0)}`)
+
       if (
-      // START - Personal
-        this.lastName
-        || this.firstName
-        || this.barCode
-        || this.birthDay
-        || this.gendersSelected
-        || this.customerTypesSelected
-        || this.customerPrivate
-        || this.note
-        || this.customerID
-        || this.customerIDDate
-        || this.customerIDLocation
+        // START - Personal
+        this.firstName === this.customer.firstName
+        && this.lastName === this.customer.lastName
+        && this.barCode === this.customer.barCode
+        && this.birthDay === formatDateToLocale(this.customer.dob)
+        && Number(this.gendersSelected || null) === this.customer.genderId
+        && Number(this.customerTypesSelected || null) === this.customer.customerTypeId
+        && Number(this.customerStatusSelected || null) === this.customer.status
+        && this.customerPrivate === (this.customer.isPrivate || false)
+        && this.note === (this.customer.noted || '')
+        && this.customerID === (this.customer.idNo || '')
+        && this.customerIDDate === (formatDateToLocale(this.customer.idNoIssuedDate) || '')
+        && this.customerIDLocation === (this.customer.idNoIssuedPlace || '')
         // START - Contact
-        || this.phoneNumber
-        || this.customerEmail
-        || this.homeNumber
-        || this.provincesSelected
-        || this.districtsSelected
-        || this.precinctsSelected
-        || this.workingOffice
-        || this.officeAddress
-        || this.taxCode
+        && this.phoneNumber === (this.customer.mobiPhone || '')
+        && this.customerEmail === (this.customer.email || '')
+        && this.homeNumber === (this.customer.street || '')
+        && Number(this.provincesSelected || null) === (this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)
+        && Number(this.districtsSelected || null) === (this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)
+        && Number(this.precinctsSelected || null) === (this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)
+        && this.workingOffice === (this.customer.workingOffice || '')
+        && this.officeAddress === (this.customer.officeAddress || '')
+        && this.taxCode === (this.customer.taxCode || '')
         // START - MembershipCard
-        || this.cardTypesSelected
-        || this.closelyTypesSelected
+        && Number(this.cardTypesSelected || null) === (this.customer.cardTypeId || 0)
+        && Number(this.closelyTypesSelected || null) === (this.customer.closelyTypeId || 0)
       ) {
         return true
       }
@@ -942,7 +984,7 @@ export default {
     },
 
     onClickAgreeButton() {
-      this.isModalShow = !this.isModalShow
+      this.isModalShow = false
       this.goNext()
     },
 
@@ -952,7 +994,7 @@ export default {
     },
 
     navigateBack() {
-      this.$router.back()
+      this.$router.replace({ name: 'sales-customers' })
     },
   },
   // END - Methods

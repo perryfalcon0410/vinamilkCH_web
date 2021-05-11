@@ -103,6 +103,12 @@
                       Ngày sinh <sup class="text-danger">*</sup>
                     </div>
                     <b-input-group class="input-group-merge">
+                      <b-input-group-prepend
+                        is-text
+                        data-toggle
+                      >
+                        <b-icon-calendar />
+                      </b-input-group-prepend>
                       <vue-flat-pickr
                         id="form-input-date-from"
                         v-model="birthDay"
@@ -112,9 +118,12 @@
                       />
                       <b-input-group-append
                         is-text
-                        data-toggle
                       >
-                        <b-icon-calendar />
+                        <b-icon-x
+                          v-show="birthDay"
+                          class="cursor-pointer text-gray"
+                          @click="birthDay = null"
+                        />
                       </b-input-group-append>
                     </b-input-group>
                     <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
@@ -238,6 +247,12 @@
                   Ngày cấp
                 </div>
                 <b-input-group class="input-group-merge">
+                  <b-input-group-prepend
+                    is-text
+                    data-toggle
+                  >
+                    <b-icon-calendar />
+                  </b-input-group-prepend>
                   <vue-flat-pickr
                     v-model="customerIDDate"
                     :config="configIDDate"
@@ -246,9 +261,12 @@
                   />
                   <b-input-group-append
                     is-text
-                    data-toggle
                   >
-                    <b-icon-calendar />
+                    <b-icon-x
+                      v-show="customerIDDate"
+                      class="cursor-pointer text-gray"
+                      @click="customerIDDate = null"
+                    />
                   </b-input-group-append>
                 </b-input-group>
                 <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
@@ -757,7 +775,7 @@ export default {
       }
     },
 
-    create() {
+    createCustomer() {
       this.checkDuplicationID(this.CREATE_CODE_ERROR)
       this.$refs.formContainer.validate().then(success => {
         if (success) {
@@ -787,7 +805,7 @@ export default {
               cardTypeId: this.cardTypesSelected,
             },
             onSuccess: () => {
-              router.push({ name: 'sales-customers' })
+              router.replace({ name: 'sales-customers' })
             },
           })
         }
@@ -834,11 +852,11 @@ export default {
 
     onClickSaveButton() {
       this.isFieldCheck = false
-      this.create()
+      this.createCustomer()
     },
 
     navigateBack() {
-      this.$router.back()
+      router.replace({ name: 'sales-customers' })
     },
   },
   // END - Methods

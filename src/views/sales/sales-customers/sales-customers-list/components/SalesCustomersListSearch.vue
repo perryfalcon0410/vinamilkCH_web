@@ -1,9 +1,7 @@
 <template>
 
   <!-- START - Search -->
-  <b-form
-    @keyup.enter="onClickSearchButton"
-  >
+  <b-form>
     <v-card-actions
       title="Tìm kiếm"
     >
@@ -26,13 +24,14 @@
             v-model="searchKeywords"
             class="h8 text-brand-3"
             placeholder="Nhập họ tên/mã"
+            @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append
             is-text
           >
             <b-icon-x
               v-show="searchKeywords"
-              class="cursor-pointer"
+              class="cursor-pointer text-gray"
               @click="searchKeywords = null"
             />
           </b-input-group-append>
@@ -65,7 +64,7 @@
           >
             <b-icon-x
               v-show="fromDate"
-              class="cursor-pointer"
+              class="cursor-pointer text-gray"
               @click="fromDate = null"
             />
           </b-input-group-append>
@@ -99,7 +98,7 @@
           >
             <b-icon-x
               v-show="toDate"
-              class="cursor-pointer text-gray font-weight-bold"
+              class="cursor-pointer text-gray"
               @click="toDate = null"
             />
           </b-input-group-append>
@@ -124,6 +123,7 @@
           :options="customerTypeOptions"
           :searchable="false"
           placeholder="Tất cả"
+          no-options-text="Không có dữ liệu"
         />
       </b-col>
       <!-- END - Group -->
@@ -144,6 +144,7 @@
           :options="statuOptions"
           :searchable="false"
           placeholder="Tất cả"
+          no-options-text="Không có dữ liệu"
         />
       </b-col>
       <!-- END - Status -->
@@ -164,6 +165,7 @@
           :options="genderOptions"
           :searchable="false"
           placeholder="Tất cả"
+          no-options-text="Không có dữ liệu"
         />
       </b-col>
       <!-- END - Gender -->
@@ -183,6 +185,8 @@
           v-model="areasSelected"
           :options="areaOptions"
           placeholder="Tất cả"
+          no-options-text="Không có dữ liệu"
+          no-results-text="Không tìm thấy kết quả"
         />
       </b-col>
       <!-- END - Location -->
@@ -233,9 +237,11 @@ import {
   CUSTOMER,
   // GETTERS
   SHOP_LOCATIONS_GETTER,
+  CUSTOMER_TYPES_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
   GET_SHOP_LOCATIONS_ACTION,
+  GET_CUSTOMER_TYPES_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -252,7 +258,6 @@ export default {
       searchKeywords: null,
       fromDate: null,
       toDate: null,
-      customerTypeOptions: customerData.customerTypes,
       customerTypesSelected: null,
       statuOptions: customerData.status,
       statusSelected: null,
@@ -271,7 +276,14 @@ export default {
   computed: {
     ...mapGetters(CUSTOMER, [
       SHOP_LOCATIONS_GETTER,
+      CUSTOMER_TYPES_GETTER,
     ]),
+    customerTypeOptions() {
+      return this.CUSTOMER_TYPES_GETTER.map(data => ({
+        id: data.id,
+        label: data.name,
+      }))
+    },
     areaOptions() {
       return this.SHOP_LOCATIONS_GETTER.map(data => ({
         id: data.areaCode,
@@ -285,6 +297,7 @@ export default {
   },
 
   mounted() {
+    this.GET_CUSTOMER_TYPES_ACTION({ formId: 9, ctrlId: 6 })
     this.GET_SHOP_LOCATIONS_ACTION({ formId: 5, ctrlId: 7 })
     this.fromDate = this.$earlyMonth
     this.toDate = this.$nowDate
@@ -294,6 +307,7 @@ export default {
     ...mapActions(CUSTOMER, [
       GET_CUSTOMERS_ACTION,
       GET_SHOP_LOCATIONS_ACTION,
+      GET_CUSTOMER_TYPES_ACTION,
     ]),
     onClickSearchButton() {
       const searchData = {

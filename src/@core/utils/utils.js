@@ -1,7 +1,12 @@
 import router from '@/router'
-// eslint-disable-next-line object-curly-newline
-import { reactive, getCurrentInstance, watch, toRefs } from '@vue/composition-api'
-import moment from 'moment'
+import {
+  reactive,
+  getCurrentInstance,
+  watch,
+  toRefs,
+} from '@vue/composition-api'
+import customerData from '@/@db/customer'
+import commonData from '@/@db/common'
 
 export const isObject = obj => typeof obj === 'object' && obj !== null
 
@@ -44,39 +49,26 @@ export const useRouter = () => {
   return { ...toRefs(state), router: vm.$router }
 }
 
-export const getGenderLabel = gender => {
-  switch (gender) {
-    case 1:
-      return 'Nam'
-    case 2:
-      return 'Nữ'
-    default:
-      return 'Khác'
+export const getGenderLabel = id => {
+  if (id) {
+    return commonData.genders.find(item => `${item.id}` === `${id}`).label
   }
+  return null
 }
 
-export const getCustomerTypeLabel = type => {
-  switch (type) {
-    case 1:
-      return 'Khách hàng thân thiết'
-    case 2:
-      return 'Khách hàng thường'
-    default:
-      return 'Khách hàng VIP'
+export const getCustomerTypeLabel = id => {
+  if (id) {
+    return customerData.customerTypes.find(item => `${item.id}` === `${id}`).label
   }
+  return null
 }
 
-export const getCustomerStatusLabel = staus => {
-  switch (staus) {
-    case 0:
-      return 'Ngưng hoạt động'
-    case 1:
-      return 'Hoạt động'
-    default:
-      return ''
+export const getCustomerStatusLabel = id => {
+  if (id) {
+    return customerData.status.find(item => `${item.id}` === `${id}`).label
   }
+  return ''
 }
-
 export const formatURLParams = obj => {
   // eslint-disable-next-line no-restricted-syntax
   for (const propName in obj) {
@@ -98,8 +90,8 @@ export const capitalizeFirstLetter = string => {
 }
 
 export const getNow = () => {
-  const date = moment().format('DD/MM/YYYY')
-  const time = moment().format('hh:mm')
+  const date = this.$moment().format('DD/MM/YYYY')
+  const time = this.$moment().format('hh:mm')
   const dateTime = `${date} lúc ${time}`
   return dateTime
 }
