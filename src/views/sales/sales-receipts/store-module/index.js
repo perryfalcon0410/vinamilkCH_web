@@ -9,6 +9,7 @@ import {
   SALES_RECEIPTS_PROMOTION_GETTER,
   SALES_RECEIPT_DETAIL_INFOS_GETTER,
   SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
+  SALES_RECEIPTS_PAGINATION_GETTER,
   // ACTIONS
   GET_SALES_RECEIPTS_DETAIL_ACTION,
   GET_SALES_RECEIPTS_ACTION,
@@ -24,6 +25,7 @@ export default {
     saleReceiptsDiscount: [],
     saleReceiptsPromotion: [],
     saleReceiptInfos: {},
+    saleReceiptsPagnigation: {},
   },
 
   getters: {
@@ -48,17 +50,21 @@ export default {
     [SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER](state) {
       return state.saleReceiptsDetailTotal
     },
+    [SALES_RECEIPTS_PAGINATION_GETTER](state) {
+      return state.saleReceiptsPagnigation
+    },
   },
   mutations: {},
   actions: {
-    [GET_SALES_RECEIPTS_ACTION]({ state }) {
+    [GET_SALES_RECEIPTS_ACTION]({ state }, val) {
       SaleReceiptService
-        .getSalesReceipts()
+        .getSalesReceipts(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.saleReceipts = res.data.response.content
             state.saleReceiptsTotal = res.data.info
+            state.saleReceiptsPagnigation = res.data.response
           } else {
             throw new Error(res.statusValue)
           }

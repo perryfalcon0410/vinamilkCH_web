@@ -3,167 +3,26 @@
     fluid
     class="d-flex flex-column p-0"
   >
-    <b-card
-      no-body
-      class="mb-1"
-    >
-      <div
-        class="m-1 text-primary"
-      >
-        <strong>
-          Tìm kiếm
-        </strong>
-      </div>
 
-      <b-collapse
-        id="accordion-2"
-        accordion="my-accordion"
-        visible
-      >
-        <b-card-body>
-
-          <!-- START - Search -->
-          <b-form-row
-            class="v-search-form border-top"
-          >
-            <b-col
-              xl
-              sm="4"
-              md="3"
-              class="mt-1"
-            >
-              <b-form-group
-                label="Khách hàng"
-                label-for="form-input-customer"
-              >
-                <b-form-input
-                  id="form-input-customer"
-                />
-              </b-form-group>
-            </b-col>
-
-            <b-col
-              xl
-              sm="4"
-              md="3"
-              class="mt-1"
-            >
-              <b-form-group
-                label="Số hóa đơn"
-                label-for="form-input-customer"
-              >
-                <b-form-input
-                  id="form-input-customer"
-                  trim
-                />
-              </b-form-group>
-            </b-col>
-
-            <b-col
-              xl
-              sm="4"
-              md="3"
-              class="mt-1"
-            >
-              <b-form-group
-                label="Trạng thái"
-                label-for="form-input-customer"
-              >
-                <b-form-select
-                  v-model="selected"
-                  :options="state"
-                />
-              </b-form-group>
-            </b-col>
-
-            <b-col
-              xl
-              sm="4"
-              md="3"
-              class="mt-1"
-            >
-              <b-form-group
-                label="Từ ngày"
-                label-for="form-input-date-from"
-              >
-                <b-form-datepicker
-                  id="form-input-date-from"
-                  v-model="valueDateFrom"
-                  :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                  locale="vi"
-                />
-              </b-form-group>
-            </b-col>
-
-            <b-col
-              xl
-              sm="4"
-              md="3"
-              class="mt-1"
-            >
-              <b-form-group
-                label="Đến ngày"
-                label-for="form-input-date-to"
-              >
-                <b-form-datepicker
-                  id="form-input-date-to"
-                  v-model="valueDateTo"
-                  :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                  locale="vi"
-                />
-              </b-form-group>
-            </b-col>
-
-            <b-col
-              xl
-              sm="4"
-              md="3"
-              class="mt-1"
-            >
-              <b-form-group
-                label="Tìm kiếm"
-                label-for="form-button-search"
-              >
-                <b-button
-                  id="form-button-search"
-                  variant="primary"
-                  @click="search()"
-                >
-                  <b-icon-search />
-                  Tìm kiếm
-                </b-button>
-              </b-form-group>
-            </b-col>
-          </b-form-row>
-          <!-- END - Search -->
-
-        </b-card-body>
-      </b-collapse>
-    </b-card>
-
+    <sales-receipt-list-search />
     <b-form class="v-search bg-white rounded shadow rounded my-1">
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
       >
-        <div
-          class="m-1 text-primary"
-        >
-          <strong>
-            Danh sách hóa đơn bán hàng
-          </strong>
-        </div>
+        <strong class="text-brand-1">
+          Danh sách hóa đơn bán hàng
+        </strong>
         <b-button-group>
           <b-button
-            class="rounded"
-            variant="primary"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-center"
+            variant="someThing"
           >
             <b-icon-printer-fill />
-            in
+            In
           </b-button>
         </b-button-group>
       </b-row>
-      <!-- End Add bill -->
 
       <!-- Start table -->
       <b-col class="py-1">
@@ -173,7 +32,8 @@
           class="pb-1"
           style-class="vgt-table striped"
           :pagination-options="{
-            enabled: true
+            enabled: true,
+            perPage: elementSize
           }"
           line-numbers
           :select-options="{
@@ -226,8 +86,7 @@
             <span v-if="props.column.field == 'note'">
               <span>
                 <b-button
-                  v-b-tooltip.hover
-                  :title="props.row.note"
+                  v-b-popover.hover="props.row.note"
                   variant="light"
                   class="rounded-circle p-1 ml-1"
                 >
@@ -240,21 +99,17 @@
 
             <span v-else-if="props.column.field == 'noteHdd'">
               <span>
-                <b-button
-                  v-b-tooltip.hover
-                  :title="props.row.noteHdd"
-                  variant="light"
-                  class="rounded-circle p-1 ml-1"
-                >
-                  <b-icon-file-earmark-excel
-                    color="blue"
-                  />
-                </b-button>
+                <b-icon-file-earmark-excel
+                  v-b-popover.hover="props.row.noteHdd"
+                  color="blue"
+                  class="cursor-pointer"
+                />
               </span>
             </span>
             <span v-else-if="props.column.field == 'press'">
               <span>
                 <b-button
+                  v-b-popover.hover="'Chi tiết hóa đơn'"
                   variant="light"
                   class="rounded-circle p-1 ml-1"
                   @click="showInvoiceDetailModal(props.row.id, props.row.numberBill)"
@@ -269,21 +124,79 @@
               {{ props.formattedRow[props.column.field] }}
             </span>
           </template>
+
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="salesReceiptsPagination.totalElements"
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Hiển thị 1 đến
+                </span>
+                <b-form-select
+                  v-model="elementSize"
+                  size="sm"
+                  :options="paginationOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span
+                  class="text-nowrap"
+                > trong {{ salesReceiptsPagination.totalElements }} mục </span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="salesReceiptsPagination.totalElements"
+                :per-page="elementSize"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+        <!-- END - Pagination -->
+
         </vue-good-table>
       </b-col>
-    <!-- End table -->
-
-    </b-form>
-    <invoice-detail-modal
-      :visible="isInvoiceDetailModal"
-      :information="info"
-      :details="detailTable"
-      :details-total="detailTableTotal"
-      :promotiondetails="promotionTable"
-      :discount-details="discountTable"
-      @invisible="hide"
-    />
-  </b-container>
+      <!-- End table -->
+      <invoice-detail-modal
+        :visible="isInvoiceDetailModal"
+        :information="info"
+        :details="detailTable"
+        :details-total="detailTableTotal"
+        :promotiondetails="promotionTable"
+        :discount-details="discountTable"
+        @invisible="hide"
+      />
+    </b-form></b-container>
 </template>
 
 <script>
@@ -295,8 +208,8 @@ import {
   formatDateToLocale,
   formatNumberToLocale,
 } from '@core/utils/filter'
-import printOptions from '@/@db/receipt'
 import lodash from 'lodash'
+import commonData from '@/@db/common'
 import {
   // GETTERS
   SALESRECEIPTS,
@@ -307,23 +220,30 @@ import {
   SALES_RECEIPTS_PROMOTION_GETTER,
   SALES_RECEIPT_DETAIL_INFOS_GETTER,
   SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
+  SALES_RECEIPTS_PAGINATION_GETTER,
   // ACTIONS
   GET_SALES_RECEIPTS_ACTION,
   GET_SALES_RECEIPTS_DETAIL_ACTION,
 } from '../store-module/type'
 import InvoiceDetailModal from '../components/InvoiceDetailModal.vue'
+import SalesReceiptListSearch from './components/SalesReceiptListSearch.vue'
 
 export default {
   components: {
     InvoiceDetailModal,
+    SalesReceiptListSearch,
   },
   data() {
     return {
-      state: printOptions.printOptions,
       isInvoiceDetailModal: false,
       valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       valueDateTo: new Date(),
       selected: null,
+
+      paginationOptions: commonData.pagination,
+      elementSize: commonData.pagination[0],
+      pageNumber: 1,
+
       columns: [
         {
           label: 'Số hóa đơn',
@@ -422,8 +342,8 @@ export default {
         discountMoney: formatNumberToLocale(data.discount),
         moneyAccumulated: data.accumulation,
         payments: formatNumberToLocale(data.total),
-        print: (data.redReceipt === true) ? 'Đã in' : 'Chưa in',
-        noteHdd: data.noteRed,
+        print: (data.usedRedInvoice === true) ? 'Đã in' : 'Chưa in',
+        noteHdd: data.redInvoiceRemark,
         company: data.comName,
         taxCode: data.taxCode,
         address: data.address,
@@ -465,9 +385,25 @@ export default {
     info() {
       return lodash.mapValues(this.SALES_RECEIPT_DETAIL_INFOS_GETTER(), value => formatNumberToLocale(value))
     },
+
+    salesReceiptsPagination() {
+      return this.SALES_RECEIPTS_PAGINATION_GETTER()
+    },
+  },
+  watch: {
+    pageNumber() {
+      this.onPaginationChange()
+    },
+    elementSize() {
+      this.onPaginationChange()
+    },
   },
   mounted() {
-    this.GET_SALES_RECEIPTS_ACTION()
+    this.GET_SALES_RECEIPTS_ACTION({
+      searchData: null,
+      fromId: 5, // hard code
+      ctrlId: 7, // hard code
+    })
   },
   methods: {
     ...mapGetters(SALESRECEIPTS, [
@@ -478,6 +414,7 @@ export default {
       SALES_RECEIPTS_PROMOTION_GETTER,
       SALES_RECEIPT_DETAIL_INFOS_GETTER,
       SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
+      SALES_RECEIPTS_PAGINATION_GETTER,
     ]),
     ...mapActions(SALESRECEIPTS, [
       GET_SALES_RECEIPTS_ACTION,
@@ -489,6 +426,14 @@ export default {
     },
     hide(state) {
       this.isInvoiceDetailModal = state
+    },
+
+    onPaginationChange() {
+      const paginationData = {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+      }
+      this.GET_SALES_RECEIPTS_ACTION(paginationData)
     },
   },
 }

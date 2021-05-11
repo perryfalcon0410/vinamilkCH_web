@@ -1,7 +1,7 @@
 export default {
-  printOptions: [
-    { value: 1, text: 'Tất cả' },
-    { value: 2, text: 'Đã print' },
-    { value: 3, text: 'Chưa print' },
+  printState: [
+    { id: '', name: 'Tất cả' },
+    { id: '1', name: 'Đã in' },
+    { id: '0', name: 'Chưa in' },
   ],
 }

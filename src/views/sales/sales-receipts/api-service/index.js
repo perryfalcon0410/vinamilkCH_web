@@ -6,8 +6,10 @@ import {
 } from './defaultConfig'
 
 export default {
-  getSalesReceipts() {
-    return axios.get(`${getSalesReceiptsEndpoint}`)
+  getSalesReceipts(args) {
+    return axios.get(`${getSalesReceiptsEndpoint}`, {
+      params: formatURLParams(args),
+    })
   },
   getSalesReceiptsDetail(args) {
     return axios.get(getSalesReceiptsDetailEndpoint, {
