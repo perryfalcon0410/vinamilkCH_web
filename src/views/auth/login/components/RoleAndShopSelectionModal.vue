@@ -10,29 +10,29 @@
     @ok="login"
   >
     <b-form>
-      <v-input-select
-        title="Vai trò"
-        :suggestions="roleDatasource"
-        :data-input="roleSelected.name"
+      <div
+        class="mt-1"
+      >
+        Vai trò
+      </div>
+      <tree-select
+        v-model="roleSelected"
+        :options="roleOptions"
+        :searchable="false"
         placeholder="Chọn vai trò"
-        title-class="h7"
-        input-class="h9"
-        suggestions-class="h9"
-        clear-able
-        is-require
-        @updateSelection="roleSelected = $event"
+        no-options-text="Không có dữ liệu"
       />
-      <v-input-select
-        title="Cửa hàng"
-        :suggestions="shopDatasource"
-        :data-input="shopSelected.name"
+      <div
+        class="mt-1"
+      >
+        Cửa hàng
+      </div>
+      <tree-select
+        v-model="shopSelected"
+        :options="shopOptions"
+        :searchable="false"
         placeholder="Chọn cửa hàng"
-        title-class="h7 mt-1"
-        input-class="h8"
-        suggestions-class="h8"
-        clear-able
-        is-require
-        @updateSelection="shopSelected = $event"
+        no-options-text="Vui lòng chọn vai trò trước"
       />
     </b-form>
   </b-modal>
@@ -42,13 +42,9 @@
 import {
   VBModal,
 } from 'bootstrap-vue'
-import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import Ripple from 'vue-ripple-directive'
 
 export default {
-  components: {
-    VInputSelect,
-  },
   directives: {
     'b-modal': VBModal,
     Ripple,
@@ -67,27 +63,27 @@ export default {
     return {
       shops: [],
 
-      roleSelected: { id: null, name: null },
-      shopSelected: { id: null, name: null },
+      roleSelected: null,
+      shopSelected: null,
     }
   },
   computed: {
     okButtonDisable() {
       return !this.roleSelected || !this.shopSelected
     },
-    roleDatasource() {
+    roleOptions() {
       return this.roles.map(e => ({
-        name: e.roleName,
+        label: e.roleName,
         id: e.id,
       }))
     },
-    shopDatasource() {
+    shopOptions() {
       if (this.roleSelected) {
-        const roleFound = this.roles.find(item => item.id === this.roleSelected.id)
+        const roleFound = this.roles.find(item => item.id === this.roleSelected)
 
         if (roleFound) {
           return roleFound.shops.map(e => ({
-            name: e.shopName,
+            label: e.shopName,
             id: e.id,
           }))
         }
@@ -95,22 +91,20 @@ export default {
 
       return []
     },
-
     getFirstShop() {
       if (this.roleSelected) {
-        const roleFound = this.roles.find(item => item.id === this.roleSelected.id)
-
+        const roleFound = this.roles.find(item => item.id === this.roleSelected)
         if (roleFound) {
-          return roleFound.shops[0]
+          return roleFound.shops[0].id
         }
       }
-      return { id: null, shopName: null }
+      return null
     },
   },
 
   watch: {
     roleSelected() {
-      this.shopSelected = { id: this.getFirstShop.id, name: this.getFirstShop.shopName }
+      this.shopSelected = this.getFirstShop
     },
   },
 

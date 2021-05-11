@@ -1,0 +1,47 @@
+@import "@riophae/vue-treeselect/dist/vue-treeselect";
+// @import "@riophae/vue-treeselect/src/style";
+@import "~@core/scss/base/bootstrap-extended/variables";
+
+/* input container*/
+.vue-treeselect__control {
+  height: $height-input-brand-1;
+
+  // value input
+  .vue-treeselect__single-value {
+    font-size: 13px;
+    color: $brand-3;
+  }
+}
+
+// dropdown menu container
+.vue-treeselect__menu-container {
+  // item seleted
+  .vue-treeselect__option--selected {
+    background: rgba($color: $brand-1, $alpha: 0.2);
+  }
+  // item hover
+  .vue-treeselect__option--highlight {
+    .vue-treeselect__label {
+      color: $brand-1;
+    }
+    background: #e4e6f0;
+  }
+
+  // item label
+  .vue-treeselect__label {
+    font-size: 13px;
+    color: $brand-3;
+  }
+}
+
+// border input
+.vue-treeselect--open .vue-treeselect__control,
+.vue-treeselect--focused:not(.vue-treeselect--open) .vue-treeselect__control {
+  border-color: $brand-1;
+  box-shadow: 1px 1px 20px 0 rgba(gray, 0.2);
+}
+
+// input curser without searchable
+.vue-treeselect:not(.vue-treeselect--searchable) .vue-treeselect__control {
+  cursor: pointer;
+}

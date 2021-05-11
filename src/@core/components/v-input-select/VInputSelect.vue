@@ -195,7 +195,6 @@ export default {
         this.isCollapse = false
 
         if (this.currentResults && this.typeAble) {
-          console.log(`currentResults: ${this.suggestions.find(item => item.id === this.currentResults.id).name}`)
           this.dataInput = this.suggestions.find(item => item.id === this.currentResults.id).name
           // this.dataInput = this.currentResults.name
         }
@@ -213,7 +212,6 @@ export default {
 
     // When one of the suggestion is clicked
     suggestionClick(id) {
-      console.log(id)
       this.currentResults = this.suggestions.find(item => item.id === id)
       this.updateSelection(this.suggestions.find(item => item.id === id))
     },

@@ -6,7 +6,7 @@ import {
   BootstrapVueIcons,
 } from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
-import { isEmpty } from '@core/utils/utils'
+import { isEmpty, capitalizeFirstLetter } from '@core/utils/utils'
 
 import i18n from '@/libs/i18n'
 import VueGoodTablePlugin from 'vue-good-table'
@@ -14,7 +14,7 @@ import moment from 'moment'
 import VueFlatPickr from 'vue-flatpickr-component'
 import flatPickr from 'flatpickr'
 import { Vietnamese } from 'flatpickr/dist/l10n/vn'
-import vSelect from 'vue-select'
+import TreeSelect from '@riophae/vue-treeselect'
 import dotenv from 'dotenv'
 import router from './router'
 import store from './store'
@@ -41,6 +41,7 @@ import '@core/scss/vue/libs/vue-good-table.scss'
 import '@core/scss/vue/libs/vue-flatpicker.scss'
 import '@core/scss/vue/libs/vue-select.scss'
 import 'vue-loading-overlay/dist/vue-loading.css'
+import '@core/scss/vue/libs/vue-treeselect.scss'
 
 dotenv.config()
 
@@ -63,6 +64,9 @@ moment.locale('vi')
 // isEmpty validate
 Vue.prototype.$isEmpty = isEmpty
 
+// capitalize first Letter
+Vue.prototype.$capFirstString = capitalizeFirstLetter
+
 // get earlyMonth and now date
 Vue.prototype.$earlyMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
 Vue.prototype.$nowDate = new Date()
@@ -72,7 +76,7 @@ flatPickr.localize(Vietnamese)
 Vue.component('vue-flat-pickr', VueFlatPickr)
 
 // vue-select
-Vue.component('v-select', vSelect)
+Vue.component('tree-select', TreeSelect)
 
 // Feather font icon - For form-wizard
 // * Shall remove it if not using font-icons of feather-icons - For form-wizard

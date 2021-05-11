@@ -1,8 +1,8 @@
 export default {
   genders: [
-    { id: '1', name: 'Nam' },
-    { id: '2', name: 'Nữ' },
-    { id: '3', name: 'Khác' },
+    { id: '1', label: 'Nam' },
+    { id: '2', label: 'Nữ' },
+    { id: '3', label: 'Khác' },
   ],
   pagination: [
     20,

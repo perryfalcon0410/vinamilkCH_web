@@ -112,7 +112,7 @@ export const dateFormatVNI = extend('dateFormatVNI', {
 
 export const age = extend('age', {
   validate: validatorAge,
-  message: 'Khách hàng không được dưới 15 tuổi',
+  message: 'Khách hàng phải trên 15 tuổi',
 })
 
 export const identifyCard = extend('identifyCard', {

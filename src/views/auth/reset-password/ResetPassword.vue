@@ -45,7 +45,7 @@
                   placeholder="Tên đăng nhập"
                   maxlength="20"
                 />
-                <small class="text-danger">{{ capFirstString(errors[0]) }}</small>
+                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -77,7 +77,7 @@
                     />
                   </b-input-group-append>
                 </b-input-group>
-                <small class="text-danger">{{ capFirstString(errors[0]) }}</small>
+                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -109,7 +109,7 @@
                     />
                   </b-input-group-append>
                 </b-input-group>
-                <small class="text-danger">{{ capFirstString(errors[0]) }}</small>
+                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -140,7 +140,7 @@
                     />
                   </b-input-group-append>
                 </b-input-group>
-                <small class="text-danger">{{ capFirstString(errors[0]) }}</small>
+                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -200,7 +200,6 @@ import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
   required, notEqual, confirmed, password, equal,
 } from '@core/utils/validations/validations'
-import { capitalizeFirstLetter } from '@core/utils/utils'
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
 
@@ -260,10 +259,6 @@ export default {
 
     navigateToLoginPage() {
       this.$router.push({ name: 'auth-login' })
-    },
-
-    capFirstString(string) {
-      return capitalizeFirstLetter(string)
     },
   },
 }

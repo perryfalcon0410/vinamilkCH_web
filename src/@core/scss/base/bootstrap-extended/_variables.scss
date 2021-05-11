@@ -8,7 +8,6 @@
 //  ================================================================================================
 
 // Color system
-
 $white: #fff !default;
 $gray-50: #f6f6f6 !default;
 $gray-100: #babfc7 !default; // $gray-lightest
@@ -38,6 +37,10 @@ $brand-1: #315899 !default;
 $brand-2: #83ba47 !default;
 $brand-3: #202124 !default;
 
+// Range system
+$height-button-brand-1: 34px;
+$height-input-brand-1: 34px;
+
 // Spacing
 //
 // Control the default styling of most Bootstrap elements by modifying these
@@ -50,7 +53,7 @@ $container-max-widths: (
   md: 720px,
   lg: 960px,
   xl: 1140px,
-  xxl: 1440px // Custom xxl size,,
+  xxl: 1440px // Custom xxl size,
 ) !default;
 // scss-docs-end container-max-widths
 

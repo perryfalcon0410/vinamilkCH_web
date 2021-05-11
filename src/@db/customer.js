@@ -1,11 +1,11 @@
 export default {
   status: [
-    { name: 'Hoạt động', id: '1' },
-    { name: 'Ngưng hoạt động', id: '0' },
+    { id: '1', label: 'Hoạt động' },
+    { id: '0', label: 'Ngưng hoạt động' },
   ],
   customerTypes: [
-    { name: 'Khách hàng thân thiết', id: '1' },
-    { name: 'Khách hàng thường', id: '2' },
-    { name: 'Khách hàng VIP', id: '21' },
+    { id: '1', label: 'Khách hàng thân thiết' },
+    { id: '2', label: 'Khách hàng thường' },
+    { id: '21', label: 'Khách hàng VIP' },
   ],
 }

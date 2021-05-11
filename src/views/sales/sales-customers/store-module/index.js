@@ -1,6 +1,5 @@
 import CustomerService from '@/views/sales/sales-customers/api-service'
 import toasts from '@core/utils/toasts/toasts'
-import router from '@/router/index'
 
 import {
   // GETTERS
@@ -142,12 +141,12 @@ export default {
     },
     [UPDATE_CUSTOMER_ACTION]({}, val) {
       CustomerService
-        .updateCustomer(val)
+        .updateCustomer(val.customer)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
-            router.push({ name: 'sales-customers' })
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

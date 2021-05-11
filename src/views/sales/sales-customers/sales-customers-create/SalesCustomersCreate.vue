@@ -46,7 +46,7 @@
                       autocomplete="on"
                       maxlength="200"
                     />
-                    <small class="text-danger">{{ errors[0] }}</small>
+                    <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
                   </validation-provider>
                 </b-col>
 
@@ -65,7 +65,7 @@
                       :state="touched ? passed : null"
                       maxlength="200"
                     />
-                    <small class="text-danger">{{ errors[0] }}</small>
+                    <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
                   </validation-provider>
                 </b-col>
               </b-form-row>
@@ -86,12 +86,13 @@
                   :state="barCode ? passed : null"
                   maxlength="40"
                 />
-                <small class="text-danger">{{ errors[0] }}</small>
+                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
               </validation-provider>
               <!-- END - Customer Barcode -->
 
               <!-- START - Customer BirthDay and Gender -->
               <b-form-row>
+                <!-- BirthDay -->
                 <b-col>
                   <validation-provider
                     v-slot="{ errors }"
@@ -116,19 +117,21 @@
                         <b-icon-calendar />
                       </b-input-group-append>
                     </b-input-group>
-                    <small class="text-danger">{{ errors[0] }}</small>
+                    <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
                   </validation-provider>
                 </b-col>
-
+                <!-- gender -->
                 <b-col>
-                  <v-input-select
-                    title="Giới tính"
-                    :suggestions="genderOptions"
-                    :data-input="gendersSelected.name"
+                  <div
+                    class="mt-1"
+                  >
+                    Giới tính
+                  </div>
+                  <tree-select
+                    v-model="gendersSelected"
+                    :options="genderOptions"
                     placeholder="Chọn giới tính"
-                    title-class="mt-1"
-                    clear-able
-                    @updateSelection="gendersSelected = $event"
+                    no-options-text="Không có dữ liệu"
                   />
                 </b-col>
               </b-form-row>
@@ -142,30 +145,34 @@
                     rules="required"
                     name="Nhóm khách hàng"
                   >
-                    <v-input-select
-                      title="Nhóm khách hàng"
-                      :suggestions="customerTypeOptions"
-                      :data-input="customerTypesSelected.name"
+                    <div
+                      class="mt-1"
+                    >
+                      Nhóm khách hàng <sup class="text-danger">*</sup>
+                    </div>
+                    <tree-select
+                      v-model="customerTypesSelected"
+                      :options="customerTypeOptions"
                       placeholder="Chọn nhóm khách hàng"
-                      title-class="mt-1"
-                      is-require
-                      clear-able
-                      @updateSelection="customerTypesSelected = $event"
+                      no-options-text="Không có dữ liệu"
+                      no-results-text="Không tìm thấy kết quả"
                     />
-                    <small class="text-danger">{{ errors[0] }}</small>
+                    <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
                   </validation-provider>
 
                 </b-col>
 
                 <b-col>
-                  <v-input-select
-                    title="Trạng thái"
-                    :suggestions="customerStatusOptions"
-                    :data-input="customerStatusSelected.name"
-                    title-class="mt-1"
-                    is-require
+                  <div
+                    class="mt-1"
+                  >
+                    Trạng thái <sup class="text-danger">*</sup>
+                  </div>
+                  <tree-select
+                    v-model="customerStatusSelected"
+                    :options="customerStatusOptions"
+                    placeholder="Chọn trạng thái"
                     disabled
-                    @updateSelection="customerStatusSelected = $event"
                   />
                 </b-col>
               </b-form-row>
@@ -216,7 +223,7 @@
                     minlength="9"
                     :state="customerID ? stateInputValueID = passed : null"
                   />
-                  <small class="text-danger">{{ errors[0] }}</small>
+                  <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
                 </b-form-group>
               </validation-provider>
               <!-- END - Customer IdentityCard -->
@@ -244,7 +251,7 @@
                     <b-icon-calendar />
                   </b-input-group-append>
                 </b-input-group>
-                <small class="text-danger">{{ errors[0] }}</small>
+                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
               </validation-provider>
               <!-- END - Customer ID Date -->
 
@@ -287,7 +294,7 @@
               :state="phoneNumber ? passed : null"
               maxlength="10"
             />
-            <small class="text-danger">{{ errors[0] }}</small>
+            <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
           </validation-provider>
           <!-- END - Customer Phone Number -->
 
@@ -308,7 +315,7 @@
               maxlength="200"
               :state="customerEmail ? passed : null"
             />
-            <small class="text-danger">{{ errors[0] }}</small>
+            <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
           </validation-provider>
           <!-- END - Customer Email -->
 
@@ -326,54 +333,54 @@
               maxlength="200"
               :state="touched ? passed : null"
             />
-            <small class="text-danger">{{ errors[0] }}</small>
+            <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
           </validation-provider>
           <!-- END - Customer Home number -->
 
-          <!-- TODO: Cần xử lý logic khúc tình,quận,phường -->
           <!-- START - Customer Province -->
-          <v-input-select
-            title="Tỉnh/ Thành"
-            :suggestions="provinceOptions"
-            :data-input="provincesSelected.name"
-            title-class="mt-1"
+          <div
+            class="mt-1"
+          >
+            Tỉnh/ Thành
+          </div>
+          <tree-select
+            v-model="provincesSelected"
+            :options="provinceOptions"
             placeholder="Chọn tỉnh/ thành"
-            :type-able="true"
-            :filter-able="true"
-            :clear-able="true"
-            @updateSelection="provincesSelected = $event"
+            no-options-text="Không có dữ liệu"
+            no-results-text="Không tìm thấy kết quả"
           />
           <!-- END - Customer Province -->
 
           <!-- START - Customer District and Wards -->
           <b-form-row>
             <b-col>
-              <v-input-select
-                title="Quận/ Huyện"
-                :suggestions="districtOptions"
-                :data-input="districtsSelected.name"
-                title-class="mt-1"
+              <div
+                class="mt-1"
+              >
+                Quận/ Huyện
+              </div>
+              <tree-select
+                v-model="districtsSelected"
+                :options="districtOptions"
                 placeholder="Chọn quận/ huyện"
-                :type-able="true"
-                :filter-able="true"
-                :clear-able="true"
-                no-options="Vui lòng chọn tỉnh/ thành trước"
-                @updateSelection="districtsSelected = $event"
+                no-options-text="Không có dữ liệu"
+                no-results-text="Không tìm thấy kết quả"
               />
             </b-col>
 
             <b-col>
-              <v-input-select
-                title="Phường/ Xã"
-                :suggestions="precinctOptions"
-                :data-input="precinctsSelected.name"
-                title-class="mt-1"
+              <div
+                class="mt-1"
+              >
+                Phường/ Xã
+              </div>
+              <tree-select
+                v-model="precinctsSelected"
+                :options="precinctOptions"
                 placeholder="Chọn phường/ xã"
-                :type-able="true"
-                :filter-able="true"
-                :clear-able="true"
-                no-options="Vui lòng chọn quận/ huyện trước"
-                @updateSelection="precinctsSelected = $event"
+                no-options-text="Không có dữ liệu"
+                no-results-text="Không tìm thấy kết quả"
               />
             </b-col>
           </b-form-row>
@@ -413,7 +420,7 @@
               :state="taxCode ? passed : null"
               maxlength="40"
             />
-            <small class="text-danger">{{ errors[0] }}</small>
+            <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
           </validation-provider>
         <!-- END - Customer Tax code-->
         </b-col>
@@ -428,40 +435,34 @@
         >
           <label class="font-weight-bold w-100 text-center mb-2 h5">Thẻ thành viên</label>
 
-          <!-- TODO: Type và filter bằng true thì ko chọn option được (lỗi do hàm filter) -->
           <!-- START - Customer Card type -->
-          <v-input-select
-            title="Loại thẻ"
-            :suggestions="cardTypeOptions"
-            :data-input="cardTypesSelected.name"
-            title-class="mt-1"
+          <div
+            class="mt-1"
+          >
+            Loại thẻ
+          </div>
+          <tree-select
+            v-model="cardTypesSelected"
+            :options="cardTypeOptions"
             placeholder="Chọn loại thẻ"
-            :type-able="true"
-            :filter-able="true"
-            :clear-able="true"
-            @updateSelection="cardTypesSelected = $event"
+            no-options-text="Không có dữ liệu"
+            no-results-text="Không tìm thấy kết quả"
           />
           <!-- END - Customer Card type -->
 
-          <!-- TODO: Thay đổi v-select thành v-i-s -->
           <!-- START - Customer Type -->
-          <b-form-group
-            label="Loại khách hàng"
-            label-for="Type"
+          <div
+            class="mt-1"
           >
-            <v-select
-              id="Type"
-              v-model="selectedCloselyTypes"
-              :options="closelyTypes"
-              label="name"
-              autocomplete="on"
-              placeholder="Chọn loại khách hàng"
-            >
-              <template #no-options="{}">
-                Không có dữ liệu
-              </template>
-            </v-select>
-          </b-form-group>
+            Loại khách hàng
+          </div>
+          <tree-select
+            v-model="closelyTypesSelected"
+            :options="closelyTypeOptions"
+            placeholder="Chọn loại khách hàng"
+            no-options-text="Không có dữ liệu"
+            no-results-text="Không tìm thấy kết quả"
+          />
         <!-- END - Customer Type -->
         </b-col>
       <!-- START - Form Membership card -->
@@ -477,17 +478,23 @@
         <b-button
           variant="primary"
           :disabled="invalid"
+          class="aligns-items-button-center"
           @click="onClickSaveButton()"
         >
-          <b-icon-download class="mr-1" />
+          <b-icon-download
+            class="mr-05"
+          />
           Lưu
         </b-button>
 
         <b-button
-          class="ml-1 my-1"
+          class="aligns-items-button-center ml-1 my-1"
           @click="navigateBack()"
         >
-          <b-icon-x class="mr-1" />
+          <b-icon-x
+            class="mr-05"
+            scale="1.5"
+          />
           Đóng
         </b-button>
       </b-row>
@@ -504,11 +511,15 @@
       <template #modal-footer>
         <b-button
           variant="primary"
+          class="aligns-items-button-center"
           @click="onClickAgreeButton()"
         >
           Đồng ý
         </b-button>
-        <b-button @click="isModalShow = !isModalShow">
+        <b-button
+          class="aligns-items-button-center"
+          @click="isModalShow = !isModalShow"
+        >
           Đóng
         </b-button>
       </template>
@@ -537,7 +548,6 @@ import {
   identifyCard,
 } from '@/@core/utils/validations/validations'
 import { formatVniDateToISO } from '@/@core/utils/filter'
-import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
 import {
@@ -564,7 +574,6 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
-    VInputSelect,
   },
 
   // START - Data
@@ -575,12 +584,14 @@ export default {
       configBitrhDay: {
         wrap: true,
         allowInput: true,
+        allowInvalidPreload: true,
         dateFormat: 'd/m/Y',
         maxDate: new Date().fp_incr(-5479),
       },
       configIDDate: {
         wrap: true,
         allowInput: true,
+        allowInvalidPreload: true,
         dateFormat: 'd/m/Y',
         maxDate: 'today',
       },
@@ -596,39 +607,39 @@ export default {
       identifyCard,
 
       // START - Personal
-      lastName: '',
-      firstName: '',
-      barCode: '',
-      birthDay: '',
+      lastName: null,
+      firstName: null,
+      barCode: null,
+      birthDay: null,
       genderOptions: commonData.genders,
-      gendersSelected: { name: null, id: null },
-      customerTypesSelected: { name: null, id: null },
+      gendersSelected: null,
+      customerTypesSelected: null,
       customerStatusOptions: customerData.status,
-      customerStatusSelected: customerData.status[0],
+      customerStatusSelected: customerData.status[0].id,
       customerPrivate: false,
-      note: '',
-      customerID: '',
+      note: null,
+      customerID: null,
       stateInputValueID: null,
-      invalidFeedbackID: '',
-      customerIDDate: '',
-      customerIDLocation: '',
+      invalidFeedbackID: null,
+      customerIDDate: null,
+      customerIDLocation: null,
       // END - Personal
 
       // START - Contact
-      phoneNumber: '',
-      customerEmail: '',
-      homeNumber: '',
-      provincesSelected: { name: '', id: '' },
-      districtsSelected: { name: '', id: '' },
-      precinctsSelected: { name: '', id: '' },
-      workingOffice: '',
-      officeAddress: '',
-      taxCode: '',
+      phoneNumber: null,
+      customerEmail: null,
+      homeNumber: null,
+      provincesSelected: null,
+      districtsSelected: null,
+      precinctsSelected: null,
+      workingOffice: null,
+      officeAddress: null,
+      taxCode: null,
       // END - Contact
 
       // START - MembershipCard
-      cardTypesSelected: '',
-      selectedCloselyTypes: '',
+      cardTypesSelected: null,
+      closelyTypesSelected: null,
       // END - MembershipCard
     }
   },
@@ -636,40 +647,49 @@ export default {
 
   // START - Computed
   computed: {
+    ...mapGetters(CUSTOMER, {
+      CUSTOMER_TYPES_GETTER,
+      ERROR_CODE_GETTER,
+      PROVINCES_GETTER,
+      DISTRICTS_GETTER,
+      PRECINCTS_GETTER,
+      CARD_TYPES_GETTER,
+      CLOSELY_TYPES_GETTER,
+    }),
     customerTypeOptions() {
-      return this.CUSTOMER_TYPES_GETTER().map(data => ({
+      return this.CUSTOMER_TYPES_GETTER.map(data => ({
         id: data.id,
-        name: data.name,
+        label: data.name,
       }))
     },
     provinceOptions() {
-      return this.PROVINCES_GETTER().map(data => ({
+      return this.PROVINCES_GETTER.map(data => ({
         id: data.id,
-        name: data.areaName,
+        label: data.areaName,
       }))
     },
     districtOptions() {
-      return this.DISTRICTS_GETTER().map(data => ({
+      return this.DISTRICTS_GETTER.map(data => ({
         id: data.id,
-        name: data.areaName,
+        label: data.areaName,
       }))
     },
     precinctOptions() {
-      return this.PRECINCTS_GETTER().map(data => ({
+      return this.PRECINCTS_GETTER.map(data => ({
         id: data.id,
-        name: data.areaName,
+        label: data.areaName,
       }))
     },
     cardTypeOptions() {
-      return this.CARD_TYPES_GETTER().map(data => ({
+      return this.CARD_TYPES_GETTER.map(data => ({
         id: data.id,
-        name: data.apParamName,
+        label: data.apParamName,
       }))
     },
-    closelyTypes() {
-      return this.CLOSELY_TYPES_GETTER().map(data => ({
+    closelyTypeOptions() {
+      return this.CLOSELY_TYPES_GETTER.map(data => ({
         id: data.id,
-        name: data.apParamName,
+        label: data.apParamName,
       }))
     },
   },
@@ -677,26 +697,15 @@ export default {
 
   watch: {
     ERROR_CODE_GETTER() {
-      this.checkDuplicationID(this.ERROR_CODE_GETTER())
+      this.checkDuplicationID(this.ERROR_CODE_GETTER)
     },
     provincesSelected() {
-      console.log('---------provinces---------')
-      console.log(this.provincesSelected)
-      console.log('---------provinces---------')
-
       this.districtsSelected = null
-      this.GET_DISTRICTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.provincesSelected.id })
+      this.GET_DISTRICTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.provincesSelected })
     },
     districtsSelected() {
-      console.log('---------districts---------')
-      console.log(this.districtsSelected)
-      console.log('---------districts---------')
-
       this.precinctsSelected = null
-      this.GET_PRECINCTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.districtsSelected.id })
-    },
-    customerIDDate() {
-      console.log(this.customerIDDate)
+      this.GET_PRECINCTS_ACTION({ formId: 9, ctrlId: 6, districtId: this.districtsSelected })
     },
   },
 
@@ -707,6 +716,7 @@ export default {
     this.GET_CLOSELY_TYPES_ACTION({ formId: 9, ctrlId: 6 })
   },
 
+  // before page leave, this will check
   beforeRouteLeave(to, from, next) {
     if (this.isFieldCheck) {
       if (this.checkFieldsValueLength()) {
@@ -722,15 +732,6 @@ export default {
 
   // START - Methods
   methods: {
-    ...mapGetters(CUSTOMER, {
-      ERROR_CODE_GETTER,
-      CUSTOMER_TYPES_GETTER,
-      PROVINCES_GETTER,
-      DISTRICTS_GETTER,
-      PRECINCTS_GETTER,
-      CARD_TYPES_GETTER,
-      CLOSELY_TYPES_GETTER,
-    }),
     ...mapActions(CUSTOMER, [
       CREATE_CUSTOMER_ACTION,
       GET_CUSTOMER_TYPES_ACTION,
@@ -762,29 +763,28 @@ export default {
         if (success) {
           this.CREATE_CUSTOMER_ACTION({
             customer: {
-              firstName: this.firstName,
-              lastName: this.lastName,
-              genderId: this.gendersSelected?.id,
-              barCode: this.barCode,
+              firstName: this.firstName?.trim(),
+              lastName: this.lastName?.trim(),
+              genderId: this.gendersSelected,
+              barCode: this.barCode?.trim(),
               dob: formatVniDateToISO(this.birthDay),
-              customerTypeId: this.customerTypesSelected?.id,
-              status: this.customerStatusSelected?.id,
+              customerTypeId: this.customerTypesSelected,
+              status: this.customerStatusSelected,
               isPrivate: this.customerPrivate,
               idNo: this.customerID,
               idNoIssuedDate: formatVniDateToISO(this.customerIDDate),
-              idNoIssuedPlace: this.customerIDLocation,
+              idNoIssuedPlace: this.customerIDLocation?.trim(),
               mobiPhone: this.phoneNumber,
-              phone: this.phoneNumber, // temp
-              email: this.customerEmail,
-              areaId: this.precinctsSelected?.id,
-              street: this.homeNumber,
+              email: this.customerEmail?.trim(),
+              areaId: this.precinctsSelected,
+              street: this.homeNumber?.trim(),
               address: null,
-              workingOffice: this.workingOffice,
-              officeAddress: this.officeAddress,
+              workingOffice: this.workingOffice?.trim(),
+              officeAddress: this.officeAddress?.trim(),
               taxCode: this.taxCode,
-              noted: this.note,
-              closelyTypeId: this.selectedCloselyTypes?.id,
-              cardTypeId: this.cardTypesSelected?.id,
+              noted: this.note?.trim(),
+              closelyTypeId: this.closelyTypesSelected,
+              cardTypeId: this.cardTypesSelected,
             },
             onSuccess: () => {
               router.push({ name: 'sales-customers' })
@@ -801,7 +801,7 @@ export default {
         || this.firstName
         || this.barCode
         || this.birthDay
-        || this.gendersSelected.name !== 'Khác'
+        || this.gendersSelected
         || this.customerTypesSelected
         || this.customerPrivate
         || this.note
@@ -820,7 +820,7 @@ export default {
         || this.taxCode
         // START - MembershipCard
         || this.cardTypesSelected
-        || this.selectedCloselyTypes
+        || this.closelyTypesSelected
       ) {
         return true
       }

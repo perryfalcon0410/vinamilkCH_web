@@ -12,9 +12,6 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 @import "~@core/scss/base/bootstrap-extended/variables";
 
 // START - Common
-.height-button-brand-1 {
-  height: 34px;
-}
 
 // Background
 .bg-brand-1 {
@@ -42,6 +39,10 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   color: $brand-3;
 }
 
+.text-gray {
+  color: #cccccc;
+}
+
 //Font-size
 .h7 {
   font-size: 14px;
@@ -55,6 +56,7 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   font-size: 12px;
 }
 
+// margin
 .mr-05 {
   margin-right: 7px;
 }
@@ -73,9 +75,10 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 
 .btn {
   padding: 7px 14px;
+  height: $height-button-brand-1;
 }
 
-.align-items-button-center {
+.aligns-items-button-center {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,9 +89,22 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 input:focus {
   border-color: $brand-1 !important;
 }
+.form-control,
+input {
+  height: $height-input-brand-1;
+}
 
-// input-group-text
+// input
+
+// border input for vue-treeselect
 .input-group:not(.bootstrap-touchspin):focus-within .input-group-text {
   border-color: $brand-1 !important;
+}
+
+// icon X color for input
+.input-group-text {
+  .bi-x.cursor-pointer.b-icon.bi:hover {
+    color: red;
+  }
 }
 // END - Input

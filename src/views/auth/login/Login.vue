@@ -70,7 +70,7 @@
                     placeholder="Tên đăng nhập"
                     maxlength="20"
                   />
-                  <small class="text-danger">{{ errors[0] }}</small>
+                  <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
                 </validation-provider>
               </b-form-group>
 
@@ -102,7 +102,7 @@
                       />
                     </b-input-group-append>
                   </b-input-group>
-                  <small class="text-danger">{{ errors[0] }}</small>
+                  <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
                 </validation-provider>
               </b-form-group>
 
@@ -132,7 +132,7 @@
                       maxlength="20"
                       @paste.prevent
                     />
-                    <small class="text-danger">{{ errors[0] }}</small>
+                    <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
                   </validation-provider>
 
                 </b-col>
@@ -334,8 +334,8 @@ export default {
         .login({
           username: this.username.toLowerCase(),
           password: this.password,
-          roleId: roleSelected.id,
-          shopId: shopSelected.id,
+          roleId: roleSelected,
+          shopId: shopSelected,
         })
         .then(response => {
           const {
