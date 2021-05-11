@@ -10,13 +10,13 @@
     hide-footer="true"
   >
     <b-card>
+      <div class="bg-light w-25 h-25 rounded-right border-top-info border-bottom-info border-right-info m-0">
+        <strong class="text-brand-1">
+          Tìm kiếm sản phẩm
+        </strong>
+      </div>
       <!--START search form-->
       <b-form>
-        <div class="bg-light w-25 h-25 rounded-right border-top-info border-bottom-info border-right-info">
-          <strong class="text-brand-1">
-            Tìm kiếm sản phẩm
-          </strong>
-        </div>
         <b-form-row class="v-search-form mx-0 pt-1">
           <b-col
             lg
@@ -53,12 +53,19 @@
             md="3"
             sm="4"
           >
-            <b-input-group>
-              <v-input-select
-                :title="'Ngành hàng'"
-                :placeholder="' '"
-              />
-            </b-input-group>
+            <div>
+              Khu vực
+            </div>
+            <v-input-select
+              title=""
+              :suggestions="''"
+              :data-input="''"
+              placeholder="Tất cả"
+              title-class="h8 mt-sm-1 mt-xl-0"
+              input-class="h8 height-button-brand-1"
+              suggestions-class="h9"
+              size="sm"
+            />
           </b-col>
           <!-- START - Search button -->
           <b-col
@@ -67,7 +74,7 @@
             md="3"
           >
             <div
-              class="h8 text-white"
+              class="h7 text-white"
             >
               Tìm kiếm
             </div>
@@ -117,6 +124,7 @@
             class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center"
             variant="someThing"
             size="sm"
+            @click="save()"
           >
             <b-icon
               icon="download"
@@ -124,13 +132,13 @@
               height="15"
               class="mr-1"
             />
-            Lưu
+            Chọn
           </b-button>
           <b-button
             class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center ml-1"
             variant="someThing"
             size="sm"
-            @click="$bvModal.hide('modal')"
+            @click="cancel()"
           >
             <b-icon
               icon="x"
@@ -166,11 +174,15 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
       ],
       rows: [
@@ -180,6 +192,14 @@ export default {
         },
       ],
     }
+  },
+  methods: {
+    save() {
+      this.$emit('close')
+    },
+    cancel() {
+      this.$emit('close')
+    },
   },
 }
 </script>

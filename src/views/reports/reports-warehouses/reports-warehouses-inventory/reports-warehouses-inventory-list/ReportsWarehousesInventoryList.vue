@@ -197,16 +197,22 @@ export default {
           label: 'Ngành hàng',
           field: 'group',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productId',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
@@ -216,6 +222,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Số lượng packet',
@@ -225,6 +233,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Số lượng lẻ',
@@ -234,11 +244,15 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Giá',
           field: 'price',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Thành tiền',
@@ -248,41 +262,57 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Quy cách',
           field: 'specifications',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Cửa hàng',
           field: 'store',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Chuỗi cửa hàng',
           field: 'chainStore',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Nhóm sản phẩm',
           field: 'productGroup',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tồn kho min',
           field: 'minInventory',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Tồn kho max',
           field: 'minInventory',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Báo cáo',
           field: 'report',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
       ],
       rows: [

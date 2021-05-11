@@ -83,7 +83,10 @@
       </b-col>
       <!-- END - Search button -->
     </v-card-actions>
-    <find-product-modal :visible="isShowFindProductModal" />
+    <find-product-modal
+      :visible="isShowFindProductModal"
+      @close="isShowFindProductModal = false"
+    />
   </b-form>
 </template>
 
