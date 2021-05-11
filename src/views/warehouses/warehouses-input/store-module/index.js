@@ -20,6 +20,8 @@ import {
   PROMOTIONS_BY_ID_GETTER,
   PRODUCTS_GETTER,
   RECEIPT_PAGINATION_GETTER,
+  WAREHOUSES_TYPE_GETTER,
+  NOT_IMPORT_REASONS_GETTER,
   // ACTIONS
   GET_RECEIPTS_ACTION,
   EXPORT_RECEIPTS_ACTION,
@@ -39,6 +41,8 @@ import {
   GET_PRODUCTS_ACTION,
   UPDATE_RECEIPT_ACTION,
   PRINT_WAREHOUSES_INPUT_ACTION,
+  GET_WAREHOUSES_TYPE_ACTION,
+  GET_NOT_IMPORT_REASONS_ACTION,
 } from './type'
 
 export default {
@@ -61,6 +65,8 @@ export default {
     promotions: [],
     allProducts: [],
     receiptPagination: {},
+    warehousestype: {},
+    notImportReasons: [],
   },
 
   // START - GETTERS
@@ -110,6 +116,12 @@ export default {
     [RECEIPT_PAGINATION_GETTER](state) {
       return state.receiptPagination
     },
+    [WAREHOUSES_TYPE_GETTER](state) {
+      return state.warehousestype
+    },
+    [NOT_IMPORT_REASONS_GETTER](state) {
+      return state.notImportReasons
+    },
   },
 
   // START - MUTATIONS
@@ -117,9 +129,9 @@ export default {
 
   // START - ACTIONS
   actions: {
-    [GET_POCONFIRMS_ACTION]({ state }) {
+    [GET_POCONFIRMS_ACTION]({ state }, val) {
       ReceiptImportService
-        .getPoConfirm()
+        .getPoConfirm(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -165,31 +177,21 @@ export default {
         })
     },
     [GET_IMPORTEXCEL_ACTION]({}, val) {
+      const fileName = 'Danh sach san pham_PO_nhap hang.xlsx'
       ReceiptImportService
         .getImportExcel(val)
+        .then(response => response.data)
         .then(res => {
-          // temp
-          if (res.status === 200 && res.data != null) {
-            const blob = new Blob([res.data], { type: 'data:attachment/xlsx' })
-            if (window.navigator.msSaveOrOpenBlob) {
-              window.navigator.msSaveOrOpenBlob(blob, 'PoImport')
-            } else {
-              const elem = window.document.createElement('a')
-              elem.href = window.URL.createObjectURL(blob)
-              elem.download = 'PoImport.xlsx'
-              document.body.appendChild(elem)
-              elem.click()
-              document.body.removeChild(elem)
-            }
-          }
+          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
           toasts.error(error.message)
         })
     },
-    [GET_IMPORT_ADJUSTMENTS_ACTION]({ state }) {
+    [GET_IMPORT_ADJUSTMENTS_ACTION]({ state }, val) {
       ReceiptImportService
-        .getImportAdjustments()
+        .getImportAdjustments(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -217,9 +219,9 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_IMPORT_BORROWINGS_ACTION]({ state }) {
+    [GET_IMPORT_BORROWINGS_ACTION]({ state }, val) {
       ReceiptImportService
-        .getImportBorrowings()
+        .getImportBorrowings(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -390,7 +392,7 @@ export default {
           toasts.error(error.message)
         })
     },
-    [PRINT_WAREHOUSES_INPUT_ACTION]({ }, val) {
+    [PRINT_WAREHOUSES_INPUT_ACTION]({}, val) {
       const fileName = `${val.transCode}.pdf`
       ReceiptImportService
         .printWarehouseInput(val)
@@ -398,6 +400,36 @@ export default {
         .then(res => {
           const blob = new Blob([res], { type: 'application/pdf' })
           FileSaver.saveAs(blob, fileName)
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_WAREHOUSES_TYPE_ACTION]({ state }, val) {
+      ReceiptImportService
+        .getWarehousesType(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.warehousestype = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_NOT_IMPORT_REASONS_ACTION]({ state }, val) {
+      ReceiptImportService
+        .getNotImportReasons(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.notImportReasons = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
         })
         .catch(error => {
           toasts.error(error.message)

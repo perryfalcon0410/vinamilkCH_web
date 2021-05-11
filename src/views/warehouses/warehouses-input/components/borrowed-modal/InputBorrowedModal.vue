@@ -88,7 +88,16 @@
               style-class="vgt-table bordered"
               compact-mode
               line-numbers
-            />
+            >
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
+            </vue-good-table>
           </b-col>
         </b-col>
         <!-- END -  Import/Export Detail -->
@@ -135,6 +144,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
+import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
 import {
   WAREHOUSEINPUT,
   // GETTERS
@@ -199,9 +209,15 @@ export default {
       return this.IMPORT_BORROWINGS_GETTER().map(data => ({
         id: data.id,
         licenseNumber: data.poBorrowCode,
-        date: new Date(data.borrowDate).toLocaleDateString(),
+        date: formatDateToLocale(data.borrowDate),
         note: data.note,
       }))
+    },
+    firstId() {
+      if (this.importBorrowingslist.length > 0) {
+        return this.importBorrowingslist[0].id
+      }
+      return 0
     },
     importBorrowingsDetailList() {
       return this.IMPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
@@ -209,23 +225,31 @@ export default {
         licenseNumber: data.licenseNumber,
         productCode: data.productCode,
         productName: data.productName,
-        price: data.price,
+        price: formatNumberToLocale(data.price),
         quantity: data.quantity,
-        totalPrice: data.totalPrice,
+        totalPrice: formatNumberToLocale(data.totalPrice),
       }))
     },
     listImportProduct() {
       return this.IMPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
         productCode: data.productCode,
         productName: data.productName,
-        price: data.price,
+        price: formatNumberToLocale(data.price),
         quantity: data.quantity,
-        totalPrice: data.totalPrice,
+        totalPrice: formatNumberToLocale(data.totalPrice),
       }))
     },
   },
+  watch: {
+    importBorrowingslist() {
+      this.selectOrder(this.firstId)
+    },
+  },
   mounted() {
-    this.GET_IMPORT_BORROWINGS_ACTION()
+    this.GET_IMPORT_BORROWINGS_ACTION({
+      formId: 5, // hard code
+      ctrlId: 7, // hard code
+    })
   },
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
@@ -244,7 +268,7 @@ export default {
     },
     selectOrder(id) {
       this.current = id
-      this.GET_IMPORT_BORROWINGS_DETAIL_ACTION(this.current)
+      this.GET_IMPORT_BORROWINGS_DETAIL_ACTION({ id: this.current, formId: 5, ctrlId: 7 })// hard code
     },
   },
 }

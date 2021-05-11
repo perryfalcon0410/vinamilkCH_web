@@ -1,6 +1,7 @@
 const SALE = '/sales/import'
 const REPORT = '/sales/report'
 const PRODUCT = '/sales/products'
+const COMMON = '/commons'
 
 export const getPoConfirmEndpoint = `${SALE}/po-confirm`
 export const getPoProductsEndpoint = `${SALE}/po-detail0`
@@ -20,3 +21,5 @@ export const getReceiptByIdEndpoint = `${SALE}/trans`
 export const getProductsByIdEndpoint = `${SALE}/trans-detail`
 export const getProductsEndPoint = `${PRODUCT}/find`
 export const updateReceiptEndpoint = `${SALE}/update`
+export const getWarehousesTypeEndpoint = `${SALE}/warehouse-type`
+export const getNotImportReasonsEndpoint = `${COMMON}/apparams/sale-mt-deny`

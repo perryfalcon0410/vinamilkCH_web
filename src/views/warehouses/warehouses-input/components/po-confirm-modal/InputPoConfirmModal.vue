@@ -119,6 +119,14 @@
                 {{ poProductInfo.totalPrice }}
               </b-row>
             </template>
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+          <!-- END - Empty rows -->
           </vue-good-table>
           <!-- END - Table Product -->
 
@@ -131,7 +139,7 @@
 
           <vue-good-table
             :columns="columns"
-            :rows="PoPromotionProducts"
+            :rows="poPromotionProducts"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
@@ -156,6 +164,14 @@
                 {{ poPromotionProductsInfo.totalPrice }}
               </b-row>
             </template>
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+          <!-- END - Empty rows -->
           </vue-good-table>
           <!-- END - Table Product promotion -->
         </b-col>
@@ -222,6 +238,7 @@
     <deny-modal
       :id="denyId"
       :visible="DenyModalVisible"
+      :reason-options="denyReason"
     />
   </b-modal>
 </template>
@@ -231,6 +248,8 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import toasts from '@core/utils/toasts/toasts'
+import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
 import DenyModal from './components/inputPoDenyModal.vue'
 import {
   WAREHOUSEINPUT,
@@ -271,22 +290,30 @@ export default {
           field: 'soNo',
           sortable: false,
           type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Giá',
           field: 'price',
           sortable: false,
           type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng',
@@ -296,6 +323,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
@@ -305,6 +334,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
       ],
     }
@@ -314,14 +345,25 @@ export default {
     poConfirm() {
       return this.POCONFIRM_GETTER().map(data => ({
         id: data.id,
-        poNo: data.poCode,
+        poNo: data.poNumber,
         shopId: data.shopId,
         poNumber: data.poNumber,
         internalNumber: data.internalNumber,
         soNo: data.saleOferNumber,
-        date: new Date(data.orderDate).toLocaleDateString(),
-        status: data.status,
+        date: formatDateToLocale(data.orderDate),
       }))
+    },
+    theFirstPo() {
+      if (this.poConfirm.length > 0) {
+        // return this.poConfirm[0].id
+        const obj = {
+          id: this.poConfirm[0].id,
+          internalNumber: this.poConfirm[0].internalNumber,
+          poNumber: this.poConfirm[0].poNumber,
+        }
+        return obj
+      }
+      return 0
     },
     // get products from selected Po
     poProducts() {
@@ -329,10 +371,10 @@ export default {
         soNo: data.soNo,
         productCode: data.productCode,
         productName: data.productName,
-        price: data.price,
+        price: formatNumberToLocale(data.price),
         unit: data.unit,
         quantity: data.quantity,
-        totalPrice: data.totalPrice,
+        totalPrice: formatNumberToLocale(data.totalPrice),
       }))
     },
     poProductInfo() {
@@ -344,34 +386,25 @@ export default {
         soNo: data.soNo,
         productCode: data.productCode,
         productName: data.productName,
-        price: data.price,
+        price: formatNumberToLocale(data.price),
         quantity: data.quantity,
-        totalPrice: data.totalPrice,
+        totalPrice: formatNumberToLocale(data.totalPrice),
       }))
     },
     poPromotionProductsInfo() {
       return this.PODETAIL_PRODUCTS_PROMO_INFO_GETTER()
     },
-    listImportProduct() {
-      const product = this.PODETAIL_PRODUCTS_RES_GETTER().map(data => ({
-        productCode: data.productCode,
-        productName: data.productName,
-        price: data.price,
-        quantity: data.quantity,
-        totalPrice: data.totalPrice,
-      }))
-      const promo = this.PODETAIL_PRODUCTS_PROMO_RES_GETTER().map(data => ({
-        productCode: data.productCode,
-        productName: data.productName,
-        price: data.price,
-        quantity: data.quantity,
-        totalPrice: data.totalPrice,
-      }))
-      return product.concat(promo)
+  },
+  watch: {
+    poConfirm() {
+      this.selectOrder(this.theFirstPo.id, this.theFirstPo.internalNumber, this.theFirstPo.poNumber)
     },
   },
   mounted() {
-    this.GET_POCONFIRMS_ACTION()
+    this.GET_POCONFIRMS_ACTION({
+      formId: 5,
+      ctrlId: 7,
+    })
   },
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
@@ -392,23 +425,36 @@ export default {
       this.current = id
       this.poNumber = poNum
       this.Snb = internalNumber
-      this.GET_PODETAIL_PRODUCTS_ACTION(this.current)
-      this.GET_PODETAIL_PRODUCTS_PROMO_ACTION(this.current)
+      this.GET_PODETAIL_PRODUCTS_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
+      this.GET_PODETAIL_PRODUCTS_PROMO_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
     },
     // Sync PoConfirms list
     syncPo() {
-      this.GET_POCONFIRMS_ACTION()
+      this.GET_POCONFIRMS_ACTION({ formId: 5, ctrlId: 7 }) // hard code
     },
     // Confirm import product from selected Po
     confirmImportButton() {
-      this.$emit('inputChange', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, false, this.Snb, this.listImportProduct, this.current])
+      if (this.poConfirm.length > 0) {
+        this.$emit('inputChange', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, false, this.Snb, this.poNumber, this.current])
+      } else {
+        toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi PO')
+      }
     },
     exportExcel() {
-      this.GET_IMPORTEXCEL_ACTION(this.current)
+      if (this.poConfirm.length <= 0) {
+        toasts.error('Không có dữ liệu kết xuất')
+      } else {
+        this.GET_IMPORTEXCEL_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
+      }
     },
     showModal() {
-      this.denyId = this.current
-      this.DenyModalVisible = !this.DenyModalVisible
+      console.log(this.poConfirm.length)
+      if (this.poConfirm.length > 0) {
+        this.denyId = this.current
+        this.DenyModalVisible = !this.DenyModalVisible
+      } else {
+        toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi PO')
+      }
     },
   },
 }

@@ -49,7 +49,7 @@
               v-for="(item, index) in importAdjustmentsList"
               :key="item.id"
               class="border-bottom border-white bg-light py-1"
-              :class="{ 'text-primary': current == item.id }"
+              :class="{ 'text-brand-1': current == item.id }"
               @click="selectOrder(item.id)"
             >
               <b-col cols="1">
@@ -88,7 +88,16 @@
               style-class="vgt-table bordered"
               compact-mode
               line-numbers
-            />
+            >
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
+            </vue-good-table>
           </b-col>
         </b-col>
         <!-- END -  Import/Export Detail -->
@@ -135,6 +144,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
+import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
 import {
   WAREHOUSEINPUT,
   // GETTER
@@ -198,34 +208,47 @@ export default {
       return this.IMPORT_ADJUSTMENTS_GETTER().map(data => ({
         id: data.id,
         licenseNumber: data.adjustmentCode,
-        date: new Date(data.adjustmentDate).toLocaleDateString(),
-        note: data.description,
+        date: formatDateToLocale(data.adjustmentDate),
         status: data.status,
       }))
+    },
+    firstId() {
+      if (this.importAdjustmentsList[0]) {
+        return this.importAdjustmentsList[0].id
+      }
+      return 0
     },
     importAdjustmentsDetailList() {
       return this.IMPORT_ADJUSTMENTS_DETAIL_GETTER().map(data => ({
         id: data.id,
         productCode: data.productCode,
         productName: data.productName,
-        price: data.price,
+        price: formatNumberToLocale(data.price),
         quantity: data.quantity,
         licenseNumber: data.licenseNumber,
-        totalPrice: data.totalPrice,
+        totalPrice: formatNumberToLocale(data.totalPrice),
       }))
     },
     listImportProduct() {
       return this.IMPORT_ADJUSTMENTS_DETAIL_GETTER().map(data => ({
         productCode: data.productCode,
         productName: data.productName,
-        price: data.price,
+        price: formatNumberToLocale(data.price),
         quantity: data.quantity,
-        totalPrice: data.totalPrice,
+        totalPrice: formatNumberToLocale(data.totalPrice),
       }))
     },
   },
+  watch: {
+    importAdjustmentsList() {
+      this.selectOrder(this.firstId)
+    },
+  },
   mounted() {
-    this.GET_IMPORT_ADJUSTMENTS_ACTION()
+    this.GET_IMPORT_ADJUSTMENTS_ACTION({
+      formId: 5, // hard code
+      ctrlId: 7, // hard code
+    })
   },
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
@@ -241,7 +264,7 @@ export default {
     },
     selectOrder(id) {
       this.current = id
-      this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION(this.current)
+      this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
     },
     inputAdjustmentConfirm() {
       this.$emit('inputAdjustChange', [this.importAdjustmentsDetailList, false, this.listImportProduct, this.current])

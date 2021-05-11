@@ -19,35 +19,58 @@ import {
   getProductsByIdEndpoint,
   getProductsEndPoint,
   updateReceiptEndpoint,
+  getWarehousesTypeEndpoint,
+  getNotImportReasonsEndpoint,
 } from './defaultConfig'
 
 export default {
-  getPoConfirm() {
-    return axios.get(`${getPoConfirmEndpoint}`)
+  getPoConfirm(args) {
+    return axios.get(getPoConfirmEndpoint, {
+      params: formatURLParams(args),
+    })
   },
   getPoProducts(args) {
-    return axios.get(`${getPoProductsEndpoint}/${args}`)
+    return axios.get(`${getPoProductsEndpoint}/${args.id}`, {
+      params: formatURLParams(args),
+    })
   },
   getPoPromotionProducts(args) {
-    return axios.get(`${getPoPromotionProductsEndpoint}/${args}`)
+    return axios.get(`${getPoPromotionProductsEndpoint}/${args.id}`, {
+      params: formatURLParams(args),
+    })
   },
   getImportExcel(args) {
-    return axios.get(`${getImportExcelEndpoint}/${args}`)
+    return axios({
+      method: 'get',
+      url: `${getImportExcelEndpoint}/${args.id}`,
+      responseType: 'blob',
+      params: formatURLParams(args),
+    })
   },
-  getImportAdjustments() {
-    return axios.get(`${getImportAdjustmentsEndpoint}`)
+  getImportAdjustments(args) {
+    return axios.get(`${getImportAdjustmentsEndpoint}`, {
+      params: formatURLParams(args),
+    })
   },
   getImportAdjustmentsDetail(args) {
-    return axios.get(`${getImportAdjustmentsDetailEndpoint}/${args}`)
+    return axios.get(`${getImportAdjustmentsDetailEndpoint}/${args.id}`, {
+      params: formatURLParams(args),
+    })
   },
-  getImportBorrowings() {
-    return axios.get(`${getImportBorrowingsEndpoint}`)
+  getImportBorrowings(args) {
+    return axios.get(`${getImportBorrowingsEndpoint}`, {
+      params: formatURLParams(args),
+    })
   },
   getImportBorrwingsDetail(args) {
-    return axios.get(`${getImportBorrwingsDetailEndpoint}/${args}`)
+    return axios.get(`${getImportBorrwingsDetailEndpoint}/${args.id}`, {
+      params: formatURLParams(args),
+    })
   },
   updateNotImport(args) {
-    return axios.put(`${updateNotImportEndpoint}/${args}`)
+    return axios.put(`${updateNotImportEndpoint}/${args.id}`, {
+      params: formatURLParams(args),
+    })
   },
   getReceiptImport(args) {
     return axios.get(getReceiptsEndpoint, {
@@ -81,5 +104,15 @@ export default {
   },
   updateReceipt(args) {
     return axios.patch(`${updateReceiptEndpoint}/${args.id}?formId=${args.formId}&ctrlId=${args.ctrlId}`, args)
+  },
+  getWarehousesType(args) {
+    return axios.get(getWarehousesTypeEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getNotImportReasons(args) {
+    return axios.get(getNotImportReasonsEndpoint, {
+      params: formatURLParams(args),
+    })
   },
 }

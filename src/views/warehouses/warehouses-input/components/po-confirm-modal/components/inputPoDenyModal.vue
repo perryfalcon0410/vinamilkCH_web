@@ -7,17 +7,14 @@
     content-class="bg-light"
     footer-border-variant="light"
   >
-    <b-form-group
-      label="Lý do"
-      label-for="reason"
-    >
-      <b-form-select
-        id="reason"
-        v-model="selected"
-        :options="options"
-      />
-    </b-form-group>
-    {{ selectedItem }}
+    <v-input-select
+      :title="'Lý do'"
+      :placeholder="''"
+      :data-input="reasonSelected.name"
+      :suggestions="reasonOptions"
+      @updateSelection="reasonSelected = $event"
+    />
+    <span> {{ reasonOptions }}</span>
     <template #modal-footer="{ cancel }">
       <b-button
         variant="danger"
@@ -50,15 +47,22 @@
 
 <script>
 import {
+  mapGetters,
   mapActions,
 } from 'vuex'
+import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import {
   WAREHOUSEINPUT,
+  NOT_IMPORT_REASONS_GETTER,
   GET_POCONFIRMS_ACTION,
   UPDATE_NOT_IMPORT_ACTION,
+  GET_NOT_IMPORT_REASONS_ACTION,
 } from '../../../store-module/type'
 
 export default {
+  components: {
+    VInputSelect,
+  },
   props: {
     visible: {
       type: Boolean,
@@ -72,17 +76,31 @@ export default {
   },
   data() {
     return {
-      selected: '',
-      options: [
-        { value: 'A', text: 'Po không muốn nhập' },
-        { value: 'B', text: 'Chính sách không cho nhập' },
-      ],
+      reasonSelected: { id: null, name: null },
     }
   },
+  computed: {
+    reasonOptions() {
+      return this.NOT_IMPORT_REASONS_GETTER().map((data, index) => ({
+        id: index + 1,
+        name: data.apParamName,
+      }))
+    },
+  },
+  mounted() {
+    this.GET_NOT_IMPORT_REASONS_ACTION({
+      formId: 5, // hard code
+      ctrlId: 7, // hard code
+    })
+  },
   methods: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      NOT_IMPORT_REASONS_GETTER,
+    ]),
     ...mapActions(WAREHOUSEINPUT, [
       UPDATE_NOT_IMPORT_ACTION,
       GET_POCONFIRMS_ACTION,
+      GET_NOT_IMPORT_REASONS_ACTION,
     ]),
     denyImport() {
       this.UPDATE_NOT_IMPORT_ACTION(this.$props.id)

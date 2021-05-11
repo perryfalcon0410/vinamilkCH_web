@@ -73,8 +73,10 @@
               label="Kho hàng"
               label-for="warehouse"
             >
-              <b-form-select
+              <b-form-input
                 id="warehouse"
+                v-model="warehousesType.wareHouseTypeName"
+                readonly
               />
             </b-form-group>
             <!-- END -  Stock  -->
@@ -229,10 +231,17 @@
                   {{ poProductInfo.totalPrice }}
                 </b-row>
               </template>
-              <!-- START - Column filter -->
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
             </vue-good-table>
             <!-- END - Table Product -->
-
+            <br>
             <!-- START - Table Product promotion -->
             <div class="d-inline-flex rounded-top px-1 my-1">
               <strong>
@@ -269,6 +278,14 @@
                   {{ poPromotionProductsInfo.totalPrice }}
                 </b-row>
               </template>
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
             </vue-good-table>
             <!--START input Po-->
             <vue-good-table
@@ -287,7 +304,7 @@
                   <b-button
                     variant="light"
                     class="rounded-circle p-1 ml-1"
-                    size="lg"
+                    size="sm"
                     @click="newRow"
                   >
                     <b-icon
@@ -306,29 +323,24 @@
                 <span v-if="props.column.field == 'productCode'">
                   <b-form-input
                     v-model="rowsProductPromotion[props.row.count].productCode"
-                  />
-                </span>
-                <span v-if="props.column.field == 'productName'">
-                  <b-input
-                    v-model="rowsProductPromotion[props.row.count].productName"
+                    size="sm"
                   />
                 </span>
                 <span v-if="props.column.field == 'quantity'">
                   <b-input
                     v-model="rowsProductPromotion[props.row.count].quantity"
-                  />
-                </span>
-                <span v-if="props.column.field == 'price'">
-                  <b-input
-                    v-model="rowsProductPromotion[props.row.count].price"
-                  />
-                </span>
-                <span v-if="props.column.field == 'totalPrice'">
-                  <b-input
-                    v-model="rowsProductPromotion[props.row.count].totalPrice"
+                    size="sm"
                   />
                 </span>
               </template>
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
             </vue-good-table>
             <!--END input Po-->
             <!--if-PoConfirm-->
@@ -339,27 +351,24 @@
             <b-row class="m-1 justify-content-end">
               <b-button-group>
                 <b-button
-                  variant="primary"
-                  class="d-flex align-items-center rounded text-uppercase"
+                  class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
+                  variant="someThing"
                   @click="create()"
                 >
                   <b-icon
                     icon="download"
-                    width="20"
-                    height="20"
-                    class="mr-1"
                   />
                   Nhập hàng
                 </b-button>
 
                 <b-button
-                  class="d-flex align-items-center ml-1 rounded text-uppercase"
+                  class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+                  variant="someThing"
                   @click="navigateBack"
                 >
                   <b-icon
                     icon="x"
-                    width="20"
-                    height="20"
+                    scale="1.5"
                   />
                   Đóng
                 </b-button>
@@ -388,8 +397,12 @@
       :visible="PoConfirmModalVisible"
       @inputChange="dataFromPoConfirm($event)"
     />
+    <confirm-close-modal
+      :visible="showConfirmCloseModal"
+      @close="showConfirmCloseModal = false"
+    >
     <!-- END - Modal -->
-  </b-container>
+    </confirm-close-modal></b-container>
 </template>
 
 <script>
@@ -401,13 +414,16 @@ import {
   number,
   required,
 } from '@/@core/utils/validations/validations'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { getNow } from '@core/utils/utils'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
 import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
+import ConfirmCloseModal from '../components/confirm-close-modal/ConfirmCloseModal.vue'
 import {
   WAREHOUSEINPUT,
+  WAREHOUSES_TYPE_GETTER,
+  GET_WAREHOUSES_TYPE_ACTION,
   CREATE_SALE_IMPORT_ACTION,
 } from '../store-module/type'
 
@@ -416,6 +432,7 @@ export default {
     AdjustmentModal,
     BorrowedModal,
     PoConfirmModal,
+    ConfirmCloseModal,
     ValidationProvider,
     ValidationObserver,
   },
@@ -425,6 +442,7 @@ export default {
       AdjustmentModalVisible: false,
       BorrowedModalVisible: false,
       PoConfirmModalVisible: false,
+      showConfirmCloseModal: false,
       // ngay nhap
       dateStamp: '',
       timeStamp: '',
@@ -454,44 +472,60 @@ export default {
           label: 'Mã hàng',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Giá',
           field: 'price',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tên hàng',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           type: 'number',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'SO No',
           field: 'SoNo',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Function',
           field: 'function',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
       rowsProduct: [],
@@ -500,6 +534,8 @@ export default {
           label: 'Mã hàng',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
@@ -508,23 +544,31 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Giá',
           field: 'price',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tên hàng',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           type: 'number',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
@@ -534,19 +578,21 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'SO No',
           field: 'SoNo',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
       rowsProductPromotion: [{
         count: 0,
         productCode: '',
         quantity: '',
-        productName: '',
-        totalPrice: '',
       }],
       // -------------------------PoConfirm--------------------------
 
@@ -557,34 +603,46 @@ export default {
           field: 'licenseNumber',
           sortable: false,
           type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Giá',
           field: 'price',
           sortable: false,
           type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
           type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           sortable: false,
           type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
       ],
       adjustRows: [],
@@ -597,34 +655,46 @@ export default {
           field: 'licenseNumber',
           sortable: false,
           type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Giá',
           field: 'price',
           sortable: false,
           type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
           type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           sortable: false,
           type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
       ],
       borrowRows: [],
@@ -641,10 +711,23 @@ export default {
         totalPrice: data.totalPrice,
       }))
     },
+    warehousesType() {
+      return this.WAREHOUSES_TYPE_GETTER()
+    },
+  },
+  mounted() {
+    this.GET_WAREHOUSES_TYPE_ACTION({
+      formId: 5, // hard code
+      ctrlId: 7, // hard code
+    })
   },
   methods: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      WAREHOUSES_TYPE_GETTER,
+    ]),
     ...mapActions(WAREHOUSEINPUT, [
       CREATE_SALE_IMPORT_ACTION,
+      GET_WAREHOUSES_TYPE_ACTION,
     ]),
     newRow() {
       if (this.status === null) {
@@ -654,8 +737,6 @@ export default {
             count: this.rowsProductPromotion.length,
             productCode: '',
             quantity: '',
-            productName: '',
-            totalPrice: '',
           },
         ]
       }
@@ -664,15 +745,19 @@ export default {
       const PoConfirm = this.importType === '1' ? this.PoConfirmModalVisible = !this.PoConfirmModalVisible : this.PoConfirmModalVisible = false
       const Adjustment = this.importType === '2' ? this.AdjustmentModalVisible = !this.AdjustmentModalVisible : this.AdjustmentModalVisible = false
       const Borrowed = this.importType === '3' ? this.BorrowedModalVisible = !this.BorrowedModalVisible : this.BorrowedModalVisible = false
-
       return PoConfirm && Adjustment && Borrowed
     },
     navigateBack() {
-      this.$router.back()
+      if (this.status === null) {
+        this.$router.back()
+      } else {
+        this.showConfirmCloseModal = true
+      }
     },
     // ---------------------------Nhap hang-----------------------
     dataFromPoConfirm(data) {
-      const [poProducts, ProductInfo, poPromotionProducts, PromotionProductsInfo, PoConfirmModalState, Snb, listData, id] = data
+      console.log(data)
+      const [poProducts, ProductInfo, poPromotionProducts, PromotionProductsInfo, PoConfirmModalState, Snb, poNum, id] = data
       this.rowsProduct = [...poProducts]
       this.rowsProductPromotion = [...poPromotionProducts]
       this.PoConfirmModalVisible = PoConfirmModalState
@@ -680,9 +765,8 @@ export default {
       this.poPromotionProductsInfo = PromotionProductsInfo
       this.status = 0
       this.internalNumber = Snb
-      this.poNo = null
+      this.poNo = poNum
       this.poId = id
-      this.listImportProduct = listData
       this.tableRender()
     },
     // ----------------------------Nhap hang-----------------------
@@ -752,7 +836,6 @@ export default {
               redInvoiceNo: this.billNumber,
               poId: this.poId,
               note: this.note,
-              lst: this.listImportProduct,
             })
           }
         })
