@@ -3,6 +3,7 @@ import { formatURLParams } from '@/@core/utils/utils'
 import {
   getWareHouseComboDetailEndPoint,
   getWarehousesComboEndPoint,
+  getComboProductsEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -13,6 +14,11 @@ export default {
   },
   getWarehousesCombo(args) {
     return axios.get(getWarehousesComboEndPoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getComboProducts(args) {
+    return axios.get(getComboProductsEndpoint, {
       params: formatURLParams(args),
     })
   },

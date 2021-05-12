@@ -7,10 +7,12 @@ import {
   WAREHOUSES_COMBO_GETTER,
   WAREHOUSES_COMBO_PAGINATION_GETTER,
   WAREHOUSES_COMBO_TOTAL_INFO_GETTER,
+  COMBO_PRODUCTS_GETTER,
 
   // Action
   GET_WAREHOUSES_COMBO_ACTIONS,
   GET_WAREHOUSE_COMBO_DETAIL_ACTION,
+  GET_COMBO_PRODUCTS_ACTION,
 } from './type'
 
 export default {
@@ -20,6 +22,7 @@ export default {
     warehousesComboLists: [],
     warehousesComboPagination: {},
     totalInfo: {},
+    comboProducts: [],
   },
 
   // getter
@@ -35,6 +38,9 @@ export default {
     },
     [WAREHOUSES_COMBO_TOTAL_INFO_GETTER](state) {
       return state.totalInfo
+    },
+    [COMBO_PRODUCTS_GETTER](state) {
+      return state.comboProducts
     },
   },
 
@@ -67,6 +73,20 @@ export default {
             state.warehousesComboLists = res.data.response.content || []
             state.warehousesComboPagination = res.data.response || {}
             state.totalInfo = res.data.info || {}
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_COMBO_PRODUCTS_ACTION]({ state }, val) {
+      WareHouseComboService
+        .getComboProducts(val)
+        .then(res => {
+          if (res.success) {
+            state.comboProducts = res.data
           } else {
             throw new Error(res.statusValue)
           }
