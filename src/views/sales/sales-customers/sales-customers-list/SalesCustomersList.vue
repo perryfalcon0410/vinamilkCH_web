@@ -4,7 +4,12 @@
     class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
-    <sales-customers-list-search />
+    <sales-customers-list-search
+      @updateSearchData="paginationData = {
+        size: elementSize,
+        page: pageNumber - 1,
+        ...$event }"
+    />
     <!-- END - Search -->
 
     <!-- START - Customer list -->
@@ -201,8 +206,8 @@ export default {
       selectedRow: 0,
       elementSize: commonData.pagination[0],
       pageNumber: 1,
-
       paginationOptions: commonData.pagination,
+      paginationData: {},
 
       columns: [
         {
@@ -276,8 +281,12 @@ export default {
   },
 
   computed: {
+    ...mapGetters(CUSTOMER, [
+      CUSTOMERS_GETTER,
+      CUSTOMER_PAGINATION_GETTER,
+    ]),
     customers() {
-      return this.CUSTOMERS_GETTER().map(data => ({
+      return this.CUSTOMERS_GETTER.map(data => ({
         id: data.id,
         code: data.customerCode,
         fullName: `${data.lastName} ${data.firstName}`,
@@ -291,28 +300,26 @@ export default {
       }))
     },
     customerPagination() {
-      return this.CUSTOMER_PAGINATION_GETTER()
+      return this.CUSTOMER_PAGINATION_GETTER
     },
   },
 
   watch: {
     pageNumber() {
+      this.paginationData.page = this.pageNumber - 1
       this.onPaginationChange()
     },
     elementSize() {
+      this.paginationData.size = this.elementSize
+      this.onPaginationChange()
+    },
+    paginationData() {
+      this.pageNumber = 1
       this.onPaginationChange()
     },
   },
 
-  mounted() {
-    this.GET_CUSTOMERS_ACTION({ formId: 5, ctrlId: 7 })
-  },
-
   methods: {
-    ...mapGetters(CUSTOMER, [
-      CUSTOMERS_GETTER,
-      CUSTOMER_PAGINATION_GETTER,
-    ]),
     ...mapActions(CUSTOMER, [
       GET_CUSTOMERS_ACTION,
       EXPORT_CUSTOMERS_ACTION,
@@ -333,12 +340,7 @@ export default {
     },
 
     onPaginationChange() {
-      const paginationData = {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-      }
-
-      this.GET_CUSTOMERS_ACTION(paginationData)
+      this.GET_CUSTOMERS_ACTION(this.paginationData)
     },
   },
 }

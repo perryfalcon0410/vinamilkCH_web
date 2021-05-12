@@ -925,7 +925,7 @@ export default {
     },
 
     checkFieldsValueLength() {
-      // WARNING: đừng xóa mấy cái log này, sau này sẽ cần để check lại
+      // WARNING: Không xóa mấy cái log này, sau này sẽ cần để check lại
       // console.log(`${this.firstName}-${this.customer.firstName}`)
       // console.log(`${this.lastName}-${this.customer.lastName}`)
       // console.log(`${this.barCode}-${this.customer.barCode}`)

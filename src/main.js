@@ -7,6 +7,7 @@ import {
 } from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
 import { isEmpty, capitalizeFirstLetter } from '@core/utils/utils'
+import { formatDateToLocale } from '@/@core/utils/filter'
 
 import i18n from '@/libs/i18n'
 import VueGoodTablePlugin from 'vue-good-table'
@@ -68,8 +69,8 @@ Vue.prototype.$isEmpty = isEmpty
 Vue.prototype.$capFirstString = capitalizeFirstLetter
 
 // get earlyMonth and now date
-Vue.prototype.$earlyMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-Vue.prototype.$nowDate = new Date()
+Vue.prototype.$earlyMonth = formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
+Vue.prototype.$nowDate = formatDateToLocale(new Date())
 
 // flatPickr
 flatPickr.localize(Vietnamese)

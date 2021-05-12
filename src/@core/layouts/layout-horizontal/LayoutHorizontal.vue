@@ -8,7 +8,7 @@
 
     <!-- NAVBAR -->
     <b-navbar
-      v-if="navbarType === 'collapse' && heightToHideOfScrollDown"
+      v-if="(navbarType === 'collapse' && heightToHideOfScrollDown) || navbarType === 'sticky'|| navbarType === 'static'"
       :style="{
         backgroundColor: navbarType === 'static' && scrolledTo && skin === 'light' ? 'white' : null,
         boxShadow: navbarType === 'static' && scrolledTo ? 'rgba(0, 0, 0, 0.05) 0px 4px 20px 0px' : null,

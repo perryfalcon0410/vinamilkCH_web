@@ -19,7 +19,7 @@
   .vue-treeselect__option--selected {
     background: rgba($color: $brand-1, $alpha: 0.2);
   }
-  // item hover
+  // items hover
   .vue-treeselect__option--highlight {
     .vue-treeselect__label {
       color: $brand-1;
@@ -27,8 +27,10 @@
     background: #e4e6f0;
   }
 
-  // item label
+  // items label
   .vue-treeselect__label {
+    // line break is allowed or not
+    white-space: unset;
     font-size: 13px;
     color: $brand-3;
   }

@@ -263,7 +263,7 @@ export default {
       statusSelected: null,
       genderOptions: commonData.genders,
       gendersSelected: null,
-      areasSelected: this.areaSelectedDefault || null,
+      areasSelected: null,
 
       configDate: {
         wrap: true,
@@ -286,21 +286,28 @@ export default {
     },
     areaOptions() {
       return this.SHOP_LOCATIONS_GETTER.map(data => ({
-        id: data.areaCode,
+        id: data.id,
         label: data.provinceAndDistrictName,
         default: data.default,
       }))
     },
-    areaSelectedDefault() {
-      return this.areaOptions.find(locations => locations.default === true).id
+  },
+
+  watch: {
+    areaOptions() {
+      this.areaSelectedDefault()
     },
   },
 
-  mounted() {
+  beforeMount() {
     this.GET_CUSTOMER_TYPES_ACTION({ formId: 9, ctrlId: 6 })
     this.GET_SHOP_LOCATIONS_ACTION({ formId: 5, ctrlId: 7 })
     this.fromDate = this.$earlyMonth
     this.toDate = this.$nowDate
+  },
+
+  mounted() {
+    this.onSearch()
   },
 
   methods: {
@@ -309,7 +316,11 @@ export default {
       GET_SHOP_LOCATIONS_ACTION,
       GET_CUSTOMER_TYPES_ACTION,
     ]),
-    onClickSearchButton() {
+    areaSelectedDefault() {
+      this.areasSelected = this.SHOP_LOCATIONS_GETTER.find(e => e.default === true).id
+      this.onSearch()
+    },
+    onSearch() {
       const searchData = {
         searchKeywords: this.searchKeywords?.trim(),
         fromDate: reverseVniDate(this.fromDate),
@@ -318,10 +329,18 @@ export default {
         status: this.statusSelected,
         genderId: this.gendersSelected,
         areaId: this.areasSelected,
+        formId: 5,
+        ctrlId: 7,
       }
+      this.updateSearchData(searchData)
       this.GET_CUSTOMERS_ACTION(searchData)
     },
-
+    onClickSearchButton() {
+      this.onSearch()
+    },
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
+    },
   },
 }
 </script>

@@ -85,6 +85,7 @@
       .navbar-header {
         position: absolute;
         left: calc(1.5%); // left 50% - branding width
+        // left: calc(50% - 56px); // left 50% - branding width
         padding: 0;
         z-index: 1000;
         .navbar-brand {
@@ -438,8 +439,9 @@
   // navbar collapse
   &.navbar-collapse {
     .app-content {
-      padding: calc(#{$content-padding} - #{$horizontal-menu-height}) #{$content-padding}
-        0 #{$content-padding};
+      // padding: calc(#{$content-padding} - #{$horizontal-menu-height}) #{$content-padding}
+      //   0 #{$content-padding};
+      padding: 0 $content-padding 0 $content-padding;
     }
     .content {
       min-height: calc(
