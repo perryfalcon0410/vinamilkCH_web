@@ -63,7 +63,7 @@
                 >
                   <b-form-input
                     v-model="oldPassword"
-                    :type="isOldPasswordShow ? 'password' : 'text'"
+                    :type="isOldPasswordShow ? 'text' : 'password'"
                     :state="errors.length > 0 ? false:null"
                     class="form-control-merge"
                     placeholder="Mật khẩu cũ"
@@ -72,7 +72,7 @@
                   <b-input-group-append is-text>
                     <feather-icon
                       class="cursor-pointer"
-                      :icon="isOldPasswordShow ? 'EyeOffIcon' : 'EyeIcon'"
+                      :icon="isOldPasswordShow ? 'EyeIcon' : 'EyeOffIcon'"
                       @click="isOldPasswordShow = !isOldPasswordShow"
                     />
                   </b-input-group-append>
@@ -95,7 +95,7 @@
                 >
                   <b-form-input
                     v-model="newPassword"
-                    :type="isNewPasswordShow ? 'password' : 'text'"
+                    :type="isNewPasswordShow ? 'text' : 'password'"
                     :state="errors.length > 0 ? false:null"
                     class="form-control-merge"
                     placeholder="Mật khẩu mới"
@@ -104,7 +104,7 @@
                   <b-input-group-append is-text>
                     <feather-icon
                       class="cursor-pointer"
-                      :icon="isNewPasswordShow ? 'EyeOffIcon' : 'EyeIcon'"
+                      :icon="isNewPasswordShow ? 'EyeIcon' : 'EyeOffIcon'"
                       @click="isNewPasswordShow = !isNewPasswordShow"
                     />
                   </b-input-group-append>
@@ -126,7 +126,7 @@
                 >
                   <b-form-input
                     v-model="confirmPassword"
-                    :type="isConfirmPasswordShow ? 'password' : 'text'"
+                    :type="isConfirmPasswordShow ? 'text' : 'password'"
                     class="form-control-merge"
                     :state="errors.length > 0 ? false:null"
                     placeholder="Xác nhận mật khẩu"
@@ -135,7 +135,7 @@
                   <b-input-group-append is-text>
                     <feather-icon
                       class="cursor-pointer"
-                      :icon="isConfirmPasswordShow ? 'EyeOffIcon' : 'EyeIcon'"
+                      :icon="isConfirmPasswordShow ? 'EyeIcon' : 'EyeOffIcon'"
                       @click="isConfirmPasswordShow = !isConfirmPasswordShow"
                     />
                   </b-input-group-append>
