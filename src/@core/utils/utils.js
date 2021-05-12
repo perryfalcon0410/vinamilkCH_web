@@ -8,6 +8,7 @@ import {
 import customerData from '@/@db/customer'
 import commonData from '@/@db/common'
 import warehousesData from '@/@db/warehouses'
+import reportsData from '@/@db/report'
 import moment from 'moment'
 
 export const isObject = obj => typeof obj === 'object' && obj !== null
@@ -69,6 +70,13 @@ export const getCustomerStatusLabel = id => {
 export const getWarehousesStatuslabel = id => {
   const warehousesDataFound = warehousesData.transTypes.find(item => `${item.id}` === `${id}`)
   return warehousesDataFound ? warehousesDataFound.label : null
+}
+
+export const getReportReasonTypeslabel = id => {
+  if (id) {
+    return reportsData.reasonTypes.find(item => `${item.id}` === `${id}`).label
+  }
+  return ''
 }
 
 export const formatURLParams = obj => {

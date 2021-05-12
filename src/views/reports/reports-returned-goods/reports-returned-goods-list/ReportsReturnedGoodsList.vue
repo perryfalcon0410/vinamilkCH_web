@@ -1,153 +1,42 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column"
+    class="d-flex flex-column px-0"
   >
-
     <!-- START - Search -->
-    <b-form class="bg-white rounded shadow">
-      <label
-        for="v-search-form"
-        class="text-primary m-1"
-      >
-        Điều kiện
-      </label>
-
-      <b-form-row class="v-search-form border-top mx-0 p-1">
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Mã trả hàng"
-            label-for="form-input-customer"
-          >
-            <b-form-input
-              id="form-input-customer"
-              trim
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Từ ngày"
-            label-for="form-input-date-from"
-          >
-            <b-form-datepicker
-              id="form-input-date-from"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-              reset-button
-              label-reset-button="Xóa"
-              placeholder="chọn ngày"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Đến ngày"
-            label-for="form-input-date-to"
-          >
-            <b-form-datepicker
-              id="form-input-date-to"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-              reset-button
-              label-reset-button="Xóa"
-              placeholder="chọn ngày"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Lý do"
-            label-for="form-input-customer-group"
-          >
-            <b-form-select
-              v-model="selected"
-              :options="options"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-        >
-          <b-form-group
-            label="Sản phẩm"
-            label-for="form-input-customer-group"
-          >
-            <b-input-group class="input-group-merge ">
-              <b-form-input
-                id="input-live"
-              />
-              <b-input-group-append is-text>
-                <b-icon-three-dots-vertical />
-              </b-input-group-append>
-            </b-input-group>
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-          class="mt-2"
-        >
-          <b-button
-            id="form-button-search"
-            variant="primary"
-            @click="search()"
-          >
-            <b-icon-search />
-            Tìm kiếm
-          </b-button>
-        </b-col>
-      </b-form-row>
-    </b-form>
+    <reports-returned-goods-list-search />
     <!-- END - Search -->
 
-    <b-form class="bg-white rounded shadow rounded my-1">
+    <!-- START - Customer list -->
+    <b-form class="v-search bg-white rounded shadow rounded my-1">
       <!-- START - Header -->
       <b-row
-        class="justify-content-between border-bottom p-1 mx-0"
+        class="justify-content-between border-bottom px-1 mx-0"
+        style="padding: 5px 0"
         align-v="center"
       >
-        <label class="text-primary">
-          Danh sách đơn trả hàng
-        </label>
+        <strong class="text-brand-1">
+          Danh sách khách hàng
+        </strong>
         <b-button-group>
           <b-button
-            class="rounded"
-            variant="primary"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+            variant="someThing"
+            @click="navigateToPrint"
           >
-            <b-icon-printer-fill />
+            <b-icon-plus
+              scale="2"
+              class="mr-05"
+            />
             In
           </b-button>
           <b-button
-            class="ml-1 rounded"
-            variant="primary"
+            class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+            variant="someThing"
+            @click="onClickExcelExportButton"
           >
-            <b-icon-file-earmark-x-fill />
-            Xuất Excel
+            <b-icon-file-earmark-x-fill class="mr-05" />
+            Xuất excel
           </b-button>
         </b-button-group>
       </b-row>
@@ -157,188 +46,364 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="rowsProduct"
+          :rows="reportReturnedgoodLists"
           style-class="vgt-table striped"
           :pagination-options="{
-            enabled: true
+            enabled: true,
+            perPage: elementSize
           }"
+          compact-mode
           line-numbers
-        />
+        >
+          >
+          <!-- START - Empty rows -->
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
+          <!-- END - Empty rows -->
+
+          <!-- START - Columns -->
+          <template
+            slot="table-column"
+            slot-scope="props"
+          >
+            <div v-if="props.column.field === 'feature'">
+              <b-icon-bricks
+                v-b-popover.hover="'Thao tác'"
+                scale="1.3"
+              />
+            </div>
+
+            <div v-else>
+              {{ props.column.label }}
+            </div>
+          </template>
+          <!-- END - Columns -->
+
+          <!-- START - Rows -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div v-if="props.column.field === 'feature'">
+              <b-icon-pencil-fill
+                v-b-popover.hover="'Chỉnh sửa'"
+                class="cursor-pointer"
+                @click="navigateToUpdate(props.row.id)"
+              />
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Rows -->
+          <!-- START - Column filter -->
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-row
+              v-if="props.column.field === 'quantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ totalQuantity || '' }}
+            </b-row>
+
+            <b-row
+              v-else-if="props.column.field === 'amount'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ totalRefunds || '' }}
+            </b-row>
+          </template>
+          <!-- END - Column filter -->
+
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="reportReturnGoodsPagination.totalElements"
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Hiển thị 1 đến
+                </span>
+                <b-form-select
+                  v-model="elementSize"
+                  size="sm"
+                  :options="paginationOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span
+                  class="text-nowrap"
+                > trong {{ reportReturnGoodsPagination.totalElements }} mục </span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="reportReturnGoodsPagination.totalElements"
+                :per-page="elementSize"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
+
+        </vue-good-table>
       </b-col>
       <!-- END - Table -->
     </b-form>
+    <!-- END - Customer list -->
   </b-container>
 </template>
+
 <script>
+import commonData from '@/@db/common'
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
+import {
+  getReportReasonTypeslabel,
+} from '@core/utils/utils'
+import ReportsReturnedGoodsListSearch from './components/ReportsReturnedGoodsListSearch.vue'
+import {
+  REPORT_RETURNED_GOODS,
+
+  // Getters
+  REPORT_RETURNED_GOODS_GETTER,
+  REPORT_RETURNED_GOODS_PAGINATION_GETTER,
+  REPORT_RETURNED_GOODS_TOTAL_INFO_GETTER,
+
+  // Actions
+  GET_REPORT_RETURNED_GOODS_ACTION,
+  EXPORT_REPORT_RETURNED_GOODS_ACTION,
+} from '../store-module/type'
 
 export default {
+  components: {
+    ReportsReturnedGoodsListSearch,
+  },
   data() {
     return {
-      selected: 1,
-      options: [
-        { value: 1, text: 'Tất cả' },
-        { value: 2, text: 'Hàng lỗi' },
-        { value: 3, text: 'Mua thêm hàng' },
-        { value: 4, text: 'Đổi hàng' },
-        { value: 5, text: 'Lý do khác' },
-      ],
-      valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      valueDateTo: new Date(),
+      elementSize: commonData.pagination[0],
+      pageNumber: 1,
+
+      paginationOptions: commonData.pagination,
+
       columns: [
         {
           label: 'Mã trả hàng',
-          field: 'Id',
+          field: 'returnCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Hóa đơn mua hàng',
-          field: 'Bill',
+          field: 'reciept',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã khách hàng',
-          field: 'CustomerCode',
+          field: 'customerCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
-          field: 'Name',
+          field: 'fullName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ngành hàng',
-          field: 'Industry',
+          field: 'industry',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã sản phẩm',
-          field: 'ProductCode',
+          field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
-          field: 'HDKM',
+          field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
 
         {
           label: 'ĐVT',
-          field: 'ĐVT',
+          field: 'unit',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
-          field: 'Number',
+          field: 'quantity',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giá bán',
-          field: 'Price',
+          field: 'price',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Thành tiền',
-          field: 'Total',
+          field: 'amount',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tiền trả lại',
-          field: 'Refunds',
+          field: 'refunds',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Ngày trả',
-          field: 'PayDay',
+          field: 'payDay',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Lý do trả',
-          field: 'Reason',
+          field: 'reasonForPayment',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Thông tin phản hồi',
-          field: 'Note',
+          field: 'feedback',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
 
-      ],
-      rowsProduct: [
-        {
-          Id: '',
-          Bill: '',
-          CustomerCode: '',
-          Name: '',
-          Industry: '',
-          ProductCode: '',
-          HDKM: '',
-          ĐVT: '',
-          Number: '44',
-          Price: '',
-          Total: '794,484',
-          Refunds: '794,484',
-          PayDay: '',
-          Reason: '',
-          Note: '',
-        },
-        {
-          Id: 'ITR.BN40011.20.00001',
-          Bill: 'SAL.BN4001120110600002',
-          CustomerCode: 'CUS.CH40235.001',
-          Name: 'Phan Bảo Châu',
-          Industry: 'A',
-          ProductCode: '04AA10',
-          HDKM: 'STT dâu ADM GOLD 180ml',
-          ĐVT: 'Hộp',
-          Number: '2',
-          Price: '8,400',
-          Total: '16,800',
-          Refunds: '16,800',
-          PayDay: '01/10/2020 15:08',
-          Reason: 'Mua thêm hàng',
-          Note: 'Trả hàng',
-        },
-        {
-          Id: 'ITR.BN40011.20.00001',
-          Bill: 'SAL.BN4001120110600002',
-          CustomerCode: 'CUS.CH40235.001',
-          Name: 'Phan Bảo Châu',
-          Industry: 'A',
-          ProductCode: '04AA10',
-          HDKM: 'STT dâu ADM GOLD 180ml',
-          ĐVT: 'Hộp',
-          Number: '2',
-          Price: '8,400',
-          Total: '16,800',
-          Refunds: '16,800',
-          PayDay: '01/10/2020 15:08',
-          Reason: 'Mua thêm hàng',
-          Note: 'Trả hàng',
-        },
-        {
-          Id: 'ITR.BN40011.20.00001',
-          Bill: 'SAL.BN4001120110600002',
-          CustomerCode: 'CUS.CH40235.001',
-          Name: 'Phan Bảo Châu',
-          Industry: 'A',
-          ProductCode: '04AA10',
-          HDKM: 'STT dâu ADM GOLD 180ml',
-          ĐVT: 'Hộp',
-          Number: '2',
-          Price: '8,400',
-          Total: '16,800',
-          Refunds: '16,800',
-          PayDay: '01/10/2020 15:08',
-          Reason: 'Mua thêm hàng',
-          Note: 'Trả hàng',
-        },
       ],
     }
   },
   computed: {
+    reportReturnedgoodLists() {
+      return this.REPORT_RETURNED_GOODS_GETTER().map(data => ({
+        returnCode: data.returnCode,
+        reciept: data.reciept,
+        customerCode: data.customerCode,
+        fullName: data.fullName,
+        industry: data.industry,
+        productCode: data.productCode,
+        productName: data.productName,
+        unit: data.unit,
+        quantity: data.quantity,
+        price: formatNumberToLocale(Number(data.price)),
+        amount: formatNumberToLocale(Number(data.amount)),
+        refunds: formatNumberToLocale(Number(data.refunds)),
+        payDay: formatDateToLocale(data.payDay),
+        reasonForPayment: getReportReasonTypeslabel(String(data.reasonForPayment)),
+        feedback: data.feedback,
+      }))
+    },
+    totalQuantity() {
+      return formatNumberToLocale(Number(this.REPORT_RETURNED_GOODS_TOTAL_INFO_GETTER().totalQuantity))
+    },
+    totalRefunds() {
+      return formatNumberToLocale(Number(this.REPORT_RETURNED_GOODS_TOTAL_INFO_GETTER().totalRefunds))
+    },
+
+    reportReturnGoodsPagination() {
+      return this.REPORT_RETURNED_GOODS_PAGINATION_GETTER()
+    },
+  },
+  watch: {
+    pageNumber() {
+      this.onPaginationChange()
+    },
+    elementSize() {
+      this.onPaginationChange()
+    },
   },
 
+  mounted() {
+    this.GET_REPORT_RETURNED_GOODS_ACTION({ formId: 5, ctrlId: 7 })
+  },
   methods: {
+    ...mapGetters(REPORT_RETURNED_GOODS, [
+      REPORT_RETURNED_GOODS_GETTER,
+      REPORT_RETURNED_GOODS_PAGINATION_GETTER,
+      REPORT_RETURNED_GOODS_TOTAL_INFO_GETTER,
+    ]),
+    ...mapActions(REPORT_RETURNED_GOODS, [
+      GET_REPORT_RETURNED_GOODS_ACTION,
+      EXPORT_REPORT_RETURNED_GOODS_ACTION,
+    ]),
+
+    onClickExcelExportButton() {
+      this.EXPORT_REPORT_RETURNED_GOODS_ACTION({ formId: 5, ctrlId: 7 })
+    },
+
+    onPaginationChange() {
+      const paginationData = {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+      }
+      this.GET_REPORT_RETURNED_GOODS_ACTION(paginationData)
+    },
   },
 }
 </script>
