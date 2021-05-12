@@ -8,6 +8,7 @@ import {
 import customerData from '@/@db/customer'
 import commonData from '@/@db/common'
 import warehousesData from '@/@db/warehouses'
+import moment from 'moment'
 
 export const isObject = obj => typeof obj === 'object' && obj !== null
 
@@ -98,8 +99,8 @@ export const capitalizeFirstLetter = string => {
 }
 
 export const getNow = () => {
-  const date = this.$moment().format('DD/MM/YYYY')
-  const time = this.$moment().format('hh:mm')
+  const date = moment().format('DD/MM/YYYY')
+  const time = moment().format('hh:mm')
   const dateTime = `${date} lúc ${time}`
   return dateTime
 }

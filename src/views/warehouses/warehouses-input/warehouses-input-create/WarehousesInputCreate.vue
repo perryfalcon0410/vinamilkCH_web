@@ -49,11 +49,9 @@
                   label="Loại nhập"
                   label-for="id"
                 >
-                  <v-input-select
-                    :suggestions="inputTypeOptions"
-                    :data-input="inputTypeSelected.name"
-                    :title="''"
-                    @updateSelection="inputTypeSelected = $event"
+                  <tree-select
+                    v-model="inputTypeSelected"
+                    :options="inputTypeOptions"
                   />
                 </b-form-group>
               </b-col>
@@ -432,7 +430,6 @@ import { mapGetters, mapActions } from 'vuex'
 import { getNow } from '@core/utils/utils'
 import { formatDateToLocale } from '@/@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
-import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
@@ -452,12 +449,11 @@ export default {
     ConfirmCloseModal,
     ValidationProvider,
     ValidationObserver,
-    VInputSelect,
   },
   data() {
     return {
       inputTypeOptions: warehousesData.inputTypes,
-      inputTypeSelected: { id: null, name: null },
+      inputTypeSelected: null,
       configDate: {
         wrap: true,
         allowInput: true,
@@ -739,7 +735,7 @@ export default {
     },
   },
   mounted() {
-    this.inputTypeSelected = { id: this.inputTypeOptions[0].id, name: this.inputTypeOptions[0].name }
+    this.inputTypeSelected = this.inputTypeOptions[0].id
     this.GET_WAREHOUSES_TYPE_ACTION({
       formId: 5, // hard code
       ctrlId: 7, // hard code
@@ -769,8 +765,7 @@ export default {
       }
     },
     showModal() {
-      console.log(this.inputTypeSelected)
-      switch (this.inputTypeSelected.id) {
+      switch (this.inputTypeSelected) {
         case '0':
           this.poConfirmModalVisible = true
           break

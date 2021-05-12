@@ -7,12 +7,9 @@
     content-class="bg-light"
     footer-border-variant="light"
   >
-    <v-input-select
-      :title="'Lý do'"
-      :placeholder="''"
-      :data-input="reasonSelected.label"
-      :suggestions="reasonOptions"
-      @updateSelection="reasonSelected = $event"
+    <tree-select
+      v-model="reasonSelected"
+      :options="reasonOptions"
     />
     <template #modal-footer="{}">
       <b-button
@@ -45,7 +42,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
+
 import {
   WAREHOUSEINPUT,
   NOT_IMPORT_REASONS_GETTER,
@@ -55,9 +52,6 @@ import {
 } from '../../../store-module/type'
 
 export default {
-  components: {
-    VInputSelect,
-  },
   props: {
     visible: {
       type: Boolean,
@@ -71,7 +65,7 @@ export default {
   },
   data() {
     return {
-      reasonSelected: { id: null, label: null },
+      reasonSelected: null,
     }
   },
   computed: {
@@ -84,7 +78,7 @@ export default {
   },
   watch: {
     reasonOptions() {
-      this.reasonSelected = { id: this.reasonOptions[0].id, label: this.reasonOptions[0].label }
+      this.reasonSelected = this.reasonOptions[0].id
     },
   },
   mounted() {
