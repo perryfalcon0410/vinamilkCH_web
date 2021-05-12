@@ -24,7 +24,7 @@
           :options="options"
           value-field="type"
           text-field="value"
-          class="ml-5 text-brand-1"
+          class="ml-5"
         />
       </b-row>
       <!--  - Select Po type -->
@@ -137,13 +137,12 @@
               slot-scope="props"
             >
               <span v-if="props.column.label === 'Chức năng'">
-                <b-button
-                  variant="someThing"
-                  class="rounded-circle p-1 ml-2"
+                <b-icon-plus
+                  v-b-popover.hover="'Chọn sản phẩm'"
+                  class="cursor-pointer ml-2"
+                  scale="2.5"
                   @click="showChooseProductsModal"
-                >
-                  <b-icon-plus scale="2" />
-                </b-button>
+                />
               </span>
               <span v-else>
                 {{ props.column.label }}
@@ -162,15 +161,11 @@
                 />
               </span>
               <span v-if="props.column.label === 'Chức năng'">
-                <b-button
-                  variant="light"
-                  class="rounded-circle p-1 ml-1"
-                  size="sm"
-                >
-                  <b-icon-x
-                    scale="1.5"
-                  />
-                </b-button>
+                <b-icon-x
+                  v-b-popover.hover="'Xóa'"
+                  class="cursor-pointer ml-1"
+                  scale="2.5"
+                />
               </span>
               <span v-else>
                 {{ props.formattedRow[props.column.field] }}
