@@ -189,7 +189,10 @@ import {
   mapActions,
 } from 'vuex'
 import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
-import { getWarehousesStatuslabel } from '@/@db/warehouses'
+import {
+  getWarehousesStatuslabel,
+} from '@core/utils/utils'
+
 import WarehousesComboListSearch from './components/WarehousesComboListSearch.vue'
 import {
   WAREHOUSES_COMBO,
@@ -272,7 +275,7 @@ export default {
         transCode: data.transCode,
         quantity: formatNumberToLocale(Number(data.totalQuantity)),
         price: formatNumberToLocale(Number(data.totalAmount)),
-        transType: getWarehousesStatuslabel(data.transType),
+        transType: getWarehousesStatuslabel(String(data.transType)),
         feature: '',
       }))
     },

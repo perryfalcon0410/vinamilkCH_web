@@ -7,6 +7,7 @@ import {
 } from '@vue/composition-api'
 import customerData from '@/@db/customer'
 import commonData from '@/@db/common'
+import warehousesData from '@/@db/warehouses'
 
 export const isObject = obj => typeof obj === 'object' && obj !== null
 
@@ -69,6 +70,13 @@ export const getCustomerStatusLabel = id => {
   }
   return ''
 }
+export const getWarehousesStatuslabel = id => {
+  if (id) {
+    return warehousesData.transTypes.find(item => `${item.id}` === `${id}`).label
+  }
+  return ''
+}
+
 export const formatURLParams = obj => {
   // eslint-disable-next-line no-restricted-syntax
   for (const propName in obj) {

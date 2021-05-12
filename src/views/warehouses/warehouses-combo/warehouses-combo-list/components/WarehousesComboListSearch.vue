@@ -95,17 +95,16 @@
         md="3"
         sm="4"
       >
-        <v-input-select
-          title="Loại giao dịch"
-          :suggestions="warehousesTypeOptions"
-          :data-input="transTypeSelected.name"
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Loại giao dịch
+        </div>
+        <tree-select
+          v-model="transTypeSelected"
+          :options="warehousesTypeOptions"
+          :searchable="false"
           placeholder="Tất cả"
-          title-class="h8 mt-sm-1 mt-xl-0"
-          input-class="h8 height-button-brand-1"
-          suggestions-class="h9"
-          :clear-able="true"
-          :type-able="true"
-          @updateSelection="transTypeSelected = $event"
         />
       </b-col>
       <!-- END - Group -->
@@ -139,7 +138,6 @@
 
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
-import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import {
   mapActions,
 } from 'vuex'
@@ -147,14 +145,13 @@ import {
 import warehousesData from '@/@db/warehouses'
 import { reverseVniDate } from '@/@core/utils/filter'
 import {
-  WAREHOUSESCOMBO,
+  WAREHOUSES_COMBO,
   GET_WAREHOUSES_COMBO_ACTIONS,
 } from '../../store-module/type'
 
 export default {
   components: {
     VCardActions,
-    VInputSelect,
   },
 
   data() {
@@ -164,8 +161,8 @@ export default {
       transCode: null,
       fromDate: null,
       toDate: null,
-      warehousesTypeOptions: warehousesData.transType,
-      transTypeSelected: { id: null, name: null },
+      warehousesTypeOptions: warehousesData.transTypes,
+      transTypeSelected: null,
 
       configDate: {
         wrap: true,
@@ -181,7 +178,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(WAREHOUSESCOMBO, [
+    ...mapActions(WAREHOUSES_COMBO, [
       GET_WAREHOUSES_COMBO_ACTIONS,
     ]),
     onClickSearchButton() {
@@ -189,7 +186,7 @@ export default {
         transCode: this.transCode,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        transType: this.transTypeSelected.id,
+        transType: this.transTypeSelected,
       })
     },
   },
