@@ -9,7 +9,7 @@ export const validatorPositive = value => {
 
 export const validatorPassword = password => {
   /* eslint-disable no-useless-escape */
-  const regExp = /.{8,}/
+  const regExp = /(?!.* ).{8,}/
   /* eslint-enable no-useless-escape */
   const validPassword = regExp.test(password)
   return validPassword
