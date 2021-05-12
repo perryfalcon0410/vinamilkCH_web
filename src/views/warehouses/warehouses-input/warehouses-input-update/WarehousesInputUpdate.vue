@@ -100,12 +100,24 @@
                   <div>
                     Ngày hóa đơn <sup class="text-danger">*</sup>
                   </div>
-                  <b-form-datepicker
-                    v-model="billDate"
-                    locale="vi"
-                    disabled
-                    :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                  />
+                  <b-input-group
+                    id="form-input-bill-date"
+                    class="input-group-merge"
+                  >
+                    <b-input-group-prepend
+                      is-text
+                      data-toggle
+                    >
+                      <b-icon-calendar />
+                    </b-input-group-prepend>
+                    <vue-flat-pickr
+                      v-model="billDate"
+                      :config="configDate"
+                      class="form-control h9"
+                      placeholder="Chọn ngày"
+                      :disabled="!canEdit"
+                    />
+                  </b-input-group>
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
               </b-col>
@@ -154,11 +166,8 @@
                       v-model="poNumber"
                       trim
                       :state="importType === '1' && touched ? passed : null"
-                      disabled
+                      :disabled="!canEdit"
                     />
-                    <b-input-group-append is-text>
-                      <b-icon-three-dots-vertical />
-                    </b-input-group-append>
                   </b-input-group>
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -342,7 +351,7 @@
               >
                 <b-form-input
                   v-model="productSearch"
-                  class="w-25"
+                  style="width: 30%"
                   placeholder="Nhập mã hoặc tên sản phẩm"
                   type="text"
                   autocomplete="off"
@@ -385,18 +394,16 @@
             <b-row class="m-1 justify-content-end">
               <b-button-group>
                 <b-button
-                  variant="primary"
-                  class="d-flex align-items-center rounded text-uppercase bg-blue-vinamilk text-white"
-                  :disabled="isTransDate"
+                  v-if="isTransDate"
+                  class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
+                  variant="someThing"
                   @click="updateReceipt"
                 >
                   <b-icon
                     icon="download"
-                    width="20"
-                    height="20"
                     class="mr-1"
                   />
-                  Nhập hàng
+                  LƯU
                 </b-button>
 
                 <b-button
@@ -476,6 +483,12 @@ export default {
       today: formatDateToLocale(new Date()),
       importTypeName: '',
       warehousesInputOptions: warehousesData.inputTypes,
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        allowInvalidPreload: false,
+      },
 
       // validation rules
       number,
@@ -630,7 +643,7 @@ export default {
       this.transTime = getTimeOfDate(this.RECEIPT_BY_ID_GETTER().transDate)
       this.wareHouseTypeName = this.RECEIPT_BY_ID_GETTER().wareHouseTypeName
       this.billNumber = this.RECEIPT_BY_ID_GETTER().redInvoiceNo
-      this.billDate = this.RECEIPT_BY_ID_GETTER().orderDate || this.RECEIPT_BY_ID_GETTER().adjustmentDate || this.RECEIPT_BY_ID_GETTER().borrowDate
+      this.billDate = formatDateToLocale(this.RECEIPT_BY_ID_GETTER().orderDate) || formatDateToLocale(this.RECEIPT_BY_ID_GETTER().adjustmentDate) || formatDateToLocale(this.RECEIPT_BY_ID_GETTER().borrowDate)
       this.internalNumber = this.RECEIPT_BY_ID_GETTER().internalNumber
       this.poNumber = this.RECEIPT_BY_ID_GETTER().poNumber
       this.note = this.RECEIPT_BY_ID_GETTER().note
@@ -724,7 +737,9 @@ export default {
         type: this.importType,
         note: this.note,
         redInvoiceNo: this.billNumber,
+        billDate: this.billDate,
         internalNumber: this.internalNumber,
+        poNo: this.poNumber,
         lstUpdate: updatedPromotions,
         formId: 5,
         ctrlId: 7,

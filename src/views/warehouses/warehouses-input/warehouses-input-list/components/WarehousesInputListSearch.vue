@@ -48,72 +48,65 @@
             lg="2"
             md
           >
-            <validation-provider
-              v-slot="{ errors }"
-              rules="dateFormatVNI"
+            <b-form-group
+              label="Từ ngày"
+              label-class="h8"
+              label-for="form-input-date-from"
             >
-              <b-form-group
-                label="Từ ngày"
-                label-class="h8"
-                label-for="form-input-date-from"
+              <b-input-group
+                id="form-input-date-from"
+                class="input-group-merge"
               >
-                <b-input-group
-                  id="form-input-date-from"
-                  class="input-group-merge"
-                  size="sm"
+                <vue-flat-pickr
+                  v-model="fromDate"
+                  :config="configDate"
+                  class="form-control h9 text-brand-3"
+                  placeholder="Chọn ngày"
+                />
+                <b-input-group-append
+                  is-text
                 >
-                  <b-input-group-prepend
-                    is-text
-                    data-toggle
-                  >
-                    <b-icon-calendar />
-                  </b-input-group-prepend>
-                  <vue-flat-pickr
-                    v-model="fromDate"
-                    :config="configDate"
-                    class="form-control h9"
-                    placeholder="Chọn ngày"
+                  <b-icon-x
+                    v-show="fromDate"
+                    class="cursor-pointer text-gray"
+                    @click="fromDate = null"
                   />
-                </b-input-group>
-              </b-form-group>
-              <small class="text-danger">{{ errors[0] }}</small>
-            </validation-provider>
+                </b-input-group-append>
+              </b-input-group>
+            </b-form-group>
           </b-col>
 
           <b-col
             lg="2"
             md
           >
-            <validation-provider
-              v-slot="{ errors }"
-              rules="dateFormatVNI"
+
+            <b-form-group
+              label="Đến ngày"
+              label-class="h8"
+              label-for="form-input-date-to"
             >
-              <b-form-group
-                label="Đến ngày"
-                label-class="h8"
-                label-for="form-input-date-to"
+              <b-input-group
+                id="form-input-date-to"
+                class="input-group-merge"
               >
-                <b-input-group
-                  id="form-input-date-to"
-                  class="input-group-merge"
-                  size="sm"
+                <vue-flat-pickr
+                  v-model="toDate"
+                  :config="configDate"
+                  class="form-control h9"
+                  placeholder="Chọn ngày"
+                />
+                <b-input-group-append
+                  is-text
                 >
-                  <b-input-group-prepend
-                    is-text
-                    data-toggle
-                  >
-                    <b-icon-calendar />
-                  </b-input-group-prepend>
-                  <vue-flat-pickr
-                    v-model="toDate"
-                    :config="configDate"
-                    class="form-control h9"
-                    placeholder="Chọn ngày"
+                  <b-icon-x
+                    v-show="toDate"
+                    class="cursor-pointer text-gray"
+                    @click="toDate = null"
                   />
-                </b-input-group>
-              </b-form-group>
-              <small class="text-danger">{{ errors[0] }}</small>
-            </validation-provider>
+                </b-input-group-append>
+              </b-input-group>
+            </b-form-group>
           </b-col>
 
           <b-col
@@ -125,13 +118,9 @@
               label="Loại nhập"
               label-for="form-input-input-type"
             >
-              <v-select
-                id="form-input-input-type"
+              <tree-select
                 v-model="inputType"
                 :options="warehousesInputOptions"
-                class="h9"
-                label="name"
-                autocomplete="on"
                 placeholder="Tất cả"
               />
             </b-form-group>
@@ -170,13 +159,11 @@
 import { mapActions } from 'vuex'
 import { reverseVniDate, formatDateToLocale } from '@/@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
-import { ValidationProvider } from 'vee-validate'
 import { dateFormatVNI } from '@/@core/utils/validations/validations'
 import { WAREHOUSEINPUT, GET_RECEIPTS_ACTION } from '../../store-module/type'
 
 export default {
   components: {
-    ValidationProvider,
   },
   data() {
     return {
@@ -185,7 +172,7 @@ export default {
       billNumber: '',
       fromDate: formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
       toDate: formatDateToLocale(new Date()),
-      inputType: '',
+      inputType: null,
       warehousesInputOptions: warehousesData.inputTypes,
 
       configDate: {
@@ -205,7 +192,7 @@ export default {
         redInvoiceNo: this.billNumber,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        type: this.inputType?.id,
+        type: this.inputType,
         formId: 5,
         ctrlId: 7,
       }

@@ -5,9 +5,9 @@ export default {
     { id: '2', name: 'Xuất vay mượn' },
   ],
   inputTypes: [
-    { id: '0', name: 'Nhập hàng' },
-    { id: '1', name: 'Nhập điều chỉnh' },
-    { id: '2', name: 'Nhập vay mượn' },
+    { id: '0', label: 'Nhập hàng' },
+    { id: '1', label: 'Nhập điều chỉnh' },
+    { id: '2', label: 'Nhập vay mượn' },
   ],
   reasonTypes: [
     { id: '0', name: 'Hàng hỏng tại cửa hàng' },

@@ -125,13 +125,9 @@
               label="Kho"
               label-for="form-input-warehouse-type"
             >
-              <v-select
-                id="form-input-warehouse-type"
+              <tree-select
                 v-model="warehouseType"
                 :options="warehouseTypes"
-                class="h9"
-                label="name"
-                autocomplete="on"
                 placeholder="Tất cả"
               />
             </b-form-group>
@@ -203,7 +199,7 @@ export default {
     warehouseTypes() {
       return this.WAREHOUSE_TYPES_GETTER().map(data => ({
         id: data.id,
-        name: data.wareHouseTypeName,
+        label: data.wareHouseTypeName,
         isDefault: data.isDefault,
       }))
     },
@@ -211,7 +207,7 @@ export default {
 
   watch: {
     warehouseTypes() {
-      this.warehouseType = this.warehouseTypes.find(types => types.isDefault === 1) // number 1 is default warehouse type
+      this.warehouseType = this.warehouseTypes.find(types => types.isDefault === 1).id // number 1 is default warehouse type
     },
   },
 
@@ -228,7 +224,7 @@ export default {
         stockCountingCode: this.stockCountingCode,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        warehouseTypeId: this.warehouseType?.id,
+        warehouseTypeId: this.warehouseType,
         formId: 5,
         ctrlId: 7,
       }
