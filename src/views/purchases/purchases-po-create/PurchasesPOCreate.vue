@@ -293,7 +293,7 @@
 
     <choose-products-modal
       :visible="isChooseProductsModal"
-      @closeModal="closeChooseProductsModal($event)"
+      @close="isChooseProductsModal = false"
     />
   </b-container>
 </template>
@@ -531,9 +531,6 @@ export default {
   methods: {
     showChooseProductsModal() {
       this.isChooseProductsModal = !this.isChooseProductsModal
-    },
-    closeChooseProductsModal(data) {
-      this.isChooseProductsModal = data
     },
   },
 }

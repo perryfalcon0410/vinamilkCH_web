@@ -232,7 +232,7 @@ export default {
   },
   methods: {
     hide() {
-      this.$emit('closeModal', false)
+      this.$emit('close')
     },
   },
 }
