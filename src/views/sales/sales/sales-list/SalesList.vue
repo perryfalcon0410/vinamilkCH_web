@@ -118,7 +118,7 @@
         <!-- START - Table product -->
         <vue-good-table
           :columns="columns"
-          :rows="products"
+          :rows="onlineOrderByIds"
           style-class="vgt-table striped"
           compact-mode
           line-numbers
@@ -212,7 +212,7 @@
       <!-- END - Section Table product and list suggestion-->
 
       <!-- START - Section Form pay -->
-      <sales-form />
+      <sales-form @getOnlineOrderInfoForm="getOnlineOrderInfoForm" />
       <!-- END - Section Form pay -->
 
     </b-row>
@@ -232,10 +232,12 @@ import {
   GET_PRODUCTS_GETTER,
   GET_PRODUCT_INFOS_GETTER,
   GET_TOP_SALE_PRODUCTS_GETTER,
+  ONLINE_ORDER_BY_ID_GETTER,
   // Action
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
   GET_TOP_SALE_PRODUCTS_ACTION,
+  GET_ONLINE_ORDER_BY_ID_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -295,6 +297,7 @@ export default {
           sortable: false,
         },
       ],
+
       searchOptions: {
         keyWord: '',
         catId: null,
@@ -309,6 +312,57 @@ export default {
       productInfos: [],
       productInfoTypeOptions: saleData.productInfoType,
       productsSearch: [],
+
+      // column online order product
+      onlineOrderId: '',
+      onlineOrderColumns: [
+        {
+          label: 'Mã sản phẩm',
+          field: 'orderTableProductId',
+          sortable: false,
+        },
+        {
+          label: 'Tên sản phẩm',
+          field: 'orderTableProductName',
+          sortable: false,
+        },
+        {
+          label: 'ĐVT',
+          field: 'orderTableProductUnit',
+          sortable: false,
+        },
+        {
+          label: 'Tồn kho',
+          field: 'orderTableProductInventory',
+          type: 'number',
+          sortable: false,
+          width: '80px',
+        },
+        {
+          label: 'Số lượng',
+          field: 'orderTableProductAmount',
+          type: 'number',
+          sortable: false,
+          width: '120px',
+        },
+        {
+          label: 'Đơn giá',
+          field: 'orderTableProductUnitPrice',
+          sortable: false,
+          type: 'number',
+        },
+        {
+          label: 'Thành tiền',
+          field: 'orderTableProductTotalPrice',
+          sortable: false,
+          type: 'number',
+        },
+        {
+          label: 'Chức năng',
+          field: 'orderTableProductFeature',
+          sortable: false,
+        },
+      ],
     }
   },
   computed: {
@@ -337,6 +391,26 @@ export default {
         productName: data.productName,
         productPrice: data.price,
         productCode: data.productCode,
+      }))
+    },
+    onlineOrderByIds() {
+      return this.ONLINE_ORDER_BY_ID_GETTER().map(data => ({
+        // orderTableProductId: data.id,
+        // orderTableProductName: data.productName,
+        // orderTableProductUnit: data.uom1,
+        // orderTableProductInventory: data.stockTotal,
+        // orderTableProductAmount: 1,
+        // orderTableProductUnitPrice: data.price,
+        // orderTableProductTotalPrice: this.totalPrice(1, Number(data.price)),
+        // orderTableProductCode: data.productCode,
+        tableProductId: data.id,
+        tableProductCode: data.productCode,
+        tableProductName: data.productName,
+        tableProductUnit: data.uom1,
+        tableProductInventory: data.stockTotal,
+        tableProductAmount: 1,
+        tableProductUnitPrice: data.price,
+        tableProductTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
     },
   },
@@ -370,17 +444,21 @@ export default {
       // ctrlId: 7, // Hard code
     }
     this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetProductsTopSale)
+
+    this.GET_ONLINE_ORDER_BY_ID_ACTION('21?formId=4&ctrlId=1')
   },
   methods: {
     ...mapGetters(SALES, [
       GET_PRODUCTS_GETTER,
       GET_PRODUCT_INFOS_GETTER,
       GET_TOP_SALE_PRODUCTS_GETTER,
+      ONLINE_ORDER_BY_ID_GETTER,
     ]),
     ...mapActions(SALES, [
       GET_PRODUCTS_ACTION,
       GET_PRODUCT_INFOS_ACTION,
       GET_TOP_SALE_PRODUCTS_ACTION,
+      GET_ONLINE_ORDER_BY_ID_ACTION,
     ]),
     totalPrice(amount, price) {
       return amount * (price || 0)
@@ -401,6 +479,11 @@ export default {
     },
     onChangeKeyWord() {
       this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
+    },
+
+    getOnlineOrderInfoForm(val) {
+      console.log(val.id)
+      this.onlineOrderId = val.id
     },
   },
 }

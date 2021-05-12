@@ -15,6 +15,9 @@ import {
 
   getCardTypesEndpoint,
   getCloselyTypesEndpoint,
+
+  getSalemtPromotionObjectTypeEndpoint,
+  getSalemtDeliveryTypeEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -67,6 +70,16 @@ export default {
   },
   getCloselyTypes(args) {
     return axios.get(getCloselyTypesEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getSalemtPromotionObjects(args) {
+    return axios.get(getSalemtPromotionObjectTypeEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getSalemtDeliveryTypes(args) {
+    return axios.get(getSalemtDeliveryTypeEndpoint, {
       params: formatURLParams(args),
     })
   },

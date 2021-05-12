@@ -6,6 +6,7 @@ import {
   VOUCHERS_GETTER,
   ONLINE_ORDERS_GETTER,
   ONLINE_ORDERS_PAGINATION_GETTER,
+  ONLINE_ORDER_BY_ID_GETTER,
   GET_PRODUCTS_GETTER,
   GET_PRODUCT_INFOS_GETTER,
   GET_TOP_SALE_PRODUCTS_GETTER,
@@ -15,6 +16,7 @@ import {
   // ACTIONS
   GET_VOUCHERS_ACTION,
   GET_ONLINE_ORDERS_ACTION,
+  GET_ONLINE_ORDER_BY_ID_ACTION,
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
   GET_TOP_SALE_PRODUCTS_ACTION,
@@ -28,6 +30,7 @@ export default {
   state: {
     vouchers: [],
     onlineOrders: [],
+    onlineOrderByIds: [],
     onlineOrderPagination: {},
     products: [],
     productInfos: [],
@@ -45,6 +48,9 @@ export default {
     },
     [ONLINE_ORDERS_PAGINATION_GETTER](state) {
       return state.onlineOrderPagination
+    },
+    [ONLINE_ORDER_BY_ID_GETTER](state) {
+      return state.onlineOrderByIds
     },
     [GET_PRODUCTS_GETTER](state) {
       return state.products
@@ -89,6 +95,22 @@ export default {
         .then(res => {
           if (res.success) {
             state.onlineOrders = res.data.content
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_ONLINE_ORDER_BY_ID_ACTION]({ state }, val) {
+      SalesServices
+        .getOnlineOrderById(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.onlineOrderByIds = res.data.products
+            console.log('state.onlineOrderById', state.onlineOrderByIds)
           } else {
             throw new Error(res.statusValue)
           }

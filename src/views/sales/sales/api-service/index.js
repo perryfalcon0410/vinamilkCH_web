@@ -3,6 +3,7 @@ import { formatURLParams } from '@/@core/utils/utils'
 import {
   getVouchersEndpoint,
   getOnlineOrdersEndpoint,
+  getOnlineOrderByIdEndpoint,
   getProductsEndpoint,
   getProductInfosEndpoint,
   getProductsTopSaleEndpoint,
@@ -21,6 +22,11 @@ export default {
       params: formatURLParams(args),
     })
   },
+
+  getOnlineOrderById(args) {
+    return axios.get((`${getOnlineOrderByIdEndpoint}/${args}?ctrlId=1&formId=4`))
+  },
+
   getProducts(args) {
     return axios.get(getProductsEndpoint, {
       params: formatURLParams(args),

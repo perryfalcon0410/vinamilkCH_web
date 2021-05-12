@@ -19,3 +19,6 @@ export const getPrecinctsEndpoint = `${COMMON}/${AREA}/precincts`
 
 export const getCardTypesEndpoint = `${COMMON}/${APPARAM}/cardtypes`
 export const getCloselyTypesEndpoint = `${COMMON}/${APPARAM}/closelytypes`
+
+export const getSalemtPromotionObjectTypeEndpoint = `${COMMON}${APPARAM}/type/SALEMT_PROMOTION_OBJECT`
+export const getSalemtDeliveryTypeEndpoint = `${COMMON}${APPARAM}/type/SALEMT_DELIVERY_TYPE`

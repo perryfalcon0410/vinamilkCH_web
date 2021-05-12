@@ -186,7 +186,12 @@
               Loại đơn hàng
             </b-col>
             <b-col>
-              <b-form-select />
+              <tree-select
+                v-model="salemtPromotionObjectSelected"
+                :options="salemtPromotionObjectOptions"
+                placeholder="Tất cả"
+                @click="onClickOffline"
+              />
             </b-col>
           </b-row>
           <!-- END - Order type -->
@@ -200,7 +205,11 @@
               Loại giao hàng
             </b-col>
             <b-col>
-              <b-form-select />
+              <tree-select
+                v-model="salemtDeliveryTypeSelected"
+                :options="salemtDeliveryTypeOptions"
+                placeholder="Tất cả"
+              />
             </b-col>
           </b-row>
           <!-- END - Delivery type -->
@@ -336,15 +345,16 @@ import {
   // GETTERS
   ERROR_CODE_GETTER,
   CUSTOMER_BY_ID_GETTER,
+  SALEMT_PROMOTION_OBJECT_GETTER,
+  SALEMT_DELIVERY_TYPE_GETTER,
   // ACTIONS
   GET_CUSTOMER_BY_ID_ACTION,
+  GET_SALEMT_PROMOTION_OBJECT_ACTION,
+  GET_SALEMT_DELIVERY_TYPE_ACTION,
 } from '../../../sales-customers/store-module/type'
-// eslint-disable-next-line import/extensions
-import SalesCreateModal from './SalesCreateModal'
-// eslint-disable-next-line import/extensions
-import SalesSearchModal from './SalesSearchModal'
-// eslint-disable-next-line import/extensions
-import SalesOnlineOrdersModal from './SalesOnlineOrdersModal'
+import SalesCreateModal from './SalesCreateModal.vue'
+import SalesSearchModal from './SalesSearchModal.vue'
+import SalesOnlineOrdersModal from './SalesOnlineOrdersModal.vue'
 
 export default {
   components: {
@@ -364,31 +374,60 @@ export default {
       totalBill: null ?? 0,
 
       // online order
+      id: null,
       quantity: null,
       totalPrice: null,
+      salemtPromotionObjectSelected: null,
+      salemtDeliveryTypeSelected: null,
     }
   },
   computed: {
+    ...mapGetters(CUSTOMER, {
+      ERROR_CODE_GETTER,
+      CUSTOMER_BY_ID_GETTER,
+      SALEMT_PROMOTION_OBJECT_GETTER,
+      SALEMT_DELIVERY_TYPE_GETTER,
+    }),
     customer() {
       return this.CUSTOMER_BY_ID_GETTER()
+    },
+    salemtPromotionObjectOptions() {
+      return this.SALEMT_PROMOTION_OBJECT_GETTER.map(data => ({
+        id: data.value,
+        label: data.apParamName,
+      }))
+    },
+    salemtDeliveryTypeOptions() {
+      return this.SALEMT_DELIVERY_TYPE_GETTER.map(data => ({
+        id: data.value,
+        label: data.apParamName,
+      }))
     },
   },
   watch: {
     ERROR_CODE_GETTER() {
       this.checkDuplicationID(this.ERROR_CODE_GETTER())
     },
+    salemtPromotionObjectSelected() {
+      this.salemtPromotionObjectSelected = null
+      this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4, alemtPromotionId: this.salemtPromotionObjectSelected })
+    },
+    salemtDeliveryTypeSelected() {
+      this.salemtDeliveryTypeSelected = null
+      this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
+    },
   },
   mounted() {
     this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
+    this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
+    this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4 })
   },
   methods: {
-    ...mapGetters(CUSTOMER, {
-      ERROR_CODE_GETTER,
-      CUSTOMER_BY_ID_GETTER,
-    }),
 
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_BY_ID_ACTION,
+      GET_SALEMT_PROMOTION_OBJECT_ACTION,
+      GET_SALEMT_DELIVERY_TYPE_ACTION,
     ]),
 
     showModalCreate() {
@@ -419,8 +458,14 @@ export default {
     },
 
     getOnlineOrderInfo(val) {
+      this.id = val.data.id
       this.quantity = val.data.quantity
       this.totalPrice = val.data.totalPrice
+      this.$emit('getOnlineOrderInfoForm', {
+        id: val.data.id,
+        quantity: val.data.quantity,
+        totalPrice: val.data.totalPrice,
+      })
     },
 
     getCreateInfo(val) {
@@ -434,6 +479,10 @@ export default {
     onClickAgreeButton() {
       this.showSearchOnlineModal()
       this.closeNotifyModal()
+    },
+
+    onClickOffline() {
+      console.log('this.salemtPromotionObjectSelected', this.salemtPromotionObjectSelected.alemtPromotionId)
     },
   },
 }
