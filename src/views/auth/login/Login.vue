@@ -217,9 +217,9 @@ export default {
   mixins: [togglePasswordVisibility],
   data() {
     return {
-      saveStatus: JSON.parse(localStorage.getItem('saveStatus')),
-      username: JSON.parse(localStorage.getItem('username')),
-      password: JSON.parse(localStorage.getItem('password')),
+      saveStatus: JSON.parse(localStorage.getItem('saveStatus')) || null,
+      username: JSON.parse(localStorage.getItem('username')) || null,
+      password: JSON.parse(localStorage.getItem('password')) || null,
       sideImg: require('@/assets/images/pages/login-v2.svg'),
       captchaStatus: false,
       captchaCodeResponse: '',
@@ -251,26 +251,24 @@ export default {
       if (this.saveStatus) {
         // Save account
         localStorage.setItem('username', JSON.stringify(this.username))
-      } else {
-        // Clean account
-        localStorage.removeItem('username')
       }
     },
     password() {
       if (this.saveStatus) {
         // Save account
         localStorage.setItem('password', JSON.stringify(this.password))
-      } else {
-        // Clean account
-        localStorage.removeItem('password')
       }
     },
     saveStatus() {
       if (this.saveStatus) {
         // Save account
+        localStorage.setItem('username', JSON.stringify(this.username))
+        localStorage.setItem('password', JSON.stringify(this.password))
         localStorage.setItem('saveStatus', JSON.stringify(this.saveStatus))
       } else {
         // Clean account
+        localStorage.removeItem('username')
+        localStorage.removeItem('password')
         localStorage.removeItem('saveStatus')
       }
     },
@@ -374,7 +372,7 @@ export default {
 
             this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
               .then(() => {
-                toasts.success(`Bạn đã đăng nhập thành công với quyền ${userData.role}. Bây giờ bạn có thể bắt đầu khám phá!`)
+                toasts.success(`Chào mừng bạn trở lại ${userData.fullName}.`)
               })
               .catch(error => {
                 this.$refs.loginForm.setErrors(error.response)

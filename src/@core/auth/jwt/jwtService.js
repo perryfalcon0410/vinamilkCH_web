@@ -74,8 +74,7 @@ export default class JwtService {
     Vue.prototype.$ability.update(initialAbility)
 
     // Redirect to login page
-    router.push({ name: 'auth-login' })
-    router.go()
+    router.replace({ name: 'auth-login' })
   }
 
   onAccessTokenFetched(accessToken) {

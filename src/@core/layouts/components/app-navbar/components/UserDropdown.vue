@@ -9,7 +9,7 @@
         <p class="user-name font-weight-bolder mb-0">
           {{ userData.fullName || userData.username }}
         </p>
-        <span class="user-status">{{ userData.role }}</span>
+        <span class="user-status">{{ userData.usedRole.roleName }}</span>
       </div>
       <b-avatar
         size="40"
@@ -41,19 +41,11 @@
 </template>
 
 <script>
-import {
-  BNavItemDropdown, BDropdownItem, BAvatar,
-} from 'bootstrap-vue'
 import { initialAbility } from '@/libs/acl/config'
 import useJwt from '@/auth/jwt/useJwt'
 import { avatarText } from '@core/utils/filter'
 
 export default {
-  components: {
-    BNavItemDropdown,
-    BDropdownItem,
-    BAvatar,
-  },
   data() {
     return {
       userData: JSON.parse(localStorage.getItem('userData')),
@@ -74,8 +66,7 @@ export default {
       this.$ability.update(initialAbility)
 
       // Redirect to login page
-      this.$router.push({ name: 'auth-login' })
-      this.$router.go()
+      this.$router.replace({ name: 'auth-login' })
     },
   },
 }
