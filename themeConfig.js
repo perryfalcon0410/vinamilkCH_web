@@ -22,11 +22,11 @@ export const $themeConfig = {
     menu: {
       hidden: false,
       isCollapsed: false,
-      type: 'collapse', // collapse, normal
+      type: 'normal', // normal
     },
     navbar: {
       // ? For horizontal menu, navbar type will work for navMenu type
-      type: 'collapse', // static , sticky , floating, hidden, collapse
+      type: 'sticky', // static , sticky , floating, hidden
       backgroundColor: '', // BS color options [primary, success, etc]
     },
     footer: {

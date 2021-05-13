@@ -7,35 +7,45 @@
   >
 
     <!-- NAVBAR -->
-    <b-navbar
-      v-if="(navbarType === 'collapse' && heightToHideOfScrollDown) || navbarType === 'sticky'|| navbarType === 'static'"
-      :style="{
-        backgroundColor: navbarType === 'static' && scrolledTo && skin === 'light' ? 'white' : null,
-        boxShadow: navbarType === 'static' && scrolledTo ? 'rgba(0, 0, 0, 0.05) 0px 4px 20px 0px' : null,
-      }"
-      :toggleable="false"
-      class="header-navbar navbar-shadow align-items-center navbar-brand-center navbar-fixed"
-      :class="{'fixed-top': $store.getters['app/currentBreakPoint'] !== 'xl'}"
+    <transition
+      name="fade"
+      :duration="{ enter: 0, leave: 1000 }"
     >
-      <slot
-        name="navbar"
-        :toggleVerticalMenuActive="toggleVerticalMenuActive"
+      <b-navbar
+        v-if="(navbarType === 'sticky' && heightToHideOfScrollDown) || navbarType === 'static' || navbarType === 'floating'"
+        :style="{
+          backgroundColor: navbarType === 'static' && scrolledTo && skin === 'light' ? 'white' : null,
+          boxShadow: navbarType === 'static' && scrolledTo ? 'rgba(0, 0, 0, 0.05) 0px 4px 20px 0px' : null,
+        }"
+        :toggleable="false"
+        class="header-navbar navbar-shadow align-items-center navbar-brand-center navbar-fixed"
+        :class="{'fixed-top': $store.getters['app/currentBreakPoint'] !== 'xl'}"
       >
-        <app-navbar-horizontal-layout-brand />
-        <app-navbar-horizontal-layout :toggle-vertical-menu-active="toggleVerticalMenuActive" />
-      </slot>
-    </b-navbar>
+        <slot
+          name="navbar"
+          :toggleVerticalMenuActive="toggleVerticalMenuActive"
+        >
+          <app-navbar-horizontal-layout-brand />
+          <app-navbar-horizontal-layout :toggle-vertical-menu-active="toggleVerticalMenuActive" />
+        </slot>
+      </b-navbar>
+    </transition>
     <!--/ NAVBAR -->
 
     <div class="horizontal-menu-wrapper">
       <!-- Horizontal Nav Menu -->
-      <div
-        v-if="isNavMenuShow"
-        class="header-navbar navbar-expand-sm navbar navbar-horizontal navbar-light navbar-shadow menu-border d-none d-xl-block"
-        :class="[navbarMenuTypeClass]"
+      <transition
+        name="fade"
+        :duration="{ enter: 0, leave: 1000 }"
       >
-        <horizontal-nav-menu />
-      </div>
+        <div
+          v-if="isNavMenuShow"
+          class="header-navbar navbar-expand-sm navbar navbar-horizontal navbar-light navbar-shadow menu-border d-none d-xl-block"
+          :class="[navbarMenuTypeClass]"
+        >
+          <horizontal-nav-menu />
+        </div>
+      </transition>
       <!-- Horizontal Nav Menu -->
 
       <!-- Vertical Nav Menu -->
@@ -51,7 +61,7 @@
           />
         </template>
       </vertical-nav-menu>
-    <!-- /Vertical Nav Menu -->
+      <!-- /Vertical Nav Menu -->
     </div>
 
     <!-- Vertical Nav Menu Overlay -->
@@ -150,8 +160,8 @@ export default {
       return 'layout-content-renderer-default'
     },
     isNavMenuShow() {
-      switch (this.navMenuType) {
-        case 'collapse':
+      switch (this.navbarType) {
+        case 'sticky':
           if (this.heightToHideOfScrollDown) {
             return true
           }
@@ -161,7 +171,7 @@ export default {
       }
     },
     heightToHideOfScrollDown() {
-      return this.y <= 1
+      return this.y <= 50
     },
   },
   setup() {
@@ -171,7 +181,6 @@ export default {
       footerType,
       routerTransition,
       isNavMenuHidden,
-      navMenuType,
     } = useAppConfig()
 
     // Vertical Menu
@@ -210,7 +219,6 @@ export default {
 
       // Menu Hidden
       isNavMenuHidden,
-      navMenuType,
 
       // Router Transition
       routerTransition,
