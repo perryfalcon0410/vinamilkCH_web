@@ -555,7 +555,7 @@ export default {
     },
   },
   mounted() {
-    // this.GET_CUSTOMERS_ACTION()
+    this.GET_CUSTOMERS_ACTION()
   },
   methods: {
     ...mapGetters(REDINVOICE, [
@@ -572,11 +572,16 @@ export default {
     },
     loadCustomers() {
       this.cursor = -1
-      const searchData = {
-        searchKeywords: this.redBill.customerCode.trim(),
-      }
+      if (this.redBill.customerCode.length >= 4) {
+        this.inputSearchFocusedKH = true
+        const searchData = {
+          searchKeywords: this.redBill.customerCode.trim(),
+        }
 
-      this.GET_CUSTOMERS_ACTION(searchData)
+        this.GET_CUSTOMERS_ACTION(searchData)
+      } else {
+        this.inputSearchFocusedKH = false
+      }
     },
     selectCustomer(customer) {
       this.redBill.customerCode = customer.customerCode
@@ -587,7 +592,7 @@ export default {
     },
     focus() {
       this.cursor = -1
-      this.inputSearchFocusedKH = true
+      this.inputSearchFocusedKH = this.redBill.customerCode.length >= 4
     },
     keyUp() {
       if (this.cursor > 0) {

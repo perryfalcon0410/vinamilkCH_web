@@ -684,30 +684,40 @@ export default {
     },
     loadProducts() {
       this.cursor = -1
-      const productIds = this.promotions.map(data => data.productId)
-      this.GET_PRODUCTS_ACTION({
-        keyWord: this.productSearch.trim(),
-        productIds,
-        formId: 5,
-        ctrlId: 7,
-      })
+      if (this.productSearch.length >= 4) {
+        this.inputSearchFocusedSP = true
+
+        this.GET_PRODUCTS_ACTION({
+          keyWord: this.productSearch.trim(),
+          formId: 5,
+          ctrlId: 7,
+        })
+      } else {
+        this.inputSearchFocusedSP = false
+      }
     },
     selectProduct(product) {
-      this.promotions.push({
-        id: -1,
-        productId: product.productId,
-        productCode: product.productCode,
-        quantity: 1,
-        price: product.price,
-        name: product.productName,
-        unit: product.unit,
-        totalPrice: 0,
-        soNo: '',
-      })
+      this.productSearch = null
+      const existedPromotionIndex = this.promotions.findIndex(promotion => promotion.productCode === product.productCode)
+      if (existedPromotionIndex === -1) {
+        this.promotions.push({
+          id: -1,
+          productId: product.productId,
+          productCode: product.productCode,
+          quantity: 1,
+          price: product.price,
+          name: product.productName,
+          unit: product.unit,
+          totalPrice: 0,
+          soNo: '',
+        })
+      } else {
+        this.promotions[existedPromotionIndex].quantity += product.quantity
+      }
     },
     focus() {
       this.cursor = -1
-      this.inputSearchFocusedSP = true
+      this.inputSearchFocusedSP = this.productSearch.length >= 4
     },
     keyUp() {
       if (this.cursor > 0) {
@@ -748,12 +758,13 @@ export default {
       })
     },
     click() {
-      this.GET_PRODUCTS_ACTION({
-        keyWord: this.productSearch.trim(),
-        productIds: this.promotions.map(data => data.productId),
-        formId: 5,
-        ctrlId: 7,
-      })
+      if (this.productSearch.length >= 4) {
+        this.GET_PRODUCTS_ACTION({
+          keyWord: this.productSearch.trim(),
+          formId: 5,
+          ctrlId: 7,
+        })
+      }
     },
     onClickDeleteButton(index) {
       this.promotions.splice(index, 1)
