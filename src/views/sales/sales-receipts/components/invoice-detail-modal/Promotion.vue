@@ -1,19 +1,31 @@
 <template>
-  <!-- Start table -->
-  <vue-good-table
-    :columns="columns"
-    :rows="promotiontable"
-    style-class="vgt-table striped"
-    :pagination-options="{
-      enabled: true
-    }"
-    line-numbers
-    :search-options="{
-      enabled: true,
-      externalQuery: searchTerm
-    }"
-  />
-  <!-- End table -->
+  <div>
+    <b-row>
+      <b-col
+        cols="2"
+      >
+        <b-row class="bg-light p-1 w-75 rounded-right  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mt-2 mb-1">
+          Khuyến mãi
+        </b-row>
+      </b-col>
+      <b-col
+        cols="8"
+      />
+    </b-row>
+
+    <!-- Start table -->
+    <vue-good-table
+      :columns="columns"
+      :rows="promotiontable"
+      style-class="vgt-table striped"
+      line-numbers
+      :search-options="{
+        enabled: true,
+        externalQuery: searchTerm
+      }"
+    />
+    <!-- End table -->
+  </div>
 </template>
 
 <script>
@@ -21,9 +33,6 @@ export default {
   components: {
   },
   props: {
-    visible: {
-      type: Boolean,
-    },
     promotiontable: {
       type: Array,
       default: null,
@@ -37,21 +46,29 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
           field: 'number',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'CTKM',
           field: 'promotionProgram',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
       ],
     }

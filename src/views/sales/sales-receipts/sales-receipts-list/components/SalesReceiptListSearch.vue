@@ -182,8 +182,8 @@ export default {
 
       customerName: null,
       billNumber: null,
-      fromDate: null,
-      toDate: null,
+      fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      toDate: new Date(),
 
       configDate: {
         wrap: true,
@@ -191,11 +191,6 @@ export default {
         dateFormat: 'd/m/Y',
       },
     }
-  },
-  watch: {
-    printStateSelected() {
-      console.log(this.printStateSelected)
-    },
   },
 
   mounted() {

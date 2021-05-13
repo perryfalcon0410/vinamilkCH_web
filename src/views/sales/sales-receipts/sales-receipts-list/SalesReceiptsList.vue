@@ -190,9 +190,9 @@
         :information="info"
         :details="detailTable"
         :details-total="detailTableTotal"
-        :promotiondetails="promotionTable"
+        :promotion-details="promotionTable"
         :discount-details="discountTable"
-        @invisible="hide"
+        @close="isInvoiceDetailModal = false"
       />
     </b-form></b-container>
 </template>
@@ -247,21 +247,29 @@ export default {
           label: 'Số hóa đơn',
           field: 'numberBill',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'name',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ngày bán',
           field: 'dayTime',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Tổng giá trị',
@@ -270,16 +278,22 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tiển giảm giá',
           field: 'discountMoney',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-rigt',
         },
         {
           label: 'Tiền tích lũy',
           field: 'moneyAccumulated',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tiền phải trả',
@@ -288,31 +302,43 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Ghi chú',
           field: 'note',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'In HĐ đỏ',
           field: 'print',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Công ty',
           field: 'company',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã số thuế',
           field: 'taxCode',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ghi chú HĐĐ',
@@ -430,10 +456,6 @@ export default {
       this.isInvoiceDetailModal = !this.isInvoiceDetailModal
       this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber: numberBill })
     },
-    hide(state) {
-      this.isInvoiceDetailModal = state
-    },
-
     onPaginationChange() {
       this.GET_SALES_RECEIPTS_ACTION(this.paginationData)
     },

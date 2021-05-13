@@ -4,9 +4,6 @@
     :columns="columns"
     :rows="detail"
     style-class="vgt-table striped"
-    :pagination-options="{
-      enabled: true
-    }"
     line-numbers
     :search-options="{
       enabled: true,
@@ -75,16 +72,22 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Số lượng',
@@ -93,12 +96,16 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Giá bán',
           field: 'price',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Thành tiền',
@@ -108,6 +115,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giảm giá',
@@ -117,6 +126,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Thanh toán',
@@ -125,6 +136,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
       ],
     }

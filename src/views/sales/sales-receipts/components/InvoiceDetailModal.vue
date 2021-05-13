@@ -124,37 +124,16 @@
     <!-- End Invoice details -->
 
     <!-- Start Discounts and discounts -->
-    <b-row>
-      <b-col
-        cols="2"
-      >
-        <b-row class="bg-light p-1 w-75 rounded-right  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mt-2 mb-1">
-          Giảm giá & chiết khấu
-        </b-row>
-      </b-col>
-      <b-col
-        cols="8"
-      />
-    </b-row>
-    <Discounts :discounts="discountDetails" />
-
+    <Discounts
+      v-show="discountDetails.length > 0"
+      :discounts="discountDetails"
+    />
     <!-- Start Discounts and discounts -->
 
     <!-- Start promotion -->
-    <b-row>
-      <b-col
-        cols="2"
-      >
-        <b-row class="bg-light p-1 w-75 rounded-right  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mt-2 mb-1">
-          Khuyến mãi
-        </b-row>
-      </b-col>
-      <b-col
-        cols="8"
-      />
-    </b-row>
     <Promotion
-      :promotiontable="promotiondetails"
+      v-show="promotionDetails.length > 0"
+      :promotiontable="promotionDetails"
     />
     <!-- Start promotion -->
 
@@ -163,14 +142,14 @@
       class="mt-2"
     >
       <b-button
-        @click="hideModal"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+        variant="someThing"
+        @click="cancel"
       >
-        <b-row>
-          <b-icon-x />
-          <h5 class="text-white ">
-            Đóng
-          </h5>
-        </b-row>
+        <b-icon-x
+          scale="1.5"
+        />
+        Đóng
       </b-button>
     </b-row>
   </b-modal>
@@ -201,7 +180,7 @@ export default {
       type: Array,
       default: null,
     },
-    promotiondetails: {
+    promotionDetails: {
       type: Array,
       default: null,
     },
@@ -217,6 +196,8 @@ export default {
   data() {
     return {
       date: null,
+      showDiscountTable: false,
+      showPromotionTable: false,
     }
   },
   computed: {
@@ -224,10 +205,11 @@ export default {
       return moment(this.information.orderDate).format('DD/MM/YYYY')
     },
   },
+
   methods: {
-    hideModal() {
+    cancel() {
       this.visible = !this.visible
-      this.$emit('invisible', false)
+      this.$emit('close')
     },
   },
 }
