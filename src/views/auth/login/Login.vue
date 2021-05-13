@@ -60,7 +60,7 @@
               <b-form-group>
                 <validation-provider
                   #default="{ errors }"
-                  name="Tên đăng nhập"
+                  name="tên đăng nhập"
                   vid="username"
                   rules="required"
                 >
@@ -70,7 +70,7 @@
                     placeholder="Tên đăng nhập"
                     maxlength="20"
                   />
-                  <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                  <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
               </b-form-group>
 
@@ -78,7 +78,7 @@
               <b-form-group>
                 <validation-provider
                   #default="{ errors }"
-                  name="Mật khẩu"
+                  name="mật khẩu"
                   vid="password"
                   rules="required"
                 >
@@ -102,7 +102,7 @@
                       />
                     </b-input-group-append>
                   </b-input-group>
-                  <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                  <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
               </b-form-group>
 
@@ -122,7 +122,7 @@
                 <b-col>
                   <validation-provider
                     #default="{ errors }"
-                    name="Captcha"
+                    name="captcha"
                     rules="required"
                   >
                     <b-form-input
@@ -132,7 +132,7 @@
                       maxlength="20"
                       @paste.prevent
                     />
-                    <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                    <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
 
                 </b-col>
@@ -250,20 +250,20 @@ export default {
     username() {
       if (this.saveStatus) {
         // Save account
-        localStorage.setItem('username', JSON.stringify(this.username))
+        localStorage.setItem('username', JSON.stringify(this.username?.trim()))
       }
     },
     password() {
       if (this.saveStatus) {
         // Save account
-        localStorage.setItem('password', JSON.stringify(this.password))
+        localStorage.setItem('password', JSON.stringify(this.password?.trim()))
       }
     },
     saveStatus() {
       if (this.saveStatus) {
         // Save account
-        localStorage.setItem('username', JSON.stringify(this.username))
-        localStorage.setItem('password', JSON.stringify(this.password))
+        localStorage.setItem('username', JSON.stringify(this.username?.trim()))
+        localStorage.setItem('password', JSON.stringify(this.password?.trim()))
         localStorage.setItem('saveStatus', JSON.stringify(this.saveStatus))
       } else {
         // Clean account
@@ -292,9 +292,9 @@ export default {
         if (success) {
           useJwt
             .preLogin({
-              username: this.username.toLowerCase(),
-              password: this.password,
-              captchaCode: this.captchaCodePost,
+              username: this.username.toLowerCase()?.trim(),
+              password: this.password?.trim(),
+              captchaCode: this.captchaCodePost?.trim(),
             })
             .then(response => response.data)
             .then(res => {
@@ -330,8 +330,8 @@ export default {
 
       useJwt
         .login({
-          username: this.username.toLowerCase(),
-          password: this.password,
+          username: this.username.toLowerCase()?.trim(),
+          password: this.password?.trim(),
           roleId: roleSelected,
           shopId: shopSelected,
         })
@@ -344,7 +344,7 @@ export default {
             const userData = {
               id: data.userId,
               fullName: `${data.firstName} ${data.lastName}`,
-              username: data.username,
+              username: data.username?.trim(),
               email: data.email,
               usedRole: data.usedRole,
               usedShop: data.usedShop,

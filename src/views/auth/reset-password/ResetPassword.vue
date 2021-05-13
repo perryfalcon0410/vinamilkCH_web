@@ -35,7 +35,7 @@
             <b-form-group>
               <validation-provider
                 #default="{ errors }"
-                name="Tên đăng nhập"
+                name="tên đăng nhập"
                 vid="username"
                 rules="required"
               >
@@ -45,7 +45,7 @@
                   placeholder="Tên đăng nhập"
                   maxlength="20"
                 />
-                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -53,7 +53,7 @@
             <b-form-group>
               <validation-provider
                 #default="{ errors }"
-                name="Mật khẩu cũ"
+                name="mật khẩu cũ"
                 vid="oldPassword"
                 rules="required"
               >
@@ -77,7 +77,7 @@
                     />
                   </b-input-group-append>
                 </b-input-group>
-                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -85,7 +85,7 @@
             <b-form-group>
               <validation-provider
                 #default="{ errors }"
-                name="Mật khẩu mới"
+                name="mật khẩu mới"
                 vid="newPassword"
                 rules="required|not-equal:@oldPassword|password"
               >
@@ -109,7 +109,7 @@
                     />
                   </b-input-group-append>
                 </b-input-group>
-                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -117,7 +117,7 @@
             <b-form-group>
               <validation-provider
                 #default="{ errors }"
-                name="Xác nhận mật khẩu"
+                name="xác nhận mật khẩu"
                 rules="required|equal:@newPassword"
               >
                 <b-input-group
@@ -140,7 +140,7 @@
                     />
                   </b-input-group-append>
                 </b-input-group>
-                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
             </b-form-group>
 
@@ -211,10 +211,10 @@ export default {
   },
   data() {
     return {
-      username: '',
-      oldPassword: '',
-      newPassword: '',
-      confirmPassword: '',
+      username: null,
+      oldPassword: null,
+      newPassword: null,
+      confirmPassword: null,
 
       // validation
       required,
@@ -236,10 +236,10 @@ export default {
         if (success) {
           useJwt
             .changePassword({
-              username: this.username.toLowerCase(),
-              oldPassword: this.oldPassword,
-              newPassword: this.newPassword,
-              confirmPassword: this.confirmPassword,
+              username: this.username.toLowerCase()?.trim(),
+              oldPassword: this.oldPassword?.trim(),
+              newPassword: this.newPassword?.trim(),
+              confirmPassword: this.confirmPassword?.trim(),
             })
             .then(response => response.data)
             .then(res => {
