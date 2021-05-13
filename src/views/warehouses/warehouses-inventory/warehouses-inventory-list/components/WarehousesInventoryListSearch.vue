@@ -1,171 +1,163 @@
 <template>
-  <div>
-    <!-- START - Search -->
-    <b-form
-      class="bg-white rounded shadow"
-      @keyup.enter="onClickSearchButton"
+  <!-- START - Search -->
+  <b-form>
+    <v-card-actions
+      title="Tìm kiếm"
     >
-      <b-row
-        v-b-toggle.collapseDelivery
-        class="text-primary mx-0 p-1"
-        align-v="center"
-        align-h="between"
+      <!-- START - Stock Counting Code -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
       >
-        <strong class="text-brand-1">Tìm kiếm</strong>
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Mã kiểm kê
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            id="form-input-stock-counting-code"
+            v-model="stockCountingCode"
+            class="h8 text-brand-3"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="stockCountingCode"
+              class="cursor-pointer text-gray"
+              @click="stockCountingCode = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Full Name -->
 
-        <b-icon-chevron-down
-          scale="1.3"
-          color="#203181"
+      <!-- START - Date From -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Từ ngày
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <vue-flat-pickr
+            v-model="fromDate"
+            :config="configDate"
+            class="form-control h8 text-brand-3"
+            placeholder="Chọn ngày"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="fromDate"
+              class="cursor-pointer text-gray"
+              @click="fromDate = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Date From -->
+
+      <!-- START - Date To -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Đến ngày
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <vue-flat-pickr
+            id="form-input-date-from"
+            v-model="toDate"
+            :config="configDate"
+            class="form-control h8 text-brand-3"
+            placeholder="Chọn ngày"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="toDate"
+              class="cursor-pointer text-gray"
+              @click="toDate = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
+
+      </b-col>
+      <!-- END - Date To -->
+
+      <!-- START - Warehouses Type -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Kho
+        </div>
+        <tree-select
+          v-model="warehouseType"
+          :options="warehouseTypes"
+          :searchable="false"
+          placeholder="Tất cả"
+          no-options-text="Không có dữ liệu"
         />
-      </b-row>
+      </b-col>
+      <!-- END - Warehouses Type -->
 
-      <b-collapse
-        id="collapseDelivery"
-        visible
+      <!-- START - Search button -->
+      <b-col
+        lg="4"
+        md="12"
       >
-        <b-form-row class="v-search-form border-top mx-0 p-1">
-          <b-col
-            lg="2"
-            md
-          >
-            <b-form-group
-              label="Mã kiểm kê"
-              label-class="h8"
-              label-for="form-input-stock-counting-code"
-            >
-              <b-form-input
-                id="form-input-red-stock-counting-code"
-                v-model="stockCountingCode"
-                class="h9"
-                size="sm"
-                maxlength="20"
-                trim
-              />
-            </b-form-group>
-          </b-col>
-
-          <b-col
-            lg="2"
-            md
-          >
-            <validation-provider
-              v-slot="{ errors }"
-              rules="dateFormatVNI"
-            >
-              <b-form-group
-                label="Từ ngày"
-                label-class="h8"
-                label-for="form-input-date-from"
-              >
-                <b-input-group
-                  id="form-input-date-from"
-                  class="input-group-merge"
-                  size="sm"
-                >
-                  <b-input-group-prepend
-                    is-text
-                    data-toggle
-                  >
-                    <b-icon-calendar />
-                  </b-input-group-prepend>
-                  <vue-flat-pickr
-                    v-model="fromDate"
-                    :config="configDate"
-                    class="form-control h9"
-                    placeholder="Chọn ngày"
-                  />
-                </b-input-group>
-              </b-form-group>
-              <small class="text-danger">{{ errors[0] }}</small>
-            </validation-provider>
-          </b-col>
-
-          <b-col
-            lg="2"
-            md
-          >
-            <validation-provider
-              v-slot="{ errors }"
-              rules="dateFormatVNI"
-            >
-              <b-form-group
-                label="Đến ngày"
-                label-class="h8"
-                label-for="form-input-date-to"
-              >
-                <b-input-group
-                  id="form-input-date-to"
-                  class="input-group-merge"
-                  size="sm"
-                >
-                  <b-input-group-prepend
-                    is-text
-                    data-toggle
-                  >
-                    <b-icon-calendar />
-                  </b-input-group-prepend>
-                  <vue-flat-pickr
-                    v-model="toDate"
-                    :config="configDate"
-                    class="form-control h9"
-                    placeholder="Chọn ngày"
-                  />
-                </b-input-group>
-              </b-form-group>
-              <small class="text-danger">{{ errors[0] }}</small>
-            </validation-provider>
-          </b-col>
-
-          <b-col
-            lg="2"
-            md
-          >
-            <b-form-group
-              label-class="h8"
-              label="Kho"
-              label-for="form-input-warehouse-type"
-            >
-              <tree-select
-                v-model="warehouseType"
-                :options="warehouseTypes"
-                placeholder="Tất cả"
-              />
-            </b-form-group>
-          </b-col>
-
-          <b-col
-            md="12"
-            lg="4"
-          >
-            <b-form-group
-              class="ml-lg-1"
-              label="Tìm kiếm"
-              label-for="form-button-search"
-              label-class="text-white"
-            >
-              <b-button
-                id="form-button-search"
-                class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
-                variant="someThing"
-                style="height: 30px;"
-                @click="onClickSearchButton()"
-              >
-                <b-icon-search />
-                Tìm kiếm
-              </b-button>
-            </b-form-group>
-          </b-col>
-        </b-form-row>
-      </b-collapse>
-    </b-form>
-    <!-- END - Search -->
-  </div>
+        <!--"onmousedown" is prevent hightlight text -->
+        <div
+          class="h8 text-white"
+          onmousedown="return false;"
+          style="cursor: context-menu;"
+        >
+          Tìm kiếm
+        </div>
+        <b-button
+          class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
+          variant="someThing"
+          @click="onClickSearchButton()"
+        >
+          <b-icon-search class="mr-05" />
+          Tìm kiếm
+        </b-button>
+      </b-col>
+      <!-- END - Search button -->
+    </v-card-actions>
+  </b-form>
+  <!-- END - Search -->
 </template>
 
 <script>
+import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { mapActions, mapGetters } from 'vuex'
 import { reverseVniDate, formatDateToLocale } from '@/@core/utils/filter'
-import { ValidationProvider } from 'vee-validate'
 import { dateFormatVNI } from '@/@core/utils/validations/validations'
 import {
   WAREHOUSEINVENTORY,
@@ -176,7 +168,7 @@ import {
 
 export default {
   components: {
-    ValidationProvider,
+    VCardActions,
   },
   data() {
     return {

@@ -446,7 +446,9 @@ import {
   number,
   required,
 } from '@/@core/utils/validations/validations'
-import { formatDateToLocale, getTimeOfDate, formatNumberToLocale } from '@core/utils/filter'
+import {
+  formatDateToLocale, getTimeOfDate, formatNumberToLocale, replaceDotWithComma,
+} from '@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
 import {
   WAREHOUSEINPUT,
@@ -574,19 +576,19 @@ export default {
     products() {
       return this.PRODUCTS_BY_ID_GETTER().map(data => ({
         productCode: data.productCode,
-        quantity: formatNumberToLocale(Number(data.quantity)),
-        price: formatNumberToLocale(Number(data.price)),
+        quantity: replaceDotWithComma(formatNumberToLocale(Number(data.quantity))),
+        price: replaceDotWithComma(formatNumberToLocale(Number(data.price))),
         name: data.productName,
         unit: data.unit,
-        totalPrice: formatNumberToLocale(Number(data.totalPrice)),
+        totalPrice: replaceDotWithComma(formatNumberToLocale(Number(data.totalPrice))),
         soNo: data.soNo,
       }))
     },
     totalProductQuantity() {
-      return formatNumberToLocale(Number(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.quantity), 0)))
+      return replaceDotWithComma(formatNumberToLocale(Number(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.quantity), 0))))
     },
     totalProductPrice() {
-      return formatNumberToLocale(Number(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.totalPrice), 0)))
+      return replaceDotWithComma(formatNumberToLocale(Number(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.totalPrice), 0))))
     },
     getPromotions() {
       return this.PROMOTIONS_BY_ID_GETTER().map(data => ({
@@ -602,7 +604,7 @@ export default {
       }))
     },
     getTotalPromotionQuantity() {
-      return formatNumberToLocale(Number(this.promotions.reduce((accum, item) => accum + Number(item.quantity), 0)))
+      return replaceDotWithComma(formatNumberToLocale(Number(this.promotions.reduce((accum, item) => accum + Number(item.quantity), 0))))
     },
     totalPromotionPrice() {
       return 0
@@ -737,9 +739,9 @@ export default {
         type: this.importType,
         note: this.note,
         redInvoiceNo: this.billNumber,
-        billDate: this.billDate,
+        orderDate: this.billDate,
         internalNumber: this.internalNumber,
-        poNo: this.poNumber,
+        poNumber: this.poNumber,
         lstUpdate: updatedPromotions,
         formId: 5,
         ctrlId: 7,

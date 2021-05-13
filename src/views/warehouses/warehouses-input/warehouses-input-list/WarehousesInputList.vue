@@ -37,7 +37,8 @@
           :rows="receipts"
           style-class="vgt-table striped"
           :pagination-options="{
-            enabled: true
+            enabled: true,
+            perPage: elementSize
           }"
           compact-mode
           line-numbers
@@ -214,7 +215,9 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale, formatNumberToLocale, reverseVniDate } from '@core/utils/filter'
+import {
+  formatDateToLocale, formatNumberToLocale, reverseVniDate, replaceDotWithComma,
+} from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import WarehousesInputListSearch from './components/WarehousesInputListSearch.vue'
 import {
@@ -327,9 +330,9 @@ export default {
         transCode: data.transCode,
         redInvoiceNo: data.redInvoiceNo,
         internalNumber: data.internalNumber,
-        quantity: formatNumberToLocale(Number(data.totalQuantity)),
+        quantity: replaceDotWithComma(formatNumberToLocale(Number(data.totalQuantity))),
         receiptQuantity: data.totalQuantity,
-        price: formatNumberToLocale(Number(data.totalAmount)),
+        price: replaceDotWithComma(formatNumberToLocale(Number(data.totalAmount))),
         receiptPrice: data.totalAmount,
         note: data.note,
         feature: '',
@@ -338,10 +341,10 @@ export default {
       }))
     },
     totalQuantity() {
-      return formatNumberToLocale(Number(this.receipts.reduce((accum, item) => accum + Number(item.receiptQuantity), 0)))
+      return replaceDotWithComma(formatNumberToLocale(Number(this.receipts.reduce((accum, item) => accum + Number(item.receiptQuantity), 0))))
     },
     totalPrice() {
-      return formatNumberToLocale(Number(this.receipts.reduce((accum, item) => accum + Number(item.receiptPrice), 0)))
+      return replaceDotWithComma(formatNumberToLocale(Number(this.receipts.reduce((accum, item) => accum + Number(item.receiptPrice), 0))))
     },
     receiptPagination() {
       return this.RECEIPT_PAGINATION_GETTER()

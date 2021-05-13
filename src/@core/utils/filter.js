@@ -94,3 +94,9 @@ export const getTimeOfDate = value => {
 
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
 }
+
+// Replace . with ,
+export const replaceDotWithComma = value => {
+  if (!value) return value
+  return value.replaceAll('.', ',')
+}
