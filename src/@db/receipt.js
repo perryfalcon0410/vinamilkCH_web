@@ -1,7 +1,7 @@
 export default {
   printState: [
-    { id: '', name: 'Tất cả' },
-    { id: '1', name: 'Đã in' },
-    { id: '0', name: 'Chưa in' },
+    { id: '', label: 'Tất cả' },
+    { id: '1', label: 'Đã in' },
+    { id: '0', label: 'Chưa in' },
   ],
 }

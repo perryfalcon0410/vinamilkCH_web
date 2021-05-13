@@ -4,7 +4,13 @@
     class="d-flex flex-column p-0"
   >
 
-    <sales-receipt-list-search />
+    <sales-receipt-list-search
+      @updateSearchData="paginationData = {
+        size: elementSize,
+        page: pageNumber - 1,
+        ...$event }"
+    />
+
     <b-form class="v-search bg-white rounded shadow rounded my-1">
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
@@ -85,15 +91,11 @@
           >
             <span v-if="props.column.field == 'note'">
               <span>
-                <b-button
+                <b-icon-file-earmark-excel
                   v-b-popover.hover="props.row.note"
-                  variant="light"
-                  class="rounded-circle p-1 ml-1"
-                >
-                  <b-icon-file-earmark-excel
-                    color="blue"
-                  />
-                </b-button>
+                  class="cursor-pointer"
+                  scale="1.5"
+                />
               </span>
             </span>
 
@@ -101,23 +103,19 @@
               <span>
                 <b-icon-file-earmark-excel
                   v-b-popover.hover="props.row.noteHdd"
-                  color="blue"
                   class="cursor-pointer"
+                  scale="1.5"
                 />
               </span>
             </span>
             <span v-else-if="props.column.field == 'press'">
               <span>
-                <b-button
+                <b-icon-eye-fill
                   v-b-popover.hover="'Chi tiết hóa đơn'"
-                  variant="light"
-                  class="rounded-circle p-1 ml-1"
+                  class="cursor-pointer"
+                  scale="1.5"
                   @click="showInvoiceDetailModal(props.row.id, props.row.numberBill)"
-                >
-                  <b-icon-eye-fill
-                    color="blue"
-                  />
-                </b-button>
+                />
               </span>
             </span>
             <span v-else>
@@ -390,13 +388,21 @@ export default {
       return this.SALES_RECEIPTS_PAGINATION_GETTER()
     },
   },
+
   watch: {
     pageNumber() {
+      this.paginationData.page = this.pageNumber - 1
       this.onPaginationChange()
     },
     elementSize() {
+      this.paginationData.size = this.elementSize
       this.onPaginationChange()
     },
+    paginationData() {
+      this.pageNumber = 1
+      this.onPaginationChange()
+    },
+
   },
   mounted() {
     this.GET_SALES_RECEIPTS_ACTION({
@@ -429,11 +435,7 @@ export default {
     },
 
     onPaginationChange() {
-      const paginationData = {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-      }
-      this.GET_SALES_RECEIPTS_ACTION(paginationData)
+      this.GET_SALES_RECEIPTS_ACTION(this.paginationData)
     },
   },
 }

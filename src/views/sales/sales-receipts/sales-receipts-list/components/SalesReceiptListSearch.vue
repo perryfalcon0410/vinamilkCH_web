@@ -115,15 +115,14 @@
         md="3"
         sm="4"
       >
-        <v-input-select
-          title="Trạng thái"
-          :suggestions="printOptions"
-          :data-input="printStateSelected.name"
-          placeholder=""
-          title-class="h8 mt-sm-1 mt-xl-0"
-          input-class="h8 height-button-brand-1"
-          suggestions-class="h9"
-          @updateSelection="printStateSelected = $event"
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Trạng thái
+        </div>
+        <tree-select
+          v-model="printStateSelected"
+          :options="printOptions"
         />
       </b-col>
       <!-- END - Status -->
@@ -157,7 +156,6 @@
 
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
-import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 
 import {
   mapActions,
@@ -176,12 +174,11 @@ import {
 export default {
   components: {
     VCardActions,
-    VInputSelect,
   },
   data() {
     return {
       printOptions: receiptData.printState,
-      printStateSelected: { id: null, name: null },
+      printStateSelected: null,
 
       customerName: null,
       billNumber: null,
@@ -195,9 +192,14 @@ export default {
       },
     }
   },
+  watch: {
+    printStateSelected() {
+      console.log(this.printStateSelected)
+    },
+  },
 
   mounted() {
-    this.printStateSelected = { id: this.printOptions[0].id, name: this.printOptions[0].name }
+    this.printStateSelected = this.printOptions[0].id
   },
 
   methods: {
@@ -207,17 +209,22 @@ export default {
     ...mapGetters(SALESRECEIPTS, [
       SALES_RECEIPTS_GETTER,
     ]),
+
     onClickSearchButton() {
       const searchData = {
         searchKeywords: this.customerName?.trim(),
         orderNumber: this.billNumber?.trim(),
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        usedRedInvoice: this.printStateSelected.id,
+        usedRedInvoice: this.printStateSelected,
         formId: 5, // hard code
         ctrlId: 7, // hard code
       }
+      this.updateSearchData(searchData)
       this.GET_SALES_RECEIPTS_ACTION(searchData)
+    },
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
     },
   },
 }
