@@ -10,7 +10,10 @@
     <!-- START - Product  list -->
     <b-form class="bg-white rounded shadow my-1">
       <!-- START - Title -->
-      <b-form-row class="justify-content-between align-items-center border-bottom p-1">
+      <b-row
+        class="justify-content-between align-items-center border-bottom px-1 mx-0"
+        style="padding: 5px 0"
+      >
         <strong
           class="text-brand-1"
         >
@@ -19,13 +22,15 @@
         <b-button
           class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
           variant="someThing"
-          size="sm"
           @click="onClickCreateButton"
         >
-          <b-icon-plus />
+          <b-icon-plus
+            scale="2"
+            class="mr-05"
+          />
           Thêm mới
         </b-button>
-      </b-form-row>
+      </b-row>
       <!-- END - Title -->
 
       <!-- START - Table -->
@@ -56,9 +61,11 @@
           >
             <b-row
               v-if="props.column.field === 'feature'"
+              class="mx-0"
             >
               <b-icon-bricks
                 v-b-popover.hover="'Thao tác'"
+                scale="1.3"
                 class="ml-3"
               />
             </b-row>
@@ -75,21 +82,25 @@
           >
             <b-row
               v-if="props.column.field === 'feature'"
+              class="mx-0"
             >
               <b-icon-printer
                 v-b-popover.hover.top="'In phiếu'"
                 class="cursor-pointer ml-1"
+                scale="1.4"
                 @click="onClickPrintButton(props.row.id)"
               />
               <b-icon-eye-fill
                 v-b-popover.hover.top="'Xem chi tiết'"
                 class="cursor-pointer ml-1"
+                scale="1.4"
                 @click="onClickUpdateButton(props.row.id, props.row.receiptType)"
               />
               <b-icon-trash-fill
                 v-b-popover.hover.top="'Xóa'"
                 class="cursor-pointer ml-1"
                 color="red"
+                scale="1.4"
                 @click="onClickDeleteButton(props.row.id, props.row.receiptType, props.row.transDate, props.row.originalIndex)"
               />
             </b-row>
@@ -240,8 +251,8 @@ export default {
     return {
       isDeleteModalShow: false,
 
-      fromDate: formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
-      toDate: formatDateToLocale(new Date()),
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
       billNumber: '',
       inputTypes: '',
       selectedReceiptId: '',
@@ -290,8 +301,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Số tiền',
@@ -301,7 +312,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-center',
           tdClass: 'text-right',
         },
         {
@@ -317,6 +328,7 @@ export default {
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
+          width: '100px',
         },
       ],
     }

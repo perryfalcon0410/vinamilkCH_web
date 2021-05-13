@@ -36,7 +36,6 @@
                     id="transCode"
                     v-model="transCode"
                     maxlength="40"
-                    trim
                     disabled
                   />
                 </b-form-group>
@@ -83,7 +82,6 @@
                   </div>
                   <b-form-input
                     v-model="billNumber"
-                    trim
                     :state="touched ? passed : null"
                     :disabled="!canEdit"
                   />
@@ -104,12 +102,6 @@
                     id="form-input-bill-date"
                     class="input-group-merge"
                   >
-                    <b-input-group-prepend
-                      is-text
-                      data-toggle
-                    >
-                      <b-icon-calendar />
-                    </b-input-group-prepend>
                     <vue-flat-pickr
                       v-model="billDate"
                       :config="configDate"
@@ -137,7 +129,6 @@
                   </div>
                   <b-form-input
                     v-model="internalNumber"
-                    trim
                     :state="touched ? passed : null"
                     :disabled="!canEdit"
                   />
@@ -164,7 +155,6 @@
                   >
                     <b-form-input
                       v-model="poNumber"
-                      trim
                       :state="importType === '1' && touched ? passed : null"
                       :disabled="!canEdit"
                     />
@@ -226,6 +216,7 @@
                   >
                     <b-icon-bricks
                       v-b-popover.hover="'Thao tác'"
+                      scale="1.3"
                       class="ml-3"
                     />
                   </b-row>
@@ -289,6 +280,7 @@
                   >
                     <b-icon-bricks
                       v-b-popover.hover="'Thao tác'"
+                      scale="1.3"
                       class="ml-3"
                     />
                   </b-row>
@@ -410,10 +402,9 @@
                   class="d-flex align-items-center ml-1 rounded text-uppercase"
                   @click="navigateBack"
                 >
-                  <b-icon
-                    icon="x"
-                    width="20"
-                    height="20"
+                  <b-icon-x
+                    scale="1.5"
+                    class="mr-05"
                   />
                   Đóng
                 </b-button>
@@ -472,19 +463,19 @@ export default {
   },
   data() {
     return {
-      warehouse: '',
-      billNumber: '',
-      billDate: '',
-      internalNumber: '',
-      poNumber: '',
-      poId: '',
-      note: '',
-      transCode: '',
-      transDate: '',
-      transTime: '',
-      wareHouseTypeName: '',
-      today: formatDateToLocale(new Date()),
-      importTypeName: '',
+      warehouse: null,
+      billNumber: null,
+      billDate: null,
+      internalNumber: null,
+      poNumber: null,
+      poId: null,
+      note: null,
+      transCode: null,
+      transDate: null,
+      transTime: null,
+      wareHouseTypeName: null,
+      today: this.$nowDate,
+      importTypeName: null,
       warehousesInputOptions: warehousesData.inputTypes,
       configDate: {
         wrap: true,
@@ -564,7 +555,7 @@ export default {
       ],
       promotions: [],
       cursor: -1,
-      productSearch: '',
+      productSearch: null,
       inputSearchFocusedSP: false,
       totalPromotionQuantity: 0,
     }
@@ -690,7 +681,7 @@ export default {
         this.inputSearchFocusedSP = true
 
         this.GET_PRODUCTS_ACTION({
-          keyWord: this.productSearch.trim(),
+          keyWord: this.productSearch?.trim(),
           formId: 5,
           ctrlId: 7,
         })
@@ -763,7 +754,7 @@ export default {
       if (this.productSearch === null) return
       if (this.productSearch.length >= commonData.minSearchLength) {
         this.GET_PRODUCTS_ACTION({
-          keyWord: this.productSearch.trim(),
+          keyWord: this.productSearch?.trim(),
           formId: 5,
           ctrlId: 7,
         })

@@ -36,7 +36,7 @@
                   <validation-provider
                     v-slot="{ errors, passed, touched }"
                     rules="required"
-                    name="Họ và tên đệm"
+                    name="họ và tên đệm"
                   >
                     <div class="mt-1">
                       Họ và tên đệm <sup class="text-danger">*</sup>
@@ -47,7 +47,7 @@
                       autocomplete="on"
                       maxlength="200"
                     />
-                    <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                    <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
                 </b-col>
 
@@ -55,7 +55,7 @@
                   <validation-provider
                     v-slot="{ errors, passed, touched }"
                     rules="required"
-                    name="Tên"
+                    name="tên"
                   >
                     <div class="mt-1">
                       Tên <sup class="text-danger">*</sup>
@@ -66,7 +66,7 @@
                       :state="touched ? passed : null"
                       maxlength="200"
                     />
-                    <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                    <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
                 </b-col>
               </b-form-row>
@@ -76,7 +76,7 @@
               <validation-provider
                 v-slot="{ errors, passed, touched }"
                 rules="code"
-                name="Mã vạch"
+                name="mã vạch"
               >
                 <div class="mt-1">
                   Mã vạch
@@ -87,7 +87,7 @@
                   :state="touched ? passed : null"
                   maxlength="40"
                 />
-                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
               <!-- END - Customer Barcode -->
 
@@ -98,7 +98,7 @@
                   <validation-provider
                     v-slot="{ errors }"
                     rules="required|dateFormatVNI|age"
-                    name="Ngày sinh"
+                    name="ngày sinh"
                   >
                     <div class="mt-1">
                       Ngày sinh <sup class="text-danger">*</sup>
@@ -129,7 +129,7 @@
                         />
                       </b-input-group-append>
                     </b-input-group>
-                    <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                    <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
                 </b-col>
                 <!-- gender -->
@@ -155,7 +155,7 @@
                   <validation-provider
                     v-slot="{ errors }"
                     rules="required"
-                    name="Nhóm khách hàng"
+                    name="nhóm khách hàng"
                   >
                     <div
                       class="mt-1"
@@ -170,7 +170,7 @@
                       no-results-text="Không tìm thấy kết quả"
                       :clearable="false"
                     />
-                    <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                    <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
 
                 </b-col>
@@ -228,7 +228,7 @@
               <validation-provider
                 v-slot="{ errors, passed,touched }"
                 rules="identifyCard"
-                name="CMND"
+                name="chứng minh nhân dân"
               >
                 <b-form-group
                   label="CMND"
@@ -243,7 +243,7 @@
                     minlength="9"
                     :state="touched ? stateInputValueID = passed : null"
                   />
-                  <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                  <small class="text-danger">{{ errors[0] }}</small>
                 </b-form-group>
               </validation-provider>
               <!-- END - Customer IdentityCard -->
@@ -252,7 +252,7 @@
               <validation-provider
                 v-slot="{ errors }"
                 rules="dateFormatVNI"
-                name="Ngày cấp"
+                name="ngày cấp"
               >
                 <div class="mt-1">
                   Ngày cấp
@@ -280,7 +280,7 @@
                     />
                   </b-input-group-append>
                 </b-input-group>
-                <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+                <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
               <!-- END - Customer ID Date -->
 
@@ -337,7 +337,7 @@
           <validation-provider
             v-slot="{ errors, passed, touched}"
             rules="phoneNumber|required"
-            name="Di động"
+            name="di động"
           >
             <div class="mt-1">
               Di động <sup class="text-danger">*</sup>
@@ -349,7 +349,7 @@
               :state="touched ? passed : null"
               maxlength="10"
             />
-            <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+            <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
           <!-- END - Customer Phone Number -->
 
@@ -357,7 +357,7 @@
           <validation-provider
             v-slot="{ errors, passed, touched }"
             rules="email"
-            name="Email"
+            name="email"
           >
             <div class="mt-1">
               Email
@@ -370,7 +370,7 @@
               maxlength="200"
               :state="touched ? passed : null"
             />
-            <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+            <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
           <!-- END - Customer Email -->
 
@@ -378,7 +378,7 @@
           <validation-provider
             v-slot="{ errors, passed, touched }"
             rules="required"
-            name="Số nhà"
+            name="số nhà"
           >
             <div class="mt-1">
               Số nhà <sup class="text-danger">*</sup>
@@ -388,7 +388,7 @@
               maxlength="200"
               :state="touched ? passed : null"
             />
-            <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+            <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
           <!-- END - Customer Home number -->
 
@@ -465,7 +465,7 @@
           <validation-provider
             v-slot="{ errors, passed, touched }"
             rules="code"
-            name="Mã số thuế"
+            name="mã số thuế"
           >
             <div class="mt-1">
               Mã số thuế
@@ -475,7 +475,7 @@
               :state="touched ? passed : null"
               maxlength="40"
             />
-            <small class="text-danger">{{ $capFirstString(errors[0]) }}</small>
+            <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
         <!-- END - Customer Tax code-->
         </b-col>

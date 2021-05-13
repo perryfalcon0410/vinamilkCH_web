@@ -38,7 +38,6 @@
                     id="id"
                     v-model="id"
                     maxlength="40"
-                    trim
                     disabled
                   />
                 </b-form-group>
@@ -66,7 +65,7 @@
               <b-form-input
                 id="warehouse"
                 v-model="warehousesType.wareHouseTypeName"
-                readonly
+                disabled
               />
             </b-form-group>
             <!-- END -  Stock  -->
@@ -77,14 +76,13 @@
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
                   rules="required"
-                  product-name="Số hóa đơn"
+                  name="số hóa đơn"
                 >
                   <div class="h9">
                     Số hóa đơn <sup class="text-danger">*</sup>
                   </div>
                   <b-form-input
                     v-model="billNumber"
-                    trim
                     :state="touched ? passed : null"
                     :disabled="importType != '1' ? true : false"
                   />
@@ -110,12 +108,7 @@
                       class="form-control h8 text-brand-3"
                       placeholder="Chọn ngày"
                     />
-                    <b-input-group-append
-                      is-text
-                      data-toggle
-                    >
-                      <b-icon-calendar />
-                    </b-input-group-append>
+
                   </b-input-group>
                 </validation-provider>
               </b-col>
@@ -128,14 +121,13 @@
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
                   rules="required"
-                  product-name="Số nội bộ"
+                  name="số nội bộ"
                 >
                   <div class="mt-1 h9">
                     Số nội bộ <sup class="text-danger">*</sup>
                   </div>
                   <b-form-input
                     v-model="internalNumber"
-                    trim
                     :state="touched ? passed : null"
                     :disabled="importType != '1' ? true : false"
                   />
@@ -146,7 +138,7 @@
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
                   :rules="importType === '1' ? 'required' : ''"
-                  product-name="PO No"
+                  name="PO No"
                 >
                   <div class="mt-1 h9">
                     PO No
@@ -161,11 +153,14 @@
                   >
                     <b-form-input
                       v-model="poNo"
-                      trim
                       :state="importType === '1' && touched ? passed : null"
                       :disabled="importType != '1' ? true : false"
                     />
-                    <b-input-group-append is-text>
+                    <b-input-group-append
+                      v-b-popover.hover="'Nhập PO No'"
+                      is-text
+                      class="cursor-pointer"
+                    >
                       <b-icon-three-dots-vertical
                         @click="showModal()"
                       />
@@ -302,11 +297,13 @@
                 slot="table-column"
                 slot-scope="props"
               >
-                <span v-if="props.column.label =='Function'">
-                  <b-icon
-                    class="cursor-pointer text-justify-center"
+                <span
+                  v-if="props.column.label =='Function'"
+                  v-b-popover.hover="'Thêm hàng'"
+                >
+                  <b-icon-plus
+                    class="cursor-pointer"
                     scale="2.5"
-                    icon="plus"
                     @click="newRow"
                   />
                 </span>
@@ -428,7 +425,6 @@ import {
 } from '@/@core/utils/validations/validations'
 import { mapGetters, mapActions } from 'vuex'
 import { getNow } from '@core/utils/utils'
-import { formatDateToLocale } from '@/@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
 import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
@@ -476,7 +472,7 @@ export default {
       billNumber: '',
       importType: '1',
       internalNumber: '',
-      billDate: formatDateToLocale(new Date()),
+      billDate: this.$nowDate,
       poNo: '',
       note: '',
       listImportProduct: null,
@@ -781,7 +777,7 @@ export default {
     },
     navigateBack() {
       if (this.status === null) {
-        this.$router.back()
+        this.$router.replace({ name: 'warehouses-input' })
       } else {
         this.showConfirmCloseModal = true
       }

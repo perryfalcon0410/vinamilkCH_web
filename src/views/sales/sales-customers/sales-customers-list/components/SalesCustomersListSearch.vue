@@ -194,8 +194,8 @@
       <!-- START - Search button -->
       <b-col
         xl
+        lg="3"
         sm="4"
-        md="3"
       >
         <!--"onmousedown" is prevent hightlight text -->
         <div
@@ -227,9 +227,6 @@ import {
   mapGetters,
 } from 'vuex'
 import { reverseVniDate } from '@/@core/utils/filter'
-import {
-  dateFormatVNI,
-} from '@/@core/utils/validations/validations'
 import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
 
@@ -251,13 +248,9 @@ export default {
   data() {
     return {
       isSearchFocus: false,
-
-      // validation rules
-      dateFormatVNI,
-
       searchKeywords: null,
-      fromDate: null,
-      toDate: null,
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
       customerTypesSelected: null,
       statuOptions: customerData.status,
       statusSelected: null,
@@ -302,8 +295,6 @@ export default {
   beforeMount() {
     this.GET_CUSTOMER_TYPES_ACTION({ formId: 9, ctrlId: 6 })
     this.GET_SHOP_LOCATIONS_ACTION({ formId: 5, ctrlId: 7 })
-    this.fromDate = this.$earlyMonth
-    this.toDate = this.$nowDate
   },
 
   mounted() {

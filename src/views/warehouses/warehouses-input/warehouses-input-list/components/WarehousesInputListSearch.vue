@@ -117,8 +117,8 @@
           Loại nhập
         </div>
         <tree-select
-          v-model="inputType"
-          :options="warehousesInputOptions"
+          v-model="inputTypesSelected"
+          :options="inputTypeOptions"
           :searchable="false"
           placeholder="Tất cả"
           no-options-text="Không có dữ liệu"
@@ -128,8 +128,9 @@
 
       <!-- START - Search button -->
       <b-col
-        lg="4"
-        md="12"
+        xl="4"
+        lg="3"
+        sm="4"
       >
         <!--"onmousedown" is prevent hightlight text -->
         <div
@@ -157,10 +158,12 @@
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { mapActions } from 'vuex'
-import { reverseVniDate, formatDateToLocale } from '@/@core/utils/filter'
+import { reverseVniDate } from '@/@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
-import { dateFormatVNI } from '@/@core/utils/validations/validations'
-import { WAREHOUSEINPUT, GET_RECEIPTS_ACTION } from '../../store-module/type'
+import {
+  WAREHOUSEINPUT,
+  GET_RECEIPTS_ACTION,
+} from '../../store-module/type'
 
 export default {
   components: {
@@ -168,13 +171,11 @@ export default {
   },
   data() {
     return {
-      dateFormatVNI,
-
       billNumber: '',
-      fromDate: formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
-      toDate: formatDateToLocale(new Date()),
-      inputType: null,
-      warehousesInputOptions: warehousesData.inputTypes,
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
+      inputTypesSelected: null,
+      inputTypeOptions: warehousesData.inputTypes,
 
       configDate: {
         wrap: true,
@@ -184,20 +185,20 @@ export default {
       },
     }
   },
-  computed: {},
-  mounted() {},
   methods: {
-    ...mapActions(WAREHOUSEINPUT, [GET_RECEIPTS_ACTION]),
+    ...mapActions(WAREHOUSEINPUT, [
+      GET_RECEIPTS_ACTION,
+    ]),
+
     onClickSearchButton() {
       const searchData = {
         redInvoiceNo: this.billNumber,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        type: this.inputType,
+        type: this.inputTypesSelected,
         formId: 5,
         ctrlId: 7,
       }
-
       this.GET_RECEIPTS_ACTION(searchData)
     },
   },

@@ -58,7 +58,10 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 
 // margin
 .mr-05 {
-  margin-right: 7px;
+  margin-right: ($spacer * 0.5) !important;
+}
+.mt-05 {
+  margin-top: ($spacer * 0.5) !important;
 }
 // END - Common
 
@@ -108,8 +111,3 @@ input {
   }
 }
 // END - Input
-
-// spacing 0.5
-.mt-05 {
-  margin-top: ($spacer * .5) !important;
-}
