@@ -4,7 +4,12 @@
     class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
-    <reports-returned-goods-list-search />
+    <reports-returned-goods-list-search
+      @updateSearchData="paginationData = {
+        size: elementSize,
+        page: pageNumber - 1,
+        ...$event }"
+    />
     <!-- END - Search -->
 
     <!-- START - Customer list -->
@@ -24,10 +29,7 @@
             variant="someThing"
             @click="navigateToPrint"
           >
-            <b-icon-plus
-              scale="2"
-              class="mr-05"
-            />
+            <b-icon-printer-fill />
             In
           </b-button>
           <b-button
@@ -222,6 +224,7 @@ export default {
     return {
       elementSize: commonData.pagination[0],
       pageNumber: 1,
+      paginationData: {},
 
       paginationOptions: commonData.pagination,
 
@@ -372,9 +375,15 @@ export default {
   },
   watch: {
     pageNumber() {
+      this.paginationData.page = this.pageNumber - 1
       this.onPaginationChange()
     },
     elementSize() {
+      this.paginationData.size = this.elementSize
+      this.onPaginationChange()
+    },
+    paginationData() {
+      this.pageNumber = 1
       this.onPaginationChange()
     },
   },
@@ -398,11 +407,7 @@ export default {
     },
 
     onPaginationChange() {
-      const paginationData = {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-      }
-      this.GET_REPORT_RETURNED_GOODS_ACTION(paginationData)
+      this.GET_REPORT_RETURNED_GOODS_ACTION(this.paginationData)
     },
   },
 }

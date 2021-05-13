@@ -7,30 +7,43 @@
     <v-card-actions
       title="Tìm kiếm"
     >
-      <!-- START - Full Name -->
+      <!-- START - Full Name  Mã trả hàng-->
       <b-col
         xl
-        md="3"
+        lg="3"
         sm="4"
       >
         <div
           class="h8 mt-sm-1 mt-xl-0"
         >
-          Khách hàng
+          Mã trả hàng
         </div>
-        <b-form-input
-          id="form-input-customer"
-          v-model="searchKeywords"
-          class="h8 text-brand-3 height-button-brand-1"
-          placeholder="Nhập họ tên/mã"
-        />
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model="reciept"
+            class="h8 text-brand-3"
+            placeholder="Nhập họ tên/mã"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="reciept"
+              class="cursor-pointer text-gray"
+              @click="reciept = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
       <!-- END - Full Name -->
 
       <!-- START - Date From -->
       <b-col
         xl
-        md="3"
+        lg="3"
         sm="4"
       >
         <div
@@ -41,19 +54,10 @@
         <b-input-group
           class="input-group-merge"
         >
-          <b-input-group-prepend
-            ref="prependIconRef"
-            is-text
-            data-toggle
-          >
-            <b-icon-calendar
-              class="cursor-pointer"
-            />
-          </b-input-group-prepend>
           <vue-flat-pickr
             v-model="fromDate"
             :config="configDate"
-            class="form-control h8 text-brand-3 height-button-brand-1"
+            class="form-control h8 text-brand-3"
             placeholder="Chọn ngày"
           />
           <b-input-group-append
@@ -61,8 +65,7 @@
           >
             <b-icon-x
               v-show="fromDate"
-              scale="1.3"
-              class="cursor-pointer"
+              class="cursor-pointer text-gray"
               @click="fromDate = null"
             />
           </b-input-group-append>
@@ -73,7 +76,7 @@
       <!-- START - Date To -->
       <b-col
         xl
-        md="3"
+        lg="3"
         sm="4"
       >
         <div
@@ -84,19 +87,11 @@
         <b-input-group
           class="input-group-merge"
         >
-          <b-input-group-prepend
-            is-text
-            data-toggle
-          >
-            <b-icon-calendar
-              class="cursor-pointer"
-            />
-          </b-input-group-prepend>
           <vue-flat-pickr
             id="form-input-date-from"
             v-model="toDate"
             :config="configDate"
-            class="form-control h8 text-brand-3 height-button-brand-1"
+            class="form-control h8 text-brand-3"
             placeholder="Chọn ngày"
           />
           <b-input-group-append
@@ -104,8 +99,7 @@
           >
             <b-icon-x
               v-show="toDate"
-              scale="1.3"
-              class="cursor-pointer"
+              class="cursor-pointer text-gray"
               @click="toDate = null"
             />
           </b-input-group-append>
@@ -169,7 +163,6 @@
           Tìm kiếm
         </div>
         <b-button
-          id="form-button-search"
           class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
           variant="someThing"
           @click="onClickSearchButton()"
@@ -180,10 +173,14 @@
       </b-col>
       <!-- END - Search button -->
     </v-card-actions>
+
+    <!-- START - Modal find product -->
     <find-product-modal
       :visible="isShowFindProductModal"
       @close="isShowFindProductModal = false"
     />
+    <!-- START - Modal find product -->
+
   </b-form>
   <!-- END - Search -->
 </template>
@@ -219,7 +216,7 @@ export default {
 
       dateFormatVNI,
 
-      searchKeywords: null,
+      reciept: null,
       fromDate: null,
       toDate: null,
       reasonOptions: reportData.reasonTypes,
@@ -232,9 +229,12 @@ export default {
       },
     }
   },
-  mounted() {
+  beforeMount() {
     this.fromDate = this.$earlyMonth
     this.toDate = this.$nowDate
+  },
+  mounted() {
+    this.onSearch()
   },
 
   methods: {
@@ -245,14 +245,26 @@ export default {
     showFindProductModal() {
       this.isShowFindProductModal = !this.isShowFindProductModal
     },
-
-    onClickSearchButton() {
-      this.GET_REPORT_RETURNED_GOODS_ACTION({
-        searchKeywords: this.searchKeywords?.trim(),
+    onSearch() {
+      const searchData = {
+        reciept: this.reciept,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         reason: this.reasonSelected,
-      })
+        // productIds: this.productCodes,
+        formId: 5,
+        ctrlId: 7,
+      }
+      this.updateSearchData(searchData)
+      this.GET_REPORT_RETURNED_GOODS_ACTION(searchData)
+    },
+
+    onClickSearchButton() {
+      this.onSearch()
+    },
+
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
     },
   },
 }
