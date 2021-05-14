@@ -57,8 +57,8 @@
                   />
                   <b-collapse
                     v-model="inputSearchFocusedKH"
-                    class="position-absolute mr-lg-0"
-                    style="zIndex:1"
+                    class="position-absolute mr-lg-0 mb-3"
+                    style="zIndex:1;"
                   >
                     <b-container
                       class="my-1 bg-white rounded border border-primary shadow-lg"
@@ -262,11 +262,18 @@
                 class="mx-1 my-2 px-2"
               >
                 <b-form-input
+                  v-model="productSearch"
                   class="w-25"
                   placeholder="Nhập mã hoặc tên sản phẩm"
                   type="text"
-                  @focus="inputSearchFocusedSP = true"
+                  autocomplete="off"
+                  @focus="searchProductFocus"
                   @blur="inputSearchFocusedSP = false"
+                  @input="loadProducts"
+                  @keyup.enter="searchProductKeyEnter"
+                  @keydown.up="searchProductKeyUp"
+                  @keydown.down="searchProductKeyDown"
+                  @click="click"
                 />
                 <b-collapse
                   v-model="inputSearchFocusedSP"
@@ -276,19 +283,18 @@
                   <b-container
                     class="my-1 bg-white rounded border border-primary shadow-lg"
                   >
-                    <b-col
-                      v-for="(n,index) in 2"
-                      :key="index"
-                      class="px-0 my-1 border-bottom"
-                    >
-                      <b-col
-                        class="text-dark font-weight-bold px-0"
+                    <b-col>
+                      <b-row
+                        v-for="(product, index) in allProducts"
+                        :key="index"
+                        class="my-1 cursor-pointer"
+                        :class="{'item-active': index === cursorProduct}"
+                        @click="selectProduct(product)"
+                        @mouseover="$event.target.classList.add('item-active')"
+                        @mouseout="$event.target.classList.remove('item-active')"
                       >
-                        Sữa Bột Dielac Grow Plus Có Tổ Yến 850g
-                      </b-col>
-                      <b-col class="text-dark px-0 mb-1">
-                        SP007
-                      </b-col>
+                        <b>{{ product.productCode }}</b> - {{ product.productName }}
+                      </b-row>
                     </b-col>
                   </b-container>
                 </b-collapse>
@@ -404,7 +410,9 @@ import BillReceiptsModal from './components/BillReceiptsModal.vue'
 import {
   REDINVOICE,
   CUSTOMERS_GETTER,
+  PRODUCTS_GETTER,
   GET_CUSTOMERS_ACTION,
+  GET_PRODUCTS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -438,6 +446,9 @@ export default {
         note: '',
       },
       cursor: -1,
+      cursorProduct: -1,
+      productSearch: null,
+      products: [],
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -554,16 +565,35 @@ export default {
         mobiPhone: data.mobiPhone,
       }))
     },
+    allProducts() {
+      return this.PRODUCTS_GETTER().map(data => ({
+        productId: data.id,
+        productCode: data.productCode,
+        productName: data.productName,
+        groupVat: data.groupVat,
+        unit: data.uom1,
+        quantity: 1,
+        price: data.price,
+        vat: data.vat,
+        vatAmount: data.vatAmount,
+        note: data.note,
+      }))
+    },
   },
   mounted() {
-    this.GET_CUSTOMERS_ACTION()
+    this.GET_CUSTOMERS_ACTION({
+      formId: 5,
+      ctrlId: 7,
+    })
   },
   methods: {
     ...mapGetters(REDINVOICE, [
       CUSTOMERS_GETTER,
+      PRODUCTS_GETTER,
     ]),
     ...mapActions(REDINVOICE, [
       GET_CUSTOMERS_ACTION,
+      GET_PRODUCTS_ACTION,
     ]),
     routeBack() {
       this.$router.back()
@@ -609,6 +639,72 @@ export default {
       if (this.inputSearchFocusedKH && this.customers[this.cursor]) {
         this.selectCustomer(this.customers[this.cursor])
         this.inputSearchFocusedKH = false
+      }
+    },
+    loadProducts() {
+      this.cursorProduct = -1
+      if (this.productSearch === null) return
+      if (this.productSearch.length >= commonData.minSearchLength) {
+        this.inputSearchFocusedSP = true
+
+        this.GET_PRODUCTS_ACTION({
+          keyWord: this.productSearch.trim(),
+          formId: 5,
+          ctrlId: 7,
+        })
+      } else {
+        this.inputSearchFocusedSP = false
+      }
+    },
+    selectProduct(product) {
+      this.productSearch = null
+      const existedProductIndex = this.rowsProduct.findIndex(rowProduct => rowProduct.ProductID === product.productCode)
+      if (existedProductIndex === -1) {
+        this.rowsProduct.push({
+          ProductID: product.productCode,
+          ProductName: product.productName,
+          Industry: product.groupVat,
+          ProductDVT: product.unit,
+          Number: 1,
+          ProductPrice: product.price,
+          ProductPriceTotal: product.price,
+          VAT: product.vat,
+          ProductExported: product.vatAmount,
+          Note: product.note,
+          button: '1',
+        })
+      } else {
+        this.rowsProduct[existedProductIndex].Number += product.quantity
+      }
+    },
+    searchProductFocus() {
+      this.cursorProduct = -1
+      this.inputSearchFocusedSP = this.productSearch !== null && this.productSearch.length >= commonData.minSearchLength
+    },
+    searchProductKeyUp() {
+      if (this.cursorProduct > 0) {
+        this.cursorProduct -= 1
+      }
+    },
+    searchProductKeyDown() {
+      if (this.cursorProduct < this.allProducts.length) {
+        this.cursorProduct += 1
+      }
+    },
+    searchProductKeyEnter() {
+      if (this.inputSearchFocusedSP && this.allProducts[this.cursorProduct]) {
+        this.selectProduct(this.allProducts[this.cursorProduct])
+        this.inputSearchFocusedSP = false
+      }
+    },
+    click() {
+      if (this.productSearch === null) return
+      if (this.productSearch.length >= commonData.minSearchLength) {
+        this.GET_PRODUCTS_ACTION({
+          keyWord: this.productSearch.trim(),
+          formId: 5,
+          ctrlId: 7,
+        })
       }
     },
   },

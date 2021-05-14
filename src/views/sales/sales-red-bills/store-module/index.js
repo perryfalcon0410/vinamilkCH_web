@@ -6,6 +6,7 @@ import {
   CUSTOMERS_GETTER,
   GET_BILL_OF_SALES_GETTER,
   GET_BILL_OF_SALES_SELECTED_PRODUCTS_GETTER,
+  PRODUCTS_GETTER,
   // ACTIONS
   GET_RED_INVOICES_ACTION,
   GET_CUSTOMERS_ACTION,
@@ -13,6 +14,7 @@ import {
   GET_BILL_OF_SALE_SELECTED_PRODUCT_ACTION,
   CLEAR_ALL_BILL_OF_SALES_PRODUCTS,
   CLEAR_BILL_OF_SALE_PRODUCTS_UNCHECKED,
+  GET_PRODUCTS_ACTION,
 } from './type'
 import toasts from '../../../../@core/utils/toasts/toasts'
 
@@ -53,6 +55,9 @@ export default {
     },
     [CUSTOMERS_GETTER](state) {
       return state.customers
+    },
+    [PRODUCTS_GETTER](state) {
+      return state.products
     },
   },
 
@@ -147,6 +152,21 @@ export default {
         .then(res => {
           if (res.success) {
             state.customers = res.data.content
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_PRODUCTS_ACTION]({ state }, val) {
+      RedInvoiceService
+        .getProducts(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.products = res.data
           } else {
             throw new Error(res.statusValue)
           }

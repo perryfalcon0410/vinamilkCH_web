@@ -5,6 +5,7 @@ import {
   getCustomersEndpoint,
   getBillOfSalesEndPoint,
   getBillOfSaleProductEndPoint,
+  getProductsEndPoint,
 } from './defaultConfig'
 
 export default {
@@ -24,5 +25,10 @@ export default {
   getBillOfSaleProduct(args) {
     const queryString = new URLSearchParams(args).toString()
     return axios.get(`${getBillOfSaleProductEndPoint}?${queryString}`)
+  },
+  getProducts(args) {
+    return axios.get(`${getProductsEndPoint}`, {
+      params: formatURLParams(args),
+    })
   },
 }
