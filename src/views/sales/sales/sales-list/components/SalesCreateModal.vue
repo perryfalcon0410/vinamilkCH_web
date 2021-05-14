@@ -75,14 +75,16 @@
             </b-col>
 
             <b-col>
-              <v-input-select
-                title="Giới tính"
-                :suggestions="genderOptions"
-                :data-input="gendersSelected.name"
+              <div
+                class="mt-1"
+              >
+                Giới tính <sup class="text-danger">*</sup>
+              </div>
+              <tree-select
+                v-model="gendersSelected"
+                :options="genderOptions"
                 placeholder="Chọn giới tính"
-                title-class="mt-1"
-                clear-able
-                @updateSelection="gendersSelected = $event"
+                no-options-text="Không có dữ liệu"
               />
             </b-col>
           </b-form-row>
@@ -148,64 +150,49 @@
         </b-col>
 
         <b-col md="12">
-          <b-form-group
-            label="Tỉnh/ Thành"
-            label-for="Province"
-            class="mt-1"
-          >
-            <v-select
-              id="Province"
-              v-model="customerProvince"
-              :options="provinces"
-              label="name"
-              autocomplete="on"
-              placeholder="Chọn tỉnh/ thành"
-              :state="touched ? passed : null"
-            />
-          </b-form-group></b-col>
-
-        <b-col md="12">
           <!-- START - Customer District and Wards -->
           <b-form-row>
             <b-col>
-              <b-form-group
-                label="Quận/ Huyện"
-                label-for="District"
+              <div
                 class="mt-1"
               >
-                <v-select
-                  id="District"
-                  v-model="customerDistrict"
-                  :options="districts"
-                  label="name"
-                  autocomplete="on"
-                  placeholder="Chọn quận/ huyện"
-                >
-                  <template #no-options="{}">
-                    Vui lòng chọn tỉnh/ thành trước
-                  </template>
-                </v-select>
-              </b-form-group>
+                Tỉnh/ Thành <sup class="text-danger">*</sup>
+              </div>
+              <tree-select
+                v-model="provincesSelected"
+                :options="provinceOptions"
+                placeholder="Chọn tỉnh/ thành"
+                no-options-text="Không có dữ liệu"
+                no-results-text="Không tìm thấy kết quả"
+              />
             </b-col>
             <b-col>
-              <b-form-group
-                label="Phường/ Xã"
-                label-for="Wards"
+              <div
                 class="mt-1"
               >
-                <v-select
-                  id="Wards"
-                  v-model="customerPrecinct"
-                  :options="precincts"
-                  label="name"
-                  autocomplete="on"
-                  placeholder="Chọn phường/ xã"
-                >
-                  <template #no-options="{}">
-                    Vui lòng chọn quận/ huyện trước
-                  </template>
-                </v-select>
-              </b-form-group>
+                Quận/ Huyện <sup class="text-danger">*</sup>
+              </div>
+              <tree-select
+                v-model="districtsSelected"
+                :options="districtOptions"
+                placeholder="Chọn quận/ huyện"
+                no-options-text="Không có dữ liệu"
+                no-results-text="Không tìm thấy kết quả"
+              />
+            </b-col>
+            <b-col>
+              <div
+                class="mt-1"
+              >
+                Phường/ Xã <sup class="text-danger">*</sup>
+              </div>
+              <tree-select
+                v-model="precinctsSelected"
+                :options="precinctOptions"
+                placeholder="Chọn phường/ xã"
+                no-options-text="Không có dữ liệu"
+                no-results-text="Không tìm thấy kết quả"
+              />
             </b-col>
           </b-form-row>
         <!-- END - Customer District and Wards -->
@@ -283,8 +270,6 @@ import {
   ValidationObserver,
 } from 'vee-validate'
 import Ripple from 'vue-ripple-directive'
-import vSelect from 'vue-select'
-import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import { formatVniDateToISO } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
@@ -307,8 +292,6 @@ export default {
     BFormInput,
     ValidationProvider,
     ValidationObserver,
-    vSelect,
-    VInputSelect,
   },
   directives: {
     'b-modal': VBModal,
@@ -329,47 +312,52 @@ export default {
       required,
       email,
 
-      customerEmail: '',
-      lastName: '',
-      firstName: '',
-      birthDay: '',
+      customerEmail: null,
+      lastName: null,
+      firstName: null,
+      birthDay: null,
       genderOptions: commonData.genders,
-      gendersSelected: { name: null, id: null },
-      phoneNumber: '',
-      address: '',
+      gendersSelected: null,
+      phoneNumber: null,
+      address: null,
       customerSpecial: false,
-      note: '',
+      note: null,
       customerStatus: customerData.status[0],
       customerGroups: null,
-      customerProvince: null,
-      customerDistrict: null,
-      customerPrecinct: null,
+      provincesSelected: null,
+      districtsSelected: null,
+      precinctsSelected: null,
     }
   },
   // START - Computed
   computed: {
+    ...mapGetters(CUSTOMER, {
+      PROVINCES_GETTER,
+      DISTRICTS_GETTER,
+      PRECINCTS_GETTER,
+    }),
     customerTypes() {
       return this.CUSTOMER_TYPES_GETTER().map(data => ({
         id: data.id,
         name: data.name,
       }))
     },
-    provinces() {
-      return this.PROVINCES_GETTER().map(data => ({
+    provinceOptions() {
+      return this.PROVINCES_GETTER.map(data => ({
         id: data.id,
-        name: data.areaName,
+        label: data.areaName,
       }))
     },
-    districts() {
-      return this.DISTRICTS_GETTER().map(data => ({
+    districtOptions() {
+      return this.DISTRICTS_GETTER.map(data => ({
         id: data.id,
-        name: data.areaName,
+        label: data.areaName,
       }))
     },
-    precincts() {
-      return this.PRECINCTS_GETTER().map(data => ({
+    precinctOptions() {
+      return this.PRECINCTS_GETTER.map(data => ({
         id: data.id,
-        name: data.areaName,
+        label: data.areaName,
       }))
     },
   },
@@ -379,28 +367,23 @@ export default {
     ERROR_CODE_GETTER() {
       this.checkDuplicationID(this.ERROR_CODE_GETTER())
     },
-    customerProvince() {
-      this.customerDistrict = null
-      this.GET_DISTRICTS_ACTION(this.customerProvince.id)
+    provincesSelected() {
+      this.districtsSelected = null
+      this.GET_DISTRICTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.provincesSelected }) // Hard
     },
-    customerDistrict() {
-      this.customerPrecinct = null
-      this.GET_PRECINCTS_ACTION(this.customerDistrict.id)
+    districtsSelected() {
+      this.precinctsSelected = null
+      this.GET_PRECINCTS_ACTION({ formId: 9, ctrlId: 6, districtId: this.districtsSelected }) // Hard
     },
   },
 
   mounted() {
-    this.GET_PROVINCES_ACTION()
+    this.GET_PROVINCES_ACTION({ formId: 9, ctrlId: 6 }) // Hard
     this.CREATE_CUSTOMER_ACTION({ formId: 4, ctrlId: 1 }) // Hard
   },
 
   // START - Methods
   methods: {
-    ...mapGetters(CUSTOMER, {
-      PROVINCES_GETTER,
-      DISTRICTS_GETTER,
-      PRECINCTS_GETTER,
-    }),
     ...mapActions(CUSTOMER, [
       CREATE_CUSTOMER_ACTION,
       GET_PROVINCES_ACTION,
@@ -455,16 +438,17 @@ export default {
     },
 
     resetInput() {
-      this.firstName = ''
-      this.lastName = ''
-      this.birthDay = ''
-      this.phoneNumber = ''
-      this.customerEmail = ''
-      this.address = ''
-      this.note = ''
-      this.customerProvince = null
-      this.customerDistrict = null
-      this.customerPrecinct = null
+      this.firstName = null
+      this.lastName = null
+      this.birthDay = null
+      this.phoneNumber = null
+      this.customerEmail = null
+      this.address = null
+      this.note = null
+      this.customerSpecial = null
+      this.provincesSelected = null
+      this.districtsSelected = null
+      this.precinctsSelected = null
     },
   },
   // END - Methods
