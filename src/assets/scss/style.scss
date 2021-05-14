@@ -104,8 +104,8 @@ input {
   border-color: $brand-1 !important;
 }
 
-// icon X color for input
-.input-group-text {
+// icon X color for flat-pickr
+.v-flat-pickr-group {
   .bi-x.cursor-pointer.b-icon.bi:hover {
     color: red;
   }

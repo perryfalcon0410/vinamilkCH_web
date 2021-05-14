@@ -104,12 +104,6 @@
                       Ngày sinh <sup class="text-danger">*</sup>
                     </div>
                     <b-input-group class="input-group-merge">
-                      <b-input-group-prepend
-                        is-text
-                        data-toggle
-                      >
-                        <b-icon-calendar />
-                      </b-input-group-prepend>
                       <vue-flat-pickr
                         id="form-input-date-from"
                         v-model="birthDay"
@@ -117,17 +111,6 @@
                         class="form-control"
                         placeholder="Chọn ngày"
                       />
-
-                      <b-input-group-append
-                        is-text
-                      >
-                        <b-icon-x
-                          v-show="birthDay"
-                          scale="1.1"
-                          class="cursor-pointer"
-                          @click="birthDay = null"
-                        />
-                      </b-input-group-append>
                     </b-input-group>
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
@@ -258,27 +241,12 @@
                   Ngày cấp
                 </div>
                 <b-input-group class="input-group-merge">
-                  <b-input-group-prepend
-                    is-text
-                    data-toggle
-                  >
-                    <b-icon-calendar />
-                  </b-input-group-prepend>
                   <vue-flat-pickr
                     v-model="customerIDDate"
                     :config="configIDDate"
                     class="form-control"
                     placeholder="Chọn ngày"
                   />
-                  <b-input-group-append
-                    is-text
-                  >
-                    <b-icon-x
-                      v-show="customerIDDate"
-                      class="cursor-pointer text-gray"
-                      @click="customerIDDate = null"
-                    />
-                  </b-input-group-append>
                 </b-input-group>
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
@@ -926,29 +894,29 @@ export default {
 
     checkFieldsValueLength() {
       // WARNING: Không xóa mấy cái log này, sau này sẽ cần để check lại
-      // console.log(`${this.firstName}-${this.customer.firstName}`)
-      // console.log(`${this.lastName}-${this.customer.lastName}`)
-      // console.log(`${this.barCode}-${this.customer.barCode}`)
-      // console.log(`${this.birthDay}-${formatDateToLocale(this.customer.dob)}`)
-      // console.log(`${Number(this.gendersSelected) || null}-${this.customer.genderId}`)
-      // console.log(`${Number(this.customerTypesSelected || null)}-${this.customer.customerTypeId}`)
-      // console.log(`${Number(this.customerStatusSelected || null)}-${this.customer.status}`)
-      // console.log(`${this.customerPrivate}-${(this.customer.isPrivate || false)}`)
-      // console.log(`${this.note}-${(this.customer.noted || '')}`)
-      // console.log(`${this.customerID}-${(this.customer.idNo || '')}`)
-      // console.log(`${this.customerIDDate}-${(formatDateToLocale(this.customer.idNoIssuedDate) || '')}`)
-      // console.log(`${this.customerIDLocation}-${(this.customer.idNoIssuedPlace || '')}`)
-      // console.log(`${this.phoneNumber}-${(this.customer.mobiPhone || '')}`)
-      // console.log(`${this.customerEmail}-${(this.customer.email || '')}`)
-      // console.log(`${this.homeNumber}-${(this.customer.street || '')}`)
-      // console.log(`${Number(this.provincesSelected || null)}-${this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0}`)
-      // console.log(`${Number(this.districtsSelected || null)}-${(this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)}`)
-      // console.log(`${Number(this.precinctsSelected || null)}-${(this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)}`)
-      // console.log(`${this.workingOffice}-${(this.customer.workingOffice || '')}`)
-      // console.log(`${this.officeAddress}-${(this.customer.officeAddress || '')}`)
-      // console.log(`${this.taxCode}-${(this.customer.taxCode || '')}`)
-      // console.log(`${Number(this.cardTypesSelected || null)}-${(this.customer.cardTypeId || 0)}`)
-      // console.log(`${Number(this.closelyTypesSelected || null)}-${(this.customer.closelyTypeId || 0)}`)
+      // console.log(`firstName:                 (${typeof this.firstName})-${this.firstName}-${this.customer.firstName}-(${typeof this.customer.firstName})`)
+      // console.log(`lastName:                  (${typeof this.lastName})-${this.lastName}-${this.customer.lastName}-(${typeof this.customer.lastName})`)
+      // console.log(`barCode:                   (${typeof this.barCode})-${this.barCode}-${this.customer.barCode}-(${typeof this.customer.barCode})`)
+      // console.log(`birthDay:                  (${typeof this.birthDay})-${this.birthDay}-${formatDateToLocale(this.customer.dob)}-(${typeof formatDateToLocale(this.customer.dob)})`)
+      // console.log(`gendersSelected:           (${typeof (Number(this.gendersSelected) || null)})-${(Number(this.gendersSelected) || null)}-${this.customer.genderId}-(${typeof this.customer.genderId})`)
+      // console.log(`customerTypesSelected:     (${typeof (Number(this.customerTypesSelected) || null)})-${(Number(this.customerTypesSelected) || null)}-${this.customer.customerTypeId}-(${typeof this.customer.customerTypeId})`)
+      // console.log(`customerStatusSelected:    (${typeof (Number(this.customerStatusSelected) || null)})-${(Number(this.customerStatusSelected) || null)}-${this.customer.status}-(${typeof this.customer.status})`)
+      // console.log(`customerPrivate:           (${typeof this.customerPrivate})-${this.customerPrivate}-${(this.customer.isPrivate || false)}-(${typeof (this.customer.isPrivate || false)})`)
+      // console.log(`note:                      (${typeof this.note})-${this.note}-${(this.customer.noted || '')}-(${typeof (this.customer.noted || '')})`)
+      // console.log(`customerID:                (${typeof this.customerID})-${this.customerID}-${(this.customer.idNo || '')}-(${typeof (this.customer.idNo || '')})`)
+      // console.log(`customerIDDate:            (${typeof this.customerIDDate})-${this.customerIDDate}-${(formatDateToLocale(this.customer.idNoIssuedDate) || '')}-(${typeof (formatDateToLocale(this.customer.idNoIssuedDate) || '')})`)
+      // console.log(`customerIDLocation:        (${typeof this.customerIDLocation})-${this.customerIDLocation}-${(this.customer.idNoIssuedPlace || '')}-(${typeof (this.customer.idNoIssuedPlace || '')})`)
+      // console.log(`phoneNumber:               (${typeof this.phoneNumber})-${this.phoneNumber}-${(this.customer.mobiPhone || '')}-(${typeof (this.customer.mobiPhone || '')})`)
+      // console.log(`customerEmail:             (${typeof this.customerEmail})-${this.customerEmail}-${(this.customer.email || '')}-(${typeof (this.customer.email || '')})`)
+      // console.log(`homeNumber:                (${typeof this.homeNumber})-${this.homeNumber}-${(this.customer.street || '')}-(${typeof (this.customer.street || '')})`)
+      // console.log(`provincesSelected:         (${typeof Number(this.provincesSelected || null)})-${Number(this.provincesSelected || null)}-${(this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)}-(${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)})`)
+      // console.log(`districtsSelected:         (${typeof Number(this.districtsSelected || null)})-${Number(this.districtsSelected || null)}-${(this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)}-(${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)})`)
+      // console.log(`precinctsSelected:         (${typeof Number(this.precinctsSelected || null)})-${Number(this.precinctsSelected || null)}-${(this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)}-(${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)})`)
+      // console.log(`workingOffice:             (${typeof this.workingOffice})-${this.workingOffice}-${(this.customer.workingOffice || '')}-(${typeof (this.customer.workingOffice || '')})`)
+      // console.log(`officeAddress:             (${typeof this.officeAddress})-${this.officeAddress}-${(this.customer.officeAddress || '')}-(${typeof (this.customer.officeAddress || '')})`)
+      // console.log(`nataxCodeme:               (${typeof this.taxCode})-${this.taxCode}-${(this.customer.taxCode || '')}-(${typeof (this.customer.taxCode || '')})`)
+      // console.log(`cardTypesSelected:         (${typeof Number(this.cardTypesSelected || null)})-${Number(this.cardTypesSelected || null)}-${(this.customer.cardTypeId || 0)}-(${typeof (this.customer.cardTypeId || 0)}`)
+      // console.log(`closelyTypesSelected:      (${typeof Number(this.closelyTypesSelected || null)})-${Number(this.closelyTypesSelected || null)}-${(this.customer.closelyTypeId || 0)}-(${typeof (this.customer.closelyTypeId || 0)})`)
 
       if (
         // START - Personal
@@ -956,9 +924,9 @@ export default {
         && this.lastName === this.customer.lastName
         && this.barCode === this.customer.barCode
         && this.birthDay === formatDateToLocale(this.customer.dob)
-        && Number(this.gendersSelected || null) === this.customer.genderId
-        && Number(this.customerTypesSelected || null) === this.customer.customerTypeId
-        && Number(this.customerStatusSelected || null) === this.customer.status
+        && (Number(this.gendersSelected) || null) === this.customer.genderId
+        && (Number(this.customerTypesSelected) || null) === this.customer.customerTypeId
+        && (Number(this.customerStatusSelected) || null) === this.customer.status
         && this.customerPrivate === (this.customer.isPrivate || false)
         && this.note === (this.customer.noted || '')
         && this.customerID === (this.customer.idNo || '')

@@ -103,12 +103,6 @@
                       Ngày sinh <sup class="text-danger">*</sup>
                     </div>
                     <b-input-group class="input-group-merge">
-                      <b-input-group-prepend
-                        is-text
-                        data-toggle
-                      >
-                        <b-icon-calendar />
-                      </b-input-group-prepend>
                       <vue-flat-pickr
                         id="form-input-date-from"
                         v-model="birthDay"
@@ -116,15 +110,6 @@
                         class="form-control"
                         placeholder="Chọn ngày"
                       />
-                      <b-input-group-append
-                        is-text
-                      >
-                        <b-icon-x
-                          v-show="birthDay"
-                          class="cursor-pointer text-gray"
-                          @click="birthDay = null"
-                        />
-                      </b-input-group-append>
                     </b-input-group>
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
@@ -247,27 +232,12 @@
                   Ngày cấp
                 </div>
                 <b-input-group class="input-group-merge">
-                  <b-input-group-prepend
-                    is-text
-                    data-toggle
-                  >
-                    <b-icon-calendar />
-                  </b-input-group-prepend>
                   <vue-flat-pickr
                     v-model="customerIDDate"
                     :config="configIDDate"
                     class="form-control"
                     placeholder="Chọn ngày"
                   />
-                  <b-input-group-append
-                    is-text
-                  >
-                    <b-icon-x
-                      v-show="customerIDDate"
-                      class="cursor-pointer text-gray"
-                      @click="customerIDDate = null"
-                    />
-                  </b-input-group-append>
                 </b-input-group>
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>

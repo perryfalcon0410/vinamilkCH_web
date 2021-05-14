@@ -190,7 +190,6 @@ import {
   CUSTOMER,
   // GETTERS
   CUSTOMERS_GETTER,
-  CUSTOMER_PAGINATION_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
   EXPORT_CUSTOMERS_ACTION,
@@ -283,24 +282,26 @@ export default {
   computed: {
     ...mapGetters(CUSTOMER, [
       CUSTOMERS_GETTER,
-      CUSTOMER_PAGINATION_GETTER,
     ]),
     customers() {
-      return this.CUSTOMERS_GETTER.map(data => ({
-        id: data.id,
-        code: data.customerCode,
-        fullName: `${data.lastName} ${data.firstName}`,
-        phoneNumber: data.mobiPhone,
-        birthDay: formatDateToLocale(data.dob),
-        gender: getGenderLabel(data.genderId),
-        status: getCustomerStatusLabel(data.status),
-        group: getCustomerTypeLabel(data.customerTypeId),
-        date: formatDateToLocale(data.createdAt),
-        feature: '',
-      }))
+      if (this.CUSTOMERS_GETTER.content) {
+        return this.CUSTOMERS_GETTER.content.map(data => ({
+          id: data.id,
+          code: data.customerCode,
+          fullName: `${data.lastName} ${data.firstName}`,
+          phoneNumber: data.mobiPhone,
+          birthDay: formatDateToLocale(data.dob),
+          gender: getGenderLabel(data.genderId),
+          status: getCustomerStatusLabel(data.status),
+          group: getCustomerTypeLabel(data.customerTypeId),
+          date: formatDateToLocale(data.createdAt),
+          feature: '',
+        }))
+      }
+      return []
     },
     customerPagination() {
-      return this.CUSTOMER_PAGINATION_GETTER
+      return this.CUSTOMERS_GETTER
     },
   },
 

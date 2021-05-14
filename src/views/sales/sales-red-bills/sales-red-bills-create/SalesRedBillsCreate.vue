@@ -555,15 +555,18 @@ export default {
   },
   computed: {
     customers() {
-      return this.CUSTOMERS_GETTER().map(data => ({
-        id: data.id,
-        customerCode: data.customerCode,
-        customerName: `${data.lastName} ${data.firstName}`,
-        workingOffice: data.workingOffice,
-        officeAddress: data.officeAddress,
-        taxCode: data.taxCode,
-        mobiPhone: data.mobiPhone,
-      }))
+      if (this.CUSTOMERS_GETTER.content) {
+        return this.CUSTOMERS_GETTER().content.map(data => ({
+          id: data.id,
+          customerCode: data.customerCode,
+          customerName: `${data.lastName} ${data.firstName}`,
+          workingOffice: data.workingOffice,
+          officeAddress: data.officeAddress,
+          taxCode: data.taxCode,
+          mobiPhone: data.mobiPhone,
+        }))
+      }
+      return []
     },
     allProducts() {
       return this.PRODUCTS_GETTER().map(data => ({

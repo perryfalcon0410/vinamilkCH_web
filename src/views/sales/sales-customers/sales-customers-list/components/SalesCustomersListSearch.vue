@@ -50,25 +50,24 @@
         >
           Từ ngày
         </div>
-        <b-input-group
-          class="input-group-merge"
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
         >
+          <b-icon-x
+            v-show="fromDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
           <vue-flat-pickr
             v-model="fromDate"
             :config="configDate"
             class="form-control h8 text-brand-3"
             placeholder="Chọn ngày"
           />
-          <b-input-group-append
-            is-text
-          >
-            <b-icon-x
-              v-show="fromDate"
-              class="cursor-pointer text-gray"
-              @click="fromDate = null"
-            />
-          </b-input-group-append>
-        </b-input-group>
+        </b-row>
       </b-col>
       <!-- END - Date From -->
 
@@ -83,26 +82,24 @@
         >
           Đến ngày
         </div>
-        <b-input-group
-          class="input-group-merge"
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
         >
+          <b-icon-x
+            v-show="toDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
           <vue-flat-pickr
-            id="form-input-date-from"
             v-model="toDate"
             :config="configDate"
             class="form-control h8 text-brand-3"
             placeholder="Chọn ngày"
           />
-          <b-input-group-append
-            is-text
-          >
-            <b-icon-x
-              v-show="toDate"
-              class="cursor-pointer text-gray"
-              @click="toDate = null"
-            />
-          </b-input-group-append>
-        </b-input-group>
+        </b-row>
 
       </b-col>
       <!-- END - Date To -->
