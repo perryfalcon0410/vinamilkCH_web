@@ -487,7 +487,6 @@ export default {
     },
 
     getCreateInfo(val) {
-      console.log(val)
       this.fullName = `${val.lastName} ${val.firstName}`
       this.phoneNumber = val.phoneNumber
       this.address = val.address

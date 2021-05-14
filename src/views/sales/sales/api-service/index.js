@@ -24,7 +24,7 @@ export default {
   },
 
   getOnlineOrderById(args) {
-    return axios.get((`${getOnlineOrderByIdEndpoint}/${args}?ctrlId=1&formId=4`))
+    return axios.get((`${getOnlineOrderByIdEndpoint}/${args}`))
   },
 
   getProducts(args) {

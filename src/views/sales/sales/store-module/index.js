@@ -116,7 +116,6 @@ export default {
         .then(res => {
           if (res.success) {
             state.onlineOrderProducts = res.data.products
-            console.log('state.onlineOrderProducts', state.onlineOrderProducts)
           } else {
             throw new Error(res.statusValue)
           }
@@ -132,7 +131,6 @@ export default {
         .then(res => {
           if (res.success) {
             state.onlineOrderCustomer = res.data
-            console.log('state.onlineOrderCustomer', state.onlineOrderCustomer)
           } else {
             throw new Error(res.statusValue)
           }
