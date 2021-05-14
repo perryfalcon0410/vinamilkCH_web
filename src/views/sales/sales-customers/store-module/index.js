@@ -37,7 +37,7 @@ export default {
   state: {
     errorCode: null,
 
-    customers: [],
+    customerData: {},
     customerById: {},
     shopLocations: [],
     customerTypes: [],
@@ -51,7 +51,7 @@ export default {
   // GETTERS
   getters: {
     [CUSTOMERS_GETTER](state) {
-      return state.customers
+      return state.customerData
     },
     [CUSTOMER_BY_ID_GETTER](state) {
       return state.customerById
@@ -93,7 +93,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.customers = res.data
+            state.customerData = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -166,13 +166,13 @@ export default {
         })
     },
 
-    [EXPORT_CUSTOMERS_ACTION]({ state }) {
+    [EXPORT_CUSTOMERS_ACTION]({}) {
       CustomerService
         .exportCustomers()
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.customers = res.data.content
+            toasts.success(res.statusValue)
           } else {
             throw new Error(res.statusValue)
           }

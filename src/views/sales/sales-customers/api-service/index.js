@@ -38,7 +38,7 @@ export default {
     return axios.patch(`${updateCustomerEndpoint}/${args.id}`, args)
   },
   exportCustomers() {
-    return axios.get(`${exportCustomersEndpoint}`)
+    return axios.get(exportCustomersEndpoint)
   },
   getShopLocations(args) {
     return axios.get(getShopLocationsEndpoint, {
