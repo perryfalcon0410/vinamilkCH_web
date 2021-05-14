@@ -17,7 +17,7 @@
               Ngày xuất:
             </b-col>
             <b-col class="font-weight-bold">
-              {{ warehousesOutput.orderDate }}
+              {{ warehousesOutput.borrowDate }}
             </b-col>
           </b-row>
           <!-- END - Date -->
@@ -44,11 +44,11 @@
                 label="Loại xuất"
                 label-for="type"
               >
-                <v-select
-                  id="type"
+                <tree-select
                   v-model="warehousesTypeSelected"
                   :options="warehousesOptions"
-                  label="name"
+                  :searchable="false"
+                  no-options-text="Không có dữ liệu"
                   disabled
                 />
               </b-form-group>
@@ -86,15 +86,22 @@
             </b-col>
 
             <b-col>
-              <div>
-                Ngày hóa đơn
+              <div
+                class="h8 mt-sm-1 mt-xl-0"
+              >
+                Ngày hoá đơn
               </div>
-              <b-form-datepicker
-                v-model="warehousesOutput.transDate"
-                locale="vi"
-                :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                disabled
-              />
+              <b-input-group
+                class="input-group-merge"
+              >
+                <vue-flat-pickr
+                  id="form-input-date-from"
+                  v-model="warehousesOutput.transDate"
+                  :config="configDate"
+                  class="form-control h8 text-brand-3"
+                  disabled
+                />
+              </b-input-group>
             </b-col>
           </b-form-row>
           <!-- END -   Bill Number and Date -->
@@ -190,12 +197,23 @@
                   slot-scope="props"
                 >
                   <div v-if="props.column.field === 'productReturnAmount'">
-                    <b-form-input
-                      v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
-                      type="number"
-                      :number="true"
-                      size="sm"
-                    />
+                    <div v-if="warehousesTypeSelected == warehousesOptions[0].id">
+                      <b-form-input
+                        v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
+                        type="number"
+                        :number="true"
+                        size="sm"
+                      />
+                    </div>
+                    <div v-else>
+                      <b-form-input
+                        v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
+                        type="number"
+                        :number="true"
+                        size="sm"
+                        disabled
+                      />
+                    </div>
                   </div>
                   <div v-else>
                     {{ props.formattedRow[props.column.field] }}
@@ -254,8 +272,8 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-
 import warehousesData from '@/@db/warehouses'
+import { formatNumberToLocale, formatDateToLocale } from '@/@core/utils/filter'
 import {
   WAREHOUSES_OUTPUT,
   // Getter
@@ -277,7 +295,7 @@ export default {
       columns: [
         {
           label: 'Mã sản phẩm',
-          field: 'productID',
+          field: 'productCode',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -340,9 +358,13 @@ export default {
         internalNumber: '', // số nội bộ
         poNumber: '',
         note: '',
-        orderDate: '',
-        transDate: '',
+        transDate: null,
         products: [],
+      },
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
       },
     }
   },
@@ -353,10 +375,11 @@ export default {
     getProductOfWarehouseOutput() {
       return this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER().map(data => ({
         productID: data.id,
-        productPrice: data.price,
+        productCode: data.productCode,
+        productPrice: formatNumberToLocale(Number(data.price)),
         productName: data.productName,
         productDVT: data.unit,
-        productPriceTotal: data.totalPrice,
+        productPriceTotal: formatNumberToLocale(Number(data.totalPrice)),
         productExported: data.export,
         productReturnAmount: data.quantity,
       }))
@@ -365,22 +388,22 @@ export default {
   watch: {
     getProductOfWarehouseOutput() {
       const dataWarehousesOutput = { ...this.getWarehousesOutput }
+      console.log(this.getWarehousesOutput.transDate)
       this.warehousesOutput = {
         id: dataWarehousesOutput.id,
         code: dataWarehousesOutput.transCode,
         type: dataWarehousesOutput.type,
-        receiptType: Number(this.warehousesOutput.receiptType),
-        wareHouseTypeId: dataWarehousesOutput.wareHouseTypeId,
+        wareHouseTypeId: Number(this.warehousesOutput.wareHouseTypeId),
         wareHouseTypeName: dataWarehousesOutput.wareHouseTypeName,
         redInvoiceNo: dataWarehousesOutput.redInvoiceNo, // số hoá đơn
         internalNumber: dataWarehousesOutput.internalNumber, // số nội bộ
         poNumber: dataWarehousesOutput.poNumber,
         note: dataWarehousesOutput.note,
-        orderDate: dataWarehousesOutput.orderDate,
-        transDate: dataWarehousesOutput.transDate,
+        transDate: formatDateToLocale(dataWarehousesOutput.transDate),
         products: [...this.getProductOfWarehouseOutput],
+        borrowDate: formatDateToLocale(dataWarehousesOutput.borrowDate),
       }
-      this.warehousesTypeSelected = this.warehousesOptions[this.warehousesOutput.receiptType].name
+      this.warehousesTypeSelected = this.warehousesOutput.type
     },
   },
   mounted() {

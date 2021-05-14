@@ -30,12 +30,12 @@ export default {
     })
   },
   getWarehouseOutputById(args) {
-    return axios.get(getWarehousesOutputByIdEndpoint, {
+    return axios.get(`${getWarehousesOutputByIdEndpoint}/${args.id}`, {
       params: formatURLParams(args),
     })
   },
   getProductsOfWarehouseOutput(args) {
-    return axios.get(getProductsOfWarehousesOutputEndpoint, {
+    return axios.get(`${getProductsOfWarehousesOutputEndpoint}/${args.id}`, {
       params: formatURLParams(args),
     })
   },

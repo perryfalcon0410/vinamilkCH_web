@@ -1,8 +1,8 @@
 export default {
   outputTypes: [
-    { id: '0', name: 'Xuất trả PO' },
-    { id: '1', name: 'Xuất điều chỉnh' },
-    { id: '2', name: 'Xuất vay mượn' },
+    { id: '0', label: 'Xuất trả PO' },
+    { id: '1', label: 'Xuất điều chỉnh' },
+    { id: '2', label: 'Xuất vay mượn' },
   ],
   inputTypes: [
     { id: '0', label: 'Nhập hàng' },
