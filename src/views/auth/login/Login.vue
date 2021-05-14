@@ -372,7 +372,7 @@ export default {
 
             this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
               .then(() => {
-                toasts.success(`Chào mừng bạn trở lại ${userData.fullName}.`)
+                toasts.success(`Chào mừng bạn trở lại, ${userData.fullName}.`)
               })
               .catch(error => {
                 this.$refs.loginForm.setErrors(error.response)
