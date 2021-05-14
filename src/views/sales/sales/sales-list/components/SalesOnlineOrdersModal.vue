@@ -453,7 +453,6 @@ export default {
     },
 
     getOnlineOrderInfo(id) {
-      console.log('Sale Modal: ', id)
       this.onClickCloseButton()
       this.$emit('getOnlineOrderInfo', id)
     },

@@ -189,7 +189,6 @@
               <tree-select
                 v-model="salemtPromotionObjectSelected"
                 :options="salemtPromotionObjectOptions"
-                @change="onClickOffline()"
               />
             </b-col>
           </b-row>
@@ -482,7 +481,6 @@ export default {
     },
 
     getOnlineOrderInfo(id) {
-      console.log('Sale Modal to Sale Form: ', id)
       this.onlineOrderId = id
       this.GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION(`${this.onlineOrderId}?formId=4&ctrlId=1`)
       this.$emit('getOnlineOrderInfoForm', id)
@@ -509,10 +507,6 @@ export default {
       this.address = this.onlineOrderCustomer.customer.address
       this.quantity = this.onlineOrderCustomer.quantity
       this.totalPrice = this.onlineOrderCustomer.totalPrice
-    },
-
-    onClickOffline(val) {
-      console.log(val)
     },
   },
 }

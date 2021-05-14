@@ -427,7 +427,6 @@ export default {
     },
 
     getOnlineOrderInfoForm(id) {
-      console.log('Sale Form to Sale List: ', id)
       this.id = id
       this.GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION(`${this.id}?formId=4&ctrlId=1`)
     },
