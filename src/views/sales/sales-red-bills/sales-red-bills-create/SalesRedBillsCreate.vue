@@ -395,6 +395,7 @@
 </template>
 
 <script>
+import commonData from '@/@db/common'
 import {
   mapActions,
   mapGetters,
@@ -572,7 +573,7 @@ export default {
     },
     loadCustomers() {
       this.cursor = -1
-      if (this.redBill.customerCode.length >= 4) {
+      if (this.redBill.customerCode.length >= commonData.minSearchLength) {
         this.inputSearchFocusedKH = true
         const searchData = {
           searchKeywords: this.redBill.customerCode.trim(),
@@ -592,7 +593,7 @@ export default {
     },
     focus() {
       this.cursor = -1
-      this.inputSearchFocusedKH = this.redBill.customerCode.length >= 4
+      this.inputSearchFocusedKH = this.redBill.customerCode.length >= commonData.minSearchLength
     },
     keyUp() {
       if (this.cursor > 0) {

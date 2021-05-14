@@ -434,6 +434,7 @@
 </template>
 
 <script>
+import commonData from '@/@db/common'
 import {
   mapActions,
   mapGetters,
@@ -684,7 +685,8 @@ export default {
     },
     loadProducts() {
       this.cursor = -1
-      if (this.productSearch.length >= 4) {
+      if (this.productSearch === null) return
+      if (this.productSearch.length >= commonData.minSearchLength) {
         this.inputSearchFocusedSP = true
 
         this.GET_PRODUCTS_ACTION({
@@ -717,7 +719,7 @@ export default {
     },
     focus() {
       this.cursor = -1
-      this.inputSearchFocusedSP = this.productSearch.length >= 4
+      this.inputSearchFocusedSP = this.productSearch !== null && this.productSearch.length >= commonData.minSearchLength
     },
     keyUp() {
       if (this.cursor > 0) {
@@ -758,7 +760,8 @@ export default {
       })
     },
     click() {
-      if (this.productSearch.length >= 4) {
+      if (this.productSearch === null) return
+      if (this.productSearch.length >= commonData.minSearchLength) {
         this.GET_PRODUCTS_ACTION({
           keyWord: this.productSearch.trim(),
           formId: 5,

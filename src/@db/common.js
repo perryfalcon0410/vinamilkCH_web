@@ -14,4 +14,5 @@ export default {
     500,
   ],
   pageNumber: 1,
+  minSearchLength: 4,
 }
