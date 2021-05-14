@@ -251,8 +251,12 @@ textarea {
 
 // Select Inputs Specific SCSS
 select.form-control {
-  &:not([multiple='multiple']) {
-    background-image: url(str-replace(str-replace($chevron-down, 'currentColor', $input-border-color), '#', '%23'));
+  &:not([multiple="multiple"]) {
+    background-image: url(str-replace(
+      str-replace($chevron-down, "currentColor", $input-border-color),
+      "#",
+      "%23"
+    ));
     background-position: calc(100% - 12px) 13px, calc(100% - 20px) 13px, 100% 0;
     background-size: 18px 14px, 18px 14px;
     background-repeat: no-repeat;
@@ -321,6 +325,8 @@ select.form-control {
     }
   }
   .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $brand-1;
+    background-color: $brand-1;
     box-shadow: 0 2px 4px 0 rgba($custom-control-indicator-checked-bg, 0.4) !important;
   }
 
@@ -339,8 +345,8 @@ select.form-control {
 .custom-control-input:not(:disabled) {
   &:active ~ .custom-control-label {
     &::before {
-      background-color: $primary;
-      border-color: $primary;
+      background-color: $brand-1;
+      border-color: $brand-1;
     }
   }
 }
@@ -540,8 +546,8 @@ select.form-control {
 }
 
 /* Number Type Input Box Scss for - Remove arrow on hover */
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
 }
 
@@ -556,7 +562,7 @@ input[type='number']::-webkit-outer-spin-button {
 
   // Bootstrap Select
   select.form-control {
-    &:not([multiple='multiple']) {
+    &:not([multiple="multiple"]) {
       background: none;
     }
   }

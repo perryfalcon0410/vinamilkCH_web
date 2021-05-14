@@ -5,13 +5,21 @@
       <b-card class="mb-0">
 
         <!-- logo -->
-        <b-link class="brand-logo">
-          <vuexy-logo />
+        <b-row
+          class="brand-logo"
+          align-v="center"
+        >
+          <!-- <kch-logo /> -->
+          <b-img
+            :src="appLogoImage"
+            alt="logo"
+            width="40px"
+          />
 
-          <h2 class="brand-text text-primary ml-1">
-            Kênh Cửa Hàng
+          <h2 class="brand-text text-brand-1 ml-1 mt-1">
+            {{ appName }}
           </h2>
-        </b-link>
+        </b-row>
 
         <b-card-title class="mb-1">
           Đổi Mật Khẩu 🔒
@@ -148,8 +156,9 @@
             <b-button
               block
               type="submit"
+              class="btn-brand-1"
               :disabled="invalid"
-              variant="primary"
+              variant="someThing"
             >
               Đổi Mật Khẩu
             </b-button>
@@ -165,7 +174,7 @@
         <hr>
         <b-row
           class="mx-0"
-          style="font-size: 10px"
+          style="font-size: 14px"
           align-h="between"
           align-v="center"
         >
@@ -180,7 +189,7 @@
               fluid
             />
             <div class="mx-1">
-              Copyright © Viettel
+              © Viettel
             </div>
           </b-row>
 
@@ -196,16 +205,15 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
   required, notEqual, confirmed, password, equal,
 } from '@core/utils/validations/validations'
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
+import { $themeConfig } from '@themeConfig'
 
 export default {
   components: {
-    VuexyLogo,
     ValidationProvider,
     ValidationObserver,
   },
@@ -227,6 +235,15 @@ export default {
       isOldPasswordShow: false,
       isNewPasswordShow: false,
       isConfirmPasswordShow: false,
+    }
+  },
+
+  setup() {
+    // App Name
+    const { appLogoImage, appName } = $themeConfig.app
+    return {
+      appName,
+      appLogoImage,
     }
   },
 

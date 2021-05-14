@@ -3,12 +3,19 @@
     <b-row class="auth-inner m-0">
 
       <!-- Brand logo-->
-      <b-link class="brand-logo">
-        <vuexy-logo />
-        <h2 class="brand-text text-primary ml-1">
-          Kênh Cửa Hàng
+      <b-row
+        class="brand-logo"
+        align-v="center"
+      >
+        <b-img
+          :src="appLogoImage"
+          alt="logo"
+          width="40px"
+        />
+        <h2 class="brand-text text-brand-1 ml-1 mt-1">
+          {{ appName }}
         </h2>
-      </b-link>
+      </b-row>
       <!-- /Brand logo-->
 
       <!-- Left Text-->
@@ -19,7 +26,7 @@
         <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
           <b-img
             fluid
-            :src="imgUrl"
+            :src="sideImg"
             alt="Đăng nhập"
           />
         </div>
@@ -152,7 +159,7 @@
                   </b-form-checkbox>
 
                   <b-link :to="{name:'auth-reset-password'}">
-                    <small class="h7">Đổi mật khẩu</small>
+                    <small class="h7 text-brand-1">Đổi mật khẩu</small>
                   </b-link>
 
                 </b-row>
@@ -161,7 +168,8 @@
               <!-- submit buttons -->
               <b-button
                 type="submit"
-                variant="primary"
+                variant="someThing"
+                class="btn-brand-1"
                 block
                 :disabled="invalid"
               >
@@ -192,7 +200,6 @@
 <script>
 /* eslint-disable global-require */
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
   VBTooltip,
 } from 'bootstrap-vue'
@@ -202,6 +209,7 @@ import store from '@/store/index'
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
+import { $themeConfig } from '@themeConfig'
 import RoleAndShopSelectionModal from './components/RoleAndShopSelectionModal.vue'
 
 export default {
@@ -209,7 +217,6 @@ export default {
     'b-tooltip': VBTooltip,
   },
   components: {
-    VuexyLogo,
     ValidationProvider,
     ValidationObserver,
     RoleAndShopSelectionModal,
@@ -217,9 +224,9 @@ export default {
   mixins: [togglePasswordVisibility],
   data() {
     return {
-      saveStatus: JSON.parse(localStorage.getItem('saveStatus')) || null,
-      username: JSON.parse(localStorage.getItem('username')) || null,
-      password: JSON.parse(localStorage.getItem('password')) || null,
+      saveStatus: localStorage.getItem('saveStatus') ? JSON.parse(localStorage.getItem('saveStatus')) : null,
+      username: localStorage.getItem('username') ? JSON.parse(localStorage.getItem('username')) : null,
+      password: localStorage.getItem('password') ? JSON.parse(localStorage.getItem('password')) : null,
       sideImg: require('@/assets/images/pages/login-v2.svg'),
       captchaStatus: false,
       captchaCodeResponse: '',
@@ -233,6 +240,16 @@ export default {
       roles: [],
     }
   },
+
+  setup() {
+    // App Name
+    const { appLogoImage, appName } = $themeConfig.app
+    return {
+      appName,
+      appLogoImage,
+    }
+  },
+
   computed: {
     passwordToggleIcon() {
       return this.passwordFieldType === 'password' ? 'EyeOffIcon' : 'EyeIcon'

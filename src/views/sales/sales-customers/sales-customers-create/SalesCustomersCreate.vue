@@ -498,7 +498,7 @@
       Thông tin khách hàng sẽ không được cập nhật khi rời trang
       <template #modal-footer>
         <b-button
-          variant="someTHing"
+          variant="someThing"
           class="btn-brand-1 aligns-items-button-center"
           @click="onClickAgreeButton()"
         >

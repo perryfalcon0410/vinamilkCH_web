@@ -1,13 +1,8 @@
 <template>
   <b-modal
     title="Chọn vai trò và cửa hàng thao tác"
-    ok-title="Đồng ý"
-    cancel-title="Đóng"
-    :ok-disabled="okButtonDisable"
-    cancel-variant="outline-secondary"
+    title-class="text-brand-1 font-weight-bolder"
     :visible="visible"
-    @hidden="onModalHidden"
-    @ok="login"
   >
     <b-form>
       <div
@@ -22,6 +17,7 @@
         placeholder="Chọn vai trò"
         no-options-text="Không có dữ liệu"
       />
+
       <div
         class="mt-1"
       >
@@ -35,6 +31,23 @@
         no-options-text="Vui lòng chọn vai trò trước"
       />
     </b-form>
+
+    <template #modal-footer>
+      <b-button
+        variant="someThing"
+        class="btn-brand-1 aligns-items-button-center"
+        :disabled="okButtonDisable"
+        @click="login()"
+      >
+        Đồng ý
+      </b-button>
+      <b-button
+        class="aligns-items-button-center"
+        @click="onModalHidden"
+      >
+        Đóng
+      </b-button>
+    </template>
   </b-modal>
 </template>
 
