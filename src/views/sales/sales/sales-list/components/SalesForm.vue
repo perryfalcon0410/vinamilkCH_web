@@ -189,8 +189,7 @@
               <tree-select
                 v-model="salemtPromotionObjectSelected"
                 :options="salemtPromotionObjectOptions"
-                placeholder="Tất cả"
-                @click="onClickOffline"
+                @change="onClickOffline()"
               />
             </b-col>
           </b-row>
@@ -208,7 +207,6 @@
               <tree-select
                 v-model="salemtDeliveryTypeSelected"
                 :options="salemtDeliveryTypeOptions"
-                placeholder="Tất cả"
               />
             </b-col>
           </b-row>
@@ -340,6 +338,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import saleData from '@/@db/sale'
 import {
   CUSTOMER,
   // GETTERS
@@ -352,6 +351,13 @@ import {
   GET_SALEMT_PROMOTION_OBJECT_ACTION,
   GET_SALEMT_DELIVERY_TYPE_ACTION,
 } from '../../../sales-customers/store-module/type'
+import {
+  SALES,
+  // Getter
+  ONLINE_ORDER_CUSTOMER_BY_ID_GETTER,
+  // Action
+  GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION,
+} from '../../store-module/type'
 import SalesCreateModal from './SalesCreateModal.vue'
 import SalesSearchModal from './SalesSearchModal.vue'
 import SalesOnlineOrdersModal from './SalesOnlineOrdersModal.vue'
@@ -368,17 +374,20 @@ export default {
       isShowSalesSearchModal: false,
 
       // customer
+      id: null,
+      firstName: null,
+      lastName: null,
       fullName: null,
       phoneNumber: null,
       address: null,
       totalBill: null ?? 0,
 
       // online order
-      id: null,
+      onlineOrderId: null,
       quantity: null,
       totalPrice: null,
-      salemtPromotionObjectSelected: null,
-      salemtDeliveryTypeSelected: null,
+      salemtPromotionObjectSelected: saleData.salemtPromotionObject[0].id,
+      salemtDeliveryTypeSelected: saleData.salemtDeliveryType[0].id,
     }
   },
   computed: {
@@ -388,6 +397,11 @@ export default {
       SALEMT_PROMOTION_OBJECT_GETTER,
       SALEMT_DELIVERY_TYPE_GETTER,
     }),
+
+    ...mapGetters(SALES, {
+      ONLINE_ORDER_CUSTOMER_BY_ID_GETTER,
+    }),
+
     customer() {
       return this.CUSTOMER_BY_ID_GETTER()
     },
@@ -403,6 +417,9 @@ export default {
         label: data.apParamName,
       }))
     },
+    onlineOrderCustomer() {
+      return this.ONLINE_ORDER_CUSTOMER_BY_ID_GETTER
+    },
   },
   watch: {
     ERROR_CODE_GETTER() {
@@ -416,6 +433,9 @@ export default {
       this.salemtDeliveryTypeSelected = null
       this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
     },
+    onlineOrderCustomer() {
+      this.getOnlineOrderCustomerById()
+    },
   },
   mounted() {
     this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
@@ -428,6 +448,10 @@ export default {
       GET_CUSTOMER_BY_ID_ACTION,
       GET_SALEMT_PROMOTION_OBJECT_ACTION,
       GET_SALEMT_DELIVERY_TYPE_ACTION,
+    ]),
+
+    ...mapActions(SALES, [
+      GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION,
     ]),
 
     showModalCreate() {
@@ -457,15 +481,11 @@ export default {
       this.totalBill = val.data.totalBill ?? 0
     },
 
-    getOnlineOrderInfo(val) {
-      this.id = val.data.id
-      this.quantity = val.data.quantity
-      this.totalPrice = val.data.totalPrice
-      this.$emit('getOnlineOrderInfoForm', {
-        id: val.data.id,
-        quantity: val.data.quantity,
-        totalPrice: val.data.totalPrice,
-      })
+    getOnlineOrderInfo(id) {
+      console.log('Sale Modal to Sale Form: ', id)
+      this.onlineOrderId = id
+      this.GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION(`${this.onlineOrderId}?formId=4&ctrlId=1`)
+      this.$emit('getOnlineOrderInfoForm', id)
     },
 
     getCreateInfo(val) {
@@ -481,8 +501,18 @@ export default {
       this.closeNotifyModal()
     },
 
-    onClickOffline() {
-      console.log('this.salemtPromotionObjectSelected', this.salemtPromotionObjectSelected.alemtPromotionId)
+    getOnlineOrderCustomerById() {
+      this.firstName = this.onlineOrderCustomer.customer.firstName
+      this.lastName = this.onlineOrderCustomer.customer.lastName
+      this.fullName = this.lastName + this.firstName
+      this.phoneNumber = this.onlineOrderCustomer.customer.mobiPhone
+      this.address = this.onlineOrderCustomer.customer.address
+      this.quantity = this.onlineOrderCustomer.quantity
+      this.totalPrice = this.onlineOrderCustomer.totalPrice
+    },
+
+    onClickOffline(val) {
+      console.log(val)
     },
   },
 }

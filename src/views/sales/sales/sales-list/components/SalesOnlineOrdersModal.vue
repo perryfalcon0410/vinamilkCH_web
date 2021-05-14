@@ -206,7 +206,7 @@
                   class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
                   variant="someThing"
                   style="max-height: 30px;"
-                  @click="getOnlineOrderInfo(props.row)"
+                  @click="getOnlineOrderInfo(props.row.id)"
                 >
                   <b-icon-hand-index-thumb
                     class="mr-1"
@@ -452,11 +452,10 @@ export default {
       this.GET_ONLINE_ORDERS_ACTION(paginationData)
     },
 
-    getOnlineOrderInfo(obj) {
+    getOnlineOrderInfo(id) {
+      console.log('Sale Modal: ', id)
       this.onClickCloseButton()
-      this.$emit('getOnlineOrderInfo', {
-        data: obj,
-      })
+      this.$emit('getOnlineOrderInfo', id)
     },
   },
 }

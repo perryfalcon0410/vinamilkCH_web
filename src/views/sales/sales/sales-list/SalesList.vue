@@ -118,7 +118,7 @@
         <!-- START - Table product -->
         <vue-good-table
           :columns="columns"
-          :rows="onlineOrderByIds"
+          :rows="id ? onlineOrderProducts : products"
           style-class="vgt-table striped"
           compact-mode
           line-numbers
@@ -232,12 +232,12 @@ import {
   GET_PRODUCTS_GETTER,
   GET_PRODUCT_INFOS_GETTER,
   GET_TOP_SALE_PRODUCTS_GETTER,
-  ONLINE_ORDER_BY_ID_GETTER,
+  ONLINE_ORDER_PRODUCTS_BY_ID_GETTER,
   // Action
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
   GET_TOP_SALE_PRODUCTS_ACTION,
-  GET_ONLINE_ORDER_BY_ID_ACTION,
+  GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -313,56 +313,8 @@ export default {
       productInfoTypeOptions: saleData.productInfoType,
       productsSearch: [],
 
-      // column online order product
-      onlineOrderId: '',
-      onlineOrderColumns: [
-        {
-          label: 'Mã sản phẩm',
-          field: 'orderTableProductId',
-          sortable: false,
-        },
-        {
-          label: 'Tên sản phẩm',
-          field: 'orderTableProductName',
-          sortable: false,
-        },
-        {
-          label: 'ĐVT',
-          field: 'orderTableProductUnit',
-          sortable: false,
-        },
-        {
-          label: 'Tồn kho',
-          field: 'orderTableProductInventory',
-          type: 'number',
-          sortable: false,
-          width: '80px',
-        },
-        {
-          label: 'Số lượng',
-          field: 'orderTableProductAmount',
-          type: 'number',
-          sortable: false,
-          width: '120px',
-        },
-        {
-          label: 'Đơn giá',
-          field: 'orderTableProductUnitPrice',
-          sortable: false,
-          type: 'number',
-        },
-        {
-          label: 'Thành tiền',
-          field: 'orderTableProductTotalPrice',
-          sortable: false,
-          type: 'number',
-        },
-        {
-          label: 'Chức năng',
-          field: 'orderTableProductFeature',
-          sortable: false,
-        },
-      ],
+      // online order
+      id: null,
     }
   },
   computed: {
@@ -393,16 +345,8 @@ export default {
         productCode: data.productCode,
       }))
     },
-    onlineOrderByIds() {
-      return this.ONLINE_ORDER_BY_ID_GETTER().map(data => ({
-        // orderTableProductId: data.id,
-        // orderTableProductName: data.productName,
-        // orderTableProductUnit: data.uom1,
-        // orderTableProductInventory: data.stockTotal,
-        // orderTableProductAmount: 1,
-        // orderTableProductUnitPrice: data.price,
-        // orderTableProductTotalPrice: this.totalPrice(1, Number(data.price)),
-        // orderTableProductCode: data.productCode,
+    onlineOrderProducts() {
+      return this.ONLINE_ORDER_PRODUCTS_BY_ID_GETTER().map(data => ({
         tableProductId: data.id,
         tableProductCode: data.productCode,
         tableProductName: data.productName,
@@ -444,21 +388,22 @@ export default {
       // ctrlId: 7, // Hard code
     }
     this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetProductsTopSale)
-
-    this.GET_ONLINE_ORDER_BY_ID_ACTION('21?formId=4&ctrlId=1')
+  },
+  created() {
+    this.property = 'Example property update.'
   },
   methods: {
     ...mapGetters(SALES, [
       GET_PRODUCTS_GETTER,
       GET_PRODUCT_INFOS_GETTER,
       GET_TOP_SALE_PRODUCTS_GETTER,
-      ONLINE_ORDER_BY_ID_GETTER,
+      ONLINE_ORDER_PRODUCTS_BY_ID_GETTER,
     ]),
     ...mapActions(SALES, [
       GET_PRODUCTS_ACTION,
       GET_PRODUCT_INFOS_ACTION,
       GET_TOP_SALE_PRODUCTS_ACTION,
-      GET_ONLINE_ORDER_BY_ID_ACTION,
+      GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION,
     ]),
     totalPrice(amount, price) {
       return amount * (price || 0)
@@ -481,9 +426,10 @@ export default {
       this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
     },
 
-    getOnlineOrderInfoForm(val) {
-      console.log(val.id)
-      this.onlineOrderId = val.id
+    getOnlineOrderInfoForm(id) {
+      console.log('Sale Form to Sale List: ', id)
+      this.id = id
+      this.GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION(`${this.id}?formId=4&ctrlId=1`)
     },
   },
 }
