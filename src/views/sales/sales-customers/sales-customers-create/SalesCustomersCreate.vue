@@ -459,14 +459,14 @@
 
       <!-- START - Group Button -->
       <b-row
-        class="mx-5"
+        class="mx-0 my-1"
         align-v="center"
         align-h="end"
       >
         <b-button
-          variant="primary"
+          variant="someThing"
           :disabled="invalid"
-          class="aligns-items-button-center"
+          class="btn-brand-1 aligns-items-button-center"
           @click="onClickSaveButton()"
         >
           <b-icon-download
@@ -476,7 +476,7 @@
         </b-button>
 
         <b-button
-          class="aligns-items-button-center ml-1 my-1"
+          class="aligns-items-button-center ml-1"
           @click="navigateBack()"
         >
           <b-icon-x
@@ -498,8 +498,8 @@
       Thông tin khách hàng sẽ không được cập nhật khi rời trang
       <template #modal-footer>
         <b-button
-          variant="primary"
-          class="aligns-items-button-center"
+          variant="someTHing"
+          class="btn-brand-1 aligns-items-button-center"
           @click="onClickAgreeButton()"
         >
           Đồng ý
@@ -521,7 +521,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import router from '@/router/index'
 import {
   ValidationProvider,
   ValidationObserver,
@@ -775,7 +774,7 @@ export default {
               cardTypeId: this.cardTypesSelected,
             },
             onSuccess: () => {
-              router.replace({ name: 'sales-customers' })
+              this.navigateBack()
             },
           })
         }
@@ -826,7 +825,7 @@ export default {
     },
 
     navigateBack() {
-      router.replace({ name: 'sales-customers' })
+      this.$router.replace({ name: 'sales-customers' })
     },
   },
   // END - Methods

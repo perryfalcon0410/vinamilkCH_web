@@ -1,136 +1,190 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column"
+    class="d-flex flex-column px-0"
   >
-    <!-- STart - List of orders returned -->
-    <b-card
-      no-body
-      class="mb-1"
+    <!-- START - Search -->
+    <v-card-actions
+      title="Tìm kiếm"
     >
-      <label
-        for="v-search-form"
-        class="text-primary m-1"
+      <!-- START - Full Name -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
       >
-        Tìm kiếm
-      </label>
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Khách hàng
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model="searchKeywords"
+            class="h8 text-brand-3"
+            placeholder="Nhập MÃ/SĐT/TÊN khách hàng"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="searchKeywords"
+              class="cursor-pointer text-gray"
+              @click="searchKeywords = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Full Name -->
 
-      <!-- START - Search -->
-      <b-form-row
-        class="v-search-form border-top mx-0 p-1"
+      <!-- START - Order return code -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
       >
-        <b-col
-          xl
-          sm="4"
-          md="3"
-          class="mt-1"
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
         >
-          <b-form-group
-            label="Khách hàng"
-            label-for="form-input-customer"
+          Mã trả hàng
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model="derReturnCode"
+            class="h8 text-brand-3"
+            placeholder="Nhập mã trả hàng"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
           >
-            <b-form-input
-              :key="index"
-              v-model="searchKeywords"
-              trim
+            <b-icon-x
+              v-show="derReturnCode"
+              class="cursor-pointer text-gray"
+              @click="derReturnCode = null"
             />
-          </b-form-group>
-        </b-col>
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Order return code -->
 
-        <b-col
-          xl
-          sm="4"
-          md="3"
-          class="mt-1"
+      <!-- START - to date -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
         >
-          <b-form-group
-            label="Mã trả hàng"
-            label-for="form-input-customer"
-          >
-            <b-input
-              v-model="searchOderReturnNumber"
-              trim
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-          class="mt-1"
+          Từ ngày
+        </div>
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
         >
-          <b-form-group
-            label="Từ ngày"
-            label-for="form-input-date-from"
-          >
-            <b-form-datepicker
-              id="form-input-date-from"
-              v-model="valueDateFrom"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
-        </b-col>
+          <b-icon-x
+            v-show="fromDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
+          <vue-flat-pickr
+            v-model="fromDate"
+            :config="configDate"
+            class="form-control h8 text-brand-3"
+            placeholder="Chọn ngày"
+          />
+        </b-row>
+      </b-col>
+      <!-- END - to date -->
 
-        <b-col
-          xl
-          sm="4"
-          md="3"
-          class="mt-1"
+      <!-- START - from date -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
         >
-          <b-form-group
-            label="Đến ngày"
-            label-for="form-input-date-to"
-          >
-            <b-form-datepicker
-              id="form-input-date-to"
-              v-model="valueDateTo"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="4"
-          md="3"
-          class="mt-1"
+          Đến ngày
+        </div>
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
         >
-          <b-form-group
-            label="Tìm kiếm"
-            label-for="form-button-search"
-          >
-            <b-button
-              id="form-button-search"
-              variant="primary"
-              @click="onClickSearchButton()"
-            >
-              <b-icon-search />
-              Tìm kiếm
-            </b-button>
-          </b-form-group>
-        </b-col>
-      </b-form-row>
-      <!-- END - Search -->
-    </b-card>
+          <b-icon-x
+            v-show="toDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
+          <vue-flat-pickr
+            v-model="toDate"
+            :config="configDate"
+            class="form-control h8 text-brand-3"
+            placeholder="Chọn ngày"
+          />
+        </b-row>
+      </b-col>
+      <!-- END - from date -->
 
+      <!-- START - Search button -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <!--"onmousedown" is prevent hightlight text -->
+        <div
+          class="h8 text-white"
+          onmousedown="return false;"
+          style="cursor: context-menu;"
+        >
+          Tìm kiếm
+        </div>
+        <b-button
+          class="btn-brand-1 h9 align-items-button-center mt-sm-1 mt-xl-0"
+          variant="someThing"
+          @click="onClickSearchButton()"
+        >
+          <b-icon-search class="mr-05" />
+          Tìm kiếm
+        </b-button>
+      </b-col>
+      <!-- END - Search button -->
+
+    </v-card-actions>
+    <!-- END - Search -->
+
+    <!-- START - List of orders returned -->
     <b-form class="v-search bg-white rounded shadow rounded my-1">
       <b-row
-        class="justify-content-between border-bottom p-1 mx-0"
+        class="justify-content-between border-bottom px-1 mx-0"
+        style="padding: 5px 0"
         align-v="center"
       >
-        <label class="text-primary">
+        <strong class="text-brand-1">
           Danh sách đơn trả hàng
-        </label>
+        </strong>
         <b-button-group>
           <b-button
-            class="rounded"
-            variant="primary"
+            class="btn-brand-1 h9 align-items-button-center"
+            variant="someThing"
             @click="showSalesReturnedGoodsCreate"
           >
-            <b-icon-plus />
+            <b-icon-plus
+              scale="2"
+              class="mr-05"
+            />
             Thêm mới
           </b-button>
         </b-button-group>
@@ -157,33 +211,40 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+
+          <!-- START - Columns -->
           <template
             slot="table-column"
             slot-scope="props"
           >
-            <div v-if="props.column.label === 'Chức năng'">
-              <b-icon-bricks class="ml-1" />
+            <div v-if="props.column.field === 'feature'">
+              <b-icon-bricks
+                v-b-popover.hover="'Thao tác'"
+                scale="1.3"
+              />
             </div>
             <div v-else>
               {{ props.column.label }}
             </div>
           </template>
+          <!-- END - Columns -->
+
+          <!-- START - Rows -->
           <template
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field == 'feature'">
-              <b-button
-                variant="light"
-                class="rounded-circle px-1"
+            <div v-if="props.column.field === 'feature'">
+              <b-icon-eye-fill
+                v-b-popover.hover="'Xem chi tiết'"
+                class="text-brand-1 cursor-pointer"
+                scale="1.5"
                 @click="showOrderDetailsModal(props.row.idDetail)"
-              >
-                <b-icon-eye-fill
-                  color="blue"
-                />
-              </b-button>
+              />
             </div>
           </template>
+          <!-- END - Rows -->
+
           <!-- START - Column filter -->
           <template
             slot="column-filter"
@@ -206,6 +267,7 @@
             </b-row>
           </template>
           <!-- START - Column filter -->
+
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"
@@ -264,17 +326,23 @@
             </b-row>
           </template>
           <!-- END - Pagination -->
+
         </vue-good-table>
       </b-col>
     <!-- End table -->
+
     </b-form>
     <!-- END - List of orders returned -->
+
+    <!-- START - Modal -->
     <order-details-modal
       :productdetails="productReturns"
       :sale-off-details="promotionReturns"
       :information="totalInfo"
       :visible="isOrderDetailsModal"
     />
+    <!-- END - Modal -->
+
   </b-container>
 </template>
 
@@ -283,7 +351,11 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale, formatNumberToLocale } from '@/@core/utils/filter'
+import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import {
+  formatDateToLocale,
+  formatNumberToLocale,
+} from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import lodash from 'lodash'
 import OrderDetailsModal from '../components/OrderDetailsModal.vue'
@@ -294,7 +366,6 @@ import {
   RETURN_GOODS_DETAIL_PRODUCTS_GETTER,
   RETURN_GOODS_DETAIL_SALES_OFF_GETTER,
   RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER,
-
   // ACTION
   GET_RETURNED_GOODS_ACTION,
   GET_RETURN_GOODS_DETAIL_ACTION,
@@ -303,6 +374,7 @@ import {
 export default {
   components: {
     OrderDetailsModal,
+    VCardActions,
   },
   data() {
     return {
@@ -311,11 +383,18 @@ export default {
       paginationOptions: commonData.pagination,
 
       isOrderDetailsModal: false,
-      valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      valueDateTo: new Date(),
-      searchTerm: '',
-      searchKeywords: '',
-      searchOderReturnNumber: '',
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
+      searchTerm: null,
+      searchKeywords: null,
+      derReturnCode: null,
+
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
+
       columns: [
         {
           label: 'Mã trả hàng',
@@ -390,6 +469,9 @@ export default {
           label: 'Chức năng',
           field: 'feature',
           sortable: false,
+          width: '40px',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
     }
@@ -490,9 +572,9 @@ export default {
     onClickSearchButton() {
       this.GET_RETURNED_GOODS_ACTION({
         searchKeywords: this.searchKeywords.trim(),
-        orderReturnNumber: this.searchOderReturnNumber,
-        formDate: this.valueDateFrom,
-        toDate: this.valueDateTo,
+        orderReturnNumber: this.derReturnCode,
+        formDate: this.fromDate,
+        toDate: this.toDate,
         size: this.elementSize,
         page: this.pageNumber - 1,
       })

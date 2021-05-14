@@ -1,139 +1,132 @@
 <template>
   <b-container
     fluid
-    class="px-0 mt-2"
+    class="px-0"
   >
-    <b-row class="px-3">
-      <b-icon-arrow-left
-        class="mr-4"
-        @click="onBack"
-      />
-      <label>Tạo phiếu trả hàng</label>
-    </b-row>
-    <b-row class="mt-2">
-
-      <!-- Start Container Left -->
+    <b-row class="mx-0">
+      <!-- START - Container Left -->
       <b-col
-        md
-        lg="6"
         xl="3"
-        class="bg-white shadow rounded mx-2 pb-3"
+        lg="6"
+        md
+        class="bg-white shadow rounded py-1"
       >
-        <b-col>
-          <b-row class="my-2">
-            <b-col>
-              <b-card-text>
-                Ngày trả hàng
-              </b-card-text>
-            </b-col>
-            <b-col>
-              <b-card-text class="font-weight-bold">
-                {{ billInfo.dateReturn }}
-              </b-card-text>
-            </b-col>
-          </b-row>
-          <b-row class="mb-1">
-            <b-col>
-              <b-card-text>
-                Đơn hàng muốn trả
-              </b-card-text>
-            </b-col>
-            <b-col>
-              <b-card-text class="font-weight-bold">
-                {{ billInfo.oderNumber }}
-              </b-card-text>
-            </b-col>
-          </b-row>
-          <b-input-group class="input-group-merge">
-            <b-form-input
-              v-model="billInfo.oderNumber"
-              readonly
-            />
-            <b-input-group-append
-              class="cursor-pointer"
-              is-text
-              @click="showSelectReceptModal()"
-            >
-              <b-icon-three-dots-vertical />
-            </b-input-group-append>
-          </b-input-group>
+        <!-- START - Goods return date -->
+        <b-row class="mx-0">
+          <b-col
+            cols="3"
+            class="px-0"
+          >
+            Ngày trả hàng
+          </b-col>
+          <strong>
+            {{ billInfo.dateReturn }}
+          </strong>
+        </b-row>
+        <!-- END - Goods return date -->
 
-          <!-- Start List Item -->
-          <b-list-group v-if="billInfo.id !== ''">
-            <b-list-group-item
-              variant="secondary"
-            >
-              Ngày mua hàng
-              <span class="font-weight-bold">
-                {{ `: ${billInfo.oderDate}` }}
-              </span>
-            </b-list-group-item>
-            <b-list-group-item
-              variant="secondary"
-            >
-              Nhân viên bán hàng
-              <span class="font-weight-bold">
-                {{ `: ${billInfo.employeeName}` }}
-              </span>
-            </b-list-group-item>
-            <b-list-group-item
-              variant="secondary"
-            >
-              Khách hàng
-              <span class="font-weight-bold">
-                {{ `: ${billInfo.customerName}` }}
-              </span>
-            </b-list-group-item>
-            <b-list-group-item
-              variant="secondary"
-            >
-              Tiền trả lại
-              <span class="font-weight-bold">
-                {{ `: ${billInfo.moneyPayback}` }}
-              </span>
-            </b-list-group-item>
-          </b-list-group>
-          <!-- End List Item -->
+        <!-- START - Order want return -->
+        <b-row class="mt-1 mx-0">
+          <b-col class="px-0">
+            Đơn hàng muốn trả
+          </b-col>
+          <strong>
+            {{ billInfo.oderNumber }}
+          </strong>
+        </b-row>
+        <!-- END - Order want return -->
 
-          <b-form-row>
-            <b-col
-              cols="6"
-              class="mt-1"
-              align-self="start"
-            >
-              <b-form-group
-                label="Lý do trả hàng"
-              >
-                <b-form-select
-                  v-model="selectedReason"
-                  :options="reasonReturn"
-                  class="form-control"
-                />
-              </b-form-group>
-            </b-col>
-          </b-form-row>
-          <b-form-row>
-            <b-col
-              align-self="start"
-            >
-              <b-form-group
-                v-model="reasonDescription"
-                label="Thông tin phản hồi"
-              >
-                <b-form-textarea />
-              </b-form-group>
-            </b-col>
-          </b-form-row>
+        <!-- START - Order input  -->
+        <b-input-group class="input-group-merge">
+          <b-form-input
+            v-model="billInfo.oderNumber"
+            readonly
+          />
+          <b-input-group-append
+            class="cursor-pointer"
+            is-text
+            @click="showSelectReceptModal()"
+          >
+            <b-icon-three-dots-vertical />
+          </b-input-group-append>
+        </b-input-group>
+        <!-- END - Order input  -->
+
+        <!-- START - List Item -->
+        <b-list-group v-if="billInfo.id !== ''">
+          <b-list-group-item
+            variant="secondary"
+          >
+            Ngày mua hàng
+            <strong>
+              {{ `: ${billInfo.oderDate}` }}
+            </strong>
+          </b-list-group-item>
+          <b-list-group-item
+            variant="secondary"
+          >
+            Nhân viên bán hàng
+            <strong>
+              {{ `: ${billInfo.employeeName}` }}
+            </strong>
+          </b-list-group-item>
+          <b-list-group-item
+            variant="secondary"
+          >
+            Khách hàng
+            <strong>
+              {{ `: ${billInfo.customerName}` }}
+            </strong>
+          </b-list-group-item>
+          <b-list-group-item
+            variant="secondary"
+          >
+            Tiền trả lại
+            <strong>
+              {{ `: ${billInfo.moneyPayback}` }}
+            </strong>
+          </b-list-group-item>
+        </b-list-group>
+        <!-- END - List Item -->
+
+        <!-- START - Order return reason -->
+        <b-col
+          class="mt-1 px-0"
+        >
+          <div>
+            Lý do trả hàng
+          </div>
+          <tree-select
+            v-model="selectedReason"
+            :options="reasonReturn"
+            :searchable="false"
+            placeholder="Chọn lý do trả hàng"
+            no-options-text="Không có dữ liệu"
+          />
         </b-col>
-      </b-col>
-      <!-- Start Container Left -->
+        <!-- END - Order return reason -->
 
-      <!-- Start Container Right -->
+        <!-- START - Feedback info -->
+        <b-col class="px-0 mt-1">
+          <div>
+            Thông tin phản hồi
+          </div>
+          <b-form-textarea
+            v-model="feedbackInfomation"
+          />
+        </b-col>
+        <!-- END - Feedback info -->
+
+      </b-col>
+      <!-- END - Container Left -->
+
+      <!-- START - Container Right -->
       <b-col
-        class="bg-white shadow rounded"
+        class="bg-white shadow rounded ml-1"
       >
-        <!-- Start Tab -->
+        <!-- START - Tables -->
         <b-tabs>
+          <!-- START - Product -->
           <b-tab
             title="Sản phẩm"
             active
@@ -142,16 +135,11 @@
             <vue-good-table
               :columns="columns"
               :rows="products"
-              class="pb-1"
               style-class="vgt-table striped"
               :pagination-options="{
                 enabled: true
               }"
               line-numbers
-              :search-options="{
-                enabled: true,
-                externalQuery: searchTerm
-              }"
             >
               <!-- START - Empty rows -->
               <div
@@ -163,22 +151,20 @@
             </vue-good-table>
             <!-- End table -->
           </b-tab>
+          <!-- END - Product -->
+
+          <!-- START - Promotion Product  -->
           <b-tab
             title="Hàng khuyến mãi"
           >
             <vue-good-table
               :columns="columns"
               :rows="promotions"
-              class="pb-1"
               style-class="vgt-table striped"
               :pagination-options="{
                 enabled: true
               }"
               line-numbers
-              :search-options="{
-                enabled: true,
-                externalQuery: searchTerm
-              }"
             >
               <!-- START - Empty rows -->
               <div
@@ -189,29 +175,44 @@
               </div>
             </vue-good-table>
           </b-tab>
-        </b-tabs>
-        <!-- End Tab -->
+          <!-- END - Promotion Product  -->
 
-        <!-- Start Button -->
-        <b-row class="px-3 mt-4 mb-2 d-flex justify-content-end">
+        </b-tabs>
+        <!-- END - Tables -->
+
+        <!-- START - Buttons -->
+        <b-row
+          class="my-1 mx-0"
+          align-h="end"
+          align-v="center"
+        >
           <b-button
-            variant="primary"
-            class="mr-2"
+            variant="someThing"
+            class="btn-brand-1 align-items-button-center"
             @click="onSubmit"
           >
-            <b-icon-arrow90deg-left />
+            <b-icon-arrow90deg-left
+              class="mr-05"
+              scale="1"
+            />
             TRẢ HÀNG
           </b-button>
-          <b-button>
-            <b-icon-x />
+
+          <b-button
+            class="align-items-button-center ml-1"
+            @click="onCloseButtonClick"
+          >
+            <b-icon-x scale="1.5" />
             ĐÓNG
           </b-button>
         </b-row>
-        <!-- End button -->
+        <!-- END - Buttons -->
 
       </b-col>
-      <!-- End Container Right -->
+      <!-- END - Container Right -->
+
     </b-row>
+
     <!-- START - Modal -->
     <select-recept-modal
       :visible="isShowSelectReceptModal"
@@ -219,12 +220,12 @@
       @onCloseModal="onCloseModal"
     />
     <!-- END - Modal -->
+
   </b-container>
 </template>
 
 <script>
-
-import { getDateNow } from '@/@core/utils/utils'
+import { getNow } from '@/@core/utils/utils'
 import {
   mapGetters,
   mapActions,
@@ -233,28 +234,34 @@ import {
 import toasts from '@core/utils/toasts/toasts'
 import SelectReceptModal from './components/SelectReceptModal.vue'
 import {
-  RETURNEDGOODS, RETURNED_GOOD_CHOOSEN_DETAIL_GETTER, GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION, CREATE_RETURNED_GOOD_ACTION, CLEAR_RETURNED_GOODS_DATA,
+  RETURNEDGOODS,
+  // GETTERS
+  RETURNED_GOOD_CHOOSEN_DETAIL_GETTER,
+  // ACTIONS
+  GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION,
+  CREATE_RETURNED_GOOD_ACTION,
+  CLEAR_RETURNED_GOODS_MUTATION,
 } from '../store-module/type'
 
 export default {
   components: {
     SelectReceptModal,
   },
+
   data() {
     return {
       isShowSelectReceptModal: false,
-      selectedReason: '',
+      selectedReason: null,
       billInfo: {
-        id: '',
-        oderDate: '',
-        employeeName: '',
-        customerName: '',
-        moneyPayback: '',
-        oderNumber: '',
-        dateReturn: getDateNow(),
-        reasonDescription: '',
+        id: null,
+        oderDate: null,
+        employeeName: null,
+        customerName: null,
+        moneyPayback: null,
+        oderNumber: null,
+        dateReturn: getNow(),
+        feedbackInfomation: null,
       },
-      searchTerm: '',
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -304,6 +311,7 @@ export default {
       ],
     }
   },
+
   computed: {
     products() {
       return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER().products.map(data => ({
@@ -338,20 +346,18 @@ export default {
       }))
     },
   },
+
   watch: {
     reasonReturn() {
       this.selectedReason = this.reasonReturn[0].value || ''
     },
   },
+
   destroyed() {
-    this.CLEAR_RETURNED_GOODS_DATA()
+    this.CLEAR_RETURNED_GOODS_MUTATION()
   },
+
   methods: {
-    onBack() {
-      this.$router.back()
-    },
-    onClick: {
-    },
     showSelectReceptModal() {
       this.isShowSelectReceptModal = true
     },
@@ -378,7 +384,7 @@ export default {
       RETURNED_GOOD_CHOOSEN_DETAIL_GETTER,
     ]),
     ...mapMutations(RETURNEDGOODS, [
-      CLEAR_RETURNED_GOODS_DATA,
+      CLEAR_RETURNED_GOODS_MUTATION,
     ]),
     ...mapActions(RETURNEDGOODS, [
       GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION,
@@ -394,9 +400,12 @@ export default {
         dateReturn: new Date(),
         orderNumber: this.billInfo.oderNumber,
         reasonId: this.selectedReason,
-        reasonDescription: this.billInfo.oderNumber,
+        feedbackInfomation: this.billInfo.oderNumber,
         createUser: localStorage.getItem('username') || '',
       })
+    },
+    onCloseButtonClick() {
+      this.$router.replace({ name: 'sales-returned-goods' })
     },
   },
 }

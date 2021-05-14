@@ -20,7 +20,6 @@
           class="input-group-merge"
         >
           <b-form-input
-            id="form-input-customer"
             v-model="searchKeywords"
             class="h8 text-brand-3"
             placeholder="Nhập họ tên/mã"
@@ -203,7 +202,7 @@
           Tìm kiếm
         </div>
         <b-button
-          class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
+          class="btn-brand-1 h9 align-items-button-center mt-sm-1 mt-xl-0"
           variant="someThing"
           @click="onClickSearchButton()"
         >

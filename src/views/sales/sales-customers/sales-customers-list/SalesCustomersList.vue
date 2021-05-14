@@ -25,7 +25,7 @@
         </strong>
         <b-button-group>
           <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+            class="btn-brand-1 h9 align-items-button-center rounded"
             variant="someThing"
             @click="navigateToCreate"
           >
@@ -36,7 +36,7 @@
             Thêm mới
           </b-button>
           <b-button
-            class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+            class="btn-brand-1 h9 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickExcelExportButton"
           >

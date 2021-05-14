@@ -18,7 +18,7 @@ import {
   CREATE_RETURNED_GOOD_ACTION,
   GET_RETURN_GOODS_DETAIL_ACTION,
   // MUTATION
-  CLEAR_RETURNED_GOODS_DATA,
+  CLEAR_RETURNED_GOODS_MUTATION,
 } from './type'
 
 export default {
@@ -70,7 +70,7 @@ export default {
   },
   // MUTATIONS
   mutations: {
-    [CLEAR_RETURNED_GOODS_DATA](state) {
+    [CLEAR_RETURNED_GOODS_MUTATION](state) {
       state.oderReturns = []
       state.saleOders = []
       state.products = []

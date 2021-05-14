@@ -3,16 +3,11 @@
     <vue-good-table
       :columns="columns"
       :rows="saleOffTable"
-      class="pb-1"
       style-class="vgt-table striped"
       :pagination-options="{
         enabled: false
       }"
       line-numbers
-      :search-options="{
-        enabled: true,
-        externalQuery: searchTerm
-      }"
     />
   </b-col>
 </template>
@@ -34,7 +29,6 @@ export default {
   data() {
     return {
       modalShow: false,
-      searchTerm: '',
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -94,13 +88,6 @@ export default {
         },
       ],
     }
-  },
-  computed: {
-
-  },
-  methods: {
-    onPress() {
-    },
   },
 }
 </script>
