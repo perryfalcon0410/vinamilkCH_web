@@ -100,6 +100,7 @@
                   <b-icon-plus
                     class="ml-1"
                     scale="2"
+                    @click="newRow"
                   />
                 </span>
               </template>
@@ -109,14 +110,21 @@
               >
                 <span v-if="props.column.field == 'comboCode'">
                   <tree-select
-                    :default-expand-level="2"
+                    v-model="comboListRows[props.index].selected"
+                    :options="comboProductOptions"
                     placeholder="Nhập mã hoặc tên sản phẩm"
+                    @select="comboSelected"
+                    @close="close(props.index)"
                   />
+                  {{ comboListRows[props.index].selected }}
                 </span>
-                <span v-if="props.column.field == 'quantity'">
+                <span v-if="props.column.field == 'numProduct'">
                   <b-form-input
-                    :type="number"
+                    v-model="comboListRows[props.index].refProductId"
+                    type="number"
+                    min="0"
                   />
+                  {{ comboListRows.refProductId }}
                 </span>
                 <span v-if="props.column.field == 'price'">
                   <b-form-input
@@ -127,7 +135,14 @@
                   {{ props.formattedRow[props.column.field] }}
                 </span>
                 <span v-if="props.column.field == 'function'">
-                  <b-icon-trash-fill color="red" />
+                  <b-icon-trash-fill
+                    color="red"
+                    class="ml-1"
+                    @click="deleteProduct(props.index)"
+                  />
+                </span>
+                <span v-else>
+                  {{ props.formattedRow[props.column.field] }}
                 </span>
               </template>
             </vue-good-table>
@@ -189,6 +204,7 @@
 <script>
 import warehousesData from '@/@db/warehouses'
 import { getNow } from '@core/utils/utils'
+import lodash from 'lodash'
 import {
   mapActions,
   mapGetters,
@@ -196,7 +212,10 @@ import {
 import {
   WAREHOUSES_COMBO,
   COMBO_PRODUCTS_GETTER,
+  COMBO_PRODUCTS_INFO_GETTER,
+  COMBO_PRODUCTS_DETAILS_GETTER,
   GET_COMBO_PRODUCTS_ACTION,
+  GET_COMBO_PRODUCTS_DETAILS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -205,6 +224,19 @@ export default {
       now: getNow(),
       tradingTypeOptions: warehousesData.tradingTypes,
       tradingTypeSelected: null,
+      comboCommonInfo: [],
+
+      comboListRows: [
+        {
+          id: '',
+          comboCode: '',
+          numProduct: '',
+          price: '',
+          comboName: '',
+          selected: null,
+          function: '',
+        },
+      ],
       // -----------------Combo List-----------------
       comboListColumns: [
         {
@@ -217,7 +249,7 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
+          field: 'numProduct',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -240,8 +272,6 @@ export default {
           label: 'Chức năng',
           field: 'function',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
       ],
       // -----------------Combo List-----------------
@@ -271,7 +301,7 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
+          field: 'numProduct',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -305,12 +335,45 @@ export default {
     }
   },
   computed: {
-    comboListRows() {
-      return this.COMBO_PRODUCTS_GETTER().map(data => ({
-
+    ...mapGetters(WAREHOUSES_COMBO, [
+      COMBO_PRODUCTS_GETTER,
+      COMBO_PRODUCTS_INFO_GETTER,
+      COMBO_PRODUCTS_DETAILS_GETTER,
+    ]),
+    comboDetails() {
+      return this.COMBO_PRODUCTS_GETTER.map(data => ({
+        id: data.id,
+        comboCode: data.productCode,
+        numProduct: data.numProduct,
         price: data.productPrice,
+        comboName: data.productName,
       }))
     },
+
+    comboProductOptions() {
+      return this.COMBO_PRODUCTS_GETTER.map(data => ({
+        id: data.id,
+        label: data.productCode,
+      }))
+    },
+
+    comboProductsInfo() {
+      return this.COMBO_PRODUCTS_INFO_GETTER
+    },
+
+    comboExchangeProducts() {
+      return this.COMBO_PRODUCTS_DETAILS_GETTER.map(data => ({
+        comboCode: data.comboProductCode,
+        productCode: data.productCode,
+        exchangeRate: data.factor,
+        price: data.productPrice,
+        productName: data.productName,
+      }))
+    },
+
+  },
+  watch: {
+
   },
   mounted() {
     this.tradingTypeSelected = this.tradingTypeOptions[0].id
@@ -320,15 +383,39 @@ export default {
     })
   },
   methods: {
-    ...mapGetters(WAREHOUSES_COMBO, [
-      COMBO_PRODUCTS_GETTER,
-    ]),
     ...mapActions(WAREHOUSES_COMBO, [
       GET_COMBO_PRODUCTS_ACTION,
+      GET_COMBO_PRODUCTS_DETAILS_ACTION,
     ]),
-    test() {
-      console.log('click')
-      console.log(this.tradingTypeOptions)
+    newRow() {
+      this.comboListRows = [...this.comboListRows,
+        {
+          comboCode: '',
+          numProduct: '',
+          price: '',
+          comboName: '',
+          selected: null,
+          function: '',
+        },
+      ]
+    },
+    comboSelected(item) {
+      if (item.id) {
+        this.GET_COMBO_PRODUCTS_DETAILS_ACTION({
+          id: item.id,
+          formId: 9,
+          ctrlId: 6,
+        })
+      }
+    },
+    close(index) {
+      console.log(this.comboProductsInfo)
+      this.comboListRows[index] = lodash.clone(this.comboProductsInfo)
+      console.log(this.comboListRows)
+    },
+    deleteProduct(index) {
+      console.log(index)
+      this.comboListRows.splice(index, 1)
     },
   },
 }

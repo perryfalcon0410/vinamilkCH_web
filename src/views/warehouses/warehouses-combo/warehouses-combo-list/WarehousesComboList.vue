@@ -321,6 +321,9 @@ export default {
 
       this.GET_WAREHOUSES_COMBO_ACTIONS(paginationData)
     },
+    navigateToCreate() {
+      this.$router.push({ name: 'warehouses-combo-create' })
+    },
   },
 }
 </script>

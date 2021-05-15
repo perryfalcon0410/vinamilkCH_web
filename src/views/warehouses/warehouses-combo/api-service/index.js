@@ -4,6 +4,7 @@ import {
   getWareHouseComboDetailEndPoint,
   getWarehousesComboEndPoint,
   getComboProductsEndpoint,
+  getComboProductsDetailsEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -19,6 +20,11 @@ export default {
   },
   getComboProducts(args) {
     return axios.get(getComboProductsEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getComboProductsDetails(args) {
+    return axios.get(`${getComboProductsDetailsEndpoint}/${args.id}`, {
       params: formatURLParams(args),
     })
   },
