@@ -79,12 +79,15 @@
                   name="số hóa đơn"
                 >
                   <div class="h9">
-                    Số hóa đơn <sup class="text-danger">*</sup>
+                    Số hóa đơn <sup
+                      v-show="inputTypeSelected === '0'"
+                      class="text-danger"
+                    >*</sup>
                   </div>
                   <b-form-input
                     v-model="billNumber"
                     :state="touched ? passed : null"
-                    :disabled="importType != '1' ? true : false"
+                    :disabled="inputTypeSelected != '0' ? true : false"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -95,7 +98,10 @@
                   rules="required"
                 >
                   <div class="h9">
-                    Ngày hóa đơn <sup class="text-danger">*</sup>
+                    Ngày hóa đơn <sup
+                      v-show="inputTypeSelected === '0'"
+                      class="text-danger"
+                    >*</sup>
                   </div>
                   <b-input-group
                     class="input-group-merge"
@@ -103,7 +109,7 @@
                     <vue-flat-pickr
                       id="form-input-date-from"
                       v-model="billDate"
-                      :disabled="importType != '1' ? true : false"
+                      :disabled="inputTypeSelected != '0' ? true : false"
                       :config="configDate"
                       class="form-control h8 text-brand-3"
                       placeholder="Chọn ngày"
@@ -124,12 +130,15 @@
                   name="số nội bộ"
                 >
                   <div class="mt-1 h9">
-                    Số nội bộ <sup class="text-danger">*</sup>
+                    Số nội bộ <sup
+                      v-show="inputTypeSelected === '0'"
+                      class="text-danger"
+                    >*</sup>
                   </div>
                   <b-form-input
                     v-model="internalNumber"
                     :state="touched ? passed : null"
-                    :disabled="importType != '1' ? true : false"
+                    :disabled="inputTypeSelected != '0' ? true : false"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -137,13 +146,13 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  :rules="importType === '1' ? 'required' : ''"
+                  :rules="inputTypeSelected === '0' ? 'required' : ''"
                   name="PO No"
                 >
                   <div class="mt-1 h9">
                     PO No
                     <sup
-                      v-show="importType === '1'"
+                      v-show="inputTypeSelected === '0'"
                       class="text-danger"
                     >*</sup>
                   </div>
@@ -153,8 +162,8 @@
                   >
                     <b-form-input
                       v-model="poNo"
-                      :state="importType === '1' && touched ? passed : null"
-                      :disabled="importType != '1' ? true : false"
+                      :state="inputTypeSelected === '0' && touched ? passed : null"
+                      :disabled="inputTypeSelected != '0' ? true : false"
                     />
                     <b-input-group-append
                       v-b-popover.hover="'Nhập PO No'"
@@ -315,15 +324,15 @@
                 slot="table-row"
                 slot-scope="props"
               >
-                <span v-if="props.column.field == 'productCode'">
+                <span v-if="props.column.field == 'productId'">
                   <b-form-input
-                    v-model="rowsProductPromotion[props.row.count].productCode"
+                    v-model="rowsProductPromotion[props.index].productId"
                     size="sm"
                   />
                 </span>
                 <span v-if="props.column.field == 'quantity'">
                   <b-input
-                    v-model="rowsProductPromotion[props.row.count].quantity"
+                    v-model="rowsProductPromotion[props.index].quantity"
                     size="sm"
                   />
                 </span>
@@ -333,7 +342,7 @@
                     class="cursor-pointer mt-05"
                     scale="1.5"
                     color="red"
-                    @click="onClickDeleteButton(props.row.count)"
+                    @click="onClickDeleteButton(props.index)"
                   />
                   {{ count }}
                 </span>
@@ -368,7 +377,6 @@
 
                 <b-button
                   class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
-                  variant="someThing"
                   @click="navigateBack"
                 >
                   <b-icon
@@ -470,7 +478,6 @@ export default {
       rows: null,
 
       billNumber: '',
-      importType: '1',
       internalNumber: '',
       billDate: this.$nowDate,
       poNo: '',
@@ -487,7 +494,7 @@ export default {
       poPromotionColumns: [
         {
           label: 'Mã hàng',
-          field: 'productCode',
+          field: 'productId',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -549,7 +556,7 @@ export default {
       poColumns: [
         {
           label: 'Mã hàng',
-          field: 'productCode',
+          field: 'productId',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -608,7 +615,7 @@ export default {
       ],
       rowsProductPromotion: [{
         count: 0,
-        productCode: '',
+        productId: '',
         quantity: '',
       }],
       // -------------------------PoConfirm--------------------------
@@ -625,7 +632,7 @@ export default {
         },
         {
           label: 'Mã sản phẩm',
-          field: 'productCode',
+          field: 'productId',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -677,7 +684,7 @@ export default {
         },
         {
           label: 'Mã sản phẩm',
-          field: 'productCode',
+          field: 'productId',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -722,7 +729,7 @@ export default {
     // filter count from newRow
     promotionRow() {
       return this.rowsProductPromotion.map(data => ({
-        productId: data.productCode,
+        productId: data.productId,
         quantity: data.quantity,
       }))
     },
@@ -754,7 +761,7 @@ export default {
           ...this.rowsProductPromotion,
           {
             count: this.rowsProductPromotion.length,
-            productCode: '',
+            productId: '',
             quantity: '',
           },
         ]
@@ -801,7 +808,7 @@ export default {
     dataFromInputAdjust(data) {
       const [importAdjustsDetail, id] = data
       this.adjustRows = [...importAdjustsDetail]
-      this.status = 1 // importType
+      this.status = 1 // inputTypeSelected
       this.poNo = null // poNumber
       this.poId = id // poId
       this.tableRender()
@@ -834,7 +841,7 @@ export default {
     create() {
       if (this.status !== null) {
         this.CREATE_SALE_IMPORT_ACTION({
-          importType: this.status,
+          inputTypeSelected: this.status,
           poNumber: this.poNo,
           internalNumber: this.internalNumber,
           redInvoiceNo: this.billNumber,
@@ -845,7 +852,7 @@ export default {
         this.$refs.formContainer.validate().then(success => {
           if (success) {
             this.CREATE_SALE_IMPORT_ACTION({
-              importType: 0,
+              inputTypeSelected: 0,
               poNumber: this.poNo,
               internalNumber: this.internalNumber,
               redInvoiceNo: this.billNumber,

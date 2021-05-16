@@ -141,6 +141,7 @@ import {
   mapActions,
 } from 'vuex'
 import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
+import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
   // GETTERS
@@ -260,8 +261,12 @@ export default {
       GET_IMPORT_BORROWINGS_DETAIL_ACTION,
     ]),
     inputBorrow() {
-      this.$emit('inputBorrowsChange', [this.importBorrowingsDetailList, false, this.current])
-      this.$emit('close')
+      if (this.importBorrowingslist.length > 0) {
+        this.$emit('inputBorrowsChange', [this.importBorrowingsDetailList, false, this.current])
+        this.$emit('close')
+      } else {
+        toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')
+      }
     },
     selectOrder(id) {
       this.current = id

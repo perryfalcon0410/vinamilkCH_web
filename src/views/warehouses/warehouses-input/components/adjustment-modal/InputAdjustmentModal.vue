@@ -141,6 +141,7 @@ import {
   mapActions,
 } from 'vuex'
 import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
+import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
   // GETTER
@@ -263,8 +264,12 @@ export default {
       this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
     },
     inputAdjustmentConfirm() {
-      this.$emit('inputAdjustChange', [this.importAdjustmentsDetailList, this.current])
-      this.$emit('close')
+      if (this.importAdjustmentsList.length === 0) {
+        this.$emit('inputAdjustChange', [this.importAdjustmentsDetailList, this.current])
+        this.$emit('close')
+      } else {
+        toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')
+      }
     },
     cancel() {
       this.$emit('close')
