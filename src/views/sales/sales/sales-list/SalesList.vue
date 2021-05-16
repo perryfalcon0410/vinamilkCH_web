@@ -228,6 +228,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import saleData from '@/@db/sale'
+import commonData from '@/@db/common'
 import SalesForm from './components/SalesForm.vue'
 import SalesProducts from './components/SalesProducts.vue'
 import {
@@ -261,7 +262,8 @@ export default {
   data() {
     return {
       inputSearchFocused: false,
-
+      formId: 5, // Hard code
+      ctrlId: 7, // hard code
       columns: [
         {
           label: '',
@@ -336,10 +338,8 @@ export default {
         catId: null,
         customerTypeId: 1,
         status: null,
-        size: 10,
-        page: 0,
-        formId: 5, // Hard code
-        ctrlId: 7, // Hard code
+        size: commonData.pagination[0],
+        page: commonData.pageNumber,
       },
       products: [],
       productInfos: [],

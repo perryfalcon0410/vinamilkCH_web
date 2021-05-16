@@ -298,9 +298,9 @@ import {
 } from 'vuex'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'
-import { reverseVniDate } from '@/@core/utils/filter'
+import { reverseVniDate, formatISOtoVNI } from '@/@core/utils/filter'
 import {
-  REDINVOICE,
+  RED_INVOICE,
   RED_INVOICES_GETTER,
   GET_RED_INVOICES_ACTION,
 } from '../store-module/type'
@@ -368,7 +368,7 @@ export default {
         },
         {
           label: 'Ngày in',
-          field: 'Date',
+          field: 'printDate',
           sortable: false,
         },
         {
@@ -395,6 +395,7 @@ export default {
         GTGT: this.$formatNumberToLocale(data.amountGTGT),
         totalMoney: this.$formatNumberToLocale(data.amountNotVat),
         note: data.note,
+        printDate: formatISOtoVNI(data.printDate),
       }))
     },
     paging() {
@@ -418,13 +419,13 @@ export default {
     this.toDate = this.$nowDate
   },
   methods: {
-    ...mapState(REDINVOICE, {
+    ...mapState(RED_INVOICE, {
       successStatusDelete: state => state.delete.success,
     }),
-    ...mapGetters(REDINVOICE, [
+    ...mapGetters(RED_INVOICE, [
       RED_INVOICES_GETTER,
     ]),
-    ...mapActions(REDINVOICE, [
+    ...mapActions(RED_INVOICE, [
       GET_RED_INVOICES_ACTION,
     ]),
     addSaleRedBillsCreate() {

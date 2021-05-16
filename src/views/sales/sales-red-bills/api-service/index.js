@@ -4,18 +4,22 @@ import {
   getRedInvoiceEndpoint,
   getCustomersEndpoint,
   getBillOfSalesEndPoint,
-  getBillOfSaleProductEndPoint,
+  getBillOfSaleProductsEndPoint,
   getProductsEndPoint,
+  createRedBillEndpoint,
+  getInvoiceDetailEndpoint,
 } from './defaultConfig'
 
 export default {
   getRedInvoices(args) {
-    const queryString = new URLSearchParams(args).toString()
-    return axios.get(`${getRedInvoiceEndpoint}?${queryString}`)
+    return axios.get(getRedInvoiceEndpoint, {
+      params: formatURLParams(args),
+    })
   },
   getBillOfSales(args) {
-    const queryString = new URLSearchParams(args).toString()
-    return axios.get(`${getBillOfSalesEndPoint}?${queryString}`)
+    return axios.get(getBillOfSalesEndPoint, {
+      params: formatURLParams(args),
+    })
   },
   getCustomers(args) {
     return axios.get(getCustomersEndpoint, {
@@ -23,11 +27,20 @@ export default {
     })
   },
   getBillOfSaleProduct(args) {
-    const queryString = new URLSearchParams(args).toString()
-    return axios.get(`${getBillOfSaleProductEndPoint}?${queryString}`)
+    return axios.get(getBillOfSaleProductsEndPoint, {
+      params: formatURLParams(args),
+    })
   },
   getProducts(args) {
     return axios.get(`${getProductsEndPoint}`, {
+      params: formatURLParams(args),
+    })
+  },
+  createRedBill(args) {
+    return axios.post(createRedBillEndpoint, args)
+  },
+  getInvoiceDetail(args) {
+    return axios.get(`${getInvoiceDetailEndpoint}`, {
       params: formatURLParams(args),
     })
   },

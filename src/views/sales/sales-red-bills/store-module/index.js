@@ -5,16 +5,20 @@ import {
   ERROR_CODE_GETTER,
   CUSTOMERS_GETTER,
   GET_BILL_OF_SALES_GETTER,
-  GET_BILL_OF_SALES_SELECTED_PRODUCTS_GETTER,
+  GET_PRODUCTS_IN_SELECTED_BILL_GETTER,
   PRODUCTS_GETTER,
+  GET_INVOICE_DETAIL_GETTER,
+  GET_INVOICE_DETAIL_INFO_GETTER,
   // ACTIONS
   GET_RED_INVOICES_ACTION,
   GET_CUSTOMERS_ACTION,
   GET_BILL_OF_SALES_ACTION,
-  GET_BILL_OF_SALE_SELECTED_PRODUCT_ACTION,
+  GET_PRODUCTS_IN_SELECTED_BILL_ACTION,
   CLEAR_ALL_BILL_OF_SALES_PRODUCTS,
   CLEAR_BILL_OF_SALE_PRODUCTS_UNCHECKED,
   GET_PRODUCTS_ACTION,
+  CREATE_RED_BILL_ACTION,
+  GET_INVOICE_DETAIL_ACTION,
 } from './type'
 import toasts from '../../../../@core/utils/toasts/toasts'
 
@@ -30,6 +34,9 @@ export default {
     billOfSales: [],
     billOfSalesPaging: [],
     products: [],
+    productOfBills: [],
+    invoiceDetail: {},
+    invoiceDetailInfo: {},
   },
 
   // GETTERS
@@ -47,8 +54,8 @@ export default {
         billOfSalesPaging: state.billOfSalesPaging,
       }
     },
-    [GET_BILL_OF_SALES_SELECTED_PRODUCTS_GETTER](state) {
-      return state.products
+    [GET_PRODUCTS_IN_SELECTED_BILL_GETTER](state) {
+      return state.productOfBills
     },
     [ERROR_CODE_GETTER](state) {
       return state.errorCode
@@ -58,6 +65,12 @@ export default {
     },
     [PRODUCTS_GETTER](state) {
       return state.products
+    },
+    [GET_INVOICE_DETAIL_GETTER](state) {
+      return state.invoiceDetail
+    },
+    [GET_INVOICE_DETAIL_INFO_GETTER](state) {
+      return state.invoiceDetailInfo
     },
   },
 
@@ -117,26 +130,13 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_BILL_OF_SALE_SELECTED_PRODUCT_ACTION]({ state }, val) {
+    [GET_PRODUCTS_IN_SELECTED_BILL_ACTION]({ state }, val) {
       RedInvoiceService
         .getBillOfSaleProduct(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            const productTemp = []
-            if (res.data) {
-              res.data.forEach(item => {
-                productTemp.push({
-                  item,
-                  orderCode: val.orderCode || '',
-                })
-              })
-            }
-
-            state.products = [
-              ...state.products,
-              ...productTemp,
-            ]
+            state.productOfBills = res.data || []
           } else {
             throw new Error(res.statusValue)
           }
@@ -151,7 +151,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.customers = res.data.content
+            state.customers = res.data.content || []
           } else {
             throw new Error(res.statusValue)
           }
@@ -167,6 +167,36 @@ export default {
         .then(res => {
           if (res.success) {
             state.products = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [CREATE_RED_BILL_ACTION]({}, val) {
+      RedInvoiceService
+        .createRedBill(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_INVOICE_DETAIL_ACTION]({ state }, val) {
+      RedInvoiceService
+        .getInvoiceDetail(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.invoiceDetail = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }

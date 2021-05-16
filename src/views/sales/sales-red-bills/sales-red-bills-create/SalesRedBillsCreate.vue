@@ -4,46 +4,32 @@
     class="p-0 px-1"
   >
     <!-- START - Form and list -->
-    <b-col>
+    <validation-observer
+      ref="formContainer"
+      v-slot="{invalid}"
+      slim
+    >
       <b-row>
         <!-- START - Form -->
         <b-col
-          xl="3"
-          class="d-flex flex-column mr-xl-1 px-0"
+          xl="4"
+          class="d-flex flex-column bg-white shadow rounded mr-xl-1 px-0"
         >
-          <!-- START - Header Form -->
-          <b-row
-            align-v="center"
-            class="mx-0 pb-1"
-          >
-            <b-icon-arrow-left
-              font-scale="1.5"
-              color="gray"
-              class="cursor-pointer"
-              @click="routeBack"
-            />
-            <b-col class="font-weight-bold text-dark">
-              Tạo hóa đơn đỏ
-            </b-col>
-          </b-row>
-          <!-- END - Header Form -->
+          <b-row>
+            <b-col
+              class="bg-white shadow rounded"
+            >
+              <strong class="my-2 text-brand-1">
+                Thông tin hóa đơn
+              </strong>
 
-          <b-col
-            class="bg-white shadow rounded"
-          >
-            <b-card-text class="my-2">
-              Thông tin hóa đơn
-            </b-card-text>
-
-            <!-- START - Archive Export ID and Type -->
-            <b-form-row>
-              <b-col>
-                <b-form-group
-                  label="Mã khách hàng"
-                  label-for="customer-code"
-                >
+              <!-- START - Archive Export ID and Type -->
+              <b-form-row>
+                <b-col>
+                  <div class="h8 mt-1">
+                    Mã khách hàng
+                  </div>
                   <b-form-input
-                    id="customer-code"
                     v-model="redBill.customerCode"
                     maxlength="40"
                     required
@@ -79,168 +65,172 @@
                       </b-col>
                     </b-container>
                   </b-collapse>
-                </b-form-group>
-              </b-col>
+                </b-col>
 
-              <b-col>
-                <b-form-group
-                  label="Tên khách hàng"
-                  label-for="customer-name"
-                >
+                <b-col>
+                  <div class="h8 mt-1">
+                    Tên khách hàng
+                  </div>
                   <b-form-input
-                    id="customer-name"
                     v-model="redBill.customerName"
                     maxlength="40"
                     required
                     disabled
                   />
-                </b-form-group>
-              </b-col>
-            </b-form-row>
-            <!-- END - Archive Export ID and Type -->
+                </b-col>
+              </b-form-row>
+              <!-- END - Archive Export ID and Type -->
 
-            <!-- START - Archive Export Bill Number and Date -->
-            <b-form-row>
-              <b-col>
-                <b-form-group
-                  label="Số hóa đơn"
-                  label-for="bill-number"
-                >
+              <!-- START - Archive Export Bill Number and Date -->
+              <b-form-row>
+                <b-col>
+                  <div class="h8 mt-1">
+                    Số hoá đơn
+                  </div>
                   <b-form-input
-                    id="bill-number"
                     v-model="redBill.billNumber"
                     maxlength="20"
-                    required
+                    disabled
                   />
-                </b-form-group>
-              </b-col>
+                </b-col>
+                <b-col @keypress="$onlyDateInput">
+                  <validation-provider
+                    v-slot="{ errors, touched, passed }"
+                    rules="required|dateFormatVNI"
+                    name="ngày in"
+                  >
+                    <div class="h8 mt-1">
+                      Ngày in
+                    </div>
+                    <b-form-group
+                      class="m-0"
+                      :state="touched ? passed : null"
+                    >
+                      <vue-flat-pickr
+                        v-model="redBill.printDate"
+                        :config="configDate"
+                        class="form-control h8 text-brand-3"
+                        placeholder="Chọn ngày"
+                      />
+                      <small class="text-danger">{{ errors[0] }}</small>
+                    </b-form-group>
+                  </validation-provider>
+                </b-col>
+              </b-form-row>
+              <!-- END - Archive Export Bill Number and Date -->
 
-              <b-col>
-                <b-form-group
-                  label="Ngày in"
-                  label-for="bill-date"
-                >
-                  <b-form-datepicker
-                    id="bill-date"
-                    v-model="redBill.billDate"
-                    required
-                    locale="vi"
-                    :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                  />
-                </b-form-group>
-              </b-col>
-            </b-form-row>
-            <!-- END - Archive Export Bill Number and Date -->
+              <!-- START - Archive Export ID and Type -->
+              <b-form-row>
+                <b-col>
+                  <validation-provider
+                    v-slot="{ errors, passed, touched }"
+                    rules="required"
+                    name="tên đơn vị"
+                  >
+                    <div class="h8 mt-1">
+                      Tên đơn vị <span class="text-danger">*</span>
+                    </div>
+                    <b-form-input
+                      v-model="redBill.officeWorking"
+                      :state="touched ? passed : null"
+                      maxlength="40"
+                    />
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
+                </b-col>
 
-            <!-- START - Archive Export ID and Type -->
-            <b-form-row>
-              <b-col>
-                <b-form-group
-                  label="Tên đơn vị*"
-                  label-for="working-office"
-                >
+                <b-col>
+                  <validation-provider
+                    v-slot="{ errors, passed, touched }"
+                    rules="required"
+                    name="mã số thuế"
+                  >
+                    <div class="h8 mt-1">
+                      Mã số thuế <span class="text-danger">*</span>
+                    </div>
+                    <b-form-input
+                      v-model="redBill.taxNumber"
+                      :state="touched ? passed : null"
+                      maxlength="40"
+                    />
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
+                </b-col>
+              </b-form-row>
+              <!-- END - Archive Export ID and Type -->
+
+              <!-- START - Archive Export Archive -->
+              <validation-provider
+                v-slot="{ errors, passed, touched }"
+                rules="required"
+                name="địa chỉ cơ quan"
+              >
+                <div class="h8 mt-1">
+                  Địa chỉ cơ quan <span class="text-danger">*</span>
+                </div>
+                <b-form-input
+                  v-model="redBill.officeAddress"
+                  :state="touched ? passed : null"
+                  maxlength="40"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+              <!-- END - Archive Export Archive -->
+
+              <!-- START - Archive Export Internal number and PO no -->
+              <b-form-row>
+                <b-col>
+                  <div class="h8 mt-1">
+                    Người mua hàng
+                  </div>
                   <b-form-input
-                    id="working-office"
-                    v-model="redBill.workingOffice"
-                    maxlength="40"
-                    required
-                  />
-                </b-form-group>
-              </b-col>
-
-              <b-col>
-                <b-form-group
-                  label="Mã số thuế*"
-                  label-for="tax-code"
-                >
-                  <b-form-input
-                    id="tax-code"
-                    v-model="redBill.taxCode"
-                    maxlength="40"
-                    required
-                  />
-                </b-form-group>
-              </b-col>
-            </b-form-row>
-            <!-- END - Archive Export ID and Type -->
-
-            <!-- START - Archive Export Archive -->
-            <b-form-group
-              label="Địa chỉ cơ quan*"
-              label-for="office-address"
-            >
-              <b-form-input
-                id="office-address"
-                v-model="redBill.officeAddress"
-                maxlength="40"
-                required
-              />
-            </b-form-group>
-            <!-- END - Archive Export Archive -->
-
-            <!-- START - Archive Export Internal number and PO no -->
-            <b-form-row>
-              <b-col>
-                <b-form-group
-                  label="Người mua hàng"
-                  label-for="customer-id"
-                >
-                  <b-form-input
-                    id="customer-id"
-                    v-model="redBill.customerId"
+                    v-model="redBill.buyer"
                     maxlength="20"
                     required
                   />
-                </b-form-group>
-              </b-col>
+                </b-col>
 
-              <b-col>
-
-                <b-form-group
-                  label="Hình thức thanh toán"
-                  label-for="payment-type"
-                >
-                  <b-form-select
+                <b-col>
+                  <div class="h8 mt-1">
+                    Hình thức thanh toán
+                  </div>
+                  <tree-select
                     id="payment-type"
                     v-model="redBill.paymentType"
-                    :options="options"
+                    :options="saleOptions"
+                    :searchable="false"
+                    no-options-text="Không có dữ liệu"
                   />
-                </b-form-group>
+                </b-col>
+              </b-form-row>
+              <!-- END - Archive Export Internal number and PO no -->
 
-              </b-col>
-            </b-form-row>
-            <!-- END - Archive Export Internal number and PO no -->
-
-            <!-- START - Archive Export Note -->
-            <b-form-group
-              label="Ghi chú"
-              label-for="note"
-            >
+              <!-- START - Archive Export Note -->
+              <div class="h8 mt-1">
+                Ghi chú
+              </div>
               <b-form-textarea
-                id="note"
                 v-model="redBill.note"
                 maxlength="4000"
+                class="mb-1"
               />
-            </b-form-group>
             <!-- END - Archive Export Note -->
-          </b-col>
+            </b-col>
+          </b-row>
         </b-col>
         <!-- END - Form -->
 
         <!-- START - List -->
         <b-col class="d-flex flex-column mt-1 mt-xl-0 px-0">
           <!-- START - Header list -->
-          <div class="font-weight-bold text-dark pb-1">
-            Danh sách sản phẩm
-          </div>
           <b-col
             class="bg-white shadow rounded"
           >
             <!-- START - Table Product -->
             <b-row class="d-flex px-1 pt-2">
-              <b-card-text class="mr-auto">
-                Thông tin hóa đơn
-              </b-card-text>
+              <strong class="mr-auto text-brand-1">
+                Danh sách sản phẩm
+              </strong>
               <b-button
                 variant="primary"
                 class="rounded "
@@ -252,7 +242,7 @@
 
             <vue-good-table
               :columns="columns"
-              :rows="rowsProduct"
+              :rows="products"
               style-class="vgt-table striped"
               line-numbers
               class="mt-2"
@@ -269,6 +259,11 @@
                   autocomplete="off"
                   @focus="searchProductFocus"
                   @blur="inputSearchFocusedSP = false"
+                  @input="loadProducts"
+                  @keyup.enter="searchProductKeyEnter"
+                  @keydown.up="searchProductKeyUp"
+                  @keydown.down="searchProductKeyDown"
+                  @click="click"
                 />
                 <b-collapse
                   v-model="inputSearchFocusedSP"
@@ -299,86 +294,110 @@
                 slot="table-row"
                 slot-scope="props"
               >
-                <span v-if="props.column.field == 'Number'">
+                <div v-if="props.column.field == 'quantity'">
                   <b-form-input
-                    v-model="props.row.Number"
+                    v-model="products[props.row.originalIndex].quantity"
                     type="text"
+                    @change="onChangeQuantityAndPrice(props.row.originalIndex)"
                   />
-                </span>
-                <span v-else-if="props.column.field == 'ProductPrice'">
-                  <div v-if="props.row.ProductPrice != ''">
+                </div>
+                <div v-else-if="props.column.field == 'productPrice'">
+                  <b-form-input
+                    v-model="products[props.row.originalIndex].productPrice"
+                    type="text"
+                    @change="onChangeQuantityAndPrice(props.row.originalIndex)"
+                  />
+                </div>
+                <div v-else-if="props.column.field == 'vat'">
+                  <b-col>
                     <b-form-input
-                      v-model="props.row.ProductPrice"
+                      v-model="products[props.row.originalIndex].vat"
                       type="text"
+                      @change="onChangeVAT(props.row.originalIndex)"
                     />
-                  </div>
-                </span>
-                <span v-else-if="props.column.field == 'VAT'">
-                  <div v-if="props.row.VAT != ''">
-                    <b-col>
-                      <b-form-input
-                        v-model="props.row.VAT"
-                        type="text"
-                      />
-                    </b-col>
-                  </div>
-                </span>
-                <span v-else-if="props.column.field == 'button'">
+                  </b-col>
+                </div>
+                <div v-else-if="props.column.field == 'button'">
                   <div v-if="props.row.button == '1'">
                     <b-button
                       variant="light"
                       class="rounded-circle px-1"
+                      @click="onClickDeleteItem(props.row.originalIndex)"
                     >
                       <b-icon-x />
                     </b-button>
                   </div>
-                </span>
-                <span v-else>
+                </div>
+                <div v-else>
                   {{ props.formattedRow[props.column.field] }}
-                </span>
+                </div>
+              </template>
+
+              <template
+                slot="column-filter"
+                slot-scope="props"
+              >
+                <b-row
+                  v-if="props.column.field === 'quantity'"
+                  class="h7"
+                  align-h="center"
+                >
+                  {{ totalQuantity }}
+                </b-row>
+
+                <b-row
+                  v-else-if="props.column.field === 'productPriceTotal'"
+                  class="h7 px-0 mx-0"
+                  align-h="end"
+                >
+                  {{ totalPriceTotal }}
+                </b-row>
+                <b-row
+                  v-else-if="props.column.field === 'productExported'"
+                  class="h7 px-0 mx-0"
+                  align-h="end"
+                >
+                  {{ totalProductExported }}
+                </b-row>
               </template>
             </vue-good-table>
             <!-- END - Table Product -->
 
             <!-- START - Button -->
-            <b-row class="justify-content-end mt-4 mr-1">
+            <b-row class="justify-content-end mt-2 mb-2 mr-1">
               <b-button-group>
                 <b-button
-                  variant="primary"
-                  size="sm"
-                  class="rounded text-uppercase"
+                  variant="none"
+                  class="btn-brand-1 aligns-items-button-center rounded"
+                  :disabled="invalid"
+                  @click="onClickCreateBill()"
                 >
                   <b-icon
                     icon="file-earmark-text-fill"
-                    width="20"
-                    height="20"
-                    class="mr-1"
+                    class="mr-05"
                   />
                   Lưu
                 </b-button>
 
                 <b-button
-                  variant="primary"
-                  size="sm"
-                  class="rounded text-uppercase ml-1"
+                  variant="none"
+                  class="ml-1 btn-brand-1 aligns-items-button-center rounded"
+                  :disabled="invalid"
                 >
                   <b-icon
                     icon="printer-fill"
-                    width="20"
-                    height="20"
-                    class="mr-1"
+                    class="mr-05"
                   />
                   LƯU & IN
                 </b-button>
 
                 <b-button
-                  size="sm"
-                  class="ml-1 rounded text-uppercase"
+                  class="ml-1 btn-brand-1 aligns-items-button-center rounded"
                   @click="routeBack"
                 >
                   <b-icon-x
-                    width="20"
-                    height="20"
+                    class="mr-05"
+                    scale="1.5"
                   />
                   Đóng
                 </b-button>
@@ -389,9 +408,12 @@
         </b-col>
         <!-- END - List -->
       </b-row>
-    </b-col>
+    </validation-observer>
     <!-- END - Form and list -->
-    <bill-receipts-modal :visible="isShowBillReceiptsModal" />
+    <bill-receipts-modal
+      :visible="isShowBillReceiptsModal"
+      @productsOfBillSaleData="insertProducsFromBillSales($event)"
+    />
   </b-container>
 </template>
 
@@ -401,102 +423,125 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import {
+  ValidationProvider,
+  ValidationObserver,
+} from 'vee-validate'
+import {
+  number,
+  required,
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
+import { formatVniDateToISO, formatNumberToLocale } from '@/@core/utils/filter'
+import saleData from '@/@db/sale'
 import BillReceiptsModal from './components/BillReceiptsModal.vue'
 import {
-  REDINVOICE,
+  // GETTERS
+  RED_INVOICE,
   CUSTOMERS_GETTER,
   PRODUCTS_GETTER,
+  // ACTIONS
   GET_CUSTOMERS_ACTION,
   GET_PRODUCTS_ACTION,
+  CREATE_RED_BILL_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
     BillReceiptsModal,
+    ValidationProvider,
+    ValidationObserver,
   },
   data() {
     return {
       isShowBillReceiptsModal: false,
       inputSearchFocusedSP: false,
       inputSearchFocusedKH: false,
-      selected: 'A',
-      options: [
-        { value: 'A', text: 'Tiền mặt' },
-        { value: 'B', text: 'Chuyển khoản' },
-      ],
+      saleOptions: saleData.payment,
       entryAdjustmentModalVisible: false,
       entryBorrowedModalVisible: false,
       entryCouponModalVisible: false,
       redBill: {
+        customerId: null,
         customerCode: '',
         customerName: '',
-        workingOffice: '',
-        officeAddress: '',
-        taxCode: '',
-        mobiPhone: '',
         billNumber: '',
-        billDate: new Date(),
-        customerId: '',
-        paymentType: '',
+        printDate: '',
+        officeWorking: '',
+        taxNumber: '',
+        officeAddress: '',
+        buyer: '',
+        paymentType: saleData.payment[0].id,
         note: '',
+        shopId: 0,
       },
       cursor: -1,
       cursorProduct: -1,
       productSearch: null,
       products: [],
+      saleOrderIds: [],
       columns: [
         {
           label: 'Mã sản phẩm',
-          field: 'ProductID',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
-          field: 'ProductName',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'Ngành hàng',
-          field: 'Industry',
+          field: 'industry',
           sortable: false,
         },
         {
           label: 'ĐVT',
-          field: 'ProductDVT',
+          field: 'productDVT',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Number',
+          field: 'quantity',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Đơn giá',
-          field: 'ProductPrice',
+          field: 'productPrice',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Thành tiền',
-          field: 'ProductPriceTotal',
+          field: 'productPriceTotal',
           type: 'number',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'VAT %',
-          field: 'VAT',
+          field: 'vat',
           type: 'number',
           sortable: false,
         },
         {
           label: 'Tiền thuế GTGT',
-          field: 'ProductExported',
+          field: 'productExported',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Ghi chú',
-          field: 'Note',
+          field: 'note',
           sortable: false,
         },
         {
@@ -505,57 +550,29 @@ export default {
           sortable: false,
         },
       ],
-      rowsProduct: [
-        {
-          ProductID: '',
-          ProductName: '',
-          Industry: '',
-          ProductDVT: '',
-          Number: '44',
-          ProductPrice: '',
-          ProductPriceTotal: '573,280',
-          VAT: '',
-          ProductExported: '57,328',
-          Note: '',
-          button: '',
-        },
-        {
-          ProductID: '04AA10',
-          ProductName: 'STT dâu ADM GOLD 180ml',
-          Industry: '',
-          ProductDVT: 'Hộp',
-          Number: '20',
-          ProductPrice: '5,960',
-          ProductPriceTotal: '119,200',
-          VAT: '10',
-          ProductExported: '11,920',
-          Note: '',
-          button: '1',
-        },
-        {
-          ProductID: '01CX01',
-          ProductName: 'SĐCĐ Ông Thọ chữ xanh 380g',
-          Industry: '1',
-          ProductDVT: 'Hộp',
-          Number: '24',
-          ProductPrice: '18,920 ',
-          ProductPriceTotal: '454,080',
-          VAT: '10',
-          ProductExported: '45,408',
-          Note: '',
-          button: '1',
-        },
-      ],
+      formId: 5, // Hard Code
+      ctrlId: 7, // Hard Code
+
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
+
+      // validation rules
+      number,
+      required,
+      dateFormatVNI,
     }
   },
   computed: {
     customers() {
-      if (this.CUSTOMERS_GETTER.content) {
-        return this.CUSTOMERS_GETTER().content.map(data => ({
+      if (this.CUSTOMERS_GETTER()) {
+        return this.CUSTOMERS_GETTER().map(data => ({
           id: data.id,
           customerCode: data.customerCode,
           customerName: `${data.lastName} ${data.firstName}`,
-          workingOffice: data.workingOffice,
+          officeWorking: data.officeWorking,
           officeAddress: data.officeAddress,
           taxCode: data.taxCode,
           mobiPhone: data.mobiPhone,
@@ -577,21 +594,34 @@ export default {
         note: data.note,
       }))
     },
+    totalQuantity() {
+      return this.products.reduce((accum, item) => accum + Number(item.quantity), 0)
+    },
+    totalPriceTotal() {
+      return this.products.reduce((accum, item) => accum + Number(item.productPriceOriginal), 0)
+    },
+    totalProductExported() {
+      return this.products.reduce((accum, item) => accum + Number(item.productExportedOriginal), 0)
+    },
+  },
+  beforeMount() {
+    this.redBill.printDate = this.$nowDate
   },
   mounted() {
     this.GET_CUSTOMERS_ACTION({
-      formId: 5,
-      ctrlId: 7,
+      formId: this.formId,
+      ctrlId: this.ctrlId,
     })
   },
   methods: {
-    ...mapGetters(REDINVOICE, [
+    ...mapGetters(RED_INVOICE, [
       CUSTOMERS_GETTER,
       PRODUCTS_GETTER,
     ]),
-    ...mapActions(REDINVOICE, [
+    ...mapActions(RED_INVOICE, [
       GET_CUSTOMERS_ACTION,
       GET_PRODUCTS_ACTION,
+      CREATE_RED_BILL_ACTION,
     ]),
     routeBack() {
       this.$router.back()
@@ -615,9 +645,9 @@ export default {
     selectCustomer(customer) {
       this.redBill.customerCode = customer.customerCode
       this.redBill.customerName = customer.customerName
-      this.redBill.workingOffice = customer.workingOffice
+      this.redBill.officeWorking = customer.officeWorking
       this.redBill.officeAddress = customer.officeAddress
-      this.redBill.taxCode = customer.taxCode
+      this.redBill.taxNumber = customer.taxCode
     },
     focus() {
       this.cursor = -1
@@ -647,8 +677,8 @@ export default {
 
         this.GET_PRODUCTS_ACTION({
           keyWord: this.productSearch.trim(),
-          formId: 5,
-          ctrlId: 7,
+          formId: this.formId,
+          ctrlId: this.ctrlId,
         })
       } else {
         this.inputSearchFocusedSP = false
@@ -656,23 +686,29 @@ export default {
     },
     selectProduct(product) {
       this.productSearch = null
-      const existedProductIndex = this.rowsProduct.findIndex(rowProduct => rowProduct.ProductID === product.productCode)
+      const existedProductIndex = this.products.findIndex(products => products.productCode === product.productCode)
       if (existedProductIndex === -1) {
-        this.rowsProduct.push({
-          ProductID: product.productCode,
-          ProductName: product.productName,
-          Industry: product.groupVat,
-          ProductDVT: product.unit,
-          Number: 1,
-          ProductPrice: product.price,
-          ProductPriceTotal: product.price,
-          VAT: product.vat,
-          ProductExported: product.vatAmount,
-          Note: product.note,
+        this.products.push({
+          productId: product.id,
+          productCode: product.productCode,
+          productName: product.productName,
+          industry: product.groupVat,
+          productDVT: product.unit,
+          quantity: 1,
+          productPrice: formatNumberToLocale(product.price),
+          productPriceTotal: formatNumberToLocale(product.price),
+          productPriceOriginal: product.price,
+          productPriceTotalOriginal: product.price,
+          vat: product.vat,
+          productExported: formatNumberToLocale(product.vatAmount),
+          productExportedOriginal: product.vatAmount,
+          note: product.note,
           button: '1',
         })
       } else {
-        this.rowsProduct[existedProductIndex].Number += product.quantity
+        this.products[existedProductIndex].quantity += product.quantity
+        this.onChangeQuantityAndPrice(existedProductIndex)
+        this.onChangeVAT(existedProductIndex)
       }
     },
     searchProductFocus() {
@@ -700,10 +736,88 @@ export default {
       if (this.productSearch.length >= commonData.minSearchLength) {
         this.GET_PRODUCTS_ACTION({
           keyWord: this.productSearch.trim(),
-          formId: 5,
-          ctrlId: 7,
+          formId: this.formId,
+          ctrlId: this.ctrlId,
         })
       }
+    },
+    insertProducsFromBillSales(invoiceData) {
+      const invoiceDetail = { ...invoiceData.invoiceDetail }
+      // Lấy dữ liệu sản phẩm từ HDBH
+      if (invoiceData.invoiceDetail) {
+        this.products = invoiceData.invoiceDetail.products.map(data => ({
+          productId: data.productId,
+          productCode: data.productCode,
+          productName: data.productName,
+          industry: data.groupVat,
+          productDVT: data.productUnit,
+          quantity: data.quantity,
+          productPrice: formatNumberToLocale(data.priceNotVat),
+          productPriceTotal: formatNumberToLocale(data.amountNotVat),
+          productPriceOriginal: data.priceNotVat,
+          productPriceTotalOriginal: data.amountNotVat,
+          vat: data.vat,
+          productExported: formatNumberToLocale(data.valueAddedTax),
+          productExportedOriginal: data.valueAddedTax,
+          note: '',
+          button: '1',
+        }))
+        // Lấy dữ liệu khách hàng từ HDBH
+        this.redBill.customerId = invoiceDetail.customerId
+        this.redBill.customerName = invoiceDetail.customerName
+        this.redBill.customerCode = invoiceDetail.customerCode
+        this.redBill.officeWorking = invoiceDetail.officeWorking
+        this.redBill.officeAddress = invoiceDetail.officeAddress
+        this.redBill.taxCode = invoiceDetail.taxCode
+        this.redBill.shopId = invoiceDetail.shopId
+      }
+
+      this.saleOrderIds = invoiceData.saleOrderIds
+      this.isShowBillReceiptsModal = false
+    },
+    taxMoney(money, vat) {
+      return (money * (vat / 100))
+    },
+    onChangeQuantityAndPrice(index) {
+      this.products[index].productPriceTotal = formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal))
+      this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal)
+      this.products[index].productExported = formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
+    },
+    onChangeVAT(index) {
+      this.products[index].productExported = formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
+    },
+    onClickCreateBill() {
+      const productsData = this.products.map(data => ({
+        quantity: data.quantity,
+        groupVat: data.industry,
+        priceNotVat: data.productPriceOriginal,
+        productId: data.productId,
+        vat: data.vat,
+      }))
+
+      const paramsCreateRedInvoice = {
+        amountTotal: this.totalPriceTotal,
+        buyerName: this.redBill.buyer,
+        customerId: this.redBill.customerId,
+        note: this.redBill.note,
+        officeAddress: this.redBill.officeAddress,
+        officeWorking: this.redBill.officeWorking,
+        paymentType: this.redBill.paymentType,
+        printDate: formatVniDateToISO(this.redBill.printDate),
+        productDataDTOS: productsData,
+        redInvoiceNumber: this.redBill.billNumber,
+        saleOrderId: this.saleOrderIds,
+        shopId: this.redBill.shopId,
+        taxCode: this.redBill.taxNumber,
+        totalQuantity: this.totalQuantity,
+        totalMoney: this.totalPriceTotal,
+      }
+
+      this.CREATE_RED_BILL_ACTION(paramsCreateRedInvoice)
+      this.$router.replace({ name: 'sales-red-bills' })
+    },
+    onClickDeleteItem(index) {
+      this.products.splice(index, 1)
     },
   },
 }
