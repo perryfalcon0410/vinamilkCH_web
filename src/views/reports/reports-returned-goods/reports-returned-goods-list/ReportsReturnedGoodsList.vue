@@ -5,10 +5,7 @@
   >
     <!-- START - Search -->
     <reports-returned-goods-list-search
-      @updateSearchData="paginationData = {
-        size: elementSize,
-        page: pageNumber - 1,
-        ...$event }"
+      @onClickSearchButton="onClickSearchButton"
     />
     <!-- END - Search -->
 
@@ -27,7 +24,7 @@
           <b-button
             class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
-            @click="navigateToPrint"
+            @click="onClickPrintExportButton"
           >
             <b-icon-printer-fill />
             In
@@ -131,7 +128,6 @@
             slot-scope="props"
           >
             <b-row
-              v-show="reportReturnGoodsPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -153,11 +149,11 @@
                 />
                 <span
                   class="text-nowrap"
-                > trong {{ reportReturnGoodsPagination.totalElements }} mục </span>
+                > trong {{ reportReturnedgoodsPagination.totalElements }} mục </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="reportReturnGoodsPagination.totalElements"
+                :total-rows="reportReturnedgoodsPagination.totalElements"
                 :per-page="elementSize"
                 first-number
                 last-number
@@ -198,18 +194,17 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
+import { formatDateToLocale, formatNumberToLocale, reverseVniDate } from '@core/utils/filter'
 import {
   getReportReasonTypeslabel,
 } from '@core/utils/utils'
+
 import ReportsReturnedGoodsListSearch from './components/ReportsReturnedGoodsListSearch.vue'
 import {
   REPORT_RETURNED_GOODS,
 
   // Getters
   REPORT_RETURNED_GOODS_GETTER,
-  REPORT_RETURNED_GOODS_PAGINATION_GETTER,
-  REPORT_RETURNED_GOODS_TOTAL_INFO_GETTER,
 
   // Actions
   GET_REPORT_RETURNED_GOODS_ACTION,
@@ -227,6 +222,13 @@ export default {
       paginationData: {},
 
       paginationOptions: commonData.pagination,
+      searchOptions: {
+        code: '',
+        fromDate: null,
+        toDate: null,
+        reasonSelected: null,
+        ids: '',
+      },
 
       columns: [
         {
@@ -344,7 +346,7 @@ export default {
   },
   computed: {
     reportReturnedgoodLists() {
-      return this.REPORT_RETURNED_GOODS_GETTER().map(data => ({
+      return this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodLists.map(data => ({
         returnCode: data.returnCode,
         reciept: data.reciept,
         customerCode: data.customerCode,
@@ -363,39 +365,38 @@ export default {
       }))
     },
     totalQuantity() {
-      return formatNumberToLocale(Number(this.REPORT_RETURNED_GOODS_TOTAL_INFO_GETTER().totalQuantity))
+      return formatNumberToLocale(Number(this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodsTotalInfo.totalQuantity))
     },
     totalRefunds() {
-      return formatNumberToLocale(Number(this.REPORT_RETURNED_GOODS_TOTAL_INFO_GETTER().totalRefunds))
+      return formatNumberToLocale(Number(this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodsTotalInfo.totalRefunds))
     },
 
-    reportReturnGoodsPagination() {
-      return this.REPORT_RETURNED_GOODS_PAGINATION_GETTER()
+    reportReturnedgoodsPagination() {
+      return this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodsPagination
     },
   },
   watch: {
     pageNumber() {
-      this.paginationData.page = this.pageNumber - 1
       this.onPaginationChange()
     },
     elementSize() {
-      this.paginationData.size = this.elementSize
-      this.onPaginationChange()
-    },
-    paginationData() {
-      this.pageNumber = 1
       this.onPaginationChange()
     },
   },
 
   mounted() {
-    this.GET_REPORT_RETURNED_GOODS_ACTION({ formId: 5, ctrlId: 7 })
+    this.searchOptions.fromDate = reverseVniDate(this.$earlyMonth)
+    this.searchOptions.toDate = reverseVniDate(this.$nowDate)
+
+    this.GET_REPORT_RETURNED_GOODS_ACTION({
+      ...this.searchOptions,
+      formId: 5,
+      ctrlId: 7,
+    })
   },
   methods: {
     ...mapGetters(REPORT_RETURNED_GOODS, [
       REPORT_RETURNED_GOODS_GETTER,
-      REPORT_RETURNED_GOODS_PAGINATION_GETTER,
-      REPORT_RETURNED_GOODS_TOTAL_INFO_GETTER,
     ]),
     ...mapActions(REPORT_RETURNED_GOODS, [
       GET_REPORT_RETURNED_GOODS_ACTION,
@@ -406,8 +407,34 @@ export default {
       this.EXPORT_REPORT_RETURNED_GOODS_ACTION({ formId: 5, ctrlId: 7 })
     },
 
+    onClickSearchButton(searchValue) {
+      const {
+        reciept, fromDate, toDate, reason, ids,
+      } = searchValue
+
+      this.searchOptions.code = reciept
+      this.searchOptions.toDate = reverseVniDate(toDate)
+      this.searchOptions.fromDate = reverseVniDate(fromDate)
+      this.searchOptions.reasonSelected = reason
+      this.searchOptions.ids = ids
+
+      this.GET_REPORT_RETURNED_GOODS_ACTION({
+        reciept,
+        fromDate: reverseVniDate(fromDate),
+        toDate: reverseVniDate(toDate),
+        reason,
+        productCodes: ids,
+      })
+    },
+
     onPaginationChange() {
-      this.GET_REPORT_RETURNED_GOODS_ACTION(this.paginationData)
+      this.GET_REPORT_RETURNED_GOODS_ACTION({
+        ...this.searchOptions,
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        formId: 1,
+        ctrlId: 7,
+      })
     },
   },
 }

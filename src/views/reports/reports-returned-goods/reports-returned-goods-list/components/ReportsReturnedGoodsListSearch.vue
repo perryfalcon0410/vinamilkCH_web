@@ -24,7 +24,7 @@
           <b-form-input
             v-model="reciept"
             class="h8 text-brand-3"
-            placeholder="Nhập họ tên/mã"
+            placeholder="Nhập mã trả hàng"
             @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append
@@ -138,13 +138,27 @@
         </div>
         <b-input-group
           class="input-group-merge"
-          size="sm"
         >
-          <b-input />
-          <b-input-group-append is-text>
+          <b-form-input
+            v-model="ids"
+            class="h8 text-brand-3"
+            placeholder="Mã sản phẩm"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <!-- Icon-- Delete-text -->
+            <b-icon-x
+              v-show="ids"
+              is-text
+              class="cursor-pointer text-gray"
+              @click="ids = null"
+            />
+            <!-- Icon-- Three-dot -->
             <b-icon-three-dots-vertical
               class="cursor-pointer"
-              @click="showFindProductModal"
+              @click="onSelectProductModalClick"
             />
           </b-input-group-append>
         </b-input-group>
@@ -172,15 +186,15 @@
         </b-button>
       </b-col>
       <!-- END - Search button -->
+
+      <!-- START - Modal find product -->
+      <find-product-modal
+        :visible="selectProductModalVisible"
+        @onModalClose="onModalCloseClick"
+        @onSaveClick="onSaveClick"
+      />
+      <!-- START - Modal find product -->
     </v-card-actions>
-
-    <!-- START - Modal find product -->
-    <find-product-modal
-      :visible="isShowFindProductModal"
-      @close="isShowFindProductModal = false"
-    />
-    <!-- START - Modal find product -->
-
   </b-form>
   <!-- END - Search -->
 </template>
@@ -188,21 +202,11 @@
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
-  mapActions,
-} from 'vuex'
-import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
 
-import { reverseVniDate } from '@/@core/utils/filter'
 import reportData from '@/@db/report'
 import FindProductModal from './FindProductModal.vue'
-
-import {
-  REPORT_RETURNED_GOODS,
-  // Actions
-  GET_REPORT_RETURNED_GOODS_ACTION,
-} from '../../store-module/type'
 
 export default {
   components: {
@@ -211,14 +215,15 @@ export default {
   },
   data() {
     return {
-      isSearchFocus: false,
-      isShowFindProductModal: false,
+      selectProductModalVisible: false,
 
       dateFormatVNI,
 
       reciept: null,
       fromDate: null,
       toDate: null,
+      ids: '',
+      customers: '',
       reasonOptions: reportData.reasonTypes,
       reasonSelected: null,
 
@@ -229,42 +234,42 @@ export default {
       },
     }
   },
-  beforeMount() {
+  mounted() {
     this.fromDate = this.$earlyMonth
     this.toDate = this.$nowDate
   },
-  mounted() {
-    this.onSearch()
-  },
 
   methods: {
-    ...mapActions(REPORT_RETURNED_GOODS, [
-      GET_REPORT_RETURNED_GOODS_ACTION,
-    ]),
-
-    showFindProductModal() {
-      this.isShowFindProductModal = !this.isShowFindProductModal
+    onSelectProductModalClick() {
+      this.selectProductModalVisible = true
     },
-    onSearch() {
-      const searchData = {
-        reciept: this.reciept,
-        fromDate: reverseVniDate(this.fromDate),
-        toDate: reverseVniDate(this.toDate),
-        reason: this.reasonSelected,
-        // productIds: this.productCodes,
-        formId: 5,
-        ctrlId: 7,
+    onModalCloseClick() {
+      this.selectProductModalVisible = false
+    },
+    onSaveClick(param) {
+      this.selectProductModalVisible = false
+      if (param.length > 0) {
+        const ids = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
+        this.ids = ids
+        this.$emit('onClickSearchButton', {
+          fromDate: this.fromDate,
+          toDate: this.toDate,
+          reciept: this.reciept,
+          customers: this.customers,
+          ids,
+        })
       }
-      this.updateSearchData(searchData)
-      this.GET_REPORT_RETURNED_GOODS_ACTION(searchData)
     },
 
     onClickSearchButton() {
-      this.onSearch()
-    },
-
-    updateSearchData(data) {
-      this.$emit('updateSearchData', data)
+      this.$emit('onClickSearchButton', {
+        fromDate: this.fromDate,
+        toDate: this.toDate,
+        reciept: this.reciept,
+        customers: this.customers,
+        reason: this.reasonSelected,
+        ids: this.ids,
+      })
     },
   },
 }
