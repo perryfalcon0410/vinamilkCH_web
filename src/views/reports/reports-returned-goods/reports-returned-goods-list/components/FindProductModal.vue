@@ -4,6 +4,7 @@
     :visible="visible"
     title="Chọn sản phẩm"
     title-class="text-uppercase font-weight-bold text-primary"
+    footer-class="justify-content-center"
     content-class="bg-light"
     footer-border-variant="light"
     hide-header-close
@@ -427,10 +428,7 @@ export default {
           this.selectedProductRow = param.filter(data => data.id !== item.id)
         })
         this.selectedCurrentPage = []
-        return
-      }
-      // xóa
-      if (this.selectedCurrentPage.length > param.selectedRows.length) {
+      } else if (this.selectedCurrentPage.length > param.selectedRows.length) {
         // tìm phần tử bị xóa
         this.selectedCurrentPage.forEach(item => {
           if (!param.selectedRows.find(data => data.id === item.id)) {

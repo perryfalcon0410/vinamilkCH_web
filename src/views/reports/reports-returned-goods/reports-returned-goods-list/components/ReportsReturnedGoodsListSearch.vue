@@ -223,7 +223,6 @@ export default {
       fromDate: null,
       toDate: null,
       ids: '',
-      customers: '',
       reasonOptions: reportData.reasonTypes,
       reasonSelected: null,
 
@@ -255,7 +254,6 @@ export default {
           fromDate: this.fromDate,
           toDate: this.toDate,
           reciept: this.reciept,
-          customers: this.customers,
           ids,
         })
       }
@@ -266,7 +264,6 @@ export default {
         fromDate: this.fromDate,
         toDate: this.toDate,
         reciept: this.reciept,
-        customers: this.customers,
         reason: this.reasonSelected,
         ids: this.ids,
       })
