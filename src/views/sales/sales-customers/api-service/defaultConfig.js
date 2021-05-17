@@ -11,6 +11,7 @@ export const createCustomerEndpoint = `${CUSTOMER}/create`
 export const updateCustomerEndpoint = `${CUSTOMER}/update`
 export const getCustomerTypesEndpoint = `${CUSTOMER}/customer-types`
 export const exportCustomersEndpoint = `${CUSTOMER}/export`
+export const getCustomerDefaultEndpoint = `${CUSTOMER}/default`
 
 export const getShopLocationsEndpoint = `${COMMON}/${AREA}/districts/index-customers`
 export const getProvincesEndpoint = `${COMMON}/${AREA}/provinces`

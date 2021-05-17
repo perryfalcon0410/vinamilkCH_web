@@ -8,6 +8,7 @@ import {
   SHOP_LOCATIONS_GETTER,
   ERROR_CODE_GETTER,
   CUSTOMER_TYPES_GETTER,
+  CUSTOMER_DEFAULT_GETTER,
   PROVINCES_GETTER,
   DISTRICTS_GETTER,
   PRECINCTS_GETTER,
@@ -22,6 +23,7 @@ import {
   UPDATE_CUSTOMER_ACTION,
   GET_CUSTOMER_TYPES_ACTION,
   EXPORT_CUSTOMERS_ACTION,
+  GET_CUSTOMER_DEFAULT_ACTION,
 
   GET_SHOP_LOCATIONS_ACTION,
   GET_PROVINCES_ACTION,
@@ -44,6 +46,7 @@ export default {
 
     customerData: {},
     customerById: {},
+    customerDefault: {},
     shopLocations: [],
     customerTypes: [],
     provinces: [],
@@ -65,6 +68,9 @@ export default {
     },
     [CUSTOMER_TYPES_GETTER](state) {
       return state.customerTypes
+    },
+    [CUSTOMER_DEFAULT_GETTER](state) {
+      return state.customerDefault
     },
     [SHOP_LOCATIONS_GETTER](state) {
       return state.shopLocations
@@ -154,6 +160,21 @@ export default {
           if (res.success) {
             toasts.success(res.statusValue)
             val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_CUSTOMER_DEFAULT_ACTION]({ state }, val) {
+      CustomerService
+        .getCustomerDefault(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.customerDefault = res.data
           } else {
             throw new Error(res.statusValue)
           }

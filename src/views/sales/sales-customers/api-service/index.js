@@ -6,6 +6,7 @@ import {
   createCustomerEndpoint,
   updateCustomerEndpoint,
   exportCustomersEndpoint,
+  getCustomerDefaultEndpoint,
 
   getShopLocationsEndpoint,
   getCustomerTypesEndpoint,
@@ -31,6 +32,11 @@ export default {
   },
   getCustomerTypes(args) {
     return axios.get(getCustomerTypesEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getCustomerDefault(args) {
+    return axios.get(getCustomerDefaultEndpoint, {
       params: formatURLParams(args),
     })
   },

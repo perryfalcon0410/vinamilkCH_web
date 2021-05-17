@@ -190,6 +190,7 @@
                 v-model="salemtPromotionObjectSelected"
                 :options="salemtPromotionObjectOptions"
               />
+              {{ salemtPromotionObjectSelected }}
             </b-col>
           </b-row>
           <!-- END - Order type -->
@@ -345,10 +346,12 @@ import {
   CUSTOMER_BY_ID_GETTER,
   SALEMT_PROMOTION_OBJECT_GETTER,
   SALEMT_DELIVERY_TYPE_GETTER,
+  CUSTOMER_DEFAULT_GETTER,
   // ACTIONS
   GET_CUSTOMER_BY_ID_ACTION,
   GET_SALEMT_PROMOTION_OBJECT_ACTION,
   GET_SALEMT_DELIVERY_TYPE_ACTION,
+  GET_CUSTOMER_DEFAULT_ACTION,
 } from '../../../sales-customers/store-module/type'
 import {
   SALES,
@@ -395,6 +398,7 @@ export default {
       CUSTOMER_BY_ID_GETTER,
       SALEMT_PROMOTION_OBJECT_GETTER,
       SALEMT_DELIVERY_TYPE_GETTER,
+      CUSTOMER_DEFAULT_GETTER,
     }),
 
     ...mapGetters(SALES, {
@@ -403,6 +407,9 @@ export default {
 
     customer() {
       return this.CUSTOMER_BY_ID_GETTER()
+    },
+    customerDefault() {
+      return this.CUSTOMER_DEFAULT_GETTER
     },
     salemtPromotionObjectOptions() {
       return this.SALEMT_PROMOTION_OBJECT_GETTER.map(data => ({
@@ -435,18 +442,22 @@ export default {
     onlineOrderCustomer() {
       this.getOnlineOrderCustomerById()
     },
+    customerDefault() {
+      this.getCustomerDefault()
+    },
   },
   mounted() {
     this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
     this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4 })
+    this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
   },
   methods: {
-
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_BY_ID_ACTION,
       GET_SALEMT_PROMOTION_OBJECT_ACTION,
       GET_SALEMT_DELIVERY_TYPE_ACTION,
+      GET_CUSTOMER_DEFAULT_ACTION,
     ]),
 
     ...mapActions(SALES, [
@@ -501,11 +512,19 @@ export default {
     getOnlineOrderCustomerById() {
       this.firstName = this.onlineOrderCustomer.customer.firstName
       this.lastName = this.onlineOrderCustomer.customer.lastName
-      this.fullName = this.lastName + this.firstName
+      this.fullName = `${this.lastName} ${this.firstName}`
       this.phoneNumber = this.onlineOrderCustomer.customer.mobiPhone
       this.address = this.onlineOrderCustomer.customer.address
       this.quantity = this.onlineOrderCustomer.quantity
       this.totalPrice = this.onlineOrderCustomer.totalPrice
+    },
+
+    getCustomerDefault() {
+      this.firstName = this.customerDefault.firstName
+      this.lastName = this.customerDefault.lastName
+      this.fullName = `${this.lastName} ${this.firstName}`
+      this.phoneNumber = this.customerDefault.mobiPhone
+      this.address = this.customerDefault.address
     },
   },
 }

@@ -1,10 +1,11 @@
 <template>
   <!-- START Popup -->
   <b-modal
+    ref="payModal"
     size="xl"
     :visible="visible"
     title="Thanh toán hóa đơn"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title-class="font-weight-bold text-primary"
     content-class="bg-white"
     footer-border-variant="white"
     hide-header-close
@@ -24,7 +25,6 @@
             <b-icon-gift
               scale="2"
               color="red"
-              class="mx-1"
             />
             <strong class="ml-1">Khuyến mãi</strong>
           </b-row>
@@ -275,7 +275,6 @@
             <b-icon-cash-stack
               scale="2"
               color="blue"
-              class="mx-1"
             />
             <strong class="ml-1">Thanh toán</strong>
           </b-row>
@@ -533,18 +532,40 @@
             class="mr-1"
             scale="1.5"
           />
-          In hóa đơn tạm (F7)
+          In HĐ tạm (F7)
         </b-button>
         <b-button
           variant="primary"
           class="d-flex align-items-center mx-1 text-uppercase"
           @click="ok()"
         >
+          <b-icon-printer
+            class="mr-1"
+            scale="1.5"
+          />
+          Thanh toán - In (F8)
+        </b-button>
+        <b-button
+          variant="primary"
+          class="d-flex align-items-center text-uppercase"
+          @click="ok()"
+        >
           <b-icon-cash-stack
             class="mr-1"
             scale="1.5"
           />
-          Thanh toán (F8)
+          Thanh toán (F9)
+        </b-button>
+        <b-button
+          variant="primary"
+          class="d-flex align-items-center mx-1 text-uppercase"
+          @click="ok()"
+        >
+          <b-icon-printer
+            class="mr-1"
+            scale="1.5"
+          />
+          In lại hóa đơn (F10)
         </b-button>
         <b-button
           variant="secondary"
@@ -645,6 +666,13 @@ export default {
     }
   },
   computed: {
+  },
+  created() {
+    window.addEventListener('keydown', e => {
+      if (e.key === 'F8') {
+        this.$refs.payModal.show()
+      }
+    })
   },
   methods: {
     onVoucherButtonClick() {

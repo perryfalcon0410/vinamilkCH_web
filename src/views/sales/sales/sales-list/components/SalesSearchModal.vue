@@ -274,6 +274,7 @@ export default {
       elementSize: commonData.pagination[0],
       pageNumber: 1,
       paginationOptions: commonData.pagination,
+      paginationData: {},
 
       // search
       searchKeywords: '',
@@ -335,9 +336,13 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(CUSTOMER, [
+      CUSTOMERS_GETTER,
+      CUSTOMER_BY_ID_GETTER,
+    ]),
     customers() {
       if (this.CUSTOMERS_GETTER.content) {
-        return this.CUSTOMERS_GETTER().content.map(data => ({
+        return this.CUSTOMERS_GETTER.content.map(data => ({
           id: data.id,
           code: data.customerCode,
           fullName: `${data.lastName} ${data.firstName}`,
@@ -356,14 +361,20 @@ export default {
       return this.CUSTOMER_BY_ID_GETTER()
     },
     customerPagination() {
-      return this.CUSTOMERS_GETTER()
+      return this.CUSTOMERS_GETTER
     },
   },
   watch: {
     pageNumber() {
+      this.paginationData.page = this.pageNumber - 1
       this.onPaginationChange()
     },
     elementSize() {
+      this.paginationData.size = this.elementSize
+      this.onPaginationChange()
+    },
+    paginationData() {
+      this.pageNumber = 1
       this.onPaginationChange()
     },
   },
@@ -378,10 +389,6 @@ export default {
     })
   },
   methods: {
-    ...mapGetters(CUSTOMER, [
-      CUSTOMERS_GETTER,
-      CUSTOMER_BY_ID_GETTER,
-    ]),
     ...mapActions(CUSTOMER, [
       GET_CUSTOMERS_ACTION,
       GET_CUSTOMER_BY_ID_ACTION,
@@ -411,12 +418,7 @@ export default {
     },
 
     onPaginationChange() {
-      const paginationData = {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-      }
-
-      this.GET_CUSTOMERS_ACTION(paginationData)
+      this.GET_CUSTOMERS_ACTION(this.paginationData)
     },
   },
 }
