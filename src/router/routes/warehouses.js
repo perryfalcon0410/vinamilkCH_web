@@ -33,7 +33,7 @@ export default [
     },
   },
   {
-    path: '/warehouses/input/update',
+    path: '/warehouses/input/:id/:type/update',
     name: 'warehouses-input-update',
     component: () => import('@/views/warehouses/warehouses-input/warehouses-input-update/WarehousesInputUpdate.vue'),
     meta: {

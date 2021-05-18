@@ -98,5 +98,5 @@ export const getTimeOfDate = value => {
 // Replace . with ,
 export const replaceDotWithComma = value => {
   if (!value) return value
-  return value.replaceAll('.', ',')
+  return value.split('.').join(',')
 }
