@@ -20,13 +20,18 @@
           <b-row class="flex-grow-1 mx-0">
             <!-- START - Section 1 -->
             <b-col sm="8">
-              <label class="font-weight-bold w-100 text-center mb-2 h5">Thông tin cá nhân</label>
+              <label class="font-weight-bold w-100 text-center h5">Thông tin cá nhân</label>
 
               <!-- START - Customer Code -->
-              Mã khách hàng
-              <b-form-input
-                disabled
-              />
+              <b-col class="px-0">
+                <div class="mt-1">
+                  Mã khách hàng
+                </div>
+                <b-form-input
+                  disabled
+                />
+              </b-col>
+
               <!-- END - Customer Code -->
 
               <!-- START - Customer Name -->
@@ -41,7 +46,7 @@
                       Họ và tên đệm <sup class="text-danger">*</sup>
                     </div>
                     <b-form-input
-                      v-model="lastName"
+                      v-model.trim="lastName"
                       :state="touched ? passed : null"
                       autocomplete="on"
                       maxlength="200"
@@ -60,7 +65,7 @@
                       Tên <sup class="text-danger">*</sup>
                     </div>
                     <b-form-input
-                      v-model="firstName"
+                      v-model.trim="firstName"
                       autocomplete="on"
                       :state="touched ? passed : null"
                       maxlength="200"
@@ -81,7 +86,7 @@
                   Mã vạch
                 </div>
                 <b-form-input
-                  v-model="barCode"
+                  v-model.trim="barCode"
 
                   :state="barCode ? passed : null"
                   maxlength="40"
@@ -93,7 +98,9 @@
               <!-- START - Customer BirthDay and Gender -->
               <b-form-row>
                 <!-- BirthDay -->
-                <b-col>
+                <b-col
+                  @keypress="$onlyDateInput"
+                >
                   <validation-provider
                     v-slot="{ errors }"
                     rules="required|dateFormatVNI|age"
@@ -102,15 +109,13 @@
                     <div class="mt-1">
                       Ngày sinh <sup class="text-danger">*</sup>
                     </div>
-                    <b-input-group class="input-group-merge">
-                      <vue-flat-pickr
-                        id="form-input-date-from"
-                        v-model="birthDay"
-                        :config="configBitrhDay"
-                        class="form-control"
-                        placeholder="Chọn ngày"
-                      />
-                    </b-input-group>
+                    <vue-flat-pickr
+                      id="form-input-date-from"
+                      v-model="birthDay"
+                      :config="configBitrhDay"
+                      class="form-control"
+                      placeholder="Chọn ngày"
+                    />
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
                 </b-col>
@@ -186,7 +191,7 @@
                 Ghi chú
               </div>
               <b-form-textarea
-                v-model="note"
+                v-model.trim="note"
                 maxlength="4000"
               />
               <!-- END - Customer Note -->
@@ -196,7 +201,8 @@
             <!-- START - Section 2 -->
             <b-col
               sm
-              class="bg-light py-2"
+              style="margin-top: -5px"
+              class="bg-light pt-3"
             >
               <!-- START - Customer IdentityCard -->
               <validation-provider
@@ -212,10 +218,10 @@
                 >
                   <b-form-input
                     id="IdentityCard"
-                    v-model="customerID"
+                    v-model.trim="customerID"
                     maxlength="12"
-                    minlength="9"
                     :state="customerID ? stateInputValueID = passed : null"
+                    @keypress="$onlyNumberInput"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </b-form-group>
@@ -225,13 +231,15 @@
               <!-- START - Customer ID Date -->
               <validation-provider
                 v-slot="{ errors }"
-                rules="dateFormatVNI"
+                :rules="`${customerID ? 'required' : null}|dateFormatVNI`"
                 name="ngày cấp"
               >
                 <div class="mt-1">
                   Ngày cấp
                 </div>
-                <b-input-group class="input-group-merge">
+                <b-input-group
+                  @keypress="$onlyDateInput"
+                >
                   <vue-flat-pickr
                     v-model="customerIDDate"
                     :config="configIDDate"
@@ -244,13 +252,21 @@
               <!-- END - Customer ID Date -->
 
               <!-- START - Customer ID Location -->
-              <div class="mt-1">
-                Nơi cấp
-              </div>
-              <b-form-input
-                v-model="customerIDLocation"
-                maxlength="200"
-              />
+              <validation-provider
+                v-slot="{ errors, passed }"
+                :rules="`${customerID ? 'required' : null}`"
+                name="nơi cấp"
+              >
+                <div class="mt-1">
+                  Nơi cấp
+                </div>
+                <b-form-input
+                  v-model.trim="customerIDLocation"
+                  :state="customerID ? passed : null"
+                  maxlength="200"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
               <!-- END - Customer ID Location -->
             </b-col>
           <!-- END - Section 2 -->
@@ -265,10 +281,10 @@
           xl="3"
           class="bg-white shadow rounded ml-lg-1 mt-1 mt-lg-0 pb-1"
         >
-          <label class="font-weight-bold w-100 text-center mb-2 h5">Thông tin liên hệ</label>
+          <label class="font-weight-bold w-100 text-center h5">Thông tin liên hệ</label>
           <!-- START - Customer Phone Number -->
           <validation-provider
-            v-slot="{ errors, passed,}"
+            v-slot="{ errors, passed, touched}"
             rules="phoneNumber|required"
             name="di động"
           >
@@ -276,11 +292,12 @@
               Di động <sup class="text-danger">*</sup>
             </div>
             <b-form-input
-              v-model="phoneNumber"
+              v-model.trim="phoneNumber"
               autocomplete="on"
               type="tel"
-              :state="phoneNumber ? passed : null"
+              :state="touched ? passed : null"
               maxlength="10"
+              @keypress="$onlyNumberInput"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -297,7 +314,7 @@
             </div>
             <b-form-input
               id="Email"
-              v-model="customerEmail"
+              v-model.trim="customerEmail"
               type="email"
               autocomplete="on"
               maxlength="200"
@@ -317,7 +334,7 @@
               Số nhà <sup class="text-danger">*</sup>
             </div>
             <b-form-input
-              v-model="homeNumber"
+              v-model.trim="homeNumber"
               maxlength="200"
               :state="touched ? passed : null"
             />
@@ -326,50 +343,71 @@
           <!-- END - Customer Home number -->
 
           <!-- START - Customer Province -->
-          <div
-            class="mt-1"
+          <validation-provider
+            v-slot="{ errors }"
+            rules="required"
+            name="tỉnh/ thành"
           >
-            Tỉnh/ Thành
-          </div>
-          <tree-select
-            v-model="provincesSelected"
-            :options="provinceOptions"
-            placeholder="Chọn tỉnh/ thành"
-            no-options-text="Không có dữ liệu"
-            no-results-text="Không tìm thấy kết quả"
-          />
+            <div
+              class="mt-1"
+            >
+              Tỉnh/ Thành <sup class="text-danger">*</sup>
+            </div>
+            <tree-select
+              v-model="provincesSelected"
+              :options="provinceOptions"
+              placeholder="Chọn tỉnh/ thành"
+              no-options-text="Không có dữ liệu"
+              no-results-text="Không tìm thấy kết quả"
+            />
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
           <!-- END - Customer Province -->
 
           <!-- START - Customer District and Wards -->
           <b-form-row>
             <b-col>
-              <div
-                class="mt-1"
+              <validation-provider
+                v-slot="{ errors }"
+                rules="required"
+                name="quận/ huyện"
               >
-                Quận/ Huyện
-              </div>
-              <tree-select
-                v-model="districtsSelected"
-                :options="districtOptions"
-                placeholder="Chọn quận/ huyện"
-                no-options-text="Không có dữ liệu"
-                no-results-text="Không tìm thấy kết quả"
-              />
+                <div
+                  class="mt-1"
+                >
+                  Quận/ Huyện <sup class="text-danger">*</sup>
+                </div>
+                <tree-select
+                  v-model="districtsSelected"
+                  :options="districtOptions"
+                  placeholder="Chọn quận/ huyện"
+                  no-options-text="Không có dữ liệu"
+                  no-results-text="Không tìm thấy kết quả"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
             </b-col>
 
             <b-col>
-              <div
-                class="mt-1"
+              <validation-provider
+                v-slot="{ errors }"
+                rules="required"
+                name="phường/ xã"
               >
-                Phường/ Xã
-              </div>
-              <tree-select
-                v-model="precinctsSelected"
-                :options="precinctOptions"
-                placeholder="Chọn phường/ xã"
-                no-options-text="Không có dữ liệu"
-                no-results-text="Không tìm thấy kết quả"
-              />
+                <div
+                  class="mt-1"
+                >
+                  Phường/ Xã <sup class="text-danger">*</sup>
+                </div>
+                <tree-select
+                  v-model="precinctsSelected"
+                  :options="precinctOptions"
+                  placeholder="Chọn phường/ xã"
+                  no-options-text="Không có dữ liệu"
+                  no-results-text="Không tìm thấy kết quả"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
             </b-col>
           </b-form-row>
           <!-- END - Customer District and Wards -->
@@ -379,7 +417,7 @@
             Cơ quan
           </div>
           <b-form-input
-            v-model="workingOffice"
+            v-model.trim="workingOffice"
             maxlength="200"
           />
           <!-- END - Office-->
@@ -389,7 +427,7 @@
             Địa chỉ cơ quan
           </div>
           <b-form-input
-            v-model="officeAddress"
+            v-model.trim="officeAddress"
             maxlength="200"
           />
           <!-- END - Office Address-->
@@ -404,7 +442,7 @@
               Mã số thuế
             </div>
             <b-form-input
-              v-model="taxCode"
+              v-model.trim="taxCode"
               :state="taxCode ? passed : null"
               maxlength="40"
             />
@@ -421,7 +459,7 @@
           xl="3"
           class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
         >
-          <label class="font-weight-bold w-100 text-center mb-2 h5">Thẻ thành viên</label>
+          <label class="font-weight-bold w-100 text-center h5">Thẻ thành viên</label>
 
           <!-- START - Customer Card type -->
           <div
@@ -534,7 +572,7 @@ import {
   age,
   identifyCard,
 } from '@/@core/utils/validations/validations'
-import { formatVniDateToISO } from '@/@core/utils/filter'
+import { formatVniDateToGlobal } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
 import {
@@ -571,14 +609,12 @@ export default {
       configBitrhDay: {
         wrap: true,
         allowInput: true,
-        allowInvalidPreload: true,
         dateFormat: 'd/m/Y',
         maxDate: new Date().fp_incr(-5479),
       },
       configIDDate: {
         wrap: true,
         allowInput: true,
-        allowInvalidPreload: true,
         dateFormat: 'd/m/Y',
         maxDate: 'today',
       },
@@ -592,6 +628,12 @@ export default {
       dateFormatVNI,
       age,
       identifyCard,
+
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
 
       // START - Personal
       lastName: null,
@@ -688,19 +730,19 @@ export default {
     },
     provincesSelected() {
       this.districtsSelected = null
-      this.GET_DISTRICTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.provincesSelected })
+      this.GET_DISTRICTS_ACTION({ ...this.decentralization, provinceId: this.provincesSelected })
     },
     districtsSelected() {
       this.precinctsSelected = null
-      this.GET_PRECINCTS_ACTION({ formId: 9, ctrlId: 6, districtId: this.districtsSelected })
+      this.GET_PRECINCTS_ACTION({ ...this.decentralization, districtId: this.districtsSelected })
     },
   },
 
   mounted() {
-    this.GET_CUSTOMER_TYPES_ACTION({ formId: 9, ctrlId: 6 })
-    this.GET_PROVINCES_ACTION({ formId: 9, ctrlId: 6 })
-    this.GET_CARD_TYPES_ACTION({ formId: 9, ctrlId: 6 })
-    this.GET_CLOSELY_TYPES_ACTION({ formId: 9, ctrlId: 6 })
+    this.GET_CUSTOMER_TYPES_ACTION({ ...this.decentralization })
+    this.GET_PROVINCES_ACTION({ ...this.decentralization })
+    this.GET_CARD_TYPES_ACTION({ ...this.decentralization })
+    this.GET_CLOSELY_TYPES_ACTION({ ...this.decentralization })
   },
 
   // before page leave, this will check
@@ -750,26 +792,26 @@ export default {
         if (success) {
           this.CREATE_CUSTOMER_ACTION({
             customer: {
-              firstName: this.firstName?.trim(),
-              lastName: this.lastName?.trim(),
+              firstName: this.firstName,
+              lastName: this.lastName,
               genderId: this.gendersSelected,
-              barCode: this.barCode?.trim(),
-              dob: formatVniDateToISO(this.birthDay),
+              barCode: this.barCode,
+              dob: formatVniDateToGlobal(this.birthDay),
               customerTypeId: this.customerTypesSelected,
               status: this.customerStatusSelected,
               isPrivate: this.customerPrivate,
               idNo: this.customerID,
-              idNoIssuedDate: formatVniDateToISO(this.customerIDDate),
-              idNoIssuedPlace: this.customerIDLocation?.trim(),
+              idNoIssuedDate: formatVniDateToGlobal(this.customerIDDate),
+              idNoIssuedPlace: this.customerIDLocation,
               mobiPhone: this.phoneNumber,
-              email: this.customerEmail?.trim(),
+              email: this.customerEmail,
               areaId: this.precinctsSelected,
-              street: this.homeNumber?.trim(),
+              street: this.homeNumber,
               address: null,
-              workingOffice: this.workingOffice?.trim(),
-              officeAddress: this.officeAddress?.trim(),
+              workingOffice: this.workingOffice,
+              officeAddress: this.officeAddress,
               taxCode: this.taxCode,
-              noted: this.note?.trim(),
+              noted: this.note,
               closelyTypeId: this.closelyTypesSelected,
               cardTypeId: this.cardTypesSelected,
             },

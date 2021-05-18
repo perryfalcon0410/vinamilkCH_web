@@ -6,7 +6,11 @@ import {
   BootstrapVueIcons,
 } from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
-import { isEmpty, capitalizeFirstLetter } from '@core/utils/utils'
+import {
+  isEmpty,
+  onlyNumberInput,
+  onlyDateInput,
+} from '@core/utils/utils'
 import { formatDateToLocale } from '@/@core/utils/filter'
 
 import i18n from '@/libs/i18n'
@@ -62,11 +66,10 @@ Vue.use(VueGoodTablePlugin)
 Vue.prototype.$moment = moment
 moment.locale('vi')
 
-// isEmpty validate
+// Ultils
 Vue.prototype.$isEmpty = isEmpty
-
-// capitalize first Letter
-Vue.prototype.$capFirstString = capitalizeFirstLetter
+Vue.prototype.$onlyNumberInput = onlyNumberInput
+Vue.prototype.$onlyDateInput = onlyDateInput
 
 // get earlyMonth and now date
 Vue.prototype.$earlyMonth = formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1))

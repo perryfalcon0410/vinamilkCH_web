@@ -6,8 +6,7 @@
     <!-- START - Search -->
     <sales-customers-list-search
       @updateSearchData="paginationData = {
-        size: elementSize,
-        page: pageNumber - 1,
+        ...paginationData,
         ...$event }"
     />
     <!-- END - Search -->
@@ -50,15 +49,26 @@
       <!-- START - Table -->
       <b-col class="py-1">
         <vue-good-table
+          mode="remote"
           :columns="columns"
           :rows="customers"
-          style-class="vgt-table striped"
+          style-class="vgt-table bordered"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: elementSize,
+            setCurrentPage: pageNumber,
           }"
           compact-mode
           line-numbers
+          :total-rows="customerPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+            initialSortBy: [{field: 'nameText', type: 'desc'}]
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           >
           <!-- START - Empty rows -->
@@ -123,7 +133,7 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
                   v-model="elementSize"
@@ -134,7 +144,11 @@
                 />
                 <span
                   class="text-nowrap"
-                > trong {{ customerPagination.totalElements }} mục </span>
+                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
+                  -
+                  {{ (elementSize * pageNumber) > customerPagination.totalElements ?
+                    customerPagination.totalElements : (elementSize * pageNumber) }}
+                  của {{ customerPagination.totalElements }} mục </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -183,8 +197,10 @@ import {
   getGenderLabel,
   getCustomerTypeLabel,
   getCustomerStatusLabel,
+  resizeAbleTable,
 } from '@core/utils/utils'
 import { formatDateToLocale } from '@core/utils/filter'
+
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
   CUSTOMER,
@@ -206,42 +222,45 @@ export default {
       elementSize: commonData.pagination[0],
       pageNumber: 1,
       paginationOptions: commonData.pagination,
-      paginationData: {},
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+      },
 
       columns: [
         {
           label: 'Mã khách hàng',
-          field: 'code',
-          sortable: false,
+          field: 'customerCode',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
-          field: 'fullName',
-          sortable: false,
+          field: 'nameText',
+          firstSortType: 'desc',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Điện thoại',
-          field: 'phoneNumber',
+          field: 'mobiPhone',
           type: 'number',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Ngày sinh',
-          field: 'birthDay',
-          sortable: false,
+          field: 'dob',
+          type: 'date',
+          dateInputFormat: 'dd/MM/yyyy',
+          dateOutputFormat: 'dd/MM/yyyy',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Giới tính',
-          field: 'gender',
-          sortable: false,
+          field: 'genderId',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -249,21 +268,18 @@ export default {
           label: 'Trạng thái',
           field: 'status',
           type: 'boolean',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Nhóm',
-          field: 'group',
-          sortable: false,
+          field: 'customerTypeId',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Ngày tạo',
-          field: 'date',
-          sortable: false,
+          field: 'createdAt',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -287,37 +303,30 @@ export default {
       if (this.CUSTOMERS_GETTER.content) {
         return this.CUSTOMERS_GETTER.content.map(data => ({
           id: data.id,
-          code: data.customerCode,
-          fullName: `${data.lastName} ${data.firstName}`,
-          phoneNumber: data.mobiPhone,
-          birthDay: formatDateToLocale(data.dob),
-          gender: getGenderLabel(data.genderId),
+          customerCode: data.customerCode,
+          nameText: data.nameText,
+          mobiPhone: data.mobiPhone,
+          dob: formatDateToLocale(data.dob),
+          genderId: getGenderLabel(data.genderId),
+          // TODO: không get được label status 'Ngưng hoạt động' vì id = 0
           status: getCustomerStatusLabel(data.status),
-          group: getCustomerTypeLabel(data.customerTypeId),
-          date: formatDateToLocale(data.createdAt),
+          customerTypeId: getCustomerTypeLabel(data.customerTypeId),
+          createdAt: formatDateToLocale(data.createdAt),
           feature: '',
         }))
       }
       return []
     },
     customerPagination() {
-      return this.CUSTOMERS_GETTER
+      if (this.CUSTOMERS_GETTER) {
+        return this.CUSTOMERS_GETTER
+      }
+      return {}
     },
   },
 
-  watch: {
-    pageNumber() {
-      this.paginationData.page = this.pageNumber - 1
-      this.onPaginationChange()
-    },
-    elementSize() {
-      this.paginationData.size = this.elementSize
-      this.onPaginationChange()
-    },
-    paginationData() {
-      this.pageNumber = 1
-      this.onPaginationChange()
-    },
+  mounted() {
+    resizeAbleTable()
   },
 
   methods: {
@@ -339,10 +348,26 @@ export default {
     onClickExcelExportButton() {
       this.EXPORT_CUSTOMERS_ACTION()
     },
-
     onPaginationChange() {
       this.GET_CUSTOMERS_ACTION(this.paginationData)
     },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    // onSortChange(params) {
+    //   this.updatePaginationData({
+    //     sort: `${params.field},${params.sortType}`,
+    //   })
+    //   this.onPaginationChange()
+    // },
   },
 }
 </script>

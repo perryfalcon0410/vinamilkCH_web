@@ -20,8 +20,8 @@
           class="input-group-merge"
         >
           <b-form-input
-            v-model="searchKeywords"
-            class="h8 text-brand-3"
+            v-model.trim="searchKeywords"
+            class="h8"
             placeholder="Nhập họ tên/mã"
             @keyup.enter="onClickSearchButton"
           />
@@ -38,6 +38,42 @@
       </b-col>
       <!-- END - Full Name -->
 
+      <!-- START - Phone -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Di động
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model.trim="phoneNumber"
+            class="h8"
+            autocomplete="on"
+            placeholder="Nhập số điện thoại"
+            maxlength="10"
+            @keypress="$onlyNumberInput"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="phoneNumber"
+              class="cursor-pointer text-gray"
+              @click="phoneNumber = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Phone -->
+
       <!-- START - Date From -->
       <b-col
         xl
@@ -52,6 +88,7 @@
         <b-row
           class="v-flat-pickr-group mx-0"
           align-v="center"
+          @keypress="$onlyDateInput"
         >
           <b-icon-x
             v-show="fromDate"
@@ -62,8 +99,8 @@
           />
           <vue-flat-pickr
             v-model="fromDate"
-            :config="configDate"
-            class="form-control h8 text-brand-3"
+            :config="configFromDate"
+            class="form-control h8"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -84,6 +121,7 @@
         <b-row
           class="v-flat-pickr-group mx-0"
           align-v="center"
+          @keypress="$onlyDateInput"
         >
           <b-icon-x
             v-show="toDate"
@@ -94,8 +132,8 @@
           />
           <vue-flat-pickr
             v-model="toDate"
-            :config="configDate"
-            class="form-control h8 text-brand-3"
+            :config="configToDate"
+            class="form-control h8"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -243,8 +281,8 @@ export default {
   },
   data() {
     return {
-      isSearchFocus: false,
       searchKeywords: null,
+      phoneNumber: null,
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
       customerTypesSelected: null,
@@ -254,10 +292,22 @@ export default {
       gendersSelected: null,
       areasSelected: null,
 
-      configDate: {
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+
+      configFromDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
+      },
+      configToDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
       },
     }
   },
@@ -286,15 +336,25 @@ export default {
     areaOptions() {
       this.areaSelectedDefault()
     },
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
   },
 
   beforeMount() {
-    this.GET_CUSTOMER_TYPES_ACTION({ formId: 9, ctrlId: 6 })
-    this.GET_SHOP_LOCATIONS_ACTION({ formId: 5, ctrlId: 7 })
+    this.GET_CUSTOMER_TYPES_ACTION({ ...this.decentralization })
+    this.GET_SHOP_LOCATIONS_ACTION({ ...this.decentralization })
   },
 
   mounted() {
     this.onSearch()
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
+    }
   },
 
   methods: {
@@ -309,15 +369,15 @@ export default {
     },
     onSearch() {
       const searchData = {
-        searchKeywords: this.searchKeywords?.trim(),
+        searchKeywords: this.searchKeywords,
+        phoneNumber: this.phoneNumber,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         customerTypeId: this.customerTypesSelected,
         status: this.statusSelected,
         genderId: this.gendersSelected,
         areaId: this.areasSelected,
-        formId: 5,
-        ctrlId: 7,
+        ...this.decentralization,
       }
       this.updateSearchData(searchData)
       this.GET_CUSTOMERS_ACTION(searchData)

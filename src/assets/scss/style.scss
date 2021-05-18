@@ -105,9 +105,8 @@ input:focus {
 .form-control,
 input {
   height: $height-input-brand-1;
+  color: $brand-3;
 }
-
-// input
 
 // border input for vue-treeselect
 .input-group:not(.bootstrap-touchspin):focus-within .input-group-text {

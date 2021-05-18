@@ -21,6 +21,20 @@ $background-odd: #edf2f7;
           color: white;
           font-size: 13px;
         }
+        th.sortable {
+          button:after {
+            border-bottom: 5px solid white;
+          }
+          button:before {
+            border-top: 5px solid white;
+          }
+        }
+        th.sorting-asc button:after {
+          border-bottom: 5px solid red;
+        }
+        th.sorting-desc button:before {
+          border-top: 5px solid red;
+        }
       }
     }
 

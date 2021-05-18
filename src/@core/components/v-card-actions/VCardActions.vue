@@ -4,14 +4,14 @@
     <b-col>
       <b-row
         class="v-card-header text-primary mx-0"
-        :class="{ rotate: visible, 'cursor-pointer': canCollapse }"
+        :class="{ rotate: visible, 'rotate-down': !visible, 'cursor-pointer': canCollapse }"
         align-v="center"
         align-h="between"
         @click="onCollapseClick()"
       >
         <strong class="text-brand-1">{{ title }}</strong>
 
-        <b-icon-chevron-down
+        <b-icon-chevron-up
           v-if="canCollapse"
           scale="1.1"
           class="text-brand-1"
@@ -74,8 +74,14 @@ export default {
 
     &.rotate {
       svg {
-        transform: rotate(-180deg);
-          }
+        transition: all 0.5s;
+        transform: rotate(180deg);
+      }
+    }
+    &.rotate-down {
+      svg {
+      transition: all 0.5s;
+      }
     }
   }
 </style>

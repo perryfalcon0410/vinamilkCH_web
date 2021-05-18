@@ -69,13 +69,13 @@ export const getCustomerStatusLabel = id => {
   if (id) {
     return customerData.status.find(item => `${item.id}` === `${id}`).label
   }
-  return ''
+  return null
 }
 export const getWarehousesStatuslabel = id => {
   if (id) {
     return warehousesData.transTypes.find(item => `${item.id}` === `${id}`).label
   }
-  return ''
+  return null
 }
 
 export const formatURLParams = obj => {
@@ -106,3 +106,56 @@ export const getNow = () => {
 }
 
 export const isEmpty = value => value === undefined || value === '' || value === null
+
+export const onlyNumberInput = e => {
+  const char = String.fromCharCode(e.keyCode)
+  if (/[0-9]+/.test(char)) {
+    return true
+  }
+  return e.preventDefault()
+}
+
+export const onlyDateInput = e => {
+  const char = String.fromCharCode(e.keyCode)
+  if (/[0-9/]+/.test(char)) {
+    return true
+  }
+  return e.preventDefault()
+}
+
+export const resizeAbleTable = () => {
+  let thElm
+  let startOffset
+
+  Array.prototype.forEach.call(
+    document.querySelectorAll('table th'),
+    th => {
+    // eslint-disable-next-line no-param-reassign
+      th.style.position = 'relative'
+
+      const grip = document.createElement('div')
+      grip.innerHTML = '&nbsp;'
+      grip.style.top = 0
+      grip.style.right = 0
+      grip.style.bottom = 0
+      grip.style.width = '5px'
+      grip.style.position = 'absolute'
+      grip.style.cursor = 'col-resize'
+      grip.addEventListener('mousedown', e => {
+        thElm = th
+        startOffset = th.offsetWidth - e.pageX
+      })
+      th.appendChild(grip)
+    },
+  )
+
+  document.addEventListener('mousemove', e => {
+    if (thElm) {
+      thElm.style.width = `${startOffset + e.pageX}px`
+    }
+  })
+
+  document.addEventListener('mouseup', () => {
+    thElm = undefined
+  })
+}
