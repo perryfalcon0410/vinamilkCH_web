@@ -4,7 +4,12 @@
     class="d-flex flex-column p-0"
   >
     <!-- START - Search -->
-    <warehouses-input-list-search />
+    <warehouses-input-list-search
+      @updateSearchData="paginationData = {
+        size: elementSize,
+        page: pageNumber - 1,
+        ...$event }"
+    />
     <!-- END - Search -->
 
     <!-- START - Product  list -->
@@ -115,6 +120,7 @@
             slot-scope="props"
           >
             <b-row
+              v-show="receiptPagination.totalElements"
               v-if="props.column.field === 'quantity'"
               class="mx-0"
               align-h="end"
@@ -123,6 +129,7 @@
             </b-row>
 
             <b-row
+              v-show="receiptPagination.totalElements"
               v-else-if="props.column.field === 'price'"
               class="mx-0"
               align-h="end"
@@ -137,6 +144,7 @@
             slot-scope="props"
           >
             <b-row
+              v-show="receiptPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -261,6 +269,7 @@ export default {
       elementSize: warehousesData.pagination[0],
       pageNumber: 1,
       paginationOptions: warehousesData.pagination,
+      paginationData: {},
       receipts: [],
 
       columns: [
@@ -367,6 +376,18 @@ export default {
     getReceipts() {
       this.receipts = [...this.getReceipts]
     },
+    pageNumber() {
+      this.paginationData.page = this.pageNumber - 1
+      this.onPaginationChange()
+    },
+    elementSize() {
+      this.paginationData.size = this.elementSize
+      this.onPaginationChange()
+    },
+    paginationData() {
+      this.pageNumber = 1
+      this.onPaginationChange()
+    },
   },
 
   mounted() {
@@ -424,6 +445,9 @@ export default {
       this.REMOVE_RECEIPT_ACTION(`${this.selectedReceiptId}?type=${this.selectedReceiptType}&formId=5&ctrlId=7`)
       this.isDeleteModalShow = !this.isDeleteModalShow
       this.receipts.splice(this.selectedReceiptIndex, 1)
+    },
+    onPaginationChange() {
+      this.GET_RECEIPTS_ACTION(this.paginationData)
     },
   },
 }

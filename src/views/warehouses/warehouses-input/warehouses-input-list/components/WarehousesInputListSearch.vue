@@ -192,14 +192,19 @@ export default {
 
     onClickSearchButton() {
       const searchData = {
-        redInvoiceNo: this.billNumber,
+        redInvoiceNo: this.billNumber?.trim(),
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         type: this.inputTypesSelected,
         formId: 5,
         ctrlId: 7,
       }
+
+      this.updateSearchData(searchData)
       this.GET_RECEIPTS_ACTION(searchData)
+    },
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
     },
   },
 }

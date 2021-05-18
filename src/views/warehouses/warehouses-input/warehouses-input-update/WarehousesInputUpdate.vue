@@ -642,7 +642,7 @@ export default {
       this.poNumber = this.RECEIPT_BY_ID_GETTER().poNumber
       this.note = this.RECEIPT_BY_ID_GETTER().note
       this.poId = this.RECEIPT_BY_ID_GETTER().poId
-      this.importTypeName = this.warehousesInputOptions[this.$route.params.type].name
+      this.importTypeName = this.warehousesInputOptions[this.$route.params.type].label
     },
     getPromotions() {
       this.promotions = [...this.getPromotions]
