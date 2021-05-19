@@ -4,6 +4,7 @@ import toasts from '@core/utils/toasts/toasts'
 import {
   // GETTERS
   VOUCHERS_GETTER,
+  VOUCHER_BY_ID_GETTER,
   ONLINE_ORDERS_GETTER,
   ONLINE_ORDERS_PAGINATION_GETTER,
   ONLINE_ORDER_PRODUCTS_BY_ID_GETTER,
@@ -13,9 +14,11 @@ import {
   GET_TOP_SALE_PRODUCTS_GETTER,
   GET_HOT_PRODUCTS_GETTER,
   GET_ALL_PRODUCT_GETTER,
+  GET_DISCOUNT_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
+  GET_VOUCHER_BY_ID_ACTION,
   GET_ONLINE_ORDERS_ACTION,
   GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION,
   GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION,
@@ -24,6 +27,8 @@ import {
   GET_TOP_SALE_PRODUCTS_ACTION,
   GET_HOT_PRODUCTS_ACTION,
   GET_ALL_PRODUCT_ACTION,
+  CREATE_SALE_ORDER_ACTION,
+  GET_DISCOUNT_ACTION,
 } from './type'
 
 export default {
@@ -31,6 +36,7 @@ export default {
 
   state: {
     vouchers: [],
+    voucherInfo: {},
     onlineOrders: [],
     onlineOrderProducts: [],
     onlineOrderCustomer: {},
@@ -40,11 +46,15 @@ export default {
     topSaleProducts: [],
     hotProducts: [],
     allProduct: [],
+    discount: {},
   },
 
   getters: {
     [VOUCHERS_GETTER](state) {
       return state.vouchers
+    },
+    [VOUCHER_BY_ID_GETTER](state) {
+      return state.voucherInfo
     },
     [ONLINE_ORDERS_GETTER](state) {
       return state.onlineOrders
@@ -73,6 +83,9 @@ export default {
     [GET_ALL_PRODUCT_GETTER](state) {
       return state.allProduct
     },
+    [GET_DISCOUNT_GETTER](state) {
+      return state.discount
+    },
   },
 
   mutations: {},
@@ -85,6 +98,39 @@ export default {
         .then(res => {
           if (res.success) {
             state.vouchers = res.data.content
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+
+    [GET_VOUCHER_BY_ID_ACTION]({ state }, val) {
+      SalesServices
+        .getVoucherById(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.voucherInfo = res.data
+            console.log('state.voucherInfo', state.voucherInfo)
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+
+    [GET_DISCOUNT_ACTION]({ state }, val) {
+      SalesServices
+        .getDiscount(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.discount = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -206,6 +252,22 @@ export default {
         .then(res => {
           if (res.success) {
             state.allProduct = res.data.content || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [CREATE_SALE_ORDER_ACTION]({}, val) {
+      SalesServices
+        .createSaleOrder(val.product)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

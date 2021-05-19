@@ -21,6 +21,9 @@ export default {
     { id: '8', label: 'Giao tại cửa hàng' },
     { id: '9', label: 'Giao tại nhà' },
   ],
+  payment: [
+    { id: '1', label: 'Tiền mặt' },
+  ],
   pageSizeRecommendProducts: 8,
   pageNumberRecommendProducts: 0,
 }

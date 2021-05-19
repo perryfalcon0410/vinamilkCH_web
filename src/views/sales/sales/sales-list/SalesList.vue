@@ -150,7 +150,6 @@
             <b-row
               v-if="props.column.field === 'tableProductInventory'"
               align-v="center"
-              align-h="end"
               class="mx-0"
             >
               {{ props.row.tableProductInventory }}
@@ -251,45 +250,65 @@ export default {
 
       columns: [
         {
-          label: 'Mã sản phẩm',
+          label: '',
           field: 'tableProductId',
           sortable: false,
+          hidden: true,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Mã sản phẩm',
+          field: 'tableProductCode',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Tên sản phẩm',
           field: 'tableProductName',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'ĐVT',
           field: 'tableProductUnit',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Tồn kho',
           field: 'tableProductInventory',
           type: 'number',
           sortable: false,
-          width: '80px',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Số lượng',
           field: 'tableProductAmount',
           type: 'number',
           sortable: false,
-          width: '120px',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Đơn giá',
           field: 'tableProductUnitPrice',
           sortable: false,
           type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'tableProductTotalPrice',
           sortable: false,
           type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Chức năng',
@@ -347,7 +366,7 @@ export default {
     },
     onlineOrderProducts() {
       return this.ONLINE_ORDER_PRODUCTS_BY_ID_GETTER().map(data => ({
-        tableProductId: data.id,
+        tableProductId: data.productId,
         tableProductCode: data.productCode,
         tableProductName: data.productName,
         tableProductUnit: data.uom1,

@@ -2,6 +2,7 @@
   <!-- START Popup -->
   <b-modal
     id="VoucherModal"
+    ref="voucherModal"
     size="xl"
     :visible="visible"
     title="Chọn voucher"
@@ -50,7 +51,10 @@
           slot-scope="props"
         >
           <div v-if="props.column.field === 'Manipulation'">
-            <b-button variant="primary">
+            <b-button
+              variant="primary"
+              @click="getVoucherInfo(props.row.id)"
+            >
               <b-icon-hand-index-thumb
                 class="mr-1"
                 scale="1.3"
@@ -180,7 +184,7 @@ export default {
   },
 
   mounted() {
-    this.GET_VOUCHERS_ACTION({})
+    this.GET_VOUCHERS_ACTION({ keyWord: 'Voucher', formId: 5, ctrlId: 7 })
   },
 
   methods: {
@@ -191,6 +195,14 @@ export default {
       GET_VOUCHERS_ACTION,
     ]),
 
+    onClickCloseButton() {
+      this.$refs.voucherModal.hide()
+    },
+
+    getVoucherInfo(id) {
+      this.onClickCloseButton()
+      this.$emit('getVoucherInfo', id)
+    },
   },
 }
 </script>

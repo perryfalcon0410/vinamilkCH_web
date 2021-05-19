@@ -289,14 +289,17 @@
                 <b-col cols="4">
                   <strong>Tổng tiền hàng
                     <strong class="d-inline-flex text-white px-1 ml-1 bg-primary rounded-pill">
-                      31
+                      {{ totalQuantity }}
                     </strong>
                   </strong>
 
                 </b-col>
 
                 <b-col>
-                  <b-form-input disabled />
+                  <b-form-input
+                    v-model="totalOrderPrice"
+                    disabled
+                  />
                 </b-col>
               </b-row>
             </b-form-group>
@@ -384,18 +387,25 @@
                             scale="1.5"
                           />
                         </b-input-group-prepend>
-                        <b-form-input class="form-control-merge" />
+                        <b-form-input
+                          v-model="voucherCode"
+                          class="form-control-merge"
+                        />
                         <b-input-group-append is-text>
                           <b-icon-x
                             scale="1.5"
                             class="cursor-pointer"
+                            @click="resetVoucher"
                           />
                         </b-input-group-append>
                       </b-input-group>
                     </b-col>
 
                     <b-col>
-                      <b-form-input disabled />
+                      <b-form-input
+                        v-model="price"
+                        disabled
+                      />
                     </b-col>
 
                   </b-row>
@@ -424,7 +434,10 @@
                       <b-input-group
                         class="input-group-merge"
                       >
-                        <b-form-input class="form-control-merge" />
+                        <b-form-input
+                          class="form-control-merge"
+                          @mouseleave="getDiscount"
+                        />
                         <b-input-group-append is-text>
                           <b-icon-x
                             scale="1.5"
@@ -435,7 +448,10 @@
                     </b-col>
 
                     <b-col>
-                      <b-form-input disabled />
+                      <b-form-input
+                        v-model="discountAmount"
+                        disabled
+                      />
                     </b-col>
 
                   </b-row>
@@ -456,7 +472,10 @@
                 </b-col>
 
                 <b-col>
-                  <b-form-input disabled />
+                  <b-form-input
+                    v-model="needPayment"
+                    disabled
+                  />
                 </b-col>
               </b-row>
             </b-form-group>
@@ -476,13 +495,15 @@
                   <b-row
                     no-gutters
                   >
-
                     <b-col>
-                      <b-form-select />
+                      <tree-select
+                        v-model="paymentSelected"
+                        :options="paymentOptions"
+                      />
                     </b-col>
 
                     <b-col>
-                      <b-form-input />
+                      <b-form-input v-model="payment" />
                     </b-col>
 
                   </b-row>
@@ -504,7 +525,10 @@
                 </b-col>
 
                 <b-col>
-                  <b-form-input disabled />
+                  <b-form-input
+                    v-model="changePayment"
+                    disabled
+                  />
                 </b-col>
               </b-row>
             </b-form-group>
@@ -548,7 +572,7 @@
         <b-button
           variant="primary"
           class="d-flex align-items-center text-uppercase"
-          @click="ok()"
+          @click="createSaleOrder"
         >
           <b-icon-cash-stack
             class="mr-1"
@@ -579,20 +603,44 @@
           Đóng (ESC)
         </b-button>
       </b-row>
+      <sales-form />
     </template>
     <!-- END - Footer -->
 
-    <voucher-modal />
+    <voucher-modal @getVoucherInfo="getVoucherInfo" />
   </b-modal>
   <!-- End Popup -->
 </template>
 
 <script>
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import saleData from '@/@db/sale'
+import {
+  formatNumberToLocale, replaceDotWithComma,
+} from '@core/utils/filter'
+import {
+  SALES,
+  // GETTERS
+  VOUCHER_BY_ID_GETTER,
+  GET_PRODUCTS_GETTER,
+  CREATE_SALE_ORDER_GETTER,
+  GET_DISCOUNT_GETTER,
+  // ACTIONS
+  GET_VOUCHER_BY_ID_ACTION,
+  GET_PRODUCTS_ACTION,
+  CREATE_SALE_ORDER_ACTION,
+  GET_DISCOUNT_ACTION,
+} from '../../store-module/type'
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
+import SalesForm from '../../sales-list/components/SalesForm.vue'
 
 export default {
   components: {
     VoucherModal,
+    SalesForm,
   },
   props: {
     visible: {
@@ -663,9 +711,123 @@ export default {
           GiftsAmount: '',
         },
       ],
+
+      paymentSelected: saleData.payment[0].id,
+      paymentOptions: saleData.payment,
+
+      // voucher
+      voucherId: null,
+      voucherCode: null,
+      price: 0,
+
+      // payment
+      productId: null,
+      quantity: null,
+      productUnitPrice: null,
+      productTotalPrice: null,
+      productCode: null,
+      products: [],
+      saleOrderProducts: [],
+      payment: 0,
+
+      // discount
+      discountCode: null,
+      discountAmount: null,
+
+      shopId: null,
+      customerId: null,
+      salemanId: null,
+      wareHouseTypeId: null,
+      totalPaid: null,
+      type: 0,
+      paymentType: 0,
+      deliveryType: 1,
+      orderType: 0,
+      usedRedInvoice: null,
+      isFreeItem: false,
+      zmPromotion: 0,
     }
   },
   computed: {
+    ...mapGetters(SALES, [
+      VOUCHER_BY_ID_GETTER,
+      GET_PRODUCTS_GETTER,
+      CREATE_SALE_ORDER_GETTER,
+      GET_DISCOUNT_GETTER,
+    ]),
+
+    voucher() {
+      return this.VOUCHER_BY_ID_GETTER
+    },
+
+    discount() {
+      return this.GET_DISCOUNT_GETTER
+    },
+
+    getProducts() {
+      return this.GET_PRODUCTS_GETTER.map(data => ({
+        productCode: data.productCode,
+        productId: data.id,
+        quantity: replaceDotWithComma(formatNumberToLocale(Number(1))),
+        isFreeItem: false,
+        zmPromotion: 0,
+        productUnitPrice: replaceDotWithComma(formatNumberToLocale(Number(data.price))),
+        productTotalPrice: Number(this.totalPrice(1, Number(data.price))),
+      }))
+    },
+
+    getSaleOrderProducts() {
+      return this.GET_PRODUCTS_GETTER.map(data => ({
+        productId: data.id,
+        quantity: 1,
+        isFreeItem: false,
+        zmPromotion: 0,
+      }))
+    },
+
+    totalQuantity() {
+      return this.getProducts.reduce((sum, item) => sum + Number(item.quantity), 0)
+    },
+
+    totalOrderPrice() {
+      return this.getProducts.reduce((sum, item) => sum + Number(item.productTotalPrice), 0)
+    },
+
+    needPayment() {
+      // Todo: tổng tiền hàng – giảm giá – điểm tích lũy – voucher – mã giảm giá.
+      return this.totalOrderPrice - this.price
+    },
+
+    changePayment() {
+      const change = 0
+      if (this.payment !== 0) {
+        if (this.payment > this.needPayment) {
+          return Number(this.payment) - Number(this.needPayment)
+        }
+      }
+      return change
+    },
+  },
+  watch: {
+    voucher() {
+      this.getVoucherById()
+    },
+
+    discount() {
+      this.getDiscount()
+    },
+
+    getProducts() {
+      this.products = [...this.getProducts]
+    },
+
+    getSaleOrderProducts() {
+      this.saleOrderProducts = [...this.getSaleOrderProductss]
+    },
+  },
+  mounted() {
+    this.GET_PRODUCTS_ACTION({ formId: 5, ctrlId: 1, customerTypeId: 1 })
+    this.GET_DISCOUNT_ACTION(`${this.discountCode}?ctrlId=7&formId=5`)
   },
   created() {
     window.addEventListener('keydown', e => {
@@ -675,8 +837,61 @@ export default {
     })
   },
   methods: {
+    ...mapActions(SALES, [
+      GET_VOUCHER_BY_ID_ACTION,
+      GET_PRODUCTS_ACTION,
+      CREATE_SALE_ORDER_ACTION,
+      GET_DISCOUNT_ACTION,
+    ]),
+
     onVoucherButtonClick() {
       this.$root.$emit('bv::show::modal', 'VoucherModal')
+    },
+
+    getVoucherInfo(id) {
+      this.voucherId = id
+      this.GET_VOUCHER_BY_ID_ACTION(`${this.voucherId}?keyWord=Voucher&ctrlId=7&formId=5&customerTypeId=1`)
+    },
+
+    getVoucherById() {
+      this.voucherCode = this.voucher.voucherCode
+      this.price = this.voucher.price
+    },
+
+    getDiscount() {
+      this.discountCode = this.discount.discountCode
+      this.discountAmount = this.discount.discountAmount
+    },
+
+    resetVoucher() {
+      this.voucherCode = null
+      this.price = null
+    },
+
+    totalPrice(amount, price) {
+      return amount * (price || 0)
+    },
+
+    createSaleOrder() {
+      this.CREATE_SALE_ORDER_ACTION({
+        product: {
+          shopId: 1,
+          customerId: 710,
+          salemanId: 1,
+          wareHouseTypeId: '1',
+          totalPaid: this.totalOrderPrice,
+          type: 0,
+          paymentType: 1,
+          deliveryType: 1,
+          orderType: 0,
+          usedRedInvoice: false,
+          voucherId: 4,
+          products: this.getProducts,
+        },
+        onSuccess: () => {
+          this.$refs.payModal.hide()
+        },
+      })
     },
   },
 }

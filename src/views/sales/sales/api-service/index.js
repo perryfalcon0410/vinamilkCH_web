@@ -2,12 +2,15 @@ import axios from '@axios'
 import { formatURLParams } from '@/@core/utils/utils'
 import {
   getVouchersEndpoint,
+  getVoucherByIdEndpoint,
   getOnlineOrdersEndpoint,
   getOnlineOrderByIdEndpoint,
   getProductsEndpoint,
   getProductInfosEndpoint,
   getProductsTopSaleEndpoint,
   getProductsHotEndpoint,
+  createSaleOrderEndpoint,
+  getDiscountEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -15,6 +18,10 @@ export default {
     return axios.get(getVouchersEndpoint, {
       params: formatURLParams(args),
     })
+  },
+
+  getVoucherById(args) {
+    return axios.get((`${getVoucherByIdEndpoint}/${args}`))
   },
 
   getOnlineOrder(args) {
@@ -44,5 +51,13 @@ export default {
   },
   getProductsHot(args) {
     return axios.get(`${getProductsHotEndpoint}/${args.customerId}`)
+  },
+
+  createSaleOrder(args) {
+    return axios.post(createSaleOrderEndpoint, args)
+  },
+
+  getDiscount(args) {
+    return axios.get((`${getDiscountEndpoint}/${args}`))
   },
 }

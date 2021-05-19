@@ -190,7 +190,6 @@
                 v-model="salemtPromotionObjectSelected"
                 :options="salemtPromotionObjectOptions"
               />
-              {{ salemtPromotionObjectSelected }}
             </b-col>
           </b-row>
           <!-- END - Order type -->
@@ -222,7 +221,7 @@
             </b-col>
             <b-col>
               <b-input-group class="input-group-merge">
-                <b-form-input />
+                <b-form-input :disabled="salemtPromotionObjectSelected === '1'" />
                 <b-input-group-append is-text>
                   <b-icon-three-dots-vertical @click="showNotifyModal" />
                   <sales-online-orders-modal
@@ -297,12 +296,14 @@
         <b-button
           variant="info"
           class="d-flex w-100 my-1 align-items-center justify-content-center"
+          @click="this.showPayModal"
         >
           <b-icon-cash-stack
             font-scale="2"
             class="mr-1"
           />
           Thanh toán (F8)
+          <pay-modal ref="payModal" />
         </b-button>
         <!-- END - Button pay -->
 
@@ -363,12 +364,14 @@ import {
 import SalesCreateModal from './SalesCreateModal.vue'
 import SalesSearchModal from './SalesSearchModal.vue'
 import SalesOnlineOrdersModal from './SalesOnlineOrdersModal.vue'
+import PayModal from '../../components/pay_modal/PayModal.vue'
 
 export default {
   components: {
     SalesCreateModal,
     SalesSearchModal,
     SalesOnlineOrdersModal,
+    PayModal,
   },
   data() {
     return {
@@ -382,7 +385,7 @@ export default {
       fullName: null,
       phoneNumber: null,
       address: null,
-      totalBill: null ?? 0,
+      totalBill: null,
 
       // online order
       onlineOrderId: null,
@@ -390,6 +393,83 @@ export default {
       totalPrice: null,
       salemtPromotionObjectSelected: saleData.salemtPromotionObject[0].id,
       salemtDeliveryTypeSelected: saleData.salemtDeliveryType[0].id,
+
+      // products
+      tableProductId: null,
+      tableProductAmount: null,
+      tableProductUnitPrice: null,
+      tableProductTotalPrice: null,
+      tableProductCode: null,
+      products: [],
+
+      columns: [
+        {
+          label: '',
+          field: 'tableProductId',
+          sortable: false,
+          hidden: true,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Mã sản phẩm',
+          field: 'tableProductCode',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Tên sản phẩm',
+          field: 'tableProductName',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'ĐVT',
+          field: 'tableProductUnit',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Tồn kho',
+          field: 'tableProductInventory',
+          type: 'number',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Số lượng',
+          field: 'tableProductAmount',
+          type: 'number',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Đơn giá',
+          field: 'tableProductUnitPrice',
+          sortable: false,
+          type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Thành tiền',
+          field: 'tableProductTotalPrice',
+          sortable: false,
+          type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Chức năng',
+          field: 'tableProductFeature',
+          sortable: false,
+        },
+      ],
     }
   },
   computed: {
@@ -432,11 +512,9 @@ export default {
       this.checkDuplicationID(this.ERROR_CODE_GETTER())
     },
     salemtPromotionObjectSelected() {
-      this.salemtPromotionObjectSelected = null
-      this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4, alemtPromotionId: this.salemtPromotionObjectSelected })
+      this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
     },
     salemtDeliveryTypeSelected() {
-      this.salemtDeliveryTypeSelected = null
       this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
     },
     onlineOrderCustomer() {
@@ -476,8 +554,14 @@ export default {
       this.$refs.salesOnlineOrderModal.$refs.salesOnlineOrderModal.show()
     },
 
+    showPayModal() {
+      this.$refs.payModal.$refs.payModal.show()
+    },
+
     showNotifyModal() {
-      this.$refs.salesNotifyModal.show()
+      if (this.salemtPromotionObjectSelected !== saleData.salemtPromotionObject[0].id) {
+        this.$refs.salesNotifyModal.show()
+      }
     },
 
     closeNotifyModal() {
@@ -525,6 +609,7 @@ export default {
       this.fullName = `${this.lastName} ${this.firstName}`
       this.phoneNumber = this.customerDefault.mobiPhone
       this.address = this.customerDefault.address
+      this.totalBill = this.customerDefault.totalBill ?? 0
     },
   },
 }
