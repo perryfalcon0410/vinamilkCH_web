@@ -436,12 +436,14 @@
                       >
                         <b-form-input
                           class="form-control-merge"
-                          @mouseleave="getDiscount"
                         />
-                        <b-input-group-append is-text>
+                        <b-input-group-append
+                          is-text
+                        >
                           <b-icon-x
                             scale="1.5"
                             class="cursor-pointer"
+                            @click="resetDiscount"
                           />
                         </b-input-group-append>
                       </b-input-group>
@@ -761,7 +763,7 @@ export default {
     },
 
     discount() {
-      return this.GET_DISCOUNT_GETTER
+      return this.getDiscount
     },
 
     getProducts() {
@@ -827,7 +829,6 @@ export default {
   },
   mounted() {
     this.GET_PRODUCTS_ACTION({ formId: 5, ctrlId: 1, customerTypeId: 1 })
-    this.GET_DISCOUNT_ACTION(`${this.discountCode}?ctrlId=7&formId=5`)
   },
   created() {
     window.addEventListener('keydown', e => {
@@ -866,6 +867,10 @@ export default {
     resetVoucher() {
       this.voucherCode = null
       this.price = null
+    },
+
+    resetDiscount() {
+      this.discountCode = null
     },
 
     totalPrice(amount, price) {
