@@ -99,7 +99,7 @@
                 v-b-popover.hover.top="'Xem chi tiết'"
                 class="cursor-pointer ml-1"
                 scale="1.4"
-                @click="onClickUpdateButton(props.row.id, props.row.receiptType)"
+                @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
               />
               <b-icon-trash-fill
                 v-b-popover.hover.top="'Xóa'"
@@ -358,7 +358,7 @@ export default {
         note: data.note,
         feature: '',
         receiptType: data.receiptType,
-        poId: data.poId,
+        poId: data.poId || 0,
       }))
     },
     totalQuantity() {
@@ -414,12 +414,13 @@ export default {
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-input-create' })
     },
-    onClickUpdateButton(id, type) {
+    onClickUpdateButton(id, type, poId) {
       this.$router.push({
         name: 'warehouses-input-update',
         params: {
           id,
           type,
+          poId,
         },
       })
     },

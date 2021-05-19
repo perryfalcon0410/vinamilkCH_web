@@ -6,6 +6,7 @@
     <!-- START - Form and list -->
     <validation-observer
       ref="formContainer"
+      v-slot="{invalid}"
     >
       <b-col>
         <b-row>
@@ -83,7 +84,8 @@
                   <b-form-input
                     v-model="billNumber"
                     :state="touched ? passed : null"
-                    :disabled="!canEdit"
+                    :disabled="importType !== 0"
+                    maxlength="50"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -131,6 +133,7 @@
                     v-model="internalNumber"
                     :state="touched ? passed : null"
                     :disabled="!canEdit"
+                    maxlength="50"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -139,13 +142,13 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  :rules="importType === '1' ? 'required' : ''"
+                  :rules="importType === '0' ? 'required' : ''"
                   name="PO No"
                 >
                   <div class="mt-1">
                     PO No
                     <sup
-                      v-show="importType === '1'"
+                      v-show="importType === '0'"
                       class="text-danger"
                     >*</sup>
                   </div>
@@ -155,8 +158,9 @@
                   >
                     <b-form-input
                       v-model="poNumber"
-                      :state="importType === '1' && touched ? passed : null"
+                      :state="importType === '0' && touched ? passed : null"
                       :disabled="!canEdit"
+                      maxlength="50"
                     />
                   </b-input-group>
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -174,7 +178,7 @@
               <b-form-textarea
                 id="note"
                 v-model="note"
-                maxlength="4000"
+                maxlength="200"
                 :disabled="!isTransDate"
               />
             </b-form-group>
@@ -317,9 +321,12 @@
                     <b-input
                       v-model="props.row.quantity"
                       size="sm"
+                      maxlength="10"
+                      type="number"
                       :number="true"
                       :value="props.row.quantity"
                       @change="updateQuantity(props.row.originalIndex, props.row.quantity)"
+                      @keypress="isNumber($event)"
                     />
                   </div>
                   <div
@@ -386,9 +393,10 @@
             <b-row class="m-1 justify-content-end">
               <b-button-group>
                 <b-button
-                  v-if="isTransDate"
+                  v-if="isTransDate || importType === 0"
                   class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
                   variant="someThing"
+                  :disabled="invalid"
                   @click="updateReceipt"
                 >
                   <b-icon
@@ -426,6 +434,7 @@
 
 <script>
 import commonData from '@/@db/common'
+import toasts from '@core/utils/toasts/toasts'
 import {
   mapActions,
   mapGetters,
@@ -468,7 +477,7 @@ export default {
       billDate: null,
       internalNumber: null,
       poNumber: null,
-      poId: null,
+      poId: Number(this.$route.params.poId),
       note: null,
       transCode: null,
       transDate: null,
@@ -558,6 +567,8 @@ export default {
       productSearch: null,
       inputSearchFocusedSP: false,
       totalPromotionQuantity: 0,
+      id: this.$route.params.id,
+      importType: Number(this.$route.params.type),
     }
   },
 
@@ -601,12 +612,6 @@ export default {
     totalPromotionPrice() {
       return 0
     },
-    id() {
-      return this.$route.params.id
-    },
-    importType() {
-      return this.$route.params.type
-    },
     allProducts() {
       return this.PRODUCTS_GETTER().map(data => ({
         productId: data.id,
@@ -620,13 +625,13 @@ export default {
       }))
     },
     showPromotionsTable() {
-      return this.totalPromotionQuantity > 0 || (this.$route.params.type === 0 && this.receipt.poId == null) // hiện table hàng khuyến mãi nếu số lượng > 0 hoặc là phiếu nhập tay khuyến mãi
+      return this.totalPromotionQuantity > 0 || (this.importType === 0 && this.poId === 0) // hiện table hàng khuyến mãi nếu số lượng > 0 hoặc là phiếu nhập tay khuyến mãi
     },
     isTransDate() {
       return this.today === this.transDate
     },
     canEdit() {
-      return this.today === this.transDate && this.$route.params.type === 0 && this.receipt.poId == null
+      return this.today === this.transDate && this.importType === 0 && this.poId === 0
     },
   },
 
@@ -641,7 +646,6 @@ export default {
       this.internalNumber = this.RECEIPT_BY_ID_GETTER().internalNumber
       this.poNumber = this.RECEIPT_BY_ID_GETTER().poNumber
       this.note = this.RECEIPT_BY_ID_GETTER().note
-      this.poId = this.RECEIPT_BY_ID_GETTER().poId
       this.importTypeName = this.warehousesInputOptions[this.$route.params.type].label
     },
     getPromotions() {
@@ -737,17 +741,25 @@ export default {
         productId: data.productId,
         quantity: data.quantity,
       }))
-      this.UPDATE_RECEIPT_ACTION({
-        id: this.id,
-        type: this.importType,
-        note: this.note,
-        redInvoiceNo: this.billNumber,
-        orderDate: this.billDate,
-        internalNumber: this.internalNumber,
-        poNumber: this.poNumber,
-        lstUpdate: updatedPromotions,
-        formId: 5,
-        ctrlId: 7,
+      if (updatedPromotions.findIndex(promotion => promotion.quantity === 0) !== -1) {
+        toasts.error('Số lượng sản phẩm phải lớn hơn 0')
+        return
+      }
+      this.$refs.formContainer.validate().then(success => {
+        if (success) {
+          this.UPDATE_RECEIPT_ACTION({
+            id: this.id,
+            type: this.importType,
+            note: this.note,
+            redInvoiceNo: this.billNumber,
+            orderDate: this.billDate,
+            internalNumber: this.internalNumber,
+            poNumber: this.poNumber,
+            lstUpdate: updatedPromotions,
+            formId: 5,
+            ctrlId: 7,
+          })
+        }
       })
     },
     click() {
@@ -763,8 +775,15 @@ export default {
     onClickDeleteButton(index) {
       this.promotions.splice(index, 1)
     },
+    isNumber(e) {
+      console.log(e.target.value)
+      const keysAllowed = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+      const keyPressed = e.key
+      if (!keysAllowed.includes(keyPressed)) {
+        e.preventDefault()
+      }
+    },
   },
-
 }
 </script>
 <style>
