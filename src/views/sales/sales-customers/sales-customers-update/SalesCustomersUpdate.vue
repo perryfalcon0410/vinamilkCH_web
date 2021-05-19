@@ -410,7 +410,7 @@
                   v-model="districtsSelected"
                   :options="districtOptions"
                   placeholder="Chọn quận/ huyện"
-                  no-options-text="Không có dữ liệu"
+                  no-options-text="Vui lòng chọn tỉnh/ thành"
                   no-results-text="Không tìm thấy kết quả"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -432,7 +432,7 @@
                   v-model="precinctsSelected"
                   :options="precinctOptions"
                   placeholder="Chọn phường/ xã"
-                  no-options-text="Không có dữ liệu"
+                  no-options-text="Vui lòng chọn quận/ huyện"
                   no-results-text="Không tìm thấy kết quả"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -741,16 +741,22 @@ export default {
       }))
     },
     districtOptions() {
-      return this.DISTRICTS_GETTER.map(data => ({
-        id: data.id,
-        label: data.areaName,
-      }))
+      if (this.provincesSelected) {
+        return this.DISTRICTS_GETTER.map(data => ({
+          id: data.id,
+          label: data.areaName,
+        }))
+      }
+      return []
     },
     precinctOptions() {
-      return this.PRECINCTS_GETTER.map(data => ({
-        id: data.id,
-        label: data.areaName,
-      }))
+      if (this.districtsSelected) {
+        return this.PRECINCTS_GETTER.map(data => ({
+          id: data.id,
+          label: data.areaName,
+        }))
+      }
+      return []
     },
     cardTypeOptions() {
       return this.CARD_TYPES_GETTER.map(data => ({
