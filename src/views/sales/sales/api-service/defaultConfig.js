@@ -13,4 +13,4 @@ export const getProductInfosEndpoint = `${SALES}${PRODUCT}/product-infos`
 export const getProductsTopSaleEndpoint = `${SALES}${PRODUCT}/top-sale`
 export const getProductsHotEndpoint = `${SALES}${PRODUCT}/top-sale/customer`
 export const createSaleOrderEndpoint = `${SALES}?ctrlId=1&formId=5`
-export const getDiscountEndpoint = `${PROMOTION}/promotion-program-discount/discount-code`
+export const getDiscountByCodeEndpoint = `${PROMOTION}/promotion-program-discount/discount-code`

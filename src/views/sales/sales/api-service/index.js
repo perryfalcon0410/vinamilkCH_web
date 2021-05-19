@@ -10,7 +10,7 @@ import {
   getProductsTopSaleEndpoint,
   getProductsHotEndpoint,
   createSaleOrderEndpoint,
-  getDiscountEndpoint,
+  getDiscountByCodeEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -57,7 +57,7 @@ export default {
     return axios.post(createSaleOrderEndpoint, args)
   },
 
-  getDiscount(args) {
-    return axios.get((`${getDiscountEndpoint}/${args}`))
+  getDiscountByCode(args) {
+    return axios.get((`${getDiscountByCodeEndpoint}/${args}`))
   },
 }

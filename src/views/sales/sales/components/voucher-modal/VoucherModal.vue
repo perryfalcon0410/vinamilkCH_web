@@ -184,7 +184,12 @@ export default {
   },
 
   mounted() {
-    this.GET_VOUCHERS_ACTION({ keyWord: 'Voucher', formId: 5, ctrlId: 7 })
+    const paramsGetVoucher = {
+      keyWord: 'Voucher',
+      formId: 5, // Hard code
+      ctrlId: 7, // // Hard code
+    }
+    this.GET_VOUCHERS_ACTION(paramsGetVoucher)
   },
 
   methods: {

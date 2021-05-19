@@ -14,7 +14,7 @@ import {
   GET_TOP_SALE_PRODUCTS_GETTER,
   GET_HOT_PRODUCTS_GETTER,
   GET_ALL_PRODUCT_GETTER,
-  GET_DISCOUNT_GETTER,
+  GET_DISCOUNT_BY_CODE_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -28,7 +28,7 @@ import {
   GET_HOT_PRODUCTS_ACTION,
   GET_ALL_PRODUCT_ACTION,
   CREATE_SALE_ORDER_ACTION,
-  GET_DISCOUNT_ACTION,
+  GET_DISCOUNT_BY_CODE_ACTION,
 } from './type'
 
 export default {
@@ -83,7 +83,7 @@ export default {
     [GET_ALL_PRODUCT_GETTER](state) {
       return state.allProduct
     },
-    [GET_DISCOUNT_GETTER](state) {
+    [GET_DISCOUNT_BY_CODE_GETTER](state) {
       return state.discount
     },
   },
@@ -124,9 +124,9 @@ export default {
         })
     },
 
-    [GET_DISCOUNT_ACTION]({ state }, val) {
+    [GET_DISCOUNT_BY_CODE_ACTION]({ state }, val) {
       SalesServices
-        .getDiscount(val)
+        .getDiscountByCode(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {

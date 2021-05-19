@@ -436,6 +436,7 @@
                       >
                         <b-form-input
                           class="form-control-merge"
+                          @keyup.enter="getDiscount"
                         />
                         <b-input-group-append
                           is-text
@@ -629,12 +630,12 @@ import {
   VOUCHER_BY_ID_GETTER,
   GET_PRODUCTS_GETTER,
   CREATE_SALE_ORDER_GETTER,
-  GET_DISCOUNT_GETTER,
+  GET_DISCOUNT_BY_CODE_GETTER,
   // ACTIONS
   GET_VOUCHER_BY_ID_ACTION,
   GET_PRODUCTS_ACTION,
   CREATE_SALE_ORDER_ACTION,
-  GET_DISCOUNT_ACTION,
+  GET_DISCOUNT_BY_CODE_ACTION,
 } from '../../store-module/type'
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
 import SalesForm from '../../sales-list/components/SalesForm.vue'
@@ -755,7 +756,7 @@ export default {
       VOUCHER_BY_ID_GETTER,
       GET_PRODUCTS_GETTER,
       CREATE_SALE_ORDER_GETTER,
-      GET_DISCOUNT_GETTER,
+      GET_DISCOUNT_BY_CODE_GETTER,
     ]),
 
     voucher() {
@@ -763,7 +764,7 @@ export default {
     },
 
     discount() {
-      return this.getDiscount
+      return this.GET_DISCOUNT_BY_CODE_GETTER
     },
 
     getProducts() {
@@ -796,8 +797,7 @@ export default {
     },
 
     needPayment() {
-      // Todo: tổng tiền hàng – giảm giá – điểm tích lũy – voucher – mã giảm giá.
-      return this.totalOrderPrice - this.price
+      return this.totalOrderPrice - this.price - this.discountAmount
     },
 
     changePayment() {
@@ -842,7 +842,7 @@ export default {
       GET_VOUCHER_BY_ID_ACTION,
       GET_PRODUCTS_ACTION,
       CREATE_SALE_ORDER_ACTION,
-      GET_DISCOUNT_ACTION,
+      GET_DISCOUNT_BY_CODE_ACTION,
     ]),
 
     onVoucherButtonClick() {
@@ -851,7 +851,12 @@ export default {
 
     getVoucherInfo(id) {
       this.voucherId = id
-      this.GET_VOUCHER_BY_ID_ACTION(`${this.voucherId}?keyWord=Voucher&ctrlId=7&formId=5&customerTypeId=1`)
+      const paramsGetVoucher = {
+        keyWord: 'Voucher',
+        formId: 5, // Hard code
+        ctrlId: 7, // Hard code
+      }
+      this.GET_VOUCHER_BY_ID_ACTION(`${this.voucherId}?customerTypeId=1`, paramsGetVoucher)
     },
 
     getVoucherById() {
@@ -862,6 +867,12 @@ export default {
     getDiscount() {
       this.discountCode = this.discount.discountCode
       this.discountAmount = this.discount.discountAmount
+
+      const paramsGetDiscount = {
+        formId: 5, // Hard code
+        ctrlId: 7, // Hard code
+      }
+      this.GET_DISCOUNT_BY_CODE_ACTION('CODE0003', paramsGetDiscount)
     },
 
     resetVoucher() {
@@ -871,6 +882,12 @@ export default {
 
     resetDiscount() {
       this.discountCode = null
+    },
+
+    resetOrderPayment() {
+      this.voucherCode = null
+      this.price = null
+      this.payment = 0
     },
 
     totalPrice(amount, price) {
@@ -886,7 +903,7 @@ export default {
           wareHouseTypeId: '1',
           totalPaid: this.totalOrderPrice,
           type: 0,
-          paymentType: 1,
+          paymentType: saleData.payment[0].id,
           deliveryType: 1,
           orderType: 0,
           usedRedInvoice: false,
@@ -895,6 +912,7 @@ export default {
         },
         onSuccess: () => {
           this.$refs.payModal.hide()
+          this.resetOrderPayment()
         },
       })
     },
