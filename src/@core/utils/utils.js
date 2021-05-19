@@ -52,30 +52,23 @@ export const useRouter = () => {
 }
 
 export const getGenderLabel = id => {
-  if (id) {
-    return commonData.genders.find(item => `${item.id}` === `${id}`).label
-  }
-  return null
+  const commonDataFound = commonData.genders.find(item => `${item.id}` === `${id}`)
+  return commonDataFound ? commonDataFound.label : null
 }
 
 export const getCustomerTypeLabel = id => {
-  if (id) {
-    return customerData.customerTypes.find(item => `${item.id}` === `${id}`).label
-  }
-  return null
+  const customerDataFound = customerData.customerTypes.find(item => `${item.id}` === `${id}`)
+  return customerDataFound ? customerDataFound.label : null
 }
 
 export const getCustomerStatusLabel = id => {
-  if (id) {
-    return customerData.status.find(item => `${item.id}` === `${id}`).label
-  }
-  return null
+  const customerDataFound = customerData.status.find(item => `${item.id}` === `${id}`)
+  return customerDataFound ? customerDataFound.label : null
 }
+
 export const getWarehousesStatuslabel = id => {
-  if (id) {
-    return warehousesData.transTypes.find(item => `${item.id}` === `${id}`).label
-  }
-  return null
+  const warehousesDataFound = warehousesData.transTypes.find(item => `${item.id}` === `${id}`)
+  return warehousesDataFound ? warehousesDataFound.label : null
 }
 
 export const formatURLParams = obj => {

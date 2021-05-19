@@ -11,6 +11,7 @@ export default {
     80,
     100,
     200,
+    300,
     500,
   ],
   pageNumber: 1,

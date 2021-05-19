@@ -308,7 +308,6 @@ export default {
           mobiPhone: data.mobiPhone,
           dob: formatDateToLocale(data.dob),
           genderId: getGenderLabel(data.genderId),
-          // TODO: không get được label status 'Ngưng hoạt động' vì id = 0
           status: getCustomerStatusLabel(data.status),
           customerTypeId: getCustomerTypeLabel(data.customerTypeId),
           createdAt: formatDateToLocale(data.createdAt),
