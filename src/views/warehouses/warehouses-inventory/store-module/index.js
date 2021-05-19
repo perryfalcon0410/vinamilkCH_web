@@ -6,9 +6,17 @@ import {
   WAREHOUSE_INVENTORIES_GETTER,
   WAREHOUSE_INVENTORY_PAGINATION_GETTER,
   WAREHOUSE_TYPES_GETTER,
+  WAREHOUSE_INVENTORY_STOCKS_GETTER,
+  IS_EXISTED_WAREHOUSE_INVENTORY_GETTER,
+  WAREHOUSE_INVENTORY_DATA_GETTER,
   // ACTIONS
   GET_WAREHOUSE_INVENTORIES_ACTION,
   GET_WAREHOUSE_TYPES_ACTION,
+  GET_WAREHOUSE_INVENTORY_STOCKS_ACTION,
+  EXPORT_FILLED_STOCKS_ACTION,
+  CREATE_WAREHOUSE_INVENTORY_ACTION,
+  IMPORT_FILLED_STOCKS_ACTION,
+  CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION,
 } from './type'
 
 export default {
@@ -19,6 +27,10 @@ export default {
     warehouseInventories: [],
     warehouseInventoryPagination: {},
     warehouseTypes: [],
+    warehouseInventoryStocks: [],
+    warehouseInventoryStatusCode: null,
+    isExistedWarehouseInventory: null,
+    warehouseInventoryData: {},
   },
 
   // START - GETTERS
@@ -31,6 +43,15 @@ export default {
     },
     [WAREHOUSE_TYPES_GETTER](state) {
       return state.warehouseTypes
+    },
+    [WAREHOUSE_INVENTORY_STOCKS_GETTER](state) {
+      return state.warehouseInventoryStocks
+    },
+    [IS_EXISTED_WAREHOUSE_INVENTORY_GETTER](state) {
+      return state.isExistedWarehouseInventory
+    },
+    [WAREHOUSE_INVENTORY_DATA_GETTER](state) {
+      return state.warehouseInventoryData
     },
   },
 
@@ -62,6 +83,91 @@ export default {
         .then(res => {
           if (res.success) {
             state.warehouseTypes = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_WAREHOUSE_INVENTORY_STOCKS_ACTION]({ state }, val) {
+      WarehousesInventoryService
+        .getWarehouseInventoryStocks(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.warehouseInventoryStocks = res.data.response.content
+            state.warehouseInventoryStatusCode = res.statusCode
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [EXPORT_FILLED_STOCKS_ACTION]({}, val) {
+      WarehousesInventoryService
+        .exportFilledStocks(val)
+        .then(res => {
+          if (res.status === 200 && res.data != null) {
+            const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' })
+            if (window.navigator.msSaveOrOpenBlob) {
+              window.navigator.msSaveOrOpenBlob(blob, `Kiểm kê hàng_Filled_${val.date}`)
+            } else {
+              const elem = window.document.createElement('a')
+              elem.href = window.URL.createObjectURL(blob)
+              elem.download = `Kiểm kê hàng_Filled_${val.date}`
+              document.body.appendChild(elem)
+              elem.click()
+              document.body.removeChild(elem)
+            }
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [CREATE_WAREHOUSE_INVENTORY_ACTION]({ state }, val) {
+      WarehousesInventoryService
+        .createWarehouseInventory(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+            state.warehouseInventoryStatusCode = res.statusCode
+            state.warehouseInventoryData = res.data || {}
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [IMPORT_FILLED_STOCKS_ACTION]({ state }, val) {
+      WarehousesInventoryService
+        .importFilledStocks(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.warehouseInventoryStocks = res.data.importSuccess
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION]({ state }, val) {
+      WarehousesInventoryService
+        .checkExistedWarehouseInventory(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.isExistedWarehouseInventory = !res.data
           } else {
             throw new Error(res.statusValue)
           }

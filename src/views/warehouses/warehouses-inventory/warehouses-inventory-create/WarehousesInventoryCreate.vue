@@ -5,15 +5,6 @@
   >
     <!-- START - Section earch -->
     <b-form class="bg-white shadow rounded">
-      <!-- START - Label -->
-      <label
-        for="v-search-form"
-        class="m-1 text-primary"
-      >
-        Tìm kiếm
-      </label>
-      <!-- END - Label -->
-
       <!-- START - Section form input -->
       <b-row
         class="v-search-form border-top mx-0 py-1"
@@ -26,95 +17,105 @@
         >
           <b-form-group
             label="Mã kiểm kê"
-            label-for="form-input-inventoryCode"
+            label-class="h8"
+            label-for="form-input-stock-counting-code"
           >
             <b-form-input
-              id="form-input-inventoryCode"
-              v-model="InventoryCode"
+              id="form-input-stock-counting-code"
+              v-model="stockCountingCode"
+              class="h9"
+              size="sm"
               maxlength="20"
               trim
+              disabled
             />
           </b-form-group>
         </b-col>
         <!-- END - Inventory code -->
 
-        <!-- START - Date to -->
+        <!-- START - Date -->
         <b-col
           lg="2"
           md="4"
         >
           <b-form-group
-            label="Từ ngày"
-            label-for="form-input-date-from"
+            label="Ngày"
+            label-class="h8"
+            label-for="form-input-counting-date"
           >
-            <b-form-datepicker
-              id="form-input-date-from"
-              v-model="fromDate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
+            <b-form-input
+              id="form-input-counting-date"
+              v-model="countingDate"
+              class="h9"
+              size="sm"
+              maxlength="20"
+              trim
+              disabled
             />
           </b-form-group>
-        </b-col>
-        <!-- END - Date to -->
 
-        <!-- START - Date from -->
-        <b-col
-          lg="2"
-          md="4"
-        >
-          <b-form-group
-            label="Đến ngày"
-            label-for="form-input-date-to"
-          >
-            <b-form-datepicker
-              id="form-input-date-to"
-              v-model="toDate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
         </b-col>
-        <!-- END - Date from -->
-
+        <!-- END - Date -->
         <!-- START - Warehouse -->
         <b-col
           lg="2"
           md="4"
         >
           <b-form-group
+            label-class="h8"
             label="Kho"
-            label-for="form-input-customer-group"
+            label-for="form-input-warehouse-type"
           >
-            <b-form-select
-              id="form-input-customer-group"
+            <tree-select
+              v-model="warehouseType"
+              :options="warehouseTypes"
+              placeholder="Tất cả"
+              disabled
             />
           </b-form-group>
         </b-col>
         <!-- END - Warehouse -->
 
         <!-- START - Button take inventory -->
-        <b-button
-          id="form-button-search"
-          variant="primary"
-          class="mx-1"
+        <b-form-group
+          class="ml-lg-1"
+          label="Lấy tồn kho"
+          label-for="form-button-get-inventory"
+          label-class="text-white"
         >
-          Lấy tồn kho
-        </b-button>
+          <b-button
+            id="form-button-get-inventory"
+            class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
+            variant="someThing"
+            style="height: 30px;"
+            @click="onClickGetInventoryStocksButton()"
+          >
+            Lấy tồn kho
+          </b-button>
+        </b-form-group>
         <!-- END - Button take inventory -->
 
         <!-- START - Button import -->
-        <b-button
-          id="form-button-search"
-          variant="primary"
-          class="mx-1"
-          @click="isImportModalShow = !isImportModalShow"
+        <b-form-group
+          class="ml-lg-1"
+          label="Import"
+          label-for="form-button-import"
+          label-class="text-white"
         >
-          <b-icon-arrow-repeat
-            scale="1.5"
-            class="mr-1"
-          />
-          Import
-        </b-button>
+          <b-button
+            id="form-button-import"
+            class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
+            variant="someThing"
+            style="height: 30px;"
+            @click="onClickImportButton()"
+          >
+            <b-icon-arrow-repeat
+              scale="1.5"
+              class="mr-1"
+            />
+            Import
+          </b-button>
+        </b-form-group>
         <!-- END - Button import -->
 
       </b-row>
@@ -127,12 +128,11 @@
     <b-form class="bg-white rounded shadow my-1">
       <!-- START - Title -->
       <b-form class="border-bottom p-1">
-        <label
-          for="listProduct"
-          class="text-primary"
+        <strong
+          class="text-brand-1"
         >
           Danh sách sản phẩm kiểm kê
-        </label>
+        </strong>
       </b-form>
       <!-- END - Title -->
 
@@ -144,80 +144,171 @@
         <!-- START - Table -->
         <vue-good-table
           :columns="columns"
-          :rows="rows"
+          :rows="products"
           style-class="vgt-table striped"
           :pagination-options="{
-            enabled: true
+            enabled: true,
+            perPage: elementSize
           }"
           compact-mode
           line-numbers
         >
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
           <!-- START - Column filter -->
           <template
             slot="column-filter"
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'InstockAmount'"
+              v-if="props.column.field === 'productName'"
               class="mx-0"
               align-h="end"
             >
-              380,986
+              <b-form-input
+                id="form-input-search-keywords"
+                v-model="searchKeywords"
+                class="h8 text-brand-3"
+                placeholder="Nhập mã hoặc tên sản phẩm"
+                @keyup.enter="onClickSearchButton()"
+              />
+            </b-row>
+            <b-row
+              v-if="props.column.field === 'instockAmount'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ instockAmount }}
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'TotalPrice'"
+              v-else-if="props.column.field === 'totalPrice'"
               class="mx-0"
               align-h="end"
             >
-              3,851,900,000
+              {{ totalPrice }}
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'InventoryPacket'"
+              v-else-if="props.column.field === 'inventoryPacket'"
               class="mx-0"
               align-h="end"
             >
-              0
+              {{ inventoryPacket }}
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'InventoryOdd'"
+              v-else-if="props.column.field === 'inventoryOdd'"
               class="mx-0"
               align-h="end"
             >
-              0
+              {{ inventoryOdd }}
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'InventoryTotal'"
+              v-else-if="props.column.field === 'inventoryTotal'"
               class="mx-0"
               align-h="end"
             >
-              0
+              {{ inventoryTotal }}
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'Unequal'"
+              v-else-if="props.column.field === 'unequal'"
               class="mx-0"
               align-h="end"
             >
-              -5.000
+              {{ unequal }}
             </b-row>
           </template>
           <!-- START - Column filter -->
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Hiển thị 1 đến
+                </span>
+                <b-form-select
+                  v-model="elementSize"
+                  size="sm"
+                  :options="paginationOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span
+                  class="text-nowrap"
+                > trong {{ productsQuantity }} mục </span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="productsQuantity"
+                :per-page="elementSize"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
 
           <!-- START - Row -->
           <template
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'InventoryPacket'">
-              <b-input />
+            <div v-if="props.column.field === 'inventoryPacket'">
+              <b-input
+                v-model="props.row.inventoryPacket"
+                size="sm"
+                type="number"
+                :number="true"
+                :value="props.row.inventoryPacket"
+                @change="updateInventoryPacket(props.row.originalIndex, props.row.inventoryPacket)"
+              />
             </div>
 
-            <div v-else-if="props.column.field === 'InventoryOdd'">
-              <b-input />
+            <div v-else-if="props.column.field === 'inventoryOdd'">
+              <b-input
+                v-model="props.row.inventoryOdd"
+                size="sm"
+                type="number"
+                :number="true"
+                :value="props.row.inventoryOdd"
+                @change="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
+              />
             </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
@@ -229,20 +320,30 @@
 
         <!-- START - Button group -->
         <b-button-group class="float-right my-1">
-          <b-button variant="primary">
+          <b-button
+            variant="someThing"
+            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            :disabled="isCreated"
+            @click="onClickSaveButton()"
+          >
             <b-icon-download />
             Lưu
           </b-button>
 
           <b-button
-            variant="primary"
-            class="mx-1"
+            variant="someThing"
+            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            :disabled="!isCreated"
+            @click="onClickExportButton()"
           >
             <b-icon-file-earmark-excel-fill />
             Xuất Excel
           </b-button>
 
-          <b-button @click="onClickCloseButton()">
+          <b-button
+            class="ml-1"
+            @click="onClickCloseButton()"
+          >
             <b-icon-x />
             Đóng
           </b-button>
@@ -256,180 +357,514 @@
     <!-- END - Section product Import list -->
 
     <!-- START - Modal import -->
-    <import-modal :visible="isImportModalShow" />
+    <b-modal
+      v-model="isImportModalShow"
+      size="lg"
+      title="Import dữ liệu"
+      title-class="text-uppercase font-weight-bold text-primary"
+      content-class="bg-light"
+      footer-border-variant="light"
+    >
+      <!-- START - Body -->
+      <div
+        class="bg-white py-1"
+      >
+        <b-col class="px-0">
+          <div class="d-inline-flex text-primary bg-light mb-1 px-1 rounded-right">
+            Tập tin
+          </div>
+          <b-row
+            align-v="center"
+            class="mx-1"
+          >
+            <b-col class="px-0">
+              <b-form-file
+                placeholder="Vui lòng chọn file import kiểm kê"
+                accept=".xlsx, .xls"
+              />
+            </b-col>
+            <ins
+              class="cursor-pointer text-primary mx-1"
+            >Tải mẫu</ins>
+          </b-row>
+
+        </b-col>
+        <b-col class="px-0">
+          <div class="d-inline-flex text-primary bg-light my-1 px-1 rounded-right">
+            Thông tin import
+          </div>
+          <b-col>
+            - Chỉ cho phép nhập file định dạng (xlsx, xls)
+          </b-col>
+
+          <b-col class="my-1">
+            - Số dòng tối đa để nhập file là 5000
+          </b-col>
+
+          <b-col class="text-danger ml-1">
+            Nhập thành công 3 dòng, thất bại 5 dòng <ins class="text-primary cursor-pointer">Xem</ins>
+          </b-col>
+        </b-col>
+      </div>
+      <!-- END - Body -->
+
+      <!-- START - Footer -->
+      <template #modal-footer>
+        <b-button
+          variant="primary"
+          class="d-flex align-items-center"
+          size="sm"
+          @click="ok()"
+        >
+          <b-icon
+            icon="download"
+            width="20"
+            height="20"
+            class="mr-1"
+          />
+          Import
+        </b-button>
+        <b-button
+          variant="secondary"
+          class="d-flex align-items-center"
+          size="sm"
+          @click="cancel()"
+        >
+          <b-icon
+            icon="x"
+            width="20"
+            height="20"
+          />
+          Đóng
+        </b-button>
+      </template>
+      <!-- END - Footer -->
+
+    </b-modal>
     <!-- END - Modal import -->
+
+    <!-- START - Modal create -->
+    <b-modal
+      v-model="isCreateModalShow"
+      title="Thông báo"
+    >
+      Đã tồn tại dữ liệu kiểm kê trong ngày hôm nay, bạn có muốn lưu đè không?
+      <template #modal-footer>
+        <b-button
+          variant="primary"
+          class="aligns-items-button-center"
+          @click="onClickAgreeButton()"
+        >
+          Đồng ý
+        </b-button>
+        <b-button
+          class="aligns-items-button-center"
+          @click="isCreateModalShow = !isCreateModalShow"
+        >
+          Đóng
+        </b-button>
+      </template>
+    </b-modal>
+    <!-- END - Modal create -->
+
+    <!-- START - Warehouse Inventory Modal Close -->
+    <b-modal
+      v-model="isModalCloseShow"
+      title="Thông báo"
+    >
+      Dữ liệu kiểm kê đang được tạo, bạn có muốn đóng?
+      <template #modal-footer>
+        <b-button
+          variant="primary"
+          class="aligns-items-button-center"
+          @click="onClickConfirmCloseButton()"
+        >
+          Đồng ý
+        </b-button>
+        <b-button
+          class="aligns-items-button-center"
+          @click="isModalCloseShow = !isModalCloseShow"
+        >
+          Đóng
+        </b-button>
+      </template>
+    </b-modal>
+    <!-- END - Warehouse Inventory Modal Close -->
   </b-container>
 </template>
 
 <script>
-import ImportModal from '../components/ImportModal.vue'
+import commonData from '@/@db/common'
+import { mapActions, mapGetters } from 'vuex'
+import { formatDateToLocale, reverseVniDate } from '@/@core/utils/filter'
+import {
+  WAREHOUSEINVENTORY,
+  WAREHOUSE_TYPES_GETTER,
+  WAREHOUSE_INVENTORY_STOCKS_GETTER,
+  IS_EXISTED_WAREHOUSE_INVENTORY_GETTER,
+  WAREHOUSE_INVENTORY_DATA_GETTER,
+  GET_WAREHOUSE_TYPES_ACTION,
+  GET_WAREHOUSE_INVENTORY_STOCKS_ACTION,
+  EXPORT_FILLED_STOCKS_ACTION,
+  CREATE_WAREHOUSE_INVENTORY_ACTION,
+  IMPORT_FILLED_STOCKS_ACTION,
+  CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
-    ImportModal,
   },
 
   data() {
     return {
-      fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      toDate: new Date(),
-      InventoryCode: '',
+      elementSize: commonData.pagination[0],
+      pageNumber: 1,
+      paginationOptions: commonData.pagination,
+      paginationData: { isPaging: true },
+      inventoryCode: '',
+      countingDate: formatDateToLocale(new Date()),
+      warehouseType: null,
       isImportModalShow: false,
+      isModalCloseShow: false,
+      isCreateModalShow: false,
+      isCreated: false,
+      warehousesInventoryData: null,
       columns: [
         {
           label: 'Ngành hàng',
-          field: 'Category',
+          field: 'category',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã SP',
-          field: 'ProductCode',
+          field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên SP',
-          field: 'ProductName',
+          field: 'productName',
           sortable: false,
           filterOptions: {
             enabled: true,
-            placeholder: 'Nhập mã hoặc tên sản phẩm',
           },
           width: '280px',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng tồn kho',
-          field: 'InstockAmount',
+          field: 'instockAmount',
           type: 'number',
           width: '120px',
           sortable: false,
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giá',
-          field: 'Price',
+          field: 'price',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Thành tiền',
-          field: 'TotalPrice',
+          field: 'totalPrice',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'SL packet kiểm kê',
-          field: 'InventoryPacket',
+          field: 'inventoryPacket',
           type: 'number',
           width: '120px',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'SL lẻ kiểm kê',
-          field: 'InventoryOdd',
+          field: 'inventoryOdd',
           type: 'number',
           width: '120px',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tổng SL kiểm kê',
-          field: 'InventoryTotal',
+          field: 'inventoryTotal',
           type: 'number',
           width: '120px',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Chênh lệch',
-          field: 'Unequal',
+          field: 'unequal',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'ĐVT packet',
-          field: 'PacketUnit',
+          field: 'packetUnit',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Quy đổi',
-          field: 'Exchange',
+          field: 'exchange',
           type: 'number',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'ĐVT lẻ',
-          field: 'OddUnit',
+          field: 'oddUnit',
           type: 'number',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
-      rows: [
-        {
-          Category: 'A',
-          ProductCode: '01CX01',
-          ProductName: 'SĐCĐ Ông Thọ chữ xanh 380g',
-          InstockAmount: '1,000',
-          Price: '23,210',
-          TotalPrice: '23,210,000',
-          InventoryPacket: '',
-          InventoryOdd: '',
-          InventoryTotal: '0',
-          Unequal: '-1,000',
-          PacketUnit: 'Thùng',
-          Exchange: '24',
-          OddUnit: 'Hộp',
-        },
-        {
-          Category: 'A',
-          ProductCode: '01CX01',
-          ProductName: 'SĐCĐ Ông Thọ chữ xanh 380g',
-          InstockAmount: '1,000',
-          Price: '23,210',
-          TotalPrice: '23,210,000',
-          InventoryPacket: '',
-          InventoryOdd: '',
-          InventoryTotal: '0',
-          Unequal: '-1,000',
-          PacketUnit: 'Thùng',
-          Exchange: '24',
-          OddUnit: 'Hộp',
-        },
-        {
-          Category: 'A',
-          ProductCode: '01CX01',
-          ProductName: 'SĐCĐ Ông Thọ chữ xanh 380g',
-          InstockAmount: '1,000',
-          Price: '23,210',
-          TotalPrice: '23,210,000',
-          InventoryPacket: '',
-          InventoryOdd: '',
-          InventoryTotal: '0',
-          Unequal: '-1,000',
-          PacketUnit: 'Thùng',
-          Exchange: '24',
-          OddUnit: 'Hộp',
-        },
-        {
-          Category: 'A',
-          ProductCode: '01CX01',
-          ProductName: 'SĐCĐ Ông Thọ chữ xanh 380g',
-          InstockAmount: '1,000',
-          Price: '23,210',
-          TotalPrice: '23,210,000',
-          InventoryPacket: '',
-          InventoryOdd: '',
-          InventoryTotal: '0',
-          Unequal: '-1,000',
-          PacketUnit: 'Thùng',
-          Exchange: '24',
-          OddUnit: 'Hộp',
-        },
-      ],
+      products: [],
+      originalProducts: [],
+      productsQuantity: 0,
+      instockAmount: 0,
+      totalPrice: 0,
+      inventoryPacket: 0,
+      inventoryOdd: 0,
+      inventoryTotal: 0,
+      unequal: 0,
+      searchKeywords: null,
     }
   },
 
+  computed: {
+    warehouseTypes() {
+      return this.WAREHOUSE_TYPES_GETTER().map(data => ({
+        id: data.id,
+        label: data.wareHouseTypeName,
+        isDefault: data.isDefault,
+      }))
+    },
+    getProductsQuantity() {
+      return this.products.length
+    },
+    getInstockAmount() {
+      return this.products.reduce((accum, item) => accum + Number(item.instockAmount), 0)
+    },
+    getTotalPrice() {
+      return this.products.reduce((accum, item) => accum + Number(item.totalPrice), 0)
+    },
+    getInventoryPacket() {
+      return this.products.reduce((accum, item) => accum + Number(item.inventoryPacket), 0)
+    },
+    getInventoryOdd() {
+      return this.products.reduce((accum, item) => accum + Number(item.inventoryOdd), 0)
+    },
+    getInventoryTotal() {
+      return this.products.reduce((accum, item) => accum + Number(item.inventoryTotal), 0)
+    },
+    getUnequal() {
+      return this.products.reduce((accum, item) => accum + Number(item.unequal), 0)
+    },
+    isExistedWarehouseInventory() {
+      return this.IS_EXISTED_WAREHOUSE_INVENTORY_GETTER()
+    },
+    getWarehouseInventoryData() {
+      return this.WAREHOUSE_INVENTORY_DATA_GETTER()
+    },
+  },
+
+  watch: {
+    pageNumber() {
+      this.paginationData.page = this.pageNumber - 1
+      this.onPaginationChange()
+    },
+    elementSize() {
+      this.paginationData.size = this.elementSize
+      this.onPaginationChange()
+    },
+    paginationData() {
+      this.pageNumber = 1
+      this.onPaginationChange()
+    },
+    warehouseTypes() {
+      this.warehouseType = this.warehouseTypes.find(types => types.isDefault === 1).id // number 1 is default warehouse type
+    },
+    getProductsQuantity() {
+      this.productsQuantity = this.getProductsQuantity
+    },
+    getInstockAmount() {
+      this.instockAmount = this.getInstockAmount
+    },
+    getTotalPrice() {
+      this.totalPrice = this.getTotalPrice
+    },
+    getInventoryPacket() {
+      this.inventoryPacket = this.getInventoryPacket
+    },
+    getInventoryOdd() {
+      this.inventoryOdd = this.getInventoryOdd
+    },
+    getInventoryTotal() {
+      this.inventoryTotal = this.getInventoryTotal
+    },
+    getUnequal() {
+      this.unequal = this.getUnequal
+    },
+    getWarehouseInventoryData() {
+      this.warehousesInventoryData = { ...this.getWarehouseInventoryData }
+    },
+  },
+
+  mounted() {
+    this.GET_WAREHOUSE_TYPES_ACTION({ formId: 5, ctrlId: 7 })
+    this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION({ isPaging: true, formId: 5, ctrlId: 7 })
+    this.CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION({ formId: 5, ctrlId: 7 })
+  },
+
   methods: {
+    ...mapActions(WAREHOUSEINVENTORY, [
+      GET_WAREHOUSE_TYPES_ACTION,
+      GET_WAREHOUSE_INVENTORY_STOCKS_ACTION,
+      EXPORT_FILLED_STOCKS_ACTION,
+      CREATE_WAREHOUSE_INVENTORY_ACTION,
+      IMPORT_FILLED_STOCKS_ACTION,
+      CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION,
+    ]),
+    ...mapGetters(WAREHOUSEINVENTORY, [
+      WAREHOUSE_TYPES_GETTER,
+      WAREHOUSE_INVENTORY_STOCKS_GETTER,
+      IS_EXISTED_WAREHOUSE_INVENTORY_GETTER,
+      WAREHOUSE_INVENTORY_DATA_GETTER,
+    ]),
+    onPaginationChange() {
+      this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION(this.paginationData)
+    },
     onClickCloseButton() {
+      if (!this.isCreated) {
+        this.isModalCloseShow = !this.isModalCloseShow
+      } else {
+        this.$router.back()
+      }
+    },
+    onClickGetInventoryStocksButton() {
+      this.products = this.WAREHOUSE_INVENTORY_STOCKS_GETTER().map(data => ({
+        category: data.productCategory,
+        productId: data.productId,
+        productCode: data.productCode,
+        productName: data.productName,
+        instockAmount: data.stockQuantity,
+        price: data.price,
+        totalPrice: data.totalAmount,
+        inventoryPacket: null,
+        inventoryOdd: null,
+        inventoryTotal: null,
+        unequal: data.changeQuantity,
+        packetUnit: data.packetUnit,
+        exchange: data.convfact,
+        oddUnit: data.unit,
+      }))
+      this.originalProducts = this.products
+    },
+    updateInventoryTotal(index) {
+      this.products[index].inventoryTotal = this.products[index].inventoryPacket * this.products[index].exchange + this.products[index].inventoryOdd + 0
+    },
+    updateInventoryPacket(index, value) {
+      this.products[index].inventoryPacket = value + 0
+      this.updateInventoryTotal(index)
+    },
+    updateInventoryOdd(index, value) {
+      this.products[index].inventoryOdd = value + 0
+      this.updateInventoryTotal(index)
+    },
+    onClickExportButton() {
+      this.EXPORT_FILLED_STOCKS_ACTION({
+        id: this.warehousesInventoryId.id,
+        date: reverseVniDate(this.countingDate),
+        formId: 5,
+        ctrlId: 7,
+      })
+    },
+    onClickSearchButton() {
+      this.products = this.originalProducts.filter(product => product.productCode.toLowerCase().includes(this.searchKeywords.trim().toLowerCase())
+                                                           || product.productName.toLowerCase().includes(this.searchKeywords.trim().toLowerCase()))
+    },
+    onClickSaveButton() {
+      const lstCreate = this.originalProducts.map(data => ({
+        productId: data.productId,
+        productCategory: data.category,
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        stockQuantity: data.instockAmount,
+        inventoryQuantity: data.inventoryTotal,
+        changeQuantity: data.unequal,
+        totalAmount: data.totalPrice,
+        convfact: data.exchange,
+        packetUnit: data.packetUnit,
+        unit: data.oddUnit,
+        packetQuantity: data.inventoryPacket,
+        unitQuantity: data.inventoryOdd,
+      }))
+      if (this.isExistedWarehouseInventory) {
+        this.isCreateModalShow = !this.isCreateModalShow
+      } else {
+        this.CREATE_WAREHOUSE_INVENTORY_ACTION({
+          lstCreate,
+          formId: 5,
+          ctrlId: 7,
+        })
+        this.isCreated = !this.isCreated
+      }
+    },
+    onClickAgreeButton() {
+      const lstCreate = this.originalProducts.map(data => ({
+        productId: data.productId,
+        productCategory: data.category,
+        productCode: data.productCode,
+        productName: data.productName,
+        price: data.price,
+        stockQuantity: data.instockAmount,
+        inventoryQuantity: data.inventoryTotal,
+        changeQuantity: data.unequal,
+        totalAmount: data.totalPrice,
+        convfact: data.exchange,
+        packetUnit: data.packetUnit,
+        unit: data.oddUnit,
+        packetQuantity: data.inventoryPacket,
+        unitQuantity: data.inventoryOdd,
+      }))
+      this.CREATE_WAREHOUSE_INVENTORY_ACTION({
+        lstCreate,
+        override: true,
+        formId: 5,
+        ctrlId: 7,
+      })
+      this.isCreateModalShow = !this.isCreateModalShow
+      this.isCreated = !this.isCreated
+    },
+    onClickImportButton() {
+      this.isImportModalShow = !this.isImportModalShow
+    },
+    onClickConfirmCloseButton() {
       this.$router.back()
     },
   },
