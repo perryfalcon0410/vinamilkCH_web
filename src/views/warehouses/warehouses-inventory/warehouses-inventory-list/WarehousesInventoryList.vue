@@ -8,7 +8,7 @@
     <!-- END - Search -->
 
     <!-- START - Warehouses Inventory List -->
-    <b-form class="v-search bg-white rounded shadow my-1">
+    <b-form class="bg-white rounded shadow my-1">
       <!-- START - Title -->
       <b-form-row class="justify-content-between align-items-center border-bottom p-1">
         <strong

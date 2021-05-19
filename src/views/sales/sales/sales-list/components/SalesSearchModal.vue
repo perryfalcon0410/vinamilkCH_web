@@ -105,7 +105,7 @@
       <!-- END - Search -->
 
       <!-- START - Coupon list -->
-      <b-form class="v-search bg-white rounded shadow rounded mt-1">
+      <b-form class="bg-white rounded shadow rounded mt-1">
         <!-- START - Table -->
         <b-col class="py-1">
           <vue-good-table

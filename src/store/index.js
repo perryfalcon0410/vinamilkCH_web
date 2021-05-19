@@ -13,6 +13,7 @@ import warehousesExchangeDamagedGoods from '@/views/warehouses/warehouses-exchan
 import warehousesInput from '@/views/warehouses/warehouses-input/store-module'
 import warehousesOutput from '@/views/warehouses/warehouses-output/store-module'
 import warehousesInventory from '@/views/warehouses/warehouses-inventory/store-module'
+import reportWarehousesDifferencePrice from '@/views/reports/reports-warehouses/report-warehouses-price-difference/store-module'
 
 // Modules
 import app from './app'
@@ -38,6 +39,7 @@ export default new Vuex.Store({
     warehousesInput,
     warehousesOutput,
     warehousesInventory,
+    reportWarehousesDifferencePrice,
   },
   strict: process.env.DEV,
 })

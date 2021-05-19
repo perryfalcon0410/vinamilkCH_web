@@ -45,4 +45,20 @@ export default [
       ],
     },
   },
+
+  // Báo cáo chênh lệch giá
+  {
+    path: '/reports/warehouses/difference-price',
+    name: 'reports-warehouses-difference-price',
+    component: () => import('@/views/reports/reports-warehouses/report-warehouses-price-difference/reports-warehouses-price-difference-list/ReportsWarehousesPriceDifferenceList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo chênh lệch giá',
+      breadcrumb: [
+        {
+          text: 'Danh sách sản phẩm',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

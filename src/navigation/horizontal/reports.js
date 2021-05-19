@@ -34,7 +34,7 @@ export default [
           },
           {
             title: 'Chênh lệch giá',
-            route: '',
+            route: 'reports-warehouses-difference-price',
           },
           {
             title: 'Đổi hàng hỏng',

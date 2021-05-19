@@ -125,7 +125,7 @@
     </b-form>
     <!-- END - Search -->
 
-    <b-form class="v-search bg-white rounded shadow rounded my-1">
+    <b-form class="bg-white rounded shadow rounded my-1">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"

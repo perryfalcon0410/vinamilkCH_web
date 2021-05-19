@@ -15,7 +15,7 @@
       class="d-flex flex-column"
     >
       <!-- START - Delivery Bill list -->
-      <b-form class="v-search bg-white rounded shadow rounded">
+      <b-form class="bg-white rounded shadow rounded">
         <!-- START - Header -->
         <b-row
           class="justify-content-between border-bottom p-1 mx-0"
@@ -96,7 +96,7 @@
       <!-- END - Delivery Bill list -->
 
       <!-- START - Product list -->
-      <b-form class="v-search bg-white rounded shadow rounded mt-1">
+      <b-form class="bg-white rounded shadow rounded mt-1">
         <!-- START - Header -->
         <b-row
           class="justify-content-between border-bottom p-1 mx-0"

@@ -162,7 +162,7 @@
         <b-col
           class="bg-white shadow rounded mt-1 mt-xl-0"
         >
-          <b-form class="v-search bg-white rounded shadow rounded my-1">
+          <b-form class="bg-white rounded shadow rounded my-1">
             <b-row
               class="justify-content-between border-bottom p-1 mx-0"
               align-v="center"
