@@ -280,7 +280,7 @@
                   <b-col>
                     <div>Doanh số tháng này</div>
                     <strong style="font-size: 20px;">
-                      {{ monthOrderNumber || 0 }}
+                      {{ monthOrderAmount || 0 }}
                     </strong>
                   </b-col>
                   <!-- END - 1 -->
@@ -690,7 +690,7 @@ export default {
       customerIDDate: '',
       customerIDLocation: null,
       totalBill: null,
-      monthOrderNumber: null,
+      monthOrderAmount: null,
       // END - Personal
 
       // START - Contact
@@ -876,7 +876,7 @@ export default {
         this.customerIDDate = formatDateToLocale(this.customer.idNoIssuedDate)
         this.customerIDLocation = this.customer.idNoIssuedPlace || ''
         this.totalBill = this.customer.totalBill
-        this.monthOrderNumber = this.customer.monthOrderNumber
+        this.monthOrderAmount = this.customer.monthOrderAmount
         // START - Contact
         this.phoneNumber = this.customer.mobiPhone || ''
         this.customerEmail = this.customer.email || ''
