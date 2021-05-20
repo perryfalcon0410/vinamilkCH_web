@@ -296,7 +296,7 @@
         <b-button
           variant="info"
           class="d-flex w-100 my-1 align-items-center justify-content-center"
-          @click="this.showPayModal"
+          @click="showPayModal"
         >
           <b-icon-cash-stack
             font-scale="2"
