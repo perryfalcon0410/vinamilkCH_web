@@ -114,7 +114,6 @@ export default {
         .then(res => {
           if (res.success) {
             state.voucherInfo = res.data
-            console.log('state.voucherInfo', state.voucherInfo)
           } else {
             throw new Error(res.statusValue)
           }

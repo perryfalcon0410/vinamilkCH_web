@@ -388,7 +388,6 @@ export default {
   watch: {
     getProductOfWarehouseOutput() {
       const dataWarehousesOutput = { ...this.getWarehousesOutput }
-      // console.log(this.getWarehousesOutput.transDate)
       this.warehousesOutput = {
         id: dataWarehousesOutput.id,
         code: dataWarehousesOutput.transCode,
