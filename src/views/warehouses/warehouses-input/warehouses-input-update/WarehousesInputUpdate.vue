@@ -84,7 +84,7 @@
                   <b-form-input
                     v-model="billNumber"
                     :state="touched ? passed : null"
-                    :disabled="importType !== 0"
+                    :disabled="importType !== inputType"
                     maxlength="50"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -142,13 +142,13 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  :rules="importType === '0' ? 'required' : ''"
+                  :rules="importType === inputType ? 'required' : ''"
                   name="PO No"
                 >
                   <div class="mt-1">
                     PO No
                     <sup
-                      v-show="importType === '0'"
+                      v-show="importType === inputType"
                       class="text-danger"
                     >*</sup>
                   </div>
@@ -158,7 +158,7 @@
                   >
                     <b-form-input
                       v-model="poNumber"
-                      :state="importType === '0' && touched ? passed : null"
+                      :state="importType === inputType && touched ? passed : null"
                       :disabled="!canEdit"
                       maxlength="50"
                     />
@@ -393,7 +393,7 @@
             <b-row class="m-1 justify-content-end">
               <b-button-group>
                 <b-button
-                  v-if="isTransDate || importType === 0"
+                  v-if="isTransDate || importType === inputType"
                   class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
                   variant="someThing"
                   :disabled="invalid"
@@ -569,6 +569,7 @@ export default {
       totalPromotionQuantity: 0,
       id: this.$route.params.id,
       importType: Number(this.$route.params.type),
+      inputType: Number(warehousesData.inputTypes[0].id), // Loại nhập hàng
     }
   },
 
@@ -625,13 +626,13 @@ export default {
       }))
     },
     showPromotionsTable() {
-      return this.totalPromotionQuantity > 0 || (this.importType === 0 && this.poId === 0) // hiện table hàng khuyến mãi nếu số lượng > 0 hoặc là phiếu nhập tay khuyến mãi
+      return this.totalPromotionQuantity > 0 || (this.importType === this.inputType && this.poId === 0) // hiện table hàng khuyến mãi nếu số lượng > 0 hoặc là phiếu nhập tay khuyến mãi
     },
     isTransDate() {
       return this.today === this.transDate
     },
     canEdit() {
-      return this.today === this.transDate && this.importType === 0 && this.poId === 0
+      return this.today === this.transDate && this.importType === this.inputType && this.poId === 0
     },
   },
 
