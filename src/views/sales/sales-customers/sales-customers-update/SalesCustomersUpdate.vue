@@ -83,7 +83,6 @@
                 </div>
                 <b-form-input
                   v-model.trim="barCode"
-
                   :state="touched ? passed : null"
                   maxlength="40"
                 />
@@ -98,21 +97,26 @@
                   @keypress="$onlyDateInput"
                 >
                   <validation-provider
-                    v-slot="{ errors }"
+                    v-slot="{ errors, touched, passed }"
                     rules="required|dateFormatVNI|age"
                     name="ngày sinh"
                   >
                     <div class="mt-1">
                       Ngày sinh <sup class="text-danger">*</sup>
                     </div>
-                    <vue-flat-pickr
-                      id="form-input-date-from"
-                      v-model="birthDay"
-                      :config="configBitrhDay"
-                      class="form-control"
-                      placeholder="Chọn ngày"
-                    />
-                    <small class="text-danger">{{ errors[0] }}</small>
+                    <b-form-group
+                      class="m-0"
+                      :state="touched ? passed : null"
+                    >
+                      <vue-flat-pickr
+                        id="form-input-date-from"
+                        v-model="birthDay"
+                        :config="configBitrhDay"
+                        class="form-control"
+                        placeholder="Chọn ngày"
+                      />
+                      <small class="text-danger">{{ errors[0] }}</small>
+                    </b-form-group>
                   </validation-provider>
                 </b-col>
                 <!-- gender -->
@@ -210,7 +214,7 @@
             >
               <!-- START - Customer IdentityCard -->
               <validation-provider
-                v-slot="{ errors, passed,touched }"
+                v-slot="{ errors, passed, touched }"
                 rules="identifyCard"
                 name="chứng minh nhân dân"
               >
@@ -235,29 +239,35 @@
 
               <!-- START - Customer ID Date -->
               <validation-provider
-                v-slot="{ errors }"
-                :rules="`${customerID ? 'required' : null}|dateFormatVNI`"
+                v-slot="{ errors, touched, passed }"
+                :rules="`${customerID ? 'required' : ''}|dateFormatVNI`"
                 name="ngày cấp"
               >
                 <div class="mt-1">
                   Ngày cấp
                 </div>
-                <b-input-group @keypress="$onlyDateInput">
-                  <vue-flat-pickr
-                    v-model="customerIDDate"
-                    :config="configIDDate"
-                    class="form-control"
-                    placeholder="Chọn ngày"
-                  />
-                </b-input-group>
-                <small class="text-danger">{{ errors[0] }}</small>
+                <b-form-group
+                  class="m-0"
+                  :state="touched ? passed : null"
+                  :disabled="customerID ? false : true"
+                >
+                  <b-input-group @keypress="$onlyDateInput">
+                    <vue-flat-pickr
+                      v-model="customerIDDate"
+                      :config="configIDDate"
+                      class="form-control"
+                      placeholder="Chọn ngày"
+                    />
+                  </b-input-group>
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </b-form-group>
               </validation-provider>
               <!-- END - Customer ID Date -->
 
               <!-- START - Customer ID Location -->
               <validation-provider
                 v-slot="{ errors, passed, touched }"
-                :rules="`${customerID ? 'required' : null}`"
+                :rules="`${customerID ? 'required' : ''}`"
                 name="nơi cấp"
               >
                 <div class="mt-1">
@@ -265,6 +275,7 @@
                 </div>
                 <b-form-input
                   v-model.trim="customerIDLocation"
+                  :disabled="customerID ? false : true"
                   :state="touched ? passed : null"
                   maxlength="200"
                 />
@@ -919,8 +930,8 @@ export default {
               status: this.customerStatusSelected,
               isPrivate: this.customerPrivate,
               idNo: this.customerID,
-              idNoIssuedDate: formatVniDateToISO(this.customerIDDate),
-              idNoIssuedPlace: this.customerIDLocation,
+              idNoIssuedDate: this.customerID ? formatVniDateToISO(this.customerIDDate) : null,
+              idNoIssuedPlace: this.customerID ? this.customerIDLocation : null,
               mobiPhone: this.phoneNumber,
               email: this.customerEmail,
               areaId: this.precinctsSelected,

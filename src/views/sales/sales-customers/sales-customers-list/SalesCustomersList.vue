@@ -228,6 +228,8 @@ export default {
         sort: null,
       },
 
+      customers: [],
+
       columns: [
         {
           label: 'Mã khách hàng',
@@ -299,7 +301,7 @@ export default {
     ...mapGetters(CUSTOMER, [
       CUSTOMERS_GETTER,
     ]),
-    customers() {
+    getCustomers() {
       if (this.CUSTOMERS_GETTER.content) {
         return this.CUSTOMERS_GETTER.content.map(data => ({
           id: data.id,
@@ -321,6 +323,12 @@ export default {
         return this.CUSTOMERS_GETTER
       }
       return {}
+    },
+  },
+
+  watch: {
+    getCustomers() {
+      this.customers = [...this.getCustomers]
     },
   },
 
