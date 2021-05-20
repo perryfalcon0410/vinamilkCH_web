@@ -222,7 +222,7 @@ export default {
       reciept: null,
       fromDate: null,
       toDate: null,
-      ids: '',
+      ids: null,
       reasonOptions: reportData.reasonTypes,
       reasonSelected: null,
 
@@ -248,14 +248,15 @@ export default {
     onSaveClick(param) {
       this.selectProductModalVisible = false
       if (param.length > 0) {
-        const ids = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
-        this.ids = ids
+        this.ids = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
         this.$emit('onClickSearchButton', {
           fromDate: this.fromDate,
           toDate: this.toDate,
           reciept: this.reciept,
-          ids,
+          ids: this.ids,
         })
+      } else {
+        this.ids = null
       }
     },
 

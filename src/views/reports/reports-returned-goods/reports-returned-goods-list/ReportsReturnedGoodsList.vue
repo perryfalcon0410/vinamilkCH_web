@@ -423,7 +423,7 @@ export default {
         fromDate: reverseVniDate(fromDate),
         toDate: reverseVniDate(toDate),
         reason,
-        productCodes: ids,
+        productIds: ids,
       })
     },
 

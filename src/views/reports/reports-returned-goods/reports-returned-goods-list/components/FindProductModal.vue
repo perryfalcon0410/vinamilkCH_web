@@ -397,9 +397,8 @@ export default {
       this.$emit('onModalClose')
     },
     onSaveClick() {
-      // if (this.selectedProductRow.length > 0) {
-      // }
       this.$emit('onSaveClick', this.selectedProductRow)
+      console.log(this.selectedParam)
     },
     onPaginationChange() {
       this.GET_PRODUCT_LISTS_ACTIONS({
@@ -423,26 +422,19 @@ export default {
       })
     },
     selectionChanged(param) {
-      if (param.selectedRows.length === 0) {
-        this.selectedCurrentPage.forEach(item => {
-          this.selectedProductRow = param.filter(data => data.id !== item.id)
-        })
-        this.selectedCurrentPage = []
-      } else if (this.selectedCurrentPage.length > param.selectedRows.length) {
-        // tìm phần tử bị xóa
-        this.selectedCurrentPage.forEach(item => {
+      if (param.selectedRows.length < this.selectedProductRow.length) {
+        this.selectedProductRow.forEach(item => {
           if (!param.selectedRows.find(data => data.id === item.id)) {
             this.selectedProductRow = this.selectedProductRow.filter(product => product.id !== item.id)
           }
         })
       } else {
         param.selectedRows.forEach(item => {
-          if (!this.selectedCurrentPage.find(data => data.id === item.id)) {
+          if (!this.selectedProductRow.find(data => data.id === item.id)) {
             this.selectedProductRow.push(item)
           }
         })
       }
-      this.selectedCurrentPage = param.selectedRows
     },
   },
 }

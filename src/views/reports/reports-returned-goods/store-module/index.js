@@ -5,7 +5,8 @@ import {
   REPORT_RETURNED_GOODS_GETTER,
   PRODUCT_LISTS_GETTER,
   PRODUCT_CAT_LISTS_GETTER,
-
+  // MUTATIONS
+  CLEAR_ALL_PRODUCT_LISTS_CHECKED,
   // ACTIONS
   GET_REPORT_RETURNED_GOODS_ACTION,
   EXPORT_REPORT_RETURNED_GOODS_ACTION,
@@ -22,6 +23,7 @@ export default {
     productLists: [],
     productCatLists: [],
     productsPagination: {},
+    selectedProductRow: [],
   },
   getters: {
     [REPORT_RETURNED_GOODS_GETTER](state) {
@@ -42,7 +44,12 @@ export default {
     },
 
   },
-  mutations: {},
+  // Mutations
+  mutations: {
+    [CLEAR_ALL_PRODUCT_LISTS_CHECKED](state) {
+      state.selectedProductRow = []
+    },
+  },
   actions: {
     [GET_REPORT_RETURNED_GOODS_ACTION]({ state }, val) {
       ReportsService
