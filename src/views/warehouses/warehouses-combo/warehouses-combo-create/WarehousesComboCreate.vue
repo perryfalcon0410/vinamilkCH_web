@@ -52,6 +52,7 @@
                   <tree-select
                     v-model="tradingTypeSelected"
                     :options="tradingTypeOptions"
+                    no-options-text="Không có dữ liệu"
                   />
                 </b-form-group>
               </b-col>
@@ -91,60 +92,70 @@
               line-numbers
             >
               <template
-                slot="table-column"
-                slot-scope="props"
-              >
-                <span
-                  v-if="props.column.label =='Chức năng'"
-                >
-                  <b-icon-plus
-                    class="ml-1"
-                    scale="2"
-                    @click="newRow"
-                  />
-                </span>
-              </template>
-              <template
                 slot="table-row"
                 slot-scope="props"
               >
-                <span v-if="props.column.field == 'comboCode'">
-                  <tree-select
-                    v-model="comboListRows[props.index].selected"
-                    :options="comboProductOptions"
-                    placeholder="Nhập mã hoặc tên sản phẩm"
-                    @select="comboSelected"
-                    @close="close(props.index)"
-                  />
-                  {{ comboListRows[props.index].selected }}
+                <span v-if="props.column.field === 'comboCode'">
+                  {{ comboListRows[props.index].comboCode }}
                 </span>
-                <span v-if="props.column.field == 'numProduct'">
+                <span v-if="props.column.field === 'numProduct'">
                   <b-form-input
-                    v-model="comboListRows[props.index].refProductId"
+                    v-model.number="comboListRows[props.index].numProduct"
+                    type="number"
+                    min="0"
+                    :state="isPositive(comboListRows[props.index].numProduct,props.index)"
+                    @change="onChangeQuantity(props.index)"
+                  />
+                </span>
+                <span v-if="props.column.field === 'price'">
+                  <b-form-input
+                    v-model.number="comboListRows[props.index].price"
+                    :state="isPositive(comboListRows[props.index].price,props.index)"
                     type="number"
                     min="0"
                   />
-                  {{ comboListRows.refProductId }}
                 </span>
-                <span v-if="props.column.field == 'price'">
-                  <b-form-input
-                    :type="number"
-                  />
+                <span v-if="props.column.field === 'comboName'">
+                  {{ comboListRows[props.index].comboName }}
                 </span>
-                <span v-if="props.column.field == 'comboName'">
-                  {{ props.formattedRow[props.column.field] }}
-                </span>
-                <span v-if="props.column.field == 'function'">
+                <span v-if="props.column.field === 'function'">
                   <b-icon-trash-fill
                     color="red"
                     class="ml-1"
                     @click="deleteProduct(props.index)"
                   />
                 </span>
-                <span v-else>
-                  {{ props.formattedRow[props.column.field] }}
-                </span>
               </template>
+              <!--START Search bottom bar -->
+              <div
+                slot="table-actions-bottom"
+                class="mx-1 my-2 px-2"
+              >
+                <tree-select
+                  v-model="comboProductSelected"
+                  class="w-35"
+                  placeholder="Nhập mã hoặc tên sản phẩm"
+                  :async="true"
+                  :open-on-click="false"
+                  :open-on-focus="false"
+                  :auto-load-root-options="false"
+                  :load-options="loadOptions"
+                  @select="onComboSelected"
+                >
+                  <label
+                    slot="option-label"
+                    slot-scope="{ node }"
+                    :class="labelClassName"
+                  >
+                    <strong>
+                      {{ node.raw.productName }}
+                    </strong>
+                    <br>
+                    {{ node.label }}
+                  </label>
+                </tree-select>
+              </div>
+              <!--END Search bottom bar -->
             </vue-good-table>
             <!-- END - Table combo list -->
             <br>
@@ -155,6 +166,7 @@
               </strong>
             </div>
             <vue-good-table
+              :key="componentKey"
               :columns="comboExchangeColumns"
               :rows="comboExchangeRows"
               style-class="vgt-table striped"
@@ -169,7 +181,7 @@
                 <b-button
                   class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center mr-1"
                   variant="someThing"
-                  @click="test()"
+                  @click="save"
                 >
                   <b-icon
                     icon="download"
@@ -204,7 +216,9 @@
 <script>
 import warehousesData from '@/@db/warehouses'
 import { getNow } from '@core/utils/utils'
-import lodash from 'lodash'
+import commonData from '@/@db/common'
+// eslint-disable-next-line no-unused-vars
+import moment from 'moment'
 import {
   mapActions,
   mapGetters,
@@ -216,34 +230,39 @@ import {
   COMBO_PRODUCTS_DETAILS_GETTER,
   GET_COMBO_PRODUCTS_ACTION,
   GET_COMBO_PRODUCTS_DETAILS_ACTION,
+  CREATE_COMBO_PRODUCT_ACTION,
 } from '../store-module/type'
 
 export default {
   data() {
     return {
+      componentKey: 0,
+      //
+      formId: 5,
+      ctrlId: 7,
+      //
+      globalIndex: null,
+
       now: getNow(),
+
       tradingTypeOptions: warehousesData.tradingTypes,
       tradingTypeSelected: null,
-      comboCommonInfo: [],
 
-      comboListRows: [
-        {
-          id: '',
-          comboCode: '',
-          numProduct: '',
-          price: '',
-          comboName: '',
-          selected: null,
-          function: '',
-        },
-      ],
+      transDate: moment().format('YYYY-MM-DD'),
+      comboExchangeRows: [],
+      comboListRows: [],
+
+      note: null,
+      // Search options
+      comboProductQuery: null,
+      comboProductSelected: null,
+      // Search options
       // -----------------Combo List-----------------
       comboListColumns: [
         {
           label: 'Mã combo',
           field: 'comboCode',
           sortable: false,
-          width: '30%',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -301,7 +320,7 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'numProduct',
+          field: 'quantity',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -321,16 +340,6 @@ export default {
           tdClass: 'text-left',
         },
       ],
-      comboExchangeRows: [
-        {
-          comboCode: 'CB_TET_001',
-          productCode: '04DC10',
-          exchangeRate: '2',
-          quantity: '200',
-          price: '6300',
-          productName: 'Thức uống cacao lúa mạch 180ml',
-        },
-      ],
       // -----------------Combo Exchange-----------------
     }
   },
@@ -346,14 +355,17 @@ export default {
         comboCode: data.productCode,
         numProduct: data.numProduct,
         price: data.productPrice,
-        comboName: data.productName,
+        productName: data.productName,
       }))
     },
 
     comboProductOptions() {
       return this.COMBO_PRODUCTS_GETTER.map(data => ({
-        id: data.id,
+        id: Number(data.id),
         label: data.productCode,
+        productName: data.productName,
+        numProduct: data.numProduct,
+        productPrice: data.productPrice,
       }))
     },
 
@@ -363,6 +375,7 @@ export default {
 
     comboExchangeProducts() {
       return this.COMBO_PRODUCTS_DETAILS_GETTER.map(data => ({
+        id: data.id,
         comboCode: data.comboProductCode,
         productCode: data.productCode,
         exchangeRate: data.factor,
@@ -370,52 +383,111 @@ export default {
         productName: data.productName,
       }))
     },
+    detailsProductFilter() {
+      return this.comboListRows.map(data => ({
+        comboProductId: data.id,
+        price: data.price,
+        quantity: data.numProduct,
+      }))
+    },
 
   },
   watch: {
-
+    comboExchangeProducts() {
+      this.comboExchangeRows = this.comboExchangeRows.concat(this.comboExchangeProducts)
+      this.comboExchangeRows.forEach(e => {
+        if (e.comboCode === this.comboListRows[this.globalIndex].comboCode) {
+          e.quantity = this.comboListRows[this.globalIndex].numProduct * e.exchangeRate
+        }
+      })
+    },
   },
   mounted() {
     this.tradingTypeSelected = this.tradingTypeOptions[0].id
-    this.GET_COMBO_PRODUCTS_ACTION({
-      formId: 5, // hard code
-      ctrlId: 7, // hard code
-    })
   },
   methods: {
     ...mapActions(WAREHOUSES_COMBO, [
       GET_COMBO_PRODUCTS_ACTION,
       GET_COMBO_PRODUCTS_DETAILS_ACTION,
+      CREATE_COMBO_PRODUCT_ACTION,
     ]),
-    newRow() {
-      this.comboListRows = [...this.comboListRows,
-        {
-          comboCode: '',
-          numProduct: '',
-          price: '',
-          comboName: '',
-          selected: null,
-          function: '',
-        },
-      ]
-    },
-    comboSelected(item) {
-      if (item.id) {
+
+    onComboSelected(item) {
+      const index = this.comboListRows.findIndex(e => e.selectedComboId === item.id)
+      const obj = {
+        id: item.id,
+        comboCode: item.label,
+        numProduct: item.numProduct || 0,
+        price: item.productPrice || 0,
+        comboName: item.productName,
+        selectedComboId: item.id,
+      }
+      if (index === -1) {
+        this.comboListRows.push(obj)
+        const newIndex = this.comboListRows.findIndex(e => e.selectedComboId === item.id)
+        this.globalIndex = newIndex
         this.GET_COMBO_PRODUCTS_DETAILS_ACTION({
           id: item.id,
-          formId: 9,
-          ctrlId: 6,
+          formId: this.formId,
+          ctrlId: this.ctrlId,
         })
+      } else {
+        this.comboListRows[index].price += obj.price
+        this.comboListRows[index].numProduct += obj.numProduct
+        this.updateComboExchangeQuantity(index)
       }
     },
-    close(index) {
-      console.log(this.comboProductsInfo)
-      this.comboListRows[index] = lodash.clone(this.comboProductsInfo)
-      console.log(this.comboListRows)
+
+    loadOptions({ searchQuery, callback }) {
+      if (searchQuery.length >= commonData.minSearchLength - 1) {
+        this.GET_COMBO_PRODUCTS_ACTION({
+          keyWord: searchQuery.trim(),
+          fromId: this.fromId,
+          ctrlId: this.ctrlId,
+        })
+        callback(null, this.comboProductOptions)
+      }
     },
     deleteProduct(index) {
-      console.log(index)
+      for (let i = 0; i <= this.comboExchangeRows.length - 1; i += 1) {
+        if (this.comboExchangeRows[i].comboCode === this.comboListRows[index].comboCode) {
+          this.comboExchangeRows.splice(i, 1)
+          i -= 1
+        }
+      }
       this.comboListRows.splice(index, 1)
+    },
+    save() {
+      const obj = {
+        details: this.detailsProductFilter,
+        note: this.note,
+        transDate: this.transDate,
+        transType: Number(this.tradingTypeSelected),
+        formId: this.formId,
+        ctrlId: this.ctrlId,
+      }
+      console.log(obj)
+      this.CREATE_COMBO_PRODUCT_ACTION(obj)
+    },
+    // Change quantity--------------------------
+    updateComboExchangeQuantity(index) {
+      this.comboExchangeRows.forEach(e => {
+        if (e.comboCode === this.comboListRows[index].comboCode) {
+          e.quantity = this.comboListRows[index].numProduct * e.exchangeRate
+        }
+      })
+      this.componentKey += 1
+    },
+    onChangeQuantity(index) {
+      this.updateComboExchangeQuantity(index)
+    },
+    // Change quantity--------------------------
+
+    isPositive(num) {
+      if (num < 0) {
+        return false
+      }
+      return true
     },
   },
 }

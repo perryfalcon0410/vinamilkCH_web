@@ -15,8 +15,8 @@ export default {
     { id: '2', name: 'Hàng hỏng do khách hàng mua tại điểm lẻ' },
   ],
   tradingTypes: [
-    { id: '0', label: 'Nhập chuyển đổi' },
-    { id: '1', label: 'Xuất chuyển đổi' },
+    { id: '1', label: 'Nhập chuyển đổi' },
+    { id: '2', label: 'Xuất chuyển đổi' },
   ],
   transTypes: [
     { id: '1', label: 'Nhập chuyển đổi' },

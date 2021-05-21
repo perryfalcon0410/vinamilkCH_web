@@ -5,6 +5,7 @@ import {
   getWarehousesComboEndPoint,
   getComboProductsEndpoint,
   getComboProductsDetailsEndpoint,
+  createComboProductEndpoit,
 } from './defaultConfig'
 
 export default {
@@ -28,4 +29,8 @@ export default {
       params: formatURLParams(args),
     })
   },
+  createComboProduct(args) {
+    return axios.post(createComboProductEndpoit, args)
+  },
+
 }

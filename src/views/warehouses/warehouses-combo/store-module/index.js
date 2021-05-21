@@ -1,6 +1,6 @@
 import WareHouseComboService from '@/views/warehouses/warehouses-combo/api-service'
 import toasts from '@core/utils/toasts/toasts'
-
+import router from '@/router/index'
 import {
   // getter
   GET_WAREHOUSE_COMBO_DETAIL_GETTER,
@@ -16,6 +16,7 @@ import {
   GET_WAREHOUSE_COMBO_DETAIL_ACTION,
   GET_COMBO_PRODUCTS_ACTION,
   GET_COMBO_PRODUCTS_DETAILS_ACTION,
+  CREATE_COMBO_PRODUCT_ACTION,
 } from './type'
 
 export default {
@@ -115,6 +116,22 @@ export default {
           if (res.success) {
             state.comboProductsInfo = res.data
             state.comboProductsDetails = res.data.details
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [CREATE_COMBO_PRODUCT_ACTION]({}, val) {
+      WareHouseComboService
+        .createComboProduct(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+            router.push({ name: 'warehouses-combo' })
           } else {
             throw new Error(res.statusValue)
           }

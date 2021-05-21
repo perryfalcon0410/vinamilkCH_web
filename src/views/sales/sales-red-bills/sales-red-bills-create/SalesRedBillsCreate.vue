@@ -269,11 +269,6 @@
                   autocomplete="off"
                   @focus="searchProductFocus"
                   @blur="inputSearchFocusedSP = false"
-                  @input="loadProducts"
-                  @keyup.enter="searchProductKeyEnter"
-                  @keydown.up="searchProductKeyUp"
-                  @keydown.down="searchProductKeyDown"
-                  @click="click"
                 />
                 <b-collapse
                   v-model="inputSearchFocusedSP"
