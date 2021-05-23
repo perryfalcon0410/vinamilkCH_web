@@ -415,7 +415,7 @@ export default {
     onComboSelected(item) {
       const index = this.comboListRows.findIndex(e => e.selectedComboId === item.id)
       const obj = {
-        id: item.id,
+        id: item.refProductId,
         comboCode: item.label,
         numProduct: item.numProduct || 0,
         price: item.productPrice || 0,
