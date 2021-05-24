@@ -124,6 +124,7 @@ export default {
         fromTransDate: null,
         toOrderDate: null,
         toTransDate: null,
+        isPaging: false, // Nếu có phân trang thì truyền thành true
         ids: '',
       },
       decentralization: {

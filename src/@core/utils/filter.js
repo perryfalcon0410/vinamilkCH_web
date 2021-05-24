@@ -39,6 +39,24 @@ export const formatDateToLocale = (value, formatting = { day: '2-digit', month: 
   return new Date(value).toLocaleDateString('vi-VN', formatting)
 }
 
+export const formatISOtoVNI = (isoTime, includeTime) => {
+  const date1 = new Date(isoTime)
+  const dateObj = new Date(date1.getTime() + (date1.getTimezoneOffset() * 60000))
+
+  const date = (`0${dateObj.getDate()}`).slice(-2)
+  const month = (`0${dateObj.getMonth() + 1}`).slice(-2)
+  const year = dateObj.getFullYear()
+  const hours = dateObj.getHours()
+  const minutes = dateObj.getMinutes()
+  const seconds = dateObj.getSeconds()
+
+  if (includeTime !== undefined && includeTime) {
+    return `${date}/${month}/${year} ${hours}:${minutes}:${seconds}`
+  }
+
+  return `${date}/${month}/${year}`
+}
+
 // Format number to locale
 export const formatNumberToLocale = value => {
   if (!value) return value
@@ -49,8 +67,19 @@ export const formatNumberToLocale = value => {
 export const formatVniDateToISO = value => {
   if (!value) return value
   const arrayDate = value.split('/')
-  // eslint-disable-next-line radix
-  return new Date(parseInt(arrayDate[2]), parseInt(arrayDate[1]) - 1, parseInt(arrayDate[0])).toISOString()
+  const expected = new Date(Number(arrayDate[2]), Number(arrayDate[1]) - 1, Number(arrayDate[0]))
+
+  let current = new Date()
+  current.setHours(0, 0, 0, 0)
+
+  if (current.getTime() === expected.getTime()) {
+    current = new Date()
+  } else {
+    current = expected
+  }
+  const tzoffset = expected.getTimezoneOffset() * 60000 // offset in milliseconds
+
+  return (new Date(current - tzoffset)).toISOString().slice(0, -1)
 }
 
 // Format from dd/mm/yyyy to yyyy-mm-dd

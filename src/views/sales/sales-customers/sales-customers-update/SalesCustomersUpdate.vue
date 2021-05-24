@@ -613,7 +613,10 @@ import {
   age,
   identifyCard,
 } from '@/@core/utils/validations/validations'
-import { formatVniDateToISO, formatDateToLocale } from '@/@core/utils/filter'
+import {
+  formatVniDateToISO,
+  formatISOtoVNI,
+} from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
 import {
@@ -882,7 +885,7 @@ export default {
         this.firstName = this.customer.firstName
         this.lastName = this.customer.lastName
         this.barCode = this.customer.barCode
-        this.birthDay = formatDateToLocale(this.customer.dob)
+        this.birthDay = formatISOtoVNI(this.customer.dob)
         this.gendersSelected = this.customer.genderId
         this.customerTypesSelected = this.customer.customerTypeId
         this.customerStatusSelected = this.customer.status
@@ -890,7 +893,7 @@ export default {
         this.note = this.customer.noted || ''
         this.createdAt = this.customer.createdAt
         this.customerID = this.customer.idNo || ''
-        this.customerIDDate = formatDateToLocale(this.customer.idNoIssuedDate)
+        this.customerIDDate = formatISOtoVNI(this.customer.idNoIssuedDate)
         this.customerIDLocation = this.customer.idNoIssuedPlace || ''
         this.totalBill = this.customer.totalBill
         this.monthOrderAmount = this.customer.monthOrderAmount
@@ -956,14 +959,14 @@ export default {
       // console.log(`firstName:                 (${typeof this.firstName})-${this.firstName}-${this.customer.firstName}-(${typeof this.customer.firstName})`)
       // console.log(`lastName:                  (${typeof this.lastName})-${this.lastName}-${this.customer.lastName}-(${typeof this.customer.lastName})`)
       // console.log(`barCode:                   (${typeof this.barCode})-${this.barCode}-${this.customer.barCode}-(${typeof this.customer.barCode})`)
-      // console.log(`birthDay:                  (${typeof this.birthDay})-${this.birthDay}-${formatDateToLocale(this.customer.dob)}-(${typeof formatDateToLocale(this.customer.dob)})`)
+      // console.log(`birthDay:                  (${typeof this.birthDay})-${this.birthDay}-${formatISOtoVNI(this.customer.dob)}-(${typeof formatISOtoVNI(this.customer.dob)})`)
       // console.log(`gendersSelected:           (${typeof (Number(this.gendersSelected) || null)})-${(Number(this.gendersSelected) || null)}-${this.customer.genderId}-(${typeof this.customer.genderId})`)
       // console.log(`customerTypesSelected:     (${typeof (Number(this.customerTypesSelected) || null)})-${(Number(this.customerTypesSelected) || null)}-${this.customer.customerTypeId}-(${typeof this.customer.customerTypeId})`)
       // console.log(`customerStatusSelected:    (${typeof (Number(this.customerStatusSelected) || 0)})-${(Number(this.customerStatusSelected) || 0)}-${this.customer.status}-(${typeof this.customer.status})`)
       // console.log(`customerPrivate:           (${typeof this.customerPrivate})-${this.customerPrivate}-${(this.customer.isPrivate || false)}-(${typeof (this.customer.isPrivate || false)})`)
       // console.log(`note:                      (${typeof this.note})-${this.note}-${(this.customer.noted || '')}-(${typeof (this.customer.noted || '')})`)
       // console.log(`customerID:                (${typeof this.customerID})-${this.customerID}-${(this.customer.idNo || '')}-(${typeof (this.customer.idNo || '')})`)
-      // console.log(`customerIDDate:            (${typeof this.customerIDDate})-${this.customerIDDate}-${(formatDateToLocale(this.customer.idNoIssuedDate) || '')}-(${typeof (formatDateToLocale(this.customer.idNoIssuedDate) || '')})`)
+      // console.log(`customerIDDate:            (${typeof this.customerIDDate})-${this.customerIDDate}-${(formatISOtoVNI(this.customer.idNoIssuedDate) || '')}-(${typeof (formatISOtoVNI(this.customer.idNoIssuedDate) || '')})`)
       // console.log(`customerIDLocation:        (${typeof this.customerIDLocation})-${this.customerIDLocation}-${(this.customer.idNoIssuedPlace || '')}-(${typeof (this.customer.idNoIssuedPlace || '')})`)
       // console.log(`phoneNumber:               (${typeof this.phoneNumber})-${this.phoneNumber}-${(this.customer.mobiPhone || '')}-(${typeof (this.customer.mobiPhone || '')})`)
       // console.log(`customerEmail:             (${typeof this.customerEmail})-${this.customerEmail}-${(this.customer.email || '')}-(${typeof (this.customer.email || '')})`)
@@ -982,14 +985,14 @@ export default {
         this.firstName === this.customer.firstName
         && this.lastName === this.customer.lastName
         && this.barCode === this.customer.barCode
-        && this.birthDay === formatDateToLocale(this.customer.dob)
+        && this.birthDay === formatISOtoVNI(this.customer.dob)
         && (Number(this.gendersSelected) || null) === this.customer.genderId
         && (Number(this.customerTypesSelected) || null) === this.customer.customerTypeId
         && (Number(this.customerStatusSelected) || 0) === this.customer.status
         && this.customerPrivate === (this.customer.isPrivate || false)
         && this.note === (this.customer.noted || '')
         && this.customerID === (this.customer.idNo || '')
-        && this.customerIDDate === (formatDateToLocale(this.customer.idNoIssuedDate) || '')
+        && this.customerIDDate === (formatISOtoVNI(this.customer.idNoIssuedDate) || '')
         && this.customerIDLocation === (this.customer.idNoIssuedPlace || '')
         // START - Contact
         && this.phoneNumber === (this.customer.mobiPhone || '')
