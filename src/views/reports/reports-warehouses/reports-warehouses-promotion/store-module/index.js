@@ -12,14 +12,14 @@ export default {
   namespaced: true,
   state: {
     promotionLists: [],
-    promotionPanigation: {},
+    promotionPagination: {},
     promotionInfo: {},
   },
   getters: {
     [REPORT_WAREHOUSES_PROMOTIONS_GETTER](state) {
       return {
         promotionLists: state.promotionLists,
-        promotionPanigation: state.promotionPanigation,
+        promotionPagination: state.promotionPagination,
         promotionInfo: state.promotionInfo,
       }
     },
@@ -28,17 +28,18 @@ export default {
   actions: {
     [GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS]({ state }, val) {
       ReportService
-        .getReportsWarehousesAdjustment(val)
+        .getReportsWarehousesPromotion(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.promotionLists = res.data.response.content
-            state.promotionPanigation = {
+            state.promotionLists = res.data.response.content || []
+            state.promotionPagination = {
               totalPages: res.data.response.totalPages,
               totalElements: res.data.response.totalElements,
               pageable: res.data.response.pageable,
               numberOfElements: res.data.response.numberOfElements,
-            }
+            } || {}
+            console.log(state.promotionPagination)
           } else {
             throw new Error(res.statusValue)
           }

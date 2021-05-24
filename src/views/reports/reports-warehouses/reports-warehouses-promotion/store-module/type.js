@@ -1,4 +1,4 @@
-export const REPORT_WAREHOUSES_PROMOTIONS = 'reportswarehousesPromotion'
+export const REPORT_WAREHOUSES_PROMOTIONS = 'reportsWarehousesPromotion'
 
 // Getters
 export const REPORT_WAREHOUSES_PROMOTIONS_GETTER = 'REPORT_WAREHOUSES_PROMOTIONS_GETTER'

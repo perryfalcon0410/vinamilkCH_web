@@ -7,7 +7,7 @@ import {
 export default {
   getReportsWarehousesPromotion(args) {
     return axios.get(getReportsWarehousesPromotionEndpoint, {
-      param: formatURLParams(args),
+      params: formatURLParams(args),
     })
   },
 }

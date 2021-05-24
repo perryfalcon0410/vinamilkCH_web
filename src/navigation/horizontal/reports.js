@@ -30,7 +30,7 @@ export default [
           },
           {
             title: 'Hàng khuyến mãi',
-            route: '',
+            route: 'reports-warehouses-promotion',
           },
           {
             title: 'Chênh lệch giá',
@@ -42,7 +42,7 @@ export default [
           },
           {
             title: 'Nhập xuất điều chỉnh',
-            route: '',
+            route: 'reports-warehouses-adjustment',
           },
         ],
       },

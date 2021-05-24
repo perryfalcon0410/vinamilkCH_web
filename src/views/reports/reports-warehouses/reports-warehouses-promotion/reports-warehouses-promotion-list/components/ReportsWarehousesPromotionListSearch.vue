@@ -20,7 +20,7 @@
           class="input-group-merge"
         >
           <b-form-input
-            v-model="billId"
+            v-model="onlineCode"
             class="h8 text-brand-3"
             placeholder="Nhập số hóa đớn"
             @keyup.enter="onClickSearchButton"
@@ -29,9 +29,9 @@
             is-text
           >
             <b-icon-x
-              v-show="billId"
+              v-show="onlineCode"
               class="cursor-pointer text-gray"
-              @click="billId = null"
+              @click="onlineCode = null"
             />
           </b-input-group-append>
         </b-input-group>
@@ -191,11 +191,10 @@ export default {
   data() {
     return {
       isSearchFocus: false,
+      onlineCode: '',
       ids: null,
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
-      areasSelected: null,
-      billId: null,
 
       configDate: {
         wrap: true,
@@ -209,6 +208,14 @@ export default {
   },
 
   methods: {
+    onClickSearchButton() {
+      this.$emit('onClickSearchButton', {
+        onlineNumber: this.onlineCode,
+        fromDate: this.fromDate,
+        toDate: this.toDate,
+        productCodes: this.ids,
+      })
+    },
   },
 }
 </script>

@@ -5,7 +5,9 @@
   >
 
     <!-- START - Search -->
-    <reports-warehouses-promotion-list-search />
+    <reports-warehouses-promotion-list-search
+      @onClickSearchButton="onClickSearchButton"
+    />
     <!-- END - Search -->
 
     <b-form class="v-search bg-white rounded shadow rounded my-1">
@@ -42,7 +44,7 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="rowsProduct"
+          :rows="getPromotionLists"
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true
@@ -70,7 +72,70 @@
               {{ totalPayment }}
             </b-row>
           </template>
-        <!-- START - Column filter -->
+          <!-- START - Column filter -->
+
+          <!-- START - Pagination -->
+          <!-- <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="promotionPagination.totalElements"
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Số hàng hiển thị
+                </span>
+                <b-form-select
+                  v-model="elementSize"
+                  size="sm"
+                  :options="paginationOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span
+                  class="text-nowrap"
+                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
+                  -
+                  {{ (elementSize * pageNumber) > promotionPagination.totalElements ?
+                    promotionPagination.totalElements : (elementSize * pageNumber) }}
+                  của {{ promotionPagination.totalElements }} mục </span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="promotionPagination.totalElements"
+                :per-page="elementSize"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template> -->
+          <!-- END - Pagination -->
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
@@ -78,12 +143,26 @@
   </b-container>
 </template>
 <script>
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import commonData from '@/@db/common'
 import reportData from '@/@db/report'
 import {
   formatDateToLocale,
   formatNumberToLocale,
+  reverseVniDate,
 } from '@core/utils/filter'
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
 import ReportsWarehousesPromotionListSearch from './components/ReportsWarehousesPromotionListSearch.vue'
+import {
+  REPORT_WAREHOUSES_PROMOTIONS,
+  REPORT_WAREHOUSES_PROMOTIONS_GETTER,
+  GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -91,17 +170,38 @@ export default {
   },
   data() {
     return {
+      elementSize: commonData.pagination[0],
+      pageNumber: 1,
+
+      paginationOptions: commonData.pagination,
+      panigationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+      },
+      searchOptions: {
+        onlineNumber: '',
+        fromDate: null,
+        toDate: null,
+        productCodes: '',
+      },
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+      promotionRows: [],
+
       columns: [
         {
           label: 'Ngày bán',
-          field: 'billDate',
+          field: 'orderDate',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Số hóa đơn',
-          field: 'billCode',
+          field: 'orderNumber',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -183,21 +283,21 @@ export default {
       ],
     }
   },
+
   computed: {
-    rowsProduct() {
-      return reportData.products.map(data => ({
-        shopCode: data.shopCode,
-        billCode: data.billCode,
-        customerCode: data.CustomerCode,
+    getPromotionLists() {
+      return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER().promotionLists.map(data => ({
+        orderNumber: data.orderNumber,
         industry: data.industry,
         productCode: data.productCode,
         productName: data.productName,
-        dvt: data.dvt,
-        amount: data.amount,
+        dvt: data.uom,
+        quantity: data.quantity,
         price: formatNumberToLocale(data.price),
         payment: formatNumberToLocale(data.payment),
-        billDate: formatDateToLocale(data.billDate),
+        orderDate: formatDateToLocale(data.orderDate),
         billType: data.billType,
+        promotionCode: data.promotionCode,
       }))
     },
     totalAmount() {
@@ -206,13 +306,39 @@ export default {
     totalPayment() {
       return reportData.totalInfo.totalPayment
     },
+    // promotionPagination() {
+    //   return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER().promotionPagination
+    // },
+    promotionPagination() {
+      if (this.REPORT_WAREHOUSES_PROMOTIONS_GETTER().promotionPagination) {
+        return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER().promotionPagination
+      }
+      return {}
+    },
 
   },
+  watch: {
+    getPromotionLists() {
+      this.promotionRows = [...this.getPromotionLists]
+    },
+  },
   mounted() {
-    console.log(reportData.totalInfo.totalAmount)
+    resizeAbleTable()
+    this.searchOptions.fromDate = reverseVniDate(this.$earlyMonth)
+    this.searchOptions.toDate = reverseVniDate(this.$nowDate)
+    this.GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS({
+      ...this.searchOptions,
+      ...this.decentralization,
+    })
   },
 
   methods: {
+    ...mapGetters(REPORT_WAREHOUSES_PROMOTIONS, [
+      REPORT_WAREHOUSES_PROMOTIONS_GETTER,
+    ]),
+    ...mapActions(REPORT_WAREHOUSES_PROMOTIONS, [
+      GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS,
+    ]),
   },
 }
 </script>

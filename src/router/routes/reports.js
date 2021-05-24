@@ -61,4 +61,35 @@ export default [
       ],
     },
   },
+  // Bao cao hang khuyen mai
+  {
+    path: '/reports/warehouses/promotion',
+    name: 'reports-warehouses-promotion',
+    component: () => import('@/views/reports/reports-warehouses/reports-warehouses-promotion/reports-warehouses-promotion-list/ReportsWarehousesPromotionList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo hàng khuyến mãi',
+      breadcrumb: [
+        {
+          text: 'Danh sách sản phẩm khuyến mãi',
+          active: true,
+        },
+      ],
+    },
+  },
+
+  // Bao cao nhap xuat dieu chinh
+  {
+    path: '/reports/warehouses/adjustment',
+    name: 'reports-warehouses-adjustment',
+    component: () => import('@/views/reports/reports-warehouses/reports-warehouses-adjustment/reports-warehouses-adjustment-list/ReportsWarehousesAdjustmentList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo nhập xuất điều chỉnh',
+      breadcrumb: [
+        {
+          text: 'Danh sách sản phẩm nhập xuất điểu chỉnh',
+          active: true,
+        },
+      ],
+    },
+  },
 ]
