@@ -4,7 +4,6 @@ import toasts from '@core/utils/toasts/toasts'
 import {
   // GETTERS
   EXCHANGE_DAMAGED_GOODS_GETTER,
-  EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER,
   EXCHANGE_DAMAGED_GOODS_REASONS_GETTER,
   EXCHANGE_DAMAGED_GOODS_BY_ID_GETTER,
   CUSTOMERS_GETTER,
@@ -35,8 +34,8 @@ export default {
     [EXCHANGE_DAMAGED_GOODS_GETTER](state) {
       return state.exchangeDamagedGoods
     },
-    [EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER](state) {
-      return state.exchangeDamagedGoodsPagination
+    [EXCHANGE_DAMAGED_GOODS_REASONS_GETTER](state) {
+      return state.exchangeDamagedGoodsReasons
     },
     [EXCHANGE_DAMAGED_GOODS_REASONS_GETTER](state) {
       return state.exchangeDamagedGoodsReasons
@@ -63,8 +62,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.exchangeDamagedGoods = res.data.content || []
-            state.exchangeDamagedGoodsPagination = res.data
+            state.exchangeDamagedGoods = res.data || []
           } else {
             throw new Error(res.statusValue)
           }
