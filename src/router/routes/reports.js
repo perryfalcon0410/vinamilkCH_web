@@ -87,6 +87,20 @@ export default [
       breadcrumb: [
         {
           text: 'Danh sách sản phẩm nhập xuất điểu chỉnh',
+        },
+      ],
+    },
+  },
+  // Báo cáo nhập hàng
+  {
+    path: '/reports/warehouses/input',
+    name: 'reports-warehouses-input',
+    component: () => import('@/views/reports/reports-warehouses/reports-warehouses-input/reports-warehouses-input-list/ReportsWarehousesInputList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo nhập hàng',
+      breadcrumb: [
+        {
+          text: 'Danh sách sản phẩm',
           active: true,
         },
       ],

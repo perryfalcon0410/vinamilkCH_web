@@ -14,7 +14,7 @@ export default [
         children: [
           {
             title: 'Nhập hàng',
-            route: '',
+            route: 'reports-warehouses-input',
           },
           {
             title: 'Xuất hàng',
