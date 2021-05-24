@@ -449,12 +449,7 @@ export default {
       }
     },
     deleteProduct(index) {
-      for (let i = 0; i <= this.comboExchangeRows.length - 1; i += 1) {
-        if (this.comboExchangeRows[i].comboCode === this.comboListRows[index].comboCode) {
-          this.comboExchangeRows.splice(i, 1)
-          i -= 1
-        }
-      }
+      this.comboExchangeRows = this.comboExchangeRows.filter(e => e.comboCode !== this.comboListRows[index].comboCode)
       this.comboListRows.splice(index, 1)
     },
     save() {
@@ -466,7 +461,6 @@ export default {
         formId: this.formId,
         ctrlId: this.ctrlId,
       }
-      console.log(obj)
       this.CREATE_COMBO_PRODUCT_ACTION(obj)
     },
     // Change quantity--------------------------
