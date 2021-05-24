@@ -890,25 +890,25 @@ export default {
         this.customerTypesSelected = this.customer.customerTypeId
         this.customerStatusSelected = this.customer.status
         this.customerPrivate = this.customer.isPrivate || false
-        this.note = this.customer.noted || ''
+        this.note = this.customer.noted || null
         this.createdAt = this.customer.createdAt
-        this.customerID = this.customer.idNo || ''
-        this.customerIDDate = formatISOtoVNI(this.customer.idNoIssuedDate)
-        this.customerIDLocation = this.customer.idNoIssuedPlace || ''
+        this.customerID = this.customer.idNo || null
+        this.customerIDDate = this.customer.idNoIssuedDate ? formatISOtoVNI(this.customer.idNoIssuedDate) : null
+        this.customerIDLocation = this.customer.idNoIssuedPlace || null
         this.totalBill = this.customer.totalBill
         this.monthOrderAmount = this.customer.monthOrderAmount
         // START - Contact
-        this.phoneNumber = this.customer.mobiPhone || ''
-        this.customerEmail = this.customer.email || ''
-        this.homeNumber = this.customer.street || ''
+        this.phoneNumber = this.customer.mobiPhone || null
+        this.customerEmail = this.customer.email || null
+        this.homeNumber = this.customer.street || null
         if (this.customer.areaDTO) {
           this.provincesSelected = this.customer.areaDTO.province
           this.districtsSelected = this.customer.areaDTO.district
           this.precinctsSelected = this.customer.areaDTO.precinct
         }
-        this.workingOffice = this.customer.workingOffice || ''
-        this.officeAddress = this.customer.officeAddress || ''
-        this.taxCode = this.customer.taxCode || ''
+        this.workingOffice = this.customer.workingOffice || null
+        this.officeAddress = this.customer.officeAddress || null
+        this.taxCode = this.customer.taxCode || null
         // START - MembershipCard
         this.cardTypesSelected = this.customer.cardTypeId
         this.closelyTypesSelected = this.customer.closelyTypeId
