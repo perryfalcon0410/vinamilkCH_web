@@ -96,7 +96,7 @@ import {
 } from 'vuex'
 import {
   formatNumberToLocale,
-  formatDateToLocale,
+  formatISOtoVNI,
   reverseVniDate,
 } from '@/@core/utils/filter'
 import {
@@ -256,8 +256,8 @@ export default {
           redInvoiceNo: data.redInvoiceNo,
           poNumber: data.poNumber,
           internalNumber: data.internalNumber,
-          transDate: formatDateToLocale(data.transDate),
-          orderDate: formatDateToLocale(data.orderDate),
+          transDate: formatISOtoVNI(data.transDate),
+          orderDate: formatISOtoVNI(data.orderDate),
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
@@ -304,6 +304,7 @@ export default {
     ]),
 
     onClickSearchButton(searchValue) {
+      console.log(searchValue)
       const {
         fromDate,
         toDate,

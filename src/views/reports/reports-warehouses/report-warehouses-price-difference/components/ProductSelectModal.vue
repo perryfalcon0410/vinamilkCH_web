@@ -8,7 +8,7 @@
     footer-border-variant="light"
     hide-header-close
     centered
-    @hidden="onModalClose"
+    @hidden="onCloseClick"
   >
     <!-- START - Modal body -->
     <b-container fluid>
@@ -30,9 +30,9 @@
           </div>
           <b-form-input
             v-model="searchOptions.productCode"
-            class="h8 text-brand-3 height-button-brand-1"
+            class="h8 text-brand-3"
             placeholder="Nhập mã sản phẩm"
-            @keyup.enter="onClickSearchButton"
+            @keyup.enter="onSearchClick"
           />
         </b-col>
         <!-- END - Product code -->
@@ -50,9 +50,9 @@
           </div>
           <b-form-input
             v-model="searchOptions.productName"
-            class="h8 text-brand-3 height-button-brand-1"
+            class="h8 text-brand-3"
             placeholder="Nhập tên sản phẩm"
-            @keyup.enter="onClickSearchButton"
+            @keyup.enter="onSearchClick"
           />
         </b-col>
         <!-- END - Product name -->
@@ -69,9 +69,8 @@
             Ngành hàng
           </div>
           <tree-select
-            v-model="prodcutCatSelected"
+            v-model="searchOptions.productCategorySelected"
             :options="productOptions"
-            :searchable="false"
             placeholder="Tất cả"
             no-options-text="Không có dữ liệu"
           />
@@ -108,14 +107,17 @@
       <b-form class="bg-white rounded shadow rounded mt-1 p-1">
         <vue-good-table
           :columns="columns"
-          :rows="rowsProduct"
+          :rows="productRows"
           style-class="vgt-table bordered"
+          :sort-options="{
+            enabled: false,
+          }"
           :pagination-options="{
             enabled: true,
           }"
           :select-options="{
             enabled: true,
-            selectOnCheckboxOnly: true,
+            selectOnCheckboxOnly: false,
             selectionInfoClass: 'custom-class',
             selectionText: 'rows selected',
             clearSelectionText: 'clear',
@@ -124,7 +126,7 @@
             multipleColumns: true,
             selected: true
           }"
-          @on-selected-rows-change="selectionChanged"
+          @on-row-click="selection"
         >
           <!-- START - Empty rows -->
           <div
@@ -213,10 +215,11 @@ export default {
 
   data() {
     return {
-      prodcutCatSelected: null,
       searchOptions: {
         productCode: null,
         productName: null,
+        productCategorySelected: null,
+
       },
       selectedProductRow: [],
       selectedCurrentPage: [],
@@ -228,21 +231,18 @@ export default {
         {
           label: 'STT',
           field: 'stt',
-          sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -266,7 +266,7 @@ export default {
       return {}
     },
 
-    rowsProduct() {
+    productRows() {
       if (this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_CHOOSE_PRODUCTS_GETTER) {
         return this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_CHOOSE_PRODUCTS_GETTER.map((data, index) => ({
           stt: index + 1,
@@ -280,27 +280,27 @@ export default {
   },
 
   watch: {
-    rowsProduct() {
-      this.rowsProduct.forEach((item, index) => {
+    productRows() {
+      this.productRows.forEach((item, index) => {
         const productSelectedFoundIndex = this.selectedProductRow.findIndex(data => item.id === data.id)
         if (productSelectedFoundIndex > -1) {
-          this.$set(this.rowsProduct[index], 'vgtSelected', true)
+          this.$set(this.productRows[index], 'vgtSelected', true)
           this.selectedCurrentPage.push(item)
         } else {
-          this.$set(this.rowsProduct[index], 'vgtSelected', false)
+          this.$set(this.productRows[index], 'vgtSelected', false)
         }
       })
     },
 
     visible() {
       if (this.selectedProductRow.length > 0 && this.visible) {
-        this.rowsProduct.forEach((item, index) => {
+        this.productRows.forEach((item, index) => {
           const productSelectedFoundIndex = this.selectedProductRow.findIndex(data => item.id === data.id)
           if (productSelectedFoundIndex > -1) {
-            this.$set(this.rowsProduct[index], 'vgtSelected', true)
+            this.$set(this.productRows[index], 'vgtSelected', true)
             this.selectedCurrentPage.push(item)
           } else {
-            this.$set(this.rowsProduct[index], 'vgtSelected', false)
+            this.$set(this.productRows[index], 'vgtSelected', false)
           }
         })
       }
@@ -323,8 +323,8 @@ export default {
       GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_CHOOSE_PRODUCTS_ACTION,
     ]),
 
-    onModalClose() {
-      this.$emit('onModalClose')
+    onCloseClick() {
+      this.$emit('onCloseClick')
     },
 
     onSaveClick() {
@@ -334,37 +334,22 @@ export default {
     onSearchClick() {
       this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_CHOOSE_PRODUCTS_ACTION({
         ...this.searchOptions,
-        prodcutCatSelected: this.prodcutCatSelected,
-        size: this.elementSize,
-        page: this.pageNumber - 1,
+        prodcutCatSelected: this.productCategorySelected,
         ...this.decentralization,
       })
     },
 
-    selectionChanged(param) {
-      if (param.selectedRows.length === 0) {
-        this.selectedCurrentPage.forEach(item => {
-          this.selectedProductRow = param.filter(data => data.id !== item.id)
-        })
-        this.selectedCurrentPage = []
-        return
-      }
-      // xóa
-      if (this.selectedCurrentPage.length > param.selectedRows.length) {
-        // tìm phần tử bị xóa
-        this.selectedCurrentPage.forEach(item => {
-          if (!param.selectedRows.find(data => data.id === item.id)) {
-            this.selectedProductRow = this.selectedProductRow.filter(product => product.id !== item.id)
-          }
-        })
+    selection(params) {
+      if (params.selected) {
+        if (!this.selectedProductRow.find(data => data.id === params.row.id)) {
+          this.selectedProductRow.push(params.row)
+        }
       } else {
-        param.selectedRows.forEach(item => {
-          if (!this.selectedCurrentPage.find(data => data.id === item.id)) {
-            this.selectedProductRow.push(item)
-          }
-        })
+        const Index = this.selectedProductRow.findIndex(data => data.id === params.row.id)
+        this.selectedProductRow.splice(Index, 1)
+        console.log(params.selected)
       }
-      this.selectedCurrentPage = param.selectedRows
+      console.log(this.selectedProductRow)
     },
   },
 }

@@ -206,9 +206,9 @@
 
     <!-- START - Modal -->
     <product-select-modal
-      :visible="SelectProductModalVisible"
-      @onModalClose="onModalCloseClick"
-      @onSaveClick="onSaveClick"
+      :visible="selectProductModalVisible"
+      @onCloseClick="onModalCloseButtonClick"
+      @onSaveClick="onModalSaveButtonClick"
     />
     <!-- END - Modal -->
   </v-card-actions>
@@ -227,7 +227,7 @@ export default {
 
   data() {
     return {
-      SelectProductModalVisible: false,
+      selectProductModalVisible: false,
 
       fromDate: null,
       toDate: null,
@@ -245,9 +245,6 @@ export default {
     }
   },
 
-  computed: {
-  },
-
   mounted() {
     this.fromDate = this.$earlyMonth
     this.toDate = this.$nowDate
@@ -257,13 +254,13 @@ export default {
 
   methods: {
     onSelectProductModalClick() {
-      this.SelectProductModalVisible = true
+      this.selectProductModalVisible = true
     },
-    onModalCloseClick() {
-      this.SelectProductModalVisible = false
+    onModalCloseButtonClick() {
+      this.selectProductModalVisible = false
     },
     onClickSearchButton() {
-      this.$emit('onClickSearchButton', {
+      this.updateSearchData({
         fromDate: this.fromDate,
         toDate: this.toDate,
         fromOrderDate: this.fromOrderDate,
@@ -271,11 +268,11 @@ export default {
         licenseNumber: this.licenseNumber,
       })
     },
-    onSaveClick(param) {
-      this.SelectProductModalVisible = false
+    onModalSaveButtonClick(param) {
+      this.selectProductModalVisible = false
       if (param.length > 0) {
         const ids = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
-        this.$emit('onClickSearchButton', {
+        this.updateSearchData({
           fromDate: this.fromDate,
           toDate: this.toDate,
           fromOrderDate: this.fromOrderDate,

@@ -217,8 +217,6 @@ export default {
   },
   data() {
     return {
-      isShowDeleteModal: false,
-      selectedRow: 0,
       elementSize: commonData.pagination[0],
       pageNumber: 1,
       paginationOptions: commonData.pagination,
