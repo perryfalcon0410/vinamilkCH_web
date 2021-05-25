@@ -326,7 +326,7 @@
                       :number="true"
                       :value="props.row.quantity"
                       @change="updateQuantity(props.row.originalIndex, props.row.quantity)"
-                      @keypress="isNumber($event)"
+                      @keypress="$onlyNumberInput"
                     />
                   </div>
                   <div
@@ -776,13 +776,6 @@ export default {
     },
     onClickDeleteButton(index) {
       this.promotions.splice(index, 1)
-    },
-    isNumber(e) {
-      const keysAllowed = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-      const keyPressed = e.key
-      if (!keysAllowed.includes(keyPressed)) {
-        e.preventDefault()
-      }
     },
   },
 }
