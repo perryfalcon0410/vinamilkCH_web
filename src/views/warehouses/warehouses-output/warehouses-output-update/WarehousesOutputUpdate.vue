@@ -17,7 +17,7 @@
               Ngày xuất:
             </b-col>
             <b-col class="font-weight-bold">
-              {{ warehousesOutput.borrowDate }}
+              {{ warehousesOutput.borrowDate }} lúc {{ warehousesOutput.borrowTime }}
             </b-col>
           </b-row>
           <!-- END - Date -->
@@ -273,7 +273,9 @@ import {
   mapGetters,
 } from 'vuex'
 import warehousesData from '@/@db/warehouses'
-import { formatDateToLocale } from '@/@core/utils/filter'
+import {
+  getTimeOfDate, formatISOtoVNI,
+} from '@/@core/utils/filter'
 import {
   WAREHOUSES_OUTPUT,
   // Getter
@@ -360,6 +362,7 @@ export default {
         note: '',
         transDate: null,
         products: [],
+        borrowTime: '',
       },
       configDate: {
         wrap: true,
@@ -398,9 +401,10 @@ export default {
         internalNumber: dataWarehousesOutput.internalNumber, // số nội bộ
         poNumber: dataWarehousesOutput.poNumber,
         note: dataWarehousesOutput.note,
-        transDate: formatDateToLocale(dataWarehousesOutput.transDate),
+        transDate: formatISOtoVNI(dataWarehousesOutput.transDate),
         products: [...this.getProductOfWarehouseOutput],
-        borrowDate: formatDateToLocale(dataWarehousesOutput.borrowDate),
+        borrowDate: formatISOtoVNI(dataWarehousesOutput.borrowDate),
+        borrowTime: getTimeOfDate(formatISOtoVNI(dataWarehousesOutput.borrowDate)),
       }
       this.warehousesTypeSelected = this.warehousesOutput.type
     },
