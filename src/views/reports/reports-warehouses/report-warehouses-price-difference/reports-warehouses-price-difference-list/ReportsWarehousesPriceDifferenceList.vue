@@ -304,7 +304,6 @@ export default {
     ]),
 
     onClickSearchButton(searchValue) {
-      console.log(searchValue)
       const {
         fromDate,
         toDate,

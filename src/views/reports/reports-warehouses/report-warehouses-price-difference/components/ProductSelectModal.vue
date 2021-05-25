@@ -347,9 +347,7 @@ export default {
       } else {
         const Index = this.selectedProductRow.findIndex(data => data.id === params.row.id)
         this.selectedProductRow.splice(Index, 1)
-        console.log(params.selected)
       }
-      console.log(this.selectedProductRow)
     },
   },
 }
