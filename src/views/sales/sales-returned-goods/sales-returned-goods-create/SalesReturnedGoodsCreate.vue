@@ -31,7 +31,7 @@
             Đơn hàng muốn trả
           </b-col>
           <strong>
-            {{ billInfo.oderNumber }}
+            {{ billInfo.orderNumber }}
           </strong>
         </b-row>
         <!-- END - Order want return -->
@@ -39,7 +39,7 @@
         <!-- START - Order input  -->
         <b-input-group class="input-group-merge">
           <b-form-input
-            v-model="billInfo.oderNumber"
+            v-model="billInfo.orderNumber"
             readonly
           />
           <b-input-group-append
@@ -98,7 +98,7 @@
           </div>
           <tree-select
             v-model="selectedReason"
-            :options="reasonReturn"
+            :options="reasonReturnOptions"
             :searchable="false"
             placeholder="Chọn lý do trả hàng"
             no-options-text="Không có dữ liệu"
@@ -135,9 +135,9 @@
             <vue-good-table
               :columns="columns"
               :rows="products"
-              style-class="vgt-table striped"
+              style-class="vgt-table bordered"
               :pagination-options="{
-                enabled: true
+                enabled: false
               }"
               line-numbers
             >
@@ -159,10 +159,10 @@
           >
             <vue-good-table
               :columns="columns"
-              :rows="promotions"
-              style-class="vgt-table striped"
+              :rows="productPromotions"
+              style-class="vgt-table bordered"
               :pagination-options="{
-                enabled: true
+                enabled: false
               }"
               line-numbers
             >
@@ -232,6 +232,7 @@ import {
   mapMutations,
 } from 'vuex'
 import toasts from '@core/utils/toasts/toasts'
+import saleData from '@/@db/sale'
 import SelectReceptModal from './components/SelectReceptModal.vue'
 import {
   RETURNEDGOODS,
@@ -252,16 +253,20 @@ export default {
     return {
       isShowSelectReceptModal: false,
       selectedReason: null,
+      reasonReturnOptions: saleData.reasonReturnGoods,
       billInfo: {
         id: null,
         oderDate: null,
         employeeName: null,
         customerName: null,
         moneyPayback: null,
-        oderNumber: null,
+        orderNumber: null,
         dateReturn: getNow(),
         feedbackInfomation: null,
       },
+      products: [],
+      productPromotions: [],
+      reasonReturn: [],
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -313,43 +318,61 @@ export default {
   },
 
   computed: {
-    products() {
-      return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER().products.map(data => ({
-        productCode: data.productCode,
-        productName: data.productName,
-        unit: data.unit,
-        quantity: data.quantity,
-        pricePerUnit: data.pricePerUnit,
-        totalPrice: data.totalPrice,
-        discount: data.discount,
-        payment: data.payment,
-        note: data.note,
-      }))
+    ...mapGetters(RETURNEDGOODS, [
+      RETURNED_GOOD_CHOOSEN_DETAIL_GETTER,
+    ]),
+    getProducts() {
+      if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn) {
+        return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn.map(data => ({
+          productCode: data.productCode,
+          productName: data.productName,
+          unit: data.unit,
+          quantity: data.quantity,
+          pricePerUnit: data.pricePerUnit,
+          totalPrice: data.totalPrice,
+          discount: data.discount,
+          payment: data.payment,
+          note: data.note,
+        }))
+      }
+      return []
     },
-    promotions() {
-      return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER().promotions.map(data => ({
-        productCode: data.productCode,
-        productName: data.productName,
-        unit: data.unit,
-        quantity: data.quantity,
-        pricePerUnit: data.pricePerUnit,
-        totalPrice: data.totalPrice,
-        discount: data.discount,
-        payment: data.payment,
-        note: data.note,
-      }))
+    getProductPromotions() {
+      if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.promotionReturn) {
+        return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.promotionReturn.map(data => ({
+          productCode: data.productCode,
+          productName: data.productName,
+          unit: data.unit,
+          quantity: data.quantity,
+          pricePerUnit: data.pricePerUnit,
+          totalPrice: data.totalPrice,
+          discount: data.discount,
+          payment: data.payment,
+          note: data.note,
+        }))
+      }
+      return []
     },
-    reasonReturn() {
-      return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER().reasonReturn.map(data => ({
-        value: data.apCode,
-        text: data.apName,
-      }))
+    getReasonReturn() {
+      if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.products) {
+        return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.reasonReturn.map(data => ({
+          value: data.apCode,
+          text: data.apName,
+        }))
+      }
+      return []
     },
   },
 
   watch: {
-    reasonReturn() {
-      this.selectedReason = this.reasonReturn[0].value || ''
+    getProducts() {
+      this.products = [...this.getProducts]
+    },
+    getProductPromotions() {
+      this.productPromotions = [...this.getProductPromotions]
+    },
+    getReasonReturn() {
+      this.reasonReturn = [...this.getReasonReturn]
     },
   },
 
@@ -378,11 +401,8 @@ export default {
       this.billInfo.employeeName = salesManName
       this.billInfo.customerName = customerName
       this.billInfo.moneyPayback = total
-      this.billInfo.oderNumber = orderNumber
+      this.billInfo.orderNumber = orderNumber
     },
-    ...mapGetters(RETURNEDGOODS, [
-      RETURNED_GOOD_CHOOSEN_DETAIL_GETTER,
-    ]),
     ...mapMutations(RETURNEDGOODS, [
       CLEAR_RETURNED_GOODS_MUTATION,
     ]),
@@ -391,16 +411,16 @@ export default {
       CREATE_RETURNED_GOOD_ACTION,
     ]),
     onSubmit() {
-      if (this.billInfo.oderNumber === '') {
+      if (this.billInfo.orderNumber === '') {
         toasts.error('Xin vui lòng chọn đơn hàng muốn trả!')
         return
       }
 
       this.CREATE_RETURNED_GOOD_ACTION({
         dateReturn: new Date(),
-        orderNumber: this.billInfo.oderNumber,
+        orderNumber: this.billInfo.orderNumber,
         reasonId: this.selectedReason,
-        feedbackInfomation: this.billInfo.oderNumber,
+        feedbackInfomation: this.feedbackInfomation,
         createUser: localStorage.getItem('username') || '',
       })
     },

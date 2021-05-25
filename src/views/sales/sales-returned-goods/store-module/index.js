@@ -7,9 +7,7 @@ import {
   RETURNED_GOODS_GETTER,
   RETURNED_GOOD_CHOOSE_GETTER,
   RETURNED_GOOD_CHOOSEN_DETAIL_GETTER,
-  RETURN_GOODS_DETAIL_PRODUCTS_GETTER,
-  RETURN_GOODS_DETAIL_SALES_OFF_GETTER,
-  RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER,
+  RETURN_GOODS_DETAIL_GETTER,
 
   // ACTIONS
   GET_RETURNED_GOODS_ACTION,
@@ -24,60 +22,38 @@ import {
 export default {
   namespaced: true,
   state: {
-    oderReturns: [],
+    orderReturnData: {},
     saleOders: [],
-    saleOdersInfo: {},
-    products: [],
-    info: {},
-    paging: {},
-    promotions: [],
-    reasonReturn: [],
-    productReturns: [],
-    promotionReturns: [],
-    totalInfo: {},
+    salesOrderData: {},
+    chooseProductData: {},
+    productDetailData: {},
   },
   getters: {
     [RETURNED_GOODS_GETTER](state) {
-      return {
-        oderReturns: state.oderReturns,
-        info: state.info,
-        paging: state.paging,
-      }
+      return state.orderReturnData
     },
     [RETURNED_GOOD_CHOOSE_GETTER](state) {
-      return {
-        saleOders: state.saleOders,
-        saleOdersInfo: state.saleOdersInfo,
-      }
+      return state.salesOrderData
     },
     [RETURNED_GOOD_CHOOSEN_DETAIL_GETTER](state) {
-      return {
-        products: state.products,
-        reasonReturn: state.reasonReturn,
-        promotions: state.promotions,
-      }
+      return state.chooseProductData
     },
     // reutrn goods detail
-    [RETURN_GOODS_DETAIL_PRODUCTS_GETTER](state) {
-      return state.productReturns
-    },
-    [RETURN_GOODS_DETAIL_SALES_OFF_GETTER](state) {
-      return state.promotionReturns
-    },
-    [RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER](state) {
-      return state.totalInfos
+    [RETURN_GOODS_DETAIL_GETTER](state) {
+      return state.productDetailData
     },
   },
   // MUTATIONS
   mutations: {
     [CLEAR_RETURNED_GOODS_MUTATION](state) {
-      state.oderReturns = []
+      state.orderReturnData = {}
       state.saleOders = []
       state.products = []
       state.info = {}
       state.paging = {}
       state.promotions = []
       state.reasonReturn = []
+      state.chooseProductData = {}
     },
   },
   actions: {
@@ -88,15 +64,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.oderReturns = res.data.response.content || []
-            state.info = res.data.info
-            state.paging = {
-              pageable: res.data.response.pageable,
-              totalPages: res.data.response.totalPages,
-              totalElements: res.data.response.totalElements,
-              last: res.data.response.last,
-              numberOfElements: res.data.response.numberOfElements,
-            }
+            state.orderReturnData = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }
@@ -114,8 +82,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.saleOders = res.data.response || []
-            state.saleOdersInfo = res.data.info || {}
+            state.salesOrderData = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }
@@ -133,14 +100,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.products = res.data.productReturn || []
-            state.promotions = res.data.promotionReturn || []
-            state.reasonReturn = res.data.reasonReturn || []
-          } else {
-            state.products = []
-            state.promotions = []
-            state.reasonReturn = []
-            throw new Error(res.statusValue)
+            state.chooseProductData = res.data || {}
           }
         })
         .catch(error => {
@@ -174,9 +134,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.productReturns = res.data.productReturn || []
-            state.promotionReturns = res.data.promotionReturn || []
-            state.totalInfo = res.data.infos || {}
+            state.productDetailData = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }

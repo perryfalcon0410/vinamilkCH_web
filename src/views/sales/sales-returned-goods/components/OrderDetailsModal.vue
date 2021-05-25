@@ -5,7 +5,9 @@
     size="xl"
     title="Thông tin chi tiết đơn hàng"
     title-class="font-weight-bolder text-brand-1"
-    hide-footer="true"
+    footer-class="justify-content-center"
+    footer-border-variant="light"
+    @hidden="onCloseModal"
   >
     <!-- START - Form Info -->
     <b-row class="mx-0">
@@ -22,7 +24,7 @@
             Ngày mua hàng:
           </b-col>
           <strong>
-            27/10/2020
+            {{ orderDate }}
           </strong>
         </b-row>
         <!-- END - Row 1 -->
@@ -62,7 +64,7 @@
             Ngày trả hàng:
           </b-col>
           <strong>
-            {{ $moment(information.returnDate).format('DD/MM/YYYY') }}
+            {{ returnDate }}
           </strong>
         </b-row>
         <!-- END - Row 1 -->
@@ -91,7 +93,11 @@
             class="px-0"
             cols="3"
           >
-            <b-form-textarea />
+            <b-form-textarea
+              id="textarea-plaintext"
+              readonly
+              :value="information.note"
+            />
           </b-col>
         </b-row>
         <!-- END - Row 3 -->
@@ -137,11 +143,31 @@
     </b-card>
     <!-- End Table -->
 
+    <!-- START - Footer -->
+    <template #modal-footer="{ cancel }">
+      <b-button
+        variant="secondary"
+        class="d-flex align-items-center text-uppercase"
+        @click="cancel()"
+      >
+        <b-icon
+          icon="x"
+          width="20"
+          height="20"
+        />
+        Đóng
+      </b-button>
+    </template>
+  <!-- END - Footer -->
+
   </b-modal>
   <!-- End Popup -->
 </template>
 
 <script>
+import {
+  formatDateToLocale,
+} from '@/@core/utils/filter'
 import Product from './order-details-modal/Product.vue'
 import SaleOff from './order-details-modal/SaleOff.vue'
 
@@ -172,6 +198,20 @@ export default {
     return {
       modalShow: false,
     }
+  },
+  computed: {
+    orderDate() {
+      return (formatDateToLocale(this.information.orderDate))
+    },
+    returnDate() {
+      return (formatDateToLocale(this.information.returnDate))
+    },
+  },
+  methods: {
+    onCloseModal() {
+      this.$emit('close')
+    },
+
   },
 }
 </script>

@@ -2,9 +2,10 @@
   <b-modal
     size="xl"
     :visible="visible"
-    title="Danh sách PO Confirm"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title="Chọn hóa đơn cần trả"
+    title-class="font-weight-bolder text-brand-1"
     content-class="bg-light"
+    footer-class="justify-content-center"
     footer-border-variant="light"
     @hidden="onCloseModal"
   >
@@ -24,7 +25,7 @@
           class="justify-content-between border-bottom p-1 mx-0"
           align-v="center"
         >
-          <div class="text-primary">
+          <div class="text-brand-1">
             <strong>
               Danh sách phiếu nhập hàng
             </strong>
@@ -38,14 +39,30 @@
           <vue-good-table
             :columns="columns"
             :rows="saleOders"
-            style-class="vgt-table striped"
+            style-class="vgt-table bordered"
             :pagination-options="{
               enabled: true,
-              perPage: elementSize
+              perPage: elementSize,
+              setCurrentPage: pageNumber,
             }"
             compact-mode
             line-numbers
+            :sort-options="{
+              enabled: false,
+              multipleColumns: true,
+            }"
+            @on-sort-change="onSortChange"
+            @on-page-change="onPageChange"
+            @on-per-page-change="onPerPageChange"
           >
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
             <!-- START - Column  -->
             <template
               slot="table-column"
@@ -70,11 +87,12 @@
               >
                 <b-button
                   size="sm"
-                  variant="info"
+                  class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
+                  variant="someThing"
                   @click="choosenRecept(props.row)"
                 >
-                  <b-icon-hand-index-thumb />
-                  Chọn
+                  <b-icon-hand-index-thumb class="mr-05" />
+                  Chọn đơn
                 </b-button>
               </div>
               <div v-else>
@@ -95,13 +113,93 @@
                 {{ totalAmount }}
               </b-row>
             </template>
-          <!-- START - Column filter -->
+            <!-- START - Column filter -->
+
+            <!-- START - Pagination -->
+            <template
+              slot="pagination-bottom"
+              slot-scope="props"
+            >
+              <b-row
+                v-show="salesOrderPagination.totalElements"
+                class="v-pagination px-1 mx-0"
+                align-h="between"
+                align-v="center"
+              >
+                <div
+                  class="d-flex align-items-center"
+                >
+                  <span
+                    class="text-nowrap"
+                  >
+                    Số hàng hiển thị
+                  </span>
+                  <b-form-select
+                    v-model="elementSize"
+                    size="sm"
+                    :options="paginationOptions"
+                    class="mx-1"
+                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                  />
+                  <span
+                    class="text-nowrap"
+                  >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
+                    -
+                    {{ (elementSize * pageNumber) > salesOrderPagination.totalElements ?
+                      salesOrderPagination.totalElements : (elementSize * pageNumber) }}
+                    của {{ salesOrderPagination.totalElements }} mục </span>
+                </div>
+                <b-pagination
+                  v-model="pageNumber"
+                  :total-rows="salesOrderPagination.totalElements"
+                  :per-page="elementSize"
+                  first-number
+                  last-number
+                  align="right"
+                  prev-class="prev-item"
+                  next-class="next-item"
+                  class="mt-1"
+                  @input="(value)=>props.pageChanged({currentPage: value})"
+                >
+                  <template slot="prev-text">
+                    <feather-icon
+                      icon="ChevronLeftIcon"
+                      size="18"
+                    />
+                  </template>
+                  <template slot="next-text">
+                    <feather-icon
+                      icon="ChevronRightIcon"
+                      size="18"
+                    />
+                  </template>
+                </b-pagination>
+              </b-row>
+            </template>
+          <!-- END - Pagination -->
           </vue-good-table>
         </b-col>
         <!-- END - Table -->
       </b-form>
       <!-- END - Coupon list -->
     </b-container>
+
+    <!-- START - Footer -->
+    <template #modal-footer="{ cancel }">
+      <b-button
+        variant="secondary"
+        class="d-flex align-items-center text-uppercase"
+        @click="cancel()"
+      >
+        <b-icon
+          icon="x"
+          width="20"
+          height="20"
+        />
+        Đóng
+      </b-button>
+    </template>
+  <!-- END - Footer -->
   </b-modal>
 </template>
 
@@ -110,6 +208,10 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
+import commonData from '@/@db/common'
 import SearchComponent from './SelectReceptSearch.vue'
 import { RETURNEDGOODS, RETURNED_GOOD_CHOOSE_GETTER, GET_RETURNED_GOOD_CHOOSE_ACTION } from '../../store-module/type'
 
@@ -129,6 +231,18 @@ export default {
   data() {
     return {
       isModalShow: false,
+      selectedRow: 0,
+      elementSize: commonData.pagination[0],
+      pageNumber: 1,
+      paginationOptions: commonData.pagination,
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+      },
+
+      saleOders: [],
+
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
       columns: [
@@ -136,21 +250,29 @@ export default {
           label: 'Số hóa đơn',
           field: 'orderNumber',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Nhân viên',
           field: 'salesManName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Khách hàng',
           field: 'customerName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tổng tiền',
           field: 'total',
           type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -160,32 +282,53 @@ export default {
           label: '',
           field: 'manipulation',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
     }
   },
   computed: {
-    saleOders() {
-      return this.RETURNED_GOOD_CHOOSE_GETTER().saleOders.map(data => ({
-        id: data.id,
-        orderNumber: data.orderNumber,
-        customerName: data.customerName,
-        total: this.$formatNumberToLocale(data.total),
-        salesManName: data.salesManName,
-        oderDate: data.orderDate,
-      }))
-    },
-    totalAmount() {
-      return this.$formatNumberToLocale(this.RETURNED_GOOD_CHOOSE_GETTER().saleOdersInfo.allTotal || '')
-    },
-  },
-  mounted() {
-    this.GET_RETURNED_GOOD_CHOOSE_ACTION()
-  },
-  methods: {
     ...mapGetters(RETURNEDGOODS, [
       RETURNED_GOOD_CHOOSE_GETTER,
     ]),
+    getSaleOders() {
+      if (this.RETURNED_GOOD_CHOOSE_GETTER.response) {
+        return this.RETURNED_GOOD_CHOOSE_GETTER.response.map(data => ({
+          id: data.id,
+          orderNumber: data.orderNumber,
+          customerName: data.customerName,
+          total: this.$formatNumberToLocale(data.total),
+          salesManName: data.salesManName,
+          oderDate: data.orderDate,
+        }))
+      }
+      return []
+    },
+    totalAmount() {
+      if (this.RETURNED_GOOD_CHOOSE_GETTER.info && this.RETURNED_GOOD_CHOOSE_GETTER.info.allTotal) {
+        return this.$formatNumberToLocale(this.RETURNED_GOOD_CHOOSE_GETTER.info.allTotal)
+      }
+      return ''
+    },
+    salesOrderPagination() {
+      if (this.RETURNED_GOOD_CHOOSE_GETTER) {
+        return this.RETURNED_GOOD_CHOOSE_GETTER
+      }
+      return {}
+    },
+  },
+  watch: {
+    getSaleOders() {
+      this.saleOders = [...this.getSaleOders]
+    },
+  },
+
+  mounted() {
+    resizeAbleTable()
+    this.GET_RETURNED_GOOD_CHOOSE_ACTION()
+  },
+  methods: {
     ...mapActions(RETURNEDGOODS, [
       GET_RETURNED_GOOD_CHOOSE_ACTION,
     ]),
@@ -198,6 +341,20 @@ export default {
     },
     onSearchClick(search) {
       this.GET_RETURNED_GOOD_CHOOSE_ACTION(search)
+    },
+    onPaginationChange() {
+      this.GET_CUSTOMERS_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
     },
   },
 }

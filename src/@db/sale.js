@@ -24,6 +24,12 @@ export default {
   payment: [
     { id: '1', label: 'Tiền mặt' },
   ],
+  reasonReturnGoods: [
+    { id: '6', label: 'Mua thêm' },
+    { id: '5', label: 'Đổi hàng' },
+    { id: '4', label: 'Hàng lỗi' },
+    { id: '7', label: 'Lý do khác' },
+  ],
   pageSizeRecommendProducts: 8,
   pageNumberRecommendProducts: 0,
 }

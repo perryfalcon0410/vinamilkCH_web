@@ -10,22 +10,27 @@ import {
 
 export default {
   getOrderReturnedGoods(args) {
-    const queryString = new URLSearchParams(args).toString()
-    return axios.get(`${getReturnedGoodsEndPoint}?formId=5&ctrlId=1&${queryString}`)
+    return axios.get(getReturnedGoodsEndPoint, {
+      params: formatURLParams(args),
+    })
   },
 
   getSaleOrders(args) {
-    const queryString = new URLSearchParams(args).toString()
-    return axios.get(`${getSaleOrdersEndPoint}?formId=5&ctrlId=1&${queryString}`)
+    return axios.get(getSaleOrdersEndPoint, {
+      params: formatURLParams(args),
+    })
   },
 
   getSaleOrderDetail(args) {
-    const queryString = new URLSearchParams(args).toString()
-    return axios.get(`${getSaleOrderDetailEndPoint}/${args.id}?formId=5&ctrlId=1&${queryString}`)
+    return axios.get(`${getSaleOrderDetailEndPoint}/${args.id}`, {
+      params: formatURLParams(args),
+    })
   },
 
   createOrderReturn(args) {
-    return axios.post(`${createReturnOrderEndPoint}?formId=5&ctrlId=1`, args)
+    return axios.post(createReturnOrderEndPoint, {
+      params: formatURLParams(args),
+    })
   },
 
   getReturnGoodDetail(args) {

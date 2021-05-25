@@ -3,12 +3,22 @@
     <vue-good-table
       :columns="columns"
       :rows="saleOffTable"
-      style-class="vgt-table striped"
+      style-class="vgt-table bordered"
       :pagination-options="{
         enabled: false
       }"
+      compact-mode
       line-numbers
-    />
+    >
+      <!-- START - Empty rows -->
+      <div
+        slot="emptystate"
+        class="text-center"
+      >
+        Không có dữ liệu
+      </div>
+    <!-- END - Empty rows -->
+    </vue-good-table>
   </b-col>
 </template>
 

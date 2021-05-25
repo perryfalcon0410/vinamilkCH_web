@@ -4,165 +4,11 @@
     class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
-    <v-card-actions
-      title="Tìm kiếm"
-    >
-      <!-- START - Full Name -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Khách hàng
-        </div>
-        <b-input-group
-          class="input-group-merge"
-        >
-          <b-form-input
-            v-model="searchKeywords"
-            class="h8 text-brand-3"
-            placeholder="Nhập MÃ/SĐT/TÊN khách hàng"
-            @keyup.enter="onClickSearchButton"
-          />
-          <b-input-group-append
-            is-text
-          >
-            <b-icon-x
-              v-show="searchKeywords"
-              class="cursor-pointer text-gray"
-              @click="searchKeywords = null"
-            />
-          </b-input-group-append>
-        </b-input-group>
-      </b-col>
-      <!-- END - Full Name -->
-
-      <!-- START - Order return code -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Mã trả hàng
-        </div>
-        <b-input-group
-          class="input-group-merge"
-        >
-          <b-form-input
-            v-model="derReturnCode"
-            class="h8 text-brand-3"
-            placeholder="Nhập mã trả hàng"
-            @keyup.enter="onClickSearchButton"
-          />
-          <b-input-group-append
-            is-text
-          >
-            <b-icon-x
-              v-show="derReturnCode"
-              class="cursor-pointer text-gray"
-              @click="derReturnCode = null"
-            />
-          </b-input-group-append>
-        </b-input-group>
-      </b-col>
-      <!-- END - Order return code -->
-
-      <!-- START - to date -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Từ ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-        >
-          <b-icon-x
-            v-show="fromDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            data-clear
-          />
-          <vue-flat-pickr
-            v-model="fromDate"
-            :config="configDate"
-            class="form-control h8 text-brand-3"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-      </b-col>
-      <!-- END - to date -->
-
-      <!-- START - from date -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Đến ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-        >
-          <b-icon-x
-            v-show="toDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            data-clear
-          />
-          <vue-flat-pickr
-            v-model="toDate"
-            :config="configDate"
-            class="form-control h8 text-brand-3"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-      </b-col>
-      <!-- END - from date -->
-
-      <!-- START - Search button -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <!--"onmousedown" is prevent hightlight text -->
-        <div
-          class="h8 text-white"
-          onmousedown="return false;"
-          style="cursor: context-menu;"
-        >
-          Tìm kiếm
-        </div>
-        <b-button
-          class="btn-brand-1 h9 align-items-button-center mt-sm-1 mt-xl-0"
-          variant="someThing"
-          @click="onClickSearchButton()"
-        >
-          <b-icon-search class="mr-05" />
-          Tìm kiếm
-        </b-button>
-      </b-col>
-      <!-- END - Search button -->
-
-    </v-card-actions>
+    <sales-returned-goods-list-search
+      @updateSearchData="paginationData = {
+        ...paginationData,
+        ...$event }"
+    />
     <!-- END - Search -->
 
     <!-- START - List of orders returned -->
@@ -195,13 +41,22 @@
         <vue-good-table
           :columns="columns"
           :rows="oderReturns"
-          style-class="vgt-table striped"
+          style-class="vgt-table bordered"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: elementSize,
+            setCurrentPage: pageNumber,
           }"
           compact-mode
           line-numbers
+          :total-rows="orderReturnPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           <!-- START - Empty rows -->
           <div
@@ -251,19 +106,21 @@
             slot-scope="props"
           >
             <b-row
+              v-show="orderReturnPagination.totalElements"
               v-if="props.column.field === 'amount'"
               class="mx-0"
               align-h="end"
             >
-              {{ totalAmount || '' }}
+              {{ totalAmount }}
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'total'"
+              v-show="orderReturnPagination.totalElements"
+              v-else-if="props.column.field === 'quantity'"
               class="mx-0"
               align-h="end"
             >
-              {{ totalPayment || '' }}
+              {{ totalQuantity }}
             </b-row>
           </template>
           <!-- START - Column filter -->
@@ -274,6 +131,7 @@
             slot-scope="props"
           >
             <b-row
+              v-show="orderReturnPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -284,23 +142,26 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
                   v-model="elementSize"
                   size="sm"
                   :options="paginationOptions"
-                  class="mx-1 mt-1 mb-1"
+                  class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
                 <span
                   class="text-nowrap"
-                > trong {{ customerPagination.totalElements }} mục </span>
+                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
+                  -
+                  {{ (elementSize * pageNumber) > orderReturnPagination.totalElements ?
+                    orderReturnPagination.totalElements : (elementSize * pageNumber) }}
+                  của {{ orderReturnPagination.totalElements }} mục </span>
               </div>
               <b-pagination
-                v-if="customerPagination.totalPages > 1"
                 v-model="pageNumber"
-                :total-rows="customerPagination.totalElements"
+                :total-rows="orderReturnPagination.totalElements"
                 :per-page="elementSize"
                 first-number
                 last-number
@@ -336,13 +197,13 @@
 
     <!-- START - Modal -->
     <order-details-modal
-      :productdetails="productReturns"
-      :sale-off-details="promotionReturns"
-      :information="totalInfo"
+      :productdetails="detailReturnProducts"
+      :sale-off-details="detailReturnPromotions"
+      :information="detailReturnInfo"
       :visible="isOrderDetailsModal"
+      @close="isOrderDetailsModal = false"
     />
     <!-- END - Modal -->
-
   </b-container>
 </template>
 
@@ -351,20 +212,23 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
-  formatDateToLocale,
+  resizeAbleTable,
+} from '@core/utils/utils'
+import {
+  formatNumberToLocale,
+  replaceDotWithComma,
+  formatISOtoVNI,
 } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import lodash from 'lodash'
 import OrderDetailsModal from '../components/OrderDetailsModal.vue'
+import SalesReturnedGoodsListSearch from './components/SalesReturnedGoodsListSearch.vue'
 import {
   // GETTERS
   RETURNEDGOODS,
   RETURNED_GOODS_GETTER,
-  RETURN_GOODS_DETAIL_PRODUCTS_GETTER,
-  RETURN_GOODS_DETAIL_SALES_OFF_GETTER,
-  RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER,
+  RETURN_GOODS_DETAIL_GETTER,
   // ACTION
   GET_RETURNED_GOODS_ACTION,
   GET_RETURN_GOODS_DETAIL_ACTION,
@@ -373,26 +237,29 @@ import {
 export default {
   components: {
     OrderDetailsModal,
-    VCardActions,
+    SalesReturnedGoodsListSearch,
   },
   data() {
     return {
+      isOrderDetailsModal: false,
+      selectedRow: 0,
       elementSize: commonData.pagination[0],
       pageNumber: 1,
       paginationOptions: commonData.pagination,
-
-      isOrderDetailsModal: false,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
-      searchTerm: null,
-      searchKeywords: null,
-      derReturnCode: null,
-
-      configDate: {
-        wrap: true,
-        allowInput: true,
-        dateFormat: 'd/m/Y',
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
       },
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+
+      oderReturns: [],
+      detailReturnProducts: [],
+      detailReturnPromotions: [],
 
       columns: [
         {
@@ -456,7 +323,7 @@ export default {
         },
         {
           label: 'Thành tiền thanh toán',
-          field: 'total',
+          field: 'quantity',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -476,84 +343,105 @@ export default {
     }
   },
   computed: {
-    customerPagination() {
-      return this.RETURNED_GOODS_GETTER().paging
+    ...mapGetters(RETURNEDGOODS, [
+      RETURNED_GOODS_GETTER,
+      RETURN_GOODS_DETAIL_GETTER,
+    ]),
+    orderReturnPagination() {
+      if (this.RETURNED_GOODS_GETTER.response) {
+        return this.RETURNED_GOODS_GETTER.response
+      }
+      return {}
     },
-    oderReturns() {
-      return this.RETURNED_GOODS_GETTER().oderReturns.map(data => ({
-        id: data.id,
-        idDetail: data.id,
-        createdAt: formatDateToLocale(data.createdAt),
-        orderReturnNumber: data.orderReturnNumber,
-        orderNumber: data.orderNumber,
-        userName: data.userName,
-        customerNumber: data.customerNumber,
-        customerName: data.customerName,
-        dateReturn: formatDateToLocale(data.dateReturn),
-        orderDate: formatDateToLocale(data.orderDate),
-        total: this.$formatNumberToLocale(data.total),
-        discount: this.$formatNumberToLocale(data.discount),
-        amount: this.$formatNumberToLocale(data.amount),
-        feature: '',
-      }))
+    getOderReturns() {
+      if (this.RETURNED_GOODS_GETTER.response && this.RETURNED_GOODS_GETTER.response.content) {
+        return this.RETURNED_GOODS_GETTER.response.content.map(data => ({
+          id: data.id,
+          idDetail: data.id,
+          createdAt: formatISOtoVNI(data.createdAt),
+          orderReturnNumber: data.orderNumberRef,
+          orderNumber: data.orderNumber,
+          userName: data.userName,
+          customerNumber: data.customerNumber,
+          customerName: data.customerName,
+          dateReturn: formatISOtoVNI(data.dateReturn),
+          orderDate: formatISOtoVNI(data.orderDate),
+          quantity: this.$formatNumberToLocale(data.total),
+          discount: this.$formatNumberToLocale(data.totalPromotion),
+          amount: this.$formatNumberToLocale(data.amount),
+          feature: '',
+        }))
+      }
+      return []
     },
-    totalPayment() {
-      return this.$formatNumberToLocale(this.RETURNED_GOODS_GETTER().info.totalPayment)
+    totalQuantity() {
+      if (this.RETURNED_GOODS_GETTER.info) {
+        return replaceDotWithComma(formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.allTotal)))
+      }
+      return 0
     },
     totalAmount() {
-      return this.$formatNumberToLocale(this.RETURNED_GOODS_GETTER().info.totalAmount)
+      if (this.RETURNED_GOODS_GETTER.info) {
+        return replaceDotWithComma(formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.totalAmount)))
+      }
+      return 0
     },
 
     // return goods detail
-    productReturns() {
-      return this.RETURN_GOODS_DETAIL_PRODUCTS_GETTER().map(data => ({
-        productCode: data.productCode,
-        productName: data.ProductName,
-        unit: data.unit,
-        quantity: this.$formatNumberToLocale(data.quantity),
-        pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
-        totalPrice: this.$formatNumberToLocale(data.totalPrice),
-        discount: this.$formatNumberToLocale(data.discount),
-        paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
-      }))
+    getDetailReturnProducts() {
+      if (this.RETURN_GOODS_DETAIL_GETTER.productReturn) {
+        return this.RETURN_GOODS_DETAIL_GETTER.productReturn.map(data => ({
+          productCode: data.productCode,
+          productName: data.productName,
+          unit: data.unit,
+          quantity: this.$formatNumberToLocale(data.quantity),
+          pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
+          totalPrice: this.$formatNumberToLocale(data.totalPrice),
+          discount: this.$formatNumberToLocale(data.discount),
+          paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
+        }))
+      }
+      return []
     },
 
-    promotionReturns() {
-      return this.RETURN_GOODS_DETAIL_SALES_OFF_GETTER().map(data => ({
-        productCode: data.productCode,
-        productName: data.ProductName,
-        unit: data.unit,
-        quantity: this.$formatNumberToLocale(data.quantity),
-        pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
-        totalPrice: this.$formatNumberToLocale(data.totalPrice),
-        discount: this.$formatNumberToLocale(data.discount),
-        paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
-
-      }))
+    getDetailReturnPromotions() {
+      if (this.RETURN_GOODS_DETAIL_GETTER.promotionReturn) {
+        return this.RETURN_GOODS_DETAIL_GETTER.promotionReturn.map(data => ({
+          productCode: data.productCode,
+          productName: data.productName,
+          unit: data.unit,
+          quantity: this.$formatNumberToLocale(data.quantity),
+          pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
+          totalPrice: this.$formatNumberToLocale(data.totalPrice),
+          discount: this.$formatNumberToLocale(data.discount),
+          paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
+        }))
+      }
+      return []
     },
-
-    totalInfo() {
-      return lodash.mapValues(this.RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER(), value => this.$formatNumberToLocale(value))
+    detailReturnInfo() {
+      if (this.RETURN_GOODS_DETAIL_GETTER.infos) {
+        return lodash.mapValues(this.RETURN_GOODS_DETAIL_GETTER.infos, value => value)
+      }
+      return {}
     },
   },
   watch: {
-    pageNumber() {
-      this.onPaginationChange()
+    getOderReturns() {
+      this.oderReturns = [...this.getOderReturns]
     },
-    elementSize() {
-      this.onPaginationChange()
+    getDetailReturnPromotions() {
+      this.detailReturnPromotions = [...this.getDetailReturnPromotions]
+    },
+    getDetailReturnProducts() {
+      this.detailReturnProducts = [...this.getDetailReturnProducts]
     },
   },
   mounted() {
-    this.GET_RETURNED_GOODS_ACTION()
+    console.log(this.RETURNED_GOODS_GETTER.response)
+    resizeAbleTable()
   },
   methods: {
-    ...mapGetters(RETURNEDGOODS, [
-      RETURNED_GOODS_GETTER,
-      RETURN_GOODS_DETAIL_PRODUCTS_GETTER,
-      RETURN_GOODS_DETAIL_SALES_OFF_GETTER,
-      RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER,
-    ]),
     ...mapActions(RETURNEDGOODS, [
       GET_RETURNED_GOODS_ACTION,
       GET_RETURN_GOODS_DETAIL_ACTION,
@@ -565,26 +453,26 @@ export default {
       return value.toLowerCase()
     },
     showOrderDetailsModal(idDetail) {
+      console.log(this.RETURN_GOODS_DETAIL_GETTER.infos)
       this.isOrderDetailsModal = !this.isOrderDetailsModal
-      this.GET_RETURN_GOODS_DETAIL_ACTION({ id: idDetail, formId: 4, ctrlId: 1 })
-    },
-    onClickSearchButton() {
-      this.GET_RETURNED_GOODS_ACTION({
-        searchKeywords: this.searchKeywords.trim(),
-        orderReturnNumber: this.derReturnCode,
-        formDate: this.fromDate,
-        toDate: this.toDate,
-        size: this.elementSize,
-        page: this.pageNumber - 1,
+      this.GET_RETURN_GOODS_DETAIL_ACTION({
+        id: idDetail,
+        ...this.decentralization,
       })
     },
     onPaginationChange() {
-      const paginationData = {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-      }
-
-      this.GET_RETURNED_GOODS_ACTION(paginationData)
+      this.GET_RETURNED_GOODS_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
     },
   },
 }

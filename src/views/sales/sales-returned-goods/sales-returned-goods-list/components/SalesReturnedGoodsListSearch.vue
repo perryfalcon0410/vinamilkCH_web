@@ -14,31 +14,30 @@
         <div
           class="h8 mt-sm-1 mt-xl-0"
         >
-          Số hóa đơn
+          Khách hàng
         </div>
         <b-input-group
           class="input-group-merge"
         >
           <b-form-input
-            v-model.trim="orderNumber"
+            v-model.trim="searchKeywords"
             class="h8"
-            placeholder="Nhập số hóa đơn"
-            @keyup.enter="onSearchClick"
+            placeholder="Nhập họ tên/mã"
+            @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append
             is-text
           >
             <b-icon-x
-              v-show="orderNumber"
+              v-show="searchKeywords"
               class="cursor-pointer text-gray"
-              @click="orderNumber = null"
+              @click="searchKeywords = null"
             />
           </b-input-group-append>
         </b-input-group>
       </b-col>
       <!-- END - Full Name -->
-
-      <!-- START - Phone -->
+      <!-- START - Return Code -->
       <b-col
         xl
         lg="3"
@@ -47,30 +46,29 @@
         <div
           class="h8 mt-sm-1 mt-xl-0"
         >
-          Khách hàng
+          Mã trả hàng
         </div>
         <b-input-group
           class="input-group-merge"
         >
           <b-form-input
-            v-model.trim="customerName"
+            v-model.trim="returnCode"
             class="h8"
-            autocomplete="on"
-            placeholder="Nhập họ tên/mã"
-            @keyup.enter="onSearchClick"
+            placeholder="Nhập mã trả hàng"
+            @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append
             is-text
           >
             <b-icon-x
-              v-show="customerName"
+              v-show="returnCode"
               class="cursor-pointer text-gray"
-              @click="customerName = null"
+              @click="returnCode = null"
             />
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <!-- END - Phone -->
+      <!-- END - Return Code -->
 
       <!-- START - Date From -->
       <b-col
@@ -156,7 +154,7 @@
         <b-button
           class="btn-brand-1 h9 align-items-button-center mt-sm-1 mt-xl-0"
           variant="someThing"
-          @click="onSearchClick()"
+          @click="onClickSearchButton()"
         >
           <b-icon-search class="mr-05" />
           Tìm kiếm
@@ -169,7 +167,6 @@
 </template>
 
 <script>
-
 import {
   mapActions,
 } from 'vuex'
@@ -177,7 +174,7 @@ import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { reverseVniDate } from '@/@core/utils/filter'
 import {
   RETURNEDGOODS,
-  GET_RETURNED_GOOD_CHOOSE_ACTION,
+  GET_RETURNED_GOODS_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -186,12 +183,12 @@ export default {
   },
   data() {
     return {
+      searchKeywords: '',
+      returnCode: '',
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
-      orderNumber: '',
-      customerName: '',
-      productName: '',
 
+      // decentralization
       decentralization: {
         formId: 1,
         ctrlId: 1,
@@ -211,6 +208,9 @@ export default {
     }
   },
 
+  computed: {
+  },
+
   watch: {
     fromDate() {
       this.configToDate = {
@@ -219,6 +219,7 @@ export default {
       }
     },
   },
+
   mounted() {
     this.onSearch()
     this.configToDate = {
@@ -226,21 +227,21 @@ export default {
       minDate: this.fromDate,
     }
   },
+
   methods: {
-    ...mapActions(RETURNEDGOODS, [GET_RETURNED_GOOD_CHOOSE_ACTION]),
+    ...mapActions(RETURNEDGOODS, [GET_RETURNED_GOODS_ACTION]),
     onSearch() {
       const searchData = {
-        searchKeywords: this.customerName,
-        orderNumber: this.orderNumber,
-        product: this.productName,
+        searchKeywords: this.searchKeywords,
+        orderReturnNumber: this.returnCode,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         ...this.decentralization,
       }
       this.updateSearchData(searchData)
-      this.GET_RETURNED_GOOD_CHOOSE_ACTION(searchData)
+      this.GET_RETURNED_GOODS_ACTION(searchData)
     },
-    onSearchClick() {
+    onClickSearchButton() {
       this.onSearch()
     },
     updateSearchData(data) {
