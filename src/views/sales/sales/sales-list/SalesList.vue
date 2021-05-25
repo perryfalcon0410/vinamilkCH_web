@@ -510,13 +510,16 @@ export default {
       console.log('customerDefaultTypeId', this.customerDefaultTypeId)
 
       const listProducts = this.getProducts
+      const customerTypeId = id
+      const params = {
+        formId: 4, // Hard code
+        ctrlId: 1, // // Hard code
+      }
       if (id !== this.customerDefaultTypeId) {
-        const customerTypeId = id
         this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
           customerTypeId,
           listProducts,
-          formId: 4,
-          ctrlId: 1,
+          params,
         })
       }
     },

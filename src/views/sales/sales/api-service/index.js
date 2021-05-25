@@ -63,11 +63,6 @@ export default {
   },
 
   updatePriceTypeCustomer(args) {
-    return axios.post(`${updatePriceTypeCustomerEndpoint}/${args.customerTypeId}`, args.listProducts, {
-      params: {
-        formId: args.formId,
-        ctrlId: args.ctrlId,
-      },
-    })
+    return axios.post(`${updatePriceTypeCustomerEndpoint}/${args.customerTypeId}`, args.listProducts)
   },
 }
