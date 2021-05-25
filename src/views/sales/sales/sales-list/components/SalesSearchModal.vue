@@ -280,6 +280,7 @@ export default {
       searchKeywords: '',
       phone: '',
       idNo: '',
+      customerTypeId: '',
 
       columns: [
         {
@@ -353,6 +354,7 @@ export default {
           idNo: data.idNo,
           feature: '',
           totalBill: data.totalBill,
+          customerTypeId: data.customerTypeId,
         }))
       }
       return []

@@ -573,6 +573,7 @@ export default {
       this.phoneNumber = val.data.phoneNumber
       this.address = val.data.address
       this.totalBill = val.data.totalBill ?? 0
+      this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
     },
 
     getOnlineOrderInfo(id) {

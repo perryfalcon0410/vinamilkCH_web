@@ -345,9 +345,6 @@
                       <b-input-group
                         class="input-group-merge"
                       >
-                        <b-input-group-prepend is-text>
-                          <b-form-checkbox />
-                        </b-input-group-prepend>
                         <b-form-input class="form-control-merge" />
                       </b-input-group>
                     </b-col>
@@ -822,7 +819,7 @@ export default {
     },
 
     getSaleOrderProducts() {
-      this.saleOrderProducts = [...this.getSaleOrderProductss]
+      this.saleOrderProducts = [...this.getSaleOrderProducts]
     },
   },
   mounted() {
@@ -850,7 +847,7 @@ export default {
     getVoucherInfo(id) {
       this.voucherId = id
       const paramsGetVoucher = {
-        keyWord: 'Voucher',
+        keyWord: 'Voucher 006',
         formId: 5, // Hard code
         ctrlId: 7, // Hard code
       }

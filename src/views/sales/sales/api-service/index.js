@@ -11,6 +11,7 @@ import {
   getProductsHotEndpoint,
   createSaleOrderEndpoint,
   getDiscountByCodeEndpoint,
+  updatePriceTypeCustomerEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -59,5 +60,14 @@ export default {
 
   getDiscountByCode(args) {
     return axios.get((`${getDiscountByCodeEndpoint}/${args}`))
+  },
+
+  updatePriceTypeCustomer(args) {
+    return axios.post(`${updatePriceTypeCustomerEndpoint}/${args.customerTypeId}`, args.listProducts, {
+      params: {
+        formId: args.formId,
+        ctrlId: args.ctrlId,
+      },
+    })
   },
 }

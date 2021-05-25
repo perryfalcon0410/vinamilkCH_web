@@ -106,6 +106,7 @@
     <!-- END - Header -->
 
     <!-- START - Body -->
+    <!--  :rows="id ? onlineOrderProducts : products"  :rows="customerTypeProducts" customerType -->
     <b-row
       class="mx-0 my-1"
     >
@@ -118,7 +119,7 @@
         <!-- START - Table product -->
         <vue-good-table
           :columns="columns"
-          :rows="id ? onlineOrderProducts : products"
+          :rows="id ? onlineOrderProducts : (customerType ? customerTypeProducts : products)"
           style-class="vgt-table striped"
           compact-mode
           line-numbers
@@ -148,13 +149,13 @@
 
             <!-- START - tableProductInventory -->
             <b-row
-              v-if="props.column.field === 'tableProductInventory'"
+              v-if="props.column.field === 'productInventory'"
               align-v="center"
               class="mx-0"
             >
-              {{ props.row.tableProductInventory }}
+              {{ props.row.productInventory }}
               <b-icon-shield-exclamation
-                v-if="props.row.tableProductInventory < props.row.tableProductAmount"
+                v-if="props.row.productInventory < props.row.quantity"
                 color="red"
                 class="cursor-pointer ml-1"
                 font-scale="1.5"
@@ -162,26 +163,26 @@
             </b-row>
             <!-- END - tableProductInventory -->
 
-            <!-- START - tableProductAmount -->
+            <!-- START - quantity -->
             <b-row
-              v-else-if="props.column.field === 'tableProductAmount'"
+              v-else-if="props.column.field === 'quantity'"
               align-v="center"
-              align-h="end"
+              align-h="start"
               class="mx-0"
             >
               <b-icon-caret-down-fill
                 class="cursor-pointer mr-1"
                 font-scale="1.5"
-                @click="decreaseAmount(props.row.tableProductId)"
+                @click="decreaseAmount(props.row.productId)"
               />
-              {{ props.row.tableProductAmount }}
+              {{ props.row.quantity }}
               <b-icon-caret-up-fill
                 class="cursor-pointer ml-1"
                 font-scale="1.5"
-                @click="increaseAmount(props.row.tableProductId)"
+                @click="increaseAmount(props.row.productId)"
               />
             </b-row>
-            <!-- END - tableProductAmount -->
+            <!-- END - quantity -->
 
             <!-- START - tableProductFeature -->
             <div
@@ -211,7 +212,10 @@
       <!-- END - Section Table product and list suggestion-->
 
       <!-- START - Section Form pay -->
-      <sales-form @getOnlineOrderInfoForm="getOnlineOrderInfoForm" />
+      <sales-form
+        @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
+        @getCustomerTypeInfo="getCustomerTypeInfo"
+      />
       <!-- END - Section Form pay -->
 
     </b-row>
@@ -232,12 +236,21 @@ import {
   GET_PRODUCT_INFOS_GETTER,
   GET_TOP_SALE_PRODUCTS_GETTER,
   ONLINE_ORDER_PRODUCTS_BY_ID_GETTER,
+  UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
   // Action
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
   GET_TOP_SALE_PRODUCTS_ACTION,
   GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION,
+  UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
 } from '../store-module/type'
+import {
+  CUSTOMER,
+  // GETTERS
+  CUSTOMER_DEFAULT_GETTER,
+  // Action
+  GET_CUSTOMER_DEFAULT_ACTION,
+} from '../../sales-customers/store-module/type'
 
 export default {
   components: {
@@ -251,7 +264,7 @@ export default {
       columns: [
         {
           label: '',
-          field: 'tableProductId',
+          field: 'productId',
           sortable: false,
           hidden: true,
           thClass: 'text-left',
@@ -259,28 +272,28 @@ export default {
         },
         {
           label: 'Mã sản phẩm',
-          field: 'tableProductCode',
+          field: 'productCode',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Tên sản phẩm',
-          field: 'tableProductName',
+          field: 'productName',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'ĐVT',
-          field: 'tableProductUnit',
+          field: 'productUnit',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Tồn kho',
-          field: 'tableProductInventory',
+          field: 'productInventory',
           type: 'number',
           sortable: false,
           thClass: 'text-center',
@@ -288,7 +301,7 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'tableProductAmount',
+          field: 'quantity',
           type: 'number',
           sortable: false,
           thClass: 'text-center',
@@ -296,7 +309,7 @@ export default {
         },
         {
           label: 'Đơn giá',
-          field: 'tableProductUnitPrice',
+          field: 'productUnitPrice',
           sortable: false,
           type: 'number',
           thClass: 'text-center',
@@ -304,7 +317,7 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'tableProductTotalPrice',
+          field: 'productTotalPrice',
           sortable: false,
           type: 'number',
           thClass: 'text-center',
@@ -334,19 +347,28 @@ export default {
 
       // online order
       id: null,
+
+      // price customer change customerTypeId
+      customerType: null,
+      productId: null,
+      quantity: null,
+      customerDefaultTypeId: null,
     }
   },
   computed: {
+    ...mapGetters(CUSTOMER, [
+      CUSTOMER_DEFAULT_GETTER,
+    ]),
     getProducts() {
       return this.GET_PRODUCTS_GETTER().map(data => ({
-        tableProductId: data.id,
-        tableProductName: data.productName,
-        tableProductUnit: data.uom1,
-        tableProductInventory: data.stockTotal,
-        tableProductAmount: 1,
-        tableProductUnitPrice: data.price,
-        tableProductTotalPrice: this.totalPrice(1, Number(data.price)),
-        tableProductCode: data.productCode,
+        productId: data.id,
+        productCode: data.productCode,
+        productName: data.productName,
+        productUnit: data.uom1,
+        productInventory: data.stockTotal,
+        quantity: 1,
+        productUnitPrice: data.price,
+        productTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
     },
     getProductInfos() {
@@ -366,14 +388,30 @@ export default {
     },
     onlineOrderProducts() {
       return this.ONLINE_ORDER_PRODUCTS_BY_ID_GETTER().map(data => ({
-        tableProductId: data.productId,
-        tableProductCode: data.productCode,
-        tableProductName: data.productName,
-        tableProductUnit: data.uom1,
-        tableProductInventory: data.stockTotal,
-        tableProductAmount: 1,
-        tableProductUnitPrice: data.price,
-        tableProductTotalPrice: this.totalPrice(1, Number(data.price)),
+        productId: data.productId,
+        productCode: data.productCode,
+        productName: data.productName,
+        productUnit: data.uom1,
+        productInventory: data.stockTotal,
+        quantity: 1,
+        productUnitPrice: data.price,
+        productTotalPrice: this.totalPrice(1, Number(data.price)),
+      }))
+    },
+    customerDefault() {
+      return this.CUSTOMER_DEFAULT_GETTER
+    },
+
+    customerTypeProducts() {
+      return this.UPDATE_PRICE_TYPE_CUSTOMER_GETTER().map(data => ({
+        productId: data.productId,
+        productCode: data.productCode,
+        productName: data.productName,
+        productUnit: data.uom1,
+        productInventory: data.stockTotal,
+        quantity: 1,
+        productUnitPrice: data.price,
+        productTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
     },
   },
@@ -386,6 +424,9 @@ export default {
     },
     getProductSearch() {
       this.productsSearch = [...this.getProductSearch]
+    },
+    customerDefault() {
+      this.getCustomerDefault()
     },
   },
   mounted() {
@@ -407,9 +448,9 @@ export default {
       // ctrlId: 7, // Hard code
     }
     this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetProductsTopSale)
+    this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
   },
   created() {
-    this.property = 'Example property update.'
   },
   methods: {
     ...mapGetters(SALES, [
@@ -417,30 +458,39 @@ export default {
       GET_PRODUCT_INFOS_GETTER,
       GET_TOP_SALE_PRODUCTS_GETTER,
       ONLINE_ORDER_PRODUCTS_BY_ID_GETTER,
+      UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
     ]),
     ...mapActions(SALES, [
       GET_PRODUCTS_ACTION,
       GET_PRODUCT_INFOS_ACTION,
       GET_TOP_SALE_PRODUCTS_ACTION,
       GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION,
+      UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
     ]),
+    ...mapActions(CUSTOMER, [
+      GET_CUSTOMER_DEFAULT_ACTION,
+    ]),
+
     totalPrice(amount, price) {
       return amount * (price || 0)
     },
+
     increaseAmount(productId) {
-      const index = this.products.findIndex(i => i.tableProductId === productId)
-      this.products[index].tableProductAmount += 1
-      this.products[index].tableProductTotalPrice = this.totalPrice(Number(this.products[index].tableProductAmount), Number(this.products[index].tableProductUnitPrice))
+      const index = this.products.findIndex(i => i.productId === productId)
+      this.products[index].quantity += 1
+      this.products[index].productTotalPrice = this.totalPrice(Number(this.products[index].quantity), Number(this.products[index].productUnitPrice))
     },
+
     decreaseAmount(productId) {
-      const index = this.products.findIndex(i => i.tableProductId === productId)
-      this.products[index].tableProductAmount -= 1
-      if (this.products[index].tableProductAmount < 0) {
-        this.products[index].tableProductAmount = 0
+      const index = this.products.findIndex(i => i.productId === productId)
+      this.products[index].quantity -= 1
+      if (this.products[index].quantity < 0) {
+        this.products[index].quantity = 0
       }
 
-      this.products[index].tableProductTotalPrice = this.totalPrice(Number(this.products[index].tableProductAmount), Number(this.products[index].tableProductUnitPrice))
+      this.products[index].productTotalPrice = this.totalPrice(Number(this.products[index].quantity), Number(this.products[index].productUnitPrice))
     },
+
     onChangeKeyWord() {
       this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
     },
@@ -448,6 +498,27 @@ export default {
     getOnlineOrderInfoForm(id) {
       this.id = id
       this.GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION(`${this.id}?formId=4&ctrlId=1`)
+    },
+
+    getCustomerDefault() {
+      this.customerDefaultTypeId = this.customerDefault.customerTypeId
+    },
+
+    getCustomerTypeInfo(id) {
+      this.customerType = id
+      console.log('customerTypeId from SalesForm', id)
+      console.log('customerDefaultTypeId', this.customerDefaultTypeId)
+
+      const listProducts = this.getProducts
+      if (id !== this.customerDefaultTypeId) {
+        const customerTypeId = id
+        this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
+          customerTypeId,
+          listProducts,
+          formId: 4,
+          ctrlId: 1,
+        })
+      }
     },
   },
 }

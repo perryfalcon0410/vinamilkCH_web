@@ -185,7 +185,7 @@ export default {
 
   mounted() {
     const paramsGetVoucher = {
-      keyWord: 'Voucher',
+      keyWord: 'Voucher 006',
       formId: 5, // Hard code
       ctrlId: 7, // // Hard code
     }

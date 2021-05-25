@@ -15,6 +15,7 @@ import {
   GET_HOT_PRODUCTS_GETTER,
   GET_ALL_PRODUCT_GETTER,
   GET_DISCOUNT_BY_CODE_GETTER,
+  UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -29,6 +30,7 @@ import {
   GET_ALL_PRODUCT_ACTION,
   CREATE_SALE_ORDER_ACTION,
   GET_DISCOUNT_BY_CODE_ACTION,
+  UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
 } from './type'
 
 export default {
@@ -47,6 +49,7 @@ export default {
     hotProducts: [],
     allProduct: [],
     discount: {},
+    customerTypeProducts: [],
   },
 
   getters: {
@@ -85,6 +88,9 @@ export default {
     },
     [GET_DISCOUNT_BY_CODE_GETTER](state) {
       return state.discount
+    },
+    [UPDATE_PRICE_TYPE_CUSTOMER_GETTER](state) {
+      return state.customerTypeProducts
     },
   },
 
@@ -267,6 +273,24 @@ export default {
           if (res.success) {
             toasts.success(res.statusValue)
             val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [UPDATE_PRICE_TYPE_CUSTOMER_ACTION]({ state }, val) {
+      SalesServices
+        .updatePriceTypeCustomer(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            // state.listProducts = res.res.statusCode
+            toasts.success(res.statusValue)
+            state.customerTypeProducts = res.data.products
+            console.log('state.customerTypeProducts:', state.customerTypeProducts)
           } else {
             throw new Error(res.statusValue)
           }
