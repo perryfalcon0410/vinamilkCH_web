@@ -69,7 +69,7 @@
                 v-model="searchOptions.fromDate"
                 :config="configDate"
                 class="form-control h8 text-brand-3"
-                placeholder="chọn ngày"
+                placeholder="Chọn ngày"
               />
               <b-input-group-append
                 is-text
@@ -99,7 +99,7 @@
                 v-model="searchOptions.toDate"
                 :config="configDate"
                 class="form-control h8 text-brand-3"
-                placeholder="chọn ngày"
+                placeholder="Chọn ngày"
               />
               <b-input-group-append
                 is-text
@@ -564,6 +564,16 @@ export default {
         // formId: this.searchOptions.formId,
         // ctrlId: this.searchOptions.ctrlId,
       }
+      if (!searchData.fromDate) {
+        searchData.fromDate = this.$earlyMonth
+        this.searchOptions.fromDate = this.$earlyMonth
+      }
+
+      if (!searchData.toDate) {
+        searchData.toDate = this.$nowDate
+        this.searchOptions.toDate = this.$nowDate
+      }
+      console.log(searchData)
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
     },

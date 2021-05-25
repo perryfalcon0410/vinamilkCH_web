@@ -25,56 +25,49 @@
           <!-- START - ID and Type -->
           <b-form-row>
             <b-col>
-              <b-form-group
-                label="Mã xuất hàng"
-                label-for="code"
-              >
-                <b-form-input
-                  id="code"
-                  v-model="warehousesOutput.code"
-                  maxlength="40"
-                  trim
-                  disabled
-                />
-              </b-form-group>
+              <div class="mt-sm-1 mt-xl-0">
+                Mã xuất hàng
+              </div>
+              <b-form-input
+                v-model="warehousesOutput.code"
+                maxlength="40"
+                trim
+                disabled
+              />
             </b-col>
 
             <b-col>
-              <b-form-group
-                label="Loại xuất"
-                label-for="type"
-              >
-                <tree-select
-                  v-model="warehousesTypeSelected"
-                  :options="warehousesOptions"
-                  :searchable="false"
-                  no-options-text="Không có dữ liệu"
-                  disabled
-                />
-              </b-form-group>
+              <div class="mt-sm-1 mt-xl-0">
+                Loại xuất
+              </div>
+              <tree-select
+                v-model="warehousesTypeSelected"
+                :options="warehousesOptions"
+                :searchable="false"
+                no-options-text="Không có dữ liệu"
+                disabled
+              />
             </b-col>
           </b-form-row>
           <!-- END - ID and Type -->
 
           <!-- START -  Stock  -->
-          <b-form-group
-            label="Kho hàng"
-            label-for="stock"
-          >
-            <b-form-input
-              id="stock"
-              v-model="warehousesOutput.wareHouseTypeName"
-              maxlength="40"
-              trim
-              disabled
-            />
-          </b-form-group>
+          <div class="mt-sm-1 mt-xl-0">
+            Kho hàng
+          </div>
+          <b-form-input
+            id="stock"
+            v-model="warehousesOutput.wareHouseTypeName"
+            maxlength="40"
+            trim
+            disabled
+          />
           <!-- END -  Stock  -->
 
           <!-- START - Bill Number and Date -->
           <b-form-row>
             <b-col>
-              <div>
+              <div class="mt-sm-1 mt-xl-0">
                 Số hóa đơn
               </div>
               <b-form-input
@@ -86,16 +79,13 @@
             </b-col>
 
             <b-col>
-              <div
-                class="h8 mt-sm-1 mt-xl-0"
-              >
+              <div class="mt-sm-1 mt-xl-0">
                 Ngày hoá đơn
               </div>
               <b-input-group
                 class="input-group-merge"
               >
                 <vue-flat-pickr
-                  id="form-input-date-from"
                   v-model="warehousesOutput.transDate"
                   :config="configDate"
                   class="form-control h8 text-brand-3"
@@ -109,7 +99,7 @@
           <!-- START -   Internal number and PO no -->
           <b-form-row>
             <b-col>
-              <div class="mt-1">
+              <div class="mt-sm-1 mt-xl-0">
                 Số nội bộ
               </div>
               <b-form-input
@@ -121,13 +111,10 @@
             </b-col>
 
             <b-col>
-              <div class="mt-1">
+              <div class="mt-sm-1 mt-xl-0">
                 PO No
               </div>
-              <b-input-group
-                id="PoNo"
-                class="input-group-merge"
-              >
+              <b-input-group class="input-group-merge">
                 <b-form-input
                   v-model="warehousesOutput.poNumber"
                   trim
@@ -143,17 +130,14 @@
           <!-- END - Internal number and PO no -->
 
           <!-- START - Note -->
-          <b-form-group
-            label="Ghi chú"
-            label-for="note"
-            class="mt-1"
-          >
-            <b-form-textarea
-              id="note"
-              v-model="warehousesOutput.note"
-              maxlength="4000"
-            />
-          </b-form-group>
+          <div class="mt-sm-1 mt-xl-0">
+            Ghi chú
+          </div>
+          <b-form-textarea
+            v-model="warehousesOutput.note"
+            maxlength="4000"
+            class="mb-1"
+          />
         <!-- END - Note -->
         </b-col>
         <!-- END - Form -->
@@ -369,6 +353,8 @@ export default {
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
+      formId: 5,
+      ctrlId: 7,
     }
   },
   computed: {
@@ -413,8 +399,8 @@ export default {
     const paramGetDetailsWarehousesOutput = {
       id: this.warehousesOutput.id,
       type: this.warehousesOutput.receiptType,
-      formId: 5,
-      ctrlId: 1,
+      // formId: this.formId,
+      // ctrlId: this.ctrlId,
     }
     this.GET_WAREHOUSES_OUTPUT_BY_ID_ACTION(paramGetDetailsWarehousesOutput)
     this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION(paramGetDetailsWarehousesOutput)
