@@ -57,10 +57,17 @@ export const formatISOtoVNI = (isoTime, includeTime) => {
   return `${date}/${month}/${year}`
 }
 
+// Replace . with ,
+export const replaceDotWithComma = value => {
+  if (!value) return value
+  return value.split('.').join(',')
+}
+
 // Format number to locale
 export const formatNumberToLocale = value => {
   if (!value) return value
-  return value.toLocaleString('vi-VN')
+  const valueFormated = Number(value)
+  return replaceDotWithComma(valueFormated.toLocaleString('vi-VN'))
 }
 
 // Format dd/mm/yyyy to 2021-04-15T03:32:47.519Z
@@ -122,10 +129,4 @@ export const getTimeOfDate = value => {
   const formatting = { hour: 'numeric', minute: 'numeric', hour12: false }
 
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
-}
-
-// Replace . with ,
-export const replaceDotWithComma = value => {
-  if (!value) return value
-  return value.split('.').join(',')
 }

@@ -140,7 +140,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
+import { formatDateToLocale } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
@@ -232,10 +232,10 @@ export default {
         id: data.id,
         productCode: data.productCode,
         productName: data.productName,
-        price: formatNumberToLocale(data.price),
+        price: this.$formatNumberToLocale(data.price),
         quantity: data.quantity,
         licenseNumber: data.licenseNumber,
-        totalPrice: formatNumberToLocale(data.totalPrice),
+        totalPrice: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
   },

@@ -249,7 +249,7 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  formatISOtoVNI, formatNumberToLocale, reverseVniDate, replaceDotWithComma,
+  formatISOtoVNI, reverseVniDate,
 } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import WarehousesInputListSearch from './components/WarehousesInputListSearch.vue'
@@ -368,9 +368,9 @@ export default {
           transCode: data.transCode,
           redInvoiceNo: data.redInvoiceNo,
           internalNumber: data.internalNumber,
-          quantity: replaceDotWithComma(formatNumberToLocale(Number(data.totalQuantity))),
+          quantity: this.$formatNumberToLocale(data.totalQuantity),
           receiptQuantity: data.totalQuantity,
-          price: replaceDotWithComma(formatNumberToLocale(Number(data.totalAmount))),
+          price: this.$formatNumberToLocale(data.totalAmount),
           receiptPrice: data.totalAmount,
           note: data.note,
           feature: '',
@@ -381,10 +381,10 @@ export default {
       return []
     },
     totalQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.receipts.reduce((accum, item) => accum + Number(item.receiptQuantity), 0))))
+      return this.$formatNumberToLocale(this.receipts.reduce((accum, item) => accum + Number(item.receiptQuantity), 0))
     },
     totalPrice() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.receipts.reduce((accum, item) => accum + Number(item.receiptPrice), 0))))
+      return this.$formatNumberToLocale(this.receipts.reduce((accum, item) => accum + Number(item.receiptPrice), 0))
     },
     receiptPagination() {
       if (this.RECEIPTS_GETTER) {

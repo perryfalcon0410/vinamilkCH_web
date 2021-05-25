@@ -60,7 +60,7 @@
           :sort-options="{
             enabled: false,
             multipleColumns: true,
-            initialSortBy: [{field: 'minuteCode', type: 'desc'}]
+            initialSortBy: [{field: 'minutesCode', type: 'desc'}]
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
@@ -133,14 +133,14 @@
               class="mx-0"
               align-h="end"
             >
-              {{ totalQuantity }}
+              {{ $formatNumberToLocale(totalQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'price'"
               class="mx-0"
               align-h="end"
             >
-              {{ totalMoney }}
+              {{ $formatNumberToLocale(totalMoney) }}
             </b-row>
           </template>
           <!-- END - Filter -->
@@ -250,7 +250,7 @@ import {
   code,
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { formatISOtoVNI, formatNumberToLocale, replaceDotWithComma } from '@/@core/utils/filter'
+import { formatISOtoVNI } from '@/@core/utils/filter'
 
 import WarehousesExchangeDamagedGoodsListSearch from './components/WarehousesExchangeDamagedGoodsListSearch.vue'
 import {
@@ -306,7 +306,7 @@ export default {
         },
         {
           label: 'Số biên bản',
-          field: 'minuteCode',
+          field: 'minutesCode',
           firstSortType: 'desc',
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -323,6 +323,7 @@ export default {
         {
           label: 'Số tiền',
           field: 'price',
+          formatFn: this.$formatNumberToLocale,
           filterOptions: {
             enabled: true,
           },
@@ -357,10 +358,10 @@ export default {
         return this.EXCHANGE_DAMAGED_GOODS_GETTER.content.map(data => ({
           id: data.id,
           date: data.transDate === '' ? '' : formatISOtoVNI(data.transDate),
-          minuteCode: data.transCode,
-          quantity: replaceDotWithComma(formatNumberToLocale(Number(data.quantity))),
+          minutesCode: data.transCode,
+          quantity: data.quantity,
           exchangeDamagedGoodsQuantity: data.quantity,
-          price: replaceDotWithComma(formatNumberToLocale(Number(data.totalAmount))),
+          price: data.totalAmount,
           exchangeDamagedGoodsPrice: data.totalAmount,
           reason: data.reason,
         }))
@@ -375,11 +376,11 @@ export default {
     },
 
     totalQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.exchangeDamagedGoods.reduce((accum, item) => accum + Number(item.exchangeDamagedGoodsQuantity), 0))))
+      return this.exchangeDamagedGoods.reduce((accum, item) => accum + Number(item.exchangeDamagedGoodsQuantity), 0)
     },
 
     totalMoney() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.exchangeDamagedGoods.reduce((accum, item) => accum + Number(item.exchangeDamagedGoodsPrice), 0))))
+      return this.exchangeDamagedGoods.reduce((accum, item) => accum + Number(item.exchangeDamagedGoodsPrice), 0)
     },
 
     exchangeDamagedGoodsPagination() {

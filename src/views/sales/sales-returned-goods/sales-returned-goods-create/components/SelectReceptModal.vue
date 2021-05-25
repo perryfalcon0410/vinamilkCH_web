@@ -110,7 +110,6 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatNumberToLocale } from '@/@core/utils/filter'
 import SearchComponent from './SelectReceptSearch.vue'
 import { RETURNEDGOODS, RETURNED_GOOD_CHOOSE_GETTER, GET_RETURNED_GOOD_CHOOSE_ACTION } from '../../store-module/type'
 
@@ -171,13 +170,13 @@ export default {
         id: data.id,
         orderNumber: data.orderNumber,
         customerName: data.customerName,
-        total: formatNumberToLocale(Number(data.total)),
+        total: this.$formatNumberToLocale(data.total),
         salesManName: data.salesManName,
         oderDate: data.orderDate,
       }))
     },
     totalAmount() {
-      return formatNumberToLocale(Number(this.RETURNED_GOOD_CHOOSE_GETTER().saleOdersInfo.allTotal || ''))
+      return this.$formatNumberToLocale(this.RETURNED_GOOD_CHOOSE_GETTER().saleOdersInfo.allTotal || '')
     },
   },
   mounted() {

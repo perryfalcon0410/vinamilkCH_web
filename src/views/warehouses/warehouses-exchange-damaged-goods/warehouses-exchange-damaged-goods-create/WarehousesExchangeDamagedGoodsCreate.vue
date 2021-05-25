@@ -117,6 +117,7 @@
               v-model.trim="customerInfo.customerPhone"
               :state="touched ? passed : null"
               maxlength="10"
+              @keypress="$onlyNumberInput"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -170,7 +171,10 @@
             >
               <div v-if="props.column.field === 'feature'">
                 <b-icon-bricks
-                  v-b-popover.hover.top="'Thao tác'"
+                  v-b-popover.hover="'Thao tác'"
+                  class="cursor-pointer"
+                  scale="1.3"
+                  @click="onClickFeature()"
                 />
               </div>
               <div v-else>
@@ -187,21 +191,23 @@
               <div
                 v-if="props.column.field === 'productCode'"
               >
-                {{ totalProducts }}
+                {{ $formatNumberToLocale(totalProducts) }}
               </div>
+
               <b-row
                 v-else-if="props.column.field === 'productAmount'"
                 class="mx-0"
                 align-h="end"
               >
-                {{ totalQuantity }}
+                {{ $formatNumberToLocale(totalQuantity) }}
               </b-row>
+
               <b-row
                 v-else-if="props.column.field === 'productPriceTotal'"
                 class="mx-0"
                 align-h="end"
               >
-                {{ totalMoney }}
+                {{ $formatNumberToLocale(totalMoney) }}
               </b-row>
             </template>
             <!-- END - Custom filter -->
@@ -221,21 +227,13 @@
                 </div>
               </span>
 
-              <span v-if="props.column.field == 'productPriceTotal'">
-                <div v-if="props.row.productPriceTotal != ''">
-                  <b-form
-                    v-model="damagedProduct[props.index].productPriceTotal"
-                  />
-                </div>
-              </span>
-
-              <div v-if="props.column.field === 'feature'">
+              <div v-if="props.column.field === 'feature' && isDisabledFeature">
                 <b-icon-trash-fill
                   v-b-popover.hover.top="'Xóa'"
                   class="cursor-pointer"
                   scale="1.3"
                   color="red"
-                  @click="onClickDeleteButton(props.row.count)"
+                  @click="onClickDeleteButton(props.row.originalIndex)"
                 />
               </div>
 
@@ -414,6 +412,7 @@ export default {
       goNext: () => {},
       isModalShow: false, // Modal xác nhận rời đi.
       isFieldCheck: true,
+      isDisabledFeature: true,
       isFocusedInputProduct: false,
       isFocusedInputCustomer: false,
       minuteCode: null,
@@ -486,6 +485,7 @@ export default {
           field: 'productPrice',
           type: 'number',
           sortable: false,
+          formatFn: this.$formatNumberToLocale,
           thClass: 'text-right',
           tdClass: 'text-right',
         },
@@ -494,6 +494,7 @@ export default {
           field: 'productAmount',
           type: 'number',
           sortable: false,
+          formatFn: this.$formatNumberToLocale,
           filterOptions: {
             enabled: true,
           },
@@ -505,6 +506,7 @@ export default {
           field: 'productPriceTotal',
           type: 'number',
           sortable: false,
+          formatFn: this.$formatNumberToLocale,
           filterOptions: {
             enabled: true,
           },
@@ -730,6 +732,10 @@ export default {
     onClickSaveButton() {
       this.isFieldCheck = false
       this.createDamagedGoods()
+    },
+
+    onClickFeature() {
+      this.isDisabledFeature = !this.isDisabledFeature
     },
 
     navigateBack() {

@@ -204,7 +204,6 @@ import {
 } from 'vuex'
 import {
   formatDateToLocale,
-  formatNumberToLocale,
 } from '@core/utils/filter'
 import lodash from 'lodash'
 import commonData from '@/@db/common'
@@ -361,11 +360,11 @@ export default {
         customerCode: data.customerNumber,
         name: data.customerName,
         dayTime: formatDateToLocale(data.orderDate),
-        totalValue: formatNumberToLocale(data.total),
+        totalValue: this.$formatNumberToLocale(data.total),
         note: data.note,
-        discountMoney: formatNumberToLocale(data.discount),
+        discountMoney: this.$formatNumberToLocale(data.discount),
         moneyAccumulated: data.accumulation,
-        payments: formatNumberToLocale(data.total),
+        payments: this.$formatNumberToLocale(data.total),
         print: (data.usedRedInvoice === true) ? 'Đã in' : 'Chưa in',
         noteHdd: data.redInvoiceRemark,
         company: data.comName,
@@ -374,7 +373,7 @@ export default {
       }))
     },
     salesReceiptsTotal() {
-      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_GETTER(), value => formatNumberToLocale(value))
+      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_GETTER(), value => this.$formatNumberToLocale(value))
     },
 
     detailTable() {
@@ -383,14 +382,14 @@ export default {
         productName: data.productName,
         unit: data.unit,
         number: data.quantity,
-        price: formatNumberToLocale(data.pricePerUnit),
-        intoMoney: formatNumberToLocale(data.amount),
-        discount: formatNumberToLocale(data.discount),
-        bill: formatNumberToLocale(data.payment),
+        price: this.$formatNumberToLocale(data.pricePerUnit),
+        intoMoney: this.$formatNumberToLocale(data.amount),
+        discount: this.$formatNumberToLocale(data.discount),
+        bill: this.$formatNumberToLocale(data.payment),
       }))
     },
     detailTableTotal() {
-      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER(), value => formatNumberToLocale(value))
+      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER(), value => this.$formatNumberToLocale(value))
     },
 
     discountTable() {
@@ -407,7 +406,7 @@ export default {
 
     // common info in receipt
     info() {
-      return lodash.mapValues(this.SALES_RECEIPT_DETAIL_INFOS_GETTER(), value => formatNumberToLocale(value))
+      return lodash.mapValues(this.SALES_RECEIPT_DETAIL_INFOS_GETTER(), value => this.$formatNumberToLocale(value))
     },
 
     salesReceiptsPagination() {

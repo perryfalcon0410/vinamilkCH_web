@@ -237,7 +237,7 @@ import {
   mapGetters,
 } from 'vuex'
 import toasts from '@core/utils/toasts/toasts'
-import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
+import { formatDateToLocale } from '@core/utils/filter'
 import DenyModal from './components/inputPoDenyModal.vue'
 import {
   WAREHOUSEINPUT,
@@ -359,10 +359,10 @@ export default {
         soNo: data.soNo,
         productCode: data.productCode,
         productName: data.productName,
-        price: formatNumberToLocale(data.price),
+        price: this.$formatNumberToLocale(data.price),
         unit: data.unit,
         quantity: data.quantity,
-        totalPrice: formatNumberToLocale(data.totalPrice),
+        totalPrice: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
     poProductInfo() {
@@ -374,9 +374,9 @@ export default {
         soNo: data.soNo,
         productCode: data.productCode,
         productName: data.productName,
-        price: formatNumberToLocale(data.price),
+        price: this.$formatNumberToLocale(data.price),
         quantity: data.quantity,
-        totalPrice: formatNumberToLocale(data.totalPrice),
+        totalPrice: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
     poPromotionProductsInfo() {

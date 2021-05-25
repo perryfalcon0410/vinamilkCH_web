@@ -194,7 +194,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatDateToLocale, formatNumberToLocale, reverseVniDate } from '@core/utils/filter'
+import { formatDateToLocale, reverseVniDate } from '@core/utils/filter'
 import {
   getReportReasonTypeslabel,
 } from '@core/utils/utils'
@@ -356,19 +356,19 @@ export default {
         productName: data.productName,
         unit: data.unit,
         quantity: data.quantity,
-        price: formatNumberToLocale(Number(data.price)),
-        amount: formatNumberToLocale(Number(data.amount)),
-        refunds: formatNumberToLocale(Number(data.refunds)),
+        price: this.$formatNumberToLocale(data.price),
+        amount: this.$formatNumberToLocale(data.amount),
+        refunds: this.$formatNumberToLocale(data.refunds),
         payDay: formatDateToLocale(data.payDay),
         reasonForPayment: getReportReasonTypeslabel(String(data.reasonForPayment)),
         feedback: data.feedback,
       }))
     },
     totalQuantity() {
-      return formatNumberToLocale(Number(this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodsTotalInfo.totalQuantity))
+      return this.$formatNumberToLocale(this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodsTotalInfo.totalQuantity)
     },
     totalRefunds() {
-      return formatNumberToLocale(Number(this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodsTotalInfo.totalRefunds))
+      return this.$formatNumberToLocale(this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodsTotalInfo.totalRefunds)
     },
 
     reportReturnedgoodsPagination() {

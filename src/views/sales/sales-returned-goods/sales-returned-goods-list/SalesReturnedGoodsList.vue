@@ -354,7 +354,6 @@ import {
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
   formatDateToLocale,
-  formatNumberToLocale,
 } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import lodash from 'lodash'
@@ -492,17 +491,17 @@ export default {
         customerName: data.customerName,
         dateReturn: formatDateToLocale(data.dateReturn),
         orderDate: formatDateToLocale(data.orderDate),
-        total: formatNumberToLocale(Number(data.total)),
-        discount: formatNumberToLocale(Number(data.discount)),
-        amount: formatNumberToLocale(Number(data.amount)),
+        total: this.$formatNumberToLocale(data.total),
+        discount: this.$formatNumberToLocale(data.discount),
+        amount: this.$formatNumberToLocale(data.amount),
         feature: '',
       }))
     },
     totalPayment() {
-      return formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER().info.totalPayment))
+      return this.$formatNumberToLocale(this.RETURNED_GOODS_GETTER().info.totalPayment)
     },
     totalAmount() {
-      return formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER().info.totalAmount))
+      return this.$formatNumberToLocale(this.RETURNED_GOODS_GETTER().info.totalAmount)
     },
 
     // return goods detail
@@ -511,11 +510,11 @@ export default {
         productCode: data.productCode,
         productName: data.ProductName,
         unit: data.unit,
-        quantity: formatNumberToLocale(data.quantity),
-        pricePerUnit: formatNumberToLocale(data.pricePerUnit),
-        totalPrice: formatNumberToLocale(data.totalPrice),
-        discount: formatNumberToLocale(data.discount),
-        paymentReturn: formatNumberToLocale(data.paymentReturn),
+        quantity: this.$formatNumberToLocale(data.quantity),
+        pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
+        totalPrice: this.$formatNumberToLocale(data.totalPrice),
+        discount: this.$formatNumberToLocale(data.discount),
+        paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
       }))
     },
 
@@ -524,17 +523,17 @@ export default {
         productCode: data.productCode,
         productName: data.ProductName,
         unit: data.unit,
-        quantity: formatNumberToLocale(data.quantity),
-        pricePerUnit: formatNumberToLocale(data.pricePerUnit),
-        totalPrice: formatNumberToLocale(data.totalPrice),
-        discount: formatNumberToLocale(data.discount),
-        paymentReturn: formatNumberToLocale(data.paymentReturn),
+        quantity: this.$formatNumberToLocale(data.quantity),
+        pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
+        totalPrice: this.$formatNumberToLocale(data.totalPrice),
+        discount: this.$formatNumberToLocale(data.discount),
+        paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
 
       }))
     },
 
     totalInfo() {
-      return lodash.mapValues(this.RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER(), value => formatNumberToLocale(value))
+      return lodash.mapValues(this.RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER(), value => this.$formatNumberToLocale(value))
     },
   },
   watch: {

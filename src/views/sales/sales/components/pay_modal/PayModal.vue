@@ -621,9 +621,7 @@ import {
   mapGetters,
 } from 'vuex'
 import saleData from '@/@db/sale'
-import {
-  formatNumberToLocale, replaceDotWithComma,
-} from '@core/utils/filter'
+
 import {
   SALES,
   // GETTERS
@@ -771,10 +769,10 @@ export default {
       return this.GET_PRODUCTS_GETTER.map(data => ({
         productCode: data.productCode,
         productId: data.id,
-        quantity: replaceDotWithComma(formatNumberToLocale(Number(1))),
+        quantity: this.$formatNumberToLocale(1),
         isFreeItem: false,
         zmPromotion: 0,
-        productUnitPrice: replaceDotWithComma(formatNumberToLocale(Number(data.price))),
+        productUnitPrice: this.$formatNumberToLocale(data.price),
         productTotalPrice: Number(this.totalPrice(1, Number(data.price))),
       }))
     },

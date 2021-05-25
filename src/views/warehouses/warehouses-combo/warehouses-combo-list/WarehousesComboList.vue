@@ -188,7 +188,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale, formatNumberToLocale } from '@core/utils/filter'
+import { formatDateToLocale } from '@core/utils/filter'
 import {
   getWarehousesStatuslabel,
 } from '@core/utils/utils'
@@ -273,18 +273,18 @@ export default {
       return this.WAREHOUSES_COMBO_GETTER().map(data => ({
         transDate: formatDateToLocale(data.transDate),
         transCode: data.transCode,
-        quantity: formatNumberToLocale(Number(data.totalQuantity)),
-        price: formatNumberToLocale(Number(data.totalAmount)),
+        quantity: this.$formatNumberToLocale(data.totalQuantity),
+        price: this.$formatNumberToLocale(data.totalAmount),
         transType: getWarehousesStatuslabel(String(data.transType)),
         feature: '',
       }))
     },
 
     totalQuantity() {
-      return formatNumberToLocale(Number(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalQuantity))
+      return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalQuantity)
     },
     totalPrice() {
-      return formatNumberToLocale(Number(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalPrice))
+      return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalPrice)
     },
 
     warehousesComboPagination() {

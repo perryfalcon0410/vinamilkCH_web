@@ -23,8 +23,8 @@
             class="input-group-merge"
           >
             <b-form-input
-              v-model.trim="searchKeywords"
-              :state="searchKeywords ? passed : null"
+              v-model.trim="minutesCode"
+              :state="minutesCode ? passed : null"
               maxlength="20"
               class="h9"
               @keyup.enter="onClickSearchButton"
@@ -33,9 +33,9 @@
               is-text
             >
               <b-icon-x
-                v-show="searchKeywords"
+                v-show="minutesCode"
                 class="cursor-pointer text-gray"
-                @click="searchKeywords = null"
+                @click="minutesCode = null"
               />
             </b-input-group-append>
           </b-input-group>
@@ -194,7 +194,7 @@ export default {
       code,
       dateFormatVNI,
 
-      searchKeywords: '',
+      minutesCode: '',
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
 
@@ -261,7 +261,7 @@ export default {
     ]),
     onSearch() {
       const searchData = {
-        searchKeywords: this.searchKeywords,
+        searchKeywords: this.minutesCode,
         reasonId: this.reasonSelected,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),

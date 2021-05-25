@@ -273,7 +273,7 @@ import {
   mapGetters,
 } from 'vuex'
 import warehousesData from '@/@db/warehouses'
-import { formatNumberToLocale, formatDateToLocale } from '@/@core/utils/filter'
+import { formatDateToLocale } from '@/@core/utils/filter'
 import {
   WAREHOUSES_OUTPUT,
   // Getter
@@ -376,10 +376,10 @@ export default {
       return this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER().map(data => ({
         productID: data.id,
         productCode: data.productCode,
-        productPrice: formatNumberToLocale(Number(data.price)),
+        productPrice: this.$formatNumberToLocale(data.price),
         productName: data.productName,
         productDVT: data.unit,
-        productPriceTotal: formatNumberToLocale(Number(data.totalPrice)),
+        productPriceTotal: this.$formatNumberToLocale(data.totalPrice),
         productExported: data.export,
         productReturnAmount: data.quantity,
       }))

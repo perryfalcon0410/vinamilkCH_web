@@ -448,7 +448,7 @@ import {
   required,
 } from '@/@core/utils/validations/validations'
 import {
-  formatISOtoVNI, getTimeOfDate, formatNumberToLocale, replaceDotWithComma, formatVniDateToISO,
+  formatISOtoVNI, getTimeOfDate, formatVniDateToISO,
 } from '@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
 import {
@@ -581,19 +581,19 @@ export default {
     products() {
       return this.PRODUCTS_BY_ID_GETTER().map(data => ({
         productCode: data.productCode,
-        quantity: replaceDotWithComma(formatNumberToLocale(Number(data.quantity))),
-        price: replaceDotWithComma(formatNumberToLocale(Number(data.price))),
+        quantity: this.$formatNumberToLocale(data.quantity),
+        price: this.$formatNumberToLocale(data.price),
         name: data.productName,
         unit: data.unit,
-        totalPrice: replaceDotWithComma(formatNumberToLocale(Number(data.totalPrice))),
+        totalPrice: this.$formatNumberToLocale(data.totalPrice),
         soNo: data.soNo,
       }))
     },
     totalProductQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.quantity), 0))))
+      return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.quantity), 0))
     },
     totalProductPrice() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.totalPrice), 0))))
+      return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.totalPrice), 0))
     },
     getPromotions() {
       return this.PROMOTIONS_BY_ID_GETTER().map(data => ({
@@ -609,7 +609,7 @@ export default {
       }))
     },
     getTotalPromotionQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.promotions.reduce((accum, item) => accum + Number(item.quantity), 0))))
+      return this.$formatNumberToLocale(this.promotions.reduce((accum, item) => accum + Number(item.quantity), 0))
     },
     totalPromotionPrice() {
       return 0

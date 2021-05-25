@@ -355,7 +355,7 @@ import {
   mapGetters,
   mapState,
 } from 'vuex'
-import { reverseVniDate, formatDateToLocale, formatNumberToLocale } from '@/@core/utils/filter'
+import { reverseVniDate, formatDateToLocale } from '@/@core/utils/filter'
 
 import {
   dateFormatVNI,
@@ -479,8 +479,8 @@ export default {
         code: data.transCode,
         billNumber: data.redInvoiceNo,
         internalNumber: data.internalNumber,
-        quantity: formatNumberToLocale(Number(data.totalQuantity)),
-        price: formatNumberToLocale(Number(data.totalAmount)),
+        quantity: this.$formatNumberToLocale(data.totalQuantity),
+        price: this.$formatNumberToLocale(data.totalAmount),
         totalAmount: Number(data.totalAmount),
         note: data.note,
         type: data.receiptType,
@@ -496,7 +496,7 @@ export default {
     },
     // FilterOptions of column price
     totalPrice() {
-      return formatNumberToLocale(this.warehousesOutputList.reduce((accum, item) => accum + Number(item.totalAmount), 0))
+      return this.$formatNumberToLocale(this.warehousesOutputList.reduce((accum, item) => accum + Number(item.totalAmount), 0))
     },
   },
   watch: {

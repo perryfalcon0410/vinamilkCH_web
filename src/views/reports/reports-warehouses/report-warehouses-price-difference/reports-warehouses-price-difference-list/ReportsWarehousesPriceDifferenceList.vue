@@ -95,7 +95,6 @@ import {
   mapGetters,
 } from 'vuex'
 import {
-  formatNumberToLocale,
   formatISOtoVNI,
   reverseVniDate,
 } from '@/@core/utils/filter'
@@ -261,12 +260,12 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
-          quantity: formatNumberToLocale(Number(data.quantity)),
-          inputPrice: formatNumberToLocale(Number(data.inputPrice)),
-          totalInput: formatNumberToLocale(Number(data.totalInput)),
-          outputPrice: formatNumberToLocale(Number(data.outputPrice)),
-          totalOutput: formatNumberToLocale(Number(data.totalOutput)),
-          priceChange: formatNumberToLocale(Number(data.priceChange)),
+          quantity: this.$formatNumberToLocale(data.quantity),
+          inputPrice: this.$formatNumberToLocale(data.inputPrice),
+          totalInput: this.$formatNumberToLocale(data.totalInput),
+          outputPrice: this.$formatNumberToLocale(data.outputPrice),
+          totalOutput: this.$formatNumberToLocale(data.totalOutput),
+          priceChange: this.$formatNumberToLocale(data.priceChange),
         }))
       }
       return {}
@@ -274,8 +273,8 @@ export default {
     info() {
       if (this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER.info) {
         return {
-          totalQuantity: formatNumberToLocale(Number(this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER.info.totalQuantity)),
-          totalPriceInput: formatNumberToLocale(Number(this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER.info.totalPriceInput)),
+          totalQuantity: this.$formatNumberToLocale(this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER.info.totalQuantity),
+          totalPriceInput: this.$formatNumberToLocale(this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER.info.totalPriceInput),
         }
       }
       return {

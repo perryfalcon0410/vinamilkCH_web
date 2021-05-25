@@ -11,7 +11,7 @@ import {
   onlyNumberInput,
   onlyDateInput,
 } from '@core/utils/utils'
-import { formatDateToLocale } from '@/@core/utils/filter'
+import { formatDateToLocale, formatNumberToLocale } from '@/@core/utils/filter'
 
 import i18n from '@/libs/i18n'
 import VueGoodTablePlugin from 'vue-good-table'
@@ -70,6 +70,7 @@ moment.locale('vi')
 Vue.prototype.$isEmpty = isEmpty
 Vue.prototype.$onlyNumberInput = onlyNumberInput
 Vue.prototype.$onlyDateInput = onlyDateInput
+Vue.prototype.$formatNumberToLocale = formatNumberToLocale
 
 // get earlyMonth and now date
 Vue.prototype.$earlyMonth = formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
