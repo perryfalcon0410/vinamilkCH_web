@@ -20,7 +20,7 @@
           <b-row class="flex-grow-1 mx-0">
             <!-- START - Section 1 -->
             <b-col sm="8">
-              <label class="font-weight-bold w-100 text-center mb-2 h5">Thông tin cá nhân</label>
+              <label class="font-weight-bold w-100 text-center mb-2 h5"><strong>Thông tin cá nhân</strong></label>
 
               <!-- START - Customer Code -->
               Mã khách hàng
@@ -321,7 +321,7 @@
           xl="3"
           class="bg-white shadow rounded ml-lg-1 mt-1 mt-lg-0 pb-1"
         >
-          <label class="font-weight-bold w-100 text-center h5">Thông tin liên hệ</label>
+          <label class="font-weight-bold w-100 text-center h5"><strong>Thông tin liên hệ</strong></label>
           <!-- START - Customer Phone Number -->
           <validation-provider
             v-slot="{ errors, passed, touched}"
@@ -499,7 +499,7 @@
           xl="3"
           class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
         >
-          <label class="font-weight-bold w-100 text-center h5">Thẻ thành viên</label>
+          <label class="font-weight-bold w-100 text-center h5"><strong>Thẻ thành viên</strong></label>
 
           <!-- START - Customer Card type -->
           <div
@@ -956,57 +956,57 @@ export default {
 
     checkFieldsValueLength() {
       // WARNING: Không xóa mấy cái log này, sau này sẽ cần để check lại
-      // console.log(`firstName:                 (${typeof this.firstName})-${this.firstName}-${this.customer.firstName}-(${typeof this.customer.firstName})`)
-      // console.log(`lastName:                  (${typeof this.lastName})-${this.lastName}-${this.customer.lastName}-(${typeof this.customer.lastName})`)
-      // console.log(`barCode:                   (${typeof this.barCode})-${this.barCode}-${this.customer.barCode}-(${typeof this.customer.barCode})`)
-      // console.log(`birthDay:                  (${typeof this.birthDay})-${this.birthDay}-${formatISOtoVNI(this.customer.dob)}-(${typeof formatISOtoVNI(this.customer.dob)})`)
-      // console.log(`gendersSelected:           (${typeof (Number(this.gendersSelected) || null)})-${(Number(this.gendersSelected) || null)}-${this.customer.genderId}-(${typeof this.customer.genderId})`)
-      // console.log(`customerTypesSelected:     (${typeof (Number(this.customerTypesSelected) || null)})-${(Number(this.customerTypesSelected) || null)}-${this.customer.customerTypeId}-(${typeof this.customer.customerTypeId})`)
-      // console.log(`customerStatusSelected:    (${typeof (Number(this.customerStatusSelected) || 0)})-${(Number(this.customerStatusSelected) || 0)}-${this.customer.status}-(${typeof this.customer.status})`)
-      // console.log(`customerPrivate:           (${typeof this.customerPrivate})-${this.customerPrivate}-${(this.customer.isPrivate || false)}-(${typeof (this.customer.isPrivate || false)})`)
-      // console.log(`note:                      (${typeof this.note})-${this.note}-${(this.customer.noted || '')}-(${typeof (this.customer.noted || '')})`)
-      // console.log(`customerID:                (${typeof this.customerID})-${this.customerID}-${(this.customer.idNo || '')}-(${typeof (this.customer.idNo || '')})`)
-      // console.log(`customerIDDate:            (${typeof this.customerIDDate})-${this.customerIDDate}-${(formatISOtoVNI(this.customer.idNoIssuedDate) || '')}-(${typeof (formatISOtoVNI(this.customer.idNoIssuedDate) || '')})`)
-      // console.log(`customerIDLocation:        (${typeof this.customerIDLocation})-${this.customerIDLocation}-${(this.customer.idNoIssuedPlace || '')}-(${typeof (this.customer.idNoIssuedPlace || '')})`)
-      // console.log(`phoneNumber:               (${typeof this.phoneNumber})-${this.phoneNumber}-${(this.customer.mobiPhone || '')}-(${typeof (this.customer.mobiPhone || '')})`)
-      // console.log(`customerEmail:             (${typeof this.customerEmail})-${this.customerEmail}-${(this.customer.email || '')}-(${typeof (this.customer.email || '')})`)
-      // console.log(`homeNumber:                (${typeof this.homeNumber})-${this.homeNumber}-${(this.customer.street || '')}-(${typeof (this.customer.street || '')})`)
-      // console.log(`provincesSelected:         (${typeof Number(this.provincesSelected || null)})-${Number(this.provincesSelected || null)}-${(this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)}-(${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)})`)
-      // console.log(`districtsSelected:         (${typeof Number(this.districtsSelected || null)})-${Number(this.districtsSelected || null)}-${(this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)}-(${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)})`)
-      // console.log(`precinctsSelected:         (${typeof Number(this.precinctsSelected || null)})-${Number(this.precinctsSelected || null)}-${(this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)}-(${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)})`)
-      // console.log(`workingOffice:             (${typeof this.workingOffice})-${this.workingOffice}-${(this.customer.workingOffice || '')}-(${typeof (this.customer.workingOffice || '')})`)
-      // console.log(`officeAddress:             (${typeof this.officeAddress})-${this.officeAddress}-${(this.customer.officeAddress || '')}-(${typeof (this.customer.officeAddress || '')})`)
-      // console.log(`nataxCodeme:               (${typeof this.taxCode})-${this.taxCode}-${(this.customer.taxCode || '')}-(${typeof (this.customer.taxCode || '')})`)
-      // console.log(`cardTypesSelected:         (${typeof Number(this.cardTypesSelected || null)})-${Number(this.cardTypesSelected || null)}-${(this.customer.cardTypeId || 0)}-(${typeof (this.customer.cardTypeId || 0)}`)
-      // console.log(`closelyTypesSelected:      (${typeof Number(this.closelyTypesSelected || null)})-${Number(this.closelyTypesSelected || null)}-${(this.customer.closelyTypeId || 0)}-(${typeof (this.customer.closelyTypeId || 0)})`)
+      // console.log(`firstName:                 ${this.firstName === this.customer.firstName} | (${typeof this.firstName}) ->|  ${this.firstName} === ${this.customer.firstName} (${typeof this.customer.firstName})`)
+      // console.log(`lastName:                  ${this.lastName === this.customer.lastName} | (${typeof this.lastName}) ->|  ${this.lastName} === ${this.customer.lastName} (${typeof this.customer.lastName})`)
+      // console.log(`barCode:                   ${(this.barCode || null) === this.customer.barCode} | (${typeof (this.barCode || null)}) ->|  ${(this.barCode || null)} === ${this.customer.barCode} (${typeof this.customer.barCode})`)
+      // console.log(`birthDay:                  ${this.birthDay === formatISOtoVNI(this.customer.dob)} | (${typeof this.birthDay}) ->|  ${this.birthDay} === ${formatISOtoVNI(this.customer.dob)} (${typeof formatISOtoVNI(this.customer.dob)})`)
+      // console.log(`gendersSelected:           ${(Number(this.gendersSelected) || null) === this.customer.genderId} | (${typeof (Number(this.gendersSelected) || null)}) ->|  ${(Number(this.gendersSelected) || null)} === ${this.customer.genderId} (${typeof this.customer.genderId})`)
+      // console.log(`customerTypesSelected:     ${(Number(this.customerTypesSelected) || null) === this.customer.customerTypeId} | (${typeof (Number(this.customerTypesSelected) || null)}) ->|  ${(Number(this.customerTypesSelected) || null)} === ${this.customer.customerTypeId} (${typeof this.customer.customerTypeId})`)
+      // console.log(`customerStatusSelected:    ${Number(this.customerStatusSelected) === this.customer.status} | (${typeof Number(this.customerStatusSelected)}) ->|  ${Number(this.customerStatusSelected)} === ${this.customer.status} (${typeof this.customer.status})`)
+      // console.log(`customerPrivate:           ${this.customerPrivate === (this.customer.isPrivate || false)} | (${typeof this.customerPrivate})->|  ${this.customerPrivate} === ${(this.customer.isPrivate || false)} (${typeof (this.customer.isPrivate || false)})`)
+      // console.log(`note:                      ${(this.note || null) === this.customer.noted} | (${typeof (this.note || null)}) ->|  ${(this.note || null)} === ${this.customer.noted} (${typeof this.customer.noted})`)
+      // console.log(`customerID:                ${(this.customerID || null) === this.customer.idNo} | (${typeof (this.customerID || null)}) ->|  ${(this.customerID || null)} === ${this.customer.idNo} (${typeof this.customer.idNo})`)
+      // console.log(`customerIDDate:            ${this.customerIDDate === (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')} | (${typeof this.customerIDDate}) ->|  ${this.customerIDDate} === ${(this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')} (${typeof (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')})`)
+      // console.log(`customerIDLocation:        ${this.customerIDLocation === this.customer.idNoIssuedPlace} | (${typeof this.customerIDLocation}) ->|  ${this.customerIDLocation} === ${this.customer.idNoIssuedPlace} (${typeof this.customer.idNoIssuedPlace})`)
+      // console.log(`phoneNumber:               ${(this.phoneNumber || null) === this.customer.mobiPhone} | (${typeof (this.phoneNumber || null)}) ->|  ${(this.phoneNumber || null)} === ${this.customer.mobiPhone} (${typeof this.customer.mobiPhone})`)
+      // console.log(`customerEmail:             ${(this.customerEmail || null) === this.customer.email} | (${typeof (this.customerEmail || null)}) ->|  ${(this.customerEmail || null)} === ${this.customer.email} (${typeof this.customer.email})`)
+      // console.log(`homeNumber:                ${(this.homeNumber || null) === this.customer.street} | (${typeof (this.homeNumber || null)}) ->|  ${(this.homeNumber || null)} === ${this.customer.street} (${typeof this.customer.street})`)
+      // console.log(`provincesSelected:         ${Number(this.provincesSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)} | (${typeof Number(this.provincesSelected)}) ->|  ${Number(this.provincesSelected)} === ${(this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)} (${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)})`)
+      // console.log(`districtsSelected:         ${Number(this.districtsSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)} | (${typeof Number(this.districtsSelected)}) ->|  ${Number(this.districtsSelected)} === ${(this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)} (${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)})`)
+      // console.log(`precinctsSelected:         ${Number(this.precinctsSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)} | (${typeof Number(this.precinctsSelected)}) ->|  ${Number(this.precinctsSelected)} === ${(this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)} (${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)})`)
+      // console.log(`workingOffice:             ${(this.workingOffice || null) === this.customer.workingOffice} | (${typeof (this.workingOffice || null)}) ->|  ${(this.workingOffice || null)} === ${this.customer.workingOffice} (${typeof this.customer.workingOffice})`)
+      // console.log(`officeAddress:             ${(this.officeAddress || null) === this.customer.officeAddress} | (${typeof (this.officeAddress || null)}) ->|  ${(this.officeAddress || null)} === ${this.customer.officeAddress} (${typeof this.customer.officeAddress})`)
+      // console.log(`taxCodeme:                 ${(this.taxCode || null) === this.customer.taxCode} | (${typeof this.taxCode}) ->|  ${(this.taxCode || null)} === ${(this.customer.taxCode || null)} (${typeof this.customer.taxCode})`)
+      // console.log(`cardTypesSelected:         ${(Number(this.cardTypesSelected) || null) === this.customer.cardTypeId} | (${typeof (Number(this.cardTypesSelected) || null)}) ->|  ${(Number(this.cardTypesSelected) || null)} === ${this.customer.cardTypeId} (${typeof this.customer.cardTypeId}`)
+      // console.log(`closelyTypesSelected:      ${(Number(this.closelyTypesSelected) || null) === this.customer.closelyTypeId} | (${typeof (Number(this.closelyTypesSelected) || null)}) ->|  ${(Number(this.closelyTypesSelected) || null)} === ${this.customer.closelyTypeId} (${typeof this.customer.closelyTypeId}`)
 
       if (
         // START - Personal
         this.firstName === this.customer.firstName
         && this.lastName === this.customer.lastName
-        && this.barCode === this.customer.barCode
+        && (this.barCode || null) === this.customer.barCode
         && this.birthDay === formatISOtoVNI(this.customer.dob)
         && (Number(this.gendersSelected) || null) === this.customer.genderId
         && (Number(this.customerTypesSelected) || null) === this.customer.customerTypeId
-        && (Number(this.customerStatusSelected) || 0) === this.customer.status
+        && Number(this.customerStatusSelected) === this.customer.status
         && this.customerPrivate === (this.customer.isPrivate || false)
-        && this.note === (this.customer.noted || '')
-        && this.customerID === (this.customer.idNo || '')
-        && this.customerIDDate === (formatISOtoVNI(this.customer.idNoIssuedDate) || '')
-        && this.customerIDLocation === (this.customer.idNoIssuedPlace || '')
+        && (this.note || null) === this.customer.noted
+        && (this.customerID || null) === this.customer.idNo
+        && this.customerIDDate === (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')
+        && this.customerIDLocation === this.customer.idNoIssuedPlace
         // START - Contact
-        && this.phoneNumber === (this.customer.mobiPhone || '')
-        && this.customerEmail === (this.customer.email || '')
-        && this.homeNumber === (this.customer.street || '')
-        && Number(this.provincesSelected || null) === (this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)
-        && Number(this.districtsSelected || null) === (this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)
-        && Number(this.precinctsSelected || null) === (this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)
-        && this.workingOffice === (this.customer.workingOffice || '')
-        && this.officeAddress === (this.customer.officeAddress || '')
-        && this.taxCode === (this.customer.taxCode || '')
+        && this.phoneNumber === this.customer.mobiPhone
+        && this.customerEmail === this.customer.email
+        && this.homeNumber === this.customer.street
+        && Number(this.provincesSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)
+        && Number(this.districtsSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)
+        && Number(this.precinctsSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)
+        && (this.workingOffice || null) === this.customer.workingOffice
+        && (this.officeAddress || null) === this.customer.officeAddress
+        && (this.taxCode || null) === this.customer.taxCode
         // START - MembershipCard
-        && Number(this.cardTypesSelected || null) === (this.customer.cardTypeId || 0)
-        && Number(this.closelyTypesSelected || null) === (this.customer.closelyTypeId || 0)
+        && (Number(this.cardTypesSelected) || null) === this.customer.cardTypeId
+        && (Number(this.closelyTypesSelected) || null) === this.customer.closelyTypeId
       ) {
         return true
       }

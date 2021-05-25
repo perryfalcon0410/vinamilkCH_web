@@ -20,7 +20,7 @@
           <b-row class="flex-grow-1 mx-0">
             <!-- START - Section 1 -->
             <b-col sm="8">
-              <label class="font-weight-bold w-100 text-center h5">Thông tin cá nhân</label>
+              <label class="font-weight-bold w-100 text-center h5"><strong>Thông tin cá nhân</strong></label>
 
               <!-- START - Customer Code -->
               <b-col class="px-0">
@@ -289,7 +289,7 @@
           xl="3"
           class="bg-white shadow rounded ml-lg-1 mt-1 mt-lg-0 pb-1"
         >
-          <label class="font-weight-bold w-100 text-center h5">Thông tin liên hệ</label>
+          <label class="font-weight-bold w-100 text-center h5"><strong>Thông tin liên hệ</strong></label>
           <!-- START - Customer Phone Number -->
           <validation-provider
             v-slot="{ errors, passed, touched}"
@@ -467,7 +467,7 @@
           xl="3"
           class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
         >
-          <label class="font-weight-bold w-100 text-center h5">Thẻ thành viên</label>
+          <label class="font-weight-bold w-100 text-center h5"><strong>Thẻ thành viên</strong></label>
 
           <!-- START - Customer Card type -->
           <div
