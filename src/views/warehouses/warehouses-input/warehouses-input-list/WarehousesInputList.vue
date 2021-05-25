@@ -6,8 +6,7 @@
     <!-- START - Search -->
     <warehouses-input-list-search
       @updateSearchData="paginationData = {
-        size: elementSize,
-        page: pageNumber - 1,
+        ...paginationData,
         ...$event }"
     />
     <!-- END - Search -->
@@ -43,15 +42,26 @@
         class="py-1"
       >
         <vue-good-table
+          mode="remote"
           :columns="columns"
           :rows="receipts"
-          style-class="vgt-table striped"
+          style-class="vgt-table bordered"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: elementSize,
+            setCurrentPage: pageNumber,
           }"
           compact-mode
           line-numbers
+          :total-rows="receiptPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+            initialSortBy: [{field: 'nameText', type: 'desc'}]
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           <div
             slot="emptystate"
@@ -155,7 +165,7 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
                   v-model="elementSize"
@@ -166,7 +176,11 @@
                 />
                 <span
                   class="text-nowrap"
-                > trong {{ receiptPagination.totalElements }} mục </span>
+                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
+                  -
+                  {{ (elementSize * pageNumber) > receiptPagination.totalElements ?
+                    receiptPagination.totalElements : (elementSize * pageNumber) }}
+                  của {{ receiptPagination.totalElements }} mục </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -235,7 +249,7 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  formatDateToLocale, formatNumberToLocale, reverseVniDate, replaceDotWithComma,
+  formatISOtoVNI, formatNumberToLocale, reverseVniDate, replaceDotWithComma,
 } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import WarehousesInputListSearch from './components/WarehousesInputListSearch.vue'
@@ -243,7 +257,6 @@ import {
   WAREHOUSEINPUT,
   // GETTERS
   RECEIPTS_GETTER,
-  RECEIPT_PAGINATION_GETTER,
   // ACTIONS
   GET_RECEIPTS_ACTION,
   EXPORT_RECEIPTS_ACTION,
@@ -344,22 +357,28 @@ export default {
   },
 
   computed: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      RECEIPTS_GETTER,
+    ]),
     getReceipts() {
-      return this.RECEIPTS_GETTER().map(data => ({
-        id: data.id,
-        transDate: formatDateToLocale(data.transDate),
-        transCode: data.transCode,
-        redInvoiceNo: data.redInvoiceNo,
-        internalNumber: data.internalNumber,
-        quantity: replaceDotWithComma(formatNumberToLocale(Number(data.totalQuantity))),
-        receiptQuantity: data.totalQuantity,
-        price: replaceDotWithComma(formatNumberToLocale(Number(data.totalAmount))),
-        receiptPrice: data.totalAmount,
-        note: data.note,
-        feature: '',
-        receiptType: data.receiptType,
-        poId: data.poId || 0,
-      }))
+      if (this.RECEIPTS_GETTER.content) {
+        return this.RECEIPTS_GETTER.content.map(data => ({
+          id: data.id,
+          transDate: formatISOtoVNI(data.transDate),
+          transCode: data.transCode,
+          redInvoiceNo: data.redInvoiceNo,
+          internalNumber: data.internalNumber,
+          quantity: replaceDotWithComma(formatNumberToLocale(Number(data.totalQuantity))),
+          receiptQuantity: data.totalQuantity,
+          price: replaceDotWithComma(formatNumberToLocale(Number(data.totalAmount))),
+          receiptPrice: data.totalAmount,
+          note: data.note,
+          feature: '',
+          receiptType: data.receiptType,
+          poId: data.poId || 0,
+        }))
+      }
+      return []
     },
     totalQuantity() {
       return replaceDotWithComma(formatNumberToLocale(Number(this.receipts.reduce((accum, item) => accum + Number(item.receiptQuantity), 0))))
@@ -368,7 +387,10 @@ export default {
       return replaceDotWithComma(formatNumberToLocale(Number(this.receipts.reduce((accum, item) => accum + Number(item.receiptPrice), 0))))
     },
     receiptPagination() {
-      return this.RECEIPT_PAGINATION_GETTER()
+      if (this.RECEIPTS_GETTER) {
+        return this.RECEIPTS_GETTER
+      }
+      return {}
     },
   },
 
@@ -400,10 +422,6 @@ export default {
   },
 
   methods: {
-    ...mapGetters(WAREHOUSEINPUT, [
-      RECEIPTS_GETTER,
-      RECEIPT_PAGINATION_GETTER,
-    ]),
     ...mapActions(WAREHOUSEINPUT, [
       GET_RECEIPTS_ACTION,
       EXPORT_RECEIPTS_ACTION,
@@ -436,7 +454,7 @@ export default {
       this.selectedReceiptIndex = index
       if (type === 1) { // Loại giao dịch nhập điều chỉnh
         toasts.error('Bạn không được phép xóa giao dịch nhập điều chỉnh')
-      } else if (date === formatDateToLocale(new Date())) {
+      } else if (date === formatISOtoVNI(new Date())) {
         this.isDeleteModalShow = !this.isDeleteModalShow
       } else {
         toasts.error('Đã quá thời hạn xóa')
@@ -449,6 +467,17 @@ export default {
     },
     onPaginationChange() {
       this.GET_RECEIPTS_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
     },
   },
 }

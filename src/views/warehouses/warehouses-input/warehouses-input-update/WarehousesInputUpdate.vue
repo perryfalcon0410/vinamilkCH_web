@@ -448,7 +448,7 @@ import {
   required,
 } from '@/@core/utils/validations/validations'
 import {
-  formatDateToLocale, getTimeOfDate, formatNumberToLocale, replaceDotWithComma,
+  formatISOtoVNI, getTimeOfDate, formatNumberToLocale, replaceDotWithComma, formatVniDateToISO,
 } from '@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
 import {
@@ -491,6 +491,7 @@ export default {
         allowInput: true,
         dateFormat: 'd/m/Y',
         allowInvalidPreload: false,
+        altInput: false,
       },
 
       // validation rules
@@ -639,11 +640,11 @@ export default {
   watch: {
     receipt() {
       this.transCode = this.RECEIPT_BY_ID_GETTER().transCode
-      this.transDate = formatDateToLocale(this.RECEIPT_BY_ID_GETTER().transDate)
+      this.transDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().transDate)
       this.transTime = getTimeOfDate(this.RECEIPT_BY_ID_GETTER().transDate)
       this.wareHouseTypeName = this.RECEIPT_BY_ID_GETTER().wareHouseTypeName
       this.billNumber = this.RECEIPT_BY_ID_GETTER().redInvoiceNo
-      this.billDate = formatDateToLocale(this.RECEIPT_BY_ID_GETTER().orderDate) || formatDateToLocale(this.RECEIPT_BY_ID_GETTER().adjustmentDate) || formatDateToLocale(this.RECEIPT_BY_ID_GETTER().borrowDate)
+      this.billDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().orderDate) || formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().adjustmentDate) || formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().borrowDate)
       this.internalNumber = this.RECEIPT_BY_ID_GETTER().internalNumber
       this.poNumber = this.RECEIPT_BY_ID_GETTER().poNumber
       this.note = this.RECEIPT_BY_ID_GETTER().note
@@ -753,7 +754,7 @@ export default {
             type: this.importType,
             note: this.note,
             redInvoiceNo: this.billNumber,
-            orderDate: this.billDate,
+            orderDate: formatVniDateToISO(this.billDate),
             internalNumber: this.internalNumber,
             poNumber: this.poNumber,
             lstUpdate: updatedPromotions,
