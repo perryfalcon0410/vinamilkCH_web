@@ -7,3 +7,5 @@ export const exportFilledStocksEndpoint = `${SALE}/filled-stock/export`
 export const createWarehouseInventoryEndpoint = `${SALE}/inventory`
 export const importFilledStocksEndpoint = `${SALE}/inventory/import-excel`
 export const checkExistedWarehouseInventoryEndpoint = `${SALE}/inventory/numInDay`
+export const getSampleImportFileEndpoint = `${SALE}/filled-stock/export-all`
+export const getFailedImportFileEndpoint = `${SALE}/filled-stock/export-fail`

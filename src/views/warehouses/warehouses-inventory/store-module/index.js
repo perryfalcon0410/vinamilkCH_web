@@ -9,6 +9,7 @@ import {
   WAREHOUSE_INVENTORY_STOCKS_GETTER,
   IS_EXISTED_WAREHOUSE_INVENTORY_GETTER,
   WAREHOUSE_INVENTORY_DATA_GETTER,
+  WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
   // ACTIONS
   GET_WAREHOUSE_INVENTORIES_ACTION,
   GET_WAREHOUSE_TYPES_ACTION,
@@ -17,6 +18,8 @@ import {
   CREATE_WAREHOUSE_INVENTORY_ACTION,
   IMPORT_FILLED_STOCKS_ACTION,
   CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION,
+  GET_SAMPLE_IMPORT_FILE_ACTION,
+  GET_FAILED_IMPORT_FILE_ACTION,
 } from './type'
 
 export default {
@@ -31,6 +34,7 @@ export default {
     warehouseInventoryStatusCode: null,
     isExistedWarehouseInventory: null,
     warehouseInventoryData: {},
+    warehouseInventoryImportData: {},
   },
 
   // START - GETTERS
@@ -52,6 +56,9 @@ export default {
     },
     [WAREHOUSE_INVENTORY_DATA_GETTER](state) {
       return state.warehouseInventoryData
+    },
+    [WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER](state) {
+      return state.warehouseInventoryImportData
     },
   },
 
@@ -152,7 +159,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.warehouseInventoryStocks = res.data.importSuccess
+            state.warehouseInventoryImportData = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -170,6 +177,50 @@ export default {
             state.isExistedWarehouseInventory = !res.data
           } else {
             throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_SAMPLE_IMPORT_FILE_ACTION]({}) {
+      WarehousesInventoryService
+        .getSampleImportFile()
+        .then(res => {
+          if (res.status === 200 && res.data != null) {
+            const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' })
+            if (window.navigator.msSaveOrOpenBlob) {
+              window.navigator.msSaveOrOpenBlob(blob, 'Mau_Import')
+            } else {
+              const elem = window.document.createElement('a')
+              elem.href = window.URL.createObjectURL(blob)
+              elem.download = 'Mau_Import'
+              document.body.appendChild(elem)
+              elem.click()
+              document.body.removeChild(elem)
+            }
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_FAILED_IMPORT_FILE_ACTION]({}, val) {
+      WarehousesInventoryService
+        .getFailedImportFile(val.data)
+        .then(res => {
+          if (res.status === 200 && res.data != null) {
+            const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' })
+            if (window.navigator.msSaveOrOpenBlob) {
+              window.navigator.msSaveOrOpenBlob(blob, `Kiểm kê hàng_Filled_${val.date}`)
+            } else {
+              const elem = window.document.createElement('a')
+              elem.href = window.URL.createObjectURL(blob)
+              elem.download = `Kiểm kê hàng_Filled_${val.date}`
+              document.body.appendChild(elem)
+              elem.click()
+              document.body.removeChild(elem)
+            }
           }
         })
         .catch(error => {

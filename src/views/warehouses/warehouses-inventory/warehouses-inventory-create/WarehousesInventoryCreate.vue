@@ -297,6 +297,7 @@
                 :number="true"
                 :value="props.row.inventoryPacket"
                 @change="updateInventoryPacket(props.row.originalIndex, props.row.inventoryPacket)"
+                @keypress="isNumber($event)"
               />
             </div>
 
@@ -308,6 +309,7 @@
                 :number="true"
                 :value="props.row.inventoryOdd"
                 @change="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
+                @keypress="isNumber($event)"
               />
             </div>
             <div v-else>
@@ -361,7 +363,7 @@
       v-model="isImportModalShow"
       size="lg"
       title="Import dữ liệu"
-      title-class="text-uppercase font-weight-bold text-primary"
+      title-class="text-uppercase font-weight-bold text-brand-1"
       content-class="bg-light"
       footer-border-variant="light"
     >
@@ -370,7 +372,7 @@
         class="bg-white py-1"
       >
         <b-col class="px-0">
-          <div class="d-inline-flex text-primary bg-light mb-1 px-1 rounded-right">
+          <div class="d-inline-flex text-brand-1 bg-light mb-1 px-1 rounded-right">
             Tập tin
           </div>
           <b-row
@@ -379,18 +381,21 @@
           >
             <b-col class="px-0">
               <b-form-file
+                v-model="importFile"
                 placeholder="Vui lòng chọn file import kiểm kê"
                 accept=".xlsx, .xls"
+                @input="hideErrorMessage"
               />
             </b-col>
             <ins
-              class="cursor-pointer text-primary mx-1"
+              class="cursor-pointer text-brand-1 mx-1"
+              @click="onClickDownloadSampleFile"
             >Tải mẫu</ins>
           </b-row>
 
         </b-col>
         <b-col class="px-0">
-          <div class="d-inline-flex text-primary bg-light my-1 px-1 rounded-right">
+          <div class="d-inline-flex text-brand-1 bg-light my-1 px-1 rounded-right">
             Thông tin import
           </div>
           <b-col>
@@ -401,8 +406,14 @@
             - Số dòng tối đa để nhập file là 5000
           </b-col>
 
-          <b-col class="text-danger ml-1">
-            Nhập thành công 3 dòng, thất bại 5 dòng <ins class="text-primary cursor-pointer">Xem</ins>
+          <b-col
+            v-show="showErrorMessage"
+            class="text-danger ml-1"
+          >
+            Nhập thành công {{ rowsSuccess }} dòng, thất bại {{ rowsFail }} dòng <ins
+              class="text-brand-1 cursor-pointer"
+              @click="onClickDownloadFailedFile"
+            >Xem</ins>
           </b-col>
         </b-col>
       </div>
@@ -411,10 +422,10 @@
       <!-- START - Footer -->
       <template #modal-footer>
         <b-button
-          variant="primary"
-          class="d-flex align-items-center"
+          variant="someThing"
+          class="btn-brand-1 aligns-items-button-center"
           size="sm"
-          @click="ok()"
+          @click="onClickAgreeImportButton()"
         >
           <b-icon
             icon="download"
@@ -428,7 +439,7 @@
           variant="secondary"
           class="d-flex align-items-center"
           size="sm"
-          @click="cancel()"
+          @click="isImportModalShow = !isImportModalShow"
         >
           <b-icon
             icon="x"
@@ -451,15 +462,15 @@
       Đã tồn tại dữ liệu kiểm kê trong ngày hôm nay, bạn có muốn lưu đè không?
       <template #modal-footer>
         <b-button
-          variant="primary"
-          class="aligns-items-button-center"
+          variant="someThing"
+          class="btn-brand-1 aligns-items-button-center"
           @click="onClickAgreeButton()"
         >
           Đồng ý
         </b-button>
         <b-button
           class="aligns-items-button-center"
-          @click="isCreateModalShow = !isCreateModalShow"
+          @click="isImportModalShow = !isImportModalShow"
         >
           Đóng
         </b-button>
@@ -475,15 +486,15 @@
       Dữ liệu kiểm kê đang được tạo, bạn có muốn đóng?
       <template #modal-footer>
         <b-button
-          variant="primary"
-          class="aligns-items-button-center"
+          variant="someThing"
+          class="btn-brand-1 aligns-items-button-center"
           @click="onClickConfirmCloseButton()"
         >
           Đồng ý
         </b-button>
         <b-button
           class="aligns-items-button-center"
-          @click="isModalCloseShow = !isModalCloseShow"
+          @click="isImportModalShow = !isImportModalShow"
         >
           Đóng
         </b-button>
@@ -503,12 +514,15 @@ import {
   WAREHOUSE_INVENTORY_STOCKS_GETTER,
   IS_EXISTED_WAREHOUSE_INVENTORY_GETTER,
   WAREHOUSE_INVENTORY_DATA_GETTER,
+  WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
   GET_WAREHOUSE_TYPES_ACTION,
   GET_WAREHOUSE_INVENTORY_STOCKS_ACTION,
   EXPORT_FILLED_STOCKS_ACTION,
   CREATE_WAREHOUSE_INVENTORY_ACTION,
   IMPORT_FILLED_STOCKS_ACTION,
   CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION,
+  GET_SAMPLE_IMPORT_FILE_ACTION,
+  GET_FAILED_IMPORT_FILE_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -528,7 +542,7 @@ export default {
       isModalCloseShow: false,
       isCreateModalShow: false,
       isCreated: false,
-      warehousesInventoryData: null,
+      warehousesInventoryData: {},
       columns: [
         {
           label: 'Ngành hàng',
@@ -651,7 +665,12 @@ export default {
       inventoryOdd: 0,
       inventoryTotal: 0,
       unequal: 0,
-      searchKeywords: null,
+      searchKeywords: '',
+      importFile: '',
+      warehouseInventoryImportData: {},
+      showErrorMessage: false,
+      rowsSuccess: 0,
+      rowsFail: 0,
     }
   },
 
@@ -689,6 +708,9 @@ export default {
     },
     getWarehouseInventoryData() {
       return this.WAREHOUSE_INVENTORY_DATA_GETTER()
+    },
+    getWarehouseInventoryImportData() {
+      return this.WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER()
     },
   },
 
@@ -732,6 +754,16 @@ export default {
     getWarehouseInventoryData() {
       this.warehousesInventoryData = { ...this.getWarehouseInventoryData }
     },
+    getWarehouseInventoryImportData() {
+      this.warehouseInventoryImportData = { ...this.getWarehouseInventoryImportData }
+      this.showErrorMessage = this.warehouseInventoryImportData.importFails.length > 0
+      this.rowsSuccess = this.warehouseInventoryImportData.importSuccess.length
+      this.rowsFail = this.warehouseInventoryImportData.importFails.length
+      this.warehouseInventoryImportData.importSuccess.forEach(productData => {
+        this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryPacket = productData.packetQuantity
+        this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryOdd = productData.packetQuantity
+      })
+    },
   },
 
   mounted() {
@@ -748,12 +780,15 @@ export default {
       CREATE_WAREHOUSE_INVENTORY_ACTION,
       IMPORT_FILLED_STOCKS_ACTION,
       CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION,
+      GET_SAMPLE_IMPORT_FILE_ACTION,
+      GET_FAILED_IMPORT_FILE_ACTION,
     ]),
     ...mapGetters(WAREHOUSEINVENTORY, [
       WAREHOUSE_TYPES_GETTER,
       WAREHOUSE_INVENTORY_STOCKS_GETTER,
       IS_EXISTED_WAREHOUSE_INVENTORY_GETTER,
       WAREHOUSE_INVENTORY_DATA_GETTER,
+      WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
     ]),
     onPaginationChange() {
       this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION(this.paginationData)
@@ -785,19 +820,19 @@ export default {
       this.originalProducts = this.products
     },
     updateInventoryTotal(index) {
-      this.products[index].inventoryTotal = this.products[index].inventoryPacket * this.products[index].exchange + this.products[index].inventoryOdd + 0
+      this.products[index].inventoryTotal = this.products[index].inventoryPacket * this.products[index].exchange + this.products[index].inventoryOdd
     },
     updateInventoryPacket(index, value) {
-      this.products[index].inventoryPacket = value + 0
+      this.products[index].inventoryPacket = value
       this.updateInventoryTotal(index)
     },
     updateInventoryOdd(index, value) {
-      this.products[index].inventoryOdd = value + 0
+      this.products[index].inventoryOdd = value
       this.updateInventoryTotal(index)
     },
     onClickExportButton() {
       this.EXPORT_FILLED_STOCKS_ACTION({
-        id: this.warehousesInventoryId.id,
+        id: this.warehousesInventoryData.id,
         date: reverseVniDate(this.countingDate),
         formId: 5,
         ctrlId: 7,
@@ -863,9 +898,41 @@ export default {
     },
     onClickImportButton() {
       this.isImportModalShow = !this.isImportModalShow
+      this.hideErrorMessage()
     },
     onClickConfirmCloseButton() {
       this.$router.back()
+    },
+    onClickAgreeImportButton() {
+      const data = new FormData()
+      data.append('name', this.importFile.name)
+      data.append('file', this.importFile)
+      this.IMPORT_FILLED_STOCKS_ACTION(data)
+    },
+    isNumber(e) {
+      const keysAllowed = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+      const keyPressed = e.key
+      if (!keysAllowed.includes(keyPressed)) {
+        e.preventDefault()
+      }
+    },
+    onClickDownloadSampleFile() {
+      this.GET_SAMPLE_IMPORT_FILE_ACTION({
+        formId: 5,
+        ctrlId: 7,
+      })
+    },
+    onClickDownloadFailedFile() {
+      const data = new FormData()
+      data.append('name', this.importFile.name)
+      data.append('file', this.importFile)
+      this.GET_FAILED_IMPORT_FILE_ACTION({
+        data,
+        date: reverseVniDate(this.countingDate),
+      })
+    },
+    hideErrorMessage() {
+      this.showErrorMessage = false
     },
   },
 }

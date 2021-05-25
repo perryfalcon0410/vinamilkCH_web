@@ -8,6 +8,9 @@ import {
   createWarehouseInventoryEndpoint,
   importFilledStocksEndpoint,
   checkExistedWarehouseInventoryEndpoint,
+  getSampleImportFileEndpoint,
+  getFailedImportFileEndpoint,
+
 } from './defaultConfig'
 
 export default {
@@ -42,11 +45,23 @@ export default {
     })
   },
   importFilledStocks(args) {
-    return axios.post(importFilledStocksEndpoint, args)
+    return axios.post(importFilledStocksEndpoint, args, {
+      'Content-Type': 'multipart/form-data',
+    })
   },
   checkExistedWarehouseInventory(args) {
     return axios.get(checkExistedWarehouseInventoryEndpoint, {
       params: formatURLParams(args),
+    })
+  },
+  getSampleImportFile() {
+    return axios.get(getSampleImportFileEndpoint, {
+      responseType: 'blob',
+    })
+  },
+  getFailedImportFile(args) {
+    return axios.post(getFailedImportFileEndpoint, args, {
+      'Content-Type': 'multipart/form-data',
     })
   },
 }
