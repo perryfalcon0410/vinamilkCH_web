@@ -1,338 +1,746 @@
 <template>
   <b-container
     fluid
-    class="pb-1 px-0"
+    class="px-0"
   >
-    <!-- START - Form and list -->
-    <b-row class="mx-0">
-      <!-- START - Form -->
-      <b-col
-        xl="3"
-        class="mr-xl-1 bg-white shadow rounded"
-      >
-        <!-- START -  Date  -->
-        <b-row class="my-1">
-          <b-col>
-            Ngày biên bản:
-          </b-col>
-          <div class="font-weight-bold mx-1">
-            29/10/2020 lúc 16:16
+    <!-- START - Form Container-->
+    <validation-observer
+      ref="formContainer"
+      v-slot="{invalid}"
+      slim
+    >
+      <!-- START - Form and Table -->
+      <b-row>
+        <!-- START - Form -->
+        <b-col
+          xl="3"
+          class="bg-white shadow rounded mr-xl-1 py-1"
+        >
+          <!-- START -  Date  -->
+          <div>
+            Ngày biên bản: <strong>{{ exchangeGoodsInfo.minuteDate }}</strong>
           </div>
-        </b-row>
-        <!-- END -  Date -->
+          <!-- END -  Date -->
 
-        <!-- START -  Number -->
-        <b-form-group
-          :state="stateInputID"
-          invalid-feedback="Chỉ bao gồm các ký tự [0-9], [a-Z], dấu chấm(.), dấu gạch dưới (_)"
-        >
-          Số phiên bản <sup class="text-danger">*</sup>
-          <b-form-input
-            id="archiveExportID"
-            v-model="inputValueID"
-            maxlength="40"
-            :state="stateInputID"
-            required
-            trim
-          />
-        </b-form-group>
-        <!-- END -  Number -->
+          <!-- START -  Number -->
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="code|required"
+            name="số biên bản"
+          >
+            <div class="mt-1">
+              Số biên bản <sup class="text-danger">*</sup>
+            </div>
+            <b-form-input
+              id="minuteID"
+              v-model.trim="exchangeGoodsInfo.transCode"
+              :state="touched ? passed : null"
+              maxlength="20"
+            />
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+          <!-- END -  Number -->
 
-        <!-- START -  Customer -->
-        <b-form-group>
-          Khách hàng <sup class="text-danger">*</sup>
-          <b-form-select
-            id="archiveExportArchive"
-          />
-        </b-form-group>
-        <!-- END -  Customer -->
+          <!-- START -  Customer -->
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="required"
+            name="tên khách hàng"
+          >
+            <div class="mt-1">
+              Khách hàng <sup class="text-danger">*</sup>
+            </div>
+            <b-form-input
+              v-model.trim="customerInfo.customerName"
+              maxlength="40"
+              :state="touched ? passed : null"
+              @focus="focusCustomer"
+              @blur="isFocusedInputCustomer = false"
+              @input="customerOptions"
+            />
+            <small class="text-danger">{{ errors[0] }}</small>
+            <!-- START - Popup customers -->
+            <b-collapse
+              v-model="isFocusedInputCustomer"
+              class="position-absolute mr-lg-0 w-50"
+              style="zIndex:1"
+            >
+              <b-container
+                class="my-1 bg-white rounded border border-primary shadow-lg"
+              >
+                <b-col>
+                  <b-row
+                    v-for="(customer, index) in customers"
+                    :key="index"
+                    class="my-1 cursor-pointer"
+                    :class="{'item-active': index === cursorCustomer}"
+                    @click="selectCustomer(customer)"
+                  >
+                    <b>{{ customer.customerName }}</b>
+                    {{ customer.customerCode }} - {{ customer.mobilePhone }}
+                  </b-row>
+                </b-col>
+              </b-container>
+            </b-collapse>
+            <!-- END - Popup customers -->
+          </validation-provider>
+          <!-- END -  Customer -->
 
-        <!-- START -  Address-->
-        <b-form-group>
-          Địa chỉ <sup class="text-danger">*</sup>
+          <!-- START -  Address-->
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="required"
+            name="địa chỉ"
+          >
+            <div class="mt-1">
+              Địa chỉ <sup class="text-danger">*</sup>
+            </div>
+            <b-input
+              v-model.trim="customerInfo.customerAddress"
+              :state="touched ? passed : null"
+              maxlength="20"
+            />
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+          <!-- END -  Address-->
 
-          <b-form-input
-            id="archiveExportBillNumber"
-            v-model="inputValueBillNumber"
-            required
-          />
-        </b-form-group>
-        <!-- END -  Address-->
+          <!-- START -  Phone number -->
+          <validation-provider
+            v-slot="{ errors, passed,touched }"
+            rules="phoneNumber|required"
+            name="số điện thoại"
+          >
+            <div class="mt-1">
+              Số điện thoại <sup class="text-danger">*</sup>
+            </div>
+            <b-form-input
+              v-model.trim="customerInfo.customerPhone"
+              :state="touched ? passed : null"
+              maxlength="10"
+            />
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+          <!-- END -  Phone number -->
 
-        <!-- START -  Phone number -->
-        <b-form-group
-          :state="stateInputInternalNumber"
-          invalid-feedback="Chỉ bao gồm ký tự [0-9]"
-        >
-          Di động <sup class="text-danger">*</sup>
-          <b-form-input
-            id="archiveExportInternalNumber"
-            v-model="inputValueInternalNumber"
-            maxlength="20"
-            :state="stateInputInternalNumber"
-            required
-          />
-        </b-form-group>
-        <!-- END -  Phone number -->
-
-        <!-- START -  Reason -->
-        <b-form-group>
-          Lý do <sup class="text-danger">*</sup>
-          <b-form-select
-            id="customerType"
-          />
-        </b-form-group>
+          <!-- START -  Reason -->
+          <validation-provider
+            v-slot="{ errors }"
+            rules="required"
+            name="lý do"
+          >
+            <div class="mt-1">
+              Lý do <sup class="text-danger">*</sup>
+            </div>
+            <tree-select
+              v-model="reasonObj.reasonSeleted"
+              :options="reasonObj.reasonOptions"
+              placeholder="Chọn lý do"
+              no-options-text="Không có dữ liệu"
+            />
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
         <!-- END -  Reason -->
 
-      </b-col>
-      <!-- END - Form -->
+        </b-col>
+        <!-- END - Form -->
 
-      <!-- START - List -->
-      <b-col class="bg-white shadow rounded mt-1 mt-xl-0 p-1">
-        <!-- START - Table Product -->
-        <vue-good-table
-          :columns="columns"
-          :rows="rowsProduct"
-          style-class="vgt-table striped"
-          compact-mode
-          line-numbers
-        >
-          <!-- START - Column -->
-          <template
-            slot="table-column"
-            slot-scope="props"
+        <!-- START - Table -->
+        <b-col class="bg-white shadow rounded mt-1 mt-xl-0 p-1">
+          <!-- START - Table Product -->
+          <vue-good-table
+            :columns="columns"
+            :rows="damagedProduct"
+            style-class="vgt-table striped"
+            compact-mode
+            line-numbers
           >
-            <div v-if="props.column.field === 'Feature'">
-              <b-icon-bricks />
-            </div>
-            <div v-else>
-              {{ props.column.label }}
-            </div>
-          </template>
-          <!-- END - Column -->
-
-          <!-- START - Row -->
-          <template
-            slot="table-row"
-            slot-scope="props"
-          >
-            <div v-if="props.column.field === 'Feature'">
-              <b-icon-trash-fill color="red" />
-            </div>
-
-            <div v-else>
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-          </template>
-          <!-- END - Row -->
-
-          <template slot="table-actions-bottom">
-            <b-col
-              cols="5"
-              class="m-1"
-            >
-              <b-input placeholder="Nhập mã hoặc tên sản phẩm" />
-            </b-col>
-          </template>
-
-          <!-- START - Filter -->
-          <template
-            slot="column-filter"
-            slot-scope="props"
-          >
+            <!-- START - Empty rows -->
             <div
-              v-if="props.column.field === 'ProductCode'"
+              slot="emptystate"
+              class="text-center"
             >
-              23 dòng
+              Vui lòng nhập sản phẩm
             </div>
-            <div
-              v-else-if="props.column.field === 'ProductAmount'"
-            >
-              560
-            </div>
-            <div
-              v-else-if="props.column.field === 'ProductPriceTotal'"
-              class="float-right"
-            >
-              25,123,000
-            </div>
-          </template>
-          <!-- END - Filter -->
+            <!-- END - Empty rows -->
 
-        </vue-good-table>
-        <!-- END - Table Product -->
-
-        <!-- START - Button -->
-        <b-row class="m-1 justify-content-end">
-          <b-button-group>
-            <b-button
-              variant="primary"
-              size="sm"
-              class="rounded text-uppercase"
+            <!-- START - Custom column -->
+            <template
+              slot="table-column"
+              slot-scope="props"
             >
-              <b-icon
-                icon="download"
-                width="20"
-                height="20"
-                class="mr-1"
-              />
-              Trả hàng
-            </b-button>
+              <div v-if="props.column.field === 'feature'">
+                <b-icon-bricks
+                  v-b-popover.hover.top="'Thao tác'"
+                />
+              </div>
+              <div v-else>
+                {{ props.column.label }}
+              </div>
+            </template>
+            <!-- END - Custom column -->
 
-            <b-button
-              size="sm"
-              class="ml-1 rounded text-uppercase"
-              @click="routeBack"
+            <!-- START - Custom filter -->
+            <template
+              slot="column-filter"
+              slot-scope="props"
             >
-              <b-icon-x
-                width="20"
-                height="20"
-              />
-              Đóng
-            </b-button>
-          </b-button-group>
-        </b-row>
+              <div
+                v-if="props.column.field === 'productCode'"
+              >
+                {{ totalProducts }}
+              </div>
+              <b-row
+                v-else-if="props.column.field === 'productAmount'"
+                class="mx-0"
+                align-h="end"
+              >
+                {{ totalQuantity }}
+              </b-row>
+              <b-row
+                v-else-if="props.column.field === 'productPriceTotal'"
+                class="mx-0"
+                align-h="end"
+              >
+                {{ totalMoney }}
+              </b-row>
+            </template>
+            <!-- END - Custom filter -->
+
+            <!-- START - Custom row -->
+            <template
+              slot="table-row"
+              slot-scope="props"
+            >
+              <span v-if="props.column.field == 'productAmount'">
+                <div v-if="props.row.productAmount != ''">
+                  <b-form-input
+                    v-model.trim="damagedProduct[props.index].productQuantity"
+                    type="number"
+                    @change="onChangeQuantity(damagedProduct[props.index])"
+                  />
+                </div>
+              </span>
+
+              <span v-if="props.column.field == 'productPriceTotal'">
+                <div v-if="props.row.productPriceTotal != ''">
+                  <b-form
+                    v-model="damagedProduct[props.index].productPriceTotal"
+                  />
+                </div>
+              </span>
+
+              <div v-if="props.column.field === 'feature'">
+                <b-icon-trash-fill
+                  v-b-popover.hover.top="'Xóa'"
+                  class="cursor-pointer"
+                  scale="1.3"
+                  color="red"
+                  @click="onClickDeleteButton(props.row.count)"
+                />
+              </div>
+
+              <div v-else>
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+            </template>
+            <!-- END - Custom row -->
+
+            <!-- START - Table Footer -->
+            <template slot="table-actions-bottom">
+              <!-- START - Prodduct input -->
+              <b-col
+                cols="5"
+                class="my-1"
+              >
+                <b-form-input
+                  v-model.trim="productInfos.productName"
+                  placeholder="Nhập mã hoặc tên sản phẩm"
+                  @focus="focusProduct"
+                  @input="loadProducts"
+                  @blur="isFocusedInputProduct = false"
+                  @keyup="loadProducts"
+                />
+                <!-- START - Product Popup -->
+                <b-collapse
+                  v-model.trim="isFocusedInputProduct"
+                  class="position-absolute w-80"
+                  style="zIndex:1"
+                >
+                  <b-container
+                    class="my-1 px-1 bg-white rounded border border-primary shadow-lg"
+                  >
+                    <b-col>
+                      <b-row
+                        v-for="(product, index) in products"
+                        :key="index"
+                        class="mx-0 my-1 border-bottom cursor-pointer"
+                        :class="{'item-active': index === cursorProduct}"
+                        @click="selectProduct(product)"
+                      >
+                        <!-- START - Section Label -->
+                        <b-col>
+                          <b-col
+                            class="text-dark"
+                          >
+                            <strong> {{ product.productName }}</strong>
+                          </b-col>
+                          <b-col
+                            class="my-1"
+                          >
+                            {{ product.productCode }}
+                          </b-col>
+                        </b-col>
+                      <!-- END - Section Label -->
+                      </b-row>
+                    </b-col>
+                  </b-container>
+                </b-collapse>
+                <!-- END - Product Popup -->
+
+              </b-col>
+              <!-- END - Prodduct input -->
+
+            </template>
+            <!-- END - Table Footer -->
+
+          </vue-good-table>
+          <!-- END - Table Product -->
+
+          <!-- START - Button -->
+          <b-row class="m-1 justify-content-end">
+            <b-button-group>
+              <b-button
+                variant="someThing"
+                class="btn-brand-1 rounded text-uppercase aligns-items-button-center"
+                :disabled="invalid"
+                @click="onClickSaveButton"
+              >
+                <b-icon-download
+                  class="mr-05"
+                />
+                Lưu
+              </b-button>
+
+              <b-button
+                class="btn-brand-1 ml-1 rounded text-uppercase aligns-items-button-center"
+                @click="navigateBack"
+              >
+                <b-icon-x
+                  class="mr-05"
+                  scale="1.5"
+                />
+                Đóng
+              </b-button>
+            </b-button-group>
+          </b-row>
         <!-- END - Button -->
-      </b-col>
-      <!-- END - List -->
-    </b-row>
-    <!-- END - Form and list -->
+        </b-col>
+      <!-- END - Table -->
 
+      </b-row>
+    <!-- END - Form and Table -->
+
+    </validation-observer>
+    <!-- END - Form Container-->
+
+    <!-- START - Customer Modal Close -->
+    <b-modal
+      v-model="isModalShow"
+      title="Thông báo"
+    >
+      Thông tin sẽ không được cập nhật khi rời trang
+      <template #modal-footer>
+        <b-button
+          variant="someThing"
+          class="btn-brand-1 aligns-items-button-center"
+          @click="onClickAgreeButton()"
+        >
+          Đồng ý
+        </b-button>
+        <b-button
+          class="aligns-items-button-center"
+          @click="isModalShow = !isModalShow"
+        >
+          Đóng
+        </b-button>
+      </template>
+    </b-modal>
+    <!-- END - Customer Modal Close -->
   </b-container>
 </template>
 
 <script>
+import commonData from '@/@db/common'
+import {
+  mapGetters,
+  mapActions,
+} from 'vuex'
+import {
+  ValidationProvider,
+  ValidationObserver,
+} from 'vee-validate'
+import {
+  code,
+  phoneNumber,
+  required,
+} from '@/@core/utils/validations/validations'
+import { getNow } from '@/@core/utils/utils'
+import {
+  WAREHOUSES_EXCHANGE_DAMAGED_GOODS,
+  // GETTERS
+  CUSTOMERS_GETTER,
+  PRODUCTS_GETTER,
+  EXCHANGE_DAMAGED_GOODS_REASONS_GETTER,
+  // ACTIONS
+  CREATE_EXCHANGE_DAMAGED_GOODS_ACTION,
+  GET_CUSTOMERS_ACTION,
+  GET_PRODUCTS_ACTION,
+  GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION,
+} from '../store-module/type'
+
 export default {
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
+
   data() {
     return {
-      selected: 'phiếu nhập',
-      EntryAdjustmentModalVisible: false,
-      EntryBorrowedModalVisible: false,
-      EntryCouponModalVisible: false,
-      inputValueID: '',
-      inputValueBillNumber: '',
-      inputValueInternalNumber: '',
-      inputValueDate: new Date(),
+      // validation rules
+      code,
+      phoneNumber,
+      required,
+
+      goNext: () => {},
+      isModalShow: false, // Modal xác nhận rời đi.
+      isFieldCheck: true,
+      isFocusedInputProduct: false,
+      isFocusedInputCustomer: false,
+      minuteCode: null,
+      cursorCustomer: -1, // Con trỏ chuột ở pop up = -1
+      cursorProduct: -1,
+
+      reasonObj: {
+        reasonSeleted: null,
+        reasonOptions: [],
+      },
+
+      decentralization: {
+        formId: 5,
+        ctrlId: 7,
+      },
+      customerInfo: {
+        customerId: null,
+        customerCode: null,
+        customerName: null,
+        customerAddress: null,
+        customerPhone: null,
+      },
+      exchangeGoodsInfo: {
+        transCode: null,
+        shopId: null,
+        customerId: null,
+        reasonId: null,
+        quantity: null,
+        totalAmount: null,
+        minuteDate: getNow(),
+        lstExchangeDetail: [
+          {
+            productCode: null,
+            productName: null,
+            price: null,
+            quantity: null,
+            totalPrice: null,
+            unit: null,
+          },
+        ],
+      },
       columns: [
         {
           label: 'Mã hàng',
-          field: 'ProductCode',
+          field: 'productCode',
           sortable: false,
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên hàng',
-          field: 'ProductName',
+          field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
-          field: 'ProductDVT',
+          field: 'productDVT',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giá',
-          field: 'ProductPrice',
+          field: 'productPrice',
           type: 'number',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng ',
-          field: 'ProductAmount',
-          sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
-        },
-        {
-          label: 'Thành tiền',
-          field: 'ProductPriceTotal',
+          field: 'productAmount',
           type: 'number',
           sortable: false,
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Thành tiền',
+          field: 'productPriceTotal',
+          type: 'number',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-center',
+          tdClass: 'text-right',
         },
         {
           label: 'Thao tác',
-          field: 'Feature',
+          field: 'feature',
           sortable: false,
         },
       ],
-      rowsProduct: [
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT Dâu ADM GOLD 180ml',
-          ProductDVT: 'Hộp',
-          ProductPrice: '6,300',
-          ProductAmount: '12',
-          ProductPriceTotal: '2,531,000',
-          Feature: '',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT Dâu ADM GOLD 180ml',
-          ProductDVT: 'Hộp',
-          ProductPrice: '6,300',
-          ProductAmount: '12',
-          ProductPriceTotal: '2,531,000',
-          Feature: '',
-        },
-        {
-          ProductCode: '04AA10',
-          ProductName: 'STT Dâu ADM GOLD 180ml',
-          ProductDVT: 'Hộp',
-          ProductPrice: '6,300',
-          ProductAmount: '12',
-          ProductPriceTotal: '2,531,000',
-          Feature: '',
-        },
+      productInfos: {
+        productName: null,
+      },
+      damagedProduct: [
       ],
     }
   },
 
   computed: {
-    stateInputID() {
-      const validID = /^([\w\\.]{0,40})$/
-      const result = validID.test(this.inputValueID)
-      if (this.inputValueID.length >= 1) {
-        return result
-      }
-      return null
+    ...mapGetters(WAREHOUSES_EXCHANGE_DAMAGED_GOODS, [
+      CUSTOMERS_GETTER,
+      EXCHANGE_DAMAGED_GOODS_REASONS_GETTER,
+      PRODUCTS_GETTER,
+    ]),
+
+    getReasonOptions() {
+      return this.EXCHANGE_DAMAGED_GOODS_REASONS_GETTER.map(data => ({
+        id: data.id,
+        label: data.categoryName,
+      }))
     },
-    stateInputBillNumber() {
-      const validBillNumber = /^(\d{0,20})$/
-      const result = validBillNumber.test(this.inputValueBillNumber)
-      if (this.inputValueBillNumber.length >= 1) {
-        return result
-      }
-      return null
+
+    customers() {
+      return this.CUSTOMERS_GETTER.map(data => ({
+        customerId: data.id,
+        customerCode: data.customerCode,
+        customerName: data.nameText,
+        address: data.address,
+        mobilePhone: data.mobiPhone,
+      }))
     },
-    stateInputInternalNumber() {
-      const validInternalNumber = /^(\d{0,20})$/
-      const result = validInternalNumber.test(this.inputValueInternalNumber)
-      if (this.inputValueInternalNumber.length >= 1) {
-        return result
-      }
-      return null
+
+    products() {
+      return this.PRODUCTS_GETTER.map(data => ({
+        id: data.id,
+        productCode: data.productCode,
+        productName: data.productName,
+        productDVT: data.uom1,
+        productPrice: data.price,
+        productQuantity: data.totalAmount,
+        productPriceTotal: data.price * data.totalAmount,
+        count: null,
+      }))
+    },
+
+    totalProducts() {
+      return this.damagedProduct.reduce(accum => accum + 1, 0)
+    },
+    totalQuantity() {
+      return this.damagedProduct.reduce((accum, item) => accum + Number(item.productQuantity), 0)
+    },
+    totalMoney() {
+      return this.damagedProduct.reduce((accum, item) => accum + Number(item.productPriceTotal), 0)
     },
   },
 
+  watch: {
+    getReasonOptions() {
+      this.reasonObj.reasonOptions = [...this.getReasonOptions]
+    },
+  },
+
+  mounted() {
+    this.GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION({ ...this.decentralization })
+  },
+
+  // before page leave this will check input
+  beforeRouteLeave(to, from, next) {
+    if (this.isFieldCheck) {
+      if (this.checkFieldsValueLength()) {
+        this.isModalShow = !this.isModalShow
+        this.goNext = next
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
+  },
   methods: {
-    routeBack() {
-      this.$router.back()
+    ...mapActions(WAREHOUSES_EXCHANGE_DAMAGED_GOODS, [
+      CREATE_EXCHANGE_DAMAGED_GOODS_ACTION,
+      GET_CUSTOMERS_ACTION,
+      GET_PRODUCTS_ACTION,
+      GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION,
+    ]),
+
+    createDamagedGoods() {
+      this.$refs.formContainer.validate().then(success => {
+        if (success) {
+          this.CREATE_EXCHANGE_DAMAGED_GOODS_ACTION({
+            damagedGoodsData: {
+              customerId: this.customerInfo.customerId,
+              reasonId: this.reasonObj.reasonSeleted,
+              lstExchangeDetail: this.damagedProduct.map(item => ({
+                productId: item.id,
+                productName: item.productName,
+                price: item.productPrice,
+                quantity: item.productQuantity,
+              })),
+            },
+            onSuccess: () => {
+              this.navigateBack()
+            },
+          })
+        }
+      })
     },
 
-    showModal() {
-      const ShowEntryCouponModal = this.selected === 'phiếu nhập' ? this.EntryCouponModalVisible = !this.EntryCouponModalVisible : this.EntryCouponModalVisible = false
-      const ShowEntryAdjustmentModal = this.selected === 'phiếu điều chỉnh' ? this.EntryAdjustmentModalVisible = !this.EntryAdjustmentModalVisible : this.EntryAdjustmentModalVisible = false
-      const ShowEntryBorrowedModal = this.selected === 'phiếu vay mượn' ? this.EntryBorrowedModalVisible = !this.EntryBorrowedModalVisible : this.EntryBorrowedModalVisible = false
+    customerOptions() {
+      this.cursorCustomer = -1
+      if (this.customerInfo.customerName.length >= commonData.minSearchLength) {
+        this.isFocusedInputCustomer = true
+        const searchData = {
+          searchKeywords: this.customerInfo.customerName.trim(),
+        }
+        this.GET_CUSTOMERS_ACTION(searchData)
+      } else {
+        this.isFocusedInputCustomer = false
+      }
+    },
 
-      return ShowEntryCouponModal && ShowEntryAdjustmentModal && ShowEntryBorrowedModal
+    selectCustomer(customer) {
+      this.customerInfo.customerId = customer.customerId
+      this.customerInfo.customerCode = customer.customerCode
+      this.customerInfo.customerName = customer.customerName
+      this.customerInfo.customerAddress = customer.address
+      this.customerInfo.customerPhone = customer.mobilePhone
+    },
+
+    loadProducts() {
+      this.cursorProduct = -1
+      if (this.productInfos.productName.length >= commonData.minSearchLength) {
+        this.isFocusedInputProduct = true
+        const searchData = {
+          keyWord: this.productInfos.productName,
+          customerTypeId: 1, // hard code vì api bảo thế để chạy trơn tru, sau này sửa lại
+          ...this.decentralization,
+        }
+        this.GET_PRODUCTS_ACTION(searchData)
+      } else {
+        this.isFocusedInputProduct = false
+      }
+    },
+
+    selectProduct(product) {
+      this.productInfos.productName = null
+      const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.productCode)
+      if (this.damagedProduct) {
+        const obj = {
+          count: this.damagedProduct.length,
+          id: product.id,
+          productCode: product.productCode,
+          productName: product.productName,
+          productDVT: product.productDVT,
+          productPrice: product.productPrice,
+          productQuantity: 1,
+          productPriceTotal: null,
+        }
+        if (existedProductIndex === -1) {
+          obj.productPriceTotal = obj.productPrice * obj.productQuantity
+          this.damagedProduct.push(obj)
+        } else {
+          this.damagedProduct[existedProductIndex].productQuantity = Number(this.damagedProduct[existedProductIndex].productQuantity) + obj.productQuantity
+          this.damagedProduct[existedProductIndex].productPriceTotal = Number(obj.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
+        }
+      }
+    },
+
+    onChangeQuantity(props) {
+      const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === props.productCode)
+      this.damagedProduct[existedProductIndex].productPriceTotal = Number(props.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
+    },
+
+    focusCustomer() {
+      this.cursorCustomer = -1
+      if (this.customerInfo.customerName) {
+        this.isFocusedInputCustomer = this.customerInfo.customerName.length >= commonData.minSearchLength
+      }
+    },
+
+    focusProduct() {
+      this.cursorProduct = -1
+      if (this.productInfos.productName) {
+        this.isFocusedInputProduct = this.productInfos.productName.length >= commonData.minSearchLength
+      }
+    },
+
+    onClickDeleteButton(index) {
+      this.damagedProduct.splice(index, 1)
+    },
+    checkFieldsValueLength() {
+      if (
+        // START FORM
+        this.exchangeGoodsInfo.transCode
+        || this.customerInfo.customerName
+        || this.customerInfo.customerAddress
+        || this.customerInfo.customerPhone
+        || this.reasonObj.reasonSeleted
+      ) {
+        return true
+      }
+      return false
+    },
+
+    onClickAgreeButton() {
+      this.isModalShow = !this.isModalShow
+      this.goNext()
+    },
+
+    onClickSaveButton() {
+      this.isFieldCheck = false
+      this.createDamagedGoods()
+    },
+
+    navigateBack() {
+      this.$router.replace({ name: 'warehouses-exchange-damaged-goods' })
     },
   },
 }
 </script>
+
+<style>
+  .item-active {
+    padding-left: 5px;
+  }
+</style>

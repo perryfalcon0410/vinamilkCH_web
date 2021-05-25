@@ -391,7 +391,7 @@
       </b-row>
     </b-col>
     <!-- END - Form and list -->
-    <bill-receipts-modal :visible="isShowBillReceiptsModal " />
+    <bill-receipts-modal :visible="isShowBillReceiptsModal" />
   </b-container>
 </template>
 

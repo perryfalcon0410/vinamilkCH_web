@@ -10,9 +10,9 @@ export default {
     { id: '2', label: 'Nhập vay mượn' },
   ],
   reasonTypes: [
-    { id: '0', name: 'Hàng hỏng tại cửa hàng' },
-    { id: '1', name: 'Hàng hỏng do khách hàng mua tại cửa hàng' },
-    { id: '2', name: 'Hàng hỏng do khách hàng mua tại điểm lẻ' },
+    { id: '0', label: 'Hàng hỏng tại cửa hàng' },
+    { id: '1', label: 'Hàng hỏng do khách hàng mua tại cửa hàng' },
+    { id: '2', label: 'Hàng hỏng do khách hàng mua tại điểm lẻ' },
   ],
   tradingTypes: [
     { id: '1', label: 'Nhập chuyển đổi' },

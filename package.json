@@ -30,6 +30,7 @@
     "echarts": "4.8.0",
     "file-saver": "^2.0.5",
     "flatpickr": "^4.6.9",
+    "intl": "^1.2.5",
     "jsonwebtoken": "8.5.1",
     "leaflet": "1.6.0",
     "lodash": "4.17.21",
