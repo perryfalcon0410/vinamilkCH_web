@@ -297,7 +297,7 @@
                 :number="true"
                 :value="props.row.inventoryPacket"
                 @change="updateInventoryPacket(props.row.originalIndex, props.row.inventoryPacket)"
-                @keypress="isNumber($event)"
+                @keypress="$onlyNumberInput"
               />
             </div>
 
@@ -309,7 +309,7 @@
                 :number="true"
                 :value="props.row.inventoryOdd"
                 @change="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
-                @keypress="isNumber($event)"
+                @keypress="$onlyNumberInput"
               />
             </div>
             <div v-else>
@@ -908,13 +908,6 @@ export default {
       data.append('name', this.importFile.name)
       data.append('file', this.importFile)
       this.IMPORT_FILLED_STOCKS_ACTION(data)
-    },
-    isNumber(e) {
-      const keysAllowed = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-      const keyPressed = e.key
-      if (!keysAllowed.includes(keyPressed)) {
-        e.preventDefault()
-      }
     },
     onClickDownloadSampleFile() {
       this.GET_SAMPLE_IMPORT_FILE_ACTION({
