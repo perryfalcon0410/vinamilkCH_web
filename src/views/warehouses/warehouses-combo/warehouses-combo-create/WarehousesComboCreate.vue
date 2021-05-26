@@ -427,7 +427,6 @@ export default {
         this.comboListRows.push(obj)
         const newIndex = this.comboListRows.findIndex(e => e.selectedComboId === item.id)
         this.globalIndex = newIndex
-        console.log(obj.status)
         this.GET_COMBO_PRODUCTS_DETAILS_ACTION({
           id: item.id,
           formId: this.formId,
@@ -455,7 +454,6 @@ export default {
       this.comboListRows.splice(index, 1)
     },
     save() {
-      console.log(this.comboListRows)
       const obj = {
         details: this.detailsProductFilter,
         note: this.note,
