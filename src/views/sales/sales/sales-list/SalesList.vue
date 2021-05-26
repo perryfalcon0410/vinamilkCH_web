@@ -517,8 +517,6 @@ export default {
 
     getCustomerDefault() {
       this.customerDefaultTypeId = this.customerDefault.customerTypeId
-
-      this.getProductsInfo()
     },
 
     getCustomerTypeInfo(id) {
@@ -540,13 +538,6 @@ export default {
 
     getCustomerIdInfo(id) {
       this.$emit('getCustomerIdInfo', id)
-    },
-
-    getProductsInfo() {
-      // this.$emit('getProductsInfo', this.products)
-
-      console.log('aa this.products', this.getProducts)
-      console.log('bb this.getOnlineOrderProducts', this.getOnlineOrderProducts)
     },
   },
 }
