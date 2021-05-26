@@ -191,6 +191,7 @@
               <b-icon-trash-fill
                 color="red"
                 class="cursor-pointer"
+                @click="onClickDeleteProduct(props.row.originalIndex)"
               />
             </div>
             <!-- END - tableProductFeature -->
@@ -345,7 +346,7 @@ export default {
       productInfos: [],
       productInfoTypeOptions: saleData.productInfoType,
       productsSearch: [],
-
+      onlineOrderProducts: [],
       // online order
       id: null,
 
@@ -387,7 +388,7 @@ export default {
         productCode: data.productCode,
       }))
     },
-    onlineOrderProducts() {
+    getOnlineOrderProducts() {
       return this.ONLINE_ORDER_PRODUCTS_BY_ID_GETTER().map(data => ({
         productId: data.productId,
         productCode: data.productCode,
@@ -428,6 +429,9 @@ export default {
     },
     customerDefault() {
       this.getCustomerDefault()
+    },
+    getOnlineOrderProducts() {
+      this.onlineOrderProducts = [...this.getOnlineOrderProducts]
     },
   },
   mounted() {
@@ -527,6 +531,10 @@ export default {
 
     getCustomerIdInfo(id) {
       this.$emit('getCustomerIdInfo', id)
+    },
+
+    onClickDeleteProduct(index) {
+      this.products.splice(index, 1)
     },
   },
 }
