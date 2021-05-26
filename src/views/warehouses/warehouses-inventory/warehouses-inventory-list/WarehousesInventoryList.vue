@@ -187,7 +187,7 @@ import {
 } from '@core/utils/utils'
 import { formatISOtoVNI } from '@core/utils/filter'
 import WarehousesInventoryListSearch from './components/WarehousesInventoryListSearch.vue'
-import { // Sua lai
+import {
   WAREHOUSEINVENTORY,
   // GETTERS
   WAREHOUSE_INVENTORIES_GETTER,

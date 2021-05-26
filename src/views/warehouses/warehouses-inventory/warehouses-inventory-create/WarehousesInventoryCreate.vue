@@ -292,9 +292,7 @@
             <div v-if="props.column.field === 'inventoryPacket'">
               <b-input
                 v-model="props.row.inventoryPacket"
-                size="sm"
-                type="number"
-                :number="true"
+                maxlength="10"
                 :value="props.row.inventoryPacket"
                 @change="updateInventoryPacket(props.row.originalIndex, props.row.inventoryPacket)"
                 @keypress="$onlyNumberInput"
@@ -304,9 +302,7 @@
             <div v-else-if="props.column.field === 'inventoryOdd'">
               <b-input
                 v-model="props.row.inventoryOdd"
-                size="sm"
-                type="number"
-                :number="true"
+                maxlength="10"
                 :value="props.row.inventoryOdd"
                 @change="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
                 @keypress="$onlyNumberInput"
