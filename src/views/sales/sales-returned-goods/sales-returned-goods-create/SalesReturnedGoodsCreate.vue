@@ -490,7 +490,6 @@ export default {
     this.CLEAR_RETURNED_GOODS_MUTATION()
   },
   mounted() {
-    console.log(this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn)
     this.selectedReason = saleData.reasonReturnGoods.find(item => item.id === 'BREAKITEM').id
   },
 
