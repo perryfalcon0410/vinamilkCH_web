@@ -28,9 +28,7 @@ export default {
   },
 
   createOrderReturn(args) {
-    return axios.post(createReturnOrderEndPoint, {
-      params: formatURLParams(args),
-    })
+    return axios.post(createReturnOrderEndPoint, args)
   },
 
   getReturnGoodDetail(args) {

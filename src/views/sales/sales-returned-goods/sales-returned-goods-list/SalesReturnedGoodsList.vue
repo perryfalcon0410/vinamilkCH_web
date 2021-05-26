@@ -438,7 +438,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.RETURNED_GOODS_GETTER.response)
     resizeAbleTable()
   },
   methods: {
@@ -453,7 +452,6 @@ export default {
       return value.toLowerCase()
     },
     showOrderDetailsModal(idDetail) {
-      console.log(this.RETURN_GOODS_DETAIL_GETTER.infos)
       this.isOrderDetailsModal = !this.isOrderDetailsModal
       this.GET_RETURN_GOODS_DETAIL_ACTION({
         id: idDetail,

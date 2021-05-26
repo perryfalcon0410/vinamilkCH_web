@@ -30,9 +30,6 @@
           <b-col class="px-0">
             Đơn hàng muốn trả
           </b-col>
-          <strong>
-            {{ billInfo.orderNumber }}
-          </strong>
         </b-row>
         <!-- END - Order want return -->
 
@@ -225,6 +222,9 @@
 </template>
 
 <script>
+import {
+  formatISOtoVNI,
+} from '@/@core/utils/filter'
 import { getNow } from '@/@core/utils/utils'
 import {
   mapGetters,
@@ -267,6 +267,11 @@ export default {
       products: [],
       productPromotions: [],
       reasonReturn: [],
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -327,12 +332,12 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
-          quantity: data.quantity,
-          pricePerUnit: data.pricePerUnit,
-          totalPrice: data.totalPrice,
-          discount: data.discount,
-          payment: data.payment,
-          note: data.note,
+          quantity: this.$formatNumberToLocale(data.quantity),
+          pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
+          totalPrice: this.$formatNumberToLocale(data.totalPrice),
+          discount: this.$formatNumberToLocale(data.discount),
+          payment: this.$formatNumberToLocale(data.payment),
+          note: this.$formatNumberToLocale(data.note),
         }))
       }
       return []
@@ -343,11 +348,11 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
-          quantity: data.quantity,
-          pricePerUnit: data.pricePerUnit,
-          totalPrice: data.totalPrice,
-          discount: data.discount,
-          payment: data.payment,
+          quantity: this.$formatNumberToLocale(data.quantity),
+          pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
+          totalPrice: this.$formatNumberToLocale(data.totalPrice),
+          discount: this.$formatNumberToLocale(data.discount),
+          payment: this.$formatNumberToLocale(data.payment),
           note: data.note,
         }))
       }
@@ -379,6 +384,9 @@ export default {
   destroyed() {
     this.CLEAR_RETURNED_GOODS_MUTATION()
   },
+  mounted() {
+    this.selectedReason = saleData.reasonReturnGoods.find(item => item.id === 'BREAKITEM').id
+  },
 
   methods: {
     showSelectReceptModal() {
@@ -396,7 +404,7 @@ export default {
         id,
       })
 
-      this.billInfo.oderDate = oderDate
+      this.billInfo.oderDate = formatISOtoVNI(oderDate)
       this.billInfo.id = id
       this.billInfo.employeeName = salesManName
       this.billInfo.customerName = customerName
@@ -417,6 +425,7 @@ export default {
       }
 
       this.CREATE_RETURNED_GOOD_ACTION({
+        ...this.decentralization,
         dateReturn: new Date(),
         orderNumber: this.billInfo.orderNumber,
         reasonId: this.selectedReason,
