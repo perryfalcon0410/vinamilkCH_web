@@ -17,7 +17,7 @@
               Ngày xuất:
             </b-col>
             <b-col class="font-weight-bold">
-              {{ warehousesOutput.borrowDate }} lúc {{ warehousesOutput.borrowTime }}
+              {{ warehousesOutput.outputDate }} lúc {{ warehousesOutput.outputTime }}
             </b-col>
           </b-row>
           <!-- END - Date -->
@@ -181,7 +181,7 @@
                   slot-scope="props"
                 >
                   <div v-if="props.column.field === 'productReturnAmount'">
-                    <div v-if="warehousesOutput.type == warehousesOptions[0].id">
+                    <div v-if="warehousesOutput.receiptType == warehousesOptions[0].id">
                       <b-form-input
                         v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
                         type="number"
@@ -216,6 +216,7 @@
               <b-button
                 variant="primary"
                 class="d-flex align-items-center rounded text-uppercase"
+                :disabled="isDisableSave"
                 @click="onClickUpdateWarehousesOutput"
               >
                 <b-icon
@@ -276,7 +277,6 @@ export default {
   },
   data() {
     return {
-      warehousesTypeSelected: null,
       warehousesOptions: warehousesData.outputTypes,
       columns: [
         {
@@ -318,13 +318,6 @@ export default {
           tdClass: 'text-right',
         },
         {
-          label: 'Đã xuất trả/tổng nhập',
-          field: 'productExported',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
           sortable: false,
@@ -346,7 +339,8 @@ export default {
         note: '',
         transDate: null,
         products: [],
-        borrowTime: '',
+        outputTime: '',
+        outputDate: '',
       },
       configDate: {
         wrap: true,
@@ -355,6 +349,7 @@ export default {
       },
       formId: 5,
       ctrlId: 7,
+      isDisableSave: false,
     }
   },
   computed: {
@@ -389,10 +384,20 @@ export default {
       this.warehousesOutput.note = dataWarehousesOutput.note
       this.warehousesOutput.transDate = formatISOtoVNI(dataWarehousesOutput.transDate)
       this.warehousesOutput.products = [...this.getProductOfWarehouseOutput]
-      this.warehousesOutput.borrowDate = formatISOtoVNI(dataWarehousesOutput.borrowDate)
-      this.warehousesOutput.borrowTime = getTimeOfDate(formatISOtoVNI(dataWarehousesOutput.borrowDate))
 
-      this.warehousesTypeSelected = dataWarehousesOutput.type
+      if (this.warehousesOutput.receiptType === warehousesData.outputTypes[0].id) {
+        this.warehousesOutput.outputDate = formatISOtoVNI(dataWarehousesOutput.orderDate)
+        this.warehousesOutput.outputTime = getTimeOfDate(formatISOtoVNI(dataWarehousesOutput.orderDate))
+      } else if (this.warehousesOutput.receiptType === warehousesData.outputTypes[1].id) {
+        this.warehousesOutput.outputDate = formatISOtoVNI(dataWarehousesOutput.adjustmentDate)
+        this.warehousesOutput.outputTime = getTimeOfDate(formatISOtoVNI(dataWarehousesOutput.adjustmentDate))
+      } else {
+        this.warehousesOutput.outputDate = formatISOtoVNI(dataWarehousesOutput.borrowDate)
+        this.warehousesOutput.outputTime = getTimeOfDate(formatISOtoVNI(dataWarehousesOutput.borrowDate))
+      }
+
+      // enable or disable button save
+      this.isDisableSave = this.warehousesOutput.outputDate !== this.$nowDate
     },
   },
   mounted() {

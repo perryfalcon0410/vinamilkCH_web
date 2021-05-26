@@ -14,6 +14,7 @@ import {
   getExportBorrowingDetailEndpoint,
   getWareHouseTypeEndpoint,
   createExportEndpoint,
+  deleteWarehousesOutputEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -66,5 +67,9 @@ export default {
   },
   createExport(args) {
     return axios.post(createExportEndpoint, args)
+  },
+  deleteWarehousesOutput(args) {
+    console.log(args)
+    return axios.put(`${deleteWarehousesOutputEndpoint}/${args.id}?type=${args.type}`)
   },
 }

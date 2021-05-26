@@ -15,3 +15,4 @@ export const getExportPoTransDetailEndpoint = `${SALE}${IMPORT}/trans-detail`
 export const getExportAdjustmentDetailEndpoint = `${SALE}${IMPORT}/adjustment-detail`
 export const getWareHouseTypeEndpoint = `${SALE}${IMPORT}/warehouse-type`
 export const createExportEndpoint = `${SALE}${EXPORT}`
+export const deleteWarehousesOutputEndpoint = `${SALE}${EXPORT}/remove`

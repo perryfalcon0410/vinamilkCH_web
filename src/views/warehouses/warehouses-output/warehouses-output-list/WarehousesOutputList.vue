@@ -244,7 +244,7 @@
                 v-b-popover.hover="'Xóa'"
                 class="cursor-pointer ml-2"
                 color="red"
-                @click="onClickUpdateButton(props.row.id,props.row.type)"
+                @click="onClickDeleteWarehousesOutput(props.row.id,props.row.type)"
               />
             </div>
             <div v-else>
@@ -337,15 +337,6 @@
 
     </b-form>
     <!-- END - Product  list -->
-
-    <!-- START - Product Modal Delete -->
-    <b-modal
-      id="deleteModal"
-      title="Thông báo"
-    >
-      Bạn có muốn xóa đợt xuất hàng?
-    </b-modal>
-    <!-- END - Product Modal Delete -->
   </b-container>
 </template>
 
@@ -369,6 +360,7 @@ import {
   GET_WAREHOUSES_OUTPUT_LIST_ACTION,
   PRINT_WAREHOUSES_OUTPUT_ACTION,
   GET_WAREHOUSES_OUTPUT_DATA_GETTER,
+  DELETE_WAREHOUSES_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -469,6 +461,8 @@ export default {
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
+      id: 0,
+      type: 0,
     }
   },
   computed: {
@@ -533,6 +527,7 @@ export default {
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_LIST_ACTION,
       PRINT_WAREHOUSES_OUTPUT_ACTION,
+      DELETE_WAREHOUSES_ACTION,
     ]),
     selectedRowsChange(params) {
       this.receiptExportSelected = params.selectedRows.map(data => data.id)
@@ -573,8 +568,16 @@ export default {
         searchData.toDate = this.$nowDate
         this.searchOptions.toDate = this.$nowDate
       }
+
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
+    },
+    onClickDeleteWarehousesOutput(id, type) {
+      const paramDeleteWarehousesOutput = {
+        id,
+        type,
+      }
+      this.DELETE_WAREHOUSES_ACTION(paramDeleteWarehousesOutput)
     },
   },
 }

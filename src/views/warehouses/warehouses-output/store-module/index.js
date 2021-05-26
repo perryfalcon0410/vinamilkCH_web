@@ -29,6 +29,7 @@ import {
   CLEAR_EXPORT_PRODUCTS_MUTATION,
   GET_WAREHOUSE_TYPE_ACTION,
   CREATE_EXPORT_ACTION,
+  DELETE_WAREHOUSES_ACTION,
 } from './type'
 import toasts from '../../../../@core/utils/toasts/toasts'
 
@@ -281,6 +282,21 @@ export default {
           if (res.success) {
             toasts.success(res.statusValue)
             router.push({ name: 'warehouses-output' })
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [DELETE_WAREHOUSES_ACTION]({}, val) {
+      WarehousesService
+        .deleteWarehousesOutput(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
           } else {
             throw new Error(res.statusValue)
           }
