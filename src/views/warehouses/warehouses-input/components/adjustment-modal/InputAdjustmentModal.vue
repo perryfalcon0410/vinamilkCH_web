@@ -3,7 +3,7 @@
     size="xl"
     :visible="visible"
     title="Nhập xuất hàng điều chỉnh"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     content-class="bg-light"
     footer-border-variant="light"
   >
@@ -46,25 +46,25 @@
 
             <!-- START - List -->
             <b-row
-              v-for="(item, index) in importAdjustmentsList"
+              v-for="(item, index) in importAdjustments"
               :key="item.id"
               class="border-bottom border-white bg-light py-1"
               :class="{ 'text-brand-1': current == item.id }"
-              @click="selectOrder(item.id)"
+              @click="selectOrder(item.id,item.date)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
               </b-col>
               <b-col>
-                {{ item.licenseNumber }}
+                {{ item.adjustmentCode }}
               </b-col>
               <b-col>
-                {{ item.date }}
+                {{ item.adjustmentDate }}
               </b-col>
               <b-col
                 class="text-wrap"
               >
-                {{ item.note }}
+                {{ item.description }}
               </b-col>
             </b-row>
             <!-- END - List -->
@@ -84,7 +84,7 @@
           >
             <vue-good-table
               :columns="columns"
-              :rows="importAdjustmentsDetailList"
+              :rows="importAdjustmentsDetail"
               style-class="vgt-table bordered"
               compact-mode
               line-numbers
@@ -97,6 +97,18 @@
                 Không có dữ liệu
               </div>
               <!-- END - Empty rows -->
+              <template
+                slot="column-filter"
+                slot-scope="props"
+              >
+                <b-row
+                  v-if="props.column.field === 'adjustQuantity'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  {{ importAdjustmentInfo.totalQuantity }}
+                </b-row>
+              </template>
             </vue-good-table>
           </b-col>
         </b-col>
@@ -140,13 +152,14 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale } from '@core/utils/filter'
+import { formatISOtoVNI } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
   // GETTER
   IMPORT_ADJUSTMENTS_GETTER,
   IMPORT_ADJUSTMENTS_DETAIL_GETTER,
+  IMPORT_ADJUSTMENTS_DETAIL_INFO_GETTER,
   // ACTION
   GET_IMPORT_ADJUSTMENTS_ACTION,
   GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION,
@@ -162,6 +175,11 @@ export default {
   },
   data() {
     return {
+      //
+      formId: 5,
+      ctrlId: 7,
+      //
+      sysDate: null,
       current: null,
       columns: [
         {
@@ -195,9 +213,12 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
+          field: 'adjustQuantity',
           sortable: false,
           type: 'number',
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -213,59 +234,70 @@ export default {
     }
   },
   computed: {
-    importAdjustmentsList() {
+    importAdjustments() {
       return this.IMPORT_ADJUSTMENTS_GETTER().map(data => ({
         id: data.id,
-        licenseNumber: data.adjustmentCode,
-        date: formatDateToLocale(data.adjustmentDate),
-        status: data.status,
+        adjustmentCode: data.adjustmentCode,
+        adjustmentDate: formatISOtoVNI(data.adjustmentDate),
+        description: data.description,
       }))
     },
-    firstId() {
-      if (this.importAdjustmentsList[0]) {
-        return this.importAdjustmentsList[0].id
+    firstPo() {
+      if (this.importAdjustments.length > 0) {
+        const obj = {
+          id: this.importAdjustments[0].id,
+          sysDate: this.importAdjustments[0].adjustmentDate,
+        }
+        return obj
       }
-      return 0
+      return null
     },
-    importAdjustmentsDetailList() {
+
+    importAdjustmentsDetail() {
       return this.IMPORT_ADJUSTMENTS_DETAIL_GETTER().map(data => ({
-        id: data.id,
+        licenseNumber: data.licenseNumber,
         productCode: data.productCode,
         productName: data.productName,
         price: this.$formatNumberToLocale(data.price),
         quantity: data.quantity,
-        licenseNumber: data.licenseNumber,
         totalPrice: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
+    importAdjustmentInfo() {
+      return this.IMPORT_ADJUSTMENTS_DETAIL_INFO_GETTER()
+    },
   },
   watch: {
-    importAdjustmentsList() {
-      this.selectOrder(this.firstId)
+    importAdjustments() {
+      if (this.importAdjustments.length > 0) {
+        this.selectOrder(this.firstPo.id, this.firstPo.sysDate)
+      }
     },
   },
   mounted() {
     this.GET_IMPORT_ADJUSTMENTS_ACTION({
-      formId: 5, // hard code
-      ctrlId: 7, // hard code
+      formId: this.formId, // hard code
+      ctrlId: this.ctrlId, // hard code
     })
   },
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
       IMPORT_ADJUSTMENTS_GETTER,
       IMPORT_ADJUSTMENTS_DETAIL_GETTER,
+      IMPORT_ADJUSTMENTS_DETAIL_INFO_GETTER,
     ]),
     ...mapActions(WAREHOUSEINPUT, [
       GET_IMPORT_ADJUSTMENTS_ACTION,
       GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION,
     ]),
-    selectOrder(id) {
+    selectOrder(id, date) {
       this.current = id
-      this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
+      this.sysDate = date
+      this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId }) // hard code
     },
     inputAdjustmentConfirm() {
-      if (this.importAdjustmentsList.length === 0) {
-        this.$emit('inputAdjustChange', [this.importAdjustmentsDetailList, this.current])
+      if (this.importAdjustments.length > 0) {
+        this.$emit('inputAdjustChange', [this.sysDate, this.importAdjustmentsDetail, this.importAdjustmentInfo, this.current])
         this.$emit('close')
       } else {
         toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')

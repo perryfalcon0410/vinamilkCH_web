@@ -3,7 +3,7 @@
     size="xl"
     :visible="visible"
     title="Danh sách PO Confirm"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     content-class="bg-light"
     footer-border-variant="light"
   >
@@ -43,7 +43,7 @@
             :key="item.id"
             class="border-bottom border-white py-1"
             :class="{ 'text-brand-1': current == item.id }"
-            @click="selectOrder(item.id, item.internalNumber, item.poNo)"
+            @click="selectOrder(item.id, item.internalNumber, item.poNo, item.date)"
           >
             <b-col cols="1">
               {{ index + 1 }}
@@ -130,47 +130,51 @@
           <!-- END - Table Product -->
 
           <!-- START - Title Product promotion -->
-          <strong class="d-inline-flex rounded-top px-1">
-            Hàng khuyến mãi
-          </strong>
-          <!-- END - Title Product promotion -->
-
-          <vue-good-table
-            :columns="columns"
-            :rows="poPromotionProducts"
-            style-class="vgt-table bordered"
-            compact-mode
-            line-numbers
-            class="py-1"
+          <div
+            v-show="isShowPoPromoTable"
           >
-            <template
-              slot="column-filter"
-              slot-scope="props"
+            <strong class="d-inline-flex rounded-top px-1">
+              Hàng khuyến mãi
+            </strong>
+            <!-- END - Title Product promotion -->
+
+            <vue-good-table
+              :columns="columns"
+              :rows="poPromotionProducts"
+              style-class="vgt-table bordered"
+              compact-mode
+              line-numbers
+              class="py-1"
             >
-              <b-row
-                v-if="props.column.field === 'quantity'"
-                class="mx-0"
-                align-h="end"
+              <template
+                slot="column-filter"
+                slot-scope="props"
               >
-                {{ poPromotionProductsInfo.totalQuantity }}
-              </b-row>
-              <b-row
-                v-if="props.column.field === 'totalPrice'"
-                class="mx-0"
-                align-h="end"
+                <b-row
+                  v-if="props.column.field === 'quantity'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  {{ poPromotionProductsInfo.totalQuantity }}
+                </b-row>
+                <b-row
+                  v-if="props.column.field === 'totalPrice'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  {{ poPromotionProductsInfo.totalPrice }}
+                </b-row>
+              </template>
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
               >
-                {{ poPromotionProductsInfo.totalPrice }}
-              </b-row>
-            </template>
-            <!-- START - Empty rows -->
-            <div
-              slot="emptystate"
-              class="text-center"
-            >
-              Không có dữ liệu
-            </div>
-          <!-- END - Empty rows -->
-          </vue-good-table>
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
+            </vue-good-table>
+          </div>
           <!-- END - Table Product promotion -->
         </b-col>
         <!-- END - List -->
@@ -237,7 +241,11 @@ import {
   mapGetters,
 } from 'vuex'
 import toasts from '@core/utils/toasts/toasts'
+<<<<<<< HEAD
 import { formatDateToLocale } from '@core/utils/filter'
+=======
+import { formatISOtoVNI, formatNumberToLocale } from '@core/utils/filter'
+>>>>>>> d852c05 (+ fix bugs)
 import DenyModal from './components/inputPoDenyModal.vue'
 import {
   WAREHOUSEINPUT,
@@ -267,11 +275,19 @@ export default {
   },
   data() {
     return {
-      denyId: null,
+      //
+      formId: 5,
+      ctrlId: 7,
+      //
+      isShowPoPromoTable: false,
       denyModalVisible: false,
+
+      denyId: null,
       current: null,
       Snb: null,
       poNumber: null,
+      sysDate: null,
+
       columns: [
         {
           label: 'SO No',
@@ -334,24 +350,21 @@ export default {
       return this.POCONFIRM_GETTER().map(data => ({
         id: data.id,
         poNo: data.poNumber,
-        shopId: data.shopId,
-        poNumber: data.poNumber,
         internalNumber: data.internalNumber,
-        soNo: data.saleOferNumber,
-        date: formatDateToLocale(data.orderDate),
+        date: formatISOtoVNI(data.orderDate),
       }))
     },
     theFirstPo() {
       if (this.poConfirm.length > 0) {
-        // return this.poConfirm[0].id
         const obj = {
           id: this.poConfirm[0].id,
           internalNumber: this.poConfirm[0].internalNumber,
           poNumber: this.poConfirm[0].poNumber,
+          sysDate: this.poConfirm[0].date,
         }
         return obj
       }
-      return 0
+      return null
     },
     // get products from selected Po
     poProducts() {
@@ -385,13 +398,22 @@ export default {
   },
   watch: {
     poConfirm() {
-      this.selectOrder(this.theFirstPo.id, this.theFirstPo.internalNumber, this.theFirstPo.poNumber)
+      if (this.poConfirm.length > 0) {
+        this.selectOrder(this.theFirstPo.id, this.theFirstPo.internalNumber, this.theFirstPo.poNumber, this.theFirstPo.sysDate)
+      }
+    },
+    poPromotionProducts() {
+      if (this.poPromotionProducts.length > 0) {
+        this.isShowPoPromoTable = true
+      } else {
+        this.isShowPoPromoTable = false
+      }
     },
   },
   mounted() {
     this.GET_POCONFIRMS_ACTION({
-      formId: 5,
-      ctrlId: 7,
+      formId: this.formId,
+      ctrlId: this.ctrlId,
     })
   },
   methods: {
@@ -409,10 +431,11 @@ export default {
       GET_IMPORTEXCEL_ACTION,
     ]),
     // invidual selectOrder event for poconfrim list
-    selectOrder(id, internalNumber, poNum) {
+    selectOrder(id, internalNumber, poNum, date) {
       this.current = id
       this.poNumber = poNum
       this.Snb = internalNumber
+      this.sysDate = date
       if (this.poConfirm.length > 0) {
         this.GET_PODETAIL_PRODUCTS_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
         this.GET_PODETAIL_PRODUCTS_PROMO_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
@@ -420,12 +443,12 @@ export default {
     },
     // Sync PoConfirms list
     syncPo() {
-      this.GET_POCONFIRMS_ACTION({ formId: 5, ctrlId: 7 }) // hard code
+      this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId }) // hard code
     },
     // Confirm import product from selected Po
     confirmImportButton() {
       if (this.poConfirm.length > 0) {
-        this.$emit('inputChange', [this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, this.Snb, this.poNumber, this.current])
+        this.$emit('inputChange', [this.sysDate, this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, this.Snb, this.poNumber, this.current])
         this.$emit('close')
       } else {
         toasts.error('Bạn cần chọn tối thiểu 1 bản ghi PO')

@@ -5,19 +5,19 @@
     size="sm"
   >
     <strong>
-      Bạn có muốn lưu thông tin nhập hàng không không
+      Bạn có muốn lưu thông tin nhập hàng không
     </strong>
     <template #modal-footer="{}">
       <b-button
         size="sm"
-        variant="somgThing"
+        class="btn-brand-1"
+        variant="something"
         @click="ok"
       >
         Có
       </b-button>
       <b-button
         size="sm"
-        variant="somThing"
         @click="cancel"
       >
         Không

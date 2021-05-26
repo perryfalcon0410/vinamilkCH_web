@@ -42,7 +42,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-
+import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
   NOT_IMPORT_REASONS_GETTER,
@@ -65,6 +65,10 @@ export default {
   },
   data() {
     return {
+      //
+      formId: 5,
+      ctrlId: 7,
+      //
       reasonSelected: null,
     }
   },
@@ -83,8 +87,8 @@ export default {
   },
   mounted() {
     this.GET_NOT_IMPORT_REASONS_ACTION({
-      formId: 5, // hard code
-      ctrlId: 7, // hard code
+      formId: this.formId, // hard code
+      ctrlId: this.ctrlId, // hard code
     })
   },
 
@@ -98,16 +102,20 @@ export default {
       GET_NOT_IMPORT_REASONS_ACTION,
     ]),
     denyImport() {
-      this.$emit('close')
-      this.UPDATE_NOT_IMPORT_ACTION({
-        id: this.reasonSelected.id,
-        formId: 5, // hard code
-        ctrlId: 7, // hard code
-      })
-      this.GET_POCONFIRMS_ACTION({
-        formId: 5, // hard code
-        ctrlId: 7, // hard code
-      })
+      if (this.reasonSelected) {
+        this.UPDATE_NOT_IMPORT_ACTION({
+          id: this.reasonSelected,
+          formId: this.formId, // hard code
+          ctrlId: this.ctrlId, // hard code
+        })
+        this.GET_POCONFIRMS_ACTION({
+          formId: this.formId, // hard code
+          ctrlId: this.ctrlId, // hard code
+        })
+        this.$emit('close')
+      } else {
+        toasts.error('Cần chọn tối thiểu 1 lý do')
+      }
     },
     cancel() {
       this.$emit('close')

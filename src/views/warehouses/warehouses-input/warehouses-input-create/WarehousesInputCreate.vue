@@ -51,6 +51,7 @@
                   <tree-select
                     v-model="inputTypeSelected"
                     :options="inputTypeOptions"
+                    @select="clearFormText"
                   />
                 </b-form-group>
               </b-col>
@@ -75,7 +76,7 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  rules="required"
+                  :rules="`${inputTypeSelected === '0' ? 'required' : ''}`"
                   name="số hóa đơn"
                 >
                   <div class="h9">
@@ -86,7 +87,7 @@
                   </div>
                   <b-form-input
                     v-model="billNumber"
-                    :state="touched ? passed : null"
+                    :state="touched && inputTypeSelected === '0' ? passed : null"
                     :disabled="inputTypeSelected != '0' ? true : false"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -126,7 +127,7 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  rules="required"
+                  :rules="`${inputTypeSelected === '0' ? 'required' : ''}`"
                   name="số nội bộ"
                 >
                   <div class="mt-1 h9">
@@ -137,8 +138,8 @@
                   </div>
                   <b-form-input
                     v-model="internalNumber"
-                    :state="touched ? passed : null"
-                    :disabled="inputTypeSelected != '0' ? true : false"
+                    :state="touched && inputTypeSelected === '0' ? passed : null"
+                    :disabled="inputTypeSelected !== '0' ? true : false"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -166,7 +167,7 @@
                       :disabled="inputTypeSelected != '0' ? true : false"
                     />
                     <b-input-group-append
-                      v-b-popover.hover="'Nhập PO No'"
+                      v-b-popover.hover="'Chọn đơn nhập'"
                       is-text
                       class="cursor-pointer"
                     >
@@ -221,6 +222,8 @@
                 slot="column-filter"
                 slot-scope="props"
               >
+
+                <!--START - Choose import po product-->
                 <b-row
                   v-if="props.column.field === 'quantity'"
                   class="mx-0"
@@ -228,7 +231,29 @@
                 >
                   {{ poProductInfo.totalQuantity }}
                 </b-row>
+                <!--END - Choose import po product-->
 
+                <!--START - Choose import borrow product-->
+                <b-row
+                  v-if="props.column.field === 'borrowQuantity'"
+                  class="mx-0"
+                  align-h="start"
+                >
+                  {{ poBorrowingInfo.totalQuantity }}
+                </b-row>
+                <!--START - Choose import borrow product-->
+
+                <!--START - Choose import adjust product-->
+                <b-row
+                  v-if="props.column.field === 'adjustQuantity'"
+                  class="mx-0"
+                  align-h="start"
+                >
+                  {{ poAdjustInfo.totalQuantity }}
+                </b-row>
+                <!--START - Choose import adjust product-->
+
+                <!--START - Choose import adjust product-->
                 <b-row
                   v-else-if="props.column.field === 'totalPrice'"
                   class="mx-0"
@@ -249,50 +274,54 @@
             <!-- END - Table Product -->
             <br>
             <!-- START - Table Product promotion -->
-            <div class="d-inline-flex rounded-top px-1 my-1">
-              <strong>
-                Hàng khuyến mãi
-              </strong>
-            </div>
-            <!--if-PoConfirm-->
-            <vue-good-table
-              v-if="status === 0"
-              :columns="poColumns"
-              :rows="rowsProductPromotion"
-              style-class="vgt-table striped"
-              compact-mode
-              line-numbers
+            <div
+              v-show="isShowPoPromoTable"
             >
-              <!-- START - Column filter -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
-              >
-                <b-row
-                  v-if="props.column.field === 'quantity'"
-                  class="mx-0"
-                  align-h="start"
-                >
-                  {{ poPromotionProductsInfo.totalQuantity }}
-                </b-row>
-
-                <b-row
-                  v-else-if="props.column.field === 'totalPrice'"
-                  class="mx-0"
-                  align-h="end"
-                >
-                  {{ poPromotionProductsInfo.totalPrice }}
-                </b-row>
-              </template>
-              <!-- START - Empty rows -->
-              <div
-                slot="emptystate"
-                class="text-center"
-              >
-                Không có dữ liệu
+              <div class="d-inline-flex rounded-top px-1 my-1">
+                <strong>
+                  Hàng khuyến mãi
+                </strong>
               </div>
+              <!--if-PoConfirm-->
+              <vue-good-table
+                v-if="status === 0"
+                :columns="poColumns"
+                :rows="rowsProductPromotionLoad"
+                style-class="vgt-table striped"
+                compact-mode
+                line-numbers
+              >
+                <!-- START - Column filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'quantity'"
+                    class="mx-0"
+                    align-h="start"
+                  >
+                    {{ poPromotionProductsInfo.totalQuantity }}
+                  </b-row>
+
+                  <b-row
+                    v-else-if="props.column.field === 'totalPrice'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    {{ poPromotionProductsInfo.totalPrice }}
+                  </b-row>
+                </template>
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
               <!-- END - Empty rows -->
-            </vue-good-table>
+              </vue-good-table>
+            </div>
             <!--START input Po-->
             <vue-good-table
               v-if="status === null"
@@ -332,7 +361,7 @@
                 </span>
                 <span v-if="props.column.field == 'quantity'">
                   <b-input
-                    v-model="rowsProductPromotion[props.index].quantity"
+                    v-model.number="rowsProductPromotion[props.index].quantity"
                     size="sm"
                   />
                 </span>
@@ -433,6 +462,8 @@ import {
 } from '@/@core/utils/validations/validations'
 import { mapGetters, mapActions } from 'vuex'
 import { getNow } from '@core/utils/utils'
+// eslint-disable-next-line no-unused-vars
+import toasts from '@core/utils/toasts/toasts'
 import warehousesData from '@/@db/warehouses'
 import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
@@ -456,36 +487,44 @@ export default {
   },
   data() {
     return {
-      inputTypeOptions: warehousesData.inputTypes,
-      inputTypeSelected: null,
       configDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
       now: getNow(),
+      // --------------input form--------------
+      billNumber: '',
+      internalNumber: '',
+      billDate: this.$nowDate,
+      poNo: null,
+      note: '',
+      poId: null,
+      inputTypeOptions: warehousesData.inputTypes,
+      inputTypeSelected: null,
+      // --------------input form--------------
+
+      // --------------modal state--------------
       adjustmentModalVisible: false,
       borrowedModalVisible: false,
       poConfirmModalVisible: false,
       showConfirmCloseModal: false,
-      // ngay nhap
-      dateStamp: '',
-      timeStamp: '',
-      // loai nhap
-      status: null,
+      isShowPoPromoTable: false,
+      // --------------modal state--------------
 
+      // --------------input type--------------
+      status: null,
       columns: null,
       rows: null,
+      // --------------input type--------------
 
-      billNumber: '',
-      internalNumber: '',
-      billDate: this.$nowDate,
-      poNo: '',
-      note: '',
-      listImportProduct: null,
-      poId: null,
+      // --------------Total-------------
       poProductInfo: {},
       poPromotionProductsInfo: {},
+      poBorrowingInfo: {},
+      poAdjustInfo: {},
+      // --------------Total-------------
+
       length: 1,
       // validation rules
       number,
@@ -556,7 +595,7 @@ export default {
       poColumns: [
         {
           label: 'Mã hàng',
-          field: 'productId',
+          field: 'productCode',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -607,17 +646,13 @@ export default {
         },
         {
           label: 'SO No',
-          field: 'SoNo',
+          field: 'soNo',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
       ],
-      rowsProductPromotion: [{
-        count: 0,
-        productId: '',
-        quantity: '',
-      }],
+      rowsProductPromotion: [],
       // -------------------------PoConfirm--------------------------
 
       // -------------------------InputAdjust--------------------------
@@ -654,9 +689,12 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
+          field: 'adjustQuantity',
           sortable: false,
           type: 'number',
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -684,7 +722,7 @@ export default {
         },
         {
           label: 'Mã sản phẩm',
-          field: 'productId',
+          field: 'productCode',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -706,9 +744,12 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
+          field: 'borrowQuantity',
           sortable: false,
           type: 'number',
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -752,6 +793,14 @@ export default {
       CREATE_SALE_IMPORT_ACTION,
       GET_WAREHOUSES_TYPE_ACTION,
     ]),
+    // clear text in input form in case changes import type
+    clearFormText(item) {
+      if (item.id !== 0) {
+        this.billNumber = null
+        this.poNo = null
+        this.internalNumber = null
+      }
+    },
     onClickDeleteButton(index) {
       this.rowsProductPromotion.splice(index, 1)
     },
@@ -791,38 +840,50 @@ export default {
     },
     // ---------------------------Nhap hang-----------------------
     dataFromPoConfirm(data) {
-      const [poProducts, ProductInfo, poPromotionProducts, PromotionProductsInfo, Snb, poNum, id] = data
+      const [sysDate, poProducts, ProductInfo, poPromotionProducts, promotionProductsInfo, Snb, poNum, id] = data
+      this.billDate = sysDate
       this.rowsProduct = [...poProducts]
-      this.rowsProductPromotion = [...poPromotionProducts]
+      this.rowsProductPromotionLoad = [...poPromotionProducts]
       this.poProductInfo = ProductInfo
-      this.poPromotionProductsInfo = PromotionProductsInfo
+      this.poPromotionProductsInfo = promotionProductsInfo
       this.status = 0
       this.internalNumber = Snb
       this.poNo = poNum
       this.poId = id
+      // show promotion grid if it's not null
+      if (this.poPromotionProducts) {
+        this.isShowPoPromoTable = true
+      } else {
+        this.isShowPoPromoTable = false
+      }
       this.tableRender()
     },
     // ----------------------------Nhap hang-----------------------
 
     // -----------------------------Nhap dieu chinh------------------------
     dataFromInputAdjust(data) {
-      const [importAdjustsDetail, id] = data
+      const [sysDate, importAdjustsDetail, importAdjustInfo, id] = data
       this.adjustRows = [...importAdjustsDetail]
       this.status = 1 // inputTypeSelected
       this.poNo = null // poNumber
       this.poId = id // poId
+      this.internalNumber = null
+      this.billDate = sysDate
+      this.poAdjustInfo = { ...importAdjustInfo }
       this.tableRender()
     },
     // -----------------------------Nhap dieu chinh------------------------
 
     // ------------------------------Nhap vay muon----------------------------
     dataFormInputBorrow(data) {
-      const [importBorrowsDetail, id] = data
+      const [sysDate, importBorrowsDetail, importBorrowInfo, id] = data
       this.borrowRows = [...importBorrowsDetail]
+      this.billDate = sysDate
       this.status = 2
       this.poNo = null
       this.internalNumber = null
       this.poId = id
+      this.poBorrowingInfo = { ...importBorrowInfo }
       this.tableRender()
     },
     // ------------------------------Nhap vay muon----------------------------
@@ -839,26 +900,32 @@ export default {
       }
     },
     create() {
-      if (this.status !== null) {
-        this.CREATE_SALE_IMPORT_ACTION({
-          inputTypeSelected: this.status,
+      if (this.promotionRow.length === 0) {
+        const obj = {
+          importType: this.status,
           poNumber: this.poNo,
           internalNumber: this.internalNumber,
           redInvoiceNo: this.billNumber,
+          order_date: this.billDate,
           poId: this.poId,
           note: this.note,
-        })
+        }
+        if (obj.poId !== null) {
+          this.CREATE_SALE_IMPORT_ACTION(obj)
+        } else {
+          toasts.error('Cần có tối thiểu 1 sản phẩm khuyến mãi')
+        }
       } else {
         this.$refs.formContainer.validate().then(success => {
           if (success) {
             this.CREATE_SALE_IMPORT_ACTION({
-              inputTypeSelected: 0,
+              importType: 0,
               poNumber: this.poNo,
               internalNumber: this.internalNumber,
               redInvoiceNo: this.billNumber,
-              poId: this.poId,
+              order_date: this.billDate,
               note: this.note,
-              lst: this.promotionRow || null,
+              lst: this.promotionRow,
             })
           }
         })

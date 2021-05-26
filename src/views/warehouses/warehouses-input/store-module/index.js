@@ -12,8 +12,10 @@ import {
   PODETAIL_PRODUCTS_PROMO_INFO_GETTER,
   IMPORT_ADJUSTMENTS_GETTER,
   IMPORT_ADJUSTMENTS_DETAIL_GETTER,
+  IMPORT_ADJUSTMENTS_DETAIL_INFO_GETTER,
   IMPORT_BORROWINGS_GETTER,
   IMPORT_BORROWINGS_DETAIL_GETTER,
+  IMPORT_BORROWINGS_DETAIL_INFO_GETTER,
   RECEIPTS_GETTER,
   RECEIPT_BY_ID_GETTER,
   PRODUCTS_BY_ID_GETTER,
@@ -56,8 +58,10 @@ export default {
     podetail_product_promo_info: {},
     importAdjustments: [],
     importAdjustmentsDetail: [],
+    importAdjustmentsDetailInfo: {},
     importBorrowings: [],
     importBorrowingsDetail: [],
+    importBorrowingsDetailInfo: {},
     receipts: [],
     receiptById: {},
     products: [],
@@ -90,11 +94,17 @@ export default {
     [IMPORT_ADJUSTMENTS_DETAIL_GETTER](state) {
       return state.importAdjustmentsDetail
     },
+    [IMPORT_ADJUSTMENTS_DETAIL_INFO_GETTER](state) {
+      return state.importAdjustmentsDetailInfo
+    },
     [IMPORT_BORROWINGS_GETTER](state) {
       return state.importBorrowings
     },
     [IMPORT_BORROWINGS_DETAIL_GETTER](state) {
       return state.importBorrowingsDetail
+    },
+    [IMPORT_BORROWINGS_DETAIL_INFO_GETTER](state) {
+      return state.importBorrowingsDetailInfo
     },
     [RECEIPTS_GETTER](state) {
       return state.receipts
@@ -205,7 +215,8 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.importAdjustmentsDetail = res.data
+            state.importAdjustmentsDetail = res.data.response
+            state.importAdjustmentsDetailInfo = res.data.info
           } else {
             throw new Error(res.statusValue)
           }
@@ -235,7 +246,8 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.importBorrowingsDetail = res.data
+            state.importBorrowingsDetail = res.data.response
+            state.importBorrowingsDetailInfo = res.data.info
           } else {
             throw new Error(res.statusValue)
           }

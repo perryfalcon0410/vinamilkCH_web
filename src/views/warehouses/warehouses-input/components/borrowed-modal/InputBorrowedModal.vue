@@ -3,7 +3,7 @@
     size="xl"
     :visible="visible"
     title="Nhập xuất hàng vay mượn"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     content-class="bg-light"
     footer-border-variant="light"
   >
@@ -46,20 +46,20 @@
 
             <!-- START - List -->
             <b-row
-              v-for="(item, index) in importBorrowingslist"
+              v-for="(item, index) in importBorrowings"
               :key="item.id"
               :class="{ 'text-brand-1': current == item.id }"
               class="border-bottom border-white bg-light py-1"
-              @click="selectOrder(item.id)"
+              @click="selectOrder(item.id,item.borrowDate)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
               </b-col>
               <b-col>
-                {{ item.licenseNumber }}
+                {{ item.poBorrowCode }}
               </b-col>
               <b-col>
-                {{ item.date }}
+                {{ item.borrowDate }}
               </b-col>
               <b-col
                 class="text-wrap"
@@ -84,7 +84,7 @@
           >
             <vue-good-table
               :columns="columns"
-              :rows="importBorrowingsDetailList"
+              :rows="importBorrowingsDetail"
               style-class="vgt-table bordered"
               compact-mode
               line-numbers
@@ -97,6 +97,18 @@
                 Không có dữ liệu
               </div>
               <!-- END - Empty rows -->
+              <template
+                slot="column-filter"
+                slot-scope="props"
+              >
+                <b-row
+                  v-if="props.column.field === 'borrowQuantity'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  {{ importBorrowingInfo.totalQuantity }}
+                </b-row>
+              </template>
             </vue-good-table>
           </b-col>
         </b-col>
@@ -140,13 +152,14 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale } from '@core/utils/filter'
+import { formatISOtoVNI } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
   // GETTERS
   IMPORT_BORROWINGS_GETTER,
   IMPORT_BORROWINGS_DETAIL_GETTER,
+  IMPORT_BORROWINGS_DETAIL_INFO_GETTER,
   // ACTIONS
   GET_IMPORT_BORROWINGS_ACTION,
   GET_IMPORT_BORROWINGS_DETAIL_ACTION,
@@ -162,6 +175,11 @@ export default {
   },
   data() {
     return {
+      //
+      formId: 5,
+      ctrlId: 7,
+      //
+      sysDate: null,
       current: null,
       columns: [
         {
@@ -196,9 +214,12 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
+          field: 'borrowQuantity',
           sortable: false,
           type: 'number',
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -214,23 +235,26 @@ export default {
     }
   },
   computed: {
-    importBorrowingslist() {
+    importBorrowings() {
       return this.IMPORT_BORROWINGS_GETTER().map(data => ({
         id: data.id,
-        licenseNumber: data.poBorrowCode,
-        date: formatDateToLocale(data.borrowDate),
+        poBorrowCode: data.poBorrowCode,
+        borrowDate: formatISOtoVNI(data.borrowDate),
         note: data.note,
       }))
     },
-    firstId() {
-      if (this.importBorrowingslist.length > 0) {
-        return this.importBorrowingslist[0].id
+    firstPo() {
+      if (this.importBorrowings.length > 0) {
+        const obj = {
+          id: this.importBorrowings[0].id,
+          sysDate: this.importBorrowings[0].borrowDate,
+        }
+        return obj
       }
-      return 0
+      return null
     },
-    importBorrowingsDetailList() {
+    importBorrowingsDetail() {
       return this.IMPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
-        id: data.id,
         licenseNumber: data.licenseNumber,
         productCode: data.productCode,
         productName: data.productName,
@@ -239,38 +263,45 @@ export default {
         totalPrice: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
+    importBorrowingInfo() {
+      return this.IMPORT_BORROWINGS_DETAIL_INFO_GETTER()
+    },
   },
   watch: {
-    importBorrowingslist() {
-      this.selectOrder(this.firstId)
+    importBorrowings() {
+      if (this.importBorrowings.length > 0) {
+        this.selectOrder(this.firstPo.id, this.firstPo.sysDate)
+      }
     },
   },
   mounted() {
     this.GET_IMPORT_BORROWINGS_ACTION({
-      formId: 5, // hard code
-      ctrlId: 7, // hard code
+      formId: this.formId, // hard code
+      ctrlId: this.ctrlId, // hard code
     })
   },
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
       IMPORT_BORROWINGS_GETTER,
       IMPORT_BORROWINGS_DETAIL_GETTER,
+      IMPORT_BORROWINGS_DETAIL_INFO_GETTER,
     ]),
     ...mapActions(WAREHOUSEINPUT, [
       GET_IMPORT_BORROWINGS_ACTION,
       GET_IMPORT_BORROWINGS_DETAIL_ACTION,
     ]),
     inputBorrow() {
-      if (this.importBorrowingslist.length > 0) {
-        this.$emit('inputBorrowsChange', [this.importBorrowingsDetailList, false, this.current])
+      if (this.importBorrowings.length > 0) {
+        this.$emit('inputBorrowsChange', [this.sysDate, this.importBorrowingsDetail, this.importBorrowingInfo, this.current])
         this.$emit('close')
       } else {
         toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')
       }
     },
-    selectOrder(id) {
+    selectOrder(id, date) {
       this.current = id
-      this.GET_IMPORT_BORROWINGS_DETAIL_ACTION({ id: this.current, formId: 5, ctrlId: 7 })// hard code
+      this.sysDate = date
+      this.GET_IMPORT_BORROWINGS_DETAIL_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId })// hard code
     },
     cancel() {
       this.$emit('close')
