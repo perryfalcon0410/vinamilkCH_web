@@ -131,32 +131,44 @@
                 slot="table-actions-bottom"
                 class="mx-1 my-2 px-2"
               >
-                <tree-select
-                  v-model="comboProductSelected"
-                  class="w-35"
-                  placeholder="Nhập mã hoặc tên sản phẩm"
-                  :async="true"
-                  :open-on-click="false"
-                  :open-on-focus="false"
-                  :auto-load-root-options="false"
-                  :load-options="loadOptions"
-                  @select="onComboSelected"
+                <div
+                  slot="table-actions-bottom"
+                  class="mx-1 my-2 px-2"
                 >
-                  <label
-                    slot="option-label"
-                    slot-scope="{ node }"
-                    :class="labelClassName"
+                  <b-form-input
+                    v-model="comboSearch"
+                    class="w-25"
+                    placeholder="Nhập mã hoặc tên sản phẩm"
+                    type="text"
+                    autocomplete="off"
+                    @focus="searchComboFocus = true"
+                    @blur="searchComboFocus = true"
+                  />
+                  <b-collapse
+                    v-model="searchComboFocus"
+                    class="position-absolute mr-lg-0 mb-3"
+                    style="zIndex:1"
                   >
-                    <strong>
-                      {{ node.raw.productName }}
-                    </strong>
-                    <br>
-                    {{ node.label }}
-                  </label>
-                </tree-select>
-              </div>
-              <!--END Search bottom bar -->
-            </vue-good-table>
+                    <b-container
+                      class="my-1 bg-white rounded border border-primary shadow-lg"
+                    >
+                      <b-col>
+                        <b-row
+                          v-for="(product, index) in comboProductOptions"
+                          :key="index"
+                          class="my-1 cursor-pointer"
+                          @mouseover="$event.target.classList.add('item-active')"
+                          @mouseout="$event.target.classList.remove('item-active')"
+                        >
+                          {{ comboProductOptions }}
+                          <b>{{ product.productCode }}</b> - {{ product.productName }}
+                        </b-row>
+                      </b-col>
+                    </b-container>
+                  </b-collapse>
+                </div>
+                <!--END Search bottom bar -->
+              </div></vue-good-table>
             <!-- END - Table combo list -->
             <br>
             <!-- START - Table combo exchange -->
@@ -237,6 +249,10 @@ export default {
   data() {
     return {
       componentKey: 0,
+      // Search combo
+      comboSearch: null,
+      searchComboFocus: false,
+      // Search Combo
       //
       formId: 5,
       ctrlId: 7,
@@ -349,15 +365,6 @@ export default {
       COMBO_PRODUCTS_INFO_GETTER,
       COMBO_PRODUCTS_DETAILS_GETTER,
     ]),
-    comboDetails() {
-      return this.COMBO_PRODUCTS_GETTER.map(data => ({
-        id: data.id,
-        comboCode: data.productCode,
-        numProduct: data.numProduct,
-        price: data.productPrice,
-        productName: data.productName,
-      }))
-    },
 
     comboProductOptions() {
       return this.COMBO_PRODUCTS_GETTER.map(data => ({
@@ -366,6 +373,7 @@ export default {
         productName: data.productName,
         numProduct: data.numProduct,
         productPrice: data.productPrice,
+        status: data.status,
       }))
     },
 
@@ -404,6 +412,10 @@ export default {
   },
   mounted() {
     this.tradingTypeSelected = this.tradingTypeOptions[0].id
+    this.GET_COMBO_PRODUCTS_ACTION({
+      fromId: this.fromId,
+      ctrlId: this.ctrlId,
+    })
   },
   methods: {
     ...mapActions(WAREHOUSES_COMBO, [
@@ -415,17 +427,19 @@ export default {
     onComboSelected(item) {
       const index = this.comboListRows.findIndex(e => e.selectedComboId === item.id)
       const obj = {
-        id: item.refProductId,
+        id: item.id,
         comboCode: item.label,
         numProduct: item.numProduct || 0,
         price: item.productPrice || 0,
         comboName: item.productName,
         selectedComboId: item.id,
+        status: item.status,
       }
       if (index === -1) {
         this.comboListRows.push(obj)
         const newIndex = this.comboListRows.findIndex(e => e.selectedComboId === item.id)
         this.globalIndex = newIndex
+        console.log(obj.status)
         this.GET_COMBO_PRODUCTS_DETAILS_ACTION({
           id: item.id,
           formId: this.formId,
@@ -437,11 +451,11 @@ export default {
         this.updateComboExchangeQuantity(index)
       }
     },
-
     loadOptions({ searchQuery, callback }) {
-      if (searchQuery.length >= commonData.minSearchLength - 1) {
+      if (searchQuery.length >= commonData.minSearchLength) {
         this.GET_COMBO_PRODUCTS_ACTION({
           keyWord: searchQuery.trim(),
+          status: 1,
           fromId: this.fromId,
           ctrlId: this.ctrlId,
         })
@@ -453,6 +467,7 @@ export default {
       this.comboListRows.splice(index, 1)
     },
     save() {
+      console.log(this.comboListRows)
       const obj = {
         details: this.detailsProductFilter,
         note: this.note,
@@ -482,6 +497,9 @@ export default {
         return false
       }
       return true
+    },
+    navigateBack() {
+      this.$router.push({ name: 'warehouses-combo' })
     },
   },
 }
