@@ -4,12 +4,12 @@ import toasts from '@core/utils/toasts/toasts'
 import {
   // GETTERS
   WAREHOUSE_INVENTORIES_GETTER,
-  WAREHOUSE_INVENTORY_PAGINATION_GETTER,
   WAREHOUSE_TYPES_GETTER,
   WAREHOUSE_INVENTORY_STOCKS_GETTER,
   IS_EXISTED_WAREHOUSE_INVENTORY_GETTER,
   WAREHOUSE_INVENTORY_DATA_GETTER,
   WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
+  WAREHOUSE_INVENTORY_DETAIL_GETTER,
   // ACTIONS
   GET_WAREHOUSE_INVENTORIES_ACTION,
   GET_WAREHOUSE_TYPES_ACTION,
@@ -20,6 +20,8 @@ import {
   CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION,
   GET_SAMPLE_IMPORT_FILE_ACTION,
   GET_FAILED_IMPORT_FILE_ACTION,
+  GET_WAREHOUSE_INVENTORY_DETAIL_ACTION,
+  UPDATE_WAREHOUSE_INVENTORY_ACTION,
 } from './type'
 
 export default {
@@ -35,15 +37,13 @@ export default {
     isExistedWarehouseInventory: null,
     warehouseInventoryData: {},
     warehouseInventoryImportData: {},
+    warehouseInventoryDetail: {},
   },
 
   // START - GETTERS
   getters: {
     [WAREHOUSE_INVENTORIES_GETTER](state) {
       return state.warehouseInventories
-    },
-    [WAREHOUSE_INVENTORY_PAGINATION_GETTER](state) {
-      return state.warehouseInventoryPagination
     },
     [WAREHOUSE_TYPES_GETTER](state) {
       return state.warehouseTypes
@@ -60,6 +60,9 @@ export default {
     [WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER](state) {
       return state.warehouseInventoryImportData
     },
+    [WAREHOUSE_INVENTORY_DETAIL_GETTER](state) {
+      return state.warehouseInventoryDetail
+    },
   },
 
   // START - MUTATIONS
@@ -73,8 +76,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.warehouseInventories = res.data.content
-            state.warehouseInventoryPagination = res.data
+            state.warehouseInventories = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -221,6 +223,37 @@ export default {
               elem.click()
               document.body.removeChild(elem)
             }
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_WAREHOUSE_INVENTORY_DETAIL_ACTION]({ state }, val) {
+      WarehousesInventoryService
+        .getWarehouseInventoryDetail(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.warehouseInventoryDetail = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [UPDATE_WAREHOUSE_INVENTORY_ACTION]({ state }, val) {
+      WarehousesInventoryService
+        .createWarehouseInventory(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+            state.warehouseInventoryStatusCode = res.statusCode
+          } else {
+            throw new Error(res.statusValue)
           }
         })
         .catch(error => {

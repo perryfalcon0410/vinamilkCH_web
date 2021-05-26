@@ -4,7 +4,11 @@
     class="d-flex flex-column p-0"
   >
     <!-- START - Search -->
-    <warehouses-inventory-list-search />
+    <warehouses-inventory-list-search
+      @updateSearchData="paginationData = {
+        ...paginationData,
+        ...$event }"
+    />
     <!-- END - Search -->
 
     <!-- START - Warehouses Inventory List -->
@@ -35,15 +39,26 @@
         class="py-1"
       >
         <vue-good-table
+          mode="remote"
           :columns="columns"
           :rows="warehouseInventories"
-          style-class="vgt-table striped"
+          style-class="vgt-table bordered"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: elementSize,
+            setCurrentPage: pageNumber,
           }"
           compact-mode
           line-numbers
+          :total-rows="warehouseInventoryPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+            initialSortBy: [{field: 'nameText', type: 'desc'}]
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           <div
             slot="emptystate"
@@ -104,7 +119,7 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
                   v-model="elementSize"
@@ -115,7 +130,11 @@
                 />
                 <span
                   class="text-nowrap"
-                > trong {{ warehouseInventoryPagination.totalElements }} mục </span>
+                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
+                  -
+                  {{ (elementSize * pageNumber) > warehouseInventoryPagination.totalElements ?
+                    warehouseInventoryPagination.totalElements : (elementSize * pageNumber) }}
+                  của {{ warehouseInventoryPagination.totalElements }} mục </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -160,13 +179,12 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale, reverseVniDate } from '@core/utils/filter'
+import { formatISOtoVNI } from '@core/utils/filter'
 import WarehousesInventoryListSearch from './components/WarehousesInventoryListSearch.vue'
 import { // Sua lai
   WAREHOUSEINVENTORY,
   // GETTERS
   WAREHOUSE_INVENTORIES_GETTER,
-  WAREHOUSE_INVENTORY_PAGINATION_GETTER,
   // ACTIONS
   GET_WAREHOUSE_INVENTORIES_ACTION,
 } from '../store-module/type'
@@ -177,19 +195,25 @@ export default {
   },
   data() {
     return {
-      fromDate: formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
-      toDate: formatDateToLocale(new Date()),
+      fromDate: formatISOtoVNI(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
+      toDate: formatISOtoVNI(new Date()),
       elementSize: commonData.pagination[0],
       pageNumber: 1,
       paginationOptions: commonData.pagination,
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+      },
+      warehouseInventories: [],
 
       columns: [
         {
           label: 'Ngày',
           field: 'countingDate',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã kiểm kê',
@@ -216,8 +240,8 @@ export default {
           label: 'Chỉnh sửa lần cuối',
           field: 'updateDate',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Người chỉnh sửa',
@@ -230,45 +254,50 @@ export default {
           label: 'Thao tác',
           field: 'feature',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-cecnter',
         },
       ],
     }
   },
 
   computed: {
-    warehouseInventories() {
-      return this.WAREHOUSE_INVENTORIES_GETTER().map(data => ({
-        id: data.id,
-        countingDate: formatDateToLocale(data.countingDate),
-        stockCountingCode: data.stockCountingCode,
-        warehouseType: data.wareHouseTypeId,
-        createUser: data.createUser,
-        createDate: formatDateToLocale(data.createdAt),
-        updateUser: data.createUser,
-        updateDate: formatDateToLocale(data.updatedAt),
-      }))
+    ...mapGetters(WAREHOUSEINVENTORY, [
+      WAREHOUSE_INVENTORIES_GETTER,
+    ]),
+    getWarehouseInventories() {
+      if (this.WAREHOUSE_INVENTORIES_GETTER.content) {
+        return this.WAREHOUSE_INVENTORIES_GETTER.content.map(data => ({
+          id: data.id,
+          countingDate: formatISOtoVNI(data.countingDate),
+          stockCountingCode: data.stockCountingCode,
+          warehouseType: data.wareHouseTypeId,
+          createUser: data.createUser,
+          createDate: formatISOtoVNI(data.createdAt),
+          updateUser: data.createUser,
+          updateDate: formatISOtoVNI(data.updatedAt),
+        }))
+      }
+      return []
     },
     warehouseInventoryPagination() {
-      return this.WAREHOUSE_INVENTORY_PAGINATION_GETTER()
+      if (this.WAREHOUSE_INVENTORIES_GETTER) {
+        return this.WAREHOUSE_INVENTORIES_GETTER
+      }
+      return {}
+    },
+  },
+
+  watch: {
+    getWarehouseInventories() {
+      this.warehouseInventories = [...this.getWarehouseInventories]
     },
   },
 
   mounted() {
-    this.GET_WAREHOUSE_INVENTORIES_ACTION({
-      fromDate: reverseVniDate(this.fromDate),
-      toDate: reverseVniDate(this.toDate),
-      formId: 5,
-      ctrlId: 7,
-    })
   },
 
   methods: {
-    ...mapGetters(WAREHOUSEINVENTORY, [
-      WAREHOUSE_INVENTORIES_GETTER,
-      WAREHOUSE_INVENTORY_PAGINATION_GETTER,
-    ]),
     ...mapActions(WAREHOUSEINVENTORY, [
       GET_WAREHOUSE_INVENTORIES_ACTION,
     ]),

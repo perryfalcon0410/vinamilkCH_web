@@ -135,7 +135,7 @@ export default [
     },
   },
   {
-    path: '/warehouses/inventory/update',
+    path: '/warehouses/inventory/:id/update',
     name: 'warehouses-inventory-update',
     component: () => import('@/views/warehouses/warehouses-inventory/warehouses-inventory-update/WarehousesInventoryUpdate.vue'),
     meta: {

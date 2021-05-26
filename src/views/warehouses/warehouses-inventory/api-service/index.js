@@ -10,6 +10,8 @@ import {
   checkExistedWarehouseInventoryEndpoint,
   getSampleImportFileEndpoint,
   getFailedImportFileEndpoint,
+  getWarehouseInventoryDetailEndpoint,
+  updateWarehouseInventoryEndpoint,
 
 } from './defaultConfig'
 
@@ -62,6 +64,19 @@ export default {
   getFailedImportFile(args) {
     return axios.post(getFailedImportFileEndpoint, args, {
       'Content-Type': 'multipart/form-data',
+    })
+  },
+  getWarehouseInventoryDetail(args) {
+    return axios.get(`${getWarehouseInventoryDetailEndpoint}/${args.id}`, {
+      params: formatURLParams(args),
+    })
+  },
+  updateWarehouseInventory(args) {
+    return axios.put(`${updateWarehouseInventoryEndpoint}/${args.id}`, args.lstUpdate, {
+      params: {
+        formId: args.formId,
+        ctrlId: args.ctrlId,
+      },
     })
   },
 }

@@ -205,6 +205,7 @@ export default {
 
   mounted() {
     this.GET_WAREHOUSE_TYPES_ACTION({ formId: 5, ctrlId: 7 })
+    this.onClickSearchButton()
   },
   methods: {
     ...mapActions(WAREHOUSEINVENTORY, [GET_WAREHOUSE_INVENTORIES_ACTION, GET_WAREHOUSE_TYPES_ACTION]),
@@ -221,7 +222,12 @@ export default {
         ctrlId: 7,
       }
 
+      this.updateSearchData(searchData)
       this.GET_WAREHOUSE_INVENTORIES_ACTION(searchData)
+    },
+
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
     },
   },
 }
