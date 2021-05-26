@@ -18,11 +18,11 @@
           <b-form-group
             label="Mã kiểm kê"
             label-class="h8"
-            label-for="form-input-stock-counting-code"
+            label-for="form-input-counting-code"
           >
             <b-form-input
-              id="form-input-stock-counting-code"
-              v-model="stockCountingCode"
+              id="form-input-counting-code"
+              v-model="countingCode"
               class="h9"
               size="sm"
               maxlength="20"
@@ -508,7 +508,7 @@ export default {
       pageNumber: 1,
       paginationOptions: commonData.pagination,
       paginationData: { isPaging: true },
-      inventoryCode: '',
+      countingCode: '',
       countingDate: null,
       warehouseType: null,
       isImportModalShow: false,
@@ -738,7 +738,7 @@ export default {
       })
     },
     getWarehouseInventoryDetail() {
-      this.inventoryCode = this.WAREHOUSE_INVENTORY_DETAIL_GETTER().info.countingCode
+      this.countingCode = this.WAREHOUSE_INVENTORY_DETAIL_GETTER().info.countingCode
       this.countingDate = formatISOtoVNI(this.WAREHOUSE_INVENTORY_DETAIL_GETTER().info.countingDate)
       this.warehouseType = this.WAREHOUSE_INVENTORY_DETAIL_GETTER().info.warehouseType
 

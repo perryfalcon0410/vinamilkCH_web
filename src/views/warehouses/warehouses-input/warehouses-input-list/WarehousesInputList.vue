@@ -443,9 +443,7 @@ export default {
       this.REMOVE_RECEIPT_ACTION(`${this.selectedReceiptId}?type=${this.selectedReceiptType}&formId=5&ctrlId=7`)
       this.isDeleteModalShow = !this.isDeleteModalShow
       this.receipts.splice(this.selectedReceiptIndex, 1)
-      if (this.receipts.length < 1) {
-        this.receiptPagination.totalElements = 0
-      }
+      this.receiptPagination.totalElements -= 1
     },
     onPaginationChange() {
       this.GET_RECEIPTS_ACTION(this.paginationData)

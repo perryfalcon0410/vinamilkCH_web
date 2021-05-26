@@ -423,33 +423,7 @@
         </b-row>
       </b-col>
     </validation-observer>
-
     <!-- END - Form and list -->
-
-    <!-- START - Modal update -->
-    <b-modal
-      v-model="isUpdateModalShow"
-      title="Thông báo"
-    >
-      Danh sách hàng khuyến mãi đang trống, bạn có muốn lưu?
-      <template #modal-footer>
-        <b-button
-          variant="someThing"
-          class="btn-brand-1 aligns-items-button-center"
-          @click="onClickAgreeButton()"
-        >
-          Đồng ý
-        </b-button>
-        <b-button
-          class="aligns-items-button-center"
-          @click="isUpdateModalShow = !isUpdateModalShow"
-        >
-          Đóng
-        </b-button>
-      </template>
-    </b-modal>
-    <!-- END - Modal update -->
-
   </b-container>
 </template>
 
@@ -592,7 +566,6 @@ export default {
       id: this.$route.params.id,
       importType: Number(this.$route.params.type),
       inputType: Number(warehousesData.inputTypes[0].id), // Loại nhập hàng
-      isUpdateModalShow: false,
     }
   },
 
@@ -770,25 +743,9 @@ export default {
         return
       }
       if (updatedPromotions.length === 0 && this.canEdit) {
-        this.isUpdateModalShow = !this.isUpdateModalShow
+        toasts.error('Vui lòng nhập sản phẩm')
         return
       }
-      this.onClickAgreeButton(updatedPromotions)
-    },
-    click() {
-      if (this.productSearch === null) return
-      if (this.productSearch.length >= commonData.minSearchLength) {
-        this.GET_PRODUCTS_ACTION({
-          keyWord: this.productSearch?.trim(),
-          formId: 5,
-          ctrlId: 7,
-        })
-      }
-    },
-    onClickDeleteButton(index) {
-      this.promotions.splice(index, 1)
-    },
-    onClickAgreeButton(updatedPromotions) {
       this.$refs.formContainer.validate().then(success => {
         if (success) {
           this.UPDATE_RECEIPT_ACTION({
@@ -805,6 +762,19 @@ export default {
           })
         }
       })
+    },
+    click() {
+      if (this.productSearch === null) return
+      if (this.productSearch.length >= commonData.minSearchLength) {
+        this.GET_PRODUCTS_ACTION({
+          keyWord: this.productSearch?.trim(),
+          formId: 5,
+          ctrlId: 7,
+        })
+      }
+    },
+    onClickDeleteButton(index) {
+      this.promotions.splice(index, 1)
     },
   },
 }
