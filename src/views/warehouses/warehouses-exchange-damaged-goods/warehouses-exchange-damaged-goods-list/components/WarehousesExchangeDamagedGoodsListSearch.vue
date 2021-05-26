@@ -101,7 +101,6 @@
             data-clear
           />
           <vue-flat-pickr
-            id="form-input-date-from"
             v-model="toDate"
             :config="configToDate"
             class="form-control h8"
@@ -123,9 +122,9 @@
           Lý do
         </div>
         <tree-select
-          v-model="reasonSelected"
-          :options="reasonOptions"
-          placeholder="Chọn lý do"
+          v-model="reasonObj.reasonSelected"
+          :options="reasonObj.reasonOptions"
+          placeholder="Tất cả"
           no-options-text="Không có dữ liệu"
         />
       </b-col>
@@ -198,8 +197,10 @@ export default {
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
 
-      reasonSelected: '',
-      reasonOptions: [],
+      reasonObj: {
+        reasonSelected: null,
+        reasonOptions: [],
+      },
 
       decentralization: {
         formId: 5, // Hard code
@@ -232,8 +233,7 @@ export default {
   },
   watch: {
     getReasonOptions() {
-      this.reasonOptions = [...this.getReasonOptions]
-      this.reasonSelected = this.getReasonOptions[3].id
+      this.reasonObj.reasonOptions = [...this.getReasonOptions]
     },
     fromDate() {
       this.configToDate = {
@@ -261,8 +261,8 @@ export default {
     ]),
     onSearch() {
       const searchData = {
-        searchKeywords: this.minutesCode,
-        reasonId: this.reasonSelected,
+        minutesCode: this.minutesCode,
+        reasonId: this.reasonObj.reasonSelected,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         ...this.decentralization,

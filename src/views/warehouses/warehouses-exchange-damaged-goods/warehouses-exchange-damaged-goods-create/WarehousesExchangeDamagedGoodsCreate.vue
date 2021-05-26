@@ -32,7 +32,6 @@
               Số biên bản <sup class="text-danger">*</sup>
             </div>
             <b-form-input
-              id="minuteID"
               v-model.trim="exchangeGoodsInfo.transCode"
               :state="touched ? passed : null"
               maxlength="20"
@@ -133,7 +132,7 @@
               Lý do <sup class="text-danger">*</sup>
             </div>
             <tree-select
-              v-model="reasonObj.reasonSeleted"
+              v-model="reasonObj.reasonSelected"
               :options="reasonObj.reasonOptions"
               placeholder="Chọn lý do"
               no-options-text="Không có dữ liệu"
@@ -415,12 +414,11 @@ export default {
       isDisabledFeature: true,
       isFocusedInputProduct: false,
       isFocusedInputCustomer: false,
-      minuteCode: null,
       cursorCustomer: -1, // Con trỏ chuột ở pop up = -1
       cursorProduct: -1,
 
       reasonObj: {
-        reasonSeleted: null,
+        reasonSelected: null,
         reasonOptions: [],
       },
 
@@ -612,7 +610,7 @@ export default {
           this.CREATE_EXCHANGE_DAMAGED_GOODS_ACTION({
             damagedGoodsData: {
               customerId: this.customerInfo.customerId,
-              reasonId: this.reasonObj.reasonSeleted,
+              reasonId: this.reasonObj.reasonSelected,
               lstExchangeDetail: this.damagedProduct.map(item => ({
                 productId: item.id,
                 productName: item.productName,
@@ -717,7 +715,7 @@ export default {
         || this.customerInfo.customerName
         || this.customerInfo.customerAddress
         || this.customerInfo.customerPhone
-        || this.reasonObj.reasonSeleted
+        || this.reasonObj.reasonSelected
       ) {
         return true
       }

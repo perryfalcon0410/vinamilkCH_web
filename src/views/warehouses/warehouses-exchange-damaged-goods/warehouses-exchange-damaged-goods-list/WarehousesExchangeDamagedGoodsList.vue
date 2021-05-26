@@ -354,8 +354,8 @@ export default {
       EXCHANGE_DAMAGED_GOODS_REASONS_GETTER,
     ]),
     getExchangeDamagedGoods() {
-      if (this.EXCHANGE_DAMAGED_GOODS_GETTER.content) {
-        return this.EXCHANGE_DAMAGED_GOODS_GETTER.content.map(data => ({
+      if (this.EXCHANGE_DAMAGED_GOODS_GETTER.response) {
+        return this.EXCHANGE_DAMAGED_GOODS_GETTER.response.content.map(data => ({
           id: data.id,
           date: data.transDate === '' ? '' : formatISOtoVNI(data.transDate),
           minutesCode: data.transCode,
@@ -384,8 +384,8 @@ export default {
     },
 
     exchangeDamagedGoodsPagination() {
-      if (this.EXCHANGE_DAMAGED_GOODS_GETTER) {
-        return this.EXCHANGE_DAMAGED_GOODS_GETTER
+      if (this.EXCHANGE_DAMAGED_GOODS_GETTER.response) {
+        return this.EXCHANGE_DAMAGED_GOODS_GETTER.response
       }
       return {}
     },
@@ -396,13 +396,12 @@ export default {
     },
     getReasonOptions() {
       this.reasonOptions = [...this.getReasonOptions]
-      this.reasonSelected = this.getReasonOptions[3].id
     },
   },
   mounted() {
     this.GET_EXCHANGE_DAMAGED_GOODS_ACTION({
       ...this.decentralization,
-      reasonId: this.reasonSelected,
+      reasonId: 7,
     })
     this.GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION({
       ...this.decentralization,
