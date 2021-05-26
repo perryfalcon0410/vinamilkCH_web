@@ -26,13 +26,19 @@ import app from './app'
 import appConfig from './app-config'
 import verticalMenu from './vertical-menu'
 
+// Common
+import commonCustomer from './common-customer'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
+    // System
     app,
     appConfig,
     verticalMenu,
+    // Common
+    commonCustomer,
     // Home
     dashboard,
     // Purchases

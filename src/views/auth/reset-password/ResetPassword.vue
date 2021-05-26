@@ -41,20 +41,10 @@
 
             <!-- username -->
             <b-form-group>
-              <validation-provider
-                #default="{ errors }"
-                name="tên đăng nhập"
-                vid="username"
-                rules="required"
-              >
-                <b-form-input
-                  v-model="username"
-                  :state="errors.length > 0 ? false:null"
-                  placeholder="Tên đăng nhập"
-                  maxlength="20"
-                />
-                <small class="text-danger">{{ errors[0] }}</small>
-              </validation-provider>
+              <b-form-input
+                v-model="username"
+                readonly
+              />
             </b-form-group>
 
             <!-- old password -->
@@ -95,7 +85,7 @@
                 #default="{ errors }"
                 name="mật khẩu mới"
                 vid="newPassword"
-                rules="required|not-equal:@oldPassword|password"
+                rules="required|not-equal:@oldPassword|password1"
               >
                 <b-input-group
                   class="input-group-merge"
@@ -166,7 +156,7 @@
         </validation-observer>
 
         <p class="text-center mt-2">
-          <b-link :to="{name:'auth-login'}">
+          <b-link @click="$router.back()">
             <feather-icon icon="ChevronLeftIcon" /> Huỷ bỏ
           </b-link>
         </p>
@@ -206,7 +196,7 @@
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import {
-  required, notEqual, confirmed, password, equal,
+  required, notEqual, confirmed, password1, equal,
 } from '@core/utils/validations/validations'
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
@@ -219,7 +209,7 @@ export default {
   },
   data() {
     return {
-      username: null,
+      username: localStorage.getItem('username') ? JSON.parse(localStorage.getItem('username')) : null,
       oldPassword: null,
       newPassword: null,
       confirmPassword: null,
@@ -228,7 +218,7 @@ export default {
       required,
       notEqual,
       confirmed,
-      password,
+      password1,
       equal,
 
       // Toggle Password Status

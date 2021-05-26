@@ -4,7 +4,7 @@
       <b-col
         cols="2"
       >
-        <b-row class="bg-light p-1 w-75 rounded-right  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mt-2 mb-1">
+        <b-row class="v-title bg-light p-1 w-75 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-center mt-2 mb-1">
           Khuyến mãi
         </b-row>
       </b-col>

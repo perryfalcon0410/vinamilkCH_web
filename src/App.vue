@@ -34,6 +34,14 @@ import useAppConfig from '@core/app-config/useAppConfig'
 import { useWindowSize, useCssVar } from '@vueuse/core'
 
 import store from '@/store'
+import {
+  mapActions,
+} from 'vuex'
+import {
+  COMMON_CUSTOMER,
+  // ACTIONS
+  GET_CUSTOMER_TYPES_ACTION,
+} from './store/common-customer/type'
 
 const LayoutVertical = () => import('@/layouts/vertical/LayoutVertical.vue')
 const LayoutHorizontal = () => import('@/layouts/horizontal/LayoutHorizontal.vue')
@@ -51,6 +59,16 @@ export default {
 
     Loading,
   },
+
+  data() {
+    return {
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+    }
+  },
+
   // ! We can move this computed: layout & contentLayoutType once we get to use Vue 3
   // Currently, router.currentRoute is not reactive and doesn't trigger any change
   computed: {
@@ -64,7 +82,15 @@ export default {
     isLoading() {
       return this.$store.state.app.isLoading
     },
+    userData() {
+      return localStorage.getItem('userData')
+    },
   },
+
+  mounted() {
+    this.getCustomerTypes()
+  },
+
   beforeCreate() {
     // Set colors in theme
     const colors = ['primary', 'secondary', 'success', 'info', 'warning', 'danger', 'light', 'dark']
@@ -86,6 +112,19 @@ export default {
     const { isRTL } = $themeConfig.layout
     document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr')
   },
+
+  methods: {
+    ...mapActions(COMMON_CUSTOMER, [
+      GET_CUSTOMER_TYPES_ACTION,
+    ]),
+
+    getCustomerTypes() {
+      if (localStorage.getItem('userData')) {
+        this.GET_CUSTOMER_TYPES_ACTION({ ...this.decentralization })
+      }
+    },
+  },
+
   setup() {
     const { skin, skinClasses } = useAppConfig()
     const { enableScrollToTop } = $themeConfig.layout

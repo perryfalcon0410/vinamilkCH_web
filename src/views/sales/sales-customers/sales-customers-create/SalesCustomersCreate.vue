@@ -593,6 +593,7 @@ import {
   PRECINCTS_GETTER,
   CARD_TYPES_GETTER,
   CLOSELY_TYPES_GETTER,
+  SHOP_LOCATIONS_GETTER,
   // ACTIONS
   CREATE_CUSTOMER_ACTION,
   GET_CUSTOMER_TYPES_ACTION,
@@ -601,6 +602,7 @@ import {
   GET_PRECINCTS_ACTION,
   GET_CARD_TYPES_ACTION,
   GET_CLOSELY_TYPES_ACTION,
+  GET_SHOP_LOCATIONS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -626,7 +628,10 @@ export default {
         dateFormat: 'd/m/Y',
         maxDate: 'today',
       },
+
       goNext: () => {},
+
+      isFirstTimeGetLocations: true,
 
       // validation rules
       number,
@@ -692,6 +697,7 @@ export default {
       PRECINCTS_GETTER,
       CARD_TYPES_GETTER,
       CLOSELY_TYPES_GETTER,
+      SHOP_LOCATIONS_GETTER,
     }),
     customerTypeOptions() {
       return this.CUSTOMER_TYPES_GETTER.map(data => ({
@@ -735,6 +741,9 @@ export default {
         label: data.apParamName,
       }))
     },
+    shopLocations() {
+      return this.SHOP_LOCATIONS_GETTER
+    },
   },
   // END - Computed
 
@@ -742,10 +751,16 @@ export default {
     ERROR_CODE_GETTER() {
       this.checkDuplicationID(this.ERROR_CODE_GETTER)
     },
+    shopLocations() {
+      this.provincesSelected = this.shopLocations.provinceId
+    },
     provincesSelected() {
       this.districtsSelected = null
       if (this.provincesSelected) {
         this.GET_DISTRICTS_ACTION({ ...this.decentralization, provinceId: this.provincesSelected })
+      }
+      if (this.shopLocations && this.isFirstTimeGetLocations) {
+        this.districtsSelected = this.shopLocations.districtId
       }
     },
     districtsSelected() {
@@ -753,14 +768,19 @@ export default {
       if (this.districtsSelected) {
         this.GET_PRECINCTS_ACTION({ ...this.decentralization, districtId: this.districtsSelected })
       }
+      if (this.shopLocations && this.isFirstTimeGetLocations) {
+        this.precinctsSelected = this.shopLocations.precinctId
+        this.isFirstTimeGetLocations = false
+      }
     },
   },
 
-  mounted() {
+  created() {
     this.GET_CUSTOMER_TYPES_ACTION({ ...this.decentralization })
     this.GET_PROVINCES_ACTION({ ...this.decentralization })
     this.GET_CARD_TYPES_ACTION({ ...this.decentralization })
     this.GET_CLOSELY_TYPES_ACTION({ ...this.decentralization })
+    this.GET_SHOP_LOCATIONS_ACTION({ ...this.decentralization })
   },
 
   // before page leave, this will check
@@ -787,6 +807,7 @@ export default {
       GET_PRECINCTS_ACTION,
       GET_CARD_TYPES_ACTION,
       GET_CLOSELY_TYPES_ACTION,
+      GET_SHOP_LOCATIONS_ACTION,
     ]),
 
     checkDuplicationID(errCode) {
@@ -842,6 +863,11 @@ export default {
     },
 
     checkFieldsValueLength() {
+      // WARNING: Không xóa mấy cái log này, sau này sẽ cần để check lại
+      // console.log(`provinces: ${this.provincesSelected !== this.shopLocations.provinceId} | (${typeof this.provincesSelected}) ->|  ${this.provincesSelected} === ${this.shopLocations.provinceId} (${typeof this.shopLocations.provinceId})`)
+      // console.log(`districts: ${this.districtsSelected !== this.shopLocations.districtId} | (${typeof this.districtsSelected}) ->|  ${this.districtsSelected} === ${this.shopLocations.districtId} (${typeof this.shopLocations.districtId})`)
+      // console.log(`precincts: ${this.precinctsSelected !== this.shopLocations.precinctId} | (${typeof this.precinctsSelected}) ->|  ${this.precinctsSelected} === ${this.shopLocations.precinctId} (${typeof this.shopLocations.precinctId})`)
+
       if (
       // START - Personal
         this.lastName
@@ -859,9 +885,9 @@ export default {
         || this.phoneNumber
         || this.customerEmail
         || this.homeNumber
-        || this.provincesSelected
-        || this.districtsSelected
-        || this.precinctsSelected
+        || this.provincesSelected !== this.shopLocations.provinceId
+        || this.districtsSelected !== this.shopLocations.districtId
+        || this.precinctsSelected !== this.shopLocations.precinctId
         || this.workingOffice
         || this.officeAddress
         || this.taxCode

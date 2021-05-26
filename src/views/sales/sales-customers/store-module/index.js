@@ -5,6 +5,7 @@ import {
   // GETTERS
   CUSTOMERS_GETTER,
   CUSTOMER_BY_ID_GETTER,
+  SHOP_LOCATIONS_SEARCH_GETTER,
   SHOP_LOCATIONS_GETTER,
   ERROR_CODE_GETTER,
   CUSTOMER_TYPES_GETTER,
@@ -26,6 +27,7 @@ import {
   EXPORT_CUSTOMERS_ACTION,
   GET_CUSTOMER_DEFAULT_ACTION,
 
+  GET_SHOP_LOCATIONS_SEARCH_ACTION,
   GET_SHOP_LOCATIONS_ACTION,
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
@@ -49,6 +51,7 @@ export default {
     customerData: {},
     customerById: {},
     customerDefault: {},
+    shopLocationsSearch: [],
     shopLocations: [],
     customerTypes: [],
     provinces: [],
@@ -74,6 +77,9 @@ export default {
     },
     [CUSTOMER_DEFAULT_GETTER](state) {
       return state.customerDefault
+    },
+    [SHOP_LOCATIONS_SEARCH_GETTER](state) {
+      return state.shopLocationsSearch
     },
     [SHOP_LOCATIONS_GETTER](state) {
       return state.shopLocations
@@ -190,6 +196,22 @@ export default {
         })
     },
 
+    [GET_SHOP_LOCATIONS_SEARCH_ACTION]({ state }, val) {
+      CustomerService
+        .getShopLocationsSearch(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.shopLocationsSearch = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+
     [GET_SHOP_LOCATIONS_ACTION]({ state }, val) {
       CustomerService
         .getShopLocations(val)
@@ -206,16 +228,19 @@ export default {
         })
     },
 
-    [EXPORT_CUSTOMERS_ACTION]({}) {
+    [EXPORT_CUSTOMERS_ACTION](val) {
       CustomerService
-        .exportCustomers()
-        .then(response => response.data)
+        .exportCustomers(val)
         .then(res => {
+          // console.log(res)
           if (res.success) {
             toasts.success(res.statusValue)
           } else {
             throw new Error(res.statusValue)
           }
+        // })
+          // const blob = new Blob([res], { type: 'data:application/xlsx' })
+          // FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
           toasts.error(error.message)

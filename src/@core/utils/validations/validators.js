@@ -15,6 +15,14 @@ export const validatorPassword = password => {
   return validPassword
 }
 
+export const validatorPassword1 = password => {
+  /* eslint-disable no-useless-escape */
+  const regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{8,}/
+  /* eslint-enable no-useless-escape */
+  const validPassword = regExp.test(password)
+  return validPassword
+}
+
 export const validatorNotEqual = (val, { target }) => val !== target
 
 export const validatorEqual = (val, { target }) => val === target

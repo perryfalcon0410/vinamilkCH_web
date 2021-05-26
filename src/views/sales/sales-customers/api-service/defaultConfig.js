@@ -13,7 +13,8 @@ export const getCustomerTypesEndpoint = `${CUSTOMER}/customer-types`
 export const exportCustomersEndpoint = `${CUSTOMER}/export`
 export const getCustomerDefaultEndpoint = `${CUSTOMER}/default`
 
-export const getShopLocationsEndpoint = `${COMMON}/${AREA}/districts/index-customers`
+export const getShopLocationsSearchEndpoint = `${COMMON}/${AREA}/districts/index-customers`
+export const getShopLocationsEndpoint = `${COMMON}/${AREA}/default`
 export const getProvincesEndpoint = `${COMMON}/${AREA}/provinces`
 export const getDistrictsEndpoint = `${COMMON}/${AREA}/districts`
 export const getPrecinctsEndpoint = `${COMMON}/${AREA}/precincts`

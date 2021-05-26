@@ -19,7 +19,6 @@
           Khách hàng
         </div>
         <b-form-input
-          id="form-input-customer"
           v-model="customerName"
           class="h8 text-brand-3 height-button-brand-1"
           placeholder="Nhập họ tên/mã"
@@ -182,8 +181,8 @@ export default {
 
       customerName: null,
       billNumber: null,
-      fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      toDate: new Date(),
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
 
       configDate: {
         wrap: true,

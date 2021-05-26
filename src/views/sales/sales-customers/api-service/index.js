@@ -8,6 +8,7 @@ import {
   exportCustomersEndpoint,
   getCustomerDefaultEndpoint,
 
+  getShopLocationsSearchEndpoint,
   getShopLocationsEndpoint,
   getCustomerTypesEndpoint,
   getPrecinctsEndpoint,
@@ -47,8 +48,16 @@ export default {
   updateCustomer(args) {
     return axios.patch(`${updateCustomerEndpoint}/${args.id}`, args)
   },
-  exportCustomers() {
-    return axios.get(exportCustomersEndpoint)
+  exportCustomers(args) {
+    return axios.get(exportCustomersEndpoint, {
+      params: formatURLParams(args),
+      responseType: 'blob',
+    })
+  },
+  getShopLocationsSearch(args) {
+    return axios.get(getShopLocationsSearchEndpoint, {
+      params: formatURLParams(args),
+    })
   },
   getShopLocations(args) {
     return axios.get(getShopLocationsEndpoint, {

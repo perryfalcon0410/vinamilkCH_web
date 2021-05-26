@@ -226,6 +226,12 @@ export default {
         sort: null,
       },
 
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+
       customers: [],
 
       columns: [
@@ -304,7 +310,7 @@ export default {
         return this.CUSTOMERS_GETTER.content.map(data => ({
           id: data.id,
           customerCode: data.customerCode,
-          nameText: data.nameText,
+          nameText: `${data.lastName} ${data.firstName}`,
           mobiPhone: data.mobiPhone,
           dob: formatDateToLocale(data.dob),
           genderId: getGenderLabel(data.genderId),
@@ -351,10 +357,10 @@ export default {
       })
     },
     onClickExcelExportButton() {
-      this.EXPORT_CUSTOMERS_ACTION()
+      this.EXPORT_CUSTOMERS_ACTION({ ...this.decentralization })
     },
     onPaginationChange() {
-      this.GET_CUSTOMERS_ACTION(this.paginationData)
+      this.GET_CUSTOMERS_ACTION({ ...this.paginationData, ...this.decentralization })
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }

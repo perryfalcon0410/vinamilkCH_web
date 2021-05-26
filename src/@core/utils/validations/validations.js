@@ -19,6 +19,7 @@ import {
   validatorPositive,
   validatorUrlValidator,
   validatorPassword,
+  validatorPassword1,
   validatorCreditCard,
   validatorNotEqual,
   validatorCode,
@@ -71,6 +72,11 @@ export const credit = extend('credit-card', {
 export const password = extend('password', {
   validate: validatorPassword,
   message: '{_field_} phải có độ dài tối thiểu 8 ký tự và tối đa 20 ký tự (không bao gồm khoảng trắng)',
+})
+
+export const password1 = extend('password1', {
+  validate: validatorPassword1,
+  message: '{_field_} phải có độ dài tối thiểu 8 ký tự và tối đa 20 ký tự, bao gồm: chữ hoa, thường, số và ký tự đặc biệt',
 })
 
 export const notEqual = extend('not-equal', {

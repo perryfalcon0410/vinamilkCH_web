@@ -1,5 +1,6 @@
 <template>
   <b-modal
+    id="roleAndShopModal"
     title="Chọn vai trò và cửa hàng thao tác"
     title-class="text-brand-1 font-weight-bolder"
     :visible="visible"
@@ -32,18 +33,18 @@
       />
     </b-form>
 
-    <template #modal-footer>
+    <template #modal-footer="{ cancel }">
       <b-button
         variant="someThing"
         class="btn-brand-1 aligns-items-button-center"
-        :disabled="okButtonDisable"
+        :disabled="isOkButtonDisabled"
         @click="login()"
       >
         Đồng ý
       </b-button>
       <b-button
         class="aligns-items-button-center"
-        @click="onModalHidden"
+        @click="cancel"
       >
         Đóng
       </b-button>
@@ -74,14 +75,12 @@ export default {
   },
   data() {
     return {
-      shops: [],
-
       roleSelected: null,
       shopSelected: null,
     }
   },
   computed: {
-    okButtonDisable() {
+    isOkButtonDisabled() {
       return !this.roleSelected || !this.shopSelected
     },
     roleOptions() {
@@ -121,11 +120,16 @@ export default {
     },
   },
 
-  methods: {
-    onModalHidden() {
-      this.$emit('onModalHidden')
-    },
+  mounted() {
+    // START - Listen modal toggle
+    this.$root.$on('bv::modal::hide', () => {
+      this.roleSelected = null
+      this.shopSelected = null
+    })
+    // END - Listen modal toggle
+  },
 
+  methods: {
     login() {
       this.$emit('login', {
         roleSelected: this.roleSelected,

@@ -130,3 +130,67 @@ export const getTimeOfDate = value => {
 
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
 }
+// count from isoDate to now
+export const countDays = isoDate => {
+  const now = new Date()
+
+  const yearNow = now.getYear()
+  const monthNow = now.getMonth()
+  const dateNow = now.getDate()
+
+  const dateString = formatISOtoVNI(isoDate)
+  const dateParts = dateString.split('/')
+  const dob = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+
+  const yearDob = dob.getYear()
+  const monthDob = dob.getMonth()
+  const dateDob = dob.getDate()
+  let age = {}
+  let ageString = ''
+  let yearString = ''
+  let monthString = ''
+  let dayString = ''
+
+  let yearAge = yearNow - yearDob
+  let monthAge
+  let dateAge
+  if (monthNow >= monthDob) {
+    monthAge = monthNow - monthDob
+  } else {
+    yearAge -= 1
+    monthAge = 12 + monthNow - monthDob
+  }
+
+  if (dateNow >= dateDob) {
+    dateAge = dateNow - dateDob
+  } else {
+    monthAge -= 1
+    dateAge = 31 + dateNow - dateDob
+
+    if (monthAge < 0) {
+      monthAge = 11
+      yearAge -= 1
+    }
+  }
+
+  age = {
+    years: yearAge,
+    months: monthAge,
+    days: dateAge,
+  }
+
+  if (age.years > 0) yearString = ' năm'
+  if (age.months > 0) monthString = ' tháng'
+  if (age.days > 0) dayString = ' ngày'
+
+  if ((age.years > 0) && (age.months > 0) && (age.days > 0)) ageString = `${age.years + yearString} ${age.months}${monthString} ${age.days}${dayString}`
+  else if ((age.years === 0) && (age.months === 0) && (age.days > 0)) ageString = `${age.days}${dayString}`
+  else if ((age.years > 0) && (age.months === 0) && (age.days === 0)) ageString = `${age.years + yearString}`
+  else if ((age.years > 0) && (age.months > 0) && (age.days === 0)) ageString = `${age.years + yearString} ${age.months}${monthString}`
+  else if ((age.years === 0) && (age.months > 0) && (age.days > 0)) ageString = `${age.months + monthString} ${age.days}${dayString}`
+  else if ((age.years > 0) && (age.months === 0) && (age.days > 0)) ageString = `${age.years + yearString} ${age.days}${dayString}`
+  else if ((age.years === 0) && (age.months > 0) && (age.days === 0)) ageString = `${age.months + monthString}`
+  else ageString = ''
+
+  return ageString
+}

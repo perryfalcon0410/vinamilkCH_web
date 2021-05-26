@@ -13,7 +13,8 @@
 
     <b-form class="bg-white rounded shadow rounded my-1">
       <b-row
-        class="justify-content-between border-bottom p-1 mx-0"
+        class="justify-content-between border-bottom mx-0 px-1"
+        style="padding: 5px 0"
         align-v="center"
       >
         <strong class="text-brand-1">
@@ -185,6 +186,7 @@
         </vue-good-table>
       </b-col>
       <!-- End table -->
+
       <invoice-detail-modal
         :visible="isInvoiceDetailModal"
         :information="info"
@@ -353,8 +355,18 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(SALESRECEIPTS, [
+      SALES_RECEIPTS_GETTER,
+      SALES_RECEIPTS_DETAIL_GETTER,
+      SALES_RECEIPTS_DETAIL_TOTAL_GETTER,
+      SALES_RECEIPTS_DISCOUNT_GETTER,
+      SALES_RECEIPTS_PROMOTION_GETTER,
+      SALES_RECEIPT_DETAIL_INFOS_GETTER,
+      SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
+      SALES_RECEIPTS_PAGINATION_GETTER,
+    ]),
     salesReceiptList() {
-      return this.SALES_RECEIPTS_GETTER().map(data => ({
+      return this.SALES_RECEIPTS_GETTER.map(data => ({
         id: data.id,
         numberBill: data.orderNumber,
         customerCode: data.customerNumber,
@@ -373,11 +385,11 @@ export default {
       }))
     },
     salesReceiptsTotal() {
-      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_GETTER(), value => this.$formatNumberToLocale(value))
+      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_GETTER, value => this.$formatNumberToLocale(value))
     },
 
     detailTable() {
-      return this.SALES_RECEIPTS_DETAIL_GETTER().map(data => ({
+      return this.SALES_RECEIPTS_DETAIL_GETTER.map(data => ({
         productCode: data.productCode,
         productName: data.productName,
         unit: data.unit,
@@ -389,14 +401,14 @@ export default {
       }))
     },
     detailTableTotal() {
-      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER(), value => this.$formatNumberToLocale(value))
+      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER, value => this.$formatNumberToLocale(value))
     },
 
     discountTable() {
-      return this.SALES_RECEIPTS_DISCOUNT_GETTER()
+      return this.SALES_RECEIPTS_DISCOUNT_GETTER
     },
     promotionTable() {
-      return this.SALES_RECEIPTS_PROMOTION_GETTER().map(data => ({
+      return this.SALES_RECEIPTS_PROMOTION_GETTER.map(data => ({
         productCode: data.productNumber,
         productName: data.productName,
         number: data.quantity,
@@ -406,11 +418,11 @@ export default {
 
     // common info in receipt
     info() {
-      return lodash.mapValues(this.SALES_RECEIPT_DETAIL_INFOS_GETTER(), value => this.$formatNumberToLocale(value))
+      return lodash.mapValues(this.SALES_RECEIPT_DETAIL_INFOS_GETTER, value => value)
     },
 
     salesReceiptsPagination() {
-      return this.SALES_RECEIPTS_PAGINATION_GETTER()
+      return this.SALES_RECEIPTS_PAGINATION_GETTER
     },
   },
 
@@ -429,6 +441,7 @@ export default {
     },
 
   },
+
   mounted() {
     this.GET_SALES_RECEIPTS_ACTION({
       searchData: null,
@@ -436,17 +449,8 @@ export default {
       ctrlId: 7, // hard code
     })
   },
+
   methods: {
-    ...mapGetters(SALESRECEIPTS, [
-      SALES_RECEIPTS_GETTER,
-      SALES_RECEIPTS_DETAIL_GETTER,
-      SALES_RECEIPTS_DETAIL_TOTAL_GETTER,
-      SALES_RECEIPTS_DISCOUNT_GETTER,
-      SALES_RECEIPTS_PROMOTION_GETTER,
-      SALES_RECEIPT_DETAIL_INFOS_GETTER,
-      SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
-      SALES_RECEIPTS_PAGINATION_GETTER,
-    ]),
     ...mapActions(SALESRECEIPTS, [
       GET_SALES_RECEIPTS_ACTION,
       GET_SALES_RECEIPTS_DETAIL_ACTION,

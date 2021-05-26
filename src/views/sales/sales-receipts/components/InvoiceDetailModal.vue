@@ -12,7 +12,9 @@
       <b-col
         cols="2"
       >
-        <b-row class="bg-light h-25 w-75 rounded-right border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1">
+        <b-row
+          class="v-title bg-light h-25 w-75 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1"
+        >
           Thông tin thanh toán
         </b-row>
       </b-col>
@@ -74,7 +76,7 @@
           </b-col>
           <b-col>
             <h3>
-              {{ (information.total) }}
+              {{ this.$formatNumberToLocale(information.total) }}
             </h3>
           </b-col>
         </b-row>
@@ -85,7 +87,7 @@
           </b-col>
           <b-col>
             <h3>
-              {{ (information.totalPaid) }}
+              {{ this.$formatNumberToLocale(information.totalPaid) }}
             </h3>
           </b-col>
         </b-row>
@@ -96,7 +98,7 @@
           </b-col>
           <b-col>
             <h3>
-              {{ (information.balance) }}
+              {{ this.$formatNumberToLocale(information.balance) }}
             </h3>
           </b-col>
         </b-row>
@@ -109,7 +111,7 @@
       <b-col
         cols="2"
       >
-        <b-row class="bg-light p-1 w-75 rounded-right  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1">
+        <b-row class="v-title bg-light p-1 w-75 rounded-pill  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1">
           Chi tiết hóa đơn
         </b-row>
       </b-col>
@@ -214,3 +216,9 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+  .v-title {
+    border-top-left-radius: 0rem !important;
+    border-bottom-left-radius: 0rem !important
+  }
+</style>

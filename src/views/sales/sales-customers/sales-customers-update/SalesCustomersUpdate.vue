@@ -199,7 +199,7 @@
 
               <!-- START - Customer Date Created -->
               <div>
-                Ngày tạo: <strong>{{ `${$moment(createdAt).format("L")} ${countDays}` }}</strong>
+                Ngày tạo: <strong>{{ `${$moment(createdAt).format("L")} ${countDays ? `(${countDays})` : ''}` }}</strong>
               </div>
               <!-- END - Customer Date Created -->
 
@@ -616,6 +616,7 @@ import {
 import {
   formatVniDateToISO,
   formatISOtoVNI,
+  countDays,
 } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
@@ -786,11 +787,7 @@ export default {
     },
     countDays() {
       if (this.createdAt) {
-        const diffDays = this.$moment(this.createdAt).fromNow(true)
-        if (diffDays.indexOf('giờ') !== -1) {
-          return '(hôm nay)'
-        }
-        return `(${diffDays})`
+        return countDays(this.createdAt)
       }
       return null
     },
@@ -903,8 +900,6 @@ export default {
         this.homeNumber = this.customer.street || null
         if (this.customer.areaDTO) {
           this.provincesSelected = this.customer.areaDTO.province
-          this.districtsSelected = this.customer.areaDTO.district
-          this.precinctsSelected = this.customer.areaDTO.precinct
         }
         this.workingOffice = this.customer.workingOffice || null
         this.officeAddress = this.customer.officeAddress || null

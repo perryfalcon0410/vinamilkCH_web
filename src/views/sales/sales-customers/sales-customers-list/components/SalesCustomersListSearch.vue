@@ -267,11 +267,11 @@ import customerData from '@/@db/customer'
 import {
   CUSTOMER,
   // GETTERS
-  SHOP_LOCATIONS_GETTER,
+  SHOP_LOCATIONS_SEARCH_GETTER,
   CUSTOMER_TYPES_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
-  GET_SHOP_LOCATIONS_ACTION,
+  GET_SHOP_LOCATIONS_SEARCH_ACTION,
   GET_CUSTOMER_TYPES_ACTION,
 } from '../../store-module/type'
 
@@ -314,7 +314,7 @@ export default {
 
   computed: {
     ...mapGetters(CUSTOMER, [
-      SHOP_LOCATIONS_GETTER,
+      SHOP_LOCATIONS_SEARCH_GETTER,
       CUSTOMER_TYPES_GETTER,
     ]),
     customerTypeOptions() {
@@ -324,7 +324,7 @@ export default {
       }))
     },
     areaOptions() {
-      return this.SHOP_LOCATIONS_GETTER.map(data => ({
+      return this.SHOP_LOCATIONS_SEARCH_GETTER.map(data => ({
         id: data.id,
         label: data.provinceAndDistrictName,
         default: data.default,
@@ -346,7 +346,7 @@ export default {
 
   beforeMount() {
     this.GET_CUSTOMER_TYPES_ACTION({ ...this.decentralization })
-    this.GET_SHOP_LOCATIONS_ACTION({ ...this.decentralization })
+    this.GET_SHOP_LOCATIONS_SEARCH_ACTION({ ...this.decentralization })
   },
 
   mounted() {
@@ -360,11 +360,11 @@ export default {
   methods: {
     ...mapActions(CUSTOMER, [
       GET_CUSTOMERS_ACTION,
-      GET_SHOP_LOCATIONS_ACTION,
+      GET_SHOP_LOCATIONS_SEARCH_ACTION,
       GET_CUSTOMER_TYPES_ACTION,
     ]),
     areaSelectedDefault() {
-      this.areasSelected = this.SHOP_LOCATIONS_GETTER.find(e => e.default === true).id
+      this.areasSelected = this.SHOP_LOCATIONS_SEARCH_GETTER.find(e => e.default === true).id
       this.onSearch()
     },
     onSearch() {

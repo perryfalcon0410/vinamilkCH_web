@@ -4,7 +4,7 @@
       <b-col
         cols="2"
       >
-        <b-row class="bg-light p-1 w-75 rounded-right  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mt-2 mb-1">
+        <b-row class="v-title bg-light p-1 w-75 rounded-pill  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mt-2 mb-1">
           Giảm giá & chiết khấu
         </b-row>
       </b-col>
@@ -48,7 +48,7 @@ export default {
           tdClass: 'text-left',
         },
         {
-          label: 'Loại',
+          label: 'Loại khuyễn mãi',
           field: 'voucherType',
           sortable: false,
           thClass: 'text-left',
@@ -58,6 +58,7 @@ export default {
           label: 'Tiền chiết khấu/ giảm',
           field: 'discountPrice',
           sortable: false,
+          formatFn: this.$formatNumberToLocale,
           thClass: 'text-right',
           tdClass: 'text-right',
         },

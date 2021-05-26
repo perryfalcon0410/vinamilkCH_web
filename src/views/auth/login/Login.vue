@@ -72,7 +72,7 @@
                   rules="required"
                 >
                   <b-form-input
-                    v-model="username"
+                    v-model.trim="username"
                     :state="errors.length > 0 ? false:null"
                     placeholder="Tên đăng nhập"
                     maxlength="20"
@@ -94,7 +94,7 @@
                     :class="errors.length > 0 ? 'is-invalid':null"
                   >
                     <b-form-input
-                      v-model="password"
+                      v-model.trim="password"
                       :state="errors.length > 0 ? false:null"
                       class="form-control-merge"
                       :type="passwordFieldType"
@@ -133,7 +133,7 @@
                     rules="required"
                   >
                     <b-form-input
-                      v-model="captchaCodePost"
+                      v-model.trim="captchaCodePost"
                       :state="errors.length > 0 ? false : null"
                       placeholder="Mã Captcha"
                       maxlength="20"
@@ -149,7 +149,6 @@
               <b-form-group>
                 <b-row
                   class="mx-0"
-                  align-h="between"
                   align-v="center"
                 >
                   <b-form-checkbox
@@ -157,11 +156,6 @@
                   >
                     Ghi nhớ mật khẩu
                   </b-form-checkbox>
-
-                  <b-link :to="{name:'auth-reset-password'}">
-                    <small class="h7 text-brand-1">Đổi mật khẩu</small>
-                  </b-link>
-
                 </b-row>
               </b-form-group>
 
@@ -187,11 +181,9 @@
     <!-- /Login-->
     </b-row>
 
-    <!-- Role And Shop Selection Success Modal-->
+    <!-- Role and shop modal-->
     <role-and-shop-selection-modal
-      :visible="isShowRoleAndShopSelectionModal"
       :roles="roles"
-      @onModalHidden="onModalHidden"
       @login="login"
     />
   </div>
@@ -200,9 +192,6 @@
 <script>
 /* eslint-disable global-require */
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import {
-  VBTooltip,
-} from 'bootstrap-vue'
 import { required } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
@@ -213,15 +202,14 @@ import { $themeConfig } from '@themeConfig'
 import RoleAndShopSelectionModal from './components/RoleAndShopSelectionModal.vue'
 
 export default {
-  directives: {
-    'b-tooltip': VBTooltip,
-  },
   components: {
     ValidationProvider,
     ValidationObserver,
     RoleAndShopSelectionModal,
   },
+
   mixins: [togglePasswordVisibility],
+
   data() {
     return {
       saveStatus: localStorage.getItem('saveStatus') ? JSON.parse(localStorage.getItem('saveStatus')) : null,
@@ -235,8 +223,6 @@ export default {
       // validation rules
       required,
 
-      // state
-      isShowRoleAndShopSelectionModal: false,
       roles: [],
     }
   },
@@ -263,38 +249,8 @@ export default {
       return this.sideImg
     },
   },
-  watch: {
-    username() {
-      if (this.saveStatus) {
-        // Save account
-        localStorage.setItem('username', JSON.stringify(this.username?.trim()))
-      }
-    },
-    password() {
-      if (this.saveStatus) {
-        // Save account
-        localStorage.setItem('password', JSON.stringify(this.password?.trim()))
-      }
-    },
-    saveStatus() {
-      if (this.saveStatus) {
-        // Save account
-        localStorage.setItem('username', JSON.stringify(this.username?.trim()))
-        localStorage.setItem('password', JSON.stringify(this.password?.trim()))
-        localStorage.setItem('saveStatus', JSON.stringify(this.saveStatus))
-      } else {
-        // Clean account
-        localStorage.removeItem('username')
-        localStorage.removeItem('password')
-        localStorage.removeItem('saveStatus')
-      }
-    },
-  },
-  methods: {
-    onModalHidden() {
-      this.isShowRoleAndShopSelectionModal = false
-    },
 
+  methods: {
     checkCaptchaExist(captcha) {
       if (captcha) {
         this.captchaCodeResponse = captcha
@@ -309,9 +265,9 @@ export default {
         if (success) {
           useJwt
             .preLogin({
-              username: this.username.toLowerCase()?.trim(),
-              password: this.password?.trim(),
-              captchaCode: this.captchaCodePost?.trim(),
+              username: this.username.toLowerCase(),
+              password: this.password,
+              captchaCode: this.captchaCodePost,
             })
             .then(response => response.data)
             .then(res => {
@@ -327,7 +283,8 @@ export default {
                   })
                 } else {
                   this.roles = res.data.roles
-                  this.isShowRoleAndShopSelectionModal = true
+                  // show modal
+                  this.$root.$emit('bv::toggle::modal', 'roleAndShopModal')
                 }
               } else {
                 if (res.data) {
@@ -343,12 +300,23 @@ export default {
       })
     },
     login(val) {
+      // Save account
+      if (this.saveStatus) {
+        localStorage.setItem('username', JSON.stringify(this.username))
+        localStorage.setItem('saveStatus', JSON.stringify(this.saveStatus))
+      } else {
+        // Clean account
+        localStorage.removeItem('username')
+        localStorage.removeItem('password')
+        localStorage.removeItem('saveStatus')
+      }
+
       const { roleSelected, shopSelected } = val
 
       useJwt
         .login({
-          username: this.username.toLowerCase()?.trim(),
-          password: this.password?.trim(),
+          username: this.username.toLowerCase(),
+          password: this.password,
           roleId: roleSelected,
           shopId: shopSelected,
         })
@@ -358,10 +326,15 @@ export default {
           } = response.data
 
           if (success) {
+            // Save password
+            if (this.saveStatus) {
+              localStorage.setItem('password', JSON.stringify(this.password))
+            }
+
             const userData = {
               id: data.userId,
               fullName: `${data.firstName} ${data.lastName}`,
-              username: data.username?.trim(),
+              username: data.username,
               email: data.email,
               usedRole: data.usedRole,
               usedShop: data.usedShop,

@@ -7,7 +7,7 @@
     <template #button-content>
       <div class="d-sm-flex d-none user-nav">
         <p class="user-name font-weight-bolder mb-0">
-          {{ userData.fullName || userData.username }}
+          {{ userData.fullName || userData.username || null }}
         </p>
         <span class="user-status">{{ userData.usedRole.roleName }}</span>
       </div>
@@ -28,6 +28,16 @@
     </template>
 
     <b-dropdown-item
+      @click="navigateToChangePassword"
+    >
+      <b-icon-lock
+        class="mr-05"
+        scale="1.2"
+      />
+      <span>Đổi mật khẩu</span>
+    </b-dropdown-item>
+
+    <b-dropdown-item
       link-class="d-flex align-items-center"
       @click="logout"
     >
@@ -37,7 +47,8 @@
         class="mr-50"
       />
       <span>Đăng xuất</span>
-    </b-dropdown-item></b-nav-item-dropdown>
+    </b-dropdown-item>
+  </b-nav-item-dropdown>
 </template>
 
 <script>
@@ -48,7 +59,7 @@ import { avatarText } from '@core/utils/filter'
 export default {
   data() {
     return {
-      userData: JSON.parse(localStorage.getItem('userData')),
+      userData: localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')) : null,
       avatarText,
     }
   },
@@ -67,6 +78,9 @@ export default {
 
       // Redirect to login page
       this.$router.replace({ name: 'auth-login' })
+    },
+    navigateToChangePassword() {
+      this.$router.push({ name: 'auth-reset-password' })
     },
   },
 }
