@@ -8,6 +8,7 @@ import {
   EXCHANGE_DAMAGED_GOODS_BY_ID_GETTER,
   CUSTOMERS_GETTER,
   PRODUCTS_GETTER,
+  DAMAGED_GOODS_GETTER,
   // ACTIONS
   GET_EXCHANGE_DAMAGED_GOODS_ACTION,
   GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION,
@@ -15,6 +16,8 @@ import {
   GET_EXCHANGE_DAMAGED_GOODS_BY_ID_ACTION,
   GET_CUSTOMERS_ACTION,
   GET_PRODUCTS_ACTION,
+  UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION,
+  GET_DAMAGED_GOODS_ACTION,
 } from './type'
 
 export default {
@@ -25,6 +28,7 @@ export default {
     exchangeDamagedGoods: [],
     exchangeDamagedGoodsReasons: [],
     exchangeDamagedGoodsById: {},
+    damagedGoodsById: {},
     customers: [],
     products: [],
   },
@@ -32,9 +36,6 @@ export default {
   getters: {
     [EXCHANGE_DAMAGED_GOODS_GETTER](state) {
       return state.exchangeDamagedGoods
-    },
-    [EXCHANGE_DAMAGED_GOODS_REASONS_GETTER](state) {
-      return state.exchangeDamagedGoodsReasons
     },
     [EXCHANGE_DAMAGED_GOODS_REASONS_GETTER](state) {
       return state.exchangeDamagedGoodsReasons
@@ -47,6 +48,9 @@ export default {
     },
     [PRODUCTS_GETTER](state) {
       return state.products
+    },
+    [DAMAGED_GOODS_GETTER](state) {
+      return state.damagedGoodsById
     },
   },
 
@@ -79,7 +83,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.exchangeDamagedGoodsById = res.data.content || []
+            state.exchangeDamagedGoodsById = res.data || []
           } else {
             throw new Error(res.statusValue)
           }
@@ -159,5 +163,42 @@ export default {
         })
     },
     // END - GET PRODUCTS
+
+    // START UPDATE EXCHANGE GOODS
+    [UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION]({}, val) {
+      exchangeDamagedGoodsService
+        .updateExchangeDamagedGoods(val.exchangeDamagedGoods)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+            val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    // END UPDATE EXCHANGE GOODS
   },
+
+  // GET DAMAGED GOODS BY ID
+  [GET_DAMAGED_GOODS_ACTION]({ state }, val) {
+    exchangeDamagedGoodsService
+      .getExchangeDamagedGoodsById(val)
+      .then(response => response.data)
+      .then(res => {
+        if (res.success) {
+          state.damagedGoodsById = res.data || []
+        } else {
+          throw new Error(res.statusValue)
+        }
+      })
+      .catch(error => {
+        toasts.error(error.message)
+      })
+  },
+  // END - GET DAMAGED GOODS BY ID
 }

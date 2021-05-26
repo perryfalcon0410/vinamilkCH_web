@@ -7,6 +7,8 @@ import {
   getExchangeDamagedGoodsByIdEndpoint,
   getCustomersEndpoint,
   getProductsEndPoint,
+  updateExchangeDamagedGoodsEndpoint,
+  getDamagedGoodsByIdEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -21,9 +23,6 @@ export default {
   createExchangeDamagedGoods(args) {
     return axios.post(createExchangeDamagedGoodsEndpoint, args)
   },
-  getExchangeDamagedGoodsById(args) {
-    return axios.get(getExchangeDamagedGoodsByIdEndpoint, args)
-  },
   getCustomers(args) {
     return axios.get(getCustomersEndpoint, {
       params: formatURLParams(args),
@@ -33,5 +32,14 @@ export default {
     return axios.get(getProductsEndPoint, {
       params: formatURLParams(args),
     })
+  },
+  updateExchangeDamagedGoods(args) {
+    return axios.put(`${updateExchangeDamagedGoodsEndpoint}/${args.id}`, args)
+  },
+  getExchangeDamagedGoodsById(args) {
+    return axios.get(`${getExchangeDamagedGoodsByIdEndpoint}/${args}`)
+  },
+  getDamagedGoodsById(args) {
+    return axios.get(`${getDamagedGoodsByIdEndpoint}/${args}`)
   },
 }

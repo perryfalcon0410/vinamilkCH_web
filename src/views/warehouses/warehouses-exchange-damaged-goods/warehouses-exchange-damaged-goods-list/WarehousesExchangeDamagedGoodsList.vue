@@ -106,7 +106,7 @@
               <b-icon-pencil-fill
                 v-b-popover.hover.top="'Chỉnh sửa'"
                 class="cursor-pointer"
-                @click="onClickUpdateButton"
+                @click="onClickUpdateButton(props.row.id)"
               />
 
               <b-icon-trash-fill
@@ -367,7 +367,6 @@ export default {
     },
     getTotalValues() {
       if (this.EXCHANGE_DAMAGED_GOODS_GETTER.info) {
-        console.log(this.totalQuantity)
         return this.EXCHANGE_DAMAGED_GOODS_GETTER.info
       }
       return {}
@@ -405,8 +404,13 @@ export default {
     onClickAddNewButton() {
       this.$router.push({ name: 'warehouses-exchange-damaged-goods-create' })
     },
-    onClickUpdateButton() {
-      this.$router.push({ name: 'archive-changeProductsUpdate' })
+    onClickUpdateButton(id) {
+      this.$router.push({
+        name: 'warehouses-exchange-damaged-goods-update',
+        params: {
+          id,
+        },
+      })
     },
     onClickDeleteButton(id, index) {
       this.selectedReceiptId = id

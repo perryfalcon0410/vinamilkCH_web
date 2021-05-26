@@ -18,7 +18,7 @@
         >
           <!-- START -  Date  -->
           <div>
-            Ngày biên bản: <strong>{{ exchangeGoodsInfo.minuteDate }}</strong>
+            Ngày biên bản: <strong>{{ exchangeGoodsInfo.transDate }}</strong>
           </div>
           <!-- END -  Date -->
 
@@ -61,7 +61,7 @@
             <!-- START - Popup customers -->
             <b-collapse
               v-model="isFocusedInputCustomer"
-              class="position-absolute mr-lg-0 w-md-75 "
+              class="position-absolute mr-lg-0 w-md-75"
               style="zIndex:1"
             >
               <b-container
@@ -71,7 +71,7 @@
                   <b-row
                     v-for="(customer, index) in customers"
                     :key="index"
-                    class="d-flex flex-column my-1 cursor-pointer border-bottom"
+                    class="d-flex flex-column my-1 cursor-pointer"
                     :class="{'item-active': index === cursorCustomer}"
                     @click="selectCustomer(customer)"
                   >
@@ -136,7 +136,7 @@
               Lý do <sup class="text-danger">*</sup>
             </div>
             <tree-select
-              v-model="reasonObj.reasonSelected"
+              v-model="exchangeGoodsInfo.reasonId"
               :options="reasonObj.reasonOptions"
               placeholder="Chọn lý do"
               no-options-text="Không có dữ liệu"
@@ -206,7 +206,7 @@
               </b-row>
 
               <b-row
-                v-else-if="props.column.field === 'productPriceTotal'"
+                v-else-if="props.column.field === 'totalPrice'"
                 class="mx-0"
                 align-h="end"
               >
@@ -223,7 +223,7 @@
               <span v-if="props.column.field == 'productAmount'">
                 <div v-if="props.row.productAmount != ''">
                   <b-form-input
-                    v-model.trim="damagedProduct[props.index].productQuantity"
+                    v-model.trim="damagedProduct[props.index].quantity"
                     type="number"
                     @change="onChangeQuantity(damagedProduct[props.index])"
                   />
@@ -314,7 +314,7 @@
                 variant="someThing"
                 class="btn-brand-1 rounded text-uppercase aligns-items-button-center"
                 :disabled="invalid"
-                @click="onClickSaveButton"
+                @click="onClickSaveButton()"
               >
                 <b-icon-download
                   class="mr-05"
@@ -385,6 +385,10 @@ import {
   phoneNumber,
   required,
 } from '@/@core/utils/validations/validations'
+import {
+  formatVniDateToISO,
+  formatISOtoVNI,
+} from '@/@core/utils/filter'
 import { getNow } from '@/@core/utils/utils'
 import {
   WAREHOUSES_EXCHANGE_DAMAGED_GOODS,
@@ -392,11 +396,15 @@ import {
   CUSTOMERS_GETTER,
   PRODUCTS_GETTER,
   EXCHANGE_DAMAGED_GOODS_REASONS_GETTER,
+  EXCHANGE_DAMAGED_GOODS_BY_ID_GETTER,
+  DAMAGED_GOODS_GETTER,
   // ACTIONS
-  CREATE_EXCHANGE_DAMAGED_GOODS_ACTION,
   GET_CUSTOMERS_ACTION,
   GET_PRODUCTS_ACTION,
   GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION,
+  GET_EXCHANGE_DAMAGED_GOODS_BY_ID_ACTION,
+  UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION,
+  GET_DAMAGED_GOODS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -412,6 +420,8 @@ export default {
       phoneNumber,
       required,
 
+      exchangeDamagedGoodsId: `${this.$route.params.id}`,
+
       goNext: () => {},
       isModalShow: false, // Modal xác nhận rời đi.
       isFieldCheck: true,
@@ -422,7 +432,6 @@ export default {
       cursorProduct: -1,
 
       reasonObj: {
-        reasonSelected: null,
         reasonOptions: [],
       },
 
@@ -431,28 +440,29 @@ export default {
         ctrlId: 7,
       },
       customerInfo: {
-        customerId: null,
-        customerCode: null,
-        customerName: null,
-        customerAddress: null,
-        customerPhone: null,
+        customerId: '',
+        customerName: '',
+        customerAddress: '',
+        customerPhone: '',
       },
       exchangeGoodsInfo: {
-        transCode: null,
-        shopId: null,
-        customerId: null,
-        reasonId: null,
-        quantity: null,
-        totalAmount: null,
-        minuteDate: getNow(),
+        customerId: '',
+        transCode: '',
+        shopId: '',
+        reasonId: '',
+        reason: '',
+        quantity: 0,
+        totalAmount: 0,
+        transDate: getNow(),
         lstExchangeDetail: [
           {
-            productCode: null,
-            productName: null,
-            price: null,
-            quantity: null,
-            totalPrice: null,
-            unit: null,
+            id: '',
+            productCode: '',
+            productId: '',
+            productName: '',
+            quantity: 0,
+            totalPrice: 0,
+            unit: '',
           },
         ],
       },
@@ -484,7 +494,7 @@ export default {
         },
         {
           label: 'Giá',
-          field: 'productPrice',
+          field: 'price',
           type: 'number',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
@@ -505,7 +515,7 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'productPriceTotal',
+          field: 'totalPrice',
           type: 'number',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
@@ -522,7 +532,7 @@ export default {
         },
       ],
       productInfos: {
-        productName: null,
+        productName: '',
       },
       damagedProduct: [
       ],
@@ -534,7 +544,13 @@ export default {
       CUSTOMERS_GETTER,
       EXCHANGE_DAMAGED_GOODS_REASONS_GETTER,
       PRODUCTS_GETTER,
+      EXCHANGE_DAMAGED_GOODS_BY_ID_GETTER,
+      DAMAGED_GOODS_GETTER,
     ]),
+
+    exchangeDamagedGoods() {
+      return this.EXCHANGE_DAMAGED_GOODS_BY_ID_GETTER
+    },
 
     getReasonOptions() {
       return this.EXCHANGE_DAMAGED_GOODS_REASONS_GETTER.map(data => ({
@@ -559,9 +575,9 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         productDVT: data.uom1,
-        productPrice: data.price,
-        productQuantity: data.totalAmount,
-        productPriceTotal: data.price * data.totalAmount,
+        price: data.price,
+        quantity: data.totalAmount,
+        totalPrice: data.price * data.totalAmount,
         count: null,
       }))
     },
@@ -570,10 +586,10 @@ export default {
       return this.damagedProduct.reduce(accum => accum + 1, 0)
     },
     totalQuantity() {
-      return this.damagedProduct.reduce((accum, item) => accum + Number(item.productQuantity), 0)
+      return this.damagedProduct.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
     totalMoney() {
-      return this.damagedProduct.reduce((accum, item) => accum + Number(item.productPriceTotal), 0)
+      return this.damagedProduct.reduce((accum, item) => accum + Number(item.totalPrice), 0)
     },
   },
 
@@ -581,10 +597,14 @@ export default {
     getReasonOptions() {
       this.reasonObj.reasonOptions = [...this.getReasonOptions]
     },
+    exchangeDamagedGoods() {
+      this.getExchangeDamagedGoodsById()
+    },
   },
 
   mounted() {
     this.GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION({ ...this.decentralization })
+    this.GET_EXCHANGE_DAMAGED_GOODS_BY_ID_ACTION(`${this.exchangeDamagedGoodsId}`)
   },
 
   // before page leave this will check input
@@ -602,25 +622,49 @@ export default {
   },
   methods: {
     ...mapActions(WAREHOUSES_EXCHANGE_DAMAGED_GOODS, [
-      CREATE_EXCHANGE_DAMAGED_GOODS_ACTION,
       GET_CUSTOMERS_ACTION,
       GET_PRODUCTS_ACTION,
       GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION,
+      GET_EXCHANGE_DAMAGED_GOODS_BY_ID_ACTION,
+      UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION,
+      GET_DAMAGED_GOODS_ACTION,
     ]),
 
-    createDamagedGoods() {
+    getExchangeDamagedGoodsById() {
+      if (this.exchangeDamagedGoods) {
+        // START - Exchange Damaged Goods
+        this.exchangeGoodsInfo.transCode = this.exchangeDamagedGoods.transCode
+        this.exchangeGoodsInfo.transDate = formatISOtoVNI(this.exchangeDamagedGoods.transDate)
+        this.exchangeGoodsInfo.shopId = this.exchangeDamagedGoods.shopId
+        this.exchangeGoodsInfo.customerId = this.exchangeDamagedGoods.customerId
+        this.customerInfo.customerName = this.exchangeDamagedGoods.customerName
+        this.customerInfo.customerAddress = this.exchangeDamagedGoods.customerAddress
+        this.customerInfo.customerPhone = this.exchangeDamagedGoods.customerPhone
+        this.exchangeGoodsInfo.reasonId = this.exchangeDamagedGoods.reasonId
+        this.exchangeGoodsInfo.reason = this.exchangeDamagedGoods.reason
+        this.exchangeGoodsInfo.quantity = this.exchangeDamagedGoods.quantity
+        this.exchangeGoodsInfo.totalAmount = this.exchangeDamagedGoods.totalAmount
+        this.damagedProduct = [...this.exchangeDamagedGoods.listProducts]
+        // END - Exchange Damaged Goods
+      }
+    },
+
+    updateExchangeDamagedGoods() {
       this.$refs.formContainer.validate().then(success => {
         if (success) {
-          this.CREATE_EXCHANGE_DAMAGED_GOODS_ACTION({
-            damagedGoodsData: {
-              customerId: this.customerInfo.customerId,
-              reasonId: this.reasonObj.reasonSelected,
-              lstExchangeDetail: this.damagedProduct.map(item => ({
-                productId: item.id,
-                productName: item.productName,
-                price: item.productPrice,
-                quantity: item.productQuantity,
-              })),
+          console.log(this.exchangeGoodsInfo.reasonId)
+          this.UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION({
+            exchangeDamagedGoods: {
+              customerId: this.exchangeGoodsInfo.customerId,
+              id: this.exchangeDamagedGoodsId,
+              lstExchangeDetail: [...this.damagedProduct],
+              quantity: this.exchangeGoodsInfo.quantity,
+              reason: this.exchangeGoodsInfo.reason,
+              reasonId: this.exchangeGoodsInfo.reasonId,
+              shopId: this.exchangeGoodsInfo.shopId,
+              totalAmount: this.exchangeGoodsInfo.totalAmount,
+              transCode: this.exchangeGoodsInfo.transCode,
+              transDate: formatVniDateToISO(this.exchangeGoodsInfo.transDate),
             },
             onSuccess: () => {
               this.navigateBack()
@@ -676,23 +720,23 @@ export default {
           productCode: product.productCode,
           productName: product.productName,
           productDVT: product.productDVT,
-          productPrice: product.productPrice,
-          productQuantity: 1,
-          productPriceTotal: null,
+          price: product.price,
+          quantity: 1,
+          totalPrice: null,
         }
         if (existedProductIndex === -1) {
-          obj.productPriceTotal = obj.productPrice * obj.productQuantity
+          obj.totalPrice = obj.price * obj.quantity
           this.damagedProduct.push(obj)
         } else {
-          this.damagedProduct[existedProductIndex].productQuantity = Number(this.damagedProduct[existedProductIndex].productQuantity) + obj.productQuantity
-          this.damagedProduct[existedProductIndex].productPriceTotal = Number(obj.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
+          this.damagedProduct[existedProductIndex].quantity = Number(this.damagedProduct[existedProductIndex].quantity) + obj.quantity
+          this.damagedProduct[existedProductIndex].totalPrice = Number(obj.price) * this.damagedProduct[existedProductIndex].quantity
         }
       }
     },
 
     onChangeQuantity(props) {
       const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === props.productCode)
-      this.damagedProduct[existedProductIndex].productPriceTotal = Number(props.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
+      this.damagedProduct[existedProductIndex].totalPrice = Number(props.price) * this.damagedProduct[existedProductIndex].quantity
     },
 
     focusCustomer() {
@@ -719,7 +763,7 @@ export default {
         || this.customerInfo.customerName
         || this.customerInfo.customerAddress
         || this.customerInfo.customerPhone
-        || this.reasonObj.reasonSelected
+        || this.exchangeGoodsInfo.reasonId
       ) {
         return true
       }
@@ -733,7 +777,7 @@ export default {
 
     onClickSaveButton() {
       this.isFieldCheck = false
-      this.createDamagedGoods()
+      this.updateExchangeDamagedGoods()
     },
 
     onClickFeature() {

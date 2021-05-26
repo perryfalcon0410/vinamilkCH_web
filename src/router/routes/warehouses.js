@@ -185,6 +185,24 @@ export default [
       ],
     },
   },
+  {
+    path: '/warehouses/exchange-damaged-goods/update',
+    name: 'warehouses-exchange-damaged-goods-update',
+    component: () => import('@/views/warehouses/warehouses-exchange-damaged-goods/warehouses-exchange-damaged-goods-update/WarehousesExchangeDamagedGoodsUpdate.vue'),
+    meta: {
+      pageTitle: 'Đổi hàng hỏng',
+      breadcrumb: [
+        {
+          text: 'Danh sách đổi hàng hỏng',
+          to: '/warehouses/exchange-damaged-goods',
+        },
+        {
+          text: 'Sửa',
+          active: true,
+        },
+      ],
+    },
+  },
   // Combo
   {
     path: '/warehouses/combo',
