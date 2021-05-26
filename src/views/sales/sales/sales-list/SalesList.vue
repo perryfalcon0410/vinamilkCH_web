@@ -215,6 +215,7 @@
       <sales-form
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
+        @getCustomerIdInfo="getCustomerIdInfo"
       />
       <!-- END - Section Form pay -->
 
@@ -409,7 +410,7 @@ export default {
         productName: data.productName,
         productUnit: data.uom1,
         productInventory: data.stockTotal,
-        quantity: 1,
+        quantity: data.quantity,
         productUnitPrice: data.price,
         productTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
@@ -522,6 +523,10 @@ export default {
           params,
         })
       }
+    },
+
+    getCustomerIdInfo(id) {
+      this.$emit('getCustomerIdInfo', id)
     },
   },
 }

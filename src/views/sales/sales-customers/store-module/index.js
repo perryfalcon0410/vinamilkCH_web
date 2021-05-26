@@ -35,6 +35,7 @@ import {
 
   GET_SALEMT_PROMOTION_OBJECT_ACTION,
   GET_SALEMT_DELIVERY_TYPE_ACTION,
+  GET_SALEMT_PAYMENT_TYPE_ACTION,
 
 } from './type'
 
@@ -56,6 +57,7 @@ export default {
     closelyTypes: [],
     salemtPromotions: [],
     salemtDeliveries: [],
+    salemtPayments: [],
   },
 
   // GETTERS
@@ -98,6 +100,9 @@ export default {
     },
     [SALEMT_DELIVERY_TYPE_GETTER](state) {
       return state.salemtDeliveries
+    },
+    [SALEMT_DELIVERY_TYPE_GETTER](state) {
+      return state.salemtPayments
     },
   },
 
@@ -328,6 +333,21 @@ export default {
         .then(res => {
           if (res.success) {
             state.salemtDeliveries = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_SALEMT_PAYMENT_TYPE_ACTION]({ state }, val) {
+      CustomerService
+        .getSalemtPaymentTypes(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.salemtPayments = res.data
           } else {
             throw new Error(res.statusValue)
           }

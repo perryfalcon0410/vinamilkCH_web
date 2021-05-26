@@ -22,7 +22,14 @@ export default {
   },
 
   getVoucherById(args) {
-    return axios.get((`${getVoucherByIdEndpoint}/${args}`))
+    return axios.get(`${getVoucherByIdEndpoint}/${args}`, {
+      params: {
+        customerId: args.customerId,
+        products: args.productIds,
+        formId: args.formId,
+        ctrlId: args.ctrlId,
+      },
+    })
   },
 
   getOnlineOrder(args) {

@@ -21,20 +21,29 @@
           Voucher
         </strong>
 
-        <b-row class="mt-1">
+        <b-form-row
+          class="mt-1"
+          @keyup.enter="onClickSearchButton"
+        >
           <b-col
             cols="4"
           >
-            <b-input placeholder="Nhập mã/ tên/ serial" />
+            <b-input
+              v-model="keyword"
+              placeholder="Nhập mã/ tên/ serial"
+            />
           </b-col>
-          <b-button variant="primary">
+          <b-button
+            variant="primary"
+            @click="onClickSearchButton()"
+          >
             <b-icon-search
               class="mr-1"
               scale="1.3"
             />
             Tìm kiếm
           </b-button>
-        </b-row>
+        </b-form-row>
       </b-col>
 
       <vue-good-table
@@ -165,6 +174,8 @@ export default {
           sortable: false,
         },
       ],
+
+      keyword: null,
     }
   },
   computed: {
@@ -184,12 +195,6 @@ export default {
   },
 
   mounted() {
-    const paramsGetVoucher = {
-      keyWord: 'Voucher 006',
-      formId: 5, // Hard code
-      ctrlId: 7, // // Hard code
-    }
-    this.GET_VOUCHERS_ACTION(paramsGetVoucher)
   },
 
   methods: {
@@ -207,6 +212,15 @@ export default {
     getVoucherInfo(id) {
       this.onClickCloseButton()
       this.$emit('getVoucherInfo', id)
+    },
+
+    onClickSearchButton() {
+      const searchData = {
+        keyWord: this.keyword.trim(),
+        formId: 5, // Hard code
+        ctrlId: 7, // Hard code
+      }
+      this.GET_VOUCHERS_ACTION(searchData)
     },
   },
 }

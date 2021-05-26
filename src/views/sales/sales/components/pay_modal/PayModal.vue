@@ -603,7 +603,7 @@
           Đóng (ESC)
         </b-button>
       </b-row>
-      <sales-form />
+      <sales-list />
     </template>
     <!-- END - Footer -->
 
@@ -632,13 +632,20 @@ import {
   CREATE_SALE_ORDER_ACTION,
   GET_DISCOUNT_BY_CODE_ACTION,
 } from '../../store-module/type'
+import {
+  CUSTOMER,
+  // GETTERS
+  CUSTOMER_DEFAULT_GETTER,
+  // ACTIONS
+  GET_CUSTOMER_DEFAULT_ACTION,
+} from '../../../sales-customers/store-module/type'
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
-import SalesForm from '../../sales-list/components/SalesForm.vue'
+import SalesList from '../../sales-list/SalesList.vue'
 
 export default {
   components: {
     VoucherModal,
-    SalesForm,
+    SalesList,
   },
   props: {
     visible: {
@@ -710,8 +717,8 @@ export default {
         },
       ],
 
-      paymentSelected: saleData.payment[0].id,
-      paymentOptions: saleData.payment,
+      paymentSelected: saleData.salePaymentType[0].id,
+      paymentOptions: saleData.salePaymentType,
 
       // voucher
       voucherId: null,
@@ -753,6 +760,9 @@ export default {
       CREATE_SALE_ORDER_GETTER,
       GET_DISCOUNT_BY_CODE_GETTER,
     ]),
+    ...mapGetters(CUSTOMER, [
+      CUSTOMER_DEFAULT_GETTER,
+    ]),
 
     voucher() {
       return this.VOUCHER_BY_ID_GETTER
@@ -760,6 +770,10 @@ export default {
 
     discount() {
       return this.GET_DISCOUNT_BY_CODE_GETTER
+    },
+
+    customerDefault() {
+      return this.CUSTOMER_DEFAULT_GETTER
     },
 
     getProducts() {
@@ -814,6 +828,10 @@ export default {
       this.getDiscount()
     },
 
+    customerDefault() {
+      this.getCustomerDefault()
+    },
+
     getProducts() {
       this.products = [...this.getProducts]
     },
@@ -821,9 +839,16 @@ export default {
     getSaleOrderProducts() {
       this.saleOrderProducts = [...this.getSaleOrderProducts]
     },
+
+    // getCustomerDefault() {
+    //   this.customerId = this.customerDefault.id
+    //   this.shopId = this.customerDefault.shopId
+    // },
   },
   mounted() {
     this.GET_PRODUCTS_ACTION({ formId: 5, ctrlId: 1, customerTypeId: 1 })
+    this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
+    this.getCustomerDefault()
   },
   created() {
     window.addEventListener('keydown', e => {
@@ -839,19 +864,28 @@ export default {
       CREATE_SALE_ORDER_ACTION,
       GET_DISCOUNT_BY_CODE_ACTION,
     ]),
+    ...mapActions(CUSTOMER, [
+      GET_CUSTOMER_DEFAULT_ACTION,
+    ]),
 
     onVoucherButtonClick() {
       this.$root.$emit('bv::show::modal', 'VoucherModal')
     },
 
+    getCustomerDefault() {
+      this.customerId = this.customerDefault.id
+      this.shopId = this.customerDefault.shopId
+    },
+
     getVoucherInfo(id) {
       this.voucherId = id
-      const paramsGetVoucher = {
-        keyWord: 'Voucher 006',
-        formId: 5, // Hard code
-        ctrlId: 7, // Hard code
+      const productIds = this.getProducts.map(item => item.productId)
+      const params = {
+        ctrlId: 7,
+        formId: 5,
       }
-      this.GET_VOUCHER_BY_ID_ACTION(`${this.voucherId}?customerTypeId=1`, paramsGetVoucher)
+
+      this.GET_VOUCHER_BY_ID_ACTION(`${this.voucherId}?customerId=${this.customerId}&productIds=${productIds}`, params)
     },
 
     getVoucherById() {
@@ -892,8 +926,8 @@ export default {
     createSaleOrder() {
       this.CREATE_SALE_ORDER_ACTION({
         product: {
-          shopId: 1,
-          customerId: 710,
+          shopId: this.shopId,
+          customerId: this.customerId,
           salemanId: 1,
           wareHouseTypeId: '1',
           totalPaid: this.totalOrderPrice,
@@ -902,7 +936,7 @@ export default {
           deliveryType: 1,
           orderType: 0,
           usedRedInvoice: false,
-          voucherId: 4,
+          voucherId: this.voucherId,
           products: this.getProducts,
         },
         onSuccess: () => {

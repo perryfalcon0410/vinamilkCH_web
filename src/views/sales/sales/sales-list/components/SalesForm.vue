@@ -189,6 +189,7 @@
               <tree-select
                 v-model="salemtPromotionObjectSelected"
                 :options="salemtPromotionObjectOptions"
+                @change="onchange()"
               />
             </b-col>
           </b-row>
@@ -569,11 +570,13 @@ export default {
     },
 
     getCustomerInfo(val) {
+      this.id = val.data.id
       this.fullName = val.data.fullName
       this.phoneNumber = val.data.phoneNumber
       this.address = val.data.address
       this.totalBill = val.data.totalBill ?? 0
       this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
+      this.$emit('getCustomerIdInfo', val.data.id)
     },
 
     getOnlineOrderInfo(id) {
@@ -611,6 +614,17 @@ export default {
       this.phoneNumber = this.customerDefault.mobiPhone
       this.address = this.customerDefault.address
       this.totalBill = this.customerDefault.totalBill ?? 0
+    },
+
+    onchange(val) {
+      console.log('selected', val)
+    },
+
+    getOrderInfo() {
+      this.$emit('getOrderInfo', {
+        salemtPromotionObjectSelected: this.salemtPromotionObjectSelected,
+        salemtDeliveryTypeSelected: this.salemtPromotionObjectSelected,
+      })
     },
   },
 }

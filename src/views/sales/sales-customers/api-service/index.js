@@ -19,6 +19,7 @@ import {
 
   getSalemtPromotionObjectTypeEndpoint,
   getSalemtDeliveryTypeEndpoint,
+  getSalemtPaymentTypeEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -86,6 +87,11 @@ export default {
   },
   getSalemtDeliveryTypes(args) {
     return axios.get(getSalemtDeliveryTypeEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getSalemtPaymentTypes(args) {
+    return axios.get(getSalemtPaymentTypeEndpoint, {
       params: formatURLParams(args),
     })
   },
