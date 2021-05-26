@@ -1,5 +1,7 @@
 import CustomerService from '@/views/sales/sales-customers/api-service'
 import toasts from '@core/utils/toasts/toasts'
+import FileSaver from 'file-saver'
+import moment from 'moment'
 
 import {
   // GETTERS
@@ -232,15 +234,19 @@ export default {
       CustomerService
         .exportCustomers(val)
         .then(res => {
-          // console.log(res)
-          if (res.success) {
-            toasts.success(res.statusValue)
-          } else {
-            throw new Error(res.statusValue)
-          }
-        // })
-          // const blob = new Blob([res], { type: 'data:application/xlsx' })
-          // FileSaver.saveAs(blob, fileName)
+          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          FileSaver.saveAs(blob, `Danh_sach_khach_hang_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`)
+          // const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' })
+          // if (window.navigator.msSaveOrOpenBlob) {
+          //   window.navigator.msSaveOrOpenBlob(blob, `Danh_sach_khach_hang_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}`)
+          // } else {
+          //   const elem = window.document.createElement('a')
+          //   elem.href = window.URL.createObjectURL(blob)
+          //   elem.download = `Danh_sach_khach_hang_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}`
+          //   document.body.appendChild(elem)
+          //   elem.click()
+          //   document.body.removeChild(elem)
+          // }
         })
         .catch(error => {
           toasts.error(error.message)
