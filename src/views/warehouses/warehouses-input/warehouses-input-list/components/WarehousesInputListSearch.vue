@@ -185,6 +185,11 @@ export default {
       },
     }
   },
+
+  mounted() {
+    this.onClickSearchButton()
+  },
+
   methods: {
     ...mapActions(WAREHOUSEINPUT, [
       GET_RECEIPTS_ACTION,

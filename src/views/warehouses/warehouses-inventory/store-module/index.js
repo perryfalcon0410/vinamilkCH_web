@@ -30,7 +30,6 @@ export default {
   // START - STATE
   state: {
     warehouseInventories: [],
-    warehouseInventoryPagination: {},
     warehouseTypes: [],
     warehouseInventoryStocks: [],
     warehouseInventoryStatusCode: null,

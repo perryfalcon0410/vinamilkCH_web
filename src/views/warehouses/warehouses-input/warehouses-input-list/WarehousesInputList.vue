@@ -1,7 +1,7 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column p-0"
+    class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
     <warehouses-input-list-search
@@ -11,12 +11,13 @@
     />
     <!-- END - Search -->
 
-    <!-- START - Product  list -->
-    <b-form class="bg-white rounded shadow my-1">
+    <!-- START - Product list -->
+    <b-form class="bg-white rounded shadow rounded my-1">
       <!-- START - Title -->
       <b-row
-        class="justify-content-between align-items-center border-bottom px-1 mx-0"
+        class="justify-content-between border-bottom px-1 mx-0"
         style="padding: 5px 0"
+        align-v="center"
       >
         <strong
           class="text-brand-1"
@@ -24,7 +25,7 @@
           Danh sách phiếu nhập hàng
         </strong>
         <b-button
-          class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+          class="btn-brand-1 h9 align-items-button-center rounded"
           variant="someThing"
           @click="onClickCreateButton"
         >
@@ -74,14 +75,11 @@
             slot="table-column"
             slot-scope="props"
           >
-            <b-row
-              v-if="props.column.field === 'feature'"
-              class="mx-0"
-            >
+            <b-row v-if="props.column.field === 'feature'">
               <b-icon-bricks
                 v-b-popover.hover="'Thao tác'"
                 scale="1.3"
-                class="ml-3"
+                class="ml-4"
               />
             </b-row>
             <div v-else>
@@ -243,13 +241,16 @@
 </template>
 
 <script>
-import warehousesData from '@/@db/common'
+import commonData from '@/@db/common'
 import {
   mapGetters,
   mapActions,
 } from 'vuex'
 import {
-  formatISOtoVNI, reverseVniDate,
+  resizeAbleTable,
+} from '@core/utils/utils'
+import {
+  formatISOtoVNI,
 } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import WarehousesInputListSearch from './components/WarehousesInputListSearch.vue'
@@ -279,39 +280,38 @@ export default {
       selectedReceiptId: '',
       selectedReceiptType: '',
       selectedReceiptIndex: '',
-      elementSize: warehousesData.pagination[0],
+      elementSize: commonData.pagination[0],
       pageNumber: 1,
-      paginationOptions: warehousesData.pagination,
-      paginationData: {},
+      paginationOptions: commonData.pagination,
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+      },
       receipts: [],
 
       columns: [
         {
           label: 'Ngày',
           field: 'transDate',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã nhập hàng',
           field: 'transCode',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
-          type: 'number',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -319,36 +319,32 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-right',
         },
         {
           label: 'Số tiền',
           field: 'price',
           type: 'number',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
           label: 'Ghi chú',
           field: 'note',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Thao tác',
           field: 'feature',
-          sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
           width: '100px',
         },
@@ -398,27 +394,10 @@ export default {
     getReceipts() {
       this.receipts = [...this.getReceipts]
     },
-    pageNumber() {
-      this.paginationData.page = this.pageNumber - 1
-      this.onPaginationChange()
-    },
-    elementSize() {
-      this.paginationData.size = this.elementSize
-      this.onPaginationChange()
-    },
-    paginationData() {
-      this.pageNumber = 1
-      this.onPaginationChange()
-    },
   },
 
   mounted() {
-    this.GET_RECEIPTS_ACTION({
-      fromDate: reverseVniDate(this.fromDate),
-      toDate: reverseVniDate(this.toDate),
-      formId: 5,
-      ctrlId: 7,
-    })
+    resizeAbleTable()
   },
 
   methods: {

@@ -1,7 +1,7 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column p-0"
+    class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
     <warehouses-inventory-list-search
@@ -12,9 +12,13 @@
     <!-- END - Search -->
 
     <!-- START - Warehouses Inventory List -->
-    <b-form class="bg-white rounded shadow my-1">
+    <b-form class="bg-white rounded shadow rounded my-1">
       <!-- START - Title -->
-      <b-form-row class="justify-content-between align-items-center border-bottom p-1">
+      <b-form-row
+        class="justify-content-between border-bottom px-1 mx-0"
+        style="padding: 5px 0"
+        align-v="center"
+      >
         <strong
           class="text-brand-1"
         >
@@ -22,9 +26,8 @@
         </strong>
         <b-button-group>
           <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            class="btn-brand-1 h9 align-items-button-center rounded"
             variant="someThing"
-            size="sm"
             @click="onClickCreateButton"
           >
             <b-icon-plus />
@@ -53,8 +56,6 @@
           :total-rows="warehouseInventoryPagination.totalElements"
           :sort-options="{
             enabled: false,
-            multipleColumns: true,
-            initialSortBy: [{field: 'nameText', type: 'desc'}]
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
@@ -73,9 +74,11 @@
           >
             <b-row
               v-if="props.column.field === 'feature'"
+              class="pl-1"
             >
               <b-icon-bricks
                 v-b-popover.hover="'Thao tác'"
+                scale="1.3"
               />
             </b-row>
             <div v-else>
@@ -94,7 +97,7 @@
             >
               <b-icon-pencil-fill
                 v-b-popover.hover.top="'Chỉnh sửa'"
-                class="cursor-pointer"
+                class="cursor-pointer pl-1"
                 @click="onClickUpdateButton(props.row.id)"
               />
             </b-row>
@@ -179,6 +182,9 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
 import { formatISOtoVNI } from '@core/utils/filter'
 import WarehousesInventoryListSearch from './components/WarehousesInventoryListSearch.vue'
 import { // Sua lai
@@ -211,51 +217,45 @@ export default {
         {
           label: 'Ngày',
           field: 'countingDate',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Mã kiểm kê',
           field: 'stockCountingCode',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Kho',
           field: 'warehouseType',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Người tạo',
           field: 'createUser',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Chỉnh sửa lần cuối',
           field: 'updateDate',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Người chỉnh sửa',
           field: 'updateUser',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Thao tác',
           field: 'feature',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-cecnter',
+          width: '30px',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
     }
@@ -295,6 +295,7 @@ export default {
   },
 
   mounted() {
+    resizeAbleTable()
   },
 
   methods: {
@@ -312,6 +313,20 @@ export default {
           id,
         },
       })
+    },
+    onPaginationChange() {
+      this.GET_WAREHOUSE_INVENTORIES_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
     },
   },
 }
