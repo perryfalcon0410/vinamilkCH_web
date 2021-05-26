@@ -50,7 +50,7 @@
               :key="item.id"
               class="border-bottom border-white bg-light py-1"
               :class="{ 'text-brand-1': current == item.id }"
-              @click="selectOrder(item.id,item.date)"
+              @click="selectOrder(item.id,item.adjustmentDate)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
@@ -309,7 +309,5 @@ export default {
       this.$emit('close')
     },
   },
-  // ---------------------------------- all seacrch funtion ----------------------------------
-  // ---------------------------------- all seacrch funtion ----------------------------------
 }
 </script>

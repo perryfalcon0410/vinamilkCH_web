@@ -179,7 +179,7 @@
 </template>
 
 <script>
-import reportData from '@/@db/report'
+import commonData from '@/@db/report'
 import ListSearch from './components/ListSearch.vue'
 
 export default {
@@ -190,7 +190,7 @@ export default {
     return {
       pageNumber: 1,
       elementSize: 20,
-      paginationOptions: reportData.pagination,
+      paginationOptions: commonData.pagination,
 
       columns: [
         {

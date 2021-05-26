@@ -912,6 +912,7 @@ export default {
       this.poId = id // poId
       this.internalNumber = null
       this.billDate = sysDate
+      console.log(this.billDate)
       this.poAdjustInfo = { ...importAdjustInfo }
       this.tableRender()
     },
