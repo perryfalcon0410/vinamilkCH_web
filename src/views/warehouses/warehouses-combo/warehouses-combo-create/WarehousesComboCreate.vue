@@ -131,44 +131,32 @@
                 slot="table-actions-bottom"
                 class="mx-1 my-2 px-2"
               >
-                <div
-                  slot="table-actions-bottom"
-                  class="mx-1 my-2 px-2"
+                <tree-select
+                  v-model="comboProductSelected"
+                  class="w-35"
+                  placeholder="Nhập mã hoặc tên sản phẩm"
+                  :async="true"
+                  :open-on-click="false"
+                  :open-on-focus="false"
+                  :auto-load-root-options="false"
+                  :load-options="loadOptions"
+                  @select="onComboSelected"
                 >
-                  <b-form-input
-                    v-model="comboSearch"
-                    class="w-25"
-                    placeholder="Nhập mã hoặc tên sản phẩm"
-                    type="text"
-                    autocomplete="off"
-                    @focus="searchComboFocus = true"
-                    @blur="searchComboFocus = true"
-                  />
-                  <b-collapse
-                    v-model="searchComboFocus"
-                    class="position-absolute mr-lg-0 mb-3"
-                    style="zIndex:1"
+                  <label
+                    slot="option-label"
+                    slot-scope="{ node }"
+                    :class="labelClassName"
                   >
-                    <b-container
-                      class="my-1 bg-white rounded border border-primary shadow-lg"
-                    >
-                      <b-col>
-                        <b-row
-                          v-for="(product, index) in comboProductOptions"
-                          :key="index"
-                          class="my-1 cursor-pointer"
-                          @mouseover="$event.target.classList.add('item-active')"
-                          @mouseout="$event.target.classList.remove('item-active')"
-                        >
-                          {{ comboProductOptions }}
-                          <b>{{ product.productCode }}</b> - {{ product.productName }}
-                        </b-row>
-                      </b-col>
-                    </b-container>
-                  </b-collapse>
-                </div>
+                    <strong>
+                      {{ node.raw.productName }}
+                    </strong>
+                    <br>
+                    {{ node.label }}
+                  </label>
+                </tree-select>
                 <!--END Search bottom bar -->
-              </div></vue-good-table>
+              </div>
+            </vue-good-table>
             <!-- END - Table combo list -->
             <br>
             <!-- START - Table combo exchange -->
