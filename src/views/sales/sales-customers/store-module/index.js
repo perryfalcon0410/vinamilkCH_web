@@ -16,6 +16,7 @@ import {
   CLOSELY_TYPES_GETTER,
   SALEMT_PROMOTION_OBJECT_GETTER,
   SALEMT_DELIVERY_TYPE_GETTER,
+  SALEMT_PAYMENT_TYPE_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
   GET_CUSTOMER_BY_ID_ACTION,
@@ -101,7 +102,7 @@ export default {
     [SALEMT_DELIVERY_TYPE_GETTER](state) {
       return state.salemtDeliveries
     },
-    [SALEMT_DELIVERY_TYPE_GETTER](state) {
+    [SALEMT_PAYMENT_TYPE_GETTER](state) {
       return state.salemtPayments
     },
   },

@@ -497,8 +497,8 @@
                   >
                     <b-col>
                       <tree-select
-                        v-model="paymentSelected"
-                        :options="paymentOptions"
+                        v-model="salemtPaymentTypeSelected"
+                        :options="salemtPaymentTypeOptions"
                       />
                     </b-col>
 
@@ -602,8 +602,9 @@
           />
           Đóng (ESC)
         </b-button>
+        <sales-list />
+        <sales-form />
       </b-row>
-      <sales-list />
     </template>
     <!-- END - Footer -->
 
@@ -636,16 +637,20 @@ import {
   CUSTOMER,
   // GETTERS
   CUSTOMER_DEFAULT_GETTER,
+  SALEMT_PAYMENT_TYPE_GETTER,
   // ACTIONS
   GET_CUSTOMER_DEFAULT_ACTION,
+  GET_SALEMT_PAYMENT_TYPE_ACTION,
 } from '../../../sales-customers/store-module/type'
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
 import SalesList from '../../sales-list/SalesList.vue'
+import SalesForm from '../../sales-list/components/SalesForm.vue'
 
 export default {
   components: {
     VoucherModal,
     SalesList,
+    SalesForm,
   },
   props: {
     visible: {
@@ -717,8 +722,8 @@ export default {
         },
       ],
 
-      paymentSelected: saleData.salePaymentType[0].id,
-      paymentOptions: saleData.salePaymentType,
+      // aparams
+      salemtPaymentTypeSelected: saleData.salePaymentType[0].id,
 
       // voucher
       voucherId: null,
@@ -762,6 +767,7 @@ export default {
     ]),
     ...mapGetters(CUSTOMER, [
       CUSTOMER_DEFAULT_GETTER,
+      SALEMT_PAYMENT_TYPE_GETTER,
     ]),
 
     voucher() {
@@ -774,6 +780,13 @@ export default {
 
     customerDefault() {
       return this.CUSTOMER_DEFAULT_GETTER
+    },
+
+    salemtPaymentTypeOptions() {
+      return this.SALEMT_PAYMENT_TYPE_GETTER.map(data => ({
+        id: data.value,
+        label: data.apParamName,
+      }))
     },
 
     getProducts() {
@@ -840,15 +853,14 @@ export default {
       this.saleOrderProducts = [...this.getSaleOrderProducts]
     },
 
-    // getCustomerDefault() {
-    //   this.customerId = this.customerDefault.id
-    //   this.shopId = this.customerDefault.shopId
-    // },
+    salemtPaymentTypeSelected() {
+      this.GET_SALEMT_PAYMENT_TYPE_ACTION({ formId: 1, ctrlId: 4 })
+    },
   },
   mounted() {
     this.GET_PRODUCTS_ACTION({ formId: 5, ctrlId: 1, customerTypeId: 1 })
     this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
-    this.getCustomerDefault()
+    this.GET_SALEMT_PAYMENT_TYPE_ACTION({ formId: 1, ctrlId: 4 })
   },
   created() {
     window.addEventListener('keydown', e => {
@@ -866,6 +878,7 @@ export default {
     ]),
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_DEFAULT_ACTION,
+      GET_SALEMT_PAYMENT_TYPE_ACTION,
     ]),
 
     onVoucherButtonClick() {
@@ -928,13 +941,10 @@ export default {
         product: {
           shopId: this.shopId,
           customerId: this.customerId,
-          salemanId: 1,
-          wareHouseTypeId: '1',
           totalPaid: this.totalOrderPrice,
-          type: 0,
-          paymentType: saleData.payment[0].id,
-          deliveryType: 1,
-          orderType: 0,
+          paymentType: this.salemtPaymentTypeSelected,
+          deliveryType: 1, // Hard code
+          orderType: 0, // Hard code
           usedRedInvoice: false,
           voucherId: this.voucherId,
           products: this.getProducts,

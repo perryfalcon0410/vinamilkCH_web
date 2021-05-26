@@ -189,7 +189,6 @@
               <tree-select
                 v-model="salemtPromotionObjectSelected"
                 :options="salemtPromotionObjectOptions"
-                @change="onchange()"
               />
             </b-col>
           </b-row>
@@ -394,6 +393,7 @@ export default {
       totalPrice: null,
       salemtPromotionObjectSelected: saleData.salemtPromotionObject[0].id,
       salemtDeliveryTypeSelected: saleData.salemtDeliveryType[0].id,
+      data: null,
 
       // products
       tableProductId: null,
@@ -516,7 +516,7 @@ export default {
       this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
     },
     salemtDeliveryTypeSelected() {
-      this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
+      this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4 })
     },
     onlineOrderCustomer() {
       this.getOnlineOrderCustomerById()
@@ -528,7 +528,7 @@ export default {
   mounted() {
     this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
-    this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4 })
+    this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4, salemtDeliveryTypeSelected: this.salemtDeliveryTypeSelected })
     this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
   },
   methods: {
@@ -614,17 +614,6 @@ export default {
       this.phoneNumber = this.customerDefault.mobiPhone
       this.address = this.customerDefault.address
       this.totalBill = this.customerDefault.totalBill ?? 0
-    },
-
-    onchange(val) {
-      console.log('selected', val)
-    },
-
-    getOrderInfo() {
-      this.$emit('getOrderInfo', {
-        salemtPromotionObjectSelected: this.salemtPromotionObjectSelected,
-        salemtDeliveryTypeSelected: this.salemtPromotionObjectSelected,
-      })
     },
   },
 }
