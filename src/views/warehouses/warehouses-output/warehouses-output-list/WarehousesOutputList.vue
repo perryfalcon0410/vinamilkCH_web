@@ -573,7 +573,6 @@ export default {
         searchData.toDate = this.$nowDate
         this.searchOptions.toDate = this.$nowDate
       }
-      console.log(searchData)
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
     },

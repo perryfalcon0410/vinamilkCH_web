@@ -511,9 +511,6 @@ export default {
 
     getCustomerTypeInfo(id) {
       this.customerType = id
-      console.log('customerTypeId from SalesForm', id)
-      console.log('customerDefaultTypeId', this.customerDefaultTypeId)
-
       const listProducts = this.getProducts
       const customerTypeId = id
       const params = {
