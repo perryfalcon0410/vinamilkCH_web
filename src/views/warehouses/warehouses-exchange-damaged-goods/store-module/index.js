@@ -23,7 +23,6 @@ export default {
   // STATE
   state: {
     exchangeDamagedGoods: [],
-    exchangeDamagedGoodsPagination: {},
     exchangeDamagedGoodsReasons: [],
     exchangeDamagedGoodsById: {},
     customers: [],

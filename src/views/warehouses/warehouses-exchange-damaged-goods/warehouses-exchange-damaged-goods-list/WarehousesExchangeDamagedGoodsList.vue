@@ -133,14 +133,14 @@
               class="mx-0"
               align-h="end"
             >
-              {{ $formatNumberToLocale(totalQuantity) }}
+              {{ $formatNumberToLocale(getTotalValues.totalQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'price'"
               class="mx-0"
               align-h="end"
             >
-              {{ $formatNumberToLocale(totalMoney) }}
+              {{ $formatNumberToLocale(getTotalValues.totalAmount) }}
             </b-row>
           </template>
           <!-- END - Filter -->
@@ -257,10 +257,8 @@ import {
   WAREHOUSES_EXCHANGE_DAMAGED_GOODS,
   // Getters
   EXCHANGE_DAMAGED_GOODS_GETTER,
-  EXCHANGE_DAMAGED_GOODS_REASONS_GETTER,
   // Actions
   GET_EXCHANGE_DAMAGED_GOODS_ACTION,
-  GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -351,7 +349,6 @@ export default {
   computed: {
     ...mapGetters(WAREHOUSES_EXCHANGE_DAMAGED_GOODS, [
       EXCHANGE_DAMAGED_GOODS_GETTER,
-      EXCHANGE_DAMAGED_GOODS_REASONS_GETTER,
     ]),
     getExchangeDamagedGoods() {
       if (this.EXCHANGE_DAMAGED_GOODS_GETTER.response) {
@@ -368,20 +365,20 @@ export default {
       }
       return []
     },
-    getReasonOptions() {
-      return this.EXCHANGE_DAMAGED_GOODS_REASONS_GETTER.map(data => ({
-        id: data.id,
-        label: data.categoryName,
-      }))
+    getTotalValues() {
+      if (this.EXCHANGE_DAMAGED_GOODS_GETTER.info) {
+        console.log(this.totalQuantity)
+        return this.EXCHANGE_DAMAGED_GOODS_GETTER.info
+      }
+      return {}
     },
+    // totalQuantity() {
+    //   return this.exchangeDamagedGoods.reduce((accum, item) => accum + Number(item.exchangeDamagedGoodsQuantity), 0)
+    // },
 
-    totalQuantity() {
-      return this.exchangeDamagedGoods.reduce((accum, item) => accum + Number(item.exchangeDamagedGoodsQuantity), 0)
-    },
-
-    totalMoney() {
-      return this.exchangeDamagedGoods.reduce((accum, item) => accum + Number(item.exchangeDamagedGoodsPrice), 0)
-    },
+    // totalMoney() {
+    //   return this.exchangeDamagedGoods.reduce((accum, item) => accum + Number(item.exchangeDamagedGoodsPrice), 0)
+    // },
 
     exchangeDamagedGoodsPagination() {
       if (this.EXCHANGE_DAMAGED_GOODS_GETTER.response) {
@@ -394,16 +391,9 @@ export default {
     getExchangeDamagedGoods() {
       this.exchangeDamagedGoods = [...this.getExchangeDamagedGoods]
     },
-    getReasonOptions() {
-      this.reasonOptions = [...this.getReasonOptions]
-    },
   },
   mounted() {
     this.GET_EXCHANGE_DAMAGED_GOODS_ACTION({
-      ...this.decentralization,
-      reasonId: 7,
-    })
-    this.GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION({
       ...this.decentralization,
     })
   },
@@ -411,7 +401,6 @@ export default {
   methods: {
     ...mapActions(WAREHOUSES_EXCHANGE_DAMAGED_GOODS, [
       GET_EXCHANGE_DAMAGED_GOODS_ACTION,
-      GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION,
     ]),
     onClickAddNewButton() {
       this.$router.push({ name: 'warehouses-exchange-damaged-goods-create' })

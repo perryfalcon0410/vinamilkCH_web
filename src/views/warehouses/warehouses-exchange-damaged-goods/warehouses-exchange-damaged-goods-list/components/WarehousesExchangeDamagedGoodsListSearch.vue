@@ -261,7 +261,7 @@ export default {
     ]),
     onSearch() {
       const searchData = {
-        minutesCode: this.minutesCode,
+        transCode: this.minutesCode,
         reasonId: this.reasonObj.reasonSelected,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
