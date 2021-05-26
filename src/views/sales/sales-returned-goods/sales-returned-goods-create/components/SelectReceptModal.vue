@@ -208,13 +208,10 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-<<<<<<< HEAD
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
 import commonData from '@/@db/common'
-=======
->>>>>>> 0f510d6 (﻿+ Optimize logic for call function 'formatNumberToLocale')
 import SearchComponent from './SelectReceptSearch.vue'
 import { RETURNEDGOODS, RETURNED_GOOD_CHOOSE_GETTER, GET_RETURNED_GOOD_CHOOSE_ACTION } from '../../store-module/type'
 
@@ -292,7 +289,6 @@ export default {
     }
   },
   computed: {
-<<<<<<< HEAD
     ...mapGetters(RETURNEDGOODS, [
       RETURNED_GOOD_CHOOSE_GETTER,
     ]),
@@ -325,20 +321,6 @@ export default {
   watch: {
     getSaleOders() {
       this.saleOders = [...this.getSaleOders]
-=======
-    saleOders() {
-      return this.RETURNED_GOOD_CHOOSE_GETTER().saleOders.map(data => ({
-        id: data.id,
-        orderNumber: data.orderNumber,
-        customerName: data.customerName,
-        total: this.$formatNumberToLocale(data.total),
-        salesManName: data.salesManName,
-        oderDate: data.orderDate,
-      }))
-    },
-    totalAmount() {
-      return this.$formatNumberToLocale(this.RETURNED_GOOD_CHOOSE_GETTER().saleOdersInfo.allTotal || '')
->>>>>>> 0f510d6 (﻿+ Optimize logic for call function 'formatNumberToLocale')
     },
   },
 

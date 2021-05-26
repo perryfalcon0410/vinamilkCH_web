@@ -172,7 +172,7 @@
                       class="cursor-pointer"
                     >
                       <b-icon-three-dots-vertical
-                        @click="showModal()"
+                        @click="showModal"
                       />
                     </b-input-group-append>
                   </b-input-group>
@@ -255,7 +255,7 @@
 
                 <!--START - Choose import adjust product-->
                 <b-row
-                  v-else-if="props.column.field === 'totalPrice'"
+                  v-else-if="props.column.field === 'poImportTotalPrice'"
                   class="mx-0"
                   align-h="end"
                 >
@@ -338,13 +338,7 @@
                 <span
                   v-if="props.column.label =='Function'"
                   v-b-popover.hover="'Thêm hàng'"
-                >
-                  <b-icon-plus
-                    class="cursor-pointer"
-                    scale="2.5"
-                    @click="newRow"
-                  />
-                </span>
+                />
                 <span v-else>
                   {{ props.column.label }}
                 </span>
@@ -353,19 +347,30 @@
                 slot="table-row"
                 slot-scope="props"
               >
-                <span v-if="props.column.field == 'productId'">
+                <span v-if="props.column.field === 'productCode'">
+                  {{ rowsProductPromotion[props.index].productCode }}
+                </span>
+                <span v-if="props.column.field === 'quantity'">
                   <b-form-input
-                    v-model="rowsProductPromotion[props.index].productId"
-                    size="sm"
-                  />
-                </span>
-                <span v-if="props.column.field == 'quantity'">
-                  <b-input
                     v-model.number="rowsProductPromotion[props.index].quantity"
-                    size="sm"
+                    type="number"
+                    :state="isPositive(rowsProductPromotion[props.index].quantity)"
+                    min="0"
                   />
                 </span>
-                <span v-if="props.column.field == 'function'">
+                <span v-if="props.column.field === 'price'">
+                  {{ rowsProductPromotion[props.index].price }}
+                </span>
+                <span v-if="props.column.field === 'productName'">
+                  {{ rowsProductPromotion[props.index].productName }}
+                </span>
+                <span v-if="props.column.field === 'unit'">
+                  {{ rowsProductPromotion[props.index].unit }}
+                </span>
+                <span v-if="props.column.field === 'totalPrice'">
+                  {{ rowsProductPromotion[props.index].totalPrice }}
+                </span>
+                <span v-if="props.column.field === 'function'">
                   <b-icon-trash-fill
                     v-b-popover.hover.top="'Xóa'"
                     class="cursor-pointer mt-05"
@@ -384,6 +389,41 @@
                 Không có dữ liệu
               </div>
               <!-- END - Empty rows -->
+              <div
+                slot="table-actions-bottom"
+                class="mx-1 my-2 px-2"
+              >
+                <b-form-input
+                  v-model="productSearch"
+                  class="w-25"
+                  placeholder="Nhập mã hoặc tên sản phẩm"
+                  type="text"
+                  autocomplete="off"
+                  @focus="focusProduct"
+                  @input="loadProducts"
+                  @blur="isFocusedInputProduct = true"
+                  @keyup="loadProducts"
+                />
+                <b-collapse
+                  v-model.trim="isFocusedInputProduct"
+                  class="position-absolute mr-lg-0 mb-3"
+                  style="zIndex:1"
+                >
+                  <b-container
+                    class="my-1 bg-white rounded border border-primary shadow-lg"
+                  >
+                    <b-row
+                      v-for="(product, index) in allProducts"
+                      :key="index"
+                      class="my-1 cursor-pointer"
+                      :class="{'item-active': index === cursorProduct}"
+                      @click="productSelected(product)"
+                    >
+                      <b>{{ product.productCode }}</b> - {{ product.productName }}
+                    </b-row>
+                  </b-container>
+                </b-collapse>
+              </div>
             </vue-good-table>
             <!--END input Po-->
             <!--if-PoConfirm-->
@@ -396,7 +436,7 @@
                 <b-button
                   class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
                   variant="someThing"
-                  @click="create()"
+                  @click="create"
                 >
                   <b-icon
                     icon="download"
@@ -462,7 +502,7 @@ import {
 } from '@/@core/utils/validations/validations'
 import { mapGetters, mapActions } from 'vuex'
 import { getNow } from '@core/utils/utils'
-// eslint-disable-next-line no-unused-vars
+import commonData from '@/@db/common'
 import toasts from '@core/utils/toasts/toasts'
 import warehousesData from '@/@db/warehouses'
 import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
@@ -472,8 +512,10 @@ import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.v
 import {
   WAREHOUSEINPUT,
   WAREHOUSES_TYPE_GETTER,
+  PRODUCTS_GETTER,
   GET_WAREHOUSES_TYPE_ACTION,
   CREATE_SALE_IMPORT_ACTION,
+  GET_PRODUCTS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -487,6 +529,15 @@ export default {
   },
   data() {
     return {
+      // search product
+      productSearch: null,
+      isFocusedInputProduct: false,
+      cursorProduct: -1,
+      // search product
+      //
+      formId: 5,
+      ctrlId: 7,
+      //
       configDate: {
         wrap: true,
         allowInput: true,
@@ -533,7 +584,7 @@ export default {
       poPromotionColumns: [
         {
           label: 'Mã hàng',
-          field: 'productId',
+          field: 'productCode',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -635,7 +686,7 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'totalPrice',
+          field: 'poImportTotalPrice',
           type: 'number',
           sortable: false,
           filterOptions: {
@@ -767,31 +818,35 @@ export default {
     }
   },
   computed: {
-    // filter count from newRow
+    warehousesType() {
+      return this.WAREHOUSES_TYPE_GETTER()
+    },
+    allProducts() {
+      return this.PRODUCTS_GETTER()
+    },
     promotionRow() {
       return this.rowsProductPromotion.map(data => ({
         productId: data.productId,
         quantity: data.quantity,
       }))
     },
-    warehousesType() {
-      return this.WAREHOUSES_TYPE_GETTER()
-    },
   },
   mounted() {
     this.inputTypeSelected = this.inputTypeOptions[0].id
     this.GET_WAREHOUSES_TYPE_ACTION({
-      formId: 5, // hard code
-      ctrlId: 7, // hard code
+      formId: this.formId,
+      ctrlId: this.ctrlId,
     })
   },
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
       WAREHOUSES_TYPE_GETTER,
+      PRODUCTS_GETTER,
     ]),
     ...mapActions(WAREHOUSEINPUT, [
       CREATE_SALE_IMPORT_ACTION,
       GET_WAREHOUSES_TYPE_ACTION,
+      GET_PRODUCTS_ACTION,
     ]),
     // clear text in input form in case changes import type
     clearFormText(item) {
@@ -803,18 +858,6 @@ export default {
     },
     onClickDeleteButton(index) {
       this.rowsProductPromotion.splice(index, 1)
-    },
-    newRow() {
-      if (this.status === null) {
-        this.rowsProductPromotion = [
-          ...this.rowsProductPromotion,
-          {
-            count: this.rowsProductPromotion.length,
-            productId: '',
-            quantity: '',
-          },
-        ]
-      }
     },
     showModal() {
       switch (this.inputTypeSelected) {
@@ -931,6 +974,51 @@ export default {
         })
       }
     },
+    isPositive(num) {
+      if (num >= 0) {
+        return true
+      }
+      return false
+    },
+    // --------------search product functions --------------
+    focusProduct() {
+      this.cursorProduct = -1
+      if (this.productSearch) {
+        this.isFocusedInputProduct = this.productSearch.length >= commonData.minSearchLength
+      }
+    },
+    loadProducts() {
+      this.cursorProduct = -1
+      if (this.productSearch.length >= commonData.minSearchLength) {
+        this.isFocusedInputProduct = true
+        const searchData = {
+          keyWord: this.productSearch,
+          formId: this.formId,
+          ctrlId: this.ctrlId,
+        }
+        this.GET_PRODUCTS_ACTION(searchData)
+      }
+    },
+    productSelected(product) {
+      const index = this.rowsProductPromotion.findIndex(e => e.productId === product.comboProductId)
+      if (this.rowsProductPromotion) {
+        const obj = {
+          productId: product.comboProductId,
+          productCode: product.productCode,
+          productName: product.productName,
+          quantity: 0,
+          price: 0,
+          totalPrice: 0,
+          unit: product.uom1,
+        }
+        if (index === -1) {
+          this.rowsProductPromotion.push(obj)
+        }
+      }
+      this.isFocusedInputProduct = false
+      this.productSearch = null
+    },
+    // --------------search product functions --------------
   },
 }
 </script>

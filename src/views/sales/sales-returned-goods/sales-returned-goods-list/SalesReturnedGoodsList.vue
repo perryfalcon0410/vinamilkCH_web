@@ -213,16 +213,12 @@ import {
   mapActions,
 } from 'vuex'
 import {
-<<<<<<< HEAD
   resizeAbleTable,
 } from '@core/utils/utils'
 import {
   formatNumberToLocale,
   replaceDotWithComma,
   formatISOtoVNI,
-=======
-  formatDateToLocale,
->>>>>>> 0f510d6 (﻿+ Optimize logic for call function 'formatNumberToLocale')
 } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import lodash from 'lodash'
@@ -357,7 +353,6 @@ export default {
       }
       return {}
     },
-<<<<<<< HEAD
     getOderReturns() {
       if (this.RETURNED_GOODS_GETTER.response && this.RETURNED_GOODS_GETTER.response.content) {
         return this.RETURNED_GOODS_GETTER.response.content.map(data => ({
@@ -429,63 +424,6 @@ export default {
         return lodash.mapValues(this.RETURN_GOODS_DETAIL_GETTER.infos, value => value)
       }
       return {}
-=======
-    oderReturns() {
-      return this.RETURNED_GOODS_GETTER().oderReturns.map(data => ({
-        id: data.id,
-        idDetail: data.id,
-        createdAt: formatDateToLocale(data.createdAt),
-        orderReturnNumber: data.orderReturnNumber,
-        orderNumber: data.orderNumber,
-        userName: data.userName,
-        customerNumber: data.customerNumber,
-        customerName: data.customerName,
-        dateReturn: formatDateToLocale(data.dateReturn),
-        orderDate: formatDateToLocale(data.orderDate),
-        total: this.$formatNumberToLocale(data.total),
-        discount: this.$formatNumberToLocale(data.discount),
-        amount: this.$formatNumberToLocale(data.amount),
-        feature: '',
-      }))
-    },
-    totalPayment() {
-      return this.$formatNumberToLocale(this.RETURNED_GOODS_GETTER().info.totalPayment)
-    },
-    totalAmount() {
-      return this.$formatNumberToLocale(this.RETURNED_GOODS_GETTER().info.totalAmount)
-    },
-
-    // return goods detail
-    productReturns() {
-      return this.RETURN_GOODS_DETAIL_PRODUCTS_GETTER().map(data => ({
-        productCode: data.productCode,
-        productName: data.ProductName,
-        unit: data.unit,
-        quantity: this.$formatNumberToLocale(data.quantity),
-        pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
-        totalPrice: this.$formatNumberToLocale(data.totalPrice),
-        discount: this.$formatNumberToLocale(data.discount),
-        paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
-      }))
-    },
-
-    promotionReturns() {
-      return this.RETURN_GOODS_DETAIL_SALES_OFF_GETTER().map(data => ({
-        productCode: data.productCode,
-        productName: data.ProductName,
-        unit: data.unit,
-        quantity: this.$formatNumberToLocale(data.quantity),
-        pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
-        totalPrice: this.$formatNumberToLocale(data.totalPrice),
-        discount: this.$formatNumberToLocale(data.discount),
-        paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
-
-      }))
-    },
-
-    totalInfo() {
-      return lodash.mapValues(this.RETURN_GOODS_DETAIL_TOTAL_INFO_GETTER(), value => this.$formatNumberToLocale(value))
->>>>>>> 0f510d6 (﻿+ Optimize logic for call function 'formatNumberToLocale')
     },
   },
   watch: {

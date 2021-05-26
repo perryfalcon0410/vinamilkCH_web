@@ -40,11 +40,9 @@ export default {
     })
   },
   getImportExcel(args) {
-    return axios({
-      method: 'get',
-      url: `${getImportExcelEndpoint}/${args.id}`,
-      responseType: 'blob',
+    return axios.get(`${getImportExcelEndpoint}/${args.id}`, {
       params: formatURLParams(args),
+      responseType: 'blob',
     })
   },
   getImportAdjustments(args) {

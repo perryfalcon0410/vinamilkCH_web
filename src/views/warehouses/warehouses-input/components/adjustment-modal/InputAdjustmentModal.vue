@@ -154,6 +154,8 @@ import {
 } from 'vuex'
 import { formatISOtoVNI } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
+// eslint-disable-next-line no-unused-vars
+import commonData from '@/@db/common'
 import {
   WAREHOUSEINPUT,
   // GETTER
@@ -307,5 +309,7 @@ export default {
       this.$emit('close')
     },
   },
+  // ---------------------------------- all seacrch funtion ----------------------------------
+  // ---------------------------------- all seacrch funtion ----------------------------------
 }
 </script>
