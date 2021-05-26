@@ -41,7 +41,7 @@
                 Loại xuất
               </div>
               <tree-select
-                v-model="warehousesTypeSelected"
+                v-model="warehousesOutput.receiptType"
                 :options="warehousesOptions"
                 :searchable="false"
                 no-options-text="Không có dữ liệu"
@@ -181,7 +181,7 @@
                   slot-scope="props"
                 >
                   <div v-if="props.column.field === 'productReturnAmount'">
-                    <div v-if="warehousesTypeSelected == warehousesOptions[0].id">
+                    <div v-if="warehousesOutput.type == warehousesOptions[0].id">
                       <b-form-input
                         v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
                         type="number"
@@ -377,22 +377,22 @@ export default {
   watch: {
     getProductOfWarehouseOutput() {
       const dataWarehousesOutput = { ...this.getWarehousesOutput }
-      this.warehousesOutput = {
-        id: dataWarehousesOutput.id,
-        code: dataWarehousesOutput.transCode,
-        type: dataWarehousesOutput.type,
-        wareHouseTypeId: Number(this.warehousesOutput.wareHouseTypeId),
-        wareHouseTypeName: dataWarehousesOutput.wareHouseTypeName,
-        redInvoiceNo: dataWarehousesOutput.redInvoiceNo, // số hoá đơn
-        internalNumber: dataWarehousesOutput.internalNumber, // số nội bộ
-        poNumber: dataWarehousesOutput.poNumber,
-        note: dataWarehousesOutput.note,
-        transDate: formatISOtoVNI(dataWarehousesOutput.transDate),
-        products: [...this.getProductOfWarehouseOutput],
-        borrowDate: formatISOtoVNI(dataWarehousesOutput.borrowDate),
-        borrowTime: getTimeOfDate(formatISOtoVNI(dataWarehousesOutput.borrowDate)),
-      }
-      this.warehousesTypeSelected = this.warehousesOutput.type
+
+      this.warehousesOutput.id = dataWarehousesOutput.id
+      this.warehousesOutput.code = dataWarehousesOutput.transCode
+      this.warehousesOutput.type = dataWarehousesOutput.type
+      this.warehousesOutput.wareHouseTypeId = Number(this.warehousesOutput.wareHouseTypeId)
+      this.warehousesOutput.wareHouseTypeName = dataWarehousesOutput.wareHouseTypeName
+      this.warehousesOutput.redInvoiceNo = dataWarehousesOutput.redInvoiceNo // số hoá đơn
+      this.warehousesOutput.internalNumber = dataWarehousesOutput.internalNumber // số nội bộ
+      this.warehousesOutput.poNumber = dataWarehousesOutput.poNumber
+      this.warehousesOutput.note = dataWarehousesOutput.note
+      this.warehousesOutput.transDate = formatISOtoVNI(dataWarehousesOutput.transDate)
+      this.warehousesOutput.products = [...this.getProductOfWarehouseOutput]
+      this.warehousesOutput.borrowDate = formatISOtoVNI(dataWarehousesOutput.borrowDate)
+      this.warehousesOutput.borrowTime = getTimeOfDate(formatISOtoVNI(dataWarehousesOutput.borrowDate))
+
+      this.warehousesTypeSelected = dataWarehousesOutput.type
     },
   },
   mounted() {
