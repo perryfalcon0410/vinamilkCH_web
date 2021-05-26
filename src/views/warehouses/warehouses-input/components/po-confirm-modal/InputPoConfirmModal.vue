@@ -242,10 +242,14 @@ import {
 } from 'vuex'
 import toasts from '@core/utils/toasts/toasts'
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { formatDateToLocale } from '@core/utils/filter'
 =======
 import { formatISOtoVNI, formatNumberToLocale } from '@core/utils/filter'
 >>>>>>> d852c05 (+ fix bugs)
+=======
+import { formatISOtoVNI } from '@core/utils/filter'
+>>>>>>> 0f510d6 (﻿+ Optimize logic for call function 'formatNumberToLocale')
 import DenyModal from './components/inputPoDenyModal.vue'
 import {
   WAREHOUSEINPUT,

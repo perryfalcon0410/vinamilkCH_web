@@ -298,7 +298,11 @@ import {
 } from 'vuex'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'
+<<<<<<< HEAD
 import { reverseVniDate, formatISOtoVNI } from '@/@core/utils/filter'
+=======
+import { reverseVniDate } from '@/@core/utils/filter'
+>>>>>>> 0f510d6 (﻿+ Optimize logic for call function 'formatNumberToLocale')
 import {
   RED_INVOICE,
   RED_INVOICES_GETTER,

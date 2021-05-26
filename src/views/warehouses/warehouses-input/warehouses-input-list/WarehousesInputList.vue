@@ -247,10 +247,14 @@ import {
   mapActions,
 } from 'vuex'
 import {
+<<<<<<< HEAD
   resizeAbleTable,
 } from '@core/utils/utils'
 import {
   formatISOtoVNI,
+=======
+  formatISOtoVNI, reverseVniDate,
+>>>>>>> 0f510d6 (﻿+ Optimize logic for call function 'formatNumberToLocale')
 } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import WarehousesInputListSearch from './components/WarehousesInputListSearch.vue'
