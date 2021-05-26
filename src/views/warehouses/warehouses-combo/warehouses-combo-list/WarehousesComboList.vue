@@ -4,7 +4,11 @@
     class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
-    <warehouses-comboList-search />
+    <warehouses-comboList-search
+      @updateSearchData="paginationData = {
+        ...paginationData,
+        ...$event }"
+    />
     <!-- END - Search -->
 
     <!-- START - Customer list -->
@@ -38,14 +42,23 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="warehousesComboLists"
-          style-class="vgt-table striped"
+          :rows="warehousesCombos"
+          style-class="vgt-table bordered"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: elementSize,
+            setCurrentPage: pageNumber,
           }"
           compact-mode
           line-numbers
+          :total-rows="warehousesComboPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           >
           <!-- START - Empty rows -->
@@ -83,8 +96,8 @@
             <div v-if="props.column.field === 'feature'">
               <b-icon-eye-fill
                 v-b-popover.hover="'Xem chi tiết'"
-                class="cursor-pointer"
-                @click="navigateToUpdate()"
+                class="text-brand-1 cursor-pointer"
+                @click="navigateToDetail(props.row.id)"
               />
             </div>
             <div v-else>
@@ -110,7 +123,7 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
                   v-model="elementSize"
@@ -121,7 +134,11 @@
                 />
                 <span
                   class="text-nowrap"
-                > trong {{ warehousesComboPagination.totalElements }} mục </span>
+                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
+                  -
+                  {{ (elementSize * pageNumber) > warehousesComboPagination.totalElements ?
+                    warehousesComboPagination.totalElements : (elementSize * pageNumber) }}
+                  của {{ warehousesComboPagination.totalElements }} mục </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -188,9 +205,10 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale } from '@core/utils/filter'
+import { formatISOtoVNI } from '@core/utils/filter'
 import {
   getWarehousesStatuslabel,
+  resizeAbleTable,
 } from '@core/utils/utils'
 
 import WarehousesComboListSearch from './components/WarehousesComboListSearch.vue'
@@ -199,8 +217,6 @@ import {
 
   // GETTERS
   WAREHOUSES_COMBO_GETTER,
-  WAREHOUSES_COMBO_PAGINATION_GETTER,
-  WAREHOUSES_COMBO_TOTAL_INFO_GETTER,
 
   // ACTIONS
   GET_WAREHOUSES_COMBO_ACTIONS,
@@ -216,7 +232,12 @@ export default {
       elementSize: commonData.pagination[0],
       pageNumber: 1,
       paginationOptions: commonData.pagination,
-
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+      },
+      warehousesCombos: [],
       columns: [
         {
           label: 'Ngày',
@@ -269,60 +290,76 @@ export default {
     }
   },
   computed: {
-    warehousesComboLists() {
-      return this.WAREHOUSES_COMBO_GETTER().map(data => ({
-        transDate: formatDateToLocale(data.transDate),
-        transCode: data.transCode,
-        quantity: this.$formatNumberToLocale(data.totalQuantity),
-        price: this.$formatNumberToLocale(data.totalAmount),
-        transType: getWarehousesStatuslabel(String(data.transType)),
-        feature: '',
-      }))
+    ...mapGetters(WAREHOUSES_COMBO, [
+      WAREHOUSES_COMBO_GETTER,
+    ]),
+    getWarehousesCombo() {
+      if (this.WAREHOUSES_COMBO_GETTER.response && this.WAREHOUSES_COMBO_GETTER.response.content) {
+        return this.WAREHOUSES_COMBO_GETTER.response.content.map(data => ({
+          transDate: formatISOtoVNI(data.transDate),
+          transCode: data.transCode,
+          quantity: this.$formatNumberToLocale(data.totalQuantity),
+          price: this.$formatNumberToLocale(data.totalAmount),
+          transType: getWarehousesStatuslabel(String(data.transType)),
+          feature: '',
+          id: data.id,
+        }))
+      }
+      return []
     },
 
-    totalQuantity() {
-      return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalQuantity)
-    },
-    totalPrice() {
-      return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalPrice)
-    },
+    // totalQuantity() {
+    //   return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalQuantity)
+    // },
+    // totalPrice() {
+    //   return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalPrice)
+    // },
 
     warehousesComboPagination() {
-      return this.WAREHOUSES_COMBO_PAGINATION_GETTER()
+      if (this.WAREHOUSES_COMBO_GETTER.response) {
+        return this.WAREHOUSES_COMBO_GETTER.response
+      }
+      return {}
     },
   },
 
   watch: {
-    pageNumber() {
-      this.onPaginationChange()
-    },
-    elementSize() {
-      this.onPaginationChange()
+    getWarehousesCombo() {
+      this.warehousesCombos = [...this.getWarehousesCombo]
     },
   },
   mounted() {
-    this.GET_WAREHOUSES_COMBO_ACTIONS({ formId: 5, ctrlId: 7 })
+    resizeAbleTable()
   },
 
   methods: {
-    ...mapGetters(WAREHOUSES_COMBO, [
-      WAREHOUSES_COMBO_GETTER,
-      WAREHOUSES_COMBO_PAGINATION_GETTER,
-      WAREHOUSES_COMBO_TOTAL_INFO_GETTER,
-    ]),
     ...mapActions(WAREHOUSES_COMBO, [
       GET_WAREHOUSES_COMBO_ACTIONS,
     ]),
     onPaginationChange() {
-      const paginationData = {
-        sie: this.elementSize,
-        page: this.pageNumber - 1,
-      }
-
-      this.GET_WAREHOUSES_COMBO_ACTIONS(paginationData)
+      this.GET_WAREHOUSES_COMBO_ACTIONS(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
     },
     navigateToCreate() {
       this.$router.push({ name: 'warehouses-combo-create' })
+    },
+    navigateToDetail(id) {
+      this.$router.push({
+        name: 'warehouses-combo-detail',
+        params: {
+          id,
+        },
+      })
     },
   },
 }

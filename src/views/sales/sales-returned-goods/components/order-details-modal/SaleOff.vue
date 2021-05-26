@@ -17,7 +17,43 @@
       >
         Không có dữ liệu
       </div>
-    <!-- END - Empty rows -->
+      <!-- END - Empty rows -->
+
+      <!-- START - Column filter -->
+      <template
+        slot="column-filter"
+        slot-scope="props"
+      >
+        <b-row
+          v-if="props.column.field === 'quantity'"
+          class="mx-0"
+          align-h="end"
+        >
+          {{ (infoPromotionData.totalQuantity) }}
+        </b-row>
+        <b-row
+          v-else-if="props.column.field === 'totalPrice'"
+          class="mx-0"
+          align-h="end"
+        >
+          {{ (infoPromotionData.totalAmount) }}
+        </b-row>
+        <b-row
+          v-if="props.column.field === 'discount'"
+          class="mx-0"
+          align-h="end"
+        >
+          {{ (infoPromotionData.totalDiscount) }}
+        </b-row>
+        <b-row
+          v-else-if="props.column.field === 'paymentReturn'"
+          class="mx-0"
+          align-h="end"
+        >
+          {{ (infoPromotionData.totalDiscount) }}
+        </b-row>
+      </template>
+      <!-- START - Column filter -->
     </vue-good-table>
   </b-col>
 </template>
@@ -31,6 +67,10 @@ export default {
       type: Boolean,
     },
     saleOffTable: {
+      type: Array,
+      default: null,
+    },
+    infoPromotionData: {
       type: Array,
       default: null,
     },
@@ -67,6 +107,9 @@ export default {
           thClass: 'text-right',
           tdClass: 'text-right',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Giá bán',

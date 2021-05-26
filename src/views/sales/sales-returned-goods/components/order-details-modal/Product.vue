@@ -29,32 +29,28 @@
           class="mx-0"
           align-h="end"
         >
-          10
-          <!-- {{ totalQuantity }} -->
+          {{ (infoProductData.totalQuantity) }}
         </b-row>
         <b-row
           v-else-if="props.column.field === 'totalPrice'"
           class="mx-0"
           align-h="end"
         >
-          234.000
-          <!-- {{ totalAllPrice }} -->
+          {{ (infoProductData.totalAmount) }}
         </b-row>
         <b-row
           v-if="props.column.field === 'discount'"
           class="mx-0"
           align-h="end"
         >
-          20.000
-          <!-- {{ totalDiscount }} -->
+          {{ (infoProductData.totalDiscount) }}
         </b-row>
         <b-row
           v-else-if="props.column.field === 'paymentReturn'"
           class="mx-0"
           align-h="end"
         >
-          214.000
-          <!-- {{ totalpaymentReturn }} -->
+          {{ (infoProductData.totalDiscount) }}
         </b-row>
       </template>
       <!-- START - Column filter -->
@@ -72,6 +68,10 @@ export default {
       type: Boolean,
     },
     producttable: {
+      type: Array,
+      default: null,
+    },
+    infoProductData: {
       type: Array,
       default: null,
     },

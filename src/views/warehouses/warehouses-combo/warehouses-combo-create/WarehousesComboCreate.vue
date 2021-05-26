@@ -87,10 +87,18 @@
             <vue-good-table
               :columns="comboListColumns"
               :rows="comboListRows"
-              style-class="vgt-table striped"
+              style-class="vgt-table bordered"
               compact-mode
               line-numbers
             >
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
               <template
                 slot="table-row"
                 slot-scope="props"
@@ -126,38 +134,65 @@
                   />
                 </span>
               </template>
-              <!--START Search bottom bar -->
-              <div
-                slot="table-actions-bottom"
-                class="mx-1 my-2 px-2"
-              >
-                <tree-select
-                  v-model="comboProductSelected"
-                  class="w-35"
-                  placeholder="Nhập mã hoặc tên sản phẩm"
-                  :async="true"
-                  :open-on-click="false"
-                  :open-on-focus="false"
-                  :auto-load-root-options="false"
-                  :load-options="loadOptions"
-                  @select="onComboSelected"
+
+              <!-- START - Table Footer -->
+              <template slot="table-actions-bottom">
+                <!-- START - Prodduct input -->
+                <b-col
+                  cols="5"
+                  class="my-1"
                 >
-                  <label
-                    slot="option-label"
-                    slot-scope="{ node }"
-                    :class="labelClassName"
+                  <b-form-input
+                    v-model.trim="productInfos.productName"
+                    placeholder="Nhập mã hoặc tên sản phẩm"
+                    @focus="focusProduct"
+                    @input="loadProducts"
+                    @blur="isFocusedInputProduct = false"
+                    @keyup="loadProducts"
+                  />
+                  <!-- START - Product Popup -->
+                  <b-collapse
+                    v-model.trim="isFocusedInputProduct"
+                    class="position-absolute w-80"
+                    style="zIndex:1"
                   >
-                    <strong>
-                      {{ node.raw.productName }}
-                    </strong>
-                    <br>
-                    {{ node.label }}
-                  </label>
-                </tree-select>
-                <!--END Search bottom bar -->
-              </div>
+                    <b-container
+                      class="my-1 px-1 bg-white rounded border border-primary shadow-lg"
+                    >
+                      <b-col>
+                        <b-row
+                          v-for="(product, index) in products"
+                          :key="index"
+                          class="mx-0 my-1 border-bottom cursor-pointer"
+                          :class="{'item-active': index === cursorProduct}"
+                          @click="onComboSelected(product)"
+                        >
+                          <!-- START - Section Label -->
+                          <b-col>
+                            <b-col
+                              class="text-dark"
+                            >
+                              <strong> {{ product.productName }}</strong>
+                            </b-col>
+                            <b-col
+                              class="my-1"
+                            >
+                              {{ product.productCode }}
+                            </b-col>
+                          </b-col>
+                          <!-- END - Section Label -->
+                        </b-row>
+                      </b-col>
+                    </b-container>
+                  </b-collapse>
+                <!-- END - Product Popup -->
+
+                </b-col>
+              <!-- END - Prodduct input -->
+
+              </template>
             </vue-good-table>
-            <!-- END - Table combo list -->
+            <!-- END - Table Footer -->
             <br>
             <!-- START - Table combo exchange -->
             <div class="d-inline-flex rounded-top px-1 my-1">
@@ -169,10 +204,19 @@
               :key="componentKey"
               :columns="comboExchangeColumns"
               :rows="comboExchangeRows"
-              style-class="vgt-table striped"
+              style-class="vgt-table bordered"
               compact-mode
               line-numbers
-            />
+            >
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
+            </vue-good-table>
             <!-- END - Table combo exchange -->
 
             <!-- START - Button -->
@@ -203,11 +247,9 @@
               </b-button-group>
             </b-row>
             <!-- END - Button -->
+            <!-- END - List -->
 
-          </b-col>
-          <!-- END - List -->
-
-        </b-row>
+          </b-col></b-row>
       </b-col>
     </validation-observer>
   </b-container>
@@ -238,8 +280,12 @@ export default {
     return {
       componentKey: 0,
       // Search combo
-      comboSearch: null,
-      searchComboFocus: false,
+      isFocusedInputProduct: false,
+      productInfos: {
+        productName: null,
+      },
+      cursorCustomer: -1, // Con trỏ chuột ở pop up = -1
+      cursorProduct: -1,
       // Search Combo
       //
       formId: 5,
@@ -354,7 +400,7 @@ export default {
       COMBO_PRODUCTS_DETAILS_GETTER,
     ]),
 
-    comboProductOptions() {
+    products() {
       return this.COMBO_PRODUCTS_GETTER.map(data => ({
         id: Number(data.id),
         label: data.productCode,
@@ -400,10 +446,6 @@ export default {
   },
   mounted() {
     this.tradingTypeSelected = this.tradingTypeOptions[0].id
-    this.GET_COMBO_PRODUCTS_ACTION({
-      fromId: this.fromId,
-      ctrlId: this.ctrlId,
-    })
   },
   methods: {
     ...mapActions(WAREHOUSES_COMBO, [
@@ -436,17 +478,6 @@ export default {
         this.comboListRows[index].price += obj.price
         this.comboListRows[index].numProduct += obj.numProduct
         this.updateComboExchangeQuantity(index)
-      }
-    },
-    loadOptions({ searchQuery, callback }) {
-      if (searchQuery.length >= commonData.minSearchLength) {
-        this.GET_COMBO_PRODUCTS_ACTION({
-          keyWord: searchQuery.trim(),
-          status: 1,
-          fromId: this.fromId,
-          ctrlId: this.ctrlId,
-        })
-        callback(null, this.comboProductOptions)
       }
     },
     deleteProduct(index) {
@@ -486,6 +517,28 @@ export default {
     },
     navigateBack() {
       this.$router.push({ name: 'warehouses-combo' })
+    },
+
+    focusProduct() {
+      this.cursorProduct = -1
+      if (this.productInfos.productName) {
+        this.isFocusedInputProduct = this.productInfos.productName.length >= commonData.minSearchLength
+      }
+    },
+
+    loadProducts() {
+      this.cursorProduct = -1
+      if (this.productInfos.productName.length >= commonData.minSearchLength) {
+        this.isFocusedInputProduct = true
+        const searchData = {
+          keyWord: this.productInfos.productName,
+          customerTypeId: 1, // hard code vì api bảo thế để chạy trơn tru, sau này sửa lại
+          ...this.decentralization,
+        }
+        this.GET_COMBO_PRODUCTS_ACTION(searchData)
+      } else {
+        this.isFocusedInputProduct = false
+      }
     },
   },
 }

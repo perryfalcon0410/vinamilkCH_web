@@ -200,6 +200,8 @@
       :productdetails="detailReturnProducts"
       :sale-off-details="detailReturnPromotions"
       :information="detailReturnInfo"
+      :info-total-product="infoProduct"
+      :info-total-promotion="infoPromotion"
       :visible="isOrderDetailsModal"
       @close="isOrderDetailsModal = false"
     />
@@ -389,8 +391,8 @@ export default {
 
     // return goods detail
     getDetailReturnProducts() {
-      if (this.RETURN_GOODS_DETAIL_GETTER.productReturn) {
-        return this.RETURN_GOODS_DETAIL_GETTER.productReturn.map(data => ({
+      if (this.RETURN_GOODS_DETAIL_GETTER.productReturn && this.RETURN_GOODS_DETAIL_GETTER.productReturn.response) {
+        return this.RETURN_GOODS_DETAIL_GETTER.productReturn.response.map(data => ({
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
@@ -405,8 +407,8 @@ export default {
     },
 
     getDetailReturnPromotions() {
-      if (this.RETURN_GOODS_DETAIL_GETTER.promotionReturn) {
-        return this.RETURN_GOODS_DETAIL_GETTER.promotionReturn.map(data => ({
+      if (this.RETURN_GOODS_DETAIL_GETTER.promotionReturn && this.RETURN_GOODS_DETAIL_GETTER.promotionReturn.response) {
+        return this.RETURN_GOODS_DETAIL_GETTER.promotionReturn.response.map(data => ({
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
@@ -422,6 +424,18 @@ export default {
     detailReturnInfo() {
       if (this.RETURN_GOODS_DETAIL_GETTER.infos) {
         return lodash.mapValues(this.RETURN_GOODS_DETAIL_GETTER.infos, value => value)
+      }
+      return {}
+    },
+    infoProduct() {
+      if (this.RETURN_GOODS_DETAIL_GETTER.productReturn && this.RETURN_GOODS_DETAIL_GETTER.productReturn.info) {
+        return lodash.mapValues(this.RETURN_GOODS_DETAIL_GETTER.productReturn.info, value => this.$formatNumberToLocale(value))
+      }
+      return {}
+    },
+    infoPromotion() {
+      if (this.RETURN_GOODS_DETAIL_GETTER.promotionReturn && this.RETURN_GOODS_DETAIL_GETTER.promotionReturn.info) {
+        return lodash.mapValues(this.RETURN_GOODS_DETAIL_GETTER.promotionReturn.info, value => this.$formatNumberToLocale(value))
       }
       return {}
     },

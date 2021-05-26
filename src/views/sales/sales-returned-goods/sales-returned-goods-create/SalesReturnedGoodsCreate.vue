@@ -145,6 +145,46 @@
               >
                 Không có dữ liệu
               </div>
+
+              <!-- START - Column filter -->
+              <template
+                slot="column-filter"
+                slot-scope="props"
+              >
+                <b-row
+                  v-if="props.column.field === 'quantity'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  0
+                  <!-- {{ (getProductInfo.totalQuantity) }} -->
+                </b-row>
+                <b-row
+                  v-else-if="props.column.field === 'totalPrice'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  0
+                  <!-- {{ (infoProductData.totalAmount) }} -->
+                </b-row>
+                <b-row
+                  v-if="props.column.field === 'discount'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  0
+                  <!-- {{ (infoProductData.totalDiscount) }} -->
+                </b-row>
+                <b-row
+                  v-else-if="props.column.field === 'payment'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  0
+                  <!-- {{ (infoProductData.totalDiscount) }} -->
+                </b-row>
+              </template>
+              <!-- START - Column filter -->
             </vue-good-table>
             <!-- End table -->
           </b-tab>
@@ -170,7 +210,45 @@
               >
                 Không có dữ liệu
               </div>
-            </vue-good-table>
+
+              <!-- START - Column filter -->
+              <template
+                slot="column-filter"
+                slot-scope="props"
+              >
+                <b-row
+                  v-if="props.column.field === 'quantity'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  0
+                  <!-- {{ (getProductInfo.totalQuantity) }} -->
+                </b-row>
+                <b-row
+                  v-else-if="props.column.field === 'totalPrice'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  0
+                  <!-- {{ (infoProductData.totalAmount) }} -->
+                </b-row>
+                <b-row
+                  v-if="props.column.field === 'discount'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  0
+                  <!-- {{ (infoProductData.totalDiscount) }} -->
+                </b-row>
+                <b-row
+                  v-else-if="props.column.field === 'payment'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  0
+                  <!-- {{ (infoProductData.totalDiscount) }} -->
+                </b-row>
+              </template></vue-good-table>
           </b-tab>
           <!-- END - Promotion Product  -->
 
@@ -267,6 +345,12 @@ export default {
       products: [],
       productPromotions: [],
       reasonReturn: [],
+      infoProducts: {
+        totalQuantity: null,
+        totalAmount: null,
+        totalDiscount: null,
+        allTotal: null,
+      },
       // decentralization
       decentralization: {
         formId: 1,
@@ -277,46 +361,67 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giá bán',
           field: 'pricePerUnit',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tổng tiền',
           field: 'totalPrice',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giảm giá',
           field: 'discount',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tiền trả lại',
           field: 'payment',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Ghi chú',
           field: 'note',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
       ],
     }
@@ -327,8 +432,8 @@ export default {
       RETURNED_GOOD_CHOOSEN_DETAIL_GETTER,
     ]),
     getProducts() {
-      if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn) {
-        return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn.map(data => ({
+      if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn && this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn.response) {
+        return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn.response.map(data => ({
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
@@ -343,8 +448,8 @@ export default {
       return []
     },
     getProductPromotions() {
-      if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.promotionReturn) {
-        return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.promotionReturn.map(data => ({
+      if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.promotionReturn && this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.promotionReturn.response) {
+        return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.promotionReturn.response.map(data => ({
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
@@ -360,7 +465,7 @@ export default {
     },
     getReasonReturn() {
       if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.products) {
-        return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.reasonReturn.map(data => ({
+        return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.products.reasonReturn.map(data => ({
           value: data.apCode,
           text: data.apName,
         }))
@@ -385,6 +490,7 @@ export default {
     this.CLEAR_RETURNED_GOODS_MUTATION()
   },
   mounted() {
+    console.log(this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn)
     this.selectedReason = saleData.reasonReturnGoods.find(item => item.id === 'BREAKITEM').id
   },
 

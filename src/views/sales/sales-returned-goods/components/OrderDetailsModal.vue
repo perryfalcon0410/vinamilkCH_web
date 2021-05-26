@@ -124,6 +124,7 @@
         >
           <Product
             :producttable="productdetails"
+            :info-product-data="infoTotalProduct"
           />
         </b-tab>
         <!-- END - Product table -->
@@ -135,6 +136,7 @@
         >
           <SaleOff
             :sale-off-table="saleOffDetails"
+            :info-promotion-data="infoTotalPromotion"
           />
         </b-tab>
         <!-- END - Product promotion table -->
@@ -189,6 +191,14 @@ export default {
       default: null,
     },
     information: {
+      type: Array,
+      default: null,
+    },
+    infoTotalPromotion: {
+      type: Array,
+      default: null,
+    },
+    infoTotalProduct: {
       type: Array,
       default: null,
     },

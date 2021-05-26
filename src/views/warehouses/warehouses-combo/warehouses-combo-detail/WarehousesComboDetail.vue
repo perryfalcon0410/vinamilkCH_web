@@ -48,10 +48,9 @@
                 <b-form-group>
                   <v-input-select
                     :suggestions="traddingTypeOptions"
-                    :data-input="traddingTypeSelected.name"
+                    :data-input="traddingTypeSelected.label"
                     disabled
                     title="Loại giao dịch"
-                    @updateSelection="traddingTypeSelected = $event"
                   />
                 </b-form-group>
               </b-col>
@@ -130,17 +129,6 @@
             <!-- START - Button -->
             <b-row class="mr-0 my-1 justify-content-end">
               <b-button-group>
-                <b-button
-                  class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center mr-1"
-                  variant="someThing"
-                >
-                  <b-icon
-                    icon="download"
-                    class="mr-1"
-                    @click="navigateBack"
-                  />
-                  Lưu
-                </b-button>
 
                 <b-button
                   class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
@@ -192,7 +180,7 @@ export default {
     return {
       now: getNow(),
       traddingTypeOptions: warehousesData.tradingTypes,
-      traddingTypeSelected: { id: null, name: null },
+      traddingTypeSelected: { id: null, label: null },
       // -----------------Combo List-----------------
       comboListColumns: [
         {

@@ -5,8 +5,6 @@ import {
   // getter
   GET_WAREHOUSE_COMBO_DETAIL_GETTER,
   WAREHOUSES_COMBO_GETTER,
-  WAREHOUSES_COMBO_PAGINATION_GETTER,
-  WAREHOUSES_COMBO_TOTAL_INFO_GETTER,
   COMBO_PRODUCTS_GETTER,
   COMBO_PRODUCTS_DETAILS_GETTER,
   COMBO_PRODUCTS_INFO_GETTER,
@@ -23,7 +21,7 @@ export default {
   namespaced: true,
   state: {
     wareHouseComboDetail: {},
-    warehousesComboLists: [],
+    warehousesComboData: [],
     warehousesComboPagination: {},
     totalInfo: {},
     comboProducts: [],
@@ -37,13 +35,7 @@ export default {
       return state.wareHouseComboDetail
     },
     [WAREHOUSES_COMBO_GETTER](state) {
-      return state.warehousesComboLists
-    },
-    [WAREHOUSES_COMBO_PAGINATION_GETTER](state) {
-      return state.warehousesComboPagination
-    },
-    [WAREHOUSES_COMBO_TOTAL_INFO_GETTER](state) {
-      return state.totalInfo
+      return state.warehousesComboData
     },
     [COMBO_PRODUCTS_GETTER](state) {
       return state.comboProducts
@@ -82,9 +74,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.warehousesComboLists = res.data.response.content || []
-            state.warehousesComboPagination = res.data.response || {}
-            state.totalInfo = res.data.info || {}
+            state.warehousesComboData = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }

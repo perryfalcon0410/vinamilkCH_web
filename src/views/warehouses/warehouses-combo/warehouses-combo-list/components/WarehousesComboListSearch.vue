@@ -7,10 +7,10 @@
     <v-card-actions
       title="Tìm kiếm"
     >
-      <!-- START - Full Name -->
+      <!-- START - Trans Code -->
       <b-col
         xl
-        md="3"
+        lg="3"
         sm="4"
       >
         <div
@@ -18,19 +18,32 @@
         >
           Mã giao dịch
         </div>
-        <b-form-input
-          id="form-input-customer"
-          v-model="transCode"
-          class="h8 text-brand-3 height-button-brand-1"
-          placeholder="Nhập họ tên/mã"
-        />
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model.trim="transCode"
+            class="h8"
+            placeholder="Nhập mã giao dịch"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="transCode"
+              class="cursor-pointer text-gray"
+              @click="transCode = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
-      <!-- END - Full Name -->
+      <!-- END - Trans Code -->
 
       <!-- START - Date From -->
       <b-col
         xl
-        md="3"
+        lg="3"
         sm="4"
       >
         <div
@@ -38,30 +51,32 @@
         >
           Từ ngày
         </div>
-        <b-input-group
-          id="form-input-date-from"
-          class="input-group-merge"
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
+          @keypress="$onlyDateInput"
         >
+          <b-icon-x
+            v-show="fromDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
           <vue-flat-pickr
             v-model="fromDate"
-            :config="configDate"
-            class="form-control h8 text-brand-3 height-button-brand-1"
+            :config="configFromDate"
+            class="form-control h8"
             placeholder="Chọn ngày"
           />
-          <b-input-group-append
-            is-text
-            data-toggle
-          >
-            <b-icon-calendar />
-          </b-input-group-append>
-        </b-input-group>
+        </b-row>
       </b-col>
       <!-- END - Date From -->
 
       <!-- START - Date To -->
       <b-col
         xl
-        md="3"
+        lg="3"
         sm="4"
       >
         <div
@@ -69,23 +84,26 @@
         >
           Đến ngày
         </div>
-        <b-input-group
-          class="input-group-merge"
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
+          @keypress="$onlyDateInput"
         >
+          <b-icon-x
+            v-show="toDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
           <vue-flat-pickr
-            id="form-input-date-from"
             v-model="toDate"
-            :config="configDate"
-            class="form-control h8 text-brand-3 height-button-brand-1"
+            :config="configToDate"
+            class="form-control h8"
             placeholder="Chọn ngày"
           />
-          <b-input-group-append
-            is-text
-            data-toggle
-          >
-            <b-icon-calendar />
-          </b-input-group-append>
-        </b-input-group>
+        </b-row>
+
       </b-col>
       <!-- END - Date To -->
 
@@ -105,6 +123,7 @@
           :options="warehousesTypeOptions"
           :searchable="false"
           placeholder="Tất cả"
+          no-options-text="Không có dữ liệu"
         />
       </b-col>
       <!-- END - Group -->
@@ -157,37 +176,60 @@ export default {
   data() {
     return {
       isSearchFocus: false,
-
       transCode: null,
-      fromDate: null,
-      toDate: null,
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
       warehousesTypeOptions: warehousesData.transTypes,
       transTypeSelected: null,
 
-      configDate: {
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+
+      configFromDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
+      },
+      configToDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
       },
     }
   },
 
   mounted() {
-    this.fromDate = this.$earlyMonth
-    this.toDate = this.$nowDate
+    this.onSearch()
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
+    }
   },
 
   methods: {
     ...mapActions(WAREHOUSES_COMBO, [
       GET_WAREHOUSES_COMBO_ACTIONS,
     ]),
-    onClickSearchButton() {
-      this.GET_WAREHOUSES_COMBO_ACTIONS({
+    onSearch() {
+      const searchData = {
         transCode: this.transCode,
+        transType: this.transTypeSelected,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        transType: this.transTypeSelected,
-      })
+        ...this.decentralization,
+      }
+      this.updateSearchData(searchData)
+      this.GET_WAREHOUSES_COMBO_ACTIONS(searchData)
+    },
+    onClickSearchButton() {
+      this.onSearch()
+    },
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
     },
   },
 }
