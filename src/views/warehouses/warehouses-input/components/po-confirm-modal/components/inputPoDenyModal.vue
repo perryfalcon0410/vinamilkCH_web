@@ -3,7 +3,7 @@
     size="md"
     :visible="visible"
     title="Lý do không nhập hàng"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     content-class="bg-light"
     footer-border-variant="light"
   >
@@ -24,7 +24,6 @@
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
-        variant="someThing"
         @click="cancel()"
       >
         <b-icon

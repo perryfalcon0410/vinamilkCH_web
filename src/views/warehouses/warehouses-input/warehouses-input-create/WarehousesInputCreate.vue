@@ -418,6 +418,8 @@
                       class="my-1 cursor-pointer"
                       :class="{'item-active': index === cursorProduct}"
                       @click="productSelected(product)"
+                      @mouseover="$event.target.classList.add('item-active')"
+                      @mouseout="$event.target.classList.remove('item-active')"
                     >
                       <b>{{ product.productCode }}</b> - {{ product.productName }}
                     </b-row>
