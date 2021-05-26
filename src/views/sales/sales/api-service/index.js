@@ -66,7 +66,12 @@ export default {
   },
 
   getDiscountByCode(args) {
-    return axios.get((`${getDiscountByCodeEndpoint}/${args}`))
+    return axios.get((`${getDiscountByCodeEndpoint}/${args.code}`), {
+      params: {
+        formId: args.formId,
+        ctrlId: args.ctrlId,
+      },
+    })
   },
 
   updatePriceTypeCustomer(args) {

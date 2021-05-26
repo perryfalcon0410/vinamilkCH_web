@@ -106,7 +106,6 @@
     <!-- END - Header -->
 
     <!-- START - Body -->
-    <!--  :rows="id ? onlineOrderProducts : products"  :rows="customerTypeProducts" customerType -->
     <b-row
       class="mx-0 my-1"
     >
@@ -119,7 +118,7 @@
         <!-- START - Table product -->
         <vue-good-table
           :columns="columns"
-          :rows="id ? onlineOrderProducts : (customerType ? customerTypeProducts : products)"
+          :rows="products"
           style-class="vgt-table striped"
           compact-mode
           line-numbers
@@ -229,7 +228,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import saleData from '@/@db/sale'
-import commonData from '@/@db/common'
 import SalesForm from './components/SalesForm.vue'
 import SalesProducts from './components/SalesProducts.vue'
 import {
@@ -263,8 +261,7 @@ export default {
   data() {
     return {
       inputSearchFocused: false,
-      formId: 5, // Hard code
-      ctrlId: 7, // hard code
+
       columns: [
         {
           label: '',
@@ -339,14 +336,16 @@ export default {
         catId: null,
         customerTypeId: 1,
         status: null,
-        size: commonData.pagination[0],
-        page: commonData.pageNumber,
+        size: 10,
+        page: 0,
+        formId: 5, // Hard code
+        ctrlId: 7, // Hard code
       },
       products: [],
       productInfos: [],
       productInfoTypeOptions: saleData.productInfoType,
       productsSearch: [],
-      onlineOrderProducts: [],
+
       // online order
       id: null,
 
@@ -404,7 +403,7 @@ export default {
       return this.CUSTOMER_DEFAULT_GETTER
     },
 
-    customerTypeProducts() {
+    getCustomerTypeProducts() {
       return this.UPDATE_PRICE_TYPE_CUSTOMER_GETTER().map(data => ({
         productId: data.productId,
         productCode: data.productCode,
@@ -418,9 +417,6 @@ export default {
     },
   },
   watch: {
-    getProducts() {
-      this.products = [...this.getProducts]
-    },
     getProductInfos() {
       this.productInfos = [...this.getProductInfos]
     },
@@ -430,8 +426,14 @@ export default {
     customerDefault() {
       this.getCustomerDefault()
     },
+    getProducts() {
+      this.products = [...this.getProducts]
+    },
+    getCustomerTypeProducts() {
+      this.products = [...this.getCustomerTypeProducts]
+    },
     getOnlineOrderProducts() {
-      this.onlineOrderProducts = [...this.getOnlineOrderProducts]
+      this.products = [...this.getOnlineOrderProducts]
     },
   },
   mounted() {
@@ -454,6 +456,10 @@ export default {
     }
     this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetProductsTopSale)
     this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
+
+    this.getProducts()
+    this.getOnlineOrderProducts()
+    this.getCustomerTypeProducts()
   },
   created() {
   },
@@ -496,6 +502,10 @@ export default {
       this.products[index].productTotalPrice = this.totalPrice(Number(this.products[index].quantity), Number(this.products[index].productUnitPrice))
     },
 
+    onClickDeleteProduct(index) {
+      this.products.splice(index, 1)
+    },
+
     onChangeKeyWord() {
       this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
     },
@@ -507,6 +517,8 @@ export default {
 
     getCustomerDefault() {
       this.customerDefaultTypeId = this.customerDefault.customerTypeId
+
+      this.getProductsInfo()
     },
 
     getCustomerTypeInfo(id) {
@@ -530,8 +542,11 @@ export default {
       this.$emit('getCustomerIdInfo', id)
     },
 
-    onClickDeleteProduct(index) {
-      this.products.splice(index, 1)
+    getProductsInfo() {
+      // this.$emit('getProductsInfo', this.products)
+
+      console.log('aa this.products', this.getProducts)
+      console.log('bb this.getOnlineOrderProducts', this.getOnlineOrderProducts)
     },
   },
 }

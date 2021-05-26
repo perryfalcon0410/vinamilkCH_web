@@ -432,6 +432,7 @@
                         class="input-group-merge"
                       >
                         <b-form-input
+                          v-model="code"
                           class="form-control-merge"
                           @keyup.enter="getDiscount"
                         />
@@ -911,10 +912,12 @@ export default {
       this.discountAmount = this.discount.discountAmount
 
       const paramsGetDiscount = {
-        formId: 5, // Hard code
-        ctrlId: 7, // Hard code
+        code: 'CODE0003',
+        formId: 1, // Hard code
+        ctrlId: 4, // Hard code
       }
-      this.GET_DISCOUNT_BY_CODE_ACTION('CODE0003', paramsGetDiscount)
+
+      this.GET_DISCOUNT_BY_CODE_ACTION(paramsGetDiscount)
     },
 
     resetVoucher() {
