@@ -642,11 +642,20 @@ export default {
       this.transTime = getTimeOfDate(this.RECEIPT_BY_ID_GETTER().transDate)
       this.wareHouseTypeName = this.RECEIPT_BY_ID_GETTER().wareHouseTypeName
       this.billNumber = this.RECEIPT_BY_ID_GETTER().redInvoiceNo
-      this.billDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().orderDate) || formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().adjustmentDate) || formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().borrowDate)
       this.internalNumber = this.RECEIPT_BY_ID_GETTER().internalNumber
       this.poNumber = this.RECEIPT_BY_ID_GETTER().poNumber
       this.note = this.RECEIPT_BY_ID_GETTER().note
       this.importTypeName = this.warehousesInputOptions[this.$route.params.type].label
+      switch (this.importType) {
+        case 1:
+          this.billDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().adjustmentDate)
+          break
+        case 2:
+          this.billDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().borrowDate)
+          break
+        default:
+          this.billDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().orderDate)
+      }
     },
     getPromotions() {
       this.promotions = [...this.getPromotions]

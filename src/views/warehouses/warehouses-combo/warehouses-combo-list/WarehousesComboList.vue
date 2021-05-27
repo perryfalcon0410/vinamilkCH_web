@@ -41,6 +41,7 @@
       <!-- START - Table -->
       <b-col class="py-1">
         <vue-good-table
+          mode="remote"
           :columns="columns"
           :rows="warehousesCombos"
           style-class="vgt-table bordered"
@@ -105,6 +106,27 @@
             </div>
           </template>
           <!-- END - Rows -->
+          <!-- START - Column filter -->
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-row
+              v-if="props.column.field === 'quantity'"
+              class="h7 text-right"
+              align-h="end"
+            >
+              {{ totalQuantity }}
+            </b-row>
+            <b-row
+              v-else-if="props.column.field === 'price'"
+              class="h7"
+              align-h="end"
+            >
+              {{ totalPrice }}
+            </b-row>
+          </template>
+          <!-- START - Column filter -->
 
           <!-- START - Pagination -->
           <template
@@ -168,28 +190,6 @@
             </b-row>
           </template>
           <!-- END - Pagination -->
-
-          <!-- START - Column filter -->
-          <template
-            slot="column-filter"
-            slot-scope="props"
-          >
-            <b-row
-              v-if="props.column.field === 'quantity'"
-              class="h7 text-right"
-              align-h="end"
-            >
-              {{ totalQuantity }}
-            </b-row>
-            <b-row
-              v-else-if="props.column.field === 'price'"
-              class="h7"
-              align-h="end"
-            >
-              {{ totalPrice }}
-            </b-row>
-          </template>
-          <!-- START - Column filter -->
 
         </vue-good-table>
       </b-col>
@@ -308,12 +308,12 @@ export default {
       return []
     },
 
-    // totalQuantity() {
-    //   return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalQuantity)
-    // },
-    // totalPrice() {
-    //   return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_TOTAL_INFO_GETTER().totalPrice)
-    // },
+    totalQuantity() {
+      return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_GETTER.info.totalQuantity)
+    },
+    totalPrice() {
+      return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_GETTER.info.totalPrice)
+    },
 
     warehousesComboPagination() {
       if (this.WAREHOUSES_COMBO_GETTER.response) {

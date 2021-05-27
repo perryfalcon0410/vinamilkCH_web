@@ -202,6 +202,15 @@ export default {
     }
   },
 
+  watch: {
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
+  },
+
   mounted() {
     this.onSearch()
     this.configToDate = {
@@ -216,7 +225,7 @@ export default {
     ]),
     onSearch() {
       const searchData = {
-        transCode: this.transCode,
+        transCode: this.transCode?.trim(),
         transType: this.transTypeSelected,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
