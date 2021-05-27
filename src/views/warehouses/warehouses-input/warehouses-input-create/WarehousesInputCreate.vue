@@ -877,7 +877,7 @@ export default {
       }
     },
     navigateBack() {
-      if (this.status === null) {
+      if (this.status === null && this.promotionRow.length === 0) {
         this.$router.replace({ name: 'warehouses-input' })
       } else {
         this.showConfirmCloseModal = true
