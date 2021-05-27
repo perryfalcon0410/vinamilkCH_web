@@ -224,7 +224,8 @@
                 <div v-if="props.row.productAmount != ''">
                   <b-form-input
                     v-model.trim="damagedProduct[props.index].quantity"
-                    type="number"
+                    maxlength="10"
+                    @keypress="$onlyNumberInput"
                     @change="onChangeQuantity(damagedProduct[props.index])"
                   />
                 </div>
@@ -607,6 +608,7 @@ export default {
   mounted() {
     this.GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION({ ...this.decentralization })
     this.GET_EXCHANGE_DAMAGED_GOODS_BY_ID_ACTION(`${this.exchangeDamagedGoodsId}`)
+    this.customerOptions()
   },
 
   // before page leave this will check input
@@ -648,6 +650,7 @@ export default {
         this.exchangeGoodsInfo.quantity = this.exchangeDamagedGoods.quantity
         this.exchangeGoodsInfo.totalAmount = this.exchangeDamagedGoods.totalAmount
         this.damagedProduct = [...this.exchangeDamagedGoods.listProducts]
+        this.customerOptions()
         // END - Exchange Damaged Goods
       }
     },
@@ -681,7 +684,7 @@ export default {
       if (this.customerInfo.customerName.length >= commonData.minSearchLength) {
         this.isFocusedInputCustomer = true
         const searchData = {
-          searchKeywords: this.customerInfo.customerName.trim(),
+          searchKeywords: this.customerInfo.customerName.trim().toLowerCase(),
           status: this.customerInfo.status,
         }
         this.GET_CUSTOMERS_ACTION(searchData)

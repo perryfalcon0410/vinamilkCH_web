@@ -61,7 +61,7 @@
             <!-- START - Popup customers -->
             <b-collapse
               v-model="isFocusedInputCustomer"
-              class="position-absolute mr-lg-0 w-md-75 "
+              class="position-absolute mr-lg-0 w-md-75 mh-50 overflow-y-auto"
               style="zIndex:1"
             >
               <b-container
@@ -224,7 +224,8 @@
                 <div v-if="props.row.productAmount != ''">
                   <b-form-input
                     v-model.trim="damagedProduct[props.index].productQuantity"
-                    type="number"
+                    maxlength="10"
+                    @keypress="$onlyNumberInput"
                     @change="onChangeQuantity(damagedProduct[props.index])"
                   />
                 </div>
@@ -270,7 +271,7 @@
                   <b-container
                     class="my-1 px-1 bg-white rounded border border-primary shadow-lg"
                   >
-                    <b-col>
+                    <b-col class="col-xs-3">
                       <b-row
                         v-for="(product, index) in products"
                         :key="index"
