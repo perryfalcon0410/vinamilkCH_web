@@ -230,7 +230,7 @@ export default {
         })
     },
 
-    [EXPORT_CUSTOMERS_ACTION](val) {
+    [EXPORT_CUSTOMERS_ACTION]({ }, val) {
       CustomerService
         .exportCustomers(val)
         .then(res => {
