@@ -5,9 +5,8 @@
   >
     <!-- START - Search -->
     <sales-customers-list-search
-      @updateSearchData="paginationData = {
-        ...paginationData,
-        ...$event }"
+      :per-page-size="paginationData.size"
+      @updateSearchData="updateSearchData"
     />
     <!-- END - Search -->
 
@@ -52,7 +51,7 @@
           mode="remote"
           :columns="columns"
           :rows="customers"
-          style-class="vgt-table bordered"
+          style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -244,7 +243,7 @@ export default {
         {
           label: 'Họ tên',
           field: 'nameText',
-          firstSortType: 'desc',
+          width: '140px',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -355,6 +354,12 @@ export default {
           id,
         },
       })
+    },
+    updateSearchData(event) {
+      this.paginationData = {
+        ...this.paginationData,
+        ...event,
+      }
     },
     onClickExcelExportButton() {
       this.EXPORT_CUSTOMERS_ACTION({ ...this.decentralization })

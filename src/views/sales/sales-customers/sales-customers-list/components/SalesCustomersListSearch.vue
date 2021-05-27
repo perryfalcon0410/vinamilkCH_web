@@ -20,7 +20,7 @@
           class="input-group-merge"
         >
           <b-form-input
-            v-model.trim="searchKeywords"
+            v-model="customerName"
             class="h8"
             placeholder="Nhập họ tên/mã"
             @keyup.enter="onClickSearchButton"
@@ -29,9 +29,9 @@
             is-text
           >
             <b-icon-x
-              v-show="searchKeywords"
+              v-show="customerName"
               class="cursor-pointer text-gray"
-              @click="searchKeywords = null"
+              @click="customerName = null"
             />
           </b-input-group-append>
         </b-input-group>
@@ -279,9 +279,16 @@ export default {
   components: {
     VCardActions,
   },
+
+  props: {
+    perPageSize: {
+      type: Number,
+      default: 20,
+    },
+  },
   data() {
     return {
-      searchKeywords: null,
+      customerName: null,
       phoneNumber: null,
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
@@ -369,7 +376,7 @@ export default {
     },
     onSearch() {
       const searchData = {
-        searchKeywords: this.searchKeywords,
+        searchKeywords: this.customerName?.trim(),
         phoneNumber: this.phoneNumber,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
@@ -377,6 +384,7 @@ export default {
         status: this.statusSelected,
         genderId: this.gendersSelected,
         areaId: this.areasSelected,
+        size: this.perPageSize,
         ...this.decentralization,
       }
       this.updateSearchData(searchData)
