@@ -3,299 +3,315 @@
     fluid
     class="px-0"
   >
-    <b-row class="mx-0">
-      <!-- START - Container Left -->
-      <b-col
-        xl="3"
-        lg="6"
-        md
-        class="bg-white shadow rounded py-1"
-      >
-        <!-- START - Goods return date -->
-        <b-row class="mx-0">
-          <b-col
-            cols="3"
-            class="px-0"
-          >
-            Ngày trả hàng
-          </b-col>
-          <strong>
-            {{ billInfo.dateReturn }}
-          </strong>
-        </b-row>
-        <!-- END - Goods return date -->
 
-        <!-- START - Order want return -->
-        <b-row class="mt-1 mx-0">
-          <b-col class="px-0">
-            Đơn hàng muốn trả
-          </b-col>
-        </b-row>
-        <!-- END - Order want return -->
-
-        <!-- START - Order input  -->
-        <b-input-group class="input-group-merge">
-          <b-form-input
-            v-model="billInfo.orderNumber"
-            readonly
-          />
-          <b-input-group-append
-            class="cursor-pointer"
-            is-text
-            @click="showSelectReceptModal()"
-          >
-            <b-icon-three-dots-vertical />
-          </b-input-group-append>
-        </b-input-group>
-        <!-- END - Order input  -->
-
-        <!-- START - List Item -->
-        <b-list-group v-if="billInfo.id !== ''">
-          <b-list-group-item
-            variant="secondary"
-          >
-            Ngày mua hàng
-            <strong>
-              {{ `: ${billInfo.oderDate}` }}
-            </strong>
-          </b-list-group-item>
-          <b-list-group-item
-            variant="secondary"
-          >
-            Nhân viên bán hàng
-            <strong>
-              {{ `: ${billInfo.employeeName}` }}
-            </strong>
-          </b-list-group-item>
-          <b-list-group-item
-            variant="secondary"
-          >
-            Khách hàng
-            <strong>
-              {{ `: ${billInfo.customerName}` }}
-            </strong>
-          </b-list-group-item>
-          <b-list-group-item
-            variant="secondary"
-          >
-            Tiền trả lại
-            <strong>
-              {{ `: ${billInfo.moneyPayback}` }}
-            </strong>
-          </b-list-group-item>
-        </b-list-group>
-        <!-- END - List Item -->
-
-        <!-- START - Order return reason -->
+    <validation-observer
+      ref="formContainer"
+      v-slot="{ invalid }"
+      slim
+    >
+      <b-row class="mx-0">
+        <!-- START - Container Left -->
         <b-col
-          class="mt-1 px-0"
+          xl="3"
+          lg="6"
+          md
+          class="bg-white shadow rounded py-1"
         >
-          <div>
-            Lý do trả hàng
-          </div>
-          <tree-select
-            v-model="selectedReason"
-            :options="reasonReturnOptions"
-            :searchable="false"
-            placeholder="Chọn lý do trả hàng"
-            no-options-text="Không có dữ liệu"
-          />
-        </b-col>
-        <!-- END - Order return reason -->
+          <!-- START - Goods return date -->
+          <b-row class="mx-0">
+            <b-col
+              cols="3"
+              class="px-0"
+            >
+              Ngày trả hàng
+            </b-col>
+            <strong>
+              {{ billInfo.dateReturn }}
+            </strong>
+          </b-row>
+          <!-- END - Goods return date -->
 
-        <!-- START - Feedback info -->
-        <b-col class="px-0 mt-1">
-          <div>
-            Thông tin phản hồi
-          </div>
-          <b-form-textarea
-            v-model="feedbackInfomation"
-          />
-        </b-col>
+          <!-- START - Order want return -->
+          <b-row class="mt-1 mx-0">
+            <b-col class="px-0">
+              Đơn hàng muốn trả
+            </b-col>
+          </b-row>
+          <!-- END - Order want return -->
+
+          <!-- START - Order input  -->
+          <b-input-group class="input-group-merge">
+            <b-form-input
+              v-model="billInfo.orderNumber"
+              readonly
+            />
+            <b-input-group-append
+              class="cursor-pointer"
+              is-text
+              @click="showSelectReceptModal()"
+            >
+              <b-icon-three-dots-vertical />
+            </b-input-group-append>
+          </b-input-group>
+          <!-- END - Order input  -->
+
+          <!-- START - List Item -->
+          <b-list-group v-if="billInfo.id !== ''">
+            <b-list-group-item
+              variant="secondary"
+            >
+              Ngày mua hàng
+              <strong>
+                {{ `: ${billInfo.oderDate}` }}
+              </strong>
+            </b-list-group-item>
+            <b-list-group-item
+              variant="secondary"
+            >
+              Nhân viên bán hàng
+              <strong>
+                {{ `: ${billInfo.employeeName}` }}
+              </strong>
+            </b-list-group-item>
+            <b-list-group-item
+              variant="secondary"
+            >
+              Khách hàng
+              <strong>
+                {{ `: ${billInfo.customerName}` }}
+              </strong>
+            </b-list-group-item>
+            <b-list-group-item
+              variant="secondary"
+            >
+              Tiền trả lại
+              <strong>
+                {{ `: ${billInfo.moneyPayback}` }}
+              </strong>
+            </b-list-group-item>
+          </b-list-group>
+          <!-- END - List Item -->
+
+          <!-- START - Order return reason -->
+          <b-col
+            class="mt-1 px-0"
+          >
+            <div>
+              Lý do trả hàng
+            </div>
+            <tree-select
+              v-model="selectedReason"
+              :options="reasonReturnOptions"
+              :searchable="false"
+              placeholder="Chọn lý do trả hàng"
+              no-options-text="Không có dữ liệu"
+            />
+          </b-col>
+          <!-- END - Order return reason -->
+
+          <!-- START - Feedback info -->
+          <b-col>
+            <validation-provider
+              v-slot="{ errors, passed, touched }"
+              rules="required"
+              name="thông tin phản hồi"
+            >
+              <div class="mt-1">
+                Thông tin phản hồi <sup class="text-danger">*</sup>
+              </div>
+              <b-form-textarea
+                v-model.trim="feedbackInfomation"
+                :state="touched ? passed : null"
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-col>
         <!-- END - Feedback info -->
 
-      </b-col>
-      <!-- END - Container Left -->
+        </b-col>
+        <!-- END - Container Left -->
 
-      <!-- START - Container Right -->
-      <b-col
-        class="bg-white shadow rounded ml-1"
-      >
-        <!-- START - Tables -->
-        <b-tabs>
-          <!-- START - Product -->
-          <b-tab
-            title="Sản phẩm"
-            active
-          >
-            <!-- Start Table -->
-            <vue-good-table
-              :columns="columns"
-              :rows="products"
-              style-class="vgt-table bordered"
-              :pagination-options="{
-                enabled: false
-              }"
-              line-numbers
+        <!-- START - Container Right -->
+        <b-col
+          class="bg-white shadow rounded ml-1"
+        >
+          <!-- START - Tables -->
+          <b-tabs>
+            <!-- START - Product -->
+            <b-tab
+              title="Sản phẩm"
+              active
             >
-              <!-- START - Empty rows -->
-              <div
-                slot="emptystate"
-                class="text-center"
+              <!-- Start Table -->
+              <vue-good-table
+                :columns="columns"
+                :rows="products"
+                style-class="vgt-table bordered"
+                :pagination-options="{
+                  enabled: false
+                }"
+                line-numbers
               >
-                Không có dữ liệu
-              </div>
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
 
-              <!-- START - Column filter -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
-              >
-                <b-row
-                  v-if="props.column.field === 'quantity'"
-                  class="mx-0"
-                  align-h="end"
+                <!-- START - Column filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
                 >
-                  0
+                  <b-row
+                    v-if="props.column.field === 'quantity'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    0
                   <!-- {{ (getProductInfo.totalQuantity) }} -->
-                </b-row>
-                <b-row
-                  v-else-if="props.column.field === 'totalPrice'"
-                  class="mx-0"
-                  align-h="end"
-                >
-                  0
+                  </b-row>
+                  <b-row
+                    v-else-if="props.column.field === 'totalPrice'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    0
                   <!-- {{ (infoProductData.totalAmount) }} -->
-                </b-row>
-                <b-row
-                  v-if="props.column.field === 'discount'"
-                  class="mx-0"
-                  align-h="end"
-                >
-                  0
+                  </b-row>
+                  <b-row
+                    v-if="props.column.field === 'discount'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    0
                   <!-- {{ (infoProductData.totalDiscount) }} -->
-                </b-row>
-                <b-row
-                  v-else-if="props.column.field === 'payment'"
-                  class="mx-0"
-                  align-h="end"
-                >
-                  0
+                  </b-row>
+                  <b-row
+                    v-else-if="props.column.field === 'payment'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    0
                   <!-- {{ (infoProductData.totalDiscount) }} -->
-                </b-row>
-              </template>
+                  </b-row>
+                </template>
               <!-- START - Column filter -->
-            </vue-good-table>
+              </vue-good-table>
             <!-- End table -->
-          </b-tab>
-          <!-- END - Product -->
+            </b-tab>
+            <!-- END - Product -->
 
-          <!-- START - Promotion Product  -->
-          <b-tab
-            title="Hàng khuyến mãi"
-          >
-            <vue-good-table
-              :columns="columns"
-              :rows="productPromotions"
-              style-class="vgt-table bordered"
-              :pagination-options="{
-                enabled: false
-              }"
-              line-numbers
+            <!-- START - Promotion Product  -->
+            <b-tab
+              title="Hàng khuyến mãi"
             >
-              <!-- START - Empty rows -->
-              <div
-                slot="emptystate"
-                class="text-center"
+              <vue-good-table
+                :columns="columns"
+                :rows="productPromotions"
+                style-class="vgt-table bordered"
+                :pagination-options="{
+                  enabled: false
+                }"
+                line-numbers
               >
-                Không có dữ liệu
-              </div>
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
 
-              <!-- START - Column filter -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
-              >
-                <b-row
-                  v-if="props.column.field === 'quantity'"
-                  class="mx-0"
-                  align-h="end"
+                <!-- START - Column filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
                 >
-                  0
+                  <b-row
+                    v-if="props.column.field === 'quantity'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    0
                   <!-- {{ (getProductInfo.totalQuantity) }} -->
-                </b-row>
-                <b-row
-                  v-else-if="props.column.field === 'totalPrice'"
-                  class="mx-0"
-                  align-h="end"
-                >
-                  0
+                  </b-row>
+                  <b-row
+                    v-else-if="props.column.field === 'totalPrice'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    0
                   <!-- {{ (infoProductData.totalAmount) }} -->
-                </b-row>
-                <b-row
-                  v-if="props.column.field === 'discount'"
-                  class="mx-0"
-                  align-h="end"
-                >
-                  0
+                  </b-row>
+                  <b-row
+                    v-if="props.column.field === 'discount'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    0
                   <!-- {{ (infoProductData.totalDiscount) }} -->
-                </b-row>
-                <b-row
-                  v-else-if="props.column.field === 'payment'"
-                  class="mx-0"
-                  align-h="end"
-                >
-                  0
+                  </b-row>
+                  <b-row
+                    v-else-if="props.column.field === 'payment'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    0
                   <!-- {{ (infoProductData.totalDiscount) }} -->
-                </b-row>
-              </template></vue-good-table>
-          </b-tab>
+                  </b-row>
+                </template></vue-good-table>
+            </b-tab>
           <!-- END - Promotion Product  -->
 
-        </b-tabs>
-        <!-- END - Tables -->
+          </b-tabs>
+          <!-- END - Tables -->
 
-        <!-- START - Buttons -->
-        <b-row
-          class="my-1 mx-0"
-          align-h="end"
-          align-v="center"
-        >
-          <b-button
-            variant="someThing"
-            class="btn-brand-1 align-items-button-center"
-            @click="onSubmit"
+          <!-- START - Buttons -->
+          <b-row
+            class="my-1 mx-0"
+            align-h="end"
+            align-v="center"
           >
-            <b-icon-arrow90deg-left
-              class="mr-05"
-              scale="1"
-            />
-            TRẢ HÀNG
-          </b-button>
+            <b-button
+              variant="someThing"
+              :disabled="invalid"
+              class="btn-brand-1 align-items-button-center"
+              @click="onSubmit"
+            >
+              <b-icon-arrow90deg-left
+                class="mr-05"
+                scale="1"
+              />
+              TRẢ HÀNG
+            </b-button>
 
-          <b-button
-            class="align-items-button-center ml-1"
-            @click="onCloseButtonClick"
-          >
-            <b-icon-x scale="1.5" />
-            ĐÓNG
-          </b-button>
-        </b-row>
+            <b-button
+              class="align-items-button-center ml-1"
+              @click="onCloseButtonClick"
+            >
+              <b-icon-x scale="1.5" />
+              ĐÓNG
+            </b-button>
+          </b-row>
         <!-- END - Buttons -->
 
-      </b-col>
+        </b-col>
       <!-- END - Container Right -->
 
-    </b-row>
+      </b-row>
 
-    <!-- START - Modal -->
-    <select-recept-modal
-      :visible="isShowSelectReceptModal"
-      @choosenRecept="choosenRecept"
-      @onCloseModal="onCloseModal"
-    />
-    <!-- END - Modal -->
+      <!-- START - Modal -->
+      <select-recept-modal
+        :visible="isShowSelectReceptModal"
+        @choosenRecept="choosenRecept"
+        @onCloseModal="onCloseModal"
+      />
+      <!-- END - Modal -->
 
+    </validation-observer>
   </b-container>
 </template>
 
@@ -309,6 +325,13 @@ import {
   mapActions,
   mapMutations,
 } from 'vuex'
+import {
+  ValidationObserver,
+  ValidationProvider,
+} from 'vee-validate'
+import {
+  required,
+} from '@/@core/utils/validations/validations'
 import toasts from '@core/utils/toasts/toasts'
 import saleData from '@/@db/sale'
 import SelectReceptModal from './components/SelectReceptModal.vue'
@@ -325,6 +348,8 @@ import {
 export default {
   components: {
     SelectReceptModal,
+    ValidationObserver,
+    ValidationProvider,
   },
 
   data() {
@@ -351,6 +376,7 @@ export default {
         totalDiscount: null,
         allTotal: null,
       },
+      required,
       // decentralization
       decentralization: {
         formId: 1,

@@ -326,7 +326,6 @@ export default {
 
   mounted() {
     resizeAbleTable()
-    this.GET_RETURNED_GOOD_CHOOSE_ACTION()
   },
   methods: {
     ...mapActions(RETURNEDGOODS, [

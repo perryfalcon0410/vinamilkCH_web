@@ -233,7 +233,7 @@ export default {
     onSearch() {
       const searchData = {
         searchKeywords: this.searchKeywords,
-        orderReturnNumber: this.returnCode,
+        returnNumber: this.returnCode,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         ...this.decentralization,
@@ -242,6 +242,7 @@ export default {
       this.GET_RETURNED_GOODS_ACTION(searchData)
     },
     onClickSearchButton() {
+      this.$emit('updatePageElement')
       this.onSearch()
     },
     updateSearchData(data) {

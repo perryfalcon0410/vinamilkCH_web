@@ -8,6 +8,7 @@
       @updateSearchData="paginationData = {
         ...paginationData,
         ...$event }"
+      @updatePageElement="updatePageNumber"
     />
     <!-- END - Search -->
 
@@ -39,6 +40,7 @@
       <!-- Start table -->
       <b-col class="py-1">
         <vue-good-table
+          mode="remote"
           :columns="columns"
           :rows="oderReturns"
           style-class="vgt-table bordered"
@@ -361,8 +363,8 @@ export default {
           id: data.id,
           idDetail: data.id,
           createdAt: formatISOtoVNI(data.createdAt),
-          orderReturnNumber: data.orderNumberRef,
-          orderNumber: data.orderNumber,
+          orderReturnNumber: data.orderNumber,
+          orderNumber: data.orderNumberRef,
           userName: data.userName,
           customerNumber: data.customerNumber,
           customerName: data.customerName,
@@ -465,6 +467,10 @@ export default {
     formatter(value) {
       return value.toLowerCase()
     },
+
+    updatePageNumber() {
+      this.pageNumber = 1
+    },
     showOrderDetailsModal(idDetail) {
       this.isOrderDetailsModal = !this.isOrderDetailsModal
       this.GET_RETURN_GOODS_DETAIL_ACTION({
@@ -486,6 +492,7 @@ export default {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },
+
   },
 }
 </script>
