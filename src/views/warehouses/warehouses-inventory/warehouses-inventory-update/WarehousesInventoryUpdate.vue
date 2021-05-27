@@ -321,7 +321,6 @@
           <b-button
             variant="someThing"
             class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
-            :disabled="isUpdated"
             @click="onClickSaveButton()"
           >
             <b-icon-download />
@@ -331,7 +330,6 @@
           <b-button
             variant="someThing"
             class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
-            :disabled="!isUpdated"
             @click="onClickExportButton()"
           >
             <b-icon-file-earmark-excel-fill />
@@ -513,7 +511,6 @@ export default {
       warehouseType: null,
       isImportModalShow: false,
       isModalCloseShow: false,
-      isUpdated: false,
       warehousesInventoryData: {},
       columns: [
         {
@@ -729,10 +726,10 @@ export default {
     },
     getWarehouseInventoryImportData() {
       this.warehouseInventoryImportData = { ...this.getWarehouseInventoryImportData }
-      this.showErrorMessage = this.warehouseInventoryImportData.importFails.length > 0
-      this.rowsSuccess = this.warehouseInventoryImportData.importSuccess.length
-      this.rowsFail = this.warehouseInventoryImportData.importFails.length
-      this.warehouseInventoryImportData.importSuccess.forEach(productData => {
+      this.showErrorMessage = this.warehouseInventoryImportData.response.importFails.length > 0
+      this.rowsSuccess = this.warehouseInventoryImportData.info
+      this.rowsFail = this.warehouseInventoryImportData.response.importFails.length
+      this.warehouseInventoryImportData.response.importSuccess.forEach(productData => {
         this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryPacket = productData.packetQuantity
         this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryOdd = productData.packetQuantity
       })
@@ -791,11 +788,7 @@ export default {
       this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION(this.paginationData)
     },
     onClickCloseButton() {
-      if (!this.isUpdated) {
-        this.isModalCloseShow = !this.isModalCloseShow
-      } else {
-        this.$router.back()
-      }
+      this.isModalCloseShow = !this.isModalCloseShow
     },
     onClickGetInventoryStocksButton() {
       this.products = this.WAREHOUSE_INVENTORY_STOCKS_GETTER().map(data => ({
@@ -847,14 +840,14 @@ export default {
         productName: data.productName,
         price: data.price,
         stockQuantity: data.instockAmount,
-        inventoryQuantity: data.inventoryTotal,
+        inventoryQuantity: data.inventoryTotal || 0,
         changeQuantity: data.unequal,
         totalAmount: data.totalPrice,
         convfact: data.exchange,
         packetUnit: data.packetUnit,
         unit: data.oddUnit,
-        packetQuantity: data.inventoryPacket,
-        unitQuantity: data.inventoryOdd,
+        packetQuantity: data.inventoryPacket || 0,
+        unitQuantity: data.inventoryOdd || 0,
       }))
 
       this.UPDATE_WAREHOUSE_INVENTORY_ACTION({
@@ -863,7 +856,6 @@ export default {
         formId: 5,
         ctrlId: 7,
       })
-      this.isUpdated = !this.isUpdated
     },
     onClickImportButton() {
       this.isImportModalShow = !this.isImportModalShow

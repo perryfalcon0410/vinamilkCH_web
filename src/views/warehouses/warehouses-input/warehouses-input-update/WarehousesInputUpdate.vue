@@ -132,7 +132,7 @@
                   <b-form-input
                     v-model="internalNumber"
                     :state="touched ? passed : null"
-                    :disabled="!canEdit"
+                    :disabled="!canEdit && !isPoConfirm"
                     maxlength="50"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -629,6 +629,9 @@ export default {
     },
     canEdit() {
       return this.today === this.transDate && this.importType === this.inputType && this.poId === 0
+    },
+    isPoConfirm() {
+      return this.importType === this.inputType && this.poId !== 0
     },
   },
 

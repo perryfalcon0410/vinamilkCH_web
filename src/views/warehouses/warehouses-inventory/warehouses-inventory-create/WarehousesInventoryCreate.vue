@@ -749,13 +749,16 @@ export default {
     },
     getWarehouseInventoryData() {
       this.warehousesInventoryData = { ...this.getWarehouseInventoryData }
+      if (this.warehousesInventoryData.id != null) {
+        this.isCreated = false
+      }
     },
     getWarehouseInventoryImportData() {
       this.warehouseInventoryImportData = { ...this.getWarehouseInventoryImportData }
-      this.showErrorMessage = this.warehouseInventoryImportData.importFails.length > 0
-      this.rowsSuccess = this.warehouseInventoryImportData.importSuccess.length
-      this.rowsFail = this.warehouseInventoryImportData.importFails.length
-      this.warehouseInventoryImportData.importSuccess.forEach(productData => {
+      this.showErrorMessage = this.warehouseInventoryImportData.response.importFails.length > 0
+      this.rowsSuccess = this.warehouseInventoryImportData.info
+      this.rowsFail = this.warehouseInventoryImportData.response.importFails.length
+      this.warehouseInventoryImportData.response.importSuccess.forEach(productData => {
         this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryPacket = productData.packetQuantity
         this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryOdd = productData.packetQuantity
       })
@@ -821,10 +824,12 @@ export default {
     updateInventoryPacket(index, value) {
       this.products[index].inventoryPacket = value
       this.updateInventoryTotal(index)
+      this.isCreated = false
     },
     updateInventoryOdd(index, value) {
       this.products[index].inventoryOdd = value
       this.updateInventoryTotal(index)
+      this.isCreated = false
     },
     onClickExportButton() {
       this.EXPORT_FILLED_STOCKS_ACTION({
@@ -846,14 +851,14 @@ export default {
         productName: data.productName,
         price: data.price,
         stockQuantity: data.instockAmount,
-        inventoryQuantity: data.inventoryTotal,
+        inventoryQuantity: data.inventoryTotal || 0,
         changeQuantity: data.unequal,
         totalAmount: data.totalPrice,
         convfact: data.exchange,
         packetUnit: data.packetUnit,
         unit: data.oddUnit,
-        packetQuantity: data.inventoryPacket,
-        unitQuantity: data.inventoryOdd,
+        packetQuantity: data.inventoryPacket || 0,
+        unitQuantity: data.inventoryOdd || 0,
       }))
       if (this.isExistedWarehouseInventory) {
         this.isCreateModalShow = !this.isCreateModalShow
@@ -863,7 +868,6 @@ export default {
           formId: 5,
           ctrlId: 7,
         })
-        this.isCreated = !this.isCreated
       }
     },
     onClickAgreeButton() {
@@ -874,14 +878,14 @@ export default {
         productName: data.productName,
         price: data.price,
         stockQuantity: data.instockAmount,
-        inventoryQuantity: data.inventoryTotal,
+        inventoryQuantity: data.inventoryTotal || 0,
         changeQuantity: data.unequal,
         totalAmount: data.totalPrice,
         convfact: data.exchange,
         packetUnit: data.packetUnit,
         unit: data.oddUnit,
-        packetQuantity: data.inventoryPacket,
-        unitQuantity: data.inventoryOdd,
+        packetQuantity: data.inventoryPacket || 0,
+        unitQuantity: data.inventoryOdd || 0,
       }))
       this.CREATE_WAREHOUSE_INVENTORY_ACTION({
         lstCreate,
@@ -890,7 +894,6 @@ export default {
         ctrlId: 7,
       })
       this.isCreateModalShow = !this.isCreateModalShow
-      this.isCreated = !this.isCreated
     },
     onClickImportButton() {
       this.isImportModalShow = !this.isImportModalShow

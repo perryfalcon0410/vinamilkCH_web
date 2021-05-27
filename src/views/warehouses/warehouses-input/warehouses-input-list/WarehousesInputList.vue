@@ -110,11 +110,12 @@
                 @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
               />
               <b-icon-trash-fill
+                v-show="props.row.transDate === today"
                 v-b-popover.hover.top="'Xóa'"
                 class="cursor-pointer ml-1"
                 color="red"
                 scale="1.4"
-                @click="onClickDeleteButton(props.row.id, props.row.receiptType, props.row.transDate, props.row.originalIndex)"
+                @click="onClickDeleteButton(props.row.id, props.row.receiptType, props.row.transDate, props.row.originalIndex, props.row.transCode)"
               />
             </b-row>
             <div v-else>
@@ -220,7 +221,7 @@
       v-model="isDeleteModalShow"
       title="Thông báo"
     >
-      Bạn có muốn xóa đợt nhập hàng?
+      Bạn có muốn xóa đợt nhập hàng {{ selectedReceiptCode }}?
       <template #modal-footer>
         <b-button
           @click="isDeleteModalShow = !isDeleteModalShow"
@@ -252,7 +253,6 @@ import {
 import {
   formatISOtoVNI,
 } from '@core/utils/filter'
-import toasts from '@core/utils/toasts/toasts'
 import WarehousesInputListSearch from './components/WarehousesInputListSearch.vue'
 import {
   WAREHOUSEINPUT,
@@ -280,6 +280,7 @@ export default {
       selectedReceiptId: '',
       selectedReceiptType: '',
       selectedReceiptIndex: '',
+      selectedReceiptCode: '',
       elementSize: commonData.pagination[0],
       pageNumber: 1,
       paginationOptions: commonData.pagination,
@@ -289,6 +290,7 @@ export default {
         sort: null,
       },
       receipts: [],
+      today: formatISOtoVNI(new Date()),
 
       columns: [
         {
@@ -427,17 +429,12 @@ export default {
       }
       this.PRINT_WAREHOUSES_INPUT_ACTION(params)
     },
-    onClickDeleteButton(id, type, date, index) {
+    onClickDeleteButton(id, type, date, index, code) {
       this.selectedReceiptId = id
       this.selectedReceiptType = type
       this.selectedReceiptIndex = index
-      if (type === 1) { // Loại giao dịch nhập điều chỉnh
-        toasts.error('Bạn không được phép xóa giao dịch nhập điều chỉnh')
-      } else if (date === formatISOtoVNI(new Date())) {
-        this.isDeleteModalShow = !this.isDeleteModalShow
-      } else {
-        toasts.error('Đã quá thời hạn xóa')
-      }
+      this.selectedReceiptCode = code
+      this.isDeleteModalShow = !this.isDeleteModalShow
     },
     confirmDelete() {
       this.REMOVE_RECEIPT_ACTION(`${this.selectedReceiptId}?type=${this.selectedReceiptType}&formId=5&ctrlId=7`)

@@ -64,6 +64,7 @@ export default {
   getFailedImportFile(args) {
     return axios.post(getFailedImportFileEndpoint, args, {
       'Content-Type': 'multipart/form-data',
+      responseType: 'blob',
     })
   },
   getWarehouseInventoryDetail(args) {
