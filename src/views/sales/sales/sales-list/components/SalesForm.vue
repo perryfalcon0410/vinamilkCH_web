@@ -570,7 +570,6 @@ export default {
 
     showPayModal() {
       this.$refs.payModal.$refs.payModal.show()
-      console.log('orderProducts', this.orderProducts)
       // this.$emit('orderProducts', this.orderProducts)
     },
 
@@ -593,7 +592,6 @@ export default {
       this.totalBill = val.data.totalBill ?? 0
       this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
       this.$emit('getCustomerIdInfo', val.data.id)
-      console.log('valllll', val)
     },
 
     getOnlineOrderInfo(id) {

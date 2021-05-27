@@ -633,7 +633,6 @@ export default {
     },
 
     checkDuplicatesName() {
-      console.log(this.customers)
       return this.customers.findIndex(x => x.customerName.toLowerCase() === this.customerInfo.customerName.toLowerCase())
     },
 

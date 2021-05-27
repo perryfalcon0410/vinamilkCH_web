@@ -69,7 +69,6 @@ export default {
     return axios.post(createExportEndpoint, args)
   },
   deleteWarehousesOutput(args) {
-    console.log(args)
     return axios.put(`${deleteWarehousesOutputEndpoint}/${args.id}?type=${args.type}`)
   },
 }
