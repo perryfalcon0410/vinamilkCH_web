@@ -501,7 +501,7 @@ export default {
     },
 
     onClickDeleteProduct(index) {
-      this.products.splice(index, 1)
+      this.orderProducts.splice(index, 1)
     },
 
     onChangeKeyWord() {

@@ -141,7 +141,7 @@
               Số nhà
             </div>
             <b-form-input
-              v-model="address"
+              v-model="street"
               :state="touched ? passed : null"
               maxlength="200"
             />
@@ -153,46 +153,67 @@
           <!-- START - Customer District and Wards -->
           <b-form-row>
             <b-col>
-              <div
-                class="mt-1"
+              <validation-provider
+                v-slot="{ errors }"
+                rules="required"
+                name="tỉnh/ thành"
               >
-                Tỉnh/ Thành <sup class="text-danger">*</sup>
-              </div>
-              <tree-select
-                v-model="provincesSelected"
-                :options="provinceOptions"
-                placeholder="Chọn tỉnh/ thành"
-                no-options-text="Không có dữ liệu"
-                no-results-text="Không tìm thấy kết quả"
-              />
+                <div
+                  class="mt-1"
+                >
+                  Tỉnh/ Thành <sup class="text-danger">*</sup>
+                </div>
+                <tree-select
+                  v-model="provincesSelected"
+                  :options="provinceOptions"
+                  placeholder="Chọn tỉnh/ thành"
+                  no-options-text="Không có dữ liệu"
+                  no-results-text="Không tìm thấy kết quả"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
             </b-col>
             <b-col>
-              <div
-                class="mt-1"
+              <validation-provider
+                v-slot="{ errors }"
+                rules="required"
+                name="quận/ huyện"
               >
-                Quận/ Huyện <sup class="text-danger">*</sup>
-              </div>
-              <tree-select
-                v-model="districtsSelected"
-                :options="districtOptions"
-                placeholder="Chọn quận/ huyện"
-                no-options-text="Không có dữ liệu"
-                no-results-text="Không tìm thấy kết quả"
-              />
+                <div
+                  class="mt-1"
+                >
+                  Quận/ Huyện <sup class="text-danger">*</sup>
+                </div>
+                <tree-select
+                  v-model="districtsSelected"
+                  :options="districtOptions"
+                  placeholder="Chọn quận/ huyện"
+                  no-options-text="Vui lòng chọn tỉnh/ thành"
+                  no-results-text="Không tìm thấy kết quả"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
             </b-col>
             <b-col>
-              <div
-                class="mt-1"
+              <validation-provider
+                v-slot="{ errors }"
+                rules="required"
+                name="phường/ xã"
               >
-                Phường/ Xã <sup class="text-danger">*</sup>
-              </div>
-              <tree-select
-                v-model="precinctsSelected"
-                :options="precinctOptions"
-                placeholder="Chọn phường/ xã"
-                no-options-text="Không có dữ liệu"
-                no-results-text="Không tìm thấy kết quả"
-              />
+                <div
+                  class="mt-1"
+                >
+                  Phường/ Xã <sup class="text-danger">*</sup>
+                </div>
+                <tree-select
+                  v-model="precinctsSelected"
+                  :options="precinctOptions"
+                  placeholder="Chọn phường/ xã"
+                  no-options-text="Vui lòng chọn quận/ huyện"
+                  no-results-text="Không tìm thấy kết quả"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
             </b-col>
           </b-form-row>
         <!-- END - Customer District and Wards -->
@@ -279,11 +300,13 @@ import {
   PROVINCES_GETTER,
   DISTRICTS_GETTER,
   PRECINCTS_GETTER,
+  SHOP_LOCATIONS_GETTER,
   // ACTIONS
   CREATE_CUSTOMER_ACTION,
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
   GET_PRECINCTS_ACTION,
+  GET_SHOP_LOCATIONS_ACTION,
 } from '../../../sales-customers/store-module/type'
 
 export default {
@@ -312,6 +335,8 @@ export default {
       required,
       email,
 
+      isFirstTimeGetLocations: true,
+
       customerEmail: null,
       lastName: null,
       firstName: null,
@@ -319,7 +344,7 @@ export default {
       genderOptions: commonData.genders,
       gendersSelected: null,
       phoneNumber: null,
-      address: null,
+      street: null,
       customerSpecial: false,
       note: null,
       customerStatus: customerData.status[0],
@@ -335,6 +360,7 @@ export default {
       PROVINCES_GETTER,
       DISTRICTS_GETTER,
       PRECINCTS_GETTER,
+      SHOP_LOCATIONS_GETTER,
     }),
     customerTypes() {
       return this.CUSTOMER_TYPES_GETTER().map(data => ({
@@ -349,16 +375,25 @@ export default {
       }))
     },
     districtOptions() {
-      return this.DISTRICTS_GETTER.map(data => ({
-        id: data.id,
-        label: data.areaName,
-      }))
+      if (this.provincesSelected) {
+        return this.DISTRICTS_GETTER.map(data => ({
+          id: data.id,
+          label: data.areaName,
+        }))
+      }
+      return []
     },
     precinctOptions() {
-      return this.PRECINCTS_GETTER.map(data => ({
-        id: data.id,
-        label: data.areaName,
-      }))
+      if (this.districtsSelected) {
+        return this.PRECINCTS_GETTER.map(data => ({
+          id: data.id,
+          label: data.areaName,
+        }))
+      }
+      return []
+    },
+    shopLocations() {
+      return this.SHOP_LOCATIONS_GETTER
     },
   },
   // END - Computed
@@ -367,19 +402,33 @@ export default {
     ERROR_CODE_GETTER() {
       this.checkDuplicationID(this.ERROR_CODE_GETTER())
     },
+    shopLocations() {
+      this.provincesSelected = this.shopLocations.provinceId
+    },
     provincesSelected() {
       this.districtsSelected = null
-      this.GET_DISTRICTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.provincesSelected }) // Hard
+      if (this.provincesSelected) {
+        this.GET_DISTRICTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.provincesSelected })
+      }
+      if (this.shopLocations && this.isFirstTimeGetLocations) {
+        this.districtsSelected = this.shopLocations.districtId
+      }
     },
     districtsSelected() {
       this.precinctsSelected = null
-      this.GET_PRECINCTS_ACTION({ formId: 9, ctrlId: 6, districtId: this.districtsSelected }) // Hard
+      if (this.districtsSelected) {
+        this.GET_PRECINCTS_ACTION({ formId: 9, ctrlId: 6, districtId: this.districtsSelected })
+      }
+      if (this.shopLocations && this.isFirstTimeGetLocations) {
+        this.precinctsSelected = this.shopLocations.precinctId
+        this.isFirstTimeGetLocations = false
+      }
     },
   },
 
   mounted() {
     this.GET_PROVINCES_ACTION({ formId: 9, ctrlId: 6 }) // Hard
-    this.CREATE_CUSTOMER_ACTION({ formId: 4, ctrlId: 1 }) // Hard
+    this.GET_SHOP_LOCATIONS_ACTION({ formId: 9, ctrlId: 6 })
   },
 
   // START - Methods
@@ -389,6 +438,7 @@ export default {
       GET_PROVINCES_ACTION,
       GET_DISTRICTS_ACTION,
       GET_PRECINCTS_ACTION,
+      GET_SHOP_LOCATIONS_ACTION,
     ]),
 
     create() {
@@ -403,10 +453,10 @@ export default {
               status: this.customerStatus?.id, // Hard
               isPrivate: this.customerSpecial,
               mobiPhone: this.phoneNumber,
-              phone: this.phoneNumber, // temp
               email: this.customerEmail,
-              address: this.address,
+              street: this.street,
               noted: this.note,
+              areaId: this.precinctsSelected,
               customerTypeId: 2, // Hard
             },
             onSuccess: () => {
@@ -433,7 +483,7 @@ export default {
         firstName: this.firstName,
         lastName: this.lastName,
         phoneNumber: this.phoneNumber,
-        address: this.address,
+        street: this.street,
       })
     },
 
@@ -443,7 +493,7 @@ export default {
       this.birthDay = null
       this.phoneNumber = null
       this.customerEmail = null
-      this.address = null
+      this.street = null
       this.note = null
       this.customerSpecial = null
       this.provincesSelected = null

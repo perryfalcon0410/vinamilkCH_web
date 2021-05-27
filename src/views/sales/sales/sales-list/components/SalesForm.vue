@@ -64,6 +64,7 @@
               <b-icon-search />
             </b-input-group-prepend>
             <b-form-input
+              ref="search"
               placeholder="Tìm khách hàng (F4)"
               @click="showSearchModal"
             />
@@ -147,7 +148,7 @@
               Điạ chỉ
             </b-col>
             <b-col>
-              {{ address }}
+              {{ street }}
             </b-col>
           <!-- END - Address -->
 
@@ -260,7 +261,7 @@
             Số lượng sản phẩm
           </b-col>
           <b-col class="text-center text-dark font-weight-bold bg-light rounded py-1">
-            {{ quantity }}
+            {{ totalQuantity }}
           </b-col>
         </b-row>
         <!-- END - Product amount -->
@@ -274,7 +275,7 @@
             Tạm tính
           </b-col>
           <b-col class="text-center text-dark font-weight-bold bg-light rounded py-1">
-            {{ totalPrice }}
+            {{ totalOrderPrice }}
           </b-col>
         </b-row>
         <!-- END - Temporary calculation -->
@@ -305,11 +306,11 @@
           Thanh toán (F8)
           <pay-modal
             ref="payModal"
-            :orderProducts="orderProducts"
-            :orderSelected="salemtPromotionObjectSelected"
-            :deliverySelected="salemtDeliveryTypeSelected"
-            :customerSelected="id"
-            :shopSelected="shopId"
+            :order-products="orderProducts"
+            :order-selected="salemtPromotionObjectSelected"
+            :delivery-selected="salemtDeliveryTypeSelected"
+            :customer-selected="id"
+            :shop-selected="shopId"
           />
         </b-button>
         <!-- END - Button pay -->
@@ -398,7 +399,7 @@ export default {
       lastName: null,
       fullName: null,
       phoneNumber: null,
-      address: null,
+      street: null,
       totalBill: null,
 
       // online order
@@ -521,6 +522,13 @@ export default {
     onlineOrderCustomer() {
       return this.ONLINE_ORDER_CUSTOMER_BY_ID_GETTER
     },
+    totalQuantity() {
+      return this.orderProducts.reduce((sum, item) => sum + Number(item.quantity), 0)
+    },
+
+    totalOrderPrice() {
+      return this.orderProducts.reduce((sum, item) => sum + Number(item.productTotalPrice), 0)
+    },
   },
   watch: {
     ERROR_CODE_GETTER() {
@@ -543,6 +551,13 @@ export default {
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
     this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4, salemtDeliveryTypeSelected: this.salemtDeliveryTypeSelected })
     this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
+  },
+  created() {
+    window.addEventListener('keydown', e => {
+      if (e.key === 'F4') {
+        this.$refs.search.focus()
+      }
+    })
   },
   methods: {
     ...mapActions(CUSTOMER, [
@@ -588,7 +603,7 @@ export default {
       this.shopId = val.data.id
       this.fullName = val.data.fullName
       this.phoneNumber = val.data.phoneNumber
-      this.address = val.data.address
+      this.street = val.data.street
       this.totalBill = val.data.totalBill ?? 0
       this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
       this.$emit('getCustomerIdInfo', val.data.id)
@@ -603,7 +618,7 @@ export default {
     getCreateInfo(val) {
       this.fullName = `${val.lastName} ${val.firstName}`
       this.phoneNumber = val.phoneNumber
-      this.address = val.address
+      this.street = val.street
       this.totalBill = val.totalBill ?? 0
     },
 
@@ -617,7 +632,7 @@ export default {
       this.lastName = this.onlineOrderCustomer.customer.lastName
       this.fullName = `${this.lastName} ${this.firstName}`
       this.phoneNumber = this.onlineOrderCustomer.customer.mobiPhone
-      this.address = this.onlineOrderCustomer.customer.address
+      this.street = this.onlineOrderCustomer.customer.street
       this.quantity = this.onlineOrderCustomer.quantity
       this.totalPrice = this.onlineOrderCustomer.totalPrice
     },
@@ -627,7 +642,7 @@ export default {
       this.lastName = this.customerDefault.lastName
       this.fullName = `${this.lastName} ${this.firstName}`
       this.phoneNumber = this.customerDefault.mobiPhone
-      this.address = this.customerDefault.address
+      this.street = this.customerDefault.street
       this.totalBill = this.customerDefault.totalBill ?? 0
     },
   },

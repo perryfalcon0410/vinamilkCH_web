@@ -386,11 +386,6 @@ export default {
     this.GET_CUSTOMERS_ACTION({ formId: 9, ctrlId: 6 }) // HARD
   },
   created() {
-    window.addEventListener('keydown', e => {
-      if (e.key === 'F4') {
-        this.$refs.salesSearchModal.show()
-      }
-    })
   },
   methods: {
     ...mapActions(CUSTOMER, [
