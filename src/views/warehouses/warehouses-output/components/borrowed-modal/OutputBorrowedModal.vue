@@ -3,8 +3,7 @@
     size="xl"
     :visible="visible"
     title="Chọn phiếu xuất vay mượng"
-    title-class="text-uppercase font-weight-bold text-primary"
-    content-class="bg-light"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     footer-border-variant="light"
     @hidden="onModalHidden"
   >
@@ -19,7 +18,7 @@
           class="justify-content-between border-bottom p-1 mx-0"
           align-v="center"
         >
-          <div class="text-primary">
+          <div class="text-brand-1">
             <strong>
               Danh sách phiếu xuất vay mượn
             </strong>
@@ -48,6 +47,7 @@
               Không có dữ liệu
             </div>
             <!-- END - Empty rows -->
+
             <!-- START - Column  -->
             <template
               slot="table-column"
@@ -70,12 +70,12 @@
               <div v-if="props.column.field === 'manipulation'">
                 <b-icon-search
                   class="cursor-pointer"
+                  scale="1.3"
                   @click="() => viewProduct(props.row.id)"
                 />
                 <b-button
-                  size="sm"
-                  variant="info"
-                  class="ml-1"
+                  variant="someThing"
+                  class="btn-brand-1 ml-1"
                   @click="() => choonsenTrans(props.row)"
                 >
                   Chọn
@@ -100,7 +100,7 @@
           class="justify-content-between border-bottom p-1 mx-0"
           align-v="center"
         >
-          <div class="text-primary">
+          <div class="text-brand-1">
             <strong>
               Danh sách sản phẩm
             </strong>
@@ -175,17 +175,20 @@
 </template>
 
 <script>
+import commonData from '@/@db/common'
 import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale } from '@core/utils/filter'
+import { formatISOtoVNI } from '@core/utils/filter'
 import {
   WAREHOUSES_OUTPUT,
-  GET_EXPORT_BORROWINGS_ACTION,
-  GET_EXPORT_BORROWINGS_DETAIL_ACTION,
+  // Getters
   GET_EXPORT_BORROWINGS_DETAIL_GETTER,
   GET_EXPORT_BORROWINGS_GETTER,
+  // Actions
+  GET_EXPORT_BORROWINGS_ACTION,
+  GET_EXPORT_BORROWINGS_DETAIL_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -198,6 +201,16 @@ export default {
   },
   data() {
     return {
+      elementSize: commonData.pagination[0],
+      pageNumber: 1,
+      paginationOptions: commonData.pagination,
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+        reasonId: this.reasonSelected,
+      },
+
       isModalShow: false,
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
@@ -207,22 +220,30 @@ export default {
           label: 'Số chứng từ',
           field: 'poBorrowCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ngày',
           field: 'borrowDate',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ghi chú',
           field: 'note',
           type: 'number',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Thao tác',
           field: 'manipulation',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
       columnsProducts: [
@@ -263,18 +284,26 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(WAREHOUSES_OUTPUT, [
+      GET_EXPORT_BORROWINGS_GETTER,
+      GET_EXPORT_BORROWINGS_DETAIL_GETTER,
+    ]),
+
     borrowing() {
-      return this.GET_EXPORT_BORROWINGS_GETTER().map(data => ({
-        id: data.id,
-        poBorrowCode: data.poBorrowCode,
-        borrowDate: formatDateToLocale(data.borrowDate),
-        billDate: data.borrowDate,
-        note: data.note,
-      }))
+      if (this.GET_EXPORT_BORROWINGS_GETTER) {
+        return this.GET_EXPORT_BORROWINGS_GETTER.map(data => ({
+          id: data.id,
+          poBorrowCode: data.poBorrowCode,
+          borrowDate: formatISOtoVNI(data.borrowDate),
+          billDate: data.borrowDate,
+          note: data.note,
+        }))
+      }
+      return []
     },
 
     poProducts() {
-      return this.GET_EXPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
+      return this.GET_EXPORT_BORROWINGS_DETAIL_GETTER.map(data => ({
         id: data.id,
         productCode: data.productCode,
         productName: data.productName,
@@ -289,10 +318,6 @@ export default {
     this.GET_EXPORT_BORROWINGS_ACTION()
   },
   methods: {
-    ...mapGetters(WAREHOUSES_OUTPUT, [
-      GET_EXPORT_BORROWINGS_GETTER,
-      GET_EXPORT_BORROWINGS_DETAIL_GETTER,
-    ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_EXPORT_BORROWINGS_ACTION,
       GET_EXPORT_BORROWINGS_DETAIL_ACTION,

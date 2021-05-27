@@ -3,8 +3,7 @@
     size="xl"
     :visible="visible"
     title="Chọn phiếu nhập hàng"
-    title-class="text-uppercase font-weight-bold text-primary"
-    content-class="bg-light"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     footer-border-variant="light"
     @hidden="onModalHidden"
   >
@@ -13,7 +12,11 @@
       class="d-flex flex-column"
     >
       <!-- START - Search -->
-      <search-component @onSearch="onSearch" />
+      <search-component
+        @updateSearchData="paginationData = {
+          ...paginationData,
+          ...$event }"
+      />
       <!-- END - Search -->
 
       <!-- START - Coupon list -->
@@ -23,7 +26,7 @@
           class="justify-content-between border-bottom p-1 mx-0"
           align-v="center"
         >
-          <div class="text-primary">
+          <div class="text-brand-1">
             <strong>
               Danh sách phiếu nhập hàng
             </strong>
@@ -37,13 +40,32 @@
           <vue-good-table
             :columns="columns"
             :rows="poTrans"
-            style-class="vgt-table bordered"
+            style-class="vgt-table striped"
             :pagination-options="{
-              enabled: true
+              enabled: true,
+              perPage: elementSize,
+              setCurrentPage: pageNumber,
             }"
             compact-mode
             line-numbers
+            :total-rows="outputPagination.totalElements"
+            :sort-options="{
+              enabled: false,
+              multipleColumns: true,
+              initialSortBy: [{field: 'transCode', type: 'desc'}]
+            }"
+            @on-sort-change="onSortChange"
+            @on-page-change="onPageChange"
+            @on-per-page-change="onPerPageChange"
           >
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
             <!-- START - Column  -->
             <template
               slot="table-column"
@@ -66,12 +88,12 @@
               <div v-if="props.column.field === 'manipulation'">
                 <b-icon-search
                   class="cursor-pointer"
+                  scale="1.3"
                   @click="() => onPoItemSelected(props.row.id)"
                 />
                 <b-button
-                  size="sm"
-                  variant="info"
-                  class="ml-1"
+                  variant="someThing"
+                  class="btn-brand-1 ml-1"
                   @click="() => choonsenTrans(props.row)"
                 >
                   Chọn
@@ -81,7 +103,70 @@
                 {{ props.formattedRow[props.column.field] }}
               </div>
             </template>
-          <!-- END - Row -->
+            <!-- END - Row -->
+
+            <!-- START - Pagination -->
+            <template
+              slot="pagination-bottom"
+              slot-scope="props"
+            >
+              <b-row
+                v-show="outputPagination.totalElements"
+                class="v-pagination px-1 mx-0"
+                align-h="between"
+                align-v="center"
+              >
+                <div
+                  class="d-flex align-items-center"
+                >
+                  <span
+                    class="text-nowrap"
+                  >
+                    Số hàng hiển thị
+                  </span>
+                  <b-form-select
+                    v-model="elementSize"
+                    size="sm"
+                    :options="paginationOptions"
+                    class="mx-1"
+                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                  />
+                  <span
+                    class="text-nowrap"
+                  >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
+                    -
+                    {{ (elementSize * pageNumber) > outputPagination.totalElements ?
+                      outputPagination.totalElements : (elementSize * pageNumber) }}
+                    của {{ outputPagination.totalElements }} mục </span>
+                </div>
+                <b-pagination
+                  v-model="pageNumber"
+                  :total-rows="outputPagination.totalElements"
+                  :per-page="elementSize"
+                  first-number
+                  last-number
+                  align="right"
+                  prev-class="prev-item"
+                  next-class="next-item"
+                  class="mt-1"
+                  @input="(value)=>props.pageChanged({currentPage: value})"
+                >
+                  <template slot="prev-text">
+                    <feather-icon
+                      icon="ChevronLeftIcon"
+                      size="18"
+                    />
+                  </template>
+                  <template slot="next-text">
+                    <feather-icon
+                      icon="ChevronRightIcon"
+                      size="18"
+                    />
+                  </template>
+                </b-pagination>
+              </b-row>
+            </template>
+          <!-- END - Pagination -->
 
           </vue-good-table>
         </b-col>
@@ -96,7 +181,7 @@
           class="justify-content-between border-bottom p-1 mx-0"
           align-v="center"
         >
-          <div class="text-primary">
+          <div class="text-brand-1">
             <strong>
               Danh sách sản phẩm
             </strong>
@@ -146,16 +231,19 @@
 </template>
 
 <script>
+import commonData from '@/@db/common'
 import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale } from '@core/utils/filter'
+import { formatISOtoVNI } from '@core/utils/filter'
 import SearchComponent from './components/SearchComponent.vue'
 import {
   WAREHOUSES_OUTPUT,
+  // Getters
   GET_EXPORT_PO_TRANS_GETTER,
   GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+  // Actions
   GET_EXPORT_PO_TRANS_DETAIL_ACTION,
   GET_EXPORT_PO_TRANS_ACTION,
 } from '../../store-module/type'
@@ -173,6 +261,16 @@ export default {
   },
   data() {
     return {
+      elementSize: commonData.pagination[0],
+      pageNumber: 1,
+      paginationOptions: commonData.pagination,
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+        reasonId: this.reasonSelected,
+      },
+
       isModalShow: false,
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
@@ -181,38 +279,52 @@ export default {
           label: 'Ngày nhập',
           field: 'createdAt',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã nhập hàng',
           field: 'transCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
           type: 'number',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ngày hóa đơn',
           field: 'transDate',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
           type: 'number',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'PO No',
           field: 'poNumber',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Thao tác',
           field: 'manipulation',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
 
@@ -258,21 +370,28 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(WAREHOUSES_OUTPUT, [
+      GET_EXPORT_PO_TRANS_GETTER,
+      GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+    ]),
     poTrans() {
-      return this.GET_EXPORT_PO_TRANS_GETTER().map(data => ({
-        id: data.id,
-        productCode: formatDateToLocale(data.formatDateToLocale),
-        transDate: formatDateToLocale(data.transDate),
-        transCode: data.transCode,
-        redInvoiceNo: data.redInvoiceNo,
-        internalNumber: data.internalNumber,
-        poNumber: data.poNumber,
-        billDate: data.transDate,
-      }))
+      if (this.GET_EXPORT_PO_TRANS_GETTER.content) {
+        return this.GET_EXPORT_PO_TRANS_GETTER.content.map(data => ({
+          id: data.id,
+          productCode: formatISOtoVNI(data.formatISOtoVNI),
+          transDate: formatISOtoVNI(data.transDate),
+          transCode: data.transCode,
+          redInvoiceNo: data.redInvoiceNo,
+          internalNumber: data.internalNumber,
+          poNumber: data.poNumber,
+          billDate: data.transDate,
+        }))
+      }
+      return []
     },
 
     poProducts() {
-      return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER().map(data => ({
+      return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER.info.map(data => ({
         id: data.id,
         productCode: data.productCode,
         productName: data.productName,
@@ -283,15 +402,18 @@ export default {
         quantity: `${data.quantity - data.export}/${data.quantity}`,
       }))
     },
+
+    outputPagination() {
+      if (this.GET_EXPORT_PO_TRANS_GETTER) {
+        return this.GET_EXPORT_PO_TRANS_GETTER
+      }
+      return {}
+    },
   },
   mounted() {
     this.GET_EXPORT_PO_TRANS_ACTION()
   },
   methods: {
-    ...mapGetters(WAREHOUSES_OUTPUT, [
-      GET_EXPORT_PO_TRANS_GETTER,
-      GET_EXPORT_PO_TRANS_DETAIL_GETTER,
-    ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_EXPORT_PO_TRANS_ACTION,
       GET_EXPORT_PO_TRANS_DETAIL_ACTION,
@@ -308,6 +430,20 @@ export default {
     choonsenTrans(trans) {
       this.$emit('choonsenTrans', trans)
       this.$emit('onModalHidden', trans.id)
+    },
+    onPaginationChange() {
+      this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
     },
   },
 }

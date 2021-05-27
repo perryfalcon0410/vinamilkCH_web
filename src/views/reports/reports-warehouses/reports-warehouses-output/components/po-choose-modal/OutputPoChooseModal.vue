@@ -5,7 +5,6 @@
     title="Chọn sản phẩm"
     title-class="text-uppercase font-weight-bold text-primary"
     content-class="bg-light"
-    footer-border-variant="light"
     hide-header-close
   >
 
@@ -313,36 +312,6 @@
       </b-row>
       <!-- END Body -->
     </b-container>
-
-    <!-- START - Footer -->
-    <template #modal-footer="{ ok, cancel }">
-      <b-button
-        variant="primary"
-        class="d-flex align-items-center text-uppercase"
-        @click="ok()"
-      >
-        <b-icon
-          icon="check2"
-          width="20"
-          height="20"
-          class="mr-1"
-        />
-        Lưu
-      </b-button>
-      <b-button
-        variant="secondary"
-        class="d-flex align-items-center text-uppercase"
-        @click="cancel()"
-      >
-        <b-icon
-          icon="x"
-          width="20"
-          height="20"
-        />
-        Đóng
-      </b-button>
-    </template>
-  <!-- END - Footer -->
 
   </b-modal>
 </template>

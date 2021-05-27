@@ -3,9 +3,7 @@
     size="xl"
     :visible="visible"
     title="Chọn phiếu xuất điều chỉnh"
-    title-class="text-uppercase font-weight-bold text-primary"
-    content-class="bg-light"
-    footer-border-variant="light"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     centered
     scrollable
     @hidden="onModalHidden"
@@ -21,7 +19,7 @@
           class="justify-content-between border-bottom p-1 mx-0"
           align-v="center"
         >
-          <div class="text-primary">
+          <div class="text-brand-1">
             <strong>
               Danh sách phiếu xuất điều chỉnh
             </strong>
@@ -37,7 +35,7 @@
             :rows="ajustments"
             style-class="vgt-table bordered"
             :pagination-options="{
-              enabled: true
+              enabled: true,
             }"
             compact-mode
             line-numbers
@@ -50,6 +48,7 @@
               Không có dữ liệu
             </div>
             <!-- END - Empty rows -->
+            >
             <!-- START - Column  -->
             <template
               slot="table-column"
@@ -72,12 +71,12 @@
               <div v-if="props.column.field === 'manipulation'">
                 <b-icon-search
                   class="cursor-pointer"
+                  scale="1.3"
                   @click="() => onShowProductsClick(props.row.id)"
                 />
                 <b-button
-                  size="sm"
-                  variant="info"
-                  class="ml-1"
+                  variant="someThing"
+                  class="btn-brand-1 ml-1"
                   @click="() => choonsenTrans(props.row)"
                 >
                   Chọn
@@ -87,7 +86,70 @@
                 {{ props.formattedRow[props.column.field] }}
               </div>
             </template>
-          <!-- END - Row -->
+            <!-- END - Row -->
+
+            <!-- START - Pagination -->
+            <!-- <template
+              slot="pagination-bottom"
+              slot-scope="props"
+            >
+              <b-row
+                v-show="outputPagination.totalElements"
+                class="v-pagination px-1 mx-0"
+                align-h="between"
+                align-v="center"
+              >
+                <div
+                  class="d-flex align-items-center"
+                >
+                  <span
+                    class="text-nowrap"
+                  >
+                    Số hàng hiển thị
+                  </span>
+                  <b-form-select
+                    v-model="elementSize"
+                    size="sm"
+                    :options="paginationOptions"
+                    class="mx-1"
+                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                  />
+                  <span
+                    class="text-nowrap"
+                  >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
+                    -
+                    {{ (elementSize * pageNumber) > outputPagination.totalElements ?
+                      outputPagination.totalElements : (elementSize * pageNumber) }}
+                    của {{ outputPagination.totalElements }} mục </span>
+                </div>
+                <b-pagination
+                  v-model="pageNumber"
+                  :total-rows="outputPagination.totalElements"
+                  :per-page="elementSize"
+                  first-number
+                  last-number
+                  align="right"
+                  prev-class="prev-item"
+                  next-class="next-item"
+                  class="mt-1"
+                  @input="(value)=>props.pageChanged({currentPage: value})"
+                >
+                  <template slot="prev-text">
+                    <feather-icon
+                      icon="ChevronLeftIcon"
+                      size="18"
+                    />
+                  </template>
+                  <template slot="next-text">
+                    <feather-icon
+                      icon="ChevronRightIcon"
+                      size="18"
+                    />
+                  </template>
+                </b-pagination>
+              </b-row>
+            </template> -->
+          <!-- END - Pagination -->
 
           </vue-good-table>
         </b-col>
@@ -102,7 +164,7 @@
           class="justify-content-between border-bottom p-1 mx-0"
           align-v="center"
         >
-          <div class="text-primary">
+          <div class="text-brand-1">
             <strong>
               Danh sách sản phẩm
             </strong>
@@ -177,18 +239,20 @@
 </template>
 
 <script>
-
+import commonData from '@/@db/common'
 import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatDateToLocale } from '@core/utils/filter'
+import { formatISOtoVNI } from '@core/utils/filter'
 import {
   WAREHOUSES_OUTPUT,
-  GET_EXPORT_AJUSTMENT_ACTION,
-  GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
+  // Getters
   GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
   GET_EXPORT_AJUSTMENTS_GETTER,
+  // Actions
+  GET_EXPORT_AJUSTMENT_ACTION,
+  GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -201,6 +265,16 @@ export default {
   },
   data() {
     return {
+      elementSize: commonData.pagination[0],
+      pageNumber: 1,
+      paginationOptions: commonData.pagination,
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+        reasonId: this.reasonSelected,
+      },
+
       isModalShow: false,
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
@@ -210,22 +284,30 @@ export default {
           label: 'Số chứng từ',
           field: 'adjustmentCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ngày',
           field: 'adjustmentDate',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ghi chú',
           field: 'description',
           type: 'number',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Thao tác',
           field: 'manipulation',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
 
@@ -267,19 +349,26 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(WAREHOUSES_OUTPUT, [
+      GET_EXPORT_AJUSTMENTS_GETTER,
+      GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
+    ]),
     ajustments() {
-      return this.GET_EXPORT_AJUSTMENTS_GETTER().map(data => ({
-        id: data.id,
-        createdAt: formatDateToLocale(data.formatDateToLocale),
-        adjustmentDate: formatDateToLocale(data.adjustmentDate),
-        adjustmentCode: data.adjustmentCode,
-        description: data.description,
-        billDate: data.adjustmentDate,
-      }))
+      if (this.GET_EXPORT_AJUSTMENTS_GETTER) {
+        return this.GET_EXPORT_AJUSTMENTS_GETTER.map(data => ({
+          id: data.id,
+          createdAt: formatISOtoVNI(data.createdAt),
+          adjustmentDate: formatISOtoVNI(data.adjustmentDate),
+          adjustmentCode: data.adjustmentCode,
+          description: data.description,
+          billDate: data.adjustmentDate,
+        }))
+      }
+      return []
     },
 
     poProducts() {
-      return this.GET_EXPORT_AJUSTMENTS_DETAIL_GETTER().map(data => ({
+      return this.GET_EXPORT_AJUSTMENTS_DETAIL_GETTER.map(data => ({
         id: data.id,
         productCode: data.productCode,
         productName: data.productName,
@@ -289,22 +378,21 @@ export default {
         quantity: data.quantity,
       }))
     },
+    // outputPagination() {
+    //   if (this.GET_EXPORT_PO_TRANS_GETTER) {
+    //     return this.GET_EXPORT_PO_TRANS_GETTER
+    //   }
+    //   return {}
+    // },
   },
   mounted() {
     this.GET_EXPORT_AJUSTMENT_ACTION()
   },
   methods: {
-    ...mapGetters(WAREHOUSES_OUTPUT, [
-      GET_EXPORT_AJUSTMENTS_GETTER,
-      GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
-    ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_EXPORT_AJUSTMENT_ACTION,
       GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
     ]),
-    onSearch(search) {
-      this.GET_EXPORT_PO_TRANS_ACTION(search)
-    },
     onShowProductsClick(id) {
       this.GET_EXPORT_AJUSTMENT_DETAIL_ACTION(id)
     },
@@ -315,6 +403,20 @@ export default {
       this.$emit('choonsenTrans', trans)
       this.$emit('onModalHidden', trans.id)
     },
+    // onPaginationChange() {
+    //   this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)
+    // },
+    // updatePaginationData(newProps) {
+    //   this.paginationData = { ...this.paginationData, ...newProps }
+    // },
+    // onPageChange(params) {
+    //   this.updatePaginationData({ page: params.currentPage - 1 })
+    //   this.onPaginationChange()
+    // },
+    // onPerPageChange(params) {
+    //   this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+    //   this.onPaginationChange()
+    // },
   },
 }
 </script>

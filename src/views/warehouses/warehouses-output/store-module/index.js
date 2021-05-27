@@ -205,7 +205,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poTrans = res.data.content || []
+            state.poTrans = res.data || []
           } else {
             throw new Error(res.statusValue)
           }
@@ -220,7 +220,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poProducts = res.data.info
+            state.poProducts = res.data
           } else {
             throw new Error(res.statusValue)
           }

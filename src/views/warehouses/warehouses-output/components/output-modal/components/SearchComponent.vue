@@ -245,12 +245,20 @@
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
+  mapActions,
+} from 'vuex'
+import {
   ValidationProvider,
 } from 'vee-validate'
 import {
   code,
 } from '@/@core/utils/validations/validations'
 import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  WAREHOUSES_OUTPUT,
+  // Actions
+  GET_EXPORT_PO_TRANS_ACTION,
+} from '../../../store-module/type'
 
 export default {
   components: {
@@ -300,15 +308,26 @@ export default {
   },
 
   methods: {
-    onSearchClick() {
-      this.$emit('onSearch', {
+    ...mapActions(WAREHOUSES_OUTPUT, [
+      GET_EXPORT_PO_TRANS_ACTION,
+    ]),
+    onSearch() {
+      const searchData = {
         transCode: this.transCode,
         redInvoiceNo: this.redInvoiceNo,
         internalNumber: this.internalNumber,
         poNumber: this.poNo,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-      })
+      }
+      this.updateSearchData(searchData)
+      this.GET_EXPORT_PO_TRANS_ACTION(searchData)
+    },
+    onSearchClick() {
+      this.onSearch()
+    },
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
     },
   },
 }
