@@ -3,254 +3,268 @@
     fluid
     class="p-0"
   >
-    <!-- START - Form and list -->
-    <b-col>
-      <b-row>
-        <!-- START - Form -->
-        <b-col
-          xl="4"
-          class="bg-white shadow rounded mr-xl-1"
-        >
-          <!-- START - Date -->
-          <b-row class="my-1">
-            <b-col cols="4">
-              Ngày xuất:
-            </b-col>
-            <b-col class="font-weight-bold">
-              {{ dateNow }}
-            </b-col>
-          </b-row>
-          <!-- END - Date -->
+    <!-- START - Form Container -->
+    <validation-observer
+      ref="formContainer"
+      v-slot="{invalid}"
+      slim
+    >
+      <!-- START - Form and list -->
+      <b-col>
+        <b-row>
+          <!-- START - Form -->
+          <b-col
+            xl="4"
+            class="bg-white shadow rounded mr-xl-1"
+          >
+            <!-- START - Date -->
+            <div>
+              Ngày biên bản:        <strong>{{ dateNow }}</strong>
+            </div>
+            <!-- END - Date -->
 
-          <!-- START - ID and Type -->
-          <b-form-row>
-            <b-col>
-              <b-form-group
-                label="Mã xuất hàng"
-                label-for="id"
-              >
-                <b-form-input
-                  id="id"
-                  v-model="id"
-                  maxlength="40"
-                  trim
-                  disabled
-                />
-              </b-form-group>
-            </b-col>
+            <!-- START - ID and Type -->
+            <b-form-row>
+              <!-- START - Export Code -->
 
-            <b-col>
-              <b-form-group
-                label="Loại xuất"
-                label-for="type"
-              >
-                <v-select
-                  id="type"
+              <b-col>
+                <validation-provider
+                  v-slot="{ errors, passed, touched }"
+                  rules="code|required"
+                  name="mã xuất hàng"
+                >
+                  <div class="mt-1">
+                    Mã xuất hàng
+                  </div>
+                  <b-form-input
+                    v-model.trim="id"
+                    :state="touched ? passed : null"
+                    maxlength="40"
+                  />
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider>
+              </b-col>
+              <!-- END - Export Code -->
+              <b-col>
+                <div class="mt-1">
+                  Loại xuất hàng
+                </div>
+                <tree-select
                   v-model="outputTypeSelected"
                   :options="outputTypesOptions"
-                  label="name"
-                  :clearable="false"
+                  placeholder="Chọn loại xuất hàng"
+                  no-options-text="Không có dữ liệu"
                 />
-              </b-form-group>
-            </b-col>
-          </b-form-row>
-          <!-- END - ID and Type -->
+              </b-col>
+            </b-form-row>
+            <!-- END - ID and Type -->
 
-          <!-- START -  Stock  -->
-          <b-form-group
-            label="Kho hàng"
-            label-for="warehouse"
-          >
+            <!-- START -  Stock  -->
+            <div class="mt-1">
+              Kho hàng
+            </div>
             <b-form-input
-              id="warehouse"
-              v-model="wareHouseType.wareHouseTypeName"
-              readonly
+              v-model="getWareHouseType.wareHouseTypeName"
+              disabled
             />
-          </b-form-group>
-          <!-- END -  Stock  -->
+            <!-- END -  Stock  -->
 
-          <!-- START - Bill Number and Date -->
-          <b-form-row>
-            <b-col>
-              <div>
-                Số hóa đơn
-              </div>
-              <b-form-input
-                v-model="transCode"
-                trim
-                :state="touched ? passed : null"
-                disabled
-              />
-            </b-col>
-
-            <b-col>
-              <div>
-                Ngày hóa đơn
-              </div>
-              <b-form-datepicker
-                v-model="transDate"
-                locale="vi"
-                :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-                disabled
-              />
-            </b-col>
-          </b-form-row>
-          <!-- END -   Bill Number and Date -->
-
-          <!-- START -   Internal number and PO no -->
-          <b-form-row>
-            <b-col>
-              <div class="mt-1">
-                Số nội bộ
-              </div>
-              <b-form-input
-                v-model="internalNumber"
-                trim
-                :state="touched ? passed : null"
-                disabled
-              />
-            </b-col>
-
-            <b-col>
-              <div class="mt-1">
-                PO No
-              </div>
-              <b-input-group
-                id="PoNo"
-                class="input-group-merge"
-              >
-                <b-form-input
-                  v-model="poNumber"
-                  trim
-                  :state="outputTypeSelected.id === '0' && touched ? passed : null"
-                  disabled
-                />
-                <b-input-group-append is-text>
-                  <b-icon-three-dots-vertical
-                    class="cursor-pointer"
-                    @click="showModal()"
+            <!-- START - Bill Number and Date -->
+            <b-form-row>
+              <b-col>
+                <validation-provider
+                  v-slot="{ errors, passed, touched }"
+                  rules="code|required"
+                  name="số hóa đơn"
+                >
+                  <div class="mt-1">
+                    Số hóa đơn
+                  </div>
+                  <b-form-input
+                    v-model.trim="transCode"
+                    :state="touched ? passed : null"
+                    readonly
                   />
-                </b-input-group-append>
-              </b-input-group>
-            </b-col>
-          </b-form-row>
-          <!-- END - Internal number and PO no -->
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider>
+              </b-col>
+              <b-col>
+                <div class="mt-1">
+                  Ngày hóa đơn
+                </div>
+                <b-row
+                  class="v-flat-pickr-group mx-0"
+                  align-v="center"
+                  @keypress="$onlyDateInput"
+                >
+                  <vue-flat-pickr
+                    v-model="transDate"
+                    :config="configDate"
+                    class="form-control h8"
+                    placeholder="Chọn ngày"
+                    readonly
+                  />
+                </b-row>
+              </b-col>
+            </b-form-row>
+            <!-- END -   Bill Number and Date -->
 
-          <!-- START - Note -->
-          <b-form-group
-            label="Ghi chú"
-            label-for="note"
-            class="mt-1"
-          >
-            <b-form-textarea
-              id="note"
-              v-model="note"
-              maxlength="4000"
-            />
-          </b-form-group>
-        <!-- END - Note -->
-        </b-col>
-        <!-- END - Form -->
+            <!-- START -   Internal number and PO no -->
+            <b-form-row>
+              <b-col>
+                <validation-provider
+                  v-slot="{ errors, passed, touched }"
+                  rules="code|required"
+                  name="số nội bộ"
+                >
+                  <div class="mt-1">
+                    Số nội bộ
+                  </div>
+                  <b-form-input
+                    v-model.trim="internalNumber"
+                    :state="touched ? passed : null"
+                    readonly
+                  />
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider>
+              </b-col>
+              <b-col>
+                <div class="mt-1">
+                  PO No
+                </div>
+                <b-input-group
+                  id="PoNo"
+                  class="input-group-merge"
+                >
+                  <b-form-input
+                    v-model="poNumber"
+                    trim
+                    :state="outputTypeSelected === '0' && touched ? passed : null"
+                  />
+                  <b-input-group-append is-text>
+                    <b-icon-three-dots-vertical
+                      class="cursor-pointer"
+                      @click="showModal()"
+                    />
+                  </b-input-group-append>
+                </b-input-group>
+              </b-col>
+            </b-form-row>
+            <!-- END - Internal number and PO no -->
 
-        <!-- START - List -->
-        <b-col
-          class="bg-white shadow rounded mt-1 mt-xl-0"
-        >
-          <!-- START - Table Product promotion -->
-          <div class="d-inline-flex rounded-top px-1 my-1">
-            <strong>
-              Danh sách sản phẩm
-            </strong>
-          </div>
-
-          <vue-good-table
-            :columns="columns"
-            :rows="poProducts"
-            style-class="vgt-table striped"
-            compact-mode
-            line-numbers
-          >
-            <!-- START - Empty rows -->
-            <div
-              slot="emptystate"
-              class="text-center"
+            <!-- START - Note -->
+            <b-form-group
+              class="mt-1"
             >
-              Không có dữ liệu
+              <div>
+                Ghi chú
+              </div>
+              <b-form-textarea
+                v-model="note"
+                maxlength="4000"
+              />
+            </b-form-group>
+            <!-- END - Note -->
+          </b-col>
+          <!-- END - Form -->
+
+          <!-- START - List -->
+          <b-col
+            class="bg-white shadow rounded mt-1 mt-xl-0"
+          >
+            <!-- START - Table Product promotion -->
+            <div class="d-inline-flex rounded-top px-1 my-1">
+              <strong>
+                Danh sách sản phẩm
+              </strong>
             </div>
-            <!-- END - Empty rows -->
-            <!-- START - Header slot -->
-            <div slot="table-actions">
-              <b-form-checkbox
-                v-model="exportAll"
-                class="m-1"
+
+            <vue-good-table
+              :columns="columns"
+              :rows="poProducts"
+              style-class="vgt-table striped"
+              compact-mode
+              line-numbers
+            >
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
               >
-                Trả nguyên đơn
-              </b-form-checkbox>
-            </div>
-            <!-- END - Header slot -->
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
+              <!-- START - Header slot -->
+              <div slot="table-actions">
+                <b-form-checkbox
+                  v-model="exportAll"
+                  class="m-1"
+                >
+                  Trả nguyên đơn
+                </b-form-checkbox>
+              </div>
+              <!-- END - Header slot -->
 
-            <!-- START - Rows -->
-            <template
-              slot="table-row"
-              slot-scope="props"
-            >
-              <div v-if="props.column.field === 'ProductReturnAmount' ">
-                <b-form-input
-                  v-model="amount[props.row.originalIndex].number"
-                  :class="amount[props.row.originalIndex].number > props.row.amountQuantity ||amount[props.row.originalIndex].number < 0 ? 'border-danger' : ''"
-                  size="sm"
-                  type="number"
-                  :readonly="exportAll && outputTypeSelected.id !== '0'"
-                />
-              </div>
-              <div v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </div>
-            </template>
+              <!-- START - Rows -->
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <div v-if="props.column.field === 'ProductReturnAmount' ">
+                  <b-form-input
+                    v-model="amount[props.row.originalIndex].number"
+                    :class="amount[props.row.originalIndex].number > props.row.amountQuantity ||amount[props.row.originalIndex].number < 0 ? 'border-danger' : ''"
+                    size="sm"
+                    type="number"
+                    :readonly="exportAll && outputTypeSelected !== '0'"
+                  />
+                </div>
+                <div v-else>
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+              </template>
             <!-- END - Rows -->
 
-          </vue-good-table>
-          <!-- END - Table Product -->
+            </vue-good-table>
+            <!-- END - Table Product -->
 
-          <!-- START - Button -->
-          <b-row class="m-1 justify-content-end">
-            <b-button-group>
-              <b-button
-                variant="primary"
-                class="d-flex align-items-center rounded text-uppercase"
-                @click="createExport"
-              >
-                <b-icon
-                  icon="download"
-                  width="20"
-                  height="20"
-                  class="mr-1"
-                />
-                Trả hàng
-              </b-button>
+            <!-- START - Button -->
+            <b-row class="m-1 justify-content-end">
+              <b-button-group>
+                <b-button
+                  variant="someThing"
+                  class="btn-brand-1 rounded text-uppercase aligns-items-button-center"
+                  :disabled="invalid"
+                  @click="createExport"
+                >
+                  <b-icon-download
+                    class="mr-05"
+                  />
+                  Trả hàng
+                </b-button>
 
-              <b-button
-                class="d-flex align-items-center ml-1 rounded text-uppercase"
-                @click="navigateBack"
-              >
-                <b-icon
-                  icon="x"
-                  width="20"
-                  height="20"
-                />
-                Đóng
-              </b-button>
-            </b-button-group>
-          </b-row>
-        <!-- END - Button -->
+                <b-button
+                  class="btn-brand-1 ml-1 rounded text-uppercase aligns-items-button-center"
+                  @click="navigateBack"
+                >
+                  <b-icon-x
+                    class="mr-05"
+                    scale="1.5"
+                  />
+                  Đóng
+                </b-button>
+              </b-button-group>
+            </b-row>
+            <!-- END - Button -->
 
-        </b-col>
-      <!-- END - List -->
+          </b-col>
+          <!-- END - List -->
 
-      </b-row>
-    </b-col>
+        </b-row>
+      </b-col>
     <!-- END - Form and list -->
-
+    </validation-observer>
+    <!-- END - Form Container -->
     <!-- START - Modal -->
     <adjustment-modal
       :visible="visibleAdjustmentModal"
@@ -278,16 +292,27 @@ import {
   mapActions,
   mapMutations,
 } from 'vuex'
+import {
+  ValidationProvider,
+  ValidationObserver,
+} from 'vee-validate'
+import {
+  code,
+  required,
+} from '@/@core/utils/validations/validations'
 import { isEmpty, getNow } from '@core/utils/utils'
 import OutputModal from '../components/output-modal/OutputModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/OutputBorrowedModal.vue'
 import {
   WAREHOUSES_OUTPUT,
+  // GETTERS
   GET_EXPORT_PO_TRANS_DETAIL_GETTER,
-  GET_EXPORT_PO_TRANS_DETAIL_ACTION,
   GET_WAREHOUSE_TYPE_GETTER,
+  // MUTATIONS
   CLEAR_EXPORT_PRODUCTS_MUTATION,
+  // ACTIONS
+  GET_EXPORT_PO_TRANS_DETAIL_ACTION,
   GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
   GET_EXPORT_BORROWINGS_DETAIL_ACTION,
   GET_WAREHOUSE_TYPE_ACTION,
@@ -300,9 +325,16 @@ export default {
     AdjustmentModal,
     BorrowedModal,
     OutputModal,
+    ValidationProvider,
+    ValidationObserver,
   },
+
   data() {
     return {
+      // validation rules
+      code,
+      required,
+
       outputTypesOptions: warehousesData.outputTypes,
       visibleAdjustmentModal: false,
       visibleBorrowedModal: false,
@@ -310,12 +342,25 @@ export default {
       exportAll: false,
       id: '',
       transCode: '',
-      outputTypeSelected: warehousesData.outputTypes[0],
+      outputTypeSelected: warehousesData.outputTypes[0].id,
+      warehouseTypeSelected: '',
       internalNumber: '',
       transDate: '',
       poNumber: '',
       note: '',
+
       dateNow: getNow(),
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
+
+      decentralization: {
+        formId: 5,
+        ctrlId: 7,
+      },
+
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -365,22 +410,27 @@ export default {
   },
 
   computed: {
+    ...mapGetters(WAREHOUSES_OUTPUT, [
+      GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+      GET_WAREHOUSE_TYPE_GETTER,
+    ]),
+
     poProducts() {
-      return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER().map(data => ({
+      return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER.map(data => ({
         id: data.id,
         productCode: data.productCode,
         productName: data.productName,
         price: data.price,
         unit: data.unit,
         totalPrice: data.totalPrice,
-        export: this.outputTypeSelected.id === '0' ? `${data.export}/${data.quantity}` : 0,
-        quantity: this.outputTypeSelected.id === '0' ? `${data.quantity - data.export}/${data.quantity}` : data.quantity,
+        export: this.outputTypeSelected === '0' ? `${data.export}/${data.quantity}` : 0,
+        quantity: this.outputTypeSelected === '0' ? `${data.quantity - data.export}/${data.quantity}` : data.quantity,
         productReturnAmount: 0,
         amountQuantity: data.quantity,
       }))
     },
-    wareHouseType() {
-      return this.GET_WAREHOUSE_TYPE_GETTER()
+    getWareHouseType() {
+      return this.GET_WAREHOUSE_TYPE_GETTER
     },
   },
 
@@ -389,7 +439,7 @@ export default {
       this.amount = []
       this.poProducts.forEach(item => {
         this.amount.push({
-          number: this.outputTypeSelected.id === '0' ? 0 : item.amountQuantity,
+          number: this.outputTypeSelected === '0' ? 0 : item.amountQuantity,
         })
       })
     },
@@ -417,7 +467,7 @@ export default {
   },
 
   mounted() {
-    this.GET_WAREHOUSE_TYPE_ACTION()
+    this.GET_WAREHOUSE_TYPE_ACTION({ ...this.decentralization })
   },
 
   destroyed() {
@@ -425,10 +475,6 @@ export default {
   },
 
   methods: {
-    ...mapGetters(WAREHOUSES_OUTPUT, [
-      GET_EXPORT_PO_TRANS_DETAIL_GETTER,
-      GET_WAREHOUSE_TYPE_GETTER,
-    ]),
     ...mapMutations(WAREHOUSES_OUTPUT, [
       CLEAR_EXPORT_PRODUCTS_MUTATION,
     ]),
@@ -442,7 +488,7 @@ export default {
 
     showModal() {
       this.CLEAR_EXPORT_PRODUCTS_MUTATION()
-      switch (this.outputTypeSelected.id) {
+      switch (this.outputTypeSelected) {
         case '0':
           this.visibleOutputModal = true
           break
@@ -464,7 +510,7 @@ export default {
         this.CLEAR_EXPORT_PRODUCTS_MUTATION()
       }
 
-      switch (this.outputTypeSelected.id) {
+      switch (this.outputTypeSelected) {
         case '0': // Xuất trả PO
           this.visibleOutputModal = false
           if (id) {
@@ -519,13 +565,13 @@ export default {
 
       this.CREATE_EXPORT_ACTION(
         {
-          importType: this.outputTypeSelected.id,
+          importType: this.outputTypeSelected,
           isRemainAll: this.exportAll,
           receiptImportId: this.id,
           note: this.note,
           litQuantityRemain: [...this.poProducts.map((item, index) => ({
             id: item.id,
-            quantity: this.outputTypeSelected.id === '0' ? this.amount[index].number : item.amountQuantity,
+            quantity: this.outputTypeSelected === '0' ? this.amount[index].number : item.amountQuantity,
           }))],
         },
       )

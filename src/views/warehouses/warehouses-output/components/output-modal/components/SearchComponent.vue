@@ -1,165 +1,313 @@
 <template>
-  <div>
+  <b-form>
     <!-- START - Search -->
-    <b-form class="bg-white rounded shadow">
-      <div class="text-primary p-1">
-        <strong>
-          Tìm kiếm
-        </strong>
-      </div>
-
-      <b-form-row
-        class="border-top mx-0 p-1"
+    <v-card-actions
+      title="Tìm kiếm"
+    >
+      <b-col
+        xl
+        lg="3"
+        sm="4"
       >
-        <b-col
-          xl
-          sm="6"
+        <validation-provider
+          v-slot="{ errors, passed }"
+          rules="code"
+          name="mã nhận hàng"
         >
-          <b-form-group
-            label="Mã nhập hàng"
-            label-for="form-input-customer"
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Mã nhận hàng
+          </div>
+          <b-input-group
+            class="input-group-merge"
           >
             <b-form-input
-              id="form-input-customer"
-              v-model="transCode"
-              placeholder="Nhập mã"
-              trim
+              v-model.trim="transCode"
+              :state="transCode ? passed : null"
+              placeholder="Nhập mã nhập hàng"
             />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="6"
-        >
-          <b-form-group
-            label="Số hóa đơn"
-            label-for="form-input-customer-group"
-          >
-            <b-form-input
-              id="form-input-customer-group"
-              v-model="redInvoiceNo"
-              placeholder="Nhập số hóa đơn"
-              trim
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="6"
-        >
-          <b-form-group
-            label="Số nội bộ"
-            label-for="form-input-customer-group"
-          >
-            <b-form-input
-              id="form-input-customer-group"
-              v-model="internalNumber"
-              placeholder="Nhập số nội bộ"
-              trim
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="6"
-        >
-          <b-form-group
-            label="PO No"
-            label-for="form-input-customer-group"
-          >
-            <b-form-input
-              id="form-input-customer-group"
-              v-model="poNo"
-              placeholder="Nhập PO No"
-              trim
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="6"
-        >
-          <b-form-group
-            label="Từ ngày"
-            label-for="form-input-date-from"
-          >
-            <b-form-datepicker
-              id="form-input-date-from"
-              v-model="valueDateFrom"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="6"
-        >
-          <b-form-group
-            label="Đến ngày"
-            label-for="form-input-date-to"
-          >
-            <b-form-datepicker
-              id="form-input-date-to"
-              v-model="valueDateTo"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
-        </b-col>
-
-        <b-col
-          xl
-          sm="6"
-          md="12"
-        >
-          <b-form-group
-            label="Tìm kiếm"
-            label-for="form-button-search"
-          >
-            <b-button
-              id="form-button-search"
-              variant="primary"
-              @click="onSearchClick"
+            <b-input-group-append
+              is-text
             >
-              <b-icon-search />
-              Tìm kiếm
-            </b-button>
-          </b-form-group>
-        </b-col>
+              <b-icon-x
+                v-show="transCode"
+                class="cursor-pointer text-gray"
+                @click="transCode = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+          <small class="text-danger">{{ errors[0] }}</small>
+        </validation-provider>
+      </b-col>
 
-      </b-form-row>
-    </b-form>
-    <!-- END - Search -->
-  </div>
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <validation-provider
+          v-slot="{ errors, passed }"
+          rules="code"
+          name="số hóa đơn"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Số hóa đơn
+          </div>
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model.trim="redInvoiceNo"
+              :state="redInvoiceNo ? passed : null"
+              placeholder="Nhập số hóa đơn"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="redInvoiceNo"
+                class="cursor-pointer text-gray"
+                @click="redInvoiceNo = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+          <small class="text-danger">{{ errors[0] }}</small>
+        </validation-provider>
+      </b-col>
+
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <validation-provider
+          v-slot="{ errors, passed }"
+          rules="code"
+          name="số nội bộ"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Số nội bộ
+          </div>
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model.trim="internalNumber"
+              :state="internalNumber ? passed : null"
+              placeholder="Nhập số nội bộ"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="internalNumber"
+                class="cursor-pointer text-gray"
+                @click="internalNumber = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+          <small class="text-danger">{{ errors[0] }}</small>
+        </validation-provider>
+      </b-col>
+
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <validation-provider
+          v-slot="{ errors, passed }"
+          rules="code"
+          name="PO No"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            PO No
+          </div>
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model.trim="poNo"
+              :state="poNo ? passed : null"
+              placeholder="Nhập PO No"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="poNo"
+                class="cursor-pointer text-gray"
+                @click="poNo = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+          <small class="text-danger">{{ errors[0] }}</small>
+        </validation-provider>
+      </b-col>
+
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Từ ngày
+        </div>
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
+          @keypress="$onlyDateInput"
+        >
+          <b-icon-x
+            v-show="fromDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
+          <vue-flat-pickr
+            v-model="fromDate"
+            :config="configFromDate"
+            class="form-control h8"
+            placeholder="Chọn ngày"
+          />
+        </b-row>
+      </b-col>
+
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Đến ngày
+        </div>
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
+          @keypress="$onlyDateInput"
+        >
+          <b-icon-x
+            v-show="toDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
+          <vue-flat-pickr
+            id="form-input-date-from"
+            v-model="toDate"
+            :config="configToDate"
+            class="form-control h8"
+            placeholder="Chọn ngày"
+          />
+        </b-row>
+      </b-col>
+
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 text-white"
+          onmousedown="return false;"
+          style="cursor: context-menu;"
+        >
+          Tìm kiếm
+        </div>
+        <b-button
+          class="btn-brand-1 h9 align-items-button-center mt-sm-1 mt-xl-0"
+          variant="someThing"
+          @click="onSearchClick"
+        >
+          <b-icon-search class="mr-1" />
+          Tìm kiếm
+        </b-button>
+      </b-col>
+
+    </v-card-actions>
+  </b-form>
+  <!-- END - Search -->
 </template>
 
 <script>
+import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import {
+  ValidationProvider,
+} from 'vee-validate'
+import {
+  code,
+} from '@/@core/utils/validations/validations'
+import { reverseVniDate } from '@/@core/utils/filter'
+
 export default {
+  components: {
+    ValidationProvider,
+    VCardActions,
+  },
+
   data() {
     return {
-      valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      valueDateTo: new Date(),
+      // validation rules
+      code,
+
       transCode: '',
       redInvoiceNo: '',
       internalNumber: '',
       poNo: '',
-      fromDate: '',
-      toDate: '',
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
+
+      configFromDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
+      configToDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
+      },
     }
   },
+  watch: {
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
+  },
+
+  mounted() {
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
+    }
+  },
+
   methods: {
     onSearchClick() {
       this.$emit('onSearch', {
         transCode: this.transCode,
         redInvoiceNo: this.redInvoiceNo,
         internalNumber: this.internalNumber,
-        poNo: this.poNo,
+        poNumber: this.poNo,
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
       })
     },
   },

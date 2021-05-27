@@ -12,7 +12,7 @@
         <validation-provider
           v-slot="{ errors, passed }"
           rules="code"
-          name="Số biên bản"
+          name="số biên bản"
         >
           <div
             class="h8 mt-sm-1 mt-xl-0"

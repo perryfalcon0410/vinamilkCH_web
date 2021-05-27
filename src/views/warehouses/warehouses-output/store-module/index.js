@@ -44,7 +44,7 @@ export default {
     ajustments: [],
     borrowing: [],
     poProducts: [],
-    wareHouseType: {},
+    wareHouseType: [],
     dataWarehousesOutput: {},
   },
 
@@ -259,9 +259,9 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_WAREHOUSE_TYPE_ACTION]({ state }, val) {
+    [GET_WAREHOUSE_TYPE_ACTION]({ state }) {
       WarehousesService
-        .getWareHouseType(val)
+        .getWareHouseType()
         .then(response => response.data)
         .then(res => {
           if (res.success) {
