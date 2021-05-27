@@ -835,17 +835,7 @@ export default {
     onClickSaveButton() {
       const lstUpdate = this.originalProducts.map(data => ({
         productId: data.productId,
-        productCategory: data.category,
-        productCode: data.productCode,
-        productName: data.productName,
-        price: data.price,
-        stockQuantity: data.instockAmount,
-        inventoryQuantity: data.inventoryTotal || 0,
-        changeQuantity: data.unequal,
-        totalAmount: data.totalPrice,
         convfact: data.exchange,
-        packetUnit: data.packetUnit,
-        unit: data.oddUnit,
         packetQuantity: data.inventoryPacket || 0,
         unitQuantity: data.inventoryOdd || 0,
       }))

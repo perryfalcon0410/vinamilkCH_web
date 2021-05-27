@@ -411,6 +411,12 @@
               @click="onClickDownloadFailedFile"
             >Xem</ins>
           </b-col>
+          <b-col
+            v-show="showSuccessMessage"
+            class="text-success ml-1"
+          >
+            Nhập thành công
+          </b-col>
         </b-col>
       </div>
       <!-- END - Body -->
@@ -667,6 +673,7 @@ export default {
       showErrorMessage: false,
       rowsSuccess: 0,
       rowsFail: 0,
+      showSuccessMessage: false,
     }
   },
 
@@ -756,6 +763,7 @@ export default {
     getWarehouseInventoryImportData() {
       this.warehouseInventoryImportData = { ...this.getWarehouseInventoryImportData }
       this.showErrorMessage = this.warehouseInventoryImportData.response.importFails.length > 0
+      this.showSuccessMessage = !this.showErrorMessage
       this.rowsSuccess = this.warehouseInventoryImportData.info
       this.rowsFail = this.warehouseInventoryImportData.response.importFails.length
       this.warehouseInventoryImportData.response.importSuccess.forEach(productData => {

@@ -245,7 +245,7 @@ export default {
     },
     [UPDATE_WAREHOUSE_INVENTORY_ACTION]({ state }, val) {
       WarehousesInventoryService
-        .createWarehouseInventory(val)
+        .updateWarehouseInventory(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
