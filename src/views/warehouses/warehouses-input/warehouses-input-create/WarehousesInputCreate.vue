@@ -191,7 +191,7 @@
               <b-form-textarea
                 id="note"
                 v-model="note"
-                maxlength="4000"
+                maxlength="250"
               />
             </b-form-group>
             <!-- END -   Note -->

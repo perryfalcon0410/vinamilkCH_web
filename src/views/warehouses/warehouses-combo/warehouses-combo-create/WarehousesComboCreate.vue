@@ -67,7 +67,7 @@
               <b-form-textarea
                 id="note"
                 v-model="note"
-                maxlength="4000"
+                maxlength="250"
               />
             </b-form-group>
             <!-- END -   Note -->
@@ -100,6 +100,18 @@
               </div>
               <!-- END - Empty rows -->
               <template
+                slot="column-filter"
+                slot-scope="props"
+              >
+                <b-row
+                  v-if="props.column.field === 'numProduct'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  {{ $formatNumberToLocale(totalQuantity) }}
+                </b-row>
+              </template>
+              <template
                 slot="table-row"
                 slot-scope="props"
               >
@@ -109,18 +121,18 @@
                 <span v-if="props.column.field === 'numProduct'">
                   <b-form-input
                     v-model.number="comboListRows[props.index].numProduct"
-                    type="number"
-                    min="0"
+                    maxlength="20"
                     :state="isPositive(comboListRows[props.index].numProduct,props.index)"
-                    @change="onChangeQuantity(props.index)"
+                    @change="onChangeQuantity(props.row.originalIndex)"
+                    @keypress="$onlyNumberInput"
                   />
                 </span>
                 <span v-if="props.column.field === 'price'">
                   <b-form-input
                     v-model.number="comboListRows[props.index].price"
                     :state="isPositive(comboListRows[props.index].price,props.index)"
-                    type="number"
-                    min="0"
+                    maxlength="20"
+                    @keypress="$onlyNumberInput"
                   />
                 </span>
                 <span v-if="props.column.field === 'comboName'">
@@ -173,14 +185,11 @@
                               class="text-dark"
                             >
                               <strong> {{ product.productName }}</strong>
-                            </b-col>
-                            <b-col
-                              class="my-1"
-                            >
-                              {{ product.productCode }}
+                              <br>
+                              {{ product.label }}
+                              <!-- END - Section Label -->
                             </b-col>
                           </b-col>
-                          <!-- END - Section Label -->
                         </b-row>
                       </b-col>
                     </b-container>
@@ -216,9 +225,20 @@
                 Không có dữ liệu
               </div>
               <!-- END - Empty rows -->
+              <template
+                slot="column-filter"
+                slot-scope="props"
+              >
+                <b-row
+                  v-if="props.column.field === 'quantity'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  {{ $formatNumberToLocale(totalExchangeQuantity) }}
+                </b-row>
+              </template>
             </vue-good-table>
             <!-- END - Table combo exchange -->
-
             <!-- START - Button -->
             <b-row class="mr-0 my-1 justify-content-end">
               <b-button-group>
@@ -235,7 +255,6 @@
 
                 <b-button
                   class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
-                  variant="someThing"
                   @click="navigateBack"
                 >
                   <b-icon
@@ -249,9 +268,14 @@
             <!-- END - Button -->
             <!-- END - List -->
 
-          </b-col></b-row>
+          </b-col>
+        </b-row>
       </b-col>
     </validation-observer>
+    <confirm-close-modal
+      :visible="showConfirmCloseModal"
+      @close="showConfirmCloseModal = false"
+    />
   </b-container>
 </template>
 
@@ -259,8 +283,8 @@
 import warehousesData from '@/@db/warehouses'
 import { getNow } from '@core/utils/utils'
 import commonData from '@/@db/common'
-// eslint-disable-next-line no-unused-vars
 import moment from 'moment'
+import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
 import {
   mapActions,
   mapGetters,
@@ -276,9 +300,14 @@ import {
 } from '../store-module/type'
 
 export default {
+  components: {
+    ConfirmCloseModal,
+  },
   data() {
     return {
+      showConfirmCloseModal: false,
       componentKey: 0,
+      totalExchangeQuantity: 0,
       // Search combo
       isFocusedInputProduct: false,
       productInfos: {
@@ -319,6 +348,9 @@ export default {
         {
           label: 'Số lượng',
           field: 'numProduct',
+          filterOptions: {
+            enabled: true,
+          },
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -371,6 +403,9 @@ export default {
         {
           label: 'Số lượng',
           field: 'quantity',
+          filterOptions: {
+            enabled: true,
+          },
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -432,7 +467,12 @@ export default {
         quantity: data.numProduct,
       }))
     },
-
+    totalQuantity() {
+      return this.comboListRows.reduce((accum, item) => accum + Number(item.numProduct), 0)
+    },
+    getTotalExchangeQuantity() {
+      return this.comboExchangeRows.reduce((accum, item) => accum + Number(item.quantity), 0)
+    },
   },
   watch: {
     comboExchangeProducts() {
@@ -442,6 +482,9 @@ export default {
           e.quantity = this.comboListRows[this.globalIndex].numProduct * e.exchangeRate
         }
       })
+    },
+    getTotalExchangeQuantity() {
+      this.totalExchangeQuantity = this.getTotalExchangeQuantity
     },
   },
   mounted() {
@@ -459,7 +502,7 @@ export default {
       const obj = {
         id: item.id,
         comboCode: item.label,
-        numProduct: item.numProduct || 0,
+        numProduct: 1,
         price: item.productPrice || 0,
         comboName: item.productName,
         selectedComboId: item.id,
@@ -471,6 +514,7 @@ export default {
         this.globalIndex = newIndex
         this.GET_COMBO_PRODUCTS_DETAILS_ACTION({
           id: item.id,
+          status: 1, // TRINH THAI bảo thế
           formId: this.formId,
           ctrlId: this.ctrlId,
         })
@@ -506,6 +550,7 @@ export default {
     },
     onChangeQuantity(index) {
       this.updateComboExchangeQuantity(index)
+      this.totalExchangeQuantity = this.comboExchangeRows.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
     // Change quantity--------------------------
 
@@ -516,7 +561,11 @@ export default {
       return true
     },
     navigateBack() {
-      this.$router.push({ name: 'warehouses-combo' })
+      if (this.comboListRows.length > 0) {
+        this.showConfirmCloseModal = true
+      } else {
+        this.$router.push({ name: 'warehouses-combo' })
+      }
     },
 
     focusProduct() {
@@ -532,8 +581,8 @@ export default {
         this.isFocusedInputProduct = true
         const searchData = {
           keyWord: this.productInfos.productName,
-          customerTypeId: 1, // hard code vì api bảo thế để chạy trơn tru, sau này sửa lại
-          ...this.decentralization,
+          formId: this.formId,
+          ctrlId: this.ctrlId,
         }
         this.GET_COMBO_PRODUCTS_ACTION(searchData)
       } else {
