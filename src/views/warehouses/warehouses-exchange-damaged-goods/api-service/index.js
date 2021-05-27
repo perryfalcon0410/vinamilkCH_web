@@ -9,6 +9,7 @@ import {
   getProductsEndPoint,
   updateExchangeDamagedGoodsEndpoint,
   getDamagedGoodsByIdEndpoint,
+  removeExchangeDamagedGoodsEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -41,5 +42,8 @@ export default {
   },
   getDamagedGoodsById(args) {
     return axios.get(`${getDamagedGoodsByIdEndpoint}/${args}`)
+  },
+  removeExchangeDamagedGoods(args) {
+    return axios.put(`${removeExchangeDamagedGoodsEndpoint}/${args}`)
   },
 }

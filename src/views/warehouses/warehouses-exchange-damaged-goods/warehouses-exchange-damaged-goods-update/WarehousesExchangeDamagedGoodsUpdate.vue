@@ -18,7 +18,7 @@
         >
           <!-- START -  Date  -->
           <div>
-            Ngày biên bản: <strong>{{ exchangeGoodsInfo.transDate }}</strong>
+            Ngày biên bản: <strong>{{ exchangeGoodsInfo.transDate }} lúc {{ exchangeGoodsInfo.transTime }}</strong>
           </div>
           <!-- END -  Date -->
 
@@ -34,7 +34,7 @@
             <b-form-input
               v-model.trim="exchangeGoodsInfo.transCode"
               :state="touched ? passed : null"
-              maxlength="20"
+              maxlength="40"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -99,7 +99,7 @@
             <b-input
               v-model.trim="customerInfo.customerAddress"
               :state="touched ? passed : null"
-              maxlength="20"
+              maxlength="200"
               readonly
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -385,11 +385,13 @@ import {
   phoneNumber,
   required,
 } from '@/@core/utils/validations/validations'
+import toasts from '@core/utils/toasts/toasts'
+// import { getNow } from '@/@core/utils/utils'
 import {
   formatVniDateToISO,
   formatISOtoVNI,
+  getTimeOfDate,
 } from '@/@core/utils/filter'
-import { getNow } from '@/@core/utils/utils'
 import {
   WAREHOUSES_EXCHANGE_DAMAGED_GOODS,
   // GETTERS
@@ -444,6 +446,7 @@ export default {
         customerName: '',
         customerAddress: '',
         customerPhone: '',
+        status: 1, // Kiểm tra khách hàng có hoạt động không
       },
       exchangeGoodsInfo: {
         customerId: '',
@@ -453,7 +456,6 @@ export default {
         reason: '',
         quantity: 0,
         totalAmount: 0,
-        transDate: getNow(),
         lstExchangeDetail: [
           {
             id: '',
@@ -635,6 +637,7 @@ export default {
         // START - Exchange Damaged Goods
         this.exchangeGoodsInfo.transCode = this.exchangeDamagedGoods.transCode
         this.exchangeGoodsInfo.transDate = formatISOtoVNI(this.exchangeDamagedGoods.transDate)
+        this.exchangeGoodsInfo.transTime = getTimeOfDate(this.exchangeDamagedGoods.transDate)
         this.exchangeGoodsInfo.shopId = this.exchangeDamagedGoods.shopId
         this.exchangeGoodsInfo.customerId = this.exchangeDamagedGoods.customerId
         this.customerInfo.customerName = this.exchangeDamagedGoods.customerName
@@ -651,8 +654,7 @@ export default {
 
     updateExchangeDamagedGoods() {
       this.$refs.formContainer.validate().then(success => {
-        if (success) {
-          console.log(this.exchangeGoodsInfo.reasonId)
+        if (success && this.checkDuplicatesName() > -1) {
           this.UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION({
             exchangeDamagedGoods: {
               customerId: this.exchangeGoodsInfo.customerId,
@@ -670,7 +672,7 @@ export default {
               this.navigateBack()
             },
           })
-        }
+        } else toasts.error('Khách hàng không tồn tại')
       })
     },
 
@@ -680,6 +682,7 @@ export default {
         this.isFocusedInputCustomer = true
         const searchData = {
           searchKeywords: this.customerInfo.customerName.trim(),
+          status: this.customerInfo.status,
         }
         this.GET_CUSTOMERS_ACTION(searchData)
       } else {
@@ -775,8 +778,14 @@ export default {
       this.goNext()
     },
 
+    checkDuplicatesName() {
+      console.log(this.customers)
+      return this.customers.findIndex(x => x.customerName.toLowerCase() === this.customerInfo.customerName.toLowerCase())
+    },
+
     onClickSaveButton() {
       this.isFieldCheck = false
+      this.checkDuplicatesName()
       this.updateExchangeDamagedGoods()
     },
 

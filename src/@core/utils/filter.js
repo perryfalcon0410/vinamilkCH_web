@@ -1,5 +1,3 @@
-import { isToday } from './utils'
-
 export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)
 
 export const title = (value, replacer = ' ') => {
@@ -111,16 +109,6 @@ export const reverseVniDate = value => {
  * @param {String} value date to format
  * @param {Boolean} toTimeForCurrentDay Shall convert to time if day is today/current
  */
-export const formatDateToMonthShort = (value, toTimeForCurrentDay = true) => {
-  const date = new Date(value)
-  let formatting = { month: 'short', day: 'numeric' }
-
-  if (toTimeForCurrentDay && isToday(date)) {
-    formatting = { hour: 'numeric', minute: 'numeric' }
-  }
-
-  return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
-}
 
 // Strip all the tags from markup and return plain text
 export const filterTags = value => value.replace(/<\/?[^>]+(>|$)/g, '')
@@ -128,7 +116,7 @@ export const filterTags = value => value.replace(/<\/?[^>]+(>|$)/g, '')
 export const getTimeOfDate = value => {
   const formatting = { hour: 'numeric', minute: 'numeric', hour12: false }
 
-  return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
+  return new Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
 }
 // count from isoDate to now
 export const countDays = isoDate => {

@@ -34,7 +34,7 @@
             <b-form-input
               v-model.trim="exchangeGoodsInfo.transCode"
               :state="touched ? passed : null"
-              maxlength="20"
+              maxlength="40"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -99,7 +99,7 @@
             <b-input
               v-model.trim="customerInfo.customerAddress"
               :state="touched ? passed : null"
-              maxlength="20"
+              maxlength="200"
               readonly
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -385,6 +385,7 @@ import {
   phoneNumber,
   required,
 } from '@/@core/utils/validations/validations'
+import toasts from '@core/utils/toasts/toasts'
 import { getNow } from '@/@core/utils/utils'
 import {
   WAREHOUSES_EXCHANGE_DAMAGED_GOODS,
@@ -431,28 +432,29 @@ export default {
         ctrlId: 7,
       },
       customerInfo: {
-        customerId: null,
-        customerCode: null,
-        customerName: null,
-        customerAddress: null,
-        customerPhone: null,
+        customerId: '',
+        customerCode: '',
+        customerName: '',
+        customerAddress: '',
+        customerPhone: '',
+        status: 1, // để kiểm tra khách hàng còn hoạt động không
       },
       exchangeGoodsInfo: {
-        transCode: null,
-        shopId: null,
-        customerId: null,
-        reasonId: null,
-        quantity: null,
-        totalAmount: null,
+        transCode: '',
+        shopId: '',
+        customerId: '',
+        reasonId: '',
+        quantity: 0,
+        totalAmount: 0,
         minuteDate: getNow(),
         lstExchangeDetail: [
           {
-            productCode: null,
-            productName: null,
-            price: null,
-            quantity: null,
-            totalPrice: null,
-            unit: null,
+            productCode: '',
+            productName: '',
+            price: 0,
+            quantity: 0,
+            totalPrice: 0,
+            unit: '',
           },
         ],
       },
@@ -610,7 +612,7 @@ export default {
 
     createDamagedGoods() {
       this.$refs.formContainer.validate().then(success => {
-        if (success) {
+        if (success && this.checkDuplicatesName() > -1) {
           this.CREATE_EXCHANGE_DAMAGED_GOODS_ACTION({
             damagedGoodsData: {
               customerId: this.customerInfo.customerId,
@@ -626,8 +628,13 @@ export default {
               this.navigateBack()
             },
           })
-        }
+        } else toasts.error('Khách hàng không tồn tại')
       })
+    },
+
+    checkDuplicatesName() {
+      console.log(this.customers)
+      return this.customers.findIndex(x => x.customerName.toLowerCase() === this.customerInfo.customerName.toLowerCase())
     },
 
     customerOptions() {
@@ -636,6 +643,7 @@ export default {
         this.isFocusedInputCustomer = true
         const searchData = {
           searchKeywords: this.customerInfo.customerName.trim(),
+          status: this.customerInfo.status,
         }
         this.GET_CUSTOMERS_ACTION(searchData)
       } else {
@@ -733,6 +741,7 @@ export default {
 
     onClickSaveButton() {
       this.isFieldCheck = false
+      this.checkDuplicatesName()
       this.createDamagedGoods()
     },
 

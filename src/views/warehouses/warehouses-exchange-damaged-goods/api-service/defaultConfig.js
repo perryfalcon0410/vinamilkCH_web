@@ -10,3 +10,4 @@ export const getCustomersEndpoint = `${CUSTOMER}`
 export const getProductsEndPoint = `${PRODUCT}`
 export const updateExchangeDamagedGoodsEndpoint = `${EXCHANGE_DAMAGED_GOODS}/update`
 export const getDamagedGoodsByIdEndpoint = `${EXCHANGE_DAMAGED_GOODS}/products`
+export const removeExchangeDamagedGoodsEndpoint = `${EXCHANGE_DAMAGED_GOODS}/remove`

@@ -18,6 +18,7 @@ import {
   GET_PRODUCTS_ACTION,
   UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION,
   GET_DAMAGED_GOODS_ACTION,
+  REMOVE_EXCHANGE_DAMAGED_GOODS_ACTION,
 } from './type'
 
 export default {
@@ -164,6 +165,24 @@ export default {
     },
     // END - GET PRODUCTS
 
+    // REMOVE DAMAGED GOODS BY ID
+    [REMOVE_EXCHANGE_DAMAGED_GOODS_ACTION]({}, val) {
+      exchangeDamagedGoodsService
+        .removeExchangeDamagedGoods(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    // END - REMOVE DAMAGED GOODS BY ID
+
     // START UPDATE EXCHANGE GOODS
     [UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION]({}, val) {
       exchangeDamagedGoodsService
@@ -182,23 +201,24 @@ export default {
         })
     },
     // END UPDATE EXCHANGE GOODS
-  },
 
-  // GET DAMAGED GOODS BY ID
-  [GET_DAMAGED_GOODS_ACTION]({ state }, val) {
-    exchangeDamagedGoodsService
-      .getExchangeDamagedGoodsById(val)
-      .then(response => response.data)
-      .then(res => {
-        if (res.success) {
-          state.damagedGoodsById = res.data || []
-        } else {
-          throw new Error(res.statusValue)
-        }
-      })
-      .catch(error => {
-        toasts.error(error.message)
-      })
+    // GET DAMAGED GOODS BY ID
+    [GET_DAMAGED_GOODS_ACTION]({ state }, val) {
+      exchangeDamagedGoodsService
+        .getExchangeDamagedGoodsById(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.damagedGoodsById = res.data || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    // END - GET DAMAGED GOODS BY ID
+
   },
-  // END - GET DAMAGED GOODS BY ID
 }

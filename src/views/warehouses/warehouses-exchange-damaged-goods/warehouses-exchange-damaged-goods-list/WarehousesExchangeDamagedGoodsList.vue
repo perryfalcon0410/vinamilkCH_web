@@ -114,7 +114,7 @@
                 class="cursor-pointer"
                 color="red"
                 scale="1.2"
-                @click="onClickDeleteButton(props.row.id, props.row.index)"
+                @click="onClickDeleteButton(props.row.id, props.row.originalIndex)"
               />
             </b-row>
             <div v-else>
@@ -129,6 +129,7 @@
             slot-scope="props"
           >
             <b-row
+              v-show="exchangeDamagedGoodsPagination.totalElements"
               v-if="props.column.field === 'quantity'"
               class="mx-0"
               align-h="end"
@@ -136,6 +137,7 @@
               {{ $formatNumberToLocale(getTotalValues.totalQuantity) }}
             </b-row>
             <b-row
+              v-show="exchangeDamagedGoodsPagination.totalElements"
               v-else-if="props.column.field === 'price'"
               class="mx-0"
               align-h="end"
@@ -228,7 +230,8 @@
           Hủy
         </b-button>
         <b-button
-          variant="primary"
+          class="btn-brand-1 h9 align-items-button-center rounded"
+          variant="someThing"
           @click="confirmDelete"
         >
           Xóa
@@ -251,6 +254,7 @@ import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
 import { formatISOtoVNI } from '@/@core/utils/filter'
+// import toasts from '@core/utils/toasts/toasts'
 
 import WarehousesExchangeDamagedGoodsListSearch from './components/WarehousesExchangeDamagedGoodsListSearch.vue'
 import {
@@ -259,6 +263,7 @@ import {
   EXCHANGE_DAMAGED_GOODS_GETTER,
   // Actions
   GET_EXCHANGE_DAMAGED_GOODS_ACTION,
+  REMOVE_EXCHANGE_DAMAGED_GOODS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -371,13 +376,6 @@ export default {
       }
       return {}
     },
-    // totalQuantity() {
-    //   return this.exchangeDamagedGoods.reduce((accum, item) => accum + Number(item.exchangeDamagedGoodsQuantity), 0)
-    // },
-
-    // totalMoney() {
-    //   return this.exchangeDamagedGoods.reduce((accum, item) => accum + Number(item.exchangeDamagedGoodsPrice), 0)
-    // },
 
     exchangeDamagedGoodsPagination() {
       if (this.EXCHANGE_DAMAGED_GOODS_GETTER.response) {
@@ -400,6 +398,7 @@ export default {
   methods: {
     ...mapActions(WAREHOUSES_EXCHANGE_DAMAGED_GOODS, [
       GET_EXCHANGE_DAMAGED_GOODS_ACTION,
+      REMOVE_EXCHANGE_DAMAGED_GOODS_ACTION,
     ]),
     onClickAddNewButton() {
       this.$router.push({ name: 'warehouses-exchange-damaged-goods-create' })
@@ -412,12 +411,24 @@ export default {
         },
       })
     },
-    onClickDeleteButton(id, index) {
-      this.selectedReceiptId = id
-      this.selectedReceiptIndex = index
 
+    removeExchangeDamagedGoods() {
+      this.REMOVE_EXCHANGE_DAMAGED_GOODS_ACTION(`${this.exchangeDamagedGoodsId}?${this.decentralization}`)
+    },
+
+    onClickDeleteButton(id, index) {
+      this.exchangeDamagedGoodsId = id
+      this.exchangeDamagedGoodsIndex = index
       this.isDeleteModalShow = !this.isDeleteModalShow
     },
+
+    confirmDelete() {
+      this.REMOVE_EXCHANGE_DAMAGED_GOODS_ACTION(`${this.exchangeDamagedGoodsId}`)
+      this.isDeleteModalShow = !this.isDeleteModalShow
+      this.exchangeDamagedGoods.splice(this.exchangeDamagedGoodsIndex, 1)
+      this.exchangeDamagedGoodsPagination.totalElements -= 1
+    },
+
     onClickFeature() {
       this.isDisabledFeature = !this.isDisabledFeature
     },
