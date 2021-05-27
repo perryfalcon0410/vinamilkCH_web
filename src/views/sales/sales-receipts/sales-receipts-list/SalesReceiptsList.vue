@@ -6,8 +6,7 @@
 
     <sales-receipt-list-search
       @updateSearchData="paginationData = {
-        size: elementSize,
-        page: pageNumber - 1,
+        ...paginationData,
         ...$event }"
     />
 
@@ -152,7 +151,11 @@
                 />
                 <span
                   class="text-nowrap"
-                > trong {{ salesReceiptsPagination.totalElements }} mục </span>
+                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
+                  -
+                  {{ (elementSize * pageNumber) > salesReceiptsPagination.totalElements ?
+                    salesReceiptsPagination.totalElements : (elementSize * pageNumber) }}
+                  của {{ salesReceiptsPagination.totalElements }} mục </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -234,6 +237,10 @@ export default {
   },
   data() {
     return {
+      decentralization: {
+        formId: 5,
+        ctrlId: 7,
+      },
       isInvoiceDetailModal: false,
       valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       valueDateTo: new Date(),
@@ -459,9 +466,22 @@ export default {
       this.isInvoiceDetailModal = !this.isInvoiceDetailModal
       this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber: numberBill })
     },
+    // -------------- pagnigation function--------------
     onPaginationChange() {
-      this.GET_SALES_RECEIPTS_ACTION(this.paginationData)
+      this.GET_CUSTOMERS_ACTION({ ...this.paginationData, ...this.decentralization })
     },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    // -------------- pagnigation function--------------
   },
 }
 </script>

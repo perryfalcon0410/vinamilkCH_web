@@ -121,8 +121,8 @@
                 <span v-if="props.column.field === 'numProduct'">
                   <b-form-input
                     v-model.number="comboListRows[props.index].numProduct"
-                    maxlength="20"
-                    :state="isPositive(comboListRows[props.index].numProduct,props.index)"
+                    maxlength="10"
+                    :state="isPricePositive(comboListRows[props.index].numProduct,props.index)"
                     @change="onChangeQuantity(props.row.originalIndex)"
                     @keypress="$onlyNumberInput"
                   />
@@ -131,7 +131,7 @@
                   <b-form-input
                     v-model.number="comboListRows[props.index].price"
                     :state="isPositive(comboListRows[props.index].price,props.index)"
-                    maxlength="20"
+                    maxlength="10"
                     @keypress="$onlyNumberInput"
                   />
                 </span>
@@ -284,6 +284,8 @@ import warehousesData from '@/@db/warehouses'
 import { getNow } from '@core/utils/utils'
 import commonData from '@/@db/common'
 import moment from 'moment'
+// eslint-disable-next-line no-unused-vars
+import toasts from '@core/utils/toasts/toasts'
 import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
 import {
   mapActions,
@@ -498,6 +500,7 @@ export default {
     ]),
 
     onComboSelected(item) {
+      this.productInfos.productName = null
       const index = this.comboListRows.findIndex(e => e.selectedComboId === item.id)
       const obj = {
         id: item.id,
@@ -519,7 +522,6 @@ export default {
           ctrlId: this.ctrlId,
         })
       } else {
-        this.comboListRows[index].price += obj.price
         this.comboListRows[index].numProduct += obj.numProduct
         this.updateComboExchangeQuantity(index)
       }
@@ -555,7 +557,14 @@ export default {
     // Change quantity--------------------------
 
     isPositive(num) {
-      if (num < 0) {
+      if (num <= 0) {
+        return false
+      }
+      return true
+    },
+    isPricePositive(num, index) {
+      if (num <= 0) {
+        this.comboListRows[index].quantity = 1
         return false
       }
       return true
