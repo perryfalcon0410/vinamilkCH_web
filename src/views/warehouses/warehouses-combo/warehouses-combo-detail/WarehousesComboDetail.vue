@@ -21,7 +21,7 @@
               </b-col>
               <b-col>
                 <strong>
-                  {{ now }}
+                  {{ transDate }} lúc {{ transTime }}
                 </strong>
               </b-col>
             </b-row>
@@ -159,6 +159,9 @@
 import router from '@/router'
 import VInputSelect from '@/@core/components/v-input-select/VInputSelect.vue'
 import warehousesData from '@/@db/warehouses'
+import {
+  formatISOtoVNI, getTimeOfDate,
+} from '@core/utils/filter'
 import { getNow } from '@core/utils/utils'
 import {
   mapGetters,
@@ -260,6 +263,8 @@ export default {
         },
       ],
       // -----------------Combo Exchange-----------------
+      transDate: '',
+      transTime: '',
     }
   },
   computed: {
@@ -294,6 +299,8 @@ export default {
   watch: {
     detail() {
       this.id = this.detail.transCode
+      this.transDate = formatISOtoVNI(this.detail.transDate)
+      this.transTime = getTimeOfDate(this.detail.transDate)
       this.note = this.detail.note
       this.traddingTypeSelected = warehousesData.tradingTypes.find(item => item.id === this.detail.transType.toString()) || null
     },
