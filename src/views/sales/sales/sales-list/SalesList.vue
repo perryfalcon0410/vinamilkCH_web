@@ -118,7 +118,7 @@
         <!-- START - Table product -->
         <vue-good-table
           :columns="columns"
-          :rows="products"
+          :rows="orderProducts"
           style-class="vgt-table striped"
           compact-mode
           line-numbers
@@ -194,6 +194,7 @@
               />
             </div>
             <!-- END - tableProductFeature -->
+            <!-- @click="onClickDeleteProduct(props.row.originalIndex)" -->
 
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
@@ -213,6 +214,7 @@
 
       <!-- START - Section Form pay -->
       <sales-form
+        :orderProducts="orderProducts"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
@@ -341,7 +343,7 @@ export default {
         formId: 5, // Hard code
         ctrlId: 7, // Hard code
       },
-      products: [],
+      orderProducts: [],
       productInfos: [],
       productInfoTypeOptions: saleData.productInfoType,
       productsSearch: [],
@@ -427,13 +429,13 @@ export default {
       this.getCustomerDefault()
     },
     getProducts() {
-      this.products = [...this.getProducts]
+      this.orderProducts = [...this.getProducts]
     },
     getCustomerTypeProducts() {
-      this.products = [...this.getCustomerTypeProducts]
+      this.orderProducts = [...this.getCustomerTypeProducts]
     },
     getOnlineOrderProducts() {
-      this.products = [...this.getOnlineOrderProducts]
+      this.orderProducts = [...this.getOnlineOrderProducts]
     },
   },
   mounted() {
@@ -456,10 +458,6 @@ export default {
     }
     this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetProductsTopSale)
     this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
-
-    this.getProducts()
-    this.getOnlineOrderProducts()
-    this.getCustomerTypeProducts()
   },
   created() {
   },
@@ -487,19 +485,19 @@ export default {
     },
 
     increaseAmount(productId) {
-      const index = this.products.findIndex(i => i.productId === productId)
-      this.products[index].quantity += 1
-      this.products[index].productTotalPrice = this.totalPrice(Number(this.products[index].quantity), Number(this.products[index].productUnitPrice))
+      const index = this.orderProducts.findIndex(i => i.productId === productId)
+      this.orderProducts[index].quantity += 1
+      this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].productUnitPrice))
     },
 
     decreaseAmount(productId) {
-      const index = this.products.findIndex(i => i.productId === productId)
-      this.products[index].quantity -= 1
-      if (this.products[index].quantity < 0) {
-        this.products[index].quantity = 0
+      const index = this.orderProducts.findIndex(i => i.productId === productId)
+      this.orderProducts[index].quantity -= 1
+      if (this.orderProducts[index].quantity < 0) {
+        this.orderProducts[index].quantity = 0
       }
 
-      this.products[index].productTotalPrice = this.totalPrice(Number(this.products[index].quantity), Number(this.products[index].productUnitPrice))
+      this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].productUnitPrice))
     },
 
     onClickDeleteProduct(index) {

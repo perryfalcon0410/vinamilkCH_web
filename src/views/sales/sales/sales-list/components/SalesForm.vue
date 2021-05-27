@@ -303,7 +303,14 @@
             class="mr-1"
           />
           Thanh toán (F8)
-          <pay-modal ref="payModal" />
+          <pay-modal
+            ref="payModal"
+            :orderProducts="orderProducts"
+            :orderSelected="salemtPromotionObjectSelected"
+            :deliverySelected="salemtDeliveryTypeSelected"
+            :customerSelected="id"
+            :shopSelected="shopId"
+          />
         </b-button>
         <!-- END - Button pay -->
 
@@ -373,6 +380,12 @@ export default {
     SalesOnlineOrdersModal,
     PayModal,
   },
+  props: {
+    orderProducts: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
       inputSearchFocused: false,
@@ -380,6 +393,7 @@ export default {
 
       // customer
       id: null,
+      shopId: null,
       firstName: null,
       lastName: null,
       fullName: null,
@@ -526,7 +540,6 @@ export default {
     },
   },
   mounted() {
-    this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
     this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4, salemtDeliveryTypeSelected: this.salemtDeliveryTypeSelected })
     this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
@@ -557,6 +570,8 @@ export default {
 
     showPayModal() {
       this.$refs.payModal.$refs.payModal.show()
+      console.log('orderProducts', this.orderProducts)
+      // this.$emit('orderProducts', this.orderProducts)
     },
 
     showNotifyModal() {
@@ -571,12 +586,14 @@ export default {
 
     getCustomerInfo(val) {
       this.id = val.data.id
+      this.shopId = val.data.id
       this.fullName = val.data.fullName
       this.phoneNumber = val.data.phoneNumber
       this.address = val.data.address
       this.totalBill = val.data.totalBill ?? 0
       this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
       this.$emit('getCustomerIdInfo', val.data.id)
+      console.log('valllll', val)
     },
 
     getOnlineOrderInfo(id) {

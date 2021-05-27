@@ -281,6 +281,7 @@ export default {
       phone: '',
       idNo: '',
       customerTypeId: '',
+      shopId: '',
 
       columns: [
         {
@@ -345,6 +346,7 @@ export default {
       if (this.CUSTOMERS_GETTER.content) {
         return this.CUSTOMERS_GETTER.content.map(data => ({
           id: data.id,
+          shopId: data.shopId,
           code: data.customerCode,
           fullName: `${data.lastName} ${data.firstName}`,
           phoneNumber: data.mobiPhone,

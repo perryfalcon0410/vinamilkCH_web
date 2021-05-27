@@ -184,7 +184,7 @@ export default {
     }
     this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetTopSaleProduct)
     const paramGetHotProduct = {
-      customerId: 310, // Hard code customerId
+      customerId: 232, // Hard code customerId
       size: saleData.pageSizeRecommendProducts,
       page: saleData.pageNumberRecommendProducts,
       // formId: 5, // Hard code

@@ -657,6 +657,26 @@ export default {
     visible: {
       type: Boolean,
     },
+    orderProducts: {
+      type: Array,
+      default: () => [],
+    },
+    deliverySelected: {
+      type: String,
+      default: String,
+    },
+    orderSelected: {
+      type: String,
+      default: String,
+    },
+    customerSelected: {
+      type: String,
+      default: String,
+    },
+    shopSelected: {
+      type: String,
+      default: String,
+    },
   },
   data() {
     return {
@@ -812,11 +832,11 @@ export default {
     },
 
     totalQuantity() {
-      return this.getProducts.reduce((sum, item) => sum + Number(item.quantity), 0)
+      return this.orderProducts.reduce((sum, item) => sum + Number(item.quantity), 0)
     },
 
     totalOrderPrice() {
-      return this.getProducts.reduce((sum, item) => sum + Number(item.productTotalPrice), 0)
+      return this.orderProducts.reduce((sum, item) => sum + Number(item.productTotalPrice), 0)
     },
 
     needPayment() {
@@ -943,14 +963,16 @@ export default {
       this.CREATE_SALE_ORDER_ACTION({
         product: {
           shopId: this.shopId,
-          customerId: this.customerId,
+          customerId: this.customerSelected,
           totalPaid: this.totalOrderPrice,
           paymentType: this.salemtPaymentTypeSelected,
-          deliveryType: 1, // Hard code
-          orderType: 0, // Hard code
-          usedRedInvoice: false,
+          deliveryType: this.deliverySelected,
+          orderType: this.orderSelected,
           voucherId: this.voucherId,
-          products: this.getProducts,
+          products: this.orderProducts,
+          type: 0,
+          salemanId: 1,
+          usedRedInvoice: false,
         },
         onSuccess: () => {
           this.$refs.payModal.hide()
