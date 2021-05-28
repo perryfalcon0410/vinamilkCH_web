@@ -7,3 +7,4 @@ export const getBillOfSaleProductsEndPoint = `${SALES}${RED_INVOICES}/show-info-
 export const getProductsEndPoint = `${SALES}${RED_INVOICES}/search-product`
 export const createRedBillEndpoint = `${SALES}${RED_INVOICES}/create`
 export const getInvoiceDetailEndpoint = `${SALES}${RED_INVOICES}/show-invoice-details`
+export const deleteReDBillEndpoint = `${SALES}${RED_INVOICES}/delete`

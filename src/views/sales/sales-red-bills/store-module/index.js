@@ -19,6 +19,7 @@ import {
   GET_PRODUCTS_ACTION,
   CREATE_RED_BILL_ACTION,
   GET_INVOICE_DETAIL_ACTION,
+  DELETE_RED_INVOICE_ACTION,
 } from './type'
 import toasts from '../../../../@core/utils/toasts/toasts'
 
@@ -197,6 +198,21 @@ export default {
         .then(res => {
           if (res.success) {
             state.invoiceDetail = res.data || {}
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [DELETE_RED_INVOICE_ACTION]({}, val) {
+      RedInvoiceService
+        .deleteRedBill(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
           } else {
             throw new Error(res.statusValue)
           }

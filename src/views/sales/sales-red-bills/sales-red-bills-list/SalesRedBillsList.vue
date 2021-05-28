@@ -187,6 +187,7 @@
           <b-button
             class="ml-1 rounded"
             variant="primary"
+            @click="onClickDeleteButton"
           >
             <b-icon-trash />
             Xóa
@@ -200,7 +201,7 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="redInvoices"
+          :rows="redBillLits"
           class="pb-1"
           style-class="vgt-table striped"
           :pagination-options="{
@@ -217,6 +218,8 @@
             selectAllByGroup: true,
             multipleColumns: true,
           }"
+          @on-row-click="selectionRow"
+          @on-select-all="selectAllRows"
         >
           <!-- START - Empty rows -->
           <div
@@ -253,11 +256,11 @@
                 />
                 <span
                   class="text-nowrap"
-                > trong {{ paging.totalElements }} mục </span>
+                > trong {{ redBillPagination.totalElements }} mục </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="paging.totalElements"
+                :total-rows="redBillPagination.totalElements"
                 :per-page="elementSize"
                 first-number
                 last-number
@@ -287,6 +290,30 @@
       </b-col>
       <!-- END - Table -->
     </b-form>
+
+    <!-- START - Red Bill Modal Delete -->
+    <b-modal
+      v-model="isDeleteModalShow"
+      title="Thông báo"
+    >
+      Bạn có muốn xóa các hóa đơn đỏ?
+      <template #modal-footer>
+        <b-button
+          @click="isDeleteModalShow = false"
+        >
+          Hủy
+        </b-button>
+        <b-button
+          class="btn-brand-1 h9 align-items-button-center rounded"
+          variant="someThing"
+          @click="confirmDelete"
+        >
+          Xóa
+        </b-button>
+      </template>
+
+    </b-modal>
+    <!-- END - Red Bill Modal Delete -->
   </b-container>
 </template>
 
@@ -296,6 +323,7 @@ import {
   mapGetters,
   mapState,
 } from 'vuex'
+import toasts from '@core/utils/toasts/toasts'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'
 import { reverseVniDate, formatISOtoVNI } from '@/@core/utils/filter'
@@ -303,6 +331,7 @@ import {
   RED_INVOICE,
   RED_INVOICES_GETTER,
   GET_RED_INVOICES_ACTION,
+  DELETE_RED_INVOICE_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -317,6 +346,14 @@ export default {
       toDate: null,
       invoiceNumber: '',
       customer: '',
+      redBillPagination: {},
+      // select rows delete
+      selectedRedBillRows: [],
+      ids: null,
+      isCheckAllRows: false,
+      isDeleteModalShow: false,
+      redBillLits: [],
+      // select rows delete
       valueShowModalBillOfSaleList: false,
       templateOptionSelected: redBillData.templateOptions[0].item,
       configDate: {
@@ -380,29 +417,41 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(RED_INVOICE, [
+      RED_INVOICES_GETTER,
+    ]),
     info() {
-      return this.RED_INVOICES_GETTER().info
+      return this.RED_INVOICES_GETTER.info
     },
-    redInvoices() {
-      return this.RED_INVOICES_GETTER().redInvoices.map(data => ({
-        id: data.id,
-        numberBill: data.invoiceNumber,
-        company: data.officeWorking,
-        address: data.officeaddress,
-        VATCode: data.taxCode,
-        amount: this.$formatNumberToLocale(data.totalQuantity),
-        goodsMoney: this.$formatNumberToLocale(data.totalMoney),
-        GTGT: this.$formatNumberToLocale(data.amountGTGT),
-        totalMoney: this.$formatNumberToLocale(data.amountNotVat),
-        note: data.note,
-        printDate: formatISOtoVNI(data.printDate),
-      }))
+    getRedInvoices() {
+      if (this.RED_INVOICES_GETTER.redInvoices) {
+        return this.RED_INVOICES_GETTER.redInvoices.map(data => ({
+          id: data.id,
+          numberBill: data.invoiceNumber,
+          company: data.officeWorking,
+          address: data.officeaddress,
+          VATCode: data.taxCode,
+          amount: this.$formatNumberToLocale(data.totalQuantity),
+          goodsMoney: this.$formatNumberToLocale(data.totalMoney),
+          GTGT: this.$formatNumberToLocale(data.amountGTGT),
+          totalMoney: this.$formatNumberToLocale(data.amountNotVat),
+          note: data.note,
+          printDate: formatISOtoVNI(data.printDate),
+        }))
+      }
+      return []
     },
-    paging() {
-      return this.RED_INVOICES_GETTER().paging
+    getRedBillPagination() {
+      return this.RED_INVOICES_GETTER.redBillPagination
     },
   },
   watch: {
+    getRedInvoices() {
+      this.redBillLits = [...this.getRedInvoices]
+    },
+    getRedBillPagination() {
+      this.redBillPagination = [...this.getRedBillPagination]
+    },
     pageNumber() {
       this.onPaginationChange()
     },
@@ -422,11 +471,9 @@ export default {
     ...mapState(RED_INVOICE, {
       successStatusDelete: state => state.delete.success,
     }),
-    ...mapGetters(RED_INVOICE, [
-      RED_INVOICES_GETTER,
-    ]),
     ...mapActions(RED_INVOICE, [
       GET_RED_INVOICES_ACTION,
+      DELETE_RED_INVOICE_ACTION,
     ]),
     addSaleRedBillsCreate() {
       this.$router.push({ name: 'sales-red-bills-create' })
@@ -461,6 +508,51 @@ export default {
         ctrlId: 7,
       })
     },
+
+    // delete rows redbill
+    selectAllRows(params) {
+      if (params.selected) {
+        this.selectedRedBillRows = []
+        params.selectedRows.forEach(item => {
+          if (!this.selectedRedBillRows.find(data => data.id === item.id)) {
+            this.selectedRedBillRows.push(item)
+          }
+        })
+        this.isCheckAllRows = true
+      } else if (this.isCheckAllRows) {
+        this.selectedRedBillRows = []
+        this.isCheckAllRows = false
+      }
+    },
+    selectionRow(params) {
+      if (params.selected) {
+        if (!this.selectedRedBillRows.find(data => data.id === params.row.id)) {
+          this.selectedRedBillRows.push(params.row)
+        }
+      } else {
+        const index = this.selectedRedBillRows.findIndex(data => data.id === params.row.id)
+        this.selectedRedBillRows.splice(index, 1)
+      }
+    },
+    onClickDeleteButton() {
+      if (this.selectedRedBillRows && this.selectedRedBillRows.length > 0) {
+        this.ids = this.selectedRedBillRows.length === 1 ? this.selectedRedBillRows[0].id : this.selectedRedBillRows.reduce((prev, curr) => `${prev.id ? prev.id : prev},${curr.id}`)
+        this.isDeleteModalShow = !this.isDeleteModalShow
+      } else {
+        toasts.error('Xin vui lòng chọn hóa đơn muốn xóa!')
+      }
+    },
+    confirmDelete() {
+      this.isDeleteModalShow = !this.isDeleteModalShow
+      this.DELETE_RED_INVOICE_ACTION({ ids: this.ids })
+      this.selectedRedBillRows.forEach(item => {
+        const findIndex = this.redBillLits.findIndex(e => e.id === item.id)
+        this.redBillLits.splice(findIndex, 1)
+      })
+      this.redBillPagination.totalElements -= this.selectedRedBillRows.length
+      this.selectedRedBillRows = []
+    },
+
   },
 }
 </script>
