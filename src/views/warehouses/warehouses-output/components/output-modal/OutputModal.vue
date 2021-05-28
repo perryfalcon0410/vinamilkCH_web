@@ -5,6 +5,7 @@
     title="Chọn phiếu nhập hàng"
     title-class="text-uppercase font-weight-bold text-brand-1"
     footer-border-variant="light"
+    hide-footer
     @hidden="onModalHidden"
   >
     <b-container
@@ -194,7 +195,7 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columnsProducts"
-            :rows="poProducts"
+            :rows="productDetail"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
@@ -274,6 +275,7 @@ export default {
       isModalShow: false,
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
+      productDetail: [],
       columns: [
         {
           label: 'Ngày nhập',
@@ -390,17 +392,20 @@ export default {
       return []
     },
 
-    poProducts() {
-      return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER.info.map(data => ({
-        id: data.id,
-        productCode: data.productCode,
-        productName: data.productName,
-        price: data.price,
-        unit: data.unit,
-        totalPrice: data.totalPrice,
-        export: `${data.export}/${data.quantity}`,
-        quantity: `${data.quantity - data.export}/${data.quantity}`,
-      }))
+    getExportPoTransDetail() {
+      if (this.GET_EXPORT_PO_TRANS_DETAIL_GETTER.info) {
+        return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER.info.map(data => ({
+          id: data.id,
+          productCode: data.productCode,
+          productName: data.productName,
+          price: data.price,
+          unit: data.unit,
+          totalPrice: data.totalPrice,
+          export: `${data.export}/${data.quantity}`,
+          quantity: `${data.quantity - data.export}/${data.quantity}`,
+        }))
+      }
+      return []
     },
 
     outputPagination() {
@@ -408,6 +413,11 @@ export default {
         return this.GET_EXPORT_PO_TRANS_GETTER
       }
       return {}
+    },
+  },
+  watch: {
+    getExportPoTransDetail() {
+      this.productDetail = [...this.getExportPoTransDetail]
     },
   },
   mounted() {
@@ -428,8 +438,11 @@ export default {
       this.$emit('onModalHidden')
     },
     choonsenTrans(trans) {
-      this.$emit('choonsenTrans', trans)
-      this.$emit('onModalHidden', trans.id)
+      this.onPoItemSelected(trans.id)
+      console.log(trans.id)
+      console.log(this.productDetail)
+      this.$emit('choonsenTrans', [trans, this.productDetail])
+      this.$emit('onModalHidden')
     },
     onPaginationChange() {
       this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)

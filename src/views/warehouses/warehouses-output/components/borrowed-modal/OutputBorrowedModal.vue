@@ -2,7 +2,7 @@
   <b-modal
     size="xl"
     :visible="visible"
-    title="Chọn phiếu xuất vay mượng"
+    title="Chọn phiếu xuất vay mượn"
     title-class="text-uppercase font-weight-bold text-brand-1"
     footer-border-variant="light"
     @hidden="onModalHidden"
@@ -113,7 +113,7 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columnsProducts"
-            :rows="poProducts"
+            :rows="getExportBorrowingDetail"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
@@ -302,16 +302,18 @@ export default {
       return []
     },
 
-    poProducts() {
-      return this.GET_EXPORT_BORROWINGS_DETAIL_GETTER.map(data => ({
-        id: data.id,
-        productCode: data.productCode,
-        productName: data.productName,
-        price: data.price,
-        unit: data.unit,
-        totalPrice: data.totalPrice,
-        quantity: data.quantity,
-      }))
+    getExportBorrowingDetail() {
+      if (this.GET_EXPORT_BORROWINGS_DETAIL_GETTER.response) {
+        return this.GET_EXPORT_BORROWINGS_DETAIL_GETTER.response.map(data => ({
+          id: data.id,
+          productCode: data.productCode,
+          productName: data.productName,
+          price: data.price,
+          unit: data.unit,
+          totalPrice: data.totalPrice,
+          quantity: data.quantity,
+        }))
+      } return []
     },
   },
   mounted() {
@@ -325,12 +327,9 @@ export default {
     viewProduct(id) {
       this.GET_EXPORT_BORROWINGS_DETAIL_ACTION(id)
     },
-    onModalHidden() {
-      this.$emit('onModalHidden')
-    },
     choonsenTrans(trans) {
       this.$emit('choonsenTrans', trans)
-      this.$emit('onModalHidden', trans.id)
+      this.$emit('onModalHidden', [trans.id])
     },
   },
 }

@@ -37,7 +37,7 @@
                     Mã xuất hàng
                   </div>
                   <b-form-input
-                    v-model.trim="id"
+                    v-model.trim="output.id"
                     :state="touched ? passed : null"
                     maxlength="40"
                   />
@@ -81,7 +81,7 @@
                     Số hóa đơn
                   </div>
                   <b-form-input
-                    v-model.trim="transCode"
+                    v-model.trim="output.transCode"
                     :state="touched ? passed : null"
                     readonly
                   />
@@ -95,6 +95,7 @@
                 <b-row
                   class="v-flat-pickr-group mx-0"
                   align-v="center"
+                  placeholder="Chọn ngày"
                   @keypress="$onlyDateInput"
                 >
                   <vue-flat-pickr
@@ -181,7 +182,7 @@
 
             <vue-good-table
               :columns="columns"
-              :rows="poProducts"
+              :rows="products"
               style-class="vgt-table striped"
               compact-mode
               line-numbers
@@ -212,11 +213,10 @@
               >
                 <div v-if="props.column.field === 'ProductReturnAmount' ">
                   <b-form-input
-                    v-model="amount[props.row.originalIndex].number"
-                    :class="amount[props.row.originalIndex].number > props.row.amountQuantity ||amount[props.row.originalIndex].number < 0 ? 'border-danger' : ''"
-                    size="sm"
-                    type="number"
+                    v-model="products[props.originalIndex].quantity"
+                    maxlength="19"
                     :readonly="exportAll && outputTypeSelected !== '0'"
+                    @keypress="$onlyNumberInput"
                   />
                 </div>
                 <div v-else>
@@ -268,18 +268,18 @@
     <!-- START - Modal -->
     <adjustment-modal
       :visible="visibleAdjustmentModal"
-      @onModalHidden="onModalHidden"
-      @choonsenTrans="choonsenTrans"
+      @onModalHidden="visibleAdjustmentModal = false"
+      @choonsenTrans="choonsenTrans($event)"
     />
     <borrowed-modal
       :visible="visibleBorrowedModal"
-      @onModalHidden="onModalHidden"
-      @choonsenTrans="choonsenTrans"
+      @onModalHidden="visibleBorrowedModal = false"
+      @choonsenTrans="choonsenTrans($event)"
     />
     <output-modal
       :visible="visibleOutputModal"
-      @onModalHidden="onModalHidden"
-      @choonsenTrans="choonsenTrans"
+      @onModalHidden="visibleOutputModal = false"
+      @choonsenTrans="dataFromPo($event)"
     />
     <!-- END - Modal -->
   </b-container>
@@ -300,25 +300,25 @@ import {
   code,
   required,
 } from '@/@core/utils/validations/validations'
-import { isEmpty, getNow } from '@core/utils/utils'
+import { formatISOtoVNI } from '@/@core/utils/filter'
+import { getNow } from '@core/utils/utils'
 import OutputModal from '../components/output-modal/OutputModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/OutputBorrowedModal.vue'
 import {
   WAREHOUSES_OUTPUT,
   // GETTERS
-  GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+  // GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+  // GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
+  // GET_EXPORT_BORROWINGS_DETAIL_GETTER,
   GET_WAREHOUSE_TYPE_GETTER,
   // MUTATIONS
   CLEAR_EXPORT_PRODUCTS_MUTATION,
   // ACTIONS
-  GET_EXPORT_PO_TRANS_DETAIL_ACTION,
-  GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
-  GET_EXPORT_BORROWINGS_DETAIL_ACTION,
   GET_WAREHOUSE_TYPE_ACTION,
   CREATE_EXPORT_ACTION,
 } from '../store-module/type'
-import toasts from '../../../../@core/utils/toasts/toasts'
+// import toasts from '../../../../@core/utils/toasts/toasts'
 
 export default {
   components: {
@@ -340,12 +340,14 @@ export default {
       visibleBorrowedModal: false,
       visibleOutputModal: false,
       exportAll: false,
-      id: '',
-      transCode: '',
+
+      output: {
+        id: '',
+        transCode: '',
+      },
       outputTypeSelected: warehousesData.outputTypes[0].id,
       warehouseTypeSelected: '',
       internalNumber: '',
-      transDate: '',
       poNumber: '',
       note: '',
 
@@ -405,62 +407,55 @@ export default {
           sortable: false,
         },
       ],
-      amount: [],
+      products: [],
     }
   },
 
   computed: {
     ...mapGetters(WAREHOUSES_OUTPUT, [
-      GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+      // GET_EXPORT_PO_TRANS_DETAIL_GETTER,
+      // GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
+      // GET_EXPORT_BORROWINGS_DETAIL_GETTER,
       GET_WAREHOUSE_TYPE_GETTER,
     ]),
 
-    poProducts() {
-      return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER.map(data => ({
-        id: data.id,
-        productCode: data.productCode,
-        productName: data.productName,
-        price: data.price,
-        unit: data.unit,
-        totalPrice: data.totalPrice,
-        export: this.outputTypeSelected === '0' ? `${data.export}/${data.quantity}` : 0,
-        quantity: this.outputTypeSelected === '0' ? `${data.quantity - data.export}/${data.quantity}` : data.quantity,
-        productReturnAmount: 0,
-        amountQuantity: data.quantity,
-      }))
-    },
+    // poProducts() {
+    //   switch (this.outputTypeSelected) {
+    //     case '0': // Xuất trả PO
+    //       return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER.info
+    //     case '1': // Xuất điều chỉnh
+    //       return this.GET_EXPORT_AJUSTMENTS_DETAIL_GETTER.response
+    //     case '2': // Xuất vay mượn
+    //       return this.GET_EXPORT_BORROWINGS_DETAIL_GETTER.response
+    //     default:
+    //       break
+    //   }
+    //   return []
+    // },
     getWareHouseType() {
       return this.GET_WAREHOUSE_TYPE_GETTER
     },
   },
 
   watch: {
-    poProducts() {
-      this.amount = []
-      this.poProducts.forEach(item => {
-        this.amount.push({
-          number: this.outputTypeSelected === '0' ? 0 : item.amountQuantity,
-        })
-      })
-    },
     outputTypeSelected() {
       this.CLEAR_EXPORT_PRODUCTS_MUTATION()
       this.internalNumber = ''
       this.internalNumber = ''
-      this.transCode = ''
+      this.output.transCode = ''
       this.poNumber = ''
       this.transDate = ''
       this.note = ''
-      this.amount = []
+      this.products = []
     },
     exportAll() {
       if (this.exportAll) {
         this.poProducts.forEach((item, index) => {
-          this.amount[index].number = item.amountQuantity
+          this.products[index].quantity = item.amountQuantity
         })
       } else {
         this.poProducts.forEach((item, index) => {
-          this.amount[index].number = 0
+          this.products[index].quantity = 0
         })
       }
     },
@@ -479,9 +474,6 @@ export default {
       CLEAR_EXPORT_PRODUCTS_MUTATION,
     ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
-      GET_EXPORT_PO_TRANS_DETAIL_ACTION,
-      GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
-      GET_EXPORT_BORROWINGS_DETAIL_ACTION,
       GET_WAREHOUSE_TYPE_ACTION,
       CREATE_EXPORT_ACTION,
     ]),
@@ -505,74 +497,28 @@ export default {
     navigateBack() {
       this.$router.back()
     },
-    onModalHidden(id) {
-      if (!id && isEmpty(this.id)) {
-        this.CLEAR_EXPORT_PRODUCTS_MUTATION()
-      }
-
-      switch (this.outputTypeSelected) {
-        case '0': // Xuất trả PO
-          this.visibleOutputModal = false
-          if (id) {
-            this.exportAll = false
-            this.GET_EXPORT_PO_TRANS_DETAIL_ACTION(id)
-          } else if (!isEmpty(this.id)) {
-            this.GET_EXPORT_PO_TRANS_DETAIL_ACTION(this.id)
-          }
-          break
-        case '1': // Xuất điều chỉnh
-          this.visibleAdjustmentModal = false
-          if (id) {
-            this.exportAll = true
-            this.GET_EXPORT_AJUSTMENT_DETAIL_ACTION(id)
-          } else if (!isEmpty(this.id)) {
-            this.GET_EXPORT_AJUSTMENT_DETAIL_ACTION(this.id)
-          }
-          break
-        case '2': // Xuất vay mượn
-          this.visibleBorrowedModal = false
-          if (id) {
-            this.exportAll = true
-            this.GET_EXPORT_BORROWINGS_DETAIL_ACTION(id)
-          } else if (!isEmpty(this.id)) {
-            this.GET_EXPORT_BORROWINGS_DETAIL_ACTION(this.id)
-          }
-          break
-        default:
-          break
-      }
-    },
-    choonsenTrans(trans) {
-      const {
-        internalNumber, transCode, poNumber, billDate, adjustmentCode, note, poBorrowCode, description, id,
-      } = trans
-
-      this.internalNumber = internalNumber
-      this.transCode = transCode || adjustmentCode || poBorrowCode
-      this.poNumber = poNumber
-      this.transDate = billDate
-      this.note = note || description
-      this.id = id
+    dataFromPo(data) {
+      const [trans, productDetail] = data
+      console.log(productDetail)
+      this.internalNumber = trans.internalNumber
+      this.output.transCode = trans.transCode || trans.adjustmentCode || trans.poBorrowCode
+      this.poNumber = trans.poNumber
+      this.transDate = formatISOtoVNI(trans.billDate)
+      this.note = trans.note || trans.description
+      this.output.id = trans.id
+      this.products = [...productDetail]
     },
     createExport() {
-      const poProductIndexFound = this.poProducts.findIndex((item, index) => this.amount[index].number > item.amountQuantity || this.amount[index].number <= 0)
-
-      if (poProductIndexFound > -1) {
-        toasts.error('Số lượng xuất không chính xác')
-
-        return
-      }
-
       this.CREATE_EXPORT_ACTION(
         {
           importType: this.outputTypeSelected,
           isRemainAll: this.exportAll,
-          receiptImportId: this.id,
+          receiptImportId: this.output.id,
           note: this.note,
-          litQuantityRemain: [...this.poProducts.map((item, index) => ({
+          litQuantityRemain: this.products.map((item, index) => ({
             id: item.id,
-            quantity: this.outputTypeSelected === '0' ? this.amount[index].number : item.amountQuantity,
-          }))],
+            quantity: this.outputTypeSelected === '0' ? this.products[index].quantity : item.amountQuantity,
+          })),
         },
       )
     },

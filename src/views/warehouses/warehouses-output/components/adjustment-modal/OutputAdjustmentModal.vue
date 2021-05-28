@@ -177,7 +177,7 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columnsProducts"
-            :rows="poProducts"
+            :rows="getExportAdjustmentDetail"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
@@ -367,16 +367,18 @@ export default {
       return []
     },
 
-    poProducts() {
-      return this.GET_EXPORT_AJUSTMENTS_DETAIL_GETTER.map(data => ({
-        id: data.id,
-        productCode: data.productCode,
-        productName: data.productName,
-        price: data.price,
-        unit: data.unit,
-        totalPrice: data.totalPrice,
-        quantity: data.quantity,
-      }))
+    getExportAdjustmentDetail() {
+      if (this.GET_EXPORT_AJUSTMENTS_DETAIL_GETTER.response) {
+        return this.GET_EXPORT_AJUSTMENTS_DETAIL_GETTER.response.map(data => ({
+          id: data.id,
+          productCode: data.productCode,
+          productName: data.productName,
+          price: data.price,
+          unit: data.unit,
+          totalPrice: data.totalPrice,
+          quantity: data.quantity,
+        }))
+      } return []
     },
     // outputPagination() {
     //   if (this.GET_EXPORT_PO_TRANS_GETTER) {
