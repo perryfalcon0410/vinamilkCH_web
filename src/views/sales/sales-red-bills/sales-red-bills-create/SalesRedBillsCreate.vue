@@ -13,240 +13,235 @@
         <!-- START - Form -->
         <b-col
           xl="4"
-          class="d-flex flex-column bg-white shadow rounded mr-xl-1 px-0"
+          class="d-flex flex-column bg-white shadow rounded mr-xl-1"
         >
-          <b-row>
-            <b-col
-              class="bg-white shadow rounded"
-            >
-              <strong class="my-2 text-brand-1">
-                Thông tin hóa đơn
-              </strong>
+          <div class="w-100 text-center text-brand-1">
+            <strong>Thông tin hóa đơn</strong>
+          </div>
 
-              <!-- START - Archive Export ID and Type -->
-              <b-form-row>
-                <b-col>
-                  <div class="h8 mt-1">
-                    Mã khách hàng
-                  </div>
-                  <b-form-input
-                    v-model="redBill.customerCode"
-                    maxlength="40"
-                    required
-                    trim
-                    @focus="focus"
-                    @blur="inputSearchFocusedKH = false"
-                    @input="loadCustomers"
-                    @keyup.enter="keyEnter"
-                    @keydown.up="keyUp"
-                    @keydown.down="keyDown"
-                  />
-                  <b-collapse
-                    v-model="inputSearchFocusedKH"
-                    class="position-absolute mr-lg-0 mb-3"
-                    style="zIndex:1;"
-                  >
-                    <b-container
-                      class="my-1 bg-white rounded border border-primary shadow-lg"
+          <!-- START - Archive Export ID and Type -->
+          <b-form-row>
+            <b-col>
+              <div class="h8 mt-1">
+                Mã khách hàng
+              </div>
+              <b-form-input
+                v-model="redBill.customerCode"
+                maxlength="40"
+                @focus="focus"
+                @blur="inputSearchFocusedKH = false"
+                @input="loadCustomers"
+                @keyup.enter="keyEnter"
+                @keydown.up="keyUp"
+                @keydown.down="keyDown"
+              />
+              <b-collapse
+                v-model="inputSearchFocusedKH"
+                class="position-absolute mr-lg-0 mb-3"
+                style="zIndex:1;"
+              >
+                <b-container
+                  class="my-1 bg-white rounded border border-primary shadow-lg"
+                >
+                  <b-col>
+                    <b-row
+                      v-for="(customer, index) in customers"
+                      :key="index"
+                      class="my-1 cursor-pointer"
+                      :class="{'item-active': index === cursor}"
+                      @click="selectCustomer(customer)"
+                      @mouseover="$event.target.classList.add('item-active')"
+                      @mouseout="$event.target.classList.remove('item-active')"
                     >
-                      <b-col>
-                        <b-row
-                          v-for="(customer, index) in customers"
-                          :key="index"
-                          class="my-1 cursor-pointer"
-                          :class="{'item-active': index === cursor}"
-                          @click="selectCustomer(customer)"
-                          @mouseover="$event.target.classList.add('item-active')"
-                          @mouseout="$event.target.classList.remove('item-active')"
-                        >
-                          <b>{{ customer.customerName }}</b>
-                          {{ customer.customerCode }} - {{ customer.mobiPhone }}
-                        </b-row>
-                      </b-col>
-                    </b-container>
-                  </b-collapse>
-                </b-col>
+                      <b>{{ customer.customerName }}</b>
+                      {{ customer.customerCode }} - {{ customer.mobiPhone }}
+                    </b-row>
+                  </b-col>
+                </b-container>
+              </b-collapse>
+            </b-col>
 
-                <b-col>
-                  <div class="h8 mt-1">
-                    Tên khách hàng
-                  </div>
-                  <b-form-input
-                    v-model="redBill.customerName"
-                    maxlength="40"
-                    required
-                    disabled
+            <b-col>
+              <div class="h8 mt-1">
+                Tên khách hàng
+              </div>
+              <b-form-input
+                v-model="redBill.customerName"
+                maxlength="40"
+                disabled
+              />
+            </b-col>
+          </b-form-row>
+          <!-- END - Archive Export ID and Type -->
+
+          <!-- START - Archive Export Bill Number and Date -->
+          <b-form-row>
+            <b-col>
+              <div class="h8 mt-1">
+                Số hoá đơn
+              </div>
+              <b-form-input
+                v-model="redBill.billNumber"
+                maxlength="20"
+                disabled
+              />
+            </b-col>
+            <b-col @keypress="$onlyDateInput">
+              <validation-provider
+                v-slot="{ errors, touched, passed }"
+                rules="required|dateFormatVNI"
+                name="ngày in"
+              >
+                <div class="h8 mt-1">
+                  Ngày in
+                </div>
+                <b-form-group
+                  class="m-0"
+                  :state="touched ? passed : null"
+                >
+                  <vue-flat-pickr
+                    v-model="redBill.printDate"
+                    :config="configDate"
+                    class="form-control h8 text-brand-3"
+                    placeholder="Chọn ngày"
                   />
-                </b-col>
-              </b-form-row>
-              <!-- END - Archive Export ID and Type -->
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </b-form-group>
+              </validation-provider>
+            </b-col>
+          </b-form-row>
+          <!-- END - Archive Export Bill Number and Date -->
 
-              <!-- START - Archive Export Bill Number and Date -->
-              <b-form-row>
-                <b-col>
-                  <div class="h8 mt-1">
-                    Số hoá đơn
-                  </div>
-                  <b-form-input
-                    v-model="redBill.billNumber"
-                    maxlength="20"
-                    disabled
-                  />
-                </b-col>
-                <b-col @keypress="$onlyDateInput">
-                  <validation-provider
-                    v-slot="{ errors, touched, passed }"
-                    rules="required|dateFormatVNI"
-                    name="ngày in"
-                  >
-                    <div class="h8 mt-1">
-                      Ngày in
-                    </div>
-                    <b-form-group
-                      class="m-0"
-                      :state="touched ? passed : null"
-                    >
-                      <vue-flat-pickr
-                        v-model="redBill.printDate"
-                        :config="configDate"
-                        class="form-control h8 text-brand-3"
-                        placeholder="Chọn ngày"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </b-form-group>
-                  </validation-provider>
-                </b-col>
-              </b-form-row>
-              <!-- END - Archive Export Bill Number and Date -->
-
-              <!-- START - Archive Export ID and Type -->
-              <b-form-row>
-                <b-col>
-                  <validation-provider
-                    v-slot="{ errors, passed, touched }"
-                    rules="required"
-                    name="tên đơn vị"
-                  >
-                    <div class="h8 mt-1">
-                      Tên đơn vị <span class="text-danger">*</span>
-                    </div>
-                    <b-form-input
-                      v-model="redBill.officeWorking"
-                      :state="touched ? passed : null"
-                      maxlength="40"
-                    />
-                    <small class="text-danger">{{ errors[0] }}</small>
-                  </validation-provider>
-                </b-col>
-
-                <b-col>
-                  <validation-provider
-                    v-slot="{ errors, passed, touched }"
-                    rules="required"
-                    name="mã số thuế"
-                  >
-                    <div class="h8 mt-1">
-                      Mã số thuế <span class="text-danger">*</span>
-                    </div>
-                    <b-form-input
-                      v-model="redBill.taxNumber"
-                      :state="touched ? passed : null"
-                      maxlength="40"
-                    />
-                    <small class="text-danger">{{ errors[0] }}</small>
-                  </validation-provider>
-                </b-col>
-              </b-form-row>
-              <!-- END - Archive Export ID and Type -->
-
-              <!-- START - Archive Export Archive -->
+          <!-- START - Archive Export ID and Type -->
+          <b-form-row>
+            <b-col>
               <validation-provider
                 v-slot="{ errors, passed, touched }"
                 rules="required"
-                name="địa chỉ cơ quan"
+                name="tên đơn vị"
               >
                 <div class="h8 mt-1">
-                  Địa chỉ cơ quan <span class="text-danger">*</span>
+                  Tên đơn vị <span class="text-danger">*</span>
                 </div>
                 <b-form-input
-                  v-model="redBill.officeAddress"
+                  v-model="redBill.officeWorking"
                   :state="touched ? passed : null"
                   maxlength="40"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
-              <!-- END - Archive Export Archive -->
-
-              <!-- START - Archive Export Internal number and PO no -->
-              <b-form-row>
-                <b-col>
-                  <div class="h8 mt-1">
-                    Người mua hàng
-                  </div>
-                  <b-form-input
-                    v-model="redBill.buyer"
-                    maxlength="20"
-                    required
-                  />
-                </b-col>
-
-                <b-col>
-                  <div class="h8 mt-1">
-                    Hình thức thanh toán
-                  </div>
-                  <tree-select
-                    id="payment-type"
-                    v-model="redBill.paymentType"
-                    :options="saleOptions"
-                    :searchable="false"
-                    no-options-text="Không có dữ liệu"
-                  />
-                </b-col>
-              </b-form-row>
-              <!-- END - Archive Export Internal number and PO no -->
-
-              <!-- START - Archive Export Note -->
-              <div class="h8 mt-1">
-                Ghi chú
-              </div>
-              <b-form-textarea
-                v-model="redBill.note"
-                maxlength="4000"
-                class="mb-1"
-              />
-            <!-- END - Archive Export Note -->
             </b-col>
-          </b-row>
+
+            <b-col>
+              <validation-provider
+                v-slot="{ errors, passed, touched }"
+                rules="required"
+                name="mã số thuế"
+              >
+                <div class="h8 mt-1">
+                  Mã số thuế <span class="text-danger">*</span>
+                </div>
+                <b-form-input
+                  v-model="redBill.taxNumber"
+                  :state="touched ? passed : null"
+                  maxlength="40"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-col>
+          </b-form-row>
+          <!-- END - Archive Export ID and Type -->
+
+          <!-- START - Archive Export Archive -->
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="required"
+            name="địa chỉ cơ quan"
+          >
+            <div class="h8 mt-1">
+              Địa chỉ cơ quan <span class="text-danger">*</span>
+            </div>
+            <b-form-input
+              v-model="redBill.officeAddress"
+              :state="touched ? passed : null"
+              maxlength="40"
+            />
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+          <!-- END - Archive Export Archive -->
+
+          <!-- START - Archive Export Internal number and PO no -->
+          <b-form-row>
+            <b-col>
+              <div class="h8 mt-1">
+                Người mua hàng
+              </div>
+              <b-form-input
+                v-model="redBill.buyer"
+                maxlength="20"
+                required
+              />
+            </b-col>
+
+            <b-col>
+              <div class="h8 mt-1">
+                Hình thức thanh toán
+              </div>
+              <tree-select
+                id="payment-type"
+                v-model="redBill.paymentType"
+                :options="saleOptions"
+                :searchable="false"
+                no-options-text="Không có dữ liệu"
+              />
+            </b-col>
+          </b-form-row>
+          <!-- END - Archive Export Internal number and PO no -->
+
+          <!-- START - Archive Export Note -->
+          <div class="h8 mt-1">
+            Ghi chú
+          </div>
+          <b-form-textarea
+            v-model="redBill.note"
+            maxlength="4000"
+            class="mb-1"
+          />
+          <!-- END - Archive Export Note -->
         </b-col>
         <!-- END - Form -->
 
         <!-- START - List -->
-        <b-col class="d-flex flex-column mt-1 mt-xl-0 px-0">
-          <!-- START - Header list -->
-          <b-col
-            class="bg-white shadow rounded"
+        <b-col class="d-flex flex-column bg-white shadow rounded mt-1 mt-xl-0 px-0">
+          <!-- START - Header table -->
+          <b-row
+            class="border-bottom mx-0 px-1"
+            style="padding: 5px 0"
+            align-v="center"
+            align-h="between"
           >
-            <!-- START - Table Product -->
-            <b-row class="d-flex px-1 pt-2">
-              <strong class="mr-auto text-brand-1">
-                Danh sách sản phẩm
-              </strong>
-              <b-button
-                variant="primary"
-                class="rounded "
-                @click="showBillOfSaleList"
-              >
-                Chọn HĐBH
-              </b-button>
-            </b-row>
+            <strong class="text-brand-1 ">
+              Danh sách sản phẩm
+            </strong>
+            <b-button
+              variant="someThing"
+              class="btn-brand-1 h8"
+              @click="showBillOfSaleList"
+            >
+              Chọn HĐBH
+            </b-button>
+          </b-row>
+          <!-- END - Header table -->
 
+          <b-col class="py-1">
+            <!-- START - Table Product -->
             <vue-good-table
               :columns="columns"
               :rows="products"
               style-class="vgt-table striped"
               line-numbers
-              class="mt-2"
             >
+              <!-- START - Action bottom -->
               <div
                 slot="table-actions-bottom"
                 class="mx-1 my-2 px-2"
@@ -289,7 +284,9 @@
                   </b-container>
                 </b-collapse>
               </div>
+              <!-- END - Action bottom -->
 
+              <!-- START - Custome row -->
               <template
                 slot="table-row"
                 slot-scope="props"
@@ -332,7 +329,9 @@
                   {{ props.formattedRow[props.column.field] }}
                 </div>
               </template>
+              <!-- END - Custome row -->
 
+              <!-- START - Custome filter -->
               <template
                 slot="column-filter"
                 slot-scope="props"
@@ -360,56 +359,62 @@
                   {{ totalProductExported }}
                 </b-row>
               </template>
+            <!-- END - Custome filter -->
+
             </vue-good-table>
             <!-- END - Table Product -->
 
             <!-- START - Button -->
-            <b-row class="justify-content-end mt-2 mb-2 mr-1">
-              <b-button-group>
-                <b-button
-                  variant="none"
-                  class="btn-brand-1 aligns-items-button-center rounded"
-                  :disabled="invalid"
-                  @click="onClickCreateBill()"
-                >
-                  <b-icon
-                    icon="file-earmark-text-fill"
-                    class="mr-05"
-                  />
-                  Lưu
-                </b-button>
+            <b-row
+              class="mx-0 mt-1"
+              align-v="center"
+              align-h="end"
+            >
+              <b-button
+                variant="none"
+                class="btn-brand-1 aligns-items-button-center"
+                :disabled="invalid"
+                @click="onClickCreateBill()"
+              >
+                <b-icon
+                  icon="file-earmark-text-fill"
+                  class="mr-05"
+                />
+                Lưu
+              </b-button>
 
-                <b-button
-                  variant="none"
-                  class="ml-1 btn-brand-1 aligns-items-button-center rounded"
-                  :disabled="invalid"
-                >
-                  <b-icon
-                    icon="printer-fill"
-                    class="mr-05"
-                  />
-                  LƯU & IN
-                </b-button>
+              <b-button
+                variant="none"
+                class="ml-1 btn-brand-1 aligns-items-button-center"
+                :disabled="invalid"
+              >
+                <b-icon
+                  icon="printer-fill"
+                  class="mr-05"
+                />
+                LƯU & IN
+              </b-button>
 
-                <b-button
-                  class="ml-1 btn-brand-1 aligns-items-button-center rounded"
-                  @click="routeBack"
-                >
-                  <b-icon-x
-                    class="mr-05"
-                    scale="1.5"
-                  />
-                  Đóng
-                </b-button>
-              </b-button-group>
+              <b-button
+                class="ml-1 btn-brand-1 aligns-items-button-center"
+                @click="routeBack"
+              >
+                <b-icon-x
+                  class="mr-05"
+                  scale="1.5"
+                />
+                Đóng
+              </b-button>
             </b-row>
-            <!-- END - Button -->
+          <!-- END - Button -->
           </b-col>
+
         </b-col>
         <!-- END - List -->
       </b-row>
     </validation-observer>
     <!-- END - Form and list -->
+
     <bill-receipts-modal
       :visible="isShowBillReceiptsModal"
       @productsOfBillSaleData="insertProducsFromBillSales($event)"
@@ -634,7 +639,7 @@ export default {
       if (this.redBill.customerCode.length >= commonData.minSearchLength) {
         this.inputSearchFocusedKH = true
         const searchData = {
-          searchKeywords: this.redBill.customerCode.trim(),
+          searchKeywords: this.redBill.customerCode?.trim(),
         }
 
         this.GET_CUSTOMERS_ACTION(searchData)
@@ -676,7 +681,7 @@ export default {
         this.inputSearchFocusedSP = true
 
         this.GET_PRODUCTS_ACTION({
-          keyWord: this.productSearch.trim(),
+          keyWord: this.productSearch?.trim(),
           formId: this.formId,
           ctrlId: this.ctrlId,
         })
@@ -735,7 +740,7 @@ export default {
       if (this.productSearch === null) return
       if (this.productSearch.length >= commonData.minSearchLength) {
         this.GET_PRODUCTS_ACTION({
-          keyWord: this.productSearch.trim(),
+          keyWord: this.productSearch?.trim(),
           formId: this.formId,
           ctrlId: this.ctrlId,
         })

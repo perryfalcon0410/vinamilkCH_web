@@ -16,6 +16,11 @@
       }
     }
   }
+  .breadcrumb-item {
+    .router-link-active {
+      color: $brand-1;
+    }
+  }
 }
 
 /* Component Specific */

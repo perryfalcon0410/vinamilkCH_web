@@ -240,7 +240,7 @@
           Tìm kiếm
         </div>
         <b-button
-          class="btn-brand-1 h9 align-items-button-center mt-sm-1 mt-xl-0"
+          class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
           variant="someThing"
           @click="onClickSearchButton()"
         >

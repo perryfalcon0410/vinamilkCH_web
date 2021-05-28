@@ -12,148 +12,130 @@
       class="d-flex flex-column"
     >
       <!-- START - Search -->
-      <b-form class="bg-white shadow rounded">
-        <b-row
-          v-b-toggle.collapseDelivery
-          class="text-primary mx-0 p-1"
-          align-v="center"
-          align-h="between"
+      <v-card-actions title="Tìm kiếm">
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          <strong class="text-brand-1">Tìm kiếm</strong>
-
-          <b-icon-chevron-down
-            scale="1.3"
-            color="#203181"
+          <div class="h8 mt-sm-1 mt-xl-0">
+            {{ 'Khách hàng' }}
+          </div>
+          <b-form-input
+            v-model="searchOptions.customerKeywords"
+            class="h8 text-brand-3"
+            placeholder="Nhập khách hàng"
+            trim
           />
-        </b-row>
-        <b-collapse
-          id="collapseDelivery"
-          visible
+        </b-col>
+
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          <b-form-row
-            class="border-top p-1"
+          <div>
+            {{ 'Số hóa đơn' }}
+          </div>
+          <b-form-input
+            v-model="searchOptions.invoiceNumberKeywords"
+            trim
+            placeholder="Nhập số hóa đơn"
+          />
+        </b-col>
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
           >
-            <b-col
-              xl
-              sm="4"
-              md="3"
-            >
-              <div class="h8 mt-sm-1 mt-xl-0">
-                {{ 'Khách hàng' }}
-              </div>
-              <b-form-input
-                v-model="searchOptions.customerKeywords"
-                class="h8 text-brand-3"
-                placeholder="Nhập khách hàng"
-                trim
-              />
-            </b-col>
+            Từ ngày
+          </div>
+          <b-row
+            class="v-flat-pickr-group mx-0"
+            align-v="center"
+            @keypress="$onlyDateInput"
+          >
+            <b-icon-x
+              v-show="searchOptions.fromDate"
+              style="position: absolute; right: 15px"
+              class="cursor-pointer text-gray"
+              scale="1.3"
+              data-clear
+            />
+            <vue-flat-pickr
+              v-model="searchOptions.fromDate"
+              :config="configDate"
+              class="form-control h8"
+              placeholder="Chọn ngày"
+            />
+          </b-row>
+        </b-col>
 
-            <b-col
-              xl
-              sm="4"
-              md="3"
-            >
-              <div>
-                {{ 'Số hóa đơn' }}
-              </div>
-              <b-form-input
-                v-model="searchOptions.invoiceNumberKeywords"
-                trim
-              />
-            </b-col>
-            <b-col
-              xl
-              sm="6"
-            >
-              <div
-                class="h8 mt-sm-1 mt-xl-0"
-              >
-                Từ ngày
-              </div>
-              <b-input-group
-                class="input-group-merge"
-              >
-                <vue-flat-pickr
-                  v-model="searchOptions.fromDate"
-                  :config="configDate"
-                  class="form-control h8 text-brand-3"
-                  placeholder="Chọn ngày"
-                />
-                <b-input-group-append
-                  is-text
-                >
-                  <b-icon-x
-                    v-show="searchOptions.fromDate"
-                    class="cursor-pointer text-gray"
-                    @click="searchOptions.fromDate = null"
-                  />
-                </b-input-group-append>
-              </b-input-group>
-            </b-col>
-
-            <b-col
-              xl
-              sm="6"
-            >
-              <div
-                class="h8 mt-sm-1 mt-xl-0"
-              >
-                Đến ngày
-              </div>
-              <b-input-group
-                class="input-group-merge"
-              >
-                <vue-flat-pickr
-                  v-model="searchOptions.toDate"
-                  :config="configDate"
-                  class="form-control h8 text-brand-3"
-                  placeholder="Chọn ngày"
-                />
-                <b-input-group-append
-                  is-text
-                >
-                  <b-icon-x
-                    v-show="searchOptions.toDate"
-                    class="cursor-pointer text-gray"
-                    @click="searchOptions.toDate = null"
-                  />
-                </b-input-group-append>
-              </b-input-group>
-            </b-col>
-            <b-col
-              xl
-              sm="6"
-              md="12"
-            >
-              <div
-                class="h8 text-white"
-                onmousedown="return false;"
-                style="cursor: context-menu;"
-              >
-                Tìm kiếm
-              </div>
-              <b-button
-                id="form-button-search"
-                class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
-                variant="someThing"
-                @click="onClickSearchButton()"
-              >
-                <b-icon-search class="mr-1" />
-                Tìm kiếm
-              </b-button>
-            </b-col>
-          </b-form-row>
-        </b-collapse>
-      </b-form>
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Đến ngày
+          </div>
+          <b-row
+            class="v-flat-pickr-group mx-0"
+            align-v="center"
+            @keypress="$onlyDateInput"
+          >
+            <b-icon-x
+              v-show="searchOptions.toDate"
+              style="position: absolute; right: 15px"
+              class="cursor-pointer text-gray"
+              scale="1.3"
+              data-clear
+            />
+            <vue-flat-pickr
+              v-model="searchOptions.toDate"
+              :config="configDate"
+              class="form-control h8"
+              placeholder="Chọn ngày"
+            />
+          </b-row>
+        </b-col>
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div
+            class="h8 text-white"
+            onmousedown="return false;"
+            style="cursor: context-menu;"
+          >
+            Tìm kiếm
+          </div>
+          <b-button
+            id="form-button-search"
+            class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+            variant="someThing"
+            @click="onClickSearchButton()"
+          >
+            <b-icon-search class="mr-1" />
+            Tìm kiếm
+          </b-button>
+        </b-col>
+      </v-card-actions>
       <!-- END - Search -->
 
       <!-- START - Coupon list -->
       <b-form class="bg-white rounded shadow rounded mt-1">
         <!-- START - Header -->
         <b-row
-          class="justify-content-between border-bottom p-1 mx-0"
+          class="border-bottom mx-0 px-1"
           align-v="center"
+          style="padding: 5px 0"
         >
           <strong class="text-brand-1"> Danh sách hóa đơn bán hàng </strong>
         </b-row>
@@ -270,7 +252,8 @@
       <b-form class="bg-white rounded shadow rounded mt-1">
         <!-- START - Header -->
         <b-row
-          class="justify-content-between border-bottom p-1 mx-0"
+          class="justify-content-between border-bottom px-1 mx-0"
+          style="padding: 5px 0"
           align-v="center"
         >
           <strong class="text-brand-1"> Danh sách sản phẩm </strong>
@@ -379,6 +362,8 @@ import {
 import { formatDateToLocale, reverseVniDate, formatNumberToLocale } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import toasts from '@/@core/utils/toasts/toasts'
+import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+
 import {
   RED_INVOICE,
   // GETTER
@@ -397,6 +382,7 @@ import {
 
 export default {
   components: {
+    VCardActions,
   },
   props: {
     visible: {

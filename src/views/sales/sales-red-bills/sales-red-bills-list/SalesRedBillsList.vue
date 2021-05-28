@@ -1,200 +1,200 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column"
+    class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
-    <b-card
-      no-body
-      class="mb-1"
-    >
-      <!-- Start Button Option Search -->
-      <label
-        for="v-search-form"
-        class="text-primary m-1"
+    <b-form>
+      <v-card-actions
+        title="Tìm kiếm"
       >
-        Tìm kiếm
-      </label>
-      <!-- End Button Option Search -->
-
-      <!-- START - Search -->
-      <b-card-body>
-        <b-form-row
-          class="border-top"
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          <b-col
-            xl
-            sm="4"
-            md="3"
-            class="mt-1"
+          <div>
+            Khách hàng
+          </div>
+          <b-form-input
+            v-model="customer"
+            class="h8"
+            placeholder="Nhập Mã/SĐT/Tên khách hàng"
+            @keyup.enter="onSearchClick"
+          />
+        </b-col>
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div>
+            Số hóa đơn
+          </div>
+          <b-form-input
+            v-model="invoiceNumber"
+            trim
+            class="h8"
+            placeholder="Nhập số hóa đơn"
+            @keyup.enter="onSearchClick"
+          />
+        </b-col>
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div
+            class="h8 mt-lg-1 mt-xl-0"
           >
-            <div>
-              {{ 'Khách hàng' }}
-            </div>
-            <b-form-input
-              v-model="customer"
-              trim
+            Từ ngày
+          </div>
+          <b-row
+            class="v-flat-pickr-group mx-0"
+            align-v="center"
+            @keypress="$onlyDateInput"
+          >
+            <b-icon-x
+              v-show="fromDate"
+              style="position: absolute; right: 15px"
+              class="cursor-pointer text-gray"
+              scale="1.3"
+              data-clear
             />
-          </b-col>
-          <b-col
-            xl
-            sm="4"
-            md="3"
-            class="mt-1"
-          >
-            <div>
-              {{ 'Số hóa đơn' }}
-            </div>
-            <b-form-input
-              v-model="invoiceNumber"
-              trim
+            <vue-flat-pickr
+              v-model="fromDate"
+              :config="configDate"
+              class="form-control h8"
+              placeholder="Chọn ngày"
             />
-          </b-col>
-          <b-col
-            xl
-            sm="4"
-            md="3"
-            class="mt-1"
-          >
-            <div
-              class="h8 mt-sm-1 mt-xl-0"
-            >
-              Từ ngày
-            </div>
-            <b-input-group
-              class="input-group-merge"
-            >
-              <vue-flat-pickr
-                id="form-input-date-from"
-                v-model="fromDate"
-                :config="configDate"
-                class="form-control h8 text-brand-3"
-                placeholder="Chọn ngày"
-              />
-              <b-input-group-append
-                is-text
-                data-toggle
-              >
-                <b-icon-calendar />
-              </b-input-group-append>
-            </b-input-group>
-          </b-col>
+          </b-row>
+        </b-col>
 
-          <b-col
-            xl
-            sm="4"
-            md="3"
-            class="mt-1"
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
           >
-            <div
-              class="h8 mt-sm-1 mt-xl-0"
-            >
-              Đến ngày
-            </div>
-            <b-input-group
-              class="input-group-merge"
-            >
-              <vue-flat-pickr
-                id="form-input-date-to"
-                v-model="toDate"
-                :config="configDate"
-                class="form-control h8 text-brand-3"
-                placeholder="Chọn ngày"
-              />
-              <b-input-group-append
-                is-text
-                data-toggle
-              >
-                <b-icon-calendar />
-              </b-input-group-append>
-            </b-input-group>
-          </b-col>
-
-          <b-col
-            xl
-            sm="4"
-            md="3"
-            class="mt-1"
+            Đến ngày
+          </div>
+          <b-row
+            class="v-flat-pickr-group mx-0"
+            align-v="center"
+            @keypress="$onlyDateInput"
           >
-            <b-form-group
-              label="Tìm kiếm"
-              label-for="form-button-search"
-            >
-              <b-button
-                variant="primary"
-                @click="onSearchClick()"
-              >
-                <b-icon-search />
-                Tìm kiếm
-              </b-button>
-            </b-form-group>
-          </b-col>
-        </b-form-row>
-      </b-card-body>
-      <!-- END - Search -->
+            <b-icon-x
+              v-show="toDate"
+              style="position: absolute; right: 15px"
+              class="cursor-pointer text-gray"
+              scale="1.3"
+              data-clear
+            />
+            <vue-flat-pickr
+              v-model="toDate"
+              :config="configDate"
+              class="form-control h8"
+              placeholder="Chọn ngày"
+            />
+          </b-row>
+        </b-col>
 
-    </b-card>
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div
+            class="h8 text-white"
+            onmousedown="return false;"
+            style="cursor: context-menu;"
+          >
+            Tìm kiếm
+          </div>
+          <b-button
+            variant="someThing"
+            class="btn-brand-1 align-items-button-center h8 mt-sm-1 mt-xl-0"
+            @click="onSearchClick()"
+          >
+            <b-icon-search class="mr-05" />
+            Tìm kiếm
+          </b-button>
+        </b-col>
+      </v-card-actions>
+    </b-form>
     <!-- END - Search -->
 
-    <b-form class=" bg-white rounded shadow rounded my-1">
+    <b-form class="bg-white rounded shadow my-1">
       <!-- START - Header -->
       <b-row
-        class="justify-content-between border-bottom p-1 mx-0"
+        class="border-bottom mx-0 px-1"
+        style="padding: 5px 0"
         align-v="center"
+        align-h="between"
       >
-        <label class="text-primary w-25">
+        <strong class="text-brand-1">
           Danh sách hóa đơn đỏ
-        </label>
+        </strong>
 
-        <!-- Start Button Head -->
-        <b-button-group>
+        <!-- START - Button Head -->
+        <b-row
+          class="mx-0"
+          align-v="center"
+        >
           <b-form-radio-group
             v-model="templateOptionSelected"
             :options="options"
-            class="mt-1 "
             value-field="item"
             text-field="name"
           />
           <b-button
-            class="rounded"
             variant="danger"
+            class="align-items-button-center h8"
           >
-            <b-icon-printer-fill />
+            <b-icon-printer-fill class="mr-05" />
             IN HĐ
           </b-button>
           <b-button
-            class="ml-1 rounded"
-            variant="primary"
+            class="align-items-button-center h8 ml-1 btn-brand-1"
+            variant="someThing"
             @click="onClickExportRedBills"
           >
-            <b-icon-file-earmark-x-fill />
+            <b-icon-file-earmark-x-fill class="mr-05" />
             Xuất Excel
           </b-button>
           <b-button
-            class="ml-1 rounded"
-            variant="primary"
+            class="align-items-button-center h8 ml-1 btn-brand-1"
+            variant="someThing"
           >
-            <b-icon-arrow-clockwise />
+            <b-icon-arrow-clockwise
+              class="mr-05"
+              scale="1.2"
+            />
             Cập nhật HĐ
           </b-button>
           <b-button
-            class="ml-1 rounded"
-            variant="primary"
+            class="align-items-button-center h8 ml-1 btn-brand-1"
+            variant="someThing"
             @click="addSaleRedBillsCreate"
           >
-            <b-icon-plus />
+            <b-icon-plus
+              class="mr-05"
+              scale="1.8"
+            />
             Thêm mới
           </b-button>
           <b-button
-            class="ml-1 rounded"
-            variant="primary"
+            class="align-items-button-center h8 ml-1 btn-brand-1"
+            variant="someThing"
             @click="onClickDeleteButton"
           >
-            <b-icon-trash />
+            <b-icon-trash class="mr-05" />
             Xóa
           </b-button>
-        </b-button-group>
-        <!-- End Button Head -->
+        </b-row>
+        <!-- END - Button Head -->
       </b-row>
       <!-- END - Header -->
 
@@ -203,7 +203,6 @@
         <vue-good-table
           :columns="columns"
           :rows="listRedBill"
-          class="pb-1"
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
@@ -237,6 +236,7 @@
             slot-scope="props"
           >
             <b-row
+              v-show="paging.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -247,18 +247,16 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
                   v-model="elementSize"
                   size="sm"
                   :options="paginationOptions"
-                  class="mx-1 mt-1 mb-1"
+                  class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                > trong {{ redBillPagination.totalElements }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -343,6 +341,7 @@ import {
   mapState,
 } from 'vuex'
 import toasts from '@core/utils/toasts/toasts'
+import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'
 import { reverseVniDate, formatISOtoVNI } from '@/@core/utils/filter'
@@ -356,6 +355,7 @@ import {
 
 export default {
   components: {
+    VCardActions,
   },
   data() {
     return {
@@ -463,6 +463,13 @@ export default {
     },
     getRedBillPagination() {
       return this.RED_INVOICES_GETTER.redBillPagination
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.paging.totalElements
+        ? this.paging.totalElements : (this.elementSize * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.paging.totalElements} mục`
     },
   },
   watch: {

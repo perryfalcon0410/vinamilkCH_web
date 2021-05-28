@@ -14,16 +14,17 @@
     <b-form class="bg-white rounded shadow rounded my-1">
       <!-- START - Header -->
       <b-row
-        class="justify-content-between border-bottom px-1 mx-0"
+        class="border-bottom px-1 mx-0"
         style="padding: 5px 0"
         align-v="center"
+        align-h="between"
       >
         <strong class="text-brand-1">
           Danh sách khách hàng
         </strong>
         <b-button-group>
           <b-button
-            class="btn-brand-1 h9 align-items-button-center rounded"
+            class="btn-brand-1 h8 align-items-button-center rounded"
             variant="someThing"
             @click="navigateToCreate"
           >
@@ -34,7 +35,7 @@
             Thêm mới
           </b-button>
           <b-button
-            class="btn-brand-1 h9 align-items-button-center rounded ml-1"
+            class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickExcelExportButton"
           >
@@ -141,13 +142,7 @@
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                  -
-                  {{ (elementSize * pageNumber) > customerPagination.totalElements ?
-                    customerPagination.totalElements : (elementSize * pageNumber) }}
-                  của {{ customerPagination.totalElements }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -326,6 +321,13 @@ export default {
         return this.CUSTOMERS_GETTER
       }
       return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.customerPagination.totalElements
+        ? this.customerPagination.totalElements : (this.elementSize * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.customerPagination.totalElements} mục`
     },
   },
 
