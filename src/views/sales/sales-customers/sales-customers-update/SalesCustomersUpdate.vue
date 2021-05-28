@@ -804,8 +804,8 @@ export default {
       if (this.provincesSelected) {
         this.GET_DISTRICTS_ACTION({ ...this.decentralization, provinceId: this.provincesSelected })
       }
-      if (this.customer.areaDTO && this.isFirstTimeGetLocations) {
-        this.districtsSelected = this.customer.areaDTO.district
+      if (this.customer.areaDetailDTO && this.isFirstTimeGetLocations) {
+        this.districtsSelected = this.customer.areaDetailDTO.districtId
       }
     },
 
@@ -814,8 +814,8 @@ export default {
       if (this.districtsSelected) {
         this.GET_PRECINCTS_ACTION({ ...this.decentralization, districtId: this.districtsSelected })
       }
-      if (this.customer.areaDTO && this.isFirstTimeGetLocations) {
-        this.precinctsSelected = this.customer.areaDTO.precinct
+      if (this.customer.areaDetailDTO && this.isFirstTimeGetLocations) {
+        this.precinctsSelected = this.customer.areaDetailDTO.precinctId
         this.isFirstTimeGetLocations = false
       }
     },
@@ -898,8 +898,8 @@ export default {
         this.phoneNumber = this.customer.mobiPhone || null
         this.customerEmail = this.customer.email || null
         this.homeNumber = this.customer.street || null
-        if (this.customer.areaDTO) {
-          this.provincesSelected = this.customer.areaDTO.province
+        if (this.customer.areaDetailDTO) {
+          this.provincesSelected = this.customer.areaDetailDTO.provinceId
         }
         this.workingOffice = this.customer.workingOffice || null
         this.officeAddress = this.customer.officeAddress || null
@@ -966,9 +966,9 @@ export default {
       // console.log(`phoneNumber:               ${(this.phoneNumber || null) === this.customer.mobiPhone} | (${typeof (this.phoneNumber || null)}) ->|  ${(this.phoneNumber || null)} === ${this.customer.mobiPhone} (${typeof this.customer.mobiPhone})`)
       // console.log(`customerEmail:             ${(this.customerEmail || null) === this.customer.email} | (${typeof (this.customerEmail || null)}) ->|  ${(this.customerEmail || null)} === ${this.customer.email} (${typeof this.customer.email})`)
       // console.log(`homeNumber:                ${(this.homeNumber || null) === this.customer.street} | (${typeof (this.homeNumber || null)}) ->|  ${(this.homeNumber || null)} === ${this.customer.street} (${typeof this.customer.street})`)
-      // console.log(`provincesSelected:         ${Number(this.provincesSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)} | (${typeof Number(this.provincesSelected)}) ->|  ${Number(this.provincesSelected)} === ${(this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)} (${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)})`)
-      // console.log(`districtsSelected:         ${Number(this.districtsSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)} | (${typeof Number(this.districtsSelected)}) ->|  ${Number(this.districtsSelected)} === ${(this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)} (${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)})`)
-      // console.log(`precinctsSelected:         ${Number(this.precinctsSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)} | (${typeof Number(this.precinctsSelected)}) ->|  ${Number(this.precinctsSelected)} === ${(this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)} (${typeof (this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)})`)
+      // console.log(`provincesSelected:         ${Number(this.provincesSelected) === (this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.provinceId) : 0)} | (${typeof Number(this.provincesSelected)}) ->|  ${Number(this.provincesSelected)} === ${(this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.provinceId) : 0)} (${typeof (this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.provinceid) : 0)})`)
+      // console.log(`districtsSelected:         ${Number(this.districtsSelected) === (this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.districtId) : 0)} | (${typeof Number(this.districtsSelected)}) ->|  ${Number(this.districtsSelected)} === ${(this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.districtId) : 0)} (${typeof (this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.districtId) : 0)})`)
+      // console.log(`precinctsSelected:         ${Number(this.precinctsSelected) === (this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.precinctId) : 0)} | (${typeof Number(this.precinctsSelected)}) ->|  ${Number(this.precinctsSelected)} === ${(this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.precinctId) : 0)} (${typeof (this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.precinctId) : 0)})`)
       // console.log(`workingOffice:             ${(this.workingOffice || null) === this.customer.workingOffice} | (${typeof (this.workingOffice || null)}) ->|  ${(this.workingOffice || null)} === ${this.customer.workingOffice} (${typeof this.customer.workingOffice})`)
       // console.log(`officeAddress:             ${(this.officeAddress || null) === this.customer.officeAddress} | (${typeof (this.officeAddress || null)}) ->|  ${(this.officeAddress || null)} === ${this.customer.officeAddress} (${typeof this.customer.officeAddress})`)
       // console.log(`taxCodeme:                 ${(this.taxCode || null) === this.customer.taxCode} | (${typeof this.taxCode}) ->|  ${(this.taxCode || null)} === ${(this.customer.taxCode || null)} (${typeof this.customer.taxCode})`)
@@ -993,9 +993,9 @@ export default {
         && this.phoneNumber === this.customer.mobiPhone
         && this.customerEmail === this.customer.email
         && this.homeNumber === this.customer.street
-        && Number(this.provincesSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.province) : 0)
-        && Number(this.districtsSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.district) : 0)
-        && Number(this.precinctsSelected) === (this.customer.areaDTO ? Number(this.customer.areaDTO.precinct) : 0)
+        && Number(this.provincesSelected) === (this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.provinceId) : 0)
+        && Number(this.districtsSelected) === (this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.districtId) : 0)
+        && Number(this.precinctsSelected) === (this.customer.areaDetailDTO ? Number(this.customer.areaDetailDTO.precinctId) : 0)
         && (this.workingOffice || null) === this.customer.workingOffice
         && (this.officeAddress || null) === this.customer.officeAddress
         && (this.taxCode || null) === this.customer.taxCode
