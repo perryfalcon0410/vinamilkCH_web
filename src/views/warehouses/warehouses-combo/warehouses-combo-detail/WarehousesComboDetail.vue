@@ -86,7 +86,7 @@
             <vue-good-table
               :columns="comboListColumns"
               :rows="combos"
-              style-class="vgt-table striped"
+              style-class="vgt-table bordered"
               compact-mode
               line-numbers
             >
@@ -111,7 +111,7 @@
             <vue-good-table
               :columns="comboExchangeColumns"
               :rows="products"
-              style-class="vgt-table striped"
+              style-class="vgt-table bordered"
               compact-mode
               line-numbers
             >
@@ -122,7 +122,22 @@
               >
                 Không có dữ liệu
               </div>
-            <!-- END - Empty rows -->
+              <!-- END - Empty rows -->
+
+              <!-- START - Column filter -->
+              <template
+                slot="column-filter"
+                slot-scope="props"
+              >
+                <b-row
+                  v-if="props.column.field === 'quantity'"
+                  class="mx-0"
+                  align-h="center"
+                >
+                  {{ totalQuantity }}
+                </b-row>
+              </template>
+              <!-- START - Column filter -->
             </vue-good-table>
             <!-- END - Table combo exchange -->
 
@@ -243,6 +258,9 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -293,6 +311,12 @@ export default {
     },
     detail() {
       return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER()
+    },
+    totalQuantity() {
+      if (this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().productTotals) {
+        return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().productTotals
+      }
+      return 0
     },
   },
   watch: {

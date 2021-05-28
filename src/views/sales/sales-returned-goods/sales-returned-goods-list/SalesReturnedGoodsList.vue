@@ -153,13 +153,7 @@
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                  -
-                  {{ (elementSize * pageNumber) > orderReturnPagination.totalElements ?
-                    orderReturnPagination.totalElements : (elementSize * pageNumber) }}
-                  của {{ orderReturnPagination.totalElements }} mục </span>
+                <span class="text-nowrap"> {{ paginationDetailContent }} </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -356,6 +350,13 @@ export default {
         return this.RETURNED_GOODS_GETTER.response
       }
       return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.orderReturnPagination.totalElements
+        ? this.orderReturnPagination.totalElements : (this.elementSize * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.orderReturnPagination.totalElements} mục`
     },
     getOderReturns() {
       if (this.RETURNED_GOODS_GETTER.response && this.RETURNED_GOODS_GETTER.response.content) {

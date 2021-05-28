@@ -282,6 +282,7 @@ export default {
           label: '',
           field: 'manipulation',
           sortable: false,
+          width: '150px',
           thClass: 'text-center',
           tdClass: 'text-center',
         },

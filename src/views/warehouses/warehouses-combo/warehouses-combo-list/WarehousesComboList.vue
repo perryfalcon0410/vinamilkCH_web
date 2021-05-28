@@ -5,6 +5,7 @@
   >
     <!-- START - Search -->
     <warehouses-comboList-search
+      @onClickSearchButton="onClickSearchButton"
       @updateSearchData="paginationData = {
         ...paginationData,
         ...$event }"
@@ -79,6 +80,7 @@
             <div v-if="props.column.field === 'feature'">
               <b-icon-bricks
                 v-b-popover.hover="'Thao tác'"
+                class="cursor-pointer"
                 scale="1.3"
               />
             </div>
@@ -156,11 +158,9 @@
                 />
                 <span
                   class="text-nowrap"
-                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                  -
-                  {{ (elementSize * pageNumber) > warehousesComboPagination.totalElements ?
-                    warehousesComboPagination.totalElements : (elementSize * pageNumber) }}
-                  của {{ warehousesComboPagination.totalElements }} mục </span>
+                >
+                  {{ paginationDetailContent }}
+                </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -195,7 +195,7 @@
       </b-col>
       <!-- END - Table -->
     </b-form>
-    <!-- END - Customer list -->
+  <!-- END - Customer list -->
   </b-container>
 </template>
 
@@ -210,7 +210,6 @@ import {
   getWarehousesStatuslabel,
   resizeAbleTable,
 } from '@core/utils/utils'
-
 import WarehousesComboListSearch from './components/WarehousesComboListSearch.vue'
 import {
   WAREHOUSES_COMBO,
@@ -237,6 +236,8 @@ export default {
         page: this.pageNumber - 1,
         sort: null,
       },
+      isCheckAllRows: false,
+      selectedColumnName: [],
       warehousesCombos: [],
       columns: [
         {
@@ -309,10 +310,16 @@ export default {
     },
 
     totalQuantity() {
-      return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_GETTER.info.totalQuantity)
+      if (this.WAREHOUSES_COMBO_GETTER.info && this.WAREHOUSES_COMBO_GETTER.info.totalQuantity) {
+        return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_GETTER.info.totalQuantity)
+      }
+      return 0
     },
     totalPrice() {
-      return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_GETTER.info.totalPrice)
+      if (this.WAREHOUSES_COMBO_GETTER.info && this.WAREHOUSES_COMBO_GETTER.info.totalPrice) {
+        return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_GETTER.info.totalPrice)
+      }
+      return 0
     },
 
     warehousesComboPagination() {
@@ -320,6 +327,13 @@ export default {
         return this.WAREHOUSES_COMBO_GETTER.response
       }
       return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehousesComboPagination.totalElements
+        ? this.warehousesComboPagination.totalElements : (this.elementSize * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.warehousesComboPagination.totalElements} mục`
     },
   },
 
@@ -341,6 +355,9 @@ export default {
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onClickSearchButton() {
+      this.pageNumber = 1
     },
     onPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1 })
