@@ -354,12 +354,12 @@ export default {
         const obj = {
           id: this.poConfirm[0].id,
           internalNumber: this.poConfirm[0].internalNumber,
-          poNumber: this.poConfirm[0].poNumber,
+          poNumber: this.poConfirm[0].poNo,
           sysDate: this.poConfirm[0].date,
         }
         return obj
       }
-      return null
+      return {}
     },
     // get products from selected Po
     poProducts() {

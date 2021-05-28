@@ -203,17 +203,13 @@
             class="bg-white shadow rounded mt-1 mt-xl-0"
           >
             <!-- START - Table Product -->
-            <div
-              v-if="isShowProductLabel"
-              class="d-inline-flex rounded-top px-1 my-1"
-            >
+            <div class="d-inline-flex rounded-top px-1 my-1">
               <strong>
                 Sản phẩm
               </strong>
             </div>
 
             <vue-good-table
-              v-if="status != null"
               :columns="columns"
               :rows="rows"
               style-class="vgt-table striped"
@@ -232,7 +228,7 @@
                   class="mx-0"
                   align-h="start"
                 >
-                  {{ poProductInfo.totalQuantity }}
+                  {{ poProductInfo.totalQuantity || 0 }}
                 </b-row>
                 <!--END - Choose import po product-->
 
@@ -242,7 +238,7 @@
                   class="mx-0"
                   align-h="start"
                 >
-                  {{ poBorrowingInfo.totalQuantity }}
+                  {{ poBorrowingInfo.totalQuantity || 0 }}
                 </b-row>
                 <!--START - Choose import borrow product-->
 
@@ -252,7 +248,7 @@
                   class="mx-0"
                   align-h="start"
                 >
-                  {{ poAdjustInfo.totalQuantity }}
+                  {{ poAdjustInfo.totalQuantity || 0 }}
                 </b-row>
                 <!--START - Choose import adjust product-->
 
@@ -262,7 +258,7 @@
                   class="mx-0"
                   align-h="end"
                 >
-                  {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
+                  {{ $formatNumberToLocale(poProductInfo.totalPrice) || 0 }}
                 </b-row>
               </template>
               <!-- START - Empty rows -->
@@ -285,8 +281,7 @@
               </div>
               <!--if-PoConfirm-->
               <vue-good-table
-                v-show="isShowPoPromoTable"
-                v-if="status === 0"
+                v-if="isShowPoPromoTable"
                 :columns="poColumns"
                 :rows="rowsProductPromotionLoad"
                 style-class="vgt-table striped"
@@ -303,7 +298,7 @@
                     class="mx-0"
                     align-h="start"
                   >
-                    {{ poPromotionProductsInfo.totalQuantity }}
+                    {{ poPromotionProductsInfo.totalQuantity || 0 }}
                   </b-row>
 
                   <b-row
@@ -311,7 +306,7 @@
                     class="mx-0"
                     align-h="end"
                   >
-                    {{ $formatNumberToLocale(poPromotionProductsInfo.totalPrice) }}
+                    {{ $formatNumberToLocale(poPromotionProductsInfo.totalPrice) || 0 }}
                   </b-row>
                 </template>
                 <!-- START - Empty rows -->
@@ -326,25 +321,13 @@
             </div>
             <!--START input Po-->
             <vue-good-table
-              v-if="status === null"
+              v-show="isShowPoPromoManualTable"
               :columns="poPromotionColumns"
               :rows="rowsProductPromotion"
               style-class="vgt-table striped"
               compact-mode
               line-numbers
             >
-              <template
-                slot="table-column"
-                slot-scope="props"
-              >
-                <span
-                  v-if="props.column.label =='Function'"
-                  v-b-popover.hover="'Thêm hàng'"
-                />
-                <span v-else>
-                  {{ props.column.label }}
-                </span>
-              </template>
               <template
                 slot="table-row"
                 slot-scope="props"
@@ -533,21 +516,20 @@ export default {
   },
   data() {
     return {
-      // label display
-      isShowProductLabel: false,
-      // label display
+      // grid - state
+      isShowPoPromoTable: false,
+      isShowPoPromoManualTable: true,
+      // grid - state
 
       // search product
       productSearch: null,
       isFocusedInputProduct: false,
       cursorProduct: -1,
       // search product
-
       //
       formId: 5,
       ctrlId: 7,
       //
-
       configDate: {
         wrap: true,
         allowInput: true,
@@ -570,13 +552,12 @@ export default {
       borrowedModalVisible: false,
       poConfirmModalVisible: false,
       showConfirmCloseModal: false,
-      isShowPoPromoTable: false,
       // --------------modal state--------------
 
       // --------------input type--------------
       status: null,
-      columns: null,
-      rows: null,
+      columns: [],
+      rows: [],
       // --------------input type--------------
 
       // --------------Total-------------
@@ -842,15 +823,32 @@ export default {
     },
   },
   watch: {
-    rows() {
-      if (this.rows.length <= 0) {
-        this.isShowProductLabel = false
+    // render importPoManually-table if poNo = null
+    poNo() {
+      if (this.inputTypeSelected === '0' && this.poNo === null) {
+        this.isShowPoPromoManualTable = true
       } else {
-        this.isShowProductLabel = true
+        this.isShowPoPromoManualTable = false
+      }
+    },
+    inputTypeSelected() {
+      // rest all total row
+      this.rows = []
+      this.poProductInfo = {}
+      this.poPromotionProductsInfo = {}
+      this.poAdjustInfo = {}
+      this.poPromotionProducts = []
+      this.poBorrowingInfo = {}
+      if (this.inputTypeSelected === '0') {
+        this.isShowPoPromoManualTable = true
+      } else {
+        this.isShowPoPromoTable = false
+        this.isShowPoPromoManualTable = false
       }
     },
   },
   mounted() {
+    this.columns = this.poColumns
     this.inputTypeSelected = this.inputTypeOptions[0].id
     this.GET_WAREHOUSES_TYPE_ACTION({
       formId: this.formId,
@@ -1006,6 +1004,22 @@ export default {
         this.isFocusedInputProduct = this.productSearch.length >= commonData.minSearchLength
       }
     },
+    keyUp() {
+      if (this.cursor > 0) {
+        this.cursor -= 1
+      }
+    },
+    keyDown() {
+      if (this.cursor < this.allProducts.length) {
+        this.cursor += 1
+      }
+    },
+    keyEnter() {
+      if (this.isFocusedInputProduct && this.allProducts[this.cursor]) {
+        this.selectProduct(this.allProducts[this.cursor])
+        this.isFocusedInputProduct = false
+      }
+    },
     loadProducts() {
       this.cursorProduct = -1
       if (this.productSearch.length >= commonData.minSearchLength) {
@@ -1022,7 +1036,7 @@ export default {
       const index = this.rowsProductPromotion.findIndex(e => e.productId === product.comboProductId)
       if (this.rowsProductPromotion) {
         const obj = {
-          productId: product.comboProductId,
+          productId: product.id,
           productCode: product.productCode,
           productName: product.productName,
           quantity: 0,

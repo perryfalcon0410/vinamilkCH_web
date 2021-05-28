@@ -5,7 +5,7 @@
     size="sm"
   >
     <strong>
-      Bạn có muốn lưu thông tin nhập hàng không
+      Bạn có muốn lưu thông tin nhập hàng không ?
     </strong>
     <template #modal-footer="{}">
       <b-button

@@ -160,7 +160,9 @@
                     @focus="focusProduct"
                     @input="loadProducts"
                     @blur="isFocusedInputProduct = false"
-                    @keyup="loadProducts"
+                    @keyup.enter="keyEnter"
+                    @keydown.up="keyUp"
+                    @keydown.down="keyDown"
                   />
                   <!-- START - Product Popup -->
                   <b-collapse
@@ -176,8 +178,10 @@
                           v-for="(product, index) in products"
                           :key="index"
                           class="mx-0 my-1 border-bottom cursor-pointer"
-                          :class="{'item-active': index === cursorProduct}"
+                          :class="{'item-active': index === cursor}"
                           @click="onComboSelected(product)"
+                          @mouseover="$event.target.classList.add('item-active')"
+                          @mouseout="$event.target.classList.remove('item-active')"
                         >
                           <!-- START - Section Label -->
                           <b-col>
@@ -281,11 +285,10 @@
 
 <script>
 import warehousesData from '@/@db/warehouses'
-import { getNow } from '@core/utils/utils'
+import { formatVniDateToISO } from '@/@core/utils/filter'
+import { getNow } from '@/@core/utils/utils'
 import commonData from '@/@db/common'
-import moment from 'moment'
-// eslint-disable-next-line no-unused-vars
-import toasts from '@core/utils/toasts/toasts'
+
 import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
 import {
   mapActions,
@@ -316,7 +319,7 @@ export default {
         productName: null,
       },
       cursorCustomer: -1, // Con trỏ chuột ở pop up = -1
-      cursorProduct: -1,
+      cursor: -1,
       // Search Combo
       //
       formId: 5,
@@ -329,7 +332,7 @@ export default {
       tradingTypeOptions: warehousesData.tradingTypes,
       tradingTypeSelected: null,
 
-      transDate: moment().format('YYYY-MM-DD'),
+      transDate: this.$nowDate,
       comboExchangeRows: [],
       comboListRows: [],
 
@@ -535,7 +538,7 @@ export default {
       const obj = {
         details: this.detailsProductFilter,
         note: this.note,
-        transDate: this.transDate,
+        transDate: formatVniDateToISO(this.transDate),
         transType: Number(this.tradingTypeSelected),
         formId: this.formId,
         ctrlId: this.ctrlId,
@@ -579,14 +582,28 @@ export default {
     },
 
     focusProduct() {
-      this.cursorProduct = -1
       if (this.productInfos.productName) {
         this.isFocusedInputProduct = this.productInfos.productName.length >= commonData.minSearchLength
       }
     },
-
+    keyUp() {
+      if (this.cursor > 0) {
+        this.cursor -= 1
+      }
+    },
+    keyDown() {
+      if (this.cursor < this.products.length) {
+        this.cursor += 1
+      }
+    },
+    keyEnter() {
+      if (this.isFocusedInputProduct && this.products[this.cursor]) {
+        this.selectProduct(this.products[this.cursor])
+        this.isFocusedInputProduct = false
+      }
+    },
     loadProducts() {
-      this.cursorProduct = -1
+      this.cursor = -1
       if (this.productInfos.productName.length >= commonData.minSearchLength) {
         this.isFocusedInputProduct = true
         const searchData = {

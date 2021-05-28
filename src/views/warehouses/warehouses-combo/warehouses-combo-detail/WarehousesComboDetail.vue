@@ -21,7 +21,7 @@
               </b-col>
               <b-col>
                 <strong>
-                  {{ transDate }} lúc {{ transTime }}
+                  {{ transDate }}
                 </strong>
               </b-col>
             </b-row>
@@ -174,6 +174,7 @@ import router from '@/router'
 import VInputSelect from '@/@core/components/v-input-select/VInputSelect.vue'
 import warehousesData from '@/@db/warehouses'
 import {
+  // eslint-disable-next-line no-unused-vars
   formatISOtoVNI, getTimeOfDate,
 } from '@core/utils/filter'
 import { getNow } from '@core/utils/utils'
@@ -322,8 +323,8 @@ export default {
   watch: {
     detail() {
       this.id = this.detail.transCode
-      this.transDate = formatISOtoVNI(this.detail.transDate)
-      this.transTime = getTimeOfDate(this.detail.transDate)
+      this.transDate = formatISOtoVNI(this.detail.transDate, true)
+      // this.transTime = getTimeOfDate(this.detail.transDate)
       this.note = this.detail.note
       this.traddingTypeSelected = warehousesData.tradingTypes.find(item => item.id === this.detail.transType.toString()) || null
     },
