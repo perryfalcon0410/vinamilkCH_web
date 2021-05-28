@@ -912,7 +912,6 @@ export default {
       this.internalNumber = Snb
       this.poNo = poNum
       this.poId = id
-      console.log(this.rowsProduct)
       // show promotion grid if it's not null
       if (this.rowsProductPromotionLoad.length > 0) {
         this.isShowPoPromoTable = true

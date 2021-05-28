@@ -56,7 +56,7 @@
             v-model.trim="phoneNumber"
             class="h8"
             autocomplete="on"
-            placeholder="Nhập số điện thoại"
+            placeholder="Nhập chính xác 4 số cuối"
             maxlength="10"
             @keypress="$onlyNumberInput"
             @keyup.enter="onClickSearchButton"
@@ -73,73 +73,6 @@
         </b-input-group>
       </b-col>
       <!-- END - Phone -->
-
-      <!-- START - Date From -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Từ ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-          @keypress="$onlyDateInput"
-        >
-          <b-icon-x
-            v-show="fromDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            data-clear
-          />
-          <vue-flat-pickr
-            v-model="fromDate"
-            :config="configFromDate"
-            class="form-control h8"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-      </b-col>
-      <!-- END - Date From -->
-
-      <!-- START - Date To -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Đến ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-          @keypress="$onlyDateInput"
-        >
-          <b-icon-x
-            v-show="toDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            data-clear
-          />
-          <vue-flat-pickr
-            v-model="toDate"
-            :config="configToDate"
-            class="form-control h8"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-
-      </b-col>
-      <!-- END - Date To -->
 
       <!-- START - Group -->
       <b-col
@@ -225,6 +158,28 @@
       </b-col>
       <!-- END - Location -->
 
+      <!-- START - Private customer -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="text-white mt-sm-1 mt-xl-0"
+          onmousedown="return false;"
+          style="cursor: context-menu; margin-bottom: 5px;"
+        >
+          Khách hàng riêng
+        </div>
+        <b-form-checkbox
+          v-model="privateCustomer"
+        >
+          Khách hàng của cửa hàng
+        </b-form-checkbox>
+
+      </b-col>
+      <!-- END - Private customer -->
+
       <!-- START - Search button -->
       <b-col
         xl
@@ -260,7 +215,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { reverseVniDate } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
 
@@ -290,31 +244,18 @@ export default {
     return {
       customerName: null,
       phoneNumber: null,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
       customerTypesSelected: null,
       statuOptions: customerData.status,
-      statusSelected: null,
+      statusSelected: customerData.status[0].id,
       genderOptions: commonData.genders,
       gendersSelected: null,
       areasSelected: null,
+      privateCustomer: true,
 
       // decentralization
       decentralization: {
         formId: 1,
         ctrlId: 1,
-      },
-
-      configFromDate: {
-        wrap: true,
-        allowInput: true,
-        dateFormat: 'd/m/Y',
-      },
-      configToDate: {
-        wrap: true,
-        allowInput: true,
-        dateFormat: 'd/m/Y',
-        minDate: this.fromDate,
       },
     }
   },
@@ -343,12 +284,6 @@ export default {
     areaOptions() {
       this.areaSelectedDefault()
     },
-    fromDate() {
-      this.configToDate = {
-        ...this.configToDate,
-        minDate: this.fromDate,
-      }
-    },
   },
 
   beforeMount() {
@@ -358,10 +293,6 @@ export default {
 
   mounted() {
     this.onSearch()
-    this.configToDate = {
-      ...this.configToDate,
-      minDate: this.fromDate,
-    }
   },
 
   methods: {
@@ -378,12 +309,11 @@ export default {
       const searchData = {
         searchKeywords: this.customerName?.trim(),
         phoneNumber: this.phoneNumber,
-        fromDate: reverseVniDate(this.fromDate),
-        toDate: reverseVniDate(this.toDate),
         customerTypeId: this.customerTypesSelected,
         status: this.statusSelected,
         genderId: this.gendersSelected,
         areaId: this.areasSelected,
+        isShop: this.privateCustomer,
         size: this.perPageSize,
         ...this.decentralization,
       }
