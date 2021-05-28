@@ -345,9 +345,9 @@ export default {
       },
 
       selectedRow: 0,
-      elementSize: commonData.pagination[0],
+      elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
-      paginationOptions: commonData.pagination,
+      paginationOptions: commonData.perPageSizes,
 
       // search
       synStatusSelected: { id: null, name: null },

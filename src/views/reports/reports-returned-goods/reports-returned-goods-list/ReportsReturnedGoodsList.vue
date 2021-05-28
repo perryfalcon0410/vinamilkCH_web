@@ -217,11 +217,11 @@ export default {
   },
   data() {
     return {
-      elementSize: commonData.pagination[0],
+      elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
       paginationData: {},
 
-      paginationOptions: commonData.pagination,
+      paginationOptions: commonData.perPageSizes,
       searchOptions: {
         code: '',
         fromDate: null,

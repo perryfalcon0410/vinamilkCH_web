@@ -19,7 +19,7 @@
           >
             <!-- START - Date -->
             <div>
-              Ngày biên bản:        <strong>{{ dateNow }}</strong>
+              Ngày biên bản: <strong>{{ dateNow }}</strong>
             </div>
             <!-- END - Date -->
 
@@ -173,8 +173,8 @@
             class="bg-white shadow rounded mt-1 mt-xl-0"
           >
             <!-- START - Table Product promotion -->
-            <div class="d-inline-flex rounded-top px-1 my-1">
-              <strong>
+            <div style="padding: 5px 0;">
+              <strong class="text-brand-1">
                 Danh sách sản phẩm
               </strong>
             </div>

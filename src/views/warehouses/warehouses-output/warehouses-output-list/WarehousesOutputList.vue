@@ -4,174 +4,137 @@
     class="d-flex flex-column p-0"
   >
     <!-- START - Search -->
-    <b-form
-      class="bg-white shadow rounded"
+    <v-card-actions
+      title="Tìm kiếm"
     >
-      <b-row
-        v-b-toggle.collapseDelivery
-        class="text-primary mx-0 p-1"
-        align-v="center"
-        align-h="between"
+      <!-- START - Red Invoice No -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
       >
-        <strong class="text-brand-1">Tìm kiếm</strong>
-
-        <b-icon-chevron-down
-          scale="1.3"
-          color="#203181"
-        />
-      </b-row>
-      <b-collapse
-        id="collapseDelivery"
-        visible
-      >
-        <b-form-row
-          class="border-top p-1"
-        >
-          <!-- START - Red Invoice No -->
-          <b-col
-            lg="2"
-            md
-          >
-            <div class="h8 mt-sm-1 mt-xl-0">
-              Số hoá đơn
-            </div>
-            <b-input-group class="input-group-merge">
-              <b-form-input
-                id="redInvoiceNo"
-                v-model="searchOptions.redInvoiceNo"
-                class="h8 text-brand-3"
-                maxlength="20"
-                placeholder="Nhập số hoá đơn"
-                trim
-              />
-              <b-input-group-append is-text>
-                <b-icon-x
-                  v-show="searchOptions.redInvoiceNo"
-                  class="cursor-pointer text-gray"
-                  @click="searchOptions.redInvoiceNo = null"
-                />
-              </b-input-group-append>
-            </b-input-group>
-          </b-col>
-          <!-- END - Red Invoice No -->
-
-          <!-- START - Date From -->
-          <b-col
-            xl
-            lg="2"
-            md
-          >
-            <div class="h8 mt-sm-1 mt-xl-0">
-              Từ ngày
-            </div>
-            <b-input-group class="input-group-merge">
-              <vue-flat-pickr
-                v-model="searchOptions.fromDate"
-                :config="configDate"
-                class="form-control h8 text-brand-3"
-                placeholder="Chọn ngày"
-              />
-              <b-input-group-append
-                is-text
-              >
-                <b-icon-x
-                  v-show="searchOptions.fromDate"
-                  class="cursor-pointer text-gray"
-                  @click="searchOptions.fromDate = null"
-                />
-              </b-input-group-append>
-            </b-input-group>
-          </b-col>
-          <!-- END - Date From -->
-
-          <!-- START - Date To -->
-          <b-col
-            xl
-            lg="2"
-            md
-          >
-            <div class="h8 mt-sm-1 mt-xl-0">
-              Đến ngày
-            </div>
-            <b-input-group class="input-group-merge">
-              <vue-flat-pickr
-                id="form-input-date-from"
-                v-model="searchOptions.toDate"
-                :config="configDate"
-                class="form-control h8 text-brand-3"
-                placeholder="Chọn ngày"
-              />
-              <b-input-group-append
-                is-text
-              >
-                <b-icon-x
-                  v-show="searchOptions.toDate"
-                  class="cursor-pointer text-gray"
-                  @click="searchOptions.toDate = null"
-                />
-              </b-input-group-append>
-            </b-input-group>
-          </b-col>
-
-          <b-col
-            lg="2"
-            md
-          >
-            <div class="h8 mt-sm-1 mt-xl-0">
-              Loại xuất
-            </div>
-            <tree-select
-              v-model="warehousesTypeSelected"
-              :options="warehousesOptions"
-              :searchable="false"
-              placeholder="Tất cả"
-              no-options-text="Không có dữ liệu"
+        <div class="h8 mt-sm-1 mt-xl-0">
+          Số hoá đơn
+        </div>
+        <b-input-group class="input-group-merge">
+          <b-form-input
+            v-model="searchOptions.redInvoiceNo"
+            class="h8 text-brand-3"
+            maxlength="20"
+            placeholder="Nhập số hoá đơn"
+            trim
+          />
+          <b-input-group-append is-text>
+            <b-icon-x
+              v-show="searchOptions.redInvoiceNo"
+              class="cursor-pointer text-gray"
+              @click="searchOptions.redInvoiceNo = null"
             />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Red Invoice No -->
 
-          </b-col>
+      <!-- START - Date From -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div class="h8 mt-sm-1 mt-xl-0">
+          Từ ngày
+        </div>
+        <vue-flat-pickr
+          v-model="searchOptions.fromDate"
+          :config="configDate"
+          class="form-control h8 text-brand-3"
+          placeholder="Chọn ngày"
+        />
+      </b-col>
+      <!-- END - Date From -->
 
-          <b-col
-            md="12"
-            lg="4"
-          >
-            <div
-              class="h8 text-white"
-              onmousedown="return false;"
-              style="cursor: context-menu;"
-            >
-              Tìm kiếm
-            </div>
-            <b-button
-              id="form-button-search"
-              class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
-              variant="someThing"
-              style="max-height: 35px;"
-              @click="onClickSearchWarehousesOutput()"
-            >
-              <b-icon-search class="mr-1" />
-              Tìm kiếm
-            </b-button>
-          </b-col>
-        </b-form-row>
-      </b-collapse>
-    </b-form>
+      <!-- START - Date To -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div class="h8 mt-sm-1 mt-xl-0">
+          Đến ngày
+        </div>
+        <vue-flat-pickr
+          v-model="searchOptions.toDate"
+          :config="configDate"
+          class="form-control h8 text-brand-3"
+          placeholder="Chọn ngày"
+        />
+      </b-col>
+      <!-- END - Date To -->
+
+      <!-- START - Output type -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div class="h8 mt-sm-1 mt-xl-0">
+          Loại xuất
+        </div>
+        <tree-select
+          v-model="warehousesTypeSelected"
+          :options="warehousesOptions"
+          :searchable="false"
+          placeholder="Tất cả"
+          no-options-text="Không có dữ liệu"
+        />
+
+      </b-col>
+      <!-- END - Output type -->
+
+      <!-- START - Search Button -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 text-white"
+          onmousedown="return false;"
+          style="cursor: context-menu;"
+        >
+          Tìm kiếm
+        </div>
+        <b-button
+          id="form-button-search"
+          class="btn-brand-1 align-items-button-center mt-sm-1 mt-xl-0 h8"
+          variant="someThing"
+          @click="onClickSearchWarehousesOutput()"
+        >
+          <b-icon-search class="mr-05" />
+          Tìm kiếm
+        </b-button>
+      </b-col>
+      <!-- END - Search Button -->
+
+    </v-card-actions>
     <!-- END - Search -->
 
-    <!-- START - Product  list -->
+    <!-- START - Table -->
     <b-form class="bg-white rounded shadow rounded my-1">
-      <!-- START - Title -->
+      <!-- START - Table header -->
       <b-row
-        class="justify-content-between border-bottom p-1 mx-0"
+        class="border-bottom px-1 mx-0"
+        style="padding: 5px 0;"
         align-v="center"
+        align-h="between"
       >
         <strong class="text-brand-1">
           Danh sách phiếu xuất hàng
         </strong>
         <b-button-group>
           <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            class="btn-brand-1 h8 align-items-button-center"
             variant="someThing"
-            size="sm"
             @click="onClickCreateButton"
           >
             <b-icon-plus
@@ -183,7 +146,7 @@
         </b-button-group>
 
       </b-row>
-      <!-- END - Title -->
+      <!-- END - Table header -->
 
       <!-- START - Table -->
       <b-col class="py-1">
@@ -193,7 +156,8 @@
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: perPageSizeSelected,
+            setCurrentPage: searchOptions.page,
           }"
           compact-mode
           line-numbers
@@ -206,6 +170,7 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+
           <!-- START - Column -->
           <template
             slot="table-column"
@@ -231,19 +196,22 @@
           >
             <div v-if="props.column.field === 'feature'">
               <b-icon-printer-fill
-                v-b-popover.hover="'In phiếu'"
+                v-b-popover.hover.top="'In phiếu'"
                 class="cursor-pointer text-brand-1"
+                scale="1.2"
                 @click="onClickPrintButton(props.index)"
               />
               <b-icon-pencil-fill
-                v-b-popover.hover="'Chỉnh sửa'"
-                class="cursor-pointer ml-2 text-brand-3"
+                v-b-popover.hover.top="'Chỉnh sửa'"
+                class="cursor-pointer ml-1 text-brand-3"
+                scale="1.2"
                 @click="onClickUpdateButton(props.row.id,props.row.type)"
               />
               <b-icon-trash-fill
-                v-b-popover.hover="'Xóa'"
-                class="cursor-pointer ml-2"
+                v-b-popover.hover.top="'Xóa'"
+                class="cursor-pointer ml-1"
                 color="red"
+                scale="1.2"
                 @click="onClickDeleteWarehousesOutput(props.row.id,props.row.type,props.row.code)"
               />
             </div>
@@ -253,12 +221,36 @@
           </template>
           <!-- END - Row -->
 
+          <!-- START - Customer filter -->
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-row
+              v-if="props.column.field === 'quantity'"
+              class="h7"
+              align-h="center"
+            >
+              {{ totalQuantity }}
+            </b-row>
+
+            <b-row
+              v-else-if="props.column.field === 'price'"
+              class="h7 px-0 mx-0"
+              align-h="end"
+            >
+              {{ totalPrice }}
+            </b-row>
+          </template>
+          <!-- END - Customer filter -->
+
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"
             slot-scope="props"
           >
             <b-row
+              v-show="totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -269,23 +261,21 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="paginationSelected"
+                  v-model="perPageSizeSelected"
                   size="sm"
-                  :options="paginationOptions"
+                  :options="perPageSizeOptions"
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                > trong {{ totalElements }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="searchOptions.page"
                 :total-rows="totalElements"
-                :per-page="paginationSelected"
+                :per-page="perPageSizeSelected"
                 first-number
                 last-number
                 align="right"
@@ -309,34 +299,13 @@
               </b-pagination>
             </b-row>
           </template>
-
-          <template
-            slot="column-filter"
-            slot-scope="props"
-          >
-            <b-row
-              v-if="props.column.field === 'quantity'"
-              class="h7"
-              align-h="center"
-            >
-              {{ totalQuantity }}
-            </b-row>
-
-            <b-row
-              v-else-if="props.column.field === 'price'"
-              class="h7 px-0 mx-0"
-              align-h="end"
-            >
-              {{ totalPrice }}
-            </b-row>
-          </template>
           <!-- END - Pagination -->
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
 
     </b-form>
-    <!-- END - Product  list -->
+    <!-- END - Table -->
 
     <!-- START - Notify Modal Close -->
     <b-modal
@@ -373,6 +342,7 @@ import {
 } from '@/@core/utils/validations/validations'
 import warehousesData from '@/@db/warehouses'
 import commonData from '@/@db/common'
+import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 
 import {
   WAREHOUSES_OUTPUT,
@@ -384,14 +354,18 @@ import {
 } from '../store-module/type'
 
 export default {
+  components: {
+    VCardActions,
+  },
+
   data() {
     return {
       dateFormatVNI,
       inputValueBillNumber: '',
       warehousesOptions: warehousesData.outputTypes,
-      paginationOptions: commonData.pagination,
+      perPageSizeOptions: commonData.perPageSizes,
       warehousesTypeSelected: null,
-      paginationSelected: commonData.pagination[0],
+      perPageSizeSelected: commonData.perPageSizes[0],
       totalElements: null,
       formId: 5, // Hard code for permission
       ctrlId: 7, // Hard code for permission
@@ -473,7 +447,7 @@ export default {
         toDate: '',
         type: '',
         page: commonData.pageNumber,
-        size: commonData.pagination[0],
+        size: commonData.perPageSizes[0],
       },
       warehousesOutputList: [],
       configDate: {
@@ -515,6 +489,13 @@ export default {
     // FilterOptions of column price
     totalPrice() {
       return this.$formatNumberToLocale(this.warehousesOutputList.reduce((accum, item) => accum + Number(item.totalAmount), 0))
+    },
+    paginationDetailContent() {
+      const minPageSize = this.searchOptions.page === 1 ? 1 : (this.searchOptions.page * this.perPageSizeSelected) - this.elementSize + 1
+      const maxPageSize = (this.perPageSizeSelected * this.searchOptions.page) > this.totalElements
+        ? this.totalElements : (this.perPageSizeSelected * this.searchOptions.page)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.totalElements} mục`
     },
   },
   watch: {

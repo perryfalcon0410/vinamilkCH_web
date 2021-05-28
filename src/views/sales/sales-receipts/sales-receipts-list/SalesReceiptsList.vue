@@ -250,13 +250,13 @@ export default {
       valueDateTo: new Date(),
       selected: null,
 
-      paginationOptions: commonData.pagination,
+      paginationOptions: commonData.perPageSizes,
       paginationData: {
         size: this.elementSize,
         page: this.pageNumber - 1,
         sort: null,
       },
-      elementSize: commonData.pagination[0],
+      elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
 
       columns: [

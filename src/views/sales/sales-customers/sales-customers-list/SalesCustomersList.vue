@@ -55,12 +55,12 @@
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize,
+            perPage: paginationData.size,
             setCurrentPage: pageNumber,
           }"
           compact-mode
           line-numbers
-          :total-rows="customerPagination.totalElements"
+          :total-rows="getCustomerPagination.totalElements"
           :sort-options="{
             enabled: false,
             multipleColumns: true,
@@ -122,7 +122,7 @@
             slot-scope="props"
           >
             <b-row
-              v-show="customerPagination.totalElements"
+              v-show="getCustomerPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -136,9 +136,9 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="paginationData.size"
                   size="sm"
-                  :options="paginationOptions"
+                  :options="perPageSizeOptions"
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
@@ -146,8 +146,8 @@
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="customerPagination.totalElements"
-                :per-page="elementSize"
+                :total-rows="getCustomerPagination.totalElements"
+                :per-page="paginationData.size"
                 first-number
                 last-number
                 align="right"
@@ -211,12 +211,11 @@ export default {
   },
   data() {
     return {
-      elementSize: commonData.pagination[0],
-      pageNumber: 1,
-      paginationOptions: commonData.pagination,
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
       paginationData: {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
         sort: null,
       },
 
@@ -316,18 +315,18 @@ export default {
       }
       return []
     },
-    customerPagination() {
+    getCustomerPagination() {
       if (this.CUSTOMERS_GETTER) {
         return this.CUSTOMERS_GETTER
       }
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.customerPagination.totalElements
-        ? this.customerPagination.totalElements : (this.elementSize * this.pageNumber)
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.getCustomerPagination.totalElements
+        ? this.getCustomerPagination.totalElements : (this.paginationData.size * this.pageNumber)
 
-      return `${minPageSize} - ${maxPageSize} của ${this.customerPagination.totalElements} mục`
+      return `${minPageSize} - ${maxPageSize} của ${this.getCustomerPagination.totalElements} mục`
     },
   },
 

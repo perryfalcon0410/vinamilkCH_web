@@ -203,9 +203,9 @@ export default {
     return {
       fromDate: formatISOtoVNI(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
       toDate: formatISOtoVNI(new Date()),
-      elementSize: commonData.pagination[0],
+      elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
-      paginationOptions: commonData.pagination,
+      paginationOptions: commonData.perPageSizes,
       paginationData: {
         size: this.elementSize,
         page: this.pageNumber - 1,

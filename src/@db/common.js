@@ -4,7 +4,7 @@ export default {
     { id: '2', label: 'Nữ' },
     { id: '3', label: 'Khác' },
   ],
-  pagination: [
+  perPageSizes: [
     20,
     40,
     60,

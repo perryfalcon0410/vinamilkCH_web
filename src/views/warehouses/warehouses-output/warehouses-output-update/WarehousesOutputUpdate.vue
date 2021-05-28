@@ -4,251 +4,238 @@
     class="p-0"
   >
     <!-- START - Form and list -->
-    <b-col>
-      <b-row>
-        <!-- START - Form -->
-        <b-col
-          xl="4"
-          class="bg-white shadow rounded mr-xl-1"
-        >
-          <!-- START - Date -->
-          <b-row class="my-1">
-            <b-col cols="4">
-              Ngày xuất:
-            </b-col>
-            <b-col class="font-weight-bold">
-              {{ warehousesOutput.outputDate }} lúc {{ warehousesOutput.outputTime }}
-            </b-col>
-          </b-row>
-          <!-- END - Date -->
+    <b-row class="mx-0">
+      <!-- START - Form -->
+      <b-col
+        xl="4"
+        class="bg-white shadow rounded mr-xl-1"
+      >
+        <!-- START - Date -->
+        <b-row class="my-1">
+          <b-col cols="4">
+            Ngày xuất:
+          </b-col>
+          <b-col class="font-weight-bold">
+            {{ warehousesOutput.outputDate }} lúc {{ warehousesOutput.outputTime }}
+          </b-col>
+        </b-row>
+        <!-- END - Date -->
 
-          <!-- START - ID and Type -->
-          <b-form-row>
-            <b-col>
-              <div class="mt-sm-1 mt-xl-0">
-                Mã xuất hàng
-              </div>
-              <b-form-input
-                v-model="warehousesOutput.code"
-                maxlength="40"
-                trim
-                disabled
-              />
-            </b-col>
+        <!-- START - ID and Type -->
+        <b-form-row>
+          <b-col>
+            <div class="mt-sm-1 mt-xl-0">
+              Mã xuất hàng
+            </div>
+            <b-form-input
+              v-model="warehousesOutput.code"
+              maxlength="40"
+              trim
+              disabled
+            />
+          </b-col>
 
-            <b-col>
-              <div class="mt-sm-1 mt-xl-0">
-                Loại xuất
-              </div>
-              <tree-select
-                v-model="warehousesOutput.receiptType"
-                :options="warehousesOptions"
-                :searchable="false"
-                no-options-text="Không có dữ liệu"
-                disabled
-              />
-            </b-col>
-          </b-form-row>
-          <!-- END - ID and Type -->
+          <b-col>
+            <div class="mt-sm-1 mt-xl-0">
+              Loại xuất
+            </div>
+            <tree-select
+              v-model="warehousesOutput.receiptType"
+              :options="warehousesOptions"
+              :searchable="false"
+              no-options-text="Không có dữ liệu"
+              disabled
+            />
+          </b-col>
+        </b-form-row>
+        <!-- END - ID and Type -->
 
-          <!-- START -  Stock  -->
-          <div class="mt-sm-1 mt-xl-0">
-            Kho hàng
-          </div>
-          <b-form-input
-            id="stock"
-            v-model="warehousesOutput.wareHouseTypeName"
-            maxlength="40"
-            trim
-            disabled
-          />
-          <!-- END -  Stock  -->
+        <!-- START -  Stock  -->
+        <div class="mt-sm-1 mt-xl-0">
+          Kho hàng
+        </div>
+        <b-form-input
+          id="stock"
+          v-model="warehousesOutput.wareHouseTypeName"
+          maxlength="40"
+          trim
+          disabled
+        />
+        <!-- END -  Stock  -->
 
-          <!-- START - Bill Number and Date -->
-          <b-form-row>
-            <b-col>
-              <div class="mt-sm-1 mt-xl-0">
-                Số hóa đơn
-              </div>
-              <b-form-input
-                v-model="warehousesOutput.redInvoiceNo"
-                trim
-                :state="touched ? passed : null"
-                disabled
-              />
-            </b-col>
+        <!-- START - Bill Number and Date -->
+        <b-form-row>
+          <b-col>
+            <div class="mt-sm-1 mt-xl-0">
+              Số hóa đơn
+            </div>
+            <b-form-input
+              v-model="warehousesOutput.redInvoiceNo"
+              trim
+              :state="touched ? passed : null"
+              disabled
+            />
+          </b-col>
 
-            <b-col>
-              <div class="mt-sm-1 mt-xl-0">
-                Ngày hoá đơn
-              </div>
-              <b-input-group
-                class="input-group-merge"
-              >
-                <vue-flat-pickr
-                  v-model="warehousesOutput.transDate"
-                  :config="configDate"
-                  class="form-control h8 text-brand-3"
-                  disabled
-                />
-              </b-input-group>
-            </b-col>
-          </b-form-row>
-          <!-- END -   Bill Number and Date -->
-
-          <!-- START -   Internal number and PO no -->
-          <b-form-row>
-            <b-col>
-              <div class="mt-sm-1 mt-xl-0">
-                Số nội bộ
-              </div>
-              <b-form-input
-                v-model="warehousesOutput.internalNumber"
-                trim
-                :state="touched ? passed : null"
-                disabled
-              />
-            </b-col>
-
-            <b-col>
-              <div class="mt-sm-1 mt-xl-0">
-                PO No
-              </div>
-              <b-input-group class="input-group-merge">
-                <b-form-input
-                  v-model="warehousesOutput.poNumber"
-                  trim
-                  :state="warehousesOutput.type === '1' && touched ? passed : null"
-                  disabled
-                />
-                <b-input-group-append is-text>
-                  <b-icon-three-dots-vertical />
-                </b-input-group-append>
-              </b-input-group>
-            </b-col>
-          </b-form-row>
-          <!-- END - Internal number and PO no -->
-
-          <!-- START - Note -->
-          <div class="mt-sm-1 mt-xl-0">
-            Ghi chú
-          </div>
-          <b-form-textarea
-            v-model="warehousesOutput.note"
-            maxlength="4000"
-            class="mb-1"
-            :disabled="isDisableSave"
-          />
-        <!-- END - Note -->
-        </b-col>
-        <!-- END - Form -->
-
-        <!-- START - List -->
-        <b-col
-          class="bg-white shadow rounded mt-1 mt-xl-0"
-        >
-          <b-form class="bg-white rounded shadow rounded my-1">
-            <b-row
-              class="justify-content-between border-bottom p-1 mx-0"
-              align-v="center"
+          <b-col>
+            <div class="mt-sm-1 mt-xl-0">
+              Ngày hoá đơn
+            </div>
+            <b-input-group
+              class="input-group-merge"
             >
-              <div class="d-inline-flex rounded-top px-1 my-1">
-                <strong class="text-blue-vinamilk">
-                  Danh sách sản phẩm
-                </strong>
+              <vue-flat-pickr
+                v-model="warehousesOutput.transDate"
+                :config="configDate"
+                class="form-control h8 text-brand-3"
+                disabled
+              />
+            </b-input-group>
+          </b-col>
+        </b-form-row>
+        <!-- END -   Bill Number and Date -->
+
+        <!-- START -   Internal number and PO no -->
+        <b-form-row>
+          <b-col>
+            <div class="mt-sm-1 mt-xl-0">
+              Số nội bộ
+            </div>
+            <b-form-input
+              v-model="warehousesOutput.internalNumber"
+              trim
+              :state="touched ? passed : null"
+              disabled
+            />
+          </b-col>
+
+          <b-col>
+            <div class="mt-sm-1 mt-xl-0">
+              PO No
+            </div>
+            <b-input-group class="input-group-merge">
+              <b-form-input
+                v-model="warehousesOutput.poNumber"
+                trim
+                :state="warehousesOutput.type === '1' && touched ? passed : null"
+                disabled
+              />
+              <b-input-group-append is-text>
+                <b-icon-three-dots-vertical />
+              </b-input-group-append>
+            </b-input-group>
+          </b-col>
+        </b-form-row>
+        <!-- END - Internal number and PO no -->
+
+        <!-- START - Note -->
+        <div class="mt-sm-1 mt-xl-0">
+          Ghi chú
+        </div>
+        <b-form-textarea
+          v-model="warehousesOutput.note"
+          maxlength="4000"
+          class="mb-1"
+          :disabled="isDisableSave"
+        />
+        <!-- END - Note -->
+      </b-col>
+      <!-- END - Form -->
+
+      <!-- START - List -->
+      <b-col
+        class="bg-white shadow rounded mt-1 mt-xl-0"
+      >
+        <div style="padding: 5px 0;">
+          <strong class="text-brand-1">
+            Danh sách sản phẩm
+          </strong>
+        </div>
+
+        <!-- START - Table Product promotion -->
+        <vue-good-table
+          :columns="columns"
+          :rows="warehousesOutput.products"
+          style-class="vgt-table striped"
+          compact-mode
+          line-numbers
+        >
+
+          <!-- START - Header slot -->
+          <div slot="table-actions">
+            <b-form-checkbox class="mx-1">
+              Trả nguyên đơn
+            </b-form-checkbox>
+          </div>
+          <!-- END - Header slot -->
+
+          <!-- START - Rows -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div v-if="props.column.field === 'productReturnAmount'">
+              <div v-if="warehousesOutput.receiptType == warehousesOptions[0].id">
+                <b-form-input
+                  v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
+                  type="number"
+                  :number="true"
+                  size="sm"
+                />
               </div>
-            </b-row>
-            <b-col class="py-1">
-              <!-- START - Table Product promotion -->
-              <vue-good-table
-                :columns="columns"
-                :rows="warehousesOutput.products"
-                style-class="vgt-table striped"
-                compact-mode
-                line-numbers
-              >
-
-                <!-- START - Header slot -->
-                <div slot="table-actions">
-                  <b-form-checkbox class="m-1">
-                    Trả nguyên đơn
-                  </b-form-checkbox>
-                </div>
-                <!-- END - Header slot -->
-
-                <!-- START - Rows -->
-                <template
-                  slot="table-row"
-                  slot-scope="props"
-                >
-                  <div v-if="props.column.field === 'productReturnAmount'">
-                    <div v-if="warehousesOutput.receiptType == warehousesOptions[0].id">
-                      <b-form-input
-                        v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
-                        type="number"
-                        :number="true"
-                        size="sm"
-                      />
-                    </div>
-                    <div v-else>
-                      <b-form-input
-                        v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
-                        type="number"
-                        :number="true"
-                        size="sm"
-                        disabled
-                      />
-                    </div>
-                  </div>
-                  <div v-else>
-                    {{ props.formattedRow[props.column.field] }}
-                  </div>
-                </template>
-                <!-- END - Rows -->
-              </vue-good-table>
-              <!-- END - Table Product -->
-
-            </b-col>
-          </b-form>
-
-          <!-- START - Button -->
-          <b-row class="m-1 justify-content-end">
-            <b-button-group>
-              <b-button
-                variant="primary"
-                class="d-flex align-items-center rounded text-uppercase"
-                :disabled="isDisableSave"
-                @click="onClickUpdateWarehousesOutput"
-              >
-                <b-icon
-                  icon="download"
-                  width="20"
-                  height="20"
-                  class="mr-1"
+              <div v-else>
+                <b-form-input
+                  v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
+                  type="number"
+                  :number="true"
+                  size="sm"
+                  disabled
                 />
-                Lưu
-              </b-button>
+              </div>
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Rows -->
+        </vue-good-table>
+        <!-- END - Table Product -->
 
-              <b-button
-                class="d-flex align-items-center ml-1 rounded text-uppercase"
-                @click="navigateBack"
-              >
-                <b-icon
-                  icon="x"
-                  width="20"
-                  height="20"
-                />
-                Đóng
-              </b-button>
-            </b-button-group>
-          </b-row>
+        <!-- START - Button -->
+        <b-row
+          class="my-1 mx-0"
+          align-v="center"
+          align-h="end"
+        >
+          <b-button
+            variant="someThing"
+            class="align-items-button-center btn-brand-1 text-uppercase"
+            :disabled="isDisableSave"
+            @click="onClickUpdateWarehousesOutput"
+          >
+            <b-icon-download
+              class="mr-05"
+            />
+            Lưu
+          </b-button>
+
+          <b-button
+            class="align-items-button-center text-uppercase ml-1"
+            @click="navigateBack"
+          >
+            <b-icon-x
+              scale="1.5"
+              class="mr-05"
+            />
+            Đóng
+          </b-button>
+        </b-row>
         <!-- END - Button -->
 
-        </b-col>
+      </b-col>
       <!-- END - List -->
 
-      </b-row>
-    </b-col>
+    </b-row>
     <!-- END - Form and list -->
   </b-container>
 </template>

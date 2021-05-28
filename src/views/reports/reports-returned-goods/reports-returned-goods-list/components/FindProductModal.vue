@@ -272,9 +272,9 @@ export default {
 
   data() {
     return {
-      elementSize: commonData.pagination[0],
+      elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
-      paginationOptions: commonData.pagination,
+      paginationOptions: commonData.perPageSizes,
       width: window.innerWidth,
       prodcutCatSelected: null,
       searchOptions: {

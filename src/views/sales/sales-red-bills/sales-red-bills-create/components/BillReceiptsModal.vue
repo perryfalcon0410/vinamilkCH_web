@@ -393,9 +393,9 @@ export default {
   },
   data() {
     return {
-      elementSize: commonData.pagination[0],
+      elementSize: commonData.perPageSizes[0],
       pageNumber: commonData.pageNumber,
-      paginationOptions: commonData.pagination,
+      paginationOptions: commonData.perPageSizes,
       searchOptions: {
         customerKeywords: '',
         fromDate: null,
