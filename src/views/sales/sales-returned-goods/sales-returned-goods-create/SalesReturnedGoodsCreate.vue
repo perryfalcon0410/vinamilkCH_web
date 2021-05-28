@@ -565,7 +565,6 @@ export default {
       CREATE_RETURNED_GOOD_ACTION,
     ]),
     onSubmit() {
-      console.log(this.billInfo.orderNumber)
       if (this.billInfo.orderNumber === null) {
         toasts.error('Xin vui lòng chọn đơn hàng muốn trả!')
         return
