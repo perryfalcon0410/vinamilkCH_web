@@ -616,8 +616,10 @@ export default {
         if (success && this.checkDuplicatesName() > -1) {
           this.CREATE_EXCHANGE_DAMAGED_GOODS_ACTION({
             damagedGoodsData: {
+              transCode: this.exchangeGoodsInfo.transCode,
               customerId: this.customerInfo.customerId,
               reasonId: this.reasonObj.reasonSelected,
+              shopId: this.damagedProduct.shopId,
               lstExchangeDetail: this.damagedProduct.map(item => ({
                 productId: item.id,
                 productName: item.productName,

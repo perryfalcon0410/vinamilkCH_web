@@ -722,7 +722,7 @@ export default {
       if (this.damagedProduct) {
         const obj = {
           count: this.damagedProduct.length,
-          id: product.id,
+          productId: product.id,
           productCode: product.productCode,
           productName: product.productName,
           productDVT: product.productDVT,
