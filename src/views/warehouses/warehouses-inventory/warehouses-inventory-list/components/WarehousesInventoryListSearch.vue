@@ -156,7 +156,7 @@
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { mapActions, mapGetters } from 'vuex'
-import { reverseVniDate, formatDateToLocale } from '@/@core/utils/filter'
+import { reverseVniDate } from '@/@core/utils/filter'
 import { dateFormatVNI } from '@/@core/utils/validations/validations'
 import {
   WAREHOUSEINVENTORY,
@@ -174,8 +174,8 @@ export default {
       dateFormatVNI,
 
       stockCountingCode: '',
-      fromDate: formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
-      toDate: formatDateToLocale(new Date()),
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
       warehouseType: null,
 
       configFromDate: {
@@ -204,6 +204,7 @@ export default {
   watch: {
     warehouseTypes() {
       this.warehouseType = this.warehouseTypes.find(types => types.isDefault === 1).id // number 1 is default warehouse type
+      this.onClickSearchButton()
     },
     fromDate() {
       this.configToDate = {
@@ -228,7 +229,7 @@ export default {
     ]),
     onClickSearchButton() {
       const searchData = {
-        stockCountingCode: this.stockCountingCode,
+        stockCountingCode: this.stockCountingCode?.trim(),
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         warehouseTypeId: this.warehouseType,
@@ -236,6 +237,7 @@ export default {
         ctrlId: 7,
       }
 
+      this.$emit('updatePageElement')
       this.updateSearchData(searchData)
       this.GET_WAREHOUSE_INVENTORIES_ACTION(searchData)
     },

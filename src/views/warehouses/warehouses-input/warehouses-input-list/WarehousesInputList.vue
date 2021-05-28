@@ -5,6 +5,7 @@
   >
     <!-- START - Search -->
     <warehouses-input-list-search
+      @updatePageElement="updatePageNumber"
       @updateSearchData="paginationData = {
         ...paginationData,
         ...$event }"
@@ -173,13 +174,7 @@
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                  -
-                  {{ (elementSize * pageNumber) > receiptPagination.totalElements ?
-                    receiptPagination.totalElements : (elementSize * pageNumber) }}
-                  của {{ receiptPagination.totalElements }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -390,6 +385,13 @@ export default {
       }
       return {}
     },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.receiptPagination.totalElements
+        ? this.receiptPagination.totalElements : (this.elementSize * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.receiptPagination.totalElements} mục`
+    },
   },
 
   watch: {
@@ -455,6 +457,9 @@ export default {
     onPerPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
+    },
+    updatePageNumber() {
+      this.pageNumber = 1
     },
   },
 }

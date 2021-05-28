@@ -5,6 +5,7 @@
   >
     <!-- START - Search -->
     <warehouses-inventory-list-search
+      @updatePageElement="updatePageNumber"
       @updateSearchData="paginationData = {
         ...paginationData,
         ...$event }"
@@ -94,10 +95,11 @@
           >
             <b-row
               v-if="props.column.field === 'feature'"
+              class="pl-1"
             >
               <b-icon-pencil-fill
                 v-b-popover.hover.top="'Chỉnh sửa'"
-                class="cursor-pointer pl-1"
+                class="cursor-pointer"
                 @click="onClickUpdateButton(props.row.id)"
               />
             </b-row>
@@ -131,13 +133,7 @@
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                  -
-                  {{ (elementSize * pageNumber) > warehouseInventoryPagination.totalElements ?
-                    warehouseInventoryPagination.totalElements : (elementSize * pageNumber) }}
-                  của {{ warehouseInventoryPagination.totalElements }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -286,6 +282,13 @@ export default {
       }
       return {}
     },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehouseInventoryPagination.totalElements
+        ? this.warehouseInventoryPagination.totalElements : (this.elementSize * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.warehouseInventoryPagination.totalElements} mục`
+    },
   },
 
   watch: {
@@ -327,6 +330,9 @@ export default {
     onPerPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
+    },
+    updatePageNumber() {
+      this.pageNumber = 1
     },
   },
 }

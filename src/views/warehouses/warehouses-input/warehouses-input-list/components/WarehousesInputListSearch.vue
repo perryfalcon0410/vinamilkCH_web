@@ -222,6 +222,7 @@ export default {
         ctrlId: 7,
       }
 
+      this.$emit('updatePageElement')
       this.updateSearchData(searchData)
       this.GET_RECEIPTS_ACTION(searchData)
     },

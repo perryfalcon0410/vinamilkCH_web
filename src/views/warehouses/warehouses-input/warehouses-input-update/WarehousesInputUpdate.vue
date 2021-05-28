@@ -321,6 +321,7 @@
                     <b-input
                       v-model="props.row.quantity"
                       maxlength="10"
+                      :number="true"
                       :value="props.row.quantity"
                       @change="updateQuantity(props.row.originalIndex, props.row.quantity)"
                       @keypress="$onlyNumberInput"

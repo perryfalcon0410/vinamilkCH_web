@@ -293,6 +293,7 @@
               <b-input
                 v-model="props.row.inventoryPacket"
                 maxlength="10"
+                :number="true"
                 :value="props.row.inventoryPacket"
                 @change="updateInventoryPacket(props.row.originalIndex, props.row.inventoryPacket)"
                 @keypress="$onlyNumberInput"
@@ -303,6 +304,7 @@
               <b-input
                 v-model="props.row.inventoryOdd"
                 maxlength="10"
+                :number="true"
                 :value="props.row.inventoryOdd"
                 @change="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
                 @keypress="$onlyNumberInput"
@@ -472,7 +474,7 @@
         </b-button>
         <b-button
           class="aligns-items-button-center"
-          @click="isImportModalShow = !isImportModalShow"
+          @click="isCreateModalShow = !isCreateModalShow"
         >
           Đóng
         </b-button>
