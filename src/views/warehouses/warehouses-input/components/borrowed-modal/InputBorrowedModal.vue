@@ -106,7 +106,7 @@
                   class="mx-0"
                   align-h="end"
                 >
-                  {{ importBorrowingInfo.totalQuantity }}
+                  {{ $formatNumberToLocale(importBorrowingInfo.totalQuantity) }}
                 </b-row>
               </template>
             </vue-good-table>

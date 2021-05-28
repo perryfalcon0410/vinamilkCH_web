@@ -62,7 +62,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ salesReceiptsTotal.totalAmount }}
+              {{ salesReceiptsTotal.allTotal }}
             </b-row>
 
             <b-row
@@ -70,7 +70,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ (salesReceiptsTotal.allTotal) }}
+              {{ (salesReceiptsTotal.totalAmount) }}
             </b-row>
           </template>
           <template
@@ -199,7 +199,8 @@
         :discount-details="discountTable"
         @close="isInvoiceDetailModal = false"
       />
-    </b-form></b-container>
+    </b-form>
+  </b-container>
 </template>
 
 <script>

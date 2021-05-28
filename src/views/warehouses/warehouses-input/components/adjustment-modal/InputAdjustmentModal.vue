@@ -106,7 +106,7 @@
                   class="mx-0"
                   align-h="end"
                 >
-                  {{ importAdjustmentInfo.totalQuantity }}
+                  {{ $formatNumberToLocale(importAdjustmentInfo.totalQuantity) }}
                 </b-row>
               </template>
             </vue-good-table>

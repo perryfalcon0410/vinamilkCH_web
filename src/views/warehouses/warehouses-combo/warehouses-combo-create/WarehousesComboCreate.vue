@@ -524,6 +524,7 @@ export default {
       } else {
         this.comboListRows[index].numProduct += obj.numProduct
         this.updateComboExchangeQuantity(index)
+        this.totalExchangeQuantity = this.comboExchangeRows.reduce((accum, i) => accum + Number(i.quantity), 0)
       }
     },
     deleteProduct(index) {

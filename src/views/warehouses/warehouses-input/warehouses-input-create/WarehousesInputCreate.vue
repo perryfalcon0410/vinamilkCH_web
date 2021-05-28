@@ -259,7 +259,7 @@
                   class="mx-0"
                   align-h="end"
                 >
-                  {{ poProductInfo.totalPrice }}
+                  {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
                 </b-row>
               </template>
               <!-- START - Empty rows -->
@@ -305,11 +305,11 @@
                   </b-row>
 
                   <b-row
-                    v-else-if="props.column.field === 'totalPrice'"
+                    v-else-if="props.column.field === 'poImportTotalPrice'"
                     class="mx-0"
                     align-h="end"
                   >
-                    {{ poPromotionProductsInfo.totalPrice }}
+                    0
                   </b-row>
                 </template>
                 <!-- START - Empty rows -->
@@ -896,7 +896,7 @@ export default {
       this.poNo = poNum
       this.poId = id
       // show promotion grid if it's not null
-      if (this.poPromotionProducts) {
+      if (this.rowsProductPromotionLoad.length > 0) {
         this.isShowPoPromoTable = true
       } else {
         this.isShowPoPromoTable = false

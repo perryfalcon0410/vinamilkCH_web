@@ -108,14 +108,14 @@
                 class="mx-0"
                 align-h="end"
               >
-                {{ poProductInfo.totalQuantity }}
+                {{ $formatNumberToLocale(poProductInfo.totalQuantity) }}
               </b-row>
               <b-row
-                v-if="props.column.field === 'totalPrice'"
+                v-if="props.column.field === 'poImportTotalPrice'"
                 class="mx-0"
                 align-h="end"
               >
-                {{ poProductInfo.totalPrice }}
+                {{ $formatNumberToLocale(poProductInfo.poImportTotalPrice) }}
               </b-row>
             </template>
             <!-- START - Empty rows -->
@@ -158,11 +158,11 @@
                   {{ poPromotionProductsInfo.totalQuantity }}
                 </b-row>
                 <b-row
-                  v-if="props.column.field === 'totalPrice'"
+                  v-if="props.column.field === 'poImportTotalPrice'"
                   class="mx-0"
                   align-h="end"
                 >
-                  {{ poPromotionProductsInfo.totalPrice }}
+                  {{ poPromotionProductsInfo.poImportTotalPrice }}
                 </b-row>
               </template>
               <!-- START - Empty rows -->
@@ -196,7 +196,7 @@
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-center"
-        variant="someThing"
+        variant="something"
         @click="showModal()"
       >
         <b-icon
@@ -216,7 +216,6 @@
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
-        variant="someThing"
         @click="cancel()"
       >
         <b-icon
@@ -328,7 +327,7 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'totalPrice',
+          field: 'poImportTotalPrice',
           sortable: false,
           type: 'number',
           filterOptions: {
@@ -371,7 +370,7 @@ export default {
         price: this.$formatNumberToLocale(data.price),
         unit: data.unit,
         quantity: data.quantity,
-        totalPrice: this.$formatNumberToLocale(data.totalPrice),
+        poImportTotalPrice: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
     poProductInfo() {
@@ -385,7 +384,7 @@ export default {
         productName: data.productName,
         price: this.$formatNumberToLocale(data.price),
         quantity: data.quantity,
-        totalPrice: this.$formatNumberToLocale(data.totalPrice),
+        poImportTotalPrice: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
     poPromotionProductsInfo() {
