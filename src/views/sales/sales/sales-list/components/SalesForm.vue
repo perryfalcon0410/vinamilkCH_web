@@ -222,7 +222,10 @@
             </b-col>
             <b-col>
               <b-input-group class="input-group-merge">
-                <b-form-input :disabled="salemtPromotionObjectSelected === '1'" />
+                <b-form-input
+                  v-model="orderNumber"
+                  :disabled="salemtPromotionObjectSelected === '1'"
+                />
                 <b-input-group-append is-text>
                   <b-icon-three-dots-vertical @click="showNotifyModal" />
                   <sales-online-orders-modal
@@ -406,6 +409,7 @@ export default {
 
       // online order
       onlineOrderId: null,
+      orderNumber: null,
       quantity: null,
       totalPrice: null,
       salemtPromotionObjectSelected: saleData.salemtPromotionObject[0].id,
@@ -631,6 +635,7 @@ export default {
     },
 
     getOnlineOrderCustomerById() {
+      this.orderNumber = this.onlineOrderCustomer.orderNumber
       this.firstName = this.onlineOrderCustomer.customer.firstName
       this.lastName = this.onlineOrderCustomer.customer.lastName
       this.fullName = `${this.lastName} ${this.firstName}`
