@@ -5,15 +5,12 @@
   >
     <!-- START - Header -->
     <b-row
-      v-for="(button, k) in buttons"
-      :key="k"
       class="m-0"
     >
-      <!-- START - Search -->
       <b-col
         sm="7"
         xl="4"
-        class="px-0 mr-1 shadow mb-1 mb-sm-0"
+        class="px-0 mr-1 shadow mb-1 mr-2 mb-sm-0"
       >
         <b-input
           v-model="searchOptions.keyWord"
@@ -85,33 +82,29 @@
       </b-col>
       <!-- END - Search -->
 
-      <!-- <div
-        class="d-flex align-items-center justify-content-center bg-white rounded shadow mr-1 px-1"
+      <b-row
+        v-for="(button, index) in buttons"
+        :key="index"
       >
-        Hóa đơn 2
-        <b-icon-x
-          class="cursor-pointer ml-1"
-          font-scale="1.6"
-        />
-      </div> -->
-      <!-- START - Bills -->
+        <b-button-toolbar
+          class="d-flex align-items-center justify-content-center bg-white rounded shadow mr-1 px-1"
+        >
+          Hóa đơn {{ index + 1 }}
+          <b-icon-x
+            class="cursor-pointer ml-1"
+            font-scale="1.6"
+            @click="onClickCloseButton(index)"
+          />
+        </b-button-toolbar>
 
-      <li
-        class="d-flex align-items-center justify-content-center bg-white rounded shadow mr-1 px-1"
-      >
-        Hóa đơn 1
-        <b-icon-x
-          class="cursor-pointer ml-1"
-          font-scale="1.6"
-        />
-      </li>
-
-      <div>
-        <b-icon-plus
-          font-scale="2.5"
-          class="cursor-pointer"
-        />
-      </div>
+        <div>
+          <b-icon-plus
+            font-scale="2.5"
+            class="cursor-pointer"
+            @click="onClickAddButton"
+          />
+        </div>
+      </b-row>
 
       <!-- END - Bills -->
 
@@ -218,7 +211,10 @@
         <!-- END - Table product -->
 
         <!-- START - List suggestion -->
-        <sales-products :product-infos="productInfos" />
+        <sales-products
+          :product-infos="productInfos"
+          :order-products="orderProducts"
+        />
         <!-- END - List suggestion -->
 
       </b-col>
@@ -527,6 +523,16 @@ export default {
 
     onclickAddProduct(index) {
       this.orderProducts.push(index)
+    },
+
+    onClickAddButton() {
+      this.buttons.push({ name: '' })
+    },
+
+    onClickCloseButton(index) {
+      if (index !== 0) {
+        this.buttons.splice({ name: '' }, 1)
+      }
     },
 
     onChangeKeyWord() {

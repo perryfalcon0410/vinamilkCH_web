@@ -55,6 +55,7 @@
           xl="3"
           md="4"
           sm="6"
+          @click="onclickAddProduct(value)"
         >
           <b-row>
             <b-col
@@ -80,7 +81,7 @@
                 {{ value.productCode }}
               </div>
               <div class="text-dark font-weight-bold">
-                {{ value.productPrice }}
+                {{ value.productUnitPrice }}
               </div>
             </b-col>
           </b-row>
@@ -118,6 +119,10 @@ export default {
       type: Array,
       required: true,
     },
+    orderProducts: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -130,23 +135,38 @@ export default {
   computed: {
     getAllProduct() {
       return this.GET_ALL_PRODUCT_GETTER().map(data => ({
+        productId: data.productId,
         productName: data.productName,
         productCode: data.productCode,
-        productPrice: data.price,
+        productUnit: data.uom1,
+        productInventory: data.stockTotal,
+        productUnitPrice: data.price,
+        quantity: 1,
+        productTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
     },
     getTopSaleProducts() {
       return this.GET_TOP_SALE_PRODUCTS_GETTER().map(data => ({
+        productId: data.productId,
         productName: data.productName,
         productCode: data.productCode,
-        productPrice: data.price,
+        productUnit: data.uom1,
+        productInventory: data.stockTotal,
+        productUnitPrice: data.price,
+        quantity: 1,
+        productTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
     },
     getHotProducts() {
       return this.GET_HOT_PRODUCTS_GETTER().map(data => ({
+        productId: data.productId,
         productName: data.productName,
         productCode: data.productCode,
-        productPrice: data.price,
+        productUnit: data.uom1,
+        productInventory: data.stockTotal,
+        productUnitPrice: data.price,
+        quantity: 1,
+        productTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
     },
   },
@@ -229,10 +249,23 @@ export default {
       }
       this.GET_PRODUCTS_ACTION(paramGetProductsWithCatId)
       this.recommendProducts = this.GET_PRODUCTS_GETTER().map(data => ({
+        productId: data.productId,
         productName: data.productName,
         productCode: data.productCode,
-        productPrice: data.price,
+        productUnit: data.uom1,
+        productInventory: data.stockTotal,
+        productUnitPrice: data.price,
+        quantity: 1,
+        productTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
+    },
+
+    onclickAddProduct(index) {
+      this.orderProducts.push(index)
+    },
+
+    totalPrice(amount, price) {
+      return amount * (price || 0)
     },
   },
 }
