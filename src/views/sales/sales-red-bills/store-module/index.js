@@ -20,6 +20,7 @@ import {
   CREATE_RED_BILL_ACTION,
   GET_INVOICE_DETAIL_ACTION,
   DELETE_RED_INVOICE_ACTION,
+  EXPORT_RED_BILLS_ACTION,
 } from './type'
 import toasts from '../../../../@core/utils/toasts/toasts'
 
@@ -215,6 +216,28 @@ export default {
             toasts.success(res.statusValue)
           } else {
             throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [EXPORT_RED_BILLS_ACTION]({}, val) {
+      RedInvoiceService
+        .exportRedBills(val)
+        .then(res => {
+          if (res.status === 200 && res.data != null) {
+            const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' })
+            if (window.navigator.msSaveOrOpenBlob) {
+              window.navigator.msSaveOrOpenBlob(blob, 'Hoa_don_do_Filled')
+            } else {
+              const elem = window.document.createElement('a')
+              elem.href = window.URL.createObjectURL(blob)
+              elem.download = 'Hoa_don_do_Filled'
+              document.body.appendChild(elem)
+              elem.click()
+              document.body.removeChild(elem)
+            }
           }
         })
         .catch(error => {

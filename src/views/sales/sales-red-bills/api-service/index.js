@@ -8,7 +8,8 @@ import {
   getProductsEndPoint,
   createRedBillEndpoint,
   getInvoiceDetailEndpoint,
-  deleteReDBillEndpoint,
+  deleteRedBillEndpoint,
+  exportRedBillsEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -46,8 +47,14 @@ export default {
     })
   },
   deleteRedBill(args) {
-    return axios.delete(`${deleteReDBillEndpoint}`, {
+    return axios.delete(`${deleteRedBillEndpoint}`, {
       params: formatURLParams(args),
+    })
+  },
+  exportRedBills(args) {
+    return axios.get(exportRedBillsEndpoint, {
+      params: formatURLParams(args),
+      responseType: 'blob',
     })
   },
 }

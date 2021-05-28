@@ -165,6 +165,7 @@
           <b-button
             class="ml-1 rounded"
             variant="primary"
+            @click="onClickExportRedBills"
           >
             <b-icon-file-earmark-x-fill />
             Xuất Excel
@@ -201,7 +202,7 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="redBillLits"
+          :rows="listRedBill"
           class="pb-1"
           style-class="vgt-table striped"
           :pagination-options="{
@@ -217,6 +218,7 @@
             disableSelectInfo: true,
             selectAllByGroup: true,
             multipleColumns: true,
+            selected: true,
           }"
           @on-row-click="selectionRow"
           @on-select-all="selectAllRows"
@@ -286,6 +288,23 @@
             </b-row>
           </template>
           <!-- END - Pagination -->
+          <!-- START - Row -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div v-if="props.column.field === 'numberBill'">
+              <b-input
+                v-model="props.row.numberBill"
+                maxlength="50"
+                :value="props.row.numberBill"
+              />
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Row -->
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
@@ -332,6 +351,7 @@ import {
   RED_INVOICES_GETTER,
   GET_RED_INVOICES_ACTION,
   DELETE_RED_INVOICE_ACTION,
+  EXPORT_RED_BILLS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -352,7 +372,7 @@ export default {
       ids: null,
       isCheckAllRows: false,
       isDeleteModalShow: false,
-      redBillLits: [],
+      listRedBill: [],
       // select rows delete
       valueShowModalBillOfSaleList: false,
       templateOptionSelected: redBillData.templateOptions[0].item,
@@ -447,7 +467,7 @@ export default {
   },
   watch: {
     getRedInvoices() {
-      this.redBillLits = [...this.getRedInvoices]
+      this.listRedBill = [...this.getRedInvoices]
     },
     getRedBillPagination() {
       this.redBillPagination = [...this.getRedBillPagination]
@@ -474,6 +494,7 @@ export default {
     ...mapActions(RED_INVOICE, [
       GET_RED_INVOICES_ACTION,
       DELETE_RED_INVOICE_ACTION,
+      EXPORT_RED_BILLS_ACTION,
     ]),
     addSaleRedBillsCreate() {
       this.$router.push({ name: 'sales-red-bills-create' })
@@ -546,13 +567,20 @@ export default {
       this.isDeleteModalShow = !this.isDeleteModalShow
       this.DELETE_RED_INVOICE_ACTION({ ids: this.ids })
       this.selectedRedBillRows.forEach(item => {
-        const findIndex = this.redBillLits.findIndex(e => e.id === item.id)
-        this.redBillLits.splice(findIndex, 1)
+        const findIndex = this.listRedBill.findIndex(e => e.id === item.id)
+        this.listRedBill.splice(findIndex, 1)
       })
       this.redBillPagination.totalElements -= this.selectedRedBillRows.length
       this.selectedRedBillRows = []
     },
-
+    onClickExportRedBills() {
+      this.EXPORT_RED_BILLS_ACTION({
+        ids: this.selectedRedBillRows.map(data => data.id).join(','),
+        type: this.templateOptionSelected,
+        formId: 1,
+        ctrlId: 1,
+      })
+    },
   },
 }
 </script>
