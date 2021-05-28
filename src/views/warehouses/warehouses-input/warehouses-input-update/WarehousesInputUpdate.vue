@@ -178,7 +178,7 @@
               <b-form-textarea
                 id="note"
                 v-model="note"
-                maxlength="200"
+                maxlength="250"
                 :disabled="!isTransDate"
               />
             </b-form-group>

@@ -203,7 +203,10 @@
             class="bg-white shadow rounded mt-1 mt-xl-0"
           >
             <!-- START - Table Product -->
-            <div class="d-inline-flex rounded-top px-1 my-1">
+            <div
+              v-if="isShowProductLabel"
+              class="d-inline-flex rounded-top px-1 my-1"
+            >
               <strong>
                 Sản phẩm
               </strong>
@@ -274,9 +277,7 @@
             <!-- END - Table Product -->
             <br>
             <!-- START - Table Product promotion -->
-            <div
-              v-show="isShowPoPromoTable"
-            >
+            <div>
               <div class="d-inline-flex rounded-top px-1 my-1">
                 <strong>
                   Hàng khuyến mãi
@@ -284,6 +285,7 @@
               </div>
               <!--if-PoConfirm-->
               <vue-good-table
+                v-show="isShowPoPromoTable"
                 v-if="status === 0"
                 :columns="poColumns"
                 :rows="rowsProductPromotionLoad"
@@ -309,7 +311,7 @@
                     class="mx-0"
                     align-h="end"
                   >
-                    0
+                    {{ $formatNumberToLocale(poPromotionProductsInfo.totalPrice) }}
                   </b-row>
                 </template>
                 <!-- START - Empty rows -->
@@ -531,15 +533,21 @@ export default {
   },
   data() {
     return {
+      // label display
+      isShowProductLabel: false,
+      // label display
+
       // search product
       productSearch: null,
       isFocusedInputProduct: false,
       cursorProduct: -1,
       // search product
+
       //
       formId: 5,
       ctrlId: 7,
       //
+
       configDate: {
         wrap: true,
         allowInput: true,
@@ -833,6 +841,15 @@ export default {
       }))
     },
   },
+  watch: {
+    rows() {
+      if (this.rows.length <= 0) {
+        this.isShowProductLabel = false
+      } else {
+        this.isShowProductLabel = true
+      }
+    },
+  },
   mounted() {
     this.inputTypeSelected = this.inputTypeOptions[0].id
     this.GET_WAREHOUSES_TYPE_ACTION({
@@ -895,6 +912,7 @@ export default {
       this.internalNumber = Snb
       this.poNo = poNum
       this.poId = id
+      console.log(this.rowsProduct)
       // show promotion grid if it's not null
       if (this.rowsProductPromotionLoad.length > 0) {
         this.isShowPoPromoTable = true

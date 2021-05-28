@@ -22,6 +22,7 @@
           v-model="customerName"
           class="h8 text-brand-3 height-button-brand-1"
           placeholder="Nhập họ tên/mã"
+          @keyup.enter="onClickSearchButton"
         />
       </b-col>
       <!-- END - Full Name -->
@@ -60,10 +61,11 @@
         <b-input-group
           id="form-input-date-from"
           class="input-group-merge"
+          @keypress="$onlyDateInput"
         >
           <vue-flat-pickr
             v-model="fromDate"
-            :config="configDate"
+            :config="configFromDate"
             class="form-control h8 text-brand-3 height-button-brand-1"
             placeholder="Chọn ngày"
           />
@@ -90,11 +92,12 @@
         </div>
         <b-input-group
           class="input-group-merge"
+          @keypress="$onlyDateInput"
         >
           <vue-flat-pickr
             id="form-input-date-from"
             v-model="toDate"
-            :config="configDate"
+            :config="configToDate"
             class="form-control h8 text-brand-3 height-button-brand-1"
             placeholder="Chọn ngày"
           />
@@ -141,7 +144,7 @@
           id="form-button-search"
           class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
           variant="someThing"
-          @click="onClickSearchButton()"
+          @click="onClickSearchButton"
         >
           <b-icon-search class="mr-05" />
           Tìm kiếm
@@ -184,16 +187,35 @@ export default {
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
 
-      configDate: {
+      configFromDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
+      configToDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
+      },
     }
+  },
+  watch: {
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
   },
 
   mounted() {
     this.printStateSelected = this.printOptions[0].id
+    this.onSearch()
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
+    }
   },
 
   methods: {
@@ -204,7 +226,7 @@ export default {
       SALES_RECEIPTS_GETTER,
     ]),
 
-    onClickSearchButton() {
+    onSearch() {
       const searchData = {
         searchKeywords: this.customerName?.trim(),
         orderNumber: this.billNumber?.trim(),
@@ -216,6 +238,9 @@ export default {
       }
       this.updateSearchData(searchData)
       this.GET_SALES_RECEIPTS_ACTION(searchData)
+    },
+    onClickSearchButton() {
+      this.onSearch()
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)

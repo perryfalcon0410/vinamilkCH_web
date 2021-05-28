@@ -214,6 +214,9 @@ import {
 import lodash from 'lodash'
 import commonData from '@/@db/common'
 import {
+  resizeAbleTable,
+} from '@core/utils/utils'
+import {
   // GETTERS
   SALESRECEIPTS,
   SALES_RECEIPTS_GETTER,
@@ -248,6 +251,11 @@ export default {
       selected: null,
 
       paginationOptions: commonData.pagination,
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+      },
       elementSize: commonData.pagination[0],
       pageNumber: 1,
 
@@ -382,7 +390,7 @@ export default {
         dayTime: formatDateToLocale(data.orderDate),
         totalValue: this.$formatNumberToLocale(data.total),
         note: data.note,
-        discountMoney: this.$formatNumberToLocale(data.discount),
+        discountMoney: this.$formatNumberToLocale(data.totalPromotion),
         moneyAccumulated: data.accumulation,
         payments: this.$formatNumberToLocale(data.total),
         print: (data.usedRedInvoice === true) ? 'Đã in' : 'Chưa in',
@@ -434,30 +442,9 @@ export default {
     },
   },
 
-  watch: {
-    pageNumber() {
-      this.paginationData.page = this.pageNumber - 1
-      this.onPaginationChange()
-    },
-    elementSize() {
-      this.paginationData.size = this.elementSize
-      this.onPaginationChange()
-    },
-    paginationData() {
-      this.pageNumber = 1
-      this.onPaginationChange()
-    },
-
-  },
-
   mounted() {
-    this.GET_SALES_RECEIPTS_ACTION({
-      searchData: null,
-      fromId: 5, // hard code
-      ctrlId: 7, // hard code
-    })
+    resizeAbleTable()
   },
-
   methods: {
     ...mapActions(SALESRECEIPTS, [
       GET_SALES_RECEIPTS_ACTION,
@@ -469,7 +456,7 @@ export default {
     },
     // -------------- pagnigation function--------------
     onPaginationChange() {
-      this.GET_CUSTOMERS_ACTION({ ...this.paginationData, ...this.decentralization })
+      this.GET_SALES_RECEIPTS_ACTION({ ...this.paginationData, ...this.decentralization })
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }

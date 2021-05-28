@@ -115,7 +115,7 @@
                 class="mx-0"
                 align-h="end"
               >
-                {{ $formatNumberToLocale(poProductInfo.poImportTotalPrice) }}
+                {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
               </b-row>
             </template>
             <!-- START - Empty rows -->
@@ -382,9 +382,9 @@ export default {
         soNo: data.soNo,
         productCode: data.productCode,
         productName: data.productName,
-        price: this.$formatNumberToLocale(data.price),
+        price: this.$formatNumberToLocale(data.price) || 0,
         quantity: data.quantity,
-        poImportTotalPrice: this.$formatNumberToLocale(data.totalPrice),
+        poImportTotalPrice: this.$formatNumberToLocale(data.totalPrice) || 0,
       }))
     },
     poPromotionProductsInfo() {
@@ -427,6 +427,7 @@ export default {
     ]),
     // invidual selectOrder event for poconfrim list
     selectOrder(id, internalNumber, poNum, date) {
+      console.log(this.poProductInfo)
       this.current = id
       this.poNumber = poNum
       this.Snb = internalNumber

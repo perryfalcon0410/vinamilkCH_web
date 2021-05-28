@@ -132,7 +132,6 @@
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
-        variant="someThing"
         @click="cancel()"
       >
         <b-icon
