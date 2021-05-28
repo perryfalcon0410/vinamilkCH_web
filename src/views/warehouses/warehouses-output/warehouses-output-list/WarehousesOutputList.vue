@@ -244,7 +244,7 @@
                 v-b-popover.hover="'Xóa'"
                 class="cursor-pointer ml-2"
                 color="red"
-                @click="onClickDeleteWarehousesOutput(props.row.id,props.row.type)"
+                @click="onClickDeleteWarehousesOutput(props.row.id,props.row.type,props.row.code)"
               />
             </div>
             <div v-else>
@@ -337,6 +337,26 @@
 
     </b-form>
     <!-- END - Product  list -->
+
+    <!-- START - Notify Modal Close -->
+    <b-modal
+      ref="salesNotifyModal"
+      title="Thông báo"
+    >
+      Bạn có muốn xóa đợt xuất hàng {{ warehousesOutputSelected.code }} ?
+      <template #modal-footer>
+        <b-button
+          variant="none"
+          @click="onClickAgreeButton()"
+        >
+          Đồng ý
+        </b-button>
+        <b-button @click="closeNotifyModal">
+          Đóng
+        </b-button>
+      </template>
+    </b-modal>
+    <!-- END - Notify Modal Close -->
   </b-container>
 </template>
 
@@ -461,8 +481,12 @@ export default {
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
-      id: 0,
-      type: 0,
+      warehousesOutputSelected: {
+        id: 0,
+        type: 0,
+        code: '',
+      },
+
     }
   },
   computed: {
@@ -572,12 +596,25 @@ export default {
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
     },
-    onClickDeleteWarehousesOutput(id, type) {
+    onClickDeleteWarehousesOutput(id, type, code) {
+      this.$refs.salesNotifyModal.show()
+      this.warehousesOutputSelected.id = id
+      this.warehousesOutputSelected.type = type
+      this.warehousesOutputSelected.code = code
+    },
+    closeNotifyModal() {
+      this.$refs.salesNotifyModal.hide()
+      this.warehousesOutputSelected.id = null
+      this.warehousesOutputSelected.type = null
+      this.warehousesOutputSelected.code = ''
+    },
+    onClickAgreeButton() {
       const paramDeleteWarehousesOutput = {
-        id,
-        type,
+        id: this.warehousesOutputSelected.id,
+        type: this.warehousesOutputSelected.type,
       }
       this.DELETE_WAREHOUSES_ACTION(paramDeleteWarehousesOutput)
+      this.closeNotifyModal()
     },
   },
 }

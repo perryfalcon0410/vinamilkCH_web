@@ -137,6 +137,7 @@
             v-model="warehousesOutput.note"
             maxlength="4000"
             class="mb-1"
+            :disabled="isDisableSave"
           />
         <!-- END - Note -->
         </b-col>
