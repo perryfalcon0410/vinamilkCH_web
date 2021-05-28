@@ -7,6 +7,7 @@ import {
   // GETTERS
   CUSTOMERS_GETTER,
   CUSTOMER_BY_ID_GETTER,
+  CREATE_CUSTOMER_GETTER,
   SHOP_LOCATIONS_SEARCH_GETTER,
   SHOP_LOCATIONS_GETTER,
   ERROR_CODE_GETTER,
@@ -53,6 +54,7 @@ export default {
     customerData: {},
     customerById: {},
     customerDefault: {},
+    customerCreate: {},
     shopLocationsSearch: [],
     shopLocations: [],
     customerTypes: [],
@@ -70,6 +72,9 @@ export default {
   getters: {
     [CUSTOMERS_GETTER](state) {
       return state.customerData
+    },
+    [CREATE_CUSTOMER_GETTER](state) {
+      return state.customerCreate
     },
     [CUSTOMER_BY_ID_GETTER](state) {
       return state.customerById
@@ -150,7 +155,7 @@ export default {
           toasts.error(error.message)
         })
     },
-    [CREATE_CUSTOMER_ACTION]({}, val) {
+    [CREATE_CUSTOMER_ACTION]({ state }, val) {
       CustomerService
         .createCustomer(val.customer)
         .then(response => response.data)
@@ -158,6 +163,7 @@ export default {
           if (res.success) {
             toasts.success(res.statusValue)
             val.onSuccess()
+            state.customerCreate = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }

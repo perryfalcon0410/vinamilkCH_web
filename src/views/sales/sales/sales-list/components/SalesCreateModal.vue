@@ -301,6 +301,7 @@ import {
   DISTRICTS_GETTER,
   PRECINCTS_GETTER,
   SHOP_LOCATIONS_GETTER,
+  CREATE_CUSTOMER_GETTER,
   // ACTIONS
   CREATE_CUSTOMER_ACTION,
   GET_PROVINCES_ACTION,
@@ -337,6 +338,7 @@ export default {
 
       isFirstTimeGetLocations: true,
 
+      id: null,
       customerEmail: null,
       lastName: null,
       firstName: null,
@@ -352,6 +354,8 @@ export default {
       provincesSelected: null,
       districtsSelected: null,
       precinctsSelected: null,
+      customerCreate: {},
+      customerCreateId: null,
     }
   },
   // START - Computed
@@ -361,6 +365,7 @@ export default {
       DISTRICTS_GETTER,
       PRECINCTS_GETTER,
       SHOP_LOCATIONS_GETTER,
+      CREATE_CUSTOMER_GETTER,
     }),
     customerTypes() {
       return this.CUSTOMER_TYPES_GETTER().map(data => ({
@@ -395,6 +400,9 @@ export default {
     shopLocations() {
       return this.SHOP_LOCATIONS_GETTER
     },
+    getCustomerCreate() {
+      return this.CREATE_CUSTOMER_GETTER
+    },
   },
   // END - Computed
 
@@ -423,6 +431,10 @@ export default {
         this.precinctsSelected = this.shopLocations.precinctId
         this.isFirstTimeGetLocations = false
       }
+    },
+    getCustomerCreate() {
+      this.customerCreate = { ...this.getCustomerCreate }
+      this.getCreateInfo()
     },
   },
 
@@ -480,10 +492,11 @@ export default {
     getCreateInfo() {
       this.onClickCloseButton()
       this.$emit('getCreateInfo', {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        phoneNumber: this.phoneNumber,
-        street: this.street,
+        id: this.customerCreate.id,
+        firstName: this.customerCreate.firstName,
+        lastName: this.customerCreate.lastName,
+        phoneNumber: this.customerCreate.mobiPhone,
+        street: this.customerCreate.street,
       })
     },
 

@@ -5,6 +5,8 @@
   >
     <!-- START - Header -->
     <b-row
+      v-for="(button, k) in buttons"
+      :key="k"
       class="m-0"
     >
       <!-- START - Search -->
@@ -34,6 +36,7 @@
               v-for="(value,index) in productsSearch"
               :key="index"
               class="mx-0 my-1"
+              @click="onclickAddProduct(value)"
             >
               <!-- START - Section Image -->
               <b-col
@@ -50,21 +53,30 @@
 
               <!-- START - Section Label -->
               <b-col>
-                <b-col
-                  class="text-dark"
-                >
-                  {{ value.productName }}
-                </b-col>
-                <b-col
-                  class="my-1"
-                >
-                  {{ value.productCode }}
-                </b-col>
-                <b-col class="text-dark font-weight-bold">
-                  {{ value.productPrice }}
-                </b-col>
+                <b-form-row>
+                  <b-col
+                    class="text-dark font-weight-bold"
+                    md="10"
+                  >
+                    {{ value.productName }}
+                  </b-col>
+                  <b-col
+                    class="text-dark font-weight-bold"
+                    md="1"
+                  >
+                    {{ value.productUnitPrice }}
+                  </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                  <b-col
+                    class="my-1"
+                  >
+                    {{ value.productCode }}
+                  </b-col>
+                </b-form-row>
               </b-col>
-            <!-- END - Section Label -->
+              <!-- END - Section Label -->
             </b-row>
           </b-container>
         </b-collapse>
@@ -73,18 +85,7 @@
       </b-col>
       <!-- END - Search -->
 
-      <!-- START - Bills -->
-      <div
-        class="d-flex align-items-center justify-content-center bg-white rounded shadow mr-1 px-1"
-      >
-        Hóa đơn 1
-        <b-icon-x
-          class="cursor-pointer ml-1"
-          font-scale="1.6"
-        />
-      </div>
-
-      <div
+      <!-- <div
         class="d-flex align-items-center justify-content-center bg-white rounded shadow mr-1 px-1"
       >
         Hóa đơn 2
@@ -92,7 +93,18 @@
           class="cursor-pointer ml-1"
           font-scale="1.6"
         />
-      </div>
+      </div> -->
+      <!-- START - Bills -->
+
+      <li
+        class="d-flex align-items-center justify-content-center bg-white rounded shadow mr-1 px-1"
+      >
+        Hóa đơn 1
+        <b-icon-x
+          class="cursor-pointer ml-1"
+          font-scale="1.6"
+        />
+      </li>
 
       <div>
         <b-icon-plus
@@ -100,6 +112,7 @@
           class="cursor-pointer"
         />
       </div>
+
       <!-- END - Bills -->
 
     </b-row>
@@ -167,7 +180,6 @@
               v-else-if="props.column.field === 'quantity'"
               align-v="center"
               align-h="start"
-              class="mx-0"
             >
               <b-icon-caret-down-fill
                 class="cursor-pointer mr-1"
@@ -214,7 +226,7 @@
 
       <!-- START - Section Form pay -->
       <sales-form
-        :orderProducts="orderProducts"
+        :order-products="orderProducts"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
@@ -263,6 +275,7 @@ export default {
   data() {
     return {
       inputSearchFocused: false,
+      productImage: null,
 
       columns: [
         {
@@ -347,6 +360,9 @@ export default {
       productInfos: [],
       productInfoTypeOptions: saleData.productInfoType,
       productsSearch: [],
+      buttons: [
+        { name: '' },
+      ],
 
       // online order
       id: null,
@@ -385,8 +401,13 @@ export default {
     getProductSearch() {
       return this.GET_TOP_SALE_PRODUCTS_GETTER().map(data => ({
         productName: data.productName,
-        productPrice: data.price,
         productCode: data.productCode,
+        productUnit: data.uom1,
+        productInventory: data.stockTotal,
+        productUnitPrice: data.price,
+        quantity: 1,
+        productTotalPrice: this.totalPrice(1, Number(data.price)),
+        productImage: data.image,
       }))
     },
     getOnlineOrderProducts() {
@@ -502,6 +523,10 @@ export default {
 
     onClickDeleteProduct(index) {
       this.orderProducts.splice(index, 1)
+    },
+
+    onclickAddProduct(index) {
+      this.orderProducts.push(index)
     },
 
     onChangeKeyWord() {

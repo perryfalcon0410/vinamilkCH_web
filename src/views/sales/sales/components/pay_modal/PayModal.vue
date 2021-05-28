@@ -603,8 +603,6 @@
           />
           Đóng (ESC)
         </b-button>
-        <sales-list />
-        <sales-form />
       </b-row>
     </template>
     <!-- END - Footer -->
@@ -637,21 +635,15 @@ import {
 import {
   CUSTOMER,
   // GETTERS
-  CUSTOMER_DEFAULT_GETTER,
   SALEMT_PAYMENT_TYPE_GETTER,
   // ACTIONS
-  GET_CUSTOMER_DEFAULT_ACTION,
   GET_SALEMT_PAYMENT_TYPE_ACTION,
 } from '../../../sales-customers/store-module/type'
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
-import SalesList from '../../sales-list/SalesList.vue'
-import SalesForm from '../../sales-list/components/SalesForm.vue'
 
 export default {
   components: {
     VoucherModal,
-    SalesList,
-    SalesForm,
   },
   props: {
     visible: {
@@ -669,7 +661,7 @@ export default {
       type: String,
       default: String,
     },
-    customerSelected: {
+    customerId: {
       type: String,
       default: String,
     },
@@ -766,7 +758,6 @@ export default {
       discountAmount: null,
 
       shopId: null,
-      customerId: null,
       salemanId: null,
       wareHouseTypeId: null,
       totalPaid: null,
@@ -787,7 +778,6 @@ export default {
       GET_DISCOUNT_BY_CODE_GETTER,
     ]),
     ...mapGetters(CUSTOMER, [
-      CUSTOMER_DEFAULT_GETTER,
       SALEMT_PAYMENT_TYPE_GETTER,
     ]),
 
@@ -797,10 +787,6 @@ export default {
 
     discount() {
       return this.GET_DISCOUNT_BY_CODE_GETTER
-    },
-
-    customerDefault() {
-      return this.CUSTOMER_DEFAULT_GETTER
     },
 
     salemtPaymentTypeOptions() {
@@ -862,10 +848,6 @@ export default {
       this.getDiscount()
     },
 
-    customerDefault() {
-      this.getCustomerDefault()
-    },
-
     getProducts() {
       this.products = [...this.getProducts]
     },
@@ -880,7 +862,6 @@ export default {
   },
   mounted() {
     this.GET_PRODUCTS_ACTION({ formId: 5, ctrlId: 1, customerTypeId: 1 })
-    this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
     this.GET_SALEMT_PAYMENT_TYPE_ACTION({ formId: 1, ctrlId: 4 })
   },
   created() {
@@ -898,17 +879,11 @@ export default {
       GET_DISCOUNT_BY_CODE_ACTION,
     ]),
     ...mapActions(CUSTOMER, [
-      GET_CUSTOMER_DEFAULT_ACTION,
       GET_SALEMT_PAYMENT_TYPE_ACTION,
     ]),
 
     onVoucherButtonClick() {
       this.$root.$emit('bv::show::modal', 'VoucherModal')
-    },
-
-    getCustomerDefault() {
-      this.customerId = this.customerDefault.id
-      this.shopId = this.customerDefault.shopId
     },
 
     getVoucherInfo(id) {
@@ -963,7 +938,7 @@ export default {
       this.CREATE_SALE_ORDER_ACTION({
         product: {
           shopId: this.shopId,
-          customerId: this.customerSelected,
+          customerId: this.customerId,
           totalPaid: this.totalOrderPrice,
           paymentType: this.salemtPaymentTypeSelected,
           deliveryType: this.deliverySelected,

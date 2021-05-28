@@ -309,11 +309,13 @@
             :order-products="orderProducts"
             :order-selected="salemtPromotionObjectSelected"
             :delivery-selected="salemtDeliveryTypeSelected"
-            :customer-selected="id"
             :shop-selected="shopId"
+            :customer-id="id"
           />
         </b-button>
         <!-- END - Button pay -->
+        <!-- :customer-create-id="id"
+            :customer-default-id="id" -->
 
         <!-- START - Notify Modal Close -->
         <b-modal
@@ -616,6 +618,7 @@ export default {
     },
 
     getCreateInfo(val) {
+      this.id = val.id
       this.fullName = `${val.lastName} ${val.firstName}`
       this.phoneNumber = val.phoneNumber
       this.street = val.street
@@ -638,6 +641,7 @@ export default {
     },
 
     getCustomerDefault() {
+      this.id = this.customerDefault.id
       this.firstName = this.customerDefault.firstName
       this.lastName = this.customerDefault.lastName
       this.fullName = `${this.lastName} ${this.firstName}`
