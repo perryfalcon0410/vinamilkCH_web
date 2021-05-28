@@ -236,7 +236,7 @@
             slot-scope="props"
           >
             <b-row
-              v-show="paging.totalElements"
+              v-show="redBillPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -466,10 +466,10 @@ export default {
     },
     paginationDetailContent() {
       const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.paging.totalElements
-        ? this.paging.totalElements : (this.elementSize * this.pageNumber)
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.redBillPagination.totalElements
+        ? this.redBillPagination.totalElements : (this.elementSize * this.pageNumber)
 
-      return `${minPageSize} - ${maxPageSize} của ${this.paging.totalElements} mục`
+      return `${minPageSize} - ${maxPageSize} của ${this.redBillPagination.totalElements} mục`
     },
   },
   watch: {
