@@ -96,21 +96,31 @@
           <b-col
             class="mt-1 px-0"
           >
-            <div>
-              Lý do trả hàng
-            </div>
-            <tree-select
-              v-model="selectedReason"
-              :options="reasonReturnOptions"
-              :searchable="false"
-              placeholder="Chọn lý do trả hàng"
-              no-options-text="Không có dữ liệu"
-            />
+            <validation-provider
+              v-slot="{ errors, passed, touched }"
+              rules="required"
+              name="lý do trả hàng"
+            >
+              <div class="mt-1">
+                Lý do trả hàng <sup class="text-danger">*</sup>
+              </div>
+              <tree-select
+                v-model="selectedReason"
+                :state="touched ? passed : null"
+                :options="reasonReturnOptions"
+                :searchable="false"
+                placeholder="Chọn lý do trả hàng"
+                no-options-text="Không có dữ liệu"
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
           </b-col>
           <!-- END - Order return reason -->
 
           <!-- START - Feedback info -->
-          <b-col>
+          <b-col
+            class="mt-1 px-0"
+          >
             <validation-provider
               v-slot="{ errors, passed, touched }"
               rules="required"
@@ -170,32 +180,28 @@
                     class="mx-0"
                     align-h="end"
                   >
-                    0
-                  <!-- {{ (getProductInfo.totalQuantity) }} -->
+                    {{ (getProductInfo.totalQuantity) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'totalPrice'"
                     class="mx-0"
                     align-h="end"
                   >
-                    0
-                  <!-- {{ (infoProductData.totalAmount) }} -->
+                    {{ (getProductInfo.totalAmount) }}
                   </b-row>
                   <b-row
                     v-if="props.column.field === 'discount'"
                     class="mx-0"
                     align-h="end"
                   >
-                    0
-                  <!-- {{ (infoProductData.totalDiscount) }} -->
+                    {{ (getProductInfo.totalDiscount) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'payment'"
                     class="mx-0"
                     align-h="end"
                   >
-                    0
-                  <!-- {{ (infoProductData.totalDiscount) }} -->
+                    {{ (getProductInfo.totalDiscount) }}
                   </b-row>
                 </template>
               <!-- START - Column filter -->
@@ -235,32 +241,28 @@
                     class="mx-0"
                     align-h="end"
                   >
-                    0
-                  <!-- {{ (getProductInfo.totalQuantity) }} -->
+                    {{ (getProductInfo.totalQuantity) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'totalPrice'"
                     class="mx-0"
                     align-h="end"
                   >
-                    0
-                  <!-- {{ (infoProductData.totalAmount) }} -->
+                    {{ (getPromotionInfo.totalAmount) }}
                   </b-row>
                   <b-row
                     v-if="props.column.field === 'discount'"
                     class="mx-0"
                     align-h="end"
                   >
-                    0
-                  <!-- {{ (infoProductData.totalDiscount) }} -->
+                    {{ (getPromotionInfo.totalDiscount) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'payment'"
                     class="mx-0"
                     align-h="end"
                   >
-                    0
-                  <!-- {{ (infoProductData.totalDiscount) }} -->
+                    {{ (getPromotionInfo.totalDiscount) }}
                   </b-row>
                 </template></vue-good-table>
             </b-tab>
@@ -325,6 +327,7 @@ import {
   mapActions,
   mapMutations,
 } from 'vuex'
+import lodash from 'lodash'
 import {
   ValidationObserver,
   ValidationProvider,
@@ -498,6 +501,18 @@ export default {
       }
       return []
     },
+    getProductInfo() {
+      if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn && this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn.info) {
+        return lodash.mapValues(this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn.info, value => this.$formatNumberToLocale(value))
+      }
+      return {}
+    },
+    getPromotionInfo() {
+      if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.promotionReturn && this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.promotionReturn.info) {
+        return lodash.mapValues(this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.promotionReturn.info, value => this.$formatNumberToLocale(value))
+      }
+      return {}
+    },
   },
 
   watch: {
@@ -550,7 +565,8 @@ export default {
       CREATE_RETURNED_GOOD_ACTION,
     ]),
     onSubmit() {
-      if (this.billInfo.orderNumber === '') {
+      console.log(this.billInfo.orderNumber)
+      if (this.billInfo.orderNumber === null) {
         toasts.error('Xin vui lòng chọn đơn hàng muốn trả!')
         return
       }

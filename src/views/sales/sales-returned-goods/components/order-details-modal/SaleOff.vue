@@ -50,7 +50,7 @@
           class="mx-0"
           align-h="end"
         >
-          {{ (infoPromotionData.totalDiscount) }}
+          {{ (infoPromotionData.allTotal) }}
         </b-row>
       </template>
       <!-- START - Column filter -->
