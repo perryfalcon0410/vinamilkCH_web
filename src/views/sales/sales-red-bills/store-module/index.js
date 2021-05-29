@@ -21,6 +21,7 @@ import {
   GET_INVOICE_DETAIL_ACTION,
   DELETE_RED_INVOICE_ACTION,
   EXPORT_RED_BILLS_ACTION,
+  UPDATE_RED_BILLS_ACTION,
 } from './type'
 import toasts from '../../../../@core/utils/toasts/toasts'
 
@@ -238,6 +239,22 @@ export default {
               elem.click()
               document.body.removeChild(elem)
             }
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [UPDATE_RED_BILLS_ACTION]({}, val) {
+      RedInvoiceService
+        .updateRedBills(val.redInvoiceRequests)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+            val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
           }
         })
         .catch(error => {

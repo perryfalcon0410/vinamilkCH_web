@@ -22,6 +22,7 @@
             id="form-input-stock-counting-code"
             v-model="stockCountingCode"
             class="h8 text-brand-3"
+            maxlength="20"
             @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append

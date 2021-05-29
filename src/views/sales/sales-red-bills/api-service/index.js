@@ -10,6 +10,7 @@ import {
   getInvoiceDetailEndpoint,
   deleteRedBillEndpoint,
   exportRedBillsEndpoint,
+  updateRedBillsEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -56,5 +57,8 @@ export default {
       params: formatURLParams(args),
       responseType: 'blob',
     })
+  },
+  updateRedBills(args) {
+    return axios.put(updateRedBillsEndpoint, args)
   },
 }

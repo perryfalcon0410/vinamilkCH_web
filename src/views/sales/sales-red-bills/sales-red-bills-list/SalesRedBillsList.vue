@@ -167,6 +167,7 @@
           <b-button
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
+            @click="onClickUpdateRedBills"
           >
             <b-icon-arrow-clockwise
               class="mr-05"
@@ -351,6 +352,7 @@ import {
   GET_RED_INVOICES_ACTION,
   DELETE_RED_INVOICE_ACTION,
   EXPORT_RED_BILLS_ACTION,
+  UPDATE_RED_BILLS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -502,6 +504,7 @@ export default {
       GET_RED_INVOICES_ACTION,
       DELETE_RED_INVOICE_ACTION,
       EXPORT_RED_BILLS_ACTION,
+      UPDATE_RED_BILLS_ACTION,
     ]),
     addSaleRedBillsCreate() {
       this.$router.push({ name: 'sales-red-bills-create' })
@@ -586,6 +589,18 @@ export default {
         type: this.templateOptionSelected,
         formId: 1,
         ctrlId: 1,
+      })
+    },
+    onClickUpdateRedBills() {
+      const redInvoiceRequests = this.selectedRedBillRows.map(data => ({
+        id: data.id,
+        invoiceNumber: data.numberBill,
+      }))
+      this.UPDATE_RED_BILLS_ACTION({
+        redInvoiceRequests,
+        onSuccess: () => {
+          this.onSearchClick()
+        },
       })
     },
   },

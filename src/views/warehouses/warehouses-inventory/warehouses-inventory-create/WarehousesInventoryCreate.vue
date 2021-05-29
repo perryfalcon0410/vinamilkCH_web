@@ -173,6 +173,7 @@
                 id="form-input-search-keywords"
                 v-model="searchKeywords"
                 class="h8 text-brand-3"
+                maxlength="200"
                 placeholder="Nhập mã hoặc tên sản phẩm"
                 @keyup.enter="onClickSearchButton()"
               />
@@ -498,7 +499,7 @@
         </b-button>
         <b-button
           class="aligns-items-button-center"
-          @click="isImportModalShow = !isImportModalShow"
+          @click="isModalCloseShow = !isModalCloseShow"
         >
           Đóng
         </b-button>
