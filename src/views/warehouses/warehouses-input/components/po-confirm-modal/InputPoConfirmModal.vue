@@ -395,6 +395,9 @@ export default {
     poConfirm() {
       if (this.poConfirm.length > 0) {
         this.selectOrder(this.theFirstPo.id, this.theFirstPo.internalNumber, this.theFirstPo.poNumber, this.theFirstPo.sysDate)
+      } else {
+        this.poProducts = []
+        this.poPromotionProducts = []
       }
     },
     poPromotionProducts() {

@@ -258,7 +258,7 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         price: this.$formatNumberToLocale(data.price),
-        quantity: data.quantity,
+        borrowQuantity: data.quantity,
         totalPrice: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
@@ -270,6 +270,8 @@ export default {
     importBorrowings() {
       if (this.importBorrowings.length > 0) {
         this.selectOrder(this.firstPo.id, this.firstPo.sysDate)
+      } else {
+        this.importBorrowingsDetail = []
       }
     },
   },

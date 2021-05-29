@@ -104,6 +104,7 @@ export default {
       if (this.reasonSelected) {
         this.UPDATE_NOT_IMPORT_ACTION({
           id: this.reasonSelected,
+          reasonId: this.reasonSelected,
           formId: this.formId, // hard code
           ctrlId: this.ctrlId, // hard code
         })

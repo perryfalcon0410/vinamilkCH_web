@@ -19,6 +19,7 @@ import warehousesOutput from '@/views/warehouses/warehouses-output/store-module'
 import warehousesInventory from '@/views/warehouses/warehouses-inventory/store-module'
 // Reports
 import reportWarehousesDifferencePrice from '@/views/reports/reports-warehouses/report-warehouses-price-difference/store-module'
+import reportWarehousesInventory from '@/views/reports/reports-warehouses/reports-warehouses-inventory/store-module'
 import reportsReturnedGoods from '@/views/reports/reports-returned-goods/store-module'
 
 // Systems
@@ -57,6 +58,7 @@ export default new Vuex.Store({
     warehousesInventory,
     // Reports
     reportWarehousesDifferencePrice,
+    reportWarehousesInventory,
     reportsReturnedGoods,
   },
   strict: process.env.DEV,

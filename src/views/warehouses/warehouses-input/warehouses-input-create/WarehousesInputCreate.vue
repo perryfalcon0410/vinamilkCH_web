@@ -833,6 +833,7 @@ export default {
     },
     inputTypeSelected() {
       // rest all total row
+      this.productSearch = null
       this.rows = []
       this.poProductInfo = {}
       this.poPromotionProductsInfo = {}
@@ -1007,17 +1008,6 @@ export default {
     keyUp() {
       if (this.cursor > 0) {
         this.cursor -= 1
-      }
-    },
-    keyDown() {
-      if (this.cursor < this.allProducts.length) {
-        this.cursor += 1
-      }
-    },
-    keyEnter() {
-      if (this.isFocusedInputProduct && this.allProducts[this.cursor]) {
-        this.selectProduct(this.allProducts[this.cursor])
-        this.isFocusedInputProduct = false
       }
     },
     loadProducts() {

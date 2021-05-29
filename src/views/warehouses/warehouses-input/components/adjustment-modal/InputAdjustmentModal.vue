@@ -260,7 +260,7 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         price: this.$formatNumberToLocale(data.price),
-        quantity: data.quantity,
+        adjustQuantity: data.quantity,
         totalPrice: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
@@ -272,6 +272,9 @@ export default {
     importAdjustments() {
       if (this.importAdjustments.length > 0) {
         this.selectOrder(this.firstPo.id, this.firstPo.sysDate)
+      } else {
+        // will clear grid view if the last po been imported
+        this.importAdjustmentsDetail = []
       }
     },
   },

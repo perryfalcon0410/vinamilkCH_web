@@ -160,9 +160,7 @@
                     @focus="focusProduct"
                     @input="loadProducts"
                     @blur="isFocusedInputProduct = false"
-                    @keyup.enter="keyEnter"
-                    @keydown.up="keyUp"
-                    @keydown.down="keyDown"
+                    @keyup="loadProducts"
                   />
                   <!-- START - Product Popup -->
                   <b-collapse
@@ -589,17 +587,6 @@ export default {
     keyUp() {
       if (this.cursor > 0) {
         this.cursor -= 1
-      }
-    },
-    keyDown() {
-      if (this.cursor < this.products.length) {
-        this.cursor += 1
-      }
-    },
-    keyEnter() {
-      if (this.isFocusedInputProduct && this.products[this.cursor]) {
-        this.selectProduct(this.products[this.cursor])
-        this.isFocusedInputProduct = false
       }
     },
     loadProducts() {
