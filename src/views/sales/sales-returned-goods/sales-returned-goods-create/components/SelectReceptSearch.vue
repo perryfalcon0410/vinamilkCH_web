@@ -5,7 +5,7 @@
     <v-card-actions
       title="Tìm kiếm"
     >
-      <!-- START - Full Name -->
+      <!-- START - Bill Code -->
       <b-col
         xl
         lg="3"
@@ -36,9 +36,9 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <!-- END - Full Name -->
+      <!-- END - Bill Code -->
 
-      <!-- START - Phone -->
+      <!-- START - Customer Name -->
       <b-col
         xl
         lg="3"
@@ -70,7 +70,41 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <!-- END - Phone -->
+      <!-- END - Customer Name -->
+
+      <!-- START - Customer Name -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Sản phẩm
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model.trim="productCode"
+            class="h8"
+            autocomplete="on"
+            placeholder="Nhập mã sản phẩm"
+            @keyup.enter="onSearchClick"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="productCode"
+              class="cursor-pointer text-gray"
+              @click="productCode = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Customer Name -->
 
       <!-- START - Date From -->
       <b-col
@@ -190,7 +224,7 @@ export default {
       toDate: this.$nowDate,
       orderNumber: '',
       customerName: '',
-      productName: '',
+      productCode: '',
 
       decentralization: {
         formId: 1,
@@ -232,7 +266,7 @@ export default {
       const searchData = {
         searchKeywords: this.customerName,
         orderNumber: this.orderNumber,
-        product: this.productName,
+        product: this.productCode,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         ...this.decentralization,

@@ -27,7 +27,7 @@
         >
           <div class="text-brand-1">
             <strong>
-              Danh sách phiếu nhập hàng
+              Danh sách hóa đơn
             </strong>
           </div>
 
@@ -141,13 +141,7 @@
                     class="mx-1"
                     @input="(value)=>props.perPageChanged({currentPerPage: value})"
                   />
-                  <span
-                    class="text-nowrap"
-                  >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                    -
-                    {{ (elementSize * pageNumber) > salesOrderPagination.totalElements ?
-                      salesOrderPagination.totalElements : (elementSize * pageNumber) }}
-                    của {{ salesOrderPagination.totalElements }} mục </span>
+                  <span class="text-nowrap"> {{ paginationDetailContent }} </span>
                 </div>
                 <b-pagination
                   v-model="pageNumber"
@@ -211,6 +205,9 @@ import {
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
+import {
+  formatISOtoVNI,
+} from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import SearchComponent from './SelectReceptSearch.vue'
 import { RETURNEDGOODS, RETURNED_GOOD_CHOOSE_GETTER, GET_RETURNED_GOOD_CHOOSE_ACTION } from '../../store-module/type'
@@ -252,6 +249,13 @@ export default {
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
+        },
+        {
+          label: 'Ngày bán',
+          field: 'orderDate',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Nhân viên',
@@ -297,6 +301,7 @@ export default {
       if (this.RETURNED_GOOD_CHOOSE_GETTER.response) {
         return this.RETURNED_GOOD_CHOOSE_GETTER.response.map(data => ({
           id: data.id,
+          orderDate: formatISOtoVNI(data.orderDate),
           orderNumber: data.orderNumber,
           customerName: data.customerName,
           total: this.$formatNumberToLocale(data.total),
@@ -355,6 +360,14 @@ export default {
     onPerPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
+    },
+
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehousesComboPagination.totalElements
+        ? this.warehousesComboPagination.totalElements : (this.elementSize * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.warehousesComboPagination.totalElements} mục`
     },
   },
 }

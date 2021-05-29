@@ -96,7 +96,7 @@
             <b-form-textarea
               id="textarea-plaintext"
               readonly
-              :value="information.note"
+              :value="information.reasonDesc"
             />
           </b-col>
         </b-row>

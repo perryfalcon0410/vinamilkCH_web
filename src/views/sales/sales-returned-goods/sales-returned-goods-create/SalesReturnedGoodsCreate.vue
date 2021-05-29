@@ -61,32 +61,32 @@
               variant="secondary"
             >
               Ngày mua hàng
-              <strong>
-                {{ `: ${billInfo.oderDate}` }}
+              <strong>:
+                {{ billInfo.oderDate }}
               </strong>
             </b-list-group-item>
             <b-list-group-item
               variant="secondary"
             >
               Nhân viên bán hàng
-              <strong>
-                {{ `: ${billInfo.employeeName}` }}
+              <strong>:
+                {{ billInfo.employeeName }}
               </strong>
             </b-list-group-item>
             <b-list-group-item
               variant="secondary"
             >
               Khách hàng
-              <strong>
-                {{ `: ${billInfo.customerName}` }}
+              <strong>:
+                {{ billInfo.customerName }}
               </strong>
             </b-list-group-item>
             <b-list-group-item
               variant="secondary"
             >
               Tiền trả lại
-              <strong>
-                {{ `: ${billInfo.moneyPayback}` }}
+              <strong>:
+                {{ billInfo.moneyPayback }}
               </strong>
             </b-list-group-item>
           </b-list-group>
@@ -132,6 +132,7 @@
               <b-form-textarea
                 v-model.trim="feedbackInfomation"
                 :state="touched ? passed : null"
+                maxlength="4000"
               />
               <small class="text-danger">{{ errors[0] }}</small>
             </validation-provider>
@@ -201,7 +202,7 @@
                     class="mx-0"
                     align-h="end"
                   >
-                    {{ (getProductInfo.totalDiscount) }}
+                    {{ (getProductInfo.allTotal) }}
                   </b-row>
                 </template>
               <!-- START - Column filter -->
@@ -215,7 +216,7 @@
               title="Hàng khuyến mãi"
             >
               <vue-good-table
-                :columns="columns"
+                :columns="promotionTable"
                 :rows="productPromotions"
                 style-class="vgt-table bordered"
                 :pagination-options="{
@@ -244,25 +245,11 @@
                     {{ (getProductInfo.totalQuantity) }}
                   </b-row>
                   <b-row
-                    v-else-if="props.column.field === 'totalPrice'"
-                    class="mx-0"
-                    align-h="end"
-                  >
-                    {{ (getPromotionInfo.totalAmount) }}
-                  </b-row>
-                  <b-row
-                    v-if="props.column.field === 'discount'"
-                    class="mx-0"
-                    align-h="end"
-                  >
-                    {{ (getPromotionInfo.totalDiscount) }}
-                  </b-row>
-                  <b-row
                     v-else-if="props.column.field === 'payment'"
                     class="mx-0"
                     align-h="end"
                   >
-                    {{ (getPromotionInfo.totalDiscount) }}
+                    {{ (getPromotionInfo.allTotal) }}
                   </b-row>
                 </template></vue-good-table>
             </b-tab>
@@ -453,6 +440,60 @@ export default {
           tdClass: 'text-left',
         },
       ],
+      promotionTable: [
+        {
+          label: 'Mã sản phẩm',
+          field: 'productCode',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Tên sản phẩm',
+          field: 'productName',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'ĐVT',
+          field: 'unit',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Số lượng',
+          field: 'quantity',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Giá bán',
+          field: 'pricePerUnit',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Tiền trả lại',
+          field: 'payment',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Ghi chú',
+          field: 'note',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+      ],
     }
   },
 
@@ -470,7 +511,7 @@ export default {
           pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
           totalPrice: this.$formatNumberToLocale(data.totalPrice),
           discount: this.$formatNumberToLocale(data.discount),
-          payment: this.$formatNumberToLocale(data.payment),
+          payment: this.$formatNumberToLocale(data.paymentReturn),
           note: this.$formatNumberToLocale(data.note),
         }))
       }
@@ -486,7 +527,7 @@ export default {
           pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
           totalPrice: this.$formatNumberToLocale(data.totalPrice),
           discount: this.$formatNumberToLocale(data.discount),
-          payment: this.$formatNumberToLocale(data.payment),
+          payment: this.$formatNumberToLocale(data.paymentReturn),
           note: data.note,
         }))
       }
@@ -575,7 +616,7 @@ export default {
         dateReturn: new Date(),
         orderNumber: this.billInfo.orderNumber,
         reasonId: this.selectedReason,
-        feedbackInfomation: this.feedbackInfomation,
+        reasonDescription: this.feedbackInfomation,
         createUser: localStorage.getItem('username') || '',
       })
     },
