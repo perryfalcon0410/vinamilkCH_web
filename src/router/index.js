@@ -15,7 +15,8 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.VUE_APP_BASE_HREF,
+  // base: process.env.VUE_APP_BASE_HREF,
+  base: '',
   scrollBehavior() {
     return { x: 0, y: 0 }
   },

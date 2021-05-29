@@ -499,7 +499,6 @@ export default {
     },
     dataFromPo(data) {
       const [trans, productDetail] = data
-      console.log(productDetail)
       this.internalNumber = trans.internalNumber
       this.output.transCode = trans.transCode || trans.adjustmentCode || trans.poBorrowCode
       this.poNumber = trans.poNumber

@@ -439,8 +439,6 @@ export default {
     },
     choonsenTrans(trans) {
       this.onPoItemSelected(trans.id)
-      console.log(trans.id)
-      console.log(this.productDetail)
       this.$emit('choonsenTrans', [trans, this.productDetail])
       this.$emit('onModalHidden')
     },

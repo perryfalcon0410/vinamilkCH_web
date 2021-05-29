@@ -1,9 +1,10 @@
 const path = require('path')
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? `/${process.env.VUE_APP_BASE_HREF}/`
-    : '/',
+  // publicPath: process.env.NODE_ENV === 'production'
+  //   ? `/${process.env.VUE_APP_BASE_HREF}/`
+  //   : '/',
+  publicPath: '/',
   css: {
     loaderOptions: {
       sass: {
