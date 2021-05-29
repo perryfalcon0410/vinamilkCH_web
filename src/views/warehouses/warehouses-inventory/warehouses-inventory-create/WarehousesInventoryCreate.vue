@@ -760,7 +760,7 @@ export default {
     getWarehouseInventoryData() {
       this.warehousesInventoryData = { ...this.getWarehouseInventoryData }
       if (this.warehousesInventoryData.id != null) {
-        this.isCreated = false
+        this.isCreated = true
       }
     },
     getWarehouseInventoryImportData() {
