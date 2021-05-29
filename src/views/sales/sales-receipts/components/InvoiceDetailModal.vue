@@ -13,19 +13,19 @@
         cols="2"
       >
         <b-row
-          class="v-title bg-light h-25 w-75 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1"
+          class="v-title bg-light h-25 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1"
         >
           Thông tin thanh toán
         </b-row>
       </b-col>
       <b-col
-        cols="4"
+        cols="5"
       >
         <b-row class="mt-1">
-          <b-col>
+          <b-col cols="4">
             Số hóa đơn:
           </b-col>
-          <b-col>
+          <b-col cols="8">
             <h2 class="text-center">
               {{ information.orderNumber }}
             </h2>
@@ -33,10 +33,10 @@
         </b-row>
 
         <b-row class="mt-1">
-          <b-col>
+          <b-col cols="4">
             Khách hàng:
           </b-col>
-          <b-col>
+          <b-col cols="8">
             <h3 class="text-center">
               {{ information.customerName }}
             </h3>
@@ -44,10 +44,10 @@
         </b-row>
 
         <b-row class="mt-1">
-          <b-col>
+          <b-col cols="4">
             Ngày thanh toán:
           </b-col>
-          <b-col>
+          <b-col cols="8">
             <h3 class="text-center">
               {{ paidDate }}
             </h3>
@@ -55,10 +55,10 @@
         </b-row>
 
         <b-row class="mt-1">
-          <b-col>
+          <b-col cols="4">
             Nhân viên:
           </b-col>
-          <b-col>
+          <b-col cols="8">
             <h3 class="text-center">
               {{ information.saleMan }}
             </h3>
@@ -76,7 +76,7 @@
           </b-col>
           <b-col>
             <h3>
-              {{ this.$formatNumberToLocale(information.total) }}
+              {{ $formatNumberToLocale(information.total) }}
             </h3>
           </b-col>
         </b-row>
@@ -87,7 +87,7 @@
           </b-col>
           <b-col>
             <h3>
-              {{ this.$formatNumberToLocale(information.totalPaid) }}
+              {{ $formatNumberToLocale(information.totalPaid) }}
             </h3>
           </b-col>
         </b-row>
@@ -98,7 +98,7 @@
           </b-col>
           <b-col>
             <h3>
-              {{ this.$formatNumberToLocale(information.balance) }}
+              {{ $formatNumberToLocale(information.balance) }}
             </h3>
           </b-col>
         </b-row>
@@ -111,7 +111,7 @@
       <b-col
         cols="2"
       >
-        <b-row class="v-title bg-light p-1 w-75 rounded-pill  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1">
+        <b-row class="v-title bg-light p-1 rounded-pill  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1">
           Chi tiết hóa đơn
         </b-row>
       </b-col>
@@ -158,7 +158,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+import { formatISOtoVNI } from '@/@core/utils/filter'
 import InvoiceDetail from './invoice-detail-modal/InvoiceDetail.vue'
 import Discounts from './invoice-detail-modal/Discount.vue'
 import Promotion from './invoice-detail-modal/Promotion.vue'
@@ -203,7 +203,7 @@ export default {
   },
   computed: {
     paidDate() {
-      return moment(this.information.orderDate).format('DD/MM/YYYY')
+      return formatISOtoVNI(this.information.orderDate)
     },
   },
 

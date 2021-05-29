@@ -48,7 +48,7 @@
             <b-row
               v-for="(item, index) in importAdjustments"
               :key="item.id"
-              class="border-bottom border-white bg-light py-1"
+              class="border-bottom border-white bg-light py-1 cursor-pointer"
               :class="{ 'text-brand-1': current == item.id }"
               @click="selectOrder(item.id,item.adjustmentDate)"
             >

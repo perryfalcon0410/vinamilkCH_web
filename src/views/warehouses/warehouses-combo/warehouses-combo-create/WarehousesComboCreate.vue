@@ -159,7 +159,7 @@
                     placeholder="Nhập mã hoặc tên sản phẩm"
                     @focus="focusProduct"
                     @input="loadProducts"
-                    @blur="isFocusedInputProduct = false"
+                    @blur="isFocusedInputProduct = true"
                     @keyup="loadProducts"
                   />
                   <!-- START - Product Popup -->
@@ -527,6 +527,7 @@ export default {
         this.updateComboExchangeQuantity(index)
         this.totalExchangeQuantity = this.comboExchangeRows.reduce((accum, i) => accum + Number(i.quantity), 0)
       }
+      this.isFocusedInputProduct = false
     },
     deleteProduct(index) {
       this.comboExchangeRows = this.comboExchangeRows.filter(e => e.comboCode !== this.comboListRows[index].comboCode)
@@ -599,8 +600,6 @@ export default {
           ctrlId: this.ctrlId,
         }
         this.GET_COMBO_PRODUCTS_ACTION(searchData)
-      } else {
-        this.isFocusedInputProduct = false
       }
     },
   },

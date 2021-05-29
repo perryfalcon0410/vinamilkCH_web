@@ -41,7 +41,7 @@
           <b-row
             v-for="(item, index) in poConfirm"
             :key="item.id"
-            class="border-bottom border-white py-1"
+            class="border-bottom border-white py-1 cursor-pointer"
             :class="{ 'text-brand-1': current == item.id }"
             @click="selectOrder(item.id, item.internalNumber, item.poNo, item.date)"
           >

@@ -48,8 +48,8 @@
             <b-row
               v-for="(item, index) in importBorrowings"
               :key="item.id"
-              :class="{ 'text-brand-1': current == item.id }"
-              class="border-bottom border-white bg-light py-1"
+              :class="{ 'text-brand-1': current === item.id }"
+              class="border-bottom border-white bg-light py-1 cursor-pointer"
               @click="selectOrder(item.id,item.borrowDate)"
             >
               <b-col cols="1">
