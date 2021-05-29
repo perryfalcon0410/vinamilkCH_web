@@ -6,24 +6,27 @@
 
     <!-- START - Search -->
     <reports-warehouses-promotion-list-search
+      :per-page-size="paginationData.size"
+      @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />
     <!-- END - Search -->
 
-    <b-form class="v-search bg-white rounded shadow rounded my-1">
+    <b-form class="bg-white rounded shadow rounded my-1">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
+        style="padding: 5px 0"
         align-v="center"
       >
-        <label class="text-primary">
+        <strong class="text-brand-1">
           Danh sách hàng khuyến mãi
-        </label>
+        </strong>
         <b-button-group>
           <b-button
             class="btn-brand-1 h9 align-items-button-center rounded ml-1"
             variant="someThing"
-            @click="onClickExcelExportButton"
+            @click="onClickPrintButton"
           >
             <b-icon-file-earmark-x-fill class="mr-05" />
             In
@@ -44,13 +47,32 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="getPromotionLists"
+          :rows="promotionRows"
           style-class="vgt-table striped"
           :pagination-options="{
-            enabled: true
+            enabled: true,
+            perPage: paginationData.size,
+            setCurrentPage: pageNumber,
           }"
+          compact-mode
           line-numbers
+          :total-rows="promotionPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
+          <!-- START - Empty rows -->
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
+          <!-- END - Empty rows -->
           <!-- START - Column filter -->
           <template
             slot="column-filter"
@@ -61,7 +83,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ totalAmount }}
+              {{ totalInfo.totalQuantity }}
             </b-row>
 
             <b-row
@@ -69,13 +91,13 @@
               class="mx-0"
               align-h="end"
             >
-              {{ totalPayment }}
+              {{ totalInfo.totalPrice }}
             </b-row>
           </template>
           <!-- START - Column filter -->
 
           <!-- START - Pagination -->
-          <!-- <template
+          <template
             slot="pagination-bottom"
             slot-scope="props"
           >
@@ -94,24 +116,18 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="paginationData.size"
                   size="sm"
-                  :options="paginationOptions"
+                  :options="perPageSizeOptions"
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                  -
-                  {{ (elementSize * pageNumber) > promotionPagination.totalElements ?
-                    promotionPagination.totalElements : (elementSize * pageNumber) }}
-                  của {{ promotionPagination.totalElements }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="promotionPagination.totalElements"
-                :per-page="elementSize"
+                :per-page="paginationData.size"
                 first-number
                 last-number
                 align="right"
@@ -134,7 +150,7 @@
                 </template>
               </b-pagination>
             </b-row>
-          </template> -->
+          </template>
           <!-- END - Pagination -->
         </vue-good-table>
       </b-col>
@@ -148,10 +164,8 @@ import {
   mapGetters,
 } from 'vuex'
 import commonData from '@/@db/common'
-import reportData from '@/@db/report'
 import {
-  formatDateToLocale,
-  formatNumberToLocale,
+  formatISOtoVNI,
   reverseVniDate,
 } from '@core/utils/filter'
 import {
@@ -162,6 +176,7 @@ import {
   REPORT_WAREHOUSES_PROMOTIONS,
   REPORT_WAREHOUSES_PROMOTIONS_GETTER,
   GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS,
+  EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -170,13 +185,11 @@ export default {
   },
   data() {
     return {
-      elementSize: commonData.pagination[0],
-      pageNumber: 1,
-
-      paginationOptions: commonData.pagination,
-      panigationData: {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
+      paginationData: {
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
         sort: null,
       },
       searchOptions: {
@@ -185,6 +198,7 @@ export default {
         toDate: null,
         productCodes: '',
       },
+      promotionDatas: [],
       decentralization: {
         formId: 1,
         ctrlId: 1,
@@ -267,14 +281,14 @@ export default {
         },
         {
           label: 'Số đơn online',
-          field: 'onlineCode',
+          field: 'onlineNumber',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Kênh Bán',
-          field: 'channel',
+          field: 'orderType',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -285,35 +299,47 @@ export default {
   },
 
   computed: {
+    ...mapGetters(REPORT_WAREHOUSES_PROMOTIONS, [
+      REPORT_WAREHOUSES_PROMOTIONS_GETTER,
+    ]),
     getPromotionLists() {
-      return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER().promotionLists.map(data => ({
-        orderNumber: data.orderNumber,
-        industry: data.industry,
-        productCode: data.productCode,
-        productName: data.productName,
-        dvt: data.uom,
-        quantity: data.quantity,
-        price: formatNumberToLocale(data.price),
-        payment: formatNumberToLocale(data.payment),
-        orderDate: formatDateToLocale(data.orderDate),
-        billType: data.billType,
-        promotionCode: data.promotionCode,
-      }))
+      if (this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.response && this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.response.content) {
+        return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.response.content.map(data => ({
+          orderNumber: data.orderNumber,
+          industry: data.industry,
+          productCode: data.productCode,
+          productName: data.productName,
+          dvt: data.uom,
+          quantity: data.quantity,
+          price: this.$formatNumberToLocale(data.price),
+          payment: this.$formatNumberToLocale(data.totalPrice),
+          orderDate: formatISOtoVNI(data.orderDate),
+          billType: data.billType,
+          promotionCode: data.promotionCode,
+          onlineNumber: data.onlineNumber,
+          orderType: data.orderType,
+        }))
+      }
+      return []
     },
-    totalAmount() {
-      return reportData.totalInfo.totalAmount
-    },
-    totalPayment() {
-      return reportData.totalInfo.totalPayment
-    },
-    // promotionPagination() {
-    //   return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER().promotionPagination
-    // },
-    promotionPagination() {
-      if (this.REPORT_WAREHOUSES_PROMOTIONS_GETTER().promotionPagination) {
-        return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER().promotionPagination
+    totalInfo() {
+      if (this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.info) {
+        return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.info
       }
       return {}
+    },
+    promotionPagination() {
+      if (this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.response) {
+        return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.response
+      }
+      return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.promotionPagination.totalElements
+        ? this.promotionPagination.totalElements : (this.paginationData.size * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.promotionPagination.totalElements} mục`
     },
 
   },
@@ -333,12 +359,38 @@ export default {
   },
 
   methods: {
-    ...mapGetters(REPORT_WAREHOUSES_PROMOTIONS, [
-      REPORT_WAREHOUSES_PROMOTIONS_GETTER,
-    ]),
     ...mapActions(REPORT_WAREHOUSES_PROMOTIONS, [
       GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS,
+      EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION,
     ]),
+    // Start - xuat excel
+    onClickExcelExportButton() {
+      this.EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION({ ...this.decentralization })
+    },
+    // End - xuat excel
+
+    // Start - pagination
+    updateSearchData(event) {
+      this.paginationData = {
+        ...this.paginationData,
+        ...event,
+      }
+    },
+    onPaginationChange() {
+      this.GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS({ ...this.paginationData, ...this.decentralization })
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+  // End - pagination
   },
 }
 </script>
