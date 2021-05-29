@@ -43,7 +43,7 @@
           mode="remote"
           :columns="columns"
           :rows="oderReturns"
-          style-class="vgt-table bordered"
+          style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,

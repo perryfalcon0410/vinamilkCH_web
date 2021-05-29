@@ -240,6 +240,7 @@ export default {
       this.GET_SALES_RECEIPTS_ACTION(searchData)
     },
     onClickSearchButton() {
+      this.$emit('onClickSearchButton')
       this.onSearch()
     },
     updateSearchData(data) {

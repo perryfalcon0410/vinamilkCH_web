@@ -5,6 +5,7 @@
   >
 
     <sales-receipt-list-search
+      @onClickSearchButton="onClickSearchButton"
       @updateSearchData="paginationData = {
         ...paginationData,
         ...$event }"
@@ -34,12 +35,14 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
+          mode="remote"
           :rows="salesReceiptList"
           class="pb-1"
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: paginationData.size,
+            setCurrentPage: pageNumber,
           }"
           line-numbers
           :select-options="{
@@ -52,7 +55,23 @@
             selectAllByGroup: true,
             multipleColumns: true,
           }"
+          :total-rows="salesReceiptsPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
+          <!-- START - Empty rows -->
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
+          <!-- END - Empty rows -->
           <template
             slot="column-filter"
             slot-scope="props"
@@ -140,27 +159,21 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="paginationData.size"
                   size="sm"
-                  :options="paginationOptions"
+                  :options="perPageSizeOptions"
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                  -
-                  {{ (elementSize * pageNumber) > salesReceiptsPagination.totalElements ?
-                    salesReceiptsPagination.totalElements : (elementSize * pageNumber) }}
-                  của {{ salesReceiptsPagination.totalElements }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="salesReceiptsPagination.totalElements"
-                :per-page="elementSize"
+                :per-page="paginationData.size"
                 first-number
                 last-number
                 align="right"
@@ -184,7 +197,7 @@
               </b-pagination>
             </b-row>
           </template>
-        <!-- END - Pagination -->
+          <!-- END - Pagination -->
 
         </vue-good-table>
       </b-col>
@@ -250,14 +263,13 @@ export default {
       valueDateTo: new Date(),
       selected: null,
 
-      paginationOptions: commonData.perPageSizes,
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
       paginationData: {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
         sort: null,
       },
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
 
       columns: [
         {
@@ -440,6 +452,13 @@ export default {
     salesReceiptsPagination() {
       return this.SALES_RECEIPTS_PAGINATION_GETTER
     },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.salesReceiptsPagination.totalElements
+        ? this.salesReceiptsPagination.totalElements : (this.paginationData.size * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.salesReceiptsPagination.totalElements} mục`
+    },
   },
 
   mounted() {
@@ -468,6 +487,9 @@ export default {
     onPerPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
+    },
+    onClickSearchButton() {
+      this.pageNumber = 1
     },
     // -------------- pagnigation function--------------
   },

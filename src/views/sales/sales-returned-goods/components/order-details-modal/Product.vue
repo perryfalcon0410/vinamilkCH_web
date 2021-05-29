@@ -3,7 +3,7 @@
     <vue-good-table
       :columns="columns"
       :rows="producttable"
-      style-class="vgt-table bordered "
+      style-class="vgt-table striped "
       :pagination-options="{
         enabled: false
       }"

@@ -157,7 +157,7 @@
               <vue-good-table
                 :columns="columns"
                 :rows="products"
-                style-class="vgt-table bordered"
+                style-class="vgt-table striped"
                 :pagination-options="{
                   enabled: false
                 }"
@@ -218,7 +218,7 @@
               <vue-good-table
                 :columns="promotionTable"
                 :rows="productPromotions"
-                style-class="vgt-table bordered"
+                style-class="vgt-table striped"
                 :pagination-options="{
                   enabled: false
                 }"
