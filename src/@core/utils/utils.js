@@ -73,10 +73,8 @@ export const getWarehousesStatuslabel = id => {
 }
 
 export const getReportReasonTypeslabel = id => {
-  if (id) {
-    return reportsData.reasonTypes.find(item => `${item.id}` === `${id}`).label
-  }
-  return ''
+  const reportsDataFound = reportsData.reasonTypes.find(item => `${item.id}` === `${id}`)
+  return reportsDataFound ? reportsDataFound.label : null
 }
 
 export const formatURLParams = obj => {

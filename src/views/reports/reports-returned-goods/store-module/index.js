@@ -1,5 +1,7 @@
 import ReportsService from '@/views/reports/reports-returned-goods/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
+import FileSaver from 'file-saver'
+import moment from 'moment'
 import {
   // GETTERS
   REPORT_RETURNED_GOODS_GETTER,
@@ -17,30 +19,20 @@ import {
 export default {
   namespaced: true,
   state: {
-    reportReturnedgoodLists: [],
-    reportReturnedgoodsPagination: {},
-    reportReturnedgoodsTotalInfo: {},
-    productLists: [],
-    productCatLists: [],
-    productsPagination: {},
+    reportReturnedgoodData: {},
+    productData: {},
+    productCatData: [],
     selectedProductRow: [],
   },
   getters: {
     [REPORT_RETURNED_GOODS_GETTER](state) {
-      return {
-        reportReturnedgoodLists: state.reportReturnedgoodLists,
-        reportReturnedgoodsPagination: state.reportReturnedgoodsPagination,
-        reportReturnedgoodsTotalInfo: state.reportReturnedgoodsTotalInfo,
-      }
+      return state.reportReturnedgoodData
     },
     [PRODUCT_LISTS_GETTER](state) {
-      return {
-        productLists: state.productLists,
-        productsPagination: state.productsPagination,
-      }
+      return state.productData
     },
     [PRODUCT_CAT_LISTS_GETTER](state) {
-      return state.productCatLists
+      return state.productCatData
     },
 
   },
@@ -57,14 +49,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.reportReturnedgoodLists = res.data.response.content || []
-            state.reportReturnedgoodsTotalInfo = res.data.info
-            state.reportReturnedgoodsPagination = {
-              totalPages: res.data.response.totalPages,
-              totalElements: res.data.response.totalElements,
-              pageable: res.data.response.pageable,
-              numberOfElements: res.data.response.numberOfElements,
-            }
+            state.reportReturnedgoodData = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }
@@ -73,13 +58,15 @@ export default {
           toasts.error(error.message)
         })
     },
-    [EXPORT_REPORT_RETURNED_GOODS_ACTION]({ state }, val) {
+    [EXPORT_REPORT_RETURNED_GOODS_ACTION]({ }, val) {
       ReportsService
         .exportReportsReturnedGoods(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.reportReturnedgoodLists = res.data.response.content || []
+            const fileName = `Bao_cao_hang_tra_lai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+            const blob = new Blob([res], { type: 'data:application/xlsx' })
+            FileSaver.saveAs(blob, fileName)
           } else {
             throw new Error(res.statusValue)
           }
@@ -95,13 +82,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.productLists = res.data.content || []
-            state.productsPagination = {
-              totalPages: res.data.totalPages,
-              totalElements: res.data.totalElements,
-              numberOfElements: res.data.numberOfElements,
-              pageable: res.data.pageable,
-            }
+            state.productData = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }
@@ -117,7 +98,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.productCatLists = res.data || []
+            state.productCatData = res.data || []
           } else {
             throw new Error(res.statusValue)
           }

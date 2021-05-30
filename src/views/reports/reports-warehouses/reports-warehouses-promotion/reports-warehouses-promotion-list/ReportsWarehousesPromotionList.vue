@@ -47,6 +47,7 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
+          mode="remote"
           :rows="promotionRows"
           style-class="vgt-table striped"
           :pagination-options="{
@@ -166,7 +167,6 @@ import {
 import commonData from '@/@db/common'
 import {
   formatISOtoVNI,
-  reverseVniDate,
 } from '@core/utils/filter'
 import {
   resizeAbleTable,
@@ -350,12 +350,6 @@ export default {
   },
   mounted() {
     resizeAbleTable()
-    this.searchOptions.fromDate = reverseVniDate(this.$earlyMonth)
-    this.searchOptions.toDate = reverseVniDate(this.$nowDate)
-    this.GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS({
-      ...this.searchOptions,
-      ...this.decentralization,
-    })
   },
 
   methods: {
@@ -389,6 +383,9 @@ export default {
     onPerPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
+    },
+    onClickSearchButton() {
+      this.pageNumber = 1
     },
   // End - pagination
   },

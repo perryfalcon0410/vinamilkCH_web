@@ -5,6 +5,8 @@
   >
     <!-- START - Search -->
     <reports-returned-goods-list-search
+      :per-page-size="paginationData.size"
+      @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />
     <!-- END - Search -->
@@ -24,7 +26,7 @@
           <b-button
             class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
-            @click="onClickPrintExportButton"
+            @click="onClickPrintButton"
           >
             <b-icon-printer-fill />
             In
@@ -45,14 +47,24 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="reportReturnedgoodLists"
+          mode="remote"
+          :rows="reportReturnRows"
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: paginationData.size,
+            setCurrentPage: pageNumber,
           }"
           compact-mode
           line-numbers
+          :total-rows="reportReturnedgoodsPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           >
           <!-- START - Empty rows -->
@@ -109,7 +121,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ totalQuantity || '' }}
+              {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
             </b-row>
 
             <b-row
@@ -117,7 +129,14 @@
               class="mx-0"
               align-h="end"
             >
-              {{ totalRefunds || '' }}
+              {{ $formatNumberToLocale(totalInfo.totalAmount) }}
+            </b-row>
+            <b-row
+              v-else-if="props.column.field === 'refunds'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.totalRefunds) }}
             </b-row>
           </template>
           <!-- END - Column filter -->
@@ -128,6 +147,7 @@
             slot-scope="props"
           >
             <b-row
+              v-show="reportReturnedgoodsPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -138,23 +158,21 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="paginationData.size"
                   size="sm"
-                  :options="paginationOptions"
+                  :options="perPageSizeOptions"
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                > trong {{ reportReturnedgoodsPagination.totalElements }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="reportReturnedgoodsPagination.totalElements"
-                :per-page="elementSize"
+                :per-page="paginationData.size"
                 first-number
                 last-number
                 align="right"
@@ -194,9 +212,10 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatDateToLocale, reverseVniDate } from '@core/utils/filter'
+import { formatISOtoVNI } from '@core/utils/filter'
 import {
   getReportReasonTypeslabel,
+  resizeAbleTable,
 } from '@core/utils/utils'
 
 import ReportsReturnedGoodsListSearch from './components/ReportsReturnedGoodsListSearch.vue'
@@ -217,11 +236,13 @@ export default {
   },
   data() {
     return {
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
-      paginationData: {},
-
-      paginationOptions: commonData.perPageSizes,
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
+      paginationData: {
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
+        sort: null,
+      },
       searchOptions: {
         code: '',
         fromDate: null,
@@ -229,6 +250,11 @@ export default {
         reasonSelected: null,
         ids: '',
       },
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+      reportReturnRows: [],
 
       columns: [
         {
@@ -345,96 +371,95 @@ export default {
     }
   },
   computed: {
-    reportReturnedgoodLists() {
-      return this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodLists.map(data => ({
-        returnCode: data.returnCode,
-        reciept: data.reciept,
-        customerCode: data.customerCode,
-        fullName: data.fullName,
-        industry: data.industry,
-        productCode: data.productCode,
-        productName: data.productName,
-        unit: data.unit,
-        quantity: data.quantity,
-        price: this.$formatNumberToLocale(data.price),
-        amount: this.$formatNumberToLocale(data.amount),
-        refunds: this.$formatNumberToLocale(data.refunds),
-        payDay: formatDateToLocale(data.payDay),
-        reasonForPayment: getReportReasonTypeslabel(String(data.reasonForPayment)),
-        feedback: data.feedback,
-      }))
+    ...mapGetters(REPORT_RETURNED_GOODS, [
+      REPORT_RETURNED_GOODS_GETTER,
+    ]),
+    getReportReturnedgoodLists() {
+      if (this.REPORT_RETURNED_GOODS_GETTER.response && this.REPORT_RETURNED_GOODS_GETTER.response.content) {
+        return this.REPORT_RETURNED_GOODS_GETTER.response.content.map(data => ({
+          returnCode: data.returnCode,
+          reciept: data.reciept,
+          customerCode: data.customerCode,
+          fullName: data.fullName,
+          industry: data.industry,
+          productCode: data.productCode,
+          productName: data.productName,
+          unit: data.unit,
+          quantity: data.quantity,
+          price: this.$formatNumberToLocale(data.price),
+          amount: this.$formatNumberToLocale(data.amount),
+          refunds: this.$formatNumberToLocale(data.refunds),
+          payDay: formatISOtoVNI(data.payDay),
+          reasonForPayment: getReportReasonTypeslabel(String(data.reasonForPayment)),
+          feedback: data.feedback,
+        }))
+      }
+      return []
     },
-    totalQuantity() {
-      return this.$formatNumberToLocale(this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodsTotalInfo.totalQuantity)
-    },
-    totalRefunds() {
-      return this.$formatNumberToLocale(this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodsTotalInfo.totalRefunds)
+    totalInfo() {
+      if (this.REPORT_RETURNED_GOODS_GETTER.info) {
+        return this.REPORT_RETURNED_GOODS_GETTER.info
+      }
+      return {}
     },
 
     reportReturnedgoodsPagination() {
-      return this.REPORT_RETURNED_GOODS_GETTER().reportReturnedgoodsPagination
+      if (this.REPORT_RETURNED_GOODS_GETTER.response) {
+        return this.REPORT_RETURNED_GOODS_GETTER.response
+      }
+      return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.reportReturnedgoodsPagination.totalElements
+        ? this.reportReturnedgoodsPagination.totalElements : (this.paginationData.size * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.reportReturnedgoodsPagination.totalElements} mục`
     },
   },
   watch: {
-    pageNumber() {
-      this.onPaginationChange()
-    },
-    elementSize() {
-      this.onPaginationChange()
+    getReportReturnedgoodLists() {
+      this.reportReturnRows = [...this.getReportReturnedgoodLists]
     },
   },
 
   mounted() {
-    this.searchOptions.fromDate = reverseVniDate(this.$earlyMonth)
-    this.searchOptions.toDate = reverseVniDate(this.$nowDate)
-
-    this.GET_REPORT_RETURNED_GOODS_ACTION({
-      ...this.searchOptions,
-      formId: 5,
-      ctrlId: 7,
-    })
+    resizeAbleTable()
   },
   methods: {
-    ...mapGetters(REPORT_RETURNED_GOODS, [
-      REPORT_RETURNED_GOODS_GETTER,
-    ]),
     ...mapActions(REPORT_RETURNED_GOODS, [
       GET_REPORT_RETURNED_GOODS_ACTION,
       EXPORT_REPORT_RETURNED_GOODS_ACTION,
     ]),
-
+    // Start - xuat excel
     onClickExcelExportButton() {
-      this.EXPORT_REPORT_RETURNED_GOODS_ACTION({ formId: 5, ctrlId: 7 })
+      this.EXPORT_REPORT_RETURNED_GOODS_ACTION({ ...this.decentralization })
     },
+    // End - xuat excel
 
-    onClickSearchButton(searchValue) {
-      const {
-        reciept, fromDate, toDate, reason, ids,
-      } = searchValue
-
-      this.searchOptions.code = reciept
-      this.searchOptions.toDate = reverseVniDate(toDate)
-      this.searchOptions.fromDate = reverseVniDate(fromDate)
-      this.searchOptions.reasonSelected = reason
-      this.searchOptions.ids = ids
-
-      this.GET_REPORT_RETURNED_GOODS_ACTION({
-        reciept,
-        fromDate: reverseVniDate(fromDate),
-        toDate: reverseVniDate(toDate),
-        reason,
-        productIds: ids,
-      })
+    // Start - pagination
+    updateSearchData(event) {
+      this.paginationData = {
+        ...this.paginationData,
+        ...event,
+      }
     },
-
     onPaginationChange() {
-      this.GET_REPORT_RETURNED_GOODS_ACTION({
-        ...this.searchOptions,
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-        formId: 1,
-        ctrlId: 7,
-      })
+      this.GET_REPORT_RETURNED_GOODS_ACTION({ ...this.paginationData, ...this.decentralization })
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    onClickSearchButton() {
+      this.pageNumber = 1 // hard code
     },
   },
 }

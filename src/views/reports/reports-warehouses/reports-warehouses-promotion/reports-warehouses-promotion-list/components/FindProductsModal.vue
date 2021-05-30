@@ -102,12 +102,21 @@
         <vue-good-table
           ref="products-table"
           :columns="columns"
+          mode="remote"
           :rows="products"
           class="pb-1 m-1"
           style-class="vgt-table striped"
+          compact-mode
+          line-numbers
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: paginationData.size,
+            setCurrentPage: pageNumber,
+          }"
+          :total-rows="productsPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
           }"
           :select-options="{
             enabled: true,
@@ -119,6 +128,9 @@
             multipleColumns: true,
             selected: true
           }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
           @on-row-click="selectionRow"
           @on-select-all="selectAllRows"
         >
@@ -147,12 +159,14 @@
               {{ props.column.label }}
             </div>
           </template>
+
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"
             slot-scope="props"
           >
             <b-row
+              v-show="productsPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -163,23 +177,21 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="paginationData.size"
                   size="sm"
-                  :options="paginationOptions"
-                  class="mx-1 mt-1 mb-1"
+                  :options="perPageSizeOptions"
+                  class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                > trong {{ productsPagination.totalElements || 0 }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="productsPagination.totalElements || 0"
-                :per-page="elementSize"
+                :total-rows="productsPagination.totalElements"
+                :per-page="paginationData.size"
                 first-number
                 last-number
                 align="right"
@@ -248,6 +260,9 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
 import commonData from '@/@db/common'
 import {
   REPORT_WAREHOUSES_PROMOTIONS,
@@ -272,9 +287,13 @@ export default {
 
   data() {
     return {
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
-      paginationOptions: commonData.perPageSizes,
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
+      paginationData: {
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
+        sort: null,
+      },
       width: window.innerWidth,
       prodcutCatSelected: null,
       searchOptions: {
@@ -285,14 +304,19 @@ export default {
       selectedCurrentPage: [],
       products: [],
       isCheckAllRows: false, //  check click all rows textbox
+
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
       columns: [
-        {
-          label: 'STT',
-          field: 'stt',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
+        // {
+        //   label: 'STT',
+        //   field: 'stt',
+        //   sortable: false,
+        //   thClass: 'text-center',
+        //   tdClass: 'text-center',
+        // },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
@@ -322,24 +346,31 @@ export default {
           label: data.productInfoName,
         }))
       }
-      return {}
+      return []
     },
     productsPagination() {
-      if (this.PRODUCT_LISTS_GETTER.content) {
-        return this.PRODUCT_LISTS_GETTER.content
+      if (this.PRODUCT_LISTS_GETTER) {
+        return this.PRODUCT_LISTS_GETTER
       }
       return {}
     },
     getProducts() {
       if (this.PRODUCT_LISTS_GETTER.content) {
-        return this.PRODUCT_LISTS_GETTER.content.map((data, index) => ({
-          stt: index + 1,
+        return this.PRODUCT_LISTS_GETTER.content.map(data => ({
+          // stt: index + 1,
           productName: data.productName,
           productCode: data.productCode,
           id: data.id,
         }))
       }
       return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.productsPagination.totalElements
+        ? this.productsPagination.totalElements : (this.paginationData.size * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.productsPagination.totalElements} mục`
     },
   },
   watch: {
@@ -378,13 +409,13 @@ export default {
     },
   },
   mounted() {
+    resizeAbleTable()
     this.GET_PRODUCT_CAT_LISTS_ACTIONS({
-      formId: 1,
-      ctrlId: 7,
+      ...this.decentralization,
     })
     this.GET_PRODUCT_LISTS_ACTIONS({
-      formId: 1,
-      ctrlId: 7,
+      ...this.decentralization,
+      ...this.paginationData,
     })
   },
 
@@ -401,24 +432,31 @@ export default {
     },
     onPaginationChange() {
       this.GET_PRODUCT_LISTS_ACTIONS({
+        ...this.paginationData,
+        ...this.decentralization,
         ...this.searchOptions,
-        prodcutCatSelected: this.prodcutCatSelected,
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-        formId: 1,
-        ctrlId: 7,
+        catId: this.prodcutCatSelected,
       })
       this.selectedCurrentPage = []
     },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
     onSearchClick() {
       this.GET_PRODUCT_LISTS_ACTIONS({
+        ...this.decentralization,
         ...this.searchOptions,
         catId: this.prodcutCatSelected,
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-        formId: 1,
-        ctrlId: 7,
       })
+      this.pageNumber = 1
     },
     selectAllRows(params) {
       if (params.selected) {

@@ -51,25 +51,25 @@
         >
           Từ ngày
         </div>
-        <b-input-group
-          class="input-group-merge"
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
+          @keypress="$onlyDateInput"
         >
+          <b-icon-x
+            v-show="fromDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
           <vue-flat-pickr
             v-model="fromDate"
-            :config="configDate"
-            class="form-control h8 text-brand-3"
+            :config="configFromDate"
+            class="form-control h8"
             placeholder="Chọn ngày"
           />
-          <b-input-group-append
-            is-text
-          >
-            <b-icon-x
-              v-show="fromDate"
-              class="cursor-pointer text-gray"
-              @click="fromDate = null"
-            />
-          </b-input-group-append>
-        </b-input-group>
+        </b-row>
       </b-col>
       <!-- END - Date From -->
 
@@ -84,26 +84,25 @@
         >
           Đến ngày
         </div>
-        <b-input-group
-          class="input-group-merge"
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
+          @keypress="$onlyDateInput"
         >
+          <b-icon-x
+            v-show="toDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
           <vue-flat-pickr
-            id="form-input-date-from"
             v-model="toDate"
-            :config="configDate"
-            class="form-control h8 text-brand-3"
+            :config="configToDate"
+            class="form-control h8"
             placeholder="Chọn ngày"
           />
-          <b-input-group-append
-            is-text
-          >
-            <b-icon-x
-              v-show="toDate"
-              class="cursor-pointer text-gray"
-              @click="toDate = null"
-            />
-          </b-input-group-append>
-        </b-input-group>
+        </b-row>
 
       </b-col>
       <!-- END - Date To -->
@@ -200,18 +199,33 @@
 </template>
 
 <script>
+import {
+  mapActions,
+} from 'vuex'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-
+import { reverseVniDate } from '@/@core/utils/filter'
 import reportData from '@/@db/report'
+import {
+  REPORT_RETURNED_GOODS,
+
+  // Actions
+  GET_REPORT_RETURNED_GOODS_ACTION,
+} from '../../store-module/type'
 import FindProductModal from './FindProductModal.vue'
 
 export default {
   components: {
     VCardActions,
     FindProductModal,
+  },
+  props: {
+    perPageSize: {
+      type: Number,
+      default: 20,
+    },
   },
   data() {
     return {
@@ -220,25 +234,51 @@ export default {
       dateFormatVNI,
 
       reciept: null,
-      fromDate: null,
-      toDate: null,
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
       ids: null,
       reasonOptions: reportData.reasonTypes,
       reasonSelected: null,
 
-      configDate: {
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+
+      configFromDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
+      configToDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
+      },
     }
   },
+  watch: {
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
+  },
   mounted() {
-    this.fromDate = this.$earlyMonth
-    this.toDate = this.$nowDate
+    this.onSearch()
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
+    }
   },
 
   methods: {
+    ...mapActions(REPORT_RETURNED_GOODS, [
+      GET_REPORT_RETURNED_GOODS_ACTION,
+    ]),
     onSelectProductModalClick() {
       this.selectProductModalVisible = true
     },
@@ -249,25 +289,28 @@ export default {
       this.selectProductModalVisible = false
       if (param.length > 0) {
         this.ids = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
-        this.$emit('onClickSearchButton', {
-          fromDate: this.fromDate,
-          toDate: this.toDate,
-          reciept: this.reciept,
-          ids: this.ids,
-        })
       } else {
         this.ids = null
       }
     },
-
-    onClickSearchButton() {
-      this.$emit('onClickSearchButton', {
-        fromDate: this.fromDate,
-        toDate: this.toDate,
+    onSearch() {
+      const searchData = {
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
         reciept: this.reciept,
         reason: this.reasonSelected,
-        ids: this.ids,
-      })
+        productCodes: this.ids,
+      }
+      this.updateSearchData(searchData)
+      this.GET_REPORT_RETURNED_GOODS_ACTION(searchData)
+    },
+
+    onClickSearchButton() {
+      this.onSearch()
+      this.$emit('onClickSearchButton')
+    },
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
     },
   },
 }

@@ -184,6 +184,7 @@ import {
   mapActions,
 } from 'vuex'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import { reverseVniDate } from '@/@core/utils/filter'
 import FindProductModal from './FindProductsModal.vue'
 import {
   REPORT_WAREHOUSES_PROMOTIONS,
@@ -268,8 +269,8 @@ export default {
     onSearch() {
       const searchData = {
         orderNumber: this.onlineCode,
-        fromDate: this.fromDate,
-        toDate: this.toDate,
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
         productCodes: this.ids,
       }
       this.updateSearchData(searchData)
@@ -277,6 +278,7 @@ export default {
     },
     onClickSearchButton() {
       this.onSearch()
+      this.$emit('onClickSearchButton')
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)

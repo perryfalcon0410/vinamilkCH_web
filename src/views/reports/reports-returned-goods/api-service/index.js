@@ -16,6 +16,7 @@ export default {
   exportReportsReturnedGoods(args) {
     return axios.get(exportReportsReturnedGoodsEndpoint, {
       params: formatURLParams(args),
+      responseType: 'blob',
     })
   },
   getProductLists(args) {
