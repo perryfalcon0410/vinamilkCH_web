@@ -179,19 +179,19 @@
               />
             </b-row>
             <b-row
-              v-if="props.column.field === 'instockAmount'"
+              v-if="props.column.field === 'sumInstockAmount'"
               class="mx-0"
               align-h="end"
             >
-              {{ instockAmount }}
+              {{ $formatNumberToLocale(instockAmount) }}
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'totalPrice'"
+              v-else-if="props.column.field === 'sumTotalPrice'"
               class="mx-0"
               align-h="end"
             >
-              {{ totalPrice }}
+              {{ $formatNumberToLocale(totalPrice) }}
             </b-row>
 
             <b-row
@@ -199,7 +199,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ inventoryPacket }}
+              {{ $formatNumberToLocale(inventoryPacket) }}
             </b-row>
 
             <b-row
@@ -207,7 +207,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ inventoryOdd }}
+              {{ $formatNumberToLocale(inventoryOdd) }}
             </b-row>
 
             <b-row
@@ -215,15 +215,15 @@
               class="mx-0"
               align-h="end"
             >
-              {{ inventoryTotal }}
+              {{ $formatNumberToLocale(inventoryTotal) }}
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'unequal'"
+              v-else-if="props.column.field === 'SumUnequal'"
               class="mx-0"
               align-h="end"
             >
-              {{ unequal }}
+              {{ $formatNumberToLocale(unequal) }}
             </b-row>
           </template>
           <!-- START - Column filter -->
@@ -543,7 +543,7 @@ export default {
         },
         {
           label: 'Số lượng tồn kho',
-          field: 'instockAmount',
+          field: 'sumInstockAmount',
           type: 'number',
           width: '120px',
           sortable: false,
@@ -563,7 +563,7 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'totalPrice',
+          field: 'sumTotalPrice',
           type: 'number',
           sortable: false,
           thClass: 'text-right',
@@ -598,7 +598,7 @@ export default {
         },
         {
           label: 'Chênh lệch',
-          field: 'unequal',
+          field: 'SumUnequal',
           type: 'number',
           sortable: false,
           thClass: 'text-right',
@@ -748,12 +748,15 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         instockAmount: data.stockQuantity,
-        price: data.price,
+        sumInstockAmount: this.$formatNumberToLocale(data.stockQuantity),
+        price: this.$formatNumberToLocale(data.price),
         totalPrice: data.totalAmount,
+        sumTotalPrice: this.$formatNumberToLocale(data.totalAmount),
         inventoryPacket: null,
         inventoryOdd: null,
         inventoryTotal: null,
         unequal: data.changeQuantity,
+        SumUnequal: this.$formatNumberToLocale(data.changeQuantity),
         packetUnit: data.packetUnit,
         exchange: data.convfact,
         oddUnit: data.unit,
@@ -800,12 +803,15 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         instockAmount: data.stockQuantity,
-        price: data.price,
+        sumInstockAmount: this.$formatNumberToLocale(data.stockQuantity),
+        price: this.$formatNumberToLocale(data.price),
+        sumTotalPrice: this.$formatNumberToLocale(data.totalAmount),
         totalPrice: data.totalAmount,
         inventoryPacket: null,
         inventoryOdd: null,
         inventoryTotal: null,
         unequal: data.changeQuantity,
+        SumUnequal: this.$formatNumberToLocale(data.changeQuantity),
         packetUnit: data.packetUnit,
         exchange: data.convfact,
         oddUnit: data.unit,

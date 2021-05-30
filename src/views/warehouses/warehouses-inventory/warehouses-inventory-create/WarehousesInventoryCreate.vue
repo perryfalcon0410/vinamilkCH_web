@@ -826,7 +826,7 @@ export default {
         totalPrice: this.$formatNumberToLocale(data.totalAmount),
         inventoryPacket: null,
         inventoryOdd: null,
-        inventoryTotal: null,
+        inventoryTotal: '0',
         unequal: this.$formatNumberToLocale(data.changeQuantity),
         packetUnit: data.packetUnit,
         exchange: data.convfact,
