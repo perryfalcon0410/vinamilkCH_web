@@ -191,7 +191,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ $formatNumberToLocale(totalPrice) }}
+              {{ totalPrice }}
             </b-row>
 
             <b-row
@@ -290,6 +290,39 @@
             slot="table-row"
             slot-scope="props"
           >
+            <div v-if="props.column.field === 'category'">
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-if="props.column.field === 'productId'">
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-if="props.column.field === 'productName'">
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-if="props.column.field === 'instockAmount' && isNaN(props.formattedRow[props.column.field]) === false">
+              {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
+            </div>
+            <div v-if="props.column.field === 'price'">
+              {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
+            </div>
+            <div v-if="props.column.field === 'totalPrice'">
+              {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
+            </div>
+            <div v-if="props.column.field === 'inventoryTotal' && isNaN(props.formattedRow[props.column.field]) === false">
+              {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
+            </div>
+            <div v-if="props.column.field === 'unequal' && isNaN(props.formattedRow[props.column.field]) === false">
+              {{ $formatNumberToLocale(props.formattedRow[props.column.field]) || 0 }}
+            </div>
+            <div v-if="props.column.field === 'packetUnit'">
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-if="props.column.field === 'exchange'">
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-if="props.column.field === 'oddUnit'">
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-if="props.column.field === 'inventoryPacket'">
               <b-input
                 v-model="props.row.inventoryPacket"
@@ -310,12 +343,6 @@
                 @change="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
                 @keypress="$onlyNumberInput"
               />
-            </div>
-            <div v-else-if="props.column.field === 'inventoryTotal'">
-              {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
-            </div>
-            <div v-else>
-              {{ props.formattedRow[props.column.field] }}
             </div>
           </template>
           <!-- END - Row -->
@@ -696,10 +723,10 @@ export default {
       return this.products.length
     },
     getInstockAmount() {
-      return this.products.reduce((accum, item) => accum + this.formatNumberToSave(item.instockAmount), 0)
+      return this.products.reduce((accum, item) => accum + Number(item.instockAmount), 0)
     },
     getTotalPrice() {
-      return this.products.reduce((accum, item) => accum + this.formatNumberToSave(item.totalPrice), 0)
+      return this.products.reduce((accum, item) => accum + Number(item.totalPrice), 0)
     },
     getInventoryPacket() {
       return this.products.reduce((accum, item) => accum + Number(item.inventoryPacket), 0)
@@ -711,7 +738,7 @@ export default {
       return this.products.reduce((accum, item) => accum + Number(item.inventoryTotal), 0)
     },
     getUnequal() {
-      return this.products.reduce((accum, item) => accum + this.formatNumberToSave(item.unequal), 0)
+      return this.products.reduce((accum, item) => accum + Number(item.unequal), 0)
     },
     isExistedWarehouseInventory() {
       return this.IS_EXISTED_WAREHOUSE_INVENTORY_GETTER()
@@ -778,8 +805,6 @@ export default {
         this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryOdd = productData.unitQuantity
       })
     },
-    // format for display
-    // format for display
   },
 
   mounted() {
@@ -822,13 +847,13 @@ export default {
         productId: data.productId,
         productCode: data.productCode,
         productName: data.productName,
-        instockAmount: this.$formatNumberToLocale(data.stockQuantity),
-        price: this.$formatNumberToLocale(data.price),
-        totalPrice: this.$formatNumberToLocale(data.totalAmount),
+        instockAmount: data.stockQuantity,
+        price: data.price,
+        totalPrice: data.totalAmount,
         inventoryPacket: null,
         inventoryOdd: null,
-        inventoryTotal: '0',
-        unequal: this.$formatNumberToLocale(data.changeQuantity),
+        inventoryTotal: 0,
+        unequal: data.changeQuantity,
         packetUnit: data.packetUnit,
         exchange: data.convfact,
         oddUnit: data.unit,
@@ -841,16 +866,13 @@ export default {
     updateInventoryPacket(index, value) {
       this.products[index].inventoryPacket = value
       this.updateInventoryTotal(index)
-      this.products[index].unequal = this.products[index].inventoryTotal - this.formatNumberToSave(this.products[index].instockAmount)
-      this.products[index].unequal = this.$formatNumberToLocale(this.products[index].unequal)
+      this.products[index].unequal = this.products[index].inventoryTotal - this.products[index].instockAmount
       this.isCreated = false
     },
     updateInventoryOdd(index, value) {
       this.products[index].inventoryOdd = value
       this.updateInventoryTotal(index)
-      this.products[index].unequal = this.products[index].inventoryTotal - this.formatNumberToSave(this.products[index].instockAmount)
-      this.products[index].unequal = this.$formatNumberToLocale(this.products[index].unequal)
-      this.$formatNumberToLocale(this.products[index].unequal)
+      this.products[index].unequal = this.products[index].inventoryTotal - this.products[index].instockAmount
       this.isCreated = false
     },
     onClickExportButton() {
@@ -871,11 +893,11 @@ export default {
         productCategory: data.category,
         productCode: data.productCode,
         productName: data.productName,
-        price: this.formatNumberToSave(data.price),
-        stockQuantity: this.formatNumberToSave(data.instockAmount),
+        price: data.price,
+        stockQuantity: data.instockAmount,
         inventoryQuantity: data.inventoryTotal || 0,
-        changeQuantity: this.formatNumberToSave(data.unequal),
-        totalAmount: this.formatNumberToSave(data.totalPrice),
+        changeQuantity: data.unequal,
+        totalAmount: data.totalPrice,
         convfact: data.exchange,
         packetUnit: data.packetUnit,
         unit: data.oddUnit,
@@ -898,11 +920,11 @@ export default {
         productCategory: data.category,
         productCode: data.productCode,
         productName: data.productName,
-        price: this.formatNumberToSave(data.price),
-        stockQuantity: this.formatNumberToSave(data.instockAmount),
+        price: data.price,
+        stockQuantity: data.instockAmount,
         inventoryQuantity: data.inventoryTotal || 0,
-        changeQuantity: this.formatNumberToSave(data.unequal),
-        totalAmount: this.formatNumberToSave(data.totalPrice),
+        changeQuantity: data.unequal,
+        totalAmount: data.totalPrice,
         convfact: data.exchange,
         packetUnit: data.packetUnit,
         unit: data.oddUnit,
@@ -952,9 +974,6 @@ export default {
     hideImportMessage() {
       this.showErrorMessage = false
       this.showSuccessMessage = false
-    },
-    formatNumberToSave(num) {
-      return Number(num.replace(/,/g, ''))
     },
   },
 }
