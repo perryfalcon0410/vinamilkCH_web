@@ -383,6 +383,7 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         price: this.$formatNumberToLocale(data.price) || 0,
+        unit: data.unit,
         quantity: data.quantity,
         poImportTotalPrice: this.$formatNumberToLocale(data.totalPrice) || 0,
       }))

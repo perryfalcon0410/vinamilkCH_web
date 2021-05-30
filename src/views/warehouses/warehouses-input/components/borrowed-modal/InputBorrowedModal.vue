@@ -50,7 +50,7 @@
               :key="item.id"
               :class="{ 'text-brand-1': current === item.id }"
               class="border-bottom border-white bg-light py-1 cursor-pointer"
-              @click="selectOrder(item.id,item.borrowDate)"
+              @click="selectOrder(item.id,item.borrowDate,item.note)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
@@ -97,18 +97,6 @@
                 Không có dữ liệu
               </div>
               <!-- END - Empty rows -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
-              >
-                <b-row
-                  v-if="props.column.field === 'borrowQuantity'"
-                  class="mx-0"
-                  align-h="center"
-                >
-                  {{ $formatNumberToLocale(importBorrowingInfo.totalQuantity) }}
-                </b-row>
-              </template>
             </vue-good-table>
           </b-col>
         </b-col>
@@ -180,6 +168,7 @@ export default {
       //
       sysDate: null,
       current: null,
+      note: '',
       columns: [
         {
           label: 'Số chứng từ',
@@ -216,9 +205,6 @@ export default {
           field: 'borrowQuantity',
           sortable: false,
           type: 'number',
-          filterOptions: {
-            enabled: true,
-          },
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -247,6 +233,8 @@ export default {
         const obj = {
           id: this.importBorrowings[0].id,
           sysDate: this.importBorrowings[0].borrowDate,
+          description: this.importBorrowings[0].note,
+
         }
         return obj
       }
@@ -293,15 +281,16 @@ export default {
     ]),
     inputBorrow() {
       if (this.importBorrowings.length > 0) {
-        this.$emit('inputBorrowsChange', [this.sysDate, this.importBorrowingsDetail, this.importBorrowingInfo, this.current])
+        this.$emit('inputBorrowsChange', [this.sysDate, this.importBorrowingsDetail, this.importBorrowingInfo, this.current, this.note])
         this.$emit('close')
       } else {
         toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')
       }
     },
-    selectOrder(id, date) {
+    selectOrder(id, date, description) {
       this.current = id
       this.sysDate = date
+      this.note = description
       this.GET_IMPORT_BORROWINGS_DETAIL_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId })// hard code
     },
     cancel() {

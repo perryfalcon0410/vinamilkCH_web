@@ -221,7 +221,6 @@
                 slot="column-filter"
                 slot-scope="props"
               >
-
                 <!--START - Choose import po product-->
                 <b-row
                   v-if="props.column.field === 'quantity'"
@@ -273,7 +272,7 @@
             <!-- END - Table Product -->
             <br>
             <!-- START - Table Product promotion -->
-            <div>
+            <div v-if="isShowPoPromoTable">
               <div class="d-inline-flex rounded-top px-1 my-1">
                 <strong>
                   Hàng khuyến mãi
@@ -281,7 +280,6 @@
               </div>
               <!--if-PoConfirm-->
               <vue-good-table
-                v-if="isShowPoPromoTable"
                 :columns="poColumns"
                 :rows="rowsProductPromotionLoad"
                 style-class="vgt-table striped"
@@ -308,6 +306,7 @@
                   >
                     {{ $formatNumberToLocale(poPromotionProductsInfo.totalPrice) || 0 }}
                   </b-row>
+
                 </template>
                 <!-- START - Empty rows -->
                 <div
@@ -320,98 +319,106 @@
               </vue-good-table>
             </div>
             <!--START input Po-->
-            <vue-good-table
-              v-show="isShowPoPromoManualTable"
-              :columns="poPromotionColumns"
-              :rows="rowsProductPromotion"
-              style-class="vgt-table striped"
-              compact-mode
-              line-numbers
-            >
-              <template
-                slot="table-row"
-                slot-scope="props"
-              >
-                <span v-if="props.column.field === 'productCode'">
-                  {{ rowsProductPromotion[props.index].productCode }}
-                </span>
-                <span v-if="props.column.field === 'quantity'">
-                  <b-form-input
-                    v-model.number="rowsProductPromotion[props.index].quantity"
-                    type="number"
-                    :state="isPositive(rowsProductPromotion[props.index].quantity)"
-                    min="0"
-                  />
-                </span>
-                <span v-if="props.column.field === 'price'">
-                  {{ rowsProductPromotion[props.index].price }}
-                </span>
-                <span v-if="props.column.field === 'productName'">
-                  {{ rowsProductPromotion[props.index].productName }}
-                </span>
-                <span v-if="props.column.field === 'unit'">
-                  {{ rowsProductPromotion[props.index].unit }}
-                </span>
-                <span v-if="props.column.field === 'totalPrice'">
-                  {{ rowsProductPromotion[props.index].totalPrice }}
-                </span>
-                <span v-if="props.column.field === 'function'">
-                  <b-icon-trash-fill
-                    v-b-popover.hover.top="'Xóa'"
-                    class="cursor-pointer mt-05"
-                    scale="1.5"
-                    color="red"
-                    @click="onClickDeleteButton(props.index)"
-                  />
-                  {{ count }}
-                </span>
-              </template>
-              <!-- START - Empty rows -->
+            <div v-if="isShowPoPromoManualTable">
               <div
-                slot="emptystate"
-                class="text-center"
+                class="d-inline-flex rounded-top px-1 my-1"
               >
-                Không có dữ liệu
+                <strong>
+                  Hàng khuyến mãi
+                </strong>
               </div>
-              <!-- END - Empty rows -->
-              <div
-                slot="table-actions-bottom"
-                class="mx-1 my-2 px-2"
+              <vue-good-table
+                :columns="poPromotionColumns"
+                :rows="rowsProductPromotion"
+                style-class="vgt-table striped"
+                compact-mode
+                line-numbers
               >
-                <b-form-input
-                  v-model="productSearch"
-                  class="w-25"
-                  placeholder="Nhập mã hoặc tên sản phẩm"
-                  type="text"
-                  autocomplete="off"
-                  @focus="focusProduct"
-                  @input="loadProducts"
-                  @blur="isFocusedInputProduct = true"
-                  @keyup="loadProducts"
-                />
-                <b-collapse
-                  v-model.trim="isFocusedInputProduct"
-                  class="position-absolute mr-lg-0 mb-3"
-                  style="zIndex:1"
+                <template
+                  slot="table-row"
+                  slot-scope="props"
                 >
-                  <b-container
-                    class="my-1 bg-white rounded border border-primary shadow-lg"
+                  <span v-if="props.column.field === 'productCode'">
+                    {{ rowsProductPromotion[props.index].productCode }}
+                  </span>
+                  <span v-if="props.column.field === 'quantity'">
+                    <b-form-input
+                      v-model.number="rowsProductPromotion[props.index].quantity"
+                      type="number"
+                      :state="isPositive(rowsProductPromotion[props.index].quantity)"
+                      min="0"
+                    />
+                  </span>
+                  <span v-if="props.column.field === 'price'">
+                    {{ rowsProductPromotion[props.index].price }}
+                  </span>
+                  <span v-if="props.column.field === 'productName'">
+                    {{ rowsProductPromotion[props.index].productName }}
+                  </span>
+                  <span v-if="props.column.field === 'unit'">
+                    {{ rowsProductPromotion[props.index].unit }}
+                  </span>
+                  <span v-if="props.column.field === 'totalPrice'">
+                    {{ rowsProductPromotion[props.index].totalPrice }}
+                  </span>
+                  <span v-if="props.column.field === 'function'">
+                    <b-icon-trash-fill
+                      v-b-popover.hover.top="'Xóa'"
+                      class="cursor-pointer mt-05"
+                      scale="1.5"
+                      color="red"
+                      @click="onClickDeleteButton(props.index)"
+                    />
+                    {{ count }}
+                  </span>
+                </template>
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
+                <!-- END - Empty rows -->
+                <div
+                  slot="table-actions-bottom"
+                  class="mx-1 my-2 px-2"
+                >
+                  <b-form-input
+                    v-model="productSearch"
+                    class="w-25"
+                    placeholder="Nhập mã hoặc tên sản phẩm"
+                    type="text"
+                    autocomplete="off"
+                    @focus="focusProduct"
+                    @input="loadProducts"
+                    @blur="isFocusedInputProduct = true"
+                    @keyup="loadProducts"
+                  />
+                  <b-collapse
+                    v-model.trim="isFocusedInputProduct"
+                    class="position-absolute mr-lg-0 mb-3"
+                    style="zIndex:1"
                   >
-                    <b-row
-                      v-for="(product, index) in allProducts"
-                      :key="index"
-                      class="my-1 cursor-pointer"
-                      :class="{'item-active': index === cursorProduct}"
-                      @click="productSelected(product)"
-                      @mouseover="$event.target.classList.add('item-active')"
-                      @mouseout="$event.target.classList.remove('item-active')"
+                    <b-container
+                      class="my-1 bg-white rounded border border-primary shadow-lg"
                     >
-                      <b>{{ product.productCode }}</b> - {{ product.productName }}
-                    </b-row>
-                  </b-container>
-                </b-collapse>
-              </div>
-            </vue-good-table>
+                      <b-row
+                        v-for="(product, index) in allProducts"
+                        :key="index"
+                        class="my-1 cursor-pointer"
+                        :class="{'item-active': index === cursorProduct}"
+                        @click="productSelected(product)"
+                        @mouseover="$event.target.classList.add('item-active')"
+                        @mouseout="$event.target.classList.remove('item-active')"
+                      >
+                        <b>{{ product.productCode }}</b> - {{ product.productName }}
+                      </b-row>
+                    </b-container>
+                  </b-collapse>
+                </div>
+              </vue-good-table>
+            </div>
             <!--END input Po-->
             <!--if-PoConfirm-->
 
@@ -493,6 +500,7 @@ import commonData from '@/@db/common'
 import toasts from '@core/utils/toasts/toasts'
 import warehousesData from '@/@db/warehouses'
 import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
+import { formatVniDateToISO } from '@/@core/utils/filter'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
 import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
@@ -626,7 +634,7 @@ export default {
           tdClass: 'text-center',
         },
         {
-          label: 'Function',
+          label: '',
           field: 'function',
           sortable: false,
           thClass: 'text-center',
@@ -709,7 +717,7 @@ export default {
         },
         {
           label: 'Mã sản phẩm',
-          field: 'productId',
+          field: 'productCode',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -923,8 +931,9 @@ export default {
 
     // -----------------------------Nhap dieu chinh------------------------
     dataFromInputAdjust(data) {
-      const [sysDate, importAdjustsDetail, importAdjustInfo, id] = data
+      const [sysDate, importAdjustsDetail, importAdjustInfo, id, description] = data
       this.adjustRows = [...importAdjustsDetail]
+      this.note = description
       this.status = 1 // inputTypeSelected
       this.poNo = null // poNumber
       this.poId = id // poId
@@ -937,8 +946,9 @@ export default {
 
     // ------------------------------Nhap vay muon----------------------------
     dataFormInputBorrow(data) {
-      const [sysDate, importBorrowsDetail, importBorrowInfo, id] = data
+      const [sysDate, importBorrowsDetail, importBorrowInfo, id, description] = data
       this.borrowRows = [...importBorrowsDetail]
+      this.note = description
       this.billDate = sysDate
       this.status = 2
       this.poNo = null
@@ -967,7 +977,7 @@ export default {
           poNumber: this.poNo,
           internalNumber: this.internalNumber,
           redInvoiceNo: this.billNumber,
-          order_date: this.billDate,
+          orderDate: formatVniDateToISO(this.billDate),
           poId: this.poId,
           note: this.note,
         }
@@ -984,7 +994,7 @@ export default {
               poNumber: this.poNo,
               internalNumber: this.internalNumber,
               redInvoiceNo: this.billNumber,
-              order_date: this.billDate,
+              orderDate: formatVniDateToISO(this.billDate),
               note: this.note,
               lst: this.promotionRow,
             })
@@ -1023,13 +1033,13 @@ export default {
       }
     },
     productSelected(product) {
-      const index = this.rowsProductPromotion.findIndex(e => e.productId === product.comboProductId)
+      const index = this.rowsProductPromotion.findIndex(e => e.productId === product.id)
       if (this.rowsProductPromotion) {
         const obj = {
           productId: product.id,
           productCode: product.productCode,
           productName: product.productName,
-          quantity: 0,
+          quantity: 1,
           price: 0,
           totalPrice: 0,
           unit: product.uom1,

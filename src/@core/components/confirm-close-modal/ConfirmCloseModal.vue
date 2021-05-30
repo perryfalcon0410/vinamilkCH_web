@@ -5,7 +5,7 @@
     size="sm"
   >
     <strong>
-      Bạn có muốn lưu thông tin nhập hàng không ?
+      Dữ liệu đang được tạo, bạn có muốn đóng ?
     </strong>
     <template #modal-footer="{}">
       <b-button
@@ -14,13 +14,13 @@
         variant="something"
         @click="ok"
       >
-        Có
+        Đồng ý
       </b-button>
       <b-button
         size="sm"
         @click="cancel"
       >
-        Không
+        Hủy bỏ
       </b-button>
     </template>
   </b-modal>
@@ -37,10 +37,10 @@ export default {
   },
   methods: {
     ok() {
-      this.$emit('close')
+      this.$router.back()
     },
     cancel() {
-      this.$router.back()
+      this.$emit('close')
     },
   },
 }

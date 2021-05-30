@@ -50,7 +50,7 @@
               :key="item.id"
               class="border-bottom border-white bg-light py-1 cursor-pointer"
               :class="{ 'text-brand-1': current == item.id }"
-              @click="selectOrder(item.id,item.adjustmentDate)"
+              @click="selectOrder(item.id,item.adjustmentDate,item.description)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
@@ -97,18 +97,6 @@
                 Không có dữ liệu
               </div>
               <!-- END - Empty rows -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
-              >
-                <b-row
-                  v-if="props.column.field === 'adjustQuantity'"
-                  class="mx-0"
-                  align-h="center"
-                >
-                  {{ $formatNumberToLocale(importAdjustmentInfo.totalQuantity) }}
-                </b-row>
-              </template>
             </vue-good-table>
           </b-col>
         </b-col>
@@ -182,6 +170,7 @@ export default {
       //
       sysDate: null,
       current: null,
+      note: '',
       columns: [
         {
           label: 'Số chứng từ',
@@ -217,9 +206,6 @@ export default {
           field: 'adjustQuantity',
           sortable: false,
           type: 'number',
-          filterOptions: {
-            enabled: true,
-          },
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -248,6 +234,7 @@ export default {
         const obj = {
           id: this.importAdjustments[0].id,
           sysDate: this.importAdjustments[0].adjustmentDate,
+          description: this.importAdjustments[0].description,
         }
         return obj
       }
@@ -271,7 +258,7 @@ export default {
   watch: {
     importAdjustments() {
       if (this.importAdjustments.length > 0) {
-        this.selectOrder(this.firstPo.id, this.firstPo.sysDate)
+        this.selectOrder(this.firstPo.id, this.firstPo.sysDate, this.firstPo.description)
       } else {
         // will clear grid view if the last po been imported
         this.importAdjustmentsDetail = []
@@ -294,14 +281,15 @@ export default {
       GET_IMPORT_ADJUSTMENTS_ACTION,
       GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION,
     ]),
-    selectOrder(id, date) {
+    selectOrder(id, date, description) {
       this.current = id
       this.sysDate = date
+      this.note = description
       this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId }) // hard code
     },
     inputAdjustmentConfirm() {
       if (this.importAdjustments.length > 0) {
-        this.$emit('inputAdjustChange', [this.sysDate, this.importAdjustmentsDetail, this.importAdjustmentInfo, this.current])
+        this.$emit('inputAdjustChange', [this.sysDate, this.importAdjustmentsDetail, this.importAdjustmentInfo, this.current, this.note])
         this.$emit('close')
       } else {
         toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')
