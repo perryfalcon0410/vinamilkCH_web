@@ -191,7 +191,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ totalPrice }}
+              {{ $formatNumberToLocale(totalPrice) }}
             </b-row>
 
             <b-row
@@ -305,7 +305,7 @@
             <div v-if="props.column.field === 'price'">
               {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
             </div>
-            <div v-if="props.column.field === 'totalPrice'">
+            <div v-if="props.column.field === 'totalPrice' && isNaN(props.formattedRow[props.column.field]) === false">
               {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
             </div>
             <div v-if="props.column.field === 'inventoryTotal' && isNaN(props.formattedRow[props.column.field]) === false">
