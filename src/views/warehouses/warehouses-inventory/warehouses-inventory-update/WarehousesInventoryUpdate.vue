@@ -75,49 +75,6 @@
           </b-form-group>
         </b-col>
         <!-- END - Warehouse -->
-
-        <!-- START - Button take inventory -->
-        <b-form-group
-          class="ml-lg-1"
-          label="Lấy tồn kho"
-          label-for="form-button-get-inventory"
-          label-class="text-white"
-        >
-          <b-button
-            id="form-button-get-inventory"
-            class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
-            variant="someThing"
-            style="height: 30px;"
-            @click="onClickGetInventoryStocksButton()"
-          >
-            Lấy tồn kho
-          </b-button>
-        </b-form-group>
-        <!-- END - Button take inventory -->
-
-        <!-- START - Button import -->
-        <b-form-group
-          class="ml-lg-1"
-          label="Import"
-          label-for="form-button-import"
-          label-class="text-white"
-        >
-          <b-button
-            id="form-button-import"
-            class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
-            variant="someThing"
-            style="height: 30px;"
-            @click="onClickImportButton()"
-          >
-            <b-icon-arrow-repeat
-              scale="1.5"
-              class="mr-1"
-            />
-            Import
-          </b-button>
-        </b-form-group>
-        <!-- END - Button import -->
-
       </b-row>
       <!-- END - Section form input -->
 
@@ -355,102 +312,6 @@
     </b-form>
     <!-- END - Section product Import list -->
 
-    <!-- START - Modal import -->
-    <b-modal
-      v-model="isImportModalShow"
-      size="lg"
-      title="Import dữ liệu"
-      title-class="text-uppercase font-weight-bold text-brand-1"
-      content-class="bg-light"
-      footer-border-variant="light"
-    >
-      <!-- START - Body -->
-      <div
-        class="bg-white py-1"
-      >
-        <b-col class="px-0">
-          <div class="d-inline-flex text-brand-1 bg-light mb-1 px-1 rounded-right">
-            Tập tin
-          </div>
-          <b-row
-            align-v="center"
-            class="mx-1"
-          >
-            <b-col class="px-0">
-              <b-form-file
-                v-model="importFile"
-                placeholder="Vui lòng chọn file import kiểm kê"
-                accept=".xlsx, .xls"
-                @input="hideErrorMessage"
-              />
-            </b-col>
-            <ins
-              class="cursor-pointer text-brand-1 mx-1"
-              @click="onClickDownloadSampleFile"
-            >Tải mẫu</ins>
-          </b-row>
-
-        </b-col>
-        <b-col class="px-0">
-          <div class="d-inline-flex text-brand-1 bg-light my-1 px-1 rounded-right">
-            Thông tin import
-          </div>
-          <b-col>
-            - Chỉ cho phép nhập file định dạng (xlsx, xls)
-          </b-col>
-
-          <b-col class="my-1">
-            - Số dòng tối đa để nhập file là 5000
-          </b-col>
-
-          <b-col
-            v-show="showErrorMessage"
-            class="text-danger ml-1"
-          >
-            Nhập thành công {{ rowsSuccess }} dòng, thất bại {{ rowsFail }} dòng <ins
-              class="text-brand-1 cursor-pointer"
-              @click="onClickDownloadFailedFile"
-            >Xem</ins>
-          </b-col>
-        </b-col>
-      </div>
-      <!-- END - Body -->
-
-      <!-- START - Footer -->
-      <template #modal-footer>
-        <b-button
-          variant="someThing"
-          class="btn-brand-1 aligns-items-button-center"
-          size="sm"
-          @click="onClickAgreeImportButton()"
-        >
-          <b-icon
-            icon="download"
-            width="20"
-            height="20"
-            class="mr-1"
-          />
-          Import
-        </b-button>
-        <b-button
-          variant="secondary"
-          class="d-flex align-items-center"
-          size="sm"
-          @click="isImportModalShow = !isImportModalShow"
-        >
-          <b-icon
-            icon="x"
-            width="20"
-            height="20"
-          />
-          Đóng
-        </b-button>
-      </template>
-      <!-- END - Footer -->
-
-    </b-modal>
-    <!-- END - Modal import -->
-
     <!-- START - Warehouse Inventory Modal Close -->
     <b-modal
       v-model="isModalCloseShow"
@@ -484,12 +345,10 @@ import { formatISOtoVNI, reverseVniDate } from '@/@core/utils/filter'
 import {
   WAREHOUSEINVENTORY,
   WAREHOUSE_TYPES_GETTER,
-  WAREHOUSE_INVENTORY_STOCKS_GETTER,
   WAREHOUSE_INVENTORY_DATA_GETTER,
   WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
   WAREHOUSE_INVENTORY_DETAIL_GETTER,
   GET_WAREHOUSE_TYPES_ACTION,
-  GET_WAREHOUSE_INVENTORY_STOCKS_ACTION,
   EXPORT_FILLED_STOCKS_ACTION,
   CREATE_WAREHOUSE_INVENTORY_ACTION,
   IMPORT_FILLED_STOCKS_ACTION,
@@ -638,11 +497,6 @@ export default {
       inventoryTotal: 0,
       unequal: 0,
       searchKeywords: '',
-      importFile: '',
-      warehouseInventoryImportData: {},
-      showErrorMessage: false,
-      rowsSuccess: 0,
-      rowsFail: 0,
       id: this.$route.params.id,
     }
   },
@@ -671,7 +525,7 @@ export default {
       return this.products.reduce((accum, item) => accum + Number(item.inventoryOdd), 0)
     },
     getInventoryTotal() {
-      return this.products.reduce((accum, item) => accum + Number(item.inventoryTotal), 0)
+      return this.products.reduce((accum, item) => accum + Number(item.originalInventoryTotal), 0)
     },
     getUnequal() {
       return this.products.reduce((accum, item) => accum + Number(item.unequal), 0)
@@ -681,9 +535,6 @@ export default {
     },
     getWarehouseInventoryData() {
       return this.WAREHOUSE_INVENTORY_DATA_GETTER()
-    },
-    getWarehouseInventoryImportData() {
-      return this.WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER()
     },
     getWarehouseInventoryDetail() {
       return this.WAREHOUSE_INVENTORY_DETAIL_GETTER()
@@ -727,16 +578,6 @@ export default {
     getWarehouseInventoryData() {
       this.warehousesInventoryData = { ...this.getWarehouseInventoryData }
     },
-    getWarehouseInventoryImportData() {
-      this.warehouseInventoryImportData = { ...this.getWarehouseInventoryImportData }
-      this.showErrorMessage = this.warehouseInventoryImportData.response.importFails.length > 0
-      this.rowsSuccess = this.warehouseInventoryImportData.info
-      this.rowsFail = this.warehouseInventoryImportData.response.importFails.length
-      this.warehouseInventoryImportData.response.importSuccess.forEach(productData => {
-        this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryPacket = productData.packetQuantity
-        this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryOdd = productData.packetQuantity
-      })
-    },
     getWarehouseInventoryDetail() {
       this.countingCode = this.WAREHOUSE_INVENTORY_DETAIL_GETTER().info.countingCode
       this.countingDate = formatISOtoVNI(this.WAREHOUSE_INVENTORY_DETAIL_GETTER().info.countingDate)
@@ -752,9 +593,10 @@ export default {
         price: this.$formatNumberToLocale(data.price),
         totalPrice: data.totalAmount,
         sumTotalPrice: this.$formatNumberToLocale(data.totalAmount),
-        inventoryPacket: null,
-        inventoryOdd: null,
-        inventoryTotal: null,
+        inventoryPacket: this.$formatNumberToLocale(data.packetQuantity),
+        inventoryOdd: this.$formatNumberToLocale(data.unitQuantity),
+        inventoryTotal: this.$formatNumberToLocale(data.stockQuantity),
+        originalInventoryTotal: data.stockQuantity,
         unequal: data.changeQuantity,
         SumUnequal: this.$formatNumberToLocale(data.changeQuantity),
         packetUnit: data.packetUnit,
@@ -768,13 +610,11 @@ export default {
   mounted() {
     this.GET_WAREHOUSE_TYPES_ACTION({ formId: 5, ctrlId: 7 })
     this.GET_WAREHOUSE_INVENTORY_DETAIL_ACTION({ id: this.id, formId: 5, ctrlId: 7 })
-    this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION({ isPaging: true, formId: 5, ctrlId: 7 })
   },
 
   methods: {
     ...mapActions(WAREHOUSEINVENTORY, [
       GET_WAREHOUSE_TYPES_ACTION,
-      GET_WAREHOUSE_INVENTORY_STOCKS_ACTION,
       EXPORT_FILLED_STOCKS_ACTION,
       CREATE_WAREHOUSE_INVENTORY_ACTION,
       IMPORT_FILLED_STOCKS_ACTION,
@@ -785,7 +625,6 @@ export default {
     ]),
     ...mapGetters(WAREHOUSEINVENTORY, [
       WAREHOUSE_TYPES_GETTER,
-      WAREHOUSE_INVENTORY_STOCKS_GETTER,
       WAREHOUSE_INVENTORY_DATA_GETTER,
       WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
       WAREHOUSE_INVENTORY_DETAIL_GETTER,
@@ -856,36 +695,8 @@ export default {
         ctrlId: 7,
       })
     },
-    onClickImportButton() {
-      this.isImportModalShow = !this.isImportModalShow
-      this.hideErrorMessage()
-    },
     onClickConfirmCloseButton() {
       this.$router.back()
-    },
-    onClickAgreeImportButton() {
-      const data = new FormData()
-      data.append('name', this.importFile.name)
-      data.append('file', this.importFile)
-      this.IMPORT_FILLED_STOCKS_ACTION(data)
-    },
-    onClickDownloadSampleFile() {
-      this.GET_SAMPLE_IMPORT_FILE_ACTION({
-        formId: 5,
-        ctrlId: 7,
-      })
-    },
-    onClickDownloadFailedFile() {
-      const data = new FormData()
-      data.append('name', this.importFile.name)
-      data.append('file', this.importFile)
-      this.GET_FAILED_IMPORT_FILE_ACTION({
-        data,
-        date: reverseVniDate(this.countingDate),
-      })
-    },
-    hideErrorMessage() {
-      this.showErrorMessage = false
     },
   },
 }

@@ -584,12 +584,16 @@ export default {
       this.selectedRedBillRows = []
     },
     onClickExportRedBills() {
-      this.EXPORT_RED_BILLS_ACTION({
-        ids: this.selectedRedBillRows.map(data => data.id).join(','),
-        type: this.templateOptionSelected,
-        formId: 1,
-        ctrlId: 1,
-      })
+      if (this.selectedRedBillRows && this.selectedRedBillRows.length > 0) {
+        this.EXPORT_RED_BILLS_ACTION({
+          ids: this.selectedRedBillRows.map(data => data.id).join(','),
+          type: this.templateOptionSelected,
+          formId: 1,
+          ctrlId: 1,
+        })
+      } else {
+        toasts.error('Xin vui lòng chọn hóa đơn muốn xuất')
+      }
     },
     onClickUpdateRedBills() {
       const redInvoiceRequests = this.selectedRedBillRows.map(data => ({

@@ -386,7 +386,7 @@
                 v-model="importFile"
                 placeholder="Vui lòng chọn file import kiểm kê"
                 accept=".xlsx, .xls"
-                @input="hideErrorMessage"
+                @input="hideImportMessage"
               />
             </b-col>
             <ins
@@ -514,6 +514,7 @@
 
 <script>
 import commonData from '@/@db/common'
+import toasts from '@core/utils/toasts/toasts'
 import { mapActions, mapGetters } from 'vuex'
 import { formatDateToLocale, reverseVniDate } from '@/@core/utils/filter'
 import {
@@ -674,7 +675,7 @@ export default {
       inventoryTotal: 0,
       unequal: 0,
       searchKeywords: '',
-      importFile: '',
+      importFile: null,
       warehouseInventoryImportData: {},
       showErrorMessage: false,
       rowsSuccess: 0,
@@ -774,7 +775,7 @@ export default {
       this.rowsFail = this.warehouseInventoryImportData.response.importFails.length
       this.warehouseInventoryImportData.response.importSuccess.forEach(productData => {
         this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryPacket = productData.packetQuantity
-        this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryOdd = productData.packetQuantity
+        this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryOdd = productData.unitQuantity
       })
     },
     // format for display
@@ -918,12 +919,16 @@ export default {
     },
     onClickImportButton() {
       this.isImportModalShow = !this.isImportModalShow
-      this.hideErrorMessage()
+      this.hideImportMessage()
     },
     onClickConfirmCloseButton() {
       this.$router.back()
     },
     onClickAgreeImportButton() {
+      if (this.importFile === null) {
+        toasts.error('Bạn chưa nhập file import')
+        return
+      }
       const data = new FormData()
       data.append('name', this.importFile.name)
       data.append('file', this.importFile)
@@ -944,8 +949,9 @@ export default {
         date: reverseVniDate(this.countingDate),
       })
     },
-    hideErrorMessage() {
+    hideImportMessage() {
       this.showErrorMessage = false
+      this.showSuccessMessage = false
     },
     formatNumberToSave(num) {
       return Number(num.replace(/,/g, ''))
