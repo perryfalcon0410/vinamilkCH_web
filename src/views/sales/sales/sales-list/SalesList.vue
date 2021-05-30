@@ -82,12 +82,15 @@
       </b-col>
       <!-- END - Search -->
 
+      <!-- START - Bills -->
       <b-row
         v-for="(button, index) in buttons"
         :key="index"
       >
-        <b-button-toolbar
-          class="d-flex align-items-center justify-content-center bg-white rounded shadow mr-1 px-1"
+        <b-button
+          variant="light"
+          class="d-flex align-items-center justify-content-center rounded shadow mr-1 px-1"
+          @click="clickBillButton(index)"
         >
           Hóa đơn {{ index + 1 }}
           <b-icon-x
@@ -95,7 +98,7 @@
             font-scale="1.6"
             @click="onClickCloseButton(index)"
           />
-        </b-button-toolbar>
+        </b-button>
 
         <div>
           <b-icon-plus
@@ -104,8 +107,8 @@
             @click="onClickAddButton"
           />
         </div>
-      </b-row>
 
+      </b-row>
       <!-- END - Bills -->
 
     </b-row>
@@ -357,7 +360,9 @@ export default {
       productInfoTypeOptions: saleData.productInfoType,
       productsSearch: [],
       buttons: [
-        { name: '' },
+        {
+          active: true,
+        },
       ],
 
       // online order
@@ -567,6 +572,10 @@ export default {
 
     getCustomerIdInfo(id) {
       this.$emit('getCustomerIdInfo', id)
+    },
+
+    clickBillButton() {
+      this.buttons.isActive = !this.buttons.isActive
     },
   },
 }

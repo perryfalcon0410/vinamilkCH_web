@@ -50,7 +50,7 @@
             >
               <b-form-input
                 id="form-input-phoneNumber"
-                v-model="phone"
+                v-model.trim="phoneNumber"
                 class="h9"
                 size="sm"
                 trim
@@ -278,7 +278,7 @@ export default {
 
       // search
       searchKeywords: '',
-      phone: '',
+      phoneNumber: '',
       idNo: '',
       customerTypeId: '',
       shopId: '',
@@ -396,7 +396,7 @@ export default {
     onClickSearchButton() {
       const searchData = {
         searchKeywords: this.searchKeywords.trim(),
-        phone: this.mobiPhone || this.phone,
+        phoneNumber: this.phoneNumber,
         idNo: this.idNo.trim(),
         formId: 9, // HARD
         ctrlId: 6, // HARD
