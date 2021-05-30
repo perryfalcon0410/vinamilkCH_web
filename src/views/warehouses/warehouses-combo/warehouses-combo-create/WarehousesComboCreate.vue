@@ -287,7 +287,6 @@ import { formatVniDateToISO } from '@/@core/utils/filter'
 import { getNow } from '@/@core/utils/utils'
 import commonData from '@/@db/common'
 
-import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
 import {
   mapActions,
   mapGetters,
@@ -303,9 +302,6 @@ import {
 } from '../store-module/type'
 
 export default {
-  components: {
-    ConfirmCloseModal,
-  },
   data() {
     return {
       showConfirmCloseModal: false,
@@ -573,11 +569,7 @@ export default {
       return true
     },
     navigateBack() {
-      if (this.comboListRows.length > 0) {
-        this.showConfirmCloseModal = true
-      } else {
-        this.$router.push({ name: 'warehouses-combo' })
-      }
+      this.$router.push({ name: 'warehouses-combo' })
     },
 
     focusProduct() {

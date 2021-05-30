@@ -106,7 +106,7 @@
               <b-row
                 v-if="props.column.field === 'quantity'"
                 class="mx-0"
-                align-h="end"
+                align-h="center"
               >
                 {{ $formatNumberToLocale(poProductInfo.totalQuantity) }}
               </b-row>
@@ -153,7 +153,7 @@
                 <b-row
                   v-if="props.column.field === 'quantity'"
                   class="mx-0"
-                  align-h="end"
+                  align-h="center"
                 >
                   {{ poPromotionProductsInfo.totalQuantity }}
                 </b-row>

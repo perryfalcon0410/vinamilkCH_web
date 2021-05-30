@@ -104,7 +104,7 @@
                 <b-row
                   v-if="props.column.field === 'borrowQuantity'"
                   class="mx-0"
-                  align-h="end"
+                  align-h="center"
                 >
                   {{ $formatNumberToLocale(importBorrowingInfo.totalQuantity) }}
                 </b-row>

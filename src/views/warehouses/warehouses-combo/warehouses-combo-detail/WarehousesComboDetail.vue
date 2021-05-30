@@ -323,8 +323,7 @@ export default {
   watch: {
     detail() {
       this.id = this.detail.transCode
-      this.transDate = formatISOtoVNI(this.detail.transDate, true)
-      // this.transTime = getTimeOfDate(this.detail.transDate)
+      this.transDate = formatISOtoVNI(this.detail.transDate, false, true)
       this.note = this.detail.note
       this.traddingTypeSelected = warehousesData.tradingTypes.find(item => item.id === this.detail.transType.toString()) || null
     },

@@ -400,7 +400,7 @@ export default {
         customerCode: data.customerNumber,
         name: data.customerName,
         dayTime: formatDateToLocale(data.orderDate),
-        totalValue: this.$formatNumberToLocale(data.total),
+        totalValue: this.$formatNumberToLocale(data.amount),
         note: data.note,
         discountMoney: this.$formatNumberToLocale(data.totalPromotion),
         moneyAccumulated: data.accumulation,

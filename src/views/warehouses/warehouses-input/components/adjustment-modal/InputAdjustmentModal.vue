@@ -104,7 +104,7 @@
                 <b-row
                   v-if="props.column.field === 'adjustQuantity'"
                   class="mx-0"
-                  align-h="end"
+                  align-h="center"
                 >
                   {{ $formatNumberToLocale(importAdjustmentInfo.totalQuantity) }}
                 </b-row>

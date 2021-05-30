@@ -226,9 +226,9 @@
                 <b-row
                   v-if="props.column.field === 'quantity'"
                   class="mx-0"
-                  align-h="start"
+                  align-h="center"
                 >
-                  {{ poProductInfo.totalQuantity || 0 }}
+                  {{ poProductInfo.totalQuantity }}
                 </b-row>
                 <!--END - Choose import po product-->
 
@@ -236,9 +236,9 @@
                 <b-row
                   v-if="props.column.field === 'borrowQuantity'"
                   class="mx-0"
-                  align-h="start"
+                  align-h="center"
                 >
-                  {{ poBorrowingInfo.totalQuantity || 0 }}
+                  {{ poBorrowingInfo.totalQuantity }}
                 </b-row>
                 <!--START - Choose import borrow product-->
 
@@ -246,9 +246,9 @@
                 <b-row
                   v-if="props.column.field === 'adjustQuantity'"
                   class="mx-0"
-                  align-h="start"
+                  align-h="center"
                 >
-                  {{ poAdjustInfo.totalQuantity || 0 }}
+                  {{ poAdjustInfo.totalQuantity }}
                 </b-row>
                 <!--START - Choose import adjust product-->
 
@@ -258,7 +258,7 @@
                   class="mx-0"
                   align-h="end"
                 >
-                  {{ $formatNumberToLocale(poProductInfo.totalPrice) || 0 }}
+                  {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
                 </b-row>
               </template>
               <!-- START - Empty rows -->
@@ -296,7 +296,7 @@
                   <b-row
                     v-if="props.column.field === 'quantity'"
                     class="mx-0"
-                    align-h="start"
+                    align-h="center"
                   >
                     {{ poPromotionProductsInfo.totalQuantity || 0 }}
                   </b-row>
@@ -825,7 +825,7 @@ export default {
   watch: {
     // render importPoManually-table if poNo = null
     poNo() {
-      if (this.inputTypeSelected === '0' && this.poNo === null) {
+      if (this.inputTypeSelected === '0' && this.status !== 0) {
         this.isShowPoPromoManualTable = true
       } else {
         this.isShowPoPromoManualTable = false

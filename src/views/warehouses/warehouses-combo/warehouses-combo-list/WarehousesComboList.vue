@@ -118,14 +118,14 @@
               class="h7 text-right"
               align-h="end"
             >
-              {{ totalQuantity }}
+              {{ totalQuantity || null }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'price'"
               class="h7"
               align-h="end"
             >
-              {{ totalPrice }}
+              {{ totalPrice || null }}
             </b-row>
           </template>
           <!-- START - Column filter -->

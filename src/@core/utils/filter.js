@@ -37,7 +37,7 @@ export const formatDateToLocale = (value, formatting = { day: '2-digit', month: 
   return new Date(value).toLocaleDateString('vi-VN', formatting)
 }
 
-export const formatISOtoVNI = (isoTime, includeTime) => {
+export const formatISOtoVNI = (isoTime, includeTime, includeText) => {
   const date1 = new Date(isoTime)
   const dateObj = new Date(date1.getTime() + (date1.getTimezoneOffset() * 60000))
 
@@ -50,6 +50,9 @@ export const formatISOtoVNI = (isoTime, includeTime) => {
 
   if (includeTime !== undefined && includeTime) {
     return `${date}/${month}/${year} ${hours}:${minutes}:${seconds}`
+  }
+  if (includeText !== undefined && includeText) {
+    return `${date}/${month}/${year} lúc ${hours}:${minutes}`
   }
 
   return `${date}/${month}/${year}`
