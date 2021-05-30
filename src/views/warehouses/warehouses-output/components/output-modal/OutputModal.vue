@@ -49,7 +49,7 @@
             }"
             compact-mode
             line-numbers
-            :total-rows="outputPagination.totalElements"
+            :total-rows="getPoTrans.totalElements"
             :sort-options="{
               enabled: false,
               multipleColumns: true,
@@ -112,7 +112,7 @@
               slot-scope="props"
             >
               <b-row
-                v-show="outputPagination.totalElements"
+                v-show="getPoTrans.totalElements"
                 class="v-pagination px-1 mx-0"
                 align-h="between"
                 align-v="center"
@@ -132,17 +132,11 @@
                     class="mx-1"
                     @input="(value)=>props.perPageChanged({currentPerPage: value})"
                   />
-                  <span
-                    class="text-nowrap"
-                  >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                    -
-                    {{ (elementSize * pageNumber) > outputPagination.totalElements ?
-                      outputPagination.totalElements : (elementSize * pageNumber) }}
-                    của {{ outputPagination.totalElements }} mục </span>
+                  <span class="text-nowrap">{{ paginationDetailContent }}</span>
                 </div>
                 <b-pagination
                   v-model="pageNumber"
-                  :total-rows="outputPagination.totalElements"
+                  :total-rows="getPoTrans.totalElements"
                   :per-page="elementSize"
                   first-number
                   last-number
@@ -263,13 +257,12 @@ export default {
   data() {
     return {
       elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
+      pageNumber: commonData.pageNumber,
       paginationOptions: commonData.perPageSizes,
       paginationData: {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
         sort: null,
-        reasonId: this.reasonSelected,
       },
 
       isModalShow: false,
@@ -369,6 +362,8 @@ export default {
           sortable: false,
         },
       ],
+
+      poTrans: [],
     }
   },
   computed: {
@@ -376,9 +371,53 @@ export default {
       GET_EXPORT_PO_TRANS_GETTER,
       GET_EXPORT_PO_TRANS_DETAIL_GETTER,
     ]),
-    poTrans() {
-      if (this.GET_EXPORT_PO_TRANS_GETTER.content) {
-        return this.GET_EXPORT_PO_TRANS_GETTER.content.map(data => ({
+    getPoTrans() {
+      if (this.GET_EXPORT_PO_TRANS_GETTER) {
+        return this.GET_EXPORT_PO_TRANS_GETTER
+      }
+      return {}
+    },
+
+    getExportPoTransDetail() {
+      if (this.GET_EXPORT_PO_TRANS_DETAIL_GETTER) {
+        return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER
+      }
+      return []
+    },
+
+    outputPagination() {
+      if (this.GET_EXPORT_PO_TRANS_GETTER) {
+        return this.GET_EXPORT_PO_TRANS_GETTER
+      }
+      return {}
+    },
+
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.getPoTrans.totalElements
+        ? this.getPoTrans.totalElements : (this.paginationData.size * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.getPoTrans.totalElements} mục`
+    },
+  },
+  watch: {
+    getExportPoTransDetail() {
+      if (this.getExportPoTransDetail.info) {
+        this.productDetail = this.getExportPoTransDetail.info.map(data => ({
+          id: data.id,
+          productCode: data.productCode,
+          productName: data.productName,
+          price: data.price,
+          unit: data.unit,
+          totalPrice: data.totalPrice,
+          export: `${data.export}/${data.quantity}`,
+          productReturnAmount: data.quantity,
+        }))
+      }
+    },
+    getPoTrans() {
+      if (this.getPoTrans.content) {
+        this.poTrans = this.getPoTrans.content.map(data => ({
           id: data.id,
           productCode: formatISOtoVNI(data.formatISOtoVNI),
           transDate: formatISOtoVNI(data.transDate),
@@ -390,34 +429,6 @@ export default {
         }))
       }
       return []
-    },
-
-    getExportPoTransDetail() {
-      if (this.GET_EXPORT_PO_TRANS_DETAIL_GETTER.info) {
-        return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER.info.map(data => ({
-          id: data.id,
-          productCode: data.productCode,
-          productName: data.productName,
-          price: data.price,
-          unit: data.unit,
-          totalPrice: data.totalPrice,
-          export: `${data.export}/${data.quantity}`,
-          quantity: `${data.quantity - data.export}/${data.quantity}`,
-        }))
-      }
-      return []
-    },
-
-    outputPagination() {
-      if (this.GET_EXPORT_PO_TRANS_GETTER) {
-        return this.GET_EXPORT_PO_TRANS_GETTER
-      }
-      return {}
-    },
-  },
-  watch: {
-    getExportPoTransDetail() {
-      this.productDetail = [...this.getExportPoTransDetail]
     },
   },
   mounted() {
@@ -439,7 +450,11 @@ export default {
     },
     choonsenTrans(trans) {
       this.onPoItemSelected(trans.id)
-      this.$emit('choonsenTrans', [trans, this.productDetail])
+      const poTranData = {
+        tranInfo: trans,
+        products: this.productDetail,
+      }
+      this.$emit('choonsenTrans', poTranData)
       this.$emit('onModalHidden')
     },
     onPaginationChange() {

@@ -6,10 +6,10 @@ import {
   GET_WAREHOUSES_OUTPUT_LIST_GETTER,
   GET_WAREHOUSES_OUTPUT_BY_ID_GETTER,
   GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER,
-  GET_EXPORT_AJUSTMENTS_GETTER,
+  GET_EXPORT_ADJUSTMENTS_GETTER,
   GET_EXPORT_PO_TRANS_GETTER,
   GET_EXPORT_BORROWINGS_GETTER,
-  GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
+  GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER,
   GET_EXPORT_BORROWINGS_DETAIL_GETTER,
   GET_EXPORT_PO_TRANS_DETAIL_GETTER,
   GET_WAREHOUSE_TYPE_GETTER,
@@ -20,11 +20,11 @@ import {
   GET_WAREHOUSES_OUTPUT_BY_ID_ACTION,
   GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION,
   UPDATE_WAREHOUSES_OUTPUT_ACTION,
-  GET_EXPORT_AJUSTMENT_ACTION,
+  GET_EXPORT_ADJUSTMENT_ACTION,
   GET_EXPORT_PO_TRANS_ACTION,
   GET_EXPORT_BORROWINGS_ACTION,
   GET_EXPORT_BORROWINGS_DETAIL_ACTION,
-  GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
+  GET_EXPORT_ADJUSTMENT_DETAIL_ACTION,
   GET_EXPORT_PO_TRANS_DETAIL_ACTION,
   CLEAR_EXPORT_PRODUCTS_MUTATION,
   GET_WAREHOUSE_TYPE_ACTION,
@@ -41,11 +41,12 @@ export default {
     warehousesOutput: {},
     products: [], // list product of warehouses output
     poTrans: [],
-    ajustments: [],
+    adjustmentTrans: [],
     borrowing: [],
     poProducts: [],
     wareHouseType: [],
     dataWarehousesOutput: {},
+    adjustmentProducts: [],
   },
 
   // GETTERS
@@ -59,8 +60,8 @@ export default {
     [GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER](state) {
       return state.products
     },
-    [GET_EXPORT_AJUSTMENTS_GETTER](state) {
-      return state.ajustments
+    [GET_EXPORT_ADJUSTMENTS_GETTER](state) {
+      return state.adjustmentTrans
     },
     [GET_EXPORT_PO_TRANS_GETTER](state) {
       return state.poTrans
@@ -68,8 +69,8 @@ export default {
     [GET_EXPORT_BORROWINGS_GETTER](state) {
       return state.borrowing
     },
-    [GET_EXPORT_AJUSTMENTS_DETAIL_GETTER](state) {
-      return state.poProducts
+    [GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER](state) {
+      return state.adjustmentProducts
     },
     [GET_EXPORT_BORROWINGS_DETAIL_GETTER](state) {
       return state.poProducts
@@ -184,13 +185,13 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_EXPORT_AJUSTMENT_ACTION]({ state }, val) {
+    [GET_EXPORT_ADJUSTMENT_ACTION]({ state }, val) {
       WarehousesService
         .getExportAdjustment(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.ajustments = res.data
+            state.adjustmentTrans = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -244,13 +245,13 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_EXPORT_AJUSTMENT_DETAIL_ACTION]({ state }, val) {
+    [GET_EXPORT_ADJUSTMENT_DETAIL_ACTION]({ state }, val) {
       WarehousesService
         .getExportAdjustmentDetail(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poProducts = res.data || []
+            state.adjustmentProducts = res.data || []
           } else {
             throw new Error(res.statusValue)
           }

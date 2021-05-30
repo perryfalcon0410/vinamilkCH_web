@@ -16,7 +16,7 @@
             Ngày xuất:
           </b-col>
           <b-col class="font-weight-bold">
-            {{ warehousesOutput.outputDate }} lúc {{ warehousesOutput.outputTime }}
+            <strong>{{ warehousesOutput.outputDate }} lúc {{ warehousesOutput.outputTime }}</strong>
           </b-col>
         </b-row>
         <!-- END - Date -->

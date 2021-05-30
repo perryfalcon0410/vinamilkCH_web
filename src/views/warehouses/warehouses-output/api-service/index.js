@@ -57,10 +57,10 @@ export default {
     return axios.get(`${getExportPoTransDetailEndpoint}/${args}?type=0`)
   },
   getExportAdjustmentDetail(args) {
-    return axios.get(`${getExportAdjustmentDetailEndpoint}/${args}`)
+    return axios.get(`${getExportAdjustmentDetailEndpoint}/${args}?type=0`)
   },
   getExportBorrowingDetail(args) {
-    return axios.get(`${getExportBorrowingDetailEndpoint}/${args}`)
+    return axios.get(`${getExportBorrowingDetailEndpoint}/${args}?type=0`)
   },
   getWareHouseType() {
     return axios.get(`${getWareHouseTypeEndpoint}`)

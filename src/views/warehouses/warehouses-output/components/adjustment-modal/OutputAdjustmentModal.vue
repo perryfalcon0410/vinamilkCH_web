@@ -32,13 +32,24 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columns"
-            :rows="ajustments"
-            style-class="vgt-table bordered"
+            :rows="ajustmentTrans"
+            style-class="vgt-table striped"
             :pagination-options="{
               enabled: true,
+              perPage: elementSize,
+              setCurrentPage: pageNumber,
             }"
             compact-mode
             line-numbers
+            :total-rows="getAjustmentTrans.totalElements"
+            :sort-options="{
+              enabled: false,
+              multipleColumns: true,
+              initialSortBy: [{field: 'adjustmentDate', type: 'desc'}]
+            }"
+            @on-sort-change="onSortChange"
+            @on-page-change="onPageChange"
+            @on-per-page-change="onPerPageChange"
           >
             <!-- START - Empty rows -->
             <div
@@ -48,7 +59,6 @@
               Không có dữ liệu
             </div>
             <!-- END - Empty rows -->
-            >
             <!-- START - Column  -->
             <template
               slot="table-column"
@@ -72,7 +82,7 @@
                 <b-icon-search
                   class="cursor-pointer"
                   scale="1.3"
-                  @click="() => onShowProductsClick(props.row.id)"
+                  @click="() => onAdjustmentItemSelected(props.row.id)"
                 />
                 <b-button
                   variant="someThing"
@@ -89,12 +99,12 @@
             <!-- END - Row -->
 
             <!-- START - Pagination -->
-            <!-- <template
+            <template
               slot="pagination-bottom"
               slot-scope="props"
             >
               <b-row
-                v-show="outputPagination.totalElements"
+                v-show="getAjustmentTrans.totalElements"
                 class="v-pagination px-1 mx-0"
                 align-h="between"
                 align-v="center"
@@ -114,17 +124,11 @@
                     class="mx-1"
                     @input="(value)=>props.perPageChanged({currentPerPage: value})"
                   />
-                  <span
-                    class="text-nowrap"
-                  >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                    -
-                    {{ (elementSize * pageNumber) > outputPagination.totalElements ?
-                      outputPagination.totalElements : (elementSize * pageNumber) }}
-                    của {{ outputPagination.totalElements }} mục </span>
+                  <span class="text-nowrap">{{ paginationDetailContent }}</span>
                 </div>
                 <b-pagination
                   v-model="pageNumber"
-                  :total-rows="outputPagination.totalElements"
+                  :total-rows="getAjustmentTrans.totalElements"
                   :per-page="elementSize"
                   first-number
                   last-number
@@ -148,7 +152,7 @@
                   </template>
                 </b-pagination>
               </b-row>
-            </template> -->
+            </template>
           <!-- END - Pagination -->
 
           </vue-good-table>
@@ -212,11 +216,13 @@
               <div v-if="props.column.field === 'manipulation'">
                 <b-icon-search
                   class="cursor-pointer"
+                  scale="1.3"
+                  @click="() => onAdjustmentItemSelected(props.row.id)"
                 />
                 <b-button
-                  size="sm"
-                  variant="info"
-                  class="ml-1"
+                  variant="someThing"
+                  class="btn-brand-1 ml-1"
+                  @click="() => choonsenTrans(props.row)"
                 >
                   Chọn
                 </b-button>
@@ -248,11 +254,11 @@ import { formatISOtoVNI } from '@core/utils/filter'
 import {
   WAREHOUSES_OUTPUT,
   // Getters
-  GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
-  GET_EXPORT_AJUSTMENTS_GETTER,
+  GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER,
+  GET_EXPORT_ADJUSTMENTS_GETTER,
   // Actions
-  GET_EXPORT_AJUSTMENT_ACTION,
-  GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
+  GET_EXPORT_ADJUSTMENT_ACTION,
+  GET_EXPORT_ADJUSTMENT_DETAIL_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -266,18 +272,19 @@ export default {
   data() {
     return {
       elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
+      pageNumber: commonData.pageNumber,
       paginationOptions: commonData.perPageSizes,
       paginationData: {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
         sort: null,
-        reasonId: this.reasonSelected,
       },
 
       isModalShow: false,
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
+
+      ajustmentTrans: [],
 
       columns: [
         {
@@ -350,26 +357,19 @@ export default {
   },
   computed: {
     ...mapGetters(WAREHOUSES_OUTPUT, [
-      GET_EXPORT_AJUSTMENTS_GETTER,
-      GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
+      GET_EXPORT_ADJUSTMENTS_GETTER,
+      GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER,
     ]),
-    ajustments() {
-      if (this.GET_EXPORT_AJUSTMENTS_GETTER) {
-        return this.GET_EXPORT_AJUSTMENTS_GETTER.map(data => ({
-          id: data.id,
-          createdAt: formatISOtoVNI(data.createdAt),
-          adjustmentDate: formatISOtoVNI(data.adjustmentDate),
-          adjustmentCode: data.adjustmentCode,
-          description: data.description,
-          billDate: data.adjustmentDate,
-        }))
+    getAjustmentTrans() {
+      if (this.GET_EXPORT_ADJUSTMENTS_GETTER) {
+        return this.GET_EXPORT_ADJUSTMENTS_GETTER
       }
-      return []
+      return {}
     },
 
     getExportAdjustmentDetail() {
-      if (this.GET_EXPORT_AJUSTMENTS_DETAIL_GETTER.response) {
-        return this.GET_EXPORT_AJUSTMENTS_DETAIL_GETTER.response.map(data => ({
+      if (this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER.response) {
+        return this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER.response.map(data => ({
           id: data.id,
           productCode: data.productCode,
           productName: data.productName,
@@ -380,45 +380,62 @@ export default {
         }))
       } return []
     },
-    // outputPagination() {
-    //   if (this.GET_EXPORT_PO_TRANS_GETTER) {
-    //     return this.GET_EXPORT_PO_TRANS_GETTER
-    //   }
-    //   return {}
-    // },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.getAjustmentTrans.totalElements
+        ? this.getAjustmentTrans.totalElements : (this.paginationData.size * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.getAjustmentTrans.totalElements} mục`
+    },
+  },
+  watch: {
+    getAjustmentTrans() {
+      if (this.getAjustmentTrans) {
+        this.ajustmentTrans = this.getAjustmentTrans.map(data => ({
+          id: data.id,
+          createdAt: formatISOtoVNI(data.createdAt),
+          adjustmentDate: formatISOtoVNI(data.adjustmentDate),
+          adjustmentCode: data.adjustmentCode,
+          description: data.description,
+          billDate: data.adjustmentDate,
+        }))
+        this.getAjustmentTrans.totalElements = this.ajustmentTrans.lenght
+      }
+      return []
+    },
   },
   mounted() {
-    this.GET_EXPORT_AJUSTMENT_ACTION()
+    this.GET_EXPORT_ADJUSTMENT_ACTION()
   },
   methods: {
     ...mapActions(WAREHOUSES_OUTPUT, [
-      GET_EXPORT_AJUSTMENT_ACTION,
-      GET_EXPORT_AJUSTMENT_DETAIL_ACTION,
+      GET_EXPORT_ADJUSTMENT_ACTION,
+      GET_EXPORT_ADJUSTMENT_DETAIL_ACTION,
     ]),
-    onShowProductsClick(id) {
-      this.GET_EXPORT_AJUSTMENT_DETAIL_ACTION(id)
+    onAdjustmentItemSelected(id) {
+      this.GET_EXPORT_ADJUSTMENT_DETAIL_ACTION(id)
     },
     onModalHidden() {
       this.$emit('onModalHidden')
     },
     choonsenTrans(trans) {
       this.$emit('choonsenTrans', trans)
-      this.$emit('onModalHidden', trans.id)
+      this.$emit('onModalHidden')
     },
-    // onPaginationChange() {
-    //   this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)
-    // },
-    // updatePaginationData(newProps) {
-    //   this.paginationData = { ...this.paginationData, ...newProps }
-    // },
-    // onPageChange(params) {
-    //   this.updatePaginationData({ page: params.currentPage - 1 })
-    //   this.onPaginationChange()
-    // },
-    // onPerPageChange(params) {
-    //   this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-    //   this.onPaginationChange()
-    // },
+    onPaginationChange() {
+      this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
   },
 }
 </script>

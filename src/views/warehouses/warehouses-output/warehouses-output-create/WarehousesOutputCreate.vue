@@ -18,9 +18,16 @@
             class="bg-white shadow rounded mr-xl-1"
           >
             <!-- START - Date -->
-            <div>
-              Ngày biên bản: <strong>{{ dateNow }}</strong>
-            </div>
+            <b-row class="my-1">
+              <b-col cols="4">
+                Ngày xuất:
+              </b-col>
+              <b-col class="font-weight-bold">
+                <strong>
+                  {{ dateNow }}
+                </strong>
+              </b-col>
+            </b-row>
             <!-- END - Date -->
 
             <!-- START - ID and Type -->
@@ -37,7 +44,7 @@
                     Mã xuất hàng
                   </div>
                   <b-form-input
-                    v-model.trim="output.id"
+                    v-model.trim="warehousesOutput.code"
                     :state="touched ? passed : null"
                     maxlength="40"
                   />
@@ -50,7 +57,7 @@
                   Loại xuất hàng
                 </div>
                 <tree-select
-                  v-model="outputTypeSelected"
+                  v-model="warehousesOutput.outputTypeSelected"
                   :options="outputTypesOptions"
                   placeholder="Chọn loại xuất hàng"
                   no-options-text="Không có dữ liệu"
@@ -81,9 +88,10 @@
                     Số hóa đơn
                   </div>
                   <b-form-input
-                    v-model.trim="output.transCode"
+                    v-model="warehousesOutput.redInvoiceNo"
                     :state="touched ? passed : null"
                     readonly
+                    trim
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -99,7 +107,7 @@
                   @keypress="$onlyDateInput"
                 >
                   <vue-flat-pickr
-                    v-model="transDate"
+                    v-model="warehousesOutput.transDate"
                     :config="configDate"
                     class="form-control h8"
                     placeholder="Chọn ngày"
@@ -122,9 +130,10 @@
                     Số nội bộ
                   </div>
                   <b-form-input
-                    v-model.trim="internalNumber"
+                    v-model="warehousesOutput.internalNumber"
                     :state="touched ? passed : null"
                     readonly
+                    trim
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -138,9 +147,9 @@
                   class="input-group-merge"
                 >
                   <b-form-input
-                    v-model="poNumber"
+                    v-model="warehousesOutput.poNumber"
                     trim
-                    :state="outputTypeSelected === '0' && touched ? passed : null"
+                    :state="warehousesOutput.outputTypeSelected === '0' && touched ? passed : null"
                   />
                   <b-input-group-append is-text>
                     <b-icon-three-dots-vertical
@@ -161,7 +170,7 @@
                 Ghi chú
               </div>
               <b-form-textarea
-                v-model="note"
+                v-model="warehousesOutput.note"
                 maxlength="4000"
               />
             </b-form-group>
@@ -211,11 +220,11 @@
                 slot="table-row"
                 slot-scope="props"
               >
-                <div v-if="props.column.field === 'ProductReturnAmount' ">
+                <div v-if="props.column.field === 'productReturnAmount'">
                   <b-form-input
-                    v-model="products[props.originalIndex].quantity"
+                    v-model="products[props.row.originalIndex].productReturnAmount"
                     maxlength="19"
-                    :readonly="exportAll && outputTypeSelected !== '0'"
+                    :readonly="exportAll && warehousesOutput.outputTypeSelected !== '0'"
                     @keypress="$onlyNumberInput"
                   />
                 </div>
@@ -269,12 +278,12 @@
     <adjustment-modal
       :visible="visibleAdjustmentModal"
       @onModalHidden="visibleAdjustmentModal = false"
-      @choonsenTrans="choonsenTrans($event)"
+      @choonsenTrans="dataFromAdjustment($event)"
     />
     <borrowed-modal
       :visible="visibleBorrowedModal"
       @onModalHidden="visibleBorrowedModal = false"
-      @choonsenTrans="choonsenTrans($event)"
+      @choonsenTrans="dataFromBorrow($event)"
     />
     <output-modal
       :visible="visibleOutputModal"
@@ -300,7 +309,7 @@ import {
   code,
   required,
 } from '@/@core/utils/validations/validations'
-import { formatISOtoVNI } from '@/@core/utils/filter'
+// import { formatISOtoVNI } from '@/@core/utils/filter'
 import { getNow } from '@core/utils/utils'
 import OutputModal from '../components/output-modal/OutputModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
@@ -345,12 +354,19 @@ export default {
         id: '',
         transCode: '',
       },
-      outputTypeSelected: warehousesData.outputTypes[0].id,
-      warehouseTypeSelected: '',
-      internalNumber: '',
-      poNumber: '',
-      note: '',
-
+      warehousesOutput: {
+        id: null,
+        outputTypeSelected: warehousesData.outputTypes[0].id,
+        code: '',
+        type: 2, // xác định 2 là loại phiếu xuất hàng
+        wareHouseTypeName: '',
+        redInvoiceNo: '', // số hoá đơn
+        internalNumber: '', // số nội bộ
+        poNumber: '',
+        note: '',
+        transDate: null,
+      },
+      products: [],
       dateNow: getNow(),
       configDate: {
         wrap: true,
@@ -397,17 +413,11 @@ export default {
           sortable: false,
         },
         {
-          label: 'Còn lại/Tổng nhập',
-          field: 'quantity',
-          sortable: false,
-        },
-        {
           label: 'Số lượng trả',
-          field: 'ProductReturnAmount',
+          field: 'productReturnAmount',
           sortable: false,
         },
       ],
-      products: [],
     }
   },
 
@@ -448,25 +458,21 @@ export default {
       this.note = ''
       this.products = []
     },
-    exportAll() {
-      if (this.exportAll) {
-        this.poProducts.forEach((item, index) => {
-          this.products[index].quantity = item.amountQuantity
-        })
-      } else {
-        this.poProducts.forEach((item, index) => {
-          this.products[index].quantity = 0
-        })
-      }
-    },
+    // exportAll() {
+    //   if (this.exportAll) {
+    //     this.poProducts.forEach((item, index) => {
+    //       this.products[index].quantity = item.amountQuantity
+    //     })
+    //   } else {
+    //     this.poProducts.forEach((item, index) => {
+    //       this.products[index].quantity = 0
+    //     })
+    //   }
+    // },
   },
 
   mounted() {
     this.GET_WAREHOUSE_TYPE_ACTION({ ...this.decentralization })
-  },
-
-  destroyed() {
-    this.CLEAR_EXPORT_PRODUCTS_MUTATION()
   },
 
   methods: {
@@ -480,7 +486,7 @@ export default {
 
     showModal() {
       this.CLEAR_EXPORT_PRODUCTS_MUTATION()
-      switch (this.outputTypeSelected) {
+      switch (this.warehousesOutput.outputTypeSelected) {
         case '0':
           this.visibleOutputModal = true
           break
@@ -498,25 +504,36 @@ export default {
       this.$router.back()
     },
     dataFromPo(data) {
-      const [trans, productDetail] = data
-      this.internalNumber = trans.internalNumber
-      this.output.transCode = trans.transCode || trans.adjustmentCode || trans.poBorrowCode
-      this.poNumber = trans.poNumber
-      this.transDate = formatISOtoVNI(trans.billDate)
-      this.note = trans.note || trans.description
-      this.output.id = trans.id
-      this.products = [...productDetail]
+      this.warehousesOutput.redInvoiceNo = data.tranInfo.redInvoiceNo
+      this.warehousesOutput.transDate = data.tranInfo.transDate
+      this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
+      this.warehousesOutput.poNumber = data.tranInfo.poNumber
+      this.products = data.products
+    },
+    dataFromBorrow(data) {
+      this.warehousesOutput.redInvoiceNo = data.tranInfo.redInvoiceNo
+      this.warehousesOutput.transDate = data.tranInfo.transDate
+      this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
+      this.warehousesOutput.poNumber = data.tranInfo.poNumber
+      this.products = data.products
+    },
+    dataFromAdjustment(data) {
+      this.warehousesOutput.redInvoiceNo = data.tranInfo.redInvoiceNo
+      this.warehousesOutput.transDate = data.tranInfo.transDate
+      this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
+      this.warehousesOutput.poNumber = data.tranInfo.poNumber
+      this.products = data.products
     },
     createExport() {
       this.CREATE_EXPORT_ACTION(
         {
-          importType: this.outputTypeSelected,
+          importType: this.outputTypeSelected.outputTypeSelected,
           isRemainAll: this.exportAll,
           receiptImportId: this.output.id,
           note: this.note,
-          litQuantityRemain: this.products.map((item, index) => ({
+          litQuantityRemain: this.products.map(item => ({
             id: item.id,
-            quantity: this.outputTypeSelected === '0' ? this.products[index].quantity : item.amountQuantity,
+            // quantity: this.outputTypeSelected === '0' ? this.products[index].quantity : item.amountQuantity,
           })),
         },
       )
