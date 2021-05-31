@@ -976,7 +976,6 @@ export default {
       }
     },
     create() {
-      console.log('status', this.status)
       if (this.promotionRow.length === 0) {
         const obj = {
           importType: this.status,
@@ -987,7 +986,6 @@ export default {
           poId: this.poId,
           note: this.note,
         }
-        console.log(obj)
         if (obj.poId !== null && this.status !== 0) {
           this.CREATE_SALE_IMPORT_ACTION(obj)
         } else {
