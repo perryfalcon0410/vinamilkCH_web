@@ -557,12 +557,12 @@ export default {
     },
     onClickSearchWarehousesOutput() {
       const searchData = {
-        redInvoiceNo: null,
+        redInvoiceNo: this.searchOptions.redInvoiceNo,
         fromDate: reverseVniDate(this.searchOptions.fromDate),
         toDate: reverseVniDate(this.searchOptions.toDate),
         type: this.warehousesTypeSelected,
-        // formId: this.searchOptions.formId,
-        // ctrlId: this.searchOptions.ctrlId,
+        // formId: this.formId,
+        // ctrlId: this.ctrlId,
       }
       if (!searchData.fromDate) {
         searchData.fromDate = this.$earlyMonth
