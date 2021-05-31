@@ -47,6 +47,7 @@ export default {
     wareHouseType: [],
     dataWarehousesOutput: {},
     adjustmentProducts: [],
+    borrowedProducts: [],
   },
 
   // GETTERS
@@ -73,7 +74,7 @@ export default {
       return state.adjustmentProducts
     },
     [GET_EXPORT_BORROWINGS_DETAIL_GETTER](state) {
-      return state.poProducts
+      return state.borrowedProducts
     },
     [GET_EXPORT_PO_TRANS_DETAIL_GETTER](state) {
       return state.poProducts
@@ -217,11 +218,12 @@ export default {
     },
     [GET_EXPORT_PO_TRANS_DETAIL_ACTION]({ state }, val) {
       WarehousesService
-        .getExportPoTransDetail(val)
+        .getExportPoTransDetail(val.id)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.poProducts = res.data
+            val.onSuccess(state.poProducts)
           } else {
             throw new Error(res.statusValue)
           }
@@ -232,11 +234,12 @@ export default {
     },
     [GET_EXPORT_BORROWINGS_DETAIL_ACTION]({ state }, val) {
       WarehousesService
-        .getExportBorrowingDetail(val)
+        .getExportBorrowingDetail(val.id)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poProducts = res.data || []
+            state.borrowedProducts = res.data
+            val.onSuccess(state.borrowedProducts)
           } else {
             throw new Error(res.statusValue)
           }
@@ -247,11 +250,12 @@ export default {
     },
     [GET_EXPORT_ADJUSTMENT_DETAIL_ACTION]({ state }, val) {
       WarehousesService
-        .getExportAdjustmentDetail(val)
+        .getExportAdjustmentDetail(val.id)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.adjustmentProducts = res.data || []
+            state.adjustmentProducts = res.data
+            val.onSuccess(state.adjustmentProducts)
           } else {
             throw new Error(res.statusValue)
           }

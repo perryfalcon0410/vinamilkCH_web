@@ -1,12 +1,12 @@
 <template>
   <b-modal
+    id="output-adjustment-modal"
     size="xl"
-    :visible="visible"
     title="Chọn phiếu xuất điều chỉnh"
     title-class="text-uppercase font-weight-bold text-brand-1"
     centered
     scrollable
-    @hidden="onModalHidden"
+    hide-footer
   >
     <b-container
       fluid
@@ -35,7 +35,7 @@
             :rows="ajustmentTrans"
             style-class="vgt-table striped"
             :pagination-options="{
-              enabled: true,
+              enabled: false,
               perPage: elementSize,
               setCurrentPage: pageNumber,
             }"
@@ -181,7 +181,7 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columnsProducts"
-            :rows="getExportAdjustmentDetail"
+            :rows="productsOfAjustment"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
@@ -250,7 +250,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatISOtoVNI } from '@core/utils/filter'
+import { formatISOtoVNI, formatNumberToLocale } from '@core/utils/filter'
 import {
   WAREHOUSES_OUTPUT,
   // Getters
@@ -280,12 +280,11 @@ export default {
         sort: null,
       },
 
-      isModalShow: false,
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
 
       ajustmentTrans: [],
-
+      productsOfAjustment: [],
       columns: [
         {
           label: 'Số chứng từ',
@@ -368,17 +367,10 @@ export default {
     },
 
     getExportAdjustmentDetail() {
-      if (this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER.response) {
-        return this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER.response.map(data => ({
-          id: data.id,
-          productCode: data.productCode,
-          productName: data.productName,
-          price: data.price,
-          unit: data.unit,
-          totalPrice: data.totalPrice,
-          quantity: data.quantity,
-        }))
-      } return []
+      if (this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER) {
+        return this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER
+      }
+      return []
     },
     paginationDetailContent() {
       const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
@@ -401,7 +393,21 @@ export default {
         }))
         this.getAjustmentTrans.totalElements = this.ajustmentTrans.lenght
       }
-      return []
+    },
+    getExportAdjustmentDetail() {
+      if (this.getExportAdjustmentDetail.response) {
+        this.productsOfAjustment = this.getExportAdjustmentDetail.response.map(data => ({
+          id: data.id,
+          productCode: data.productCode,
+          productName: data.productName,
+          price: formatNumberToLocale(data.price),
+          unit: data.unit,
+          totalPrice: formatNumberToLocale(data.totalPrice),
+          quantity: data.quantity,
+          productReturnAmount: data.quantity,
+          productReturnAmountOriginal: data.quantity,
+        }))
+      }
     },
   },
   mounted() {
@@ -413,14 +419,34 @@ export default {
       GET_EXPORT_ADJUSTMENT_DETAIL_ACTION,
     ]),
     onAdjustmentItemSelected(id) {
-      this.GET_EXPORT_ADJUSTMENT_DETAIL_ACTION(id)
-    },
-    onModalHidden() {
-      this.$emit('onModalHidden')
+      this.GET_EXPORT_ADJUSTMENT_DETAIL_ACTION({
+        id,
+        onSuccess: () => {
+        },
+      })
     },
     choonsenTrans(trans) {
-      this.$emit('choonsenTrans', trans)
-      this.$emit('onModalHidden')
+      this.GET_EXPORT_ADJUSTMENT_DETAIL_ACTION({
+        id: trans.id,
+        onSuccess: adjustmentProducts => {
+          this.productsOfAjustment = adjustmentProducts.response.map(data => ({
+            id: data.id,
+            productCode: data.productCode,
+            productName: data.productName,
+            price: formatNumberToLocale(data.price),
+            unit: data.unit,
+            totalPrice: formatNumberToLocale(data.totalPrice),
+            productReturnAmount: 0,
+            productReturnAmountOriginal: data.quantity,
+          }))
+          const adjustmentTranData = {
+            tranInfo: trans,
+            products: this.productsOfAjustment,
+          }
+          this.$emit('choonsenTrans', adjustmentTranData)
+          this.$root.$emit('bv::hide::modal', 'output-adjustment-modal')
+        },
+      })
     },
     onPaginationChange() {
       this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)

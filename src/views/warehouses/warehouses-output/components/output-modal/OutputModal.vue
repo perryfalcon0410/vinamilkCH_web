@@ -1,12 +1,12 @@
 <template>
   <b-modal
+    id="output-modal"
     size="xl"
-    :visible="visible"
     title="Chọn phiếu nhập hàng"
     title-class="text-uppercase font-weight-bold text-brand-1"
     footer-border-variant="light"
     hide-footer
-    @hidden="onModalHidden"
+    scrollable
   >
     <b-container
       fluid
@@ -231,7 +231,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatISOtoVNI } from '@core/utils/filter'
+import { formatISOtoVNI, formatNumberToLocale } from '@core/utils/filter'
 import SearchComponent from './components/SearchComponent.vue'
 import {
   WAREHOUSES_OUTPUT,
@@ -401,20 +401,6 @@ export default {
     },
   },
   watch: {
-    getExportPoTransDetail() {
-      if (this.getExportPoTransDetail.info) {
-        this.productDetail = this.getExportPoTransDetail.info.map(data => ({
-          id: data.id,
-          productCode: data.productCode,
-          productName: data.productName,
-          price: data.price,
-          unit: data.unit,
-          totalPrice: data.totalPrice,
-          export: `${data.export}/${data.quantity}`,
-          productReturnAmount: data.quantity,
-        }))
-      }
-    },
     getPoTrans() {
       if (this.getPoTrans.content) {
         this.poTrans = this.getPoTrans.content.map(data => ({
@@ -430,6 +416,21 @@ export default {
       }
       return []
     },
+    getExportPoTransDetail() {
+      if (this.getExportPoTransDetail.info) {
+        this.productDetail = this.getExportPoTransDetail.info.map(data => ({
+          id: data.id,
+          productCode: data.productCode,
+          productName: data.productName,
+          price: formatNumberToLocale(data.price),
+          unit: data.unit,
+          totalPrice: formatNumberToLocale(data.totalPrice),
+          export: `${data.export}/${data.quantity}`,
+          productReturnAmount: 0,
+          productReturnAmountOriginal: data.quantity,
+        }))
+      }
+    },
   },
   mounted() {
     this.GET_EXPORT_PO_TRANS_ACTION()
@@ -443,19 +444,35 @@ export default {
       this.GET_EXPORT_PO_TRANS_ACTION(search)
     },
     onPoItemSelected(id) {
-      this.GET_EXPORT_PO_TRANS_DETAIL_ACTION(id)
-    },
-    onModalHidden() {
-      this.$emit('onModalHidden')
+      this.GET_EXPORT_PO_TRANS_DETAIL_ACTION({
+        id,
+        onSuccess: () => {
+        },
+      })
     },
     choonsenTrans(trans) {
-      this.onPoItemSelected(trans.id)
-      const poTranData = {
-        tranInfo: trans,
-        products: this.productDetail,
-      }
-      this.$emit('choonsenTrans', poTranData)
-      this.$emit('onModalHidden')
+      this.GET_EXPORT_PO_TRANS_DETAIL_ACTION({
+        id: trans.id,
+        onSuccess: poProducts => {
+          this.productDetail = poProducts.info.map(data => ({
+            id: data.id,
+            productCode: data.productCode,
+            productName: data.productName,
+            price: formatNumberToLocale(data.price),
+            unit: data.unit,
+            totalPrice: formatNumberToLocale(data.totalPrice),
+            export: `${data.export}/${data.quantity}`,
+            productReturnAmount: 0,
+            productReturnAmountOriginal: data.quantity,
+          }))
+          const poTranData = {
+            tranInfo: trans,
+            products: this.productDetail,
+          }
+          this.$emit('choonsenTrans', poTranData)
+          this.$root.$emit('bv::hide::modal', 'output-modal')
+        },
+      })
     },
     onPaginationChange() {
       this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)

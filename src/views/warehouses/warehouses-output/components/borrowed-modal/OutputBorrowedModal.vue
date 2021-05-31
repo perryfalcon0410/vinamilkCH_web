@@ -1,11 +1,11 @@
 <template>
   <b-modal
+    id="output-borrowed-modal"
     size="xl"
-    :visible="visible"
     title="Chọn phiếu xuất vay mượn"
     title-class="text-uppercase font-weight-bold text-brand-1"
     footer-border-variant="light"
-    @hidden="onModalHidden"
+    hide-footer
   >
     <b-container
       fluid
@@ -31,13 +31,24 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columns"
-            :rows="borrowing"
+            :rows="borrowedTrans"
             style-class="vgt-table bordered"
             :pagination-options="{
-              enabled: true
+              enabled: false,
+              perPage: elementSize,
+              setCurrentPage: pageNumber,
             }"
             compact-mode
             line-numbers
+            :total-rows="getBorrowedTrans.totalElements"
+            :sort-options="{
+              enabled: false,
+              multipleColumns: true,
+              initialSortBy: [{field: 'borrowDate', type: 'desc'}]
+            }"
+            @on-sort-change="onSortChange"
+            @on-page-change="onPageChange"
+            @on-per-page-change="onPerPageChange"
           >
             <!-- START - Empty rows -->
             <div
@@ -71,7 +82,7 @@
                 <b-icon-search
                   class="cursor-pointer"
                   scale="1.3"
-                  @click="() => viewProduct(props.row.id)"
+                  @click="() => onBorrowedItemSelected(props.row.id)"
                 />
                 <b-button
                   variant="someThing"
@@ -85,8 +96,63 @@
                 {{ props.formattedRow[props.column.field] }}
               </div>
             </template>
-          <!-- END - Row -->
-
+            <!-- END - Row -->
+            <!-- START - Pagination -->
+            <template
+              slot="pagination-bottom"
+              slot-scope="props"
+            >
+              <b-row
+                v-show="getBorrowedTrans.totalElements"
+                class="v-pagination px-1 mx-0"
+                align-h="between"
+                align-v="center"
+              >
+                <div
+                  class="d-flex align-items-center"
+                >
+                  <span
+                    class="text-nowrap"
+                  >
+                    Số hàng hiển thị
+                  </span>
+                  <b-form-select
+                    v-model="elementSize"
+                    size="sm"
+                    :options="paginationOptions"
+                    class="mx-1"
+                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                  />
+                  <span class="text-nowrap">{{ paginationDetailContent }}</span>
+                </div>
+                <b-pagination
+                  v-model="pageNumber"
+                  :total-rows="getBorrowedTrans.totalElements"
+                  :per-page="elementSize"
+                  first-number
+                  last-number
+                  align="right"
+                  prev-class="prev-item"
+                  next-class="next-item"
+                  class="mt-1"
+                  @input="(value)=>props.pageChanged({currentPage: value})"
+                >
+                  <template slot="prev-text">
+                    <feather-icon
+                      icon="ChevronLeftIcon"
+                      size="18"
+                    />
+                  </template>
+                  <template slot="next-text">
+                    <feather-icon
+                      icon="ChevronRightIcon"
+                      size="18"
+                    />
+                  </template>
+                </b-pagination>
+              </b-row>
+            </template>
+          <!-- END - Pagination -->
           </vue-good-table>
         </b-col>
         <!-- END - Table -->
@@ -113,7 +179,7 @@
         <b-col class="py-1">
           <vue-good-table
             :columns="columnsProducts"
-            :rows="getExportBorrowingDetail"
+            :rows="productOfBorrowed"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
@@ -180,7 +246,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatISOtoVNI } from '@core/utils/filter'
+import { formatISOtoVNI, formatNumberToLocale } from '@core/utils/filter'
 import {
   WAREHOUSES_OUTPUT,
   // Getters
@@ -202,19 +268,18 @@ export default {
   data() {
     return {
       elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
+      pageNumber: commonData.pageNumber,
       paginationOptions: commonData.perPageSizes,
       paginationData: {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
         sort: null,
-        reasonId: this.reasonSelected,
       },
 
-      isModalShow: false,
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
-
+      borrowedTrans: [],
+      productOfBorrowed: [],
       columns: [
         {
           label: 'Số chứng từ',
@@ -289,9 +354,31 @@ export default {
       GET_EXPORT_BORROWINGS_DETAIL_GETTER,
     ]),
 
-    borrowing() {
+    getBorrowedTrans() {
       if (this.GET_EXPORT_BORROWINGS_GETTER) {
-        return this.GET_EXPORT_BORROWINGS_GETTER.map(data => ({
+        return this.GET_EXPORT_BORROWINGS_GETTER
+      }
+      return []
+    },
+
+    getExportBorrowingDetail() {
+      if (this.GET_EXPORT_BORROWINGS_DETAIL_GETTER) {
+        return this.GET_EXPORT_BORROWINGS_DETAIL_GETTER
+      }
+      return []
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.getBorrowedTrans.totalElements
+        ? this.getBorrowedTrans.totalElements : (this.paginationData.size * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.getBorrowedTrans.totalElements} mục`
+    },
+  },
+  watch: {
+    getBorrowedTrans() {
+      if (this.getBorrowedTrans) {
+        this.borrowedTrans = this.getBorrowedTrans.map(data => ({
           id: data.id,
           poBorrowCode: data.poBorrowCode,
           borrowDate: formatISOtoVNI(data.borrowDate),
@@ -299,21 +386,21 @@ export default {
           note: data.note,
         }))
       }
-      return []
     },
-
     getExportBorrowingDetail() {
-      if (this.GET_EXPORT_BORROWINGS_DETAIL_GETTER.response) {
-        return this.GET_EXPORT_BORROWINGS_DETAIL_GETTER.response.map(data => ({
+      if (this.getExportBorrowingDetail.response) {
+        this.productOfBorrowed = this.getExportBorrowingDetail.response.map(data => ({
           id: data.id,
           productCode: data.productCode,
           productName: data.productName,
-          price: data.price,
+          price: formatNumberToLocale(data.price),
           unit: data.unit,
-          totalPrice: data.totalPrice,
+          totalPrice: formatNumberToLocale(data.totalPrice),
           quantity: data.quantity,
+          productReturnAmount: data.quantity,
+          productReturnAmountOriginal: data.quantity,
         }))
-      } return []
+      }
     },
   },
   mounted() {
@@ -324,12 +411,49 @@ export default {
       GET_EXPORT_BORROWINGS_ACTION,
       GET_EXPORT_BORROWINGS_DETAIL_ACTION,
     ]),
-    viewProduct(id) {
-      this.GET_EXPORT_BORROWINGS_DETAIL_ACTION(id)
+    onBorrowedItemSelected(id) {
+      this.GET_EXPORT_BORROWINGS_DETAIL_ACTION({
+        id,
+        onSuccess: () => {
+        },
+      })
     },
     choonsenTrans(trans) {
-      this.$emit('choonsenTrans', trans)
-      this.$emit('onModalHidden', [trans.id])
+      this.GET_EXPORT_BORROWINGS_DETAIL_ACTION({
+        id: trans.id,
+        onSuccess: borrowedProducts => {
+          this.borrowedTrans = borrowedProducts.response.map(data => ({
+            id: data.id,
+            productCode: data.productCode,
+            productName: data.productName,
+            price: formatNumberToLocale(data.price),
+            unit: data.unit,
+            totalPrice: formatNumberToLocale(data.totalPrice),
+            productReturnAmount: 0,
+            productReturnAmountOriginal: data.quantity,
+          }))
+          const borrowedTranData = {
+            tranInfo: trans,
+            products: this.borrowedTrans,
+          }
+          this.$emit('choonsenTrans', borrowedTranData)
+          this.$root.$emit('bv::hide::modal', 'output-borrowed-modal')
+        },
+      })
+    },
+    onPaginationChange() {
+      this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
     },
   },
 }

@@ -6,7 +6,6 @@
     <!-- START - Form Container -->
     <validation-observer
       ref="formContainer"
-      v-slot="{invalid}"
       slim
     >
       <!-- START - Form and list -->
@@ -81,7 +80,6 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  rules="code|required"
                   name="số hóa đơn"
                 >
                   <div class="mt-1">
@@ -123,7 +121,6 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  rules="code|required"
                   name="số nội bộ"
                 >
                   <div class="mt-1">
@@ -149,7 +146,7 @@
                   <b-form-input
                     v-model="warehousesOutput.poNumber"
                     trim
-                    :state="warehousesOutput.outputTypeSelected === '0' && touched ? passed : null"
+                    :state="warehousesOutput.outputTypeSelected === poOutputType && touched ? passed : null"
                   />
                   <b-input-group-append is-text>
                     <b-icon-three-dots-vertical
@@ -209,6 +206,7 @@
                 <b-form-checkbox
                   v-model="exportAll"
                   class="m-1"
+                  :disabled="warehousesOutput.outputTypeSelected !== poOutputType"
                 >
                   Trả nguyên đơn
                 </b-form-checkbox>
@@ -224,7 +222,7 @@
                   <b-form-input
                     v-model="products[props.row.originalIndex].productReturnAmount"
                     maxlength="19"
-                    :readonly="exportAll && warehousesOutput.outputTypeSelected !== '0'"
+                    :readonly="exportAll && warehousesOutput.outputTypeSelected !== poOutputType"
                     @keypress="$onlyNumberInput"
                   />
                 </div>
@@ -243,7 +241,6 @@
                 <b-button
                   variant="someThing"
                   class="btn-brand-1 rounded text-uppercase aligns-items-button-center"
-                  :disabled="invalid"
                   @click="createExport"
                 >
                   <b-icon-download
@@ -276,21 +273,35 @@
     <!-- END - Form Container -->
     <!-- START - Modal -->
     <adjustment-modal
-      :visible="visibleAdjustmentModal"
-      @onModalHidden="visibleAdjustmentModal = false"
       @choonsenTrans="dataFromAdjustment($event)"
     />
     <borrowed-modal
-      :visible="visibleBorrowedModal"
-      @onModalHidden="visibleBorrowedModal = false"
       @choonsenTrans="dataFromBorrow($event)"
     />
     <output-modal
-      :visible="visibleOutputModal"
-      @onModalHidden="visibleOutputModal = false"
       @choonsenTrans="dataFromPo($event)"
     />
     <!-- END - Modal -->
+
+    <!-- START - Notify Modal Close -->
+    <b-modal
+      ref="salesNotifyModal"
+      title="Thông báo"
+    >
+      Dữ liệu đang được tạo, bạn có muốn đóng
+      <template #modal-footer>
+        <b-button
+          variant="primary"
+          @click="onClickAgreeButton()"
+        >
+          Đồng ý
+        </b-button>
+        <b-button @click="closeNotifyModal">
+          Huỷ bỏ
+        </b-button>
+      </template>
+    </b-modal>
+    <!-- END - Notify Modal Close -->
   </b-container>
 </template>
 
@@ -309,7 +320,7 @@ import {
   code,
   required,
 } from '@/@core/utils/validations/validations'
-// import { formatISOtoVNI } from '@/@core/utils/filter'
+import { formatVniDateToISO } from '@/@core/utils/filter'
 import { getNow } from '@core/utils/utils'
 import OutputModal from '../components/output-modal/OutputModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
@@ -345,15 +356,13 @@ export default {
       required,
 
       outputTypesOptions: warehousesData.outputTypes,
-      visibleAdjustmentModal: false,
-      visibleBorrowedModal: false,
-      visibleOutputModal: false,
       exportAll: false,
 
       output: {
         id: '',
         transCode: '',
       },
+      poOutputType: warehousesData.outputTypes[0].id,
       warehousesOutput: {
         id: null,
         outputTypeSelected: warehousesData.outputTypes[0].id,
@@ -423,25 +432,8 @@ export default {
 
   computed: {
     ...mapGetters(WAREHOUSES_OUTPUT, [
-      // GET_EXPORT_PO_TRANS_DETAIL_GETTER,
-      // GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
-      // GET_EXPORT_BORROWINGS_DETAIL_GETTER,
       GET_WAREHOUSE_TYPE_GETTER,
     ]),
-
-    // poProducts() {
-    //   switch (this.outputTypeSelected) {
-    //     case '0': // Xuất trả PO
-    //       return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER.info
-    //     case '1': // Xuất điều chỉnh
-    //       return this.GET_EXPORT_AJUSTMENTS_DETAIL_GETTER.response
-    //     case '2': // Xuất vay mượn
-    //       return this.GET_EXPORT_BORROWINGS_DETAIL_GETTER.response
-    //     default:
-    //       break
-    //   }
-    //   return []
-    // },
     getWareHouseType() {
       return this.GET_WAREHOUSE_TYPE_GETTER
     },
@@ -458,21 +450,22 @@ export default {
       this.note = ''
       this.products = []
     },
-    // exportAll() {
-    //   if (this.exportAll) {
-    //     this.poProducts.forEach((item, index) => {
-    //       this.products[index].quantity = item.amountQuantity
-    //     })
-    //   } else {
-    //     this.poProducts.forEach((item, index) => {
-    //       this.products[index].quantity = 0
-    //     })
-    //   }
-    // },
+    exportAll() {
+      if (this.exportAll) {
+        this.products.forEach((item, index) => {
+          this.products[index].productReturnAmount = item.productReturnAmountOriginal
+        })
+      } else {
+        this.products.forEach((item, index) => {
+          this.products[index].productReturnAmount = 0
+        })
+      }
+    },
   },
 
   mounted() {
     this.GET_WAREHOUSE_TYPE_ACTION({ ...this.decentralization })
+    console.log(Number(warehousesData.warehousesType[1].id))
   },
 
   methods: {
@@ -487,56 +480,81 @@ export default {
     showModal() {
       this.CLEAR_EXPORT_PRODUCTS_MUTATION()
       switch (this.warehousesOutput.outputTypeSelected) {
-        case '0':
-          this.visibleOutputModal = true
+        case warehousesData.outputTypes[0].id:
+          this.$root.$emit('bv::toggle::modal', 'output-modal')
           break
-        case '1':
-          this.visibleAdjustmentModal = true
+        case warehousesData.outputTypes[1].id:
+          this.$root.$emit('bv::toggle::modal', 'output-adjustment-modal')
           break
-        case '2':
-          this.visibleBorrowedModal = true
+        case warehousesData.outputTypes[2].id:
+          this.$root.$emit('bv::toggle::modal', 'output-borrowed-modal')
           break
         default:
           break
       }
     },
-    navigateBack() {
-      this.$router.back()
-    },
     dataFromPo(data) {
+      this.warehousesOutput.id = data.tranInfo.id
       this.warehousesOutput.redInvoiceNo = data.tranInfo.redInvoiceNo
       this.warehousesOutput.transDate = data.tranInfo.transDate
       this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
       this.warehousesOutput.poNumber = data.tranInfo.poNumber
       this.products = data.products
+      this.exportAll = false
     },
     dataFromBorrow(data) {
-      this.warehousesOutput.redInvoiceNo = data.tranInfo.redInvoiceNo
-      this.warehousesOutput.transDate = data.tranInfo.transDate
-      this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
-      this.warehousesOutput.poNumber = data.tranInfo.poNumber
+      this.warehousesOutput.id = data.tranInfo.id
+      this.warehousesOutput.transDate = data.tranInfo.borrowDate
+      this.warehousesOutput.note = data.tranInfo.note
       this.products = data.products
+      this.exportAll = true
+
+      // clear data
+      this.warehousesOutput.redInvoiceNo = ''
+      this.warehousesOutput.internalNumber = ''
+      this.warehousesOutput.poNumber = ''
+      this.warehousesOutput.code = ''
     },
     dataFromAdjustment(data) {
-      this.warehousesOutput.redInvoiceNo = data.tranInfo.redInvoiceNo
-      this.warehousesOutput.transDate = data.tranInfo.transDate
-      this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
-      this.warehousesOutput.poNumber = data.tranInfo.poNumber
+      this.warehousesOutput.id = data.tranInfo.id
+      this.warehousesOutput.transDate = data.tranInfo.adjustmentDate
+      this.warehousesOutput.note = data.tranInfo.description
       this.products = data.products
+      this.exportAll = true
+
+      // clear data
+      this.warehousesOutput.redInvoiceNo = ''
+      this.warehousesOutput.internalNumber = ''
+      this.warehousesOutput.poNumber = ''
+      this.warehousesOutput.code = ''
     },
     createExport() {
       this.CREATE_EXPORT_ACTION(
         {
-          importType: this.outputTypeSelected.outputTypeSelected,
+          importType: this.warehousesOutput.outputTypeSelected,
           isRemainAll: this.exportAll,
-          receiptImportId: this.output.id,
+          poNumber: this.warehousesOutput.poNumber,
+          internalNumber: this.warehousesOutput.internalNumber,
+          redInvoiceNo: this.warehousesOutput.redInvoiceNo,
+          transDate: formatVniDateToISO(this.warehousesOutput.transDate),
+          receiptImportId: this.warehousesOutput.id,
+          type: Number(warehousesData.warehousesType[1].id), // hard code biểu thị tạo mới là phiếu xuất
           note: this.note,
           litQuantityRemain: this.products.map(item => ({
             id: item.id,
-            // quantity: this.outputTypeSelected === '0' ? this.products[index].quantity : item.amountQuantity,
+            quantity: item.productReturnAmount,
           })),
         },
       )
+    },
+    navigateBack() {
+      this.$refs.salesNotifyModal.show()
+    },
+    onClickAgreeButton() {
+      this.$router.back()
+    },
+    closeNotifyModal() {
+      this.$refs.salesNotifyModal.hide()
     },
   },
 }

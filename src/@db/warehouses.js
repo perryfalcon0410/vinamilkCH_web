@@ -22,4 +22,8 @@ export default {
     { id: '1', label: 'Nhập chuyển đổi' },
     { id: '2', label: 'Xuất chuyển đổi' },
   ],
+  warehousesType: [
+    { id: '1', label: 'Nhập hàng' },
+    { id: '2', label: 'Xuất hàng' },
+  ],
 }
