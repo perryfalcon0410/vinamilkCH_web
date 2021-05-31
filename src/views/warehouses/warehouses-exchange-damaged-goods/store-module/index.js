@@ -154,7 +154,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.products = res.data.content || []
+            state.products = res.data || []
           } else {
             throw new Error(res.statusValue)
           }

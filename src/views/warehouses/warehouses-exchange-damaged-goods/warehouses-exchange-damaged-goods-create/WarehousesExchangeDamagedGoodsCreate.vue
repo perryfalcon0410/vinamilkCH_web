@@ -54,8 +54,14 @@
               maxlength="40"
               :state="touched ? passed : null"
               @focus="focusCustomer"
-              @blur="isFocusedInputCustomer = false"
               @input="customerOptions"
+            />
+            <b-icon-x
+              v-show="customerInfo.customerName"
+              style="position: absolute; top: 147px; right: 45px"
+              class="cursor-pointer text-gray"
+              scale="1.3"
+              @click="clearCustomer"
             />
             <small class="text-danger">{{ errors[0] }}</small>
             <!-- START - Popup customers -->
@@ -254,14 +260,25 @@
                 cols="5"
                 class="my-1"
               >
-                <b-form-input
-                  v-model.trim="productInfos.productName"
-                  placeholder="Nhập mã hoặc tên sản phẩm"
-                  @focus="focusProduct"
-                  @input="loadProducts"
-                  @blur="isFocusedInputProduct = false"
-                  @keyup="loadProducts"
-                />
+                <b-row
+                  class="mx-2"
+                  align-v="center"
+                >
+                  <b-form-input
+                    v-model.trim="productInfos.productName"
+                    placeholder="Nhập mã hoặc tên sản phẩm"
+                    @focus="focusProduct"
+                    @input="loadProducts"
+                    @keyup="loadProducts"
+                  />
+                  <b-icon-x
+                    v-show="productInfos.productName"
+                    style="position: absolute; right: 40px"
+                    class="cursor-pointer text-gray"
+                    scale="1.3"
+                    @click="clearProduct"
+                  />
+                </b-row>
                 <!-- START - Product Popup -->
                 <b-collapse
                   v-model.trim="isFocusedInputProduct"
@@ -269,9 +286,11 @@
                   style="zIndex:1"
                 >
                   <b-container
-                    class="my-1 px-1 bg-white rounded border border-primary shadow-lg"
+                    class="my-1 px-1 bg-white rounded border border-primary shadow-lg overflow-auto"
                   >
-                    <b-col class="col-xs-3">
+                    <b-col
+                      class="col-xs-3"
+                    >
                       <b-row
                         v-for="(product, index) in products"
                         :key="index"
@@ -659,6 +678,7 @@ export default {
       this.customerInfo.customerName = customer.customerName
       this.customerInfo.customerAddress = customer.address
       this.customerInfo.customerPhone = customer.mobilePhone
+      this.isFocusedInputCustomer = false
     },
 
     loadProducts() {
@@ -677,7 +697,7 @@ export default {
     },
 
     selectProduct(product) {
-      this.productInfos.productName = null
+      this.productInfos.productName = ''
       const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.productCode)
       if (this.damagedProduct) {
         const obj = {
@@ -697,6 +717,7 @@ export default {
           this.damagedProduct[existedProductIndex].productQuantity = Number(this.damagedProduct[existedProductIndex].productQuantity) + obj.productQuantity
           this.damagedProduct[existedProductIndex].productPriceTotal = Number(obj.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
         }
+        this.isFocusedInputProduct = false
       }
     },
 
@@ -717,6 +738,16 @@ export default {
       if (this.productInfos.productName) {
         this.isFocusedInputProduct = this.productInfos.productName.length >= commonData.minSearchLength
       }
+    },
+
+    clearCustomer() {
+      this.customerInfo.customerName = ''
+      this.isFocusedInputCustomer = false
+    },
+
+    clearProduct() {
+      this.productInfos.productName = ''
+      this.isFocusedInputProduct = false
     },
 
     onClickDeleteButton(index) {

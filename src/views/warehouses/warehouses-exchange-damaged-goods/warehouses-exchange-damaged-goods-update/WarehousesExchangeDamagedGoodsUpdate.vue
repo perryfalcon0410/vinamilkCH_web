@@ -54,8 +54,14 @@
               maxlength="40"
               :state="touched ? passed : null"
               @focus="focusCustomer"
-              @blur="isFocusedInputCustomer = false"
               @input="customerOptions"
+            />
+            <b-icon-x
+              v-show="customerInfo.customerName"
+              style="position: absolute; top: 147px; right: 45px"
+              class="cursor-pointer text-gray"
+              scale="1.3"
+              @click="clearCustomer"
             />
             <small class="text-danger">{{ errors[0] }}</small>
             <!-- START - Popup customers -->
@@ -254,14 +260,24 @@
                 cols="5"
                 class="my-1"
               >
-                <b-form-input
-                  v-model.trim="productInfos.productName"
-                  placeholder="Nhập mã hoặc tên sản phẩm"
-                  @focus="focusProduct"
-                  @input="loadProducts"
-                  @blur="isFocusedInputProduct = false"
-                  @keyup="loadProducts"
-                />
+                <b-row
+                  class="mx-2"
+                  align-v="center"
+                >
+                  <b-form-input
+                    v-model.trim="productInfos.productName"
+                    placeholder="Nhập mã hoặc tên sản phẩm"
+                    @focus="focusProduct"
+                    @input="loadProducts"
+                    @keyup="loadProducts"
+                  />  <b-icon-x
+                    v-show="productInfos.productName"
+                    style="position: absolute; right: 40px"
+                    class="cursor-pointer text-gray"
+                    scale="1.3"
+                    @click="clearProduct"
+                  />
+                </b-row>
                 <!-- START - Product Popup -->
                 <b-collapse
                   v-model.trim="isFocusedInputProduct"
@@ -608,7 +624,6 @@ export default {
   mounted() {
     this.GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION({ ...this.decentralization })
     this.GET_EXCHANGE_DAMAGED_GOODS_BY_ID_ACTION(`${this.exchangeDamagedGoodsId}`)
-    this.customerOptions()
   },
 
   // before page leave this will check input
@@ -650,7 +665,7 @@ export default {
         this.exchangeGoodsInfo.quantity = this.exchangeDamagedGoods.quantity
         this.exchangeGoodsInfo.totalAmount = this.exchangeDamagedGoods.totalAmount
         this.damagedProduct = [...this.exchangeDamagedGoods.listProducts]
-        this.customerOptions()
+        // this.customerOptions()
         // END - Exchange Damaged Goods
       }
     },
@@ -699,6 +714,7 @@ export default {
       this.customerInfo.customerName = customer.customerName
       this.customerInfo.customerAddress = customer.address
       this.customerInfo.customerPhone = customer.mobilePhone
+      this.isFocusedInputCustomer = false
     },
 
     loadProducts() {
@@ -717,7 +733,7 @@ export default {
     },
 
     selectProduct(product) {
-      this.productInfos.productName = null
+      this.productInfos.productName = ''
       const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.productCode)
       if (this.damagedProduct) {
         const obj = {
@@ -737,6 +753,7 @@ export default {
           this.damagedProduct[existedProductIndex].quantity = Number(this.damagedProduct[existedProductIndex].quantity) + obj.quantity
           this.damagedProduct[existedProductIndex].totalPrice = Number(obj.price) * this.damagedProduct[existedProductIndex].quantity
         }
+        this.isFocusedInputProduct = false
       }
     },
 
@@ -757,6 +774,16 @@ export default {
       if (this.productInfos.productName) {
         this.isFocusedInputProduct = this.productInfos.productName.length >= commonData.minSearchLength
       }
+    },
+
+    clearCustomer() {
+      this.customerInfo.customerName = ''
+      this.isFocusedInputCustomer = false
+    },
+
+    clearProduct() {
+      this.productInfos.productName = ''
+      this.isFocusedInputProduct = false
     },
 
     onClickDeleteButton(index) {
@@ -782,6 +809,8 @@ export default {
     },
 
     checkDuplicatesName() {
+      console.log(this.customerInfo.customerName.toLowerCase())
+      console.log(this.customers.findIndex(x => x.customerName === this.customerInfo.customerName.toLowerCase()))
       return this.customers.findIndex(x => x.customerName.toLowerCase() === this.customerInfo.customerName.toLowerCase())
     },
 
