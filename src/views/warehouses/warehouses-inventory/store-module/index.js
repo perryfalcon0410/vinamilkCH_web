@@ -105,7 +105,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.warehouseInventoryStocks = res.data.response.content
+            state.warehouseInventoryStocks = res.data
             state.warehouseInventoryStatusCode = res.statusCode
           } else {
             throw new Error(res.statusValue)

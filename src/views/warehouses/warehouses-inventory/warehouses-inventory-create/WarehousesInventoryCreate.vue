@@ -25,7 +25,7 @@
               v-model="stockCountingCode"
               class="h9"
               size="sm"
-              maxlength="20"
+              maxlength="40"
               trim
               disabled
             />
@@ -143,15 +143,23 @@
       >
         <!-- START - Table -->
         <vue-good-table
+          mode="remote"
           :columns="columns"
           :rows="products"
-          style-class="vgt-table striped"
+          style-class="vgt-table bordered"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: elementSize,
+            setCurrentPage: pageNumber,
           }"
           compact-mode
           line-numbers
+          :total-rows="warehouseInventoryPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+          }"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           <div
             slot="emptystate"
@@ -175,7 +183,7 @@
                 class="h8 text-brand-3"
                 maxlength="200"
                 placeholder="Nhập mã hoặc tên sản phẩm"
-                @keyup.enter="onClickSearchButton()"
+                @keydown.enter.prevent="onClickSearchButton()"
               />
             </b-row>
             <b-row
@@ -243,7 +251,7 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
                   v-model="elementSize"
@@ -252,13 +260,11 @@
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                > trong {{ productsQuantity }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="productsQuantity"
+                :total-rows="warehouseInventoryPagination.totalElements"
                 :per-page="elementSize"
                 first-number
                 last-number
@@ -573,7 +579,12 @@ export default {
       elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
       paginationOptions: commonData.perPageSizes,
-      paginationData: { isPaging: true },
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+        isPaging: true,
+      },
       inventoryCode: '',
       countingDate: formatDateToLocale(new Date()),
       warehouseType: null,
@@ -697,7 +708,6 @@ export default {
       ],
       products: [],
       originalProducts: [],
-      productsQuantity: 0,
       instockAmount: 0,
       totalPrice: 0,
       inventoryPacket: 0,
@@ -715,15 +725,19 @@ export default {
   },
 
   computed: {
+    ...mapGetters(WAREHOUSEINVENTORY, [
+      WAREHOUSE_TYPES_GETTER,
+      WAREHOUSE_INVENTORY_STOCKS_GETTER,
+      IS_EXISTED_WAREHOUSE_INVENTORY_GETTER,
+      WAREHOUSE_INVENTORY_DATA_GETTER,
+      WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
+    ]),
     warehouseTypes() {
-      return this.WAREHOUSE_TYPES_GETTER().map(data => ({
+      return this.WAREHOUSE_TYPES_GETTER.map(data => ({
         id: data.id,
         label: data.wareHouseTypeName,
         isDefault: data.isDefault,
       }))
-    },
-    getProductsQuantity() {
-      return this.products.length
     },
     getInstockAmount() {
       return this.products.reduce((accum, item) => accum + Number(item.instockAmount), 0)
@@ -744,34 +758,53 @@ export default {
       return this.products.reduce((accum, item) => accum + Number(item.unequal), 0)
     },
     isExistedWarehouseInventory() {
-      return this.IS_EXISTED_WAREHOUSE_INVENTORY_GETTER()
+      return this.IS_EXISTED_WAREHOUSE_INVENTORY_GETTER
     },
     getWarehouseInventoryData() {
-      return this.WAREHOUSE_INVENTORY_DATA_GETTER()
+      return this.WAREHOUSE_INVENTORY_DATA_GETTER
     },
     getWarehouseInventoryImportData() {
-      return this.WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER()
+      return this.WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER
+    },
+    getWarehouseInventoryStocks() {
+      if (this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response) {
+        return this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response.content.map(data => ({
+          category: data.productCategory,
+          productId: data.productId,
+          productCode: data.productCode,
+          productName: data.productName,
+          instockAmount: data.stockQuantity,
+          price: data.price,
+          totalPrice: data.totalAmount,
+          inventoryPacket: null,
+          inventoryOdd: null,
+          inventoryTotal: 0,
+          unequal: data.changeQuantity,
+          packetUnit: data.packetUnit,
+          exchange: data.convfact,
+          oddUnit: data.unit,
+        }))
+      }
+      return []
+    },
+    warehouseInventoryPagination() {
+      if (this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response) {
+        return this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response
+      }
+      return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehouseInventoryPagination.totalElements
+        ? this.warehouseInventoryPagination.totalElements : (this.elementSize * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.warehouseInventoryPagination.totalElements} mục`
     },
   },
 
   watch: {
-    pageNumber() {
-      this.paginationData.page = this.pageNumber - 1
-      this.onPaginationChange()
-    },
-    elementSize() {
-      this.paginationData.size = this.elementSize
-      this.onPaginationChange()
-    },
-    paginationData() {
-      this.pageNumber = 1
-      this.onPaginationChange()
-    },
     warehouseTypes() {
       this.warehouseType = this.warehouseTypes.find(types => types.isDefault === 1).id // number 1 is default warehouse type
-    },
-    getProductsQuantity() {
-      this.productsQuantity = this.getProductsQuantity
     },
     getInstockAmount() {
       this.instockAmount = this.getInstockAmount
@@ -808,6 +841,10 @@ export default {
         this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryOdd = productData.unitQuantity
       })
     },
+    getWarehouseInventoryStocks() {
+      this.products = [...this.getWarehouseInventoryStocks]
+      this.originalProducts = this.products
+    },
   },
 
   mounted() {
@@ -827,15 +864,19 @@ export default {
       GET_SAMPLE_IMPORT_FILE_ACTION,
       GET_FAILED_IMPORT_FILE_ACTION,
     ]),
-    ...mapGetters(WAREHOUSEINVENTORY, [
-      WAREHOUSE_TYPES_GETTER,
-      WAREHOUSE_INVENTORY_STOCKS_GETTER,
-      IS_EXISTED_WAREHOUSE_INVENTORY_GETTER,
-      WAREHOUSE_INVENTORY_DATA_GETTER,
-      WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
-    ]),
     onPaginationChange() {
-      this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION(this.paginationData)
+      this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION({ ...this.paginationData })
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
     },
     onClickCloseButton() {
       if (!this.isCreated) {
@@ -845,23 +886,25 @@ export default {
       }
     },
     onClickGetInventoryStocksButton() {
-      this.products = this.WAREHOUSE_INVENTORY_STOCKS_GETTER().map(data => ({
-        category: data.productCategory,
-        productId: data.productId,
-        productCode: data.productCode,
-        productName: data.productName,
-        instockAmount: data.stockQuantity,
-        price: data.price,
-        totalPrice: data.totalAmount,
-        inventoryPacket: null,
-        inventoryOdd: null,
-        inventoryTotal: 0,
-        unequal: data.changeQuantity,
-        packetUnit: data.packetUnit,
-        exchange: data.convfact,
-        oddUnit: data.unit,
-      }))
-      this.originalProducts = this.products
+      if (this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response) {
+        this.products = this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response.content.map(data => ({
+          category: data.productCategory,
+          productId: data.productId,
+          productCode: data.productCode,
+          productName: data.productName,
+          instockAmount: data.stockQuantity,
+          price: data.price,
+          totalPrice: data.totalAmount,
+          inventoryPacket: null,
+          inventoryOdd: null,
+          inventoryTotal: 0,
+          unequal: data.changeQuantity,
+          packetUnit: data.packetUnit,
+          exchange: data.convfact,
+          oddUnit: data.unit,
+        }))
+        this.originalProducts = this.products
+      }
     },
     updateInventoryTotal(index) {
       this.products[index].inventoryTotal = this.products[index].inventoryPacket * this.products[index].exchange + this.products[index].inventoryOdd

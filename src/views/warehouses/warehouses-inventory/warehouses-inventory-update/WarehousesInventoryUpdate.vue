@@ -25,7 +25,7 @@
               v-model="countingCode"
               class="h9"
               size="sm"
-              maxlength="20"
+              maxlength="40"
               trim
               disabled
             />
@@ -132,7 +132,7 @@
                 class="h8 text-brand-3"
                 maxlength="200"
                 placeholder="Nhập mã hoặc tên sản phẩm"
-                @keyup.enter="onClickSearchButton()"
+                @keydown.enter.prevent="onClickSearchButton()"
               />
             </b-row>
             <b-row
