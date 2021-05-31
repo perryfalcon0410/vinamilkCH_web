@@ -41,6 +41,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
+// eslint-disable-next-line no-unused-vars
 import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
@@ -104,15 +105,15 @@ export default {
       if (this.reasonSelected) {
         this.UPDATE_NOT_IMPORT_ACTION({
           id: this.reasonSelected,
-          reasonId: this.reasonSelected,
-          formId: this.formId, // hard code
-          ctrlId: this.ctrlId, // hard code
-        })
-        this.GET_POCONFIRMS_ACTION({
+          reasonDeny: this.reasonSelected,
           formId: this.formId, // hard code
           ctrlId: this.ctrlId, // hard code
         })
         this.$emit('close')
+        this.GET_POCONFIRMS_ACTION({
+          formId: this.formId, // hard code
+          ctrlId: this.ctrlId, // hard code
+        })
       } else {
         toasts.error('Cần chọn tối thiểu 1 lý do')
       }

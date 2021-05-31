@@ -200,7 +200,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.importAdjustments = res.data
+            state.importAdjustments = res.data.content
           } else {
             throw new Error(res.statusValue)
           }
@@ -215,8 +215,8 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.importAdjustmentsDetail = res.data.response
-            state.importAdjustmentsDetailInfo = res.data.info
+            state.importAdjustmentsDetail = res.data.response || []
+            state.importAdjustmentsDetailInfo = res.data.info || {}
           } else {
             throw new Error(res.statusValue)
           }
@@ -231,7 +231,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.importBorrowings = res.data
+            state.importBorrowings = res.data.content || []
           } else {
             throw new Error(res.statusValue)
           }
@@ -246,8 +246,8 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.importBorrowingsDetail = res.data.response
-            state.importBorrowingsDetailInfo = res.data.info
+            state.importBorrowingsDetail = res.data.response || []
+            state.importBorrowingsDetailInfo = res.data.info || {}
           } else {
             throw new Error(res.statusValue)
           }

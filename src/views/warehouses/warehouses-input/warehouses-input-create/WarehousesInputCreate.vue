@@ -296,7 +296,7 @@
                     class="mx-0"
                     align-h="center"
                   >
-                    {{ poPromotionProductsInfo.totalQuantity || 0 }}
+                    {{ $formatNumberToLocale(poPromotionProductsInfo.totalQuantity) || 0 }}
                   </b-row>
 
                   <b-row
@@ -344,9 +344,9 @@
                   <span v-if="props.column.field === 'quantity'">
                     <b-form-input
                       v-model.number="rowsProductPromotion[props.index].quantity"
-                      type="number"
                       :state="isPositive(rowsProductPromotion[props.index].quantity)"
-                      min="0"
+                      maxlength="17"
+                      @keypress="$onlyNumberInput"
                     />
                   </span>
                   <span v-if="props.column.field === 'price'">
@@ -497,6 +497,7 @@ import {
 import { mapGetters, mapActions } from 'vuex'
 import { getNow } from '@core/utils/utils'
 import commonData from '@/@db/common'
+// eslint-disable-next-line no-unused-vars
 import toasts from '@core/utils/toasts/toasts'
 import warehousesData from '@/@db/warehouses'
 import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
@@ -848,7 +849,11 @@ export default {
       this.poAdjustInfo = {}
       this.poPromotionProducts = []
       this.poBorrowingInfo = {}
+      this.status = null
+      this.note = ''
+      this.poId = null
       if (this.inputTypeSelected === '0') {
+        this.billDate = this.$nowDate
         this.isShowPoPromoManualTable = true
       } else {
         this.isShowPoPromoTable = false
@@ -971,6 +976,7 @@ export default {
       }
     },
     create() {
+      console.log('status', this.status)
       if (this.promotionRow.length === 0) {
         const obj = {
           importType: this.status,
@@ -981,10 +987,19 @@ export default {
           poId: this.poId,
           note: this.note,
         }
-        if (obj.poId !== null) {
+        console.log(obj)
+        if (obj.poId !== null && this.status !== 0) {
           this.CREATE_SALE_IMPORT_ACTION(obj)
         } else {
-          toasts.error('Cần có tối thiểu 1 sản phẩm khuyến mãi')
+          toasts.error('Cần chọn ít nhất 1 sản phẩm khuyến mãi')
+        }
+        // if import type = choose poConfirm -> check redInvoice
+        if (this.status === 0) {
+          this.$refs.formContainer.validate().then(success => {
+            if (success) {
+              this.CREATE_SALE_IMPORT_ACTION(obj)
+            }
+          })
         }
       } else {
         this.$refs.formContainer.validate().then(success => {
@@ -1046,6 +1061,8 @@ export default {
         }
         if (index === -1) {
           this.rowsProductPromotion.push(obj)
+        } else {
+          this.rowsProductPromotion[index].quantity += 1
         }
       }
       this.isFocusedInputProduct = false

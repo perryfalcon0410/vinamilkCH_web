@@ -121,7 +121,7 @@
                 <span v-if="props.column.field === 'numProduct'">
                   <b-form-input
                     v-model.number="comboListRows[props.index].numProduct"
-                    maxlength="10"
+                    maxlength="7"
                     :state="isPricePositive(comboListRows[props.index].numProduct,props.index)"
                     @change="onChangeQuantity(props.row.originalIndex)"
                     @keypress="$onlyNumberInput"
@@ -131,7 +131,7 @@
                   <b-form-input
                     v-model.number="comboListRows[props.index].price"
                     :state="isPositive(comboListRows[props.index].price,props.index)"
-                    maxlength="10"
+                    maxlength="12"
                     @keypress="$onlyNumberInput"
                   />
                 </span>

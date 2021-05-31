@@ -46,7 +46,7 @@
 
             <!-- START - List -->
             <b-row
-              v-for="(item, index) in importAdjustments"
+              v-for="(item, index) in importAdjustmentsList"
               :key="item.id"
               class="border-bottom border-white bg-light py-1 cursor-pointer"
               :class="{ 'text-brand-1': current == item.id }"
@@ -84,7 +84,7 @@
           >
             <vue-good-table
               :columns="columns"
-              :rows="importAdjustmentsDetail"
+              :rows="importAdjustmentsDetails"
               style-class="vgt-table bordered"
               compact-mode
               line-numbers
@@ -141,8 +141,6 @@ import {
 } from 'vuex'
 import { formatISOtoVNI } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
-// eslint-disable-next-line no-unused-vars
-import commonData from '@/@db/common'
 import {
   WAREHOUSEINPUT,
   // GETTER
@@ -221,7 +219,7 @@ export default {
     }
   },
   computed: {
-    importAdjustments() {
+    importAdjustmentsList() {
       return this.IMPORT_ADJUSTMENTS_GETTER().map(data => ({
         id: data.id,
         adjustmentCode: data.adjustmentCode,
@@ -230,24 +228,24 @@ export default {
       }))
     },
     firstPo() {
-      if (this.importAdjustments.length > 0) {
+      if (this.importAdjustmentsList.length > 0) {
         const obj = {
-          id: this.importAdjustments[0].id,
-          sysDate: this.importAdjustments[0].adjustmentDate,
-          description: this.importAdjustments[0].description,
+          id: this.importAdjustmentsList[0].id,
+          sysDate: this.importAdjustmentsList[0].adjustmentDate,
+          description: this.importAdjustmentsList[0].description,
         }
         return obj
       }
       return null
     },
 
-    importAdjustmentsDetail() {
+    importAdjustmentsDetails() {
       return this.IMPORT_ADJUSTMENTS_DETAIL_GETTER().map(data => ({
         licenseNumber: data.licenseNumber,
         productCode: data.productCode,
         productName: data.productName,
         price: this.$formatNumberToLocale(data.price),
-        adjustQuantity: data.quantity,
+        adjustQuantity: this.$formatNumberToLocale(data.quantity),
         totalPrice: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
@@ -256,12 +254,12 @@ export default {
     },
   },
   watch: {
-    importAdjustments() {
-      if (this.importAdjustments.length > 0) {
+    importAdjustmentsList() {
+      if (this.importAdjustmentsList.length > 0) {
         this.selectOrder(this.firstPo.id, this.firstPo.sysDate, this.firstPo.description)
       } else {
         // will clear grid view if the last po been imported
-        this.importAdjustmentsDetail = []
+        this.importAdjustmentsDetails = []
       }
     },
   },
@@ -288,8 +286,8 @@ export default {
       this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId }) // hard code
     },
     inputAdjustmentConfirm() {
-      if (this.importAdjustments.length > 0) {
-        this.$emit('inputAdjustChange', [this.sysDate, this.importAdjustmentsDetail, this.importAdjustmentInfo, this.current, this.note])
+      if (this.importAdjustmentsList.length > 0) {
+        this.$emit('inputAdjustChange', [this.sysDate, this.importAdjustmentsDetails, this.importAdjustmentInfo, this.current, this.note])
         this.$emit('close')
       } else {
         toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')

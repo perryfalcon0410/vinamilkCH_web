@@ -957,7 +957,11 @@ export default {
       const data = new FormData()
       data.append('name', this.importFile.name)
       data.append('file', this.importFile)
-      this.IMPORT_FILLED_STOCKS_ACTION(data)
+      if (this.importFile.type.search(/sheet/g) !== -1) {
+        this.IMPORT_FILLED_STOCKS_ACTION(data)
+      } else {
+        toasts.error('Dữ liệu nhập sai định dạng')
+      }
     },
     onClickDownloadSampleFile() {
       this.GET_SAMPLE_IMPORT_FILE_ACTION({
