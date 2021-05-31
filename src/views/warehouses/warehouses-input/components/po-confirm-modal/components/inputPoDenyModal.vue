@@ -104,7 +104,7 @@ export default {
     denyImport() {
       if (this.reasonSelected) {
         this.UPDATE_NOT_IMPORT_ACTION({
-          id: this.reasonSelected,
+          id: this.id,
           reasonDeny: this.reasonSelected,
           formId: this.formId, // hard code
           ctrlId: this.ctrlId, // hard code

@@ -211,7 +211,7 @@
 
             <vue-good-table
               :columns="columns"
-              :rows="rows"
+              :rows="rowsProduct"
               style-class="vgt-table striped"
               compact-mode
               line-numbers
@@ -227,33 +227,13 @@
                   class="mx-0"
                   align-h="center"
                 >
-                  {{ poProductInfo.totalQuantity }}
+                  {{ $formatNumberToLocale(poProductInfo.totalQuantity) ||
+                    $formatNumberToLocale(poAdjustInfo.totalQuantity) ||
+                    $formatNumberToLocale(poBorrowingInfo.totalQuantity)
+                  }}
                 </b-row>
-                <!--END - Choose import po product-->
-
-                <!--START - Choose import borrow product-->
                 <b-row
-                  v-if="props.column.field === 'borrowQuantity'"
-                  class="mx-0"
-                  align-h="center"
-                >
-                  {{ poBorrowingInfo.totalQuantity }}
-                </b-row>
-                <!--START - Choose import borrow product-->
-
-                <!--START - Choose import adjust product-->
-                <b-row
-                  v-if="props.column.field === 'adjustQuantity'"
-                  class="mx-0"
-                  align-h="center"
-                >
-                  {{ poAdjustInfo.totalQuantity }}
-                </b-row>
-                <!--START - Choose import adjust product-->
-
-                <!--START - Choose import adjust product-->
-                <b-row
-                  v-else-if="props.column.field === 'poImportTotalPrice'"
+                  v-else-if="props.column.field === 'totalPriceVat'"
                   class="mx-0"
                   align-h="end"
                 >
@@ -280,7 +260,7 @@
               </div>
               <!--if-PoConfirm-->
               <vue-good-table
-                :columns="poColumns"
+                :columns="poPromotionColumns"
                 :rows="rowsProductPromotionLoad"
                 style-class="vgt-table striped"
                 compact-mode
@@ -296,15 +276,15 @@
                     class="mx-0"
                     align-h="center"
                   >
-                    {{ $formatNumberToLocale(poPromotionProductsInfo.totalQuantity) || 0 }}
+                    {{ $formatNumberToLocale(poPromotionProductsInfo.totalQuantity) }}
                   </b-row>
 
                   <b-row
-                    v-else-if="props.column.field === 'poImportTotalPrice'"
+                    v-else-if="props.column.field === 'totalPrice'"
                     class="mx-0"
                     align-h="end"
                   >
-                    {{ $formatNumberToLocale(poPromotionProductsInfo.totalPrice) || 0 }}
+                    {{ $formatNumberToLocale(poPromotionProductsInfo.totalPrice) }}
                   </b-row>
 
                 </template>
@@ -334,6 +314,23 @@
                 compact-mode
                 line-numbers
               >
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'quantity'"
+                    class="mx-0"
+                    align-h="center"
+                  />
+
+                  <b-row
+                    v-else-if="props.column.field === 'totalPrice'"
+                    class="mx-0"
+                    align-h="end"
+                  />
+
+                </template>
                 <template
                   slot="table-row"
                   slot-scope="props"
@@ -566,7 +563,6 @@ export default {
       // --------------input type--------------
       status: null,
       columns: [],
-      rows: [],
       // --------------input type--------------
 
       // --------------Total-------------
@@ -593,6 +589,155 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Giá',
+          field: 'price',
+          type: 'number',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Tên hàng',
+          field: 'productName',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'ĐVT',
+          field: 'unit',
+          type: 'number',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Thành tiền',
+          field: 'totalPrice',
+          type: 'number',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'SO No',
+          field: 'SoNo',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: '',
+          field: 'function',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+      ],
+      rowsProduct: [],
+      poConfirmColumn: [
+        {
+          label: 'Mã hàng',
+          field: 'productCode',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Số lượng',
+          field: 'quantity',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Giá',
+          field: 'price',
+          type: 'number',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Tên hàng',
+          field: 'productName',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'ĐVT',
+          field: 'unit',
+          type: 'number',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Thành tiền (chưa Vat)',
+          field: 'totalPriceNotVat',
+          type: 'number',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Vat',
+          field: 'vat',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Thành tiền (Vat)',
+          field: 'totalPriceVat',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+
+        {
+          label: 'SO No',
+          field: 'soNo',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+      ],
+      rowsProductPromotion: [],
+      // -------------------------PoConfirm--------------------------
+      // --------------------------Adjust-Borrow-col-------------------
+      adjustBorrowColumns: [
+        {
+          label: 'Mã hàng',
+          field: 'productCode',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Số lượng',
+          field: 'quantity',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -634,187 +779,7 @@ export default {
           thClass: 'text-center',
           tdClass: 'text-center',
         },
-        {
-          label: '',
-          field: 'function',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
       ],
-      rowsProduct: [],
-      poColumns: [
-        {
-          label: 'Mã hàng',
-          field: 'productCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Số lượng',
-          field: 'quantity',
-          sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Giá',
-          field: 'price',
-          type: 'number',
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-        {
-          label: 'Tên hàng',
-          field: 'productName',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'ĐVT',
-          field: 'unit',
-          type: 'number',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Thành tiền',
-          field: 'poImportTotalPrice',
-          type: 'number',
-          sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-        {
-          label: 'SO No',
-          field: 'soNo',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-      ],
-      rowsProductPromotion: [],
-      // -------------------------PoConfirm--------------------------
-
-      // -------------------------InputAdjust--------------------------
-      adjustColumns: [
-        {
-          label: 'Số chứng từ',
-          field: 'licenseNumber',
-          sortable: false,
-          type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Mã sản phẩm',
-          field: 'productCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Tên sản phẩm',
-          field: 'productName',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Giá',
-          field: 'price',
-          sortable: false,
-          type: 'number',
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-        {
-          label: 'Số lượng',
-          field: 'adjustQuantity',
-          sortable: false,
-          type: 'number',
-          filterOptions: {
-            enabled: true,
-          },
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Thành tiền',
-          field: 'totalPrice',
-          sortable: false,
-          type: 'number',
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-      ],
-      adjustRows: [],
-      // -------------------------InputAdjust--------------------------
-
-      // -------------------------InputBorrow--------------------------
-      borrowColumns: [
-        {
-          label: 'Số chứng từ',
-          field: 'licenseNumber',
-          sortable: false,
-          type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Mã sản phẩm',
-          field: 'productCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Tên sản phẩm',
-          field: 'productName',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Giá',
-          field: 'price',
-          sortable: false,
-          type: 'number',
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-        {
-          label: 'Số lượng',
-          field: 'borrowQuantity',
-          sortable: false,
-          type: 'number',
-          filterOptions: {
-            enabled: true,
-          },
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Thành tiền',
-          field: 'totalPrice',
-          sortable: false,
-          type: 'number',
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-      ],
-      borrowRows: [],
-      // -------------------------InputAdjust--------------------------
     }
   },
   computed: {
@@ -843,7 +808,7 @@ export default {
     inputTypeSelected() {
       // rest all total row
       this.productSearch = null
-      this.rows = []
+      this.rowsProduct = []
       this.poProductInfo = {}
       this.poPromotionProductsInfo = {}
       this.poAdjustInfo = {}
@@ -853,16 +818,19 @@ export default {
       this.note = ''
       this.poId = null
       if (this.inputTypeSelected === '0') {
+        this.columns = this.poConfirmColumn
         this.billDate = this.$nowDate
         this.isShowPoPromoManualTable = true
       } else {
         this.isShowPoPromoTable = false
         this.isShowPoPromoManualTable = false
       }
+      if (this.inputTypeSelected !== '0') {
+        this.columns = this.adjustBorrowColumns
+      }
     },
   },
   mounted() {
-    this.columns = this.poColumns
     this.inputTypeSelected = this.inputTypeOptions[0].id
     this.GET_WAREHOUSES_TYPE_ACTION({
       formId: this.formId,
@@ -930,14 +898,13 @@ export default {
       } else {
         this.isShowPoPromoTable = false
       }
-      this.tableRender()
     },
     // ----------------------------Nhap hang-----------------------
 
     // -----------------------------Nhap dieu chinh------------------------
     dataFromInputAdjust(data) {
       const [sysDate, importAdjustsDetail, importAdjustInfo, id, description] = data
-      this.adjustRows = [...importAdjustsDetail]
+      this.rowsProduct = [...importAdjustsDetail]
       this.note = description
       this.status = 1 // inputTypeSelected
       this.poNo = null // poNumber
@@ -945,14 +912,13 @@ export default {
       this.internalNumber = null
       this.billDate = sysDate
       this.poAdjustInfo = { ...importAdjustInfo }
-      this.tableRender()
     },
     // -----------------------------Nhap dieu chinh------------------------
 
     // ------------------------------Nhap vay muon----------------------------
     dataFormInputBorrow(data) {
       const [sysDate, importBorrowsDetail, importBorrowInfo, id, description] = data
-      this.borrowRows = [...importBorrowsDetail]
+      this.rowsProduct = [...importBorrowsDetail]
       this.note = description
       this.billDate = sysDate
       this.status = 2
@@ -960,21 +926,8 @@ export default {
       this.internalNumber = null
       this.poId = id
       this.poBorrowingInfo = { ...importBorrowInfo }
-      this.tableRender()
     },
     // ------------------------------Nhap vay muon----------------------------
-    tableRender() {
-      if (this.status === 0) {
-        this.columns = this.poColumns
-        this.rows = this.rowsProduct
-      } else if (this.status === 1) {
-        this.columns = this.adjustColumns
-        this.rows = this.adjustRows
-      } else if (this.status === 2) {
-        this.columns = this.borrowColumns
-        this.rows = this.borrowRows
-      }
-    },
     create() {
       if (this.promotionRow.length === 0) {
         const obj = {

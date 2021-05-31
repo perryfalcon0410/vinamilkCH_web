@@ -111,7 +111,7 @@
                 {{ $formatNumberToLocale(poProductInfo.totalQuantity) }}
               </b-row>
               <b-row
-                v-if="props.column.field === 'poImportTotalPrice'"
+                v-if="props.column.field === 'totalPriceVat'"
                 class="mx-0"
                 align-h="end"
               >
@@ -147,6 +147,20 @@
               class="py-1"
             >
               <template
+                slot="table-column"
+                slot-scope="props"
+              >
+                <span v-if="props.column.label === 'Giá (VAT)'">
+                  Giá
+                </span>
+                <span v-else-if="props.column.label === 'Thành tiền (VAT)'">
+                  Thành tiền
+                </span>
+                <span v-else>
+                  {{ props.column.label }}
+                </span>
+              </template>
+              <template
                 slot="column-filter"
                 slot-scope="props"
               >
@@ -158,11 +172,11 @@
                   {{ poPromotionProductsInfo.totalQuantity }}
                 </b-row>
                 <b-row
-                  v-if="props.column.field === 'poImportTotalPrice'"
+                  v-if="props.column.field === 'totalPriceVat'"
                   class="mx-0"
                   align-h="end"
                 >
-                  {{ poPromotionProductsInfo.poImportTotalPrice }}
+                  {{ poPromotionProductsInfo.totalPrice }}
                 </b-row>
               </template>
               <!-- START - Empty rows -->
@@ -229,7 +243,7 @@
     <deny-modal
       :id="denyId"
       :visible="denyModalVisible"
-      @close="denyModalVisible = false"
+      @close="close"
     />
   </b-modal>
 </template>
@@ -307,7 +321,7 @@ export default {
           tdClass: 'text-left',
         },
         {
-          label: 'Giá',
+          label: 'Giá (VAT)',
           field: 'price',
           sortable: false,
           type: 'number',
@@ -326,8 +340,8 @@ export default {
           tdClass: 'text-center',
         },
         {
-          label: 'Thành tiền',
-          field: 'poImportTotalPrice',
+          label: 'Thành tiền (VAT)',
+          field: 'totalPriceVat',
           sortable: false,
           type: 'number',
           filterOptions: {
@@ -368,9 +382,11 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         price: this.$formatNumberToLocale(data.price),
+        vat: this.$formatNumberToLocale(data.vat),
         unit: data.unit,
-        quantity: data.quantity,
-        poImportTotalPrice: this.$formatNumberToLocale(data.totalPrice),
+        quantity: this.$formatNumberToLocale(data.quantity),
+        totalPriceNotVat: this.$formatNumberToLocale(data.amountNotVat),
+        totalPriceVat: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
     poProductInfo() {
@@ -385,7 +401,7 @@ export default {
         price: this.$formatNumberToLocale(data.price) || 0,
         unit: data.unit,
         quantity: data.quantity,
-        poImportTotalPrice: this.$formatNumberToLocale(data.totalPrice) || 0,
+        totalPrice: this.$formatNumberToLocale(data.totalPrice) || 0,
       }))
     },
     poPromotionProductsInfo() {
@@ -431,6 +447,7 @@ export default {
     ]),
     // invidual selectOrder event for poconfrim list
     selectOrder(id, internalNumber, poNum, date) {
+      console.log(id)
       this.current = id
       this.poNumber = poNum
       this.Snb = internalNumber
@@ -467,6 +484,10 @@ export default {
       } else {
         toasts.error('Bạn cần chọn tối thiểu 1 bản ghi PO')
       }
+    },
+    close() {
+      this.denyModalVisible = false
+      this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId }) // hard code
     },
     cancel() {
       this.$emit('close')

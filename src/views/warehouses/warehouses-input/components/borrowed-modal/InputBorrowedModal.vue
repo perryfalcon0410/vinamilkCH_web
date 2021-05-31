@@ -193,7 +193,7 @@ export default {
           tdClass: 'text-left',
         },
         {
-          label: 'Giá',
+          label: 'Giá (VAT)',
           field: 'price',
           sortable: false,
           type: 'number',
@@ -202,14 +202,14 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'borrowQuantity',
+          field: 'quantity',
           sortable: false,
           type: 'number',
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
-          label: 'Thành tiền',
+          label: 'Thành tiền (VAT)',
           field: 'totalPrice',
           sortable: false,
           type: 'number',
@@ -246,7 +246,8 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         price: this.$formatNumberToLocale(data.price),
-        borrowQuantity: data.quantity,
+        unit: data.unit,
+        quantity: data.quantity,
         totalPrice: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
