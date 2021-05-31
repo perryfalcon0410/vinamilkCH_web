@@ -296,6 +296,9 @@
             <div v-if="props.column.field === 'productId'">
               {{ props.formattedRow[props.column.field] }}
             </div>
+            <div v-if="props.column.field === 'productCode'">
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-if="props.column.field === 'productName'">
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -614,7 +617,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -622,7 +625,7 @@ export default {
           field: 'price',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -630,7 +633,7 @@ export default {
           field: 'totalPrice',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -639,7 +642,7 @@ export default {
           type: 'number',
           width: '120px',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -648,7 +651,7 @@ export default {
           type: 'number',
           width: '120px',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -657,7 +660,7 @@ export default {
           type: 'number',
           width: '120px',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -665,14 +668,14 @@ export default {
           field: 'unequal',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
           label: 'ĐVT packet',
           field: 'packetUnit',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
         {
@@ -680,15 +683,15 @@ export default {
           field: 'exchange',
           type: 'number',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-right',
         },
         {
           label: 'ĐVT lẻ',
           field: 'oddUnit',
           type: 'number',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
       ],

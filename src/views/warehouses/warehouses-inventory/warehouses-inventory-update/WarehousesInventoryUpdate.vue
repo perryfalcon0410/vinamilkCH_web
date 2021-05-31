@@ -136,7 +136,7 @@
               />
             </b-row>
             <b-row
-              v-if="props.column.field === 'sumInstockAmount'"
+              v-if="props.column.field === 'instockAmount'"
               class="mx-0"
               align-h="end"
             >
@@ -144,7 +144,7 @@
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'sumTotalPrice'"
+              v-else-if="props.column.field === 'totalPrice'"
               class="mx-0"
               align-h="end"
             >
@@ -176,7 +176,7 @@
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'SumUnequal'"
+              v-else-if="props.column.field === 'unequal'"
               class="mx-0"
               align-h="end"
             >
@@ -290,6 +290,7 @@
           <b-button
             variant="someThing"
             class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            :disabled="originalProducts.length === 0"
             @click="onClickExportButton()"
           >
             <b-icon-file-earmark-excel-fill />
@@ -402,14 +403,14 @@ export default {
         },
         {
           label: 'Số lượng tồn kho',
-          field: 'sumInstockAmount',
+          field: 'instockAmount',
           type: 'number',
           width: '120px',
           sortable: false,
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -417,15 +418,15 @@ export default {
           field: 'price',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
           label: 'Thành tiền',
-          field: 'sumTotalPrice',
+          field: 'totalPrice',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -434,7 +435,7 @@ export default {
           type: 'number',
           width: '120px',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -443,7 +444,7 @@ export default {
           type: 'number',
           width: '120px',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -452,15 +453,15 @@ export default {
           type: 'number',
           width: '120px',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
           label: 'Chênh lệch',
-          field: 'SumUnequal',
+          field: 'unequal',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -475,15 +476,15 @@ export default {
           field: 'exchange',
           type: 'number',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-right',
         },
         {
           label: 'ĐVT lẻ',
           field: 'oddUnit',
           type: 'number',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
       ],
@@ -513,10 +514,10 @@ export default {
       return this.products.length
     },
     getInstockAmount() {
-      return this.products.reduce((accum, item) => accum + Number(item.instockAmount), 0)
+      return this.products.reduce((accum, item) => accum + Number(item.originalInstockAmount), 0)
     },
     getTotalPrice() {
-      return this.products.reduce((accum, item) => accum + Number(item.totalPrice), 0)
+      return this.products.reduce((accum, item) => accum + Number(item.originalTotalPrice), 0)
     },
     getInventoryPacket() {
       return this.products.reduce((accum, item) => accum + Number(item.inventoryPacket), 0)
@@ -528,7 +529,7 @@ export default {
       return this.products.reduce((accum, item) => accum + Number(item.originalInventoryTotal), 0)
     },
     getUnequal() {
-      return this.products.reduce((accum, item) => accum + Number(item.unequal), 0)
+      return this.products.reduce((accum, item) => accum + Number(item.originalUnequal), 0)
     },
     isExistedWarehouseInventory() {
       return this.IS_EXISTED_WAREHOUSE_INVENTORY_GETTER()
@@ -588,17 +589,17 @@ export default {
         productId: data.productId,
         productCode: data.productCode,
         productName: data.productName,
-        instockAmount: data.stockQuantity,
-        sumInstockAmount: this.$formatNumberToLocale(data.stockQuantity),
+        originalInstockAmount: data.stockQuantity,
+        instockAmount: this.$formatNumberToLocale(data.stockQuantity),
         price: this.$formatNumberToLocale(data.price),
-        totalPrice: data.totalAmount,
-        sumTotalPrice: this.$formatNumberToLocale(data.totalAmount),
-        inventoryPacket: this.$formatNumberToLocale(data.packetQuantity),
-        inventoryOdd: this.$formatNumberToLocale(data.unitQuantity),
-        inventoryTotal: this.$formatNumberToLocale(data.stockQuantity),
-        originalInventoryTotal: data.stockQuantity,
-        unequal: data.changeQuantity,
-        SumUnequal: this.$formatNumberToLocale(data.changeQuantity),
+        originalTotalPrice: data.totalAmount,
+        totalPrice: this.$formatNumberToLocale(data.totalAmount),
+        inventoryPacket: data.packetQuantity,
+        inventoryOdd: data.unitQuantity,
+        inventoryTotal: this.$formatNumberToLocale(data.packetQuantity * data.convfact + data.unitQuantity),
+        originalInventoryTotal: data.packetQuantity * data.convfact + data.unitQuantity,
+        unequal: this.$formatNumberToLocale(data.packetQuantity * data.convfact + data.unitQuantity - data.stockQuantity),
+        originalUnequal: data.packetQuantity * data.convfact + data.unitQuantity - data.stockQuantity,
         packetUnit: data.packetUnit,
         exchange: data.convfact,
         oddUnit: data.unit,
@@ -635,38 +636,21 @@ export default {
     onClickCloseButton() {
       this.isModalCloseShow = !this.isModalCloseShow
     },
-    onClickGetInventoryStocksButton() {
-      this.products = this.WAREHOUSE_INVENTORY_STOCKS_GETTER().map(data => ({
-        category: data.productCategory,
-        productId: data.productId,
-        productCode: data.productCode,
-        productName: data.productName,
-        instockAmount: data.stockQuantity,
-        sumInstockAmount: this.$formatNumberToLocale(data.stockQuantity),
-        price: this.$formatNumberToLocale(data.price),
-        sumTotalPrice: this.$formatNumberToLocale(data.totalAmount),
-        totalPrice: data.totalAmount,
-        inventoryPacket: null,
-        inventoryOdd: null,
-        inventoryTotal: null,
-        unequal: data.changeQuantity,
-        SumUnequal: this.$formatNumberToLocale(data.changeQuantity),
-        packetUnit: data.packetUnit,
-        exchange: data.convfact,
-        oddUnit: data.unit,
-      }))
-      this.originalProducts = this.products
-    },
     updateInventoryTotal(index) {
-      this.products[index].inventoryTotal = this.products[index].inventoryPacket * this.products[index].exchange + this.products[index].inventoryOdd
+      this.products[index].originalInventoryTotal = this.products[index].inventoryPacket * this.products[index].exchange + this.products[index].inventoryOdd
+      this.products[index].inventoryTotal = this.$formatNumberToLocale(this.products[index].originalInventoryTotal)
     },
     updateInventoryPacket(index, value) {
       this.products[index].inventoryPacket = value
       this.updateInventoryTotal(index)
+      this.products[index].originalUnequal = this.products[index].originalInventoryTotal - this.products[index].originalInstockAmount
+      this.products[index].unequal = this.$formatNumberToLocale(this.products[index].originalUnequal)
     },
     updateInventoryOdd(index, value) {
       this.products[index].inventoryOdd = value
       this.updateInventoryTotal(index)
+      this.products[index].originalUnequal = this.products[index].originalInventoryTotal - this.products[index].originalInstockAmount
+      this.products[index].unequal = this.$formatNumberToLocale(this.products[index].originalUnequal)
     },
     onClickExportButton() {
       this.EXPORT_FILLED_STOCKS_ACTION({

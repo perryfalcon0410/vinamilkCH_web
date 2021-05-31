@@ -123,7 +123,7 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  rules="required"
+                  :rules="isBorrowType ? null : required"
                   name="Số nội bộ"
                 >
                   <div class="mt-1">
@@ -132,7 +132,7 @@
                   <b-form-input
                     v-model="internalNumber"
                     :state="touched ? passed : null"
-                    :disabled="!canEdit && !isPoConfirm"
+                    :disabled="!canEdit"
                     maxlength="50"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -567,6 +567,7 @@ export default {
       id: this.$route.params.id,
       importType: Number(this.$route.params.type),
       inputType: Number(warehousesData.inputTypes[0].id), // Loại nhập hàng
+      borrowType: Number(warehousesData.inputTypes[2].id), // Loại nhập vay mượn
     }
   },
 
@@ -633,6 +634,9 @@ export default {
     },
     isPoConfirm() {
       return this.importType === this.inputType && this.poId !== 0
+    },
+    isBorrowType() {
+      return this.importType === this.borrowType
     },
   },
 
