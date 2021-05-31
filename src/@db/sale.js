@@ -22,8 +22,8 @@ export default {
     { id: '9', label: 'Giao tại nhà' },
   ],
   salePaymentType: [
-    { id: '10', label: 'Tiền mặt' },
-    { id: '11', label: 'Thanh toán thẻ' },
+    { id: '0', label: 'Tiền mặt' },
+    { id: '1', label: 'Chuyển khoản' },
   ],
   reasonReturnGoods: [
     { id: 'BUYMORE', label: 'Mua thêm' },

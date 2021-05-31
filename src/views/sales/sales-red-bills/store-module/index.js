@@ -45,11 +45,7 @@ export default {
   // GETTERS
   getters: {
     [RED_INVOICES_GETTER](state) {
-      return {
-        redInvoices: state.redInvoices,
-        paging: state.paging,
-        info: state.info,
-      }
+      return state.redInvoices
     },
     [GET_BILL_OF_SALES_GETTER](state) {
       return {
@@ -95,15 +91,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.redInvoices = res.data.response.content || []
-            state.paging = {
-              pageable: res.data.response.pageable,
-              totalPages: res.data.response.totalPages,
-              totalElements: res.data.response.totalElements,
-              last: res.data.response.last,
-              numberOfElements: res.data.response.numberOfElements,
-            }
-            state.info = res.data.info
+            state.redInvoices = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }

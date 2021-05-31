@@ -92,7 +92,7 @@
                 name="ngày in"
               >
                 <div class="h8 mt-1">
-                  Ngày in
+                  Ngày in <span class="text-danger">*</span>
                 </div>
                 <b-form-group
                   class="m-0"
@@ -141,7 +141,7 @@
                   Mã số thuế <span class="text-danger">*</span>
                 </div>
                 <b-form-input
-                  v-model="redBill.taxNumber"
+                  v-model="redBill.taxCode"
                   :state="touched ? passed : null"
                   maxlength="40"
                 />
@@ -240,6 +240,14 @@
               style-class="vgt-table striped"
               line-numbers
             >
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
               <!-- START - Action bottom -->
               <div
                 slot="table-actions-bottom"
@@ -348,14 +356,14 @@
                   class="h7 px-0 mx-0"
                   align-h="end"
                 >
-                  {{ totalPriceTotal }}
+                  {{ $formatNumberToLocale(totalPriceTotal) }}
                 </b-row>
                 <b-row
                   v-else-if="props.column.field === 'productExported'"
                   class="h7 px-0 mx-0"
                   align-h="end"
                 >
-                  {{ totalProductExported }}
+                  {{ $formatNumberToLocale(totalProductExported) }}
                 </b-row>
               </template>
             <!-- END - Custome filter -->
@@ -468,7 +476,7 @@ export default {
         billNumber: '',
         printDate: '',
         officeWorking: '',
-        taxNumber: '',
+        taxCode: '',
         officeAddress: '',
         buyer: '',
         paymentType: saleData.salePaymentType[0].id,
@@ -595,17 +603,26 @@ export default {
       }))
     },
     totalQuantity() {
-      return this.products.reduce((accum, item) => accum + Number(item.quantity), 0)
+      if (this.products.reduce((accum, item) => accum + Number(item.quantity), 0) !== 0) {
+        return this.products.reduce((accum, item) => accum + Number(item.quantity), 0)
+      }
+      return ''
     },
     totalPriceTotal() {
-      return this.products.reduce((accum, item) => accum + Number(item.productPriceOriginal), 0)
+      if (this.products.reduce((accum, item) => accum + Number(item.productPriceOriginal), 0) !== 0) {
+        return this.products.reduce((accum, item) => accum + Number(item.productPriceOriginal), 0)
+      }
+      return ''
     },
     totalProductExported() {
-      return this.products.reduce((accum, item) => accum + Number(item.productExportedOriginal), 0)
+      if (this.products.reduce((accum, item) => accum + Number(item.productExportedOriginal), 0) !== 0) {
+        return this.products.reduce((accum, item) => accum + Number(item.productExportedOriginal), 0)
+      }
+      return ''
     },
   },
   beforeMount() {
-    this.redBill.printDate = this.$nowDate
+    // this.redBill.printDate = this.$nowDate
   },
   mounted() {
     this.GET_CUSTOMERS_ACTION({
@@ -647,7 +664,7 @@ export default {
       this.redBill.customerName = customer.customerName
       this.redBill.officeWorking = customer.officeWorking
       this.redBill.officeAddress = customer.officeAddress
-      this.redBill.taxNumber = customer.taxCode
+      this.redBill.taxCode = customer.taxCode
     },
     focus() {
       this.cursor = -1
@@ -807,13 +824,13 @@ export default {
         redInvoiceNumber: this.redBill.billNumber,
         saleOrderId: this.saleOrderIds,
         shopId: this.redBill.shopId,
-        taxCode: this.redBill.taxNumber,
+        taxCode: this.redBill.taxCode,
         totalQuantity: this.totalQuantity,
         totalMoney: this.totalPriceTotal,
       }
-
-      this.CREATE_RED_BILL_ACTION(paramsCreateRedInvoice)
-      this.$router.replace({ name: 'sales-red-bills' })
+      console.log(paramsCreateRedInvoice)
+      // this.CREATE_RED_BILL_ACTION(paramsCreateRedInvoice)
+      // this.$router.replace({ name: 'sales-red-bills' })
     },
     onClickDeleteItem(index) {
       this.products.splice(index, 1)

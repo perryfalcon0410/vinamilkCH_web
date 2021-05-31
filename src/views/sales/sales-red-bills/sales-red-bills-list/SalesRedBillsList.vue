@@ -207,9 +207,11 @@
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: paginationData.size,
+            setCurrentPage: pageNumber,
           }"
           line-numbers
+          :total-rows="getRedBillPagination.totalElements"
           :select-options="{
             enabled: true,
             selectOnCheckboxOnly: true,
@@ -222,6 +224,10 @@
           }"
           @on-row-click="selectionRow"
           @on-select-all="selectAllRows"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
+          @on-cell-click="focusRows"
         >
           <!-- START - Empty rows -->
           <div
@@ -231,13 +237,14 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"
             slot-scope="props"
           >
             <b-row
-              v-show="redBillPagination.totalElements"
+              v-show="getRedBillPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -251,9 +258,9 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="paginationData.size"
                   size="sm"
-                  :options="paginationOptions"
+                  :options="perPageSizeOptions"
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
@@ -261,8 +268,8 @@
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="redBillPagination.totalElements"
-                :per-page="elementSize"
+                :total-rows="getRedBillPagination.totalElements"
+                :per-page="paginationData.size"
                 first-number
                 last-number
                 align="right"
@@ -304,6 +311,47 @@
             </div>
           </template>
           <!-- END - Row -->
+
+          <!-- START - Column filter -->
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="getRedBillPagination.totalElements"
+              v-if="props.column.field === 'quantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.sumTotalQuantity) }}
+            </b-row>
+
+            <b-row
+              v-show="getRedBillPagination.totalElements"
+              v-else-if="props.column.field === 'goodsMoney'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.sumTotalMoney) }}
+            </b-row>
+            <b-row
+              v-show="getRedBillPagination.totalElements"
+              v-else-if="props.column.field === 'GTGT'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.sumAmountGTGT) }}
+            </b-row>
+            <b-row
+              v-show="getRedBillPagination.totalElements"
+              v-else-if="props.column.field === 'totalMoney'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.sumAmountNotVat) }}
+            </b-row>
+          </template>
+          <!-- START - Column filter -->
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
@@ -361,14 +409,22 @@ export default {
   },
   data() {
     return {
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
-      paginationOptions: commonData.perPageSizes,
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
+      paginationData: {
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
+        sort: null,
+      },
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
       fromDate: null,
       toDate: null,
       invoiceNumber: '',
       customer: '',
-      redBillPagination: {},
       // select rows delete
       selectedRedBillRows: [],
       ids: null,
@@ -389,51 +445,74 @@ export default {
           label: 'Số hóa đơn đỏ',
           field: 'numberBill',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên công ty',
           field: 'company',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã số thuế',
           field: 'VATCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
-          field: 'amount',
+          field: 'quantity',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tiền hàng',
           field: 'goodsMoney',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tiền thuế GTGT',
           field: 'GTGT',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tổng cộng tiền',
           field: 'totalMoney',
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Ngày in',
           field: 'printDate',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Ghi chú HĐĐ đỏ',
           field: 'note',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
       ],
     }
@@ -442,18 +521,21 @@ export default {
     ...mapGetters(RED_INVOICE, [
       RED_INVOICES_GETTER,
     ]),
-    info() {
-      return this.RED_INVOICES_GETTER.info
+    totalInfo() {
+      if (this.RED_INVOICES_GETTER.info) {
+        return this.RED_INVOICES_GETTER.info
+      }
+      return {}
     },
     getRedInvoices() {
-      if (this.RED_INVOICES_GETTER.redInvoices) {
-        return this.RED_INVOICES_GETTER.redInvoices.map(data => ({
+      if (this.RED_INVOICES_GETTER.response && this.RED_INVOICES_GETTER.response.content) {
+        return this.RED_INVOICES_GETTER.response.content.map(data => ({
           id: data.id,
           numberBill: data.invoiceNumber,
           company: data.officeWorking,
-          address: data.officeaddress,
+          address: data.officeAddress,
           VATCode: data.taxCode,
-          amount: this.$formatNumberToLocale(data.totalQuantity),
+          quantity: this.$formatNumberToLocale(data.totalQuantity),
           goodsMoney: this.$formatNumberToLocale(data.totalMoney),
           GTGT: this.$formatNumberToLocale(data.amountGTGT),
           totalMoney: this.$formatNumberToLocale(data.amountNotVat),
@@ -464,28 +546,22 @@ export default {
       return []
     },
     getRedBillPagination() {
-      return this.RED_INVOICES_GETTER.redBillPagination
+      if (this.RED_INVOICES_GETTER.response) {
+        return this.RED_INVOICES_GETTER.response
+      }
+      return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.redBillPagination.totalElements
-        ? this.redBillPagination.totalElements : (this.elementSize * this.pageNumber)
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.getRedBillPagination.totalElements
+        ? this.getRedBillPagination.totalElements : (this.paginationData.size * this.pageNumber)
 
-      return `${minPageSize} - ${maxPageSize} của ${this.redBillPagination.totalElements} mục`
+      return `${minPageSize} - ${maxPageSize} của ${this.getRedBillPagination.totalElements} mục`
     },
   },
   watch: {
     getRedInvoices() {
       this.listRedBill = [...this.getRedInvoices]
-    },
-    getRedBillPagination() {
-      this.redBillPagination = [...this.getRedBillPagination]
-    },
-    pageNumber() {
-      this.onPaginationChange()
-    },
-    elementSize() {
-      this.onPaginationChange()
     },
   },
   mounted() {
@@ -516,14 +592,18 @@ export default {
         searchKeywords: this.customer,
         invoiceNumber: this.invoiceNumber,
       }
-
-      this.GET_RED_INVOICES_ACTION({
-        ...searchStr,
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-        formId: 1,
-        ctrlId: 7,
-      })
+      this.GET_RED_INVOICES_ACTION({ ...searchStr, ...this.paginationData, ...this.decentralization })
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
     },
     onSearchClick() {
       const searchStr = {
@@ -532,12 +612,11 @@ export default {
         searchKeywords: this.customer,
         invoiceNumber: this.invoiceNumber,
       }
-
       this.GET_RED_INVOICES_ACTION({
         ...searchStr,
-        formId: 1,
-        ctrlId: 7,
+        ...this.decentralization,
       })
+      this.pageNumber = 1
     },
 
     // delete rows redbill
@@ -565,6 +644,15 @@ export default {
         this.selectedRedBillRows.splice(index, 1)
       }
     },
+    // auto select rows when focus feld oderNumber
+    // focusRows(params) {
+    //   if (params.column.field === 'numberBill') {
+    //     this.$set(this.listRedBill[params.row.originalIndex], 'vgtSelected', true)
+    //     if (!this.selectedRedBillRows.find(data => data.id === params.row.id)) {
+    //       this.selectedRedBillRows.push(params.row)
+    //     }
+    //   }
+    // },
     onClickDeleteButton() {
       if (this.selectedRedBillRows && this.selectedRedBillRows.length > 0) {
         this.ids = this.selectedRedBillRows.length === 1 ? this.selectedRedBillRows[0].id : this.selectedRedBillRows.reduce((prev, curr) => `${prev.id ? prev.id : prev},${curr.id}`)
@@ -575,12 +663,12 @@ export default {
     },
     confirmDelete() {
       this.isDeleteModalShow = !this.isDeleteModalShow
-      this.DELETE_RED_INVOICE_ACTION({ ids: this.ids })
+      this.DELETE_RED_INVOICE_ACTION({ ids: this.ids, ...this.decentralization })
       this.selectedRedBillRows.forEach(item => {
         const findIndex = this.listRedBill.findIndex(e => e.id === item.id)
         this.listRedBill.splice(findIndex, 1)
       })
-      this.redBillPagination.totalElements -= this.selectedRedBillRows.length
+      this.getRedBillPagination.totalElements -= this.selectedRedBillRows.length
       this.selectedRedBillRows = []
     },
     onClickExportRedBills() {
@@ -588,8 +676,7 @@ export default {
         this.EXPORT_RED_BILLS_ACTION({
           ids: this.selectedRedBillRows.map(data => data.id).join(','),
           type: this.templateOptionSelected,
-          formId: 1,
-          ctrlId: 1,
+          ...this.decentralization,
         })
       } else {
         toasts.error('Xin vui lòng chọn hóa đơn muốn xuất')
