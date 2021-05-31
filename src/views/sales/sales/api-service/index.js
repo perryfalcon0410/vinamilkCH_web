@@ -12,6 +12,7 @@ import {
   createSaleOrderEndpoint,
   getDiscountByCodeEndpoint,
   updatePriceTypeCustomerEndpoint,
+  getProductsTopSaleMonthEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -76,5 +77,10 @@ export default {
 
   updatePriceTypeCustomer(args) {
     return axios.post(`${updatePriceTypeCustomerEndpoint}/${args.customerTypeId}`, args.listProducts)
+  },
+  getProductsTopSaleInMonth(args) {
+    return axios.get(getProductsTopSaleMonthEndpoint, {
+      params: formatURLParams(args),
+    })
   },
 }

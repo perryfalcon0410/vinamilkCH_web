@@ -14,7 +14,7 @@
           </div>
           <div
             class="bg-info text-white mt-1 mr-1 px-1 rounded-pill cursor-pointer"
-            @click="onClickTopSaleProduct"
+            @click="onClickTopSaleProductInMonth"
           >
             Bán chạy
           </div>
@@ -102,15 +102,15 @@ import {
   // Getter
   GET_PRODUCTS_GETTER,
   GET_PRODUCT_INFOS_GETTER,
-  GET_TOP_SALE_PRODUCTS_GETTER,
   GET_HOT_PRODUCTS_GETTER,
   GET_ALL_PRODUCT_GETTER,
+  GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER,
   // Action
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
-  GET_TOP_SALE_PRODUCTS_ACTION,
   GET_HOT_PRODUCTS_ACTION,
   GET_ALL_PRODUCT_ACTION,
+  GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -128,25 +128,15 @@ export default {
     return {
       recommendProducts: [],
       allProducts: [],
-      topSaleProducts: [],
       hotProducts: [],
+      topSaleProductsInMonth: [],
+      formId: 5,
+      ctrlId: 7,
     }
   },
   computed: {
     getAllProduct() {
       return this.GET_ALL_PRODUCT_GETTER().map(data => ({
-        productId: data.productId,
-        productName: data.productName,
-        productCode: data.productCode,
-        productUnit: data.uom1,
-        productInventory: data.stockTotal,
-        productUnitPrice: data.price,
-        quantity: 1,
-        productTotalPrice: this.totalPrice(1, Number(data.price)),
-      }))
-    },
-    getTopSaleProducts() {
-      return this.GET_TOP_SALE_PRODUCTS_GETTER().map(data => ({
         productId: data.productId,
         productName: data.productName,
         productCode: data.productCode,
@@ -169,6 +159,18 @@ export default {
         productTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
     },
+    getTopSaleProductsInMonth() {
+      return this.GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER().map(data => ({
+        productId: data.productId,
+        productName: data.productName,
+        productCode: data.productCode,
+        productUnit: data.uom1,
+        productInventory: data.stockTotal,
+        productUnitPrice: data.price,
+        quantity: 1,
+        productTotalPrice: this.totalPrice(1, Number(data.price)),
+      }))
+    },
   },
   watch: {
     getAllProduct() {
@@ -181,6 +183,9 @@ export default {
     getHotProducts() {
       this.hotProducts = [...this.getHotProducts]
     },
+    getTopSaleProductsInMonth() {
+      this.topSaleProductsInMonth = [...this.getTopSaleProductsInMonth]
+    },
   },
   mounted() {
     const paramGetAllProduct = {
@@ -190,48 +195,46 @@ export default {
       status: 1,
       size: saleData.pageSizeRecommendProducts,
       page: saleData.pageNumberRecommendProducts,
-      // formId: 5, // Hard code
-      // ctrlId: 7, // Hard code
+      // formId: this.formId, // Hard code
+      // ctrlId: this.ctrlId, // Hard code
     }
     this.GET_ALL_PRODUCT_ACTION(paramGetAllProduct)
-    const paramGetTopSaleProduct = {
-      keyWord: 'BOT',
-      customerTypeId: 1, // Hard code
-      size: saleData.pageSizeRecommendProducts,
-      page: saleData.pageNumberRecommendProducts,
-      // formId: 5, // Hard code
-      // ctrlId: 7, // Hard code
-    }
-    this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetTopSaleProduct)
     const paramGetHotProduct = {
       customerId: 232, // Hard code customerId
       size: saleData.pageSizeRecommendProducts,
       page: saleData.pageNumberRecommendProducts,
-      // formId: 5, // Hard code
-      // ctrlId: 7, // Hard code
+      // formId: this.formId, // Hard code
+      // ctrlId: this.ctrlId, // Hard code
     }
     this.GET_HOT_PRODUCTS_ACTION(paramGetHotProduct)
+
+    const paramGetTopSaleProductInMonth = {
+      customerTypeId: 1, // Hard code customer type
+      // formId: this.formId, // Hard code
+      // ctrlId: this.ctrlId, // Hard code
+    }
+    this.GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION(paramGetTopSaleProductInMonth)
   },
   methods: {
     ...mapGetters(SALES, [
       GET_PRODUCTS_GETTER,
       GET_PRODUCT_INFOS_GETTER,
-      GET_TOP_SALE_PRODUCTS_GETTER,
       GET_HOT_PRODUCTS_GETTER,
       GET_ALL_PRODUCT_GETTER,
+      GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER,
     ]),
     ...mapActions(SALES, [
       GET_PRODUCTS_ACTION,
       GET_PRODUCT_INFOS_ACTION,
-      GET_TOP_SALE_PRODUCTS_ACTION,
       GET_HOT_PRODUCTS_ACTION,
       GET_ALL_PRODUCT_ACTION,
+      GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION,
     ]),
     onClickAllProduct() {
       this.recommendProducts = this.allProducts
     },
-    onClickTopSaleProduct() {
-      this.recommendProducts = this.topSaleProducts
+    onClickTopSaleProductInMonth() {
+      this.recommendProducts = this.topSaleProductsInMonth
     },
     onClickHotProduct() {
       this.recommendProducts = this.hotProducts

@@ -16,6 +16,7 @@ import {
   GET_ALL_PRODUCT_GETTER,
   GET_DISCOUNT_BY_CODE_GETTER,
   UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
+  GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -31,6 +32,7 @@ import {
   CREATE_SALE_ORDER_ACTION,
   GET_DISCOUNT_BY_CODE_ACTION,
   UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
+  GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION,
 } from './type'
 
 export default {
@@ -50,6 +52,7 @@ export default {
     allProduct: [],
     discount: {},
     customerTypeProducts: [],
+    productsInMonth: [],
   },
 
   getters: {
@@ -91,6 +94,9 @@ export default {
     },
     [UPDATE_PRICE_TYPE_CUSTOMER_GETTER](state) {
       return state.customerTypeProducts
+    },
+    [GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER](state) {
+      return state.productsInMonth
     },
   },
 
@@ -289,6 +295,21 @@ export default {
           if (res.success) {
             toasts.success(res.statusValue)
             state.customerTypeProducts = res.data.products
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION]({ state }, val) {
+      SalesServices
+        .getProductsTopSaleInMonth(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.productsInMonth = res.data.content || []
           } else {
             throw new Error(res.statusValue)
           }
