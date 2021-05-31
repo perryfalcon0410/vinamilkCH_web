@@ -14,7 +14,7 @@
       <!-- START - Section 1 -->
       <b-col
         class="px-0"
-        cols="3"
+        cols="5"
       >
         <!-- START - Row 1 -->
         <b-row>
@@ -59,7 +59,7 @@
         <!-- START - Row 1 -->
         <b-row>
           <b-col
-            cols="2"
+            cols="3"
           >
             Ngày trả hàng:
           </b-col>
@@ -72,7 +72,7 @@
         <!-- START - Row 2 -->
         <b-row class="mt-1">
           <b-col
-            cols="2"
+            cols="3"
           >
             Nhân viên bán hàng:
           </b-col>
@@ -85,7 +85,7 @@
         <!-- START - Row 3 -->
         <b-row class="mt-1">
           <b-col
-            cols="2"
+            cols="3"
           >
             Thông tin phản hồi :
           </b-col>
