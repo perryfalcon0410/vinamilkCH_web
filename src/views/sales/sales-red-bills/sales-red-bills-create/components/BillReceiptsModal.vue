@@ -43,6 +43,8 @@
             placeholder="Nhập số hóa đơn"
           />
         </b-col>
+
+        <!-- START - Date From -->
         <b-col
           xl
           lg="3"
@@ -59,21 +61,23 @@
             @keypress="$onlyDateInput"
           >
             <b-icon-x
-              v-show="searchOptions.fromDate"
+              v-show="fromDate"
               style="position: absolute; right: 15px"
               class="cursor-pointer text-gray"
               scale="1.3"
               data-clear
             />
             <vue-flat-pickr
-              v-model="searchOptions.fromDate"
-              :config="configDate"
+              v-model="fromDate"
+              :config="configFromDate"
               class="form-control h8"
               placeholder="Chọn ngày"
             />
           </b-row>
         </b-col>
+        <!-- END - Date From -->
 
+        <!-- START - Date To -->
         <b-col
           xl
           lg="3"
@@ -90,20 +94,22 @@
             @keypress="$onlyDateInput"
           >
             <b-icon-x
-              v-show="searchOptions.toDate"
+              v-show="toDate"
               style="position: absolute; right: 15px"
               class="cursor-pointer text-gray"
               scale="1.3"
               data-clear
             />
             <vue-flat-pickr
-              v-model="searchOptions.toDate"
-              :config="configDate"
+              v-model="toDate"
+              :config="configToDate"
               class="form-control h8"
               placeholder="Chọn ngày"
             />
           </b-row>
+
         </b-col>
+        <!-- END - Date To -->
         <b-col
           xl
           lg="3"
@@ -130,7 +136,9 @@
       <!-- END - Search -->
 
       <!-- START - Coupon list -->
-      <b-form class="bg-white rounded shadow rounded mt-1">
+      <b-form
+        class="bg-white rounded shadow rounded mt-1"
+      >
         <!-- START - Header -->
         <b-row
           class="border-bottom mx-0 px-1"
@@ -249,7 +257,10 @@
       <!-- END - Coupon list -->
 
       <!-- START - Product list -->
-      <b-form class="bg-white rounded shadow rounded mt-1">
+      <b-form
+        v-if="isHidden === true"
+        class="bg-white rounded shadow rounded mt-1"
+      >
         <!-- START - Header -->
         <b-row
           class="justify-content-between border-bottom px-1 mx-0"
@@ -393,17 +404,33 @@ export default {
   },
   data() {
     return {
+      isHidden: false,
       elementSize: commonData.perPageSizes[0],
       pageNumber: commonData.pageNumber,
       paginationOptions: commonData.perPageSizes,
       searchOptions: {
         customerKeywords: '',
-        fromDate: null,
-        toDate: null,
         invoiceNumberKeywords: '',
       },
-      formId: 5, // hard code
-      ctrlId: 7, // hard code
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
+
+      configFromDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
+      configToDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
+      },
       billSales: [],
       billSalesSelected: [],
       productSales: [],
@@ -544,6 +571,12 @@ export default {
     },
   },
   watch: {
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
     getBillOfSales() {
       this.billSales = [...this.getBillOfSales]
       this.totalElementBill = this.GET_BILL_OF_SALES_GETTER().billOfSalesPaging.totalElements
@@ -573,16 +606,12 @@ export default {
       this.invoiceDetail.products = [...this.getInvoiceDetail]
     },
   },
-  beforeMount() {
-    this.searchOptions.fromDate = this.$earlyMonth
-    this.searchOptions.toDate = this.$nowDate
-  },
   mounted() {
-    const paramGetBillOfSale = {
-      formId: this.formId,
-      ctrlId: this.ctrlId,
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
     }
-    this.GET_BILL_OF_SALES_ACTION(paramGetBillOfSale)
+    this.GET_BILL_OF_SALES_ACTION({ ...this.decentralization })
   },
   methods: {
     ...mapGetters(RED_INVOICE, [
@@ -602,8 +631,8 @@ export default {
     ]),
     onPaginationChange() {
       const searchBillOfSales = {
-        fromDate: reverseVniDate(this.searchOptions.fromDate),
-        toDate: reverseVniDate(this.searchOptions.toDate),
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
         searchKeywords: this.searchOptions.customerKeywords,
         invoiceNumber: this.searchOptions.invoiceNumberKeywords,
       }
@@ -612,30 +641,42 @@ export default {
         ...searchBillOfSales,
         size: this.elementSize,
         page: this.pageNumber,
-        formId: this.formId,
-        ctrlId: this.ctrlId,
+        ...this.decentralization,
       })
     },
-    onClickSearchButton() {
-      const searchBillOfSales = {
-        fromDate: reverseVniDate(this.searchOptions.fromDate),
-        toDate: reverseVniDate(this.searchOptions.toDate),
+    onSearch() {
+      const searchData = {
         searchKeywords: this.searchOptions.customerKeywords,
         invoiceNumber: this.searchOptions.invoiceNumberKeywords,
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
+        ...this.decentralization,
       }
+      this.GET_BILL_OF_SALES_ACTION(searchData)
+    },
+    onClickSearchButton() {
+      this.onSearch()
+      // const searchBillOfSales = {
+      //   fromDate: reverseVniDate(this.searchOptions.fromDate),
+      //   toDate: reverseVniDate(this.searchOptions.toDate),
+      //   searchKeywords: this.searchOptions.customerKeywords,
+      //   invoiceNumber: this.searchOptions.invoiceNumberKeywords,
+      // }
 
-      this.GET_BILL_OF_SALES_ACTION({
-        ...searchBillOfSales,
-        size: this.elementSize,
-        page: this.pageNumber,
-        formId: this.formId,
-        ctrlId: this.ctrlId,
-      })
+      // this.GET_BILL_OF_SALES_ACTION({
+      //   ...searchBillOfSales,
+      //   size: this.elementSize,
+      //   page: this.pageNumber,
+      //   formId: this.formId,
+      //   ctrlId: this.ctrlId,
+      // })
     },
     selectionChanged(params) {
       if (params.selectedRows.length === 0) {
+        this.isHidden = false
         this.CLEAR_ALL_BILL_OF_SALES_PRODUCTS()
       } else if (params.selectedRows.length > 0) {
+        this.isHidden = true
         this.productSales = []
         this.billSalesSelected = []
         this.arrSaleOrderIds = []
@@ -673,6 +714,7 @@ export default {
             this.$root.$emit('bv::hide::modal', 'bill-receipt-modal')
           },
         })
+        this.isHidden = false
       } else {
         toasts.error('Hóa đơn được chọn không cùng một khách hàng')
       }

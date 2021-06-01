@@ -27,7 +27,8 @@
               </div>
               <b-form-input
                 v-model="redBill.customerCode"
-                maxlength="40"
+                :disabled="isDisabled"
+                maxlength="200"
                 @focus="focus"
                 @blur="inputSearchFocusedKH = false"
                 @input="loadCustomers"
@@ -298,37 +299,51 @@
                 slot="table-row"
                 slot-scope="props"
               >
-                <div v-if="props.column.field == 'quantity'">
+                <div v-if="props.column.field === 'quantity'">
                   <b-form-input
-                    v-model="products[props.row.originalIndex].quantity"
+                    v-model.number="products[props.row.originalIndex].quantity"
+                    maxlength="10"
                     type="text"
+                    @keypress="$onlyNumberInput"
                     @change="onChangeQuantityAndPrice(props.row.originalIndex)"
                   />
                 </div>
-                <div v-else-if="props.column.field == 'productPrice'">
+                <div v-else-if="props.column.field === 'productPrice'">
                   <b-form-input
-                    v-model="products[props.row.originalIndex].productPrice"
+                    v-model.number="products[props.row.originalIndex].productPrice"
                     type="text"
+                    @keypress="$onlyNumberInput"
                     @change="onChangeQuantityAndPrice(props.row.originalIndex)"
                   />
                 </div>
-                <div v-else-if="props.column.field == 'vat'">
+                <div v-else-if="props.column.field === 'vat'">
                   <b-col>
                     <b-form-input
                       v-model="products[props.row.originalIndex].vat"
-                      type="text"
+                      maxlength="2"
+                      @keypress="$onlyNumberInput"
                       @change="onChangeVAT(props.row.originalIndex)"
                     />
                   </b-col>
                 </div>
-                <div v-else-if="props.column.field == 'button'">
-                  <div v-if="props.row.button == '1'">
+                <div v-else-if="props.column.field === 'note'">
+                  <b-col>
+                    <b-form-input
+                      v-model="products[props.row.originalIndex].note"
+                      maxlength="4000"
+                    />
+                  </b-col>
+                </div>
+                <div v-else-if="props.column.field === 'button'">
+                  <div v-if="props.row.button === '1'">
                     <b-button
                       variant="light"
                       class="rounded-circle px-1"
                       @click="onClickDeleteItem(props.row.originalIndex)"
                     >
-                      <b-icon-x />
+                      <b-icon-x
+                        v-b-popover.hover="'Xóa'"
+                      />
                     </b-button>
                   </div>
                 </div>
@@ -394,6 +409,7 @@
                 variant="none"
                 class="ml-1 btn-brand-1 aligns-items-button-center"
                 :disabled="invalid"
+                @click="onClickCreateBill()"
               >
                 <b-icon
                   icon="printer-fill"
@@ -463,12 +479,16 @@ export default {
   },
   data() {
     return {
+      isDisabled: false,
       inputSearchFocusedSP: false,
       inputSearchFocusedKH: false,
       saleOptions: saleData.salePaymentType,
       entryAdjustmentModalVisible: false,
       entryBorrowedModalVisible: false,
       entryCouponModalVisible: false,
+      totalQuantity: '',
+      totalPriceTotal: '',
+      totalProductExported: '',
       redBill: {
         customerId: null,
         customerCode: '',
@@ -602,23 +622,25 @@ export default {
         note: data.note,
       }))
     },
-    totalQuantity() {
-      if (this.products.reduce((accum, item) => accum + Number(item.quantity), 0) !== 0) {
-        return this.products.reduce((accum, item) => accum + Number(item.quantity), 0)
-      }
-      return ''
+    getTotalQuantity() {
+      return this.products.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
-    totalPriceTotal() {
-      if (this.products.reduce((accum, item) => accum + Number(item.productPriceOriginal), 0) !== 0) {
-        return this.products.reduce((accum, item) => accum + Number(item.productPriceOriginal), 0)
-      }
-      return ''
+    getTotalPriceTotal() {
+      return this.products.reduce((accum, item) => accum + Number(item.productPriceTotalOriginal), 0)
     },
-    totalProductExported() {
-      if (this.products.reduce((accum, item) => accum + Number(item.productExportedOriginal), 0) !== 0) {
-        return this.products.reduce((accum, item) => accum + Number(item.productExportedOriginal), 0)
-      }
-      return ''
+    getTotalProductExported() {
+      return this.products.reduce((accum, item) => accum + Number(item.productExportedOriginal), 0)
+    },
+  },
+  watch: {
+    getTotalQuantity() {
+      this.totalQuantity = this.getTotalQuantity
+    },
+    getTotalPriceTotal() {
+      this.totalPriceTotal = this.getTotalPriceTotal
+    },
+    getTotalProductExported() {
+      this.totalProductExported = this.getTotalProductExported
     },
   },
   beforeMount() {
@@ -654,13 +676,14 @@ export default {
           searchKeywords: this.redBill.customerCode?.trim(),
         }
 
-        this.GET_CUSTOMERS_ACTION(searchData)
+        this.GET_CUSTOMERS_ACTION({ ...searchData, isShop: true })
       } else {
         this.inputSearchFocusedKH = false
       }
     },
     selectCustomer(customer) {
       this.redBill.customerCode = customer.customerCode
+      this.redBill.customerId = customer.id
       this.redBill.customerName = customer.customerName
       this.redBill.officeWorking = customer.officeWorking
       this.redBill.officeAddress = customer.officeAddress
@@ -719,6 +742,7 @@ export default {
           vat: product.vat,
           productExported: formatNumberToLocale(product.vatAmount),
           productExportedOriginal: product.vatAmount,
+          sumProductExportedOriginal: product.vatAmount,
           note: product.note,
           button: '1',
         })
@@ -726,6 +750,7 @@ export default {
         this.products[existedProductIndex].quantity += product.quantity
         this.onChangeQuantityAndPrice(existedProductIndex)
         this.onChangeVAT(existedProductIndex)
+        this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
       }
     },
     searchProductFocus() {
@@ -776,6 +801,7 @@ export default {
           vat: data.vat,
           productExported: formatNumberToLocale(data.valueAddedTax),
           productExportedOriginal: data.valueAddedTax,
+          sumProductExportedOriginal: data.valueAddedTax,
           note: '',
           button: '1',
         }))
@@ -787,6 +813,13 @@ export default {
         this.redBill.officeAddress = invoiceDetail.officeAddress
         this.redBill.taxCode = invoiceDetail.taxCode
         this.redBill.shopId = invoiceDetail.shopId
+        // check disabled feild customerCode
+        if (this.redBill.customerCode) {
+          this.isDisabled = true
+        }
+        this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
+        this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
+        this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
       }
 
       this.saleOrderIds = invoiceData.saleOrderIds
@@ -798,9 +831,15 @@ export default {
       this.products[index].productPriceTotal = formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal))
       this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal)
       this.products[index].productExported = formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
+      this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
+      this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
+      this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
+      this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
     },
     onChangeVAT(index) {
       this.products[index].productExported = formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
+      this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
+      this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
     },
     onClickCreateBill() {
       const productsData = this.products.map(data => ({
@@ -809,24 +848,24 @@ export default {
         priceNotVat: data.productPriceOriginal,
         productId: data.productId,
         vat: data.vat,
+        note: data.note,
       }))
-
       const paramsCreateRedInvoice = {
-        amountTotal: this.totalPriceTotal,
-        buyerName: this.redBill.buyer,
         customerId: this.redBill.customerId,
-        note: this.redBill.note,
-        officeAddress: this.redBill.officeAddress,
-        officeWorking: this.redBill.officeWorking,
-        paymentType: this.redBill.paymentType,
         printDate: formatVniDateToISO(this.redBill.printDate),
-        productDataDTOS: productsData,
-        redInvoiceNumber: this.redBill.billNumber,
-        saleOrderId: this.saleOrderIds,
-        shopId: this.redBill.shopId,
+        officeWorking: this.redBill.officeWorking,
+        officeAddress: this.redBill.officeAddress,
         taxCode: this.redBill.taxCode,
+        redInvoiceNumber: this.redBill.billNumber,
         totalQuantity: this.totalQuantity,
         totalMoney: this.totalPriceTotal,
+        amountTotal: this.totalPriceTotal,
+        paymentType: this.redBill.paymentType,
+        buyerName: this.redBill.buyer,
+        note: this.redBill.note,
+        shopId: this.redBill.shopId,
+        productDataDTOS: productsData,
+        saleOrderId: this.saleOrderIds,
       }
       console.log(paramsCreateRedInvoice)
       // this.CREATE_RED_BILL_ACTION(paramsCreateRedInvoice)

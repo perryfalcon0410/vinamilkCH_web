@@ -7,45 +7,75 @@
     <b-form>
       <v-card-actions
         title="Tìm kiếm"
-      >
-        <b-col
-          xl
-          lg="3"
-          sm="4"
-        >
-          <div>
-            Khách hàng
-          </div>
-          <b-form-input
-            v-model="customer"
-            class="h8"
-            placeholder="Nhập Mã/SĐT/Tên khách hàng"
-            @keyup.enter="onSearchClick"
-          />
-        </b-col>
-        <b-col
-          xl
-          lg="3"
-          sm="4"
-        >
-          <div>
-            Số hóa đơn
-          </div>
-          <b-form-input
-            v-model="invoiceNumber"
-            trim
-            class="h8"
-            placeholder="Nhập số hóa đơn"
-            @keyup.enter="onSearchClick"
-          />
-        </b-col>
+      ><b-col
+         xl
+         lg="3"
+         sm="4"
+       >
+         <div
+           class="h8 mt-sm-1 mt-xl-0"
+         >
+           Khách hàng
+         </div>
+         <b-input-group
+           class="input-group-merge"
+         >
+           <b-form-input
+             v-model.trim="customer"
+             class="h8"
+             placeholder="Nhập Mã/SĐT/Tên khách hàng"
+             @keyup.enter="onClickSearchButton"
+           />
+           <b-input-group-append
+             is-text
+           >
+             <b-icon-x
+               v-show="customer"
+               class="cursor-pointer text-gray"
+               @click="customer = null"
+             />
+           </b-input-group-append>
+         </b-input-group>
+       </b-col>
         <b-col
           xl
           lg="3"
           sm="4"
         >
           <div
-            class="h8 mt-lg-1 mt-xl-0"
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Số hóa đơn
+          </div>
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model.trim="invoiceNumber"
+              class="h8"
+              placeholder="Nhập số hóa đơn"
+              @keyup.enter="onClickSearchButton"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="invoiceNumber"
+                class="cursor-pointer text-gray"
+                @click="invoiceNumber = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+
+        <!-- START - Date From -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
           >
             Từ ngày
           </div>
@@ -63,13 +93,15 @@
             />
             <vue-flat-pickr
               v-model="fromDate"
-              :config="configDate"
+              :config="configFromDate"
               class="form-control h8"
               placeholder="Chọn ngày"
             />
           </b-row>
         </b-col>
+        <!-- END - Date From -->
 
+        <!-- START - Date To -->
         <b-col
           xl
           lg="3"
@@ -94,12 +126,14 @@
             />
             <vue-flat-pickr
               v-model="toDate"
-              :config="configDate"
+              :config="configToDate"
               class="form-control h8"
               placeholder="Chọn ngày"
             />
           </b-row>
+
         </b-col>
+        <!-- END - Date To -->
 
         <b-col
           xl
@@ -421,8 +455,20 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
-      fromDate: null,
-      toDate: null,
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
+
+      configFromDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
+      configToDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
+      },
       invoiceNumber: '',
       customer: '',
       // select rows delete
@@ -563,14 +609,19 @@ export default {
     getRedInvoices() {
       this.listRedBill = [...this.getRedInvoices]
     },
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
   },
   mounted() {
-    this.GET_RED_INVOICES_ACTION({
-      formId: 1,
-      ctrlId: 7,
-    })
-    this.fromDate = this.$earlyMonth
-    this.toDate = this.$nowDate
+    this.onSearch()
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
+    }
   },
   methods: {
     ...mapState(RED_INVOICE, {
@@ -582,6 +633,16 @@ export default {
       EXPORT_RED_BILLS_ACTION,
       UPDATE_RED_BILLS_ACTION,
     ]),
+    onSearch() {
+      const searchData = {
+        searchKeywords: this.customer,
+        invoiceNumber: this.invoiceNumber,
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
+        ...this.decentralization,
+      }
+      this.GET_RED_INVOICES_ACTION(searchData)
+    },
     addSaleRedBillsCreate() {
       this.$router.push({ name: 'sales-red-bills-create' })
     },
@@ -606,16 +667,7 @@ export default {
       this.onPaginationChange()
     },
     onSearchClick() {
-      const searchStr = {
-        fromDate: reverseVniDate(this.fromDate),
-        toDate: reverseVniDate(this.toDate),
-        searchKeywords: this.customer,
-        invoiceNumber: this.invoiceNumber,
-      }
-      this.GET_RED_INVOICES_ACTION({
-        ...searchStr,
-        ...this.decentralization,
-      })
+      this.onSearch()
       this.pageNumber = 1
     },
 
@@ -645,14 +697,14 @@ export default {
       }
     },
     // auto select rows when focus feld oderNumber
-    // focusRows(params) {
-    //   if (params.column.field === 'numberBill') {
-    //     this.$set(this.listRedBill[params.row.originalIndex], 'vgtSelected', true)
-    //     if (!this.selectedRedBillRows.find(data => data.id === params.row.id)) {
-    //       this.selectedRedBillRows.push(params.row)
-    //     }
-    //   }
-    // },
+    focusRows(params) {
+      if (params.column.field === 'numberBill') {
+        this.$set(this.listRedBill[params.row.originalIndex], 'vgtSelected', true)
+        if (!this.selectedRedBillRows.find(data => data.id === params.row.id)) {
+          this.selectedRedBillRows.push(params.row)
+        }
+      }
+    },
     onClickDeleteButton() {
       if (this.selectedRedBillRows && this.selectedRedBillRows.length > 0) {
         this.ids = this.selectedRedBillRows.length === 1 ? this.selectedRedBillRows[0].id : this.selectedRedBillRows.reduce((prev, curr) => `${prev.id ? prev.id : prev},${curr.id}`)
