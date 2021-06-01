@@ -337,7 +337,7 @@ export default {
   },
 
   mounted() {
-    console.log('permission', this.$permission('WarehousesInputCreate'))
+    // console.log('permission', this.$permission('WarehousesInputCreate'))
 
     resizeAbleTable()
   },

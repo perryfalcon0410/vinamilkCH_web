@@ -867,9 +867,8 @@ export default {
         productDataDTOS: productsData,
         saleOrderId: this.saleOrderIds,
       }
-      console.log(paramsCreateRedInvoice)
-      // this.CREATE_RED_BILL_ACTION(paramsCreateRedInvoice)
-      // this.$router.replace({ name: 'sales-red-bills' })
+      this.CREATE_RED_BILL_ACTION(paramsCreateRedInvoice)
+      this.$router.replace({ name: 'sales-red-bills' })
     },
     onClickDeleteItem(index) {
       this.products.splice(index, 1)
