@@ -1,28 +1,26 @@
 <template>
   <b-modal
-    size="xl"
+    size="lg"
     :visible="visible"
     title="Chọn sản phẩm"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     content-class="bg-light"
+    hide-footer
     hide-header-close
   >
-
     <b-container fluid>
       <!-- START - Body -->
-      <b-row class="d-flex justify-content-between">
-        <!-- START - Search -->
-        <b-col
-          xl="5"
-          lg="12"
-          md="12"
-          class="bg-white rounded shadow ml-3 ml-lg-0 ml-md-0"
-        >
+
+      <!-- START - Search -->
+      <b-col
+        class="bg-white rounded shadow"
+      >
+        <b-col class="pl-2">
           <!-- START - Label -->
           <div
-            class="mt-1 py-1"
+            class="pt-1"
           >
-            <strong class="text-primary p-1">
+            <strong class="text-brand-1">
               Tìm kiếm sản phẩm
             </strong>
           </div>
@@ -31,73 +29,134 @@
           <!-- START - INPUT -->
           <b-row
             class="pt-1"
-            align-v="center"
           >
-            <!-- START - Product name -->
+            <!-- START - Product code -->
             <b-col
-              md="7"
-              lg="8"
-              class="ml-1"
+              sm="4"
+              md="2"
             >
-              <b-form-group
-                label="Sản phẩm"
-                label-for="product"
+              <div
+                class="h8 mt-sm-1 mt-xl-0"
+              >
+                Mã sản phẩm
+              </div>
+              <b-input-group
+                class="input-group-merge"
               >
                 <b-form-input
-                  id="product"
+                  v-model.trim="productCode"
+                  :state="productCode ? passed : null"
                   maxlength="20"
-                  trim
-                  placeholder="04DC10, 04DC02, 04PC04"
+                  class="h9"
                 />
-              </b-form-group>
+                <b-input-group-append
+                  is-text
+                >
+                  <b-icon-x
+                    v-show="productCode"
+                    class="cursor-pointer text-gray"
+                    @click="productCode = null"
+                  />
+                </b-input-group-append>
+              </b-input-group>
+            </b-col>
+            <!-- END - Product code -->
+
+            <!-- START - Product name -->
+            <b-col
+              sm="4"
+              md="4"
+            >
+              <div
+                class="h8 mt-sm-1 mt-xl-0"
+              >
+                Tên sản phẩm
+              </div>
+              <b-input-group
+                class="input-group-merge"
+              >
+                <b-form-input
+                  v-model.trim="productName"
+                  :state="productName ? passed : null"
+                  maxlength="20"
+                  class="h9"
+                />
+                <b-input-group-append
+                  is-text
+                >
+                  <b-icon-x
+                    v-show="productName"
+                    class="cursor-pointer text-gray"
+                    @click="productName = null"
+                  />
+                </b-input-group-append>
+              </b-input-group>
             </b-col>
             <!-- END - Product name -->
+
+            <!-- START - Industry -->
+            <b-col
+              sm="4"
+              md="3"
+            >
+              <div
+                class="h8 mt-sm-1 mt-xl-0"
+              >
+                Ngành hàng
+              </div>
+              <b-input-group
+                class="input-group-merge"
+              >
+                <b-form-input
+                  v-model.trim="industry"
+                  :state="industry ? passed : null"
+                  maxlength="20"
+                  class="h9"
+                />
+                <b-input-group-append
+                  is-text
+                >
+                  <b-icon-x
+                    v-show="industry"
+                    class="cursor-pointer text-gray"
+                    @click="industry = null"
+                  />
+                </b-input-group-append>
+              </b-input-group>
+            </b-col>
+            <!-- END - Industry -->
+
             <!-- START - Button search -->
             <b-col
-              md="2"
-              lg="1"
-              class="mr-lg-1 mr-md-0"
+              sm="4"
+              md="3"
             >
-              <b-form-group
-                class="mt-2"
+              <div
+                class="h8 text-white"
+                onmousedown="return false;"
+                style="cursor: context-menu;"
               >
-                <b-button
-                  id="SearchButton"
-                  variant="primary"
-                >
-                  <b-icon-search />
-                </b-button>
-              </b-form-group>
+                Tìm kiếm
+              </div>
+              <b-button
+                class="btn-brand-1 h9 align-items-button-center mt-sm-1 mt-xl-0"
+                variant="someThing"
+                @click="onClickSearchButton()"
+              >
+                <b-icon-search class="mr-1" />
+                Tìm kiếm
+              </b-button>
             </b-col>
-            <!-- END - Button search -->
+          <!-- END - Button search -->
 
-            <!-- START - Button excel -->
-            <b-col
-              md="2"
-              lg="1"
-              class="mr-1"
-            >
-              <b-form-group
-                class="ml-lg-1 mt-2"
-                label-for="ExcelButton"
-              >
-                <b-button
-                  id="ExcelButton"
-                  variant="primary"
-                >
-                  <b-icon-file-earmark-excel-fill />
-                </b-button>
-              </b-form-group>
-            </b-col>
-            <!-- END - Button excel -->
           </b-row>
-
+          <!-- END - INPUT -->
           <b-row>
-            <b-form class="my-1 ml-1">
+            <b-form>
               <!-- START - Title -->
               <b-form-row class="align-items-center ml-1 mt-1">
                 <strong
-                  class="text-primary"
+                  class="text-brand-1 pb-1"
                 >
                   Tổng cộng: 123 sản phẩm
                 </strong>
@@ -105,7 +164,7 @@
               <!-- END - Title -->
 
               <!-- Start table -->
-              <b-col class="py-1">
+              <b-col>
                 <vue-good-table
                   :columns="columns"
                   :rows="rowsProduct"
@@ -114,6 +173,7 @@
                   :pagination-options="{
                     enabled: true
                   }"
+                  compact-mode
                   line-numbers
                   :select-options="{
                     enabled: true,
@@ -141,175 +201,13 @@
 
                 </vue-good-table>
               </b-col>
-              <!-- End table -->
+            <!-- End table -->
 
             </b-form>
           </b-row>
         </b-col>
-        <!-- END Search -->
-
-        <!-- START - Group button -->
-        <b-col
-          xl="1"
-          md="12"
-          class="align-self-end mb-xl-5 mb-md-0 mt-md-1 ml-md-4 my-lg-1 ml-lg-0"
-        >
-          <b-row
-            align="center"
-          >
-            <!-- START - Button select all -->
-            <b-col
-              class="mb-1"
-              xl="12"
-              md="3"
-            >
-              <b-button
-                id="selectAll"
-                variant="primary"
-                class="px-0"
-              >
-                Chọn tất cả
-              </b-button>
-            </b-col>
-            <!-- END - Button select all -->
-
-            <!-- START - Button select to the right -->
-            <b-col
-              class="mb-1"
-              xl="12"
-              md="3"
-            >
-              <b-button
-                id="selectToRight"
-                variant="primary"
-              >
-                <div v-show="width >= 1200">
-                  <b-icon-chevron-right />
-                </div>
-                <div v-show="width < 1200">
-                  <b-icon-chevron-down />
-                </div>
-              </b-button>
-            </b-col>
-            <!-- END - Button select to the right -->
-
-            <!-- START - Button select to the left -->
-            <b-col
-              class="mb-xl-5"
-              xl="12"
-              md="3"
-            >
-              <b-button
-                id="selectToLeft"
-                variant="primary"
-              >
-                <div v-show="width >= 1200">
-                  <b-icon-chevron-left />
-                </div>
-                <div v-show="width < 1200">
-                  <b-icon-chevron-up />
-                </div>
-              </b-button>
-            </b-col>
-          <!-- END - Button select to the left -->
-          </b-row>
-
-        </b-col>
-        <!-- END - Group button -->
-
-        <!-- START - Choose -->
-        <b-col
-          xl="5"
-          lg="12"
-          md="12"
-          class="bg-white rounded shadow d-flex flex-column mr-3"
-        >
-          <!-- START - Label -->
-          <div
-            class="mt-xl-1 mt-md-0 py-1 mb-auto"
-          >
-            <strong class="text-primary p-1">
-              Danh sách được chọn
-            </strong>
-          </div>
-          <!-- END - Label -->
-
-          <b-row class="align-items-end">
-            <b-form class="mb-1 ml-1">
-              <!-- START - Title -->
-              <b-form-row class="align-items-end ml-1 mt-1">
-                <b-col>
-                  <strong
-                    class="text-primary mr-auto"
-                  >
-                    Tổng cộng: 123 sản phẩm
-                  </strong>
-                </b-col>
-                <!-- START - Button import -->
-                <b-button
-                  id="importButton"
-                  variant="primary"
-                  class="mr-1 px-md-0 px-lg-1"
-                >
-                  <b-icon-arrow-repeat />
-                  Import
-                </b-button>
-
-                <!-- START - Button delete -->
-                <b-button
-                  id="deleteButton"
-                  variant="danger"
-                  class="mr-2 px-md-0 px-lg-1"
-                >
-                  <b-icon-x-circle />
-                  Xóa tất cả
-                </b-button>
-              <!-- END - Button delete -->
-              </b-form-row>
-              <!-- END - Title -->
-
-              <!-- Start table -->
-              <b-col class="py-1">
-                <vue-good-table
-                  :columns="columns"
-                  :rows="rowsProduct"
-                  class="pb-1"
-                  style-class="vgt-table striped"
-                  :pagination-options="{
-                    enabled: true
-                  }"
-                  line-numbers
-                  :select-options="{
-                    enabled: true,
-                    selectOnCheckboxOnly: true,
-                    selectionInfoClass: 'custom-class',
-                    selectionText: 'rows selected',
-                    clearSelectionText: 'clear',
-                    disableSelectInfo: true,
-                    selectAllByGroup: true,
-                    multipleColumns: true,
-                  }"
-                >
-                  <template
-                    slot="table-column"
-                    slot-scope="props"
-                  >
-                    <div v-if="props.column.label === 'Chức năng'">
-                      <b-icon-bricks class="ml-1" />
-                    </div>
-                    <div v-else>
-                      {{ props.column.label }}
-                    </div>
-                  </template>
-                </vue-good-table>
-              </b-col>
-              <!-- End table -->
-
-            </b-form>
-          </b-row>
-        </b-col>
-        <!-- END Choose -->
-      </b-row>
+      </b-col>
+      <!-- END Search -->
       <!-- END Body -->
     </b-container>
 
@@ -334,11 +232,17 @@ export default {
           label: 'Mã sản phẩm',
           field: 'ProductId',
           sortable: false,
+          width: '200px',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'Name',
           sortable: false,
+          width: '400px',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
       ],
       rowsProduct: [

@@ -44,7 +44,7 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="rows"
+          :rows="getOutputGoods"
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
@@ -90,11 +90,11 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'Quantity'"
+              v-if="props.column.field === 'quantity'"
               class="mx-0"
               align-h="end"
             >
-              506,000
+              {{ $formatNumberToLocale(getTotalValues.totalQuantity) }}
             </b-row>
 
             <b-row
@@ -102,28 +102,28 @@
               class="mx-0"
               align-h="end"
             >
-              182,580
+              {{ $formatNumberToLocale(getTotalValues.totalPacketQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'outpacketQuantity'"
               class="mx-0"
               align-h="end"
             >
-              6,824
+              {{ $formatNumberToLocale(getTotalValues.totalUnitQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'intoPrice'"
               class="mx-0"
               align-h="end"
             >
-              0
+              {{ $formatNumberToLocale(getTotalValues.totalAmountNotVat) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'finalPrice'"
               class="mx-0"
               align-h="end"
             >
-              3,852,069,000
+              {{ $formatNumberToLocale(getTotalValues.totalAmount) }}
             </b-row>
           </template>
           <!-- END - Column filter -->
@@ -137,6 +137,18 @@
 </template>
 
 <script>
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import { formatISOtoVNI } from '@/@core/utils/filter'
+import {
+  REPORT_OUTPUT_GOODS,
+  // Getters
+  OUTPUT_GOODS_GETTER,
+  // Actions
+  GET_OUTPUT_GOODS_ACTION,
+} from '../store-module/type'
 import ReportsWarehousesOutputListSearch from './components/ReportsWarehousesOutputListSearch.vue'
 
 export default {
@@ -146,6 +158,10 @@ export default {
   data() {
     return {
       isShowDeleteModal: false,
+      decentralization: {
+        formId: 5, // Hard code
+        ctrlId: 7, // Hard code
+      },
       columns: [
         {
           label: 'Ngày xuất',
@@ -195,8 +211,8 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
-          type: 'number',
+          field: 'quantity',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -205,7 +221,7 @@ export default {
         {
           label: 'Số lượng packet',
           field: 'packetQuantity',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -214,7 +230,7 @@ export default {
         {
           label: 'Số lượng lẻ',
           field: 'outpacketQuantity',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -223,12 +239,13 @@ export default {
         {
           label: 'Giá trước thế',
           field: 'preTaxPrice',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
         {
           label: 'Thành tiền',
           field: 'intoPrice',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -237,12 +254,13 @@ export default {
         {
           label: 'Giá sau thuế',
           field: 'afTaxPrice',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
         {
           label: 'Tổng cộng',
           field: 'finalPrice',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -284,92 +302,58 @@ export default {
           sortable: false,
         },
       ],
-      rows: [
-        {
-          transDate: '01/10/2020',
-          transType: 'Xuất điều chỉnh',
-          billNumber: 'SAL.BH40011.20102100001',
-          poNumber: '',
-          internalNumber: 'EDC.BN40011.20.00001',
-          recieptDate: '01/10/2020',
-          group: 'E',
-          productId: '04AA10',
-          productName: 'STT dâu ADM GOLD 180ml',
-          Quantity: '1000',
-          packetQuantity: '1,000',
-          outpacketQuantity: '41',
-          preTaxPrice: '',
-          intoPrice: '0',
-          afTaxPrice: '33,000',
-          finalPrice: '33,000,000',
-          specifications: 'Thùng 24 hộp',
-          importId: 'DCG_0000341',
-          store: 'CHGTSP Vinamilk Lê Văn Sỹ',
-          chainStore: 'Cao cấp',
-          productGroup: '',
-          note: '',
-          poNo: '',
-        },
-        {
-          transDate: '01/10/2020',
-          transType: 'Xuất điều chỉnh',
-          billNumber: 'SAL.BH40011.20102100001',
-          poNumber: '',
-          internalNumber: 'EDC.BN40011.20.00001',
-          recieptDate: '01/10/2020',
-          group: 'E',
-          productId: '04AA10',
-          productName: 'STT dâu ADM GOLD 180ml',
-          Quantity: '1000',
-          packetQuantity: '1,000',
-          outpacketQuantity: '41',
-          preTaxPrice: '',
-          intoPrice: '0',
-          afTaxPrice: '33,000',
-          finalPrice: '33,000,000',
-          specifications: 'Thùng 24 hộp',
-          importId: 'DCG_0000341',
-          store: 'CHGTSP Vinamilk Lê Văn Sỹ',
-          chainStore: 'Cao cấp',
-          productGroup: '',
-          note: '',
-          poNo: '',
-        },
-        {
-          transDate: '01/10/2020',
-          transType: 'Xuất điều chỉnh',
-          billNumber: 'SAL.BH40011.20102100001',
-          poNumber: '',
-          internalNumber: 'EDC.BN40011.20.00001',
-          recieptDate: '01/10/2020',
-          group: 'E',
-          productId: '04AA10',
-          productName: 'STT dâu ADM GOLD 180ml',
-          Quantity: '1000',
-          packetQuantity: '1,000',
-          outpacketQuantity: '41',
-          preTaxPrice: '',
-          intoPrice: '0',
-          afTaxPrice: '33,000',
-          finalPrice: '33,000,000',
-          specifications: 'Thùng 24 hộp',
-          importId: 'DCG_0000341',
-          store: 'CHGTSP Vinamilk Lê Văn Sỹ',
-          chainStore: 'Cao cấp',
-          productGroup: '',
-          note: '',
-          poNo: '',
-        },
-      ],
     }
   },
   computed: {
-
+    ...mapGetters(REPORT_OUTPUT_GOODS, [
+      OUTPUT_GOODS_GETTER,
+    ]),
+    getOutputGoods() {
+      if (this.OUTPUT_GOODS_GETTER.response) {
+        return this.OUTPUT_GOODS_GETTER.response.content.map(data => ({
+          id: data.id,
+          transDate: formatISOtoVNI(data.exportDate),
+          billNumber: data.tranCode,
+          poNumber: data.poNumber,
+          internalNumber: data.internalNumber,
+          recieptDate: formatISOtoVNI(data.orderDate),
+          group: null,
+          productId: data.productId,
+          productName: data.productName,
+          quantity: data.quantity,
+          packetQuantity: data.packetQuantity,
+          outpacketQuantity: data.unitQuantity,
+          preTaxPrice: data.priceNotVat,
+          intoPrice: data.price,
+          afTaxPrice: data.amountNotVat,
+          finalPrice: data.totalAmount,
+          specifications: `${data.packetUnit} ${data.convfact} ${data.unit}`,
+          importId: data.orderNumber,
+          store: data.shopName,
+          chainStore: data.shopType,
+          productGroup: data.productGroupCategory,
+          note: data.noted,
+          poNo: null,
+        }))
+      }
+      return []
+    },
+    getTotalValues() {
+      if (this.OUTPUT_GOODS_GETTER.info) {
+        return this.OUTPUT_GOODS_GETTER.info
+      }
+      return {}
+    },
   },
   mounted() {
-
+    this.GET_OUTPUT_GOODS_ACTION({
+      ...this.decentralization,
+    })
   },
   methods: {
+    ...mapActions(REPORT_OUTPUT_GOODS, [
+      GET_OUTPUT_GOODS_ACTION,
+    ]),
     navigateToCreate() {
       this.$router.push({ name: 'sales-customers-create' })
     },
