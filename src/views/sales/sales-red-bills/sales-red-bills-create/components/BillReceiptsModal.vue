@@ -1,7 +1,7 @@
 <template>
   <b-modal
+    id="bill-receipt-modal"
     size="xl"
-    :visible="visible"
     title="Chọn hoá đơn bán hàng"
     title-class="text-uppercase font-weight-bold text-brand-1"
     content-class="bg-light"
@@ -655,9 +655,24 @@ export default {
     onClickChooseButton() {
       const filterBillSalesSelected = this.billSalesSelected.filter(i => i.customerNumber === this.billSalesSelected[0].customerNumber)
       if (filterBillSalesSelected.length === this.billSalesSelected.length) {
-        this.visible = false
-        this.GET_INVOICE_DETAIL_ACTION({ orderCodeList: this.orderNumbers.join(',') })
-        this.$emit('productsOfBillSaleData', { invoiceDetail: this.invoiceDetail, saleOrderIds: this.arrSaleOrderIds })
+        this.GET_INVOICE_DETAIL_ACTION({
+          orderCodeList: { orderCodeList: this.orderNumbers.join(',') },
+          onSuccess: invoiceDetailData => {
+            this.invoiceDetail.customerId = invoiceDetailData.info.customerId
+            this.invoiceDetail.customerCode = invoiceDetailData.info.customerCode
+            this.invoiceDetail.customerName = invoiceDetailData.info.customerName
+            this.invoiceDetail.officeWorking = invoiceDetailData.info.officeWorking
+            this.invoiceDetail.officeAddress = invoiceDetailData.info.officeAddress
+            this.invoiceDetail.taxCode = invoiceDetailData.info.taxCode
+            this.invoiceDetail.shopId = invoiceDetailData.info.shopId
+            this.invoiceDetail.totalAmount = invoiceDetailData.info.totalAmount
+            this.invoiceDetail.totalQuantity = invoiceDetailData.info.totalQuantity
+            this.invoiceDetail.totalValueAddedTax = invoiceDetailData.info.totalValueAddedTax
+            this.invoiceDetail.products = invoiceDetailData.response
+            this.$emit('productsOfBillSaleData', { invoiceDetail: this.invoiceDetail, saleOrderIds: this.arrSaleOrderIds })
+            this.$root.$emit('bv::hide::modal', 'bill-receipt-modal')
+          },
+        })
       } else {
         toasts.error('Hóa đơn được chọn không cùng một khách hàng')
       }

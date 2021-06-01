@@ -320,7 +320,6 @@ import {
   code,
   required,
 } from '@/@core/utils/validations/validations'
-import { formatVniDateToISO } from '@/@core/utils/filter'
 import { getNow } from '@core/utils/utils'
 import OutputModal from '../components/output-modal/OutputModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
@@ -457,7 +456,7 @@ export default {
         })
       } else {
         this.products.forEach((item, index) => {
-          this.products[index].productReturnAmount = 0
+          this.products[index].productReturnAmount = null
         })
       }
     },
@@ -531,18 +530,13 @@ export default {
     createExport() {
       this.CREATE_EXPORT_ACTION(
         {
-          importType: this.warehousesOutput.outputTypeSelected,
+          importType: Number(this.warehousesOutput.outputTypeSelected),
           isRemainAll: this.exportAll,
-          poNumber: this.warehousesOutput.poNumber,
-          internalNumber: this.warehousesOutput.internalNumber,
-          redInvoiceNo: this.warehousesOutput.redInvoiceNo,
-          transDate: formatVniDateToISO(this.warehousesOutput.transDate),
-          receiptImportId: this.warehousesOutput.id,
-          type: Number(warehousesData.warehousesType[1].id), // hard code biểu thị tạo mới là phiếu xuất
-          note: this.note,
+          receiptImportId: Number(this.warehousesOutput.id),
+          note: this.warehousesOutput.note,
           litQuantityRemain: this.products.map(item => ({
             id: item.id,
-            quantity: item.productReturnAmount,
+            quantity: Number(item.productReturnAmount) || 0,
           })),
         },
       )

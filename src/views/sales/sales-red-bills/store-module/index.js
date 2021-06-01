@@ -195,11 +195,12 @@ export default {
     },
     [GET_INVOICE_DETAIL_ACTION]({ state }, val) {
       RedInvoiceService
-        .getInvoiceDetail(val)
+        .getInvoiceDetail(val.orderCodeList)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.invoiceDetail = res.data || {}
+            val.onSuccess(state.invoiceDetail)
           } else {
             throw new Error(res.statusValue)
           }

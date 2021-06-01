@@ -83,7 +83,6 @@
               <b-form-input
                 v-model="redBill.billNumber"
                 maxlength="20"
-                disabled
               />
             </b-col>
             <b-col @keypress="$onlyDateInput">
@@ -415,10 +414,7 @@
     </validation-observer>
     <!-- END - Form and list -->
 
-    <bill-receipts-modal
-      :visible="isShowBillReceiptsModal"
-      @productsOfBillSaleData="insertProducsFromBillSales($event)"
-    />
+    <bill-receipts-modal @productsOfBillSaleData="insertProducsFromBillSales($event)" />
   </b-container>
 </template>
 
@@ -459,7 +455,6 @@ export default {
   },
   data() {
     return {
-      isShowBillReceiptsModal: false,
       inputSearchFocusedSP: false,
       inputSearchFocusedKH: false,
       saleOptions: saleData.salePaymentType,
@@ -632,7 +627,7 @@ export default {
       this.$router.back()
     },
     showBillOfSaleList() {
-      this.isShowBillReceiptsModal = !this.isShowBillReceiptsModal
+      this.$root.$emit('bv::toggle::modal', 'bill-receipt-modal')
     },
     loadCustomers() {
       this.cursor = -1
@@ -747,6 +742,7 @@ export default {
       }
     },
     insertProducsFromBillSales(invoiceData) {
+      console.log(invoiceData)
       const invoiceDetail = { ...invoiceData.invoiceDetail }
       // Lấy dữ liệu sản phẩm từ HDBH
       if (invoiceData.invoiceDetail) {
@@ -778,7 +774,6 @@ export default {
       }
 
       this.saleOrderIds = invoiceData.saleOrderIds
-      this.isShowBillReceiptsModal = false
     },
     taxMoney(money, vat) {
       return (money * (vat / 100))
