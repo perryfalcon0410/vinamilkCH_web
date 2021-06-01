@@ -84,7 +84,7 @@
 
       <!-- START - Bills -->
       <b-row
-        v-for="(button, index) in buttons"
+        v-for="(bill, index) in bills"
         :key="index"
       >
         <b-button
@@ -96,7 +96,7 @@
           <b-icon-x
             class="cursor-pointer ml-1"
             font-scale="1.6"
-            @click="onClickCloseButton(index)"
+            @click="onClickDeleteButton(index)"
           />
         </b-button>
 
@@ -104,7 +104,7 @@
           <b-icon-plus
             font-scale="2.5"
             class="cursor-pointer"
-            @click="onClickAddButton"
+            @click="onClickAddButton(index)"
           />
         </div>
 
@@ -359,9 +359,13 @@ export default {
       productInfos: [],
       productInfoTypeOptions: saleData.productInfoType,
       productsSearch: [],
-      buttons: [
+
+      isActive: false,
+      bills: [
         {
-          active: true,
+          id: 0,
+          products: [],
+          active: false,
         },
       ],
 
@@ -530,13 +534,16 @@ export default {
       this.orderProducts.push(index)
     },
 
-    onClickAddButton() {
-      this.buttons.push({ name: '' })
+    onClickAddButton(index) {
+      this.bills.push({
+        id: index + 1,
+        products: [],
+      })
     },
 
-    onClickCloseButton(index) {
+    onClickDeleteButton(index) {
       if (index !== 0) {
-        this.buttons.splice({ name: '' }, 1)
+        this.bills.splice(index, 1)
       }
     },
 
@@ -574,8 +581,10 @@ export default {
       this.$emit('getCustomerIdInfo', id)
     },
 
-    clickBillButton() {
-      this.buttons.isActive = !this.buttons.isActive
+    clickBillButton(index) {
+      const idx = this.bills.findIndex(i => i.id === index)
+      this.bills[idx].products = this.orderProducts
+      this.bills[idx].active = true
     },
   },
 }
