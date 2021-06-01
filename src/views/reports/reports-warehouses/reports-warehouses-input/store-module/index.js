@@ -4,9 +4,15 @@ import toasts from '@core/utils/toasts/toasts'
 import {
   // GETTERS
   REPORT_WAREHOUSES_INPUT_GETTER,
+  PRODUCT_LISTS_GETTER,
+  PRODUCT_CAT_LISTS_GETTER,
+  // MUTATIONS
+  CLEAR_ALL_PRODUCT_LISTS_CHECKED,
   // ACTIONS
   GET_REPORT_WAREHOUSES_INPUT_ACTION,
   EXPORT_REPORT_WAREHOUSES_INPUT_ACTION,
+  GET_PRODUCT_LISTS_ACTIONS,
+  GET_PRODUCT_CAT_LISTS_ACTIONS,
 } from './type'
 
 export default {
@@ -14,15 +20,28 @@ export default {
 
   state: {
     warehousesInput: [],
+    productData: {},
+    productCatData: [],
+    selectedProductRow: [],
   },
 
   getters: {
     [REPORT_WAREHOUSES_INPUT_GETTER](state) {
       return state.warehousesInput
     },
+    [PRODUCT_LISTS_GETTER](state) {
+      return state.productData
+    },
+    [PRODUCT_CAT_LISTS_GETTER](state) {
+      return state.productCatData
+    },
   },
 
-  mutations: {},
+  mutations: {
+    [CLEAR_ALL_PRODUCT_LISTS_CHECKED](state) {
+      state.selectedProductRow = []
+    },
+  },
 
   actions: {
     [GET_REPORT_WAREHOUSES_INPUT_ACTION]({ state }, val) {
@@ -56,6 +75,37 @@ export default {
               elem.click()
               document.body.removeChild(elem)
             }
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_PRODUCT_LISTS_ACTIONS]({ state }, val) {
+      ReportsWarehousesInputServices
+        .getProductLists(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.productData = res.data || {}
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+
+    [GET_PRODUCT_CAT_LISTS_ACTIONS]({ state }, val) {
+      ReportsWarehousesInputServices
+        .getProductCatlists(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.productCatData = res.data || []
+          } else {
+            throw new Error(res.statusValue)
           }
         })
         .catch(error => {

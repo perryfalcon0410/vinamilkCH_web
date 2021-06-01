@@ -216,9 +216,9 @@ export default {
 
   data() {
     return {
-      elementSize: commonData.pagination[0],
+      elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
-      paginationOptions: commonData.pagination,
+      paginationOptions: commonData.perPageSizes,
       paginationData: {
         size: this.elementSize,
         page: this.pageNumber - 1,
@@ -486,17 +486,6 @@ export default {
   },
 
   mounted() {
-    this.GET_REPORT_WAREHOUSES_INPUT_ACTION({
-      productCodes: this.productCodes?.trim(),
-      fromDate: reverseVniDate(this.fromDate),
-      toDate: reverseVniDate(this.toDate),
-      fromOrderDate: reverseVniDate(this.fromOrderDate),
-      toOrderDate: reverseVniDate(this.toOrderDate),
-      importType: this.inputTypesSelected,
-      internalNumber: this.licenseNumber?.trim(),
-      formId: 1,
-      ctrlId: 1,
-    })
   },
 
   methods: {

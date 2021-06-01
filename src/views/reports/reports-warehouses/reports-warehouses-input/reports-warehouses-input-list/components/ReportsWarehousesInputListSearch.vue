@@ -87,10 +87,19 @@
         />
         <b-input-group-append
           is-text
-          class="cursor-pointer"
-          @click="onSelectProductModalClick"
         >
-          <b-icon-three-dots-vertical />
+          <!-- Icon-- Delete-text -->
+          <b-icon-x
+            v-show="productCodes"
+            is-text
+            class="cursor-pointer text-gray"
+            @click="productCodes = null"
+          />
+          <!-- Icon-- Three-dot -->
+          <b-icon-three-dots-vertical
+            class="cursor-pointer"
+            @click="onSelectProductModalClick"
+          />
         </b-input-group-append>
       </b-input-group>
     </b-col>
@@ -225,12 +234,13 @@
     </b-col>
     <!-- END - Search button -->
 
-    <!-- START - Modal -->
-    <product-select-modal
+    <!-- START - Modal find product -->
+    <find-product-modal
       :visible="selectProductModalVisible"
       @onModalClose="onModalCloseClick"
+      @onSaveClick="onSaveClick"
     />
-    <!-- END - Modal -->
+    <!-- START - Modal find product -->
   </v-card-actions>
   <!-- END - Search -->
 </template>
@@ -244,12 +254,12 @@ import {
   REPORT_WAREHOUSES_INPUT,
   GET_REPORT_WAREHOUSES_INPUT_ACTION,
 } from '../../store-module/type'
-import ProductSelectModal from '../../components/ProductSelectModal.vue'
+import FindProductModal from './FindProductModal.vue'
 
 export default {
   components: {
     VCardActions,
-    ProductSelectModal,
+    FindProductModal,
   },
 
   data() {
@@ -272,6 +282,10 @@ export default {
     }
   },
 
+  mounted() {
+    this.onClickSearchButton()
+  },
+
   methods: {
     ...mapActions(REPORT_WAREHOUSES_INPUT, [
       GET_REPORT_WAREHOUSES_INPUT_ACTION,
@@ -280,7 +294,15 @@ export default {
       this.selectProductModalVisible = !this.selectProductModalVisible
     },
     onModalCloseClick() {
-      this.selectProductModalVisible = !this.selectProductModalVisible
+      this.selectProductModalVisible = false
+    },
+    onSaveClick(param) {
+      this.selectProductModalVisible = false
+      if (param.length > 0) {
+        this.productCodes = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
+      } else {
+        this.productCodes = null
+      }
     },
 
     onClickSearchButton() {
