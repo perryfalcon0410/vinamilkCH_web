@@ -12,6 +12,7 @@ import {
   onlyDateInput,
 } from '@core/utils/utils'
 import { formatDateToLocale, formatNumberToLocale } from '@/@core/utils/filter'
+import { permission } from '@/libs/acl/ability'
 
 import i18n from '@/libs/i18n'
 import VueGoodTablePlugin from 'vue-good-table'
@@ -21,6 +22,7 @@ import flatPickr from 'flatpickr'
 import { Vietnamese } from 'flatpickr/dist/l10n/vn'
 import TreeSelect from '@riophae/vue-treeselect'
 import dotenv from 'dotenv'
+
 import router from './router'
 import store from './store'
 import App from './App.vue'
@@ -75,6 +77,8 @@ Vue.prototype.$formatNumberToLocale = formatNumberToLocale
 // get earlyMonth and now date
 Vue.prototype.$earlyMonth = formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
 Vue.prototype.$nowDate = formatDateToLocale(new Date())
+
+Vue.prototype.$permission = permission
 
 // flatPickr
 flatPickr.localize(Vietnamese)

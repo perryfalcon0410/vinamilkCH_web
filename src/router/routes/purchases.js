@@ -11,6 +11,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'Purchases',
     },
   },
   {
@@ -29,6 +30,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'PurchasesCreate',
     },
   },
 ]

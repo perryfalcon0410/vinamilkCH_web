@@ -1,10 +1,5 @@
 import mock from './mock'
 
-/* eslint-disable import/extensions */
-
-// JWT
-import './jwt'
-
 // dashboard
 import './data/dashboard/analytics'
 import './data/dashboard/ecommerce'

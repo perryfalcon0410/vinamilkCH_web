@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { Ability } from '@casl/ability'
 import { initialAbility } from './config'
 
@@ -7,5 +8,23 @@ import { initialAbility } from './config'
 // ! Anyone can update localStorage so be careful and please update this
 const userData = JSON.parse(localStorage.getItem('userData'))
 const existingAbility = userData ? userData.ability : null
+
+export const permission = subject => {
+  const ability = Vue.prototype.$ability.j.find(item => item.subject === subject)
+
+  if (ability) {
+    return {
+      can: true,
+      data: {
+        formId: ability.formId,
+        ctrlId: ability.ctrlId,
+      },
+    }
+  }
+
+  return {
+    can: false,
+  }
+}
 
 export default new Ability(existingAbility || initialAbility)

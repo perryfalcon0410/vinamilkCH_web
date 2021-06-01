@@ -224,6 +224,233 @@ export default {
       required,
 
       roles: [],
+      permissions: [
+        {
+          id: 1,
+          formCode: 'DashboardEcommerce', // Trang chủ - Thương mại điện tử
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 2,
+          formCode: 'DashboardAnalytics', // Trang chủ - Phân tích
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 3,
+          formCode: 'Sales', // Bán hàng
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 4,
+          formCode: 'SalesCustomers', // Khách hàng
+          orderNumber: 1,
+          controls: [
+            {
+              id: 1,
+              controlCode: 'SalesCustomersCreate', // Thêm mới
+            },
+            {
+              id: 2,
+              controlCode: 'SalesCustomersUpdate', // Cập nhật
+            },
+          ],
+        },
+        {
+          id: 5,
+          formCode: 'SalesRedBills', // Hoá đơn đỏ
+          orderNumber: 1,
+          controls: [
+            {
+              id: 1,
+              controlCode: 'SalesRedBillsCreate', // Thêm mới
+            },
+          ],
+        },
+        {
+          id: 6,
+          formCode: 'SalesReceipts', // Hoá đơn bán hàng
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 7,
+          formCode: 'SalesReturnedGoods', // Hàng trả lại
+          orderNumber: 1,
+          controls: [
+            {
+              id: 1,
+              controlCode: 'SalesReturnedGoodsCreate', // Thêm mới
+            },
+          ],
+        },
+        {
+          id: 8,
+          formCode: 'Purchases', // Mua hàng
+          orderNumber: 1,
+          controls: [
+            {
+              id: 1,
+              controlCode: 'PurchasesCreate', // Thêm mới
+            },
+          ],
+        },
+        {
+          id: 9,
+          formCode: 'WarehousesInput', // Nhập kho
+          orderNumber: 1,
+          controls: [
+            {
+              id: 1,
+              controlCode: 'WarehousesInputCreate', // Thêm mới
+            },
+            {
+              id: 2,
+              controlCode: 'WarehousesInputUpdate', // Cập nhật
+            },
+          ],
+        },
+        {
+          id: 10,
+          formCode: 'WarehousesOutput', // Xuất kho
+          orderNumber: 1,
+          controls: [
+            {
+              id: 1,
+              controlCode: 'WarehousesOutputCreate', // Thêm mới
+            },
+            {
+              id: 2,
+              controlCode: 'WarehousesOutputUpdate', // Cập nhật
+            },
+          ],
+        },
+        {
+          id: 11,
+          formCode: 'WarehousesInventory', // Kiểm kê
+          orderNumber: 1,
+          controls: [
+            {
+              id: 1,
+              controlCode: 'WarehousesInventoryCreate', // Thêm mới
+            },
+            {
+              id: 2,
+              controlCode: 'WarehousesInventoryUpdate', // Cập nhật
+            },
+          ],
+        },
+        {
+          id: 12,
+          formCode: 'WarehousesExchangeDamagedGoods', // Đổi hàng hỏng
+          orderNumber: 1,
+          controls: [
+            {
+              id: 1,
+              controlCode: 'WarehousesExchangeDamagedGoodsCreate', // Thêm mới
+            },
+            {
+              id: 2,
+              controlCode: 'WarehousesExchangeDamagedGoodsUpdate', // Cập nhật
+            },
+          ],
+        },
+        {
+          id: 13,
+          formCode: 'WarehousesCombo', // Combo
+          orderNumber: 1,
+          controls: [
+            {
+              id: 1,
+              controlCode: 'WarehousesComboCreate', // Thêm mới
+            },
+            {
+              id: 2,
+              controlCode: 'WarehousesComboDetail', // Chi tiết
+            },
+          ],
+        },
+        {
+          id: 14,
+          formCode: 'ReportsReturnedGoods', // Báo cáo - Hàng trả lại
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 15,
+          formCode: 'ReportsWarehousesInput', // Báo cáo - Kho - Nhập hàng
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 16,
+          formCode: 'ReportsWarehousesOutput', // Báo cáo - Kho - Xuất hàng
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 17,
+          formCode: 'ReportsWarehousesInventory', // Báo cáo - Kho - Tồn kho
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 18,
+          formCode: 'ReportsWarehousesInputOutputInventory', // Báo cáo - Kho - Xuất nhập tồn
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 19,
+          formCode: 'ReportsWarehousesPromotions', // Báo cáo - Kho - Hàng khuyến mãi
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 20,
+          formCode: 'ReportsWarehousesPriceDifference', // Báo cáo - Kho - Chênh lệch giá
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 21,
+          formCode: 'ReportsWarehousesExchangeDamagedGoods', // Báo cáo - Kho - Đổi hàng hỏng
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 22,
+          formCode: 'ReportsWarehousesAdjustment', // Báo cáo - Kho - Nhập xuất điều chỉnh
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 23,
+          formCode: 'ReportsPurchases', // Báo cáo - Mua hàng
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 24,
+          formCode: 'ReportsSales', // Báo cáo - Bán hàng
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 25,
+          formCode: 'ReportsCustomers', // Báo cáo - Khách hàng
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 26,
+          formCode: 'ReportsVouchers', // Báo cáo - Danh sách voucher
+          orderNumber: 1,
+          controls: [],
+        },
+      ],
     }
   },
 
@@ -339,26 +566,40 @@ export default {
               usedRole: data.usedRole,
               usedShop: data.usedShop,
               phoneNumber: data.phoneNumber,
-              permissions: data.permissions,
 
               // Other
+              ability: [],
               avatar: require('@/assets/images/avatars/13-small.png'),
               role: 'admin',
-              ability: [
-                {
-                  action: 'manage',
-                  subject: 'all',
-                },
-              ],
               extras: {
                 eCommerceCartItemsCount: 0,
               },
             }
 
+            this.permissions.forEach(permission => {
+              userData.ability.push({
+                action: 'manage',
+                subject: permission.formCode,
+                formId: permission.id,
+                ctrlId: undefined,
+              })
+
+              permission.controls.forEach(control => {
+                userData.ability.push({
+                  action: 'manage',
+                  subject: control.controlCode,
+                  formId: permission.id,
+                  ctrlId: control.id,
+                })
+              })
+            })
+
             useJwt.setToken(token.replace('Bearer ', ''))
             useJwt.setRefreshToken(token.replace('Bearer ', ''))
             localStorage.setItem('userData', JSON.stringify(userData))
-            this.$ability.update(userData.ability)
+
+            // this.$ability.update(userData.ability)
+            this.$ability.update([{ action: 'manage', subject: 'all' }]) // => Temp
 
             this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
               .then(() => {

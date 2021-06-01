@@ -12,6 +12,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesInput',
     },
   },
   {
@@ -30,6 +31,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesInputCreate',
     },
   },
   {
@@ -48,6 +50,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesInputUpdate',
     },
   },
   // Xuất hàng
@@ -63,6 +66,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesOutput',
     },
   },
   {
@@ -81,6 +85,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesOutputCreate',
     },
   },
   {
@@ -99,6 +104,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesOutputUpdate',
     },
   },
   // Kiểm kê
@@ -114,6 +120,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesInventory',
     },
   },
   {
@@ -132,6 +139,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesInventoryCreate',
     },
   },
   {
@@ -150,6 +158,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesInventoryUpdate',
     },
   },
   // Đổi hàng hỏng
@@ -165,6 +174,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesExchangeDamagedGoods',
     },
   },
   {
@@ -183,6 +193,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesExchangeDamagedGoodsCreate',
     },
   },
   {
@@ -201,6 +212,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesExchangeDamagedGoodsUpdate',
     },
   },
   // Combo
@@ -216,6 +228,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesCombo',
     },
   },
   {
@@ -234,6 +247,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesComboCreate',
     },
   },
   {
@@ -252,6 +266,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'WarehousesComboDetail',
     },
   },
 ]

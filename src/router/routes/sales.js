@@ -11,6 +11,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'Sales',
     },
   },
   // Khách hàng
@@ -26,6 +27,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'SalesCustomers',
     },
   },
   {
@@ -44,6 +46,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'SalesCustomersCreate',
     },
   },
   {
@@ -62,6 +65,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'SalesCustomersUpdate',
     },
   },
   // Hoá đơn đỏ
@@ -77,6 +81,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'SalesRedBills',
     },
   },
   {
@@ -95,6 +100,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'SalesRedBillsCreate',
     },
   },
   // Hoá đơn bán hàng
@@ -110,6 +116,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'SalesReceipts',
     },
   },
   // Hàng trả lại
@@ -125,6 +132,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'SalesReturnedGoods',
     },
   },
   {
@@ -143,6 +151,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'SalesReturnedGoodsCreate',
     },
   },
 ]

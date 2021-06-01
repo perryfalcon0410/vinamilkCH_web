@@ -6,6 +6,7 @@ export default [
     title: 'Hàng trả lại',
     route: 'reports-returned-goods',
     icon: 'ArrowLeftCircleIcon',
+    resource: 'ReportsReturnedGoods',
   },
   {
     title: 'Kho',
@@ -14,56 +15,68 @@ export default [
     children: [
       {
         title: 'Nhập hàng',
-        route: '',
+        route: 'reports-warehouses-input',
+        resource: 'ReportsWarehousesInput',
       },
       {
         title: 'Xuất hàng',
-        route: '',
+        route: 'reports-warehouses-output',
+        resource: 'ReportsWarehousesOutput',
       },
       {
         title: 'Tồn kho',
-        route: '',
+        route: 'reports-warehouses-inventory',
+        resource: 'ReportsWarehousesInventory',
       },
       {
         title: 'Xuất nhập tồn',
-        route: '',
+        route: 'reports-warehouses-input-output-inventory',
+        resource: 'ReportsWarehousesInputOutputInventory',
       },
       {
         title: 'Hàng khuyến mãi',
-        route: '',
+        route: 'reports-warehouses-promotion',
+        resource: 'ReportsWarehousesPromotions',
       },
       {
         title: 'Chênh lệch giá',
-        route: '',
+        route: 'reports-warehouses-difference-price',
+        resource: 'ReportsWarehousesDifferencePrice',
       },
       {
         title: 'Đổi hàng hỏng',
-        route: '',
+        route: 'reports-warehouses-exchange-damaged-goods',
+        resource: 'ReportsWarehousesExchangeDamagedGoods',
       },
       {
         title: 'Nhập xuất điều chỉnh',
-        route: '',
+        route: 'reports-warehouses-adjustment',
+        resource: 'ReportsWarehousesAdjustment',
       },
     ],
   },
   {
     title: 'Bảng kê chi tiết đơn nhập hàng',
-    route: '',
+    route: 'reports-purchases',
+    resource: 'ReportsPurchases',
     icon: 'MapIcon',
   },
   {
     title: 'Bán hàng',
-    route: '',
+    route: 'reports-sales',
+    resource: 'ReportsSales',
     icon: 'ShoppingCartIcon',
   },
   {
     title: 'Khách hàng',
-    route: '',
+    route: 'reports-customers',
+    resource: 'ReportsCustomers',
     icon: 'UsersIcon',
   },
   {
     title: 'Danh sách voucher',
-    route: '',
+    route: 'reports-vouchers',
+    resource: 'ReportsVouchers',
     icon: 'GiftIcon',
   },
 ]

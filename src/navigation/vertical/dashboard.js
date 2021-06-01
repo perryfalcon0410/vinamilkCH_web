@@ -8,10 +8,12 @@ export default [
       {
         title: 'Thương mại điện tử',
         route: 'dashboard-ecommerce',
+        resource: 'DashboardEcommerce',
       },
       {
         title: 'Phân tích',
         route: 'dashboard-analytics',
+        resource: 'DashboardAnalytics',
       },
     ],
   },

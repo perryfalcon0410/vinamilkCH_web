@@ -11,10 +11,9 @@ export default [
           active: true,
         },
       ],
+      resource: 'ReportsReturnedGoods',
     },
   },
-
-  // Bao cao Xuat hang
   {
     path: '/reports/warehouses/output',
     name: 'reports-warehouses-output',
@@ -27,10 +26,9 @@ export default [
           active: true,
         },
       ],
+      resource: 'ReportsWarehousesOutput',
     },
   },
-
-  // Bao cao Ton kho
   {
     path: '/reports/warehouses/inventory',
     name: 'reports-warehouses-inventory',
@@ -43,10 +41,9 @@ export default [
           active: true,
         },
       ],
+      resource: 'ReportsWarehousesInventory',
     },
   },
-
-  // Báo cáo chênh lệch giá
   {
     path: '/reports/warehouses/difference-price',
     name: 'reports-warehouses-difference-price',
@@ -59,9 +56,9 @@ export default [
           active: true,
         },
       ],
+      resource: 'ReportsWarehousesDifferencePrice',
     },
   },
-  // Bao cao hang khuyen mai
   {
     path: '/reports/warehouses/promotion',
     name: 'reports-warehouses-promotion',
@@ -74,10 +71,9 @@ export default [
           active: true,
         },
       ],
+      resource: 'ReportsWarehousesPromotions',
     },
   },
-
-  // Bao cao nhap xuat dieu chinh
   {
     path: '/reports/warehouses/adjustment',
     name: 'reports-warehouses-adjustment',
@@ -89,9 +85,9 @@ export default [
           text: 'Danh sách sản phẩm nhập xuất điểu chỉnh',
         },
       ],
+      resource: 'ReportsWarehousesAdjustment',
     },
   },
-  // Báo cáo nhập hàng
   {
     path: '/reports/warehouses/input',
     name: 'reports-warehouses-input',
@@ -104,6 +100,7 @@ export default [
           active: true,
         },
       ],
+      resource: 'ReportsWarehousesInput',
     },
   },
 ]
