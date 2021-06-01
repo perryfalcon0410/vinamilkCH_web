@@ -133,12 +133,55 @@
         </b-col>
 
         <b-col md="12">
+          <!-- START - Customer Group and State -->
+          <b-form-row>
+            <b-col>
+              <validation-provider
+                v-slot="{ errors }"
+                rules="required"
+                name="nhóm khách hàng"
+              >
+                <div
+                  class="mt-1"
+                >
+                  Nhóm khách hàng <sup class="text-danger">*</sup>
+                </div>
+                <tree-select
+                  v-model="customerTypesSelected"
+                  :options="customerTypeOptions"
+                  placeholder="Chọn nhóm khách hàng"
+                  no-options-text="Không có dữ liệu"
+                  no-results-text="Không tìm thấy kết quả"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+
+            </b-col>
+
+            <b-col>
+              <div
+                class="mt-1"
+              >
+                Trạng thái <sup class="text-danger">*</sup>
+              </div>
+              <tree-select
+                v-model="customerStatusSelected"
+                :options="customerStatusOptions"
+                placeholder="Chọn trạng thái"
+                disabled
+              />
+            </b-col>
+          </b-form-row>
+          <!-- END - Customer Group and State -->
+        </b-col>
+
+        <b-col md="12">
           <validation-provider
             v-slot="{ errors, passed}"
             name="Số nhà"
           >
             <div class="mt-1">
-              Số nhà
+              Số nhà <sup class="text-danger">*</sup>
             </div>
             <b-form-input
               v-model="street"
@@ -302,12 +345,14 @@ import {
   PRECINCTS_GETTER,
   SHOP_LOCATIONS_GETTER,
   CREATE_CUSTOMER_GETTER,
+  CUSTOMER_TYPES_GETTER,
   // ACTIONS
   CREATE_CUSTOMER_ACTION,
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
   GET_PRECINCTS_ACTION,
   GET_SHOP_LOCATIONS_ACTION,
+  GET_CUSTOMER_TYPES_ACTION,
 } from '../../../sales-customers/store-module/type'
 
 export default {
@@ -339,6 +384,7 @@ export default {
       isFirstTimeGetLocations: true,
 
       id: null,
+      customerTypesSelected: null,
       customerEmail: null,
       lastName: null,
       firstName: null,
@@ -349,7 +395,8 @@ export default {
       street: null,
       customerSpecial: false,
       note: null,
-      customerStatus: customerData.status[0],
+      customerStatusOptions: customerData.status,
+      customerStatusSelected: customerData.status[0].id,
       customerGroups: null,
       provincesSelected: null,
       districtsSelected: null,
@@ -366,11 +413,12 @@ export default {
       PRECINCTS_GETTER,
       SHOP_LOCATIONS_GETTER,
       CREATE_CUSTOMER_GETTER,
+      CUSTOMER_TYPES_GETTER,
     }),
-    customerTypes() {
-      return this.CUSTOMER_TYPES_GETTER().map(data => ({
+    customerTypeOptions() {
+      return this.CUSTOMER_TYPES_GETTER.map(data => ({
         id: data.id,
-        name: data.name,
+        label: data.name,
       }))
     },
     provinceOptions() {
@@ -439,8 +487,9 @@ export default {
   },
 
   mounted() {
-    this.GET_PROVINCES_ACTION({ formId: 9, ctrlId: 6 }) // Hard
+    this.GET_PROVINCES_ACTION({ formId: 9, ctrlId: 6 })
     this.GET_SHOP_LOCATIONS_ACTION({ formId: 9, ctrlId: 6 })
+    this.GET_CUSTOMER_TYPES_ACTION({ formId: 9, ctrlId: 6 })
   },
 
   // START - Methods
@@ -451,6 +500,7 @@ export default {
       GET_DISTRICTS_ACTION,
       GET_PRECINCTS_ACTION,
       GET_SHOP_LOCATIONS_ACTION,
+      GET_CUSTOMER_TYPES_ACTION,
     ]),
 
     create() {
@@ -462,14 +512,14 @@ export default {
               lastName: this.lastName,
               genderId: this.gendersSelected?.id,
               dob: formatVniDateToISO(this.birthDay),
-              status: this.customerStatus?.id, // Hard
+              status: this.customerStatusSelected,
               isPrivate: this.customerSpecial,
               mobiPhone: this.phoneNumber,
               email: this.customerEmail,
               street: this.street,
               noted: this.note,
               areaId: this.precinctsSelected,
-              customerTypeId: 2, // Hard
+              customerTypeId: this.customerTypesSelected,
             },
             onSuccess: () => {
               this.getCreateInfo()
