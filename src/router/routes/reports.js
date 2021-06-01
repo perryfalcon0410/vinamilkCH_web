@@ -96,11 +96,27 @@ export default [
       pageTitle: 'Báo cáo nhập hàng',
       breadcrumb: [
         {
-          text: 'Danh sách sản phẩm',
+          text: 'Danh sách báo cáo nhập hàng',
           active: true,
         },
       ],
       resource: 'ReportsWarehousesInput',
+    },
+  },
+  // Báo cáo xuất nhập tồn
+  {
+    path: '/reports/warehouses/input-output-inventory',
+    name: 'reports-warehouses-input-output-inventory',
+    component: () => import('@/views/reports/reports-warehouses/reports-warehouses-input-output-inventory/reports-warehouses-input-output-inventory-list/ReportsWarehousesInputOutputInventoryList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo xuất nhập tồn',
+      breadcrumb: [
+        {
+          text: 'Danh sách báo cáo xuất nhập tồn',
+          active: true,
+        },
+      ],
+      resource: 'ReportsWarehousesInputOutputInventory',
     },
   },
 ]

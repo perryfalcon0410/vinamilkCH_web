@@ -1,0 +1,727 @@
+<template>
+  <b-container
+    fluid
+    class="d-flex flex-column px-0"
+  >
+    <!-- START - Search -->
+    <reports-warehouses-input-output-inventory-list-search
+      @updatePageElement="updatePageNumber"
+      @updateSearchData="paginationData = {
+        ...paginationData,
+        ...$event }"
+    />
+    <!-- END - Search -->
+
+    <!-- START - Report Output list -->
+    <b-form class="bg-white rounded shadow rounded my-1">
+      <!-- START - Header -->
+      <b-row
+        class="justify-content-between border-bottom p-1 mx-0"
+        align-v="center"
+      >
+        <strong class="text-brand-1">
+          Xuất nhập tồn
+        </strong>
+        <b-button-group>
+          <b-button
+            class="rounded btn-brand-1"
+            variant="someThing"
+          >
+            <b-icon-printer-fill class="mr-05" />
+            In
+          </b-button>
+          <b-button
+            class="ml-1 rounded btn-brand-1"
+            variant="someThing"
+            @click="onClickExcelExportButton"
+          >
+            <b-icon-file-earmark-x-fill class="mr-05" />
+            Xuất excel
+          </b-button>
+        </b-button-group>
+      </b-row>
+      <!-- END - Header -->
+
+      <!-- START - Table -->
+      <b-col
+        class="py-1"
+      >
+        <vue-good-table
+          mode="remote"
+          :columns="columns"
+          :rows="warehousesInputOutputInventory"
+          style-class="vgt-table bordered"
+          :pagination-options="{
+            enabled: true,
+            perPage: elementSize,
+            setCurrentPage: pageNumber,
+          }"
+          compact-mode
+          line-numbers
+          :total-rows="warehousesInputOutputInventoryPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+            initialSortBy: [{field: 'transDate', type: 'desc'}]
+          }"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
+        >
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
+          <!-- START - Column filter -->
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-if="props.column.field === 'beginningQuantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ totalQuantity }}
+            </b-row>
+
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'beginningAmount'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ totalPacketQuantity }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'impTotalQuantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ totalOddQuantity }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'impQuantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ amount }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'impAmount'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'impAdjustmentQuantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'impAdjustmentAmount'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'expTotalQuantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'expSalesQuantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'expSalesAmount'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'expPromotionQuantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'expPromotionAmount'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'expAdjustmentQuantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'expAdjustmentAmount'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'expExchangeQuantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'expExchangeAmount'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'endingQuantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              v-else-if="props.column.field === 'endingAmount'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ total }}
+            </b-row>
+          </template>
+          <!-- START - Column filter -->
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="warehousesInputOutputInventoryPagination.totalElements"
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Số hàng hiển thị
+                </span>
+                <b-form-select
+                  v-model="elementSize"
+                  size="sm"
+                  :options="paginationOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span
+                  class="text-nowrap"
+                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
+                  -
+                  {{ (elementSize * pageNumber) > warehousesInputOutputInventoryPagination.totalElements ?
+                    warehousesInputOutputInventoryPagination.totalElements : (elementSize * pageNumber) }}
+                  của {{ warehousesInputOutputInventoryPagination.totalElements }} mục </span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="warehousesInputOutputInventoryPagination.totalElements"
+                :per-page="elementSize"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
+        </vue-good-table>
+      </b-col>
+      <!-- END - Table -->
+    </b-form>
+    <!-- END - Report Output list -->
+  </b-container>
+</template>
+
+<script>
+import commonData from '@/@db/common'
+import {
+  mapGetters,
+  mapActions,
+} from 'vuex'
+import {
+  formatNumberToLocale, reverseVniDate, replaceDotWithComma, formatVniDateToGlobal,
+} from '@core/utils/filter'
+import ReportsWarehousesInputOutputInventoryListSearch from './components/ReportsWarehousesInputOutputInventoryListSearch.vue'
+import {
+  REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY,
+  // GETTERS
+  REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER,
+  // ACTIONS
+  GET_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
+  EXPORT_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
+} from '../store-module/type'
+
+export default {
+  components: {
+    ReportsWarehousesInputOutputInventoryListSearch,
+  },
+
+  data() {
+    return {
+      elementSize: commonData.perPageSizes[0],
+      pageNumber: 1,
+      paginationOptions: commonData.perPageSizes,
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+      },
+      searchOptions: {
+        productCodes: null,
+        fromDate: null,
+        toDate: null,
+      },
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+      columns: [
+        {
+          label: 'Ngành hàng',
+          field: 'industry',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Mã sản phẩm',
+          field: 'productCode',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Tên sản phẩm',
+          field: 'productName',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'ĐVT',
+          field: 'unit',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Tồn đầu kỳ',
+          field: 'beginningQuantity',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Giá đầu kỳ',
+          field: 'beginningPrice',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+        },
+        {
+          label: 'Thành tiền đầu kỳ',
+          field: 'beginningAmount',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Tổng nhập trong kỳ',
+          field: 'impTotalQuantity',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Nhập mua hàng',
+          field: 'impQuantity',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Giá trị nhập mua hàng',
+          field: 'impAmount',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Nhập điều chỉnh',
+          field: 'impAdjustmentQuantity',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Giá trị nhập điều chỉnh',
+          field: 'impAdjustmentAmount',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Tổng xuất trong kỳ',
+          field: 'expTotalQuantity',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Xuất bán hàng',
+          field: 'expSalesQuantity',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Giá trị xuất bán hàng',
+          field: 'expSalesAmount',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Xuất khuyến mãi',
+          field: 'expPromotionQuantity',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Giá trị xuất khuyến mãi',
+          field: 'expPromotionAmount',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Xuất điều chỉnh',
+          field: 'expAdjustmentQuantity',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Giá trị xuất điều chỉnh',
+          field: 'expAdjustmentAmount',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Xuất trả hàng',
+          field: 'expExchangeQuantity',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Giá trị xuất trả hàng',
+          field: 'expExchangeAmount',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Tồn cuối kỳ',
+          field: 'endingQuantity',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Giá cuối kỳ',
+          field: 'endingPrice',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+        },
+        {
+          label: 'Thành tiền cuối kỳ',
+          field: 'endingAmount',
+          type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-right',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+      ],
+      warehousesInputOutputInventory: [],
+    }
+  },
+
+  computed: {
+    ...mapGetters(REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY, [
+      REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER,
+    ]),
+    getwarehousesInputOutputInventory() {
+      if (this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.content) {
+        return this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.content.map(data => ({
+          industry: data.catName,
+          productCode: data.productCode,
+          productName: data.productName,
+          unit: data.uom,
+          beginningQuantity: data.beginningQty,
+          beginningPrice: data.beginningPrice,
+          beginningAmount: data.beginningAmount,
+          impTotalQuantity: data.impTotalQty,
+          impQuantity: data.impQty,
+          impAmount: data.impAmount,
+          impAdjustmentQuantity: data.impAdjustmentQty,
+          impAdjustmentAmount: data.impAdjustmentAmount,
+          expTotalQuantity: data.expTotalQty,
+          expSalesQuantity: data.expSalesQty,
+          expSalesAmount: data.expSalesAmount,
+          expPromotionQuantity: data.expPromotionQty,
+          expPromotionAmount: data.expPromotionAmount,
+          expAdjustmentQuantity: data.expAdjustmentQty,
+          expAdjustmentAmount: data.expAdjustmentAmount,
+          expExchangeQuantity: data.expExchangeQty,
+          expExchangeAmount: data.expExchangeAmount,
+          endingQuantity: data.endingQty,
+          endingPrice: data.endingPrice,
+          endingAmount: data.endingAmount,
+        }))
+      }
+      return []
+    },
+    totalBeginningQuantity() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.beginningQuantity), 0))))
+    },
+    totalBeginningAmount() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.beginningAmount), 0))))
+    },
+    totalImpTotalQuantity() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impTotalQuantity), 0))))
+    },
+    totalImpQuantity() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impQuantity), 0))))
+    },
+    totalImpAmount() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAmount), 0))))
+    },
+    totalImpAdjustmentQuantity() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAdjustmentQuantity), 0))))
+    },
+    totalImpAdjustmentAmount() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAdjustmentAmount), 0))))
+    },
+    totalExpTotalQuantity() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expTotalQuantity), 0))))
+    },
+    totalExpSalesQuantity() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expSalesQuantity), 0))))
+    },
+    totalExpSalesAmount() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expSalesAmount), 0))))
+    },
+    totalExpPromotionQuantity() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expPromotionQuantity), 0))))
+    },
+    totalExpPromotionAmount() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expPromotionAmount), 0))))
+    },
+    totalExpAdjustmentQuantity() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expAdjustmentQuantity), 0))))
+    },
+    totalExpAdjustmentAmount() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expAdjustmentAmount), 0))))
+    },
+    totalExpExchangeQuantity() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expExchangeQuantity), 0))))
+    },
+    totalExpExchangeAmount() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expExchangeAmount), 0))))
+    },
+    totalEndingQuantity() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.endingQuantity), 0))))
+    },
+    totalEndingAmount() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.endingAmount), 0))))
+    },
+    warehousesInputOutputInventoryPagination() {
+      if (this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER) {
+        return this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER
+      }
+      return {}
+    },
+  },
+
+  watch: {
+    getwarehousesInputOutputInventory() {
+      this.warehousesInputOutputInventory = [...this.getwarehousesInputOutputInventory]
+    },
+  },
+
+  mounted() {
+  },
+
+  methods: {
+    ...mapActions(REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY, [
+      GET_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
+      EXPORT_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
+    ]),
+
+    onPaginationChange() {
+      this.GET_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    onClickExcelExportButton() {
+      this.EXPORT_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION({
+        productCodes: this.paginationData.productCodes,
+        fromDate: formatVniDateToGlobal(reverseVniDate(this.paginationData.fromDate)),
+        toDate: formatVniDateToGlobal(reverseVniDate(this.paginationData.toDate)),
+      })
+    },
+    updatePageNumber() {
+      this.pageNumber = 1
+    },
+  },
+}
+</script>

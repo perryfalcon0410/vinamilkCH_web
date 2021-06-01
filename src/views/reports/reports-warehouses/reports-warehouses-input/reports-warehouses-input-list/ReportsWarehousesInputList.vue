@@ -5,6 +5,7 @@
   >
     <!-- START - Search -->
     <reports-warehouses-input-list-search
+      @updatePageElement="updatePageNumber"
       @updateSearchData="paginationData = {
         ...paginationData,
         ...$event }"
@@ -242,14 +243,14 @@ export default {
           label: 'Ngày nhập',
           field: 'transDate',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
         {
           label: 'Loại nhập',
           field: 'inputType',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
         {
@@ -277,14 +278,14 @@ export default {
           label: 'Ngày hóa đơn',
           field: 'orderDate',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
         {
           label: 'Ngành hàng',
           field: 'industry',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
         {
@@ -305,7 +306,7 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
           sortable: false,
           filterOptions: {
@@ -316,7 +317,7 @@ export default {
           label: 'Số lượng packet',
           field: 'packetQuantity',
           type: 'number',
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
           sortable: false,
           filterOptions: {
@@ -327,7 +328,7 @@ export default {
           label: 'Số lượng lẻ',
           field: 'oddQuantity',
           type: 'number',
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
           sortable: false,
           filterOptions: {
@@ -339,7 +340,7 @@ export default {
           field: 'priceNotVat',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -347,7 +348,7 @@ export default {
           field: 'amount',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
           filterOptions: {
             enabled: true,
@@ -358,21 +359,21 @@ export default {
           field: 'price',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
           label: 'Tổng cộng',
           field: 'total',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
           label: 'Quy cách',
           field: 'convfact',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
         {
@@ -393,14 +394,14 @@ export default {
           label: 'Chuỗi cửa hàng',
           field: 'shopType',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
         {
           label: 'Nhóm sản phẩm',
           field: 'productGroup',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
         {
@@ -518,6 +519,9 @@ export default {
         toOrderDate: formatVniDateToGlobal(reverseVniDate(this.paginationData.toOrderDate)),
         toDate: formatVniDateToGlobal(reverseVniDate(this.paginationData.toDate)),
       })
+    },
+    updatePageNumber() {
+      this.pageNumber = 1
     },
   },
 }

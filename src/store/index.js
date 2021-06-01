@@ -25,6 +25,7 @@ import reportsWarehousesAdjustment from '@/views/reports/reports-warehouses/repo
 import reportsWarehousesPromotion from '@/views/reports/reports-warehouses/reports-warehouses-promotion/store-module'
 import reportWarehousesInput from '@/views/reports/reports-warehouses/reports-warehouses-input/store-module'
 import reportsWarehousesOutput from '@/views/reports/reports-warehouses/reports-warehouses-output/store-module'
+import reportWarehousesInputOutputInventory from '@/views/reports/reports-warehouses/reports-warehouses-input-output-inventory/store-module'
 
 // Systems
 import app from './app'
@@ -68,6 +69,7 @@ export default new Vuex.Store({
     reportsWarehousesPromotion,
     reportWarehousesInput,
     reportsWarehousesOutput,
+    reportWarehousesInputOutputInventory,
   },
   strict: process.env.DEV,
 })
