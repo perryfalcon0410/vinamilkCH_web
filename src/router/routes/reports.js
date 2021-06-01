@@ -26,7 +26,7 @@ export default [
           active: true,
         },
       ],
-      resource: 'reportsWarehousesOutput',
+      resource: 'ReportsWarehousesOutput',
     },
   },
   {
