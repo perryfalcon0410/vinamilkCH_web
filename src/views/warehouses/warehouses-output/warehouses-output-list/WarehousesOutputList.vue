@@ -564,15 +564,6 @@ export default {
         // formId: this.formId,
         // ctrlId: this.ctrlId,
       }
-      if (!searchData.fromDate) {
-        searchData.fromDate = this.$earlyMonth
-        this.searchOptions.fromDate = this.$earlyMonth
-      }
-
-      if (!searchData.toDate) {
-        searchData.toDate = this.$nowDate
-        this.searchOptions.toDate = this.$nowDate
-      }
 
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
