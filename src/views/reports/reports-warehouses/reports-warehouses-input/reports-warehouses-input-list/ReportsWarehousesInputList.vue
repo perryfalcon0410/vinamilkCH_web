@@ -509,8 +509,6 @@ export default {
       this.onPaginationChange()
     },
     onClickExcelExportButton() {
-      console.log(this.paginationData)
-      console.log(this.paginationData.fromTransDate)
       this.EXPORT_REPORT_WAREHOUSES_INPUT_ACTION({
         productCodes: this.paginationData.productCodes,
         internalNumber: this.paginationData.internalNumber,

@@ -447,7 +447,6 @@ export default {
     ]),
     // invidual selectOrder event for poconfrim list
     selectOrder(id, internalNumber, poNum, date) {
-      console.log(id)
       this.current = id
       this.poNumber = poNum
       this.Snb = internalNumber

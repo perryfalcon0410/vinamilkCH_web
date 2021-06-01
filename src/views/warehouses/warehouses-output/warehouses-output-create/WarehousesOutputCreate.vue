@@ -464,7 +464,6 @@ export default {
 
   mounted() {
     this.GET_WAREHOUSE_TYPE_ACTION({ ...this.decentralization })
-    console.log(Number(warehousesData.warehousesType[1].id))
   },
 
   methods: {

@@ -809,8 +809,6 @@ export default {
     },
 
     checkDuplicatesName() {
-      console.log(this.customerInfo.customerName.toLowerCase())
-      console.log(this.customers.findIndex(x => x.customerName === this.customerInfo.customerName.toLowerCase()))
       return this.customers.findIndex(x => x.customerName.toLowerCase() === this.customerInfo.customerName.toLowerCase())
     },
 

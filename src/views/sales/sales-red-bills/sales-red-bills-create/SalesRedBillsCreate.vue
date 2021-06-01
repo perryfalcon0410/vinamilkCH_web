@@ -742,7 +742,6 @@ export default {
       }
     },
     insertProducsFromBillSales(invoiceData) {
-      console.log(invoiceData)
       const invoiceDetail = { ...invoiceData.invoiceDetail }
       // Lấy dữ liệu sản phẩm từ HDBH
       if (invoiceData.invoiceDetail) {
