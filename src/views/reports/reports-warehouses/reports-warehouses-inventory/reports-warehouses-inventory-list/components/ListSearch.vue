@@ -1,5 +1,7 @@
 <template>
-  <b-form>
+  <b-form
+    @keyup.enter="onClickSearchButton"
+  >
     <v-card-actions
       title="Điều kiện"
     >
@@ -20,6 +22,7 @@
             id="form-input-date"
             class="input-group-merge"
             size="sm"
+            @keypress="$onlyDateInput"
           >
             <b-input-group-prepend
               is-text
@@ -75,7 +78,7 @@
           variant="someThing"
           size="sm"
           style="height: 30px;"
-          @click="onClickSearchButton()"
+          @click="onClickSearchButton"
         >
           <b-icon-search class="mr-1" />
           Tìm kiếm
@@ -95,7 +98,18 @@ import VCardActions from '@/@core/components/v-card-actions/VCardActions.vue'
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import { reverseVniDate } from '@/@core/utils/filter'
 import FindProductModal from './FindProductModal.vue'
+import {
+  REPORT_WAREHOUSES_INVENTORY,
+  REPORT_WAREHOUSES_INVENTORY_GETTER,
+  REPORT_WAREHOUSES_INVENTORY_INFO_GETTER,
+  GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
+} from '../../store-module/type'
 
 export default {
   components: {
@@ -106,10 +120,45 @@ export default {
     return {
       isShowFindProductModal: false,
       dateFormatVNI,
-      date: null,
+      date: this.$nowDate,
+      configDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
     }
   },
+  mounted() {
+    this.onSearch()
+  },
   methods: {
+    ...mapGetters(REPORT_WAREHOUSES_INVENTORY, [
+      REPORT_WAREHOUSES_INVENTORY_GETTER,
+      REPORT_WAREHOUSES_INVENTORY_INFO_GETTER,
+    ]),
+    ...mapActions(REPORT_WAREHOUSES_INVENTORY, [
+      GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
+    ]),
+    onSearch() {
+      const searchData = {
+        stockDate: reverseVniDate(this.date),
+        ...this.decentralization,
+      }
+      this.updateSearchData(searchData)
+      this.GET_REPORT_WAREHOUSES_INVENTORY_ACTION(searchData)
+    },
+    onClickSearchButton() {
+      this.onSearch()
+      this.$emit('onClickSearchButton', this.date)
+    },
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
+    },
     showFindProductModal() {
       this.isShowFindProductModal = !this.isShowFindProductModal
     },

@@ -3,7 +3,12 @@
     fluid
     class="d-flex flex-column"
   >
-    <list-search />
+    <list-search
+      @onClickSearchButton="onClickSearchButton($event)"
+      @updateSearchData="paginationData = {
+        ...paginationData,
+        ...$event }"
+    />
 
     <b-form class="bg-white rounded shadow rounded my-1">
       <b-row
@@ -18,6 +23,7 @@
             class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
             variant="someThing"
             size="sm"
+            @click="exportExcel"
           >
             <b-icon-printer-fill />
             In
@@ -36,13 +42,22 @@
         <vue-good-table
           :columns="columns"
           :rows="rows"
-          style-class="vgt-table striped"
+          style-class="vgt-table bordered"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
+            setCurrentPage: pageNumber,
+          }"
+          :total-rows="reportInventoryPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
           }"
           compact-mode
           line-numbers
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           <!-- START - Columns -->
           <template
@@ -80,11 +95,11 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'quantity'"
+              v-if="props.column.field === 'stockQuantity'"
               class="mx-0"
               align-h="end"
             >
-              506,000
+              {{ $formatNumberToLocale(reportInventoryInfo.totalQuantity) }}
             </b-row>
 
             <b-row
@@ -92,28 +107,21 @@
               class="mx-0"
               align-h="end"
             >
-              182,580
+              {{ $formatNumberToLocale(reportInventoryInfo.totalPackageQuantity) }}
             </b-row>
             <b-row
-              v-else-if="props.column.field === 'outpacketQuantity'"
+              v-else-if="props.column.field === 'unitQuantity'"
               class="mx-0"
               align-h="end"
             >
-              6,824
+              {{ $formatNumberToLocale(reportInventoryInfo.totalUnitQuantity) }}
             </b-row>
             <b-row
-              v-else-if="props.column.field === 'intoPrice'"
+              v-else-if="props.column.field === 'totalAmount'"
               class="mx-0"
               align-h="end"
             >
-              0
-            </b-row>
-            <b-row
-              v-else-if="props.column.field === 'finalPrice'"
-              class="mx-0"
-              align-h="end"
-            >
-              3,852,069,000
+              {{ $formatNumberToLocale(reportInventoryInfo.totalAmount) }}
             </b-row>
           </template>
           <template
@@ -121,6 +129,7 @@
             slot-scope="props"
           >
             <b-row
+              v-show="reportInventoryPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -131,7 +140,7 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
                   v-model="elementSize"
@@ -142,11 +151,13 @@
                 />
                 <span
                   class="text-nowrap"
-                > trong 69 mục </span>
+                >
+                  {{ paginationDetailContent }}
+                </span>
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="1"
+                :total-rows="reportInventoryPagination.totalElements"
                 :per-page="elementSize"
                 first-number
                 last-number
@@ -179,8 +190,20 @@
 </template>
 
 <script>
-import commonData from '@/@db/report'
+import commonData from '@/@db/common'
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import { reverseVniDate } from '@/@core/utils/filter'
 import ListSearch from './components/ListSearch.vue'
+import {
+  REPORT_WAREHOUSES_INVENTORY,
+  REPORT_WAREHOUSES_INVENTORY_GETTER,
+  REPORT_WAREHOUSES_INVENTORY_INFO_GETTER,
+  REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER,
+  EXPORT_REPORT_INVENTORIES_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -189,20 +212,29 @@ export default {
   data() {
     return {
       pageNumber: 1,
-      elementSize: 20,
-      paginationOptions: commonData.pagination,
-
+      elementSize: commonData.perPageSizes[0],
+      paginationOptions: commonData.perPageSizes,
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+      },
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+      stockDate: this.$nowDate,
       columns: [
         {
           label: 'Ngành hàng',
-          field: 'group',
+          field: 'productCategory',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Mã sản phẩm',
-          field: 'productId',
+          field: 'productCode',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -216,7 +248,7 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
+          field: 'stockQuantity',
           type: 'number',
           sortable: false,
           filterOptions: {
@@ -238,7 +270,7 @@ export default {
         },
         {
           label: 'Số lượng lẻ',
-          field: 'outpacketQuantity',
+          field: 'unitQuantity',
           type: 'number',
           sortable: false,
           filterOptions: {
@@ -256,7 +288,7 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'intoPrice',
+          field: 'totalAmount',
           type: 'number',
           sortable: false,
           filterOptions: {
@@ -267,21 +299,21 @@ export default {
         },
         {
           label: 'Quy cách',
-          field: 'specifications',
+          field: 'specification',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Cửa hàng',
-          field: 'store',
+          field: 'shop',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Chuỗi cửa hàng',
-          field: 'chainStore',
+          field: 'shopType',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -302,56 +334,99 @@ export default {
         },
         {
           label: 'Tồn kho max',
-          field: 'minInventory',
+          field: 'maxInventory',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Báo cáo',
-          field: 'report',
+          field: 'warning',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
       ],
-      rows: [
-        {
-          group: 'E',
-          productId: '04AA10',
-          productName: 'STT Dâu ADM GOLD 180ml',
-          quantity: '1000',
-          packetQuantity: '41',
-          outpacketQuantity: '16',
-          price: '8,400',
-          intoPrice: '16,800',
-          specifications: 'Thùng 24 hộp',
-          store: 'CHGTSP Vinamilk Lê Văn Sỹ',
-          chainStore: 'Cao cấp',
-          productGroup: '',
-          minInventory: '',
-          maxInventory: '',
-          reports: '',
-        },
-        {
-          group: 'E',
-          productId: '04AA10',
-          productName: 'STT Dâu ADM GOLD 180ml',
-          quantity: '1000',
-          packetQuantity: '41',
-          outpacketQuantity: '16',
-          price: '8,400',
-          intoPrice: '16,800',
-          specifications: 'Thùng 24 hộp',
-          store: 'CHGTSP Vinamilk Lê Văn Sỹ',
-          chainStore: 'Cao cấp',
-          productGroup: '',
-          minInventory: '',
-          maxInventory: '',
-          reports: '',
-        },
-      ],
+      rows: [],
     }
+  },
+  computed: {
+    ...mapGetters(REPORT_WAREHOUSES_INVENTORY, [
+      REPORT_WAREHOUSES_INVENTORY_GETTER,
+      REPORT_WAREHOUSES_INVENTORY_INFO_GETTER,
+      REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER,
+    ]),
+    reportInventory() {
+      return this.REPORT_WAREHOUSES_INVENTORY_GETTER.map(data => ({
+        productCategory: data.productCategory,
+        productCode: data.productCode,
+        productName: data.productName,
+        stockQuantity: this.$formatNumberToLocale(data.stockQuantity) || 0,
+        packetQuantity: this.$formatNumberToLocale(data.packetQuantity) || 0,
+        unitQuantity: this.$formatNumberToLocale(data.unitQuantity) || 0,
+        price: this.$formatNumberToLocale(data.price),
+        totalAmount: this.$formatNumberToLocale(data.totalAmount) || 0,
+        specification: `${data.packetUnit} ${data.convfact} ${data.unit}`,
+        shop: data.shop,
+        shopType: data.shopType,
+        productGroup: data.productGroup,
+        minInventory: this.$formatNumberToLocale(data.minInventory),
+        maxInventory: this.$formatNumberToLocale(data.maxInventory),
+        warning: data.warning,
+      }))
+    },
+    reportInventoryInfo() {
+      return this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER
+    },
+    reportInventoryPagination() {
+      if (this.REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER) {
+        return this.REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER
+      }
+      return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.reportInventoryPagination.totalElements
+        ? this.reportInventoryPagination.totalElements : (this.elementSize * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.reportInventoryPagination.totalElements} mục`
+    },
+  },
+  watch: {
+    reportInventory() {
+      this.rows = [...this.reportInventory]
+    },
+  },
+  methods: {
+    exportExcel() {
+      this.EXPORT_REPORT_INVENTORIES_ACTION({
+        stockDate: reverseVniDate(this.stockDate),
+        ...this.decentralization,
+      })
+    },
+    ...mapActions(REPORT_WAREHOUSES_INVENTORY, [
+      EXPORT_REPORT_INVENTORIES_ACTION,
+    ]),
+    // pagnigation funcs
+    onPaginationChange() {
+      this.GET_REPORT_WAREHOUSES_INVENTORY_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onClickSearchButton(date) {
+      this.stockDate = date
+      this.pageNumber = 1
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    // pagnigation funcs
   },
 }
 </script>

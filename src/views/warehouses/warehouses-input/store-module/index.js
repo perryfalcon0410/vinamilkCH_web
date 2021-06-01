@@ -200,7 +200,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.importAdjustments = res.data.content
+            state.importAdjustments = res.data
           } else {
             throw new Error(res.statusValue)
           }

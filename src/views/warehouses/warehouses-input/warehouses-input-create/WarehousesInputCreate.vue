@@ -151,7 +151,7 @@
                   name="PO No"
                 >
                   <div class="mt-1 h9">
-                    PO No
+                    POCo No
                     <sup
                       v-show="inputTypeSelected === '0'"
                       class="text-danger"
@@ -322,13 +322,17 @@
                     v-if="props.column.field === 'quantity'"
                     class="mx-0"
                     align-h="center"
-                  />
+                  >
+                    {{ totalPromoProductQuantity }}
+                  </b-row>
 
                   <b-row
-                    v-else-if="props.column.field === 'totalPrice'"
+                    v-else-if="props.column.field === 'productCode'"
                     class="mx-0"
-                    align-h="end"
-                  />
+                    align-h="center"
+                  >
+                    {{ totalPromoProduct }}
+                  </b-row>
 
                 </template>
                 <template
@@ -342,7 +346,7 @@
                     <b-form-input
                       v-model.number="rowsProductPromotion[props.index].quantity"
                       :state="isPositive(rowsProductPromotion[props.index].quantity)"
-                      maxlength="17"
+                      maxlength="7"
                       @keypress="$onlyNumberInput"
                     />
                   </span>
@@ -582,6 +586,9 @@ export default {
           label: 'Mã hàng',
           field: 'productCode',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -623,9 +630,6 @@ export default {
           field: 'totalPrice',
           type: 'number',
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
           thClass: 'text-right',
           tdClass: 'text-right',
         },
@@ -687,7 +691,7 @@ export default {
           tdClass: 'text-center',
         },
         {
-          label: 'Thành tiền (chưa Vat)',
+          label: 'Thành tiền (chưa VAT)',
           field: 'totalPriceNotVat',
           type: 'number',
           sortable: false,
@@ -695,14 +699,14 @@ export default {
           tdClass: 'text-right',
         },
         {
-          label: 'Vat',
+          label: 'VAT',
           field: 'vat',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
-          label: 'Thành tiền (Vat)',
+          label: 'Thành tiền (VAT)',
           field: 'totalPriceVat',
           sortable: false,
           filterOptions: {
@@ -795,8 +799,15 @@ export default {
         quantity: data.quantity,
       }))
     },
+    totalPromoProduct() {
+      return this.rowsProductPromotion.length
+    },
+    totalPromoProductQuantity() {
+      return this.rowsProductPromotion.reduce((accum, item) => accum + Number(item.quantity), 0)
+    },
   },
   watch: {
+
     // render importPoManually-table if poNo = null
     poNo() {
       if (this.inputTypeSelected === '0' && this.status !== 0) {
@@ -817,6 +828,8 @@ export default {
       this.status = null
       this.note = ''
       this.poId = null
+      this.rowsProductPromotion = []
+      this.promotionRow = []
       if (this.inputTypeSelected === '0') {
         this.columns = this.poConfirmColumn
         this.billDate = this.$nowDate
@@ -932,7 +945,7 @@ export default {
       if (this.promotionRow.length === 0) {
         const obj = {
           importType: this.status,
-          poNumber: this.poNo,
+          poCoNumber: this.poNo,
           internalNumber: this.internalNumber,
           redInvoiceNo: this.billNumber,
           orderDate: formatVniDateToISO(this.billDate),
@@ -957,7 +970,7 @@ export default {
           if (success) {
             this.CREATE_SALE_IMPORT_ACTION({
               importType: 0,
-              poNumber: this.poNo,
+              poCoNumber: this.poNo,
               internalNumber: this.internalNumber,
               redInvoiceNo: this.billNumber,
               orderDate: formatVniDateToISO(this.billDate),
@@ -1005,9 +1018,9 @@ export default {
           productId: product.id,
           productCode: product.productCode,
           productName: product.productName,
-          quantity: 1,
-          price: 0,
-          totalPrice: 0,
+          quantity: 1, // default quantity
+          price: product.price || 0,
+          totalPrice: product.stockTotal || 0,
           unit: product.uom1,
         }
         if (index === -1) {

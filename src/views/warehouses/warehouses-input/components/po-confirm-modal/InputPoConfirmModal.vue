@@ -22,7 +22,7 @@
             />
             <b-col>
               <strong>
-                PO No
+                POCo No
               </strong>
             </b-col>
             <b-col>
@@ -43,13 +43,13 @@
             :key="item.id"
             class="border-bottom border-white py-1 cursor-pointer"
             :class="{ 'text-brand-1': current == item.id }"
-            @click="selectOrder(item.id, item.internalNumber, item.poNo, item.date)"
+            @click="selectOrder(item.id, item.internalNumber, item.poCoNumber, item.date)"
           >
             <b-col cols="1">
               {{ index + 1 }}
             </b-col>
             <b-col>
-              {{ item.poNo }}
+              {{ item.poCoNumber }}
             </b-col>
             <b-col>
               {{ item.internalNumber }}
@@ -358,7 +358,7 @@ export default {
     poConfirm() {
       return this.POCONFIRM_GETTER().map(data => ({
         id: data.id,
-        poNo: data.poNumber,
+        poCoNumber: data.poCoNumber,
         internalNumber: data.internalNumber,
         date: formatISOtoVNI(data.orderDate),
       }))
@@ -368,7 +368,7 @@ export default {
         const obj = {
           id: this.poConfirm[0].id,
           internalNumber: this.poConfirm[0].internalNumber,
-          poNumber: this.poConfirm[0].poNo,
+          poNumber: this.poConfirm[0].poCoNumber,
           sysDate: this.poConfirm[0].date,
         }
         return obj

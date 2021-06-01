@@ -21,7 +21,7 @@
                 Ngày nhập:
               </b-col>
               <b-col class="font-weight-bold">
-                {{ transDate }} lúc {{ transTime }}
+                {{ transDate }}
               </b-col>
             </b-row>
             <!-- END - Date -->
@@ -444,7 +444,7 @@ import {
   required,
 } from '@/@core/utils/validations/validations'
 import {
-  formatISOtoVNI, getTimeOfDate, formatVniDateToISO,
+  formatISOtoVNI, formatVniDateToISO,
 } from '@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
 import {
@@ -477,7 +477,6 @@ export default {
       note: null,
       transCode: null,
       transDate: null,
-      transTime: null,
       wareHouseTypeName: null,
       today: this.$nowDate,
       importTypeName: null,
@@ -643,8 +642,7 @@ export default {
   watch: {
     receipt() {
       this.transCode = this.RECEIPT_BY_ID_GETTER().transCode
-      this.transDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().transDate)
-      this.transTime = getTimeOfDate(this.RECEIPT_BY_ID_GETTER().transDate)
+      this.transDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().transDate, false, true)
       this.wareHouseTypeName = this.RECEIPT_BY_ID_GETTER().wareHouseTypeName
       this.billNumber = this.RECEIPT_BY_ID_GETTER().redInvoiceNo
       this.internalNumber = this.RECEIPT_BY_ID_GETTER().internalNumber
