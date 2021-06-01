@@ -646,7 +646,7 @@ export default {
       this.wareHouseTypeName = this.RECEIPT_BY_ID_GETTER().wareHouseTypeName
       this.billNumber = this.RECEIPT_BY_ID_GETTER().redInvoiceNo
       this.internalNumber = this.RECEIPT_BY_ID_GETTER().internalNumber
-      this.poNumber = this.RECEIPT_BY_ID_GETTER().poNumber
+      this.poCoNumber = this.RECEIPT_BY_ID_GETTER().poCoNumber
       this.note = this.RECEIPT_BY_ID_GETTER().note
       this.importTypeName = this.warehousesInputOptions[this.$route.params.type].label
       switch (this.importType) {
