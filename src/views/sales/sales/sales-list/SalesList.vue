@@ -122,7 +122,6 @@
 
     </b-row>
     <!-- END - Header -->
-    <div class="break">{{ bills }}</div>
 
     <!-- START - Body -->
     <b-row
