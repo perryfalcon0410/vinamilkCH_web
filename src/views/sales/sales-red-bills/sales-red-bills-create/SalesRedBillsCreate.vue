@@ -729,7 +729,7 @@ export default {
       const existedProductIndex = this.products.findIndex(products => products.productCode === product.productCode)
       if (existedProductIndex === -1) {
         this.products.push({
-          productId: product.id,
+          productId: product.productId,
           productCode: product.productCode,
           productName: product.productName,
           industry: product.groupVat,
@@ -802,7 +802,7 @@ export default {
           productExported: formatNumberToLocale(data.valueAddedTax),
           productExportedOriginal: data.valueAddedTax,
           sumProductExportedOriginal: data.valueAddedTax,
-          note: '',
+          note: data.note,
           button: '1',
         }))
         // Lấy dữ liệu khách hàng từ HDBH

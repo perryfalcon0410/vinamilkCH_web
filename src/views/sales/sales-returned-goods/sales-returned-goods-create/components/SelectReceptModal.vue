@@ -329,7 +329,6 @@ export default {
       this.saleOders = [...this.getSaleOders]
     },
   },
-
   mounted() {
     resizeAbleTable()
   },
@@ -340,9 +339,11 @@ export default {
     choosenRecept(value) {
       this.$emit('choosenRecept', { value })
       this.$emit('onCloseModal')
+      this.saleOders = []
     },
     onCloseModal() {
       this.$emit('onCloseModal')
+      this.saleOders = []
     },
     onSearchClick(search) {
       this.GET_RETURNED_GOOD_CHOOSE_ACTION(search)
