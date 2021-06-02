@@ -3,6 +3,8 @@ import { formatURLParams } from '@/@core/utils/utils'
 import {
   getReportsWarehousesInventoryEndpoint,
   exportReportInventoriesEndpoint,
+  getProductCatListsEndpoint,
+  getProductListsEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -15,6 +17,16 @@ export default {
     return axios.get(exportReportInventoriesEndpoint, {
       params: formatURLParams(args),
       responseType: 'blob',
+    })
+  },
+  getProductLists(args) {
+    return axios.get(getProductListsEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getProductCatlists(args) {
+    return axios.get(getProductCatListsEndpoint, {
+      params: formatURLParams(args),
     })
   },
 

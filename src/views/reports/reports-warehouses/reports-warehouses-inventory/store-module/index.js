@@ -7,9 +7,14 @@ import {
   REPORT_WAREHOUSES_INVENTORY_GETTER,
   REPORT_WAREHOUSES_INVENTORY_INFO_GETTER,
   REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER,
+  PRODUCT_LIST_GETTER,
+  PRODUCT_LIST_PAGINATION_GETTER,
+  PRODUCT_CAT_LIST_GETTER,
   // ACTIONS
   GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
   EXPORT_REPORT_INVENTORIES_ACTION,
+  GET_PRODUCT_LIST_ACTION,
+  GET_PRODUCT_CAT_LIST_ACTION,
 } from './type'
 
 export default {
@@ -20,6 +25,9 @@ export default {
     reportWarehousesInventory: [],
     reportWarehousesInventoryInfo: {},
     reportWarehousesInventoryPagination: {},
+    productList: [],
+    productListPagination: {},
+    productCatList: [],
   },
 
   // START - GETTERS
@@ -32,6 +40,15 @@ export default {
     },
     [REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER](state) {
       return state.reportWarehousesInventoryPagination
+    },
+    [PRODUCT_LIST_GETTER](state) {
+      return state.productList
+    },
+    [PRODUCT_LIST_PAGINATION_GETTER](state) {
+      return state.productListPagination
+    },
+    [PRODUCT_CAT_LIST_GETTER](state) {
+      return state.productCatList
     },
   },
 
@@ -65,6 +82,38 @@ export default {
           const fileName = `Ton_kho_cua_hang_Filled_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_PRODUCT_LIST_ACTION]({ state }, val) {
+      reportWarehousesInventoryService
+        .getProductLists(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.productList = res.data.content
+            console.log(res.data)
+            state.productListPagination = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_PRODUCT_CAT_LIST_ACTION]({ state }, val) {
+      reportWarehousesInventoryService
+        .getProductCatlists(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.productCatList = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
         })
         .catch(error => {
           toasts.error(error.message)

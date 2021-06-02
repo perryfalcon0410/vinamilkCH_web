@@ -52,8 +52,22 @@
           class="input-group-merge"
           size="sm"
         >
-          <b-input />
-          <b-input-group-append is-text>
+          <b-form-input
+            v-model="products"
+            class="h8 text-brand-3"
+            placeholder="Mã sản phẩm"
+            @keyup.enter="onSaveClick"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <!-- Icon-- Delete-text -->
+            <b-icon-x
+              v-show="products"
+              is-text
+              class="cursor-pointer text-gray"
+              @click="ids = null"
+            />
             <b-icon-three-dots-vertical
               @click="showFindProductModal"
             />
@@ -89,6 +103,7 @@
     <find-product-modal
       :visible="isShowFindProductModal"
       @close="isShowFindProductModal = false"
+      @onSaveClick="onSaveClick($event)"
     />
   </b-form>
 </template>
@@ -121,6 +136,7 @@ export default {
       isShowFindProductModal: false,
       dateFormatVNI,
       date: this.$nowDate,
+      products: null,
       configDate: {
         wrap: true,
         allowInput: true,
@@ -144,9 +160,18 @@ export default {
     ...mapActions(REPORT_WAREHOUSES_INVENTORY, [
       GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
     ]),
+    onSaveClick(param) {
+      this.isShowFindProductModal = false
+      if (param.length > 0) {
+        this.products = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
+      } else {
+        this.products = null
+      }
+    },
     onSearch() {
       const searchData = {
         stockDate: reverseVniDate(this.date),
+        productCodes: this.products,
         ...this.decentralization,
       }
       this.updateSearchData(searchData)
