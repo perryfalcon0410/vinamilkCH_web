@@ -53,7 +53,7 @@
           size="sm"
         >
           <b-form-input
-            v-model="products"
+            v-model="productCodes"
             class="h8 text-brand-3"
             placeholder="Mã sản phẩm"
             @keyup.enter="onSaveClick"
@@ -63,7 +63,7 @@
           >
             <!-- Icon-- Delete-text -->
             <b-icon-x
-              v-show="products"
+              v-show="productCodes"
               is-text
               class="cursor-pointer text-gray"
               @click="ids = null"
@@ -136,7 +136,7 @@ export default {
       isShowFindProductModal: false,
       dateFormatVNI,
       date: this.$nowDate,
-      products: null,
+      productCodes: null,
       configDate: {
         wrap: true,
         allowInput: true,
@@ -163,15 +163,15 @@ export default {
     onSaveClick(param) {
       this.isShowFindProductModal = false
       if (param.length > 0) {
-        this.products = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
+        this.productCodes = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
       } else {
-        this.products = null
+        this.productCodes = null
       }
     },
     onSearch() {
       const searchData = {
         stockDate: reverseVniDate(this.date),
-        productCodes: this.products,
+        productCodes: this.productCodes,
         ...this.decentralization,
       }
       this.updateSearchData(searchData)
