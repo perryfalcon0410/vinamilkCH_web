@@ -409,8 +409,7 @@ export default {
       UPDATE_WAREHOUSES_OUTPUT_ACTION,
     ]),
     navigateBack() {
-      // this.$router.back()
-      console.log(this.getProductOfWarehouseOutput)
+      this.$router.back()
     },
     onClickUpdateWarehousesOutput() {
       const products = this.warehousesOutput.products.map(data => ({
