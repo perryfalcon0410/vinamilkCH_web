@@ -1,9 +1,8 @@
 <template>
   <!-- START Popup -->
   <b-modal
-    ref="payModal"
+    id="pay-modal"
     size="xl"
-    :visible="visible"
     title="Thanh toán hóa đơn"
     title-class="font-weight-bold text-primary"
     content-class="bg-white"
@@ -289,7 +288,7 @@
                 <b-col cols="4">
                   <strong>Tổng tiền hàng
                     <strong class="d-inline-flex text-white px-1 ml-1 bg-primary rounded-pill">
-                      {{ totalQuantity }}
+                      {{ pay.totalQuantity }}
                     </strong>
                   </strong>
 
@@ -297,7 +296,7 @@
 
                 <b-col>
                   <b-form-input
-                    v-model="totalOrderPrice"
+                    v-model="pay.totalAmount"
                     disabled
                   />
                 </b-col>
@@ -316,7 +315,10 @@
                 </b-col>
 
                 <b-col>
-                  <b-form-input disabled />
+                  <b-form-input
+                    v-model="pay.promotionAmount"
+                    disabled
+                  />
                 </b-col>
               </b-row>
             </b-form-group>
@@ -338,14 +340,20 @@
                     no-gutters
                   >
                     <b-col>
-                      <b-form-input disabled />
+                      <b-form-input
+                        v-model="pay.accumulate.accumulatePoint"
+                        disabled
+                      />
                     </b-col>
 
                     <b-col>
                       <b-input-group
                         class="input-group-merge"
                       >
-                        <b-form-input class="form-control-merge" />
+                        <b-form-input
+                          v-model="pay.accumulate.accumulateAmount"
+                          class="form-control-merge"
+                        />
                       </b-input-group>
                     </b-col>
 
@@ -385,7 +393,7 @@
                           />
                         </b-input-group-prepend>
                         <b-form-input
-                          v-model="voucherCode"
+                          v-model="pay.voucher.voucherCode"
                           class="form-control-merge"
                         />
                         <b-input-group-append is-text>
@@ -400,7 +408,7 @@
 
                     <b-col>
                       <b-form-input
-                        v-model="price"
+                        v-model="pay.voucher.voucherAmount"
                         disabled
                       />
                     </b-col>
@@ -432,9 +440,9 @@
                         class="input-group-merge"
                       >
                         <b-form-input
-                          v-model="code"
+                          v-model="pay.discount.discountCode"
                           class="form-control-merge"
-                          @keyup.enter="getDiscount"
+                          @keyup.enter="searchDiscount"
                         />
                         <b-input-group-append
                           is-text
@@ -450,7 +458,7 @@
 
                     <b-col>
                       <b-form-input
-                        v-model="discountAmount"
+                        v-model="pay.discount.discountAmount"
                         disabled
                       />
                     </b-col>
@@ -474,7 +482,7 @@
 
                 <b-col>
                   <b-form-input
-                    v-model="needPayment"
+                    v-model="pay.needPaymentAmount"
                     disabled
                   />
                 </b-col>
@@ -498,13 +506,13 @@
                   >
                     <b-col>
                       <tree-select
-                        v-model="salemtPaymentTypeSelected"
-                        :options="salemtPaymentTypeOptions"
+                        v-model="pay.salePayment.salePaymentType"
+                        :options="salePaymentTypeOptions"
                       />
                     </b-col>
 
                     <b-col>
-                      <b-form-input v-model="payment" />
+                      <b-form-input v-model="pay.salePayment.salePaymentAmount" />
                     </b-col>
 
                   </b-row>
@@ -527,7 +535,7 @@
 
                 <b-col>
                   <b-form-input
-                    v-model="changePayment"
+                    v-model="pay.excessAmount"
                     disabled
                   />
                 </b-col>
@@ -624,13 +632,14 @@ import {
   // GETTERS
   VOUCHER_BY_ID_GETTER,
   GET_PRODUCTS_GETTER,
-  CREATE_SALE_ORDER_GETTER,
   GET_DISCOUNT_BY_CODE_GETTER,
+  GET_PROMOTION_FREE_ITEMS_GETTER,
   // ACTIONS
   GET_VOUCHER_BY_ID_ACTION,
   GET_PRODUCTS_ACTION,
   CREATE_SALE_ORDER_ACTION,
   GET_DISCOUNT_BY_CODE_ACTION,
+  GET_PROMOTION_FREE_ITEMS_ACTION,
 } from '../../store-module/type'
 import {
   CUSTOMER,
@@ -672,8 +681,6 @@ export default {
   },
   data() {
     return {
-      isVoucherModalShow: false,
-      searchTerm: '',
       columnsAdm: [
         {
           label: 'Mã sản phẩm',
@@ -735,85 +742,68 @@ export default {
         },
       ],
 
-      // aparams
-      salemtPaymentTypeSelected: saleData.salePaymentType[0].id,
-
-      // voucher
-      voucherId: null,
-      voucherCode: null,
-      price: 0,
-
-      // payment
-      productId: null,
-      quantity: null,
-      productUnitPrice: null,
-      productTotalPrice: null,
-      productCode: null,
-      products: [],
-      saleOrderProducts: [],
-      payment: 0,
-
-      // discount
-      discountCode: null,
-      discountAmount: null,
-
-      shopId: null,
-      salemanId: null,
-      wareHouseTypeId: null,
-      totalPaid: null,
-      type: 0,
-      paymentType: 0,
-      deliveryType: 1,
-      orderType: 0,
-      usedRedInvoice: null,
-      isFreeItem: false,
-      zmPromotion: 0,
+      salePaymentTypeOptions: saleData.salePaymentType,
+      pay: {
+        totalQuantity: 0,
+        totalAmount: null,
+        promotionAmount: null,
+        accumulate: {
+          accumulatePoint: null,
+          accumulateAmount: null,
+        },
+        voucher: {
+          voucherId: null,
+          voucherCode: '',
+          oucherAmount: null,
+        },
+        discount: {
+          discountCode: '',
+          discountAmount: null,
+        },
+        needPaymentAmount: null,
+        salePayment: {
+          salePaymentType: saleData.salePaymentType[0].id,
+          salePaymentAmount: null,
+        },
+        excessAmount: null,
+        shopId: null,
+        salemanId: null,
+        totalPaid: null,
+        type: 0,
+        deliveryType: 1,
+        orderType: 0,
+        usedRedInvoice: null,
+      },
+      formId: 5, // hard code permission
+      ctrlId: 1, // hard code permission
     }
   },
   computed: {
     ...mapGetters(SALES, [
       VOUCHER_BY_ID_GETTER,
       GET_PRODUCTS_GETTER,
-      CREATE_SALE_ORDER_GETTER,
       GET_DISCOUNT_BY_CODE_GETTER,
+      GET_PROMOTION_FREE_ITEMS_GETTER,
     ]),
     ...mapGetters(CUSTOMER, [
       SALEMT_PAYMENT_TYPE_GETTER,
     ]),
 
-    voucher() {
+    getVoucher() {
       return this.VOUCHER_BY_ID_GETTER
     },
 
-    discount() {
-      return this.GET_DISCOUNT_BY_CODE_GETTER
+    getDiscount() {
+      if (this.GET_DISCOUNT_BY_CODE_GETTER) {
+        return this.GET_DISCOUNT_BY_CODE_GETTER
+      }
+      return {}
     },
 
     salemtPaymentTypeOptions() {
       return this.SALEMT_PAYMENT_TYPE_GETTER.map(data => ({
         id: data.value,
         label: data.apParamName,
-      }))
-    },
-
-    getProducts() {
-      return this.GET_PRODUCTS_GETTER.map(data => ({
-        productCode: data.productCode,
-        productId: data.id,
-        quantity: this.$formatNumberToLocale(1),
-        isFreeItem: false,
-        zmPromotion: 0,
-        productUnitPrice: this.$formatNumberToLocale(data.price),
-        productTotalPrice: Number(this.totalPrice(1, Number(data.price))),
-      }))
-    },
-
-    getSaleOrderProducts() {
-      return this.GET_PRODUCTS_GETTER.map(data => ({
-        productId: data.id,
-        quantity: 1,
-        isFreeItem: false,
-        zmPromotion: 0,
       }))
     },
 
@@ -838,30 +828,52 @@ export default {
       }
       return change
     },
+    getPromotionFreeItems() {
+      if (this.GET_PROMOTION_FREE_ITEMS_GETTER) {
+        return this.GET_PROMOTION_FREE_ITEMS_GETTER
+      }
+      return {}
+    },
   },
   watch: {
-    voucher() {
-      this.getVoucherById()
+    getVoucher() {
+      this.pay.voucher.voucherCode = this.getVoucher.voucherCode
+      this.pay.voucher.voucherAmount = this.getVoucher.price
     },
 
-    discount() {
-      this.getDiscount()
+    getDiscount() {
+      this.pay.discount.discountCode = this.getDiscount.discountCode
+      this.pay.discount.discountAmount = this.getDiscount.discountAmount
     },
 
-    getProducts() {
-      this.products = [...this.getProducts]
+    // salemtPaymentTypeSelected() {
+    //   this.GET_SALEMT_PAYMENT_TYPE_ACTION({ formId: 1, ctrlId: 4 })
+    // },
+    orderProducts: {
+      handler() {
+        const products = this.orderProducts.map(data => ({
+          productCode: data.productCode,
+          productId: data.productId,
+          quantity: data.quantity,
+        }))
+        console.log(products)
+        // this.GET_PROMOTION_FREE_ITEMS_ACTION({
+        //   productList: products,
+        // })
+      },
+      deep: true,
     },
-
-    getSaleOrderProducts() {
-      this.saleOrderProducts = [...this.getSaleOrderProducts]
+    getPromotionFreeItems() {
+      console.log(this.getPromotionFreeItems)
     },
-
-    salemtPaymentTypeSelected() {
-      this.GET_SALEMT_PAYMENT_TYPE_ACTION({ formId: 1, ctrlId: 4 })
+    totalOrderPrice() {
+      this.pay.totalAmount = this.totalOrderPrice
+    },
+    totalQuantity() {
+      this.pay.totalQuantity = this.totalQuantity
     },
   },
   mounted() {
-    this.GET_PRODUCTS_ACTION({ formId: 5, ctrlId: 1, customerTypeId: 1 })
     this.GET_SALEMT_PAYMENT_TYPE_ACTION({ formId: 1, ctrlId: 4 })
   },
   created() {
@@ -873,10 +885,11 @@ export default {
   },
   methods: {
     ...mapActions(SALES, [
-      GET_VOUCHER_BY_ID_ACTION,
       GET_PRODUCTS_ACTION,
       CREATE_SALE_ORDER_ACTION,
       GET_DISCOUNT_BY_CODE_ACTION,
+      GET_VOUCHER_BY_ID_ACTION,
+      GET_PROMOTION_FREE_ITEMS_ACTION,
     ]),
     ...mapActions(CUSTOMER, [
       GET_SALEMT_PAYMENT_TYPE_ACTION,
@@ -887,41 +900,37 @@ export default {
     },
 
     getVoucherInfo(id) {
-      this.voucherId = id
-      const productIds = this.getProducts.map(item => item.productId)
+      this.pay.voucher.voucherId = id
+      const productIds = this.orderProducts.map(item => item.productId)
       const params = {
         ctrlId: 7,
         formId: 5,
       }
 
-      this.GET_VOUCHER_BY_ID_ACTION(`${this.voucherId}?customerId=${this.customerId}&productIds=${productIds}`, params)
+      this.GET_VOUCHER_BY_ID_ACTION(`${this.pay.voucher.voucherId}?customerId=${this.customerId}&productIds=${productIds}`, params)
     },
 
-    getVoucherById() {
-      this.voucherCode = this.voucher.voucherCode
-      this.price = this.voucher.price
-    },
+    searchDiscount() {
+      const products = this.orderProducts.map(data => ({
+        productId: data.productId,
+        quantity: data.quantity,
+      }))
 
-    getDiscount() {
-      this.discountCode = this.discount.discountCode
-      this.discountAmount = this.discount.discountAmount
-
-      const paramsGetDiscount = {
-        code: 'CODE0003',
-        formId: 1, // Hard code
-        ctrlId: 4, // Hard code
-      }
-
-      this.GET_DISCOUNT_BY_CODE_ACTION(paramsGetDiscount)
+      this.GET_DISCOUNT_BY_CODE_ACTION({
+        code: this.pay.discount.discountCode,
+        customerId: this.customerId,
+        products,
+      })
     },
 
     resetVoucher() {
-      this.voucherCode = null
-      this.price = null
+      this.pay.voucher.voucherCode = ''
+      this.pay.voucher.voucherAmount = null
     },
 
     resetDiscount() {
-      this.discountCode = null
+      this.pay.discount.discountCode = ''
+      this.pay.discount.discountAmount = null
     },
 
     resetOrderPayment() {
@@ -934,27 +943,27 @@ export default {
       return amount * (price || 0)
     },
 
-    createSaleOrder() {
-      this.CREATE_SALE_ORDER_ACTION({
-        product: {
-          shopId: this.shopId,
-          customerId: this.customerId,
-          totalPaid: this.totalOrderPrice,
-          paymentType: this.salemtPaymentTypeSelected,
-          deliveryType: this.deliverySelected,
-          orderType: this.orderSelected,
-          voucherId: this.voucherId,
-          products: this.orderProducts,
-          type: 0,
-          salemanId: 1,
-          usedRedInvoice: false,
-        },
-        onSuccess: () => {
-          this.$refs.payModal.hide()
-          this.resetOrderPayment()
-        },
-      })
-    },
+    // createSaleOrder() {
+    //   this.CREATE_SALE_ORDER_ACTION({
+    //     product: {
+    //       shopId: this.shopId,
+    //       customerId: this.customerId,
+    //       totalPaid: this.totalOrderPrice,
+    //       paymentType: this.salemtPaymentTypeSelected,
+    //       deliveryType: this.deliverySelected,
+    //       orderType: this.orderSelected,
+    //       voucherId: this.voucherId,
+    //       products: this.orderProducts,
+    //       type: 0,
+    //       salemanId: 1,
+    //       usedRedInvoice: false,
+    //     },
+    //     onSuccess: () => {
+    //       this.$refs.payModal.hide()
+    //       this.resetOrderPayment()
+    //     },
+    //   })
+    // },
   },
 }
 </script>

@@ -590,7 +590,7 @@ export default {
     },
 
     showPayModal() {
-      this.$refs.payModal.$refs.payModal.show()
+      this.$root.$emit('bv::toggle::modal', 'pay-modal')
       // this.$emit('orderProducts', this.orderProducts)
     },
 

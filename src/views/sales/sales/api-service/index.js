@@ -13,6 +13,7 @@ import {
   getDiscountByCodeEndpoint,
   updatePriceTypeCustomerEndpoint,
   getProductsTopSaleMonthEndpoint,
+  getPromotionFreeItemsEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -67,10 +68,9 @@ export default {
   },
 
   getDiscountByCode(args) {
-    return axios.get((`${getDiscountByCodeEndpoint}/${args.code}`), {
+    return axios.post(`${getDiscountByCodeEndpoint}/${args.code}`, args.products, {
       params: {
-        formId: args.formId,
-        ctrlId: args.ctrlId,
+        customerId: args.customerId,
       },
     })
   },
@@ -82,5 +82,8 @@ export default {
     return axios.get(getProductsTopSaleMonthEndpoint, {
       params: formatURLParams(args),
     })
+  },
+  getPromotionFreeItems(args) {
+    return axios.post(getPromotionFreeItemsEndpoint, args)
   },
 }

@@ -17,6 +17,7 @@ import {
   GET_DISCOUNT_BY_CODE_GETTER,
   UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
   GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER,
+  GET_PROMOTION_FREE_ITEMS_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -33,6 +34,7 @@ import {
   GET_DISCOUNT_BY_CODE_ACTION,
   UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
   GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION,
+  GET_PROMOTION_FREE_ITEMS_ACTION,
 } from './type'
 
 export default {
@@ -53,6 +55,7 @@ export default {
     discount: {},
     customerTypeProducts: [],
     productsInMonth: [],
+    promotionFreeItems: [],
   },
 
   getters: {
@@ -97,6 +100,9 @@ export default {
     },
     [GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER](state) {
       return state.productsInMonth
+    },
+    [GET_PROMOTION_FREE_ITEMS_GETTER](state) {
+      return state.promotionFreeItems
     },
   },
 
@@ -310,6 +316,21 @@ export default {
         .then(res => {
           if (res.success) {
             state.productsInMonth = res.data.content || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_PROMOTION_FREE_ITEMS_ACTION]({ state }, val) {
+      SalesServices
+        .getPromotionFreeItems(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.promotionFreeItems = res.data || []
           } else {
             throw new Error(res.statusValue)
           }

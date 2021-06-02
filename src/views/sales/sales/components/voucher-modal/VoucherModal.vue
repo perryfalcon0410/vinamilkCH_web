@@ -2,11 +2,9 @@
   <!-- START Popup -->
   <b-modal
     id="VoucherModal"
-    ref="voucherModal"
     size="xl"
-    :visible="visible"
     title="Chọn voucher"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     content-class="bg-white"
     footer-border-variant="white"
     hide-header-close
@@ -17,7 +15,7 @@
       class="px-0"
     >
       <b-col class="px-0">
-        <strong>
+        <strong class="text-brand-1">
           Voucher
         </strong>
 
@@ -34,12 +32,12 @@
             />
           </b-col>
           <b-button
-            variant="primary"
+            class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
+            variant="someThing"
             @click="onClickSearchButton()"
           >
             <b-icon-search
-              class="mr-1"
-              scale="1.3"
+              class="mr-0.5"
             />
             Tìm kiếm
           </b-button>
@@ -54,6 +52,15 @@
         line-numbers
         class="my-1"
       >
+        <!-- START - Empty rows -->
+        <div
+          slot="emptystate"
+          class="text-center"
+        >
+          Không có dữ liệu
+        </div>
+        <!-- END - Empty rows -->
+
         <!-- START - Row -->
         <template
           slot="table-row"
@@ -61,7 +68,8 @@
         >
           <div v-if="props.column.field === 'Manipulation'">
             <b-button
-              variant="primary"
+              class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
+              variant="someThing"
               @click="getVoucherInfo(props.row.id)"
             >
               <b-icon-hand-index-thumb
@@ -219,13 +227,9 @@ export default {
       GET_VOUCHERS_ACTION,
     ]),
 
-    onClickCloseButton() {
-      this.$refs.voucherModal.hide()
-    },
-
     getVoucherInfo(id) {
-      this.onClickCloseButton()
       this.$emit('getVoucherInfo', id)
+      this.$root.$emit('bv::hide::modal', 'VoucherModal')
     },
 
     onClickSearchButton() {
