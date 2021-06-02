@@ -887,7 +887,7 @@ export default {
       }
     },
     navigateBack() {
-      if (this.status === null && this.promotionRow.length === 0) {
+      if (this.status === null && this.promotionRow.length === 0 && !this.billNumber && !this.internalNumber && !this.poNo) {
         this.$router.replace({ name: 'warehouses-input' })
       } else {
         this.showConfirmCloseModal = true

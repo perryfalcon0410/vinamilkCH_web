@@ -231,7 +231,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.importBorrowings = res.data.content || []
+            state.importBorrowings = res.data || []
           } else {
             throw new Error(res.statusValue)
           }

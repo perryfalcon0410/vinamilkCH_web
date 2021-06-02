@@ -19,7 +19,7 @@
       <b-form>
         <b-form-row class="v-search-form mx-0 pt-1">
           <b-col
-            lg
+            xl
             md="3"
             sm="4"
           >
@@ -28,13 +28,13 @@
             </div>
             <b-input-group
               class="input-group-merge"
-              size="sm"
+              size="md"
             >
               <b-input />
             </b-input-group>
           </b-col>
           <b-col
-            lg
+            xl
             md="3"
             sm="4"
           >
@@ -43,29 +43,20 @@
             </div>
             <b-input-group
               class="input-group-merge"
-              size="sm"
+              size="md"
             >
               <b-input />
             </b-input-group>
           </b-col>
           <b-col
-            lg
-            md="3"
+            xl
+            lg="3"
             sm="4"
           >
             <div>
               Khu vực
             </div>
-            <v-input-select
-              title=""
-              :suggestions="''"
-              :data-input="''"
-              placeholder="Tất cả"
-              title-class="h8 mt-sm-1 mt-xl-0"
-              input-class="h8 height-button-brand-1"
-              suggestions-class="h9"
-              size="sm"
-            />
+            <tree-select />
           </b-col>
           <!-- START - Search button -->
           <b-col
@@ -154,12 +145,7 @@
 </template>
 
 <script>
-import VInputSelect from '@/@core/components/v-input-select/VInputSelect.vue'
-
 export default {
-  components: {
-    VInputSelect,
-  },
   props: {
     visible: {
       type: Boolean,

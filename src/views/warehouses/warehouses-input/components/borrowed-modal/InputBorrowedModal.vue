@@ -281,6 +281,7 @@ export default {
       GET_IMPORT_BORROWINGS_DETAIL_ACTION,
     ]),
     inputBorrow() {
+      console.log(this.importBorrowings)
       if (this.importBorrowings.length > 0) {
         this.$emit('inputBorrowsChange', [this.sysDate, this.importBorrowingsDetail, this.importBorrowingInfo, this.current, this.note])
         this.$emit('close')
