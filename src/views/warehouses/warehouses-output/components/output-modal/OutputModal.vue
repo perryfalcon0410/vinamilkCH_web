@@ -462,7 +462,7 @@ export default {
             unit: data.unit,
             totalPrice: formatNumberToLocale(data.totalPrice),
             export: `${data.export}/${data.quantity}`,
-            productReturnAmount: 0,
+            productReturnAmount: null,
             productReturnAmountOriginal: data.quantity,
           }))
           const poTranData = {
