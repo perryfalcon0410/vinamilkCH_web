@@ -320,7 +320,7 @@
                   <div v-if="props.column.field === 'quantity' && canEdit">
                     <b-input
                       v-model="props.row.quantity"
-                      maxlength="10"
+                      maxlength="7"
                       :number="true"
                       :value="props.row.quantity"
                       @change="updateQuantity(props.row.originalIndex, props.row.quantity)"

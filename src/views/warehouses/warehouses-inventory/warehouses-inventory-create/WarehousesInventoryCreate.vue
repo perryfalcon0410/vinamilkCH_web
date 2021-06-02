@@ -335,7 +335,7 @@
             <div v-if="props.column.field === 'inventoryPacket'">
               <b-input
                 v-model="props.row.inventoryPacket"
-                maxlength="10"
+                maxlength="7"
                 :number="true"
                 :value="props.row.inventoryPacket"
                 @change="updateInventoryPacket(props.row.originalIndex, props.row.inventoryPacket)"
@@ -346,7 +346,7 @@
             <div v-else-if="props.column.field === 'inventoryOdd'">
               <b-input
                 v-model="props.row.inventoryOdd"
-                maxlength="10"
+                maxlength="7"
                 :number="true"
                 :value="props.row.inventoryOdd"
                 @change="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
