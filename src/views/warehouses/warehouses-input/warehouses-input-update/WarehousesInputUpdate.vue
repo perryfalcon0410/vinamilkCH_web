@@ -21,7 +21,7 @@
                 Ngày nhập:
               </b-col>
               <b-col class="font-weight-bold">
-                {{ transDate }}
+                {{ transDateTime }}
               </b-col>
             </b-row>
             <!-- END - Date -->
@@ -142,7 +142,7 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  :rules="importType === inputType ? 'required' : ''"
+                  :rules="importType === inputType ? required : null"
                   name="PO No"
                 >
                   <div class="mt-1">
@@ -477,6 +477,7 @@ export default {
       note: null,
       transCode: null,
       transDate: null,
+      transDateTime: null,
       wareHouseTypeName: null,
       today: this.$nowDate,
       importTypeName: null,
@@ -642,11 +643,12 @@ export default {
   watch: {
     receipt() {
       this.transCode = this.RECEIPT_BY_ID_GETTER().transCode
-      this.transDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().transDate, false, true)
+      this.transDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().transDate)
+      this.transDateTime = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().transDate, false, true)
       this.wareHouseTypeName = this.RECEIPT_BY_ID_GETTER().wareHouseTypeName
       this.billNumber = this.RECEIPT_BY_ID_GETTER().redInvoiceNo
       this.internalNumber = this.RECEIPT_BY_ID_GETTER().internalNumber
-      this.poCoNumber = this.RECEIPT_BY_ID_GETTER().poCoNumber
+      this.poNumber = this.RECEIPT_BY_ID_GETTER().pocoNumber
       this.note = this.RECEIPT_BY_ID_GETTER().note
       this.importTypeName = this.warehousesInputOptions[this.$route.params.type].label
       switch (this.importType) {

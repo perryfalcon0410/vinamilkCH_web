@@ -302,7 +302,7 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  formatNumberToLocale, reverseVniDate, replaceDotWithComma, formatVniDateToGlobal,
+  formatNumberToLocale, replaceDotWithComma, formatDateToLocale,
 } from '@core/utils/filter'
 import ReportsWarehousesInputOutputInventoryListSearch from './components/ReportsWarehousesInputOutputInventoryListSearch.vue'
 import {
@@ -715,8 +715,8 @@ export default {
     onClickExcelExportButton() {
       this.EXPORT_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION({
         productCodes: this.paginationData.productCodes,
-        fromDate: formatVniDateToGlobal(reverseVniDate(this.paginationData.fromDate)),
-        toDate: formatVniDateToGlobal(reverseVniDate(this.paginationData.toDate)),
+        fromDate: formatDateToLocale(this.paginationData.fromDate),
+        toDate: formatDateToLocale(this.paginationData.toDate),
       })
     },
     updatePageNumber() {
