@@ -10,15 +10,24 @@
       <b-col
         sm="7"
         xl="4"
-        class="px-0 mr-1 shadow mb-1 mr-2 mb-sm-0"
+        class="px-0 mr-1 shadow mb-1 mr-2 mb-sm-0 form-control-merge"
       >
-        <b-input
-          v-model="searchOptions.keyWord"
-          placeholder="Tìm sản phẩm (F3)"
-          @focus="inputSearchFocused = true"
-          @blur="inputSearchFocused = false"
-          @keyup="onChangeKeyWord"
-        />
+        <b-input-group class="input-group-merge">
+          <b-form-input
+            v-model="searchOptions.keyWord"
+            class="form-control-merge"
+            placeholder="Tìm sản phẩm (F3)"
+            @focus="inputSearchFocused = true"
+            @blur="inputSearchFocused = false"
+            @keyup="onChangeKeyWord"
+          />
+          <b-input-group-append
+            class="px-0 pb-0 m-0"
+            is-text
+          >
+            <b-form-checkbox v-model="checkStockTotal" />
+          </b-input-group-append>
+        </b-input-group>
 
         <!-- START - Product Popup -->
         <b-collapse
@@ -113,6 +122,7 @@
 
     </b-row>
     <!-- END - Header -->
+    <div class="break">{{ bills }}</div>
 
     <!-- START - Body -->
     <b-row
@@ -275,6 +285,7 @@ export default {
     return {
       inputSearchFocused: false,
       productImage: null,
+      checkStockTotal: true,
 
       columns: [
         {
@@ -405,6 +416,7 @@ export default {
     },
     getProductSearch() {
       return this.GET_TOP_SALE_PRODUCTS_GETTER().map(data => ({
+        checkStockTotal: data.checkStockTotal,
         productName: data.productName,
         productCode: data.productCode,
         productUnit: data.uom1,
@@ -475,6 +487,7 @@ export default {
     this.GET_PRODUCT_INFOS_ACTION(paramGetProductInfo)
 
     const paramGetProductsTopSale = {
+      checkStockTotal: this.checkStockTotal ? 0 : 1,
       keyWord: '',
       customerTypeId: 1, // Hard code
       page: 0,
