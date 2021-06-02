@@ -306,11 +306,11 @@
                   </b-row>
 
                   <b-row
-                    v-else-if="props.column.field === 'totalPrice'"
+                    v-else-if="props.column.field === 'productCode'"
                     class="mx-0"
                     align-h="end"
                   >
-                    {{ totalPromotionPrice }}
+                    {{ totalProductCode }}
                   </b-row>
                 </template>
                 <template
@@ -564,6 +564,7 @@ export default {
       productSearch: null,
       inputSearchFocusedSP: false,
       totalPromotionQuantity: 0,
+      totalProductCode: 0,
       id: this.$route.params.id,
       importType: Number(this.$route.params.type),
       inputType: Number(warehousesData.inputTypes[0].id), // Loại nhập hàng
@@ -608,8 +609,8 @@ export default {
     getTotalPromotionQuantity() {
       return this.$formatNumberToLocale(this.promotions.reduce((accum, item) => accum + Number(item.quantity), 0))
     },
-    totalPromotionPrice() {
-      return 0
+    getTotalProductCode() {
+      return this.$formatNumberToLocale(this.promotions.length)
     },
     allProducts() {
       return this.PRODUCTS_GETTER().map(data => ({
@@ -667,6 +668,9 @@ export default {
     },
     getTotalPromotionQuantity() {
       this.totalPromotionQuantity = this.getTotalPromotionQuantity
+    },
+    getTotalProductCode() {
+      this.totalProductCode = this.getTotalProductCode
     },
   },
 

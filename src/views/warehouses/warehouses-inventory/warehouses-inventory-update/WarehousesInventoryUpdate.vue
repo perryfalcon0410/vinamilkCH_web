@@ -100,15 +100,23 @@
       >
         <!-- START - Table -->
         <vue-good-table
+          mode="remote"
           :columns="columns"
           :rows="products"
-          style-class="vgt-table striped"
+          style-class="vgt-table bordered"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: elementSize,
+            setCurrentPage: pageNumber,
           }"
           compact-mode
           line-numbers
+          :total-rows="warehouseInventoryPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+          }"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           <div
             slot="emptystate"
@@ -200,7 +208,7 @@
                 <span
                   class="text-nowrap"
                 >
-                  Hiển thị 1 đến
+                  Số hàng hiển thị
                 </span>
                 <b-form-select
                   v-model="elementSize"
@@ -209,13 +217,11 @@
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                > trong {{ productsQuantity }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="productsQuantity"
+                :total-rows="warehouseInventoryPagination.totalElements"
                 :per-page="elementSize"
                 first-number
                 last-number
@@ -368,7 +374,12 @@ export default {
       elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
       paginationOptions: commonData.perPageSizes,
-      paginationData: { isPaging: true },
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+        isPaging: true,
+      },
       countingCode: '',
       countingDate: null,
       warehouseType: null,
@@ -503,8 +514,14 @@ export default {
   },
 
   computed: {
+    ...mapGetters(WAREHOUSEINVENTORY, [
+      WAREHOUSE_TYPES_GETTER,
+      WAREHOUSE_INVENTORY_DATA_GETTER,
+      WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
+      WAREHOUSE_INVENTORY_DETAIL_GETTER,
+    ]),
     warehouseTypes() {
-      return this.WAREHOUSE_TYPES_GETTER().map(data => ({
+      return this.WAREHOUSE_TYPES_GETTER.map(data => ({
         id: data.id,
         label: data.wareHouseTypeName,
         isDefault: data.isDefault,
@@ -532,29 +549,30 @@ export default {
       return this.products.reduce((accum, item) => accum + Number(item.originalUnequal), 0)
     },
     isExistedWarehouseInventory() {
-      return this.IS_EXISTED_WAREHOUSE_INVENTORY_GETTER()
+      return this.IS_EXISTED_WAREHOUSE_INVENTORY_GETTER
     },
     getWarehouseInventoryData() {
-      return this.WAREHOUSE_INVENTORY_DATA_GETTER()
+      return this.WAREHOUSE_INVENTORY_DATA_GETTER
     },
     getWarehouseInventoryDetail() {
-      return this.WAREHOUSE_INVENTORY_DETAIL_GETTER()
+      return this.WAREHOUSE_INVENTORY_DETAIL_GETTER
+    },
+    warehouseInventoryPagination() {
+      if (this.WAREHOUSE_INVENTORY_DETAIL_GETTER.response) {
+        return this.WAREHOUSE_INVENTORY_DETAIL_GETTER.response
+      }
+      return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehouseInventoryPagination.totalElements
+        ? this.warehouseInventoryPagination.totalElements : (this.elementSize * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.warehouseInventoryPagination.totalElements} mục`
     },
   },
 
   watch: {
-    pageNumber() {
-      this.paginationData.page = this.pageNumber - 1
-      this.onPaginationChange()
-    },
-    elementSize() {
-      this.paginationData.size = this.elementSize
-      this.onPaginationChange()
-    },
-    paginationData() {
-      this.pageNumber = 1
-      this.onPaginationChange()
-    },
     getProductsQuantity() {
       this.productsQuantity = this.getProductsQuantity
     },
@@ -580,11 +598,11 @@ export default {
       this.warehousesInventoryData = { ...this.getWarehouseInventoryData }
     },
     getWarehouseInventoryDetail() {
-      this.countingCode = this.WAREHOUSE_INVENTORY_DETAIL_GETTER().info.countingCode
-      this.countingDate = formatISOtoVNI(this.WAREHOUSE_INVENTORY_DETAIL_GETTER().info.countingDate)
-      this.warehouseType = this.WAREHOUSE_INVENTORY_DETAIL_GETTER().info.warehouseType
+      this.countingCode = this.WAREHOUSE_INVENTORY_DETAIL_GETTER.info.countingCode
+      this.countingDate = formatISOtoVNI(this.WAREHOUSE_INVENTORY_DETAIL_GETTER.info.countingDate)
+      this.warehouseType = this.WAREHOUSE_INVENTORY_DETAIL_GETTER.info.warehouseType
 
-      this.products = this.WAREHOUSE_INVENTORY_DETAIL_GETTER().response.content.map(data => ({
+      this.products = this.WAREHOUSE_INVENTORY_DETAIL_GETTER.response.content.map(data => ({
         category: data.productCategory,
         productId: data.productId,
         productCode: data.productCode,
@@ -624,14 +642,19 @@ export default {
       GET_WAREHOUSE_INVENTORY_DETAIL_ACTION,
       UPDATE_WAREHOUSE_INVENTORY_ACTION,
     ]),
-    ...mapGetters(WAREHOUSEINVENTORY, [
-      WAREHOUSE_TYPES_GETTER,
-      WAREHOUSE_INVENTORY_DATA_GETTER,
-      WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
-      WAREHOUSE_INVENTORY_DETAIL_GETTER,
-    ]),
     onPaginationChange() {
-      this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION(this.paginationData)
+      this.GET_WAREHOUSE_INVENTORY_DETAIL_ACTION({ ...this.paginationData })
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
     },
     onClickCloseButton() {
       this.isModalCloseShow = !this.isModalCloseShow
