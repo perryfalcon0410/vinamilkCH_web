@@ -160,7 +160,10 @@
       <!-- END - Delivery Bill list -->
 
       <!-- START - Product list -->
-      <b-form class="bg-white rounded shadow rounded mt-1">
+      <b-form
+        v-if="productDetailTable"
+        class="bg-white rounded shadow rounded mt-1"
+      >
         <!-- START - Header -->
         <b-row
           class="justify-content-between border-bottom p-1 mx-0"
@@ -267,6 +270,8 @@ export default {
   },
   data() {
     return {
+      productDetailTable: false,
+
       elementSize: commonData.perPageSizes[0],
       pageNumber: commonData.pageNumber,
       paginationOptions: commonData.perPageSizes,
@@ -415,6 +420,7 @@ export default {
       this.GET_EXPORT_BORROWINGS_DETAIL_ACTION({
         id,
         onSuccess: () => {
+          this.productDetailTable = true
         },
       })
     },

@@ -341,11 +341,15 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(WAREHOUSES_OUTPUT, [
+      GET_WAREHOUSES_OUTPUT_BY_ID_GETTER,
+      GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER,
+    ]),
     getWarehousesOutput() {
-      return this.GET_WAREHOUSES_OUTPUT_BY_ID_GETTER()
+      return this.GET_WAREHOUSES_OUTPUT_BY_ID_GETTER
     },
     getProductOfWarehouseOutput() {
-      return this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER().map(data => ({
+      return this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.map(data => ({
         productID: data.id,
         productCode: data.productCode,
         productPrice: this.$formatNumberToLocale(data.price),
@@ -399,17 +403,14 @@ export default {
     this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION(paramGetDetailsWarehousesOutput)
   },
   methods: {
-    ...mapGetters(WAREHOUSES_OUTPUT, [
-      GET_WAREHOUSES_OUTPUT_BY_ID_GETTER,
-      GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER,
-    ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_BY_ID_ACTION,
       GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION,
       UPDATE_WAREHOUSES_OUTPUT_ACTION,
     ]),
     navigateBack() {
-      this.$router.back()
+      // this.$router.back()
+      console.log(this.getProductOfWarehouseOutput)
     },
     onClickUpdateWarehousesOutput() {
       const products = this.warehousesOutput.products.map(data => ({

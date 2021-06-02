@@ -110,6 +110,7 @@
                     :config="configDate"
                     class="form-control h8"
                     placeholder="Chọn ngày"
+                    :disabled="warehousesOutput.outputTypeSelected !== poOutputType"
                     readonly
                   />
                 </b-row>
@@ -373,7 +374,7 @@ export default {
         internalNumber: '', // số nội bộ
         poNumber: '',
         note: '',
-        transDate: null,
+        transDate: this.$nowDate,
       },
       products: [],
       dateNow: getNow(),

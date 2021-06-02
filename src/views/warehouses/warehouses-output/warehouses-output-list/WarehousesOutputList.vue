@@ -212,7 +212,7 @@
                 class="cursor-pointer ml-1"
                 color="red"
                 scale="1.2"
-                @click="onClickDeleteWarehousesOutput(props.row.id,props.row.type,props.row.code)"
+                @click="onClickDeleteWarehousesOutput(props.row.id,props.row.type,props.row.code, props.row.originalIndex, props.row.date)"
               />
             </div>
             <div v-else>
@@ -315,7 +315,8 @@
       Bạn có muốn xóa đợt xuất hàng {{ warehousesOutputSelected.code }} ?
       <template #modal-footer>
         <b-button
-          variant="none"
+          class="btn-brand-1"
+          variant="someThing"
           @click="onClickAgreeButton()"
         >
           Đồng ý
@@ -335,7 +336,7 @@ import {
   mapGetters,
   mapState,
 } from 'vuex'
-import { reverseVniDate, formatDateToLocale } from '@/@core/utils/filter'
+import { reverseVniDate, formatISOtoVNI } from '@/@core/utils/filter'
 
 import {
   dateFormatVNI,
@@ -467,7 +468,7 @@ export default {
     getWarehousesOutputList() {
       return this.GET_WAREHOUSES_OUTPUT_LIST_GETTER().map(data => ({
         id: data.id,
-        date: data.transDate === '' ? '' : formatDateToLocale(data.transDate),
+        date: data.transDate === '' ? '' : formatISOtoVNI(data.transDate),
         code: data.transCode,
         billNumber: data.redInvoiceNo,
         internalNumber: data.internalNumber,
@@ -568,11 +569,13 @@ export default {
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
     },
-    onClickDeleteWarehousesOutput(id, type, code) {
+    onClickDeleteWarehousesOutput(id, type, code, index, date) {
       this.$refs.salesNotifyModal.show()
       this.warehousesOutputSelected.id = id
       this.warehousesOutputSelected.type = type
       this.warehousesOutputSelected.code = code
+      this.warehousesOutputSelected.index = index
+      this.warehousesOutputSelected.date = date
     },
     closeNotifyModal() {
       this.$refs.salesNotifyModal.hide()
@@ -584,6 +587,9 @@ export default {
       const paramDeleteWarehousesOutput = {
         id: this.warehousesOutputSelected.id,
         type: this.warehousesOutputSelected.type,
+      }
+      if (this.warehousesOutputSelected.date === this.$nowDate) {
+        this.warehousesOutputList.splice(this.warehousesOutputSelected.index, 1)
       }
       this.DELETE_WAREHOUSES_ACTION(paramDeleteWarehousesOutput)
       this.closeNotifyModal()

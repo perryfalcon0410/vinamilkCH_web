@@ -26,6 +26,7 @@
               v-model.trim="transCode"
               :state="transCode ? passed : null"
               placeholder="Nhập mã nhập hàng"
+              hint
             />
             <b-input-group-append
               is-text
@@ -206,7 +207,6 @@
             data-clear
           />
           <vue-flat-pickr
-            id="form-input-date-from"
             v-model="toDate"
             :config="configToDate"
             class="form-control h8"
@@ -275,7 +275,7 @@ export default {
       redInvoiceNo: '',
       internalNumber: '',
       poNo: '',
-      fromDate: this.$earlyMonth,
+      fromDate: this.$nowDate,
       toDate: this.$nowDate,
 
       configFromDate: {
