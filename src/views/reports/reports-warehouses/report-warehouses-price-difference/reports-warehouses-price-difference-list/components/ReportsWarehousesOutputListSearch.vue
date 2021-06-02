@@ -15,15 +15,27 @@
       >
         Số chứng từ
       </div>
-      <b-form-input
-        v-model="licenseNumber"
-        class="h8"
-        placeholder="Nhập số chứng từ"
-        @keyup.enter="onClickSearchButton"
-      />
+      <b-input-group
+        class="input-group-merge"
+      >
+        <b-form-input
+          v-model="licenseNumber"
+          class="h8 text-brand-3"
+          placeholder="Nhập số chứng từ"
+          @keyup.enter="onClickSearchButton"
+        />
+        <b-input-group-append
+          is-text
+        >
+          <b-icon-x
+            v-show="licenseNumber"
+            class="cursor-pointer text-gray"
+            @click="licenseNumber = null"
+          />
+        </b-input-group-append>
+      </b-input-group>
     </b-col>
     <!-- END - License -->
-
     <!-- START - Date From -->
     <b-col
       xl
@@ -38,6 +50,7 @@
       <b-row
         class="v-flat-pickr-group mx-0"
         align-v="center"
+        @keypress="$onlyDateInput"
       >
         <b-icon-x
           v-show="fromDate"
@@ -48,8 +61,8 @@
         />
         <vue-flat-pickr
           v-model="fromDate"
-          :config="configDate"
-          class="form-control h8 text-brand-3"
+          :config="configFromDate"
+          class="form-control h8"
           placeholder="Chọn ngày"
         />
       </b-row>
@@ -70,6 +83,7 @@
       <b-row
         class="v-flat-pickr-group mx-0"
         align-v="center"
+        @keypress="$onlyDateInput"
       >
         <b-icon-x
           v-show="toDate"
@@ -80,11 +94,12 @@
         />
         <vue-flat-pickr
           v-model="toDate"
-          :config="configDate"
-          class="form-control h8 text-brand-3"
+          :config="configToDate"
+          class="form-control h8"
           placeholder="Chọn ngày"
         />
       </b-row>
+
     </b-col>
     <!-- END - Date To -->
 
@@ -101,7 +116,7 @@
       </div>
       <b-input-group class="input-group-merge ">
         <b-form-input
-          v-model.trim="productCode"
+          v-model.trim="ids"
           class="h8"
           placeholder="Nhập mã sản phẩm"
         />
@@ -130,6 +145,7 @@
       <b-row
         class="v-flat-pickr-group mx-0"
         align-v="center"
+        @keypress="$onlyDateInput"
       >
         <b-icon-x
           v-show="fromOrderDate"
@@ -140,8 +156,8 @@
         />
         <vue-flat-pickr
           v-model="fromOrderDate"
-          :config="configDate"
-          class="form-control h8 text-brand-3"
+          :config="configFromOrderDate"
+          class="form-control h8"
           placeholder="Chọn ngày"
         />
       </b-row>
@@ -162,6 +178,7 @@
       <b-row
         class="v-flat-pickr-group mx-0"
         align-v="center"
+        @keypress="$onlyDateInput"
       >
         <b-icon-x
           v-show="toOrderDate"
@@ -172,11 +189,12 @@
         />
         <vue-flat-pickr
           v-model="toOrderDate"
-          :config="configDate"
-          class="form-control h8 text-brand-3"
+          :config="configToOrderDate"
+          class="form-control h8"
           placeholder="Chọn ngày"
         />
       </b-row>
+
     </b-col>
     <!-- END - Bill Date To -->
 
@@ -207,8 +225,8 @@
     <!-- START - Modal -->
     <product-select-modal
       :visible="selectProductModalVisible"
-      @onCloseClick="onModalCloseButtonClick"
-      @onSaveClick="onModalSaveButtonClick"
+      @onCloseClick="onModalCloseClick"
+      @onSaveClick="onSaveClick"
     />
     <!-- END - Modal -->
   </v-card-actions>
@@ -216,74 +234,147 @@
 </template>
 
 <script>
+import {
+  mapActions,
+} from 'vuex'
+import {
+  reverseVniDate,
+} from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import ProductSelectModal from '../../components/ProductSelectModal.vue'
+import {
+  REPORT_WAREHOUSES_DIFFERENCE_PRICE,
+  GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
+} from '../../store-module/type'
 
 export default {
   components: {
     VCardActions,
     ProductSelectModal,
   },
-
+  props: {
+    perPageSize: {
+      type: Number,
+      default: 20,
+    },
+  },
   data() {
     return {
       selectProductModalVisible: false,
-
-      fromDate: null,
-      toDate: null,
-      fromOrderDate: null,
-      toOrderDate: null,
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
+      fromOrderDate: this.$earlyMonth,
+      toOrderDate: this.$nowDate,
       product: null,
       licenseNumber: null,
       productCode: null,
+      isSearchFocus: false,
+      ids: null,
+      isPaging: true,
 
-      configDate: {
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+
+      configFromDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
+      configToDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
+      },
+      configFromOrderDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
+      configToOrderDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
+      },
+    }
+  },
+  computed: {
+  },
+  watch: {
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
+    fromOrderDate() {
+      this.configToOrderDate = {
+        ...this.configToOrderDate,
+        minDate: this.fromOrderDate,
+      }
+    },
+  },
+  mounted() {
+    this.onSearch()
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
+    }
+    this.configToOrderDate = {
+      ...this.configToOrderDate,
+      minDate: this.fromOrderDate,
     }
   },
 
-  mounted() {
-    this.fromDate = this.$earlyMonth
-    this.toDate = this.$nowDate
-    this.fromOrderDate = this.$earlyMonth
-    this.toOrderDate = this.$nowDate
-  },
-
   methods: {
+    ...mapActions(REPORT_WAREHOUSES_DIFFERENCE_PRICE, [
+      GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
+    ]),
     onSelectProductModalClick() {
       this.selectProductModalVisible = true
     },
-    onModalCloseButtonClick() {
+    onModalCloseClick() {
       this.selectProductModalVisible = false
     },
+    onSaveClick(param) {
+      this.selectProductModalVisible = false
+      if (param.length > 0) {
+        this.ids = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
+      } else {
+        this.ids = null
+      }
+    },
+    onSearch() {
+      const searchData = {
+        fromTransDate: reverseVniDate(this.fromDate),
+        toTransDate: reverseVniDate(this.toDate),
+        fromOrderDate: reverseVniDate(this.fromOrderDate),
+        toOrderDate: reverseVniDate(this.toOrderDate),
+        licenseNumber: this.licenseNumber,
+        productCodes: this.ids,
+        isPaging: this.isPaging,
+      }
+      this.updateSearchData(searchData)
+      this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION(searchData)
+    },
     onClickSearchButton() {
-      this.updateSearchData({
-        fromDate: this.fromDate,
-        toDate: this.toDate,
+      const searchData = {
+        fromTransDate: this.fromDate,
+        toTransDate: this.toDate,
+        productCodes: this.ids,
         fromOrderDate: this.fromOrderDate,
         toOrderDate: this.toOrderDate,
         licenseNumber: this.licenseNumber,
-      })
-    },
-    onModalSaveButtonClick(param) {
-      this.selectProductModalVisible = false
-      if (param.length > 0) {
-        const ids = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
-        this.updateSearchData({
-          fromDate: this.fromDate,
-          toDate: this.toDate,
-          fromOrderDate: this.fromOrderDate,
-          toOrderDate: this.toOrderDate,
-          licenseNumber: this.licenseNumber,
-          productCode: ids,
-        })
       }
+      this.onSearch()
+      this.$emit('onClickSearchButton', searchData)
     },
     updateSearchData(data) {
-      this.$emit('onClickSearchButton', data)
+      this.$emit('updateSearchData', data)
     },
   },
 }

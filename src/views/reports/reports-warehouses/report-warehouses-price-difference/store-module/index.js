@@ -1,41 +1,38 @@
 import DifferencePriceServices from '@/views/reports/reports-warehouses/report-warehouses-price-difference/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
+import FileSaver from 'file-saver'
+import moment from 'moment'
 
 import {
   // GETTERS
   GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER,
-  GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_PRODUCT_CATS_GETTER,
-  GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_CHOOSE_PRODUCTS_GETTER,
+  PRODUCT_LISTS_GETTER,
+  PRODUCT_CAT_LISTS_GETTER,
   // ACTIONS
   GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
-  GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_PRODUCT_CATS_ACTION,
-  GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_CHOOSE_PRODUCTS_ACTION,
+  GET_PRODUCT_LISTS_ACTION,
+  GET_PRODUCT_CAT_LISTS_ACTION,
+  EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
 } from './type'
 
 export default {
   namespaced: true,
 
   state: {
-    differencePrices: [],
-    paging: {},
-    info: {},
-    cats: [],
-    products: [],
+    differencePrices: {},
+    productData: {},
+    productCatData: [],
   },
 
   getters: {
     [GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER](state) {
-      return {
-        differencePrices: state.differencePrices,
-        info: state.info,
-        paging: state.paging,
-      }
+      return state.differencePrices
     },
-    [GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_PRODUCT_CATS_GETTER](state) {
-      return state.cats
+    [PRODUCT_LISTS_GETTER](state) {
+      return state.productData
     },
-    [GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_CHOOSE_PRODUCTS_GETTER](state) {
-      return state.products
+    [PRODUCT_CAT_LISTS_GETTER](state) {
+      return state.productCatData
     },
   },
 
@@ -48,15 +45,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.differencePrices = res.data.response.content || []
-            state.info = res.data.info
-            state.paging = {
-              pageable: res.data.response.pageable,
-              totalPages: res.data.response.totalPages,
-              totalElements: res.data.response.totalElements,
-              last: res.data.response.last,
-              numberOfElements: res.data.response.numberOfElements,
-            }
+            state.differencePrices = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -65,13 +54,14 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_PRODUCT_CATS_ACTION]({ state }, val) {
+
+    [GET_PRODUCT_LISTS_ACTION]({ state }, val) {
       DifferencePriceServices
-        .getDifferencePriceProductCats(val)
+        .getProductLists(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.cats = res.data || []
+            state.productData = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }
@@ -80,13 +70,31 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_CHOOSE_PRODUCTS_ACTION]({ state }, val) {
+
+    [GET_PRODUCT_CAT_LISTS_ACTION]({ state }, val) {
       DifferencePriceServices
-        .getDifferencePriceChooseProducts(val)
+        .getProductCatlists(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.products = res.data.content || []
+            state.productCatData = res.data || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION]({ }, val) {
+      DifferencePriceServices
+        .exportDifferencePrice(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            const fileName = `Bao_cao_hang_khuyen_mai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+            const blob = new Blob([res], { type: 'data:application/xlsx' })
+            FileSaver.saveAs(blob, fileName)
           } else {
             throw new Error(res.statusValue)
           }

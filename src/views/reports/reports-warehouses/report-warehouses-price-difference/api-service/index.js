@@ -2,8 +2,9 @@ import axios from '@axios'
 import { formatURLParams } from '@/@core/utils/utils'
 import {
   getDifferencePriceEndPoint,
-  getDifferencePriceProductCatsEndPoint,
-  getDifferencePriceChooseProductsEndPoint,
+  getProductListsEndpoint,
+  getProductCatListsEndpoint,
+  exportDifferencePriceEndPoint,
 } from './defaultConfig'
 
 export default {
@@ -12,12 +13,20 @@ export default {
       params: formatURLParams(args),
     })
   },
-  getDifferencePriceProductCats(args) {
-    return axios.get(getDifferencePriceProductCatsEndPoint, args)
-  },
-  getDifferencePriceChooseProducts(args) {
-    return axios.get(getDifferencePriceChooseProductsEndPoint, {
+  getProductLists(args) {
+    return axios.get(getProductListsEndpoint, {
       params: formatURLParams(args),
+    })
+  },
+  getProductCatlists(args) {
+    return axios.get(getProductCatListsEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  exportDifferencePrice(args) {
+    return axios.get(exportDifferencePriceEndPoint, {
+      params: formatURLParams(args),
+      responseType: 'blob',
     })
   },
 }
