@@ -7,6 +7,9 @@ import {
   REPORT_RETURNED_GOODS_GETTER,
   PRODUCT_LISTS_GETTER,
   PRODUCT_CAT_LISTS_GETTER,
+  PRINT_INPUT_ORDER_DETIAL_GETTER, // temp
+  PRINT_SELLS_GETTER, // temp
+  PRINT_RETURN_GOODS_GETTER,
   // MUTATIONS
   CLEAR_ALL_PRODUCT_LISTS_CHECKED,
   // ACTIONS
@@ -14,16 +17,24 @@ import {
   EXPORT_REPORT_RETURNED_GOODS_ACTION,
   GET_PRODUCT_LISTS_ACTIONS,
   GET_PRODUCT_CAT_LISTS_ACTIONS,
+  PRINT_INPUT_ORDER_DETIAL_ACTION, // temp
+  PRINT_SELLS_ACTION, // temp
+  PRINT_RETURN_GOODS_ACTION,
 } from './type'
 
 export default {
   namespaced: true,
+  // State
   state: {
     reportReturnedgoodData: {},
     productData: {},
     productCatData: [],
     selectedProductRow: [],
+    printInputOrderDetailData: [], // temp
+    printSellsData: [], // temp
+    printReturnGoodsData: [], // temp
   },
+  // Getters
   getters: {
     [REPORT_RETURNED_GOODS_GETTER](state) {
       return state.reportReturnedgoodData
@@ -34,6 +45,15 @@ export default {
     [PRODUCT_CAT_LISTS_GETTER](state) {
       return state.productCatData
     },
+    [PRINT_INPUT_ORDER_DETIAL_GETTER](state) { // temp
+      return state.printInputOrderDetailData
+    },
+    [PRINT_SELLS_GETTER](state) { // temp
+      return state.printSellsData
+    },
+    [PRINT_RETURN_GOODS_GETTER](state) { // temp
+      return state.printReturnGoodsData
+    },
 
   },
   // Mutations
@@ -42,6 +62,7 @@ export default {
       state.selectedProductRow = []
     },
   },
+  // Actions
   actions: {
     [GET_REPORT_RETURNED_GOODS_ACTION]({ state }, val) {
       ReportsService
@@ -99,6 +120,51 @@ export default {
         .then(res => {
           if (res.success) {
             state.productCatData = res.data || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_INPUT_ORDER_DETIAL_ACTION]({ state }, val) { // temp
+      ReportsService
+        .printInputOrderDetail(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printInputOrderDetailData = res.data || {}
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_SELLS_ACTION]({ state }, val) { // temp
+      ReportsService
+        .printSells(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printSellsData = res.data || {}
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_RETURN_GOODS_ACTION]({ state }, val) {
+      ReportsService
+        .printReturnGoods(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printReturnGoodsData = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }

@@ -6,6 +6,7 @@
     title-class="text-uppercase font-weight-bold text-primary"
     footer-class="justify-content-center"
     content-class="bg-light"
+    class="d-print-none"
     footer-border-variant="light"
     hide-header-close
     centered

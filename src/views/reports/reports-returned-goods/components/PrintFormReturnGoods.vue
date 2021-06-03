@@ -491,66 +491,31 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import {
+  REPORT_RETURNED_GOODS,
+  // Getters
+  PRINT_INPUT_ORDER_DETIAL_GETTER,
+  // Actions
+  PRINT_INPUT_ORDER_DETIAL_ACTION,
+} from '../store-module/type'
+
 export default {
   data() {
     return {
-      columns: [
-        {
-          label: 'Mã khách hàng',
-          field: 'customerCode',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Họ tên',
-          field: 'nameText',
-          width: '140px',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Điện thoại',
-          field: 'mobiPhone',
-          type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Ngày sinh',
-          field: 'dob',
-          type: 'date',
-          dateInputFormat: 'dd/MM/yyyy',
-          dateOutputFormat: 'dd/MM/yyyy',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Giới tính',
-          field: 'genderId',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Trạng thái',
-          field: 'status',
-          type: 'boolean',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Nhóm',
-          field: 'customerTypeId',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Ngày tạo',
-          field: 'createdAt',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-      ],
+
     }
+  },
+  computed: {
+    ...mapGetters(REPORT_RETURNED_GOODS, [PRINT_INPUT_ORDER_DETIAL_GETTER]),
+  },
+
+  mounted() {
+    this.PRINT_INPUT_ORDER_DETIAL_ACTION({ ...this.decentralization })
+  },
+
+  methods: {
+    ...mapActions(REPORT_RETURNED_GOODS, [PRINT_INPUT_ORDER_DETIAL_ACTION]),
   },
 }
 </script>

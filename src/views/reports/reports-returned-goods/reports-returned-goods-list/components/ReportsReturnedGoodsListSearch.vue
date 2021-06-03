@@ -2,6 +2,7 @@
 
   <!-- START - Search -->
   <b-form
+    class="d-print-none"
     @keyup.enter="onClickSearchButton"
   >
     <v-card-actions

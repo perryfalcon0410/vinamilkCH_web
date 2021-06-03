@@ -12,7 +12,7 @@
     <!-- END - Search -->
 
     <!-- START - Customer list -->
-    <b-form class="v-search bg-white rounded shadow rounded my-1">
+    <b-form class="v-search bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom px-1 mx-0"
@@ -203,6 +203,11 @@
       <!-- END - Table -->
     </b-form>
     <!-- END - Customer list -->
+
+    <!-- STAT - Print form -->
+    <print-form />
+    <!-- END - Print form -->
+
   </b-container>
 </template>
 
@@ -217,7 +222,6 @@ import {
   getReportReasonTypeslabel,
   resizeAbleTable,
 } from '@core/utils/utils'
-
 import ReportsReturnedGoodsListSearch from './components/ReportsReturnedGoodsListSearch.vue'
 import {
   REPORT_RETURNED_GOODS,
@@ -229,10 +233,12 @@ import {
   GET_REPORT_RETURNED_GOODS_ACTION,
   EXPORT_REPORT_RETURNED_GOODS_ACTION,
 } from '../store-module/type'
+import PrintForm from '../components/PrintFormReturnGoods.vue'
 
 export default {
   components: {
     ReportsReturnedGoodsListSearch,
+    PrintForm,
   },
   data() {
     return {

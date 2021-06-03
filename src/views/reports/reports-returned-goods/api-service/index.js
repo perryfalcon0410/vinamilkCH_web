@@ -1,13 +1,19 @@
 import axios from '@axios'
 import { formatURLParams } from '@/@core/utils/utils'
 import {
+  // Reports
   getReportsReturnedGoodsEndpoint,
   exportReportsReturnedGoodsEndpoint,
+  printInputOrderDetailEndpoint, // temp
+  printSellsEndpoint, // temp
+  printReturnGoodsEndpoint,
+  // Sales
   getProductCatListsEndpoint,
   getProductListsEndpoint,
 } from './defaultConfig'
 
 export default {
+  // Reports
   getReportsReturnedGoods(args) {
     return axios.get(getReportsReturnedGoodsEndpoint, {
       params: formatURLParams(args),
@@ -19,6 +25,22 @@ export default {
       responseType: 'blob',
     })
   },
+  printInputOrderDetail(args) {
+    return axios.get(printInputOrderDetailEndpoint, { // temp
+      params: formatURLParams(args),
+    })
+  },
+  printSells(args) {
+    return axios.get(printSellsEndpoint, { // temp
+      params: formatURLParams(args),
+    })
+  },
+  printReturnGoods(args) {
+    return axios.get(printReturnGoodsEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  // Sales
   getProductLists(args) {
     return axios.get(getProductListsEndpoint, {
       params: formatURLParams(args),

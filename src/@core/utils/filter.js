@@ -38,6 +38,8 @@ export const formatDateToLocale = (value, formatting = { day: '2-digit', month: 
 }
 
 export const formatISOtoVNI = (isoTime, includeTime, includeText) => {
+  // eslint-disable-next-line no-param-reassign
+  isoTime += '.000Z'
   const date1 = new Date(isoTime)
   const dateObj = new Date(date1.getTime() + (date1.getTimezoneOffset() * 60000))
 

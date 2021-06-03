@@ -179,14 +179,6 @@
       <!-- END - Table -->
     </b-form>
     <!-- END - Customer list -->
-
-    <!-- STAT - Print form -->
-    <print-form
-      :columns="columns"
-      :rows="customers"
-    />
-    <!-- END - Print form -->
-
   </b-container>
 </template>
 
@@ -203,7 +195,6 @@ import {
   resizeAbleTable,
 } from '@core/utils/utils'
 import { formatDateToLocale } from '@core/utils/filter'
-import PrintForm from './components/PrintFormOrderInputDetail.vue'
 
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
@@ -218,7 +209,6 @@ import {
 export default {
   components: {
     SalesCustomersListSearch,
-    PrintForm,
   },
   data() {
     return {
