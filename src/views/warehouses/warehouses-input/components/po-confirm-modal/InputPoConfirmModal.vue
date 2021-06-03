@@ -1,5 +1,6 @@
 <template>
   <b-modal
+    id="po-confirm-modal"
     size="xl"
     :visible="visible"
     title="Danh sách PO Confirm"
@@ -230,7 +231,7 @@
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
-        @click="cancel()"
+        @click="close"
       >
         <b-icon
           icon="x"
@@ -465,6 +466,7 @@ export default {
       if (this.poConfirm.length > 0) {
         this.$emit('inputChange', [this.sysDate, this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, this.Snb, this.poNumber, this.current])
         this.$emit('close')
+        this.close()
       } else {
         toasts.error('Bạn cần chọn tối thiểu 1 bản ghi PO')
       }
@@ -485,11 +487,12 @@ export default {
       }
     },
     close() {
-      this.denyModalVisible = false
+      this.$root.$emit('bv::hide::modal', 'po-confirm-modal')
       this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId }) // hard code
-    },
-    cancel() {
-      this.$emit('close')
+      if (this.poConfirm.length === 0) {
+        this.poProducts = []
+        this.poPromotionProducts = []
+      }
     },
   },
 }

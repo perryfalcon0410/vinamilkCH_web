@@ -134,7 +134,7 @@
                   class="mx-0"
                   align-h="center"
                 >
-                  {{ totalQuantity }}
+                  {{ $formatNumberToLocale(totalQuantity) }}
                 </b-row>
               </template>
               <!-- START - Column filter -->
@@ -291,8 +291,8 @@ export default {
         return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().combos.map(data => ({
           productCode: data.productCode,
           productName: data.productName,
-          quantity: data.quantity,
-          productPrice: data.productPrice,
+          quantity: this.$formatNumberToLocale(data.quantity),
+          productPrice: this.$formatNumberToLocale(data.productPrice),
         }))
       }
       return []
@@ -304,8 +304,8 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           factor: data.factor,
-          quantity: data.quantity,
-          price: data.price,
+          quantity: this.$formatNumberToLocale(data.quantity),
+          price: this.$formatNumberToLocale(data.price),
         })) || []
       }
       return []

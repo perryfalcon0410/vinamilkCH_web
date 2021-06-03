@@ -221,15 +221,23 @@
                 slot="column-filter"
                 slot-scope="props"
               >
+                <b-row
+                  v-if="props.column.field === 'productCode' && totalProduct !== 0"
+                  class="mx-0"
+                  align-h="center"
+                >
+                  {{ $formatNumberToLocale(totalProduct) }}
+                </b-row>
                 <!--START - Choose import po product-->
                 <b-row
                   v-if="props.column.field === 'quantity'"
                   class="mx-0"
                   align-h="center"
                 >
-                  {{ $formatNumberToLocale(poProductInfo.totalQuantity) ||
-                    $formatNumberToLocale(poAdjustInfo.totalQuantity) ||
-                    $formatNumberToLocale(poBorrowingInfo.totalQuantity)
+                  {{
+                    $formatNumberToLocale(poProductInfo.totalQuantity) ||
+                      $formatNumberToLocale(poAdjustInfo.totalQuantity) ||
+                      $formatNumberToLocale(poBorrowingInfo.totalQuantity)
                   }}
                 </b-row>
                 <b-row
@@ -238,6 +246,16 @@
                   align-h="end"
                 >
                   {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
+                </b-row>
+                <b-row
+                  v-else-if="props.column.field === 'totalPrice'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  {{
+                    $formatNumberToLocale(poAdjustInfo.totalPrice) ||
+                      $formatNumberToLocale(poBorrowingInfo.totalPrice)
+                  }}
                 </b-row>
               </template>
               <!-- START - Empty rows -->
@@ -272,19 +290,18 @@
                   slot-scope="props"
                 >
                   <b-row
+                    v-if="props.column.field === 'productCode'"
+                    class="mx-0"
+                    align-h="center"
+                  >
+                    {{ $formatNumberToLocale(totalPoPromoProduct) }}
+                  </b-row>
+                  <b-row
                     v-if="props.column.field === 'quantity'"
                     class="mx-0"
                     align-h="center"
                   >
                     {{ $formatNumberToLocale(poPromotionProductsInfo.totalQuantity) }}
-                  </b-row>
-
-                  <b-row
-                    v-else-if="props.column.field === 'totalPrice'"
-                    class="mx-0"
-                    align-h="end"
-                  >
-                    {{ $formatNumberToLocale(poPromotionProductsInfo.totalPrice) }}
                   </b-row>
 
                 </template>
@@ -323,7 +340,7 @@
                     class="mx-0"
                     align-h="center"
                   >
-                    {{ totalPromoProductQuantity }}
+                    {{ $formatNumberToLocale(totalPromoProductQuantity) }}
                   </b-row>
 
                   <b-row
@@ -463,19 +480,13 @@
 
     <!-- START - Modal -->
     <adjustment-modal
-      :visible="adjustmentModalVisible"
       @inputAdjustChange="dataFromInputAdjust($event)"
-      @close="adjustmentModalVisible = false"
     />
     <borrowed-modal
-      :visible="borrowedModalVisible"
       @inputBorrowsChange="dataFormInputBorrow($event)"
-      @close="borrowedModalVisible = false"
     />
     <po-confirm-modal
-      :visible="poConfirmModalVisible"
       @inputChange="dataFromPoConfirm($event)"
-      @close="poConfirmModalVisible = false"
     />
     <confirm-close-modal
       :visible="showConfirmCloseModal"
@@ -502,6 +513,7 @@ import commonData from '@/@db/common'
 import toasts from '@core/utils/toasts/toasts'
 import warehousesData from '@/@db/warehouses'
 import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
+// eslint-disable-next-line no-unused-vars
 import { formatVniDateToISO } from '@/@core/utils/filter'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
@@ -526,6 +538,9 @@ export default {
   },
   data() {
     return {
+      componentKey: 0,
+      totalPoPromoProduct: 0,
+      totalProduct: 0,
       // grid - state
       isShowPoPromoTable: false,
       isShowPoPromoManualTable: true,
@@ -565,7 +580,7 @@ export default {
       // --------------modal state--------------
 
       // --------------input type--------------
-      status: null,
+      status: -1,
       columns: [],
       // --------------input type--------------
 
@@ -595,10 +610,10 @@ export default {
         {
           label: 'Số lượng',
           field: 'quantity',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -661,9 +676,6 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -807,7 +819,9 @@ export default {
     },
   },
   watch: {
-
+    rowsProduct() {
+      this.totalProduct = this.rowsProduct.length
+    },
     // render importPoManually-table if poNo = null
     poNo() {
       if (this.inputTypeSelected === '0' && this.status !== 0) {
@@ -825,11 +839,12 @@ export default {
       this.poAdjustInfo = {}
       this.poPromotionProducts = []
       this.poBorrowingInfo = {}
-      this.status = null
+      this.status = -1
       this.note = ''
       this.poId = null
       this.rowsProductPromotion = []
       this.promotionRow = []
+      this.totalProduct = null
       if (this.inputTypeSelected === '0') {
         this.columns = this.poConfirmColumn
         this.billDate = this.$nowDate
@@ -874,20 +889,20 @@ export default {
     showModal() {
       switch (this.inputTypeSelected) {
         case '0':
-          this.poConfirmModalVisible = true
+          this.$root.$emit('bv::toggle::modal', 'po-confirm-modal')
           break
         case '1':
-          this.adjustmentModalVisible = true
+          this.$root.$emit('bv::toggle::modal', 'adjustment-modal')
           break
         case '2':
-          this.borrowedModalVisible = true
+          this.$root.$emit('bv::toggle::modal', 'borrowed-modal')
           break
         default:
           break
       }
     },
     navigateBack() {
-      if (this.status === null && this.promotionRow.length === 0 && !this.billNumber && !this.internalNumber && !this.poNo) {
+      if (this.status === -1 && this.promotionRow.length === 0 && !this.billNumber && !this.internalNumber && !this.poNo) {
         this.$router.replace({ name: 'warehouses-input' })
       } else {
         this.showConfirmCloseModal = true
@@ -905,6 +920,7 @@ export default {
       this.internalNumber = Snb
       this.poNo = poNum
       this.poId = id
+      this.totalPoPromoProduct = this.rowsProductPromotionLoad.length
       // show promotion grid if it's not null
       if (this.rowsProductPromotionLoad.length > 0) {
         this.isShowPoPromoTable = true
@@ -952,10 +968,11 @@ export default {
           poId: this.poId,
           note: this.note,
         }
+        if (obj.importType === -1) {
+          toasts.error('Cần chọn ít nhất 1 sản phẩm khuyến mãi')
+        }
         if (obj.poId !== null && this.status !== 0) {
           this.CREATE_SALE_IMPORT_ACTION(obj)
-        } else {
-          toasts.error('Cần chọn ít nhất 1 sản phẩm khuyến mãi')
         }
         // if import type = choose poConfirm -> check redInvoice
         if (this.status === 0) {

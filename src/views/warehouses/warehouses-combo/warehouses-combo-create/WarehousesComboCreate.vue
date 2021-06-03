@@ -239,6 +239,14 @@
                   {{ $formatNumberToLocale(totalExchangeQuantity) }}
                 </b-row>
               </template>
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <div v-if="props.column.field === 'quantity'">
+                  {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
+                </div>
+              </template>
             </vue-good-table>
             <!-- END - Table combo exchange -->
             <!-- START - Button -->
@@ -455,7 +463,7 @@ export default {
         comboCode: data.comboProductCode,
         productCode: data.productCode,
         exchangeRate: data.factor,
-        price: data.productPrice,
+        price: this.$formatNumberToLocale(data.productPrice),
         productName: data.productName,
       }))
     },

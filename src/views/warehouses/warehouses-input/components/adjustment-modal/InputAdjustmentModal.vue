@@ -1,5 +1,6 @@
 <template>
   <b-modal
+    id="adjustment-modal"
     size="xl"
     :visible="visible"
     title="Nhập xuất hàng điều chỉnh"
@@ -120,7 +121,7 @@
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
-        @click="cancel()"
+        @click="close"
       >
         <b-icon
           icon="x"
@@ -289,13 +290,13 @@ export default {
     inputAdjustmentConfirm() {
       if (this.importAdjustmentsList.length > 0) {
         this.$emit('inputAdjustChange', [this.sysDate, this.importAdjustmentsDetails, this.importAdjustmentInfo, this.current, this.note])
-        this.$emit('close')
+        this.close()
       } else {
         toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')
       }
     },
-    cancel() {
-      this.$emit('close')
+    close() {
+      this.$root.$emit('bv::hide::modal', 'adjustment-modal')
     },
   },
 }

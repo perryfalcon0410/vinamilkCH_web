@@ -1,5 +1,6 @@
 <template>
   <b-modal
+    id="borrowed-modal"
     size="xl"
     :visible="visible"
     title="Nhập xuất hàng vay mượn"
@@ -120,7 +121,7 @@
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
-        @click="cancel()"
+        @click="close"
       >
         <b-icon
           icon="x"
@@ -283,7 +284,7 @@ export default {
     inputBorrow() {
       if (this.importBorrowings.length > 0) {
         this.$emit('inputBorrowsChange', [this.sysDate, this.importBorrowingsDetail, this.importBorrowingInfo, this.current, this.note])
-        this.$emit('close')
+        this.close()
       } else {
         toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')
       }
@@ -294,8 +295,8 @@ export default {
       this.note = description
       this.GET_IMPORT_BORROWINGS_DETAIL_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId })// hard code
     },
-    cancel() {
-      this.$emit('close')
+    close() {
+      this.$root.$emit('bv::hide::modal', 'borrowed-modal')
     },
   },
 }
