@@ -386,6 +386,8 @@ export default {
       id: null,
       customerTypesSelected: null,
       customerEmail: null,
+      shopId: null,
+      scoreCumulated: null,
       lastName: null,
       firstName: null,
       birthDay: null,
@@ -402,7 +404,6 @@ export default {
       districtsSelected: null,
       precinctsSelected: null,
       customerCreate: {},
-      customerCreateId: null,
     }
   },
   // START - Computed
@@ -543,10 +544,12 @@ export default {
       this.onClickCloseButton()
       this.$emit('getCreateInfo', {
         id: this.customerCreate.id,
+        shopId: this.customerCreate.shopId,
         firstName: this.customerCreate.firstName,
         lastName: this.customerCreate.lastName,
         phoneNumber: this.customerCreate.mobiPhone,
         street: this.customerCreate.street,
+        scoreCumulated: this.customerCreate.scoreCumulated,
       })
     },
 

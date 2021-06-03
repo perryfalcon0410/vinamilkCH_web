@@ -710,13 +710,9 @@ export default {
       type: String,
       default: String,
     },
-    customerId: {
-      type: String,
-      default: String,
-    },
-    shopSelected: {
-      type: String,
-      default: String,
+    customer: {
+      type: Object,
+      default: () => {},
     },
   },
   data() {
@@ -1045,7 +1041,7 @@ export default {
         formId: 5,
       }
 
-      this.GET_VOUCHER_BY_ID_ACTION(`${this.pay.voucher.voucherId}?customerId=${this.customerId}&productIds=${productIds}`, params)
+      this.GET_VOUCHER_BY_ID_ACTION(`${this.pay.voucher.voucherId}?customerId=${this.customer.id}&productIds=${productIds}`, params)
     },
 
     searchDiscount() {
@@ -1056,7 +1052,7 @@ export default {
 
       this.GET_DISCOUNT_BY_CODE_ACTION({
         code: this.pay.discount.discountCode,
-        customerId: this.customerId,
+        customerId: this.customer.id,
         products,
       })
     },
@@ -1118,7 +1114,7 @@ export default {
     //   this.CREATE_SALE_ORDER_ACTION({
     //     product: {
     //       shopId: this.shopId,
-    //       customerId: this.customerId,
+    //       customerId: this.customer.id,
     //       totalPaid: this.totalOrderPrice,
     //       paymentType: this.salemtPaymentTypeSelected,
     //       deliveryType: this.deliverySelected,

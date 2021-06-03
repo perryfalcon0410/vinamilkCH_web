@@ -31,7 +31,7 @@
             font-scale="2"
             class="mr-1"
           />
-          {{ fullName }}
+          {{ customer.fullName }}
         </b-row>
         <!-- END - Name  -->
 
@@ -120,7 +120,7 @@
               Điện thoại
             </b-col>
             <b-col>
-              {{ phoneNumber }}
+              {{ customer.phoneNumber }}
             </b-col>
           </b-row>
           <!-- END - Phone Number -->
@@ -134,7 +134,7 @@
               Điểm tích lũy
             </b-col>
             <b-col>
-              {{ totalBill }}
+              {{ customer.totalBill }}
             </b-col>
           </b-row>
           <!-- END - Cumulative points -->
@@ -148,7 +148,7 @@
               Điạ chỉ
             </b-col>
             <b-col>
-              {{ street }}
+              {{ customer.street }}
             </b-col>
           <!-- END - Address -->
 
@@ -312,8 +312,7 @@
             :order-products="orderProducts"
             :order-selected="salemtPromotionObjectSelected"
             :delivery-selected="salemtDeliveryTypeSelected"
-            :shop-selected="shopId"
-            :customer-id="id"
+            :customer="customer"
           />
         </b-button>
         <!-- END - Button pay -->
@@ -398,14 +397,17 @@ export default {
       isShowSalesSearchModal: false,
 
       // customer
-      id: null,
-      shopId: null,
-      firstName: null,
-      lastName: null,
-      fullName: null,
-      phoneNumber: null,
-      street: null,
-      totalBill: null,
+      customer: {
+        id: null,
+        shopId: null,
+        firstName: null,
+        lastName: null,
+        fullName: null,
+        phoneNumber: null,
+        street: null,
+        totalBill: null,
+        scoreCumulated: null,
+      },
 
       // online order
       onlineOrderId: null,
@@ -507,9 +509,9 @@ export default {
       ONLINE_ORDER_CUSTOMER_BY_ID_GETTER,
     }),
 
-    customer() {
-      return this.CUSTOMER_BY_ID_GETTER()
-    },
+    // customer() {
+    //   return this.CUSTOMER_BY_ID_GETTER()
+    // },
     customerDefault() {
       return this.CUSTOMER_DEFAULT_GETTER
     },
@@ -605,12 +607,12 @@ export default {
     },
 
     getCustomerInfo(val) {
-      this.id = val.data.id
-      this.shopId = val.data.id
-      this.fullName = val.data.fullName
-      this.phoneNumber = val.data.phoneNumber
-      this.street = val.data.street
-      this.totalBill = val.data.totalBill ?? 0
+      this.customer.id = val.data.id
+      this.customer.shopId = val.data.shopId
+      this.customer.fullName = val.data.fullName
+      this.customer.phoneNumber = val.data.phoneNumber
+      this.customer.street = val.data.address
+      this.customer.totalBill = val.data.totalBill ?? 0
       this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
       this.$emit('getCustomerIdInfo', val.data.id)
     },
@@ -622,11 +624,12 @@ export default {
     },
 
     getCreateInfo(val) {
-      this.id = val.id
-      this.fullName = `${val.lastName} ${val.firstName}`
-      this.phoneNumber = val.phoneNumber
-      this.street = val.street
-      this.totalBill = val.totalBill ?? 0
+      this.customer.id = val.id
+      this.customer.shopId = val.shopId
+      this.customer.fullName = `${val.lastName} ${val.firstName}`
+      this.customer.phoneNumber = val.phoneNumber
+      this.customer.street = val.street
+      this.customer.totalBill = val.totalBill ?? 0
     },
 
     onClickAgreeButton() {
@@ -635,24 +638,27 @@ export default {
     },
 
     getOnlineOrderCustomerById() {
+      this.customer.firstName = this.onlineOrderCustomer.customer.firstName
+      this.customer.lastName = this.onlineOrderCustomer.customer.lastName
+      this.customer.fullName = `${this.customer.lastName} ${this.customer.firstName}`
+      this.customer.phoneNumber = this.onlineOrderCustomer.customer.mobiPhone
+      this.customer.street = this.onlineOrderCustomer.customer.street
+      this.customer.scoreCumulated = this.onlineOrderCustomer.customer.scoreCumulated
       this.orderNumber = this.onlineOrderCustomer.orderNumber
-      this.firstName = this.onlineOrderCustomer.customer.firstName
-      this.lastName = this.onlineOrderCustomer.customer.lastName
-      this.fullName = `${this.lastName} ${this.firstName}`
-      this.phoneNumber = this.onlineOrderCustomer.customer.mobiPhone
-      this.street = this.onlineOrderCustomer.customer.street
       this.quantity = this.onlineOrderCustomer.quantity
       this.totalPrice = this.onlineOrderCustomer.totalPrice
     },
 
     getCustomerDefault() {
-      this.id = this.customerDefault.id
-      this.firstName = this.customerDefault.firstName
-      this.lastName = this.customerDefault.lastName
-      this.fullName = `${this.lastName} ${this.firstName}`
-      this.phoneNumber = this.customerDefault.mobiPhone
-      this.street = this.customerDefault.street
-      this.totalBill = this.customerDefault.totalBill ?? 0
+      this.customer.id = this.customerDefault.id
+      this.customer.shopId = this.customerDefault.shopId
+      this.customer.firstName = this.customerDefault.firstName
+      this.customer.lastName = this.customerDefault.lastName
+      this.customer.fullName = `${this.customer.lastName} ${this.customer.firstName}`
+      this.customer.phoneNumber = this.customerDefault.mobiPhone
+      this.customer.street = this.customerDefault.street
+      this.customer.totalBill = this.customerDefault.totalBill ?? 0
+      this.customer.scoreCumulated = this.customerDefault.scoreCumulated
     },
   },
 }

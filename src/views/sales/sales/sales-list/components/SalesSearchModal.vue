@@ -282,6 +282,7 @@ export default {
       idNo: '',
       customerTypeId: '',
       shopId: '',
+      scoreCumulated: '',
 
       columns: [
         {
@@ -357,6 +358,7 @@ export default {
           feature: '',
           totalBill: data.totalBill,
           customerTypeId: data.customerTypeId,
+          scoreCumulated: data.scoreCumulated,
         }))
       }
       return []
