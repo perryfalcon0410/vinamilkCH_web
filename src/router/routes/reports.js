@@ -56,7 +56,7 @@ export default [
           active: true,
         },
       ],
-      resource: 'ReportsWarehousesDifferencePrice',
+      resource: 'ReportsWarehousesPriceDifference',
     },
   },
   {

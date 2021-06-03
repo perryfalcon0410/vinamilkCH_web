@@ -106,26 +106,36 @@
     <!-- START - Product -->
     <b-col
       xl
-      lg="3"
+      md="3"
       sm="4"
     >
-      <div
-        class="h8 mt-sm-1 mt-xl-0"
-      >
+      <div class="h8 mt-sm-1 mt-xl-0">
         Sản phẩm
       </div>
-      <b-input-group class="input-group-merge ">
+      <b-input-group
+        class="input-group-merge"
+      >
         <b-form-input
-          v-model.trim="ids"
-          class="h8"
-          placeholder="Nhập mã sản phẩm"
+          v-model="ids"
+          class="h8 text-brand-3"
+          placeholder="Mã sản phẩm"
+          @keyup.enter="onClickSearchButton"
         />
         <b-input-group-append
           is-text
-          class="cursor-pointer"
-          @click="onSelectProductModalClick"
         >
-          <b-icon-three-dots-vertical />
+          <!-- Icon-- Delete-text -->
+          <b-icon-x
+            v-show="ids"
+            is-text
+            class="cursor-pointer text-gray"
+            @click="ids = null"
+          />
+          <!-- Icon-- Three-dot -->
+          <b-icon-three-dots-vertical
+            class="cursor-pointer"
+            @click="onSelectProductModalClick"
+          />
         </b-input-group-append>
       </b-input-group>
     </b-col>

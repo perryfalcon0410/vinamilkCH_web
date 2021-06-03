@@ -41,7 +41,7 @@ export default [
       {
         title: 'Chênh lệch giá',
         route: 'reports-warehouses-difference-price',
-        resource: 'ReportsWarehousesDifferencePrice',
+        resource: 'ReportsWarehousesPriceDifference',
       },
       {
         title: 'Đổi hàng hỏng',

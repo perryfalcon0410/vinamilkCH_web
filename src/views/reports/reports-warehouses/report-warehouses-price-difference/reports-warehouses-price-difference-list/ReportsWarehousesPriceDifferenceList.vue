@@ -404,6 +404,7 @@ export default {
         ...this.paginationData,
         ...event,
       }
+      this.pageNumber = 1
     },
     onPaginationChange() {
       this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION({ ...this.paginationData, ...this.decentralization })

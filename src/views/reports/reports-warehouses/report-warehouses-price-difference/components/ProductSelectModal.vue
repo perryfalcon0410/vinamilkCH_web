@@ -310,13 +310,6 @@ export default {
         ctrlId: 1,
       },
       columns: [
-        // {
-        //   label: 'STT',
-        //   field: 'stt',
-        //   sortable: false,
-        //   thClass: 'text-center',
-        //   tdClass: 'text-center',
-        // },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
@@ -357,7 +350,6 @@ export default {
     getProducts() {
       if (this.PRODUCT_LISTS_GETTER.content) {
         return this.PRODUCT_LISTS_GETTER.content.map(data => ({
-          // stt: index + 1,
           productName: data.productName,
           productCode: data.productCode,
           id: data.id,
