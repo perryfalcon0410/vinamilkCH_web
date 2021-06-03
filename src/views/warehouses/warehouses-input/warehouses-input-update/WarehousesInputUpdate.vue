@@ -248,6 +248,14 @@
                   >
                     {{ totalProductPrice }}
                   </b-row>
+
+                  <b-row
+                    v-else-if="props.column.field === 'productCode'"
+                    class="mx-0"
+                    align-h="end"
+                  >
+                    {{ totalProductCode }}
+                  </b-row>
                 </template>
                 <!-- START - Column filter -->
               </vue-good-table>
@@ -310,7 +318,7 @@
                     class="mx-0"
                     align-h="end"
                   >
-                    {{ totalProductCode }}
+                    {{ totalPromotionCode }}
                   </b-row>
                 </template>
                 <template
@@ -564,7 +572,7 @@ export default {
       productSearch: null,
       inputSearchFocusedSP: false,
       totalPromotionQuantity: 0,
-      totalProductCode: 0,
+      totalPromotionCode: 0,
       id: this.$route.params.id,
       importType: Number(this.$route.params.type),
       inputType: Number(warehousesData.inputTypes[0].id), // Loại nhập hàng
@@ -593,6 +601,9 @@ export default {
     totalProductPrice() {
       return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.totalPrice), 0))
     },
+    totalProductCode() {
+      return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER().length)
+    },
     getPromotions() {
       return this.PROMOTIONS_BY_ID_GETTER().map(data => ({
         id: data.id,
@@ -609,7 +620,7 @@ export default {
     getTotalPromotionQuantity() {
       return this.$formatNumberToLocale(this.promotions.reduce((accum, item) => accum + Number(item.quantity), 0))
     },
-    getTotalProductCode() {
+    getTotalPromotionCode() {
       return this.$formatNumberToLocale(this.promotions.length)
     },
     allProducts() {
@@ -669,8 +680,8 @@ export default {
     getTotalPromotionQuantity() {
       this.totalPromotionQuantity = this.getTotalPromotionQuantity
     },
-    getTotalProductCode() {
-      this.totalProductCode = this.getTotalProductCode
+    getTotalPromotionCode() {
+      this.totalPromotionCode = this.getTotalPromotionCode
     },
   },
 
@@ -776,7 +787,7 @@ export default {
             redInvoiceNo: this.billNumber,
             orderDate: formatVniDateToISO(this.billDate),
             internalNumber: this.internalNumber,
-            poNumber: this.poNumber,
+            poCoNumber: this.poNumber,
             lstUpdate: updatedPromotions,
             formId: 5,
             ctrlId: 7,

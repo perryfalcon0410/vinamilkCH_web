@@ -268,9 +268,9 @@ export default {
           countingDate: formatISOtoVNI(data.countingDate),
           stockCountingCode: data.stockCountingCode,
           warehouseType: data.wareHouseTypeId,
-          createUser: data.createBy,
+          createUser: data.createdBy,
           createDate: formatISOtoVNI(data.createdAt),
-          updateUser: data.createBy,
+          updateUser: data.updatedBy,
           updateDate: formatISOtoVNI(data.updatedAt),
         }))
       }
