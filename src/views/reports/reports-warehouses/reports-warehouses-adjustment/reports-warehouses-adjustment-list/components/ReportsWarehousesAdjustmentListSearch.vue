@@ -151,10 +151,12 @@ import {
   mapActions,
 } from 'vuex'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import { reverseVniDate } from '@/@core/utils/filter'
 import FindProductModal from './FindProductsModal.vue'
+
 import {
   REPORT_WAREHOUSES_ADJUSTMENTS,
-  GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTIONS,
+  GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -215,7 +217,7 @@ export default {
 
   methods: {
     ...mapActions(REPORT_WAREHOUSES_ADJUSTMENTS, [
-      GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTIONS,
+      GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION,
     ]),
     onSelectProductModalClick() {
       this.selectProductModalVisible = true
@@ -233,12 +235,13 @@ export default {
     },
     onSearch() {
       const searchData = {
-        fromDate: this.fromDate,
-        toDate: this.toDate,
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
         productCodes: this.ids,
       }
+      this.$emit('onClickSearchButton', searchData)
       this.updateSearchData(searchData)
-      this.GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTIONS(searchData)
+      this.GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION(searchData)
     },
     onClickSearchButton() {
       this.onSearch()

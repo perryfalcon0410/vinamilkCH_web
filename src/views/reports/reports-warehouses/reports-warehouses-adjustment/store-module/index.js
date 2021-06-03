@@ -10,9 +10,9 @@ import {
   PRODUCT_CAT_LISTS_GETTER,
 
   // Actions
-  GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTIONS,
-  GET_PRODUCT_LISTS_ACTIONS,
-  GET_PRODUCT_CAT_LISTS_ACTIONS,
+  GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION,
+  GET_PRODUCT_LISTS_ACTION,
+  GET_PRODUCT_CAT_LISTS_ACTION,
   EXPORT_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION,
 } from './type'
 
@@ -36,13 +36,13 @@ export default {
   },
   mutations: {},
   actions: {
-    [GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTIONS]({ state }, val) {
+    [GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION]({ state }, val) {
       ReportService
         .getReportsWarehousesAdjustment(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.adjustmentData = res.data || {}
+            state.adjustmentData = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -52,13 +52,13 @@ export default {
         })
     },
 
-    [GET_PRODUCT_LISTS_ACTIONS]({ state }, val) {
+    [GET_PRODUCT_LISTS_ACTION]({ state }, val) {
       ReportService
         .getProductLists(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.productData = res.data || {}
+            state.productData = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -68,13 +68,13 @@ export default {
         })
     },
 
-    [GET_PRODUCT_CAT_LISTS_ACTIONS]({ state }, val) {
+    [GET_PRODUCT_CAT_LISTS_ACTION]({ state }, val) {
       ReportService
         .getProductCatlists(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.productCatData = res.data || {}
+            state.productCatData = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -88,9 +88,13 @@ export default {
         .exportsWarehousesAdjustment(val)
         .then(response => response.data)
         .then(res => {
-          const fileName = `Bao_cao_nhap_xuat_dieu_chinh_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
-          const blob = new Blob([res], { type: 'data:application/xlsx' })
-          FileSaver.saveAs(blob, fileName)
+          if (res.success) {
+            const fileName = `Bao_cao_nhap_xuat_dieu_chinh_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+            const blob = new Blob([res], { type: 'data:application/xlsx' })
+            FileSaver.saveAs(blob, fileName)
+          } else {
+            throw new Error(res.statusValue)
+          }
         })
         .catch(error => {
           toasts.error(error.message)

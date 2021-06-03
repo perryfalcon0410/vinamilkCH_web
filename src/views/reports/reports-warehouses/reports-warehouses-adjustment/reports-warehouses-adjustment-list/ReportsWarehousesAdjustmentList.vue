@@ -46,6 +46,7 @@
       <!-- START - Table -->
       <b-col class="py-1">
         <vue-good-table
+          mode="remote"
           :columns="columns"
           :rows="promotionRows"
           style-class="vgt-table striped"
@@ -73,6 +74,23 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+
+          <!-- START - Columns -->
+          <template
+            slot="table-column"
+            slot-scope="props"
+          >
+            <div v-if="props.column.field === 'feature'">
+              <b-icon-bricks
+                v-b-popover.hover="'Thao tác'"
+                scale="1.3"
+              />
+            </div>
+            <div v-else>
+              {{ props.column.label }}
+            </div>
+          </template>
+          <!-- END - Columns -->
           <!-- START - Column filter -->
           <template
             slot="column-filter"
@@ -166,7 +184,6 @@ import {
 import commonData from '@/@db/common'
 import {
   formatISOtoVNI,
-  reverseVniDate,
 } from '@core/utils/filter'
 import {
   resizeAbleTable,
@@ -175,7 +192,7 @@ import ReportsWarehousesAdjustmentListSearch from './components/ReportsWarehouse
 import {
   REPORT_WAREHOUSES_ADJUSTMENTS,
   REPORT_WAREHOUSES_ADJUSTMENTS_GETTER,
-  GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTIONS,
+  GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION,
   EXPORT_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION,
 } from '../store-module/type'
 
@@ -199,6 +216,7 @@ export default {
         productCodes: '',
       },
       promotionDatas: [],
+      searchData: {},
       decentralization: {
         formId: 1,
         ctrlId: 1,
@@ -208,38 +226,38 @@ export default {
       columns: [
         {
           label: 'Mã cửa hàng',
-          field: 'orderNumber',
+          field: 'shopCode',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
-          field: 'orderNumber',
+          field: 'redInvoiceNo',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Ngày hóa đơn',
-          field: 'orderDate',
+          field: 'adjustmentDate',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Loại hóa đơn',
-          field: 'industry',
+          field: 'adjustmentType',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Ngành hàng',
-          field: 'industry',
+          field: 'productInfoName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Mã sản phẩm',
@@ -259,8 +277,8 @@ export default {
           label: 'ĐVT',
           field: 'dvt',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Số lượng',
@@ -286,6 +304,14 @@ export default {
           thClass: 'text-right',
           tdClass: 'text-right',
         },
+
+        {
+          label: 'chức năng',
+          field: 'feature',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
       ],
     }
   },
@@ -295,21 +321,19 @@ export default {
       REPORT_WAREHOUSES_ADJUSTMENTS_GETTER,
     ]),
     getAdjustmentLists() {
-      if (this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.response && this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.response.content) {
-        return this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.response.content.map(data => ({
-          orderNumber: data.orderNumber,
-          industry: data.industry,
+      if (this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.content) {
+        return this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.content.map(data => ({
+          shopCode: data.shopCode,
+          redInvoiceNo: data.redInvoiceNo,
+          adjustmentType: data.typess,
+          productInfoName: data.productInfoName,
           productCode: data.productCode,
           productName: data.productName,
-          dvt: data.uom,
+          dvt: data.uom1,
           quantity: data.quantity,
           price: this.$formatNumberToLocale(data.price),
-          payment: this.$formatNumberToLocale(data.totalPrice),
-          orderDate: formatISOtoVNI(data.orderDate),
-          billType: data.billType,
-          promotionCode: data.promotionCode,
-          onlineNumber: data.onlineNumber,
-          orderType: data.orderType,
+          payment: this.$formatNumberToLocale(data.total),
+          adjustmentDate: formatISOtoVNI(data.adjustmentDate),
         }))
       }
       return []
@@ -321,8 +345,8 @@ export default {
       return {}
     },
     adjustmentPagination() {
-      if (this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.response) {
-        return this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.response
+      if (this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER) {
+        return this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER
       }
       return {}
     },
@@ -342,22 +366,16 @@ export default {
   },
   mounted() {
     resizeAbleTable()
-    this.searchOptions.fromDate = reverseVniDate(this.$earlyMonth)
-    this.searchOptions.toDate = reverseVniDate(this.$nowDate)
-    this.GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTIONS({
-      ...this.searchOptions,
-      ...this.decentralization,
-    })
   },
 
   methods: {
     ...mapActions(REPORT_WAREHOUSES_ADJUSTMENTS, [
-      GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTIONS,
+      GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION,
       EXPORT_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION,
     ]),
 
     onClickExcelExportButton() {
-      this.EXPORT_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION({ ...this.decentralization })
+      this.EXPORT_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION({ ...this.decentralization, ...this.searchData })
     },
 
     // Start - pagination
@@ -366,9 +384,10 @@ export default {
         ...this.paginationData,
         ...event,
       }
+      this.searchData = event
     },
     onPaginationChange() {
-      this.GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTIONS({ ...this.paginationData, ...this.decentralization })
+      this.GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION({ ...this.paginationData, ...this.decentralization })
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
