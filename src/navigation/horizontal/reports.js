@@ -94,9 +94,19 @@ export default [
       },
       {
         title: 'Khách hàng',
-        route: 'reports-customers',
-        resource: 'ReportsCustomers',
         icon: 'UsersIcon',
+        children: [
+          {
+            title: 'Khách hàng',
+            route: 'reports-customers',
+            resource: 'ReportsCustomers',
+          },
+          {
+            title: 'Khách hàng không giao dịch',
+            route: 'reports-customers-non-transactional',
+            resource: 'ReportsCustomersNonTransactional',
+          },
+        ],
       },
       {
         title: 'Danh sách voucher',

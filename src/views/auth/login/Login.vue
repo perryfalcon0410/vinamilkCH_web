@@ -474,6 +474,12 @@ export default {
           orderNumber: 1,
           controls: [],
         },
+        {
+          id: 29,
+          formCode: 'ReportsCustomersNonTransactional', // Báo cáo - Khách hàng không giao dịch
+          orderNumber: 1,
+          controls: [],
+        },
       ],
     }
   },

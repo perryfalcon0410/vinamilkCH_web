@@ -151,4 +151,36 @@ export default [
       resource: 'ReportsSalesSaleReceiptPerCustomer',
     },
   },
+  // báo cáo khách hàng
+  {
+    path: '/reports/customers/customers',
+    name: 'reports-customers',
+    component: () => import('@/views/reports/reports-customers/reports-customers/reports-customers-list/ReportsCustomersList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo khách hàng',
+      breadcrumb: [
+        {
+          text: 'Danh sách báo cáo khách hàng',
+          active: true,
+        },
+      ],
+      resource: 'ReportsCustomers',
+    },
+  },
+  // báo cáo khách hàng không giao dịch
+  {
+    path: '/reports/customers/customers-non-transactional',
+    name: 'reports-customers-non-transactional',
+    component: () => import('@/views/reports/reports-customers/reports-customers-non-transactional/reports-customers-non-transactional-list/ReportsCustomersNonTransactionalList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo khách hàng không giao dịch',
+      breadcrumb: [
+        {
+          text: 'Danh sách báo cáo khách hàng không giao dịch',
+          active: true,
+        },
+      ],
+      resource: 'ReportsCustomersNonTransactional',
+    },
+  },
 ]
