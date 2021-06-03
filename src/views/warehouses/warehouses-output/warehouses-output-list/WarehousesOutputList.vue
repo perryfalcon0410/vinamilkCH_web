@@ -23,6 +23,7 @@
             maxlength="20"
             placeholder="Nhập số hoá đơn"
             trim
+            @keyup.enter="onClickSearchWarehousesOutput"
           />
           <b-input-group-append is-text>
             <b-icon-x
@@ -41,15 +42,30 @@
         lg="3"
         sm="4"
       >
-        <div class="h8 mt-sm-1 mt-xl-0">
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
           Từ ngày
         </div>
-        <vue-flat-pickr
-          v-model="searchOptions.fromDate"
-          :config="configDate"
-          class="form-control h8 text-brand-3"
-          placeholder="Chọn ngày"
-        />
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
+          @keypress="$onlyDateInput"
+        >
+          <b-icon-x
+            v-show="searchOptions.fromDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
+          <vue-flat-pickr
+            v-model="searchOptions.fromDate"
+            :config="configFromDate"
+            class="form-control h8"
+            placeholder="Chọn ngày"
+          />
+        </b-row>
       </b-col>
       <!-- END - Date From -->
 
@@ -59,15 +75,30 @@
         lg="3"
         sm="4"
       >
-        <div class="h8 mt-sm-1 mt-xl-0">
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
           Đến ngày
         </div>
-        <vue-flat-pickr
-          v-model="searchOptions.toDate"
-          :config="configDate"
-          class="form-control h8 text-brand-3"
-          placeholder="Chọn ngày"
-        />
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
+          @keypress="$onlyDateInput"
+        >
+          <b-icon-x
+            v-show="searchOptions.toDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
+          <vue-flat-pickr
+            v-model="searchOptions.toDate"
+            :config="configToDate"
+            class="form-control h8"
+            placeholder="Chọn ngày"
+          />
+        </b-row>
       </b-col>
       <!-- END - Date To -->
 
@@ -451,10 +482,16 @@ export default {
         size: commonData.perPageSizes[0],
       },
       warehousesOutputList: [],
-      configDate: {
+      configFromDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
+      },
+      configToDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
       },
       warehousesOutputSelected: {
         id: 0,
@@ -506,6 +543,12 @@ export default {
     warehousesOutputPagination() {
       this.totalElements = this.warehousesOutputPagination.totalElements
     },
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
   },
   beforeMount() {
     this.searchOptions.fromDate = this.$earlyMonth
@@ -521,6 +564,10 @@ export default {
       // ctrlId: this.ctrlId,
     }
     this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
+    }
   },
   methods: {
     ...mapState(WAREHOUSES_OUTPUT, {

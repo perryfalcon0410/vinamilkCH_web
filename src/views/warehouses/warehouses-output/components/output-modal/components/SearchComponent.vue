@@ -12,12 +12,12 @@
         <validation-provider
           v-slot="{ errors, passed }"
           rules="code"
-          name="mã nhận hàng"
+          name="mã nhập hàng"
         >
           <div
             class="h8 mt-sm-1 mt-xl-0"
           >
-            Mã nhận hàng
+            Mã nhập hàng
           </div>
           <b-input-group
             class="input-group-merge"

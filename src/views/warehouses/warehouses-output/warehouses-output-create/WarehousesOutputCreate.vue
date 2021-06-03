@@ -6,6 +6,7 @@
     <!-- START - Form Container -->
     <validation-observer
       ref="formContainer"
+      v-slot="{invalid}"
       slim
     >
       <!-- START - Form and list -->
@@ -34,35 +35,36 @@
               <!-- START - Export Code -->
 
               <b-col>
-                <validation-provider
-                  v-slot="{ errors, passed, touched }"
-                  rules="code|required"
-                  name="mã xuất hàng"
-                >
-                  <div class="mt-1">
-                    Mã xuất hàng
-                  </div>
-                  <b-form-input
-                    v-model.trim="warehousesOutput.code"
-                    :state="touched ? passed : null"
-                    maxlength="40"
-                    disabled
-                  />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
+
+                <div class="mt-1">
+                  Mã xuất hàng
+                </div>
+                <b-form-input
+                  v-model.trim="warehousesOutput.code"
+                  :state="touched ? passed : null"
+                  maxlength="40"
+                  disabled
+                />
+
               </b-col>
               <!-- END - Export Code -->
               <b-col>
-                <div class="mt-1">
-                  Loại xuất hàng
-                </div>
-                <tree-select
-                  v-model="warehousesOutput.outputTypeSelected"
-                  :options="outputTypesOptions"
-                  placeholder="Chọn loại xuất hàng"
-                  no-options-text="Không có dữ liệu"
-                />
-              </b-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="loại xuất hàng"
+                >
+                  <div class="mt-1">
+                    Loại xuất hàng
+                  </div>
+                  <tree-select
+                    v-model="warehousesOutput.outputTypeSelected"
+                    :options="outputTypesOptions"
+                    placeholder="Chọn loại xuất hàng"
+                    no-options-text="Không có dữ liệu"
+                  />
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider></b-col>
             </b-form-row>
             <!-- END - ID and Type -->
 
@@ -170,7 +172,7 @@
               </div>
               <b-form-textarea
                 v-model="warehousesOutput.note"
-                maxlength="4000"
+                maxlength="250"
               />
             </b-form-group>
             <!-- END - Note -->
@@ -243,6 +245,7 @@
                 <b-button
                   variant="someThing"
                   class="btn-brand-1 rounded text-uppercase aligns-items-button-center"
+                  :disabled="invalid"
                   @click="createExport"
                 >
                   <b-icon-download
