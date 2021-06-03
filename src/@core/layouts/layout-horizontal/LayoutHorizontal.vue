@@ -18,7 +18,7 @@
           boxShadow: navbarType === 'static' && scrolledTo ? 'rgba(0, 0, 0, 0.05) 0px 4px 20px 0px' : null,
         }"
         :toggleable="false"
-        class="header-navbar navbar-shadow align-items-center navbar-brand-center navbar-fixed"
+        class="header-navbar navbar-shadow align-items-center navbar-brand-center navbar-fixed d-print-none"
         :class="{'fixed-top': $store.getters['app/currentBreakPoint'] !== 'xl'}"
       >
         <slot
@@ -32,7 +32,7 @@
     </transition>
     <!--/ NAVBAR -->
 
-    <div class="horizontal-menu-wrapper">
+    <div class="horizontal-menu-wrapper d-print-none">
       <!-- Horizontal Nav Menu -->
       <transition
         name="fade"
@@ -52,7 +52,7 @@
       <vertical-nav-menu
         :is-vertical-menu-active="isVerticalMenuActive"
         :toggle-vertical-menu-active="toggleVerticalMenuActive"
-        class="d-block d-xl-none"
+        class="d-block d-xl-none "
       >
         <template #header="slotProps">
           <slot

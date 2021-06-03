@@ -4,6 +4,7 @@
   <b-form>
     <v-card-actions
       title="Tìm kiếm"
+      class="d-print-none"
     >
       <!-- START - Full Name -->
       <b-col

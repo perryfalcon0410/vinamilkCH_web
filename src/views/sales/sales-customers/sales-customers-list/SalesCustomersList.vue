@@ -11,7 +11,7 @@
     <!-- END - Search -->
 
     <!-- START - Customer list -->
-    <b-form class="bg-white rounded shadow rounded my-1">
+    <b-form class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="border-bottom px-1 mx-0"
@@ -47,7 +47,9 @@
       <!-- END - Header -->
 
       <!-- START - Table -->
-      <b-col class="py-1">
+      <b-col
+        class="py-1"
+      >
         <vue-good-table
           mode="remote"
           :columns="columns"
@@ -123,7 +125,7 @@
           >
             <b-row
               v-show="getCustomerPagination.totalElements"
-              class="v-pagination px-1 mx-0"
+              class="v-pagination px-1 mx-0 d-print-none"
               align-h="between"
               align-v="center"
             >
@@ -172,12 +174,19 @@
             </b-row>
           </template>
           <!-- END - Pagination -->
-
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
     </b-form>
     <!-- END - Customer list -->
+
+    <!-- STAT - Print form -->
+    <print-form
+      :columns="columns"
+      :rows="customers"
+    />
+    <!-- END - Print form -->
+
   </b-container>
 </template>
 
@@ -194,6 +203,7 @@ import {
   resizeAbleTable,
 } from '@core/utils/utils'
 import { formatDateToLocale } from '@core/utils/filter'
+import PrintForm from './components/PrintFormOrderInputDetail.vue'
 
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
@@ -208,6 +218,7 @@ import {
 export default {
   components: {
     SalesCustomersListSearch,
+    PrintForm,
   },
   data() {
     return {
