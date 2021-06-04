@@ -259,6 +259,7 @@
           >
             <b-row
               v-if="props.column.field === 'quantity'"
+              v-show="totalElements"
               class="h7"
               align-h="center"
             >
@@ -267,6 +268,7 @@
 
             <b-row
               v-else-if="props.column.field === 'price'"
+              v-show="totalElements"
               class="h7 px-0 mx-0"
               align-h="end"
             >

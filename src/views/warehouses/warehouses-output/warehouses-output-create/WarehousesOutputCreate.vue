@@ -140,26 +140,36 @@
                 </validation-provider>
               </b-col>
               <b-col>
-                <div class="mt-1">
-                  PO No
-                </div>
-                <b-input-group
-                  id="PoNo"
-                  class="input-group-merge"
+                <validation-provider
+                  v-slot="{ errors, passed, touched }"
+                  :rules="warehousesOutput.outputTypeSelected === poOutputType ? 'required' : ''"
+                  name="PO No"
                 >
-                  <b-form-input
-                    v-model="warehousesOutput.poNumber"
-                    trim
-                    :state="warehousesOutput.outputTypeSelected === poOutputType && touched ? passed : null"
-                  />
-                  <b-input-group-append is-text>
-                    <b-icon-three-dots-vertical
-                      class="cursor-pointer"
-                      @click="showModal()"
+                  <div class="mt-1">
+                    PO No
+                    <sup
+                      v-show="warehousesOutput.outputTypeSelected === poOutputType"
+                      class="text-danger"
+                    >*</sup>
+                  </div>
+                  <b-input-group
+                    id="PoNo"
+                    class="input-group-merge"
+                  >
+                    <b-form-input
+                      v-model="warehousesOutput.poNumber"
+                      trim
+                      :state="warehousesOutput.outputTypeSelected !== poOutputType && touched ? passed : null"
                     />
-                  </b-input-group-append>
-                </b-input-group>
-              </b-col>
+                    <b-input-group-append is-text>
+                      <b-icon-three-dots-vertical
+                        class="cursor-pointer"
+                        @click="showModal()"
+                      />
+                    </b-input-group-append>
+                  </b-input-group>
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider></b-col>
             </b-form-row>
             <!-- END - Internal number and PO no -->
 
