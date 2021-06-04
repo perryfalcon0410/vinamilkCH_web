@@ -4,7 +4,7 @@
     id="pay-modal"
     size="xl"
     title="Thanh toán hóa đơn"
-    title-class="font-weight-bold text-primary"
+    title-class="font-weight-bold text-brand-1"
     content-class="bg-white"
     footer-border-variant="white"
     hide-header-close
@@ -25,116 +25,106 @@
               scale="2"
               color="red"
             />
-            <strong class="ml-1">Khuyến mãi</strong>
+            <strong class="ml-1 text-brand-1">Khuyến mãi</strong>
           </b-row>
 
-          <!-- START - Table 1 -->
-          <b-col class="p-0">
-            <!-- START - Title -->
-            <b-row
-              v-b-toggle.collapseAdmVoucher
-              align-v="center"
-              class="bg-primary mx-0 p-1"
-            >
-              <b-check />
-              <div class="text-white">
-                Khuyến mãi ADM tháng 11.2020
-              </div>
-              <b-icon-chevron-down
-                class="ml-auto"
-                color="white"
-              />
-            </b-row>
-            <!-- END - Title -->
-
-            <!-- START - Body -->
-            <b-collapse
-              id="collapseAdmVoucher"
-              visible
-            >
-              <vue-good-table
-                :columns="columnsAdm"
-                :rows="rowsAdm"
-                style-class="vgt-table bordered"
-                compact-mode
-                line-numbers
+          <div
+            v-for="(value,index) in tempPromotions"
+            :key="index"
+          >
+            <!-- START - Table Promotion -->
+            <b-col class="p-0 mt-1">
+              <!-- START - Title -->
+              <b-row
+                v-b-toggle="'collapse-'+value.programId"
+                align-v="center"
+                class="mx-0 p-1 bg-brand-1"
               >
-                <!-- START - Row -->
-                <template
-                  slot="table-row"
-                  slot-scope="props"
-                >
-                  <div v-if="props.column.field === 'GiftsAmount'">
-                    <b-input-group
-                      append="3"
-                    >
-                      <b-form-input />
-                    </b-input-group>
-                  </div>
-                  <div v-else>
-                    {{ props.formattedRow[props.column.field] }}
-                  </div>
-                </template>
-                <!-- END - Row -->
-              </vue-good-table>
-            </b-collapse>
-            <!-- END - Body -->
-          </b-col>
-          <!-- END - Table 1 -->
+                <b-check
+                  v-if="value.promotionType === Number(promotionTypeOption[0].id)"
+                  v-model="value.isSelected"
+                  disabled
+                />
+                <b-check
+                  v-else
+                  v-model="value.isSelected"
+                />
+                <div class="text-white">
+                  {{ value.promotionProgramName }}
+                </div>
+                <b-icon-chevron-down
+                  class="ml-auto"
+                  color="white"
+                />
+              </b-row>
+              <!-- END - Title -->
 
-          <!-- START - Table 2 -->
-          <b-col class="p-0 mt-1">
-            <!-- START - Title -->
-            <b-row
-              v-b-toggle.collapsePrmProduct
-              align-v="center"
-              class="bg-primary mx-0 p-1"
-            >
-              <b-check />
-              <div class="text-white">
-                Khuyến mãi tay PRM.001 - tặng sản phẩm
-              </div>
-              <b-icon-chevron-down
-                class="ml-auto"
-                color="white"
-              />
-            </b-row>
-            <!-- END - Title -->
-
-            <!-- START - Body -->
-            <b-collapse
-              id="collapsePrmProduct"
-              visible
-            >
-              <vue-good-table
-                :columns="columnsPrmProduct"
-                :rows="rowsPrmProduct"
-                style-class="vgt-table bordered"
-                compact-mode
-                line-numbers
+              <!-- START - Body -->
+              <b-collapse
+                :id="'collapse-'+value.programId"
+                visible
               >
-                <!-- START - Row -->
-                <template
-                  slot="table-row"
-                  slot-scope="props"
-                >
-                  <div v-if="props.column.field === 'GiftsAmount'">
-                    <b-input-group
-                      append="3"
+                <div v-if="value.products.length > 0">
+                  <vue-good-table
+                    v-if="value.products.length > 0"
+                    :columns="columnsAdm"
+                    :rows="value.products"
+                    style-class="vgt-table bordered"
+                    compact-mode
+                    line-numbers
+                  >
+                    <!-- START - Row -->
+                    <template
+                      slot="table-row"
+                      slot-scope="props"
                     >
-                      <b-form-input />
-                    </b-input-group>
-                  </div>
-                  <div v-else>
-                    {{ props.formattedRow[props.column.field] }}
-                  </div>
-                </template>
-                <!-- END - Row -->
-              </vue-good-table>
-            </b-collapse>
+                      <div v-if="props.column.field === 'quantity'">
+                        <b-input-group v-if="value.isEditable || value.promotionType === Number(promotionTypeOption[1].id)">
+                          <template #append>
+                            <b-input-group-text>{{ props.row.quantityMax }}</b-input-group-text>
+                          </template>
+                          <b-form-input
+                            v-model.number="tempPromotions[index].products[props.row.originalIndex].quantity"
+                            @change="onChangeQuantity(value.programId, props)"
+                            @keypress="$onlyNumberInput"
+                          />
+                        </b-input-group>
+
+                        <div
+                          v-else
+                          class="text-center"
+                        >
+                          {{ props.row.quantityMax }}
+                        </div>
+                      </div>
+                      <div v-else>
+                        {{ props.formattedRow[props.column.field] }}
+                      </div>
+                    </template>
+                    <!-- END - Row -->
+                  </vue-good-table>
+                </div>
+                <div v-else>
+                  <b-row
+                    class="mx-0 p-1"
+                    align-v="center"
+                  >
+                    <div>Số tiền</div>
+
+                    <b-col cols="3">
+                      <b-form-input
+                        v-model="value.amount.value"
+                        :disabled="value.promotionType === Number(promotionTypeOption[0].id)"
+                      />
+                    </b-col>
+
+                  </b-row>
+                </div>
+              </b-collapse>
             <!-- END - Body -->
-          </b-col>
-          <!-- END - Table 2 -->
+            </b-col>
+          <!-- END - Table Promotion -->
+          </div>
 
           <!-- START - Table 3 -->
           <b-col class="p-0 mt-1">
@@ -262,6 +252,53 @@
           </b-col>
           <!-- END - Table 5 -->
 
+          <!-- START - Table 4 -->
+          <b-col class="p-0 mt-1">
+            <!-- START - Title -->
+            <b-row
+              v-b-toggle.collapseAccumulationBỉthDay
+              align-v="center"
+              class="bg-brand-1 mx-0 p-1"
+            >
+              <b-check />
+              <div class="text-white">
+                Khuyến mãi ZV23.001 - giảm % tiền
+              </div>
+              <b-icon-chevron-down
+                class="ml-auto"
+                color="white"
+              />
+            </b-row>
+            <!-- END - Title -->
+
+            <!-- START - Body -->
+            <b-collapse
+              id="collapseAccumulationBỉthDay"
+              visible
+            >
+              <b-row
+                class="mx-0 p-1"
+                align-v="center"
+              >
+                <div>Giảm giá</div>
+
+                <b-col cols="3">
+                  <b-input-group
+                    prepend="20%"
+                  >
+                    <b-form-input
+                      value="20000"
+                      disabled
+                    />
+                  </b-input-group>
+                </b-col>
+
+              </b-row>
+            </b-collapse>
+            <!-- END - Body -->
+          </b-col>
+          <!-- END - Table 4 -->
+
         </b-col>
         <!-- START - Section table -->
 
@@ -273,7 +310,7 @@
           >
             <b-icon-cash-stack
               scale="2"
-              color="blue"
+              class="text-brand-1"
             />
             <strong class="ml-1">Thanh toán</strong>
           </b-row>
@@ -287,7 +324,7 @@
               >
                 <b-col cols="4">
                   <strong>Tổng tiền hàng
-                    <strong class="d-inline-flex text-white px-1 ml-1 bg-primary rounded-pill">
+                    <strong class="d-inline-flex text-white px-1 ml-1 bg-brand-1 rounded-pill">
                       {{ pay.totalQuantity }}
                     </strong>
                   </strong>
@@ -622,6 +659,9 @@
 
 <script>
 import {
+  number,
+} from '@/@core/utils/validations/validations'
+import {
   mapActions,
   mapGetters,
 } from 'vuex'
@@ -681,64 +721,162 @@ export default {
   },
   data() {
     return {
+      promotionTypeOption: saleData.promotionType,
       columnsAdm: [
         {
           label: 'Mã sản phẩm',
-          field: 'ProductCode',
+          field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
-          field: 'ProductName',
+          field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Tồn kho',
+          field: 'stockQuantity',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Số lượng tặng',
-          field: 'GiftsAmount',
+          field: 'quantity',
           sortable: false,
           type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
-      rowsAdm: [
+
+      tempPromotions: [
         {
-          ProductCode: '04AA30',
-          ProductName: 'STT H.Dâu ADM VNM TP 110',
-          GiftsAmount: '',
+          programId: 1,
+          promotionProgramName: 'Khuyến mãi ADM tháng 11.2020',
+          products: [
+            {
+              productId: 1,
+              productCode: '04AA30',
+              productName: 'STT H.Dâu ADM VNM TP 110',
+              quantity: '',
+              stockQuantity: 4,
+              quantityMax: 3,
+            },
+            {
+              productId: 2,
+              productCode: '04AA31',
+              productName: 'STT H.Dâu ADM VNM TP 111',
+              quantity: '',
+              stockQuantity: 4,
+              quantityMax: 3,
+            },
+            {
+              productId: 3,
+              productCode: '04AA33',
+              productName: 'STT H.Dâu ADM VNM TP 111',
+              quantity: '',
+              stockQuantity: 4,
+              quantityMax: 3,
+            },
+          ],
+          amount: {},
+          promotionType: 0,
+          isSelected: true,
+          isUse: true,
+          isEditable: true,
         },
         {
-          ProductCode: '04AA30',
-          ProductName: 'STT H.Dâu ADM VNM TP 110',
-          GiftsAmount: '',
+          programId: 2,
+          promotionProgramName: 'Khuyến mãi XYZ tháng 11.2020',
+          products: [
+            {
+              productId: 4,
+              productCode: '05BB31',
+              productName: 'STT H.Dâu XYZ VNM TP 110',
+              quantity: '',
+              stockQuantity: 4,
+              quantityMax: 3,
+            },
+            {
+              productId: 5,
+              productCode: '05BB32',
+              productName: 'STT H.Dâu XYZ VNM TP 110',
+              quantity: '',
+              stockQuantity: 4,
+              quantityMax: 3,
+            },
+            {
+              productId: 6,
+              productCode: '05BB33',
+              productName: 'STT H.Dâu XYZ VNM TP 110',
+              quantity: '',
+              stockQuantity: 4,
+              quantityMax: 3,
+            },
+          ],
+          amount: {},
+          promotionType: 0,
+          isSelected: true,
+          isUse: true,
+          isEditable: false,
         },
         {
-          ProductCode: '04AA30',
-          ProductName: 'STT H.Dâu ADM VNM TP 110',
-          GiftsAmount: '',
-        },
-      ],
-      columnsPrmProduct: [
-        {
-          label: 'Mã sản phẩm',
-          field: 'ProductCode',
-          sortable: false,
-        },
-        {
-          label: 'Tên sản phẩm',
-          field: 'ProductName',
-          sortable: false,
+          programId: 3,
+          promotionProgramName: 'Khuyến mãi AYX tháng 11.2020',
+          products: [],
+          amount: {
+            value: 100000,
+            percentage: '',
+          },
+          promotionType: 0,
+          isSelected: true,
+          isUse: true,
+          isEditable: false,
         },
         {
-          label: 'Số lượng tặng',
-          field: 'GiftsAmount',
-          sortable: false,
-          type: 'number',
+          programId: 4,
+          promotionProgramName: 'Khuyến mãi tay PRM tháng 11.2020',
+          products: [
+            {
+              productId: 7,
+              productCode: '05BB31',
+              productName: 'STT H.Dâu XYZ VNM TP 110',
+              quantity: null,
+              stockQuantity: 4,
+              quantityMax: 3,
+            },
+            {
+              productId: 8,
+              productCode: '05BB32',
+              productName: 'STT H.Dâu XYZ VNM TP 110',
+              quantity: '',
+              stockQuantity: 4,
+              quantityMax: 3,
+            },
+          ],
+          amount: {},
+          promotionType: 1,
+          isSelected: false,
+          isUse: true,
+          isEditable: false,
         },
-      ],
-      rowsPrmProduct: [
         {
-          ProductCode: '04AA30',
-          ProductName: 'STT H.Dâu ADM VNM TP 110',
-          GiftsAmount: '',
+          programId: 5,
+          promotionProgramName: 'Khuyến mãi tay PRM tháng 11.2020',
+          products: [],
+          amount: {
+            value: 100000,
+            percentage: '',
+          },
+          promotionType: 1,
+          isSelected: false,
+          isUse: false,
+          isEditable: false,
         },
       ],
 
@@ -776,6 +914,9 @@ export default {
       },
       formId: 5, // hard code permission
       ctrlId: 1, // hard code permission
+
+      // validation rules
+      number,
     }
   },
   computed: {
@@ -939,7 +1080,40 @@ export default {
     totalPrice(amount, price) {
       return amount * (price || 0)
     },
+    onChangeQuantity(id, params) {
+      this.tempPromotions = [...this.tempPromotions.map(program => {
+        if (program.programId === id) {
+          return {
+            ...program,
+            products: [...program.products.map(product => {
+              if (product.productId === params.row.productId) {
+                if (Number(product.quantity) < 0) {
+                  return {
+                    ...product,
+                    quantity: 0,
+                  }
+                }
 
+                if (Number(product.quantity) > Number(product.quantityMax)) {
+                  return {
+                    ...product,
+                    quantity: product.quantityMax,
+                  }
+                }
+              }
+              return product
+            })],
+          }
+        }
+        return program
+      })]
+    },
+    isPositive(num) {
+      if (num >= 0) {
+        return true
+      }
+      return false
+    },
     // createSaleOrder() {
     //   this.CREATE_SALE_ORDER_ACTION({
     //     product: {

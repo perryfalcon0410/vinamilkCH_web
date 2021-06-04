@@ -31,6 +31,10 @@ export default {
     { id: 'BREAKITEM', label: 'Hàng lỗi' },
     { id: 'ORTHERREASON', label: 'Lý do khác' },
   ],
+  promotionType: [
+    { id: '0', label: 'Khuyến mãi tự động' },
+    { id: '1', label: 'Khuyến mãi bằng tay' },
+  ],
   pageSizeRecommendProducts: 8,
   pageNumberRecommendProducts: 0,
 }
