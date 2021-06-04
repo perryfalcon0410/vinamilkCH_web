@@ -94,7 +94,6 @@ export default {
         .then(res => {
           if (res.success) {
             state.productList = res.data.content
-            console.log(res.data)
             state.productListPagination = res.data
           } else {
             throw new Error(res.statusValue)

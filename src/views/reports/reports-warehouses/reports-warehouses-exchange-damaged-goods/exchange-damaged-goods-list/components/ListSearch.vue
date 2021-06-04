@@ -1,0 +1,298 @@
+<template>
+  <b-form
+    @keyup.enter="onClickSearchButton"
+  >
+    <v-card-actions
+      title="Điều kiện"
+    >
+      <!-- START - Bill Number -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Số biên bản
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model="transCode"
+            class="h8 text-brand-3"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="transCode"
+              class="cursor-pointer text-gray"
+              @click="transCode = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Bill Number -->
+
+      <!-- START - Date From -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Từ ngày
+        </div>
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
+          @keypress="$onlyDateInput"
+        >
+          <b-icon-x
+            v-show="fromDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
+          <vue-flat-pickr
+            v-model="fromDate"
+            :config="configFromDate"
+            class="form-control h8"
+            placeholder="Chọn ngày"
+          />
+        </b-row>
+      </b-col>
+      <!-- END - Date From -->
+
+      <!-- START - Date To -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Đến ngày
+        </div>
+        <b-row
+          class="v-flat-pickr-group mx-0"
+          align-v="center"
+          @keypress="$onlyDateInput"
+        >
+          <b-icon-x
+            v-show="toDate"
+            style="position: absolute; right: 15px"
+            class="cursor-pointer text-gray"
+            scale="1.3"
+            data-clear
+          />
+          <vue-flat-pickr
+            v-model="toDate"
+            :config="configToDate"
+            class="form-control h8"
+            placeholder="Chọn ngày"
+          />
+        </b-row>
+
+      </b-col>
+      <!-- END - Date To -->
+
+      <b-col
+        xl
+        md="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Lý do
+        </div>
+        <tree-select
+          v-model="reasonSelected"
+          title="Lý do"
+          :options="reasonOptions"
+          :searchable="false"
+          placeholder="Tất cả"
+          no-options-text="Không có dữ liệu"
+          size="sm"
+        />
+      </b-col>
+      <b-col
+        xl
+        md="3"
+        sm="4"
+      >
+        <div class="h8 mt-sm-1 mt-xl-0">
+          Sản phẩm
+        </div>
+        <b-input-group
+          class="input-group-merge"
+          size="md"
+        >
+          <b-form-input
+            v-model="productCodes"
+            class="h8 text-brand-3"
+            placeholder="Mã sản phẩm"
+            @keyup.enter="onSaveClick"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <!-- Icon-- Delete-text -->
+            <b-icon-x
+              v-show="productCodes"
+              is-text
+              class="cursor-pointer text-gray"
+              @click="ids = null"
+            />
+            <b-icon-three-dots-vertical
+              @click="showFindProductModal"
+            />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- START - Search button -->
+      <b-col
+        xl
+        sm="4"
+        md="3"
+        class="h-25"
+      >
+        <div
+          class="h8 text-white"
+        >
+          Tìm kiếm
+        </div>
+        <b-button
+          id="form-button-search"
+          class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+          variant="someThing"
+          size="sm"
+          style="height: 30px;"
+          @click="onClickSearchButton"
+        >
+          <b-icon-search class="mr-1" />
+          Tìm kiếm
+        </b-button>
+      </b-col>
+      <!-- END - Search button -->
+    </v-card-actions>
+    <find-product-modal
+      :visible="isShowFindProductModal"
+      @close="isShowFindProductModal = false"
+      @onSaveClick="onSaveClick($event)"
+    />
+  </b-form>
+</template>
+
+<script>
+import VCardActions from '@/@core/components/v-card-actions/VCardActions.vue'
+import {
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import { reverseVniDate } from '@/@core/utils/filter'
+import FindProductModal from './FindProductModal.vue'
+import {
+  REPORT_EXCHANGE_DAMAGED_GOODS,
+  REPORT_EXCHANGE_DAMAGED_GOODS_GETTER,
+  REPORT_EXCHANGE_DAMAGED_GOODS_INFO_GETTER,
+  REASON_EXCHANGE_DAMAGED_GOODS_GETTER,
+  GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
+  GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION,
+} from '../../store-module/type'
+
+export default {
+  components: {
+    FindProductModal,
+    VCardActions,
+  },
+  data() {
+    return {
+      isShowFindProductModal: false,
+      dateFormatVNI,
+      transCode: null,
+
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
+      configFromDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+      },
+      configToDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
+      },
+
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+    }
+  },
+  computed: {
+    // reasonOptions() {
+    //   return this.REASON_EXCHANGE_DAMAGED_GOODS_GETTER().map(data => ({
+    //     id: data.id,
+    //     label: data.categoryName,
+    //   }))
+    // },
+  },
+  mounted() {
+    this.onSearch()
+    this.GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION({ ...this.decentralization })
+  },
+  methods: {
+    ...mapGetters(REPORT_EXCHANGE_DAMAGED_GOODS, [
+      REPORT_EXCHANGE_DAMAGED_GOODS_GETTER,
+      REPORT_EXCHANGE_DAMAGED_GOODS_INFO_GETTER,
+      REASON_EXCHANGE_DAMAGED_GOODS_GETTER,
+    ]),
+    ...mapActions(REPORT_EXCHANGE_DAMAGED_GOODS, [
+      GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
+      GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION,
+    ]),
+    onSaveClick(param) {
+      this.isShowFindProductModal = false
+      if (param.length > 0) {
+        this.productCodes = param.length === 1 ? param[0].productCode : param.reduce((prev, curr) => `${prev.productCode ? prev.productCode : prev},${curr.productCode}`)
+      } else {
+        this.productCodes = null
+      }
+    },
+    onSearch() {
+      const searchData = {
+        stockDate: reverseVniDate(this.date),
+        productCodes: this.productCodes,
+        ...this.decentralization,
+      }
+      this.updateSearchData(searchData)
+      this.GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(searchData)
+    },
+    onClickSearchButton() {
+      this.onSearch()
+      this.$emit('onClickSearchButton', this.date)
+    },
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
+    },
+    showFindProductModal() {
+      this.isShowFindProductModal = !this.isShowFindProductModal
+    },
+  },
+}
+</script>

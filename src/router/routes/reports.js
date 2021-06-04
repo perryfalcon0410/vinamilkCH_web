@@ -119,4 +119,20 @@ export default [
       resource: 'ReportsWarehousesInputOutputInventory',
     },
   },
+  // Báo cáo đổi hàng hỏng
+  {
+    path: '/reports/warehouses/exchange-damaged-goods',
+    name: 'reports-warehouses-exchange-damaged-goods',
+    component: () => import('@/views/reports/reports-warehouses/reports-warehouses-exchange-damaged-goods/exchange-damaged-goods-list/ExchangeDamagedGoodsList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo đổi hàng hỏng',
+      breadcrumb: [
+        {
+          text: 'Danh sách báo cáo đổ hàng hỏng',
+          active: true,
+        },
+      ],
+      resource: 'ReportsWarehousesExchangeDamagedGoods',
+    },
+  },
 ]

@@ -48,7 +48,7 @@
             perPage: elementSize,
             setCurrentPage: pageNumber,
           }"
-          :total-rows="reportInventoryPagination.totalElements"
+          :total-rows="reportExchangePagnigation.totalElements"
           :sort-options="{
             enabled: false,
             multipleColumns: true,
@@ -99,7 +99,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ $formatNumberToLocale(reportInventoryInfo.totalQuantity) }}
+              {{ $formatNumberToLocale(reportExchangeInfo.totalQuantity) }}
             </b-row>
 
             <b-row
@@ -107,21 +107,21 @@
               class="mx-0"
               align-h="end"
             >
-              {{ $formatNumberToLocale(reportInventoryInfo.totalPackageQuantity) }}
+              {{ $formatNumberToLocale(reportExchangeInfo.totalPackageQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'unitQuantity'"
               class="mx-0"
               align-h="end"
             >
-              {{ $formatNumberToLocale(reportInventoryInfo.totalUnitQuantity) }}
+              {{ $formatNumberToLocale(reportExchangeInfo.totalUnitQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'totalAmount'"
               class="mx-0"
               align-h="end"
             >
-              {{ $formatNumberToLocale(reportInventoryInfo.totalAmount) }}
+              {{ $formatNumberToLocale(reportExchangeInfo.totalAmount) }}
             </b-row>
           </template>
           <template
@@ -129,7 +129,7 @@
             slot-scope="props"
           >
             <b-row
-              v-show="reportInventoryPagination.totalElements"
+              v-show="reportExchangePagnigation.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -157,7 +157,7 @@
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="reportInventoryPagination.totalElements"
+                :total-rows="reportExchangePagnigation.totalElements"
                 :per-page="elementSize"
                 first-number
                 last-number
@@ -198,11 +198,13 @@ import {
 import { reverseVniDate } from '@/@core/utils/filter'
 import ListSearch from './components/ListSearch.vue'
 import {
-  REPORT_WAREHOUSES_INVENTORY,
-  REPORT_WAREHOUSES_INVENTORY_GETTER,
-  REPORT_WAREHOUSES_INVENTORY_INFO_GETTER,
-  REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER,
-  EXPORT_REPORT_INVENTORIES_ACTION,
+  REPORT_EXCHANGE_DAMAGED_GOODS,
+  // GETTERS
+  REPORT_EXCHANGE_DAMAGED_GOODS_GETTER,
+  REPORT_EXCHANGE_DAMAGED_GOODS_INFO_GETTER,
+  REPORT_EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER,
+  // ACTIONS
+  EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -351,13 +353,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(REPORT_WAREHOUSES_INVENTORY, [
-      REPORT_WAREHOUSES_INVENTORY_GETTER,
-      REPORT_WAREHOUSES_INVENTORY_INFO_GETTER,
-      REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER,
+    ...mapGetters(REPORT_EXCHANGE_DAMAGED_GOODS, [
+      REPORT_EXCHANGE_DAMAGED_GOODS_GETTER,
+      REPORT_EXCHANGE_DAMAGED_GOODS_INFO_GETTER,
+      REPORT_EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER,
     ]),
     reportInventory() {
-      return this.REPORT_WAREHOUSES_INVENTORY_GETTER.map(data => ({
+      return this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.map(data => ({
         productCategory: data.productCategory,
         productCode: data.productCode,
         productName: data.productName,
@@ -375,21 +377,21 @@ export default {
         warning: data.warning,
       }))
     },
-    reportInventoryInfo() {
+    reportExchangeInfo() {
       return this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER
     },
-    reportInventoryPagination() {
-      if (this.REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER) {
-        return this.REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER
+    reportExchangePagnigation() {
+      if (this.REPORT_EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER) {
+        return this.REPORT_EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER
       }
       return {}
     },
     paginationDetailContent() {
       const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.reportInventoryPagination.totalElements
-        ? this.reportInventoryPagination.totalElements : (this.elementSize * this.pageNumber)
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.reportExchangePagnigation.totalElements
+        ? this.reportExchangePagnigation.totalElements : (this.elementSize * this.pageNumber)
 
-      return `${minPageSize} - ${maxPageSize} của ${this.reportInventoryPagination.totalElements} mục`
+      return `${minPageSize} - ${maxPageSize} của ${this.reportExchangePagnigation.totalElements} mục`
     },
   },
   watch: {
@@ -399,13 +401,13 @@ export default {
   },
   methods: {
     exportExcel() {
-      this.EXPORT_REPORT_INVENTORIES_ACTION({
+      this.EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION({
         stockDate: reverseVniDate(this.stockDate),
         ...this.decentralization,
       })
     },
-    ...mapActions(REPORT_WAREHOUSES_INVENTORY, [
-      EXPORT_REPORT_INVENTORIES_ACTION,
+    ...mapActions(REPORT_EXCHANGE_DAMAGED_GOODS, [
+      EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
     ]),
     // pagnigation funcs
     onPaginationChange() {
