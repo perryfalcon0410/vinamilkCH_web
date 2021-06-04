@@ -201,8 +201,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-// eslint-disable-next-line no-unused-vars
-import { formatVniDateToISO, reverseVniDate } from '@/@core/utils/filter'
+import { formatVniDateToISO } from '@/@core/utils/filter'
 import FindProductModal from './FindProductModal.vue'
 import {
   REPORT_EXCHANGE_DAMAGED_GOODS,

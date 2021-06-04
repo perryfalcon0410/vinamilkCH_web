@@ -195,8 +195,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-// eslint-disable-next-line no-unused-vars
-import { reverseVniDate } from '@/@core/utils/filter'
 import ListSearch from './components/ListSearch.vue'
 import {
   REPORT_EXCHANGE_DAMAGED_GOODS,
