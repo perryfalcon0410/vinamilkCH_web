@@ -157,7 +157,7 @@ export default {
     },
     [UPDATE_WAREHOUSES_OUTPUT_ACTION]({ }, val) {
       WarehousesService
-        .updateWarehouseOutput(val)
+        .updateWarehouseOutput(val.updateWarehouseOutput)
         .then(response => response.data)
         .then(res => {
           if (res.success) {

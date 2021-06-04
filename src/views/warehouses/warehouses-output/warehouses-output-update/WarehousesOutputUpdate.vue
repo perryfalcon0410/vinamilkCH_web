@@ -415,20 +415,19 @@ export default {
       this.$router.back()
     },
     onClickUpdateWarehousesOutput() {
-      if (this.productReturnAmount < this.productQuantity) {
+      if (this.warehousesOutput.products) {
         const products = this.warehousesOutput.products.map(data => ({
           id: data.productID,
           quantity: data.productReturnAmount,
         }))
 
-        const updateWarehouseOutput = {
-          id: this.warehousesOutput.id,
-          type: this.warehousesOutput.receiptType,
-          note: this.warehousesOutput.note,
-          listProductRemain: products,
-        }
         this.UPDATE_WAREHOUSES_OUTPUT_ACTION({
-          updateWarehouseOutput,
+          updateWarehouseOutput: {
+            id: this.warehousesOutput.id,
+            type: this.warehousesOutput.receiptType,
+            note: this.warehousesOutput.note,
+            listProductRemain: products,
+          },
           onSuccess: () => {
             this.navigateBack()
           },
