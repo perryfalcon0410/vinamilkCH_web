@@ -80,6 +80,7 @@
             >
               <div v-if="props.column.field === 'manipulation'">
                 <b-icon-search
+                  v-b-popover.hover.top="'Xem chi tiết'"
                   class="cursor-pointer"
                   scale="1.3"
                   @click="() => onBorrowedItemSelected(props.row.id)"

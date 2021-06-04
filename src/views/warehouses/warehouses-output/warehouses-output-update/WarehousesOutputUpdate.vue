@@ -28,9 +28,8 @@
               Mã xuất hàng
             </div>
             <b-form-input
-              v-model="warehousesOutput.code"
+              v-model.trim="warehousesOutput.code"
               maxlength="40"
-              trim
               disabled
             />
           </b-col>
@@ -56,9 +55,8 @@
         </div>
         <b-form-input
           id="stock"
-          v-model="warehousesOutput.wareHouseTypeName"
+          v-model.trim="warehousesOutput.wareHouseTypeName"
           maxlength="40"
-          trim
           disabled
         />
         <!-- END -  Stock  -->
@@ -70,8 +68,7 @@
               Số hóa đơn
             </div>
             <b-form-input
-              v-model="warehousesOutput.redInvoiceNo"
-              trim
+              v-model.trim="warehousesOutput.redInvoiceNo"
               :state="touched ? passed : null"
               disabled
             />
@@ -102,8 +99,8 @@
               Số nội bộ
             </div>
             <b-form-input
-              v-model="warehousesOutput.internalNumber"
-              trim
+              v-model.trim="warehousesOutput.internalNumber"
+
               :state="touched ? passed : null"
               disabled
             />
@@ -115,8 +112,7 @@
             </div>
             <b-input-group class="input-group-merge">
               <b-form-input
-                v-model="warehousesOutput.poNumber"
-                trim
+                v-model.trim="warehousesOutput.poNumber"
                 :state="warehousesOutput.type === '1' && touched ? passed : null"
                 disabled
               />
@@ -163,7 +159,10 @@
 
           <!-- START - Header slot -->
           <div slot="table-actions">
-            <b-form-checkbox class="mx-1">
+            <b-form-checkbox
+              class="mx-1"
+              :disabled="isDisableSave"
+            >
               Trả nguyên đơn
             </b-form-checkbox>
           </div>
@@ -174,22 +173,23 @@
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'productReturnAmount'">
+            <div
+              v-if="props.column.field === 'productReturnAmount'"
+            >
               <div v-if="warehousesOutput.receiptType == warehousesOptions[0].id">
                 <b-form-input
                   v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
-                  type="number"
-                  :number="true"
                   size="sm"
+                  :disabled="isDisableSave"
+                  @keypress="$onlyNumberInput"
                 />
               </div>
               <div v-else>
                 <b-form-input
                   v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
-                  type="number"
-                  :number="true"
                   size="sm"
                   disabled
+                  @keypress="$onlyNumberInput"
                 />
               </div>
             </div>
@@ -210,7 +210,7 @@
           <b-button
             variant="someThing"
             class="align-items-button-center btn-brand-1 text-uppercase"
-            :disabled="isDisableSave"
+            :hidden="isDisableSave"
             @click="onClickUpdateWarehousesOutput"
           >
             <b-icon-download
@@ -249,6 +249,7 @@ import warehousesData from '@/@db/warehouses'
 import {
   getTimeOfDate, formatISOtoVNI,
 } from '@/@core/utils/filter'
+import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSES_OUTPUT,
   // Getter
@@ -356,13 +357,13 @@ export default {
         productName: data.productName,
         productDVT: data.unit,
         productPriceTotal: this.$formatNumberToLocale(data.totalPrice),
-        productExported: data.export,
+        productQuantity: data.quantity - data.export,
         productReturnAmount: data.quantity,
       }))
     },
   },
   watch: {
-    getProductOfWarehouseOutput() {
+    getWarehousesOutput() {
       const dataWarehousesOutput = { ...this.getWarehousesOutput }
 
       this.warehousesOutput.id = dataWarehousesOutput.id
@@ -390,6 +391,7 @@ export default {
 
       // enable or disable button save
       this.isDisableSave = this.warehousesOutput.outputDate !== this.$nowDate
+      console.log(this.isDisableSave)
     },
   },
   mounted() {
@@ -401,6 +403,7 @@ export default {
     }
     this.GET_WAREHOUSES_OUTPUT_BY_ID_ACTION(paramGetDetailsWarehousesOutput)
     this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION(paramGetDetailsWarehousesOutput)
+    console.log(this.warehousesOutput.id)
   },
   methods: {
     ...mapActions(WAREHOUSES_OUTPUT, [
@@ -412,18 +415,21 @@ export default {
       this.$router.back()
     },
     onClickUpdateWarehousesOutput() {
-      const products = this.warehousesOutput.products.map(data => ({
-        id: data.productID,
-        quantity: data.productReturnAmount,
-      }))
+      if (this.productReturnAmount < this.productQuantity) {
+        const products = this.warehousesOutput.products.map(data => ({
+          id: data.productID,
+          quantity: data.productReturnAmount,
+        }))
 
-      const updateWarehouseOutput = {
-        id: this.warehousesOutput.id,
-        type: this.warehousesOutput.receiptType,
-        note: this.warehousesOutput.note,
-        listProductRemain: products,
-      }
-      this.UPDATE_WAREHOUSES_OUTPUT_ACTION(updateWarehouseOutput)
+        const updateWarehouseOutput = {
+          id: this.warehousesOutput.id,
+          type: this.warehousesOutput.receiptType,
+          note: this.warehousesOutput.note,
+          listProductRemain: products,
+        }
+        this.UPDATE_WAREHOUSES_OUTPUT_ACTION(updateWarehouseOutput)
+        this.$router.back()
+      } else toasts.error('Số lượng trả phải nhỏ hơn số lượng sản phẩm!')
     },
   },
 }

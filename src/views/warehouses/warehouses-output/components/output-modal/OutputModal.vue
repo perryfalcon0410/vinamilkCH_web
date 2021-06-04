@@ -88,6 +88,7 @@
             >
               <div v-if="props.column.field === 'manipulation'">
                 <b-icon-search
+                  v-b-popover.hover.top="'Xem chi tiết'"
                   class="cursor-pointer"
                   scale="1.3"
                   @click="() => onPoItemSelected(props.row.id)"
@@ -277,7 +278,7 @@ export default {
       columns: [
         {
           label: 'Ngày nhập',
-          field: 'createdAt',
+          field: 'transDate',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -299,7 +300,7 @@ export default {
         },
         {
           label: 'Ngày hóa đơn',
-          field: 'transDate',
+          field: 'billDate',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -416,7 +417,7 @@ export default {
           redInvoiceNo: data.redInvoiceNo,
           internalNumber: data.internalNumber,
           poNumber: data.poNumber,
-          billDate: data.transDate,
+          billDate: formatISOtoVNI(data.orderDate),
         }))
       }
       return []

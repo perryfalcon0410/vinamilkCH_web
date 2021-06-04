@@ -89,10 +89,9 @@
                     Số hóa đơn
                   </div>
                   <b-form-input
-                    v-model="warehousesOutput.redInvoiceNo"
+                    v-model.trim="warehousesOutput.redInvoiceNo"
                     :state="touched ? passed : null"
-                    readonly
-                    trim
+                    disabled
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -131,10 +130,9 @@
                     Số nội bộ
                   </div>
                   <b-form-input
-                    v-model="warehousesOutput.internalNumber"
+                    v-model.trim="warehousesOutput.internalNumber"
                     :state="touched ? passed : null"
-                    readonly
-                    trim
+                    disabled
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -163,6 +161,7 @@
                     />
                     <b-input-group-append is-text>
                       <b-icon-three-dots-vertical
+                        v-b-popover.hover.right="'Chọn phiếu xuất'"
                         class="cursor-pointer"
                         @click="showModal()"
                       />
@@ -370,7 +369,7 @@ export default {
       required,
 
       outputTypesOptions: warehousesData.outputTypes,
-      exportAll: false,
+      exportAll: true,
 
       output: {
         id: '',

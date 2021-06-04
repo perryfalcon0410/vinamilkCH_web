@@ -10,7 +10,7 @@
         sm="4"
       >
         <validation-provider
-          v-slot="{ errors, passed }"
+          v-slot="{ errors }"
           rules="code"
           name="mã nhập hàng"
         >
@@ -24,9 +24,8 @@
           >
             <b-form-input
               v-model.trim="transCode"
-              :state="transCode ? passed : null"
               placeholder="Nhập mã nhập hàng"
-              hint
+              maxlength="40"
             />
             <b-input-group-append
               is-text
@@ -48,7 +47,7 @@
         sm="4"
       >
         <validation-provider
-          v-slot="{ errors, passed }"
+          v-slot="{ errors }"
           rules="code"
           name="số hóa đơn"
         >
@@ -62,8 +61,8 @@
           >
             <b-form-input
               v-model.trim="redInvoiceNo"
-              :state="redInvoiceNo ? passed : null"
               placeholder="Nhập số hóa đơn"
+              maxlength="40"
             />
             <b-input-group-append
               is-text
@@ -85,7 +84,7 @@
         sm="4"
       >
         <validation-provider
-          v-slot="{ errors, passed }"
+          v-slot="{ errors }"
           rules="code"
           name="số nội bộ"
         >
@@ -99,8 +98,8 @@
           >
             <b-form-input
               v-model.trim="internalNumber"
-              :state="internalNumber ? passed : null"
               placeholder="Nhập số nội bộ"
+              maxlength="40"
             />
             <b-input-group-append
               is-text
@@ -122,7 +121,7 @@
         sm="4"
       >
         <validation-provider
-          v-slot="{ errors, passed }"
+          v-slot="{ errors }"
           rules="code"
           name="PO No"
         >
@@ -136,8 +135,8 @@
           >
             <b-form-input
               v-model.trim="poNo"
-              :state="poNo ? passed : null"
               placeholder="Nhập PO No"
+              maxlength="40"
             />
             <b-input-group-append
               is-text
@@ -275,7 +274,7 @@ export default {
       redInvoiceNo: '',
       internalNumber: '',
       poNo: '',
-      fromDate: this.$nowDate,
+      fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
 
       configFromDate: {

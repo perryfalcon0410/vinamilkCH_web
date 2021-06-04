@@ -53,14 +53,14 @@
           @keypress="$onlyDateInput"
         >
           <b-icon-x
-            v-show="searchOptions.fromDate"
+            v-show="fromDate"
             style="position: absolute; right: 15px"
             class="cursor-pointer text-gray"
             scale="1.3"
             data-clear
           />
           <vue-flat-pickr
-            v-model="searchOptions.fromDate"
+            v-model="fromDate"
             :config="configFromDate"
             class="form-control h8"
             placeholder="Chọn ngày"
@@ -86,14 +86,14 @@
           @keypress="$onlyDateInput"
         >
           <b-icon-x
-            v-show="searchOptions.toDate"
+            v-show="toDate"
             style="position: absolute; right: 15px"
             class="cursor-pointer text-gray"
             scale="1.3"
             data-clear
           />
           <vue-flat-pickr
-            v-model="searchOptions.toDate"
+            v-model="toDate"
             :config="configToDate"
             class="form-control h8"
             placeholder="Chọn ngày"
@@ -401,6 +401,8 @@ export default {
       warehousesTypeSelected: null,
       perPageSizeSelected: commonData.perPageSizes[0],
       totalElements: null,
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
       formId: 5, // Hard code for permission
       ctrlId: 7, // Hard code for permission
       columns: [
@@ -477,8 +479,6 @@ export default {
       ],
       searchOptions: {
         redInvoiceNo: '', // số hóa đơn
-        fromDate: '',
-        toDate: '',
         type: '',
         page: commonData.pageNumber,
         size: commonData.perPageSizes[0],
@@ -552,10 +552,6 @@ export default {
       }
     },
   },
-  beforeMount() {
-    this.searchOptions.fromDate = this.$earlyMonth
-    this.searchOptions.toDate = this.$nowDate
-  },
   mounted() {
     const searchData = {
       redInvoiceNo: this.searchOptions.redInvoiceNo,
@@ -608,8 +604,8 @@ export default {
     onClickSearchWarehousesOutput() {
       const searchData = {
         redInvoiceNo: this.searchOptions.redInvoiceNo,
-        fromDate: reverseVniDate(this.searchOptions.fromDate),
-        toDate: reverseVniDate(this.searchOptions.toDate),
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
         type: this.warehousesTypeSelected,
         // formId: this.formId,
         // ctrlId: this.ctrlId,
