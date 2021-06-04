@@ -65,7 +65,10 @@
             </b-input-group-prepend>
             <b-form-input
               ref="search"
+              v-model="search"
               placeholder="Tìm khách hàng (F4)"
+              @mouseover="search.length >= 4 ? inputSearchFocused = true : inputSearchFocused"
+              @blur="inputSearchFocused = false"
               @click="showSearchModal"
             />
             <sales-search-modal
@@ -92,18 +95,19 @@
               class="my-1 bg-white rounded border border-primary shadow-lg"
             >
               <b-col
-                v-for="(n,index) in 6"
+                v-for="(value, index) in customersSearch"
                 :key="index"
-                class="px-0 my-1"
+                class="px-0 my-1 border-bottom"
+                @click="getCustomerInfo"
               >
                 <!-- START - Section Content -->
                 <b-col
                   class="text-dark font-weight-bold px-0"
                 >
-                  Nguyễn Xuân Điểm
+                  {{ value.fullName }}
                 </b-col>
                 <b-col class="text-dark px-0">
-                  CUS.BN40011.0001 - 0979604450
+                  {{ value.code }} - {{ value.phoneNumber }}
                 </b-col>
                 <!-- END - Section Content -->
               </b-col>
@@ -352,6 +356,7 @@ import {
   mapGetters,
 } from 'vuex'
 import saleData from '@/@db/sale'
+import { formatDateToLocale } from '@core/utils/filter'
 import {
   CUSTOMER,
   // GETTERS
@@ -360,11 +365,13 @@ import {
   SALEMT_PROMOTION_OBJECT_GETTER,
   SALEMT_DELIVERY_TYPE_GETTER,
   CUSTOMER_DEFAULT_GETTER,
+  CUSTOMERS_GETTER,
   // ACTIONS
   GET_CUSTOMER_BY_ID_ACTION,
   GET_SALEMT_PROMOTION_OBJECT_ACTION,
   GET_SALEMT_DELIVERY_TYPE_ACTION,
   GET_CUSTOMER_DEFAULT_ACTION,
+  GET_CUSTOMERS_ACTION,
 } from '../../../sales-customers/store-module/type'
 import {
   SALES,
@@ -395,6 +402,8 @@ export default {
     return {
       inputSearchFocused: false,
       isShowSalesSearchModal: false,
+      customersSearch: [],
+      search: '',
 
       // customer
       customer: {
@@ -503,15 +512,33 @@ export default {
       SALEMT_PROMOTION_OBJECT_GETTER,
       SALEMT_DELIVERY_TYPE_GETTER,
       CUSTOMER_DEFAULT_GETTER,
+      CUSTOMERS_GETTER,
     }),
 
     ...mapGetters(SALES, {
       ONLINE_ORDER_CUSTOMER_BY_ID_GETTER,
     }),
 
-    // customer() {
-    //   return this.CUSTOMER_BY_ID_GETTER()
-    // },
+    getCustomerSearch() {
+      if (this.CUSTOMERS_GETTER.content) {
+        return this.CUSTOMERS_GETTER.content.map(data => ({
+          id: data.id,
+          shopId: data.shopId,
+          code: data.customerCode,
+          fullName: `${data.lastName} ${data.firstName}`,
+          phoneNumber: data.mobiPhone,
+          birthDay: formatDateToLocale(data.dob),
+          date: formatDateToLocale(data.createdAt),
+          address: data.address,
+          idNo: data.idNo,
+          feature: '',
+          totalBill: data.totalBill,
+          customerTypeId: data.customerTypeId,
+          scoreCumulated: data.scoreCumulated,
+        }))
+      }
+      return []
+    },
     customerDefault() {
       return this.CUSTOMER_DEFAULT_GETTER
     },
@@ -554,6 +581,10 @@ export default {
     customerDefault() {
       this.getCustomerDefault()
     },
+    getCustomerSearch() {
+      this.customersSearch = [...this.getCustomerSearch]
+      this.customer.fullName = this.getCustomerSearch.fullName
+    },
   },
   mounted() {
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
@@ -573,6 +604,7 @@ export default {
       GET_SALEMT_PROMOTION_OBJECT_ACTION,
       GET_SALEMT_DELIVERY_TYPE_ACTION,
       GET_CUSTOMER_DEFAULT_ACTION,
+      GET_CUSTOMERS_ACTION,
     ]),
 
     ...mapActions(SALES, [

@@ -14,6 +14,7 @@
       >
         <b-input-group class="input-group-merge">
           <b-form-input
+            ref="seach"
             v-model="searchOptions.keyWord"
             class="form-control-merge"
             placeholder="Tìm sản phẩm (F3)"
@@ -116,6 +117,7 @@
             @click="onClickAddButton(index)"
           />
         </div>
+        <div>{{ bills[index] }}</div>
 
       </b-row>
       <!-- END - Bills -->
@@ -498,6 +500,11 @@ export default {
     this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
   },
   created() {
+    window.addEventListener('keydown', e => {
+      if (e.key === 'F3') {
+        this.$refs.search.focus()
+      }
+    })
   },
   methods: {
     ...mapGetters(SALES, [
@@ -593,8 +600,19 @@ export default {
       this.$emit('getCustomerIdInfo', id)
     },
 
+    billHandle(bill, index) {
+      return {
+        id: bill.id,
+        index,
+        products: this.orderProducts,
+      }
+    },
+
     clickBillButton(index) {
       const idx = this.bills.findIndex(i => i.id === index)
+      if (index !== 0) {
+        this.bills[index].products = []
+      }
       this.bills[idx].products = this.orderProducts
       this.bills[idx].active = true
     },
