@@ -162,7 +162,7 @@ export default {
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
-            router.push({ name: 'warehouses-output-list' })
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

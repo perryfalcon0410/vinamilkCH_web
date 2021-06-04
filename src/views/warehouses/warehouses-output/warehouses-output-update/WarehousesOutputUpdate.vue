@@ -427,8 +427,12 @@ export default {
           note: this.warehousesOutput.note,
           listProductRemain: products,
         }
-        this.UPDATE_WAREHOUSES_OUTPUT_ACTION(updateWarehouseOutput)
-        this.$router.back()
+        this.UPDATE_WAREHOUSES_OUTPUT_ACTION({
+          updateWarehouseOutput,
+          onSuccess: () => {
+            this.navigateBack()
+          },
+        })
       } else toasts.error('Số lượng trả phải nhỏ hơn số lượng sản phẩm!')
     },
   },
