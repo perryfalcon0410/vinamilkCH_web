@@ -80,7 +80,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           const fileName = `Ton_kho_cua_hang_Filled_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
-          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {

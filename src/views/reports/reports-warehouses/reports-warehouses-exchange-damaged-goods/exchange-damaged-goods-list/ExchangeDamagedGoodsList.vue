@@ -195,6 +195,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+// eslint-disable-next-line no-unused-vars
 import { reverseVniDate } from '@/@core/utils/filter'
 import ListSearch from './components/ListSearch.vue'
 import {
@@ -225,7 +226,7 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
-      stockDate: this.$nowDate,
+      exportExcelData: {},
       columns: [
         {
           label: 'Ngành hàng',
@@ -402,7 +403,7 @@ export default {
   methods: {
     exportExcel() {
       this.EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION({
-        stockDate: reverseVniDate(this.stockDate),
+        ...this.exportExcelData,
         ...this.decentralization,
       })
     },
@@ -416,8 +417,9 @@ export default {
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
-    onClickSearchButton(date) {
-      this.stockDate = date
+    onClickSearchButton(data) {
+      this.exportExcelData = { ...data }
+      console.log(this.exportExcelData)
       this.pageNumber = 1
     },
     onPageChange(params) {

@@ -56,7 +56,7 @@
             v-model="productCodes"
             class="h8 text-brand-3"
             placeholder="Mã sản phẩm"
-            @keyup.enter="onSaveClick"
+            @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append
             is-text

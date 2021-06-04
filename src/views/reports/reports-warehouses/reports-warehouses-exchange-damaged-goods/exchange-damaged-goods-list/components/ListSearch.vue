@@ -140,7 +140,7 @@
             v-model="productCodes"
             class="h8 text-brand-3"
             placeholder="Mã sản phẩm"
-            @keyup.enter="onSaveClick"
+            @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append
             is-text
@@ -150,7 +150,7 @@
               v-show="productCodes"
               is-text
               class="cursor-pointer text-gray"
-              @click="ids = null"
+              @click="productCodes = null"
             />
             <b-icon-three-dots-vertical
               @click="showFindProductModal"
@@ -201,7 +201,8 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { reverseVniDate } from '@/@core/utils/filter'
+// eslint-disable-next-line no-unused-vars
+import { formatVniDateToISO, reverseVniDate } from '@/@core/utils/filter'
 import FindProductModal from './FindProductModal.vue'
 import {
   REPORT_EXCHANGE_DAMAGED_GOODS,
@@ -221,8 +222,11 @@ export default {
     return {
       isShowFindProductModal: false,
       dateFormatVNI,
-      transCode: null,
 
+      searchData: {},
+      productCodes: null,
+      transCode: null,
+      reasonSelected: null,
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
       configFromDate: {
@@ -275,17 +279,20 @@ export default {
       }
     },
     onSearch() {
-      const searchData = {
-        stockDate: reverseVniDate(this.date),
-        productCodes: this.productCodes,
+      this.searchData = {
+        fromDate: formatVniDateToISO(this.fromDate),
+        toDate: formatVniDateToISO(this.toDate),
+        transCode: this.transCode,
+        productKW: this.productCodes,
+        reason: this.reasonSelected,
         ...this.decentralization,
       }
-      this.updateSearchData(searchData)
-      this.GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(searchData)
+      this.updateSearchData(this.searchData)
+      this.GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(this.searchData)
     },
     onClickSearchButton() {
       this.onSearch()
-      this.$emit('onClickSearchButton', this.date)
+      this.$emit('onClickSearchButton', this.searchData)
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)
