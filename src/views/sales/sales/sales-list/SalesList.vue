@@ -117,7 +117,6 @@
             @click="onClickAddButton(index)"
           />
         </div>
-        <div>{{ bills[index] }}</div>
 
       </b-row>
       <!-- END - Bills -->
