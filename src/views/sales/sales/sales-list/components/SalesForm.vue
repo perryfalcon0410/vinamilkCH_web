@@ -67,7 +67,7 @@
               ref="search"
               v-model="search"
               placeholder="Tìm khách hàng (F4)"
-              @mouseover="search.length >= 4 ? inputSearchFocused = true : inputSearchFocused"
+              @mouseover="search.length >= minSearch ? inputSearchFocused = true : inputSearchFocused"
               @blur="inputSearchFocused = false"
               @click="showSearchModal"
             />
@@ -356,6 +356,7 @@ import {
   mapGetters,
 } from 'vuex'
 import saleData from '@/@db/sale'
+import commonData from '@/@db/common'
 import { formatDateToLocale } from '@core/utils/filter'
 import {
   CUSTOMER,
@@ -404,6 +405,7 @@ export default {
       isShowSalesSearchModal: false,
       customersSearch: [],
       search: '',
+      minSearch: commonData.minSearchLength,
 
       // customer
       customer: {
