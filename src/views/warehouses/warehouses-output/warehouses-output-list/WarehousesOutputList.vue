@@ -141,7 +141,7 @@
           variant="someThing"
           @click="onClickSearchWarehousesOutput()"
         >
-          <b-icon-search class="mr-05" />
+          <b-icon-search class="mr-50" />
           Tìm kiếm
         </b-button>
       </b-col>
@@ -151,7 +151,7 @@
     <!-- END - Search -->
 
     <!-- START - Table -->
-    <b-form class="bg-white rounded shadow rounded my-1">
+    <b-form class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Table header -->
       <b-row
         class="border-bottom px-1 mx-0"
@@ -170,7 +170,7 @@
           >
             <b-icon-plus
               scale="2"
-              class="mr-05"
+              class="mr-50"
             />
             Thêm mới
           </b-button>
@@ -230,7 +230,7 @@
                 v-b-popover.hover.top="'In phiếu'"
                 class="cursor-pointer text-brand-1"
                 scale="1.2"
-                @click="onClickPrintButton(props.index)"
+                @click="onClickPrintButton(props.row.code)"
               />
               <b-icon-pencil-fill
                 v-b-popover.hover.top="'Chỉnh sửa'"
@@ -360,6 +360,10 @@
       </template>
     </b-modal>
     <!-- END - Notify Modal Close -->
+
+    <!-- STAT - Print form -->
+    <print-form-output-order />
+    <!-- END - Print form -->
   </b-container>
 </template>
 
@@ -367,34 +371,34 @@
 import {
   mapActions,
   mapGetters,
-  mapState,
 } from 'vuex'
-import { reverseVniDate, formatISOtoVNI } from '@/@core/utils/filter'
-
 import {
-  dateFormatVNI,
-} from '@/@core/utils/validations/validations'
+  reverseVniDate,
+} from '@/@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
 import commonData from '@/@db/common'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import PrintFormOutputOrder from '../components/PrintFormOutputOrder.vue'
 
 import {
   WAREHOUSES_OUTPUT,
+  // GETTERS
   GET_WAREHOUSES_OUTPUT_LIST_GETTER,
-  GET_WAREHOUSES_OUTPUT_LIST_ACTION,
-  PRINT_WAREHOUSES_OUTPUT_ACTION,
   GET_WAREHOUSES_OUTPUT_DATA_GETTER,
+  // ACTIONS
+  GET_WAREHOUSES_OUTPUT_LIST_ACTION,
   DELETE_WAREHOUSES_ACTION,
+  PRINT_OUT_IN_PUT_ORDER_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
     VCardActions,
+    PrintFormOutputOrder,
   },
 
   data() {
     return {
-      dateFormatVNI,
       inputValueBillNumber: '',
       warehousesOptions: warehousesData.outputTypes,
       perPageSizeOptions: commonData.perPageSizes,
@@ -403,8 +407,10 @@ export default {
       totalElements: null,
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
-      formId: 5, // Hard code for permission
-      ctrlId: 7, // Hard code for permission
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
       columns: [
         {
           label: 'ID',
@@ -504,10 +510,14 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(WAREHOUSES_OUTPUT, [
+      GET_WAREHOUSES_OUTPUT_LIST_GETTER,
+      GET_WAREHOUSES_OUTPUT_DATA_GETTER,
+    ]),
     getWarehousesOutputList() {
-      return this.GET_WAREHOUSES_OUTPUT_LIST_GETTER().map(data => ({
+      return this.GET_WAREHOUSES_OUTPUT_LIST_GETTER.map(data => ({
         id: data.id,
-        date: data.transDate === '' ? '' : formatISOtoVNI(data.transDate),
+        date: data.transDate === '' ? '' : this.$formatISOtoVNI(data.transDate),
         code: data.transCode,
         billNumber: data.redInvoiceNo,
         internalNumber: data.internalNumber,
@@ -520,7 +530,7 @@ export default {
     },
     // Get data totalElement
     warehousesOutputPagination() {
-      return this.GET_WAREHOUSES_OUTPUT_DATA_GETTER()
+      return this.GET_WAREHOUSES_OUTPUT_DATA_GETTER
     },
     // FilterOptions of column quantity
     totalQuantity() {
@@ -558,8 +568,7 @@ export default {
       fromDate: reverseVniDate(this.$earlyMonth),
       toDate: reverseVniDate(this.$nowDate),
       type: this.warehousesTypeSelected,
-      // formId: this.formId,
-      // ctrlId: this.ctrlId,
+      // ...this.decentralization
     }
     this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
     this.configToDate = {
@@ -568,16 +577,9 @@ export default {
     }
   },
   methods: {
-    ...mapState(WAREHOUSES_OUTPUT, {
-      successStatusDelete: state => state.delete.success,
-    }),
-    ...mapGetters(WAREHOUSES_OUTPUT, [
-      GET_WAREHOUSES_OUTPUT_LIST_GETTER,
-      GET_WAREHOUSES_OUTPUT_DATA_GETTER,
-    ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_LIST_ACTION,
-      PRINT_WAREHOUSES_OUTPUT_ACTION,
+      PRINT_OUT_IN_PUT_ORDER_ACTION,
       DELETE_WAREHOUSES_ACTION,
     ]),
     selectedRowsChange(params) {
@@ -595,11 +597,19 @@ export default {
         },
       })
     },
-    onClickPrintButton(itemIndex) {
-      const params = {
-        transCode: this.warehousesOutputList[itemIndex].Id,
-      }
-      this.PRINT_WAREHOUSES_OUTPUT_ACTION(params)
+    onClickPrintButton(id) {
+      console.log(id)
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_OUT_IN_PUT_ORDER_ACTION({
+        data: {
+          transCode: id,
+          params: { ...this.decentralization },
+        },
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
     },
     onClickSearchWarehousesOutput() {
       const searchData = {
@@ -607,12 +617,11 @@ export default {
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         type: this.warehousesTypeSelected,
-        // formId: this.formId,
-        // ctrlId: this.ctrlId,
+        // ...this.decentralization
       }
 
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
-      this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER()
+      this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER
     },
     onClickDeleteWarehousesOutput(id, type, code, index, date) {
       this.$refs.salesNotifyModal.show()

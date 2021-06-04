@@ -23,6 +23,7 @@ import {
   PRODUCTS_GETTER,
   WAREHOUSES_TYPE_GETTER,
   NOT_IMPORT_REASONS_GETTER,
+  PRINT_OUT_IN_PUT_ORDER_GETTER,
   // ACTIONS
   GET_RECEIPTS_ACTION,
   EXPORT_RECEIPTS_ACTION,
@@ -44,6 +45,7 @@ import {
   PRINT_WAREHOUSES_INPUT_ACTION,
   GET_WAREHOUSES_TYPE_ACTION,
   GET_NOT_IMPORT_REASONS_ACTION,
+  PRINT_OUT_IN_PUT_ORDER_ACTION,
 } from './type'
 
 export default {
@@ -69,6 +71,7 @@ export default {
     allProducts: [],
     warehousestype: {},
     notImportReasons: [],
+    printOutInputOrderData: [],
   },
 
   // START - GETTERS
@@ -126,6 +129,9 @@ export default {
     },
     [NOT_IMPORT_REASONS_GETTER](state) {
       return state.notImportReasons
+    },
+    [PRINT_OUT_IN_PUT_ORDER_GETTER](state) {
+      return state.printOutInputOrderData
     },
   },
 
@@ -433,6 +439,22 @@ export default {
         .then(res => {
           if (res.success) {
             state.notImportReasons = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_OUT_IN_PUT_ORDER_ACTION]({ state }, val) {
+      ReceiptImportService
+        .printOutInputOrder(val.data)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printOutInputOrderData = res.data || {}
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

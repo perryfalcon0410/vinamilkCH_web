@@ -14,6 +14,7 @@ import {
   GET_EXPORT_PO_TRANS_DETAIL_GETTER,
   GET_WAREHOUSE_TYPE_GETTER,
   GET_WAREHOUSES_OUTPUT_DATA_GETTER,
+  PRINT_OUT_IN_PUT_ORDER_GETTER,
   // ACTIONS
   GET_WAREHOUSES_OUTPUT_LIST_ACTION,
   PRINT_WAREHOUSES_OUTPUT_ACTION,
@@ -30,6 +31,7 @@ import {
   GET_WAREHOUSE_TYPE_ACTION,
   CREATE_EXPORT_ACTION,
   DELETE_WAREHOUSES_ACTION,
+  PRINT_OUT_IN_PUT_ORDER_ACTION,
 } from './type'
 import toasts from '../../../../@core/utils/toasts/toasts'
 
@@ -48,6 +50,7 @@ export default {
     dataWarehousesOutput: {},
     adjustmentProducts: [],
     borrowedProducts: [],
+    printOutInputOrderData: [],
   },
 
   // GETTERS
@@ -84,6 +87,9 @@ export default {
     },
     [GET_WAREHOUSES_OUTPUT_DATA_GETTER](state) {
       return state.dataWarehousesOutput
+    },
+    [PRINT_OUT_IN_PUT_ORDER_GETTER](state) {
+      return state.printOutInputOrderData
     },
   },
 
@@ -302,6 +308,22 @@ export default {
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_OUT_IN_PUT_ORDER_ACTION]({ state }, val) {
+      WarehousesService
+        .printOutInputOrder(val.data)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printOutInputOrderData = res.data || {}
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

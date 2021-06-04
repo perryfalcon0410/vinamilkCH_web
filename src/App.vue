@@ -11,6 +11,7 @@
     <scroll-to-top v-if="enableScrollToTop" />
 
     <loading
+      class="d-print-none"
       :active.sync="isLoading"
       :can-cancel="false"
       :is-full-page="true"

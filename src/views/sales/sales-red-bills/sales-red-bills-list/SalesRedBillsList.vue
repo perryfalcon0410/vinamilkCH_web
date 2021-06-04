@@ -152,7 +152,7 @@
             class="btn-brand-1 align-items-button-center h8 mt-sm-1 mt-xl-0"
             @click="onSearchClick()"
           >
-            <b-icon-search class="mr-05" />
+            <b-icon-search class="mr-50" />
             Tìm kiếm
           </b-button>
         </b-col>
@@ -187,7 +187,7 @@
             variant="danger"
             class="align-items-button-center h8"
           >
-            <b-icon-printer-fill class="mr-05" />
+            <b-icon-printer-fill class="mr-50" />
             IN HĐ
           </b-button>
           <b-button
@@ -195,7 +195,7 @@
             variant="someThing"
             @click="onClickExportRedBills"
           >
-            <b-icon-file-earmark-x-fill class="mr-05" />
+            <b-icon-file-earmark-x-fill class="mr-50" />
             Xuất Excel
           </b-button>
           <b-button
@@ -204,7 +204,7 @@
             @click="onClickUpdateRedBills"
           >
             <b-icon-arrow-clockwise
-              class="mr-05"
+              class="mr-50"
               scale="1.2"
             />
             Cập nhật HĐ
@@ -215,7 +215,7 @@
             @click="addSaleRedBillsCreate"
           >
             <b-icon-plus
-              class="mr-05"
+              class="mr-50"
               scale="1.8"
             />
             Thêm mới
@@ -225,7 +225,7 @@
             variant="someThing"
             @click="onClickDeleteButton"
           >
-            <b-icon-trash class="mr-05" />
+            <b-icon-trash class="mr-50" />
             Xóa
           </b-button>
         </b-row>

@@ -32,7 +32,7 @@ export default {
     selectedProductRow: [],
     printInputOrderDetailData: [], // temp
     printSellsData: [], // temp
-    printReturnGoodsData: [], // temp
+    printReturnGoodsData: [],
   },
   // Getters
   getters: {

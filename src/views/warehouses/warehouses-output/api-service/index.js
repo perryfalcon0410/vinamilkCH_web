@@ -15,6 +15,7 @@ import {
   getWareHouseTypeEndpoint,
   createExportEndpoint,
   deleteWarehousesOutputEndpoint,
+  printOutInputOrderEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -70,5 +71,10 @@ export default {
   },
   deleteWarehousesOutput(args) {
     return axios.put(`${deleteWarehousesOutputEndpoint}/${args.id}?type=${args.type}`)
+  },
+  printOutInputOrder(args) {
+    return axios.get(`${printOutInputOrderEndpoint}/${args.transCode}`, {
+      params: formatURLParams(args.params),
+    })
   },
 }

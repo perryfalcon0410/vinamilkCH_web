@@ -382,7 +382,7 @@
                   <span v-if="props.column.field === 'function'">
                     <b-icon-trash-fill
                       v-b-popover.hover.top="'Xóa'"
-                      class="cursor-pointer mt-05"
+                      class="cursor-pointer mt-50"
                       scale="1.5"
                       color="red"
                       @click="onClickDeleteButton(props.index)"

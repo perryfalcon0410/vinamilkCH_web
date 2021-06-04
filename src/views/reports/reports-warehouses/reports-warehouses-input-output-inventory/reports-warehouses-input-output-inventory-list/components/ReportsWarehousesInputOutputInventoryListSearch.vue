@@ -123,7 +123,7 @@
         variant="someThing"
         @click="onClickSearchButton()"
       >
-        <b-icon-search class="mr-05" />
+        <b-icon-search class="mr-50" />
         Tìm kiếm
       </b-button>
     </b-col>

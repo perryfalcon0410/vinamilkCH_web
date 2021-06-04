@@ -258,7 +258,7 @@
                   @click="createExport"
                 >
                   <b-icon-download
-                    class="mr-05"
+                    class="mr-50"
                   />
                   Trả hàng
                 </b-button>
@@ -268,7 +268,7 @@
                   @click="navigateBack"
                 >
                   <b-icon-x
-                    class="mr-05"
+                    class="mr-50"
                     scale="1.5"
                   />
                   Đóng

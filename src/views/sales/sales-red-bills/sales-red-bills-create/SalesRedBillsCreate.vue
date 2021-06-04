@@ -400,7 +400,7 @@
               >
                 <b-icon
                   icon="file-earmark-text-fill"
-                  class="mr-05"
+                  class="mr-50"
                 />
                 Lưu
               </b-button>
@@ -413,7 +413,7 @@
               >
                 <b-icon
                   icon="printer-fill"
-                  class="mr-05"
+                  class="mr-50"
                 />
                 LƯU & IN
               </b-button>
@@ -423,7 +423,7 @@
                 @click="routeBack"
               >
                 <b-icon-x
-                  class="mr-05"
+                  class="mr-50"
                   scale="1.5"
                 />
                 Đóng

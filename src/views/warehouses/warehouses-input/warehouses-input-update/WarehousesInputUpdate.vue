@@ -418,7 +418,7 @@
                 >
                   <b-icon-x
                     scale="1.5"
-                    class="mr-05"
+                    class="mr-50"
                   />
                   Đóng
                 </b-button>

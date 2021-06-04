@@ -11,7 +11,12 @@ import {
   onlyNumberInput,
   onlyDateInput,
 } from '@core/utils/utils'
-import { formatDateToLocale, formatNumberToLocale } from '@/@core/utils/filter'
+import {
+  formatDateToLocale,
+  formatNumberToLocale,
+  formatISOtoVNI,
+  formatVniDateToISO,
+} from '@/@core/utils/filter'
 import { permission } from '@/libs/acl/ability'
 
 import i18n from '@/libs/i18n'
@@ -73,6 +78,8 @@ Vue.prototype.$isEmpty = isEmpty
 Vue.prototype.$onlyNumberInput = onlyNumberInput
 Vue.prototype.$onlyDateInput = onlyDateInput
 Vue.prototype.$formatNumberToLocale = formatNumberToLocale
+Vue.prototype.$formatISOtoVNI = formatISOtoVNI
+Vue.prototype.$formatVniDateToISO = formatVniDateToISO
 
 // get earlyMonth and now date
 Vue.prototype.$earlyMonth = formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1))

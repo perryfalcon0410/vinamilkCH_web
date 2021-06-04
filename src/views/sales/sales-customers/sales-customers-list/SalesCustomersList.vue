@@ -30,7 +30,7 @@
           >
             <b-icon-plus
               scale="2"
-              class="mr-05"
+              class="mr-50"
             />
             Thêm mới
           </b-button>
@@ -39,7 +39,7 @@
             variant="someThing"
             @click="onClickExcelExportButton"
           >
-            <b-icon-file-earmark-x-fill class="mr-05" />
+            <b-icon-file-earmark-x-fill class="mr-50" />
             Xuất excel
           </b-button>
         </b-button-group>
@@ -194,7 +194,6 @@ import {
   getCustomerStatusLabel,
   resizeAbleTable,
 } from '@core/utils/utils'
-import { formatDateToLocale } from '@core/utils/filter'
 
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
@@ -252,9 +251,6 @@ export default {
         {
           label: 'Ngày sinh',
           field: 'dob',
-          type: 'date',
-          dateInputFormat: 'dd/MM/yyyy',
-          dateOutputFormat: 'dd/MM/yyyy',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -306,11 +302,11 @@ export default {
           customerCode: data.customerCode,
           nameText: `${data.lastName} ${data.firstName}`,
           mobiPhone: data.mobiPhone,
-          dob: formatDateToLocale(data.dob),
+          dob: this.$formatISOtoVNI(data.dob),
           genderId: getGenderLabel(data.genderId),
           status: getCustomerStatusLabel(data.status),
           customerTypeId: getCustomerTypeLabel(data.customerTypeId),
-          createdAt: formatDateToLocale(data.createdAt),
+          createdAt: this.$formatISOtoVNI(data.createdAt),
           feature: '',
         }))
       }

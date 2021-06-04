@@ -36,7 +36,7 @@
             variant="someThing"
             @click="onClickExcelExportButton"
           >
-            <b-icon-file-earmark-x-fill class="mr-05" />
+            <b-icon-file-earmark-x-fill class="mr-50" />
             Xuất excel
           </b-button>
         </b-button-group>
@@ -225,15 +225,13 @@ import {
 import ReportsReturnedGoodsListSearch from './components/ReportsReturnedGoodsListSearch.vue'
 import {
   REPORT_RETURNED_GOODS,
-
   // Getters
   REPORT_RETURNED_GOODS_GETTER,
-
   // Actions
   GET_REPORT_RETURNED_GOODS_ACTION,
   EXPORT_REPORT_RETURNED_GOODS_ACTION,
 } from '../store-module/type'
-import PrintForm from '../components/PrintFormReturnGoods.vue'
+import PrintForm from '../components/PrintFormReportReturnGoods.vue'
 
 export default {
   components: {

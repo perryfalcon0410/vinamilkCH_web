@@ -31,7 +31,7 @@
       @click="navigateToChangePassword"
     >
       <b-icon-lock
-        class="mr-05"
+        class="mr-50"
         scale="1.2"
       />
       <span>Đổi mật khẩu</span>

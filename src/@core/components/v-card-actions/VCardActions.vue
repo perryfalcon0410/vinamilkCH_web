@@ -1,5 +1,5 @@
 <template>
-  <div class="v-card bg-white rounded shadow">
+  <div class="v-card bg-white rounded shadow d-print-none">
     <!-- START - Title -->
     <b-col>
       <b-row

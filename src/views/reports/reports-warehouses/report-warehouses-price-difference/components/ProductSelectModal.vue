@@ -91,7 +91,7 @@
             variant="someThing"
             @click="onSearchClick"
           >
-            <b-icon-search class="mr-05" />
+            <b-icon-search class="mr-50" />
             Tìm kiếm
           </b-button>
         </b-col>
@@ -228,11 +228,9 @@
         class="d-flex align-items-center text-uppercase"
         @click="onSaveClick"
       >
-        <b-icon
-          icon="check2"
-          width="20"
-          height="20"
-          class="mr-1"
+        <b-icon-check2
+          scale="1.3"
+          class="mr-50"
         />
         Lưu
       </b-button>
@@ -241,10 +239,9 @@
         class="d-flex align-items-center text-uppercase"
         @click="cancel()"
       >
-        <b-icon
-          icon="x"
-          width="20"
-          height="20"
+        <b-icon-x
+          scale="1.5"
+          class="mr-50"
         />
         Đóng
       </b-button>

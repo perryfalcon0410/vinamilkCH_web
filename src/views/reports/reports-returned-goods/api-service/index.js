@@ -51,5 +51,4 @@ export default {
       params: formatURLParams(args),
     })
   },
-
 }

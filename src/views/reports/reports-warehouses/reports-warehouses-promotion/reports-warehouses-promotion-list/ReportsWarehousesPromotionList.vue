@@ -28,7 +28,7 @@
             variant="someThing"
             @click="onClickPrintButton"
           >
-            <b-icon-file-earmark-x-fill class="mr-05" />
+            <b-icon-file-earmark-x-fill class="mr-50" />
             In
           </b-button>
           <b-button
@@ -36,7 +36,7 @@
             variant="someThing"
             @click="onClickExcelExportButton"
           >
-            <b-icon-file-earmark-x-fill class="mr-05" />
+            <b-icon-file-earmark-x-fill class="mr-50" />
             Xuất excel
           </b-button>
         </b-button-group>

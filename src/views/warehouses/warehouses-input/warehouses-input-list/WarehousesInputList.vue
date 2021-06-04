@@ -5,6 +5,7 @@
   >
     <!-- START - Search -->
     <warehouses-input-list-search
+      class="d-print-none"
       @updatePageElement="updatePageNumber"
       @updateSearchData="paginationData = {
         ...paginationData,
@@ -13,7 +14,7 @@
     <!-- END - Search -->
 
     <!-- START - Product list -->
-    <b-form class="bg-white rounded shadow rounded my-1">
+    <b-form class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Title -->
       <b-row
         class="justify-content-between border-bottom px-1 mx-0"
@@ -32,7 +33,7 @@
         >
           <b-icon-plus
             scale="2"
-            class="mr-05"
+            class="mr-50"
           />
           Thêm mới
         </b-button>
@@ -102,7 +103,7 @@
                 v-b-popover.hover.top="'In phiếu'"
                 class="cursor-pointer ml-1"
                 scale="1.4"
-                @click="onClickPrintButton(props.row.id)"
+                @click="onClickPrintButton(props.row.transCode)"
               />
               <b-icon-eye-fill
                 v-b-popover.hover.top="'Xem chi tiết'"
@@ -111,7 +112,7 @@
                 @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
               />
               <b-icon-trash-fill
-                v-show="props.row.transDate === today"
+                v-show="props.row.transDate === $nowDate"
                 v-b-popover.hover.top="'Xóa'"
                 class="cursor-pointer ml-1"
                 color="red"
@@ -233,6 +234,10 @@
 
     </b-modal>
     <!-- END - Product Modal Delete -->
+
+    <!-- STAT - Print form -->
+    <print-form-input-order />
+    <!-- END - Print form -->
   </b-container>
 </template>
 
@@ -249,6 +254,7 @@ import {
   formatISOtoVNI,
 } from '@core/utils/filter'
 import WarehousesInputListSearch from './components/WarehousesInputListSearch.vue'
+import PrintFormInputOrder from '../components/PrintFormInputOrder.vue'
 import {
   WAREHOUSEINPUT,
   // GETTERS
@@ -257,12 +263,13 @@ import {
   GET_RECEIPTS_ACTION,
   EXPORT_RECEIPTS_ACTION,
   REMOVE_RECEIPT_ACTION,
-  PRINT_WAREHOUSES_INPUT_ACTION,
+  PRINT_OUT_IN_PUT_ORDER_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
     WarehousesInputListSearch,
+    PrintFormInputOrder,
   },
   data() {
     return {
@@ -285,8 +292,10 @@ export default {
         sort: null,
       },
       receipts: [],
-      today: formatISOtoVNI(new Date()),
-
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
       columns: [
         {
           label: 'Ngày',
@@ -409,7 +418,7 @@ export default {
       GET_RECEIPTS_ACTION,
       EXPORT_RECEIPTS_ACTION,
       REMOVE_RECEIPT_ACTION,
-      PRINT_WAREHOUSES_INPUT_ACTION,
+      PRINT_OUT_IN_PUT_ORDER_ACTION,
     ]),
 
     onClickCreateButton() {
@@ -426,10 +435,17 @@ export default {
       })
     },
     onClickPrintButton(id) {
-      const params = {
-        transCode: id,
-      }
-      this.PRINT_WAREHOUSES_INPUT_ACTION(params)
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_OUT_IN_PUT_ORDER_ACTION({
+        data: {
+          transCode: id,
+          params: { ...this.decentralization },
+        },
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
     },
     onClickDeleteButton(id, type, date, index, code) {
       this.selectedReceiptId = id

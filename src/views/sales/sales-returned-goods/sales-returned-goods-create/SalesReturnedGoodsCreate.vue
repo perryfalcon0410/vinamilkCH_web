@@ -271,7 +271,7 @@
               @click="onSubmit"
             >
               <b-icon-arrow90deg-left
-                class="mr-05"
+                class="mr-50"
                 scale="1"
               />
               TRẢ HÀNG

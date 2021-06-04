@@ -38,8 +38,16 @@ export const formatDateToLocale = (value, formatting = { day: '2-digit', month: 
 }
 
 export const formatISOtoVNI = (isoTime, includeTime, includeText) => {
-  // eslint-disable-next-line no-param-reassign
-  isoTime += '.000Z'
+  if (!isoTime) return isoTime
+
+  if (isoTime.length === 19) {
+    // eslint-disable-next-line no-param-reassign
+    isoTime = `${isoTime}.000Z`
+  } else if (isoTime.length === 23) {
+    // eslint-disable-next-line no-param-reassign
+    isoTime = `${isoTime}Z`
+  }
+
   const date1 = new Date(isoTime)
   const dateObj = new Date(date1.getTime() + (date1.getTimezoneOffset() * 60000))
 
@@ -60,19 +68,6 @@ export const formatISOtoVNI = (isoTime, includeTime, includeText) => {
   return `${date}/${month}/${year}`
 }
 
-// Replace . with ,
-export const replaceDotWithComma = value => {
-  if (!value) return value
-  return value.split('.').join(',')
-}
-
-// Format number to locale
-export const formatNumberToLocale = value => {
-  if (!value) return value
-  const valueFormated = Number(value)
-  return replaceDotWithComma(valueFormated.toLocaleString('vi-VN'))
-}
-
 // Format dd/mm/yyyy to 2021-04-15T03:32:47.519Z
 export const formatVniDateToISO = value => {
   if (!value) return value
@@ -90,6 +85,19 @@ export const formatVniDateToISO = value => {
   const tzoffset = expected.getTimezoneOffset() * 60000 // offset in milliseconds
 
   return (new Date(current - tzoffset)).toISOString().slice(0, -1)
+}
+
+// Replace . with ,
+export const replaceDotWithComma = value => {
+  if (!value) return value
+  return value.split('.').join(',')
+}
+
+// Format number to locale
+export const formatNumberToLocale = value => {
+  if (!value) return value
+  const valueFormated = Number(value)
+  return replaceDotWithComma(valueFormated.toLocaleString('vi-VN'))
 }
 
 // Format from dd/mm/yyyy to yyyy-mm-dd

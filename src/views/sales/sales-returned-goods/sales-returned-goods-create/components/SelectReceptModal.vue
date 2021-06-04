@@ -91,7 +91,7 @@
                   variant="someThing"
                   @click="choosenRecept(props.row)"
                 >
-                  <b-icon-hand-index-thumb class="mr-05" />
+                  <b-icon-hand-index-thumb class="mr-50" />
                   Chọn đơn
                 </b-button>
               </div>

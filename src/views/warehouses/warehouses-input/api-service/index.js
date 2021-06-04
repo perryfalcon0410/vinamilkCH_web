@@ -21,6 +21,7 @@ import {
   updateReceiptEndpoint,
   getWarehousesTypeEndpoint,
   getNotImportReasonsEndpoint,
+  printOutInputOrderEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -113,6 +114,11 @@ export default {
   getNotImportReasons(args) {
     return axios.get(getNotImportReasonsEndpoint, {
       params: formatURLParams(args),
+    })
+  },
+  printOutInputOrder(args) {
+    return axios.get(`${printOutInputOrderEndpoint}/${args.transCode}`, {
+      params: formatURLParams(args.params),
     })
   },
 }

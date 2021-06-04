@@ -31,7 +31,7 @@
           >
             <b-icon-plus
               scale="2"
-              class="mr-05"
+              class="mr-50"
             />
             Thêm mới
           </b-button>
@@ -205,7 +205,6 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatISOtoVNI } from '@core/utils/filter'
 import {
   getWarehousesStatuslabel,
   resizeAbleTable,
@@ -297,7 +296,7 @@ export default {
     getWarehousesCombo() {
       if (this.WAREHOUSES_COMBO_GETTER.response && this.WAREHOUSES_COMBO_GETTER.response.content) {
         return this.WAREHOUSES_COMBO_GETTER.response.content.map(data => ({
-          transDate: formatISOtoVNI(data.transDate),
+          transDate: this.$formatISOtoVNI(data.transDate),
           transCode: data.transCode,
           quantity: this.$formatNumberToLocale(data.totalQuantity),
           price: this.$formatNumberToLocale(data.totalAmount),

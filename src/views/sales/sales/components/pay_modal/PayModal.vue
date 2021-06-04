@@ -863,9 +863,6 @@ export default {
       },
       deep: true,
     },
-    getPromotionFreeItems() {
-      console.log(this.getPromotionFreeItems)
-    },
     totalOrderPrice() {
       this.pay.totalAmount = this.totalOrderPrice
     },
