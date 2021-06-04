@@ -1000,7 +1000,7 @@ export default {
       const data = new FormData()
       data.append('name', this.importFile.name)
       data.append('file', this.importFile)
-      if (this.importFile.type.search(/sheet/g) !== -1) {
+      if (this.importFile.type.search(/sheet/g) !== -1 || this.importFile.type.search(/excel/g !== -1)) {
         this.IMPORT_FILLED_STOCKS_ACTION(data)
       } else {
         toasts.error('Dữ liệu nhập sai định dạng')
