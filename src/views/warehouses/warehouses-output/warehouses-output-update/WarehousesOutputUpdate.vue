@@ -380,13 +380,13 @@ export default {
 
       if (this.warehousesOutput.receiptType === warehousesData.outputTypes[0].id) {
         this.warehousesOutput.outputDate = formatISOtoVNI(dataWarehousesOutput.orderDate)
-        this.warehousesOutput.outputTime = getTimeOfDate(formatISOtoVNI(dataWarehousesOutput.orderDate))
-      } else if (this.warehousesOutput.receiptType === warehousesData.outputTypes[1].id) {
+        this.warehousesOutput.outputTime = getTimeOfDate(dataWarehousesOutput.orderDate)
+      } if (this.warehousesOutput.receiptType === warehousesData.outputTypes[1].id) {
         this.warehousesOutput.outputDate = formatISOtoVNI(dataWarehousesOutput.adjustmentDate)
-        this.warehousesOutput.outputTime = getTimeOfDate(formatISOtoVNI(dataWarehousesOutput.adjustmentDate))
-      } else {
+        this.warehousesOutput.outputTime = getTimeOfDate(dataWarehousesOutput.adjustmentDate)
+      } if (this.warehousesOutput.receiptType === warehousesData.outputTypes[2].id) {
         this.warehousesOutput.outputDate = formatISOtoVNI(dataWarehousesOutput.borrowDate)
-        this.warehousesOutput.outputTime = getTimeOfDate(formatISOtoVNI(dataWarehousesOutput.borrowDate))
+        this.warehousesOutput.outputTime = getTimeOfDate(dataWarehousesOutput.borrowDate)
       }
 
       // enable or disable button save
@@ -397,8 +397,6 @@ export default {
     const paramGetDetailsWarehousesOutput = {
       id: this.warehousesOutput.id,
       type: this.warehousesOutput.receiptType,
-      // formId: this.formId,
-      // ctrlId: this.ctrlId,
     }
     this.GET_WAREHOUSES_OUTPUT_BY_ID_ACTION(paramGetDetailsWarehousesOutput)
     this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION(paramGetDetailsWarehousesOutput)

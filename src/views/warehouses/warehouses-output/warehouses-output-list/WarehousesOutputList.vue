@@ -236,7 +236,7 @@
                 v-b-popover.hover.top="'Chỉnh sửa'"
                 class="cursor-pointer ml-1 text-brand-3"
                 scale="1.2"
-                @click="onClickUpdateButton(props.row.id,props.row.type)"
+                @click="onClickUpdateButton(props.row.id,props.row.type, props.row.poId)"
               />
               <b-icon-trash-fill
                 v-b-popover.hover.top="'Xóa'"
@@ -526,6 +526,7 @@ export default {
         totalAmount: Number(data.totalAmount),
         note: data.note,
         type: data.receiptType,
+        poId: data.poId || 0,
       }))
     },
     // Get data totalElement
@@ -588,12 +589,13 @@ export default {
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-output-create' })
     },
-    onClickUpdateButton(id, type) {
+    onClickUpdateButton(id, type, poId) {
       this.$router.push({
         name: 'warehouses-output-update',
         params: {
           id,
           type,
+          poId,
         },
       })
     },
