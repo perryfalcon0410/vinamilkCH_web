@@ -335,7 +335,7 @@
             slot-scope="props"
           >
             <div v-if="props.column.field === 'numberBill'">
-              <b-input
+              <b-form-input
                 v-model="props.row.numberBill"
                 maxlength="50"
                 :value="props.row.numberBill"
@@ -685,6 +685,15 @@ export default {
       this.pageNumber = 1
     },
 
+    // auto select rows when focus feld oderNumber
+    focusRows(params) {
+      if (params.column.field === 'numberBill') {
+        this.$set(this.listRedBill[params.row.originalIndex], 'vgtSelected', true)
+        if (!this.selectedRedBillRows.find(data => data.id === params.row.id)) {
+          this.selectedRedBillRows.push(params.row)
+        }
+      }
+    },
     // delete rows redbill
     selectAllRows(params) {
       if (params.selected) {
@@ -709,15 +718,14 @@ export default {
         const index = this.selectedRedBillRows.findIndex(data => data.id === params.row.id)
         this.selectedRedBillRows.splice(index, 1)
       }
-    },
-    // auto select rows when focus feld oderNumber
-    focusRows(params) {
-      if (params.column.field === 'numberBill') {
-        this.$set(this.listRedBill[params.row.originalIndex], 'vgtSelected', true)
-        if (!this.selectedRedBillRows.find(data => data.id === params.row.id)) {
-          this.selectedRedBillRows.push(params.row)
+      this.listRedBill.forEach((item, index) => {
+        const redBillSelectedFoundIndex = this.selectedRedBillRows.findIndex(data => item.id === data.id)
+        if (redBillSelectedFoundIndex > -1) {
+          this.$set(this.listRedBill[index], 'vgtSelected', true)
+        } else {
+          this.$set(this.listRedBill[index], 'vgtSelected', false)
         }
-      }
+      })
     },
     onClickDeleteButton() {
       if (this.selectedRedBillRows && this.selectedRedBillRows.length > 0) {

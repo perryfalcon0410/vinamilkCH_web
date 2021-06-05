@@ -216,7 +216,6 @@ import {
 import {
   formatNumberToLocale,
   replaceDotWithComma,
-  formatISOtoVNI,
 } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import lodash from 'lodash'
@@ -363,14 +362,14 @@ export default {
         return this.RETURNED_GOODS_GETTER.response.content.map(data => ({
           id: data.id,
           idDetail: data.id,
-          createdAt: formatISOtoVNI(data.createdAt),
+          createdAt: this.$formatISOtoVNI(data.createdAt),
           orderReturnNumber: data.orderNumber,
           orderNumber: data.orderNumberRef,
           userName: data.userName,
           customerNumber: data.customerNumber,
           customerName: data.customerName,
-          dateReturn: formatISOtoVNI(data.dateReturn),
-          orderDate: formatISOtoVNI(data.orderDate),
+          dateReturn: this.$formatISOtoVNI(data.dateReturn),
+          orderDate: this.$formatISOtoVNI(data.orderDate),
           quantity: this.$formatNumberToLocale(data.total),
           discount: this.$formatNumberToLocale(data.totalPromotion),
           amount: this.$formatNumberToLocale(data.amount),

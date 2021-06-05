@@ -306,7 +306,7 @@
 
 <script>
 import {
-  formatISOtoVNI,
+  formatVniDateToISO,
 } from '@/@core/utils/filter'
 import { getNow } from '@/@core/utils/utils'
 import {
@@ -591,7 +591,7 @@ export default {
         id,
       })
 
-      this.billInfo.oderDate = formatISOtoVNI(oderDate)
+      this.billInfo.oderDate = this.$formatISOtoVNI(oderDate)
       this.billInfo.id = id
       this.billInfo.employeeName = salesManName
       this.billInfo.customerName = customerName
@@ -610,10 +610,9 @@ export default {
         toasts.error('Xin vui lòng chọn đơn hàng muốn trả!')
         return
       }
-
       this.CREATE_RETURNED_GOOD_ACTION({
         ...this.decentralization,
-        dateReturn: new Date(),
+        dateReturn: formatVniDateToISO(this.$nowDate),
         orderNumber: this.billInfo.orderNumber,
         reasonId: this.selectedReason,
         reasonDescription: this.feedbackInfomation,

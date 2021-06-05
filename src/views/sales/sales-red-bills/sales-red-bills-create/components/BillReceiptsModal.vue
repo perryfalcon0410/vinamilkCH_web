@@ -712,9 +712,9 @@ export default {
             this.invoiceDetail.products = invoiceDetailData.response
             this.$emit('productsOfBillSaleData', { invoiceDetail: this.invoiceDetail, saleOrderIds: this.arrSaleOrderIds })
             this.$root.$emit('bv::hide::modal', 'bill-receipt-modal')
+            this.isHidden = false
           },
         })
-        this.isHidden = false
       } else {
         toasts.error('Hóa đơn được chọn không cùng một khách hàng')
       }

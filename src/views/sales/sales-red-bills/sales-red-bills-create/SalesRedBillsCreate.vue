@@ -12,7 +12,7 @@
       <b-row>
         <!-- START - Form -->
         <b-col
-          xl="4"
+          xl="3"
           class="d-flex flex-column bg-white shadow rounded mr-xl-1"
         >
           <div class="w-100 text-center text-brand-1">
@@ -68,7 +68,7 @@
               </div>
               <b-form-input
                 v-model="redBill.customerName"
-                maxlength="40"
+                maxlength="200"
                 disabled
               />
             </b-col>
@@ -126,7 +126,7 @@
                 <b-form-input
                   v-model="redBill.officeWorking"
                   :state="touched ? passed : null"
-                  maxlength="40"
+                  maxlength="200"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
@@ -164,7 +164,7 @@
             <b-form-input
               v-model="redBill.officeAddress"
               :state="touched ? passed : null"
-              maxlength="40"
+              maxlength="200"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
@@ -178,7 +178,7 @@
               </div>
               <b-form-input
                 v-model="redBill.buyer"
-                maxlength="20"
+                maxlength="200"
                 required
               />
             </b-col>
@@ -249,50 +249,6 @@
                 Không có dữ liệu
               </div>
               <!-- END - Empty rows -->
-              <!-- START - Action bottom -->
-              <div
-                slot="table-actions-bottom"
-                class="mx-1 my-2 px-2"
-              >
-                <b-form-input
-                  v-model="productSearch"
-                  class="w-25"
-                  placeholder="Nhập mã hoặc tên sản phẩm"
-                  type="text"
-                  autocomplete="off"
-                  @focus="searchProductFocus"
-                  @blur="inputSearchFocusedSP = false"
-                  @input="loadProducts"
-                  @keyup.enter="searchProductKeyEnter"
-                  @keydown.up="searchProductKeyUp"
-                  @keydown.down="searchProductKeyDown"
-                  @click="click"
-                />
-                <b-collapse
-                  v-model="inputSearchFocusedSP"
-                  class="position-absolute mr-lg-0 mb-3"
-                  style="zIndex:1"
-                >
-                  <b-container
-                    class="my-1 bg-white rounded border border-primary shadow-lg"
-                  >
-                    <b-col>
-                      <b-row
-                        v-for="(product, index) in allProducts"
-                        :key="index"
-                        class="my-1 cursor-pointer"
-                        :class="{'item-active': index === cursorProduct}"
-                        @click="selectProduct(product)"
-                        @mouseover="$event.target.classList.add('item-active')"
-                        @mouseout="$event.target.classList.remove('item-active')"
-                      >
-                        <b>{{ product.productCode }}</b> - {{ product.productName }}
-                      </b-row>
-                    </b-col>
-                  </b-container>
-                </b-collapse>
-              </div>
-              <!-- END - Action bottom -->
 
               <!-- START - Custome row -->
               <template
@@ -302,7 +258,7 @@
                 <div v-if="props.column.field === 'quantity'">
                   <b-form-input
                     v-model.number="products[props.row.originalIndex].quantity"
-                    maxlength="10"
+                    maxlength="7"
                     type="text"
                     @keypress="$onlyNumberInput"
                     @change="onChangeQuantityAndPrice(props.row.originalIndex)"
@@ -311,6 +267,7 @@
                 <div v-else-if="props.column.field === 'productPrice'">
                   <b-form-input
                     v-model.number="products[props.row.originalIndex].productPrice"
+                    maxlength="20"
                     type="text"
                     @keypress="$onlyNumberInput"
                     @change="onChangeQuantityAndPrice(props.row.originalIndex)"
@@ -320,7 +277,8 @@
                   <b-col>
                     <b-form-input
                       v-model="products[props.row.originalIndex].vat"
-                      maxlength="2"
+                      maxlength="3"
+                      @input="checkValue(props.row.originalIndex)"
                       @keypress="$onlyNumberInput"
                       @change="onChangeVAT(props.row.originalIndex)"
                     />
@@ -363,7 +321,7 @@
                   class="h7"
                   align-h="center"
                 >
-                  {{ totalQuantity }}
+                  {{ $formatNumberToLocale(totalQuantity) }}
                 </b-row>
 
                 <b-row
@@ -381,7 +339,48 @@
                   {{ $formatNumberToLocale(totalProductExported) }}
                 </b-row>
               </template>
-            <!-- END - Custome filter -->
+              <!-- END - Custome filter -->
+              <!-- START - Action bottom -->
+              <div
+                slot="table-actions-bottom"
+                class="mx-1 my-2 px-2"
+              >
+                <b-form-input
+                  v-model="productSearch"
+                  class="w-25"
+                  placeholder="Nhập mã hoặc tên sản phẩm"
+                  type="text"
+                  autocomplete="off"
+                  @focus="searchProductFocus"
+                  @input="loadProducts"
+                  @keyup.enter="searchProductKeyEnter"
+                  @keydown.up="searchProductKeyUp"
+                  @keydown.down="searchProductKeyDown"
+                  @click="click"
+                />
+                <b-collapse
+                  v-model="inputSearchFocusedSP"
+                  class="position-absolute mr-lg-0 mb-3"
+                  style="zIndex:9999"
+                >
+                  <b-container
+                    class="my-1 bg-white rounded border border-primary shadow-lg"
+                  >
+                    <b-row
+                      v-for="(product, index) in allProducts"
+                      :key="index"
+                      class="my-1 cursor-pointer"
+                      :class="{'item-active': index === cursorProduct}"
+                      @click="selectProduct(product)"
+                      @mouseover="$event.target.classList.add('item-active')"
+                      @mouseout="$event.target.classList.remove('item-active')"
+                    >
+                      <b>{{ product.productCode }}</b> - {{ product.productName }}
+                    </b-row>
+                  </b-container>
+                </b-collapse>
+              </div>
+              <!-- END - Action bottom -->
 
             </vue-good-table>
             <!-- END - Table Product -->
@@ -443,6 +442,7 @@
 </template>
 
 <script>
+import toasts from '@/@core/utils/toasts/toasts'
 import commonData from '@/@db/common'
 import {
   mapActions,
@@ -457,7 +457,7 @@ import {
   required,
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { formatVniDateToISO, formatNumberToLocale } from '@/@core/utils/filter'
+import { formatVniDateToISO } from '@/@core/utils/filter'
 import saleData from '@/@db/sale'
 import BillReceiptsModal from './components/BillReceiptsModal.vue'
 import {
@@ -600,7 +600,7 @@ export default {
           id: data.id,
           customerCode: data.customerCode,
           customerName: `${data.lastName} ${data.firstName}`,
-          officeWorking: data.officeWorking,
+          officeWorking: data.officeAddress,
           officeAddress: data.officeAddress,
           taxCode: data.taxCode,
           mobiPhone: data.mobiPhone,
@@ -735,12 +735,12 @@ export default {
           industry: product.groupVat,
           productDVT: product.unit,
           quantity: 1,
-          productPrice: formatNumberToLocale(product.price),
-          productPriceTotal: formatNumberToLocale(product.price),
+          productPrice: this.$formatNumberToLocale(product.price),
+          productPriceTotal: this.$formatNumberToLocale(product.price),
           productPriceOriginal: product.price,
           productPriceTotalOriginal: product.price,
           vat: product.vat,
-          productExported: formatNumberToLocale(product.vatAmount),
+          productExported: this.$formatNumberToLocale(product.vatAmount),
           productExportedOriginal: product.vatAmount,
           sumProductExportedOriginal: product.vatAmount,
           note: product.note,
@@ -752,6 +752,8 @@ export default {
         this.onChangeVAT(existedProductIndex)
         this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
       }
+      this.inputSearchFocusedSP = false
+      this.productSearch = null
     },
     searchProductFocus() {
       this.cursorProduct = -1
@@ -794,12 +796,12 @@ export default {
           industry: data.groupVat,
           productDVT: data.productUnit,
           quantity: data.quantity,
-          productPrice: formatNumberToLocale(data.priceNotVat),
-          productPriceTotal: formatNumberToLocale(data.amountNotVat),
+          productPrice: this.$formatNumberToLocale(data.priceNotVat),
+          productPriceTotal: this.$formatNumberToLocale(data.amountNotVat),
           productPriceOriginal: data.priceNotVat,
           productPriceTotalOriginal: data.amountNotVat,
           vat: data.vat,
-          productExported: formatNumberToLocale(data.valueAddedTax),
+          productExported: this.$formatNumberToLocale(data.valueAddedTax),
           productExportedOriginal: data.valueAddedTax,
           sumProductExportedOriginal: data.valueAddedTax,
           note: data.note,
@@ -827,17 +829,23 @@ export default {
     taxMoney(money, vat) {
       return (money * (vat / 100))
     },
+    checkValue(index) {
+      if (this.products[index].vat > 100) {
+        this.products[index].vat = 100
+      }
+    },
     onChangeQuantityAndPrice(index) {
-      this.products[index].productPriceTotal = formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal))
+      this.products[index].productPriceOriginal = this.products[index].productPrice
+      this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal))
       this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal)
-      this.products[index].productExported = formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
+      this.products[index].productExported = this.$formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
       this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
       this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
       this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
       this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
     },
     onChangeVAT(index) {
-      this.products[index].productExported = formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
+      this.products[index].productExported = this.$formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
       this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
       this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
     },
@@ -867,8 +875,12 @@ export default {
         productDataDTOS: productsData,
         saleOrderId: this.saleOrderIds,
       }
-      this.CREATE_RED_BILL_ACTION(paramsCreateRedInvoice)
-      this.$router.replace({ name: 'sales-red-bills' })
+      if (productsData.length > 0) {
+        this.CREATE_RED_BILL_ACTION(paramsCreateRedInvoice)
+        this.$router.replace({ name: 'sales-red-bills' })
+        return
+      }
+      toasts.error('Hóa đơn cần chứa ít nhất một sản phẩm')
     },
     onClickDeleteItem(index) {
       this.products.splice(index, 1)

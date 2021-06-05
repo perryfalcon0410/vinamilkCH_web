@@ -167,9 +167,6 @@
 </template>
 
 <script>
-import {
-  formatDateToLocale,
-} from '@/@core/utils/filter'
 import Product from './order-details-modal/Product.vue'
 import SaleOff from './order-details-modal/SaleOff.vue'
 
@@ -211,10 +208,10 @@ export default {
   },
   computed: {
     orderDate() {
-      return (formatDateToLocale(this.information.orderDate))
+      return (this.$formatISOtoVNI(this.information.orderDate))
     },
     returnDate() {
-      return (formatDateToLocale(this.information.returnDate))
+      return (this.$formatISOtoVNI(this.information.returnDate))
     },
   },
   methods: {
