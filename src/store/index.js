@@ -27,6 +27,8 @@ import reportWarehousesInput from '@/views/reports/reports-warehouses/reports-wa
 import reportsWarehousesOutput from '@/views/reports/reports-warehouses/reports-warehouses-output/store-module'
 import reportWarehousesInputOutputInventory from '@/views/reports/reports-warehouses/reports-warehouses-input-output-inventory/store-module'
 import reportWarehousesExchangeDamagedGoods from '@/views/reports/reports-warehouses/reports-warehouses-exchange-damaged-goods/store-module'
+import reportsCustomers from '@/views/reports/reports-customers/reports-customers/store-module'
+import reportsCustomersNonTransactional from '@/views/reports/reports-customers/reports-customers-non-transactional/store-module'
 
 // Systems
 import app from './app'
@@ -72,6 +74,8 @@ export default new Vuex.Store({
     reportsWarehousesOutput,
     reportWarehousesInputOutputInventory,
     reportWarehousesExchangeDamagedGoods,
+    reportsCustomers,
+    reportsCustomersNonTransactional,
   },
   strict: process.env.DEV,
 })

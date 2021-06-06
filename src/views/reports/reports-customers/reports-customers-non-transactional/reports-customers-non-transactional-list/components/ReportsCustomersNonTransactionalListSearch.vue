@@ -101,7 +101,20 @@
 </template>
 
 <script>
+import {
+  mapActions,
+} from 'vuex'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import {
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
+import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  REPORT_CUSTOMERS_NON_TRANSACTIONAL,
+
+  // Actions
+  GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
+} from '../../store-module/type'
 
 export default {
   components: {
@@ -115,14 +128,16 @@ export default {
   },
   data() {
     return {
+      dateFormatVNI,
+
       isSearchFocus: false,
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
-
       // decentralization
       decentralization: {
         formId: 1,
         ctrlId: 1,
+        isPaging: true,
       },
 
       configFromDate: {
@@ -149,6 +164,7 @@ export default {
     },
   },
   mounted() {
+    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
@@ -156,6 +172,26 @@ export default {
   },
 
   methods: {
+    ...mapActions(REPORT_CUSTOMERS_NON_TRANSACTIONAL, [
+      GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
+    ]),
+    onSearch() {
+      const searchData = {
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
+        ...this.decentralization,
+      }
+      this.updateSearchData(searchData)
+      this.GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION(searchData)
+    },
+
+    onClickSearchButton() {
+      this.onSearch()
+      this.$emit('onClickSearchButton')
+    },
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
+    },
   },
 }
 </script>

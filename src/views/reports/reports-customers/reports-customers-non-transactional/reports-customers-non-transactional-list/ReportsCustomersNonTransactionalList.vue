@@ -5,7 +5,11 @@
   >
 
     <!-- START - Search -->
-    <reports-customers-non-transactional-list-search />
+    <reports-customers-non-transactional-list-search
+      :per-page-size="paginationData.size"
+      @updateSearchData="updateSearchData"
+      @onClickSearchButton="onClickSearchButton"
+    />
     <!-- END - Search -->
 
     <b-form class="bg-white rounded shadow rounded my-1">
@@ -43,6 +47,7 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
+          mode="remote"
           :rows="customerNonTransRows"
           style-class="vgt-table striped"
           :pagination-options="{
@@ -52,6 +57,14 @@
           }"
           compact-mode
           line-numbers
+          :total-rows="CustomerNonTransPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           <!-- START - Empty rows -->
           <div
@@ -63,12 +76,12 @@
           <!-- END - Empty rows -->
 
           <!-- START - Pagination -->
-          <!-- <template
+          <template
             slot="pagination-bottom"
             slot-scope="props"
           >
             <b-row
-              v-show="adjustmentPagination.totalElements"
+              v-show="CustomerNonTransPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -92,7 +105,7 @@
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="adjustmentPagination.totalElements"
+                :total-rows="CustomerNonTransPagination.totalElements"
                 :per-page="paginationData.size"
                 first-number
                 last-number
@@ -116,7 +129,7 @@
                 </template>
               </b-pagination>
             </b-row>
-          </template> -->
+          </template>
           <!-- END - Pagination -->
         </vue-good-table>
       </b-col>
@@ -125,19 +138,29 @@
   </b-container>
 </template>
 <script>
-// import {
-//   mapActions,
-//   mapGetters,
-// } from 'vuex'
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
 import commonData from '@/@db/common'
 // import {
 //   formatISOtoVNI,
 //   reverseVniDate,
 // } from '@core/utils/filter'
-// import {
-//   resizeAbleTable,
-// } from '@core/utils/utils'
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
 import ReportsCustomersNonTransactionalListSearch from './components/ReportsCustomersNonTransactionalListSearch.vue'
+import {
+  REPORT_CUSTOMERS_NON_TRANSACTIONAL,
+
+  // Getters
+  REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER,
+
+  // Actions
+  GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
+  EXPORT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -151,6 +174,10 @@ export default {
         size: commonData.perPageSizes[0],
         page: this.pageNumber,
         sort: null,
+      },
+      searchData: {
+        fromDate: this.$earlyMonth,
+        toDate: this.$nowDate,
       },
       customerNonTransRows: [],
       columns: [
@@ -201,14 +228,79 @@ export default {
   },
 
   computed: {
+    ...mapGetters(REPORT_CUSTOMERS_NON_TRANSACTIONAL, [
+      REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER,
+    ]),
+    getCustomerNonTrans() {
+      if (this.REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER.content) {
+        return this.REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER.content.map(data => ({
+          customerCode: data.customerCode,
+          customerName: data.customerName,
+          phoneNumber: data.phoneNumber,
+          dateOfBirth: this.$formatISOtoVNI(data.birthDay),
+          gender: data.gender,
+          address: data.address,
+        }))
+      }
+      return []
+    },
+    CustomerNonTransPagination() {
+      if (this.REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER) {
+        return this.REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER
+      }
+      return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.CustomerNonTransPagination.totalElements
+        ? this.CustomerNonTransPagination.totalElements : (this.paginationData.size * this.pageNumber)
 
+      return `${minPageSize} - ${maxPageSize} của ${this.CustomerNonTransPagination.totalElements} mục`
+    },
   },
   watch: {
+    getCustomerNonTrans() {
+      this.customerNonTransRows = [...this.getCustomerNonTrans]
+    },
   },
   mounted() {
+    resizeAbleTable()
   },
 
   methods: {
+    ...mapActions(REPORT_CUSTOMERS_NON_TRANSACTIONAL, [
+      EXPORT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
+      GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
+    ]),
+    // Start - pagination
+    updateSearchData(event) {
+      this.paginationData = {
+        ...this.paginationData,
+        ...event,
+      }
+      this.searchData = event
+    },
+    onPaginationChange() {
+      this.GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION({ ...this.paginationData, ...this.decentralization })
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    onClickSearchButton() {
+      this.pageNumber = 1 // hard code
+    },
+    // Start - xuat excel
+    onClickExcelExportButton() {
+      this.EXPORT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION({ ...this.decentralization, ...this.searchData })
+    },
   },
 }
 </script>
