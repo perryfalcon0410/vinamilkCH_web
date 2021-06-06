@@ -3,6 +3,7 @@ import { formatURLParams } from '@/@core/utils/utils'
 import {
   getSalesReceiptsEndpoint,
   getSalesReceiptsDetailEndpoint,
+  printSalesReceipt,
 } from './defaultConfig'
 
 export default {
@@ -14,6 +15,11 @@ export default {
   getSalesReceiptsDetail(args) {
     return axios.get(getSalesReceiptsDetailEndpoint, {
       params: formatURLParams(args),
+    })
+  },
+  printSalesReceipt(args) {
+    return axios.get(`${printSalesReceipt}/${args.salesReceiptId}`, {
+      params: formatURLParams(args.params),
     })
   },
 }

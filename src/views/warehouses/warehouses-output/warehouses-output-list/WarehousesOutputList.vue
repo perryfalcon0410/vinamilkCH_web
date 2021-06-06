@@ -378,7 +378,7 @@ import {
 import warehousesData from '@/@db/warehouses'
 import commonData from '@/@db/common'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
-import PrintFormOutputOrder from '../components/PrintFormOutputOrder.vue'
+import PrintFormOutputOrder from '@core/components/print-form/PrintFormOutputOrder.vue'
 
 import {
   WAREHOUSES_OUTPUT,
@@ -598,7 +598,6 @@ export default {
       })
     },
     onClickPrintButton(id) {
-      console.log(id)
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
       this.PRINT_OUT_IN_PUT_ORDER_ACTION({

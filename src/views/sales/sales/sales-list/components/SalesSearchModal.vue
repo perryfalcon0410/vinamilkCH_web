@@ -2,6 +2,7 @@
   <b-modal
     ref="salesSearchModal"
     size="xl"
+    class="d-print-none"
     title="Tìm kiếm khách hàng"
     title-class="font-weight-bold text-primary"
     content-class="bg-light"

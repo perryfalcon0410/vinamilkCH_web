@@ -1,7 +1,7 @@
 <template>
   <b-col
     lg
-    class="bg-white shadow rounded ml-lg-1 mt-sm-1 mt-lg-0"
+    class="d-print-none bg-white shadow rounded ml-lg-1 mt-sm-1 mt-lg-0"
   >
     <b-form>
       <!-- START - Date and name -->

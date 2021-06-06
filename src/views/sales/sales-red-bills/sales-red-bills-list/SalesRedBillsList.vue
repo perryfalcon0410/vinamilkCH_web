@@ -160,7 +160,7 @@
     </b-form>
     <!-- END - Search -->
 
-    <b-form class="bg-white rounded shadow my-1">
+    <b-form class="d-print-none bg-white rounded shadow my-1">
       <!-- START - Header -->
       <b-row
         class="border-bottom mx-0 px-1"
@@ -414,6 +414,10 @@
 
     </b-modal>
     <!-- END - Red Bill Modal Delete -->
+
+    <!-- START - Print form -->
+    <print-form-red-bills />
+    <!-- END - Print form -->
   </b-container>
 </template>
 
@@ -428,6 +432,7 @@ import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'
 import { reverseVniDate, formatISOtoVNI } from '@/@core/utils/filter'
+import PrintFormRedBills from '@core/components/print-form/PrintFormRedBills.vue'
 import {
   RED_INVOICE,
   RED_INVOICES_GETTER,
@@ -440,6 +445,7 @@ import {
 export default {
   components: {
     VCardActions,
+    PrintFormRedBills,
   },
   data() {
     return {

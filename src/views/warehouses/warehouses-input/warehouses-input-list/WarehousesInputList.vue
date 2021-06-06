@@ -253,8 +253,8 @@ import {
 import {
   formatISOtoVNI,
 } from '@core/utils/filter'
+import PrintFormInputOrder from '@core/components/print-form/PrintFormInputOrder.vue'
 import WarehousesInputListSearch from './components/WarehousesInputListSearch.vue'
-import PrintFormInputOrder from '../components/PrintFormInputOrder.vue'
 import {
   WAREHOUSEINPUT,
   // GETTERS

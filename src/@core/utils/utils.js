@@ -9,6 +9,8 @@ import customerData from '@/@db/customer'
 import commonData from '@/@db/common'
 import warehousesData from '@/@db/warehouses'
 import reportsData from '@/@db/report'
+import salesData from '@/@db/sale'
+
 import moment from 'moment'
 
 export const isObject = obj => typeof obj === 'object' && obj !== null
@@ -75,6 +77,11 @@ export const getWarehousesStatuslabel = id => {
 export const getReportReasonTypeslabel = id => {
   const reportsDataFound = reportsData.reasonTypes.find(item => `${item.id}` === `${id}`)
   return reportsDataFound ? reportsDataFound.label : null
+}
+
+export const getSaleDeliveryTypeslabel = id => {
+  const salesDataFound = salesData.salemtDeliveryType.find(item => `${item.id}` === `${id}`)
+  return salesDataFound ? salesDataFound.label : null
 }
 
 export const formatURLParams = obj => {

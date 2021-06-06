@@ -10,9 +10,11 @@ import {
   SALES_RECEIPT_DETAIL_INFOS_GETTER,
   SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
   SALES_RECEIPTS_PAGINATION_GETTER,
+  PRINT_SALES_RECEIPT_GETTER,
   // ACTIONS
   GET_SALES_RECEIPTS_DETAIL_ACTION,
   GET_SALES_RECEIPTS_ACTION,
+  PRINT_SALES_RECEIPT_ACTION,
 } from './type'
 
 export default {
@@ -26,6 +28,7 @@ export default {
     saleReceiptsPromotion: [],
     saleReceiptInfos: {},
     saleReceiptsPagnigation: {},
+    printSalesReceiptData: {},
   },
 
   getters: {
@@ -53,8 +56,11 @@ export default {
     [SALES_RECEIPTS_PAGINATION_GETTER](state) {
       return state.saleReceiptsPagnigation
     },
+    [PRINT_SALES_RECEIPT_GETTER](state) {
+      return state.printSalesReceiptData
+    },
   },
-  mutations: {},
+
   actions: {
     [GET_SALES_RECEIPTS_ACTION]({ state }, val) {
       SaleReceiptService
@@ -84,6 +90,22 @@ export default {
             state.saleReceiptsDiscount = res.data.discount
             state.saleReceiptsPromotion = res.data.promotion
             state.saleReceiptInfos = res.data.infos
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_SALES_RECEIPT_ACTION]({ state }, val) {
+      SaleReceiptService
+        .printSalesReceipt(val.data)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printSalesReceiptData = res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

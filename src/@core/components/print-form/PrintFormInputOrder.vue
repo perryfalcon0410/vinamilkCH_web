@@ -382,7 +382,7 @@ import {
   WAREHOUSEINPUT,
   // Getters
   PRINT_OUT_IN_PUT_ORDER_GETTER,
-} from '../store-module/type'
+} from '@/views/warehouses/warehouses-input/store-module/type'
 
 export default {
   computed: {

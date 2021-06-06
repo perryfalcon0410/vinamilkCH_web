@@ -1,6 +1,7 @@
 <template>
   <validation-observer
     ref="formContainer"
+    class="d-print-none"
   >
     <b-modal
       ref="salesCreateModal"

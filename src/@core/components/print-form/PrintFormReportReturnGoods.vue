@@ -498,7 +498,7 @@ import {
   PRINT_INPUT_ORDER_DETIAL_GETTER,
   // Actions
   PRINT_INPUT_ORDER_DETIAL_ACTION,
-} from '../store-module/type'
+} from '@/views/reports/reports-returned-goods/store-module/type'
 
 export default {
   data() {

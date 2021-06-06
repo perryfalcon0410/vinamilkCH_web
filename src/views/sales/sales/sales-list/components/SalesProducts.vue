@@ -1,7 +1,7 @@
 <template>
   <b-container
 
-    class="bg-white shadow rounded mt-1 flex-grow-1"
+    class="d-print-none bg-white shadow rounded mt-1 flex-grow-1"
   >
     <b-row class="mx-0 mt-1 pb-1">
       <b-col class="px-0">

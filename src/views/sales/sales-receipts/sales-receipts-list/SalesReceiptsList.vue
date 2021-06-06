@@ -11,7 +11,7 @@
         ...$event }"
     />
 
-    <b-form class="bg-white rounded shadow rounded my-1">
+    <b-form class="bg-white rounded shadow rounded my-1 d-print-none">
       <b-row
         class="justify-content-between border-bottom mx-0 px-1"
         style="padding: 5px 0"
@@ -22,8 +22,9 @@
         </strong>
         <b-button-group>
           <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-center"
+            class="btn-brand-1 h8 align-items-button-center"
             variant="someThing"
+            @click="onClickPrintButton(1)"
           >
             <b-icon-printer-fill />
             In
@@ -213,6 +214,10 @@
         @close="isInvoiceDetailModal = false"
       />
     </b-form>
+
+    <!-- START - Print form -->
+    <print-form-sales-receipt />
+    <!-- END - Print form -->
   </b-container>
 </template>
 
@@ -229,6 +234,7 @@ import commonData from '@/@db/common'
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
+import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
 import {
   // GETTERS
   SALESRECEIPTS,
@@ -243,6 +249,7 @@ import {
   // ACTIONS
   GET_SALES_RECEIPTS_ACTION,
   GET_SALES_RECEIPTS_DETAIL_ACTION,
+  PRINT_SALES_RECEIPT_ACTION,
 } from '../store-module/type'
 import InvoiceDetailModal from '../components/InvoiceDetailModal.vue'
 import SalesReceiptListSearch from './components/SalesReceiptListSearch.vue'
@@ -251,6 +258,7 @@ export default {
   components: {
     InvoiceDetailModal,
     SalesReceiptListSearch,
+    PrintFormSalesReceipt,
   },
   data() {
     return {
@@ -468,10 +476,24 @@ export default {
     ...mapActions(SALESRECEIPTS, [
       GET_SALES_RECEIPTS_ACTION,
       GET_SALES_RECEIPTS_DETAIL_ACTION,
+      PRINT_SALES_RECEIPT_ACTION,
     ]),
     showInvoiceDetailModal(id, numberBill) {
       this.isInvoiceDetailModal = !this.isInvoiceDetailModal
       this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber: numberBill })
+    },
+    onClickPrintButton(id) {
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_SALES_RECEIPT_ACTION({
+        data: {
+          salesReceiptId: id, // hard code: id của hóa đơn bán hàng
+          params: { ...this.decentralization },
+        },
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
     },
     // -------------- pagnigation function--------------
     onPaginationChange() {

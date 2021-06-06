@@ -131,6 +131,7 @@ export const getTimeOfDate = value => {
 
   return new Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
 }
+
 // count from isoDate to now
 export const countDays = isoDate => {
   const now = new Date()

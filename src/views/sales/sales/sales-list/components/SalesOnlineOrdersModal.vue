@@ -1,6 +1,7 @@
 <template>
   <b-modal
     ref="salesOnlineOrderModal"
+    class="d-print-none"
     size="xl"
     title="Chọn đơn hàng Online"
     title-class="font-weight-bold text-primary"

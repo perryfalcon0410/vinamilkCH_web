@@ -5,7 +5,7 @@
   >
     <!-- START - Header -->
     <b-row
-      class="m-0"
+      class="m-0 d-print-none"
     >
       <b-col
         sm="7"
@@ -126,7 +126,7 @@
 
     <!-- START - Body -->
     <b-row
-      class="mx-0 my-1"
+      class="d-print-none mx-0 my-1"
     >
       <!-- START - Section Table product and list suggestion  -->
       <b-col
@@ -245,12 +245,17 @@
     </b-row>
     <!-- END - Body -->
 
+    <!-- START - Print form -->
+    <print-form-sales-receipt />
+    <!-- END - Print form -->
+
   </b-container>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import saleData from '@/@db/sale'
+import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
 import SalesForm from './components/SalesForm.vue'
 import SalesProducts from './components/SalesProducts.vue'
 import {
@@ -280,6 +285,7 @@ export default {
   components: {
     SalesForm,
     SalesProducts,
+    PrintFormSalesReceipt,
   },
   data() {
     return {

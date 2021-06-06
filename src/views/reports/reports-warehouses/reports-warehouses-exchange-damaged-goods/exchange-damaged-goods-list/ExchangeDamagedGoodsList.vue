@@ -417,7 +417,6 @@ export default {
     },
     onClickSearchButton(data) {
       this.exportExcelData = { ...data }
-      console.log(this.exportExcelData)
       this.pageNumber = 1
     },
     onPageChange(params) {

@@ -205,7 +205,7 @@
     <!-- END - Customer list -->
 
     <!-- STAT - Print form -->
-    <print-form />
+    <print-form-report-return-goods />
     <!-- END - Print form -->
 
   </b-container>
@@ -222,6 +222,7 @@ import {
   getReportReasonTypeslabel,
   resizeAbleTable,
 } from '@core/utils/utils'
+import PrintFormReportReturnGoods from '@core/components/print-form/PrintFormReportReturnGoods.vue'
 import ReportsReturnedGoodsListSearch from './components/ReportsReturnedGoodsListSearch.vue'
 import {
   REPORT_RETURNED_GOODS,
@@ -231,12 +232,11 @@ import {
   GET_REPORT_RETURNED_GOODS_ACTION,
   EXPORT_REPORT_RETURNED_GOODS_ACTION,
 } from '../store-module/type'
-import PrintForm from '../components/PrintFormReportReturnGoods.vue'
 
 export default {
   components: {
     ReportsReturnedGoodsListSearch,
-    PrintForm,
+    PrintFormReportReturnGoods,
   },
   data() {
     return {
