@@ -270,6 +270,7 @@
                     maxlength="20"
                     type="text"
                     @keypress="$onlyNumberInput"
+                    @input="onInputValue(props.row.originalIndex)"
                     @change="onChangeQuantityAndPrice(props.row.originalIndex)"
                   />
                 </div>
@@ -834,8 +835,10 @@ export default {
         this.products[index].vat = 100
       }
     },
+    onInputValue(index) {
+      this.products[index].productPriceOriginal = Number(this.products[index].productPrice)
+    },
     onChangeQuantityAndPrice(index) {
-      this.products[index].productPriceOriginal = this.products[index].productPrice
       this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal))
       this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal)
       this.products[index].productExported = this.$formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
@@ -867,7 +870,7 @@ export default {
         redInvoiceNumber: this.redBill.billNumber,
         totalQuantity: this.totalQuantity,
         totalMoney: this.totalPriceTotal,
-        amountTotal: this.totalPriceTotal,
+        amountTotal: this.totalPriceTotal + this.totalProductExported,
         paymentType: this.redBill.paymentType,
         buyerName: this.redBill.buyer,
         note: this.redBill.note,
@@ -875,6 +878,7 @@ export default {
         productDataDTOS: productsData,
         saleOrderId: this.saleOrderIds,
       }
+      console.log(paramsCreateRedInvoice)
       if (productsData.length > 0) {
         this.CREATE_RED_BILL_ACTION(paramsCreateRedInvoice)
         this.$router.replace({ name: 'sales-red-bills' })
