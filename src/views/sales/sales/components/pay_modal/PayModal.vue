@@ -986,20 +986,20 @@ export default {
     // salemtPaymentTypeSelected() {
     //   this.GET_SALEMT_PAYMENT_TYPE_ACTION({ formId: 1, ctrlId: 4 })
     // },
-    orderProducts: {
-      handler() {
-        const products = this.orderProducts.map(data => ({
-          productCode: data.productCode,
-          productId: data.productId,
-          quantity: data.quantity,
-        }))
-        console.log(products)
-        // this.GET_PROMOTION_FREE_ITEMS_ACTION({
-        //   productList: products,
-        // })
-      },
-      deep: true,
-    },
+    // orderProducts: {
+    //   handler() {
+    //     const products = this.orderProducts.map(data => ({
+    //       productCode: data.productCode,
+    //       productId: data.productId,
+    //       quantity: data.quantity,
+    //     }))
+    //     console.log(products)
+    // this.GET_PROMOTION_FREE_ITEMS_ACTION({
+    //   productList: products,
+    // })
+    //   },
+    //   deep: true,
+    // },
     totalOrderPrice() {
       this.pay.totalAmount = this.totalOrderPrice
     },
@@ -1007,9 +1007,11 @@ export default {
       this.pay.totalQuantity = this.totalQuantity
     },
   },
+
   mounted() {
     this.GET_SALEMT_PAYMENT_TYPE_ACTION({ formId: 1, ctrlId: 4 })
   },
+
   created() {
     window.addEventListener('keydown', e => {
       if (e.key === 'F8') {
@@ -1017,6 +1019,7 @@ export default {
       }
     })
   },
+
   methods: {
     ...mapActions(SALES, [
       GET_PRODUCTS_ACTION,

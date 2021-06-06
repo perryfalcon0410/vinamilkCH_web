@@ -186,6 +186,7 @@
           <b-button
             variant="danger"
             class="align-items-button-center h8"
+            @click="onClickPrintButton"
           >
             <b-icon-printer-fill class="mr-50" />
             IN HĐ
@@ -425,7 +426,6 @@
 import {
   mapActions,
   mapGetters,
-  mapState,
 } from 'vuex'
 import toasts from '@core/utils/toasts/toasts'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
@@ -447,6 +447,7 @@ export default {
     VCardActions,
     PrintFormRedBills,
   },
+
   data() {
     return {
       perPageSizeOptions: commonData.perPageSizes,
@@ -569,6 +570,7 @@ export default {
       ],
     }
   },
+
   computed: {
     ...mapGetters(RED_INVOICE, [
       RED_INVOICES_GETTER,
@@ -611,6 +613,7 @@ export default {
       return `${minPageSize} - ${maxPageSize} của ${this.getRedBillPagination.totalElements} mục`
     },
   },
+
   watch: {
     getRedInvoices() {
       this.listRedBill = [...this.getRedInvoices]
@@ -622,6 +625,7 @@ export default {
       }
     },
   },
+
   mounted() {
     this.onSearch()
     this.configToDate = {
@@ -629,10 +633,8 @@ export default {
       minDate: this.fromDate,
     }
   },
+
   methods: {
-    ...mapState(RED_INVOICE, {
-      successStatusDelete: state => state.delete.success,
-    }),
     ...mapActions(RED_INVOICE, [
       GET_RED_INVOICES_ACTION,
       DELETE_RED_INVOICE_ACTION,
@@ -652,6 +654,10 @@ export default {
     addSaleRedBillsCreate() {
       this.$router.push({ name: 'sales-red-bills-create' })
     },
+    onClickPrintButton() {
+      window.print()
+    },
+    // START - Pagination func
     onPaginationChange() {
       const searchStr = {
         fromDate: reverseVniDate(this.fromDate),
@@ -672,6 +678,8 @@ export default {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },
+    // END - Pagination func
+
     onSearchClick() {
       this.onSearch()
       this.pageNumber = 1

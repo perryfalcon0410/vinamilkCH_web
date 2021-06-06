@@ -391,7 +391,6 @@ export default {
 
       // enable or disable button save
       this.isDisableSave = this.warehousesOutput.outputDate !== this.$nowDate
-      console.log(this.isDisableSave)
     },
   },
   mounted() {
@@ -403,7 +402,6 @@ export default {
     }
     this.GET_WAREHOUSES_OUTPUT_BY_ID_ACTION(paramGetDetailsWarehousesOutput)
     this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION(paramGetDetailsWarehousesOutput)
-    console.log(this.warehousesOutput.id)
   },
   methods: {
     ...mapActions(WAREHOUSES_OUTPUT, [

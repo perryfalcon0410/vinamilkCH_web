@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div
+    class="d-none d-print-block text-brand-3 mx-0"
+  >
     <b-row
-      class="d-none d-print-flex text-brand-3 mx-0"
       align-h="around"
     >
       <div class="text-center">
