@@ -135,4 +135,20 @@ export default [
       resource: 'ReportsWarehousesExchangeDamagedGoods',
     },
   },
+  // Báo cáo doanh số hóa đơn theo KH
+  {
+    path: '/reports/sales',
+    name: 'reports-sales-sale-per-customer',
+    component: () => import('@/views/reports/reports-sales/reports-sales-sale-receipt-per-customer/sale-receipt-list/SaleReceiptList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo doanh số hóa đơn theo khách hàng',
+      breadcrumb: [
+        {
+          text: 'Báo cáo doanh số hóa đơn theo khách hàng',
+          active: true,
+        },
+      ],
+      resource: 'ReportsSalesSaleReceiptPerCustomer',
+    },
+  },
 ]

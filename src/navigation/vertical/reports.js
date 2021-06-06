@@ -63,9 +63,34 @@ export default [
   },
   {
     title: 'Bán hàng',
-    route: 'reports-sales',
-    resource: 'ReportsSales',
     icon: 'ShoppingCartIcon',
+    children: [
+      {
+        title: 'Bán hàng',
+        route: 'reports-sales',
+        resource: 'ReportsSales',
+      },
+      {
+        title: 'Doanh số CAT',
+        route: 'reports-sales-cat-sale',
+        resource: 'ReportsSalesCatSale',
+      },
+      {
+        title: 'Doanh số hóa đơn theo KH',
+        route: 'reports-sales-sale-per-customer',
+        resource: 'ReportsSalesSaleReceiptPerCustomer',
+      },
+      {
+        title: 'Số lượng hóa đơn theo KH',
+        route: 'reports-sales-amount-per-customer',
+        resource: 'ReportsSalesAmountReceiptPerCustomer',
+      },
+      {
+        title: 'Hóa đơn theo loại giao hàng',
+        route: 'reports-sales-receipt-on-delivery-type',
+        resource: 'ReportsSalesReceiptOnDeliveryType',
+      },
+    ],
   },
   {
     title: 'Khách hàng',
