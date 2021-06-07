@@ -1,7 +1,7 @@
 export default {
   synStatus: [
-    { name: 'Đã xử lý', id: '1' },
-    { name: 'Chưa xử lý', id: '0' },
+    { id: '0', label: 'Chưa xử lý' },
+    { id: '1', label: 'Đã xử lý' },
   ],
   productInfoType: [
     { id: '1', name: 'Ngành hàng' },

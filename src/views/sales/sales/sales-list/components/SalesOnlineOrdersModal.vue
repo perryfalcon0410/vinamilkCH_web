@@ -43,17 +43,17 @@
             xl
             sm="6"
           >
-            <v-input-select
-              title="Trạng thái"
-              :suggestions="synStatusOptions"
-              :data-input="synStatusSelected.name"
+            <div
+              class="h8 mt-sm-1 mt-xl-0"
+            >
+              Trạng thái
+            </div>
+            <tree-select
+              v-model="synStatusSelected"
+              :options="synStatusOptions"
+              :searchable="false"
               placeholder="Tất cả"
-              title-class="h8 mt-sm-1 mt-xl-0"
-              input-class="h8"
-              suggestions-class="h9"
-              :clear-able="true"
-              size="sm"
-              @updateSelection="synStatusSelected = $event"
+              no-options-text="Không có dữ liệu"
             />
           </b-col>
           <!-- END - Status -->
@@ -75,7 +75,6 @@
               <b-input-group
                 id="form-input-date-from"
                 class="input-group-merge"
-                size="sm"
               >
                 <b-input-group-prepend
                   is-text
@@ -111,7 +110,6 @@
               </div>
               <b-input-group
                 class="input-group-merge"
-                size="sm"
               >
                 <b-input-group-prepend
                   is-text
@@ -207,6 +205,7 @@
                   class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
                   variant="someThing"
                   style="max-height: 30px;"
+                  :disabled="isDisable === true && synStatusSelected === '1' "
                   @click="getOnlineOrderInfo(props.row.id)"
                 >
                   <b-icon-hand-index-thumb
@@ -306,7 +305,6 @@ import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
 import { formatDateToLocale, reverseVniDate } from '@core/utils/filter'
-import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import {
   ValidationProvider,
 } from 'vee-validate'
@@ -324,7 +322,6 @@ import {
 export default {
   components: {
     ValidationProvider,
-    VInputSelect,
   },
   props: {
     visible: {
@@ -349,9 +346,10 @@ export default {
       elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
       paginationOptions: commonData.perPageSizes,
+      isDisable: false,
 
       // search
-      synStatusSelected: { id: null, name: null },
+      synStatusSelected: saleData.synStatus[0].id,
       synStatusOptions: saleData.synStatus,
       orderNumber: null,
       fromDate: null,
@@ -433,11 +431,12 @@ export default {
         orderNumber: this.orderNumber?.trim(),
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        synStatus: this.synStatusSelected?.id,
+        synStatus: this.synStatusSelected,
         formId: 1, // Hard
         ctrlId: 4, // Hard
       }
       this.GET_ONLINE_ORDERS_ACTION(searchData)
+      this.isDisable = !this.isDisable
     },
 
     onClickCloseButton() {

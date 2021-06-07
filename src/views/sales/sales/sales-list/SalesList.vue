@@ -14,7 +14,7 @@
       >
         <b-input-group class="input-group-merge">
           <b-form-input
-            ref="seach"
+            ref="search"
             v-model="searchOptions.keyWord"
             class="form-control-merge"
             placeholder="Tìm sản phẩm (F3)"
@@ -192,9 +192,15 @@
                 font-scale="1.5"
                 @click="decreaseAmount(props.row.productId)"
               />
-              {{ props.row.quantity }}
+              <!-- {{ props.row.quantity }} -->
+              <b-input
+                v-model="props.row.quantity"
+                :value="props.row.quantity"
+                :number="true"
+                maxlength="6"
+              />
               <b-icon-caret-up-fill
-                class="cursor-pointer ml-1"
+                class="cursor-pointer"
                 font-scale="1.5"
                 @click="increaseAmount(props.row.productId)"
               />
@@ -335,6 +341,7 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
+          width: '60px',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -507,6 +514,9 @@ export default {
   created() {
     window.addEventListener('keydown', e => {
       if (e.key === 'F3') {
+        if (e.which === 114) {
+          e.preventDefault()
+        }
         this.$refs.search.focus()
       }
     })
@@ -603,14 +613,6 @@ export default {
 
     getCustomerIdInfo(id) {
       this.$emit('getCustomerIdInfo', id)
-    },
-
-    billHandle(bill, index) {
-      return {
-        id: bill.id,
-        index,
-        products: this.orderProducts,
-      }
     },
 
     clickBillButton(index) {
