@@ -878,7 +878,6 @@ export default {
         productDataDTOS: productsData,
         saleOrderId: this.saleOrderIds,
       }
-      console.log(paramsCreateRedInvoice)
       if (productsData.length > 0) {
         this.CREATE_RED_BILL_ACTION(paramsCreateRedInvoice)
         this.$router.replace({ name: 'sales-red-bills' })

@@ -356,6 +356,7 @@
       <b-button
         variant="someThing"
         class="btn-brand-1 aligns-items-button-center"
+        :disabled="isCheckValue"
         @click="onClickChooseButton()"
       >
         Chọn
@@ -404,6 +405,7 @@ export default {
   },
   data() {
     return {
+      isCheckValue: true,
       isHidden: false,
       elementSize: commonData.perPageSizes[0],
       pageNumber: commonData.pageNumber,
@@ -516,7 +518,7 @@ export default {
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
-      totalElementProduct: null,
+      totalElementProduct: 0,
       totalElementBill: null,
       arrSaleOrderIds: [],
       orderNumbers: [],
@@ -590,6 +592,11 @@ export default {
     getProductsOfBillSale() {
       this.productSales.push(...this.getProductsOfBillSale)
       this.totalElementProduct = this.productSales.length
+      if (this.productSales.length > 0) {
+        this.isCheckValue = false
+      } else {
+        this.isCheckValue = true
+      }
     },
     getInvoiceDetailInfo() {
       const invoiceDetailInfoData = { ...this.getInvoiceDetailInfo }
@@ -674,6 +681,7 @@ export default {
     selectionChanged(params) {
       if (params.selectedRows.length === 0) {
         this.isHidden = false
+        this.isCheckValue = true
         this.CLEAR_ALL_BILL_OF_SALES_PRODUCTS()
       } else if (params.selectedRows.length > 0) {
         this.isHidden = true
@@ -713,6 +721,7 @@ export default {
             this.$emit('productsOfBillSaleData', { invoiceDetail: this.invoiceDetail, saleOrderIds: this.arrSaleOrderIds })
             this.$root.$emit('bv::hide::modal', 'bill-receipt-modal')
             this.isHidden = false
+            this.isCheckValue = true
           },
         })
       } else {

@@ -193,10 +193,6 @@ export default {
         sort: null,
       },
       searchOptions: {
-        onlineNumber: '',
-        fromDate: null,
-        toDate: null,
-        productCodes: '',
       },
       promotionDatas: [],
       decentralization: {
@@ -359,7 +355,7 @@ export default {
     ]),
     // Start - xuat excel
     onClickExcelExportButton() {
-      this.EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION({ ...this.decentralization })
+      this.EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION({ ...this.decentralization, ...this.searchOptions })
     },
     // End - xuat excel
 
@@ -369,6 +365,7 @@ export default {
         ...this.paginationData,
         ...event,
       }
+      this.searchOptions = event
     },
     onPaginationChange() {
       this.GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS({ ...this.paginationData, ...this.decentralization })

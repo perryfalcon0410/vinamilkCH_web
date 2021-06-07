@@ -209,12 +209,6 @@ export default {
         page: this.pageNumber,
         sort: null,
       },
-      searchOptions: {
-        onlineNumber: '',
-        fromDate: null,
-        toDate: null,
-        productCodes: '',
-      },
       promotionDatas: [],
       searchData: {},
       decentralization: {
