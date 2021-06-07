@@ -18,6 +18,9 @@ import {
   UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
   GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER,
   GET_PROMOTION_FREE_ITEMS_GETTER,
+  GET_PROMOTION_PROGRAMS_GETTER,
+  GET_PROMOTION_CALCULATION_GETTER,
+  GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -35,6 +38,9 @@ import {
   UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
   GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION,
   GET_PROMOTION_FREE_ITEMS_ACTION,
+  GET_PROMOTION_PROGRAMS_ACTION,
+  GET_PROMOTION_CALCULATION_ACTION,
+  GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
 } from './type'
 
 export default {
@@ -56,6 +62,9 @@ export default {
     customerTypeProducts: [],
     productsInMonth: [],
     promotionFreeItems: [],
+    promotionPrograms: [],
+    promotionCalculation: {},
+    itemsProductsProgram: [],
   },
 
   getters: {
@@ -103,6 +112,15 @@ export default {
     },
     [GET_PROMOTION_FREE_ITEMS_GETTER](state) {
       return state.promotionFreeItems
+    },
+    [GET_PROMOTION_PROGRAMS_GETTER](state) {
+      return state.promotionPrograms
+    },
+    [GET_PROMOTION_CALCULATION_GETTER](state) {
+      return state.promotionCalculation
+    },
+    [GET_ITEMS_PRODUCTS_PROGRAM_GETTER](state) {
+      return state.itemsProductsProgram
     },
   },
 
@@ -331,6 +349,51 @@ export default {
         .then(res => {
           if (res.success) {
             state.promotionFreeItems = res.data || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_PROMOTION_PROGRAMS_ACTION]({ state }, val) {
+      SalesServices
+        .getPromotionPrograms(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.promotionPrograms = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_PROMOTION_CALCULATION_ACTION]({ state }, val) {
+      SalesServices
+        .getPromotionCalculation(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.promotionCalculation = res.data || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_ITEMS_PRODUCTS_PROGRAM_ACTION]({ state }, val) {
+      SalesServices
+        .getItemsProductsProgram(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.itemsProductsProgram = res.data
           } else {
             throw new Error(res.statusValue)
           }

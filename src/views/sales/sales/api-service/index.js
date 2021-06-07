@@ -14,6 +14,9 @@ import {
   updatePriceTypeCustomerEndpoint,
   getProductsTopSaleMonthEndpoint,
   getPromotionFreeItemsEndpoint,
+  getPromotionProgramsEndpoint,
+  getPromotionCalculationEndpoint,
+  getItemsProductsProgramEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -85,5 +88,16 @@ export default {
   },
   getPromotionFreeItems(args) {
     return axios.post(getPromotionFreeItemsEndpoint, args)
+  },
+  getPromotionPrograms(args) {
+    return axios.post(getPromotionProgramsEndpoint, args)
+  },
+  getPromotionCalculation(args) {
+    return axios.post(getPromotionCalculationEndpoint, args)
+  },
+  getItemsProductsProgram(args) {
+    return axios.get(getItemsProductsProgramEndpoint, {
+      params: formatURLParams(args),
+    })
   },
 }

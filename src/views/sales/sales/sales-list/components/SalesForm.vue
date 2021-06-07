@@ -378,8 +378,10 @@ import {
   SALES,
   // Getter
   ONLINE_ORDER_CUSTOMER_BY_ID_GETTER,
+  GET_PROMOTION_PROGRAMS_GETTER,
   // Action
   GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION,
+  GET_PROMOTION_PROGRAMS_ACTION,
 } from '../../store-module/type'
 import SalesCreateModal from './SalesCreateModal.vue'
 import SalesSearchModal from './SalesSearchModal.vue'
@@ -436,7 +438,7 @@ export default {
       tableProductTotalPrice: null,
       tableProductCode: null,
       products: [],
-
+      promotionPrograms: [],
       columns: [
         {
           label: '',
@@ -519,6 +521,7 @@ export default {
 
     ...mapGetters(SALES, {
       ONLINE_ORDER_CUSTOMER_BY_ID_GETTER,
+      GET_PROMOTION_PROGRAMS_GETTER,
     }),
 
     getCustomerSearch() {
@@ -566,6 +569,12 @@ export default {
     totalOrderPrice() {
       return this.orderProducts.reduce((sum, item) => sum + Number(item.productTotalPrice), 0)
     },
+    getPromotionPrograms() {
+      if (this.GET_PROMOTION_PROGRAMS_GETTER) {
+        return this.GET_PROMOTION_PROGRAMS_GETTER
+      }
+      return []
+    },
   },
   watch: {
     ERROR_CODE_GETTER() {
@@ -587,6 +596,10 @@ export default {
       this.customersSearch = [...this.getCustomerSearch]
       this.customer.fullName = this.getCustomerSearch.fullName
     },
+    // getPromotionPrograms() {
+    //   this.promotionPrograms = [...this.getPromotionPrograms]
+    //   console.log(this.promotionPrograms)
+    // },
   },
   mounted() {
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
@@ -611,6 +624,7 @@ export default {
 
     ...mapActions(SALES, [
       GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION,
+      GET_PROMOTION_PROGRAMS_ACTION,
     ]),
 
     showModalCreate() {
@@ -626,8 +640,17 @@ export default {
     },
 
     showPayModal() {
+      const paramProducts = this.orderProducts.map(data => ({
+        productId: data.productId,
+        productCode: data.productCode,
+        quantity: data.quantity,
+      }))
+      this.GET_PROMOTION_PROGRAMS_ACTION({
+        customerId: this.customer.id,
+        orderType: Number(saleData.orderType[0].id),
+        products: paramProducts,
+      })
       this.$root.$emit('bv::toggle::modal', 'pay-modal')
-      // this.$emit('orderProducts', this.orderProducts)
     },
 
     showNotifyModal() {

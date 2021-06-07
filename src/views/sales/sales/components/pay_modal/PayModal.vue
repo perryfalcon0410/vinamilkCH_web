@@ -29,7 +29,7 @@
           </b-row>
 
           <div
-            v-for="(value,index) in tempPromotions"
+            v-for="(value,index) in promotionPrograms"
             :key="index"
           >
             <!-- START - Table Promotion -->
@@ -66,13 +66,20 @@
               >
                 <div v-if="value.products.length > 0">
                   <vue-good-table
-                    v-if="value.products.length > 0"
                     :columns="columnsAdm"
                     :rows="value.products"
                     style-class="vgt-table bordered"
                     compact-mode
                     line-numbers
                   >
+                    <!-- START - Empty rows -->
+                    <div
+                      slot="emptystate"
+                      class="text-center"
+                    >
+                      Không có dữ liệu
+                    </div>
+                    <!-- END - Empty rows -->
                     <!-- START - Row -->
                     <template
                       slot="table-row"
@@ -84,7 +91,7 @@
                             <b-input-group-text>{{ props.row.quantityMax }}</b-input-group-text>
                           </template>
                           <b-form-input
-                            v-model.number="tempPromotions[index].products[props.row.originalIndex].quantity"
+                            v-model.number="promotionPrograms[index].products[props.row.originalIndex].quantity"
                             @change="onChangeQuantity(value.programId, props)"
                             @keypress="$onlyNumberInput"
                           />
@@ -102,67 +109,163 @@
                       </div>
                     </template>
                     <!-- END - Row -->
+
+                    <!-- START - Action bottom -->
+                    <div
+                      v-if="value.isInsertItemProducts"
+                      slot="table-actions-bottom"
+                      class="mx-1 my-2 px-2"
+                    >
+                      <b-form-input
+                        v-model="pay.productSearch"
+                        class="w-25"
+                        placeholder="Nhập mã hoặc tên sản phẩm"
+                        type="text"
+                        autocomplete="off"
+                        @focus="searchProductFocus"
+                        @blur="inputSearchFocusedSP = false"
+                        @input="loadProducts(value.programId)"
+                        @keyup.enter="searchProductKeyEnter"
+                        @keydown.up="searchProductKeyUp"
+                        @keydown.down="searchProductKeyDown"
+                        @click="clickProduct(value.programId)"
+                      />
+                      <b-collapse
+                        v-model="inputSearchFocusedSP"
+                        class="position-absolute mr-lg-0 mb-3"
+                        style="zIndex:1"
+                      >
+                        <b-container
+                          class="my-1 bg-white rounded border border-primary shadow-lg"
+                        >
+                          <b-col>
+                            <b-row
+                              v-for="(product,indexProduct) in allProducts"
+                              :key="indexProduct"
+                              class="my-1 cursor-pointer"
+                              :class="{'item-active': indexProduct === cursorProduct}"
+                              @click="selectProduct(value.programId,product)"
+                              @mouseover="$event.target.classList.add('item-active')"
+                              @mouseout="$event.target.classList.remove('item-active')"
+                            >
+                              <b>{{ product.productCode }}</b> - {{ product.productName }}
+                            </b-row>
+                          </b-col>
+                        </b-container>
+                      </b-collapse>
+                    </div>
+                    <!-- END - Action bottom -->
                   </vue-good-table>
                 </div>
+                <div v-else-if="value.amount">
+                  <div v-if="value.amount.percentage > 0">
+                    <b-row
+                      class="mx-0 p-1"
+                      align-v="center"
+                    >
+                      <div>Giảm giá</div>
+
+                      <b-col cols="3">
+                        <b-input-group
+                          v-model="value.amount.percentage"
+                        >
+                          <b-form-input
+                            v-if="value.amount"
+                            v-model="value.amount.amount"
+                            disabled
+                          />
+                        </b-input-group>
+                      </b-col>
+                    </b-row>
+                  </div>
+                  <div v-else>
+                    <b-row
+                      class="mx-0 p-1"
+                      align-v="center"
+                    >
+                      <div>Số tiền</div>
+
+                      <b-col cols="3">
+                        <b-form-input
+                          v-if="value.amount"
+                          v-model="value.amount.amount"
+                          :disabled="value.promotionType === Number(promotionTypeOption[0].id)"
+                          @change="onChangePromotionAmout(value.amount.amount, value.amount.maxAmount)"
+                        />
+                      </b-col>
+                    </b-row>
+                    <div class="ml-1">
+                      Tối đa: {{ value.amount.maxAmount }}
+                    </div>
+                  </div>
+                </div>
                 <div v-else>
-                  <b-row
-                    class="mx-0 p-1"
-                    align-v="center"
+                  <vue-good-table
+                    :columns="columnsAdm"
+                    :rows="value.products"
+                    style-class="vgt-table bordered"
+                    compact-mode
+                    line-numbers
                   >
-                    <div>Số tiền</div>
-
-                    <b-col cols="3">
+                    <!-- START - Empty rows -->
+                    <div
+                      slot="emptystate"
+                      class="text-center"
+                    >
+                      Không có dữ liệu
+                    </div>
+                    <!-- END - Empty rows -->
+                    <!-- START - Action bottom -->
+                    <div
+                      slot="table-actions-bottom"
+                      class="mx-1 my-2 px-2"
+                    >
                       <b-form-input
-                        v-model="value.amount.value"
-                        :disabled="value.promotionType === Number(promotionTypeOption[0].id)"
+                        v-model="pay.productSearch"
+                        class="w-25"
+                        placeholder="Nhập mã hoặc tên sản phẩm"
+                        type="text"
+                        autocomplete="off"
+                        @focus="searchProductFocus"
+                        @blur="inputSearchFocusedSP = false"
+                        @input="loadProducts(value.programId)"
+                        @keyup.enter="searchProductKeyEnter"
+                        @keydown.up="searchProductKeyUp"
+                        @keydown.down="searchProductKeyDown"
+                        @click="clickProduct(value.programId)"
                       />
-                    </b-col>
-
-                  </b-row>
+                      <b-collapse
+                        v-model="inputSearchFocusedSP"
+                        class="position-absolute mr-lg-0 mb-3"
+                        style="zIndex:1"
+                      >
+                        <b-container
+                          class="my-1 bg-white rounded border border-primary shadow-lg"
+                        >
+                          <b-col>
+                            <b-row
+                              v-for="(product,indexProduct) in allProducts"
+                              :key="indexProduct"
+                              class="my-1 cursor-pointer"
+                              :class="{'item-active': indexProduct === cursorProduct}"
+                              @click="selectProduct(value.programId,product)"
+                              @mouseover="$event.target.classList.add('item-active')"
+                              @mouseout="$event.target.classList.remove('item-active')"
+                            >
+                              <b>{{ product.productCode }}</b> - {{ product.productName }}
+                            </b-row>
+                          </b-col>
+                        </b-container>
+                      </b-collapse>
+                    </div>
+                    <!-- END - Action bottom -->
+                  </vue-good-table>
                 </div>
               </b-collapse>
             <!-- END - Body -->
             </b-col>
           <!-- END - Table Promotion -->
           </div>
-
-          <!-- START - Table 3 -->
-          <b-col class="p-0 mt-1">
-            <!-- START - Title -->
-            <b-row
-              v-b-toggle.collapsePrmMoney
-              align-v="center"
-              class="bg-primary mx-0 p-1"
-            >
-              <b-check />
-              <div class="text-white">
-                Khuyến mãi tay PRM.001 - tặng tiền
-              </div>
-              <b-icon-chevron-down
-                class="ml-auto"
-                color="white"
-              />
-            </b-row>
-            <!-- END - Title -->
-
-            <!-- START - Body -->
-            <b-collapse
-              id="collapsePrmMoney"
-              visible
-            >
-              <b-row
-                class="mx-0 p-1"
-                align-v="center"
-              >
-                <div>Số tiền</div>
-                <b-col cols="3">
-                  <b-input />
-                </b-col>
-              </b-row>
-            </b-collapse>
-            <!-- END - Body -->
-          </b-col>
-          <!-- END - Table 3 -->
 
           <!-- START - Table 4 -->
           <b-col class="p-0 mt-1">
@@ -251,54 +354,6 @@
             <!-- END - Body -->
           </b-col>
           <!-- END - Table 5 -->
-
-          <!-- START - Table 4 -->
-          <b-col class="p-0 mt-1">
-            <!-- START - Title -->
-            <b-row
-              v-b-toggle.collapseAccumulationBỉthDay
-              align-v="center"
-              class="bg-brand-1 mx-0 p-1"
-            >
-              <b-check />
-              <div class="text-white">
-                Khuyến mãi ZV23.001 - giảm % tiền
-              </div>
-              <b-icon-chevron-down
-                class="ml-auto"
-                color="white"
-              />
-            </b-row>
-            <!-- END - Title -->
-
-            <!-- START - Body -->
-            <b-collapse
-              id="collapseAccumulationBỉthDay"
-              visible
-            >
-              <b-row
-                class="mx-0 p-1"
-                align-v="center"
-              >
-                <div>Giảm giá</div>
-
-                <b-col cols="3">
-                  <b-input-group
-                    prepend="20%"
-                  >
-                    <b-form-input
-                      value="20000"
-                      disabled
-                    />
-                  </b-input-group>
-                </b-col>
-
-              </b-row>
-            </b-collapse>
-            <!-- END - Body -->
-          </b-col>
-          <!-- END - Table 4 -->
-
         </b-col>
         <!-- START - Section table -->
 
@@ -594,8 +649,15 @@
         class="mx-auto"
       >
         <b-button
-          variant="primary"
-          class="d-flex align-items-center text-uppercase"
+          variant="none"
+          class="d-flex align-items-center text-uppercase btn-brand-1"
+          @click="onClickPromotionCalculation()"
+        >
+          Tính khuyến mãi
+        </b-button>
+        <b-button
+          variant="none"
+          class="d-flex align-items-center ml-1 text-uppercase btn-brand-1"
           @click="ok()"
         >
           <b-icon-printer
@@ -605,8 +667,8 @@
           In HĐ tạm (F7)
         </b-button>
         <b-button
-          variant="primary"
-          class="d-flex align-items-center mx-1 text-uppercase"
+          variant="none"
+          class="d-flex align-items-center mx-1 text-uppercase btn-brand-1"
           @click="ok()"
         >
           <b-icon-printer
@@ -616,8 +678,8 @@
           Thanh toán - In (F8)
         </b-button>
         <b-button
-          variant="primary"
-          class="d-flex align-items-center text-uppercase"
+          variant="none"
+          class="d-flex align-items-center text-uppercase btn-brand-1"
           @click="createSaleOrder"
         >
           <b-icon-cash-stack
@@ -627,8 +689,8 @@
           Thanh toán (F9)
         </b-button>
         <b-button
-          variant="primary"
-          class="d-flex align-items-center mx-1 text-uppercase"
+          variant="none"
+          class="d-flex align-items-center mx-1 text-uppercase btn-brand-1"
           @click="ok()"
         >
           <b-icon-printer
@@ -638,8 +700,8 @@
           In lại hóa đơn (F10)
         </b-button>
         <b-button
-          variant="secondary"
-          class="d-flex align-items-center text-uppercase"
+          variant="none"
+          class="d-flex align-items-center text-uppercase btn-brand-1"
           @click="cancel()"
         >
           <b-icon-x
@@ -658,6 +720,8 @@
 </template>
 
 <script>
+import commonData from '@/@db/common'
+import toasts from '@core/utils/toasts/toasts'
 import {
   number,
 } from '@/@core/utils/validations/validations'
@@ -674,12 +738,19 @@ import {
   GET_PRODUCTS_GETTER,
   GET_DISCOUNT_BY_CODE_GETTER,
   GET_PROMOTION_FREE_ITEMS_GETTER,
+  GET_PROMOTION_PROGRAMS_GETTER,
+  GET_PROMOTION_CALCULATION_GETTER,
+  GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
+
   // ACTIONS
   GET_VOUCHER_BY_ID_ACTION,
   GET_PRODUCTS_ACTION,
   CREATE_SALE_ORDER_ACTION,
   GET_DISCOUNT_BY_CODE_ACTION,
   GET_PROMOTION_FREE_ITEMS_ACTION,
+  GET_PROMOTION_PROGRAMS_ACTION,
+  GET_PROMOTION_CALCULATION_ACTION,
+  GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
 } from '../../store-module/type'
 import {
   CUSTOMER,
@@ -723,30 +794,30 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left col-2',
+          tdClass: 'text-left col-2',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left col-6',
+          tdClass: 'text-left col-6',
         },
         {
           label: 'Tồn kho',
           field: 'stockQuantity',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-center col-2',
+          tdClass: 'text-center col-2',
         },
         {
           label: 'Số lượng tặng',
           field: 'quantity',
           sortable: false,
           type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-center col-2',
+          tdClass: 'text-center col-2',
         },
       ],
 
@@ -875,26 +946,29 @@ export default {
           isEditable: false,
         },
       ],
-
+      promotionPrograms: [],
+      test: [],
+      cursor: -1,
+      cursorProduct: -1,
       salePaymentTypeOptions: saleData.salePaymentType,
       pay: {
         totalQuantity: 0,
         totalAmount: null,
-        promotionAmount: null,
+        promotionAmount: 0,
         accumulate: {
           accumulatePoint: null,
-          accumulateAmount: null,
+          accumulateAmount: 0,
         },
         voucher: {
           voucherId: null,
           voucherCode: '',
-          oucherAmount: null,
+          voucherAmount: 0,
         },
         discount: {
           discountCode: '',
-          discountAmount: null,
+          discountAmount: 0,
         },
-        needPaymentAmount: null,
+        needPaymentAmount: 0,
         salePayment: {
           salePaymentType: saleData.salePaymentType[0].id,
           salePaymentAmount: null,
@@ -907,7 +981,10 @@ export default {
         deliveryType: 1,
         orderType: 0,
         usedRedInvoice: null,
+        productSearch: null,
       },
+      inputSearchFocusedSP: false,
+      allProducts: [],
       formId: 5, // hard code permission
       ctrlId: 1, // hard code permission
 
@@ -921,6 +998,9 @@ export default {
       GET_PRODUCTS_GETTER,
       GET_DISCOUNT_BY_CODE_GETTER,
       GET_PROMOTION_FREE_ITEMS_GETTER,
+      GET_PROMOTION_PROGRAMS_GETTER,
+      GET_PROMOTION_CALCULATION_GETTER,
+      GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
     ]),
     ...mapGetters(CUSTOMER, [
       SALEMT_PAYMENT_TYPE_GETTER,
@@ -937,13 +1017,6 @@ export default {
       return {}
     },
 
-    salemtPaymentTypeOptions() {
-      return this.SALEMT_PAYMENT_TYPE_GETTER.map(data => ({
-        id: data.value,
-        label: data.apParamName,
-      }))
-    },
-
     totalQuantity() {
       return this.orderProducts.reduce((sum, item) => sum + Number(item.quantity), 0)
     },
@@ -953,7 +1026,7 @@ export default {
     },
 
     needPayment() {
-      return this.totalOrderPrice - this.price - this.discountAmount
+      return this.pay.totalAmount - this.pay.promotionAmount - this.pay.accumulate.accumulateAmount - this.pay.voucher.voucherAmount - this.pay.discount.discountAmount
     },
 
     changePayment() {
@@ -965,9 +1038,21 @@ export default {
       }
       return change
     },
-    getPromotionFreeItems() {
-      if (this.GET_PROMOTION_FREE_ITEMS_GETTER) {
-        return this.GET_PROMOTION_FREE_ITEMS_GETTER
+    getPromotionPrograms() {
+      if (this.GET_PROMOTION_PROGRAMS_GETTER) {
+        return this.GET_PROMOTION_PROGRAMS_GETTER
+      }
+      return []
+    },
+    getItemsProduct() {
+      if (this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER) {
+        return this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER
+      }
+      return []
+    },
+    getPromotionCalculation() {
+      if (this.GET_PROMOTION_CALCULATION_GETTER) {
+        return this.GET_PROMOTION_CALCULATION_GETTER
       }
       return {}
     },
@@ -977,34 +1062,39 @@ export default {
       this.pay.voucher.voucherCode = this.getVoucher.voucherCode
       this.pay.voucher.voucherAmount = this.getVoucher.price
     },
-
     getDiscount() {
       this.pay.discount.discountCode = this.getDiscount.discountCode
       this.pay.discount.discountAmount = this.getDiscount.discountAmount
     },
-
-    // salemtPaymentTypeSelected() {
-    //   this.GET_SALEMT_PAYMENT_TYPE_ACTION({ formId: 1, ctrlId: 4 })
-    // },
-    // orderProducts: {
-    //   handler() {
-    //     const products = this.orderProducts.map(data => ({
-    //       productCode: data.productCode,
-    //       productId: data.productId,
-    //       quantity: data.quantity,
-    //     }))
-    //     console.log(products)
-    // this.GET_PROMOTION_FREE_ITEMS_ACTION({
-    //   productList: products,
-    // })
-    //   },
-    //   deep: true,
-    // },
     totalOrderPrice() {
       this.pay.totalAmount = this.totalOrderPrice
     },
     totalQuantity() {
       this.pay.totalQuantity = this.totalQuantity
+    },
+    getPromotionPrograms() {
+      this.promotionPrograms = this.getPromotionPrograms.map(data => ({
+        promotionType: data.promotionType,
+        isUse: data.isUse,
+        programId: data.programId,
+        promotionProgramName: data.promotionProgramName,
+        contraintType: data.contraintType,
+        products: data.products || [],
+        amount: data.amount,
+        isEditable: data.isEditable,
+        isSelected: data.promotionType === Number(this.promotionTypeOption[0].id),
+        isInsertItemProducts: (data.products === null && data.amount === null),
+      }))
+    },
+    getItemsProduct() {
+      this.allProducts = [...this.getItemsProduct]
+    },
+    needPayment() {
+      this.pay.needPaymentAmount = this.needPayment
+    },
+    getPromotionCalculation() {
+      this.pay.promotionAmount = this.getPromotionCalculation.promotionAmount
+      this.pay.needPaymentAmount = this.getPromotionCalculation.paymentAmount
     },
   },
 
@@ -1027,6 +1117,9 @@ export default {
       GET_DISCOUNT_BY_CODE_ACTION,
       GET_VOUCHER_BY_ID_ACTION,
       GET_PROMOTION_FREE_ITEMS_ACTION,
+      GET_PROMOTION_PROGRAMS_ACTION,
+      GET_PROMOTION_CALCULATION_ACTION,
+      GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
     ]),
     ...mapActions(CUSTOMER, [
       GET_SALEMT_PAYMENT_TYPE_ACTION,
@@ -1080,7 +1173,7 @@ export default {
       return amount * (price || 0)
     },
     onChangeQuantity(id, params) {
-      this.tempPromotions = [...this.tempPromotions.map(program => {
+      this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.programId === id) {
           return {
             ...program,
@@ -1113,27 +1206,119 @@ export default {
       }
       return false
     },
-    // createSaleOrder() {
-    //   this.CREATE_SALE_ORDER_ACTION({
-    //     product: {
-    //       shopId: this.shopId,
-    //       customerId: this.customer.id,
-    //       totalPaid: this.totalOrderPrice,
-    //       paymentType: this.salemtPaymentTypeSelected,
-    //       deliveryType: this.deliverySelected,
-    //       orderType: this.orderSelected,
-    //       voucherId: this.voucherId,
-    //       products: this.orderProducts,
-    //       type: 0,
-    //       salemanId: 1,
-    //       usedRedInvoice: false,
-    //     },
-    //     onSuccess: () => {
-    //       this.$refs.payModal.hide()
-    //       this.resetOrderPayment()
-    //     },
-    //   })
-    // },
+    searchProductFocus() {
+      this.cursorProduct = -1
+      this.inputSearchFocusedSP = this.pay.productSearch !== null && this.pay.productSearch.length >= commonData.minSearchLength
+    },
+    searchProductKeyUp() {
+      if (this.cursorProduct > 0) {
+        this.cursorProduct -= 1
+      }
+    },
+    searchProductKeyDown() {
+      if (this.cursorProduct < this.allProducts.length) {
+        this.cursorProduct += 1
+      }
+    },
+    searchProductKeyEnter() {
+      if (this.inputSearchFocusedSP && this.allProducts[this.cursorProduct]) {
+        this.selectProduct(this.allProducts[this.cursorProduct])
+        this.inputSearchFocusedSP = false
+      }
+    },
+    loadProducts(programId) {
+      this.cursorProduct = -1
+      if (this.pay.productSearch === null) return
+      if (this.pay.productSearch.length >= commonData.minSearchLength) {
+        this.inputSearchFocusedSP = true
+
+        this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
+          keyWord: this.pay.productSearch,
+          promotionId: programId,
+          formId: this.formId,
+          ctrlId: this.ctrlId,
+        })
+      } else {
+        this.inputSearchFocusedSP = false
+      }
+    },
+    clickProduct(programId) {
+      if (this.pay.productSearch === null) return
+      if (this.pay.productSearch.length >= commonData.minSearchLength) {
+        this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
+          promotionId: programId,
+          formId: this.formId,
+          ctrlId: this.ctrlId,
+        })
+      }
+    },
+    selectProduct(programId, product) {
+      this.pay.productSearch = null
+      this.promotionPrograms = [...this.promotionPrograms.map(program => {
+        if (program.programId === programId) {
+          const existedProductIndex = program.products.findIndex(p => p.productCode === product.productCode)
+          if (existedProductIndex === -1 || program.products.length === 0) {
+            return {
+              ...program,
+              products: [...program.products.push(product)],
+            }
+          }
+        }
+        return program
+      })]
+    },
+    onClickPromotionCalculation() {
+      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.promotionType === Number(saleData.promotionType[1].id) && p.amount)
+      this.GET_PROMOTION_CALCULATION_ACTION({
+        customerId: this.customer.id,
+        orderType: Number(saleData.orderType[0].id),
+        totalAmount: this.pay.totalAmount,
+        saveAmount: this.pay.accumulate.accumulateAmount,
+        voucherAmount: this.pay.voucher.voucherAmount,
+        saleOffAmount: this.pay.discount.discountAmount,
+        promotionInfo: paramPromotionAmountInfos,
+      })
+    },
+    onChangePromotionAmout(amount, maxAmout) {
+      if (amount > maxAmout) {
+        toasts.error('Số tiền không được vượt quá số tiền tối đa')
+      }
+    },
+    createSaleOrder() {
+      this.promotionPrograms.forEach(program => {
+        if (program.contraintType === Number(saleData.constraintType[1].id)) {
+          let maxQuantity = 0
+          let totalQuantity = 0
+          program.products.forEach(product => {
+            maxQuantity = product.quantityMax
+            totalQuantity += product.quantity
+          })
+          if (totalQuantity > maxQuantity) {
+            toasts.error(`${program.promotionProgramName}tổng sản phẩm không được lớn hơn ${maxQuantity}`)
+          }
+        }
+        this.$root.$emit('bv::hide::modal', 'pay-modal')
+        // this.CREATE_SALE_ORDER_ACTION({
+        //   product: {
+        //     shopId: this.shopId,
+        //     customerId: this.customer.id,
+        //     totalPaid: this.totalOrderPrice,
+        //     paymentType: this.salemtPaymentTypeSelected,
+        //     deliveryType: this.deliverySelected,
+        //     orderType: this.orderSelected,
+        //     voucherId: this.voucherId,
+        //     products: this.orderProducts,
+        //     type: 0,
+        //     salemanId: 1,
+        //     usedRedInvoice: false,
+        //   },
+        //   onSuccess: () => {
+        //     this.$refs.payModal.hide()
+        //     this.resetOrderPayment()
+        //   },
+        // })
+      })
+    },
   },
 }
 </script>

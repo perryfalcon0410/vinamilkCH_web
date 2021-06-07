@@ -29,3 +29,9 @@ export const updatePriceTypeCustomerEndpoint = `${SALES}/${PRODUCT}/change/custo
 export const getProductsTopSaleMonthEndpoint = `${SALES}${PRODUCT}/top-sale/month`
 
 export const getPromotionFreeItemsEndpoint = `${SALES}/promotion-free-item`
+
+export const getPromotionProgramsEndpoint = `${SALES}/order-promotions`
+
+export const getPromotionCalculationEndpoint = `${SALES}/promotion-calculation`
+
+export const getItemsProductsProgramEndpoint = `${SALES}/promotion-products`

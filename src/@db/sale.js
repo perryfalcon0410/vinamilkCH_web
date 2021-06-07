@@ -35,6 +35,14 @@ export default {
     { id: '0', label: 'Khuyến mãi tự động' },
     { id: '1', label: 'Khuyến mãi bằng tay' },
   ],
+  constraintType: [
+    { id: '0', label: 'Mỗi số sản phẩm sẽ có số lượng riêng' },
+    { id: '1', label: 'Tổng số lượng sản phẩm nhất định' },
+  ],
+  orderType: [
+    { id: '0', label: 'Hoá đơn offline' },
+    { id: '1', label: 'Hoá đơn online' },
+  ],
   pageSizeRecommendProducts: 8,
   pageNumberRecommendProducts: 0,
 }
