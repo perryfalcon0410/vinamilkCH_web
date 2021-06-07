@@ -549,7 +549,7 @@ export default {
         firstName: this.customerCreate.firstName,
         lastName: this.customerCreate.lastName,
         phoneNumber: this.customerCreate.mobiPhone,
-        street: this.customerCreate.street,
+        street: this.customerCreate.address,
         scoreCumulated: this.customerCreate.scoreCumulated,
       })
     },

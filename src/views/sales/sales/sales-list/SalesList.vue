@@ -182,13 +182,13 @@
             <!-- END - tableProductInventory -->
 
             <!-- START - quantity -->
-            <b-row
+            <span
               v-else-if="props.column.field === 'quantity'"
               align-v="center"
               align-h="start"
             >
               <b-icon-caret-down-fill
-                class="cursor-pointer mr-1"
+                class="cursor-pointer"
                 font-scale="1.5"
                 @click="decreaseAmount(props.row.productId)"
               />
@@ -204,7 +204,7 @@
                 font-scale="1.5"
                 @click="increaseAmount(props.row.productId)"
               />
-            </b-row>
+            </span>
             <!-- END - quantity -->
 
             <!-- START - tableProductFeature -->
@@ -343,8 +343,8 @@ export default {
           type: 'number',
           width: '60px',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Đơn giá',
@@ -447,7 +447,7 @@ export default {
         productName: data.productName,
         productUnit: data.uom1,
         productInventory: data.stockTotal,
-        quantity: 1,
+        quantity: data.quantity,
         productUnitPrice: data.price,
         productTotalPrice: this.totalPrice(1, Number(data.price)),
       }))

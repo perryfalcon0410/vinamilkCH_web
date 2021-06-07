@@ -84,7 +84,7 @@
                 </b-input-group-prepend>
                 <vue-flat-pickr
                   v-model="fromDate"
-                  :config="configDate"
+                  :config="configFromDate"
                   class="form-control h9"
                   placeholder="Chọn ngày"
                 />
@@ -120,7 +120,7 @@
                 <vue-flat-pickr
                   id="form-input-date-from"
                   v-model="toDate"
-                  :config="configDate"
+                  :config="configToDate"
                   class="form-control h9"
                   placeholder="Chọn ngày"
                 />
@@ -202,6 +202,7 @@
             >
               <div v-if="props.column.field === 'feature'">
                 <b-button
+                  v-if="synStatusSelected"
                   class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
                   variant="someThing"
                   style="max-height: 30px;"
@@ -304,7 +305,7 @@ import {
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { formatDateToLocale, reverseVniDate } from '@core/utils/filter'
+import { formatDateToLocale, getHourToSecondOfDate, reverseVniDate } from '@core/utils/filter'
 import {
   ValidationProvider,
 } from 'vee-validate'
@@ -335,11 +336,23 @@ export default {
       // validation rules
       dateFormatVNI,
 
-      configDate: {
+      // configDate: {
+      //   wrap: true,
+      //   allowInput: true,
+      //   dateFormat: 'd/m/Y hh:ss',
+      //   allowInvalidPreload: false,
+      // },
+
+      configFromDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
-        allowInvalidPreload: false,
+      },
+      configToDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromDate,
       },
 
       selectedRow: 0,
@@ -352,8 +365,8 @@ export default {
       synStatusSelected: saleData.synStatus[0].id,
       synStatusOptions: saleData.synStatus,
       orderNumber: null,
-      fromDate: null,
-      toDate: null,
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
 
       columns: [
         {
@@ -393,7 +406,7 @@ export default {
       return this.ONLINE_ORDERS_GETTER().map(data => ({
         id: data.id,
         orderNumber: data.orderNumber,
-        createdAt: formatDateToLocale(data.createdAt),
+        createdAt: formatDateToLocale(data.createdAt) + getHourToSecondOfDate(data.createdAt),
         orderInfo: data.orderInfo,
         quantity: data.quantity,
         totalPrice: data.totalPrice,
@@ -455,6 +468,10 @@ export default {
     getOnlineOrderInfo(id) {
       this.onClickCloseButton()
       this.$emit('getOnlineOrderInfo', id)
+    },
+
+    changeStatus() {
+      this.isDisable = !this.isDisable
     },
   },
 }
