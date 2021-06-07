@@ -72,7 +72,7 @@ export default [
           },
           {
             title: 'Doanh số CAT',
-            route: 'reports-sales-cat-sale',
+            route: 'reports-sales-cat',
             resource: 'ReportsSalesCatSale',
           },
           {

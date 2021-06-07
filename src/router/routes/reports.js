@@ -183,4 +183,21 @@ export default [
       resource: 'ReportsCustomersNonTransactional',
     },
   },
+
+  // Báo cáo doanh số CAT
+  {
+    path: '/reports/sales/cat',
+    name: 'reports-sales-cat',
+    component: () => import('@/views/reports/reports-sales/reports-sales-cat/reports-sales-cat-list/ReportsSalesCatList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo doanh số CAT',
+      breadcrumb: [
+        {
+          text: 'Báo cáo doanh số CAT',
+          active: true,
+        },
+      ],
+      resource: 'ReportsSalesCatSale',
+    },
+  },
 ]
