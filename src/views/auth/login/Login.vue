@@ -440,12 +440,36 @@ export default {
         },
         {
           id: 25,
-          formCode: 'ReportsCustomers', // Báo cáo - Khách hàng
+          formCode: 'ReportsSalesCatSale', // Báo cáo - Bán hàng - Doanh só CAT
           orderNumber: 1,
           controls: [],
         },
         {
           id: 26,
+          formCode: 'ReportsSalesSaleReceiptPerCustomer', // Báo cáo - Bán hàng - Doanh số hóa đơn theo kh
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 27,
+          formCode: 'ReportsSalesAmountReceiptPerCustomer', // Báo cáo - Bán hàng - Số lượng hóa đơn theo khách hàng
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 28,
+          formCode: 'ReportsSalesReceiptOnDeliveryType', // Báo cáo - Bán hàng - Hóa đơn theo loại giao hàng
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 29,
+          formCode: 'ReportsCustomers', // Báo cáo - Khách hàng
+          orderNumber: 1,
+          controls: [],
+        },
+        {
+          id: 30,
           formCode: 'ReportsVouchers', // Báo cáo - Danh sách voucher
           orderNumber: 1,
           controls: [],
