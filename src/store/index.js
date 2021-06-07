@@ -31,6 +31,7 @@ import reportsCustomers from '@/views/reports/reports-customers/reports-customer
 import reportsCustomersNonTransactional from '@/views/reports/reports-customers/reports-customers-non-transactional/store-module'
 import reportSalesAmountReceiptPerCustomers from '@/views/reports/reports-sales/reports-sales-amount-receipt-per-customers/store-module'
 import reportSalesCat from '@/views/reports/reports-sales/reports-sales-cat/store-module'
+import reportSales from '@/views/reports/reports-sales/reports-sales/store-module'
 
 import reportSalesSaleReceiptPerCustomer from '@/views/reports/reports-sales/reports-sales-sale-receipt-per-customer/store-module'
 // Systems
@@ -82,6 +83,7 @@ export default new Vuex.Store({
     reportSalesSaleReceiptPerCustomer,
     reportSalesAmountReceiptPerCustomers,
     reportSalesCat,
+    reportSales,
   },
   strict: process.env.DEV,
 })

@@ -11,4 +11,8 @@ export default {
     { id: '2', label: 'Nhập vay mượn' },
     { id: '3', label: 'Xuất trả PO' },
   ],
+  saleChannels: [
+    { id: '1', label: 'Offline' },
+    { id: '2', label: 'Online' },
+  ],
 }

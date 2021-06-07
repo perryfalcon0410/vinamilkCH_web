@@ -217,4 +217,20 @@ export default [
       resource: 'ReportsSalesAmountReceiptPerCustomer',
     },
   },
+  // Báo cáo bán hàng
+  {
+    path: '/reports/sales/sales',
+    name: 'reports-sales',
+    component: () => import('@/views/reports/reports-sales/reports-sales/reports-sales-list/ReportsSalesList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo bán hàng',
+      breadcrumb: [
+        {
+          text: 'Danh sách báo cáo bán hàng',
+          active: true,
+        },
+      ],
+      resource: 'ReportsSales',
+    },
+  },
 ]
