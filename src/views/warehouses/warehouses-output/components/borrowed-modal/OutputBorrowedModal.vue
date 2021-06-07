@@ -435,6 +435,7 @@ export default {
             productName: data.productName,
             price: formatNumberToLocale(data.price),
             unit: data.unit,
+            shopId: data.shopId,
             totalPrice: formatNumberToLocale(data.totalPrice),
             productReturnAmount: 0,
             productReturnAmountOriginal: data.quantity,

@@ -4,8 +4,6 @@
     size="xl"
     title="Chọn phiếu xuất điều chỉnh"
     title-class="text-uppercase font-weight-bold text-brand-1"
-    centered
-    scrollable
     hide-footer
   >
     <b-container
@@ -442,6 +440,7 @@ export default {
             productName: data.productName,
             price: formatNumberToLocale(data.price),
             unit: data.unit,
+            shopId: data.shopId,
             totalPrice: formatNumberToLocale(data.totalPrice),
             productReturnAmount: 0,
             productReturnAmountOriginal: data.quantity,

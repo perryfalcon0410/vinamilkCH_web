@@ -294,7 +294,7 @@ export default {
             toasts.success(res.statusValue)
             router.push({ name: 'warehouses-output' })
           } else {
-            throw new Error(res.statusValue)
+            throw new Error('Tạo không thành công')
           }
         })
         .catch(error => {

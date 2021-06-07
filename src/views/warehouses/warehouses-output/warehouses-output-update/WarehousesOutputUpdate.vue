@@ -16,7 +16,7 @@
             Ngày xuất:
           </b-col>
           <b-col class="font-weight-bold">
-            <strong>{{ warehousesOutput.outputDate }} lúc {{ warehousesOutput.outputTime }}</strong>
+            <strong>{{ warehousesOutput.transDate }} lúc {{ warehousesOutput.transTime }}</strong>
           </b-col>
         </b-row>
         <!-- END - Date -->
@@ -82,7 +82,7 @@
               class="input-group-merge"
             >
               <vue-flat-pickr
-                v-model="warehousesOutput.transDate"
+                v-model="warehousesOutput.orderDate"
                 :config="configDate"
                 class="form-control h8 text-brand-3"
                 disabled
@@ -151,16 +151,24 @@
         <!-- START - Table Product promotion -->
         <vue-good-table
           :columns="columns"
-          :rows="warehousesOutput.products"
+          :rows="getProductOfWarehouseOutput"
           style-class="vgt-table striped"
           compact-mode
           line-numbers
         >
-
+          <!-- START - Empty rows -->
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
+          <!-- END - Empty rows -->
           <!-- START - Header slot -->
           <div slot="table-actions">
             <b-form-checkbox
-              class="mx-1"
+              v-model="exportAll"
+              class="m-1"
               :disabled="isDisableSave"
             >
               Trả nguyên đơn
@@ -178,7 +186,7 @@
             >
               <div v-if="warehousesOutput.receiptType == warehousesOptions[0].id">
                 <b-form-input
-                  v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
+                  v-model="getProductOfWarehouseOutput[props.row.originalIndex].productReturnAmount"
                   size="sm"
                   :disabled="isDisableSave"
                   @keypress="$onlyNumberInput"
@@ -186,7 +194,7 @@
               </div>
               <div v-else>
                 <b-form-input
-                  v-model="warehousesOutput.products[props.row.originalIndex].productReturnAmount"
+                  v-model="getProductOfWarehouseOutput[props.row.originalIndex].productReturnAmount"
                   size="sm"
                   disabled
                   @keypress="$onlyNumberInput"
@@ -267,6 +275,7 @@ export default {
   data() {
     return {
       warehousesOptions: warehousesData.outputTypes,
+      exportAll: true,
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -327,9 +336,9 @@ export default {
         poNumber: '',
         note: '',
         transDate: null,
+        transTime: null,
         products: [],
-        outputTime: '',
-        outputDate: '',
+        orderDate: '',
       },
       configDate: {
         wrap: true,
@@ -376,21 +385,19 @@ export default {
       this.warehousesOutput.poNumber = dataWarehousesOutput.poNumber
       this.warehousesOutput.note = dataWarehousesOutput.note
       this.warehousesOutput.transDate = formatISOtoVNI(dataWarehousesOutput.transDate)
-      this.warehousesOutput.products = [...this.getProductOfWarehouseOutput]
+      this.warehousesOutput.transTime = getTimeOfDate(dataWarehousesOutput.transDate)
 
       if (this.warehousesOutput.receiptType === warehousesData.outputTypes[0].id) {
-        this.warehousesOutput.outputDate = formatISOtoVNI(dataWarehousesOutput.orderDate)
-        this.warehousesOutput.outputTime = getTimeOfDate(dataWarehousesOutput.orderDate)
+        this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.orderDate)
+        this.exportAll = false
       } if (this.warehousesOutput.receiptType === warehousesData.outputTypes[1].id) {
-        this.warehousesOutput.outputDate = formatISOtoVNI(dataWarehousesOutput.adjustmentDate)
-        this.warehousesOutput.outputTime = getTimeOfDate(dataWarehousesOutput.adjustmentDate)
+        this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.adjustmentDate)
       } if (this.warehousesOutput.receiptType === warehousesData.outputTypes[2].id) {
-        this.warehousesOutput.outputDate = formatISOtoVNI(dataWarehousesOutput.borrowDate)
-        this.warehousesOutput.outputTime = getTimeOfDate(dataWarehousesOutput.borrowDate)
+        this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.borrowDate)
       }
 
       // enable or disable button save
-      this.isDisableSave = this.warehousesOutput.outputDate !== this.$nowDate
+      this.isDisableSave = this.warehousesOutput.transDate !== this.$nowDate
     },
   },
   mounted() {
@@ -411,8 +418,8 @@ export default {
       this.$router.back()
     },
     onClickUpdateWarehousesOutput() {
-      if (this.warehousesOutput.products) {
-        const products = this.warehousesOutput.products.map(data => ({
+      if (this.getProductOfWarehouseOutput) {
+        const products = this.getProductOfWarehouseOutput.map(data => ({
           id: data.productID,
           quantity: data.productReturnAmount,
         }))

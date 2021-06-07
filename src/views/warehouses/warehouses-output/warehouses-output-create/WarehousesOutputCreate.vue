@@ -107,10 +107,9 @@
                   @keypress="$onlyDateInput"
                 >
                   <vue-flat-pickr
-                    v-model="warehousesOutput.transDate"
+                    v-model="warehousesOutput.billDate"
                     :config="configDate"
                     class="form-control h8"
-                    placeholder="Chọn ngày"
                     :disabled="warehousesOutput.outputTypeSelected !== poOutputType"
                     readonly
                   />
@@ -335,6 +334,7 @@ import {
   required,
 } from '@/@core/utils/validations/validations'
 import { getNow } from '@core/utils/utils'
+import toasts from '@/@core/utils/toasts/toasts'
 import OutputModal from '../components/output-modal/OutputModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/OutputBorrowedModal.vue'
@@ -351,7 +351,6 @@ import {
   GET_WAREHOUSE_TYPE_ACTION,
   CREATE_EXPORT_ACTION,
 } from '../store-module/type'
-// import toasts from '../../../../@core/utils/toasts/toasts'
 
 export default {
   components: {
@@ -370,6 +369,7 @@ export default {
 
       outputTypesOptions: warehousesData.outputTypes,
       exportAll: true,
+      quantityCheck: true,
 
       output: {
         id: '',
@@ -387,6 +387,7 @@ export default {
         poNumber: '',
         note: '',
         transDate: this.$nowDate,
+        billDate: this.$nowDate,
       },
       products: [],
       dateNow: getNow(),
@@ -453,7 +454,7 @@ export default {
   },
 
   watch: {
-    outputTypeSelected() {
+    warehousesOutput() {
       this.CLEAR_EXPORT_PRODUCTS_MUTATION()
       this.internalNumber = ''
       this.internalNumber = ''
@@ -508,7 +509,7 @@ export default {
     dataFromPo(data) {
       this.warehousesOutput.id = data.tranInfo.id
       this.warehousesOutput.redInvoiceNo = data.tranInfo.redInvoiceNo
-      this.warehousesOutput.transDate = data.tranInfo.transDate
+      this.warehousesOutput.billDate = data.tranInfo.billDate
       this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
       this.warehousesOutput.poNumber = data.tranInfo.poNumber
       this.products = data.products
@@ -516,7 +517,7 @@ export default {
     },
     dataFromBorrow(data) {
       this.warehousesOutput.id = data.tranInfo.id
-      this.warehousesOutput.transDate = data.tranInfo.borrowDate
+      this.warehousesOutput.billDate = data.tranInfo.borrowDate
       this.warehousesOutput.note = data.tranInfo.note
       this.products = data.products
       this.exportAll = true
@@ -529,10 +530,10 @@ export default {
     },
     dataFromAdjustment(data) {
       this.warehousesOutput.id = data.tranInfo.id
-      this.warehousesOutput.transDate = data.tranInfo.adjustmentDate
+      this.warehousesOutput.billDate = data.tranInfo.adjustmentDate
       this.warehousesOutput.note = data.tranInfo.description
-      this.products = data.products
       this.exportAll = true
+      this.products = data.products
 
       // clear data
       this.warehousesOutput.redInvoiceNo = ''
@@ -540,19 +541,35 @@ export default {
       this.warehousesOutput.poNumber = ''
       this.warehousesOutput.code = ''
     },
+    checkQuantity() {
+      this.products.forEach((item, index) => {
+        if (this.products[index].productReturnAmountOriginal - this.products[index].productReturnExportOriginal >= this.products[index].productReturnAmount) {
+          this.quantityCheck = true
+        } else {
+          this.quantityCheck = false
+        }
+      })
+    },
     createExport() {
-      this.CREATE_EXPORT_ACTION(
-        {
-          importType: Number(this.warehousesOutput.outputTypeSelected),
-          isRemainAll: this.exportAll,
-          receiptImportId: Number(this.warehousesOutput.id),
-          note: this.warehousesOutput.note,
-          litQuantityRemain: this.products.map(item => ({
-            id: item.id,
-            quantity: Number(item.productReturnAmount) || 0,
-          })),
-        },
-      )
+      if (this.warehousesOutput.outputTypeSelected === warehousesData.outputTypes[0].id) {
+        this.checkQuantity()
+      }
+      if (this.quantityCheck) {
+        console.log(this.warehousesOutput.note)
+        this.CREATE_EXPORT_ACTION(
+          {
+            importType: Number(this.warehousesOutput.outputTypeSelected),
+            isRemainAll: this.exportAll,
+            receiptImportId: Number(this.warehousesOutput.id),
+            note: this.warehousesOutput.note,
+            litQuantityRemain: this.products.map(item => ({
+              id: item.id,
+              quantity: Number(item.productReturnAmount) || 0,
+              shopId: item.shopId,
+            })),
+          },
+        )
+      } else if (this.warehousesOutput.outputTypeSelected === warehousesData.outputTypes[0].id) toasts.error('Không đủ sản phẩm trả.')
     },
     navigateBack() {
       this.$refs.salesNotifyModal.show()

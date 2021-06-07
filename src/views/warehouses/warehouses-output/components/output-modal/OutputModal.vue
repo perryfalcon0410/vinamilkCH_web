@@ -53,7 +53,10 @@
             :sort-options="{
               enabled: false,
               multipleColumns: true,
-              initialSortBy: [{field: 'transCode', type: 'desc'}]
+              initialSortBy: [
+                {field: 'transCode', type: 'desc'},
+                {field: 'transDate', type: 'desc'}
+              ]
             }"
             @on-sort-change="onSortChange"
             @on-page-change="onPageChange"
@@ -282,6 +285,7 @@ export default {
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
+          hidden: true,
         },
         {
           label: 'Mã nhập hàng',
@@ -289,6 +293,7 @@ export default {
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
+          hidden: true,
         },
         {
           label: 'Số hóa đơn',
@@ -297,10 +302,11 @@ export default {
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
+          hidden: true,
         },
         {
-          label: 'Ngày hóa đơn',
-          field: 'billDate',
+          label: 'PO No',
+          field: 'pocoNumber',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -314,8 +320,8 @@ export default {
           tdClass: 'text-left',
         },
         {
-          label: 'PO No',
-          field: 'poNumber',
+          label: 'Ngày hóa đơn',
+          field: 'billDate',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -416,15 +422,15 @@ export default {
           transCode: data.transCode,
           redInvoiceNo: data.redInvoiceNo,
           internalNumber: data.internalNumber,
-          poNumber: data.poNumber,
+          pocoNumber: data.pocoNumber,
           billDate: formatISOtoVNI(data.orderDate),
         }))
       }
       return []
     },
     getExportPoTransDetail() {
-      if (this.getExportPoTransDetail.info) {
-        this.productDetail = this.getExportPoTransDetail.info.map(data => ({
+      if (this.getExportPoTransDetail.response) {
+        this.productDetail = this.getExportPoTransDetail.response.map(data => ({
           id: data.id,
           productCode: data.productCode,
           productName: data.productName,
@@ -433,6 +439,7 @@ export default {
           totalPrice: formatNumberToLocale(data.totalPrice),
           export: `${data.export}/${data.quantity}`,
           productReturnAmount: 0,
+          productReturnExportOriginal: data.export,
           productReturnAmountOriginal: data.quantity,
         }))
       }
@@ -462,15 +469,17 @@ export default {
       this.GET_EXPORT_PO_TRANS_DETAIL_ACTION({
         id: trans.id,
         onSuccess: poProducts => {
-          this.productDetail = poProducts.info.map(data => ({
+          this.productDetail = poProducts.response.map(data => ({
             id: data.id,
             productCode: data.productCode,
             productName: data.productName,
             price: formatNumberToLocale(data.price),
             unit: data.unit,
+            shopId: data.shopId,
             totalPrice: formatNumberToLocale(data.totalPrice),
             export: `${data.export}/${data.quantity}`,
             productReturnAmount: null,
+            productReturnExportOriginal: data.export,
             productReturnAmountOriginal: data.quantity,
           }))
           const poTranData = {

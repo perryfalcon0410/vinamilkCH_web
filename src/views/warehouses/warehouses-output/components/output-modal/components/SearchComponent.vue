@@ -26,6 +26,7 @@
               v-model.trim="transCode"
               placeholder="Nhập mã nhập hàng"
               maxlength="40"
+              @keyup.enter="onSearch"
             />
             <b-input-group-append
               is-text
@@ -33,7 +34,7 @@
               <b-icon-x
                 v-show="transCode"
                 class="cursor-pointer text-gray"
-                @click="transCode = null"
+                @click="transCode = ''"
               />
             </b-input-group-append>
           </b-input-group>
@@ -63,6 +64,7 @@
               v-model.trim="redInvoiceNo"
               placeholder="Nhập số hóa đơn"
               maxlength="40"
+              @keyup.enter="onSearch"
             />
             <b-input-group-append
               is-text
@@ -70,7 +72,7 @@
               <b-icon-x
                 v-show="redInvoiceNo"
                 class="cursor-pointer text-gray"
-                @click="redInvoiceNo = null"
+                @click="redInvoiceNo = ''"
               />
             </b-input-group-append>
           </b-input-group>
@@ -100,6 +102,7 @@
               v-model.trim="internalNumber"
               placeholder="Nhập số nội bộ"
               maxlength="40"
+              @keyup.enter="onSearch"
             />
             <b-input-group-append
               is-text
@@ -107,7 +110,7 @@
               <b-icon-x
                 v-show="internalNumber"
                 class="cursor-pointer text-gray"
-                @click="internalNumber = null"
+                @click="internalNumber = ''"
               />
             </b-input-group-append>
           </b-input-group>
@@ -137,6 +140,7 @@
               v-model.trim="poNo"
               placeholder="Nhập PO No"
               maxlength="40"
+              @keyup.enter="onSearch"
             />
             <b-input-group-append
               is-text
@@ -144,7 +148,7 @@
               <b-icon-x
                 v-show="poNo"
                 class="cursor-pointer text-gray"
-                @click="poNo = null"
+                @click="poNo = ''"
               />
             </b-input-group-append>
           </b-input-group>
@@ -315,7 +319,7 @@ export default {
         transCode: this.transCode,
         redInvoiceNo: this.redInvoiceNo,
         internalNumber: this.internalNumber,
-        poNumber: this.poNo,
+        poNo: this.poNo,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
       }

@@ -107,6 +107,7 @@
         xl
         lg="3"
         sm="4"
+        @keyup.enter="onClickSearchWarehousesOutput"
       >
         <div class="h8 mt-sm-1 mt-xl-0">
           Loại xuất
@@ -185,6 +186,10 @@
           :columns="columns"
           :rows="warehousesOutputList"
           style-class="vgt-table striped"
+          :sort-options="{
+            enabled: true,
+            initialSortBy: {field: 'date', type: 'esc'}
+          }"
           :pagination-options="{
             enabled: true,
             perPage: perPageSizeSelected,
