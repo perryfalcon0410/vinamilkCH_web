@@ -4,7 +4,11 @@
     class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
-    <list-search />
+    <list-search
+      :per-page-size="paginationData.size"
+      @updateSearchData="updateSearchData"
+      @onClickSearchButton="onClickSearchButton($event)"
+    />
     <!-- END - Search -->
 
     <!-- START - sale receipt list -->
@@ -42,6 +46,15 @@
             enabled: false,
             multipleColumns: true,
           }"
+          :total-rows="reportSalesSaleReceiptPagination.totalElements"
+          :pagination-options="{
+            enabled: true,
+            perPage: paginationData.size,
+            setCurrentPage: pageNumber,
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           <!-- START - Empty rows -->
           <div
@@ -51,6 +64,63 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="reportSalesSaleReceiptPagination.totalElements"
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Số hàng hiển thị
+                </span>
+                <b-form-select
+                  v-model="paginationData.size"
+                  size="sm"
+                  :options="perPageSizeOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="reportSalesSaleReceiptPagination.totalElements"
+                :per-page="paginationData.size"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
         </vue-good-table>
       </b-col>
     </b-form>
@@ -59,7 +129,24 @@
 </template>
 
 <script>
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
+import commonData from '@/@db/common'
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
 import ListSearch from '../components/ListSearch.vue'
+import {
+  REPORT_SALES_SALE_RECEIPT,
+  // Getters
+  REPORT_SALES_SALE_RECEIPT_GETTER,
+  REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER,
+  // Actions
+  GET_SALE_RECEIPTS_ACTION,
+  EXPORT_REPORT_SALE_RECEIPT_AMOUNT,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -67,7 +154,19 @@ export default {
   },
   data() {
     return {
-      columns: [
+      // pagination
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
+      paginationData: {
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
+        sort: null,
+      },
+      // pagination
+      searchData: {},
+      columns: [],
+      rows: [],
+      initalCol: [
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
@@ -89,22 +188,128 @@ export default {
           thClass: 'text-center',
           tdClass: 'text-center',
         },
-        {
-          label: '01/10/2020',
-          field: 'price',
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-        {
-          label: 'Tổng cộng',
-          field: 'sumTotal',
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
       ],
+      lastCol: {
+        label: 'Tổng cộng',
+        field: 'sumTotal',
+        sortable: false,
+        thClass: 'text-right',
+        tdClass: 'text-right',
+      },
     }
+  },
+  computed: {
+    totalInfo() {
+      if (this.REPORT_SALES_SALE_RECEIPT_GETTER().totals) {
+        return this.REPORT_SALES_SALE_RECEIPT_GETTER().totals
+      }
+      return {}
+    },
+    reportSalesSaleReceiptPagination() {
+      if (this.REPORT_SALES_SALE_RECEIPT_GETTER().response) {
+        return this.REPORT_SALES_SALE_RECEIPT_GETTER().response
+      }
+      return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.reportSalesSaleReceiptPagination.totalElements
+        ? this.reportSalesSaleReceiptPagination.totalElements : (this.paginationData.size * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.reportSalesSaleReceiptPagination.totalElements} mục`
+    },
+    getReportSalesReceiptAmountDates() {
+      return this.REPORT_SALES_SALE_RECEIPT_GETTER().dates
+    },
+    getReportSalesReceiptAmount() {
+      return this.REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER().map(data => ({
+        customerCode: data[0],
+        customerName: data[1],
+        address: data[2],
+      }))
+    },
+    getReportSalesReceiptAmountPrice() {
+      return this.REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER()
+    },
+  },
+  watch: {
+    // add columns dynamically
+    getReportSalesReceiptAmountDates() {
+      this.columns = [...this.initalCol]
+      this.getReportSalesReceiptAmountDates.forEach((item, index) => {
+        const obj = {
+          label: item,
+          field: `${index + 3}`,
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        }
+        this.columns.push(obj)
+      })
+      this.columns.push(this.lastCol)
+    },
+    getReportSalesReceiptAmount() {
+      this.rows = [...this.getReportSalesReceiptAmount]
+    },
+    getReportSalesReceiptAmountPrice() {
+      for (let i = 0; i <= this.rows.length - 1; i += 1) {
+        for (let j = 3; j <= this.getReportSalesReceiptAmountPrice[i].length - 1; j += 1) {
+          if (j < this.getReportSalesReceiptAmountPrice[i].length - 1) {
+            this.rows[i][j] = this.getReportSalesReceiptAmountPrice[i][j]
+          } else {
+            this.rows[i].sumTotal = this.getReportSalesReceiptAmountPrice[i][j]
+          }
+        }
+      }
+    },
+  },
+  mounted() {
+    resizeAbleTable()
+  },
+  methods: {
+    ...mapActions(REPORT_SALES_SALE_RECEIPT, [
+      GET_SALE_RECEIPTS_ACTION,
+      EXPORT_REPORT_SALE_RECEIPT_AMOUNT,
+    ]),
+    ...mapGetters(REPORT_SALES_SALE_RECEIPT, [
+      REPORT_SALES_SALE_RECEIPT_GETTER,
+      REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER,
+    ]),
+    onClickExcelExportButton() {
+      this.EXPORT_REPORT_SALE_RECEIPT_AMOUNT({
+        ...this.searchData,
+        ...this.decentralization,
+      })
+    },
+    // pagination funcs
+    updateSearchData(event) {
+      this.searchData = { ...event }
+      this.paginationData = {
+        ...this.paginationData,
+        ...event,
+      }
+    },
+    onPaginationChange() {
+      this.GET_SALE_RECEIPTS_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onClickSearchButton() {
+      this.pageNumber = 1
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    // pagigation funcs
   },
 }
 </script>

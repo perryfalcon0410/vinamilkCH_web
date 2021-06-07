@@ -137,7 +137,7 @@ export default [
   },
   // Báo cáo doanh số hóa đơn theo KH
   {
-    path: '/reports/sales',
+    path: '/reports/sales/sale-per-customer',
     name: 'reports-sales-sale-per-customer',
     component: () => import('@/views/reports/reports-sales/reports-sales-sale-receipt-per-customer/sale-receipt-list/SaleReceiptList.vue'),
     meta: {

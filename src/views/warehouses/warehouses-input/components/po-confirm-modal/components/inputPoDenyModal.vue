@@ -1,5 +1,6 @@
 <template>
   <b-modal
+    id="po-deny-modal"
     size="md"
     :visible="visible"
     title="Lý do không nhập hàng"
@@ -109,11 +110,7 @@ export default {
           formId: this.formId, // hard code
           ctrlId: this.ctrlId, // hard code
         })
-        this.$emit('close')
-        this.GET_POCONFIRMS_ACTION({
-          formId: this.formId, // hard code
-          ctrlId: this.ctrlId, // hard code
-        })
+        this.$emit('deny')
       } else {
         toasts.error('Cần chọn tối thiểu 1 lý do')
       }

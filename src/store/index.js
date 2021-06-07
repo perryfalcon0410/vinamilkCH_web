@@ -30,6 +30,7 @@ import reportWarehousesExchangeDamagedGoods from '@/views/reports/reports-wareho
 import reportsCustomers from '@/views/reports/reports-customers/reports-customers/store-module'
 import reportsCustomersNonTransactional from '@/views/reports/reports-customers/reports-customers-non-transactional/store-module'
 
+import reportSalesSaleReceiptPerCustomer from '@/views/reports/reports-sales/reports-sales-sale-receipt-per-customer/store-module'
 // Systems
 import app from './app'
 import appConfig from './app-config'
@@ -76,6 +77,7 @@ export default new Vuex.Store({
     reportWarehousesExchangeDamagedGoods,
     reportsCustomers,
     reportsCustomersNonTransactional,
+    reportSalesSaleReceiptPerCustomer,
   },
   strict: process.env.DEV,
 })

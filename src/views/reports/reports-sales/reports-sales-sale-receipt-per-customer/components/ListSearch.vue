@@ -85,7 +85,13 @@
         >
           Nhóm khách hàng
         </div>
-        <tree-select />
+        <tree-select
+          v-model="customerTypesSelected"
+          :options="customerTypeOptions"
+          title="Nhóm khách hàng"
+          :searchable="false"
+          no-options-text="Không có dữ liệu"
+        />
       </b-col>
       <!-- END - Customer group -->
 
@@ -213,7 +219,20 @@
 </template>
 
 <script>
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import { reverseVniDate } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import {
+  REPORT_SALES_SALE_RECEIPT,
+  // GETTERS,
+  REPORT_SALES_CUSTOMER_TYPES_GETTER,
+  // ACTIONS
+  GET_CUSTOMERS_TYPES_ACTION,
+  GET_SALE_RECEIPTS_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -226,8 +245,9 @@ export default {
         ctrlId: 1,
       },
       // search
-      min: 0,
-      max: 0,
+      customerTypesSelected: null,
+      min: null,
+      max: null,
       customerCode: null,
       phoneNumber: null,
       fromDate: this.$earlyMonth,
@@ -245,6 +265,64 @@ export default {
       },
     }
     // search
+  },
+  computed: {
+    customerTypeOptions() {
+      return this.REPORT_SALES_CUSTOMER_TYPE_GETTER().map(data => ({
+        id: data.id,
+        label: data.name,
+      }))
+    },
+  },
+  watch: {
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
+  },
+  mounted() {
+    this.GET_CUSTOMERS_TYPES_ACTION({ ...this.decentralization })
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
+    }
+  },
+  beforeUpdate() {
+    this.customerTypesSelected = this.customerTypeOptions[0].id
+    this.onSearch()
+  },
+  methods: {
+    ...mapActions(REPORT_SALES_SALE_RECEIPT, [
+      GET_CUSTOMERS_TYPES_ACTION,
+      GET_SALE_RECEIPTS_ACTION,
+    ]),
+    ...mapGetters(REPORT_SALES_SALE_RECEIPT, [
+      REPORT_SALES_CUSTOMER_TYPES_GETTER,
+    ]),
+
+    onSearch() {
+      const searchData = {
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
+        fromAmount: this.min,
+        toAmount: this.max,
+        customerTypeId: this.customerTypesSelected,
+        keySearch: this.customerCode,
+        phoneNumber: this.phoneNumber,
+      }
+      this.updateSearchData(searchData)
+      this.GET_SALE_RECEIPTS_ACTION(searchData)
+    },
+
+    onClickSearchButton() {
+      this.onSearch()
+      this.$emit('onClickSearchButton')
+    },
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
+    },
   },
 }
 </script>

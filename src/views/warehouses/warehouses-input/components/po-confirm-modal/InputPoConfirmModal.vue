@@ -231,7 +231,7 @@
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
-        @click="close"
+        @click="closePoModal"
       >
         <b-icon
           icon="x"
@@ -243,7 +243,7 @@
     <!-- END - Footer -->
     <deny-modal
       :id="denyId"
-      :visible="denyModalVisible"
+      @deny="deny"
       @close="close"
     />
   </b-modal>
@@ -285,6 +285,8 @@ export default {
   },
   data() {
     return {
+      poTable: 0,
+      poPromoTable: 0,
       //
       formId: 5,
       ctrlId: 7,
@@ -465,8 +467,7 @@ export default {
     confirmImportButton() {
       if (this.poConfirm.length > 0) {
         this.$emit('inputChange', [this.sysDate, this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, this.Snb, this.poNumber, this.current])
-        this.$emit('close')
-        this.close()
+        this.closePoModal()
       } else {
         toasts.error('Bạn cần chọn tối thiểu 1 bản ghi PO')
       }
@@ -481,14 +482,22 @@ export default {
     showModal() {
       if (this.poConfirm.length > 0) {
         this.denyId = this.current
-        this.denyModalVisible = !this.denyModalVisible
+        this.$root.$emit('bv::toggle::modal', 'po-deny-modal')
       } else {
         toasts.error('Bạn cần chọn tối thiểu 1 bản ghi PO')
       }
     },
-    close() {
+    closePoModal() {
       this.$root.$emit('bv::hide::modal', 'po-confirm-modal')
-      this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId }) // hard code
+    },
+    close() {
+      this.$root.$emit('bv::hide::modal', 'po-deny-modal')
+    },
+    deny() {
+      this.$root.$emit('bv::hide::modal', 'po-deny-modal')
+      setTimeout(() => {
+        this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
+      }, 500)
       if (this.poConfirm.length === 0) {
         this.poProducts = []
         this.poPromotionProducts = []

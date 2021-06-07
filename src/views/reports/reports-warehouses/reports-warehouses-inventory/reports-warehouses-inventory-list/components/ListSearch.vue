@@ -117,8 +117,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-// eslint-disable-next-line no-unused-vars
-import { reverseVniDate, formatVniDateToISO } from '@/@core/utils/filter'
+import { reverseVniDate } from '@/@core/utils/filter'
 import FindProductModal from './FindProductModal.vue'
 import {
   REPORT_WAREHOUSES_INVENTORY,
@@ -171,7 +170,7 @@ export default {
     },
     onSearch() {
       const searchData = {
-        stockDate: formatVniDateToISO(this.date),
+        stockDate: reverseVniDate(this.date),
         productCodes: this.productCodes,
         ...this.decentralization,
       }
