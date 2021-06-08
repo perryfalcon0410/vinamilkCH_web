@@ -100,7 +100,7 @@
         <b-button
           variant="light"
           class="d-flex align-items-center justify-content-center rounded shadow mr-1 px-1"
-          @click="clickBillButton(index)"
+          @click="clickBillButton(bill.id)"
         >
           Hóa đơn {{ index + 1 }}
           <b-icon-x
@@ -114,7 +114,7 @@
           <b-icon-plus
             font-scale="2.5"
             class="cursor-pointer"
-            @click="onClickAddButton(index)"
+            @click="onClickAddButton()"
           />
         </div>
 
@@ -390,9 +390,9 @@ export default {
       isActive: false,
       bills: [
         {
-          id: 0,
+          id: 1,
           products: [],
-          active: false,
+          active: true,
         },
       ],
 
@@ -404,6 +404,8 @@ export default {
       productId: null,
       quantity: null,
       customerDefaultTypeId: null,
+
+      orderCurrentId: 1, // Id of order current
     }
   },
   computed: {
@@ -558,10 +560,12 @@ export default {
       this.orderProducts.push(index)
     },
 
-    onClickAddButton(index) {
+    onClickAddButton() {
+      const lastIteminBill = this.bills[this.bills.length - 1]
       this.bills.push({
-        id: index + 1,
+        id: lastIteminBill.id + 1,
         products: [],
+        active: false,
       })
     },
 
@@ -614,13 +618,36 @@ export default {
       this.$emit('getCustomerIdInfo', id)
     },
 
-    clickBillButton(index) {
-      const idx = this.bills.findIndex(i => i.id === index)
-      if (index !== 0) {
-        this.bills[index].products = []
+    billHandle(bill, index) {
+      return {
+        id: bill.id,
+        index,
+        products: this.orderProducts,
       }
-      this.bills[idx].products = this.orderProducts
-      this.bills[idx].active = true
+    },
+
+    clickBillButton(billSelectedId) {
+      this.bills = this.bills.map(bill => {
+        if (bill.id === this.orderCurrentId) {
+          return {
+            ...bill,
+            products: this.orderProducts,
+            active: false,
+          }
+        }
+        return bill
+      })
+      this.bills = this.bills.map(bill => {
+        if (bill.id === billSelectedId) {
+          this.orderProducts = bill.products
+          this.orderCurrentId = billSelectedId
+          return {
+            ...bill,
+            active: true,
+          }
+        }
+        return bill
+      })
     },
   },
 }
