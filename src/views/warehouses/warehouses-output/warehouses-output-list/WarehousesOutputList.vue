@@ -187,7 +187,7 @@
           :rows="warehousesOutputList"
           style-class="vgt-table striped"
           :sort-options="{
-            enabled: true,
+            enabled: false,
             initialSortBy: {field: 'date', type: 'esc'}
           }"
           :pagination-options="{
@@ -380,6 +380,10 @@ import {
 import {
   reverseVniDate,
 } from '@/@core/utils/filter'
+import {
+  getOutputTypeslabel,
+  resizeAbleTable,
+} from '@core/utils/utils'
 import warehousesData from '@/@db/warehouses'
 import commonData from '@/@db/common'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
@@ -425,14 +429,12 @@ export default {
         {
           label: 'Ngày',
           field: 'date',
-          sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Mã xuất hàng',
           field: 'code',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -440,14 +442,12 @@ export default {
           label: 'Số hóa đơn',
           field: 'billNumber',
           type: 'number',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -455,7 +455,6 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
           filterOptions: {
@@ -466,7 +465,6 @@ export default {
           label: 'Số tiền',
           field: 'price',
           type: 'number',
-          sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
           filterOptions: {
@@ -474,18 +472,23 @@ export default {
           },
         },
         {
+          label: 'Loại nhập',
+          field: 'inputTypes',
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
           label: 'Ghi chú',
           field: 'note',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Thao tác',
           field: 'feature',
-          sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
+          width: '90px',
         },
       ],
       searchOptions: {
@@ -514,6 +517,7 @@ export default {
 
     }
   },
+
   computed: {
     ...mapGetters(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_LIST_GETTER,
@@ -529,6 +533,7 @@ export default {
         quantity: this.$formatNumberToLocale(data.totalQuantity),
         price: this.$formatNumberToLocale(data.totalAmount),
         totalAmount: Number(data.totalAmount),
+        inputTypes: getOutputTypeslabel(data.receiptType),
         note: data.note,
         type: data.receiptType,
         poId: data.poId || 0,
@@ -554,6 +559,7 @@ export default {
       return `${minPageSize} - ${maxPageSize} của ${this.totalElements} mục`
     },
   },
+
   watch: {
     getWarehousesOutputList() {
       this.warehousesOutputList = [...this.getWarehousesOutputList]
@@ -568,7 +574,10 @@ export default {
       }
     },
   },
+
   mounted() {
+    resizeAbleTable()
+
     const searchData = {
       redInvoiceNo: this.searchOptions.redInvoiceNo,
       fromDate: reverseVniDate(this.$earlyMonth),
@@ -582,6 +591,7 @@ export default {
       minDate: this.fromDate,
     }
   },
+
   methods: {
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_LIST_ACTION,

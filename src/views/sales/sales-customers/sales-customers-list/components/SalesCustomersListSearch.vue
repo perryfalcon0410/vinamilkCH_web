@@ -1,7 +1,9 @@
 <template>
 
   <!-- START - Search -->
-  <b-form>
+  <b-form
+    @keydown.enter="onClickSearchButton"
+  >
     <v-card-actions
       title="Tìm kiếm"
       class="d-print-none"
@@ -11,9 +13,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Khách hàng
         </div>
@@ -22,9 +25,7 @@
         >
           <b-form-input
             v-model="customerName"
-            class="h8"
             placeholder="Nhập họ tên/mã"
-            @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append
             is-text
@@ -44,9 +45,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Di động
         </div>
@@ -55,12 +57,10 @@
         >
           <b-form-input
             v-model.trim="phoneNumber"
-            class="h8"
             autocomplete="on"
             placeholder="Nhập chính xác 4 số cuối"
             maxlength="10"
             @keypress="$onlyNumberInput"
-            @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append
             is-text
@@ -80,9 +80,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Nhóm khách hàng
         </div>
@@ -101,9 +102,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Trạng thái
         </div>
@@ -122,9 +124,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Giới tính
         </div>
@@ -143,9 +146,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Khu vực
         </div>
@@ -164,6 +168,7 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
           class="text-white mt-sm-1 mt-xl-0"
@@ -186,17 +191,18 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <!--"onmousedown" is prevent hightlight text -->
         <div
-          class="h8 text-white"
+          class="text-white"
           onmousedown="return false;"
           style="cursor: context-menu;"
         >
           Tìm kiếm
         </div>
         <b-button
-          class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
+          class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0"
           variant="someThing"
           @click="onClickSearchButton()"
         >

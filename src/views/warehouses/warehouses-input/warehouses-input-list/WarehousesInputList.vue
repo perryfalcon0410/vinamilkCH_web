@@ -6,10 +6,7 @@
     <!-- START - Search -->
     <warehouses-input-list-search
       class="d-print-none"
-      @updatePageElement="updatePageNumber"
-      @updateSearchData="paginationData = {
-        ...paginationData,
-        ...$event }"
+      @updateSearchData="updateSearchData"
     />
     <!-- END - Search -->
 
@@ -48,7 +45,7 @@
           mode="remote"
           :columns="columns"
           :rows="receipts"
-          style-class="vgt-table bordered"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -66,13 +63,16 @@
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
         >
+          <!-- START - Empty row -->
           <div
             slot="emptystate"
             class="text-center"
           >
             Không có dữ liệu
           </div>
-          <!-- START - Column -->
+          <!-- END - Empty row -->
+
+          <!-- START - Custom column -->
           <template
             slot="table-column"
             slot-scope="props"
@@ -88,9 +88,9 @@
               {{ props.column.label }}
             </div>
           </template>
-          <!-- END - Column -->
+          <!-- END - Custom column -->
 
-          <!-- START - Row -->
+          <!-- START - Custom row -->
           <template
             slot="table-row"
             slot-scope="props"
@@ -99,16 +99,16 @@
               v-if="props.column.field === 'feature'"
               class="mx-0"
             >
-              <b-icon-printer
+              <b-icon-printer-fill
                 v-b-popover.hover.top="'In phiếu'"
-                class="cursor-pointer ml-1"
-                scale="1.4"
+                class="cursor-pointer text-brand-1"
+                scale="1.2"
                 @click="onClickPrintButton(props.row.transCode)"
               />
               <b-icon-eye-fill
                 v-b-popover.hover.top="'Xem chi tiết'"
                 class="cursor-pointer ml-1"
-                scale="1.4"
+                scale="1.2"
                 @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
               />
               <b-icon-trash-fill
@@ -116,7 +116,7 @@
                 v-b-popover.hover.top="'Xóa'"
                 class="cursor-pointer ml-1"
                 color="red"
-                scale="1.4"
+                scale="1.2"
                 @click="onClickDeleteButton(props.row.id, props.row.receiptType, props.row.transDate, props.row.originalIndex, props.row.transCode)"
               />
             </b-row>
@@ -124,8 +124,9 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
           </template>
-          <!-- END - Row -->
-          <!-- START - Column filter -->
+          <!-- END - Custom row -->
+
+          <!-- START - Custom filter -->
           <template
             slot="column-filter"
             slot-scope="props"
@@ -133,8 +134,8 @@
             <b-row
               v-show="receiptPagination.totalElements"
               v-if="props.column.field === 'quantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3"
+              align-h="start"
             >
               {{ totalQuantity }}
             </b-row>
@@ -142,14 +143,15 @@
             <b-row
               v-show="receiptPagination.totalElements"
               v-else-if="props.column.field === 'price'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3"
+              align-h="start"
             >
               {{ totalPrice }}
             </b-row>
           </template>
-          <!-- START - Column filter -->
-          <!-- START - Pagination -->
+          <!-- START - Custom filter -->
+
+          <!-- START - Custom Pagination -->
           <template
             slot="pagination-bottom"
             slot-scope="props"
@@ -204,7 +206,7 @@
               </b-pagination>
             </b-row>
           </template>
-          <!-- END - Pagination -->
+          <!-- END - Custom Pagination -->
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
@@ -244,12 +246,14 @@
 <script>
 import commonData from '@/@db/common'
 import {
+  getInputTypeslabel,
+  resizeAbleTable,
+} from '@core/utils/utils'
+import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import {
-  resizeAbleTable,
-} from '@core/utils/utils'
+
 import {
   formatISOtoVNI,
 } from '@core/utils/filter'
@@ -342,6 +346,12 @@ export default {
           tdClass: 'text-right',
         },
         {
+          label: 'Loại nhập',
+          field: 'inputTypes',
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
           label: 'Ghi chú',
           field: 'note',
           thClass: 'text-left',
@@ -352,7 +362,7 @@ export default {
           field: 'feature',
           thClass: 'text-left',
           tdClass: 'text-center',
-          width: '100px',
+          width: '90px',
         },
       ],
     }
@@ -374,6 +384,7 @@ export default {
           receiptQuantity: data.totalQuantity,
           price: this.$formatNumberToLocale(data.totalAmount),
           receiptPrice: data.totalAmount,
+          inputTypes: getInputTypeslabel(data.receiptType),
           note: data.note,
           feature: '',
           receiptType: data.receiptType,
@@ -471,11 +482,14 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.updatePaginationData({ size: params.currentPerPage })
       this.onPaginationChange()
     },
-    updatePageNumber() {
+    updateSearchData(event) {
       this.pageNumber = 1
+      this.updatePaginationData({
+        ...event,
+      })
     },
   },
 }

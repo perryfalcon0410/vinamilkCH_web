@@ -400,20 +400,20 @@
               <b-button-group>
                 <b-button
                   v-if="isTransDate || importType === inputType"
-                  class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
+                  class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0 text-uppercase rounded"
                   variant="someThing"
                   :disabled="invalid"
                   @click="updateReceipt"
                 >
                   <b-icon
                     icon="download"
-                    class="mr-1"
+                    class="mr-50"
                   />
                   LƯU
                 </b-button>
 
                 <b-button
-                  class="d-flex align-items-center ml-1 rounded text-uppercase"
+                  class="align-items-button-center h8 ml-1 rounded text-uppercase"
                   @click="navigateBack"
                 >
                   <b-icon-x

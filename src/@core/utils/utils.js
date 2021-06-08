@@ -74,6 +74,16 @@ export const getWarehousesStatuslabel = id => {
   return warehousesDataFound ? warehousesDataFound.label : null
 }
 
+export const getInputTypeslabel = id => {
+  const warehousesDataFound = warehousesData.inputTypes.find(item => `${item.id}` === `${id}`)
+  return warehousesDataFound ? warehousesDataFound.label : null
+}
+
+export const getOutputTypeslabel = id => {
+  const warehousesDataFound = warehousesData.outputTypes.find(item => `${item.id}` === `${id}`)
+  return warehousesDataFound ? warehousesDataFound.label : null
+}
+
 export const getReportReasonTypeslabel = id => {
   const reportsDataFound = reportsData.reasonTypes.find(item => `${item.id}` === `${id}`)
   return reportsDataFound ? reportsDataFound.label : null

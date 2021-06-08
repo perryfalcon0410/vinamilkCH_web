@@ -62,6 +62,7 @@
                     :options="outputTypesOptions"
                     placeholder="Chọn loại xuất hàng"
                     no-options-text="Không có dữ liệu"
+                    no-results-text="Không tìm thấy kết quả"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider></b-col>

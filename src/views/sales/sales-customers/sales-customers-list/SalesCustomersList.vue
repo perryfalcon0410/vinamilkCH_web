@@ -64,9 +64,8 @@
           line-numbers
           :total-rows="getCustomerPagination.totalElements"
           :sort-options="{
-            enabled: false,
-            multipleColumns: true,
-            initialSortBy: [{field: 'nameText', type: 'desc'}]
+            enabled: true,
+            initialSortBy: [{field: 'nameText', type: 'asc'}]
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
@@ -251,6 +250,9 @@ export default {
         {
           label: 'Ngày sinh',
           field: 'dob',
+          type: 'date',
+          dateInputFormat: 'dd/MM/yyyy',
+          dateOutputFormat: 'dd/MM/yyyy',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -276,6 +278,9 @@ export default {
         {
           label: 'Ngày tạo',
           field: 'createdAt',
+          type: 'date',
+          dateInputFormat: 'dd/MM/yyyy',
+          dateOutputFormat: 'dd/MM/yyyy',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -355,14 +360,16 @@ export default {
         },
       })
     },
-    updateSearchData(event) {
-      this.paginationData = {
-        ...this.paginationData,
-        ...event,
-      }
-    },
+
     onClickExcelExportButton() {
-      this.EXPORT_CUSTOMERS_ACTION({ ...this.decentralization })
+      this.EXPORT_CUSTOMERS_ACTION({ ...this.paginationData, ...this.decentralization })
+    },
+    // START - Pagination func
+    updateSearchData(event) {
+      this.pageNumber = 1
+      this.updatePaginationData({
+        ...event,
+      })
     },
     onPaginationChange() {
       this.GET_CUSTOMERS_ACTION({ ...this.paginationData, ...this.decentralization })
@@ -375,14 +382,16 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.updatePaginationData({ size: params.currentPerPage })
       this.onPaginationChange()
     },
+    // END - Pagination func
+
     // onSortChange(params) {
-    //   this.updatePaginationData({
-    //     sort: `${params.field},${params.sortType}`,
-    //   })
-    //   this.onPaginationChange()
+    // this.updatePaginationData({
+    //   sort: `${params.field},${params.sortType}`,
+    // })
+    // this.onPaginationChange()
     // },
   },
 }

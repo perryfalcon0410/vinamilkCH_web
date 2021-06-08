@@ -51,6 +51,9 @@
                   <tree-select
                     v-model="inputTypeSelected"
                     :options="inputTypeOptions"
+                    no-options-text="Không có dữ liệu"
+                    no-results-text="Không tìm thấy kết quả"
+                    placeholder="Chọn loại nhập hàng"
                     @select="clearFormText"
                   />
                 </b-form-group>
