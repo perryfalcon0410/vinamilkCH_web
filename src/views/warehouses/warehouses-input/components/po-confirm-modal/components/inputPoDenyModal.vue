@@ -92,7 +92,7 @@ export default {
     },
     status() {
       if (this.status === true) {
-        this.CLEAR_STATUS_NOT_IMPORT()
+        this.CLEAR_STATUS_NOT_IMPORT_MUTATION()
         this.$emit('deny')
       }
     },
