@@ -224,6 +224,7 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
+      searchData: {},
       exportExcelData: {},
       columns: [
         {
@@ -377,7 +378,10 @@ export default {
       }))
     },
     reportExchangeInfo() {
-      return this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER
+      if (this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER) {
+        return this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER
+      }
+      return {}
     },
     reportExchangePagnigation() {
       if (this.REPORT_EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER) {
@@ -409,6 +413,13 @@ export default {
       EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
     ]),
     // pagnigation funcs
+    updateSearchData(event) {
+      this.paginationData = {
+        ...this.paginationData,
+        ...event,
+      }
+      this.searchData = event
+    },
     onPaginationChange() {
       this.GET_REPORT_WAREHOUSES_INVENTORY_ACTION(this.paginationData)
     },

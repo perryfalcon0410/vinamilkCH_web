@@ -590,7 +590,14 @@ export default {
       this.onPaginationChange()
     },
     getProductsOfBillSale() {
-      this.productSales.push(...this.getProductsOfBillSale)
+      this.getProductsOfBillSale.forEach(item => {
+        const index = this.productSales.findIndex(data => data.productId === item.productId)
+        if (index === -1) {
+          this.productSales.push(item)
+        } else {
+          this.productSales[index].quantity += item.quantity
+        }
+      })
       this.totalElementProduct = this.productSales.length
       if (this.productSales.length > 0) {
         this.isCheckValue = false

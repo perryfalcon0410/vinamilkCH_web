@@ -201,12 +201,10 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatVniDateToISO } from '@/@core/utils/filter'
+import { reverseVniDate } from '@/@core/utils/filter'
 import FindProductModal from './FindProductModal.vue'
 import {
   REPORT_EXCHANGE_DAMAGED_GOODS,
-  REPORT_EXCHANGE_DAMAGED_GOODS_GETTER,
-  REPORT_EXCHANGE_DAMAGED_GOODS_INFO_GETTER,
   REASON_EXCHANGE_DAMAGED_GOODS_GETTER,
   GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
   GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION,
@@ -248,23 +246,21 @@ export default {
     }
   },
   computed: {
-    // reasonOptions() {
-    //   return this.REASON_EXCHANGE_DAMAGED_GOODS_GETTER().map(data => ({
-    //     id: data.id,
-    //     label: data.categoryName,
-    //   }))
-    // },
+    ...mapGetters(REPORT_EXCHANGE_DAMAGED_GOODS, [
+      REASON_EXCHANGE_DAMAGED_GOODS_GETTER,
+    ]),
+    reasonOptions() {
+      return this.REASON_EXCHANGE_DAMAGED_GOODS_GETTER.map(data => ({
+        id: data.id,
+        label: data.categoryName,
+      }))
+    },
   },
   mounted() {
     this.onSearch()
     this.GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION({ ...this.decentralization })
   },
   methods: {
-    ...mapGetters(REPORT_EXCHANGE_DAMAGED_GOODS, [
-      REPORT_EXCHANGE_DAMAGED_GOODS_GETTER,
-      REPORT_EXCHANGE_DAMAGED_GOODS_INFO_GETTER,
-      REASON_EXCHANGE_DAMAGED_GOODS_GETTER,
-    ]),
     ...mapActions(REPORT_EXCHANGE_DAMAGED_GOODS, [
       GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
       GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION,
@@ -279,8 +275,8 @@ export default {
     },
     onSearch() {
       this.searchData = {
-        fromDate: formatVniDateToISO(this.fromDate),
-        toDate: formatVniDateToISO(this.toDate),
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
         transCode: this.transCode,
         productKW: this.productCodes,
         reason: this.reasonSelected,
