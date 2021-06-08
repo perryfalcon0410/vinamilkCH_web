@@ -716,6 +716,7 @@ export default {
       this.customer.street = this.customerDefault.street
       this.customer.totalBill = this.customerDefault.totalBill ?? 0
       this.customer.scoreCumulated = this.customerDefault.scoreCumulated
+      this.$emit('getCustomerDefault', { data: this.customer })
     },
   },
 }

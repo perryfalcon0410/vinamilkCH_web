@@ -191,7 +191,7 @@ export default {
     const paramGetAllProduct = {
       keyWord: '',
       catId: null,
-      customerTypeId: 1, // Hard code
+      customerId: 507, // Hard code
       status: 1,
       size: saleData.pageSizeRecommendProducts,
       page: saleData.pageNumberRecommendProducts,
@@ -209,7 +209,7 @@ export default {
     this.GET_HOT_PRODUCTS_ACTION(paramGetHotProduct)
 
     const paramGetTopSaleProductInMonth = {
-      customerTypeId: 1, // Hard code customer type
+      customerId: 507, // Hard code customer type
       // formId: this.formId, // Hard code
       // ctrlId: this.ctrlId, // Hard code
     }

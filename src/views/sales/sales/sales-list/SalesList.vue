@@ -245,6 +245,7 @@
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
+        @getCustomerDefault="getCustomerDefault"
       />
       <!-- END - Section Form pay -->
 
@@ -298,6 +299,8 @@ export default {
       inputSearchFocused: false,
       productImage: null,
       checkStockTotal: true,
+      customerId: null,
+      customer: {},
 
       columns: [
         {
@@ -341,7 +344,7 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          width: '60px',
+          width: '80px',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -372,7 +375,7 @@ export default {
       searchOptions: {
         keyWord: '',
         catId: null,
-        customerTypeId: 1,
+        customerId: 507,
         status: null,
         size: 10,
         page: 0,
@@ -453,7 +456,7 @@ export default {
       }))
     },
     customerDefault() {
-      return this.CUSTOMER_DEFAULT_GETTER
+      return this.getCustomerDefault
     },
 
     getCustomerTypeProducts() {
@@ -476,9 +479,6 @@ export default {
     getProductSearch() {
       this.productsSearch = [...this.getProductSearch]
     },
-    customerDefault() {
-      this.getCustomerDefault()
-    },
     getProducts() {
       this.orderProducts = [...this.getProducts]
     },
@@ -499,16 +499,6 @@ export default {
     }
     this.GET_PRODUCT_INFOS_ACTION(paramGetProductInfo)
 
-    const paramGetProductsTopSale = {
-      checkStockTotal: this.checkStockTotal ? 0 : 1,
-      keyWord: '',
-      customerTypeId: 1, // Hard code
-      page: 0,
-      size: 10,
-      // formId: 5, // Hard code
-      // ctrlId: 7, // Hard code
-    }
-    this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetProductsTopSale)
     this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
   },
   created() {
@@ -590,8 +580,17 @@ export default {
       this.GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION(`${this.id}?formId=4&ctrlId=1`)
     },
 
-    getCustomerDefault() {
-      this.customerDefaultTypeId = this.customerDefault.customerTypeId
+    getCustomerDefault(val) {
+      this.customerId = val.data.id
+      this.GET_PRODUCTS_ACTION(this.searchOptions)
+      const paramGetProductsTopSale = {
+        checkStockTotal: this.checkStockTotal ? 0 : 1,
+        keyWord: '',
+        customerId: this.customerId,
+        page: 0,
+        size: 10,
+      }
+      this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetProductsTopSale)
     },
 
     getCustomerTypeInfo(id) {
