@@ -227,7 +227,7 @@
             <b-col>
               <b-input-group class="input-group-merge">
                 <b-form-input
-                  v-model="orderNumber"
+                  v-model="orderOnline.orderNumber"
                   :disabled="salemtPromotionObjectSelected === '1'"
                 />
                 <b-input-group-append is-text>
@@ -294,7 +294,10 @@
             <b-input-group-prepend is-text>
               <b-icon-pencil-fill />
             </b-input-group-prepend>
-            <b-form-input placeholder="Ghi chú" />
+            <b-form-input
+              v-model="orderOnline.orderNote"
+              placeholder="Ghi chú"
+            />
 
           </b-input-group>
         </b-col>
@@ -317,6 +320,7 @@
             :order-selected="salemtPromotionObjectSelected"
             :delivery-selected="salemtDeliveryTypeSelected"
             :customer="customer"
+            :order-online="orderOnline"
           />
         </b-button>
         <!-- END - Button pay -->
@@ -423,8 +427,11 @@ export default {
       },
 
       // online order
-      onlineOrderId: null,
-      orderNumber: null,
+      orderOnline: {
+        onlineOrderId: null,
+        orderNumber: null,
+        orderNote: '',
+      },
       quantity: null,
       totalPrice: null,
       salemtPromotionObjectSelected: saleData.salemtPromotionObject[0].id,
@@ -675,8 +682,8 @@ export default {
     },
 
     getOnlineOrderInfo(id) {
-      this.onlineOrderId = id
-      this.GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION(`${this.onlineOrderId}?formId=4&ctrlId=1`)
+      this.orderOnline.onlineOrderId = id
+      this.GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION(`${this.orderOnline.onlineOrderId}?formId=4&ctrlId=1`)
       this.$emit('getOnlineOrderInfoForm', id)
     },
 
@@ -701,7 +708,7 @@ export default {
       this.customer.phoneNumber = this.onlineOrderCustomer.customer.mobiPhone
       this.customer.street = this.onlineOrderCustomer.customer.street
       this.customer.scoreCumulated = this.onlineOrderCustomer.customer.scoreCumulated
-      this.orderNumber = this.onlineOrderCustomer.orderNumber
+      this.orderOnline.orderNumber = this.onlineOrderCustomer.orderNumber
       this.quantity = this.onlineOrderCustomer.quantity
       this.totalPrice = this.onlineOrderCustomer.totalPrice
     },

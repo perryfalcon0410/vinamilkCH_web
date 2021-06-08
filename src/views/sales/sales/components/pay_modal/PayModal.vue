@@ -92,6 +92,7 @@
                           </template>
                           <b-form-input
                             v-model.number="promotionPrograms[index].products[props.row.originalIndex].quantity"
+                            :disabled="!value.isUse"
                             @change="onChangeQuantity(value.programId, props)"
                             @keypress="$onlyNumberInput"
                           />
@@ -122,6 +123,7 @@
                         placeholder="Nhập mã hoặc tên sản phẩm"
                         type="text"
                         autocomplete="off"
+                        :disabled="!value.isUse"
                         @focus="searchProductFocus"
                         @blur="inputSearchFocusedSP = false"
                         @input="loadProducts(value.programId)"
@@ -189,7 +191,7 @@
                         <b-form-input
                           v-if="value.amount"
                           v-model="value.amount.amount"
-                          :disabled="value.promotionType === Number(promotionTypeOption[0].id)"
+                          :disabled="value.promotionType === Number(promotionTypeOption[0].id) && !value.isUse"
                           @change="onChangePromotionAmout(value.amount.amount, value.amount.maxAmount)"
                         />
                       </b-col>
@@ -604,7 +606,10 @@
                     </b-col>
 
                     <b-col>
-                      <b-form-input v-model="pay.salePayment.salePaymentAmount" />
+                      <b-form-input
+                        v-model="pay.salePayment.salePaymentAmount"
+                        @keyup="extraAmountCalculation"
+                      />
                     </b-col>
 
                   </b-row>
@@ -627,7 +632,7 @@
 
                 <b-col>
                   <b-form-input
-                    v-model="pay.excessAmount"
+                    v-model="pay.extraAmount"
                     disabled
                   />
                 </b-col>
@@ -752,13 +757,6 @@ import {
   GET_PROMOTION_CALCULATION_ACTION,
   GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
 } from '../../store-module/type'
-import {
-  CUSTOMER,
-  // GETTERS
-  SALEMT_PAYMENT_TYPE_GETTER,
-  // ACTIONS
-  GET_SALEMT_PAYMENT_TYPE_ACTION,
-} from '../../../sales-customers/store-module/type'
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
 
 export default {
@@ -782,6 +780,10 @@ export default {
       default: String,
     },
     customer: {
+      type: Object,
+      default: () => {},
+    },
+    orderOnline: {
       type: Object,
       default: () => {},
     },
@@ -821,131 +823,6 @@ export default {
         },
       ],
 
-      tempPromotions: [
-        {
-          programId: 1,
-          promotionProgramName: 'Khuyến mãi ADM tháng 11.2020',
-          products: [
-            {
-              productId: 1,
-              productCode: '04AA30',
-              productName: 'STT H.Dâu ADM VNM TP 110',
-              quantity: '',
-              stockQuantity: 4,
-              quantityMax: 3,
-            },
-            {
-              productId: 2,
-              productCode: '04AA31',
-              productName: 'STT H.Dâu ADM VNM TP 111',
-              quantity: '',
-              stockQuantity: 4,
-              quantityMax: 3,
-            },
-            {
-              productId: 3,
-              productCode: '04AA33',
-              productName: 'STT H.Dâu ADM VNM TP 111',
-              quantity: '',
-              stockQuantity: 4,
-              quantityMax: 3,
-            },
-          ],
-          amount: {},
-          promotionType: 0,
-          isSelected: true,
-          isUse: true,
-          isEditable: true,
-        },
-        {
-          programId: 2,
-          promotionProgramName: 'Khuyến mãi XYZ tháng 11.2020',
-          products: [
-            {
-              productId: 4,
-              productCode: '05BB31',
-              productName: 'STT H.Dâu XYZ VNM TP 110',
-              quantity: '',
-              stockQuantity: 4,
-              quantityMax: 3,
-            },
-            {
-              productId: 5,
-              productCode: '05BB32',
-              productName: 'STT H.Dâu XYZ VNM TP 110',
-              quantity: '',
-              stockQuantity: 4,
-              quantityMax: 3,
-            },
-            {
-              productId: 6,
-              productCode: '05BB33',
-              productName: 'STT H.Dâu XYZ VNM TP 110',
-              quantity: '',
-              stockQuantity: 4,
-              quantityMax: 3,
-            },
-          ],
-          amount: {},
-          promotionType: 0,
-          isSelected: true,
-          isUse: true,
-          isEditable: false,
-        },
-        {
-          programId: 3,
-          promotionProgramName: 'Khuyến mãi AYX tháng 11.2020',
-          products: [],
-          amount: {
-            value: 100000,
-            percentage: '',
-          },
-          promotionType: 0,
-          isSelected: true,
-          isUse: true,
-          isEditable: false,
-        },
-        {
-          programId: 4,
-          promotionProgramName: 'Khuyến mãi tay PRM tháng 11.2020',
-          products: [
-            {
-              productId: 7,
-              productCode: '05BB31',
-              productName: 'STT H.Dâu XYZ VNM TP 110',
-              quantity: null,
-              stockQuantity: 4,
-              quantityMax: 3,
-            },
-            {
-              productId: 8,
-              productCode: '05BB32',
-              productName: 'STT H.Dâu XYZ VNM TP 110',
-              quantity: '',
-              stockQuantity: 4,
-              quantityMax: 3,
-            },
-          ],
-          amount: {},
-          promotionType: 1,
-          isSelected: false,
-          isUse: true,
-          isEditable: false,
-        },
-        {
-          programId: 5,
-          promotionProgramName: 'Khuyến mãi tay PRM tháng 11.2020',
-          products: [],
-          amount: {
-            value: 100000,
-            percentage: '',
-          },
-          promotionType: 1,
-          isSelected: false,
-          isUse: false,
-          isEditable: false,
-        },
-      ],
       promotionPrograms: [],
       test: [],
       cursor: -1,
@@ -971,17 +848,9 @@ export default {
         needPaymentAmount: 0,
         salePayment: {
           salePaymentType: saleData.salePaymentType[0].id,
-          salePaymentAmount: null,
+          salePaymentAmount: 0,
         },
-        excessAmount: null,
-        shopId: null,
-        salemanId: null,
-        totalPaid: null,
-        type: 0,
-        deliveryType: 1,
-        orderType: 0,
-        usedRedInvoice: null,
-        productSearch: null,
+        extraAmount: null,
       },
       inputSearchFocusedSP: false,
       allProducts: [],
@@ -1002,19 +871,13 @@ export default {
       GET_PROMOTION_CALCULATION_GETTER,
       GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
     ]),
-    ...mapGetters(CUSTOMER, [
-      SALEMT_PAYMENT_TYPE_GETTER,
-    ]),
 
     getVoucher() {
       return this.VOUCHER_BY_ID_GETTER
     },
 
     getDiscount() {
-      if (this.GET_DISCOUNT_BY_CODE_GETTER) {
-        return this.GET_DISCOUNT_BY_CODE_GETTER
-      }
-      return {}
+      return this.GET_DISCOUNT_BY_CODE_GETTER
     },
 
     totalQuantity() {
@@ -1026,7 +889,7 @@ export default {
     },
 
     needPayment() {
-      return this.pay.totalAmount - this.pay.promotionAmount - this.pay.accumulate.accumulateAmount - this.pay.voucher.voucherAmount - this.pay.discount.discountAmount
+      return this.pay.totalAmount - this.pay.accumulate.accumulateAmount - this.pay.voucher.voucherAmount - this.pay.discount.discountAmount
     },
 
     changePayment() {
@@ -1039,22 +902,13 @@ export default {
       return change
     },
     getPromotionPrograms() {
-      if (this.GET_PROMOTION_PROGRAMS_GETTER) {
-        return this.GET_PROMOTION_PROGRAMS_GETTER
-      }
-      return []
+      return this.GET_PROMOTION_PROGRAMS_GETTER
     },
     getItemsProduct() {
-      if (this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER) {
-        return this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER
-      }
-      return []
+      return this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER
     },
     getPromotionCalculation() {
-      if (this.GET_PROMOTION_CALCULATION_GETTER) {
-        return this.GET_PROMOTION_CALCULATION_GETTER
-      }
-      return {}
+      return this.GET_PROMOTION_CALCULATION_GETTER
     },
   },
   watch: {
@@ -1098,18 +952,30 @@ export default {
     },
   },
 
-  mounted() {
-    this.GET_SALEMT_PAYMENT_TYPE_ACTION({ formId: 1, ctrlId: 4 })
-  },
-
   created() {
     window.addEventListener('keydown', e => {
       if (e.key === 'F8') {
-        this.$refs.payModal.show()
+        const paramProducts = this.orderProducts.map(data => ({
+          productId: data.productId,
+          productCode: data.productCode,
+          quantity: data.quantity,
+        }))
+        this.GET_PROMOTION_PROGRAMS_ACTION({
+          customerId: this.customer.id,
+          orderType: Number(saleData.orderType[0].id),
+          products: paramProducts,
+        })
+        this.$root.$emit('bv::toggle::modal', 'pay-modal')
       }
     })
   },
-
+  mounted() {
+    window.addEventListener('keydown', e => {
+      if (e.key === 'F9') {
+        this.createSaleOrder()
+      }
+    })
+  },
   methods: {
     ...mapActions(SALES, [
       GET_PRODUCTS_ACTION,
@@ -1120,9 +986,6 @@ export default {
       GET_PROMOTION_PROGRAMS_ACTION,
       GET_PROMOTION_CALCULATION_ACTION,
       GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
-    ]),
-    ...mapActions(CUSTOMER, [
-      GET_SALEMT_PAYMENT_TYPE_ACTION,
     ]),
 
     onVoucherButtonClick() {
@@ -1156,6 +1019,7 @@ export default {
     resetVoucher() {
       this.pay.voucher.voucherCode = ''
       this.pay.voucher.voucherAmount = null
+      this.pay.voucher.voucherId = null
     },
 
     resetDiscount() {
@@ -1164,9 +1028,16 @@ export default {
     },
 
     resetOrderPayment() {
-      this.voucherCode = null
-      this.price = null
-      this.payment = 0
+      this.pay.totalQuantity = 0
+      this.pay.totalAmount = null
+      this.pay.promotionAmount = 0
+      this.pay.accumulate.accumulatePoint = null
+      this.pay.accumulate.accumulateAmount = 0
+      this.pay.needPaymentAmount = 0
+      this.pay.salePayment.salePaymentAmount = 0
+      this.pay.extraAmount = null
+      this.resetVoucher()
+      this.resetDiscount()
     },
 
     totalPrice(amount, price) {
@@ -1268,10 +1139,12 @@ export default {
       })]
     },
     onClickPromotionCalculation() {
-      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.promotionType === Number(saleData.promotionType[1].id) && p.amount)
+      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.promotionType === Number(saleData.promotionType[1].id)
+                                                                    && p.amount && p.isSelected === true)
+      console.log(paramPromotionAmountInfos)
       this.GET_PROMOTION_CALCULATION_ACTION({
         customerId: this.customer.id,
-        orderType: Number(saleData.orderType[0].id),
+        orderType: Number(this.orderSelected),
         totalAmount: this.pay.totalAmount,
         saveAmount: this.pay.accumulate.accumulateAmount,
         voucherAmount: this.pay.voucher.voucherAmount,
@@ -1283,6 +1156,9 @@ export default {
       if (amount > maxAmout) {
         toasts.error('Số tiền không được vượt quá số tiền tối đa')
       }
+    },
+    extraAmountCalculation() {
+      this.pay.extraAmount = Number(this.pay.salePayment.salePaymentAmount) - Number(this.pay.needPaymentAmount)
     },
     createSaleOrder() {
       this.promotionPrograms.forEach(program => {
@@ -1297,26 +1173,34 @@ export default {
             toasts.error(`${program.promotionProgramName}tổng sản phẩm không được lớn hơn ${maxQuantity}`)
           }
         }
-        this.$root.$emit('bv::hide::modal', 'pay-modal')
-        // this.CREATE_SALE_ORDER_ACTION({
-        //   product: {
-        //     shopId: this.shopId,
-        //     customerId: this.customer.id,
-        //     totalPaid: this.totalOrderPrice,
-        //     paymentType: this.salemtPaymentTypeSelected,
-        //     deliveryType: this.deliverySelected,
-        //     orderType: this.orderSelected,
-        //     voucherId: this.voucherId,
-        //     products: this.orderProducts,
-        //     type: 0,
-        //     salemanId: 1,
-        //     usedRedInvoice: false,
-        //   },
-        //   onSuccess: () => {
-        //     this.$refs.payModal.hide()
-        //     this.resetOrderPayment()
-        //   },
-        // })
+
+        this.CREATE_SALE_ORDER_ACTION({
+          orderSale: {
+            customerId: this.customer.id,
+            paymentType: this.pay.salePayment.salePaymentType,
+            deliveryType: Number(this.deliverySelected),
+            orderType: Number(this.orderSelected),
+            note: this.orderOnline.orderNote,
+            orderOnlineId: this.orderOnline.onlineOrderId,
+            onlineNumber: this.orderOnline.orderNumber,
+            products: this.orderProducts,
+            promotionInfo: this.promotionPrograms,
+            totalOrderAmount: this.pay.totalAmount,
+            promotionAmount: this.pay.promotionAmount,
+            accumulatedAmount: this.pay.accumulate.accumulateAmount,
+            discountAmount: this.pay.discount.discountAmount,
+            discountCode: this.pay.discount.discountCode,
+            voucherAmount: this.pay.voucher.voucherAmount,
+            voucherId: this.pay.voucher.voucherId,
+            remainAmount: this.pay.needPaymentAmount,
+            paymentAmount: this.pay.salePayment.salePaymentAmount,
+            extraAmount: this.pay.extraAmount,
+          },
+          onSuccess: () => {
+            this.$root.$emit('bv::hide::modal', 'pay-modal')
+            this.resetOrderPayment()
+          },
+        })
       })
     },
   },

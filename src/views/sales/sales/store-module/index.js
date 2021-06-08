@@ -72,7 +72,7 @@ export default {
       return state.vouchers
     },
     [VOUCHER_BY_ID_GETTER](state) {
-      return state.voucherInfo
+      return state.voucherInfo || {}
     },
     [ONLINE_ORDERS_GETTER](state) {
       return state.onlineOrders
@@ -102,7 +102,7 @@ export default {
       return state.allProduct
     },
     [GET_DISCOUNT_BY_CODE_GETTER](state) {
-      return state.discount
+      return state.discount || {}
     },
     [UPDATE_PRICE_TYPE_CUSTOMER_GETTER](state) {
       return state.customerTypeProducts
@@ -114,13 +114,13 @@ export default {
       return state.promotionFreeItems
     },
     [GET_PROMOTION_PROGRAMS_GETTER](state) {
-      return state.promotionPrograms
+      return state.promotionPrograms || []
     },
     [GET_PROMOTION_CALCULATION_GETTER](state) {
-      return state.promotionCalculation
+      return state.promotionCalculation || {}
     },
     [GET_ITEMS_PRODUCTS_PROGRAM_GETTER](state) {
-      return state.itemsProductsProgram
+      return state.itemsProductsProgram || []
     },
   },
 
@@ -297,7 +297,7 @@ export default {
     },
     [CREATE_SALE_ORDER_ACTION]({}, val) {
       SalesServices
-        .createSaleOrder(val.product)
+        .createSaleOrder(val.orderSale)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
