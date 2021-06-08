@@ -43,7 +43,6 @@ import {
   mapActions,
   mapMutations,
 } from 'vuex'
-// eslint-disable-next-line no-unused-vars
 import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
@@ -51,8 +50,8 @@ import {
   STATUS_NOT_IMPORT_GETTER,
   GET_POCONFIRMS_ACTION,
   UPDATE_NOT_IMPORT_ACTION,
-  CLEAR_STATUS_NOT_IMPORT,
   GET_NOT_IMPORT_REASONS_ACTION,
+  CLEAR_STATUS_NOT_IMPORT_MUTATION,
 } from '../../../store-module/type'
 
 export default {
@@ -116,7 +115,7 @@ export default {
       GET_NOT_IMPORT_REASONS_ACTION,
     ]),
     ...mapMutations(WAREHOUSEINPUT, [
-      CLEAR_STATUS_NOT_IMPORT,
+      CLEAR_STATUS_NOT_IMPORT_MUTATION,
     ]),
     denyImport() {
       if (this.reasonSelected) {

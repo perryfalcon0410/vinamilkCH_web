@@ -47,7 +47,8 @@ import {
   GET_WAREHOUSES_TYPE_ACTION,
   GET_NOT_IMPORT_REASONS_ACTION,
   PRINT_OUT_IN_PUT_ORDER_ACTION,
-  CLEAR_STATUS_NOT_IMPORT,
+  // mutations
+  CLEAR_STATUS_NOT_IMPORT_MUTATION,
 } from './type'
 
 export default {
@@ -143,7 +144,7 @@ export default {
 
   // START - MUTATIONS
   mutations: {
-    [CLEAR_STATUS_NOT_IMPORT](state) {
+    [CLEAR_STATUS_NOT_IMPORT_MUTATION](state) {
       state.statusNotImport = {}
     },
   },

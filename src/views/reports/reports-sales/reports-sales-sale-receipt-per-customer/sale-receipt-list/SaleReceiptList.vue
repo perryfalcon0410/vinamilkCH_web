@@ -145,7 +145,7 @@ import {
   REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER,
   // Actions
   GET_SALE_RECEIPTS_ACTION,
-  EXPORT_REPORT_SALE_RECEIPT_AMOUNT,
+  EXPORT_REPORT_SALE_RECEIPT_AMOUNT_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -272,14 +272,14 @@ export default {
   methods: {
     ...mapActions(REPORT_SALES_SALE_RECEIPT, [
       GET_SALE_RECEIPTS_ACTION,
-      EXPORT_REPORT_SALE_RECEIPT_AMOUNT,
+      EXPORT_REPORT_SALE_RECEIPT_AMOUNT_ACTION,
     ]),
     ...mapGetters(REPORT_SALES_SALE_RECEIPT, [
       REPORT_SALES_SALE_RECEIPT_GETTER,
       REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER,
     ]),
     onClickExcelExportButton() {
-      this.EXPORT_REPORT_SALE_RECEIPT_AMOUNT({
+      this.EXPORT_REPORT_SALE_RECEIPT_AMOUNT_ACTION({
         ...this.searchData,
         ...this.decentralization,
       })

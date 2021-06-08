@@ -11,7 +11,7 @@ import {
   // ACTIONS
   GET_CUSTOMERS_TYPES_ACTION,
   GET_SALE_RECEIPTS_ACTION,
-  EXPORT_REPORT_SALE_RECEIPT_AMOUNT,
+  EXPORT_REPORT_SALE_RECEIPT_AMOUNT_ACTION,
 } from './type'
 
 export default {
@@ -70,7 +70,7 @@ export default {
           toasts.error(error.message)
         })
     },
-    [EXPORT_REPORT_SALE_RECEIPT_AMOUNT]({ }, val) {
+    [EXPORT_REPORT_SALE_RECEIPT_AMOUNT_ACTION]({ }, val) {
       reportSalesService
         .exportReportSalesExcel(val)
         .then(response => response.data)
