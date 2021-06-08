@@ -361,17 +361,11 @@ export default {
     ]),
 
     getBorrowedTrans() {
-      if (this.GET_EXPORT_BORROWINGS_GETTER) {
-        return this.GET_EXPORT_BORROWINGS_GETTER
-      }
-      return []
+      return this.GET_EXPORT_BORROWINGS_GETTER
     },
 
     getExportBorrowingDetail() {
-      if (this.GET_EXPORT_BORROWINGS_DETAIL_GETTER) {
-        return this.GET_EXPORT_BORROWINGS_DETAIL_GETTER
-      }
-      return []
+      return this.GET_EXPORT_BORROWINGS_DETAIL_GETTER
     },
     paginationDetailContent() {
       const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1

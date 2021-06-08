@@ -382,24 +382,15 @@ export default {
       GET_EXPORT_PO_TRANS_DETAIL_GETTER,
     ]),
     getPoTrans() {
-      if (this.GET_EXPORT_PO_TRANS_GETTER) {
-        return this.GET_EXPORT_PO_TRANS_GETTER
-      }
-      return {}
+      return this.GET_EXPORT_PO_TRANS_GETTER
     },
 
     getExportPoTransDetail() {
-      if (this.GET_EXPORT_PO_TRANS_DETAIL_GETTER) {
-        return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER
-      }
-      return []
+      return this.GET_EXPORT_PO_TRANS_DETAIL_GETTER
     },
 
     outputPagination() {
-      if (this.GET_EXPORT_PO_TRANS_GETTER) {
-        return this.GET_EXPORT_PO_TRANS_GETTER
-      }
-      return {}
+      return this.GET_EXPORT_PO_TRANS_GETTER
     },
 
     paginationDetailContent() {

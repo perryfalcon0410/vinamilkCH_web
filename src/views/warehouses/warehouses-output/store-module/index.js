@@ -183,7 +183,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.borrowing = res.data
+            state.borrowing = res.data || []
           } else {
             throw new Error(res.statusValue)
           }
@@ -198,7 +198,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.adjustmentTrans = res.data
+            state.adjustmentTrans = res.data || []
           } else {
             throw new Error(res.statusValue)
           }
@@ -228,7 +228,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poProducts = res.data
+            state.poProducts = res.data || []
             val.onSuccess(state.poProducts)
           } else {
             throw new Error(res.statusValue)
@@ -244,7 +244,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.borrowedProducts = res.data
+            state.borrowedProducts = res.data || []
             val.onSuccess(state.borrowedProducts)
           } else {
             throw new Error(res.statusValue)
@@ -260,7 +260,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.adjustmentProducts = res.data
+            state.adjustmentProducts = res.data || []
             val.onSuccess(state.adjustmentProducts)
           } else {
             throw new Error(res.statusValue)

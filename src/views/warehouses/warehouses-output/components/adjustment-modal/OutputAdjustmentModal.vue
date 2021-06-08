@@ -339,17 +339,11 @@ export default {
       GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER,
     ]),
     getAjustmentTrans() {
-      if (this.GET_EXPORT_ADJUSTMENTS_GETTER) {
-        return this.GET_EXPORT_ADJUSTMENTS_GETTER
-      }
-      return {}
+      return this.GET_EXPORT_ADJUSTMENTS_GETTER
     },
 
     getExportAdjustmentDetail() {
-      if (this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER.response) {
-        return this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER.response
-      }
-      return []
+      return this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER.response
     },
     paginationDetailContent() {
       const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
