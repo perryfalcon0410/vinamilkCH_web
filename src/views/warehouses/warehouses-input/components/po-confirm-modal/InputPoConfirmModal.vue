@@ -294,6 +294,10 @@ export default {
       isShowPoPromoTable: false,
       denyModalVisible: false,
 
+      poProduct: [],
+      poPromotionProducts: [],
+      poProductInfo: {},
+      poPromotionProductsInfo: {},
       denyId: null,
       current: null,
       Snb: null,
@@ -379,7 +383,7 @@ export default {
       return {}
     },
     // get products from selected Po
-    poProducts() {
+    getPoProducts() {
       return this.PODETAIL_PRODUCTS_RES_GETTER().map(data => ({
         soNo: data.soNo,
         productCode: data.productCode,
@@ -392,11 +396,11 @@ export default {
         totalPriceVat: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
-    poProductInfo() {
+    getPoProductInfo() {
       return this.PODETAIL_PRODUCTS_INFO_GETTER()
     },
     // get promotion produtcs from selected Po
-    poPromotionProducts() {
+    getPoPromotionProducts() {
       return this.PODETAIL_PRODUCTS_PROMO_RES_GETTER().map(data => ({
         soNo: data.soNo,
         productCode: data.productCode,
@@ -407,7 +411,7 @@ export default {
         totalPrice: this.$formatNumberToLocale(data.totalPrice) || 0,
       }))
     },
-    poPromotionProductsInfo() {
+    getPoPromotionProductsInfo() {
       return this.PODETAIL_PRODUCTS_PROMO_INFO_GETTER()
     },
   },
@@ -418,6 +422,8 @@ export default {
       } else {
         this.poProducts = []
         this.poPromotionProducts = []
+        this.poProductInfo = {}
+        this.poPromotionProducts = {}
       }
     },
     poPromotionProducts() {
@@ -426,6 +432,18 @@ export default {
       } else {
         this.isShowPoPromoTable = false
       }
+    },
+    getPoProducts() {
+      this.poProducts = [...this.getPoProducts]
+    },
+    getPoPromotionProducts() {
+      this.poPromotionProducts = [...this.getPoPromotionProducts]
+    },
+    getPoProductInfo() {
+      this.poProductInfo = { ...this.getPoProductInfo }
+    },
+    getPoPromotionProductsInfo() {
+      this.poPromotionProductsInfo = { ...this.getPoPromotionProductsInfo }
     },
   },
   mounted() {
@@ -495,13 +513,7 @@ export default {
     },
     deny() {
       this.$root.$emit('bv::hide::modal', 'po-deny-modal')
-      setTimeout(() => {
-        this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
-      }, 500)
-      if (this.poConfirm.length === 0) {
-        this.poProducts = []
-        this.poPromotionProducts = []
-      }
+      this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId }) // hard code
     },
   },
 }

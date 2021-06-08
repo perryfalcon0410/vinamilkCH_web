@@ -21,7 +21,7 @@
         <b-icon
           icon="slash-circle"
         />
-        Không nhập
+        Không nhập {{ status.success }}
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
@@ -41,14 +41,17 @@
 import {
   mapGetters,
   mapActions,
+  mapMutations,
 } from 'vuex'
 // eslint-disable-next-line no-unused-vars
 import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
   NOT_IMPORT_REASONS_GETTER,
+  STATUS_NOT_IMPORT_GETTER,
   GET_POCONFIRMS_ACTION,
   UPDATE_NOT_IMPORT_ACTION,
+  CLEAR_STATUS_NOT_IMPORT,
   GET_NOT_IMPORT_REASONS_ACTION,
 } from '../../../store-module/type'
 
@@ -80,10 +83,19 @@ export default {
         label: data.apParamName,
       }))
     },
+    status() {
+      return this.STATUS_NOT_IMPORT_GETTER()
+    },
   },
   watch: {
     reasonOptions() {
       this.reasonSelected = this.reasonOptions[0].id
+    },
+    status() {
+      if (this.status === true) {
+        this.CLEAR_STATUS_NOT_IMPORT()
+        this.$emit('deny')
+      }
     },
   },
   mounted() {
@@ -96,11 +108,15 @@ export default {
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
       NOT_IMPORT_REASONS_GETTER,
+      STATUS_NOT_IMPORT_GETTER,
     ]),
     ...mapActions(WAREHOUSEINPUT, [
       UPDATE_NOT_IMPORT_ACTION,
       GET_POCONFIRMS_ACTION,
       GET_NOT_IMPORT_REASONS_ACTION,
+    ]),
+    ...mapMutations(WAREHOUSEINPUT, [
+      CLEAR_STATUS_NOT_IMPORT,
     ]),
     denyImport() {
       if (this.reasonSelected) {
@@ -110,7 +126,6 @@ export default {
           formId: this.formId, // hard code
           ctrlId: this.ctrlId, // hard code
         })
-        this.$emit('deny')
       } else {
         toasts.error('Cần chọn tối thiểu 1 lý do')
       }

@@ -24,6 +24,7 @@ import {
   WAREHOUSES_TYPE_GETTER,
   NOT_IMPORT_REASONS_GETTER,
   PRINT_OUT_IN_PUT_ORDER_GETTER,
+  STATUS_NOT_IMPORT_GETTER,
   // ACTIONS
   GET_RECEIPTS_ACTION,
   EXPORT_RECEIPTS_ACTION,
@@ -46,6 +47,7 @@ import {
   GET_WAREHOUSES_TYPE_ACTION,
   GET_NOT_IMPORT_REASONS_ACTION,
   PRINT_OUT_IN_PUT_ORDER_ACTION,
+  CLEAR_STATUS_NOT_IMPORT,
 } from './type'
 
 export default {
@@ -72,6 +74,7 @@ export default {
     warehousestype: {},
     notImportReasons: [],
     printOutInputOrderData: [],
+    statusNotImport: {},
   },
 
   // START - GETTERS
@@ -133,10 +136,17 @@ export default {
     [PRINT_OUT_IN_PUT_ORDER_GETTER](state) {
       return state.printOutInputOrderData
     },
+    [STATUS_NOT_IMPORT_GETTER](state) {
+      return state.statusNotImport
+    },
   },
 
   // START - MUTATIONS
-  mutations: {},
+  mutations: {
+    [CLEAR_STATUS_NOT_IMPORT](state) {
+      state.statusNotImport = {}
+    },
+  },
 
   // START - ACTIONS
   actions: {
@@ -262,12 +272,13 @@ export default {
           toasts.error(error.message)
         })
     },
-    [UPDATE_NOT_IMPORT_ACTION]({}, val) {
+    [UPDATE_NOT_IMPORT_ACTION]({ state }, val) {
       ReceiptImportService
         .updateNotImport(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
+            state.statusNotImport = res.success
             toasts.success(res.statusValue)
           } else {
             throw new Error(res.statusValue)
@@ -374,7 +385,7 @@ export default {
           toasts.error(error.message)
         })
     },
-    [REMOVE_RECEIPT_ACTION]({}, val) {
+    [REMOVE_RECEIPT_ACTION]({ }, val) {
       ReceiptImportService
         .removeReceipt(val)
         .then(response => response.data)
