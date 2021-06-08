@@ -445,6 +445,7 @@
 <script>
 import toasts from '@/@core/utils/toasts/toasts'
 import commonData from '@/@db/common'
+import redBillData from '@/@db/redBill'
 import {
   mapActions,
   mapGetters,
@@ -507,6 +508,7 @@ export default {
       cursor: -1,
       cursorProduct: -1,
       productSearch: null,
+      quantityPerBox: redBillData.quantityPerBox,
       products: [],
       saleOrderIds: [],
       columns: [
@@ -805,7 +807,7 @@ export default {
           productExported: this.$formatNumberToLocale(data.valueAddedTax),
           productExportedOriginal: data.valueAddedTax,
           sumProductExportedOriginal: data.valueAddedTax,
-          note: `${Math.floor(data.quantity / 24)}T${data.quantity % 24}`,
+          note: `${Math.floor(data.quantity / this.quantityPerBox)}T${data.quantity % this.quantityPerBox}`,
           button: '1',
         }))
         // Lấy dữ liệu khách hàng từ HDBH
@@ -839,7 +841,7 @@ export default {
       this.products[index].productPriceOriginal = Number(this.products[index].productPrice)
     },
     onChangeQuantityAndPrice(index) {
-      this.products[index].note = `${Math.floor(this.products[index].quantity / 24)}T${this.products[index].quantity % 24}`
+      this.products[index].note = `${Math.floor(this.products[index].quantity / this.quantityPerBox)}T${this.products[index].quantity % this.quantityPerBox}`
       this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal))
       this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal)
       this.products[index].productExported = this.$formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
