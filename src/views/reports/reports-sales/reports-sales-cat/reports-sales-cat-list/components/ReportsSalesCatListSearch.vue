@@ -202,12 +202,6 @@ export default {
   components: {
     VCardActions,
   },
-  props: {
-    perPageSize: {
-      type: Number,
-      default: 20,
-    },
-  },
   data() {
     return {
       selectProductModalVisible: false,
