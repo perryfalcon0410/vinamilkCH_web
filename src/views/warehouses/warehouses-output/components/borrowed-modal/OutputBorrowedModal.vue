@@ -429,7 +429,7 @@ export default {
       this.GET_EXPORT_BORROWINGS_DETAIL_ACTION({
         id: trans.id,
         onSuccess: borrowedProducts => {
-          this.borrowedTrans = borrowedProducts.response.map(data => ({
+          this.productOfBorrowed = borrowedProducts.response.map(data => ({
             id: data.id,
             productCode: data.productCode,
             productName: data.productName,
@@ -442,7 +442,7 @@ export default {
           }))
           const borrowedTranData = {
             tranInfo: trans,
-            products: this.borrowedTrans,
+            products: this.productOfBorrowed,
           }
           this.$emit('choonsenTrans', borrowedTranData)
           this.$root.$emit('bv::hide::modal', 'output-borrowed-modal')

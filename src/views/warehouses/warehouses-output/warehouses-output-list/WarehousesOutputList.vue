@@ -3,152 +3,154 @@
     fluid
     class="d-flex flex-column p-0"
   >
-    <!-- START - Search -->
-    <v-card-actions
-      title="Tìm kiếm"
+    <b-from
+      @keydown.enter="onClickSearchWarehousesOutput"
     >
-      <!-- START - Red Invoice No -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
+      <!-- START - Search -->
+      <v-card-actions
+        title="Tìm kiếm"
       >
-        <div class="h8 mt-sm-1 mt-xl-0">
-          Số hoá đơn
-        </div>
-        <b-input-group class="input-group-merge">
-          <b-form-input
-            v-model="searchOptions.redInvoiceNo"
-            class="h8 text-brand-3"
-            maxlength="20"
-            placeholder="Nhập số hoá đơn"
-            trim
-            @keyup.enter="onClickSearchWarehousesOutput"
-          />
-          <b-input-group-append is-text>
-            <b-icon-x
-              v-show="searchOptions.redInvoiceNo"
-              class="cursor-pointer text-gray"
-              @click="searchOptions.redInvoiceNo = null"
+        <!-- START - Red Invoice No -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div class="h8 mt-sm-1 mt-xl-0">
+            Số hoá đơn
+          </div>
+          <b-input-group class="input-group-merge">
+            <b-form-input
+              v-model="searchOptions.redInvoiceNo"
+              class="h8 text-brand-3"
+              maxlength="20"
+              placeholder="Nhập số hoá đơn"
+              trim
             />
-          </b-input-group-append>
-        </b-input-group>
-      </b-col>
-      <!-- END - Red Invoice No -->
+            <b-input-group-append is-text>
+              <b-icon-x
+                v-show="searchOptions.redInvoiceNo"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.redInvoiceNo = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+        <!-- END - Red Invoice No -->
 
-      <!-- START - Date From -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
+        <!-- START - Date From -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          Từ ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-          @keypress="$onlyDateInput"
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Từ ngày
+          </div>
+          <b-row
+            class="v-flat-pickr-group mx-0"
+            align-v="center"
+            @keypress="$onlyDateInput"
+          >
+            <b-icon-x
+              v-show="fromDate"
+              style="position: absolute; right: 15px"
+              class="cursor-pointer text-gray"
+              scale="1.3"
+              data-clear
+            />
+            <vue-flat-pickr
+              v-model="fromDate"
+              :config="configFromDate"
+              class="form-control h8"
+              placeholder="Chọn ngày"
+            />
+          </b-row>
+        </b-col>
+        <!-- END - Date From -->
+
+        <!-- START - Date To -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          <b-icon-x
-            v-show="fromDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            data-clear
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Đến ngày
+          </div>
+          <b-row
+            class="v-flat-pickr-group mx-0"
+            align-v="center"
+            @keypress="$onlyDateInput"
+          >
+            <b-icon-x
+              v-show="toDate"
+              style="position: absolute; right: 15px"
+              class="cursor-pointer text-gray"
+              scale="1.3"
+              data-clear
+            />
+            <vue-flat-pickr
+              v-model="toDate"
+              :config="configToDate"
+              class="form-control h8"
+              placeholder="Chọn ngày"
+            />
+          </b-row>
+        </b-col>
+        <!-- END - Date To -->
+
+        <!-- START - Output type -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div class="h8 mt-sm-1 mt-xl-0">
+            Loại xuất
+          </div>
+          <tree-select
+            v-model="warehousesTypeSelected"
+            :options="warehousesOptions"
+            :searchable="false"
+            placeholder="Tất cả"
+            no-options-text="Không có dữ liệu"
           />
-          <vue-flat-pickr
-            v-model="fromDate"
-            :config="configFromDate"
-            class="form-control h8"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-      </b-col>
-      <!-- END - Date From -->
 
-      <!-- START - Date To -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Đến ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-          @keypress="$onlyDateInput"
-        >
-          <b-icon-x
-            v-show="toDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            data-clear
-          />
-          <vue-flat-pickr
-            v-model="toDate"
-            :config="configToDate"
-            class="form-control h8"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-      </b-col>
-      <!-- END - Date To -->
+        </b-col>
+        <!-- END - Output type -->
 
-      <!-- START - Output type -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-        @keyup.enter="onClickSearchWarehousesOutput"
-      >
-        <div class="h8 mt-sm-1 mt-xl-0">
-          Loại xuất
-        </div>
-        <tree-select
-          v-model="warehousesTypeSelected"
-          :options="warehousesOptions"
-          :searchable="false"
-          placeholder="Tất cả"
-          no-options-text="Không có dữ liệu"
-        />
-
-      </b-col>
-      <!-- END - Output type -->
-
-      <!-- START - Search Button -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 text-white"
-          onmousedown="return false;"
-          style="cursor: context-menu;"
+        <!-- START - Search Button -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          Tìm kiếm
-        </div>
-        <b-button
-          id="form-button-search"
-          class="btn-brand-1 align-items-button-center mt-sm-1 mt-xl-0 h8"
-          variant="someThing"
-          @click="onClickSearchWarehousesOutput()"
-        >
-          <b-icon-search class="mr-50" />
-          Tìm kiếm
-        </b-button>
-      </b-col>
+          <div
+            class="h8 text-white"
+            onmousedown="return false;"
+            style="cursor: context-menu;"
+          >
+            Tìm kiếm
+          </div>
+          <b-button
+            id="form-button-search"
+            class="btn-brand-1 align-items-button-center mt-sm-1 mt-xl-0 h8"
+            variant="someThing"
+            @click="onClickSearchWarehousesOutput()"
+          >
+            <b-icon-search class="mr-50" />
+            Tìm kiếm
+          </b-button>
+        </b-col>
       <!-- END - Search Button -->
 
-    </v-card-actions>
+      </v-card-actions>
+    </b-from>
     <!-- END - Search -->
 
     <!-- START - Table -->
@@ -183,6 +185,7 @@
       <!-- START - Table -->
       <b-col class="py-1">
         <vue-good-table
+          mode="remote"
           :columns="columns"
           :rows="warehousesOutputList"
           style-class="vgt-table striped"
@@ -192,11 +195,15 @@
           }"
           :pagination-options="{
             enabled: true,
-            perPage: perPageSizeSelected,
-            setCurrentPage: searchOptions.page,
+            perPage: elementSize,
+            setCurrentPage: pageNumber,
           }"
           compact-mode
           line-numbers
+          :total-rows="warehousesOutputPagination.totalElements"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           <!-- START - Empty rows -->
           <div
@@ -264,7 +271,7 @@
           >
             <b-row
               v-if="props.column.field === 'quantity'"
-              v-show="totalElements"
+              v-show="warehousesOutputPagination.totalElements"
               class="h7"
               align-h="center"
             >
@@ -273,7 +280,7 @@
 
             <b-row
               v-else-if="props.column.field === 'price'"
-              v-show="totalElements"
+              v-show="warehousesOutputPagination.totalElements"
               class="h7 px-0 mx-0"
               align-h="end"
             >
@@ -288,7 +295,7 @@
             slot-scope="props"
           >
             <b-row
-              v-show="totalElements"
+              v-show="warehousesOutputPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -302,7 +309,7 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="perPageSizeSelected"
+                  v-model="elementSize"
                   size="sm"
                   :options="perPageSizeOptions"
                   class="mx-1"
@@ -311,9 +318,9 @@
                 <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
-                v-model="searchOptions.page"
-                :total-rows="totalElements"
-                :per-page="perPageSizeSelected"
+                v-model="pageNumber"
+                :total-rows="warehousesOutputPagination.totalElements"
+                :per-page="elementSize"
                 first-number
                 last-number
                 align="right"
@@ -412,8 +419,13 @@ export default {
       warehousesOptions: warehousesData.outputTypes,
       perPageSizeOptions: commonData.perPageSizes,
       warehousesTypeSelected: null,
-      perPageSizeSelected: commonData.perPageSizes[0],
-      totalElements: null,
+      elementSize: commonData.perPageSizes[0],
+      pageNumber: 1,
+      paginationData: {
+        size: this.elementSize,
+        page: this.pageNumber - 1,
+        sort: null,
+      },
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
       decentralization: {
@@ -552,20 +564,17 @@ export default {
       return this.$formatNumberToLocale(this.warehousesOutputList.reduce((accum, item) => accum + Number(item.totalAmount), 0))
     },
     paginationDetailContent() {
-      const minPageSize = this.searchOptions.page === 1 ? 1 : (this.searchOptions.page * this.perPageSizeSelected) - this.elementSize + 1
-      const maxPageSize = (this.perPageSizeSelected * this.searchOptions.page) > this.totalElements
-        ? this.totalElements : (this.perPageSizeSelected * this.searchOptions.page)
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehousesOutputPagination.totalElements
+        ? this.warehousesOutputPagination.totalElements : (this.elementSize * this.pageNumber)
 
-      return `${minPageSize} - ${maxPageSize} của ${this.totalElements} mục`
+      return `${minPageSize} - ${maxPageSize} của ${this.warehousesOutputPagination.totalElements} mục`
     },
   },
 
   watch: {
     getWarehousesOutputList() {
       this.warehousesOutputList = [...this.getWarehousesOutputList]
-    },
-    warehousesOutputPagination() {
-      this.totalElements = this.warehousesOutputPagination.totalElements
     },
     fromDate() {
       this.configToDate = {
@@ -590,6 +599,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    resizeAbleTable()
   },
 
   methods: {
@@ -598,9 +608,6 @@ export default {
       PRINT_OUT_IN_PUT_ORDER_ACTION,
       DELETE_WAREHOUSES_ACTION,
     ]),
-    selectedRowsChange(params) {
-      this.receiptExportSelected = params.selectedRows.map(data => data.id)
-    },
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-output-create' })
     },
@@ -662,8 +669,24 @@ export default {
         this.warehousesOutputList.splice(this.warehousesOutputSelected.index, 1)
       }
       this.DELETE_WAREHOUSES_ACTION(paramDeleteWarehousesOutput)
+      this.warehousesOutputPagination.totalElements -= 1
       this.closeNotifyModal()
     },
+    onPaginationChange() {
+      this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+
   },
 }
 </script>

@@ -209,31 +209,6 @@
               </div>
             </template>
             <!-- END - Column -->
-
-            <!-- START - Row -->
-            <template
-              slot="table-row"
-              slot-scope="props"
-            >
-              <div v-if="props.column.field === 'manipulation'">
-                <b-icon-search
-                  class="cursor-pointer"
-                  scale="1.3"
-                  @click="() => onAdjustmentItemSelected(props.row.id)"
-                />
-                <b-button
-                  variant="someThing"
-                  class="btn-brand-1 ml-1"
-                  @click="() => choonsenTrans(props.row)"
-                >
-                  Chọn
-                </b-button>
-              </div>
-              <div v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </div>
-            </template>
-          <!-- END - Row -->
           </vue-good-table>
 
         </b-col>
@@ -371,8 +346,8 @@ export default {
     },
 
     getExportAdjustmentDetail() {
-      if (this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER) {
-        return this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER
+      if (this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER.response) {
+        return this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER.response
       }
       return []
     },
@@ -399,8 +374,8 @@ export default {
       }
     },
     getExportAdjustmentDetail() {
-      if (this.getExportAdjustmentDetail.response) {
-        this.productsOfAjustment = this.getExportAdjustmentDetail.response.map(data => ({
+      if (this.getExportAdjustmentDetail) {
+        this.productsOfAjustment = this.getExportAdjustmentDetail.map(data => ({
           id: data.id,
           productCode: data.productCode,
           productName: data.productName,
@@ -412,6 +387,18 @@ export default {
           productReturnAmountOriginal: data.quantity,
         }))
       }
+      // for (let i = 0; i < this.productsOfAjustment.length; i += 1) {
+      //   this.count = 0
+      //   for (let j = 0; j < this.getExportAdjustmentDetail.length; j += 1) {
+      //     if (this.productsOfAjustment[i].productCode === this.getExportAdjustmentDetail[j].productCode) {
+      //       this.count += 1
+      //       if (this.count > 1) {
+      //         this.productsOfAjustment[i].quantity = this.getExportAdjustmentDetail[j].quantity + this.getExportAdjustmentDetail[i].quantity
+      //         console.log(this.productsOfAjustment[i].quantity)
+      //       }
+      //     }
+      //   }
+      // }
     },
   },
   mounted() {

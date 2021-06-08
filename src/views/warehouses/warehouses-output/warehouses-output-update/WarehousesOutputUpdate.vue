@@ -100,9 +100,8 @@
             </div>
             <b-form-input
               v-model.trim="warehousesOutput.internalNumber"
-
               :state="touched ? passed : null"
-              disabled
+              :disabled="warehousesOutput.receiptType !== warehousesOptions[0].id"
             />
           </b-col>
 
@@ -169,7 +168,7 @@
             <b-form-checkbox
               v-model="exportAll"
               class="m-1"
-              :disabled="isDisableSave"
+              disabled
             >
               Trả nguyên đơn
             </b-form-checkbox>
@@ -218,7 +217,7 @@
           <b-button
             variant="someThing"
             class="align-items-button-center btn-brand-1 text-uppercase"
-            :hidden="isDisableSave"
+            :hidden="isDisableSave && warehousesOutput.receiptType !== warehousesOptions[0].id"
             @click="onClickUpdateWarehousesOutput"
           >
             <b-icon-download

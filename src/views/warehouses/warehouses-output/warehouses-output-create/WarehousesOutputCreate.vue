@@ -512,7 +512,7 @@ export default {
       this.warehousesOutput.redInvoiceNo = data.tranInfo.redInvoiceNo
       this.warehousesOutput.billDate = data.tranInfo.billDate
       this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
-      this.warehousesOutput.poNumber = data.tranInfo.poNumber
+      this.warehousesOutput.poNumber = data.tranInfo.pocoNumber
       this.products = data.products
       this.exportAll = false
     },

@@ -1,5 +1,7 @@
 <template>
-  <b-form>
+  <b-form
+    @keydown.enter="onSearch"
+  >
     <!-- START - Search -->
     <v-card-actions
       title="Tìm kiếm"
@@ -26,7 +28,6 @@
               v-model.trim="transCode"
               placeholder="Nhập mã nhập hàng"
               maxlength="40"
-              @keyup.enter="onSearch"
             />
             <b-input-group-append
               is-text
@@ -64,7 +65,6 @@
               v-model.trim="redInvoiceNo"
               placeholder="Nhập số hóa đơn"
               maxlength="40"
-              @keyup.enter="onSearch"
             />
             <b-input-group-append
               is-text
@@ -102,7 +102,6 @@
               v-model.trim="internalNumber"
               placeholder="Nhập số nội bộ"
               maxlength="40"
-              @keyup.enter="onSearch"
             />
             <b-input-group-append
               is-text
@@ -140,7 +139,6 @@
               v-model.trim="poNo"
               placeholder="Nhập PO No"
               maxlength="40"
-              @keyup.enter="onSearch"
             />
             <b-input-group-append
               is-text

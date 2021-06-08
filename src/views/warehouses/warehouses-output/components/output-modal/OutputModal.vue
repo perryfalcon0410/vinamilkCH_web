@@ -54,8 +54,8 @@
               enabled: false,
               multipleColumns: true,
               initialSortBy: [
-                {field: 'transCode', type: 'desc'},
-                {field: 'transDate', type: 'desc'}
+                {field: 'transDate', type: 'desc'},
+                {field: 'transCode', type: 'desc'}
               ]
             }"
             @on-sort-change="onSortChange"
@@ -238,7 +238,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatISOtoVNI, formatNumberToLocale } from '@core/utils/filter'
+import { formatISOtoVNI, formatNumberToLocale, reverseVniDate } from '@core/utils/filter'
 import SearchComponent from './components/SearchComponent.vue'
 import {
   WAREHOUSES_OUTPUT,
@@ -282,10 +282,10 @@ export default {
         {
           label: 'Ngày nhập',
           field: 'transDate',
+          type: Date,
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
-          hidden: true,
         },
         {
           label: 'Mã nhập hàng',
@@ -293,7 +293,6 @@ export default {
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
-          hidden: true,
         },
         {
           label: 'Số hóa đơn',
@@ -302,11 +301,10 @@ export default {
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
-          hidden: true,
         },
         {
-          label: 'PO No',
-          field: 'pocoNumber',
+          label: 'Ngày hóa đơn',
+          field: 'billDate',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -320,8 +318,8 @@ export default {
           tdClass: 'text-left',
         },
         {
-          label: 'Ngày hóa đơn',
-          field: 'billDate',
+          label: 'PO No',
+          field: 'pocoNumber',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -446,7 +444,11 @@ export default {
     },
   },
   mounted() {
-    this.GET_EXPORT_PO_TRANS_ACTION()
+    const data = {
+      fromDate: reverseVniDate(this.$earlyMonth),
+      toDate: reverseVniDate(this.$nowDate),
+    }
+    this.GET_EXPORT_PO_TRANS_ACTION(data)
   },
   methods: {
     ...mapActions(WAREHOUSES_OUTPUT, [
