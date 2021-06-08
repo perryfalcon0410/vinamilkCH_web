@@ -1,6 +1,6 @@
 <template>
   <b-modal
-    id="modal"
+    id="find-product-modal"
     size="xl"
     :visible="visible"
     title="Chọn sản phẩm"
@@ -410,7 +410,7 @@ export default {
       this.$emit('onSaveClick', this.selectedProductRow)
     },
     cancel() {
-      this.$emit('close')
+      this.$root.$emit('bv::hide::modal', 'find-product-modal')
     },
     // pagination funcs
     onPaginationChange() {

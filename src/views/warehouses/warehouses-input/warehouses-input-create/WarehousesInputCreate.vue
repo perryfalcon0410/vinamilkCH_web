@@ -244,6 +244,13 @@
                   }}
                 </b-row>
                 <b-row
+                  v-if="props.column.field === 'totalPriceNotVat'"
+                  class="mx-0"
+                  align-h="end"
+                >
+                  {{ $formatNumberToLocale(poProductInfo.totalPriceNotVat) }}
+                </b-row>
+                <b-row
                   v-else-if="props.column.field === 'totalPriceVat'"
                   class="mx-0"
                   align-h="end"

@@ -101,8 +101,6 @@
       <!-- END - Search button -->
     </v-card-actions>
     <find-product-modal
-      :visible="isShowFindProductModal"
-      @close="isShowFindProductModal = false"
       @onSaveClick="onSaveClick($event)"
     />
   </b-form>
@@ -185,7 +183,7 @@ export default {
       this.$emit('updateSearchData', data)
     },
     showFindProductModal() {
-      this.isShowFindProductModal = !this.isShowFindProductModal
+      this.$root.$emit('bv::toggle::modal', 'find-product-modal')
     },
   },
 }

@@ -253,23 +253,26 @@
 import {
   mapActions,
   mapGetters,
+  mapMutations,
 } from 'vuex'
 import toasts from '@core/utils/toasts/toasts'
 import { formatISOtoVNI } from '@core/utils/filter'
 import DenyModal from './components/inputPoDenyModal.vue'
 import {
   WAREHOUSEINPUT,
-  // GETTER
+  // GETTERS
   POCONFIRM_GETTER,
   PODETAIL_PRODUCTS_RES_GETTER,
   PODETAIL_PRODUCTS_PROMO_RES_GETTER,
   PODETAIL_PRODUCTS_INFO_GETTER,
   PODETAIL_PRODUCTS_PROMO_INFO_GETTER,
-  // ACTION
+  // ACTIONS
   GET_POCONFIRMS_ACTION,
   GET_PODETAIL_PRODUCTS_ACTION,
   GET_PODETAIL_PRODUCTS_PROMO_ACTION,
   GET_IMPORTEXCEL_ACTION,
+  // MUTATIONS
+  CLEAR_GRID_VIEW_MUTATION,
 } from '../../store-module/type'
 
 export default {
@@ -294,10 +297,6 @@ export default {
       isShowPoPromoTable: false,
       denyModalVisible: false,
 
-      poProduct: [],
-      poPromotionProducts: [],
-      poProductInfo: {},
-      poPromotionProductsInfo: {},
       denyId: null,
       current: null,
       Snb: null,
@@ -383,7 +382,7 @@ export default {
       return {}
     },
     // get products from selected Po
-    getPoProducts() {
+    poProducts() {
       return this.PODETAIL_PRODUCTS_RES_GETTER().map(data => ({
         soNo: data.soNo,
         productCode: data.productCode,
@@ -396,11 +395,11 @@ export default {
         totalPriceVat: this.$formatNumberToLocale(data.totalPrice),
       }))
     },
-    getPoProductInfo() {
+    poProductInfo() {
       return this.PODETAIL_PRODUCTS_INFO_GETTER()
     },
     // get promotion produtcs from selected Po
-    getPoPromotionProducts() {
+    poPromotionProducts() {
       return this.PODETAIL_PRODUCTS_PROMO_RES_GETTER().map(data => ({
         soNo: data.soNo,
         productCode: data.productCode,
@@ -411,7 +410,7 @@ export default {
         totalPrice: this.$formatNumberToLocale(data.totalPrice) || 0,
       }))
     },
-    getPoPromotionProductsInfo() {
+    poPromotionProductsInfo() {
       return this.PODETAIL_PRODUCTS_PROMO_INFO_GETTER()
     },
   },
@@ -420,10 +419,7 @@ export default {
       if (this.poConfirm.length > 0) {
         this.selectOrder(this.theFirstPo.id, this.theFirstPo.internalNumber, this.theFirstPo.poNumber, this.theFirstPo.sysDate)
       } else {
-        this.poProducts = []
-        this.poPromotionProducts = []
-        this.poProductInfo = {}
-        this.poPromotionProducts = {}
+        this.CLEAR_GRID_VIEW_MUTATION()
       }
     },
     poPromotionProducts() {
@@ -432,18 +428,6 @@ export default {
       } else {
         this.isShowPoPromoTable = false
       }
-    },
-    getPoProducts() {
-      this.poProducts = [...this.getPoProducts]
-    },
-    getPoPromotionProducts() {
-      this.poPromotionProducts = [...this.getPoPromotionProducts]
-    },
-    getPoProductInfo() {
-      this.poProductInfo = { ...this.getPoProductInfo }
-    },
-    getPoPromotionProductsInfo() {
-      this.poPromotionProductsInfo = { ...this.getPoPromotionProductsInfo }
     },
   },
   mounted() {
@@ -465,6 +449,9 @@ export default {
       GET_PODETAIL_PRODUCTS_ACTION,
       GET_PODETAIL_PRODUCTS_PROMO_ACTION,
       GET_IMPORTEXCEL_ACTION,
+    ]),
+    ...mapMutations(WAREHOUSEINPUT, [
+      CLEAR_GRID_VIEW_MUTATION,
     ]),
     // invidual selectOrder event for poconfrim list
     selectOrder(id, internalNumber, poNum, date) {
