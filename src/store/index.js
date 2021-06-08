@@ -29,6 +29,8 @@ import reportWarehousesInputOutputInventory from '@/views/reports/reports-wareho
 import reportWarehousesExchangeDamagedGoods from '@/views/reports/reports-warehouses/reports-warehouses-exchange-damaged-goods/store-module'
 import reportsCustomers from '@/views/reports/reports-customers/reports-customers/store-module'
 import reportsCustomersNonTransactional from '@/views/reports/reports-customers/reports-customers-non-transactional/store-module'
+import reportSalesAmountReceiptPerCustomers from '@/views/reports/reports-sales/reports-sales-amount-receipt-per-customers/store-module'
+import reportSalesCat from '@/views/reports/reports-sales/reports-sales-cat/store-module'
 
 import reportSalesSaleReceiptPerCustomer from '@/views/reports/reports-sales/reports-sales-sale-receipt-per-customer/store-module'
 // Systems
@@ -78,6 +80,8 @@ export default new Vuex.Store({
     reportsCustomers,
     reportsCustomersNonTransactional,
     reportSalesSaleReceiptPerCustomer,
+    reportSalesAmountReceiptPerCustomers,
+    reportSalesCat,
   },
   strict: process.env.DEV,
 })

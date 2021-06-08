@@ -200,4 +200,21 @@ export default [
       resource: 'ReportsSalesCatSale',
     },
   },
+
+  // Báo cáo số lượng theo doanh số khách hàng
+  {
+    path: '/reports/sales/amount-per-customers',
+    name: 'reports-sales-amount-per-customer',
+    component: () => import('@/views/reports/reports-sales/reports-sales-amount-receipt-per-customers/reports-sales-amount-receipt-per-customers-list/ReportsSalesAmountReceiptPerCustomersList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo số lượng theo doanh số khách hàng',
+      breadcrumb: [
+        {
+          text: 'Báo cáo số lượng theo doanh số khách hàng',
+          active: true,
+        },
+      ],
+      resource: 'ReportsSalesAmountReceiptPerCustomer',
+    },
+  },
 ]

@@ -4,7 +4,7 @@
     class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
-    <!-- <list-search /> -->
+    <reports-sales-cat-list-search />
     <!-- END - Search -->
 
     <!-- START - sale receipt list -->
@@ -33,7 +33,6 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
-          :rows="rows"
           mode="remote"
           style-class="vgt-table striped"
           compact-mode
@@ -59,11 +58,11 @@
 </template>
 
 <script>
-// import ListSearch from '../components/ListSearch.vue'
+import ReportsSalesCatListSearch from './components/ReportsSalesCatListSearch.vue'
 
 export default {
   components: {
-    // ListSearch,
+    ReportsSalesCatListSearch,
   },
   data() {
     return {
