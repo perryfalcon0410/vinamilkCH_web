@@ -489,6 +489,7 @@
                         <b-form-input
                           v-model="pay.voucher.voucherCode"
                           class="form-control-merge"
+                          @change="onChangeVoucherCode"
                         />
                         <b-input-group-append is-text>
                           <b-icon-x
@@ -746,6 +747,7 @@ import {
   GET_PROMOTION_PROGRAMS_GETTER,
   GET_PROMOTION_CALCULATION_GETTER,
   GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
+  GET_VOUCHER_BY_SERIAL_GETTER,
 
   // ACTIONS
   GET_VOUCHER_BY_ID_ACTION,
@@ -756,6 +758,7 @@ import {
   GET_PROMOTION_PROGRAMS_ACTION,
   GET_PROMOTION_CALCULATION_ACTION,
   GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
+  GET_VOUCHER_BY_SERIAL_ACTION,
 } from '../../store-module/type'
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
 
@@ -870,6 +873,7 @@ export default {
       GET_PROMOTION_PROGRAMS_GETTER,
       GET_PROMOTION_CALCULATION_GETTER,
       GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
+      GET_VOUCHER_BY_SERIAL_GETTER,
     ]),
 
     getVoucher() {
@@ -910,11 +914,15 @@ export default {
     getPromotionCalculation() {
       return this.GET_PROMOTION_CALCULATION_GETTER
     },
+    getVoucherBySerial() {
+      return this.GET_VOUCHER_BY_SERIAL_GETTER
+    },
   },
   watch: {
     getVoucher() {
       this.pay.voucher.voucherCode = this.getVoucher.voucherCode
       this.pay.voucher.voucherAmount = this.getVoucher.price
+      this.pay.voucher.voucherId = this.getVoucher.id
     },
     getDiscount() {
       this.pay.discount.discountCode = this.getDiscount.discountCode
@@ -949,6 +957,11 @@ export default {
     getPromotionCalculation() {
       this.pay.promotionAmount = this.getPromotionCalculation.promotionAmount
       this.pay.needPaymentAmount = this.getPromotionCalculation.paymentAmount
+    },
+    getVoucherBySerial() {
+      this.pay.voucher.voucherCode = this.getVoucherBySerial.serial
+      this.pay.voucher.voucherAmount = this.getVoucherBySerial.price
+      this.pay.voucher.voucherId = this.getVoucherBySerial.id
     },
   },
 
@@ -986,6 +999,7 @@ export default {
       GET_PROMOTION_PROGRAMS_ACTION,
       GET_PROMOTION_CALCULATION_ACTION,
       GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
+      GET_VOUCHER_BY_SERIAL_ACTION,
     ]),
 
     onVoucherButtonClick() {
@@ -1139,8 +1153,7 @@ export default {
       })]
     },
     onClickPromotionCalculation() {
-      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.promotionType === Number(saleData.promotionType[1].id)
-                                                                    && p.amount && p.isSelected === true)
+      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.amount && p.isSelected === true)
       console.log(paramPromotionAmountInfos)
       this.GET_PROMOTION_CALCULATION_ACTION({
         customerId: this.customer.id,
@@ -1202,6 +1215,18 @@ export default {
           },
         })
       })
+    },
+    onChangeVoucherCode() {
+      const productIds = this.orderProducts.map(item => item.productId)
+      const paramsGetVoucherBySerial = {
+        serial: this.pay.voucher.voucherCode,
+        customerId: this.customer.id,
+        productIds: productIds.toString(),
+        ctrlId: this.ctrlId,
+        formId: this.formId,
+      }
+
+      this.GET_VOUCHER_BY_SERIAL_ACTION(paramsGetVoucherBySerial)
     },
   },
 }

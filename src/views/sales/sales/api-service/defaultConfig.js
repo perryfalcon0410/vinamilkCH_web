@@ -35,3 +35,5 @@ export const getPromotionProgramsEndpoint = `${SALES}/order-promotions`
 export const getPromotionCalculationEndpoint = `${SALES}/promotion-calculation`
 
 export const getItemsProductsProgramEndpoint = `${SALES}/promotion-products`
+
+export const getVoucherBySerialEndpoint = `${PROMOTION}/${VOUCHERS}/code`
