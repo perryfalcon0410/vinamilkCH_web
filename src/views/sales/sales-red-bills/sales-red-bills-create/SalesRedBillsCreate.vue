@@ -800,13 +800,13 @@ export default {
           productDVT: data.productUnit,
           quantity: data.quantity,
           productPrice: this.$formatNumberToLocale(data.priceNotVat),
-          productPriceTotal: this.$formatNumberToLocale(data.amountNotVat),
+          productPriceTotal: this.$formatNumberToLocale(data.quantity * data.priceNotVat),
           productPriceOriginal: data.priceNotVat,
-          productPriceTotalOriginal: data.amountNotVat,
+          productPriceTotalOriginal: data.quantity * data.priceNotVat,
           vat: data.vat,
-          productExported: this.$formatNumberToLocale(data.valueAddedTax),
-          productExportedOriginal: data.valueAddedTax,
-          sumProductExportedOriginal: data.valueAddedTax,
+          productExported: this.$formatNumberToLocale((data.quantity * data.priceNotVat * data.vat) / 100), // tính giá VAT (SL*PRICE)*VAT/100%
+          productExportedOriginal: (data.quantity * data.priceNotVat * data.vat) / 100,
+          sumProductExportedOriginal: (data.quantity * data.priceNotVat * data.vat) / 100,
           note: `${Math.floor(data.quantity / this.quantityPerBox)}T${data.quantity % this.quantityPerBox}`,
           button: '1',
         }))

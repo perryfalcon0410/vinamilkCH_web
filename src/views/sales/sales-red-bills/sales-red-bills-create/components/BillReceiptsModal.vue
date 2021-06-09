@@ -371,7 +371,7 @@ import {
   mapGetters,
   mapMutations,
 } from 'vuex'
-import { formatDateToLocale, reverseVniDate, formatNumberToLocale } from '@/@core/utils/filter'
+import { reverseVniDate } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import toasts from '@/@core/utils/toasts/toasts'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
@@ -539,11 +539,11 @@ export default {
         orderNumber: data.orderNumber,
         customerNumber: data.customerNumber,
         customerName: data.customerName,
-        orderDate: formatDateToLocale(data.orderDate),
-        totalPromotion: formatNumberToLocale(data.totalPromotion),
+        orderDate: this.$formatISOtoVNI(data.orderDate),
+        totalPromotion: this.$formatNumberToLocale(data.totalPromotion),
         customerPurchase: data.customerPurchase,
         amount: data.amount,
-        total: formatNumberToLocale(data.total),
+        total: this.$formatNumberToLocale(data.total),
         stt: index + 1,
         saleOrderId: data.saleOrderID,
       }))
@@ -558,8 +558,8 @@ export default {
         productCode: data.productCode,
         productUnit: data.uom1,
         quantity: data.quantity,
-        unitPrice: formatNumberToLocale(data.unitPrice),
-        totalMoney: formatNumberToLocale(data.intoMoney),
+        unitPrice: this.$formatNumberToLocale(data.unitPrice),
+        totalMoney: this.$formatNumberToLocale(data.intoMoney),
         unitPriceOriginal: data.unitPrice,
         totalMoneyOriginal: data.intoMoney,
         groupVat: data.groupVat,
@@ -596,6 +596,7 @@ export default {
           this.productSales.push(item)
         } else {
           this.productSales[index].quantity += item.quantity
+          this.productSales[index].totalMoney = this.$formatNumberToLocale(this.productSales[index].totalMoneyOriginal + item.totalMoneyOriginal)
         }
       })
       this.totalElementProduct = this.productSales.length

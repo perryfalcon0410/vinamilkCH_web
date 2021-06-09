@@ -431,7 +431,7 @@ import toasts from '@core/utils/toasts/toasts'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'
-import { reverseVniDate, formatISOtoVNI } from '@/@core/utils/filter'
+import { reverseVniDate } from '@/@core/utils/filter'
 import PrintFormRedBills from '@core/components/print-form/PrintFormRedBills.vue'
 import {
   RED_INVOICE,
@@ -594,7 +594,7 @@ export default {
           GTGT: this.$formatNumberToLocale(data.amountGTGT),
           totalMoney: this.$formatNumberToLocale(data.amountNotVat),
           note: data.note,
-          printDate: formatISOtoVNI(data.printDate),
+          printDate: this.$formatISOtoVNI(data.printDate),
         }))
       }
       return []
