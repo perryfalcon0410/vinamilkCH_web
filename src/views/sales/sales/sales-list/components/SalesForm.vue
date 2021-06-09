@@ -150,7 +150,7 @@
             align-v="center"
           >
             <b-col cols="4">
-              Điạ chỉ
+              Địa chỉ
             </b-col>
             <b-col>
               {{ customer.street }}
@@ -198,7 +198,6 @@
               />
             </b-col>
           </b-row>
-          <div>{{ salemtPromotionObjectSelected }}</div>
           <!-- END - Order type -->
 
           <!-- START - Delivery type -->
@@ -230,7 +229,7 @@
               <b-input-group class="input-group-merge">
                 <b-form-input
                   v-model="orderOnline.orderNumber"
-                  :disabled="salemtPromotionObjectSelected === '1'"
+                  :disabled="salemtPromotionObjectSelected === '1' || salemtPromotionObjectSelected === '0'"
                 />
                 <b-input-group-append is-text>
                   <b-icon-three-dots-vertical @click="showNotifyModal" />
@@ -326,8 +325,6 @@
           />
         </b-button>
         <!-- END - Button pay -->
-        <!-- :customer-create-id="id"
-            :customer-default-id="id" -->
 
         <!-- START - Notify Modal Close -->
         <b-modal
@@ -436,7 +433,7 @@ export default {
       },
       quantity: null,
       totalPrice: null,
-      salemtPromotionObjectSelected: saleData.salemtPromotionObject[0].id,
+      salemtPromotionObjectSelected: null,
       salemtDeliveryTypeSelected: saleData.salemtDeliveryType[0].id,
       data: null,
 
@@ -614,6 +611,7 @@ export default {
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
     this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4, salemtDeliveryTypeSelected: this.salemtDeliveryTypeSelected })
     this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
+    this.salemtPromotionObjectSelected = saleData.salemtPromotionObject[0].id
   },
   created() {
     window.addEventListener('keydown', e => {
@@ -696,6 +694,7 @@ export default {
       this.customer.phoneNumber = val.phoneNumber
       this.customer.street = val.street
       this.customer.totalBill = val.totalBill ?? 0
+      this.customer.scoreCumulated = val.scoreCumulated
     },
 
     onClickAgreeButton() {
@@ -710,9 +709,11 @@ export default {
       this.customer.phoneNumber = this.onlineOrderCustomer.customer.mobiPhone
       this.customer.street = this.onlineOrderCustomer.customer.street
       this.customer.scoreCumulated = this.onlineOrderCustomer.customer.scoreCumulated
+      this.customer.shopId = this.onlineOrderCustomer.customer.shopId
       this.orderOnline.orderNumber = this.onlineOrderCustomer.orderNumber
       this.quantity = this.onlineOrderCustomer.quantity
       this.totalPrice = this.onlineOrderCustomer.totalPrice
+      this.$emit('getOnlineCustomer', this.customer)
     },
 
     getCustomerDefault() {

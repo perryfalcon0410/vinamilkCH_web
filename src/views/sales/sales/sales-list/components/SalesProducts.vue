@@ -56,7 +56,7 @@
           xl="3"
           md="4"
           sm="6"
-          @click="onclickAddProduct(value)"
+          @click="editPermission ? onclickAddProduct(value) : '' "
         >
           <b-row>
             <b-col
@@ -123,6 +123,10 @@ export default {
     orderProducts: {
       type: Array,
       default: () => [],
+    },
+    editPermission: {
+      type: Boolean,
+      default: Boolean,
     },
   },
   data() {

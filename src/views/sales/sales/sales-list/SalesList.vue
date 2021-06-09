@@ -45,7 +45,7 @@
               v-for="(value,index) in productsSearch"
               :key="index"
               class="mx-0 my-1"
-              @click="onclickAddProduct(value)"
+              @click="editPermission ? onclickAddProduct(value) : '' "
             >
               <!-- START - Section Image -->
               <b-col
@@ -190,6 +190,7 @@
               align-h="start"
             >
               <b-icon-caret-down-fill
+                v-if="editPermission"
                 class="cursor-pointer"
                 font-scale="1.5"
                 @click="decreaseAmount(props.row.productId)"
@@ -202,6 +203,7 @@
                 maxlength="6"
               /> -->
               <b-icon-caret-up-fill
+                v-if="editPermission"
                 class="cursor-pointer"
                 font-scale="1.5"
                 @click="increaseAmount(props.row.productId)"
@@ -214,6 +216,7 @@
               v-else-if="props.column.field === 'tableProductFeature'"
             >
               <b-icon-trash-fill
+                v-if="editPermission"
                 color="red"
                 class="cursor-pointer"
                 @click="onClickDeleteProduct(props.row.originalIndex)"
@@ -235,6 +238,7 @@
         <sales-products
           :product-infos="productInfos"
           :order-products="orderProducts"
+          :edit-permission="editPermission"
         />
         <!-- END - List suggestion -->
 
@@ -248,6 +252,7 @@
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
         @getCustomerDefault="getCustomerDefault"
+        @getOnlineCustomer="getOnlineCustomer"
       />
       <!-- END - Section Form pay -->
 
@@ -400,6 +405,7 @@ export default {
 
       // online order
       id: null,
+      editPermission: true,
 
       // price customer change customerTypeId
       customerType: null,
@@ -462,6 +468,9 @@ export default {
     customerDefault() {
       return this.getCustomerDefault
     },
+    onlineCustomer() {
+      return this.getOnlineCustomer
+    },
 
     getCustomerTypeProducts() {
       return this.UPDATE_PRICE_TYPE_CUSTOMER_GETTER().map(data => ({
@@ -474,6 +483,12 @@ export default {
         productUnitPrice: data.price,
         productTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
+    },
+
+    loginInfo() {
+      const login = JSON.parse(localStorage.getItem('userData'))
+      console.log('login', login)
+      return login
     },
   },
   watch: {
@@ -597,6 +612,30 @@ export default {
         size: 10,
       }
       this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetProductsTopSale)
+
+      const { usedShop } = this.loginInfo
+
+      if (val.data.shopId === usedShop.id) {
+        if (usedShop.editable) {
+          this.editPermission = true
+        } else {
+          this.editPermission = false
+        }
+      }
+    },
+
+    getOnlineCustomer(val) {
+      console.log('online custmer', typeof val.id)
+      const { usedShop } = this.loginInfo
+
+      if (val.shopId === usedShop.id) {
+        if (usedShop.editable) {
+          this.editPermission = true
+          console.log('this.editPermission', this.editPermission)
+        } else {
+          this.editPermission = false
+        }
+      }
     },
 
     getCustomerTypeInfo(id) {
