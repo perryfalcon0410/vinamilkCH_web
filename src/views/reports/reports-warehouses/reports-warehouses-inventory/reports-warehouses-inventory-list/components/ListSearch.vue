@@ -36,6 +36,15 @@
               class="form-control h9"
               placeholder="Chọn ngày"
             />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="date"
+                class="cursor-pointer text-gray"
+                @click="date = $nowDate"
+              />
+            </b-input-group-append>
           </b-input-group>
         </validation-provider>
       </b-col>
@@ -108,6 +117,7 @@
 
 <script>
 import VCardActions from '@/@core/components/v-card-actions/VCardActions.vue'
+import toasts from '@core/utils/toasts/toasts'
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
@@ -172,8 +182,12 @@ export default {
         productCodes: this.productCodes,
         ...this.decentralization,
       }
-      this.updateSearchData(searchData)
-      this.GET_REPORT_WAREHOUSES_INVENTORY_ACTION(searchData)
+      if (searchData.stockDate !== null) {
+        this.updateSearchData(searchData)
+        this.GET_REPORT_WAREHOUSES_INVENTORY_ACTION(searchData)
+      } else {
+        toasts.error('Ngày không được để trống')
+      }
     },
     onClickSearchButton() {
       this.onSearch()

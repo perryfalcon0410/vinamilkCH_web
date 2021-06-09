@@ -183,54 +183,20 @@ export default [
       resource: 'ReportsCustomersNonTransactional',
     },
   },
-
-  // Báo cáo doanh số CAT
+  // báo cáo hóa đơn theo loại giao hàng
   {
-    path: '/reports/sales/cat',
-    name: 'reports-sales-cat',
-    component: () => import('@/views/reports/reports-sales/reports-sales-cat/reports-sales-cat-list/ReportsSalesCatList.vue'),
+    path: '/reports/sales/receipt-on-delivery-type',
+    name: 'reports-sales-receipt-on-delivery-type',
+    component: () => import('@/views/reports/reports-sales/reports-sales-sale-receipt-on-delivery-type/sale-receipt-on-delivery-list/SaleReceiptOnDeliveryTypeList.vue'),
     meta: {
-      pageTitle: 'Báo cáo doanh số CAT',
+      pageTitle: 'Báo cáo hóa đơn theo loại giao hàng',
       breadcrumb: [
         {
-          text: 'Báo cáo doanh số CAT',
+          text: 'Danh sách báo cáo hóa đơn theo loại giao hàng',
           active: true,
         },
       ],
-      resource: 'ReportsSalesCatSale',
-    },
-  },
-
-  // Báo cáo số lượng theo doanh số khách hàng
-  {
-    path: '/reports/sales/amount-per-customers',
-    name: 'reports-sales-amount-per-customer',
-    component: () => import('@/views/reports/reports-sales/reports-sales-amount-receipt-per-customers/reports-sales-amount-receipt-per-customers-list/ReportsSalesAmountReceiptPerCustomersList.vue'),
-    meta: {
-      pageTitle: 'Báo cáo số lượng theo doanh số khách hàng',
-      breadcrumb: [
-        {
-          text: 'Báo cáo số lượng theo doanh số khách hàng',
-          active: true,
-        },
-      ],
-      resource: 'ReportsSalesAmountReceiptPerCustomer',
-    },
-  },
-  // Báo cáo bán hàng
-  {
-    path: '/reports/sales/sales',
-    name: 'reports-sales',
-    component: () => import('@/views/reports/reports-sales/reports-sales/reports-sales-list/ReportsSalesList.vue'),
-    meta: {
-      pageTitle: 'Báo cáo bán hàng',
-      breadcrumb: [
-        {
-          text: 'Danh sách báo cáo bán hàng',
-          active: true,
-        },
-      ],
-      resource: 'ReportsSales',
+      resource: 'ReportsSalesReceiptOnDeliveryType',
     },
   },
 ]

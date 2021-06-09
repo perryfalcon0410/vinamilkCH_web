@@ -4,10 +4,8 @@
     class="d-flex flex-column"
   >
     <list-search
+      @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton($event)"
-      @updateSearchData="paginationData = {
-        ...paginationData,
-        ...$event }"
     />
 
     <b-form class="bg-white rounded shadow rounded my-1">
@@ -195,6 +193,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import { formatISOtoVNI } from '@/@core/utils/filter'
 import ListSearch from './components/ListSearch.vue'
 import {
   REPORT_EXCHANGE_DAMAGED_GOODS,
@@ -220,23 +219,50 @@ export default {
         page: this.pageNumber - 1,
         sort: null,
       },
-      decentralization: {
-        formId: 1,
-        ctrlId: 1,
-      },
+      formId: 1,
+      ctrlId: 1,
       searchData: {},
-      exportExcelData: {},
       columns: [
         {
-          label: 'Ngành hàng',
-          field: 'productCategory',
+          label: 'Ngày biên bản',
+          field: 'transDate',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Số biên bản',
+          field: 'transNumber',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Mã khách hàng',
+          field: 'customerCode',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
-          label: 'Mã sản phẩm',
+          label: 'Họ tên',
+          field: 'customerName',
+          type: 'number',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Địa chỉ',
+          field: 'address',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Mã sản phẩn',
           field: 'productCode',
+          type: 'number',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -250,103 +276,31 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'stockQuantity',
-          type: 'number',
+          field: 'quantity',
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
           thClass: 'text-center',
           tdClass: 'text-center',
-        },
-        {
-          label: 'Số lượng packet',
-          field: 'packetQuantity',
-          type: 'number',
-          sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Số lượng lẻ',
-          field: 'unitQuantity',
-          type: 'number',
-          sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Giá',
-          field: 'price',
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
         },
         {
           label: 'Thành tiền',
-          field: 'totalAmount',
-          type: 'number',
+          field: 'amount',
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
           thClass: 'text-right',
           tdClass: 'text-right',
         },
         {
-          label: 'Quy cách',
-          field: 'specification',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Cửa hàng',
-          field: 'shop',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Chuỗi cửa hàng',
-          field: 'shopType',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Nhóm sản phẩm',
-          field: 'productGroup',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Tồn kho min',
-          field: 'minInventory',
+          label: 'Lý do',
+          field: 'reason',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
-          label: 'Tồn kho max',
-          field: 'maxInventory',
+          label: 'Điện thoại',
+          field: 'phoneNumber',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
-        },
-        {
-          label: 'Báo cáo',
-          field: 'warning',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
       ],
       rows: [],
@@ -360,21 +314,17 @@ export default {
     ]),
     reportInventory() {
       return this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.map(data => ({
-        productCategory: data.productCategory,
+        transDate: formatISOtoVNI(data.transDate),
+        transNumber: data.transNumber,
+        customerCode: data.customerCode,
+        customerName: data.customerName,
+        address: data.address,
         productCode: data.productCode,
         productName: data.productName,
-        stockQuantity: this.$formatNumberToLocale(data.stockQuantity) || 0,
-        packetQuantity: this.$formatNumberToLocale(data.packetQuantity) || 0,
-        unitQuantity: this.$formatNumberToLocale(data.unitQuantity) || 0,
-        price: this.$formatNumberToLocale(data.price),
-        totalAmount: this.$formatNumberToLocale(data.totalAmount) || 0,
-        specification: `${data.packetUnit} ${data.convfact} ${data.unit}`,
-        shop: data.shop,
-        shopType: data.shopType,
-        productGroup: data.productGroup,
-        minInventory: this.$formatNumberToLocale(data.minInventory),
-        maxInventory: this.$formatNumberToLocale(data.maxInventory),
-        warning: data.warning,
+        quantity: this.$formatNumberToLocale(data.quantity),
+        amount: this.$formatNumberToLocale(data.amount),
+        reason: data.categoryName,
+        phoneNumber: data.phone,
       }))
     },
     reportExchangeInfo() {
@@ -404,10 +354,8 @@ export default {
   },
   methods: {
     exportExcel() {
-      this.EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION({
-        ...this.exportExcelData,
-        ...this.decentralization,
-      })
+      console.log(this.searchData)
+      this.EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(this.searchData)
     },
     ...mapActions(REPORT_EXCHANGE_DAMAGED_GOODS, [
       EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
@@ -418,7 +366,7 @@ export default {
         ...this.paginationData,
         ...event,
       }
-      this.searchData = event
+      this.searchData = { ...event }
     },
     onPaginationChange() {
       this.GET_REPORT_WAREHOUSES_INVENTORY_ACTION(this.paginationData)
@@ -426,8 +374,7 @@ export default {
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
-    onClickSearchButton(data) {
-      this.exportExcelData = { ...data }
+    onClickSearchButton() {
       this.pageNumber = 1
     },
     onPageChange(params) {

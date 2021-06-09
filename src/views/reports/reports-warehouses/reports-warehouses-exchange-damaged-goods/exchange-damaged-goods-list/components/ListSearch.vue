@@ -58,7 +58,7 @@
             style="position: absolute; right: 15px"
             class="cursor-pointer text-gray"
             scale="1.3"
-            data-clear
+            @click="fromDate = $earlyMonth"
           />
           <vue-flat-pickr
             v-model="fromDate"
@@ -91,7 +91,7 @@
             style="position: absolute; right: 15px"
             class="cursor-pointer text-gray"
             scale="1.3"
-            data-clear
+            @click="toDate = $nowDate"
           />
           <vue-flat-pickr
             v-model="toDate"
@@ -197,6 +197,7 @@ import VCardActions from '@/@core/components/v-card-actions/VCardActions.vue'
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
+import toasts from '@core/utils/toasts/toasts'
 import {
   mapActions,
   mapGetters,
@@ -256,9 +257,21 @@ export default {
       }))
     },
   },
+  watch: {
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
+  },
   mounted() {
     this.onSearch()
     this.GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION({ ...this.decentralization })
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
+    }
   },
   methods: {
     ...mapActions(REPORT_EXCHANGE_DAMAGED_GOODS, [
@@ -282,12 +295,16 @@ export default {
         reason: this.reasonSelected,
         ...this.decentralization,
       }
-      this.updateSearchData(this.searchData)
-      this.GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(this.searchData)
+      if (this.searchData.fromDate !== null && this.searchData.toDate !== null) {
+        this.updateSearchData(this.searchData)
+        this.GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(this.searchData)
+      } else {
+        toasts.error('Ngày không được để trống')
+      }
     },
     onClickSearchButton() {
       this.onSearch()
-      this.$emit('onClickSearchButton', this.searchData)
+      this.$emit('onClickSearchButton')
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)

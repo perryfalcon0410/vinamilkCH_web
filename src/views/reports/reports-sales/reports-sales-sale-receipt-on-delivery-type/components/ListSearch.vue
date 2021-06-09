@@ -8,6 +8,39 @@
     <v-card-actions
       title="điều kiện"
     >
+
+      <!-- START - Receipt Code-->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Số hóa đơn
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model="receiptCode"
+            class="h8 text-brand-3"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="receiptCode"
+              class="cursor-pointer text-gray"
+              @click="receiptCode = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Receipt Code -->
+
       <!-- START from date -->
       <b-col
         xl
@@ -83,12 +116,12 @@
         <div
           class="h8 mt-sm-1 mt-xl-0"
         >
-          Nhóm khách hàng
+          Loại giao hàng
         </div>
         <tree-select
-          v-model="customerTypesSelected"
-          :options="customerTypeOptions"
-          title="Nhóm khách hàng"
+          v-model="deliveryTypeSelected"
+          :options="deliveryTypeOptions"
+          title="Loại giao hàng"
           :searchable="false"
           no-options-text="Không có dữ liệu"
         />
@@ -112,7 +145,7 @@
           <b-form-input
             v-model="customerCode"
             class="h8 text-brand-3"
-            placeholder="Nhập mã khách hàng"
+            placeholder="Nhập họ tên/mã"
             @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append
@@ -175,20 +208,20 @@
         <b-row
           no-gutters
         >
-          <b-form-group>
-            <b-input-group>
-              <b-form-input
-                v-model="min"
-                class="h8 text-brand-3"
-                @keyup.enter="onClickSearchButton"
-              />
-              <b-form-input
-                v-model="max"
-                class="h8 text-brand-3"
-                @keyup.enter="onClickSearchButton"
-              />
-            </b-input-group>
-          </b-form-group>
+          <b-col>
+            <b-form-input
+              v-model="min"
+              class="h8 text-brand-3"
+              @keyup.enter="onClickSearchButton"
+            />
+          </b-col>
+          <b-col>
+            <b-form-input
+              v-model="max"
+              class="h8 text-brand-3"
+              @keyup.enter="onClickSearchButton"
+            />
+          </b-col>
         </b-row>
       </b-col>
       <!-- END - Income -->
@@ -226,12 +259,12 @@ import {
 import { reverseVniDate } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
-  REPORT_SALES_SALE_RECEIPT,
+  REPORT_SALES_SALE_ON_DELIVERY_TYPE,
   // GETTERS,
-  REPORT_SALES_CUSTOMER_TYPES_GETTER,
+  REPORT_SALES_DELIVERY_TYPES_GETTER,
   // ACTIONS
-  GET_CUSTOMERS_TYPES_ACTION,
-  GET_SALE_RECEIPTS_ACTION,
+  GET_SALE_ON_DELIVERY_TYPE_ACTION,
+  GET_SALES_DELIVERY_TYPES_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -240,14 +273,13 @@ export default {
   },
   data() {
     return {
-      decentralization: {
-        formId: 1,
-        ctrlId: 1,
-      },
+      formId: 5,
+      ctrlId: 7,
       // search
-      customerTypesSelected: null,
-      min: 0,
-      max: 0,
+      receiptCode: null,
+      deliveryTypeSelected: null,
+      min: null,
+      max: null,
       customerCode: null,
       phoneNumber: null,
       fromDate: this.$earlyMonth,
@@ -267,10 +299,10 @@ export default {
     // search
   },
   computed: {
-    customerTypeOptions() {
-      return this.REPORT_SALES_CUSTOMER_TYPE_GETTER().map(data => ({
+    deliveryTypeOptions() {
+      return this.GET_SALES_DELIVERY_TYPES_ACTION().map(data => ({
         id: data.id,
-        label: data.name,
+        label: data.apParamName,
       }))
     },
   },
@@ -281,13 +313,13 @@ export default {
         minDate: this.fromDate,
       }
     },
-    customerTypeOptions() {
-      this.customerTypesSelected = this.customerTypeOptions[0].id
+    deliveryTypeOptions() {
+      this.deliveryTypeSelected = this.deliveryTypeOptions[0].id
       this.onSearch()
     },
   },
   created() {
-    this.GET_CUSTOMERS_TYPES_ACTION({ ...this.decentralization })
+    this.GET_SALES_DELIVERY_TYPES_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
   },
   mounted() {
     this.configToDate = {
@@ -296,27 +328,29 @@ export default {
     }
   },
   methods: {
-    ...mapActions(REPORT_SALES_SALE_RECEIPT, [
-      GET_CUSTOMERS_TYPES_ACTION,
-      GET_SALE_RECEIPTS_ACTION,
+    ...mapActions(REPORT_SALES_SALE_ON_DELIVERY_TYPE, [
+      GET_SALE_ON_DELIVERY_TYPE_ACTION,
+      GET_SALES_DELIVERY_TYPES_ACTION,
     ]),
-    ...mapGetters(REPORT_SALES_SALE_RECEIPT, [
-      REPORT_SALES_CUSTOMER_TYPES_GETTER,
+    ...mapGetters(REPORT_SALES_SALE_ON_DELIVERY_TYPE, [
+      REPORT_SALES_DELIVERY_TYPES_GETTER,
     ]),
 
     onSearch() {
       const searchData = {
-        fromDate: reverseVniDate(this.fromDate),
-        toDate: reverseVniDate(this.toDate),
-        fromAmount: this.min,
-        toAmount: this.max,
-        customerTypeId: this.customerTypesSelected,
-        keySearch: this.customerCode,
-        phoneNumber: this.phoneNumber,
-        ...this.decentralization,
+        orderNumber: this.receiptCode, // Số hóa đơn
+        fromDate: reverseVniDate(this.fromDate), // từ ngày
+        toDate: reverseVniDate(this.toDate), // đến ngày
+        fromTotal: this.min, // nhỏ nhất
+        toTotal: this.max, // lớn nhất
+        apValue: this.deliveryTypeSelected, // loại giao hàng
+        customerKW: this.customerCode, // họ tên/mã kh
+        phoneText: this.phoneNumber, // SĐT
+        formId: this.formId,
+        ctrlId: this.ctrlId,
       }
       this.updateSearchData(searchData)
-      this.GET_SALE_RECEIPTS_ACTION(searchData)
+      this.GET_SALE_ON_DELIVERY_TYPE_ACTION(searchData)
     },
 
     onClickSearchButton() {

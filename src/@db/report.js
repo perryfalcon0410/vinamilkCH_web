@@ -15,4 +15,11 @@ export default {
     { id: '1', label: 'Offline' },
     { id: '2', label: 'Online' },
   ],
+  deliveryTypes: [
+    { id: '1', label: 'Tất cả' },
+    { id: '2', label: 'Giao tại cửa hàng ' },
+    { id: '3', label: 'Giao hàng tận nhà' },
+    { id: '4', label: 'Giao hàng đơn online' },
+    { id: '5', label: 'Giao hàng grab' },
+  ],
 }

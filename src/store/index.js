@@ -34,6 +34,7 @@ import reportSalesCat from '@/views/reports/reports-sales/reports-sales-cat/stor
 import reportSales from '@/views/reports/reports-sales/reports-sales/store-module'
 
 import reportSalesSaleReceiptPerCustomer from '@/views/reports/reports-sales/reports-sales-sale-receipt-per-customer/store-module'
+import reportSalesSaleOnDeliveryType from '@/views/reports/reports-sales/reports-sales-sale-receipt-on-delivery-type/store-module'
 // Systems
 import app from './app'
 import appConfig from './app-config'
@@ -84,6 +85,7 @@ export default new Vuex.Store({
     reportSalesAmountReceiptPerCustomers,
     reportSalesCat,
     reportSales,
+    reportSalesSaleOnDeliveryType,
   },
   strict: process.env.DEV,
 })
