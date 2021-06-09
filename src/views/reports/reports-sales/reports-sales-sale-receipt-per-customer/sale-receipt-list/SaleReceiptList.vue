@@ -65,6 +65,33 @@
           </div>
           <!-- END - Empty rows -->
 
+          <!-- START - Column filter -->
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-col
+              v-for="(item,index) in labelName"
+              :key="index"
+            >
+              <b-row
+                v-if="props.column.field === `${item.field}`"
+                class="mx-0"
+                align-h="end"
+              >
+                {{ $formatNumberToLocale(totalQuantity[index]) }}
+              </b-row>
+            </b-col>
+            <b-row
+              v-if="props.column.field === 'sumTotal'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalQuantity[totalQuantity.length-1]) }}
+            </b-row>
+          </template>
+          <!-- END - Column filter -->
+
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"
@@ -163,6 +190,8 @@ export default {
         sort: null,
       },
       // pagination
+      totalQuantity: [],
+      labelName: [],
       searchData: {},
       columns: [],
       rows: [],
@@ -199,7 +228,7 @@ export default {
     }
   },
   computed: {
-    totalInfo() {
+    getTotalInfo() {
       if (this.REPORT_SALES_SALE_RECEIPT_GETTER().totals) {
         return this.REPORT_SALES_SALE_RECEIPT_GETTER().totals
       }
@@ -235,6 +264,7 @@ export default {
   watch: {
     // add columns dynamically
     getReportSalesReceiptAmountDates() {
+      this.labelName = []
       this.columns = [...this.initalCol]
       this.getReportSalesReceiptAmountDates.forEach((item, index) => {
         const obj = {
@@ -247,6 +277,7 @@ export default {
           thClass: 'text-right',
           tdClass: 'text-right',
         }
+        this.labelName.push(obj)
         this.columns.push(obj)
       })
       this.columns.push(this.lastCol)
@@ -258,12 +289,21 @@ export default {
       for (let i = 0; i <= this.rows.length - 1; i += 1) {
         for (let j = 3; j <= this.getReportSalesReceiptAmountPrice[i].length - 1; j += 1) {
           if (j < this.getReportSalesReceiptAmountPrice[i].length - 1) {
-            this.rows[i][j] = this.getReportSalesReceiptAmountPrice[i][j]
+            this.rows[i][j] = this.$formatNumberToLocale(this.getReportSalesReceiptAmountPrice[i][j])
           } else {
             this.rows[i].sumTotal = this.getReportSalesReceiptAmountPrice[i][j]
           }
         }
       }
+    },
+
+    getTotalInfo() {
+      this.totalQuantity = []
+      this.getTotalInfo.forEach((item, index) => {
+        if (index > 2) {
+          this.totalQuantity.push(item)
+        }
+      })
     },
   },
   mounted() {

@@ -175,20 +175,20 @@
         <b-row
           no-gutters
         >
-          <b-col>
-            <b-form-input
-              v-model="min"
-              class="h8 text-brand-3"
-              @keyup.enter="onClickSearchButton"
-            />
-          </b-col>
-          <b-col>
-            <b-form-input
-              v-model="max"
-              class="h8 text-brand-3"
-              @keyup.enter="onClickSearchButton"
-            />
-          </b-col>
+          <b-form-group>
+            <b-input-group>
+              <b-form-input
+                v-model="min"
+                class="h8 text-brand-3"
+                @keyup.enter="onClickSearchButton"
+              />
+              <b-form-input
+                v-model="max"
+                class="h8 text-brand-3"
+                @keyup.enter="onClickSearchButton"
+              />
+            </b-input-group>
+          </b-form-group>
         </b-row>
       </b-col>
       <!-- END - Income -->
@@ -281,17 +281,19 @@ export default {
         minDate: this.fromDate,
       }
     },
+    customerTypeOptions() {
+      this.customerTypesSelected = this.customerTypeOptions[0].id
+      this.onSearch()
+    },
+  },
+  created() {
+    this.GET_CUSTOMERS_TYPES_ACTION({ ...this.decentralization })
   },
   mounted() {
-    this.GET_CUSTOMERS_TYPES_ACTION({ ...this.decentralization })
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
     }
-  },
-  beforeUpdate() {
-    this.customerTypesSelected = this.customerTypeOptions[0].id
-    this.onSearch()
   },
   methods: {
     ...mapActions(REPORT_SALES_SALE_RECEIPT, [
