@@ -8,3 +8,4 @@ export const exportExcelEndpoint = `${REPORTS}${SELLS}/export`
 export const getProductCatsEndpoint = `${SALES}${PRODUCTS}/all-product-cat`
 export const getProductsEndpoint = `${SALES}${PRODUCTS}/choose-product`
 export const getBillCollectorsEndpoint = `${REPORTS}${SELLS}/get-data-user`
+export const printReportSalesEndpoint = `${REPORTS}${SELLS}/print`

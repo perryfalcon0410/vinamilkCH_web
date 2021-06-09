@@ -11,13 +11,13 @@
     >
       <div class="d-flex flex-column">
         <strong style="font-size: 17px;">
-          CH GTSP Hải Dương
+          {{ reportSalesShopData.shopName }}
         </strong>
         <p class="mt-1">
-          Add: 8 Hoàng Hoa Thám - Hải Dương
+          Add : {{ reportSalesShopData.address }}
         </p>
         <p>
-          Tel: (84.320) 3 838 399
+          Tel : {{ reportSalesShopData.tel }}
         </p>
       </div>
 
@@ -26,10 +26,10 @@
           Báo cáo bán hàng
         </strong>
         <p class="my-1">
-          Từ ngày 01/02/2021 đến 23/04/2021
+          Từ ngày: {{ reportSalesInfoData.fromDate }} Đến ngày: {{ reportSalesInfoData.toDate }}
         </p>
         <p>
-          Ngày in : 23/04/2021 - 11:33:28AM
+          Ngày in : {{ reportSalesInfoData.dateOfPrinting }}
         </p>
       </div>
 
@@ -54,27 +54,117 @@
       align-v="end"
       style="background-color: gray"
     >
-      <div>
-        Tổng số HĐ: <strong>12</strong>
+      <div class="col-5">
+        Tổng số HĐ: <strong>{{ reportSalesInfoData.someBills }}</strong>
       </div>
-      <div>Tổng cộng: <strong>29</strong> </div>
-      <strong>504,161</strong>
-      <strong>31,000</strong>
-      <strong>470,061</strong>
+      <div class="col-4">Tổng cộng: <strong>{{ reportSalesInfoData.totalQuantity }}</strong> </div>
+      <strong class="text-right">{{ reportSalesInfoData.totalTotal }}</strong>
+      <strong class="text-right">{{ reportSalesInfoData.totalPromotion }}</strong>
+      <strong class="text-right">{{ reportSalesInfoData.totalPay }}</strong>
     </b-row>
     <!-- END - Total view -->
 
-    <!-- START - Table -->
-    <vue-good-table
-      :columns="columns"
-      :rows="rows"
-      style-class="vgt-table bordered"
-      line-numbers
-      :sort-options="{
-        enabled: false,
-      }"
-    />
-    <!-- END - Table -->
+    <!-- START - Table 1 -->
+
+    <table
+      class="mt-1"
+    >
+      <thead>
+        <!-- START - Header -->
+        <tr>
+          <th
+            style="width: 1%"
+            class="px-1"
+          >
+            STT
+          </th>
+          <th class="px-1">
+            Mã HĐ
+          </th>
+          <th class="px-1">
+            Mã KH
+          </th>
+          <th class="px-1">
+            Tên KH
+          </th>
+          <th class="text-right px-2">
+            Ngành
+          </th>
+          <th class="text-right px-1">
+            Mã SP
+          </th>
+          <th class="text-right px-1 w-15">
+            Tên SP
+          </th>
+          <th class="text-right px-1">
+            ĐVT
+          </th>
+          <th class="text-right px-1">
+            SL
+          </th>
+          <th class="text-right px-1">
+            Giá
+          </th>
+          <th class="text-right px-1">
+            T.Tiền
+          </th>
+          <th class="text-right px-1">
+            KM chưa VAT
+          </th>
+          <th class="text-right px-1">
+            Thanh toán
+          </th>
+        </tr>
+        <!-- END - Header -->
+      </thead>
+      <tbody>
+        <tr
+          v-for="(products, index) in reportSalesData"
+          :key="products.productCode"
+        >
+          <td class="px-1">
+            {{ index + 1 }}
+          </td>
+          <td class="px-1">
+            {{ products.orderNumber }}
+          </td>
+          <td class="px-1">
+            {{ products.customerCode }}
+          </td>
+          <td class="px-1">
+            {{ products.customerName }}
+          </td>
+          <td class="px-1">
+            {{ products.industry }}
+          </td>
+          <td class="px-1">
+            {{ products.productCode }}
+          </td>
+          <td class="px-1">
+            {{ products.productName }}
+          </td>
+          <td class="px-1">
+            {{ products.unit }}
+          </td>
+          <td class="text-right px-1">
+            {{ $formatNumberToLocale(products.quantity) }}
+          </td>
+          <td class="text-right px-1">
+            {{ $formatNumberToLocale(products.price) }}
+          </td>
+          <td class="text-right px-1">
+            {{ $formatNumberToLocale(products.total) }}
+          </td>
+          <td class="text-right px-1">
+            {{ $formatNumberToLocale(products.promotion) }}
+          </td>
+          <td class="text-right px-1">
+            {{ $formatNumberToLocale(products.pay) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- END - Table 1 -->
 
     <!-- START - Fotter -->
     <b-row
@@ -95,80 +185,74 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import {
+  REPORT_SALES,
+  // Getters
+  PRINT_REPORT_SALES_GETTER,
+} from '@/views/reports/reports-sales/reports-sales/store-module/type'
+
 export default {
-  props: {
-    rows: {
-      type: Array,
-      default: () => [],
+  computed: {
+    ...mapGetters(REPORT_SALES, [PRINT_REPORT_SALES_GETTER]),
+
+    reportSalesShopData() {
+      if (this.PRINT_REPORT_SALES_GETTER.info) {
+        return this.PRINT_REPORT_SALES_GETTER.info
+      }
+      return {
+        shopName: 'name',
+        address: 'addres',
+        phone: 'phone',
+      }
+    },
+    reportSalesInfoData() {
+      if (this.PRINT_REPORT_SALES_GETTER.info) {
+        return this.PRINT_REPORT_SALES_GETTER.info
+      }
+      return {
+        fromDate: 'fromDate',
+        toDate: 'toDate',
+        dateOfPrinting: 'dateOfPrinting',
+        someBills: 'someBills',
+        totalQuantity: 'totalQuantity',
+        totalTotal: 'totalTotal',
+        totalPromotion: 'totalPromotion',
+        totalPay: 'totalPay',
+      }
+    },
+    reportSalesData() {
+      if (this.PRINT_REPORT_SALES_GETTER.response) {
+        return this.PRINT_REPORT_SALES_GETTER.response
+      }
+      return null
     },
   },
 
-  data() {
-    return {
-      columns: [
-        {
-          label: 'Mã khách hàng',
-          field: 'customerCode',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Họ tên',
-          field: 'nameText',
-          width: '140px',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Điện thoại',
-          field: 'mobiPhone',
-          type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Ngày sinh',
-          field: 'dob',
-          type: 'date',
-          dateInputFormat: 'dd/MM/yyyy',
-          dateOutputFormat: 'dd/MM/yyyy',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Giới tính',
-          field: 'genderId',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Trạng thái',
-          field: 'status',
-          type: 'boolean',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Nhóm',
-          field: 'customerTypeId',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Ngày tạo',
-          field: 'createdAt',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-      ],
-    }
+  updated() {
+    window.print()
   },
+
 }
 </script>
 <style lang="scss" scoped>
-table, th, td {
-border-style: solid !important;
+table {
+  width: 100%;
 }
-// END - Layout Table
-
+th {
+  border-style: solid;
+  border-width: 2px;
+}
+td, .td {
+  border-style: dotted;
+  border-width: 2px;
+}
+</style>
+<style type="text/css" media="print">
+    @page {
+        margin-top: 0;
+        margin-bottom: 0;
+        size: landscape;
+    }
 </style>

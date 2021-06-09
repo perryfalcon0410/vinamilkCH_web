@@ -5,6 +5,7 @@
   >
     <!-- START - Search -->
     <reports-sales-list-search
+      class="d-print-none"
       @updatePageElement="updatePageNumber"
       @updateSearchData="paginationData = {
         ...paginationData,
@@ -13,7 +14,7 @@
     <!-- END - Search -->
 
     <!-- START - Report Output list -->
-    <b-form class="bg-white rounded shadow rounded my-1">
+    <b-form class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
@@ -26,6 +27,7 @@
           <b-button
             class="rounded btn-brand-1"
             variant="someThing"
+            @click="onClickPrintButton"
           >
             <b-icon-printer-fill class="mr-50" />
             In
@@ -93,7 +95,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ totalPacketQuantity }}
+              {{ total }}
             </b-row>
             <b-row
               v-show="salesPagination.totalElements"
@@ -101,7 +103,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ totalOddQuantity }}
+              {{ totalPromotion }}
             </b-row>
             <b-row
               v-show="salesPagination.totalElements"
@@ -109,7 +111,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ amount }}
+              {{ totalAmount }}
             </b-row>
           </template>
           <!-- START - Column filter -->
@@ -174,6 +176,10 @@
       <!-- END - Table -->
     </b-form>
     <!-- END - Report Output list -->
+
+    <!-- STAT - Print form -->
+    <print-form-report-sales />
+    <!-- END - Print form -->
   </b-container>
 </template>
 
@@ -186,6 +192,7 @@ import {
 import {
   formatISOtoVNI, formatNumberToLocale, reverseVniDate, replaceDotWithComma,
 } from '@core/utils/filter'
+import PrintFormReportSales from '@core/components/print-form/PrintFormReportSales.vue'
 import ReportsSalesListSearch from './components/ReportsSalesListSearch.vue'
 import {
   REPORT_SALES,
@@ -194,11 +201,13 @@ import {
   // ACTIONS
   GET_REPORT_SALES_ACTION,
   EXPORT_REPORT_SALES_ACTION,
+  PRINT_REPORT_SALES_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
     ReportsSalesListSearch,
+    PrintFormReportSales,
   },
 
   data() {
@@ -415,6 +424,9 @@ export default {
     total() {
       return replaceDotWithComma(formatNumberToLocale(Number(this.sales.reduce((accum, item) => accum + Number(item.total), 0))))
     },
+    totalPromotion() {
+      return replaceDotWithComma(formatNumberToLocale(Number(this.sales.reduce((accum, item) => accum + Number(item.promotion), 0))))
+    },
     totalAmount() {
       return replaceDotWithComma(formatNumberToLocale(Number(this.sales.reduce((accum, item) => accum + Number(item.amount), 0))))
     },
@@ -446,6 +458,7 @@ export default {
     ...mapActions(REPORT_SALES, [
       GET_REPORT_SALES_ACTION,
       EXPORT_REPORT_SALES_ACTION,
+      PRINT_REPORT_SALES_ACTION,
     ]),
 
     onPaginationChange() {
@@ -464,22 +477,44 @@ export default {
     },
     onClickExcelExportButton() {
       this.EXPORT_REPORT_SALES_ACTION({
-        collecter: this.billCollectorSelected,
-        customerKW: this.customer?.trim(),
-        fromDate: reverseVniDate(this.fromDate),
-        toDate: reverseVniDate(this.toDate),
-        fromInvoiceSales: this.minIncome,
-        toInvoiceSales: this.maxIncome,
-        orderNumber: this.redInvoiceNo?.trim(),
-        phoneNumber: this.phoneNumber?.trim(),
-        productKW: this.productCodes?.trim(),
-        salesChannel: this.saleChannelSelected,
+        collecter: this.paginationData.collecter,
+        customerKW: this.paginationData.customerKW?.trim(),
+        fromDate: reverseVniDate(this.paginationData.fromDate),
+        toDate: reverseVniDate(this.paginationData.toDate),
+        fromInvoiceSales: this.paginationData.fromInvoiceSales,
+        toInvoiceSales: this.paginationData.toInvoiceSales,
+        orderNumber: this.paginationData.orderNumber?.trim(),
+        phoneNumber: this.paginationData.phoneNumber?.trim(),
+        productKW: this.paginationData.productKW?.trim(),
+        salesChannel: this.paginationData.salesChannel,
         formId: 1,
         ctrlId: 1,
       })
     },
     updatePageNumber() {
       this.pageNumber = 1
+    },
+    onClickPrintButton() {
+      console.log(this.paginationData)
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_REPORT_SALES_ACTION({
+        collecter: this.paginationData.collecter,
+        customerKW: this.paginationData.customerKW?.trim(),
+        fromDate: reverseVniDate(this.paginationData.fromDate),
+        toDate: reverseVniDate(this.paginationData.toDate),
+        fromInvoiceSales: this.paginationData.fromInvoiceSales,
+        toInvoiceSales: this.paginationData.toInvoiceSales,
+        orderNumber: this.paginationData.orderNumber?.trim(),
+        phoneNumber: this.paginationData.phoneNumber?.trim(),
+        productKW: this.paginationData.productKW?.trim(),
+        salesChannel: this.paginationData.salesChannel,
+        formId: 1,
+        ctrlId: 1,
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
     },
   },
 }

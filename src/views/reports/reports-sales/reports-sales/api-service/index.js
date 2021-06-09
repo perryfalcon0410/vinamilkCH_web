@@ -6,6 +6,7 @@ import {
   getProductCatsEndpoint,
   getProductsEndpoint,
   getBillCollectorsEndpoint,
+  printReportSalesEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -32,6 +33,11 @@ export default {
   },
   getBillCollectors(args) {
     return axios.get(getBillCollectorsEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  printReportSales(args) {
+    return axios.get(printReportSalesEndpoint, {
       params: formatURLParams(args),
     })
   },

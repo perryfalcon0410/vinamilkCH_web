@@ -9,6 +9,7 @@ import {
   PRODUCTS_GETTER,
   PRODUCT_CATS_GETTER,
   BILL_COLLECTORS_GETTER,
+  PRINT_REPORT_SALES_GETTER,
   // MUTATIONS
   CLEAR_ALL_PRODUCTS_CHECKED_MUTATION,
   // ACTIONS
@@ -17,6 +18,7 @@ import {
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_CATS_ACTION,
   GET_BILL_COLLECTORS_ACTION,
+  PRINT_REPORT_SALES_ACTION,
 } from './type'
 
 export default {
@@ -28,6 +30,7 @@ export default {
     productCatData: [],
     selectedProductRow: [],
     billCollectors: [],
+    printReportSalesData: {},
   },
 
   getters: {
@@ -42,6 +45,9 @@ export default {
     },
     [BILL_COLLECTORS_GETTER](state) {
       return state.billCollectors
+    },
+    [PRINT_REPORT_SALES_GETTER](state) {
+      return state.printReportSalesData
     },
   },
 
@@ -119,6 +125,22 @@ export default {
         .then(res => {
           if (res.success) {
             state.billCollectors = res.data || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_REPORT_SALES_ACTION]({ state }, val) {
+      ReportsSalesServices
+        .printReportSales(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printReportSalesData = res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }
