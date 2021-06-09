@@ -459,7 +459,7 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: 1, size: params.currentPerPage })
+      this.updatePaginationData({ size: params.currentPerPage })
       this.onPaginationChange()
     },
     onClickExcelExportButton() {
