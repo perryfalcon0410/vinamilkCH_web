@@ -5,6 +5,7 @@ import {
   exportExcelEndpoint,
   getProductCatsEndpoint,
   getProductsEndpoint,
+  getBillCollectorsEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -26,6 +27,11 @@ export default {
   },
   getProductCats(args) {
     return axios.get(getProductCatsEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getBillCollectors(args) {
+    return axios.get(getBillCollectorsEndpoint, {
       params: formatURLParams(args),
     })
   },

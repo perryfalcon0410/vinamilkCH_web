@@ -18,6 +18,7 @@
       <b-form-input
         v-model="redInvoiceNo"
         class="h8"
+        maxlength="40"
         placeholder="Nhập số hóa đơn"
         @keyup.enter="onClickSearchButton"
       />
@@ -181,6 +182,7 @@
       <b-form-input
         v-model="customer"
         class="h8"
+        maxlength="200"
         placeholder="Nhập họ tên/mã"
         @keyup.enter="onClickSearchButton"
       />
@@ -201,8 +203,10 @@
       <b-form-input
         v-model="phoneNumber"
         class="h8"
+        maxlength="10"
         placeholder="Nhập SĐT khách hàng"
         @keyup.enter="onClickSearchButton"
+        @keypress="$onlyNumberInput"
       />
     </b-col>
     <!-- END - Phone number -->
@@ -225,14 +229,20 @@
           <b-form-input
             v-model="minIncome"
             class="h8"
+            :number="true"
+            maxlength="12"
             @keyup.enter="onClickSearchButton"
+            @keypress="$onlyNumberInput"
           />
         </b-col>
         <b-col>
           <b-form-input
             v-model="maxIncome"
             class="h8"
+            :number="true"
+            maxlength="12"
             @keyup.enter="onClickSearchButton"
+            @keypress="$onlyNumberInput"
           />
         </b-col>
       </b-row>
@@ -277,11 +287,13 @@
 <script>
 import reportData from '@/@db/report'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { reverseVniDate } from '@/@core/utils/filter'
 import {
   REPORT_SALES,
+  BILL_COLLECTORS_GETTER,
   GET_REPORT_SALES_ACTION,
+  GET_BILL_COLLECTORS_ACTION,
 } from '../../store-module/type'
 import FindProductModal from './FindProductModal.vue'
 
@@ -298,14 +310,13 @@ export default {
       toDate: this.$nowDate,
       redInvoiceNo: null,
       productCodes: null,
-      billCollectorSelected: reportData.saleChannels[0].id,
-      billCollectorOptions: reportData.saleChannels,
+      billCollectorSelected: null,
       customer: null,
       phoneNumber: null,
       saleChannelSelected: reportData.saleChannels[0].id,
       saleChannelOptions: reportData.saleChannels,
-      minIncome: 0,
-      maxIncome: 0,
+      minIncome: null,
+      maxIncome: null,
 
       configFromDate: {
         wrap: true,
@@ -321,6 +332,18 @@ export default {
     }
   },
 
+  computed: {
+    ...mapGetters(REPORT_SALES, [
+      BILL_COLLECTORS_GETTER,
+    ]),
+    billCollectorOptions() {
+      return this.BILL_COLLECTORS_GETTER.map(data => ({
+        id: data.id,
+        label: data.fullName,
+      }))
+    },
+  },
+
   watch: {
     fromDate() {
       this.configToDate = {
@@ -328,6 +351,10 @@ export default {
         minDate: this.fromDate,
       }
     },
+  },
+
+  beforeMount() {
+    this.GET_BILL_COLLECTORS_ACTION({ formId: 1, ctrlId: 1 })
   },
 
   mounted() {
@@ -341,6 +368,7 @@ export default {
   methods: {
     ...mapActions(REPORT_SALES, [
       GET_REPORT_SALES_ACTION,
+      GET_BILL_COLLECTORS_ACTION,
     ]),
     onSelectProductModalClick() {
       this.selectProductModalVisible = !this.selectProductModalVisible

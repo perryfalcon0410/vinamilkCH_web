@@ -1,11 +1,14 @@
 import ReportsSalesServices from '@/views/reports/reports-sales/reports-sales/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
+import FileSaver from 'file-saver'
+import moment from 'moment'
 
 import {
   // GETTERS
   REPORT_SALES_GETTER,
   PRODUCTS_GETTER,
   PRODUCT_CATS_GETTER,
+  BILL_COLLECTORS_GETTER,
   // MUTATIONS
   CLEAR_ALL_PRODUCTS_CHECKED_MUTATION,
   // ACTIONS
@@ -13,6 +16,7 @@ import {
   EXPORT_REPORT_SALES_ACTION,
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_CATS_ACTION,
+  GET_BILL_COLLECTORS_ACTION,
 } from './type'
 
 export default {
@@ -23,6 +27,7 @@ export default {
     productData: {},
     productCatData: [],
     selectedProductRow: [],
+    billCollectors: [],
   },
 
   getters: {
@@ -34,6 +39,9 @@ export default {
     },
     [PRODUCT_CATS_GETTER](state) {
       return state.productCatData
+    },
+    [BILL_COLLECTORS_GETTER](state) {
+      return state.billCollectors
     },
   },
 
@@ -50,7 +58,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.Sales = res.data.response
+            state.reportSales = res.data.response
           } else {
             throw new Error(res.statusValue)
           }
@@ -62,20 +70,11 @@ export default {
     [EXPORT_REPORT_SALES_ACTION]({}, val) {
       ReportsSalesServices
         .exportReportSales(val)
+        .then(response => response.data)
         .then(res => {
-          if (res.status === 200 && res.data != null) {
-            const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' })
-            if (window.navigator.msSaveOrOpenBlob) {
-              window.navigator.msSaveOrOpenBlob(blob, 'Bán hàng_Filled')
-            } else {
-              const elem = window.document.createElement('a')
-              elem.href = window.URL.createObjectURL(blob)
-              elem.download = 'Bán hàng_Filled'
-              document.body.appendChild(elem)
-              elem.click()
-              document.body.removeChild(elem)
-            }
-          }
+          const fileName = `Báo cáo bán hàng_Filled_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
           toasts.error(error.message)
@@ -104,6 +103,22 @@ export default {
         .then(res => {
           if (res.success) {
             state.productCatData = res.data || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+
+    [GET_BILL_COLLECTORS_ACTION]({ state }, val) {
+      ReportsSalesServices
+        .getBillCollectors(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.billCollectors = res.data || []
           } else {
             throw new Error(res.statusValue)
           }
