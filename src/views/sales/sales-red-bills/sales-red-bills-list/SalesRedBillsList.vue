@@ -336,9 +336,9 @@
           >
             <div v-if="props.column.field === 'numberBill'">
               <b-form-input
-                v-model="props.row.numberBill"
+                v-model="listRedBill[props.row.originalIndex].numberBill"
                 maxlength="50"
-                :value="props.row.numberBill"
+                :value="listRedBill[props.row.originalIndex].numberBill"
               />
             </div>
             <div v-else>
@@ -684,7 +684,6 @@ export default {
       this.onSearch()
       this.pageNumber = 1
     },
-
     // auto select rows when focus feld oderNumber
     focusRows(params) {
       if (params.column.field === 'numberBill') {
@@ -757,6 +756,9 @@ export default {
       }
     },
     onClickUpdateRedBills() {
+      this.selectedRedBillRows.forEach((data, index) => {
+        this.selectedRedBillRows[index].numberBill = this.listRedBill.find(item => item.id === data.id).numberBill
+      })
       const redInvoiceRequests = this.selectedRedBillRows.map(data => ({
         id: data.id,
         invoiceNumber: data.numberBill,
@@ -767,6 +769,7 @@ export default {
           this.onSearchClick()
         },
       })
+      this.selectedRedBillRows = []
     },
   },
 }
