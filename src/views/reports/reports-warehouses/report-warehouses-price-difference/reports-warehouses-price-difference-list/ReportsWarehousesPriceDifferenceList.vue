@@ -6,7 +6,6 @@
 
     <!-- START - Search -->
     <reports-warehouses-output-list-search
-      :per-page-size="paginationData.size"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />
@@ -166,10 +165,6 @@ import {
 
 import commonData from '@/@db/common'
 import {
-  formatISOtoVNI,
-  reverseVniDate,
-} from '@/@core/utils/filter'
-import {
   resizeAbleTable,
 } from '@core/utils/utils'
 import ReportsWarehousesOutputListSearch from './components/ReportsWarehousesOutputListSearch.vue'
@@ -188,14 +183,7 @@ export default {
   },
   data() {
     return {
-      searchData: {
-        fromTransDate: reverseVniDate(this.$earlyMonth),
-        toTransDate: reverseVniDate(this.$nowDate),
-        fromOrderDate: reverseVniDate(this.$earlyMonth),
-        toOrderDate: reverseVniDate(this.$nowDate),
-        productCodes: '',
-        licenseNumber: '',
-      },
+      searchData: {},
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
       paginationData: {
@@ -332,8 +320,8 @@ export default {
           redInvoiceNo: data.redInvoiceNo,
           poNumber: data.poNumber,
           internalNumber: data.internalNumber,
-          transDate: formatISOtoVNI(data.transDate),
-          orderDate: formatISOtoVNI(data.orderDate),
+          transDate: this.$formatISOtoVNI(data.transDate),
+          orderDate: this.$formatISOtoVNI(data.orderDate),
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
@@ -382,17 +370,6 @@ export default {
       GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
       EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
     ]),
-    onClickSearchButton(searchvalue) {
-      const {
-        fromTransDate, toTransDate, toOrderDate, fromOrderDate, productCodes, licenseNumber,
-      } = searchvalue
-      this.searchData.toTransDate = reverseVniDate(toTransDate)
-      this.searchData.fromTransDate = reverseVniDate(fromTransDate)
-      this.searchData.toOrderDate = reverseVniDate(toOrderDate)
-      this.searchData.fromOrderDate = reverseVniDate(fromOrderDate)
-      this.searchData.productCodes = productCodes
-      this.searchData.licenseNumber = licenseNumber
-    },
 
     onClickExcelExportButton() {
       this.EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION({ ...this.decentralization, ...this.searchData })
@@ -404,6 +381,7 @@ export default {
         ...this.paginationData,
         ...event,
       }
+      this.searchData = event
       this.pageNumber = 1
     },
     onPaginationChange() {

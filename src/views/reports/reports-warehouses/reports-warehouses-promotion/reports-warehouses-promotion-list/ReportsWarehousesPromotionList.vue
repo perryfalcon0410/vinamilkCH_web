@@ -6,7 +6,6 @@
 
     <!-- START - Search -->
     <reports-warehouses-promotion-list-search
-      :per-page-size="paginationData.size"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />

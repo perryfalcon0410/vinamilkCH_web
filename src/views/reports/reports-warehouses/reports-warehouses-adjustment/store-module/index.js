@@ -6,13 +6,13 @@ import moment from 'moment'
 import {
   // Getters
   REPORT_WAREHOUSES_ADJUSTMENTS_GETTER,
-  PRODUCT_LISTS_GETTER,
-  PRODUCT_CAT_LISTS_GETTER,
+  PRODUCT_GETTER,
+  PRODUCT_CAT_GETTER,
 
   // Actions
   GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION,
-  GET_PRODUCT_LISTS_ACTION,
-  GET_PRODUCT_CAT_LISTS_ACTION,
+  GET_PRODUCT_ACTION,
+  GET_PRODUCT_CAT_ACTION,
   EXPORT_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION,
 } from './type'
 
@@ -27,10 +27,10 @@ export default {
     [REPORT_WAREHOUSES_ADJUSTMENTS_GETTER](state) {
       return state.adjustmentData
     },
-    [PRODUCT_LISTS_GETTER](state) {
+    [PRODUCT_GETTER](state) {
       return state.productData
     },
-    [PRODUCT_CAT_LISTS_GETTER](state) {
+    [PRODUCT_CAT_GETTER](state) {
       return state.productCatData
     },
   },
@@ -52,7 +52,7 @@ export default {
         })
     },
 
-    [GET_PRODUCT_LISTS_ACTION]({ state }, val) {
+    [GET_PRODUCT_ACTION]({ state }, val) {
       ReportService
         .getProductLists(val)
         .then(response => response.data)
@@ -68,7 +68,7 @@ export default {
         })
     },
 
-    [GET_PRODUCT_CAT_LISTS_ACTION]({ state }, val) {
+    [GET_PRODUCT_CAT_ACTION]({ state }, val) {
       ReportService
         .getProductCatlists(val)
         .then(response => response.data)
@@ -88,13 +88,9 @@ export default {
         .exportsWarehousesAdjustment(val)
         .then(response => response.data)
         .then(res => {
-          if (res.success) {
-            const fileName = `Bao_cao_nhap_xuat_dieu_chinh_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
-            const blob = new Blob([res], { type: 'data:application/xlsx' })
-            FileSaver.saveAs(blob, fileName)
-          } else {
-            throw new Error(res.statusValue)
-          }
+          const fileName = `Bao_cao_nhap_xuat_dieu_chinh_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
           toasts.error(error.message)

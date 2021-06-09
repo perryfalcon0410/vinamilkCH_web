@@ -164,12 +164,6 @@ export default {
     VCardActions,
     FindProductModal,
   },
-  props: {
-    perPageSize: {
-      type: Number,
-      default: 20,
-    },
-  },
   data() {
     return {
       selectProductModalVisible: false,

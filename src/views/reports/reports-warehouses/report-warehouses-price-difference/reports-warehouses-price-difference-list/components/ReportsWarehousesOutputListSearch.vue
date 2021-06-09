@@ -262,12 +262,6 @@ export default {
     VCardActions,
     ProductSelectModal,
   },
-  props: {
-    perPageSize: {
-      type: Number,
-      default: 20,
-    },
-  },
   data() {
     return {
       selectProductModalVisible: false,
@@ -372,16 +366,7 @@ export default {
       this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION(searchData)
     },
     onClickSearchButton() {
-      const searchData = {
-        fromTransDate: this.fromDate,
-        toTransDate: this.toDate,
-        productCodes: this.ids,
-        fromOrderDate: this.fromOrderDate,
-        toOrderDate: this.toOrderDate,
-        licenseNumber: this.licenseNumber,
-      }
       this.onSearch()
-      this.$emit('onClickSearchButton', searchData)
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)

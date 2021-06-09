@@ -266,11 +266,11 @@ import {
 import commonData from '@/@db/common'
 import {
   REPORT_WAREHOUSES_PROMOTIONS,
-  PRODUCT_CAT_LISTS_GETTER,
-  PRODUCT_LISTS_GETTER,
+  PRODUCT_CAT_GETTER,
+  PRODUCT_GETTER,
   // Actions
-  GET_PRODUCT_LISTS_ACTIONS,
-  GET_PRODUCT_CAT_LISTS_ACTIONS,
+  GET_PRODUCT_ACTION,
+  GET_PRODUCT_CAT_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -336,12 +336,12 @@ export default {
   },
   computed: {
     ...mapGetters(REPORT_WAREHOUSES_PROMOTIONS, [
-      PRODUCT_LISTS_GETTER,
-      PRODUCT_CAT_LISTS_GETTER,
+      PRODUCT_GETTER,
+      PRODUCT_CAT_GETTER,
     ]),
     productCats() {
-      if (this.PRODUCT_CAT_LISTS_GETTER) {
-        return this.PRODUCT_CAT_LISTS_GETTER.map(data => ({
+      if (this.PRODUCT_CAT_GETTER) {
+        return this.PRODUCT_CAT_GETTER.map(data => ({
           id: data.id,
           label: data.productInfoName,
         }))
@@ -349,14 +349,14 @@ export default {
       return []
     },
     productsPagination() {
-      if (this.PRODUCT_LISTS_GETTER) {
-        return this.PRODUCT_LISTS_GETTER
+      if (this.PRODUCT_GETTER) {
+        return this.PRODUCT_GETTER
       }
       return {}
     },
     getProducts() {
-      if (this.PRODUCT_LISTS_GETTER.content) {
-        return this.PRODUCT_LISTS_GETTER.content.map(data => ({
+      if (this.PRODUCT_GETTER.content) {
+        return this.PRODUCT_GETTER.content.map(data => ({
           // stt: index + 1,
           productName: data.productName,
           productCode: data.productCode,
@@ -410,10 +410,10 @@ export default {
   },
   mounted() {
     resizeAbleTable()
-    this.GET_PRODUCT_CAT_LISTS_ACTIONS({
+    this.GET_PRODUCT_CAT_ACTION({
       ...this.decentralization,
     })
-    this.GET_PRODUCT_LISTS_ACTIONS({
+    this.GET_PRODUCT_ACTION({
       ...this.decentralization,
       ...this.paginationData,
     })
@@ -421,8 +421,8 @@ export default {
 
   methods: {
     ...mapActions(REPORT_WAREHOUSES_PROMOTIONS, [
-      GET_PRODUCT_LISTS_ACTIONS,
-      GET_PRODUCT_CAT_LISTS_ACTIONS,
+      GET_PRODUCT_ACTION,
+      GET_PRODUCT_CAT_ACTION,
     ]),
     onModalClose() {
       this.$emit('onModalClose')
@@ -431,7 +431,7 @@ export default {
       this.$emit('onSaveClick', this.selectedProductRow)
     },
     onPaginationChange() {
-      this.GET_PRODUCT_LISTS_ACTIONS({
+      this.GET_PRODUCT_ACTION({
         ...this.paginationData,
         ...this.decentralization,
         ...this.searchOptions,
@@ -451,7 +451,7 @@ export default {
       this.onPaginationChange()
     },
     onSearchClick() {
-      this.GET_PRODUCT_LISTS_ACTIONS({
+      this.GET_PRODUCT_ACTION({
         ...this.decentralization,
         ...this.searchOptions,
         catId: this.prodcutCatSelected,

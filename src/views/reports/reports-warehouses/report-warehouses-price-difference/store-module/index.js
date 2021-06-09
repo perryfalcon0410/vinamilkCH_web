@@ -6,12 +6,12 @@ import moment from 'moment'
 import {
   // GETTERS
   GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER,
-  PRODUCT_LISTS_GETTER,
-  PRODUCT_CAT_LISTS_GETTER,
+  PRODUCT_GETTER,
+  PRODUCT_CAT_GETTER,
   // ACTIONS
   GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
-  GET_PRODUCT_LISTS_ACTION,
-  GET_PRODUCT_CAT_LISTS_ACTION,
+  GET_PRODUCT_ACTION,
+  GET_PRODUCT_CAT_ACTION,
   EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
 } from './type'
 
@@ -28,10 +28,10 @@ export default {
     [GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER](state) {
       return state.differencePrices
     },
-    [PRODUCT_LISTS_GETTER](state) {
+    [PRODUCT_GETTER](state) {
       return state.productData
     },
-    [PRODUCT_CAT_LISTS_GETTER](state) {
+    [PRODUCT_CAT_GETTER](state) {
       return state.productCatData
     },
   },
@@ -55,7 +55,7 @@ export default {
         })
     },
 
-    [GET_PRODUCT_LISTS_ACTION]({ state }, val) {
+    [GET_PRODUCT_ACTION]({ state }, val) {
       DifferencePriceServices
         .getProductLists(val)
         .then(response => response.data)
@@ -71,7 +71,7 @@ export default {
         })
     },
 
-    [GET_PRODUCT_CAT_LISTS_ACTION]({ state }, val) {
+    [GET_PRODUCT_CAT_ACTION]({ state }, val) {
       DifferencePriceServices
         .getProductCatlists(val)
         .then(response => response.data)

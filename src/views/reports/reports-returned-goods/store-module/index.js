@@ -5,8 +5,8 @@ import moment from 'moment'
 import {
   // GETTERS
   REPORT_RETURNED_GOODS_GETTER,
-  PRODUCT_LISTS_GETTER,
-  PRODUCT_CAT_LISTS_GETTER,
+  PRODUCT_GETTER,
+  PRODUCT_CAT_GETTER,
   PRINT_INPUT_ORDER_DETIAL_GETTER, // temp
   PRINT_SELLS_GETTER, // temp
   PRINT_RETURN_GOODS_GETTER,
@@ -15,8 +15,8 @@ import {
   // ACTIONS
   GET_REPORT_RETURNED_GOODS_ACTION,
   EXPORT_REPORT_RETURNED_GOODS_ACTION,
-  GET_PRODUCT_LISTS_ACTIONS,
-  GET_PRODUCT_CAT_LISTS_ACTIONS,
+  GET_PRODUCT_ACTION,
+  GET_PRODUCT_CAT_ACTION,
   PRINT_INPUT_ORDER_DETIAL_ACTION, // temp
   PRINT_SELLS_ACTION, // temp
   PRINT_RETURN_GOODS_ACTION,
@@ -39,10 +39,10 @@ export default {
     [REPORT_RETURNED_GOODS_GETTER](state) {
       return state.reportReturnedgoodData
     },
-    [PRODUCT_LISTS_GETTER](state) {
+    [PRODUCT_GETTER](state) {
       return state.productData
     },
-    [PRODUCT_CAT_LISTS_GETTER](state) {
+    [PRODUCT_CAT_GETTER](state) {
       return state.productCatData
     },
     [PRINT_INPUT_ORDER_DETIAL_GETTER](state) { // temp
@@ -84,20 +84,16 @@ export default {
         .exportReportsReturnedGoods(val)
         .then(response => response.data)
         .then(res => {
-          if (res.success) {
-            const fileName = `Bao_cao_hang_tra_lai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
-            const blob = new Blob([res], { type: 'data:application/xlsx' })
-            FileSaver.saveAs(blob, fileName)
-          } else {
-            throw new Error(res.statusValue)
-          }
+          const fileName = `Bao_cao_hang_tra_lai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
           toasts.error(error.message)
         })
     },
 
-    [GET_PRODUCT_LISTS_ACTIONS]({ state }, val) {
+    [GET_PRODUCT_ACTION]({ state }, val) {
       ReportsService
         .getProductLists(val)
         .then(response => response.data)
@@ -113,7 +109,7 @@ export default {
         })
     },
 
-    [GET_PRODUCT_CAT_LISTS_ACTIONS]({ state }, val) {
+    [GET_PRODUCT_CAT_ACTION]({ state }, val) {
       ReportsService
         .getProductCatlists(val)
         .then(response => response.data)

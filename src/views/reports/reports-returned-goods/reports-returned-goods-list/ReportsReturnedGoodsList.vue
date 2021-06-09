@@ -5,7 +5,6 @@
   >
     <!-- START - Search -->
     <reports-returned-goods-list-search
-      :per-page-size="paginationData.size"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />
@@ -217,7 +216,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatISOtoVNI } from '@core/utils/filter'
 import {
   getReportReasonTypeslabel,
   resizeAbleTable,
@@ -248,11 +246,6 @@ export default {
         sort: null,
       },
       searchOptions: {
-        code: '',
-        fromDate: null,
-        toDate: null,
-        reasonSelected: null,
-        ids: '',
       },
       decentralization: {
         formId: 1,
@@ -393,7 +386,7 @@ export default {
           price: this.$formatNumberToLocale(data.price),
           amount: this.$formatNumberToLocale(data.amount),
           refunds: this.$formatNumberToLocale(data.refunds),
-          payDay: formatISOtoVNI(data.payDay),
+          payDay: this.$formatISOtoVNI(data.payDay),
           reasonForPayment: getReportReasonTypeslabel(String(data.reasonForPayment)),
           feedback: data.feedback,
         }))
@@ -437,12 +430,13 @@ export default {
     ]),
     // Start - xuat excel
     onClickExcelExportButton() {
-      this.EXPORT_REPORT_RETURNED_GOODS_ACTION({ ...this.decentralization })
+      this.EXPORT_REPORT_RETURNED_GOODS_ACTION({ ...this.decentralization, ...this.searchOptions })
     },
     // End - xuat excel
 
     // Start - pagination
     updateSearchData(event) {
+      this.searchOptions = event
       this.paginationData = {
         ...this.paginationData,
         ...event,

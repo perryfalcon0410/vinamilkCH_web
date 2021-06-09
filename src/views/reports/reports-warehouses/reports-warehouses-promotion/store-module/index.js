@@ -5,13 +5,13 @@ import ReportService from '@/views/reports/reports-warehouses/reports-warehouses
 import {
   // Getters
   REPORT_WAREHOUSES_PROMOTIONS_GETTER,
-  PRODUCT_LISTS_GETTER,
-  PRODUCT_CAT_LISTS_GETTER,
+  PRODUCT_GETTER,
+  PRODUCT_CAT_GETTER,
 
   // Actions
   GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS,
-  GET_PRODUCT_LISTS_ACTIONS,
-  GET_PRODUCT_CAT_LISTS_ACTIONS,
+  GET_PRODUCT_ACTION,
+  GET_PRODUCT_CAT_ACTION,
   EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION,
 } from './type'
 
@@ -26,10 +26,10 @@ export default {
     [REPORT_WAREHOUSES_PROMOTIONS_GETTER](state) {
       return state.promotionData
     },
-    [PRODUCT_LISTS_GETTER](state) {
+    [PRODUCT_GETTER](state) {
       return state.productData
     },
-    [PRODUCT_CAT_LISTS_GETTER](state) {
+    [PRODUCT_CAT_GETTER](state) {
       return state.productCatData
     },
   },
@@ -51,7 +51,7 @@ export default {
         })
     },
 
-    [GET_PRODUCT_LISTS_ACTIONS]({ state }, val) {
+    [GET_PRODUCT_ACTION]({ state }, val) {
       ReportService
         .getProductLists(val)
         .then(response => response.data)
@@ -67,7 +67,7 @@ export default {
         })
     },
 
-    [GET_PRODUCT_CAT_LISTS_ACTIONS]({ state }, val) {
+    [GET_PRODUCT_CAT_ACTION]({ state }, val) {
       ReportService
         .getProductCatlists(val)
         .then(response => response.data)
@@ -87,13 +87,9 @@ export default {
         .exportsWarehousesPromotion(val)
         .then(response => response.data)
         .then(res => {
-          if (res.success) {
-            const fileName = `Bao_cao_hang_khuyen_mai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
-            const blob = new Blob([res], { type: 'data:application/xlsx' })
-            FileSaver.saveAs(blob, fileName)
-          } else {
-            throw new Error(res.statusValue)
-          }
+          const fileName = `Bao_cao_hang_khuyen_mai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
           toasts.error(error.message)

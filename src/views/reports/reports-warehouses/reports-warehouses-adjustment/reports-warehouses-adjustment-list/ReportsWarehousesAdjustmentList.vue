@@ -6,7 +6,6 @@
 
     <!-- START - Search -->
     <reports-warehouses-adjustment-list-search
-      :per-page-size="paginationData.size"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />
@@ -183,9 +182,6 @@ import {
 } from 'vuex'
 import commonData from '@/@db/common'
 import {
-  formatISOtoVNI,
-} from '@core/utils/filter'
-import {
   resizeAbleTable,
 } from '@core/utils/utils'
 import ReportsWarehousesAdjustmentListSearch from './components/ReportsWarehousesAdjustmentListSearch.vue'
@@ -327,7 +323,7 @@ export default {
           quantity: data.quantity,
           price: this.$formatNumberToLocale(data.price),
           payment: this.$formatNumberToLocale(data.total),
-          adjustmentDate: formatISOtoVNI(data.adjustmentDate),
+          adjustmentDate: this.$formatISOtoVNI(data.adjustmentDate),
         }))
       }
       return []
@@ -379,6 +375,7 @@ export default {
         ...event,
       }
       this.searchData = event
+      this.pageNumber = 1
     },
     onPaginationChange() {
       this.GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION({ ...this.paginationData, ...this.decentralization })
