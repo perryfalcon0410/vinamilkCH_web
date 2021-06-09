@@ -139,13 +139,7 @@
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                  -
-                  {{ (elementSize * pageNumber) > salesPagination.totalElements ?
-                    salesPagination.totalElements : (elementSize * pageNumber) }}
-                  của {{ salesPagination.totalElements }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
@@ -429,6 +423,13 @@ export default {
         return this.REPORT_SALES_GETTER
       }
       return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.salesPagination.totalElements
+        ? this.salesPagination.totalElements : (this.elementSize * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.salesPagination.totalElements} mục`
     },
   },
 
