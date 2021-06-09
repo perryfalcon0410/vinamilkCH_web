@@ -26,7 +26,9 @@
             class="px-0 pb-0 m-0"
             is-text
           >
-            <b-form-checkbox v-model="checkStockTotal" />
+            <b-form-checkbox
+              v-model="checkStockTotal"
+            />
           </b-input-group-append>
         </b-input-group>
 
@@ -192,13 +194,13 @@
                 font-scale="1.5"
                 @click="decreaseAmount(props.row.productId)"
               />
-              <!-- {{ props.row.quantity }} -->
-              <b-input
+              {{ props.row.quantity }}
+              <!-- <b-input
                 v-model="props.row.quantity"
                 :value="props.row.quantity"
                 :number="true"
                 maxlength="6"
-              />
+              /> -->
               <b-icon-caret-up-fill
                 class="cursor-pointer"
                 font-scale="1.5"
@@ -588,7 +590,7 @@ export default {
       this.customerId = val.data.id
       this.GET_PRODUCTS_ACTION(this.searchOptions)
       const paramGetProductsTopSale = {
-        checkStockTotal: this.checkStockTotal ? 0 : 1,
+        checkStockTotal: this.checkStockTotal ? 1 : 0,
         keyWord: '',
         customerId: this.customerId,
         page: 0,

@@ -69,7 +69,8 @@
               placeholder="Tìm khách hàng (F4)"
               @mouseover="search.length >= minSearch ? inputSearchFocused = true : inputSearchFocused"
               @blur="inputSearchFocused = false"
-              @click="showSearchModal"
+              @keyup.enter="showSearchModal"
+              @keyup="onChangeKeyWord"
             />
             <sales-search-modal
               ref="salesSearchModal"
@@ -197,6 +198,7 @@
               />
             </b-col>
           </b-row>
+          <div>{{ salemtPromotionObjectSelected }}</div>
           <!-- END - Order type -->
 
           <!-- START - Delivery type -->
@@ -724,6 +726,22 @@ export default {
       this.customer.totalBill = this.customerDefault.totalBill ?? 0
       this.customer.scoreCumulated = this.customerDefault.scoreCumulated
       this.$emit('getCustomerDefault', { data: this.customer })
+    },
+
+    onChangeKeyWord() {
+      const name = {
+        searchKeywords: this.search.trim(),
+      }
+
+      const phone = {
+        phoneNumber: this.search,
+      }
+
+      const code = {
+        phoneNumber: this.search,
+      }
+
+      this.GET_CUSTOMERS_ACTION(name || phone || code)
     },
   },
 }

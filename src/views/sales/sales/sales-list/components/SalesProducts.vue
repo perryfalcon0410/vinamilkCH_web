@@ -19,6 +19,7 @@
             Bán chạy
           </div>
           <div
+            ref="oftenBuy"
             class="bg-info text-white mt-1 mr-1 px-1 rounded-pill cursor-pointer"
             @click="onClickHotProduct"
           >
@@ -200,7 +201,7 @@ export default {
     }
     this.GET_ALL_PRODUCT_ACTION(paramGetAllProduct)
     const paramGetHotProduct = {
-      customerId: 232, // Hard code customerId
+      customerId: 507, // Hard code customerId
       size: saleData.pageSizeRecommendProducts,
       page: saleData.pageNumberRecommendProducts,
       // formId: this.formId, // Hard code
@@ -243,7 +244,7 @@ export default {
       const paramGetProductsWithCatId = {
         keyWord: '',
         catId: Number(catId),
-        customerTypeId: 1, // Hard code
+        customerId: 507, // Hard code
         status: 1,
         size: 8,
         page: 0,
