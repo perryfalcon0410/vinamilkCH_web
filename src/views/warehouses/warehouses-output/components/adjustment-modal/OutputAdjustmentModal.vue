@@ -31,6 +31,7 @@
           <vue-good-table
             :columns="columns"
             :rows="ajustmentTrans"
+            max-height="500px"
             style-class="vgt-table striped"
             :pagination-options="{
               enabled: false,
@@ -184,6 +185,7 @@
           <vue-good-table
             :columns="columnsProducts"
             :rows="productsOfAjustment"
+            max-height="150px"
             style-class="vgt-table bordered"
             compact-mode
             line-numbers
@@ -227,7 +229,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatISOtoVNI, formatNumberToLocale } from '@core/utils/filter'
+import { formatISOtoVNI } from '@core/utils/filter'
 import {
   WAREHOUSES_OUTPUT,
   // Getters
@@ -310,13 +312,13 @@ export default {
         {
           label: 'Số lượng',
           field: 'quantity',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
         {
           label: 'Giá',
           field: 'price',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
         {
@@ -327,7 +329,7 @@ export default {
         {
           label: 'Thành tiền',
           field: 'totalPrice',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
       ],
@@ -368,31 +370,19 @@ export default {
       }
     },
     getExportAdjustmentDetail() {
+      const products = []
       if (this.getExportAdjustmentDetail) {
-        this.productsOfAjustment = this.getExportAdjustmentDetail.map(data => ({
-          id: data.id,
-          productCode: data.productCode,
-          productName: data.productName,
-          price: formatNumberToLocale(data.price),
-          unit: data.unit,
-          totalPrice: formatNumberToLocale(data.totalPrice),
-          quantity: data.quantity,
-          productReturnAmount: data.quantity,
-          productReturnAmountOriginal: data.quantity,
-        }))
+        this.getExportAdjustmentDetail.forEach(item => {
+          const index = products.findIndex(product => product.productCode === item.productCode)
+          if (index === -1) {
+            products.push(item)
+          } else {
+            products[index].quantity += item.quantity
+            products[index].totalPrice += item.totalPrice
+          }
+        })
+        this.productsOfAjustment = products
       }
-      // for (let i = 0; i < this.productsOfAjustment.length; i += 1) {
-      //   this.count = 0
-      //   for (let j = 0; j < this.getExportAdjustmentDetail.length; j += 1) {
-      //     if (this.productsOfAjustment[i].productCode === this.getExportAdjustmentDetail[j].productCode) {
-      //       this.count += 1
-      //       if (this.count > 1) {
-      //         this.productsOfAjustment[i].quantity = this.getExportAdjustmentDetail[j].quantity + this.getExportAdjustmentDetail[i].quantity
-      //         console.log(this.productsOfAjustment[i].quantity)
-      //       }
-      //     }
-      //   }
-      // }
     },
   },
   mounted() {
@@ -415,17 +405,17 @@ export default {
       this.GET_EXPORT_ADJUSTMENT_DETAIL_ACTION({
         id: trans.id,
         onSuccess: adjustmentProducts => {
-          this.productsOfAjustment = adjustmentProducts.response.map(data => ({
-            id: data.id,
-            productCode: data.productCode,
-            productName: data.productName,
-            price: formatNumberToLocale(data.price),
-            unit: data.unit,
-            shopId: data.shopId,
-            totalPrice: formatNumberToLocale(data.totalPrice),
-            productReturnAmount: 0,
-            productReturnAmountOriginal: data.quantity,
-          }))
+          const products = []
+          adjustmentProducts.response.forEach(item => {
+            const index = products.findIndex(product => product.productCode === item.productCode)
+            if (index === -1) {
+              products.push(item)
+            } else {
+              products[index].quantity += item.quantity
+              products[index].totalPrice += item.totalPrice
+            }
+          })
+          this.productsOfAjustment = products
           const adjustmentTranData = {
             tranInfo: trans,
             products: this.productsOfAjustment,

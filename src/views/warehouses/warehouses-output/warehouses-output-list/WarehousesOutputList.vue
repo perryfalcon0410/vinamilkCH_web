@@ -189,10 +189,6 @@
           :columns="columns"
           :rows="warehousesOutputList"
           style-class="vgt-table striped"
-          :sort-options="{
-            enabled: false,
-            initialSortBy: {field: 'date', type: 'esc'}
-          }"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -201,6 +197,13 @@
           compact-mode
           line-numbers
           :total-rows="warehousesOutputPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+            initialSortBy: [
+              {field: 'code', type: 'desc'},
+            ]
+          }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
@@ -421,6 +424,12 @@ export default {
       warehousesTypeSelected: null,
       elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
+      serverParams: {
+        sort: {
+          field: 'date',
+          type: 'desc',
+        },
+      },
       paginationData: {
         size: this.elementSize,
         page: this.pageNumber - 1,
@@ -441,6 +450,7 @@ export default {
         {
           label: 'Ngày',
           field: 'date',
+          type: Date,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -586,20 +596,11 @@ export default {
 
   mounted() {
     resizeAbleTable()
-
-    const searchData = {
-      redInvoiceNo: this.searchOptions.redInvoiceNo,
-      fromDate: reverseVniDate(this.$earlyMonth),
-      toDate: reverseVniDate(this.$nowDate),
-      type: this.warehousesTypeSelected,
-      // ...this.decentralization
-    }
-    this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
     }
-    resizeAbleTable()
+    this.onClickSearchWarehousesOutput()
   },
 
   methods: {
@@ -640,10 +641,11 @@ export default {
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         type: this.warehousesTypeSelected,
-        // ...this.decentralization
+        ...this.decentralization,
       }
 
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
+      this.paginationData = { ...this.paginationData, ...searchData }
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER
     },
     onClickDeleteWarehousesOutput(id, type, code, index, date) {
@@ -680,13 +682,15 @@ export default {
     },
     onPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1 })
+      this.paginationData.page = params.currentPage - 1
       this.onPaginationChange()
     },
     onPerPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.paginationData.page = params.currentPage - 1
+      this.paginationData.size = params.currentPerPage
       this.onPaginationChange()
     },
-
   },
 }
 </script>

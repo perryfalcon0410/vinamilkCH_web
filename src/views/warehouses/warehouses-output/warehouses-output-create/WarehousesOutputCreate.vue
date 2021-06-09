@@ -57,15 +57,26 @@
                   <div class="mt-1">
                     Loại xuất hàng
                   </div>
-                  <tree-select
-                    v-model="warehousesOutput.outputTypeSelected"
-                    :options="outputTypesOptions"
-                    placeholder="Chọn loại xuất hàng"
-                    no-options-text="Không có dữ liệu"
-                    no-results-text="Không tìm thấy kết quả"
-                  />
+                  <div class="d-flex align-items-center">
+                    <tree-select
+                      v-model="warehousesOutput.outputTypeSelected"
+                      :options="outputTypesOptions"
+                      placeholder="Chọn loại xuất hàng"
+                      no-options-text="Không có dữ liệu"
+                      no-results-text="Không tìm thấy kết quả"
+                    />
+                    <b-input-group-append>
+                      <b-icon-three-dots-vertical
+                        v-b-popover.hover.right="'Chọn phiếu xuất'"
+                        scale="1.4"
+                        class="cursor-pointer"
+                        @click="showModal()"
+                      />
+                    </b-input-group-append>
+                  </div>
                   <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider></b-col>
+                </validation-provider>
+              </b-col>
             </b-form-row>
             <!-- END - ID and Type -->
 
@@ -155,17 +166,11 @@
                     class="input-group-merge"
                   >
                     <b-form-input
-                      v-model="warehousesOutput.poNumber"
-                      trim
+                      v-model.trim="warehousesOutput.poNumber"
                       :state="warehousesOutput.outputTypeSelected !== poOutputType && touched ? passed : null"
+                      :disabled="warehousesOutput.outputTypeSelected !== poOutputType"
                     />
-                    <b-input-group-append is-text>
-                      <b-icon-three-dots-vertical
-                        v-b-popover.hover.right="'Chọn phiếu xuất'"
-                        class="cursor-pointer"
-                        @click="showModal()"
-                      />
-                    </b-input-group-append>
+
                   </b-input-group>
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider></b-col>
@@ -231,9 +236,9 @@
                 slot="table-row"
                 slot-scope="props"
               >
-                <div v-if="props.column.field === 'productReturnAmount'">
+                <div v-if="props.column.field === 'quantity'">
                   <b-form-input
-                    v-model="products[props.row.originalIndex].productReturnAmount"
+                    v-model="products[props.row.originalIndex].quantity"
                     maxlength="19"
                     :readonly="exportAll && warehousesOutput.outputTypeSelected !== poOutputType"
                     @keypress="$onlyNumberInput"
@@ -417,7 +422,7 @@ export default {
         {
           label: 'Giá',
           field: 'price',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
         {
@@ -428,7 +433,7 @@ export default {
         {
           label: 'Thành tiền',
           field: 'totalPrice',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
         {
@@ -438,7 +443,8 @@ export default {
         },
         {
           label: 'Số lượng trả',
-          field: 'productReturnAmount',
+          field: 'quantity',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
       ],
@@ -468,11 +474,11 @@ export default {
     exportAll() {
       if (this.exportAll) {
         this.products.forEach((item, index) => {
-          this.products[index].productReturnAmount = item.productReturnAmountOriginal
+          this.products[index].quantity = item.productReturnAmountOriginal
         })
       } else {
         this.products.forEach((item, index) => {
-          this.products[index].productReturnAmount = null
+          this.products[index].quantity = null
         })
       }
     },
@@ -544,7 +550,7 @@ export default {
     },
     checkQuantity() {
       this.products.forEach((item, index) => {
-        if (this.products[index].productReturnAmountOriginal - this.products[index].productReturnExportOriginal >= this.products[index].productReturnAmount) {
+        if (this.products[index].productReturnAmountOriginal - this.products[index].productReturnExportOriginal >= this.products[index].quantity) {
           this.quantityCheck = true
         } else {
           this.quantityCheck = false
@@ -555,22 +561,24 @@ export default {
       if (this.warehousesOutput.outputTypeSelected === warehousesData.outputTypes[0].id) {
         this.checkQuantity()
       }
-      if (this.quantityCheck) {
-        console.log(this.warehousesOutput.note)
-        this.CREATE_EXPORT_ACTION(
-          {
-            importType: Number(this.warehousesOutput.outputTypeSelected),
-            isRemainAll: this.exportAll,
-            receiptImportId: Number(this.warehousesOutput.id),
-            note: this.warehousesOutput.note,
-            litQuantityRemain: this.products.map(item => ({
-              id: item.id,
-              quantity: Number(item.productReturnAmount) || 0,
-              shopId: item.shopId,
-            })),
-          },
-        )
-      } else if (this.warehousesOutput.outputTypeSelected === warehousesData.outputTypes[0].id) toasts.error('Không đủ sản phẩm trả.')
+      if (this.products.length !== 0) {
+        if (this.quantityCheck) {
+          this.CREATE_EXPORT_ACTION(
+            {
+              importType: Number(this.warehousesOutput.outputTypeSelected),
+              isRemainAll: this.exportAll,
+              receiptImportId: Number(this.warehousesOutput.id),
+              note: this.warehousesOutput.note,
+              litQuantityRemain: this.products.map(item => ({
+                id: item.id,
+                quantity: Number(item.quantity) || 0,
+                shopId: item.shopId,
+              })),
+            },
+          )
+        } else if (this.warehousesOutput.outputTypeSelected === warehousesData.outputTypes[0].id) toasts.error('Không đủ sản phẩm trả.')
+      } else toasts.error('Vui lòng chọn phiếu.')
+      console.log(this.products)
     },
     navigateBack() {
       this.$refs.salesNotifyModal.show()

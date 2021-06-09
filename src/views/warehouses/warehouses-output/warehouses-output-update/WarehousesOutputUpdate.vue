@@ -111,7 +111,7 @@
             </div>
             <b-input-group class="input-group-merge">
               <b-form-input
-                v-model.trim="warehousesOutput.poNumber"
+                v-model.trim="warehousesOutput.pocoNumber"
                 :state="warehousesOutput.type === '1' && touched ? passed : null"
                 disabled
               />
@@ -332,7 +332,7 @@ export default {
         wareHouseTypeName: '',
         redInvoiceNo: '', // số hoá đơn
         internalNumber: '', // số nội bộ
-        poNumber: '',
+        pocoNumber: '',
         note: '',
         transDate: null,
         transTime: null,
@@ -381,7 +381,7 @@ export default {
       this.warehousesOutput.wareHouseTypeName = dataWarehousesOutput.wareHouseTypeName
       this.warehousesOutput.redInvoiceNo = dataWarehousesOutput.redInvoiceNo // số hoá đơn
       this.warehousesOutput.internalNumber = dataWarehousesOutput.internalNumber // số nội bộ
-      this.warehousesOutput.poNumber = dataWarehousesOutput.poNumber
+      this.warehousesOutput.pocoNumber = dataWarehousesOutput.pocoNumber
       this.warehousesOutput.note = dataWarehousesOutput.note
       this.warehousesOutput.transDate = formatISOtoVNI(dataWarehousesOutput.transDate)
       this.warehousesOutput.transTime = getTimeOfDate(dataWarehousesOutput.transDate)

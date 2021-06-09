@@ -238,7 +238,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatISOtoVNI, formatNumberToLocale, reverseVniDate } from '@core/utils/filter'
+import { formatISOtoVNI, reverseVniDate } from '@core/utils/filter'
 import SearchComponent from './components/SearchComponent.vue'
 import {
   WAREHOUSES_OUTPUT,
@@ -347,7 +347,7 @@ export default {
         {
           label: 'Giá',
           field: 'price',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
         {
@@ -358,7 +358,7 @@ export default {
         {
           label: 'Thành tiền',
           field: 'totalPrice',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
         {
@@ -423,9 +423,9 @@ export default {
           id: data.id,
           productCode: data.productCode,
           productName: data.productName,
-          price: formatNumberToLocale(data.price),
+          price: data.price,
           unit: data.unit,
-          totalPrice: formatNumberToLocale(data.totalPrice),
+          totalPrice: data.totalPrice,
           export: `${data.export}/${data.quantity}`,
           productReturnAmount: 0,
           productReturnExportOriginal: data.export,
@@ -466,10 +466,10 @@ export default {
             id: data.id,
             productCode: data.productCode,
             productName: data.productName,
-            price: formatNumberToLocale(data.price),
+            price: data.price,
             unit: data.unit,
             shopId: data.shopId,
-            totalPrice: formatNumberToLocale(data.totalPrice),
+            totalPrice: data.totalPrice,
             export: `${data.export}/${data.quantity}`,
             productReturnAmount: null,
             productReturnExportOriginal: data.export,
