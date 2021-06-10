@@ -668,7 +668,7 @@ export default {
 
     selectCustomer(customer) {
       if (customer.item) {
-        console.log('1')
+        // console.log('1')
         this.customerInfo.customerId = customer.item.customerId
         this.customerInfo.customerCode = customer.item.customerCode
         this.customerInfo.customerName = customer.item.customerName
@@ -676,7 +676,7 @@ export default {
         this.customerInfo.customerPhone = customer.item.mobilePhone
         this.customers = [{ data: null }]
       }
-      console.log(customer.item.customerName)
+      // console.log(customer.item.customerName)
     },
 
     loadProducts(text) {
@@ -762,8 +762,7 @@ export default {
     },
 
     navigateBack() {
-      // this.$router.replace({ name: 'warehouses-exchange-damaged-goods' })
-      console.log(this.getAllCustomer)
+      this.$router.replace({ name: 'warehouses-exchange-damaged-goods' })
     },
   },
 }
