@@ -195,6 +195,7 @@
               <tree-select
                 v-model="salemtPromotionObjectSelected"
                 :options="salemtPromotionObjectOptions"
+                @select="resetOrderNumber"
               />
             </b-col>
           </b-row>
@@ -433,7 +434,7 @@ export default {
       },
       quantity: null,
       totalPrice: null,
-      salemtPromotionObjectSelected: null,
+      salemtPromotionObjectSelected: saleData.salemtPromotionObject[0].id,
       salemtDeliveryTypeSelected: saleData.salemtDeliveryType[0].id,
       data: null,
 
@@ -611,7 +612,6 @@ export default {
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
     this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4, salemtDeliveryTypeSelected: this.salemtDeliveryTypeSelected })
     this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
-    this.salemtPromotionObjectSelected = saleData.salemtPromotionObject[0].id
   },
   created() {
     window.addEventListener('keydown', e => {
@@ -743,6 +743,12 @@ export default {
       }
 
       this.GET_CUSTOMERS_ACTION(name || phone || code)
+    },
+
+    resetOrderNumber(item) {
+      if (item.id === saleData.salemtPromotionObject[0].id) {
+        this.orderOnline.orderNumber = null
+      }
     },
   },
 }

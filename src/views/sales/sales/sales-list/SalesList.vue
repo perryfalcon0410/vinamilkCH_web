@@ -225,7 +225,6 @@
               />
             </div>
             <!-- END - tableProductFeature -->
-            <!-- @click="onClickDeleteProduct(props.row.originalIndex)" -->
 
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
@@ -237,11 +236,11 @@
         <!-- END - Table product -->
 
         <!-- START - List suggestion -->
-        <sales-products
+        <!-- <sales-products
           :product-infos="productInfos"
           :order-products="orderProducts"
           :edit-permission="editPermission"
-        />
+        /> -->
         <!-- END - List suggestion -->
 
       </b-col>
@@ -273,7 +272,7 @@ import { mapGetters, mapActions } from 'vuex'
 import saleData from '@/@db/sale'
 import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
 import SalesForm from './components/SalesForm.vue'
-import SalesProducts from './components/SalesProducts.vue'
+// import SalesProducts from './components/SalesProducts.vue'
 import {
   SALES,
   // Getter
@@ -300,7 +299,7 @@ import {
 export default {
   components: {
     SalesForm,
-    SalesProducts,
+    // SalesProducts,
     PrintFormSalesReceipt,
   },
   data() {
