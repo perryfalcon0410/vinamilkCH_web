@@ -38,13 +38,24 @@
             <div class="mt-sm-1 mt-xl-0">
               Loại xuất
             </div>
-            <tree-select
-              v-model="warehousesOutput.receiptType"
-              :options="warehousesOptions"
-              :searchable="false"
-              no-options-text="Không có dữ liệu"
-              disabled
-            />
+            <div class="d-flex align-items-center">
+              <tree-select
+                v-model="warehousesOutput.receiptType"
+                :options="warehousesOptions"
+                :searchable="false"
+                no-options-text="Không có dữ liệu"
+                disabled
+              />
+              <b-input-group-append>
+                <b-icon-three-dots-vertical
+                  v-b-popover.hover.right="'Chọn phiếu xuất'"
+                  scale="1.4"
+                  class="cursor-pointer"
+                  :disabled="warehousesOutput.receiptType === warehousesOptions[0].id"
+                  @click="showModal()"
+                />
+              </b-input-group-append>
+            </div>
           </b-col>
         </b-form-row>
         <!-- END - ID and Type -->
@@ -115,9 +126,6 @@
                 :state="warehousesOutput.type === '1' && touched ? passed : null"
                 disabled
               />
-              <b-input-group-append is-text>
-                <b-icon-three-dots-vertical />
-              </b-input-group-append>
             </b-input-group>
           </b-col>
         </b-form-row>
@@ -244,6 +252,14 @@
 
     </b-row>
     <!-- END - Form and list -->
+    <!-- START - Modal -->
+    <adjustment-modal
+      @choonsenTrans="dataFromAdjustment($event)"
+    />
+    <borrowed-modal
+      @choonsenTrans="dataFromBorrow($event)"
+    />
+    <!-- END - Modal -->
   </b-container>
 </template>
 
@@ -251,17 +267,22 @@
 import {
   mapActions,
   mapGetters,
+  mapMutations,
 } from 'vuex'
 import warehousesData from '@/@db/warehouses'
 import {
   getTimeOfDate, formatISOtoVNI,
 } from '@/@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
+import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
+import BorrowedModal from '../components/borrowed-modal/OutputBorrowedModal.vue'
 import {
   WAREHOUSES_OUTPUT,
   // Getter
   GET_WAREHOUSES_OUTPUT_BY_ID_GETTER,
   GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER,
+  // MUTATIONS
+  CLEAR_EXPORT_PRODUCTS_MUTATION,
   // Action
   GET_WAREHOUSES_OUTPUT_BY_ID_ACTION,
   GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION,
@@ -270,6 +291,8 @@ import {
 
 export default {
   components: {
+    AdjustmentModal,
+    BorrowedModal,
   },
   data() {
     return {
@@ -408,6 +431,9 @@ export default {
     this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION(paramGetDetailsWarehousesOutput)
   },
   methods: {
+    ...mapMutations(WAREHOUSES_OUTPUT, [
+      CLEAR_EXPORT_PRODUCTS_MUTATION,
+    ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_BY_ID_ACTION,
       GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION,
@@ -415,6 +441,65 @@ export default {
     ]),
     navigateBack() {
       this.$router.back()
+    },
+    showModal() {
+      this.CLEAR_EXPORT_PRODUCTS_MUTATION()
+      switch (this.warehousesOutput.receiptType) {
+        case this.warehousesOptions[0].id:
+          this.$root.$emit('bv::toggle::modal', 'output-modal')
+          break
+        case this.warehousesOptions[1].id:
+          this.$root.$emit('bv::toggle::modal', 'output-adjustment-modal')
+          break
+        case this.warehousesOptions[2].id:
+          this.$root.$emit('bv::toggle::modal', 'output-borrowed-modal')
+          break
+        default:
+          break
+      }
+    },
+    dataFromBorrow(data) {
+      this.warehousesOutput.id = data.tranInfo.id
+      this.warehousesOutput.code = data.tranInfo.transCode
+      this.warehousesOutput.note = data.tranInfo.note
+      this.warehousesOutput.orderDate = data.tranInfo.adjustmentDate
+      this.getProductOfWarehouseOutput = data.products.map(item => ({
+        productID: item.id,
+        productCode: item.productCode,
+        productPrice: this.$formatNumberToLocale(item.price),
+        productName: item.productName,
+        productDVT: item.unit,
+        productPriceTotal: this.$formatNumberToLocale(item.totalPrice),
+        productQuantity: item.quantity - item.export,
+        productReturnAmount: item.quantity,
+      }))
+      // clear data
+      this.warehousesOutput.redInvoiceNo = ''
+      this.warehousesOutput.internalNumber = ''
+      this.warehousesOutput.pocoNumber = ''
+      this.warehousesOutput.code = ''
+    },
+    dataFromAdjustment(data) {
+      this.warehousesOutput.id = data.tranInfo.id
+      this.warehousesOutput.code = data.tranInfo.transCode
+      this.warehousesOutput.note = data.tranInfo.note
+      this.warehousesOutput.orderDate = data.tranInfo.adjustmentDate
+      this.getProductOfWarehouseOutput = data.products.map(item => ({
+        productID: item.id,
+        productCode: item.productCode,
+        productPrice: this.$formatNumberToLocale(item.price),
+        productName: item.productName,
+        productDVT: item.unit,
+        productPriceTotal: this.$formatNumberToLocale(item.totalPrice),
+        productQuantity: item.quantity - item.export,
+        productReturnAmount: item.quantity,
+      }))
+
+      // clear data
+      this.warehousesOutput.redInvoiceNo = ''
+      this.warehousesOutput.internalNumber = ''
+      this.warehousesOutput.poNumber = ''
+      this.warehousesOutput.code = ''
     },
     onClickUpdateWarehousesOutput() {
       if (this.getProductOfWarehouseOutput) {

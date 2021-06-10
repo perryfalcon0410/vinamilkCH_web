@@ -32,7 +32,7 @@
           <vue-good-table
             :columns="columns"
             :rows="borrowedTrans"
-            max-height="500px"
+            max-height="400px"
             style-class="vgt-table bordered"
             :pagination-options="{
               enabled: false,

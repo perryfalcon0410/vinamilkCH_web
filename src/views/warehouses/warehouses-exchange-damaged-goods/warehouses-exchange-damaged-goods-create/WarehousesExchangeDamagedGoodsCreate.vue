@@ -42,54 +42,35 @@
 
           <!-- START -  Customer -->
           <validation-provider
-            v-slot="{ errors, passed, touched }"
+            v-slot="{ errors, passed, touched}"
             rules="required"
-            name="tên khách hàng"
+            name="khách hàng"
           >
             <div class="mt-1">
               Khách hàng <sup class="text-danger">*</sup>
             </div>
-            <b-form-input
-              v-model.trim="customerInfo.customerName"
+            <vue-autosuggest
+              v-model="customerInfo.customerName"
               maxlength="40"
               :state="touched ? passed : null"
-              @focus="focusCustomer"
+              :suggestions="customers"
+              :input-props="{
+                id:'autosuggest__input',
+                class:'form-control',
+                placeholder:'Nhập mã hoặc tên khách hàng'
+              }"
               @input="customerOptions"
-            />
-            <b-icon-x
-              v-show="customerInfo.customerName"
-              style="position: absolute; top: 147px; right: 45px"
-              class="cursor-pointer text-gray"
-              scale="1.3"
-              @click="clearCustomer"
-            />
-            <small class="text-danger">{{ errors[0] }}</small>
-            <!-- START - Popup customers -->
-            <b-collapse
-              v-model="isFocusedInputCustomer"
-              class="position-absolute mr-lg-0 w-md-75 mh-50 overflow-y-auto"
-              style="zIndex:1"
+              @selected="selectCustomer"
             >
-              <b-container
-                class="my-1 bg-white rounded border border-primary shadow-lg"
-              >
-                <b-col>
-                  <b-row
-                    v-for="(customer, index) in customers"
-                    :key="index"
-                    class="d-flex flex-column my-1 cursor-pointer border-bottom"
-                    :class="{'item-active': index === cursorCustomer}"
-                    @click="selectCustomer(customer)"
-                  >
-                    <div>
-                      <b>{{ customer.customerName }}</b>
-                    </div>
-                    <div>{{ customer.customerCode }} - {{ customer.mobilePhone }}</div>
-                  </b-row>
-                </b-col>
-              </b-container>
-            </b-collapse>
-            <!-- END - Popup customers -->
+
+              <template slot-scope="{ suggestion }">
+                <div>
+                  <b>{{ suggestion.item.customerName }}</b>
+                </div>
+                <div>{{ suggestion.item.customerCode }} - {{ suggestion.item.mobilePhone }}</div>
+              </template>
+            </vue-autosuggest>
+            <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
           <!-- END -  Customer -->
 
@@ -178,12 +159,15 @@
               slot="table-column"
               slot-scope="props"
             >
-              <div v-if="props.column.field === 'feature'">
+              <div
+                v-if="props.column.field === 'feature'"
+                hidden
+              >
                 <b-icon-bricks
                   v-b-popover.hover="'Thao tác'"
                   class="cursor-pointer"
                   scale="1.3"
-                  @click="onClickFeature()"
+                  hidden
                 />
               </div>
               <div v-else>
@@ -230,14 +214,14 @@
                 <div v-if="props.row.productAmount != ''">
                   <b-form-input
                     v-model.trim="damagedProduct[props.index].productQuantity"
-                    maxlength="10"
+                    maxlength="7"
                     @keypress="$onlyNumberInput"
                     @change="onChangeQuantity(damagedProduct[props.index])"
                   />
                 </div>
               </span>
 
-              <div v-if="props.column.field === 'feature' && isDisabledFeature">
+              <div v-if="props.column.field === 'feature'">
                 <b-icon-trash-fill
                   v-b-popover.hover.top="'Xóa'"
                   class="cursor-pointer"
@@ -254,74 +238,31 @@
             <!-- END - Custom row -->
 
             <!-- START - Table Footer -->
-            <template slot="table-actions-bottom">
+            <div
+              slot="table-actions-bottom"
+              class="m-2"
+            >
               <!-- START - Prodduct input -->
-              <b-col
-                cols="5"
-                class="my-1"
+              <vue-autosuggest
+                v-model.trim="productInfos.productName"
+                :suggestions="products"
+                :input-props="{
+                  id:'autosuggest_product__input',
+                  class:'form-control w-25',
+                  placeholder:'Nhập mã hoặc tên sản phẩm'
+                }"
+                @input="loadProducts"
+                @selected="selectProduct"
               >
-                <b-row
-                  class="mx-2"
-                  align-v="center"
+                <template
+                  slot-scope="{ suggestion }"
+                  class="mw-25"
                 >
-                  <b-form-input
-                    v-model.trim="productInfos.productName"
-                    placeholder="Nhập mã hoặc tên sản phẩm"
-                    @focus="focusProduct"
-                    @input="loadProducts"
-                    @keyup="loadProducts"
-                  />
-                  <b-icon-x
-                    v-show="productInfos.productName"
-                    style="position: absolute; right: 40px"
-                    class="cursor-pointer text-gray"
-                    scale="1.3"
-                    @click="clearProduct"
-                  />
-                </b-row>
-                <!-- START - Product Popup -->
-                <b-collapse
-                  v-model.trim="isFocusedInputProduct"
-                  class="position-absolute w-80"
-                  style="zIndex:1"
-                >
-                  <b-container
-                    class="my-1 px-1 bg-white rounded border border-primary shadow-lg overflow-auto"
-                  >
-                    <b-col
-                      class="col-xs-3"
-                    >
-                      <b-row
-                        v-for="(product, index) in products"
-                        :key="index"
-                        class="mx-0 my-1 border-bottom cursor-pointer"
-                        :class="{'item-active': index === cursorProduct}"
-                        @click="selectProduct(product)"
-                      >
-                        <!-- START - Section Label -->
-                        <b-col>
-                          <b-col
-                            class="text-dark"
-                          >
-                            <strong> {{ product.productName }}</strong>
-                          </b-col>
-                          <b-col
-                            class="my-1"
-                          >
-                            {{ product.productCode }}
-                          </b-col>
-                        </b-col>
-                      <!-- END - Section Label -->
-                      </b-row>
-                    </b-col>
-                  </b-container>
-                </b-collapse>
-                <!-- END - Product Popup -->
-
-              </b-col>
+                  <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                </template>
+              </vue-autosuggest>
               <!-- END - Prodduct input -->
-
-            </template>
+            </div>
             <!-- END - Table Footer -->
 
           </vue-good-table>
@@ -405,6 +346,7 @@ import {
   phoneNumber,
   required,
 } from '@/@core/utils/validations/validations'
+import { VueAutosuggest } from 'vue-autosuggest'
 import toasts from '@core/utils/toasts/toasts'
 import { getNow } from '@/@core/utils/utils'
 import {
@@ -424,6 +366,7 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
+    VueAutosuggest,
   },
 
   data() {
@@ -436,11 +379,8 @@ export default {
       goNext: () => {},
       isModalShow: false, // Modal xác nhận rời đi.
       isFieldCheck: true,
-      isDisabledFeature: true,
-      isFocusedInputProduct: false,
-      isFocusedInputCustomer: false,
-      cursorCustomer: -1, // Con trỏ chuột ở pop up = -1
-      cursorProduct: -1,
+      customers: [{ data: '' }],
+      products: [{ data: '' }],
 
       reasonObj: {
         reasonSelected: null,
@@ -499,7 +439,6 @@ export default {
         {
           label: 'ĐVT',
           field: 'productDVT',
-          type: 'number',
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
@@ -507,7 +446,6 @@ export default {
         {
           label: 'Giá',
           field: 'productPrice',
-          type: 'number',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
           thClass: 'text-right',
@@ -516,7 +454,6 @@ export default {
         {
           label: 'Số lượng ',
           field: 'productAmount',
-          type: 'number',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
           filterOptions: {
@@ -528,7 +465,6 @@ export default {
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
-          type: 'number',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
           filterOptions: {
@@ -546,8 +482,7 @@ export default {
       productInfos: {
         productName: null,
       },
-      damagedProduct: [
-      ],
+      damagedProduct: [],
     }
   },
 
@@ -565,7 +500,18 @@ export default {
       }))
     },
 
-    customers() {
+    getCustomers() {
+      return [{
+        data: this.CUSTOMERS_GETTER.map(data => ({
+          customerId: data.id,
+          customerCode: data.customerCode,
+          customerName: `${data.lastName} ${data.firstName}`,
+          address: data.address,
+          mobilePhone: data.mobiPhone,
+        })),
+      }]
+    },
+    getAllCustomer() {
       return this.CUSTOMERS_GETTER.map(data => ({
         customerId: data.id,
         customerCode: data.customerCode,
@@ -575,17 +521,19 @@ export default {
       }))
     },
 
-    products() {
-      return this.PRODUCTS_GETTER.map(data => ({
-        id: data.id,
-        productCode: data.productCode,
-        productName: data.productName,
-        productDVT: data.uom1,
-        productPrice: data.price,
-        productQuantity: data.totalAmount,
-        productPriceTotal: data.price * data.totalAmount,
-        count: null,
-      }))
+    getProducts() {
+      return [{
+        data: this.PRODUCTS_GETTER.map(data => ({
+          id: data.id,
+          productCode: data.productCode,
+          productName: data.productName,
+          productDVT: data.uom1,
+          productPrice: data.price,
+          productQuantity: data.totalAmount,
+          productPriceTotal: data.price * data.totalAmount,
+          count: null,
+        })),
+      }]
     },
 
     totalProducts() {
@@ -602,6 +550,12 @@ export default {
   watch: {
     getReasonOptions() {
       this.reasonObj.reasonOptions = [...this.getReasonOptions]
+    },
+    getCustomers() {
+      this.customers = [...this.getCustomers]
+    },
+    getProducts() {
+      this.products = [...this.getProducts]
     },
   },
 
@@ -633,80 +587,79 @@ export default {
     createDamagedGoods() {
       this.$refs.formContainer.validate().then(success => {
         if (success && this.checkDuplicatesName() > -1) {
-          this.CREATE_EXCHANGE_DAMAGED_GOODS_ACTION({
-            damagedGoodsData: {
-              transCode: this.exchangeGoodsInfo.transCode,
-              customerId: this.customerInfo.customerId,
-              reasonId: this.reasonObj.reasonSelected,
-              shopId: this.damagedProduct.shopId,
-              lstExchangeDetail: this.damagedProduct.map(item => ({
-                productId: item.id,
-                productName: item.productName,
-                price: item.productPrice,
-                quantity: item.productQuantity,
-              })),
-            },
-            onSuccess: () => {
-              this.navigateBack()
-            },
-          })
+          if (this.damagedProduct.length > 0) {
+            this.CREATE_EXCHANGE_DAMAGED_GOODS_ACTION({
+              damagedGoodsData: {
+                transCode: this.exchangeGoodsInfo.transCode,
+                customerId: this.customerInfo.customerId,
+                reasonId: this.reasonObj.reasonSelected,
+                shopId: this.damagedProduct.shopId,
+                lstExchangeDetail: this.damagedProduct.map(item => ({
+                  productId: item.id,
+                  productName: item.productName,
+                  price: item.productPrice,
+                  quantity: item.productQuantity,
+                })),
+              },
+              onSuccess: () => {
+                this.navigateBack()
+              },
+            })
+          } else toasts.error('Vui lòng thêm sản phẩm')
         } else toasts.error('Khách hàng không tồn tại')
       })
     },
 
     checkDuplicatesName() {
-      return this.customers.findIndex(x => x.customerName.toLowerCase() === this.customerInfo.customerName.toLowerCase())
+      return this.getAllCustomer.findIndex(x => x.customerName.toLowerCase() === this.customerInfo.customerName.toLowerCase())
     },
 
-    customerOptions() {
-      this.cursorCustomer = -1
-      if (this.customerInfo.customerName.length >= commonData.minSearchLength) {
-        this.isFocusedInputCustomer = true
-        const searchData = {
-          searchKeywords: this.customerInfo.customerName.trim(),
-          status: this.customerInfo.status,
+    customerOptions(text) {
+      if (text) {
+        if (text.length >= commonData.minSearchLength) {
+          const searchData = {
+            searchKeywords: text,
+            status: this.customerInfo.status,
+            ...this.decentralization,
+          }
+          this.GET_CUSTOMERS_ACTION(searchData)
         }
-        this.GET_CUSTOMERS_ACTION(searchData)
-      } else {
-        this.isFocusedInputCustomer = false
       }
     },
 
     selectCustomer(customer) {
-      this.customerInfo.customerId = customer.customerId
-      this.customerInfo.customerCode = customer.customerCode
-      this.customerInfo.customerName = customer.customerName
-      this.customerInfo.customerAddress = customer.address
-      this.customerInfo.customerPhone = customer.mobilePhone
-      this.isFocusedInputCustomer = false
+      if (customer.item) {
+        this.customerInfo.customerId = customer.item.customerId
+        this.customerInfo.customerCode = customer.item.customerCode
+        this.customerInfo.customerName = customer.item.customerName
+        this.customerInfo.customerAddress = customer.item.address
+        this.customerInfo.customerPhone = customer.item.mobilePhone
+        this.customers = [{ data: null }]
+      }
     },
 
-    loadProducts() {
-      this.cursorProduct = -1
-      if (this.productInfos.productName.length >= commonData.minSearchLength) {
-        this.isFocusedInputProduct = true
-        const searchData = {
-          keyWord: this.productInfos.productName,
-          customerTypeId: 1, // hard code vì api bảo thế để chạy trơn tru, sau này sửa lại
-          ...this.decentralization,
+    loadProducts(text) {
+      if (text) {
+        if (text.length >= commonData.minSearchLength) {
+          const searchData = {
+            keyWord: this.productInfos.productName,
+            ...this.decentralization,
+          }
+          this.GET_PRODUCTS_ACTION(searchData)
         }
-        this.GET_PRODUCTS_ACTION(searchData)
-      } else {
-        this.isFocusedInputProduct = false
       }
     },
 
     selectProduct(product) {
-      this.productInfos.productName = ''
-      const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.productCode)
+      const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.item.productCode)
       if (this.damagedProduct) {
         const obj = {
           count: this.damagedProduct.length,
-          id: product.id,
-          productCode: product.productCode,
-          productName: product.productName,
-          productDVT: product.productDVT,
-          productPrice: product.productPrice,
+          id: product.item.id,
+          productCode: product.item.productCode,
+          productName: product.item.productName,
+          productDVT: product.item.productDVT,
+          productPrice: product.item.productPrice,
           productQuantity: 1,
           productPriceTotal: null,
         }
@@ -717,7 +670,8 @@ export default {
           this.damagedProduct[existedProductIndex].productQuantity = Number(this.damagedProduct[existedProductIndex].productQuantity) + obj.productQuantity
           this.damagedProduct[existedProductIndex].productPriceTotal = Number(obj.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
         }
-        this.isFocusedInputProduct = false
+        this.productInfos.productName = null
+        this.products = [{ data: null }]
       }
     },
 
@@ -726,28 +680,12 @@ export default {
       this.damagedProduct[existedProductIndex].productPriceTotal = Number(props.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
     },
 
-    focusCustomer() {
-      this.cursorCustomer = -1
-      if (this.customerInfo.customerName) {
-        this.isFocusedInputCustomer = this.customerInfo.customerName.length >= commonData.minSearchLength
-      }
-    },
-
-    focusProduct() {
-      this.cursorProduct = -1
-      if (this.productInfos.productName) {
-        this.isFocusedInputProduct = this.productInfos.productName.length >= commonData.minSearchLength
-      }
-    },
-
     clearCustomer() {
       this.customerInfo.customerName = ''
-      this.isFocusedInputCustomer = false
     },
 
     clearProduct() {
       this.productInfos.productName = ''
-      this.isFocusedInputProduct = false
     },
 
     onClickDeleteButton(index) {
@@ -778,19 +716,9 @@ export default {
       this.createDamagedGoods()
     },
 
-    onClickFeature() {
-      this.isDisabledFeature = !this.isDisabledFeature
-    },
-
     navigateBack() {
       this.$router.replace({ name: 'warehouses-exchange-damaged-goods' })
     },
   },
 }
 </script>
-
-<style>
-  .item-active {
-    padding-left: 5px;
-  }
-</style>

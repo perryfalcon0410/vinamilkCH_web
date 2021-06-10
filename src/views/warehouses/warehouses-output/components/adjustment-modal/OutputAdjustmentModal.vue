@@ -31,7 +31,7 @@
           <vue-good-table
             :columns="columns"
             :rows="ajustmentTrans"
-            max-height="500px"
+            max-height="400px"
             style-class="vgt-table striped"
             :pagination-options="{
               enabled: false,

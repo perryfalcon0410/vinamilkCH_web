@@ -79,7 +79,10 @@
             slot="table-column"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'feature'">
+            <div
+              v-if="props.column.field === 'feature'"
+              hidden
+            >
               <b-icon-bricks
                 v-b-popover.hover="'Thao tác'"
                 class="cursor-pointer"
