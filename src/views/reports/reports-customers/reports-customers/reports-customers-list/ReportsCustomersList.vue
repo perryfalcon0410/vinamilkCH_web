@@ -1,0 +1,399 @@
+<template>
+  <b-container
+    fluid
+    class="d-flex flex-column px-0"
+  >
+    <!-- START - Search -->
+    <reports-customers-list-search
+      :per-page-size="paginationData.size"
+      @updateSearchData="updateSearchData"
+      @onClickSearchButton="onClickSearchButton"
+    />
+    <!-- END - Search -->
+
+    <!-- START - Customer list -->
+    <b-form class="v-search bg-white rounded shadow rounded my-1 d-print-none">
+      <!-- START - Header -->
+      <b-row
+        class="justify-content-between border-bottom px-1 mx-0"
+        style="padding: 5px 0"
+        align-v="center"
+      >
+        <strong class="text-brand-1">
+          Danh sách khách hàng
+        </strong>
+        <b-button-group>
+          <b-button
+            class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+            variant="someThing"
+            @click="onClickExcelExportButton"
+          >
+            <b-icon-file-earmark-x-fill class="mr-50" />
+            Xuất excel
+          </b-button>
+        </b-button-group>
+      </b-row>
+      <!-- END - Header -->
+
+      <!-- START - Table -->
+      <b-col class="py-1">
+        <vue-good-table
+          :columns="columns"
+          mode="remote"
+          :rows="reportReturnRows"
+          style-class="vgt-table striped"
+          :pagination-options="{
+            enabled: true,
+            perPage: paginationData.size,
+            setCurrentPage: pageNumber,
+          }"
+          compact-mode
+          line-numbers
+          :total-rows="reportCustomersPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
+        >
+          >
+          <!-- START - Empty rows -->
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
+          <!-- END - Empty rows -->
+
+          <!-- START - Columns -->
+          <template
+            slot="table-column"
+            slot-scope="props"
+          >
+            <div v-if="props.column.field === 'feature'">
+              <b-icon-bricks
+                v-b-popover.hover="'Thao tác'"
+                scale="1.3"
+              />
+            </div>
+
+            <div v-else>
+              {{ props.column.label }}
+            </div>
+          </template>
+          <!-- END - Columns -->
+
+          <!-- START - Rows -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div v-if="props.column.field === 'feature'">
+              <b-icon-pencil-fill
+                v-b-popover.hover="'Chỉnh sửa'"
+                class="cursor-pointer"
+                @click="navigateToUpdate(props.row.id)"
+              />
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Rows -->
+          <!-- START - Column filter -->
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-row
+              v-if="props.column.field === 'quantity'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
+            </b-row>
+
+            <b-row
+              v-else-if="props.column.field === 'amount'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.totalAmount) }}
+            </b-row>
+            <b-row
+              v-else-if="props.column.field === 'refunds'"
+              class="mx-0"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.totalRefunds) }}
+            </b-row>
+          </template>
+          <!-- END - Column filter -->
+
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="reportCustomersPagination.totalElements"
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Số hàng hiển thị
+                </span>
+                <b-form-select
+                  v-model="paginationData.size"
+                  size="sm"
+                  :options="perPageSizeOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="reportCustomersPagination.totalElements"
+                :per-page="paginationData.size"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
+
+        </vue-good-table>
+      </b-col>
+      <!-- END - Table -->
+    </b-form>
+    <!-- END - Customer list -->
+
+  </b-container>
+</template>
+
+<script>
+import commonData from '@/@db/common'
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import { formatISOtoVNI } from '@core/utils/filter'
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
+import ReportsCustomersListSearch from './components/ReportsCustomersListSearch.vue'
+import {
+  REPORT_CUSTOMERS,
+  // Getters
+  REPORT_CUSTOMERS_GETTER,
+  // Actions
+  GET_REPORT_CUSTOMERS_ACTION,
+  EXPORT_REPORT_CUSTOMERS_ACTION,
+} from '../store-module/type'
+
+export default {
+  components: {
+    ReportsCustomersListSearch,
+  },
+  data() {
+    return {
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
+      paginationData: {
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
+        sort: null,
+      },
+      searchOptions: {
+        code: '',
+        fromDate: null,
+        toDate: null,
+        reasonSelected: null,
+        ids: '',
+      },
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+      reportReturnRows: [],
+
+      columns: [
+        {
+          label: 'Mã khách hàng',
+          field: 'customerCode',
+          sortable: false,
+        },
+        {
+          label: 'Họ tên',
+          field: 'fullName',
+          sortable: false,
+        },
+        {
+          label: 'Điện thoại',
+          field: 'mobiPhone',
+          sortable: false,
+        },
+        {
+          label: 'Ngày sinh',
+          field: 'birthDay',
+          sortable: false,
+        },
+        {
+          label: 'Giới tính',
+          field: 'gender',
+          sortable: false,
+        },
+        {
+          label: 'Địa chỉ',
+          field: 'address',
+          sortable: false,
+        },
+        {
+          label: 'Trạng thái',
+          field: 'status',
+          sortable: false,
+        },
+
+        {
+          label: 'Nhóm',
+          field: 'cusTypeName',
+          sortable: false,
+        },
+        {
+          label: 'Ngày tạo',
+          field: 'createdAt',
+          sortable: false,
+        },
+        {
+          label: 'Ngày mua hàng cuối',
+          field: 'orderDate',
+          sortable: false,
+        },
+        {
+          label: 'Doanh số',
+          field: 'saleAmount',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+      ],
+    }
+  },
+  computed: {
+    ...mapGetters(REPORT_CUSTOMERS, [
+      REPORT_CUSTOMERS_GETTER,
+    ]),
+    getReportCustomerLists() {
+      if (this.REPORT_CUSTOMERS_GETTER.content && this.REPORT_CUSTOMERS_GETTER.content.length) {
+        return this.REPORT_CUSTOMERS_GETTER.content.map(data => ({
+          customerCode: data.customerCode,
+          fullName: data.fullName,
+          mobiPhone: data.mobiPhone,
+          birthDay: formatISOtoVNI(data.birthDay),
+          gender: data.gender,
+          address: data.address,
+          status: data.status,
+          cusTypeName: data.cusTypeName,
+          createdAt: formatISOtoVNI(data.createdAt),
+          orderDate: formatISOtoVNI(data.orderDate),
+          saleAmount: this.$formatNumberToLocale(data.saleAmount),
+        }))
+      }
+      return []
+    },
+    totalInfo() {
+      if (this.REPORT_CUSTOMERS_GETTER.info) {
+        return this.REPORT_CUSTOMERS_GETTER.info
+      }
+      return {}
+    },
+
+    reportCustomersPagination() {
+      if (this.REPORT_CUSTOMERS_GETTER) {
+        return this.REPORT_CUSTOMERS_GETTER
+      }
+      return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.reportCustomersPagination.totalElements
+        ? this.reportCustomersPagination.totalElements : (this.paginationData.size * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.reportCustomersPagination.totalElements} mục`
+    },
+  },
+  watch: {
+    getReportCustomerLists() {
+      this.reportReturnRows = [...this.getReportCustomerLists]
+    },
+  },
+
+  mounted() {
+    resizeAbleTable()
+  },
+  methods: {
+    ...mapActions(REPORT_CUSTOMERS, [
+      GET_REPORT_CUSTOMERS_ACTION,
+      EXPORT_REPORT_CUSTOMERS_ACTION,
+    ]),
+    // Start - xuat excel
+    onClickExcelExportButton() {
+      this.EXPORT_REPORT_CUSTOMERS_ACTION({ ...this.decentralization })
+    },
+    // End - xuat excel
+
+    // Start - pagination
+    updateSearchData(event) {
+      this.paginationData = {
+        ...this.paginationData,
+        ...event,
+      }
+    },
+    onPaginationChange() {
+      this.GET_REPORT_CUSTOMERS_ACTION({ ...this.paginationData, ...this.decentralization })
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    onClickSearchButton() {
+      this.pageNumber = 1 // hard code
+    },
+  },
+}
+</script>
