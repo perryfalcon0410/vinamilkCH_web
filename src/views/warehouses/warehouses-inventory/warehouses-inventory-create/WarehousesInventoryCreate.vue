@@ -147,19 +147,12 @@
           :columns="columns"
           :rows="products"
           style-class="vgt-table bordered"
-          :pagination-options="{
-            enabled: true,
-            perPage: elementSize,
-            setCurrentPage: pageNumber,
-          }"
           compact-mode
           line-numbers
-          :total-rows="warehouseInventoryPagination.totalElements"
           :sort-options="{
             enabled: false,
           }"
-          @on-page-change="onPageChange"
-          @on-per-page-change="onPerPageChange"
+          max-height="500px"
         >
           <div
             slot="emptystate"
@@ -235,62 +228,6 @@
             </b-row>
           </template>
           <!-- START - Column filter -->
-          <!-- START - Pagination -->
-          <template
-            slot="pagination-bottom"
-            slot-scope="props"
-          >
-            <b-row
-              class="v-pagination px-1 mx-0"
-              align-h="between"
-              align-v="center"
-            >
-              <div
-                class="d-flex align-items-center"
-              >
-                <span
-                  class="text-nowrap"
-                >
-                  Số hàng hiển thị
-                </span>
-                <b-form-select
-                  v-model="elementSize"
-                  size="sm"
-                  :options="paginationOptions"
-                  class="mx-1"
-                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
-                />
-                <span class="text-nowrap">{{ paginationDetailContent }}</span>
-              </div>
-              <b-pagination
-                v-model="pageNumber"
-                :total-rows="warehouseInventoryPagination.totalElements"
-                :per-page="elementSize"
-                first-number
-                last-number
-                align="right"
-                prev-class="prev-item"
-                next-class="next-item"
-                class="mt-1"
-                @input="(value)=>props.pageChanged({currentPage: value})"
-              >
-                <template slot="prev-text">
-                  <feather-icon
-                    icon="ChevronLeftIcon"
-                    size="18"
-                  />
-                </template>
-                <template slot="next-text">
-                  <feather-icon
-                    icon="ChevronRightIcon"
-                    size="18"
-                  />
-                </template>
-              </b-pagination>
-            </b-row>
-          </template>
-          <!-- END - Pagination -->
-
           <!-- START - Row -->
           <template
             slot="table-row"
@@ -549,7 +486,6 @@
 </template>
 
 <script>
-import commonData from '@/@db/common'
 import toasts from '@core/utils/toasts/toasts'
 import { mapActions, mapGetters } from 'vuex'
 import { formatDateToLocale, reverseVniDate } from '@/@core/utils/filter'
@@ -576,15 +512,6 @@ export default {
 
   data() {
     return {
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
-      paginationOptions: commonData.perPageSizes,
-      paginationData: {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-        sort: null,
-        isPaging: true,
-      },
       inventoryCode: '',
       countingDate: formatDateToLocale(new Date()),
       warehouseType: null,
@@ -768,7 +695,7 @@ export default {
     },
     getWarehouseInventoryStocks() {
       if (this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response) {
-        return this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response.content.map(data => ({
+        return this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response.map(data => ({
           category: data.productCategory,
           productId: data.productId,
           productCode: data.productCode,
@@ -786,19 +713,6 @@ export default {
         }))
       }
       return []
-    },
-    warehouseInventoryPagination() {
-      if (this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response) {
-        return this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response
-      }
-      return {}
-    },
-    paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehouseInventoryPagination.totalElements
-        ? this.warehouseInventoryPagination.totalElements : (this.elementSize * this.pageNumber)
-
-      return `${minPageSize} - ${maxPageSize} của ${this.warehouseInventoryPagination.totalElements} mục`
     },
   },
 
@@ -834,11 +748,14 @@ export default {
       this.warehouseInventoryImportData = { ...this.getWarehouseInventoryImportData }
       this.showErrorMessage = this.warehouseInventoryImportData.response.importFails.length > 0
       this.showSuccessMessage = !this.showErrorMessage
-      this.rowsSuccess = this.warehouseInventoryImportData.info
-      this.rowsFail = this.warehouseInventoryImportData.response.importFails.length
+      this.rowsSuccess = this.warehouseInventoryImportData.info.importSucceed
+      this.rowsFail = this.warehouseInventoryImportData.info.importFailed
       this.warehouseInventoryImportData.response.importSuccess.forEach(productData => {
-        this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryPacket = productData.packetQuantity
-        this.products[this.products.findIndex(product => product.productCode === productData.productCode)].inventoryOdd = productData.unitQuantity
+        const index = this.products.findIndex(product => product.productCode === productData.productCode)
+        this.products[index].inventoryPacket = productData.packetQuantity
+        this.products[index].inventoryOdd = productData.unitQuantity
+        this.updateInventoryPacket(index, productData.packetQuantity)
+        this.updateInventoryOdd(index, productData.unitQuantity)
       })
     },
     getWarehouseInventoryStocks() {
@@ -849,7 +766,10 @@ export default {
 
   mounted() {
     this.GET_WAREHOUSE_TYPES_ACTION({ formId: 5, ctrlId: 7 })
-    this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION({ isPaging: true, formId: 5, ctrlId: 7 })
+    this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION({
+      formId: 5,
+      ctrlId: 7,
+    })
     this.CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION({ formId: 5, ctrlId: 7 })
   },
 
@@ -864,20 +784,6 @@ export default {
       GET_SAMPLE_IMPORT_FILE_ACTION,
       GET_FAILED_IMPORT_FILE_ACTION,
     ]),
-    onPaginationChange() {
-      this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION({ ...this.paginationData })
-    },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
-    },
-    onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
-    },
-    onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange()
-    },
     onClickCloseButton() {
       if (!this.isCreated) {
         this.isModalCloseShow = !this.isModalCloseShow
@@ -886,25 +792,10 @@ export default {
       }
     },
     onClickGetInventoryStocksButton() {
-      if (this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response) {
-        this.products = this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response.content.map(data => ({
-          category: data.productCategory,
-          productId: data.productId,
-          productCode: data.productCode,
-          productName: data.productName,
-          instockAmount: data.stockQuantity,
-          price: data.price,
-          totalPrice: data.totalAmount,
-          inventoryPacket: null,
-          inventoryOdd: null,
-          inventoryTotal: 0,
-          unequal: data.changeQuantity,
-          packetUnit: data.packetUnit,
-          exchange: data.convfact,
-          oddUnit: data.unit,
-        }))
-        this.originalProducts = this.products
-      }
+      this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION({
+        formId: 5,
+        ctrlId: 7,
+      })
     },
     updateInventoryTotal(index) {
       this.products[index].inventoryTotal = this.products[index].inventoryPacket * this.products[index].exchange + this.products[index].inventoryOdd

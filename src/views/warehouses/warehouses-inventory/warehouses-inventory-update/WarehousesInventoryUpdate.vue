@@ -104,19 +104,12 @@
           :columns="columns"
           :rows="products"
           style-class="vgt-table bordered"
-          :pagination-options="{
-            enabled: true,
-            perPage: elementSize,
-            setCurrentPage: pageNumber,
-          }"
           compact-mode
           line-numbers
-          :total-rows="warehouseInventoryPagination.totalElements"
           :sort-options="{
             enabled: false,
           }"
-          @on-page-change="onPageChange"
-          @on-per-page-change="onPerPageChange"
+          max-height="500px"
         >
           <div
             slot="emptystate"
@@ -192,61 +185,6 @@
             </b-row>
           </template>
           <!-- START - Column filter -->
-          <!-- START - Pagination -->
-          <template
-            slot="pagination-bottom"
-            slot-scope="props"
-          >
-            <b-row
-              class="v-pagination px-1 mx-0"
-              align-h="between"
-              align-v="center"
-            >
-              <div
-                class="d-flex align-items-center"
-              >
-                <span
-                  class="text-nowrap"
-                >
-                  Số hàng hiển thị
-                </span>
-                <b-form-select
-                  v-model="elementSize"
-                  size="sm"
-                  :options="paginationOptions"
-                  class="mx-1"
-                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
-                />
-                <span class="text-nowrap">{{ paginationDetailContent }}</span>
-              </div>
-              <b-pagination
-                v-model="pageNumber"
-                :total-rows="warehouseInventoryPagination.totalElements"
-                :per-page="elementSize"
-                first-number
-                last-number
-                align="right"
-                prev-class="prev-item"
-                next-class="next-item"
-                class="mt-1"
-                @input="(value)=>props.pageChanged({currentPage: value})"
-              >
-                <template slot="prev-text">
-                  <feather-icon
-                    icon="ChevronLeftIcon"
-                    size="18"
-                  />
-                </template>
-                <template slot="next-text">
-                  <feather-icon
-                    icon="ChevronRightIcon"
-                    size="18"
-                  />
-                </template>
-              </b-pagination>
-            </b-row>
-          </template>
-          <!-- END - Pagination -->
 
           <!-- START - Row -->
           <template
@@ -346,7 +284,6 @@
 </template>
 
 <script>
-import commonData from '@/@db/common'
 import { mapActions, mapGetters } from 'vuex'
 import { formatISOtoVNI, reverseVniDate } from '@/@core/utils/filter'
 import {
@@ -371,15 +308,6 @@ export default {
 
   data() {
     return {
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
-      paginationOptions: commonData.perPageSizes,
-      paginationData: {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-        sort: null,
-        isPaging: true,
-      },
       countingCode: '',
       countingDate: null,
       warehouseType: null,
@@ -557,19 +485,6 @@ export default {
     getWarehouseInventoryDetail() {
       return this.WAREHOUSE_INVENTORY_DETAIL_GETTER
     },
-    warehouseInventoryPagination() {
-      if (this.WAREHOUSE_INVENTORY_DETAIL_GETTER.response) {
-        return this.WAREHOUSE_INVENTORY_DETAIL_GETTER.response
-      }
-      return {}
-    },
-    paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehouseInventoryPagination.totalElements
-        ? this.warehouseInventoryPagination.totalElements : (this.elementSize * this.pageNumber)
-
-      return `${minPageSize} - ${maxPageSize} của ${this.warehouseInventoryPagination.totalElements} mục`
-    },
   },
 
   watch: {
@@ -642,20 +557,6 @@ export default {
       GET_WAREHOUSE_INVENTORY_DETAIL_ACTION,
       UPDATE_WAREHOUSE_INVENTORY_ACTION,
     ]),
-    onPaginationChange() {
-      this.GET_WAREHOUSE_INVENTORY_DETAIL_ACTION({ ...this.paginationData })
-    },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
-    },
-    onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
-    },
-    onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange()
-    },
     onClickCloseButton() {
       this.isModalCloseShow = !this.isModalCloseShow
     },
