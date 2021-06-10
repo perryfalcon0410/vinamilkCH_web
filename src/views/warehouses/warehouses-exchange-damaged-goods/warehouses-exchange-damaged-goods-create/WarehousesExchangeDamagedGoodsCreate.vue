@@ -593,11 +593,8 @@ export default {
                 transCode: this.exchangeGoodsInfo.transCode,
                 customerId: this.customerInfo.customerId,
                 reasonId: this.reasonObj.reasonSelected,
-                shopId: this.damagedProduct.shopId,
                 lstExchangeDetail: this.damagedProduct.map(item => ({
                   productId: item.id,
-                  productName: item.productName,
-                  price: item.productPrice,
                   quantity: item.productQuantity,
                 })),
               },
