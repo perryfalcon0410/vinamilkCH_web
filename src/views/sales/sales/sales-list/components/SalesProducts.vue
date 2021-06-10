@@ -142,7 +142,7 @@ export default {
   computed: {
     getAllProduct() {
       return this.GET_ALL_PRODUCT_GETTER().map(data => ({
-        productId: data.productId,
+        productId: data.id,
         productName: data.productName,
         productCode: data.productCode,
         productUnit: data.uom1,
@@ -154,7 +154,7 @@ export default {
     },
     getHotProducts() {
       return this.GET_HOT_PRODUCTS_GETTER().map(data => ({
-        productId: data.productId,
+        productId: data.id,
         productName: data.productName,
         productCode: data.productCode,
         productUnit: data.uom1,
@@ -166,7 +166,7 @@ export default {
     },
     getTopSaleProductsInMonth() {
       return this.GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER().map(data => ({
-        productId: data.productId,
+        productId: data.id,
         productName: data.productName,
         productCode: data.productCode,
         productUnit: data.uom1,
@@ -257,7 +257,7 @@ export default {
       }
       this.GET_PRODUCTS_ACTION(paramGetProductsWithCatId)
       this.recommendProducts = this.GET_PRODUCTS_GETTER().map(data => ({
-        productId: data.productId,
+        productId: data.idd,
         productName: data.productName,
         productCode: data.productCode,
         productUnit: data.uom1,
@@ -268,8 +268,13 @@ export default {
       }))
     },
 
-    onclickAddProduct(index) {
-      this.orderProducts.push(index)
+    onclickAddProduct(params) {
+      const findIndex = this.orderProducts.findIndex(item => item.productId === params.productId)
+      if (findIndex === -1) {
+        this.orderProducts.push(params)
+      } else {
+        this.orderProducts[findIndex].quantity += 1
+      }
     },
 
     totalPrice(amount, price) {

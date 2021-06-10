@@ -188,6 +188,7 @@
               v-else-if="props.column.field === 'quantity'"
               align-v="center"
               align-h="start"
+              class="d-flex align-items-center"
             >
               <b-icon-caret-down-fill
                 v-if="editPermission"
@@ -195,13 +196,14 @@
                 font-scale="1.5"
                 @click="decreaseAmount(props.row.productId)"
               />
-              {{ props.row.quantity }}
-              <!-- <b-input
-                v-model="props.row.quantity"
-                :value="props.row.quantity"
+              <!-- {{ props.row.quantity }} -->
+              <b-input
+                v-model="orderProducts[props.row.originalIndex].quantity"
+                :value="orderProducts[props.row.originalIndex].quantity"
                 :number="true"
                 maxlength="6"
-              /> -->
+                @change="onChangeQuantity(props.row.originalIndex)"
+              />
               <b-icon-caret-up-fill
                 v-if="editPermission"
                 class="cursor-pointer"
@@ -351,7 +353,7 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          width: '80px',
+          width: '100px',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -381,6 +383,7 @@ export default {
 
       searchOptions: {
         keyWord: '',
+        checkStockTotal: true,
         catId: null,
         customerId: 507,
         status: null,
@@ -592,6 +595,7 @@ export default {
     },
 
     onChangeKeyWord() {
+      this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
       this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
     },
 
@@ -599,7 +603,9 @@ export default {
       this.id = id
       this.GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION(`${this.id}?formId=4&ctrlId=1`)
     },
-
+    onChangeQuantity(index) {
+      this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].productUnitPrice))
+    },
     getCustomerDefault(val) {
       this.customerId = val.data.id
       this.GET_PRODUCTS_ACTION(this.searchOptions)

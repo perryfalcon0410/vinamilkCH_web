@@ -797,7 +797,7 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           industry: data.groupVat,
-          productDVT: data.productUnit,
+          productDVT: data.uom1,
           quantity: data.quantity,
           productPrice: this.$formatNumberToLocale(data.priceNotVat),
           productPriceTotal: this.$formatNumberToLocale(data.quantity * data.priceNotVat),
@@ -862,7 +862,7 @@ export default {
         priceNotVat: data.productPriceOriginal,
         productId: data.productId,
         vat: data.vat,
-        note: data.note,
+        noteRedInvoiceDetail: data.note,
       }))
       const paramsCreateRedInvoice = {
         customerId: this.redBill.customerId,
@@ -876,7 +876,7 @@ export default {
         amountTotal: this.totalPriceTotal + this.totalProductExported,
         paymentType: this.redBill.paymentType,
         buyerName: this.redBill.buyer,
-        note: this.redBill.note,
+        noteRedInvoice: this.redBill.note,
         shopId: this.redBill.shopId,
         productDataDTOS: productsData,
         saleOrderId: this.saleOrderIds,

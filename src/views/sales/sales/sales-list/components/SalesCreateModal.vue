@@ -134,49 +134,6 @@
         </b-col>
 
         <b-col md="12">
-          <!-- START - Customer Group and State -->
-          <b-form-row>
-            <b-col>
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                name="nhóm khách hàng"
-              >
-                <div
-                  class="mt-1"
-                >
-                  Nhóm khách hàng <sup class="text-danger">*</sup>
-                </div>
-                <tree-select
-                  v-model="customerTypesSelected"
-                  :options="customerTypeOptions"
-                  placeholder="Chọn nhóm khách hàng"
-                  no-options-text="Không có dữ liệu"
-                  no-results-text="Không tìm thấy kết quả"
-                />
-                <small class="text-danger">{{ errors[0] }}</small>
-              </validation-provider>
-
-            </b-col>
-
-            <b-col>
-              <div
-                class="mt-1"
-              >
-                Trạng thái <sup class="text-danger">*</sup>
-              </div>
-              <tree-select
-                v-model="customerStatusSelected"
-                :options="customerStatusOptions"
-                placeholder="Chọn trạng thái"
-                disabled
-              />
-            </b-col>
-          </b-form-row>
-          <!-- END - Customer Group and State -->
-        </b-col>
-
-        <b-col md="12">
           <validation-provider
             v-slot="{ errors, passed}"
             name="Số nhà"
@@ -337,7 +294,7 @@ import {
 import Ripple from 'vue-ripple-directive'
 import { formatVniDateToISO } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
-import customerData from '@/@db/customer'
+// import customerData from '@/@db/customer'
 import {
   CUSTOMER,
   // GETTERS
@@ -398,8 +355,6 @@ export default {
       street: null,
       customerSpecial: false,
       note: null,
-      customerStatusOptions: customerData.status,
-      customerStatusSelected: customerData.status[0].id,
       customerGroups: null,
       provincesSelected: null,
       districtsSelected: null,
@@ -417,12 +372,6 @@ export default {
       CREATE_CUSTOMER_GETTER,
       CUSTOMER_TYPES_GETTER,
     }),
-    customerTypeOptions() {
-      return this.CUSTOMER_TYPES_GETTER.map(data => ({
-        id: data.id,
-        label: data.name,
-      }))
-    },
     provinceOptions() {
       return this.PROVINCES_GETTER.map(data => ({
         id: data.id,
@@ -521,7 +470,7 @@ export default {
               street: this.street,
               noted: this.note,
               areaId: this.precinctsSelected,
-              customerTypeId: this.customerTypesSelected,
+              // customerTypeId: this.customerTypesSelected,
             },
             onSuccess: () => {
               this.getCreateInfo()

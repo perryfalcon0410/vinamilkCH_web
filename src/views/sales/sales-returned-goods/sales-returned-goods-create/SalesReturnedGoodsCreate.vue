@@ -242,7 +242,7 @@
                     class="mx-0"
                     align-h="end"
                   >
-                    {{ (getProductInfo.totalQuantity) }}
+                    {{ (getPromotionInfo.totalQuantity) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'payment'"
