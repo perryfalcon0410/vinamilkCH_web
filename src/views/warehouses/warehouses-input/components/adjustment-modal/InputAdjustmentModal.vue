@@ -139,18 +139,21 @@
 import {
   mapGetters,
   mapActions,
+  mapMutations,
 } from 'vuex'
 import { formatISOtoVNI } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSEINPUT,
-  // GETTER
+  // GETTERS
   IMPORT_ADJUSTMENTS_GETTER,
   IMPORT_ADJUSTMENTS_DETAIL_GETTER,
   IMPORT_ADJUSTMENTS_DETAIL_INFO_GETTER,
-  // ACTION
+  // ACTIONS
   GET_IMPORT_ADJUSTMENTS_ACTION,
   GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION,
+  // MUTATIONS
+  CLEAR_ADJUST_GRID_VIEW_MUTATION,
 } from '../../store-module/type'
 
 export default {
@@ -261,7 +264,7 @@ export default {
         this.selectOrder(this.firstPo.id, this.firstPo.sysDate, this.firstPo.description)
       } else {
         // will clear grid view if the last po been imported
-        this.importAdjustmentsDetails = []
+        this.CLEAR_ADJUST_GRID_VIEW_MUTATION()
       }
     },
   },
@@ -280,6 +283,9 @@ export default {
     ...mapActions(WAREHOUSEINPUT, [
       GET_IMPORT_ADJUSTMENTS_ACTION,
       GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION,
+    ]),
+    ...mapMutations(WAREHOUSEINPUT, [
+      CLEAR_ADJUST_GRID_VIEW_MUTATION,
     ]),
     selectOrder(id, date, description) {
       this.current = id

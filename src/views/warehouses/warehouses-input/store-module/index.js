@@ -50,6 +50,8 @@ import {
   // mutations
   CLEAR_STATUS_NOT_IMPORT_MUTATION,
   CLEAR_GRID_VIEW_MUTATION,
+  CLEAR_ADJUST_GRID_VIEW_MUTATION,
+  CLEAR_BORROW_GRID_VIEW_MUTATION,
 } from './type'
 
 export default {
@@ -153,6 +155,14 @@ export default {
       state.podetail_products_promo_res = []
       state.podetail_products_info = {}
       state.podetail_product_promo_info = {}
+    },
+    [CLEAR_ADJUST_GRID_VIEW_MUTATION](state) {
+      state.importAdjustmentsDetail = []
+      state.importAdjustmentsDetailInfo = {}
+    },
+    [CLEAR_BORROW_GRID_VIEW_MUTATION](state) {
+      state.importBorrowingsDetail = []
+      state.importBorrowingsDetailInfo = {}
     },
   },
 

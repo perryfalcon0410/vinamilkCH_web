@@ -48,14 +48,24 @@
                   label="Loại nhập"
                   label-for="id"
                 >
-                  <tree-select
-                    v-model="inputTypeSelected"
-                    :options="inputTypeOptions"
-                    no-options-text="Không có dữ liệu"
-                    no-results-text="Không tìm thấy kết quả"
-                    placeholder="Chọn loại nhập hàng"
-                    @select="clearFormText"
-                  />
+                  <div class="d-flex align-items-center">
+                    <tree-select
+                      v-model="inputTypeSelected"
+                      :options="inputTypeOptions"
+                      no-options-text="Không có dữ liệu"
+                      no-results-text="Không tìm thấy kết quả"
+                      placeholder="Chọn loại nhập hàng"
+                      @select="clearFormText"
+                    />
+                    <b-input-group-append>
+                      <b-icon-three-dots-vertical
+                        v-b-popover.hover="'Chọn đơn nhập'"
+                        scale="1.5"
+                        class="cursor-pointer"
+                        @click="showModal"
+                      />
+                    </b-input-group-append>
+                  </div>
                 </b-form-group>
               </b-col>
             </b-form-row>
@@ -169,15 +179,6 @@
                       :state="inputTypeSelected === '0' && touched ? passed : null"
                       :disabled="inputTypeSelected != '0' ? true : false"
                     />
-                    <b-input-group-append
-                      v-b-popover.hover="'Chọn đơn nhập'"
-                      is-text
-                      class="cursor-pointer"
-                    >
-                      <b-icon-three-dots-vertical
-                        @click="showModal"
-                      />
-                    </b-input-group-append>
                   </b-input-group>
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>

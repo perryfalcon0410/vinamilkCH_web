@@ -139,6 +139,7 @@
 import {
   mapGetters,
   mapActions,
+  mapMutations,
 } from 'vuex'
 import { formatISOtoVNI } from '@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
@@ -151,6 +152,8 @@ import {
   // ACTIONS
   GET_IMPORT_BORROWINGS_ACTION,
   GET_IMPORT_BORROWINGS_DETAIL_ACTION,
+  // MUTATIONS
+  CLEAR_BORROW_GRID_VIEW_MUTATION,
 } from '../../store-module/type'
 
 export default {
@@ -261,7 +264,7 @@ export default {
       if (this.importBorrowings.length > 0) {
         this.selectOrder(this.firstPo.id, this.firstPo.sysDate)
       } else {
-        this.importBorrowingsDetail = []
+        this.CLEAR_BORROW_GRID_VIEW_MUTATION()
       }
     },
   },
@@ -280,6 +283,9 @@ export default {
     ...mapActions(WAREHOUSEINPUT, [
       GET_IMPORT_BORROWINGS_ACTION,
       GET_IMPORT_BORROWINGS_DETAIL_ACTION,
+    ]),
+    ...mapMutations(WAREHOUSEINPUT, [
+      CLEAR_BORROW_GRID_VIEW_MUTATION,
     ]),
     inputBorrow() {
       if (this.importBorrowings.length > 0) {
