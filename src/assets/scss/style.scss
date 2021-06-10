@@ -115,7 +115,7 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 // END - Button
 
 // START - Input
-input:focus {
+.form-control:focus {
   border-color: $brand-1 !important;
 }
 .form-control,

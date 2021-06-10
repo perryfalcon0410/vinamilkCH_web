@@ -276,7 +276,7 @@
               v-if="props.column.field === 'quantity'"
               v-show="warehousesOutputPagination.totalElements"
               class="h7"
-              align-h="center"
+              align-h="start"
             >
               {{ totalQuantity }}
             </b-row>
@@ -285,7 +285,7 @@
               v-else-if="props.column.field === 'price'"
               v-show="warehousesOutputPagination.totalElements"
               class="h7 px-0 mx-0"
-              align-h="end"
+              align-h="start"
             >
               {{ totalPrice }}
             </b-row>
@@ -477,8 +477,8 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
           filterOptions: {
             enabled: true,
           },
@@ -487,8 +487,8 @@ export default {
           label: 'Số tiền',
           field: 'price',
           type: 'number',
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-left',
+          tdClass: 'text-left',
           filterOptions: {
             enabled: true,
           },

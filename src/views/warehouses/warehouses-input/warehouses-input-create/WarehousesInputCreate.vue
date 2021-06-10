@@ -89,7 +89,8 @@
                     >*</sup>
                   </div>
                   <b-form-input
-                    v-model="billNumber"
+                    v-model.trim="billNumber"
+                    class="text-uppercase"
                     :state="touched && inputTypeSelected === '0' ? passed : null"
                     :disabled="inputTypeSelected != '0' ? true : false"
                   />
@@ -111,7 +112,6 @@
                     class="input-group-merge"
                   >
                     <vue-flat-pickr
-                      id="form-input-date-from"
                       v-model="billDate"
                       :disabled="inputTypeSelected != '0' ? true : false"
                       :config="configDate"
@@ -278,23 +278,35 @@
               <!-- END - Empty rows -->
             </vue-good-table>
             <!-- END - Table Product -->
+
             <br>
-            <!-- START - Table Product promotion -->
+
+            <!-- START - Table Product promotion 1 -->
             <div v-if="isShowPoPromoTable">
+
               <div class="d-inline-flex rounded-top px-1 my-1">
                 <strong>
                   Hàng khuyến mãi
                 </strong>
               </div>
-              <!--if-PoConfirm-->
+
               <vue-good-table
                 :columns="poPromotionColumns"
                 :rows="rowsProductPromotionLoad"
-                style-class="vgt-table striped"
+                style-class="vgt-table"
                 compact-mode
                 line-numbers
               >
-                <!-- START - Column filter -->
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
+                <!-- END - Empty rows -->
+
+                <!-- START - Custom filter -->
                 <template
                   slot="column-filter"
                   slot-scope="props"
@@ -315,18 +327,14 @@
                   </b-row>
 
                 </template>
-                <!-- START - Empty rows -->
-                <div
-                  slot="emptystate"
-                  class="text-center"
-                >
-                  Không có dữ liệu
-                </div>
-              <!-- END - Empty rows -->
+                <!-- END - Custom filter -->
               </vue-good-table>
             </div>
-            <!--START input Po-->
+            <!-- END - Table Product promotion 1 -->
+
+            <!-- START - Table Product promotion 2 -->
             <div v-if="isShowPoPromoManualTable">
+
               <div
                 class="d-inline-flex rounded-top px-1 my-1"
               >
@@ -334,6 +342,7 @@
                   Hàng khuyến mãi
                 </strong>
               </div>
+
               <vue-good-table
                 :columns="poPromotionColumns"
                 :rows="rowsProductPromotion"
@@ -341,6 +350,16 @@
                 compact-mode
                 line-numbers
               >
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
+                <!-- END - Empty rows -->
+
+                <!-- START - Custom filter -->
                 <template
                   slot="column-filter"
                   slot-scope="props"
@@ -362,6 +381,9 @@
                   </b-row>
 
                 </template>
+                <!-- END - Custom filter -->
+
+                <!-- START - Custom row-->
                 <template
                   slot="table-row"
                   slot-scope="props"
@@ -400,57 +422,34 @@
                     {{ count }}
                   </span>
                 </template>
-                <!-- START - Empty rows -->
-                <div
-                  slot="emptystate"
-                  class="text-center"
-                >
-                  Không có dữ liệu
-                </div>
-                <!-- END - Empty rows -->
+                <!-- END - Custom row-->
+
+                <!-- START - Table action bottom -->
                 <div
                   slot="table-actions-bottom"
-                  class="mx-1 my-2 px-2"
+                  class="m-2"
                 >
-                  <b-form-input
+                  <vue-autosuggest
                     v-model="productSearch"
-                    class="w-25"
-                    placeholder="Nhập mã hoặc tên sản phẩm"
-                    type="text"
-                    autocomplete="off"
-                    @focus="focusProduct"
+                    :suggestions="products"
+                    :input-props="{
+                      id:'autosuggest__input',
+                      class:'form-control w-25',
+                      placeholder:'Nhập mã hoặc tên sản phẩm'
+                    }"
                     @input="loadProducts"
-                    @blur="isFocusedInputProduct = true"
-                    @keyup="loadProducts"
-                  />
-                  <b-collapse
-                    v-model.trim="isFocusedInputProduct"
-                    class="position-absolute mr-lg-0 mb-3"
-                    style="zIndex:1"
+                    @selected="productSelected"
                   >
-                    <b-container
-                      class="my-1 bg-white rounded border border-primary shadow-lg"
-                    >
-                      <b-row
-                        v-for="(product, index) in allProducts"
-                        :key="index"
-                        class="my-1 cursor-pointer"
-                        :class="{'item-active': index === cursorProduct}"
-                        @click="productSelected(product)"
-                        @mouseover="$event.target.classList.add('item-active')"
-                        @mouseout="$event.target.classList.remove('item-active')"
-                      >
-                        <b>{{ product.productCode }}</b> - {{ product.productName }}
-                      </b-row>
-                    </b-container>
-                  </b-collapse>
+                    <template slot-scope="{ suggestion }">
+                      <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                    </template>
+                  </vue-autosuggest>
                 </div>
+                <!-- END - Table action bottom -->
+
               </vue-good-table>
             </div>
-            <!--END input Po-->
-            <!--if-PoConfirm-->
-
-            <!-- END - Table Product promotion -->
+            <!-- START - Table Product promotion 2 -->
 
             <!-- START - Button -->
             <b-row class="m-1 justify-content-end">
@@ -516,14 +515,13 @@ import {
   number,
   required,
 } from '@/@core/utils/validations/validations'
+import { VueAutosuggest } from 'vue-autosuggest'
 import { mapGetters, mapActions } from 'vuex'
 import { getNow } from '@core/utils/utils'
 import commonData from '@/@db/common'
-// eslint-disable-next-line no-unused-vars
 import toasts from '@core/utils/toasts/toasts'
 import warehousesData from '@/@db/warehouses'
 import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
-// eslint-disable-next-line no-unused-vars
 import { formatVniDateToISO } from '@/@core/utils/filter'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
@@ -539,6 +537,8 @@ import {
 
 export default {
   components: {
+    // eslint-disable-next-line vue/no-unused-components
+    VueAutosuggest,
     AdjustmentModal,
     BorrowedModal,
     PoConfirmModal,
@@ -546,32 +546,37 @@ export default {
     ValidationProvider,
     ValidationObserver,
   },
+
   data() {
     return {
       componentKey: 0,
       totalPoPromoProduct: 0,
       totalProduct: 0,
-      // grid - state
+      products: [{ data: '' }],
+      // START - Table promotions
       isShowPoPromoTable: false,
       isShowPoPromoManualTable: true,
-      // grid - state
+      // END - Table promotions
 
-      // search product
+      // START - Search product
       productSearch: null,
-      isFocusedInputProduct: false,
-      cursorProduct: -1,
-      // search product
-      //
-      formId: 5,
-      ctrlId: 7,
-      //
+      // END - Search product
+
+      // START - decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+      // END - decentralization
+
       configDate: {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
       now: getNow(),
-      // --------------input form--------------
+
+      // START - Input form
       billNumber: '',
       internalNumber: '',
       billDate: this.$nowDate,
@@ -580,32 +585,33 @@ export default {
       poId: null,
       inputTypeOptions: warehousesData.inputTypes,
       inputTypeSelected: null,
-      // --------------input form--------------
+      // END - Input form
 
-      // --------------modal state--------------
+      // START - Modal status
       adjustmentModalVisible: false,
       borrowedModalVisible: false,
       poConfirmModalVisible: false,
       showConfirmCloseModal: false,
-      // --------------modal state--------------
+      // END - Modal status
 
-      // --------------input type--------------
+      // START - Input Type
       status: -1,
       columns: [],
-      // --------------input type--------------
+      // END - Input Type
 
-      // --------------Total-------------
+      // START - Total
       poProductInfo: {},
       poPromotionProductsInfo: {},
       poBorrowingInfo: {},
       poAdjustInfo: {},
-      // --------------Total-------------
+      // END - Total
 
-      length: 1,
-      // validation rules
+      // START - Validation rules
       number,
       required,
-      // -------------------------PoConfirm--------------------------
+      // END - Validation rules
+
+      // START - PoConfirm
       poPromotionColumns: [
         {
           label: 'Mã hàng',
@@ -747,8 +753,9 @@ export default {
         },
       ],
       rowsProductPromotion: [],
-      // -------------------------PoConfirm--------------------------
-      // --------------------------Adjust-Borrow-col-------------------
+      // END - PoConfirm
+
+      // START - Adjust Borrow col
       adjustBorrowColumns: [
         {
           label: 'Mã hàng',
@@ -806,14 +813,24 @@ export default {
           tdClass: 'text-center',
         },
       ],
+      // END - Adjust Borrow col
+
     }
   },
+
   computed: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      WAREHOUSES_TYPE_GETTER,
+      PRODUCTS_GETTER,
+    ]),
     warehousesType() {
-      return this.WAREHOUSES_TYPE_GETTER()
+      return this.WAREHOUSES_TYPE_GETTER
     },
-    allProducts() {
-      return this.PRODUCTS_GETTER()
+    getProducts() {
+      if (this.PRODUCTS_GETTER) {
+        return [{ data: this.PRODUCTS_GETTER }]
+      }
+      return []
     },
     promotionRow() {
       return this.rowsProductPromotion.map(data => ({
@@ -828,6 +845,7 @@ export default {
       return this.rowsProductPromotion.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
   },
+
   watch: {
     rowsProduct() {
       this.totalProduct = this.rowsProduct.length
@@ -842,7 +860,6 @@ export default {
     },
     inputTypeSelected() {
       // rest all total row
-      this.productSearch = null
       this.rowsProduct = []
       this.poProductInfo = {}
       this.poPromotionProductsInfo = {}
@@ -867,19 +884,19 @@ export default {
         this.columns = this.adjustBorrowColumns
       }
     },
+    getProducts() {
+      this.products = [...this.getProducts]
+    },
   },
+
   mounted() {
     this.inputTypeSelected = this.inputTypeOptions[0].id
     this.GET_WAREHOUSES_TYPE_ACTION({
-      formId: this.formId,
-      ctrlId: this.ctrlId,
+      ...this.decentralization,
     })
   },
+
   methods: {
-    ...mapGetters(WAREHOUSEINPUT, [
-      WAREHOUSES_TYPE_GETTER,
-      PRODUCTS_GETTER,
-    ]),
     ...mapActions(WAREHOUSEINPUT, [
       CREATE_SALE_IMPORT_ACTION,
       GET_WAREHOUSES_TYPE_ACTION,
@@ -1014,52 +1031,42 @@ export default {
       }
       return false
     },
-    // --------------search product functions --------------
-    focusProduct() {
-      this.cursorProduct = -1
-      if (this.productSearch) {
-        this.isFocusedInputProduct = this.productSearch.length >= commonData.minSearchLength
-      }
-    },
-    keyUp() {
-      if (this.cursor > 0) {
-        this.cursor -= 1
-      }
-    },
-    loadProducts() {
-      this.cursorProduct = -1
-      if (this.productSearch.length >= commonData.minSearchLength) {
-        this.isFocusedInputProduct = true
-        const searchData = {
-          keyWord: this.productSearch,
-          formId: this.formId,
-          ctrlId: this.ctrlId,
+    // START - Search product func
+    loadProducts(text) {
+      if (text) {
+        if (text.length >= commonData.minSearchLength) {
+          const searchData = {
+            keyWord: text,
+            ...this.decentralization,
+          }
+          this.GET_PRODUCTS_ACTION(searchData)
         }
-        this.GET_PRODUCTS_ACTION(searchData)
       }
     },
     productSelected(product) {
-      const index = this.rowsProductPromotion.findIndex(e => e.productId === product.id)
-      if (this.rowsProductPromotion) {
-        const obj = {
-          productId: product.id,
-          productCode: product.productCode,
-          productName: product.productName,
-          quantity: 1, // default quantity
-          price: product.price || 0,
-          totalPrice: product.stockTotal || 0,
-          unit: product.uom1,
-        }
-        if (index === -1) {
-          this.rowsProductPromotion.push(obj)
-        } else {
-          this.rowsProductPromotion[index].quantity += 1
+      if (product.item) {
+        const index = this.rowsProductPromotion.findIndex(e => e.productId === product.item.id)
+        if (this.rowsProductPromotion) {
+          const obj = {
+            productId: product.item.id,
+            productCode: product.item.productCode,
+            productName: product.item.productName,
+            quantity: 1, // default quantity
+            price: product.item.price || 0,
+            totalPrice: product.item.stockTotal || 0,
+            unit: product.item.uom1,
+          }
+          if (index === -1) {
+            this.rowsProductPromotion.push(obj)
+          } else {
+            this.rowsProductPromotion[index].quantity += 1
+          }
+          this.productSearch = null
+          this.products = [{ data: null }]
         }
       }
-      this.isFocusedInputProduct = false
-      this.productSearch = null
     },
-    // --------------search product functions --------------
+    // END - Search product func
   },
 }
 </script>

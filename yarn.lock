@@ -8978,7 +8978,7 @@ vue-apexcharts@1.6.0:
   resolved "https://registry.yarnpkg.com/vue-apexcharts/-/vue-apexcharts-1.6.0.tgz#c7d3afd93f712433d404e5ceeb4e3aa65f422af2"
   integrity sha512-sT6tuVTLBwfH3TA7azecDNS/W70bmz14ZJI7aE7QIqcG9I6OywyH7x3hcOeY1v1DxttI8Svc5RuYj4Dd+A5F4g==
 
-vue-autosuggest@2.2.0:
+vue-autosuggest@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/vue-autosuggest/-/vue-autosuggest-2.2.0.tgz#0202b9aaeeef6a3a4357bf401a73be2ecbe166f1"
   integrity sha512-cHgEakpoRUOaqXXEo8RcRrbSTM3eAaCu9b55ZXiKbaS6IUD8ewqffQrMy/A1DXqHSQbyEEGui4oAsCbRge29Jg==

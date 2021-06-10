@@ -54,6 +54,7 @@ import '@core/scss/vue/libs/vue-flatpicker.scss'
 import '@core/scss/vue/libs/vue-select.scss'
 import 'vue-loading-overlay/dist/vue-loading.css'
 import '@core/scss/vue/libs/vue-treeselect.scss'
+import '@core/scss/vue/libs/vue-autosuggest.scss'
 
 dotenv.config()
 

@@ -59,7 +59,6 @@
           Từ ngày
         </div>
         <b-input-group
-          id="form-input-date-from"
           class="input-group-merge"
           @keypress="$onlyDateInput"
         >
@@ -95,7 +94,6 @@
           @keypress="$onlyDateInput"
         >
           <vue-flat-pickr
-            id="form-input-date-from"
             v-model="toDate"
             :config="configToDate"
             class="form-control h8 text-brand-3 height-button-brand-1"

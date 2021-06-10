@@ -333,7 +333,7 @@ export default {
             enabled: true,
           },
           thClass: 'text-left',
-          tdClass: 'text-right',
+          tdClass: 'text-left',
         },
         {
           label: 'Số tiền',
@@ -343,7 +343,7 @@ export default {
             enabled: true,
           },
           thClass: 'text-left',
-          tdClass: 'text-right',
+          tdClass: 'text-left',
         },
         {
           label: 'Loại nhập',

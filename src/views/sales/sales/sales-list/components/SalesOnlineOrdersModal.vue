@@ -73,7 +73,6 @@
                 Từ ngày
               </div>
               <b-input-group
-                id="form-input-date-from"
                 class="input-group-merge"
               >
                 <b-input-group-prepend
@@ -118,7 +117,6 @@
                   <b-icon-calendar />
                 </b-input-group-prepend>
                 <vue-flat-pickr
-                  id="form-input-date-from"
                   v-model="toDate"
                   :config="configToDate"
                   class="form-control h9"

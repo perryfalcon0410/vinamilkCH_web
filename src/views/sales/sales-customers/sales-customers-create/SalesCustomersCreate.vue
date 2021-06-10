@@ -113,7 +113,6 @@
                       :state="touched ? passed : null"
                     >
                       <vue-flat-pickr
-                        id="form-input-date-from"
                         v-model="birthDay"
                         :config="configBitrhDay"
                         class="form-control"
