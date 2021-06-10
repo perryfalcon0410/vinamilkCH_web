@@ -828,6 +828,7 @@ export default {
     },
     getProducts() {
       if (this.PRODUCTS_GETTER) {
+        // để show lên vue-autosuggest thì phải để [{data: value}]
         return [{ data: this.PRODUCTS_GETTER }]
       }
       return []

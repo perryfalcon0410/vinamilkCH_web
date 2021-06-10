@@ -245,20 +245,20 @@
                 v-b-popover.hover.top="'In phiếu'"
                 class="cursor-pointer text-brand-1"
                 scale="1.2"
-                @click="onClickPrintButton(props.row.code)"
+                @click="onClickPrintButton(props.row)"
               />
               <b-icon-pencil-fill
                 v-b-popover.hover.top="'Chỉnh sửa'"
                 class="cursor-pointer ml-1 text-brand-3"
                 scale="1.2"
-                @click="onClickUpdateButton(props.row.id,props.row.type, props.row.poId)"
+                @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
               />
               <b-icon-trash-fill
                 v-b-popover.hover.top="'Xóa'"
                 class="cursor-pointer ml-1"
                 color="red"
                 scale="1.2"
-                @click="onClickDeleteWarehousesOutput(props.row.id,props.row.type,props.row.code, props.row.originalIndex, props.row.date)"
+                @click="onClickDeleteWarehousesOutput(props.row.id,props.row.inputTypes,props.row.code, props.row.originalIndex, $formatISOtoVNI(props.row.date))"
               />
             </div>
             <div v-else>
@@ -278,7 +278,7 @@
               class="h7"
               align-h="start"
             >
-              {{ totalQuantity }}
+              {{ $formatNumberToLocale(totalQuantity) }}
             </b-row>
 
             <b-row
@@ -287,7 +287,7 @@
               class="h7 px-0 mx-0"
               align-h="start"
             >
-              {{ totalPrice }}
+              {{ $formatNumberToLocale(totalPrice) }}
             </b-row>
           </template>
           <!-- END - Customer filter -->
@@ -450,9 +450,9 @@ export default {
         {
           label: 'Ngày',
           field: 'date',
-          type: Date,
           thClass: 'text-center',
           tdClass: 'text-center',
+          formatFn: value => this.formatFn(value, 'date'),
         },
         {
           label: 'Mã xuất hàng',
@@ -482,6 +482,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          formatFn: value => this.formatFn(value, 'quantity'),
         },
         {
           label: 'Số tiền',
@@ -492,12 +493,14 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          formatFn: value => this.formatFn(value, 'price'),
         },
         {
           label: 'Loại nhập',
           field: 'inputTypes',
           thClass: 'text-left',
           tdClass: 'text-left',
+          formatFn: value => this.formatFn(value, 'inputTypes'),
         },
         {
           label: 'Ghi chú',
@@ -548,16 +551,14 @@ export default {
     getWarehousesOutputList() {
       return this.GET_WAREHOUSES_OUTPUT_LIST_GETTER.map(data => ({
         id: data.id,
-        date: data.transDate === '' ? '' : this.$formatISOtoVNI(data.transDate),
+        date: data.transDate,
         code: data.transCode,
         billNumber: data.redInvoiceNo,
         internalNumber: data.internalNumber,
-        quantity: this.$formatNumberToLocale(data.totalQuantity),
-        price: this.$formatNumberToLocale(data.totalAmount),
-        totalAmount: Number(data.totalAmount),
-        inputTypes: getOutputTypeslabel(data.receiptType),
+        quantity: data.totalQuantity,
+        price: data.totalAmount,
+        inputTypes: data.receiptType,
         note: data.note,
-        type: data.receiptType,
         poId: data.poId || 0,
       }))
     },
@@ -571,7 +572,7 @@ export default {
     },
     // FilterOptions of column price
     totalPrice() {
-      return this.$formatNumberToLocale(this.warehousesOutputList.reduce((accum, item) => accum + Number(item.totalAmount), 0))
+      return this.warehousesOutputList.reduce((accum, item) => accum + Number(item.price), 0)
     },
     paginationDetailContent() {
       const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
@@ -609,6 +610,20 @@ export default {
       PRINT_OUT_IN_PUT_ORDER_ACTION,
       DELETE_WAREHOUSES_ACTION,
     ]),
+    formatFn(value, field) {
+      switch (field) {
+        case 'date':
+          return this.$formatISOtoVNI(value)
+        case 'quantity':
+          return this.$formatNumberToLocale(value)
+        case 'price':
+          return this.$formatNumberToLocale(value)
+        case 'inputTypes':
+          return getOutputTypeslabel(value)
+        default:
+          return value
+      }
+    },
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-output-create' })
     },
@@ -622,13 +637,13 @@ export default {
         },
       })
     },
-    onClickPrintButton(id) {
+    onClickPrintButton(outputOrderData) {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
       this.PRINT_OUT_IN_PUT_ORDER_ACTION({
         data: {
-          transCode: id,
-          params: { ...this.decentralization },
+          transCode: outputOrderData.id,
+          params: { ...this.decentralization, receiptType: outputOrderData.inputTypes },
         },
         onSuccess: () => {
           this.$root.$emit('bv::enable::popover')

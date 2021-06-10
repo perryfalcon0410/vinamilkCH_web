@@ -103,21 +103,21 @@
                 v-b-popover.hover.top="'In phiếu'"
                 class="cursor-pointer text-brand-1"
                 scale="1.2"
-                @click="onClickPrintButton(props.row.transCode)"
+                @click="onClickPrintButton(props.row)"
               />
               <b-icon-eye-fill
                 v-b-popover.hover.top="'Xem chi tiết'"
                 class="cursor-pointer ml-1"
                 scale="1.2"
-                @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
+                @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
               />
               <b-icon-trash-fill
-                v-show="props.row.transDate === $nowDate"
+                v-show="$formatISOtoVNI(props.row.transDate) === $nowDate"
                 v-b-popover.hover.top="'Xóa'"
                 class="cursor-pointer ml-1"
                 color="red"
                 scale="1.2"
-                @click="onClickDeleteButton(props.row.id, props.row.receiptType, props.row.transDate, props.row.originalIndex, props.row.transCode)"
+                @click="onClickDeleteButton(props.row.id, props.row.inputTypes, props.row.originalIndex, props.row.transCode)"
               />
             </b-row>
             <div v-else>
@@ -137,7 +137,7 @@
               class="mx-0 h7 text-brand-3"
               align-h="start"
             >
-              {{ totalQuantity }}
+              {{ $formatNumberToLocale(totalQuantity) }}
             </b-row>
 
             <b-row
@@ -146,7 +146,7 @@
               class="mx-0 h7 text-brand-3"
               align-h="start"
             >
-              {{ totalPrice }}
+              {{ $formatNumberToLocale(totalPrice) }}
             </b-row>
           </template>
           <!-- START - Custom filter -->
@@ -255,10 +255,6 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-
-import {
-  formatISOtoVNI,
-} from '@core/utils/filter'
 import PrintFormInputOrder from '@core/components/print-form/PrintFormInputOrder.vue'
 import WarehousesInputListSearch from './components/WarehousesInputListSearch.vue'
 import {
@@ -281,10 +277,6 @@ export default {
     return {
       isDeleteModalShow: false,
 
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
-      billNumber: '',
-      inputTypes: '',
       selectedReceiptId: '',
       selectedReceiptType: '',
       selectedReceiptIndex: '',
@@ -308,6 +300,7 @@ export default {
           field: 'transDate',
           thClass: 'text-left',
           tdClass: 'text-left',
+          formatFn: value => this.formatFn(value, 'transDate'),
         },
         {
           label: 'Mã nhập hàng',
@@ -336,6 +329,7 @@ export default {
           },
           thClass: 'text-left',
           tdClass: 'text-left',
+          formatFn: value => this.formatFn(value, 'quantity'),
         },
         {
           label: 'Số tiền',
@@ -346,12 +340,14 @@ export default {
           },
           thClass: 'text-left',
           tdClass: 'text-left',
+          formatFn: value => this.formatFn(value, 'price'),
         },
         {
           label: 'Loại nhập',
           field: 'inputTypes',
           thClass: 'text-left',
           tdClass: 'text-left',
+          formatFn: value => this.formatFn(value, 'inputTypes'),
         },
         {
           label: 'Ghi chú',
@@ -378,28 +374,25 @@ export default {
       if (this.RECEIPTS_GETTER.content) {
         return this.RECEIPTS_GETTER.content.map(data => ({
           id: data.id,
-          transDate: formatISOtoVNI(data.transDate),
+          transDate: data.transDate,
           transCode: data.transCode,
           redInvoiceNo: data.redInvoiceNo,
           internalNumber: data.internalNumber,
-          quantity: this.$formatNumberToLocale(data.totalQuantity),
-          receiptQuantity: data.totalQuantity,
-          price: this.$formatNumberToLocale(data.totalAmount),
-          receiptPrice: data.totalAmount,
-          inputTypes: getInputTypeslabel(data.receiptType),
+          quantity: data.totalQuantity,
+          price: data.totalAmount,
+          inputTypes: data.receiptType,
           note: data.note,
-          feature: '',
-          receiptType: data.receiptType,
           poId: data.poId || 0,
         }))
       }
       return []
     },
+
     totalQuantity() {
-      return this.$formatNumberToLocale(this.receipts.reduce((accum, item) => accum + Number(item.receiptQuantity), 0))
+      return this.receipts.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
     totalPrice() {
-      return this.$formatNumberToLocale(this.receipts.reduce((accum, item) => accum + Number(item.receiptPrice), 0))
+      return this.receipts.reduce((accum, item) => accum + Number(item.price), 0)
     },
     receiptPagination() {
       if (this.RECEIPTS_GETTER) {
@@ -433,7 +426,20 @@ export default {
       REMOVE_RECEIPT_ACTION,
       PRINT_OUT_IN_PUT_ORDER_ACTION,
     ]),
-
+    formatFn(value, field) {
+      switch (field) {
+        case 'transDate':
+          return this.$formatISOtoVNI(value)
+        case 'quantity':
+          return this.$formatNumberToLocale(value)
+        case 'price':
+          return this.$formatNumberToLocale(value)
+        case 'inputTypes':
+          return getInputTypeslabel(value)
+        default:
+          return value
+      }
+    },
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-input-create' })
     },
@@ -447,20 +453,20 @@ export default {
         },
       })
     },
-    onClickPrintButton(id) {
+    onClickPrintButton(inputOrderData) {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
       this.PRINT_OUT_IN_PUT_ORDER_ACTION({
         data: {
-          transCode: id,
-          params: { ...this.decentralization },
+          transCode: inputOrderData.id,
+          params: { ...this.decentralization, receiptType: inputOrderData.inputTypes },
         },
         onSuccess: () => {
           this.$root.$emit('bv::enable::popover')
         },
       })
     },
-    onClickDeleteButton(id, type, date, index, code) {
+    onClickDeleteButton(id, type, index, code) {
       this.selectedReceiptId = id
       this.selectedReceiptType = type
       this.selectedReceiptIndex = index

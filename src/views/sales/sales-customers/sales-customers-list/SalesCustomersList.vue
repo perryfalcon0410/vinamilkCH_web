@@ -64,7 +64,7 @@
           line-numbers
           :total-rows="getCustomerPagination.totalElements"
           :sort-options="{
-            enabled: true,
+            enabled: false,
             initialSortBy: [{field: 'nameText', type: 'asc'}]
           }"
           @on-sort-change="onSortChange"
@@ -250,17 +250,16 @@ export default {
         {
           label: 'Ngày sinh',
           field: 'dob',
-          type: 'date',
-          dateInputFormat: 'dd/MM/yyyy',
-          dateOutputFormat: 'dd/MM/yyyy',
           thClass: 'text-left',
           tdClass: 'text-left',
+          formatFn: value => this.formatFn(value, 'dob'),
         },
         {
           label: 'Giới tính',
           field: 'genderId',
           thClass: 'text-left',
           tdClass: 'text-left',
+          formatFn: value => this.formatFn(value, 'genderId'),
         },
         {
           label: 'Trạng thái',
@@ -268,21 +267,21 @@ export default {
           type: 'boolean',
           thClass: 'text-left',
           tdClass: 'text-left',
+          formatFn: value => this.formatFn(value, 'status'),
         },
         {
           label: 'Nhóm',
           field: 'customerTypeId',
           thClass: 'text-left',
           tdClass: 'text-left',
+          formatFn: value => this.formatFn(value, 'customerTypeId'),
         },
         {
           label: 'Ngày tạo',
           field: 'createdAt',
-          type: 'date',
-          dateInputFormat: 'dd/MM/yyyy',
-          dateOutputFormat: 'dd/MM/yyyy',
           thClass: 'text-left',
           tdClass: 'text-left',
+          formatFn: value => this.formatFn(value, 'createdAt'),
         },
         {
           label: 'Chức năng',
@@ -307,11 +306,11 @@ export default {
           customerCode: data.customerCode,
           nameText: `${data.lastName} ${data.firstName}`,
           mobiPhone: data.mobiPhone,
-          dob: this.$formatISOtoVNI(data.dob),
-          genderId: getGenderLabel(data.genderId),
-          status: getCustomerStatusLabel(data.status),
-          customerTypeId: getCustomerTypeLabel(data.customerTypeId),
-          createdAt: this.$formatISOtoVNI(data.createdAt),
+          dob: data.dob,
+          genderId: data.genderId,
+          status: data.status,
+          customerTypeId: data.customerTypeId,
+          createdAt: data.createdAt,
           feature: '',
         }))
       }
@@ -349,9 +348,28 @@ export default {
       GET_CUSTOMERS_ACTION,
       EXPORT_CUSTOMERS_ACTION,
     ]),
+
+    formatFn(value, field) {
+      switch (field) {
+        case 'dob':
+          return this.$formatISOtoVNI(value)
+        case 'genderId':
+          return getGenderLabel(value)
+        case 'status':
+          return getCustomerStatusLabel(value)
+        case 'customerTypeId':
+          return getCustomerTypeLabel(value)
+        case 'createdAt':
+          return this.$formatISOtoVNI(value)
+        default:
+          return value
+      }
+    },
+
     navigateToCreate() {
       this.$router.push({ name: 'sales-customers-create' })
     },
+
     navigateToUpdate(id) {
       this.$router.push({
         name: 'sales-customers-update',
