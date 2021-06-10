@@ -495,7 +495,6 @@ export default {
       this.pageNumber = 1
     },
     onClickPrintButton() {
-      console.log(this.paginationData)
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
       this.PRINT_REPORT_SALES_ACTION({

@@ -1154,7 +1154,7 @@ export default {
     },
     onClickPromotionCalculation() {
       const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.amount && p.isSelected === true)
-      console.log(paramPromotionAmountInfos)
+
       this.GET_PROMOTION_CALCULATION_ACTION({
         customerId: this.customer.id,
         orderType: Number(this.orderSelected),

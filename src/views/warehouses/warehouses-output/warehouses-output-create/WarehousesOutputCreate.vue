@@ -578,7 +578,6 @@ export default {
           )
         } else if (this.warehousesOutput.outputTypeSelected === warehousesData.outputTypes[0].id) toasts.error('Không đủ sản phẩm trả.')
       } else toasts.error('Vui lòng chọn phiếu.')
-      console.log(this.products)
     },
     navigateBack() {
       this.$refs.salesNotifyModal.show()

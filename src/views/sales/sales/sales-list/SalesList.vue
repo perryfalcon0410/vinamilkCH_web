@@ -487,7 +487,6 @@ export default {
 
     loginInfo() {
       const login = JSON.parse(localStorage.getItem('userData'))
-      console.log('login', login)
       return login
     },
   },
@@ -625,13 +624,11 @@ export default {
     },
 
     getOnlineCustomer(val) {
-      console.log('online custmer', typeof val.id)
       const { usedShop } = this.loginInfo
 
       if (val.shopId === usedShop.id) {
         if (usedShop.editable) {
           this.editPermission = true
-          console.log('this.editPermission', this.editPermission)
         } else {
           this.editPermission = false
         }
