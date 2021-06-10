@@ -72,7 +72,7 @@ export default {
     receiptById: {},
     products: [],
     promotions: [],
-    allProducts: [],
+    suggestProducts: [],
     warehousestype: {},
     notImportReasons: [],
     printOutInputOrderData: [],
@@ -127,7 +127,7 @@ export default {
       return state.promotions
     },
     [PRODUCTS_GETTER](state) {
-      return state.allProducts
+      return state.suggestProducts
     },
     [WAREHOUSES_TYPE_GETTER](state) {
       return state.warehousestype
@@ -384,7 +384,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.allProducts = res.data
+            state.suggestProducts = res.data
           } else {
             throw new Error(res.statusValue)
           }

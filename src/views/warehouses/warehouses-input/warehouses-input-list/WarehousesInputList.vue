@@ -222,12 +222,14 @@
       Bạn có muốn xóa đợt nhập hàng {{ selectedReceiptCode }}?
       <template #modal-footer>
         <b-button
+          class="aligns-items-button-center ml-1"
           @click="isDeleteModalShow = !isDeleteModalShow"
         >
           Hủy
         </b-button>
         <b-button
-          variant="primary"
+          variant="someThing"
+          class="btn-brand-1 aligns-items-button-center"
           @click="confirmDelete"
         >
           Xóa

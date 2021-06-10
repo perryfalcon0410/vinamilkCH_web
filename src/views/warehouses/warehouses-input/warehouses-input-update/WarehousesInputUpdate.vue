@@ -238,7 +238,7 @@
                     class="mx-0"
                     align-h="end"
                   >
-                    {{ totalProductQuantity }}
+                    {{ $formatNumberToLocale(totalProductQuantity) }}
                   </b-row>
 
                   <b-row
@@ -287,16 +287,7 @@
                   slot="table-column"
                   slot-scope="props"
                 >
-                  <b-row
-                    v-if="props.column.field === 'feature'"
-                  >
-                    <b-icon-bricks
-                      v-b-popover.hover="'Thao tác'"
-                      scale="1.3"
-                      class="ml-3"
-                    />
-                  </b-row>
-                  <div v-else>
+                  <div>
                     {{ props.column.label }}
                   </div>
                 </template>
@@ -310,7 +301,7 @@
                     class="mx-0"
                     align-h="end"
                   >
-                    {{ totalPromotionQuantity }}
+                    {{ $formatNumberToLocale(totalPromotionQuantity) }}
                   </b-row>
 
                   <b-row
@@ -339,9 +330,11 @@
                     v-else-if="props.column.field === 'feature' && canEdit"
                     align-h="center"
                   >
-                    <b-icon-x
+                    <b-icon-trash-fill
                       v-b-popover.hover.top="'Xóa'"
                       class="cursor-pointer ml-1"
+                      color="red"
+                      scale="1.2"
                       @click="onClickDeleteButton(props.row.originalIndex)"
                     />
                   </div>
@@ -354,43 +347,21 @@
                 slot="table-actions-bottom"
                 class="mx-1 my-2 px-2"
               >
-                <b-form-input
+                <vue-autosuggest
                   v-model="productSearch"
-                  style="width: 30%"
-                  placeholder="Nhập mã hoặc tên sản phẩm"
-                  type="text"
-                  autocomplete="off"
-                  @focus="focus"
-                  @blur="inputSearchFocusedSP = false"
+                  :suggestions="suggestProducts"
+                  :input-props="{
+                    id:'autosuggest__input',
+                    class:'form-control w-25',
+                    placeholder:'Nhập mã hoặc tên sản phẩm'
+                  }"
                   @input="loadProducts"
-                  @keyup.enter="keyEnter"
-                  @keydown.up="keyUp"
-                  @keydown.down="keyDown"
-                  @click="click"
-                />
-                <b-collapse
-                  v-model="inputSearchFocusedSP"
-                  class="position-absolute mr-lg-0 mb-3"
-                  style="zIndex:1"
+                  @selected="productSelected"
                 >
-                  <b-container
-                    class="my-1 bg-white rounded border border-primary shadow-lg"
-                  >
-                    <b-col>
-                      <b-row
-                        v-for="(product, index) in allProducts"
-                        :key="index"
-                        class="my-1 cursor-pointer"
-                        :class="{'item-active': index === cursor}"
-                        @click="selectProduct(product)"
-                        @mouseover="$event.target.classList.add('item-active')"
-                        @mouseout="$event.target.classList.remove('item-active')"
-                      >
-                        <b>{{ product.productCode }}</b> - {{ product.productName }}
-                      </b-row>
-                    </b-col>
-                  </b-container>
-                </b-collapse>
+                  <template slot-scope="{ suggestion }">
+                    <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                  </template>
+                </vue-autosuggest>
               </div>
             </div>
             <!-- END - Table Product promotion -->
@@ -447,6 +418,7 @@ import {
   ValidationProvider,
   ValidationObserver,
 } from 'vee-validate'
+import { VueAutosuggest } from 'vue-autosuggest'
 import {
   number,
   required,
@@ -473,6 +445,7 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
+    VueAutosuggest,
   },
   data() {
     return {
@@ -507,8 +480,8 @@ export default {
           label: 'Mã hàng',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
@@ -518,7 +491,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -526,7 +499,7 @@ export default {
           field: 'price',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -541,7 +514,7 @@ export default {
           field: 'unit',
           type: 'number',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
         {
@@ -549,7 +522,7 @@ export default {
           field: 'totalPrice',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-left',
           tdClass: 'text-right',
         },
         {
@@ -560,80 +533,91 @@ export default {
           tdClass: 'text-left',
         },
         {
-          label: 'Thao tác',
+          label: '',
           field: 'feature',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-center',
         },
       ],
       promotions: [],
-      cursor: -1,
       productSearch: null,
-      inputSearchFocusedSP: false,
       totalPromotionQuantity: 0,
       totalPromotionCode: 0,
       id: this.$route.params.id,
       importType: Number(this.$route.params.type),
       inputType: Number(warehousesData.inputTypes[0].id), // Loại nhập hàng
       borrowType: Number(warehousesData.inputTypes[2].id), // Loại nhập vay mượn
+      suggestProducts: [{ data: '' }],
+      // START - decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+      // END - decentralization
     }
   },
 
   computed: {
+    ...mapGetters(WAREHOUSEINPUT, {
+      RECEIPT_BY_ID_GETTER,
+      PRODUCTS_BY_ID_GETTER,
+      PROMOTIONS_BY_ID_GETTER,
+      PRODUCTS_GETTER,
+    }),
     receipt() {
-      return this.RECEIPT_BY_ID_GETTER()
+      return this.RECEIPT_BY_ID_GETTER
     },
     products() {
-      return this.PRODUCTS_BY_ID_GETTER().map(data => ({
-        productCode: data.productCode,
-        quantity: this.$formatNumberToLocale(data.quantity),
-        price: this.$formatNumberToLocale(data.price),
-        name: data.productName,
-        unit: data.unit,
-        totalPrice: this.$formatNumberToLocale(data.totalPrice),
-        soNo: data.soNo,
-      }))
+      if (this.PRODUCTS_BY_ID_GETTER) {
+        return this.PRODUCTS_BY_ID_GETTER.map(data => ({
+          productCode: data.productCode,
+          quantity: this.$formatNumberToLocale(data.quantity),
+          price: this.$formatNumberToLocale(data.price),
+          name: data.productName,
+          unit: data.unit,
+          totalPrice: this.$formatNumberToLocale(data.totalPrice),
+          soNo: data.soNo,
+        }))
+      }
+      return []
     },
     totalProductQuantity() {
-      return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.quantity), 0))
+      return this.PRODUCTS_BY_ID_GETTER.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
     totalProductPrice() {
-      return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER().reduce((accum, item) => accum + Number(item.totalPrice), 0))
+      return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER.reduce((accum, item) => accum + Number(item.totalPrice), 0))
     },
     totalProductCode() {
-      return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER().length)
+      return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER.length)
     },
     getPromotions() {
-      return this.PROMOTIONS_BY_ID_GETTER().map(data => ({
-        id: data.id,
-        productId: data.productId,
-        productCode: data.productCode,
-        quantity: data.quantity,
-        price: data.price,
-        name: data.productName,
-        unit: data.unit,
-        totalPrice: data.totalPrice,
-        soNo: data.soNo,
-      }))
+      if (this.PROMOTIONS_BY_ID_GETTER) {
+        return this.PROMOTIONS_BY_ID_GETTER.map(data => ({
+          id: data.id,
+          productId: data.productId,
+          productCode: data.productCode,
+          quantity: data.quantity,
+          price: data.price,
+          name: data.productName,
+          unit: data.unit,
+          totalPrice: data.totalPrice,
+          soNo: data.soNo,
+        }))
+      }
+      return []
     },
     getTotalPromotionQuantity() {
-      return this.$formatNumberToLocale(this.promotions.reduce((accum, item) => accum + Number(item.quantity), 0))
+      return this.promotions.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
     getTotalPromotionCode() {
       return this.$formatNumberToLocale(this.promotions.length)
     },
-    allProducts() {
-      return this.PRODUCTS_GETTER().map(data => ({
-        productId: data.id,
-        productCode: data.productCode,
-        quantity: 1,
-        price: 0,
-        productName: data.productName,
-        unit: data.uom1,
-        totalPrice: 0,
-        soNo: '',
-      }))
+    getSuggestProducts() {
+      if (this.PRODUCTS_GETTER) {
+        return [{ data: this.PRODUCTS_GETTER }]
+      }
+      return []
     },
     showPromotionsTable() {
       return this.totalPromotionQuantity > 0 || (this.importType === this.inputType && this.poId === 0) // hiện table hàng khuyến mãi nếu số lượng > 0 hoặc là phiếu nhập tay khuyến mãi
@@ -654,24 +638,24 @@ export default {
 
   watch: {
     receipt() {
-      this.transCode = this.RECEIPT_BY_ID_GETTER().transCode
-      this.transDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().transDate)
-      this.transDateTime = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().transDate, false, true)
-      this.wareHouseTypeName = this.RECEIPT_BY_ID_GETTER().wareHouseTypeName
-      this.billNumber = this.RECEIPT_BY_ID_GETTER().redInvoiceNo
-      this.internalNumber = this.RECEIPT_BY_ID_GETTER().internalNumber
-      this.poNumber = this.RECEIPT_BY_ID_GETTER().pocoNumber
-      this.note = this.RECEIPT_BY_ID_GETTER().note
+      this.transCode = this.RECEIPT_BY_ID_GETTER.transCode
+      this.transDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER.transDate)
+      this.transDateTime = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER.transDate, false, true)
+      this.wareHouseTypeName = this.RECEIPT_BY_ID_GETTER.wareHouseTypeName
+      this.billNumber = this.RECEIPT_BY_ID_GETTER.redInvoiceNo
+      this.internalNumber = this.RECEIPT_BY_ID_GETTER.internalNumber
+      this.poNumber = this.RECEIPT_BY_ID_GETTER.pocoNumber
+      this.note = this.RECEIPT_BY_ID_GETTER.note
       this.importTypeName = this.warehousesInputOptions[this.$route.params.type].label
       switch (this.importType) {
         case 1:
-          this.billDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().adjustmentDate)
+          this.billDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER.adjustmentDate)
           break
         case 2:
-          this.billDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().borrowDate)
+          this.billDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER.borrowDate)
           break
         default:
-          this.billDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER().orderDate)
+          this.billDate = formatISOtoVNI(this.RECEIPT_BY_ID_GETTER.orderDate)
       }
     },
     getPromotions() {
@@ -683,6 +667,9 @@ export default {
     getTotalPromotionCode() {
       this.totalPromotionCode = this.getTotalPromotionCode
     },
+    getSuggestProducts() {
+      this.suggestProducts = [...this.getSuggestProducts]
+    },
   },
 
   mounted() {
@@ -691,12 +678,6 @@ export default {
   },
 
   methods: {
-    ...mapGetters(WAREHOUSEINPUT, {
-      RECEIPT_BY_ID_GETTER,
-      PRODUCTS_BY_ID_GETTER,
-      PROMOTIONS_BY_ID_GETTER,
-      PRODUCTS_GETTER,
-    }),
     ...mapActions(WAREHOUSEINPUT, [
       GET_RECEIPT_BY_ID_ACTION,
       GET_PRODUCTS_BY_ID_ACTION,
@@ -707,60 +688,42 @@ export default {
     navigateBack() {
       this.$router.back()
     },
-    loadProducts() {
-      this.cursor = -1
-      if (this.productSearch === null) return
-      if (this.productSearch.length >= commonData.minSearchLength) {
-        this.inputSearchFocusedSP = true
-
-        this.GET_PRODUCTS_ACTION({
-          keyWord: this.productSearch?.trim(),
-          formId: 5,
-          ctrlId: 7,
-        })
-      } else {
-        this.inputSearchFocusedSP = false
+    // START - Search product func
+    loadProducts(text) {
+      if (text) {
+        if (text.length >= commonData.minSearchLength) {
+          const searchData = {
+            keyWord: text,
+            ...this.decentralization,
+          }
+          this.GET_PRODUCTS_ACTION(searchData)
+        }
       }
     },
-    selectProduct(product) {
-      this.productSearch = null
-      const existedPromotionIndex = this.promotions.findIndex(promotion => promotion.productCode === product.productCode)
-      if (existedPromotionIndex === -1) {
-        this.promotions.push({
-          id: -1,
-          productId: product.productId,
-          productCode: product.productCode,
-          quantity: 1,
-          price: product.price,
-          name: product.productName,
-          unit: product.unit,
-          totalPrice: 0,
-          soNo: '',
-        })
-      } else {
-        this.promotions[existedPromotionIndex].quantity += product.quantity
+    productSelected(product) {
+      if (product.item) {
+        const index = this.promotions.findIndex(e => e.productId === product.item.id)
+        if (this.promotions) {
+          const obj = {
+            productId: product.item.id,
+            productCode: product.item.productCode,
+            productName: product.item.productName,
+            quantity: 1, // default quantity
+            price: product.item.price || 0,
+            totalPrice: product.item.stockTotal || 0,
+            unit: product.item.uom1,
+          }
+          if (index === -1) {
+            this.promotions.push(obj)
+          } else {
+            this.promotions[index].quantity += 1
+          }
+          this.productSearch = null
+          this.suggestProducts = [{ data: null }]
+        }
       }
     },
-    focus() {
-      this.cursor = -1
-      this.inputSearchFocusedSP = this.productSearch !== null && this.productSearch.length >= commonData.minSearchLength
-    },
-    keyUp() {
-      if (this.cursor > 0) {
-        this.cursor -= 1
-      }
-    },
-    keyDown() {
-      if (this.cursor < this.allProducts.length) {
-        this.cursor += 1
-      }
-    },
-    keyEnter() {
-      if (this.inputSearchFocusedSP && this.allProducts[this.cursor]) {
-        this.selectProduct(this.allProducts[this.cursor])
-        this.inputSearchFocusedSP = false
-      }
-    },
+    // END - Search product func
     updateQuantity(index, value) {
       this.promotions[index].quantity = value + 0
     },
@@ -784,10 +747,10 @@ export default {
             id: this.id,
             type: this.importType,
             note: this.note,
-            redInvoiceNo: this.billNumber,
+            redInvoiceNo: this.billNumber?.trim(),
             orderDate: formatVniDateToISO(this.billDate),
-            internalNumber: this.internalNumber,
-            poCoNumber: this.poNumber,
+            internalNumber: this.internalNumber?.trim(),
+            poCoNumber: this.poNumber?.trim(),
             lstUpdate: updatedPromotions,
             formId: 5,
             ctrlId: 7,
