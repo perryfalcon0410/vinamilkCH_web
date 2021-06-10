@@ -105,6 +105,7 @@
               >
                 <b-row
                   v-if="props.column.field === 'numProduct'"
+                  v-show="totalQuantity"
                   class="mx-0"
                   align-h="end"
                 >
@@ -147,61 +148,29 @@
                 </span>
               </template>
 
-              <!-- START - Table Footer -->
-              <template slot="table-actions-bottom">
-                <!-- START - Prodduct input -->
-                <b-col
-                  cols="5"
-                  class="my-1"
+              <!-- START - Table action bottom -->
+              <div
+                slot="table-actions-bottom"
+                class="m-2"
+              >
+                <vue-autosuggest
+                  v-model="comboSearchQuery"
+                  :suggestions="products"
+                  :input-props="{
+                    id:'autosuggest__input',
+                    class:'form-control w-25',
+                    placeholder:'Nhập mã hoặc tên sản phẩm'
+                  }"
+                  @input="loadProducts"
+                  @selected="onComboSelected"
                 >
-                  <b-form-input
-                    v-model.trim="productInfos.productName"
-                    placeholder="Nhập mã hoặc tên sản phẩm"
-                    @focus="focusProduct"
-                    @input="loadProducts"
-                    @blur="isFocusedInputProduct = true"
-                    @keyup="loadProducts"
-                  />
-                  <!-- START - Product Popup -->
-                  <b-collapse
-                    v-model.trim="isFocusedInputProduct"
-                    class="position-absolute w-80"
-                    style="zIndex:1"
-                  >
-                    <b-container
-                      class="my-1 px-1 bg-white rounded border border-primary shadow-lg"
-                    >
-                      <b-col>
-                        <b-row
-                          v-for="(product, index) in products"
-                          :key="index"
-                          class="mx-0 my-1 border-bottom cursor-pointer"
-                          :class="{'item-active': index === cursor}"
-                          @click="onComboSelected(product)"
-                          @mouseover="$event.target.classList.add('item-active')"
-                          @mouseout="$event.target.classList.remove('item-active')"
-                        >
-                          <!-- START - Section Label -->
-                          <b-col>
-                            <b-col
-                              class="text-dark"
-                            >
-                              <strong> {{ product.productName }}</strong>
-                              <br>
-                              {{ product.label }}
-                              <!-- END - Section Label -->
-                            </b-col>
-                          </b-col>
-                        </b-row>
-                      </b-col>
-                    </b-container>
-                  </b-collapse>
-                <!-- END - Product Popup -->
+                  <template slot-scope="{ suggestion }">
+                    <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                  </template>
+                </vue-autosuggest>
+              </div>
+              <!-- END - Table action bottom -->
 
-                </b-col>
-              <!-- END - Prodduct input -->
-
-              </template>
             </vue-good-table>
             <!-- END - Table Footer -->
             <br>
@@ -233,8 +202,9 @@
               >
                 <b-row
                   v-if="props.column.field === 'quantity'"
+                  v-show="totalExchangeQuantity"
                   class="mx-0"
-                  align-h="end"
+                  align-h="center"
                 >
                   {{ $formatNumberToLocale(totalExchangeQuantity) }}
                 </b-row>
@@ -294,7 +264,7 @@ import warehousesData from '@/@db/warehouses'
 import { formatVniDateToISO } from '@/@core/utils/filter'
 import { getNow } from '@/@core/utils/utils'
 import commonData from '@/@db/common'
-
+import { VueAutosuggest } from 'vue-autosuggest'
 import {
   mapActions,
   mapGetters,
@@ -310,19 +280,15 @@ import {
 } from '../store-module/type'
 
 export default {
+  components: {
+    VueAutosuggest,
+  },
   data() {
     return {
       showConfirmCloseModal: false,
       componentKey: 0,
       totalExchangeQuantity: 0,
       // Search combo
-      isFocusedInputProduct: false,
-      productInfos: {
-        productName: null,
-      },
-      cursorCustomer: -1, // Con trỏ chuột ở pop up = -1
-      cursor: -1,
-      // Search Combo
       //
       formId: 5,
       ctrlId: 7,
@@ -340,8 +306,8 @@ export default {
 
       note: null,
       // Search options
-      comboProductQuery: null,
-      comboProductSelected: null,
+      comboSearchQuery: null,
+      products: [{ data: '' }],
       // Search options
       // -----------------Combo List-----------------
       comboListColumns: [
@@ -377,7 +343,7 @@ export default {
           tdClass: 'text-left',
         },
         {
-          label: 'Chức năng',
+          label: '',
           field: 'function',
           sortable: false,
         },
@@ -442,15 +408,11 @@ export default {
       COMBO_PRODUCTS_DETAILS_GETTER,
     ]),
 
-    products() {
-      return this.COMBO_PRODUCTS_GETTER.map(data => ({
-        id: Number(data.id),
-        label: data.productCode,
-        productName: data.productName,
-        numProduct: data.numProduct,
-        productPrice: data.productPrice,
-        status: data.status,
-      }))
+    getProducts() {
+      if (this.COMBO_PRODUCTS_GETTER) {
+        return [{ data: this.COMBO_PRODUCTS_GETTER }]
+      }
+      return []
     },
 
     comboProductsInfo() {
@@ -493,6 +455,9 @@ export default {
     getTotalExchangeQuantity() {
       this.totalExchangeQuantity = this.getTotalExchangeQuantity
     },
+    getProducts() {
+      this.products = [...this.getProducts]
+    },
   },
   mounted() {
     this.tradingTypeSelected = this.tradingTypeOptions[0].id
@@ -504,34 +469,36 @@ export default {
       CREATE_COMBO_PRODUCT_ACTION,
     ]),
 
-    onComboSelected(item) {
-      this.productInfos.productName = null
-      const index = this.comboListRows.findIndex(e => e.selectedComboId === item.id)
-      const obj = {
-        id: item.id,
-        comboCode: item.label,
-        numProduct: 1,
-        price: item.productPrice || 0,
-        comboName: item.productName,
-        selectedComboId: item.id,
-        status: item.status,
+    onComboSelected(combo) {
+      if (combo) {
+        const index = this.comboListRows.findIndex(e => e.selectedComboId === combo.item.id)
+        const obj = {
+          id: combo.item.id,
+          comboCode: combo.item.productCode,
+          numProduct: 1,
+          price: combo.item.productPrice || 0,
+          comboName: combo.item.productName,
+          selectedComboId: combo.item.id,
+          status: combo.item.status,
+        }
+        if (index === -1) {
+          this.comboListRows.push(obj)
+          const newIndex = this.comboListRows.findIndex(e => e.selectedComboId === combo.item.id)
+          this.globalIndex = newIndex
+          this.GET_COMBO_PRODUCTS_DETAILS_ACTION({
+            id: combo.item.id,
+            status: 1,
+            formId: this.formId,
+            ctrlId: this.ctrlId,
+          })
+        } else {
+          this.comboListRows[index].numProduct += obj.numProduct
+          this.updateComboExchangeQuantity(index)
+          this.totalExchangeQuantity = this.comboExchangeRows.reduce((accum, i) => accum + Number(i.quantity), 0)
+        }
+        this.comboSearchQuery = null
+        this.products = [{ data: null }]
       }
-      if (index === -1) {
-        this.comboListRows.push(obj)
-        const newIndex = this.comboListRows.findIndex(e => e.selectedComboId === item.id)
-        this.globalIndex = newIndex
-        this.GET_COMBO_PRODUCTS_DETAILS_ACTION({
-          id: item.id,
-          status: 1, // TRINH THAI bảo thế
-          formId: this.formId,
-          ctrlId: this.ctrlId,
-        })
-      } else {
-        this.comboListRows[index].numProduct += obj.numProduct
-        this.updateComboExchangeQuantity(index)
-        this.totalExchangeQuantity = this.comboExchangeRows.reduce((accum, i) => accum + Number(i.quantity), 0)
-      }
-      this.isFocusedInputProduct = false
     },
     deleteProduct(index) {
       this.comboExchangeRows = this.comboExchangeRows.filter(e => e.comboCode !== this.comboListRows[index].comboCode)
@@ -579,23 +546,10 @@ export default {
     navigateBack() {
       this.$router.push({ name: 'warehouses-combo' })
     },
-
-    focusProduct() {
-      if (this.productInfos.productName) {
-        this.isFocusedInputProduct = this.productInfos.productName.length >= commonData.minSearchLength
-      }
-    },
-    keyUp() {
-      if (this.cursor > 0) {
-        this.cursor -= 1
-      }
-    },
-    loadProducts() {
-      this.cursor = -1
-      if (this.productInfos.productName.length >= commonData.minSearchLength) {
-        this.isFocusedInputProduct = true
+    loadProducts(text) {
+      if (text.length >= commonData.minSearchLength) {
         const searchData = {
-          keyWord: this.productInfos.productName,
+          keyWord: text,
           formId: this.formId,
           ctrlId: this.ctrlId,
         }
