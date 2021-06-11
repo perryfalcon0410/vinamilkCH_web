@@ -367,6 +367,7 @@
                 >
                   <b-row
                     v-if="props.column.field === 'quantity'"
+                    v-show="totalPromoProductQuantity"
                     class="mx-0"
                     align-h="center"
                   >
@@ -375,10 +376,11 @@
 
                   <b-row
                     v-else-if="props.column.field === 'productCode'"
+                    v-show="totalPromoProduct"
                     class="mx-0"
                     align-h="center"
                   >
-                    {{ totalPromoProduct }}
+                    {{ $formatNumberToLocale(totalPromoProduct) }}
                   </b-row>
 
                 </template>
@@ -1023,6 +1025,8 @@ export default {
               note: this.note,
               lst: this.promotionRow,
             })
+          } else {
+            toasts.error('ngày không được để trống')
           }
         })
       }

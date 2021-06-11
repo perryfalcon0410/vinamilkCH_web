@@ -44,6 +44,11 @@ export default {
     return axios.get(`${getImportExcelEndpoint}/${args.id}`, {
       params: formatURLParams(args),
       responseType: 'blob',
+      config: {
+        header: {
+          'Content-Type': 'application/json',
+        },
+      },
     })
   },
   getImportAdjustments(args) {

@@ -65,6 +65,38 @@
           </div>
           <!-- END - Empty rows -->
 
+          <!-- START - Column filter -->
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-row
+              v-if="props.column.field === 'receiptCode'"
+              v-show="totalInfo"
+              class="h7"
+              align-h="center"
+            >
+              {{ $formatNumberToLocale(totalInfo.saleOrder) }}
+            </b-row>
+            <b-row
+              v-else-if="props.column.field === 'sales'"
+              v-show="totalInfo"
+              class="h7"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.totalAmount) }}
+            </b-row>
+            <b-row
+              v-else-if="props.column.field === 'pay'"
+              v-show="totalInfo"
+              class="h7"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.allTotal) }}
+            </b-row>
+          </template>
+          <!-- START - Column filter -->
+
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"
@@ -137,11 +169,13 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import { formatISOtoVNI } from '@/@core/utils/filter'
 import ListSearch from '../components/ListSearch.vue'
 import {
   REPORT_SALES_SALE_ON_DELIVERY_TYPE,
   // GETTERS,
   REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER,
+  REPORT_SALES_DELIVERY_TYPES_CONTENT_GETTER,
   // ACTIONS
   EXPORT_REPORT_SALE_ON_DELIVERY_TYPE_ACTION,
 } from '../store-module/type'
@@ -188,6 +222,9 @@ export default {
           label: 'Số hóa đơn',
           field: 'receiptCode',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -202,6 +239,9 @@ export default {
           label: 'Doanh số',
           field: 'sales',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -209,6 +249,9 @@ export default {
           label: 'Thanh toán',
           field: 'pay',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-right',
           tdClass: 'text-right',
         },
@@ -252,16 +295,24 @@ export default {
   },
   computed: {
     reportsSalesReceiptOnDeliveryType() {
-      return this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER().response.content.map(data => ({
+      return this.REPORT_SALES_DELIVERY_TYPES_CONTENT_GETTER().map(data => ({
         customerCode: data.customerCode,
         customerName: data.customerName,
         address: data.customerAddress,
-        receiptCode: data.shopCode,
+        receiptCode: data.orderNumber,
+        receiptDate: formatISOtoVNI(data.orderDate),
+        sales: this.$formatNumberToLocale(data.amount),
+        pay: this.$formatNumberToLocale(data.total),
+        deliveryType: data.deliveryType,
+        onlineReceipt: data.onlineNumber,
+        channel: data.type,
+        storeCode: data.shopCode,
+        storeName: data.shopName,
       }))
     },
     totalInfo() {
-      if (this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER().totals) {
-        return this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER().totals
+      if (this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER().info) {
+        return this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER().info
       }
       return {}
     },
@@ -289,9 +340,11 @@ export default {
     ]),
     ...mapGetters(REPORT_SALES_SALE_ON_DELIVERY_TYPE, [
       REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER,
+      REPORT_SALES_DELIVERY_TYPES_CONTENT_GETTER,
     ]),
 
     onClickExcelExportButton() {
+      console.log(this.reportsSalesReceiptOnDeliveryType)
       this.EXPORT_REPORT_SALE_ON_DELIVERY_TYPE_ACTION({
         ...this.searchData,
         ...this.decentralization,

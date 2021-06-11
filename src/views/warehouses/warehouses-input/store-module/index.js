@@ -2,7 +2,7 @@ import ReceiptImportService from '@/views/warehouses/warehouses-input/api-servic
 import toasts from '@core/utils/toasts/toasts'
 import router from '@/router/index'
 import FileSaver from 'file-saver'
-
+import moment from 'moment'
 import {
   // GETTERS
   POCONFIRM_GETTER,
@@ -216,12 +216,12 @@ export default {
         })
     },
     [GET_IMPORTEXCEL_ACTION]({}, val) {
-      const fileName = 'Danh sach san pham_PO_nhap hang.xlsx'
+      const fileName = `Danh sach san pham_PO_nhap hang_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
       ReceiptImportService
         .getImportExcel(val)
         .then(response => response.data)
         .then(res => {
-          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
