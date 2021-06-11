@@ -96,29 +96,29 @@
           >
             <b-row
               v-if="props.column.field === 'stockQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="h7 mx-0"
+              align-h="center"
             >
               {{ $formatNumberToLocale(reportInventoryInfo.totalQuantity) }}
             </b-row>
 
             <b-row
               v-else-if="props.column.field === 'packetQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="h7 mx-0"
+              align-h="center"
             >
               {{ $formatNumberToLocale(reportInventoryInfo.totalPackageQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'unitQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="h7 mx-0"
+              align-h="center"
             >
               {{ $formatNumberToLocale(reportInventoryInfo.totalUnitQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'totalAmount'"
-              class="mx-0"
+              class="h7 mx-0"
               align-h="end"
             >
               {{ $formatNumberToLocale(reportInventoryInfo.totalAmount) }}

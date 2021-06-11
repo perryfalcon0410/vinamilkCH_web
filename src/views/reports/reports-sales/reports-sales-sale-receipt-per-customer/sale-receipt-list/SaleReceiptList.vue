@@ -76,7 +76,7 @@
             >
               <b-row
                 v-if="props.column.field === `${item.field}`"
-                class="mx-0"
+                class="h7"
                 align-h="end"
               >
                 {{ $formatNumberToLocale(totalQuantity[index]) }}
@@ -84,7 +84,7 @@
             </b-col>
             <b-row
               v-if="props.column.field === 'sumTotal'"
-              class="mx-0"
+              class="h7"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalQuantity[totalQuantity.length-1]) }}

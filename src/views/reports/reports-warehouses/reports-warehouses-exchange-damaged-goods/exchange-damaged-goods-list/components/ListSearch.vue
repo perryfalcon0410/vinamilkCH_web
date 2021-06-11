@@ -58,7 +58,7 @@
             style="position: absolute; right: 15px"
             class="cursor-pointer text-gray"
             scale="1.3"
-            @click="fromDate = $earlyMonth"
+            @click="fromDate = null"
           />
           <vue-flat-pickr
             v-model="fromDate"
@@ -91,7 +91,7 @@
             style="position: absolute; right: 15px"
             class="cursor-pointer text-gray"
             scale="1.3"
-            @click="toDate = $nowDate"
+            @click="toDate = null"
           />
           <vue-flat-pickr
             v-model="toDate"
@@ -115,13 +115,14 @@
           Lý do
         </div>
         <tree-select
-          v-model="reasonSelected"
+          v-model="reasonDisplayed"
           title="Lý do"
           :options="reasonOptions"
           :searchable="false"
-          placeholder="Tất cả"
+          placeholder="Chọn lý do đổi trả hàng"
           no-options-text="Không có dữ liệu"
           size="sm"
+          @select="select"
         />
       </b-col>
       <b-col
@@ -224,6 +225,7 @@ export default {
       searchData: {},
       productCodes: null,
       transCode: null,
+      reasonDisplayed: null,
       reasonSelected: null,
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
@@ -254,6 +256,7 @@ export default {
       return this.REASON_EXCHANGE_DAMAGED_GOODS_GETTER.map(data => ({
         id: data.id,
         label: data.categoryName,
+        reason: data.categoryCode,
       }))
     },
   },
@@ -264,10 +267,15 @@ export default {
         minDate: this.fromDate,
       }
     },
+    reasonOptions() {
+      this.reasonDisplayed = this.reasonOptions[0].id
+      this.onSearch()
+    },
+  },
+  created() {
+    this.GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION({ ...this.decentralization })
   },
   mounted() {
-    this.onSearch()
-    this.GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION({ ...this.decentralization })
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
@@ -290,8 +298,8 @@ export default {
       this.searchData = {
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        transCode: this.transCode,
-        productKW: this.productCodes,
+        transCode: this.transCode?.trim(),
+        productKW: this.productCodes?.trim(),
         reason: this.reasonSelected,
         ...this.decentralization,
       }
@@ -311,6 +319,9 @@ export default {
     },
     showFindProductModal() {
       this.isShowFindProductModal = !this.isShowFindProductModal
+    },
+    select(node) {
+      this.reasonSelected = node.reason
     },
   },
 }

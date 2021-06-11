@@ -1,252 +1,280 @@
 <template>
   <b-modal
-    id="modal"
-    size="xl"
+    id="find-product-modal"
+    size="lg"
     :visible="visible"
     title="Chọn sản phẩm"
     title-class="text-uppercase font-weight-bold text-brand-1"
+    footer-class="justify-content-center"
     content-class="bg-light"
+    class="d-print-none"
     footer-border-variant="light"
-    hide-footer="true"
+    centered
   >
-    <b-card>
-      <div class="bg-light w-25 h-25 rounded-right border-top-info border-bottom-info border-right-info m-0">
-        <strong class="text-brand-1">
-          Tìm kiếm sản phẩm
-        </strong>
-      </div>
-      <!--START search form-->
-      <b-form>
-        <b-form-row class="v-search-form mx-0 pt-1">
-          <b-col
-            xl
-            md="3"
-            sm="4"
+    <b-container fluid>
+      <!-- START - Body -->
+      <v-card-actions
+        class="bg-white rounded shadow "
+        title="Tìm kiếm"
+      >
+        <!-- START - Product code -->
+        <b-col
+          xl
+          md="3"
+          sm="4"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
           >
-            <div>
-              Mã sản phẩm
-            </div>
-            <b-input-group
-              class="input-group-merge"
-              size="md"
-            >
-              <b-input
-                v-model="searchOptions.productCode"
-                class="h8 text-brand-3 height-button-brand-1"
-                placeholder="Nhập mã sản phẩm"
-                @keyup.enter="onSearchClick"
-              />
-            </b-input-group>
-          </b-col>
-          <b-col
-            xl
-            md="3"
-            sm="4"
+            Mã sản phẩm
+          </div>
+          <b-input-group
+            class="input-group-merge"
           >
-            <div>
-              Tên sản phẩm
-            </div>
-            <b-input-group
-              class="input-group-merge"
-              size="md"
-            >
-              <b-input
-                v-model="searchOptions.productName"
-                class="h8 text-brand-3 height-button-brand-1"
-                placeholder="Nhập tên sản phẩm"
-                @keyup.enter="onSearchClick"
-              />
-            </b-input-group>
-          </b-col>
-          <b-col
-            xl
-            lg="3"
-            sm="4"
-          >
-            <div>
-              Ngành hàng
-            </div>
-            <tree-select
-              v-model="productCategorySelected"
-              :options="productCategory"
-              :searchable="false"
-              placeholder="Tất cả"
-              no-options-text="Không có dữ liệu"
+            <b-form-input
+              id="form-input-customer"
+              v-model="searchOptions.productCodes"
+              class="h8 text-brand-3 height-button-brand-1"
+              placeholder="Nhập mã sản phẩm"
+              @keyup.enter="onSearchClick"
             />
-          </b-col>
-          <!-- START - Search button -->
-          <b-col
-            xl
-            sm="4"
-            md="3"
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="searchOptions.productCodes"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                @click="searchOptions.productCodes = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+        <!-- END - Product code -->
+
+        <!-- START - Product name -->
+        <b-col
+          xl
+          md="3"
+          sm="4"
+          class=" pr-0"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
           >
-            <div
-              class="h7 text-white"
+            Tên sản phẩm
+          </div>
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model="searchOptions.productName"
+              class="h8 text-brand-3 height-button-brand-1"
+              placeholder="Nhập tên sản phẩm"
+              @keyup.enter="onSearchClick"
+            />
+            <b-input-group-append
+              is-text
             >
-              Tìm kiếm
-            </div>
-            <b-button
-              class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
-              variant="someThing"
-              size="sm"
-              style="height: 30px;"
-              @click="onSearchClick"
-            >
-              <b-icon-search class="mr-1" />
-              Tìm kiếm
-            </b-button>
-          </b-col>
-          <!-- END - Search button -->
-        </b-form-row>
-        <!--END search form-->
-        <div class="pt-2">
+              <b-icon-x
+                v-show="searchOptions.productName"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                @click="searchOptions.productName = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+        <!-- END - Product name -->
+
+        <!-- START - Product cat -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+          class=" pr-0"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Ngành hàng
+          </div>
+          <tree-select
+            v-model="productCategorySelected"
+            :options="productCategory"
+            :searchable="false"
+            placeholder="Tất cả"
+            no-options-text="Không có dữ liệu"
+          />
+        </b-col>
+        <!-- END - Product cat -->
+        <!-- START - Search button -->
+        <b-col>
+          <div
+            class="h8 text-white"
+          >
+            Tìm kiếm
+          </div>
+          <b-button
+            id="form-button-search"
+            class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
+            variant="someThing"
+            @click="onSearchClick"
+          >
+            <b-icon-search class="mr-50" />
+            Tìm kiếm
+          </b-button>
+        </b-col>
+        <!-- END - Search button -->
+      </v-card-actions>
+      <!-- START- Table -->
+      <b-form class="bg-white rounded shadow rounded mt-1 p-1">
+        <div class="pt-0">
           <strong class="text-blue-vinamilk pt-2">
             Tổng cộng: {{ $formatNumberToLocale(totalProductFound) }} sản phẩm
           </strong>
         </div>
-        <!-- START - Table -->
-        <b-col
-          class="py-1"
+        <vue-good-table
+          ref="products-table"
+          :columns="columns"
+          mode="remote"
+          :rows="products"
+          class="pb-1 m-1"
+          style-class="vgt-table striped"
+          compact-mode
+          line-numbers
+          :pagination-options="{
+            enabled: true,
+            perPage: paginationData.size,
+            setCurrentPage: pageNumber,
+          }"
+          :total-rows="productsPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+          }"
+          :select-options="{
+            enabled: true,
+            selectionInfoClass: 'custom-class',
+            selectionText: 'rows selected',
+            clearSelectionText: 'clear',
+            disableSelectInfo: true,
+            selectAllByGroup: true,
+            multipleColumns: true,
+            selected: true
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
+          @on-row-click="selectionRow"
+          @on-select-all="selectAllRows"
         >
-          <vue-good-table
-            ref="products-table"
-            :columns="columns"
-            mode="remote"
-            :rows="products"
-            class="pb-1 m-1"
-            style-class="vgt-table striped"
-            compact-mode
-            line-numbers
-            :pagination-options="{
-              enabled: true,
-              perPage: paginationData.size,
-              setCurrentPage: pageNumber,
-            }"
-            :total-rows="productsPagination.totalElements"
-            :sort-options="{
-              enabled: false,
-              multipleColumns: true,
-            }"
-            :select-options="{
-              enabled: true,
-              selectionInfoClass: 'custom-class',
-              selectionText: 'rows selected',
-              clearSelectionText: 'clear',
-              disableSelectInfo: true,
-              selectAllByGroup: true,
-              multipleColumns: true,
-              selected: true
-            }"
-            @on-sort-change="onSortChange"
-            @on-page-change="onPageChange"
-            @on-per-page-change="onPerPageChange"
-            @on-row-click="selectionRow"
-            @on-select-all="selectAllRows"
+          <!-- START - Empty rows -->
+          <div
+            slot="emptystate"
+            class="text-center"
           >
-            <!-- START - Empty rows -->
-            <div
-              slot="emptystate"
-              class="text-center"
-            >
-              Không có dữ liệu
-            </div>
-            <!-- END - Empty rows -->
-            <!-- START - Pagination -->
-            <template
-              slot="pagination-bottom"
-              slot-scope="props"
-            >
-              <b-row
-                v-show="productsPagination.totalElements"
-                class="v-pagination px-1 mx-0"
-                align-h="between"
-                align-v="center"
-              >
-                <div
-                  class="d-flex align-items-center"
-                >
-                  <span
-                    class="text-nowrap"
-                  >
-                    Số hàng hiển thị
-                  </span>
-                  <b-form-select
-                    v-model="paginationData.size"
-                    size="sm"
-                    :options="perPageSizeOptions"
-                    class="mx-1"
-                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
-                  />
-                  <span class="text-nowrap">{{ paginationDetailContent }}</span>
-                </div>
-                <b-pagination
-                  v-model="pageNumber"
-                  :total-rows="productsPagination.totalElements"
-                  :per-page="paginationData.size"
-                  first-number
-                  last-number
-                  align="right"
-                  prev-class="prev-item"
-                  next-class="next-item"
-                  class="mt-1"
-                  @input="(value)=>props.pageChanged({currentPage: value})"
-                >
-                  <template slot="prev-text">
-                    <feather-icon
-                      icon="ChevronLeftIcon"
-                      size="18"
-                    />
-                  </template>
-                  <template slot="next-text">
-                    <feather-icon
-                      icon="ChevronRightIcon"
-                      size="18"
-                    />
-                  </template>
-                </b-pagination>
-              </b-row>
-            </template>
-          <!-- END - Pagination -->
-          </vue-good-table>
+            Không có dữ liệu
+          </div>
+          <!-- END - Empty rows -->
 
-        </b-col>
-        <!--END table-->
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="productsPagination.totalElements"
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Số hàng hiển thị
+                </span>
+                <b-form-select
+                  v-model="paginationData.size"
+                  size="sm"
+                  :options="perPageSizeOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="productsPagination.totalElements"
+                :per-page="paginationData.size"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
+        </vue-good-table>
       </b-form>
-      <b-row class="m-1 justify-content-center">
-        <b-button-group>
-          <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center"
-            variant="someThing"
-            size="sm"
-            @click="save()"
-          >
-            <b-icon
-              icon="download"
-              width="15"
-              height="15"
-              class="mr-1"
-            />
-            Chọn
-          </b-button>
-          <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center ml-1"
-            size="sm"
-            @click="cancel()"
-          >
-            <b-icon
-              icon="x"
-              width="20"
-              height="20"
-            />
-            Đóng
-          </b-button>
-        </b-button-group>
-      </b-row>
-    </b-card>
+      <!-- END Body -->
+    </b-container>
+
+    <!-- START - Footer -->
+    <template #modal-footer="{ }">
+      <b-button
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center"
+        variant="someThing"
+        size="sm"
+        @click="save()"
+      >
+        <b-icon
+          icon="download"
+          width="15"
+          height="15"
+          class="mr-1"
+        />
+        Chọn
+      </b-button>
+      <b-button
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center ml-1"
+        size="sm"
+        @click="cancel()"
+      >
+        <b-icon
+          icon="x"
+          width="20"
+          height="20"
+        />
+        Đóng
+      </b-button>
+    </template>
+  <!-- END - Footer -->
+
   </b-modal>
 </template>
 
 <script>
+import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import commonData from '@/@db/common'
 import {
   resizeAbleTable,
@@ -267,6 +295,9 @@ import {
 } from '../../store-module/type'
 
 export default {
+  components: {
+    VCardActions,
+  },
   props: {
     visible: {
       type: Boolean,
@@ -287,7 +318,7 @@ export default {
       totalProductFound: 0,
       // searchOptions
       searchOptions: {
-        productCode: '',
+        productCodes: '',
         productName: '',
       },
       selectedProductRow: [],
@@ -312,12 +343,6 @@ export default {
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
-        },
-      ],
-      rows: [
-        {
-          productCode: '04DC10',
-          productName: 'Thức uống cacao lúa mạch 180ml',
         },
       ],
     }
@@ -408,9 +433,10 @@ export default {
     ]),
     save() {
       this.$emit('onSaveClick', this.selectedProductRow)
+      this.$root.$emit('bv::hide::modal', 'find-product-modal')
     },
     cancel() {
-      this.$emit('close')
+      this.$root.$emit('bv::hide::modal', 'find-product-modal')
     },
     // pagination funcs
     onPaginationChange() {

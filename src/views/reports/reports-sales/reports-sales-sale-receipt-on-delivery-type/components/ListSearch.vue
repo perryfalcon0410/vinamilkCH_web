@@ -214,6 +214,7 @@
               v-model="min"
               class="h8 text-brand-3"
               @keyup.enter="onClickSearchButton"
+              @keypress="$onlyNumberInput"
             />
           </b-col>
           <b-col>
@@ -221,6 +222,7 @@
               v-model="max"
               class="h8 text-brand-3"
               @keyup.enter="onClickSearchButton"
+              @keypress="$onlyNumberInput"
             />
           </b-col>
         </b-row>
@@ -259,6 +261,7 @@ import {
 } from 'vuex'
 import { reverseVniDate } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import toasts from '@core/utils/toasts/toasts'
 import {
   REPORT_SALES_SALE_ON_DELIVERY_TYPE,
   // GETTERS,
@@ -341,19 +344,27 @@ export default {
 
     onSearch() {
       const searchData = {
-        orderNumber: this.receiptCode, // Số hóa đơn
+        orderNumber: this.receiptCode?.trim(), // Số hóa đơn
         fromDate: reverseVniDate(this.fromDate), // từ ngày
         toDate: reverseVniDate(this.toDate), // đến ngày
         fromTotal: this.min, // nhỏ nhất
         toTotal: this.max, // lớn nhất
         apValue: this.deliveryTypeSelected, // loại giao hàng
-        customerKW: this.customerCode, // họ tên/mã kh
-        phoneText: this.phoneNumber, // SĐT
+        customerKW: this.customerCode?.trim(), // họ tên/mã kh
+        phoneText: this.phoneNumber?.trim(), // SĐT
         formId: this.formId,
         ctrlId: this.ctrlId,
       }
-      this.updateSearchData(searchData)
-      this.GET_SALE_ON_DELIVERY_TYPE_ACTION(searchData)
+      if (searchData.fromDate !== null && searchData.toDate !== null) {
+        if (searchData.toTotal >= searchData.fromTotal) {
+          this.updateSearchData(searchData)
+          this.GET_SALE_ON_DELIVERY_TYPE_ACTION(searchData)
+        } else {
+          toasts.error('Doanh số đến không hợp lệ')
+        }
+      } else {
+        toasts.error('Ngày không được để trống')
+      }
     },
 
     onClickSearchButton() {

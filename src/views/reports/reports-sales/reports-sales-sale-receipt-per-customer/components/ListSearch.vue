@@ -181,11 +181,13 @@
                 v-model="min"
                 class="h8 text-brand-3"
                 @keyup.enter="onClickSearchButton"
+                @keypress="$onlyNumberInput"
               />
               <b-form-input
                 v-model="max"
                 class="h8 text-brand-3"
                 @keyup.enter="onClickSearchButton"
+                @keypress="$onlyNumberInput"
               />
             </b-input-group>
           </b-form-group>
@@ -225,6 +227,7 @@ import {
 } from 'vuex'
 import { reverseVniDate } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import toasts from '@core/utils/toasts/toasts'
 import {
   REPORT_SALES_SALE_RECEIPT,
   // GETTERS,
@@ -246,8 +249,8 @@ export default {
       },
       // search
       customerTypesSelected: null,
-      min: 0,
-      max: 0,
+      min: null,
+      max: null,
       customerCode: null,
       phoneNumber: null,
       fromDate: this.$earlyMonth,
@@ -311,12 +314,20 @@ export default {
         fromAmount: this.min,
         toAmount: this.max,
         customerTypeId: this.customerTypesSelected,
-        keySearch: this.customerCode,
-        phoneNumber: this.phoneNumber,
+        keySearch: this.customerCode?.trim(),
+        phoneNumber: this.phoneNumber?.trim(),
         ...this.decentralization,
       }
-      this.updateSearchData(searchData)
-      this.GET_SALE_RECEIPTS_ACTION(searchData)
+      if (searchData.fromDate !== null && searchData.toDate !== null) {
+        if (searchData.toAmount >= searchData.fromAmount) {
+          this.updateSearchData(searchData)
+          this.GET_SALE_RECEIPTS_ACTION(searchData)
+        } else {
+          toasts.error('Doanh số đến không hợp lệ')
+        }
+      } else {
+        toasts.error('Ngày không được để trống')
+      }
     },
 
     onClickSearchButton() {

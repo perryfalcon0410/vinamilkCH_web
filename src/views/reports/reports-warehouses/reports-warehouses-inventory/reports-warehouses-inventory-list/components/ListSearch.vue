@@ -42,7 +42,7 @@
               <b-icon-x
                 v-show="date"
                 class="cursor-pointer text-gray"
-                @click="date = $nowDate"
+                @click="date = null"
               />
             </b-input-group-append>
           </b-input-group>
@@ -75,7 +75,7 @@
               v-show="productCodes"
               is-text
               class="cursor-pointer text-gray"
-              @click="ids = null"
+              @click="productCodes = null"
             />
             <b-icon-three-dots-vertical
               @click="showFindProductModal"
@@ -179,7 +179,7 @@ export default {
     onSearch() {
       const searchData = {
         stockDate: reverseVniDate(this.date),
-        productCodes: this.productCodes,
+        productCodes: this.productCodes?.trim(),
         ...this.decentralization,
       }
       if (searchData.stockDate !== null) {
