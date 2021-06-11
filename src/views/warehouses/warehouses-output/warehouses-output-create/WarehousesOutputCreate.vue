@@ -64,6 +64,7 @@
                       placeholder="Chọn loại xuất hàng"
                       no-options-text="Không có dữ liệu"
                       no-results-text="Không tìm thấy kết quả"
+                      @select="resetDataToDefault"
                     />
                     <b-input-group-append>
                       <b-icon-three-dots-vertical
@@ -539,6 +540,7 @@ export default {
       this.warehousesOutput.id = data.tranInfo.id
       this.warehousesOutput.billDate = data.tranInfo.adjustmentDate
       this.warehousesOutput.note = data.tranInfo.description
+      this.warehousesOutput.code = data.tranInfo.adjustmentCode
       this.exportAll = true
       this.products = data.products
 
@@ -546,7 +548,6 @@ export default {
       this.warehousesOutput.redInvoiceNo = ''
       this.warehousesOutput.internalNumber = ''
       this.warehousesOutput.poNumber = ''
-      this.warehousesOutput.code = ''
     },
     checkQuantity() {
       this.products.forEach((item, index) => {
@@ -587,6 +588,15 @@ export default {
     },
     closeNotifyModal() {
       this.$refs.salesNotifyModal.hide()
+    },
+    resetDataToDefault() {
+      this.warehousesOutput.redInvoiceNo = ''
+      this.warehousesOutput.internalNumber = ''
+      this.warehousesOutput.poNumber = ''
+      this.warehousesOutput.code = ''
+      this.warehousesOutput.note = ''
+      this.warehousesOutput.outputTypeSelected = warehousesData.outputTypes[0].id
+      this.warehousesOutput.billDate = this.$nowDate
     },
   },
 }

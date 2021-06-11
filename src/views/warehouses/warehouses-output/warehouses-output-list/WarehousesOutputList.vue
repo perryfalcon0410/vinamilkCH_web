@@ -109,6 +109,7 @@
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
           <div class="h8 mt-sm-1 mt-xl-0">
             Loại xuất
