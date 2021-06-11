@@ -16,4 +16,5 @@ export default {
   ],
   pageNumber: 1,
   minSearchLength: 4,
+  minOnlineOrderLength: 1,
 }

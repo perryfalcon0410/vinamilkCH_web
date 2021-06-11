@@ -230,7 +230,7 @@
               <b-input-group class="input-group-merge">
                 <b-form-input
                   v-model="orderOnline.orderNumber"
-                  :disabled="salemtPromotionObjectSelected === '1' || salemtPromotionObjectSelected === '0'"
+                  :disabled="salemtPromotionObjectSelected === salemtPromotionId || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0)"
                 />
                 <b-input-group-append is-text>
                   <b-icon-three-dots-vertical @click="showNotifyModal" />
@@ -309,6 +309,7 @@
         <b-button
           variant="info"
           class="d-flex w-100 my-1 align-items-center justify-content-center"
+          :disabled="orderOnline.orderNumber.length < minOnlineOrder && salemtPromotionObjectSelected !== salemtPromotionId"
           @click="showPayModal"
         >
           <b-icon-cash-stack
@@ -412,6 +413,8 @@ export default {
       customersSearch: [],
       search: '',
       minSearch: commonData.minSearchLength,
+      minOnlineOrder: commonData.minOnlineOrderLength,
+      salemtPromotionId: '1',
 
       // customer
       customer: {
@@ -429,7 +432,7 @@ export default {
       // online order
       orderOnline: {
         onlineOrderId: null,
-        orderNumber: null,
+        orderNumber: '',
         orderNote: '',
       },
       quantity: null,
@@ -747,7 +750,7 @@ export default {
 
     resetOrderNumber(item) {
       if (item.id === saleData.salemtPromotionObject[0].id) {
-        this.orderOnline.orderNumber = null
+        this.orderOnline.orderNumber = ''
       }
     },
   },

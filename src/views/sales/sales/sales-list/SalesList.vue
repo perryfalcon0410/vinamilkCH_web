@@ -201,7 +201,8 @@
                 v-model="orderProducts[props.row.originalIndex].quantity"
                 :value="orderProducts[props.row.originalIndex].quantity"
                 :number="true"
-                maxlength="6"
+                maxlength="7"
+                class="text-center"
                 @change="onChangeQuantity(props.row.originalIndex)"
               />
               <b-icon-caret-up-fill
@@ -352,10 +353,10 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          width: '100px',
+          width: '140px',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Đơn giá',

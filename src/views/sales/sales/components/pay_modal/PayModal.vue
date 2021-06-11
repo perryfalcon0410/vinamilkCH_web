@@ -686,6 +686,7 @@
         <b-button
           variant="none"
           class="d-flex align-items-center text-uppercase btn-brand-1"
+          :disabled="pay.totalQuantity === 0"
           @click="createSaleOrder"
         >
           <b-icon-cash-stack
