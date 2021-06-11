@@ -260,6 +260,8 @@ export default {
         page: this.pageNumber,
         sort: null,
       },
+      totalQuantity: 0,
+      totalProducts: 0,
 
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
@@ -345,7 +347,7 @@ export default {
     },
 
     getExportAdjustmentDetail() {
-      return this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER.response
+      return this.GET_EXPORT_ADJUSTMENTS_DETAIL_GETTER
     },
     paginationDetailContent() {
       const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
@@ -370,18 +372,23 @@ export default {
       }
     },
     getExportAdjustmentDetail() {
-      const products = []
       if (this.getExportAdjustmentDetail) {
-        this.getExportAdjustmentDetail.forEach(item => {
-          const index = products.findIndex(product => product.productCode === item.productCode)
-          if (index === -1) {
-            products.push(item)
-          } else {
-            products[index].quantity += item.quantity
-            products[index].totalPrice += item.totalPrice
-          }
-        })
-        this.productsOfAjustment = products
+        const products = []
+        if (this.getExportAdjustmentDetail.response) {
+          this.getExportAdjustmentDetail.response.forEach(item => {
+            const index = products.findIndex(product => product.productCode === item.productCode)
+            if (index === -1) {
+              products.push(item)
+            } else {
+              products[index].quantity += item.quantity
+              products[index].totalPrice += item.totalPrice
+            }
+          })
+          this.productsOfAjustment = products
+        }
+        if (this.getExportAdjustmentDetail.info) {
+          this.totalQuantity = this.getExportAdjustmentDetail.info.totalQuantity
+        }
       }
     },
   },
@@ -408,6 +415,7 @@ export default {
           const adjustmentTranData = {
             tranInfo: trans,
             products: this.productsOfAjustment,
+            totalQuantity: this.totalQuantity,
           }
           this.$emit('choonsenTrans', adjustmentTranData)
           this.$root.$emit('bv::hide::modal', 'output-adjustment-modal')

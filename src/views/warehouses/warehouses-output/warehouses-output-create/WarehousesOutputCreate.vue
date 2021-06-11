@@ -59,7 +59,7 @@
                   </div>
                   <div class="d-flex align-items-center">
                     <tree-select
-                      v-model="warehousesOutput.outputTypeSelected"
+                      v-model="outputTypeSelected"
                       :options="outputTypesOptions"
                       placeholder="Chọn loại xuất hàng"
                       no-options-text="Không có dữ liệu"
@@ -123,7 +123,7 @@
                     v-model="warehousesOutput.billDate"
                     :config="configDate"
                     class="form-control h8"
-                    :disabled="warehousesOutput.outputTypeSelected !== poOutputType"
+                    :disabled="outputTypeSelected !== poOutputType"
                     readonly
                   />
                 </b-row>
@@ -152,13 +152,13 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  :rules="warehousesOutput.outputTypeSelected === poOutputType ? 'required' : ''"
+                  :rules="outputTypeSelected === poOutputType ? 'required' : ''"
                   name="PO No"
                 >
                   <div class="mt-1">
                     PO No
                     <sup
-                      v-show="warehousesOutput.outputTypeSelected === poOutputType"
+                      v-show="outputTypeSelected === poOutputType"
                       class="text-danger"
                     >*</sup>
                   </div>
@@ -168,8 +168,8 @@
                   >
                     <b-form-input
                       v-model.trim="warehousesOutput.poNumber"
-                      :state="warehousesOutput.outputTypeSelected !== poOutputType && touched ? passed : null"
-                      :disabled="warehousesOutput.outputTypeSelected !== poOutputType"
+                      :state="outputTypeSelected !== poOutputType && touched ? passed : null"
+                      :disabled="outputTypeSelected !== poOutputType"
                     />
 
                   </b-input-group>
@@ -225,7 +225,7 @@
                 <b-form-checkbox
                   v-model="exportAll"
                   class="m-1"
-                  :disabled="warehousesOutput.outputTypeSelected !== poOutputType"
+                  :disabled="outputTypeSelected !== poOutputType"
                 >
                   Trả nguyên đơn
                 </b-form-checkbox>
@@ -241,7 +241,7 @@
                   <b-form-input
                     v-model="products[props.row.originalIndex].quantity"
                     maxlength="19"
-                    :readonly="exportAll && warehousesOutput.outputTypeSelected !== poOutputType"
+                    :readonly="exportAll && outputTypeSelected !== poOutputType"
                     @keypress="$onlyNumberInput"
                   />
                 </div>
@@ -249,7 +249,32 @@
                   {{ props.formattedRow[props.column.field] }}
                 </div>
               </template>
-            <!-- END - Rows -->
+              <!-- END - Rows -->
+
+              <!-- START - Customer filter -->
+              <template
+                slot="column-filter"
+                slot-scope="props"
+              >
+                <b-row
+                  v-if="props.column.field === 'quantity'"
+                  class="h7 ml-1"
+                  align-h="start"
+                  :hidden="hideFilter"
+                >
+                  {{ $formatNumberToLocale(totalQuantity) }}
+                </b-row>
+                <b-row
+                  v-if="props.column.field === 'productCode'"
+                  class="h7 ml-1"
+                  align-h="start"
+                  :hidden="hideFilter"
+                >
+                  {{ $formatNumberToLocale(totalProduct) }}
+                </b-row>
+
+              </template>
+              <!-- END - Customer filter -->
 
             </vue-good-table>
             <!-- END - Table Product -->
@@ -377,15 +402,16 @@ export default {
       outputTypesOptions: warehousesData.outputTypes,
       exportAll: true,
       quantityCheck: true,
+      hideFilter: true,
 
       output: {
         id: '',
         transCode: '',
       },
       poOutputType: warehousesData.outputTypes[0].id,
+      outputTypeSelected: warehousesData.outputTypes[0].id,
       warehousesOutput: {
         id: null,
-        outputTypeSelected: warehousesData.outputTypes[0].id,
         code: '',
         type: 2, // xác định 2 là loại phiếu xuất hàng
         wareHouseTypeName: '',
@@ -447,6 +473,9 @@ export default {
           field: 'quantity',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
         },
       ],
     }
@@ -462,7 +491,7 @@ export default {
   },
 
   watch: {
-    warehousesOutput() {
+    outputTypeSelected() {
       this.CLEAR_EXPORT_PRODUCTS_MUTATION()
       this.internalNumber = ''
       this.internalNumber = ''
@@ -471,6 +500,7 @@ export default {
       this.transDate = ''
       this.note = ''
       this.products = []
+      this.hideFilter = true
     },
     exportAll() {
       if (this.exportAll) {
@@ -500,7 +530,7 @@ export default {
 
     showModal() {
       this.CLEAR_EXPORT_PRODUCTS_MUTATION()
-      switch (this.warehousesOutput.outputTypeSelected) {
+      switch (this.outputTypeSelected) {
         case warehousesData.outputTypes[0].id:
           this.$root.$emit('bv::toggle::modal', 'output-modal')
           break
@@ -529,6 +559,9 @@ export default {
       this.warehousesOutput.note = data.tranInfo.note
       this.products = data.products
       this.exportAll = true
+      this.totalQuantity = data.totalQuantity
+      this.totalProduct = data.products.length
+      this.hideFilter = false
 
       // clear data
       this.warehousesOutput.redInvoiceNo = ''
@@ -543,6 +576,9 @@ export default {
       this.warehousesOutput.code = data.tranInfo.adjustmentCode
       this.exportAll = true
       this.products = data.products
+      this.totalQuantity = data.totalQuantity
+      this.totalProduct = data.products.length
+      this.hideFilter = false
 
       // clear data
       this.warehousesOutput.redInvoiceNo = ''
@@ -559,14 +595,14 @@ export default {
       })
     },
     createExport() {
-      if (this.warehousesOutput.outputTypeSelected === warehousesData.outputTypes[0].id) {
+      if (this.outputTypeSelected === warehousesData.outputTypes[0].id) {
         this.checkQuantity()
       }
       if (this.products.length !== 0) {
         if (this.quantityCheck) {
           this.CREATE_EXPORT_ACTION(
             {
-              importType: Number(this.warehousesOutput.outputTypeSelected),
+              importType: Number(this.outputTypeSelected),
               isRemainAll: this.exportAll,
               receiptImportId: Number(this.warehousesOutput.id),
               note: this.warehousesOutput.note,
@@ -577,7 +613,7 @@ export default {
               })),
             },
           )
-        } else if (this.warehousesOutput.outputTypeSelected === warehousesData.outputTypes[0].id) toasts.error('Không đủ sản phẩm trả.')
+        } else if (this.outputTypeSelected === warehousesData.outputTypes[0].id) toasts.error('Không đủ sản phẩm trả.')
       } else toasts.error('Vui lòng chọn phiếu.')
     },
     navigateBack() {
@@ -595,7 +631,7 @@ export default {
       this.warehousesOutput.poNumber = ''
       this.warehousesOutput.code = ''
       this.warehousesOutput.note = ''
-      this.warehousesOutput.outputTypeSelected = warehousesData.outputTypes[0].id
+      this.outputTypeSelected = warehousesData.outputTypes[0].id
       this.warehousesOutput.billDate = this.$nowDate
     },
   },

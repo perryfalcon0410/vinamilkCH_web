@@ -283,6 +283,7 @@ export default {
         page: this.pageNumber,
         sort: null,
       },
+      totalQuantity: 0,
 
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
@@ -403,6 +404,9 @@ export default {
         })
         this.productOfBorrowed = products
       }
+      if (this.getExportBorrowingDetail.info) {
+        this.totalQuantity = this.getExportBorrowingDetail.info.totalQuantity
+      }
     },
   },
   mounted() {
@@ -428,6 +432,7 @@ export default {
           const borrowedTranData = {
             tranInfo: trans,
             products: this.productOfBorrowed,
+            totalQuantity: this.totalQuantity,
           }
           this.$emit('choonsenTrans', borrowedTranData)
           this.$root.$emit('bv::hide::modal', 'output-borrowed-modal')

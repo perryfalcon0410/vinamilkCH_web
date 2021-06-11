@@ -435,11 +435,6 @@ export default {
     },
   },
   mounted() {
-    // const data = {
-    //   fromDate: reverseVniDate(this.$earlyMonth),
-    //   toDate: reverseVniDate(this.$nowDate),
-    // }
-    // this.GET_EXPORT_PO_TRANS_ACTION(data)
   },
   methods: {
     ...mapActions(WAREHOUSES_OUTPUT, [
