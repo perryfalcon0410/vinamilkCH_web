@@ -41,13 +41,8 @@
                 class="mx-0 p-1 bg-brand-1"
               >
                 <b-check
-                  v-if="value.promotionType === Number(promotionTypeOption[0].id)"
                   v-model="value.isSelected"
-                  disabled
-                />
-                <b-check
-                  v-else
-                  v-model="value.isSelected"
+                  :disabled="!value.isUse"
                 />
                 <div class="text-white">
                   {{ value.promotionProgramName }}
@@ -487,23 +482,16 @@
                           />
                         </b-input-group-prepend>
                         <b-form-input
-                          v-model="pay.voucher.voucherCode"
+                          v-model="pay.voucher.voucherSerials"
                           class="form-control-merge"
-                          @change="onChangeVoucherCode"
+                          disabled
                         />
-                        <b-input-group-append is-text>
-                          <b-icon-x
-                            scale="1.5"
-                            class="cursor-pointer"
-                            @click="resetVoucher"
-                          />
-                        </b-input-group-append>
                       </b-input-group>
                     </b-col>
 
                     <b-col>
                       <b-form-input
-                        v-model="pay.voucher.voucherAmount"
+                        v-model="pay.voucher.totalVoucherAmount"
                         disabled
                       />
                     </b-col>
@@ -721,7 +709,11 @@
     </template>
     <!-- END - Footer -->
 
-    <voucher-modal @getVoucherInfo="getVoucherInfo" />
+    <voucher-modal
+      :order-products="orderProducts"
+      :customer="customer"
+      @getVoucherInfo="getVoucherInfo"
+    />
   </b-modal>
   <!-- End Popup -->
 </template>
@@ -741,17 +733,14 @@ import saleData from '@/@db/sale'
 import {
   SALES,
   // GETTERS
-  VOUCHER_BY_ID_GETTER,
   GET_PRODUCTS_GETTER,
   GET_DISCOUNT_BY_CODE_GETTER,
   GET_PROMOTION_FREE_ITEMS_GETTER,
   GET_PROMOTION_PROGRAMS_GETTER,
   GET_PROMOTION_CALCULATION_GETTER,
   GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
-  GET_VOUCHER_BY_SERIAL_GETTER,
 
   // ACTIONS
-  GET_VOUCHER_BY_ID_ACTION,
   GET_PRODUCTS_ACTION,
   CREATE_SALE_ORDER_ACTION,
   GET_DISCOUNT_BY_CODE_ACTION,
@@ -759,7 +748,6 @@ import {
   GET_PROMOTION_PROGRAMS_ACTION,
   GET_PROMOTION_CALCULATION_ACTION,
   GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
-  GET_VOUCHER_BY_SERIAL_ACTION,
 } from '../../store-module/type'
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
 
@@ -841,9 +829,12 @@ export default {
           accumulateAmount: 0,
         },
         voucher: {
-          voucherId: null,
-          voucherCode: '',
-          voucherAmount: 0,
+          voucherSerials: '',
+          vouchers: [],
+          // voucherId: null,
+          // voucherCode: '',
+          // voucherAmount: 0,
+          totalVoucherAmount: null,
         },
         discount: {
           discountCode: '',
@@ -867,19 +858,13 @@ export default {
   },
   computed: {
     ...mapGetters(SALES, [
-      VOUCHER_BY_ID_GETTER,
       GET_PRODUCTS_GETTER,
       GET_DISCOUNT_BY_CODE_GETTER,
       GET_PROMOTION_FREE_ITEMS_GETTER,
       GET_PROMOTION_PROGRAMS_GETTER,
       GET_PROMOTION_CALCULATION_GETTER,
       GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
-      GET_VOUCHER_BY_SERIAL_GETTER,
     ]),
-
-    getVoucher() {
-      return this.VOUCHER_BY_ID_GETTER
-    },
 
     getDiscount() {
       return this.GET_DISCOUNT_BY_CODE_GETTER
@@ -894,7 +879,7 @@ export default {
     },
 
     needPayment() {
-      return this.pay.totalAmount - this.pay.accumulate.accumulateAmount - this.pay.voucher.voucherAmount - this.pay.discount.discountAmount
+      return this.pay.totalAmount - this.pay.accumulate.accumulateAmount - this.pay.voucher.totalVoucherAmount - this.pay.discount.discountAmount
     },
 
     changePayment() {
@@ -915,16 +900,8 @@ export default {
     getPromotionCalculation() {
       return this.GET_PROMOTION_CALCULATION_GETTER
     },
-    getVoucherBySerial() {
-      return this.GET_VOUCHER_BY_SERIAL_GETTER
-    },
   },
   watch: {
-    getVoucher() {
-      this.pay.voucher.voucherCode = this.getVoucher.voucherCode
-      this.pay.voucher.voucherAmount = this.getVoucher.price
-      this.pay.voucher.voucherId = this.getVoucher.id
-    },
     getDiscount() {
       this.pay.discount.discountCode = this.getDiscount.discountCode
       this.pay.discount.discountAmount = this.getDiscount.discountAmount
@@ -945,7 +922,8 @@ export default {
         products: data.products || [],
         amount: data.amount,
         isEditable: data.isEditable,
-        isSelected: data.promotionType === Number(this.promotionTypeOption[0].id),
+        numberLimited: data.numberLimited,
+        isSelected: data.promotionType === Number(this.promotionTypeOption[0].id) && data.isUse,
         isInsertItemProducts: (data.products === null && data.amount === null),
       }))
     },
@@ -958,11 +936,6 @@ export default {
     getPromotionCalculation() {
       this.pay.promotionAmount = this.getPromotionCalculation.promotionAmount
       this.pay.needPaymentAmount = this.getPromotionCalculation.paymentAmount
-    },
-    getVoucherBySerial() {
-      this.pay.voucher.voucherCode = this.getVoucherBySerial.serial
-      this.pay.voucher.voucherAmount = this.getVoucherBySerial.price
-      this.pay.voucher.voucherId = this.getVoucherBySerial.id
     },
   },
 
@@ -995,27 +968,25 @@ export default {
       GET_PRODUCTS_ACTION,
       CREATE_SALE_ORDER_ACTION,
       GET_DISCOUNT_BY_CODE_ACTION,
-      GET_VOUCHER_BY_ID_ACTION,
       GET_PROMOTION_FREE_ITEMS_ACTION,
       GET_PROMOTION_PROGRAMS_ACTION,
       GET_PROMOTION_CALCULATION_ACTION,
       GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
-      GET_VOUCHER_BY_SERIAL_ACTION,
     ]),
 
     onVoucherButtonClick() {
       this.$root.$emit('bv::show::modal', 'VoucherModal')
     },
 
-    getVoucherInfo(id) {
-      this.pay.voucher.voucherId = id
-      const productIds = this.orderProducts.map(item => item.productId)
-      const params = {
-        ctrlId: 7,
-        formId: 5,
-      }
-
-      this.GET_VOUCHER_BY_ID_ACTION(`${this.pay.voucher.voucherId}?customerId=${this.customer.id}&productIds=${productIds}`, params)
+    getVoucherInfo(vouchers) {
+      this.pay.voucher.vouchers = [...vouchers]
+      const productSerials = vouchers.map(item => item.serialNumber)
+      let totalVoucherAmount = 0
+      this.pay.voucher.voucherSerials = productSerials.toString()
+      vouchers.forEach(voucher => {
+        totalVoucherAmount += voucher.price
+      })
+      this.pay.voucher.totalVoucherAmount = totalVoucherAmount
     },
 
     searchDiscount() {
@@ -1029,12 +1000,6 @@ export default {
         customerId: this.customer.id,
         products,
       })
-    },
-
-    resetVoucher() {
-      this.pay.voucher.voucherCode = ''
-      this.pay.voucher.voucherAmount = null
-      this.pay.voucher.voucherId = null
     },
 
     resetDiscount() {
@@ -1051,7 +1016,6 @@ export default {
       this.pay.needPaymentAmount = 0
       this.pay.salePayment.salePaymentAmount = 0
       this.pay.extraAmount = null
-      this.resetVoucher()
       this.resetDiscount()
     },
 
@@ -1061,6 +1025,55 @@ export default {
     onChangeQuantity(id, params) {
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.programId === id) {
+          if (program.contraintType === Number(saleData.constraintType[1].id)) {
+            let maxQuantity = 0
+            let totalQuantity = 0
+            const productsSameQuantityMax = program.products.filter(i => i.quantityMax === program.products[0].quantityMax)
+
+            if (productsSameQuantityMax.length === program.products.length) {
+              program.products.forEach(product => {
+                totalQuantity += product.quantity
+              })
+              maxQuantity = program.products[0].quantityMax
+              if (totalQuantity > maxQuantity) {
+                toasts.error(`${program.promotionProgramName} tổng tất cả sản phẩm trong chương trình không được lớn hơn ${maxQuantity}`)
+              }
+              return program
+            }
+            return {
+              ...program,
+              products: [...program.products.map(product => {
+                if (product.productId !== params.row.productId || Number(product.quantity) < 0) {
+                  return {
+                    ...product,
+                    quantity: null,
+                  }
+                }
+
+                if (Number(product.quantity) > product.quantityMax) {
+                  if (program.numberLimited < product.quantityMax) {
+                    return {
+                      ...product,
+                      quantity: Number(program.numberLimited),
+                    }
+                  }
+                  return {
+                    ...product,
+                    quantity: product.quantityMax,
+                  }
+                }
+
+                if (program.numberLimited > 0 && Number(product.quantity) > program.numberLimited) {
+                  return {
+                    ...product,
+                    quantity: program.numberLimited,
+                  }
+                }
+                return product
+              })],
+            }
+          }
+
           return {
             ...program,
             products: [...program.products.map(product => {
@@ -1068,14 +1081,27 @@ export default {
                 if (Number(product.quantity) < 0) {
                   return {
                     ...product,
-                    quantity: 0,
+                    quantity: null,
                   }
                 }
 
-                if (Number(product.quantity) > Number(product.quantityMax)) {
+                if (Number(product.quantity) > product.quantityMax) {
+                  if (program.numberLimited < product.quantityMax) {
+                    return {
+                      ...product,
+                      quantity: Number(program.numberLimited),
+                    }
+                  }
                   return {
                     ...product,
                     quantity: product.quantityMax,
+                  }
+                }
+
+                if (program.numberLimited > 0 && Number(product.quantity) > program.numberLimited) {
+                  return {
+                    ...product,
+                    quantity: program.numberLimited,
                   }
                 }
               }
@@ -1154,14 +1180,13 @@ export default {
       })]
     },
     onClickPromotionCalculation() {
-      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.amount && p.isSelected === true)
-
+      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.amount !== null && p.isSelected && p.isUse)
       this.GET_PROMOTION_CALCULATION_ACTION({
         customerId: this.customer.id,
         orderType: Number(this.orderSelected),
         totalAmount: this.pay.totalAmount,
         saveAmount: this.pay.accumulate.accumulateAmount,
-        voucherAmount: this.pay.voucher.voucherAmount,
+        voucherAmount: this.pay.voucher.totalVoucherAmount,
         saleOffAmount: this.pay.discount.discountAmount,
         promotionInfo: paramPromotionAmountInfos,
       })
@@ -1174,20 +1199,25 @@ export default {
     extraAmountCalculation() {
       this.pay.extraAmount = Number(this.pay.salePayment.salePaymentAmount) - Number(this.pay.needPaymentAmount)
     },
-    createSaleOrder() {
-      this.promotionPrograms.forEach(program => {
-        if (program.contraintType === Number(saleData.constraintType[1].id)) {
-          let maxQuantity = 0
-          let totalQuantity = 0
-          program.products.forEach(product => {
-            maxQuantity = product.quantityMax
-            totalQuantity += product.quantity
-          })
-          if (totalQuantity > maxQuantity) {
-            toasts.error(`${program.promotionProgramName}tổng sản phẩm không được lớn hơn ${maxQuantity}`)
-          }
-        }
 
+    createSaleOrder() {
+      let isValid = true
+      this.promotionPrograms = this.promotionPrograms.filter(p => p.isUse && p.isSelected)
+      this.promotionPrograms.forEach(program => {
+        program.products.forEach(product => {
+          if (program.isEditable) {
+            if (product.quantity > product.stockQuantity) {
+              isValid = false
+              toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
+            }
+          } else if (product.quantityMax > product.stockQuantity) {
+            isValid = false
+            toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
+          }
+        })
+      })
+
+      if (isValid) {
         this.CREATE_SALE_ORDER_ACTION({
           orderSale: {
             customerId: this.customer.id,
@@ -1204,8 +1234,8 @@ export default {
             accumulatedAmount: this.pay.accumulate.accumulateAmount,
             discountAmount: this.pay.discount.discountAmount,
             discountCode: this.pay.discount.discountCode,
-            voucherAmount: this.pay.voucher.voucherAmount,
-            voucherId: this.pay.voucher.voucherId,
+            voucherAmount: this.pay.voucher.totalVoucherAmount,
+            vouchers: this.pay.voucher.vouchers,
             remainAmount: this.pay.needPaymentAmount,
             paymentAmount: this.pay.salePayment.salePaymentAmount,
             extraAmount: this.pay.extraAmount,
@@ -1215,19 +1245,7 @@ export default {
             this.resetOrderPayment()
           },
         })
-      })
-    },
-    onChangeVoucherCode() {
-      const productIds = this.orderProducts.map(item => item.productId)
-      const paramsGetVoucherBySerial = {
-        serial: this.pay.voucher.voucherCode,
-        customerId: this.customer.id,
-        productIds: productIds.toString(),
-        ctrlId: this.ctrlId,
-        formId: this.formId,
       }
-
-      this.GET_VOUCHER_BY_SERIAL_ACTION(paramsGetVoucherBySerial)
     },
   },
 }

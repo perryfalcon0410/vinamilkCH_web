@@ -29,6 +29,7 @@
             <b-input
               v-model="keyword"
               placeholder="Nhập mã/ tên/ serial"
+              :disabled="isLocked"
             />
           </b-col>
           <b-button
@@ -45,12 +46,22 @@
       </b-col>
 
       <vue-good-table
+        ref="table-voucher"
         :columns="columns"
         :rows="vouchers"
         style-class="vgt-table"
         compact-mode
         line-numbers
         class="my-1"
+        :select-options="{
+          enabled: true,
+          selectOnCheckboxOnly: true,
+          selectionInfoClass: 'custom-class',
+          clearSelectionText: 'clear',
+          disableSelectInfo: true,
+          selectAllByGroup: true,
+          multipleColumns: true,
+        }"
       >
         <!-- START - Empty rows -->
         <div
@@ -60,30 +71,6 @@
           Không có dữ liệu
         </div>
         <!-- END - Empty rows -->
-
-        <!-- START - Row -->
-        <template
-          slot="table-row"
-          slot-scope="props"
-        >
-          <div v-if="props.column.field === 'Manipulation'">
-            <b-button
-              class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
-              variant="someThing"
-              @click="getVoucherInfo(props.row.id)"
-            >
-              <b-icon-hand-index-thumb
-                class="mr-1"
-                scale="1.3"
-              />
-              Chọn
-            </b-button>
-          </div>
-          <div v-else>
-            {{ props.formattedRow[props.column.field] }}
-          </div>
-        </template>
-        <!-- END - Row -->
       </vue-good-table>
     </b-container>
     <!-- END - Body -->
@@ -94,7 +81,14 @@
         class="mx-auto"
       >
         <b-button
-          variant="secondary"
+          variant="none"
+          class="d-flex align-items-center text-uppercase btn-brand-1"
+          @click="onClickChooeseVouchers()"
+        >
+          Chọn
+        </b-button>
+        <b-button
+          variant="none"
           class="d-flex align-items-center text-uppercase"
           @click="cancel()"
         >
@@ -116,12 +110,13 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import toasts from '@core/utils/toasts/toasts'
 import {
   SALES,
   // GETTERS
-  VOUCHERS_GETTER,
+  GET_VOUCHER_BY_SERIAL_GETTER,
   // ACTIONS
-  GET_VOUCHERS_ACTION,
+  GET_VOUCHER_BY_SERIAL_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -132,7 +127,14 @@ export default {
     visible: {
       type: Boolean,
     },
-
+    orderProducts: {
+      type: Array,
+      default: () => [],
+    },
+    customer: {
+      type: Object,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -141,35 +143,35 @@ export default {
       columns: [
         {
           label: 'Mã chương trình voucher',
-          field: 'ProgramCode',
+          field: 'programCode',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Tên chương trình voucher',
-          field: 'ProgramName',
+          field: 'programName',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Mã voucher',
-          field: 'VoucherCode',
+          field: 'poucherCode',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Tên voucher',
-          field: 'VoucherName',
+          field: 'voucherName',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Số serial',
-          field: 'SerialNumber',
+          field: 'serialNumber',
           type: 'number',
           sortable: false,
           thClass: 'text-center',
@@ -177,7 +179,7 @@ export default {
         },
         {
           label: 'Mệnh giá',
-          field: 'Denominations',
+          field: 'price',
           type: 'number',
           sortable: false,
           thClass: 'text-center',
@@ -185,60 +187,79 @@ export default {
         },
         {
           label: 'Thời gian hiệu lực',
-          field: 'EffectiveTime',
+          field: 'activeTime',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
-        {
-          label: '',
-          field: 'Manipulation',
-          sortable: false,
-        },
       ],
 
-      keyword: null,
+      keyword: '',
+      formId: 5,
+      ctrlId: 7,
+      vouchers: [],
+      isLocked: false,
+      message: '',
     }
   },
   computed: {
-    vouchers() {
-      return this.VOUCHERS_GETTER().map(data => ({
-        id: data.id,
-        ProgramCode: data.voucherProgramCode,
-        ProgramName: data.voucherProgramName,
-        VoucherCode: data.voucherCode,
-        VoucherName: data.voucherName,
-        SerialNumber: data.serial,
-        Denominations: data.price,
-        EffectiveTime: data.activeTime,
-        Manipulation: null,
-      }))
+    ...mapGetters(SALES, [
+      GET_VOUCHER_BY_SERIAL_GETTER,
+    ]),
+
+    getVoucher() {
+      return this.GET_VOUCHER_BY_SERIAL_GETTER
     },
   },
-
+  watch: {
+    getVoucher() {
+      const voucher = {
+        id: this.getVoucher.id,
+        programCode: this.getVoucher.voucherProgramCode,
+        programName: this.getVoucher.voucherProgramName,
+        voucherCode: this.getVoucher.voucherCode,
+        voucherName: this.getVoucher.voucherName,
+        serialNumber: this.getVoucher.serial,
+        price: this.getVoucher.price,
+        activeTime: this.getVoucher.activeTime,
+      }
+      this.isLocked = this.getVoucher.isLocked
+      this.message = this.getVoucher.message
+      if (this.isLocked) {
+        toasts.error(this.message)
+      } else {
+        this.vouchers.push(voucher)
+      }
+    },
+  },
   mounted() {
   },
 
   methods: {
-    ...mapGetters(SALES, [
-      VOUCHERS_GETTER,
-    ]),
     ...mapActions(SALES, [
-      GET_VOUCHERS_ACTION,
+      GET_VOUCHER_BY_SERIAL_ACTION,
     ]),
 
-    getVoucherInfo(id) {
-      this.$emit('getVoucherInfo', id)
-      this.$root.$emit('bv::hide::modal', 'VoucherModal')
-    },
+    // getVoucherInfo(id) {
+    //   this.$emit('getVoucherInfo', id)
+    //   this.$root.$emit('bv::hide::modal', 'VoucherModal')
+    // },
 
     onClickSearchButton() {
-      const searchData = {
-        keyWord: this.keyword.trim(),
-        formId: 5, // Hard code
-        ctrlId: 7, // Hard code
+      const productIds = this.orderProducts.map(item => item.productId)
+      const paramsGetVoucherBySerial = {
+        serial: this.keyword,
+        customerId: this.customer.id,
+        productIds: productIds.toString(),
+        ctrlId: this.ctrlId,
+        formId: this.formId,
       }
-      this.GET_VOUCHERS_ACTION(searchData)
+
+      this.GET_VOUCHER_BY_SERIAL_ACTION(paramsGetVoucherBySerial)
+    },
+    onClickChooeseVouchers() {
+      this.$emit('getVoucherInfo', this.$refs['table-voucher'].selectedRows)
+      this.$root.$emit('bv::hide::modal', 'VoucherModal')
     },
   },
 }
