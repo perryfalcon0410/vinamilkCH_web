@@ -294,7 +294,7 @@ import {
 import Ripple from 'vue-ripple-directive'
 import { formatVniDateToISO } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
-// import customerData from '@/@db/customer'
+import customerData from '@/@db/customer'
 import {
   CUSTOMER,
   // GETTERS
@@ -359,6 +359,7 @@ export default {
       provincesSelected: null,
       districtsSelected: null,
       precinctsSelected: null,
+      customerStatusSelected: customerData.status[0].id,
       customerCreate: {},
     }
   },
@@ -498,7 +499,7 @@ export default {
         firstName: this.customerCreate.firstName,
         lastName: this.customerCreate.lastName,
         phoneNumber: this.customerCreate.mobiPhone,
-        street: this.customerCreate.address,
+        address: this.customerCreate.address,
         scoreCumulated: this.customerCreate.scoreCumulated,
       })
     },

@@ -136,7 +136,7 @@
             align-v="center"
           >
             <b-col cols="4">
-              Điểm tích lũy
+              Tiền tích lũy
             </b-col>
             <b-col>
               {{ customer.totalBill }}
@@ -695,7 +695,7 @@ export default {
       this.customer.shopId = val.shopId
       this.customer.fullName = `${val.lastName} ${val.firstName}`
       this.customer.phoneNumber = val.phoneNumber
-      this.customer.street = val.street
+      this.customer.street = val.address
       this.customer.totalBill = val.totalBill ?? 0
       this.customer.scoreCumulated = val.scoreCumulated
     },
@@ -708,7 +708,7 @@ export default {
     getOnlineOrderCustomerById() {
       this.customer.firstName = this.onlineOrderCustomer.customer.firstName
       this.customer.lastName = this.onlineOrderCustomer.customer.lastName
-      this.customer.fullName = `${this.customer.lastName} ${this.customer.firstName}`
+      this.customer.fullName = `${this.onlineOrderCustomer.customer.lastName} ${this.onlineOrderCustomer.customer.firstName}`
       this.customer.phoneNumber = this.onlineOrderCustomer.customer.mobiPhone
       this.customer.street = this.onlineOrderCustomer.customer.street
       this.customer.scoreCumulated = this.onlineOrderCustomer.customer.scoreCumulated

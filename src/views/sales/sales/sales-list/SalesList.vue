@@ -145,6 +145,12 @@
           line-numbers
           class="shadow"
         >
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
           <!-- START - Columns -->
           <template
             slot="table-column"
