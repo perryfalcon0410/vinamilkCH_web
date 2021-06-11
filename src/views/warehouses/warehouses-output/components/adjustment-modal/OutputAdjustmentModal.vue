@@ -404,18 +404,7 @@ export default {
     choonsenTrans(trans) {
       this.GET_EXPORT_ADJUSTMENT_DETAIL_ACTION({
         id: trans.id,
-        onSuccess: adjustmentProducts => {
-          const products = []
-          adjustmentProducts.response.forEach(item => {
-            const index = products.findIndex(product => product.productCode === item.productCode)
-            if (index === -1) {
-              products.push(item)
-            } else {
-              products[index].quantity += item.quantity
-              products[index].totalPrice += item.totalPrice
-            }
-          })
-          this.productsOfAjustment = products
+        onSuccess: () => {
           const adjustmentTranData = {
             tranInfo: trans,
             products: this.productsOfAjustment,

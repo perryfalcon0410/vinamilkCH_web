@@ -258,6 +258,7 @@
                 @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
               />
               <b-icon-trash-fill
+                v-show="$formatISOtoVNI(props.row.date) === $nowDate"
                 v-b-popover.hover.top="'Xóa'"
                 class="cursor-pointer ml-1"
                 color="red"
@@ -516,7 +517,7 @@ export default {
           label: 'Thao tác',
           field: 'feature',
           thClass: 'text-center',
-          tdClass: 'text-center',
+          tdClass: 'text-left',
           width: '90px',
         },
       ],
@@ -666,6 +667,7 @@ export default {
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
       this.paginationData = { ...this.paginationData, ...searchData }
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER
+      this.pageNumber = 1
     },
     onClickDeleteWarehousesOutput(id, type, code, index, date) {
       this.$refs.salesNotifyModal.show()

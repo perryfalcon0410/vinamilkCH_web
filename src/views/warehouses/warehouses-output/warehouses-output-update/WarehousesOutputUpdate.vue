@@ -411,7 +411,6 @@ export default {
 
       if (this.warehousesOutput.receiptType === warehousesData.outputTypes[0].id) {
         this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.orderDate)
-        this.exportAll = false
       } if (this.warehousesOutput.receiptType === warehousesData.outputTypes[1].id) {
         this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.adjustmentDate)
       } if (this.warehousesOutput.receiptType === warehousesData.outputTypes[2].id) {

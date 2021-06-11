@@ -205,7 +205,7 @@
           <validation-provider
             v-slot="{ errors }"
             rules="required"
-            name="từ ngày"
+            name="đến ngày"
           >
             <div
               class="h8 mt-sm-1 mt-xl-0"
@@ -331,6 +331,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    this.onSearch()
   },
 
   methods: {

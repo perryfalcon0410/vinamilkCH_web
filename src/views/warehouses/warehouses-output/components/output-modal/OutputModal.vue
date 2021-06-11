@@ -238,7 +238,7 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import { formatISOtoVNI, reverseVniDate } from '@core/utils/filter'
+import { formatISOtoVNI } from '@core/utils/filter'
 import SearchComponent from './components/SearchComponent.vue'
 import {
   WAREHOUSES_OUTPUT,
@@ -435,21 +435,17 @@ export default {
     },
   },
   mounted() {
-    const data = {
-      fromDate: reverseVniDate(this.$earlyMonth),
-      toDate: reverseVniDate(this.$nowDate),
-    }
-    this.GET_EXPORT_PO_TRANS_ACTION(data)
+    // const data = {
+    //   fromDate: reverseVniDate(this.$earlyMonth),
+    //   toDate: reverseVniDate(this.$nowDate),
+    // }
+    // this.GET_EXPORT_PO_TRANS_ACTION(data)
   },
   methods: {
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_EXPORT_PO_TRANS_ACTION,
       GET_EXPORT_PO_TRANS_DETAIL_ACTION,
     ]),
-    onSearch(search) {
-      this.GET_EXPORT_PO_TRANS_ACTION(search)
-      this.productDetailTable = false
-    },
     onPoItemSelected(id) {
       this.GET_EXPORT_PO_TRANS_DETAIL_ACTION({
         id,
@@ -481,6 +477,7 @@ export default {
           }
           this.$emit('choonsenTrans', poTranData)
           this.$root.$emit('bv::hide::modal', 'output-modal')
+          this.GET_EXPORT_PO_TRANS_ACTION()
         },
       })
     },
@@ -492,11 +489,11 @@ export default {
     },
     onPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
+      // this.onPaginationChange()
     },
     onPerPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange()
+      // this.onPaginationChange()
     },
   },
 }

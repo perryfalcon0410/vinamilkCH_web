@@ -424,18 +424,7 @@ export default {
     choonsenTrans(trans) {
       this.GET_EXPORT_BORROWINGS_DETAIL_ACTION({
         id: trans.id,
-        onSuccess: borrowedProducts => {
-          const products = []
-          borrowedProducts.response.forEach(item => {
-            const index = products.findIndex(product => product.productCode === item.productCode)
-            if (index === -1) {
-              products.push(item)
-            } else {
-              products[index].quantity += item.quantity
-              products[index].totalPrice += item.totalPrice
-            }
-          })
-          this.productOfBorrowed = products
+        onSuccess: () => {
           const borrowedTranData = {
             tranInfo: trans,
             products: this.productOfBorrowed,
