@@ -1026,7 +1026,7 @@ export default {
               lst: this.promotionRow,
             })
           } else {
-            toasts.error('ngày không được để trống')
+            toasts.error('Ngày không được để trống')
           }
         })
       }

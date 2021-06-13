@@ -199,4 +199,20 @@ export default [
       resource: 'ReportsSalesReceiptOnDeliveryType',
     },
   },
+  // báo cáo bảng kê chi tiết đơn nhập hàng
+  {
+    path: '/reports/purchases',
+    name: 'reports-purchases',
+    component: () => import('@/views/reports/reports-purchases/reports-purchases-list/ReportsPuchasesList.vue'),
+    meta: {
+      pageTitle: 'Bảng kê chi tiết đơn nhập hàng',
+      breadcrumb: [
+        {
+          text: 'Bảng kê chi tiết đơn nhập hàng',
+          active: true,
+        },
+      ],
+      resource: 'ReportsPurchases',
+    },
+  },
 ]
