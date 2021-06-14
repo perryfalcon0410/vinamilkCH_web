@@ -26,6 +26,7 @@
           <b-button
             class="rounded btn-brand-1"
             variant="someThing"
+            @click="printReport"
           >
             <b-icon-printer-fill class="mr-50" />
             In
@@ -309,9 +310,11 @@ import {
   REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY,
   // GETTERS
   REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER,
+  PRINT_INPUT_OUTPUT_INVENTORY_GETTER,
   // ACTIONS
   GET_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
   EXPORT_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
+  PRINT_INPUT_OUTPUT_INVENTORY_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -589,6 +592,7 @@ export default {
   computed: {
     ...mapGetters(REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY, [
       REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER,
+      PRINT_INPUT_OUTPUT_INVENTORY_GETTER,
     ]),
     getwarehousesInputOutputInventory() {
       if (this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.content) {
@@ -681,6 +685,9 @@ export default {
       }
       return {}
     },
+    getPrintData() {
+      return this.PRINT_INPUT_OUTPUT_INVENTORY_GETTER
+    },
   },
 
   watch: {
@@ -696,6 +703,7 @@ export default {
     ...mapActions(REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY, [
       GET_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
       EXPORT_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
+      PRINT_INPUT_OUTPUT_INVENTORY_ACTION,
     ]),
 
     onPaginationChange() {
@@ -721,6 +729,13 @@ export default {
     },
     updatePageNumber() {
       this.pageNumber = 1
+    },
+    printReport() {
+      this.PRINT_INPUT_OUTPUT_INVENTORY_ACTION({
+        fromDate: this.paginationData.fromDate,
+        toDate: this.paginationData.toDate,
+        ...this.decentralization,
+      })
     },
   },
 }

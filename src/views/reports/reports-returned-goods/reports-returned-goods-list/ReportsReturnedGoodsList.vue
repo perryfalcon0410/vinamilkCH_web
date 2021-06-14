@@ -25,7 +25,7 @@
           <b-button
             class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
-            @click="onClickPrintButton"
+            @click="printReport"
           >
             <b-icon-printer-fill />
             In
@@ -226,9 +226,11 @@ import {
   REPORT_RETURNED_GOODS,
   // Getters
   REPORT_RETURNED_GOODS_GETTER,
+  PRINT_RETURN_GOODS_GETTER,
   // Actions
   GET_REPORT_RETURNED_GOODS_ACTION,
   EXPORT_REPORT_RETURNED_GOODS_ACTION,
+  PRINT_RETURN_GOODS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -370,6 +372,7 @@ export default {
   computed: {
     ...mapGetters(REPORT_RETURNED_GOODS, [
       REPORT_RETURNED_GOODS_GETTER,
+      PRINT_RETURN_GOODS_GETTER,
     ]),
     getReportReturnedgoodLists() {
       if (this.REPORT_RETURNED_GOODS_GETTER.response && this.REPORT_RETURNED_GOODS_GETTER.response.content) {
@@ -427,12 +430,19 @@ export default {
     ...mapActions(REPORT_RETURNED_GOODS, [
       GET_REPORT_RETURNED_GOODS_ACTION,
       EXPORT_REPORT_RETURNED_GOODS_ACTION,
+      PRINT_RETURN_GOODS_ACTION,
     ]),
     // Start - xuat excel
     onClickExcelExportButton() {
       this.EXPORT_REPORT_RETURNED_GOODS_ACTION({ ...this.decentralization, ...this.searchOptions })
     },
     // End - xuat excel
+
+    // printReport
+    printReport() {
+      this.PRINT_RETURN_GOODS_ACTION({ ...this.searchOptions, ...this.decentralization })
+    },
+    // printReport
 
     // Start - pagination
     updateSearchData(event) {

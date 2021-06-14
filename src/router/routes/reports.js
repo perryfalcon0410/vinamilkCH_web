@@ -215,4 +215,52 @@ export default [
       resource: 'ReportsPurchases',
     },
   },
+  // báo cáo bán hàng
+  {
+    path: '/reports/sales',
+    name: 'reports-sales',
+    component: () => import('@/views/reports/reports-sales/reports-sales/reports-sales-list/ReportsSalesList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo bán hàng',
+      breadcrumb: [
+        {
+          text: 'Danh sách báo cáo bán hàng',
+          active: true,
+        },
+      ],
+      resource: 'ReportsSales',
+    },
+  },
+  // báo cáo doanh số CAT
+  {
+    path: '/reports/sales/cat-sale',
+    name: 'reports-sales-cat-sale',
+    component: () => import('@/views/reports/reports-sales/reports-sales-cat/reports-sales-cat-list/ReportsSalesCatList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo doanh số CAT',
+      breadcrumb: [
+        {
+          text: 'Danh sách báo cáo doanh số CAT',
+          active: true,
+        },
+      ],
+      resource: 'ReportsSalesCatSale',
+    },
+  },
+  // báo cáo số lượng hóa đơn theo khách hàng
+  {
+    path: '/reports/sales/amount-per-customer',
+    name: 'reports-sales-amount-per-customer',
+    component: () => import('@/views/reports/reports-sales/reports-sales-amount-receipt-per-customers/reports-sales-amount-receipt-per-customers-list/ReportsSalesAmountReceiptPerCustomersList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo số lượng hóa đơn theo khách hàng',
+      breadcrumb: [
+        {
+          text: 'Danh sách số lượng hóa đơn theo khách hàng',
+          active: true,
+        },
+      ],
+      resource: 'ReportsSalesAmountReceiptPerCustomer',
+    },
+  },
 ]

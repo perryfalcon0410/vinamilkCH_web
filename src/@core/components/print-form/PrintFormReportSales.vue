@@ -57,7 +57,9 @@
       <div class="col-5">
         Tổng số HĐ: <strong>{{ reportSalesInfoData.someBills }}</strong>
       </div>
-      <div class="col-4">Tổng cộng: <strong>{{ reportSalesInfoData.totalQuantity }}</strong> </div>
+      <div class="col-4">
+        Tổng cộng: <strong>{{ reportSalesInfoData.totalQuantity }}</strong>
+      </div>
       <strong class="text-right">{{ reportSalesInfoData.totalTotal }}</strong>
       <strong class="text-right">{{ reportSalesInfoData.totalPromotion }}</strong>
       <strong class="text-right">{{ reportSalesInfoData.totalPay }}</strong>

@@ -4,7 +4,7 @@
     class="d-print-none"
     size="xl"
     title="Chọn đơn hàng Online"
-    title-class="font-weight-bold text-primary"
+    title-class="font-weight-bold text-brand-1"
     content-class="bg-light"
     hide-footer
   >
@@ -204,7 +204,7 @@
                   class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
                   variant="someThing"
                   style="max-height: 30px;"
-                  :disabled="isDisable === true && synStatusSelected === '1' "
+                  :disabled="isDisable"
                   @click="getOnlineOrderInfo(props.row.id)"
                 >
                   <b-icon-hand-index-thumb
@@ -358,7 +358,7 @@ export default {
       pageNumber: 1,
       paginationOptions: commonData.perPageSizes,
       isDisable: false,
-
+      isClicked: 0,
       // search
       synStatusSelected: saleData.synStatus[0].id,
       synStatusOptions: saleData.synStatus,
@@ -424,6 +424,13 @@ export default {
     elementSize() {
       this.onPaginationChange()
     },
+    isClicked() {
+      if (this.synStatusSelected === '1') {
+        this.isDisable = true
+      } else {
+        this.isDisable = false
+      }
+    },
   },
   mounted() {
     this.GET_ONLINE_ORDERS_ACTION({ formId: 1, ctrlId: 4 }) // HARD
@@ -447,7 +454,7 @@ export default {
         ctrlId: 4, // Hard
       }
       this.GET_ONLINE_ORDERS_ACTION(searchData)
-      this.isDisable = !this.isDisable
+      this.isClicked += 1
     },
 
     onClickCloseButton() {
@@ -466,10 +473,6 @@ export default {
     getOnlineOrderInfo(id) {
       this.onClickCloseButton()
       this.$emit('getOnlineOrderInfo', id)
-    },
-
-    changeStatus() {
-      this.isDisable = !this.isDisable
     },
   },
 }

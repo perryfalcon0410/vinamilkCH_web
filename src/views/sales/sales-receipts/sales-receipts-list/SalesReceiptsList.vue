@@ -82,7 +82,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ salesReceiptsTotal.allTotal }}
+              {{ salesReceiptsTotal.totalAmount }}
             </b-row>
 
             <b-row
@@ -90,7 +90,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ (salesReceiptsTotal.totalAmount) }}
+              {{ (salesReceiptsTotal.allTotal) }}
             </b-row>
           </template>
           <template

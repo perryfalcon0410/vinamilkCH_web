@@ -165,7 +165,9 @@
                   @selected="onComboSelected"
                 >
                   <template slot-scope="{ suggestion }">
-                    <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                    <div class="cursor-pointer">
+                      <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                    </div>
                   </template>
                 </vue-autosuggest>
               </div>
