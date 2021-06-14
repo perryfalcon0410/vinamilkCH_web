@@ -464,7 +464,7 @@ export default {
             export: `${data.export}/${data.quantity}`,
             productReturnAmount: null,
             productReturnExportOriginal: data.export,
-            productReturnAmountOriginal: data.quantity,
+            quantity: data.quantity,
           }))
           const poTranData = {
             tranInfo: trans,

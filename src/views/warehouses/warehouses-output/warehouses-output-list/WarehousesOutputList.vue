@@ -455,8 +455,8 @@ export default {
         {
           label: 'Ngày',
           field: 'date',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
           formatFn: value => this.formatFn(value, 'date'),
         },
         {
@@ -501,7 +501,7 @@ export default {
           formatFn: value => this.formatFn(value, 'price'),
         },
         {
-          label: 'Loại nhập',
+          label: 'Loại xuất',
           field: 'inputTypes',
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -665,8 +665,9 @@ export default {
       }
 
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
-      this.paginationData = { ...this.paginationData, ...searchData }
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER
+      this.paginationData = { ...this.paginationData, ...searchData }
+      this.onPaginationChange()
       this.pageNumber = 1
     },
     onClickDeleteWarehousesOutput(id, type, code, index, date) {

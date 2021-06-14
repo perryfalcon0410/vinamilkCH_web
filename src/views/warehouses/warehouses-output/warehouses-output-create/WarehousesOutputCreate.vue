@@ -237,12 +237,13 @@
                 slot="table-row"
                 slot-scope="props"
               >
-                <div v-if="props.column.field === 'quantity'">
+                <div v-if="props.column.field === 'quantityReturn'">
                   <b-form-input
-                    v-model="products[props.row.originalIndex].quantity"
+                    v-model="products[props.row.originalIndex].quantityReturn"
                     maxlength="19"
                     :readonly="exportAll && outputTypeSelected !== poOutputType"
                     @keypress="$onlyNumberInput"
+                    @change="changeQuantity"
                   />
                 </div>
                 <div v-else>
@@ -258,8 +259,8 @@
               >
                 <b-row
                   v-if="props.column.field === 'quantity'"
-                  class="h7 ml-1"
-                  align-h="start"
+                  class="h7 mr-1"
+                  align-h="end"
                   :hidden="hideFilter"
                 >
                   {{ $formatNumberToLocale(totalQuantity) }}
@@ -272,10 +273,8 @@
                 >
                   {{ $formatNumberToLocale(totalProduct) }}
                 </b-row>
-
               </template>
               <!-- END - Customer filter -->
-
             </vue-good-table>
             <!-- END - Table Product -->
 
@@ -400,9 +399,10 @@ export default {
       required,
 
       outputTypesOptions: warehousesData.outputTypes,
-      exportAll: true,
+      exportAll: false,
       quantityCheck: true,
       hideFilter: true,
+      columnType: null,
 
       output: {
         id: '',
@@ -442,6 +442,17 @@ export default {
           sortable: false,
         },
         {
+          label: 'Số lượng',
+          field: 'quantity',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
@@ -451,6 +462,8 @@ export default {
           field: 'price',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'ĐVT',
@@ -462,6 +475,8 @@ export default {
           field: 'totalPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Đã xuất trả/tổng nhập',
@@ -470,12 +485,69 @@ export default {
         },
         {
           label: 'Số lượng trả',
+          field: 'quantityReturn',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-left',
+          tdClass: 'text-right',
+        },
+      ],
+      columnsCustom: [
+        {
+          label: 'Mã sản phẩm',
+          field: 'productCode',
+          sortable: false,
+        },
+        {
+          label: 'Số lượng',
           field: 'quantity',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Tên sản phẩm',
+          field: 'productName',
+          sortable: false,
+        },
+        {
+          label: 'Giá',
+          field: 'price',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'ĐVT',
+          field: 'unit',
+          sortable: false,
+        },
+        {
+          label: 'Thành tiền',
+          field: 'totalPrice',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Số lượng trả',
+          field: 'quantityReturn',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-left',
+          tdClass: 'text-right',
         },
       ],
     }
@@ -501,15 +573,21 @@ export default {
       this.note = ''
       this.products = []
       this.hideFilter = true
+      this.exportAll = false
+      if (this.outputTypeSelected !== this.poOutputType) {
+        this.columns = this.columnsCustom
+      }
     },
     exportAll() {
       if (this.exportAll) {
         this.products.forEach((item, index) => {
-          this.products[index].quantity = item.productReturnAmountOriginal
+          this.products[index].quantityReturn = item.quantity
         })
       } else {
         this.products.forEach((item, index) => {
-          this.products[index].quantity = null
+          if (this.products[index].quantityReturn === item.quantity) {
+            this.products[index].quantityReturn = null
+          }
         })
       }
     },
@@ -551,7 +629,6 @@ export default {
       this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
       this.warehousesOutput.poNumber = data.tranInfo.pocoNumber
       this.products = data.products
-      this.exportAll = false
     },
     dataFromBorrow(data) {
       this.warehousesOutput.id = data.tranInfo.id
@@ -561,7 +638,8 @@ export default {
       this.exportAll = true
       this.totalQuantity = data.totalQuantity
       this.totalProduct = data.products.length
-      this.hideFilter = false
+      this.quantityReturn = data.products.quantity
+      this.hideFilter = true
 
       // clear data
       this.warehousesOutput.redInvoiceNo = ''
@@ -573,11 +651,11 @@ export default {
       this.warehousesOutput.id = data.tranInfo.id
       this.warehousesOutput.billDate = data.tranInfo.adjustmentDate
       this.warehousesOutput.note = data.tranInfo.description
-      this.warehousesOutput.code = data.tranInfo.adjustmentCode
       this.exportAll = true
       this.products = data.products
       this.totalQuantity = data.totalQuantity
       this.totalProduct = data.products.length
+      this.quantityReturn = data.products.quantity
       this.hideFilter = false
 
       // clear data
@@ -587,7 +665,7 @@ export default {
     },
     checkQuantity() {
       this.products.forEach((item, index) => {
-        if (this.products[index].productReturnAmountOriginal - this.products[index].productReturnExportOriginal >= this.products[index].quantity) {
+        if (this.products[index].quantity - this.products[index].productReturnExportOriginal >= this.products[index].quantityReturn) {
           this.quantityCheck = true
         } else {
           this.quantityCheck = false
@@ -608,7 +686,7 @@ export default {
               note: this.warehousesOutput.note,
               litQuantityRemain: this.products.map(item => ({
                 id: item.id,
-                quantity: Number(item.quantity) || 0,
+                quantity: Number(item.quantityReturn) || 0,
                 shopId: item.shopId,
               })),
             },
@@ -633,6 +711,14 @@ export default {
       this.warehousesOutput.note = ''
       this.outputTypeSelected = warehousesData.outputTypes[0].id
       this.warehousesOutput.billDate = this.$nowDate
+    },
+    changeQuantity() {
+      this.exportAll = false
+      this.products.forEach((item, index) => {
+        if (Number(this.products[index].quantityReturn) === Number(item.quantity)) {
+          this.exportAll = true
+        }
+      })
     },
   },
 }

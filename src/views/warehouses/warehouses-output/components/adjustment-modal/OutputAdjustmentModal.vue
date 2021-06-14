@@ -4,222 +4,153 @@
     size="xl"
     title="Chọn phiếu xuất điều chỉnh"
     title-class="text-uppercase font-weight-bold text-brand-1"
-    hide-footer
+    content-class="bg-light"
+    footer-border-variant="light"
   >
     <b-container
       fluid
-      class="d-flex flex-column"
     >
       <!-- START - Delivery Bill list -->
-      <b-form class="bg-white rounded shadow rounded">
+      <b-row class="mx-0">
         <!-- START - Header -->
-        <b-row
-          class="justify-content-between border-bottom p-1 mx-0"
-          align-v="center"
+        <b-col
+          xl="4"
+          class="d-flex flex-column px-0"
+          max-height="200px"
         >
-          <div class="text-brand-1">
-            <strong>
-              Danh sách phiếu xuất điều chỉnh
-            </strong>
-          </div>
-
-        </b-row>
-        <!-- END - Header -->
-
-        <!-- START - Table -->
-        <b-col class="py-1">
-          <vue-good-table
-            :columns="columns"
-            :rows="ajustmentTrans"
-            max-height="400px"
-            style-class="vgt-table striped"
-            :pagination-options="{
-              enabled: false,
-              perPage: elementSize,
-              setCurrentPage: pageNumber,
-            }"
-            compact-mode
-            line-numbers
-            :total-rows="getAjustmentTrans.totalElements"
-            :sort-options="{
-              enabled: false,
-              multipleColumns: true,
-              initialSortBy: [{field: 'adjustmentDate', type: 'desc'}]
-            }"
-            @on-sort-change="onSortChange"
-            @on-page-change="onPageChange"
-            @on-per-page-change="onPerPageChange"
+          <strong
+            class="text-dark mx-1 mb-1 "
           >
-            <!-- START - Empty rows -->
-            <div
-              slot="emptystate"
-              class="text-center"
-            >
-              Không có dữ liệu
-            </div>
-            <!-- END - Empty rows -->
-            <!-- START - Column  -->
-            <template
-              slot="table-column"
-              slot-scope="props"
-            >
-              <div v-if="props.column.field === 'manipulation'">
-                <b-icon-bricks />
-              </div>
-              <div v-else>
-                {{ props.column.label }}
-              </div>
-            </template>
-            <!-- END - Column -->
+            Danh sách nhập/xuất hàng
+          </strong>
+          <b-col
+            class="bg-white shadow rounded text-dark"
+          >
+            <!-- START - Header -->
+            <b-row class="py-1">
+              <b-col cols="1" />
+              <b-col>
+                <strong>
+                  Số chứng từ
+                </strong>
+              </b-col>
+              <b-col>
+                <strong>
+                  Ngày
+                </strong>
+              </b-col>
+              <b-col>
+                <strong>
+                  Ghi chú
+                </strong>
+              </b-col>
+            </b-row>
+            <!-- END - Header -->
 
-            <!-- START - Row -->
-            <template
-              slot="table-row"
-              slot-scope="props"
+            <!-- START - List -->
+            <b-row
+              v-for="(item, index) in ajustmentTrans"
+              :key="item.id"
+              class="border-bottom border-white bg-light py-1 cursor-pointer"
+              :class="{ 'text-brand-1': current == item.id }"
+              @click="onAdjustmentItemSelected(item.id, item.adjustmentDate, item.description)"
             >
-              <div v-if="props.column.field === 'manipulation'">
-                <b-icon-search
-                  v-b-popover.hover.top="'Xem chi tiết'"
-                  class="cursor-pointer"
-                  scale="1.3"
-                  @click="() => onAdjustmentItemSelected(props.row.id)"
-                />
-                <b-button
-                  variant="someThing"
-                  class="btn-brand-1 ml-1"
-                  @click="() => choonsenTrans(props.row)"
-                >
-                  Chọn
-                </b-button>
-              </div>
-              <div v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </div>
-            </template>
-            <!-- END - Row -->
-
-            <!-- START - Pagination -->
-            <template
-              slot="pagination-bottom"
-              slot-scope="props"
-            >
-              <b-row
-                v-show="getAjustmentTrans.totalElements"
-                class="v-pagination px-1 mx-0"
-                align-h="between"
-                align-v="center"
+              <b-col cols="1">
+                {{ index + 1 }}
+              </b-col>
+              <b-col>
+                {{ item.adjustmentCode }}
+              </b-col>
+              <b-col>
+                {{ item.adjustmentDate }}
+              </b-col>
+              <b-col
+                class="text-wrap"
               >
-                <div
-                  class="d-flex align-items-center"
-                >
-                  <span
-                    class="text-nowrap"
-                  >
-                    Số hàng hiển thị
-                  </span>
-                  <b-form-select
-                    v-model="elementSize"
-                    size="sm"
-                    :options="paginationOptions"
-                    class="mx-1"
-                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
-                  />
-                  <span class="text-nowrap">{{ paginationDetailContent }}</span>
-                </div>
-                <b-pagination
-                  v-model="pageNumber"
-                  :total-rows="getAjustmentTrans.totalElements"
-                  :per-page="elementSize"
-                  first-number
-                  last-number
-                  align="right"
-                  prev-class="prev-item"
-                  next-class="next-item"
-                  class="mt-1"
-                  @input="(value)=>props.pageChanged({currentPage: value})"
-                >
-                  <template slot="prev-text">
-                    <feather-icon
-                      icon="ChevronLeftIcon"
-                      size="18"
-                    />
-                  </template>
-                  <template slot="next-text">
-                    <feather-icon
-                      icon="ChevronRightIcon"
-                      size="18"
-                    />
-                  </template>
-                </b-pagination>
-              </b-row>
-            </template>
-          <!-- END - Pagination -->
-
-          </vue-good-table>
+                {{ item.description }}
+              </b-col>
+            </b-row>
+            <!-- END - List -->
+          </b-col>
         </b-col>
-        <!-- END - Table -->
-      </b-form>
+        <!-- START - Product list -->
+        <b-col
+          class="d-flex flex-column  px-0 ml-xl-1 mt-1 mt-xl-0"
+        >
+          <!-- START - Header -->
+          <strong
+            class="text-dark mb-1 mx-1"
+          >Chi tiết nhập/xuất hàng
+          </strong>
+
+          <b-col
+            class="bg-white rounded shadow py-1"
+          >
+            <vue-good-table
+              :columns="columnsProducts"
+              :rows="productsOfAjustment"
+              max-height="500px"
+              style-class="vgt-table bordered"
+              compact-mode
+              line-numbers
+            >
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
+              <!-- START - Column  -->
+              <template
+                slot="table-column"
+                slot-scope="props"
+              >
+                <div v-if="props.column.field === 'manipulation'">
+                  <b-icon-bricks />
+                </div>
+                <div v-else>
+                  {{ props.column.label }}
+                </div>
+              </template>
+            <!-- END - Column -->
+            </vue-good-table>
+
+          </b-col>
+          <!-- END - Table Products-->
+
+        </b-col>
+      <!-- END - Product list -->
+      </b-row>
       <!-- END - Delivery Bill list -->
 
-      <!-- START - Product list -->
-      <b-form
-        v-if="productDetailTable"
-        class="bg-white rounded shadow rounded mt-1"
-      >
-        <!-- START - Header -->
-        <b-row
-          class="justify-content-between border-bottom p-1 mx-0"
-          align-v="center"
-        >
-          <div class="text-brand-1">
-            <strong>
-              Danh sách sản phẩm
-            </strong>
-          </div>
-
-        </b-row>
-        <!-- END - Header -->
-
-        <!-- START - Table Products -->
-        <b-col class="py-1">
-          <vue-good-table
-            :columns="columnsProducts"
-            :rows="productsOfAjustment"
-            max-height="150px"
-            style-class="vgt-table bordered"
-            compact-mode
-            line-numbers
-          >
-            <!-- START - Empty rows -->
-            <div
-              slot="emptystate"
-              class="text-center"
-            >
-              Không có dữ liệu
-            </div>
-            <!-- END - Empty rows -->
-            <!-- START - Column  -->
-            <template
-              slot="table-column"
-              slot-scope="props"
-            >
-              <div v-if="props.column.field === 'manipulation'">
-                <b-icon-bricks />
-              </div>
-              <div v-else>
-                {{ props.column.label }}
-              </div>
-            </template>
-            <!-- END - Column -->
-          </vue-good-table>
-
-        </b-col>
-      <!-- END - Table Products-->
-
-      </b-form>
-      <!-- END - Product list -->
-
     </b-container>
+
+    <!-- START - Footer -->
+    <template #modal-footer="{}">
+      <b-button
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-center"
+        variant="someThing"
+        @click="choonsenTrans"
+      >
+        <b-icon
+          icon="download"
+        />
+        Lưu ĐC
+      </b-button>
+      <b-button
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+        @click="close"
+      >
+        <b-icon
+          icon="x"
+          scale="1.5"
+        />
+        Đóng
+      </b-button>
+    </template>
+  <!-- END - Footer -->
   </b-modal>
 </template>
 
@@ -230,6 +161,7 @@ import {
   mapActions,
 } from 'vuex'
 import { formatISOtoVNI } from '@core/utils/filter'
+import toasts from '@core/utils/toasts/toasts'
 import {
   WAREHOUSES_OUTPUT,
   // Getters
@@ -251,6 +183,7 @@ export default {
   data() {
     return {
       productDetailTable: false,
+      current: null,
 
       elementSize: commonData.perPageSizes[0],
       pageNumber: commonData.pageNumber,
@@ -261,46 +194,19 @@ export default {
         sort: null,
       },
       totalQuantity: 0,
-      totalProducts: 0,
 
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
-
       ajustmentTrans: [],
+      trans: {},
       productsOfAjustment: [],
-      columns: [
-        {
-          label: 'Số chứng từ',
-          field: 'adjustmentCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Ngày',
-          field: 'adjustmentDate',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Ghi chú',
-          field: 'description',
-          type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Thao tác',
-          field: 'manipulation',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-      ],
 
       columnsProducts: [
+        {
+          label: 'Số chứng từ',
+          field: 'licenseNumber',
+          sortable: false,
+        },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
@@ -318,7 +224,7 @@ export default {
           sortable: false,
         },
         {
-          label: 'Giá',
+          label: 'Giá (VAT)',
           field: 'price',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
@@ -329,7 +235,7 @@ export default {
           sortable: false,
         },
         {
-          label: 'Thành tiền',
+          label: 'Thành tiền (VAT)',
           field: 'totalPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
@@ -368,7 +274,6 @@ export default {
           description: data.description,
           billDate: data.adjustmentDate,
         }))
-        this.getAjustmentTrans.totalElements = this.ajustmentTrans.lenght
       }
     },
     getExportAdjustmentDetail() {
@@ -376,7 +281,7 @@ export default {
         const products = []
         if (this.getExportAdjustmentDetail.response) {
           this.getExportAdjustmentDetail.response.forEach(item => {
-            const index = products.findIndex(product => product.productCode === item.productCode)
+            const index = products.findIndex(i => i.productCode === item.productCode)
             if (index === -1) {
               products.push(item)
             } else {
@@ -400,7 +305,11 @@ export default {
       GET_EXPORT_ADJUSTMENT_ACTION,
       GET_EXPORT_ADJUSTMENT_DETAIL_ACTION,
     ]),
-    onAdjustmentItemSelected(id) {
+    onAdjustmentItemSelected(id, date, description) {
+      this.current = id
+      this.trans.id = id
+      this.trans.adjustmentDate = date
+      this.trans.description = description
       this.GET_EXPORT_ADJUSTMENT_DETAIL_ACTION({
         id,
         onSuccess: () => {
@@ -408,19 +317,21 @@ export default {
         },
       })
     },
-    choonsenTrans(trans) {
-      this.GET_EXPORT_ADJUSTMENT_DETAIL_ACTION({
-        id: trans.id,
-        onSuccess: () => {
-          const adjustmentTranData = {
-            tranInfo: trans,
-            products: this.productsOfAjustment,
-            totalQuantity: this.totalQuantity,
-          }
-          this.$emit('choonsenTrans', adjustmentTranData)
-          this.$root.$emit('bv::hide::modal', 'output-adjustment-modal')
-        },
-      })
+    choonsenTrans() {
+      if (this.productsOfAjustment.length > 0) {
+        const adjustmentTranData = {
+          tranInfo: this.trans,
+          products: this.productsOfAjustment,
+          totalQuantity: this.totalQuantity,
+        }
+        this.$emit('choonsenTrans', adjustmentTranData)
+        this.$root.$emit('bv::hide::modal', 'output-adjustment-modal')
+      } else {
+        toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')
+      }
+    },
+    close() {
+      this.$root.$emit('bv::hide::modal', 'output-adjustment-modal')
     },
     onPaginationChange() {
       this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)

@@ -197,6 +197,7 @@
                   size="sm"
                   :disabled="isDisableSave"
                   @keypress="$onlyNumberInput"
+                  @change="changeQuantity"
                 />
               </div>
               <div v-else>
@@ -205,6 +206,7 @@
                   size="sm"
                   disabled
                   @keypress="$onlyNumberInput"
+                  @change="changeQuantity"
                 />
               </div>
             </div>
@@ -307,6 +309,20 @@ export default {
           tdClass: 'text-left',
         },
         {
+          label: 'Số lượng',
+          field: 'productQuantity',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Giá',
+          field: 'productPrice',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
@@ -314,17 +330,8 @@ export default {
           tdClass: 'text-left',
         },
         {
-          label: 'Giá',
-          field: 'productPrice',
-          type: 'number',
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-        {
           label: 'ĐVT',
           field: 'productDVT',
-          type: 'number',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -332,7 +339,6 @@ export default {
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
-          type: 'number',
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
@@ -388,8 +394,8 @@ export default {
         productName: data.productName,
         productDVT: data.unit,
         productPriceTotal: this.$formatNumberToLocale(data.totalPrice),
-        productQuantity: data.quantity - data.export,
-        productReturnAmount: data.quantity,
+        productQuantity: data.quantity,
+        productReturnAmount: data.export,
       }))
     },
   },
@@ -469,7 +475,7 @@ export default {
         productName: item.productName,
         productDVT: item.unit,
         productPriceTotal: this.$formatNumberToLocale(item.totalPrice),
-        productQuantity: item.quantity - item.export,
+        productQuantity: item.quantity,
         productReturnAmount: item.quantity,
       }))
       // clear data
@@ -490,7 +496,7 @@ export default {
         productName: item.productName,
         productDVT: item.unit,
         productPriceTotal: this.$formatNumberToLocale(item.totalPrice),
-        productQuantity: item.quantity - item.export,
+        productQuantity: item.quantity,
         productReturnAmount: item.quantity,
       }))
 
@@ -519,6 +525,14 @@ export default {
           },
         })
       } else toasts.error('Số lượng trả phải nhỏ hơn số lượng sản phẩm!')
+    },
+    changeQuantity() {
+      this.exportAll = false
+      this.getProductOfWarehouseOutput.forEach((item, index) => {
+        if (Number(this.getProductOfWarehouseOutput[index].productReturnAmount) === Number(item.productQuantity)) {
+          this.exportAll = true
+        }
+      })
     },
   },
 }
