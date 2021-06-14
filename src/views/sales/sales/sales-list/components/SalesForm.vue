@@ -405,6 +405,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    editPermission: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -416,6 +420,7 @@ export default {
       minOnlineOrder: commonData.minOnlineOrderLength,
       salemtPromotionId: '1',
       isCheckmanualCreate: false,
+      currentCustomer: {},
 
       // customer
       customer: {
@@ -430,6 +435,7 @@ export default {
         scoreCumulated: null,
         isDefault: null,
         status: null,
+        typeId: null,
       },
 
       // online order
@@ -606,13 +612,16 @@ export default {
     },
     onlineOrderCustomer() {
       this.getOnlineOrderCustomerById()
+      this.currentCustomer = { ...this.onlineOrderCustomer.customer }
+      this.$emit('currentCustomer', this.currentCustomer)
     },
     customerDefault() {
       this.getCustomerDefault()
+      this.currentCustomer = { ...this.customerDefault }
+      this.$emit('currentCustomer', this.currentCustomer)
     },
     getCustomerSearch() {
       this.customersSearch = [...this.getCustomerSearch]
-      this.customer.fullName = this.getCustomerSearch.fullName
     },
     // getPromotionPrograms() {
     //   this.promotionPrograms = [...this.getPromotionPrograms]
@@ -628,6 +637,11 @@ export default {
     window.addEventListener('keydown', e => {
       if (e.key === 'F4') {
         this.$refs.search.focus()
+      }
+      if (e.key === 'F8') {
+        if (this.orderOnline.onlineOrderId != null && this.orderOnline.orderNumber.length > 0) {
+          this.$refs.payModal.$refs.payModal.show()
+        }
       }
     })
   },
@@ -668,7 +682,10 @@ export default {
         orderType: Number(saleData.orderType[0].id),
         products: paramProducts,
       })
-      this.$root.$emit('bv::toggle::modal', 'pay-modal')
+
+      if (this.editPermission === true) {
+        this.$root.$emit('bv::toggle::modal', 'pay-modal')
+      }
     },
 
     showNotifyModal() {
@@ -707,6 +724,7 @@ export default {
       this.customer.street = val.address
       this.customer.totalBill = val.totalBill ?? 0
       this.customer.scoreCumulated = val.scoreCumulated
+      this.customer.typeId = val.customerTypeId
     },
 
     onClickAgreeButton() {
@@ -722,6 +740,7 @@ export default {
       this.customer.street = this.onlineOrderCustomer.customer.street
       this.customer.scoreCumulated = this.onlineOrderCustomer.customer.scoreCumulated
       this.customer.shopId = this.onlineOrderCustomer.customer.shopId
+      this.customer.typeId = this.onlineOrderCustomer.customer.customerTypeId
       this.orderOnline.orderNumber = this.onlineOrderCustomer.orderNumber
       this.quantity = this.onlineOrderCustomer.quantity
       this.totalPrice = this.onlineOrderCustomer.totalPrice
@@ -740,6 +759,7 @@ export default {
       this.customer.scoreCumulated = this.customerDefault.scoreCumulated
       this.customer.isDefault = this.customerDefault.isDefault
       this.customer.status = this.customerDefault.status
+      this.customer.typeId = this.customerDefault.customerTypeId
       this.$emit('getCustomerDefault', { data: this.customer })
 
       // Check manualcreate

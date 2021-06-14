@@ -501,6 +501,7 @@ export default {
         phoneNumber: this.customerCreate.mobiPhone,
         address: this.customerCreate.address,
         scoreCumulated: this.customerCreate.scoreCumulated,
+        customerTypeId: this.customerCreate.customerTypeId,
       })
     },
 

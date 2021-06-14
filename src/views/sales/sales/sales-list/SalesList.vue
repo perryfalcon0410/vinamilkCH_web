@@ -85,6 +85,65 @@
           </b-input-group-append>
         </b-input-group>
 
+        <!-- START - Product Popup -->
+        <b-collapse
+          v-model="inputSearchFocused"
+          class="position-absolute w-100"
+          style="zIndex:1"
+        >
+          <b-container
+            class="my-1 px-1 bg-white rounded border border-primary shadow-lg"
+          >
+            <b-row
+              v-for="(value,index) in productsSearch"
+              :key="index"
+              class="mx-0 my-1"
+              @click="onclickAddProduct(value)"
+            >
+              <!-- START - Section Image -->
+              <b-col
+                cols="2"
+                class="px-0"
+              >
+                <b-img-lazy
+                  src="https://pngimg.com/uploads/nuclear_bomb/nuclear_bomb_PNG18.png"
+                  fluid
+                  width="60px"
+                />
+              </b-col>
+              <!-- END - Section Image -->
+
+              <!-- START - Section Label -->
+              <b-col>
+                <b-form-row>
+                  <b-col
+                    class="text-dark font-weight-bold"
+                    md="10"
+                  >
+                    {{ value.productName }}
+                  </b-col>
+                  <b-col
+                    class="text-dark font-weight-bold"
+                    md="1"
+                  >
+                    {{ value.productUnitPrice }}
+                  </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                  <b-col
+                    class="my-1"
+                  >
+                    {{ value.productCode }}
+                  </b-col>
+                </b-form-row>
+              </b-col>
+              <!-- END - Section Label -->
+            </b-row>
+          </b-container>
+        </b-collapse>
+        <!-- END - Product Popup -->
+
       </b-col>
       <!-- END - Search -->
 
@@ -253,11 +312,13 @@
       <!-- START - Section Form pay -->
       <sales-form
         :order-products="orderProducts"
+        :edit-permission="editPermission"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
         @getCustomerDefault="getCustomerDefault"
         @getOnlineCustomer="getOnlineCustomer"
+        @currentCustomer="getCurrentCustomer"
       />
       <!-- END - Section Form pay -->
 
@@ -317,6 +378,7 @@ export default {
       customerId: null,
       customer: {},
       isCheckShopId: false, // check shop default
+      currentCustomer: {},
 
       columns: [
         {
@@ -415,7 +477,7 @@ export default {
 
       // online order
       id: null,
-      editPermission: true,
+      editPermission: false,
 
       // price customer change customerTypeId
       customerType: null,
@@ -532,6 +594,11 @@ export default {
     },
     getOnlineOrderProducts() {
       this.orderProducts = [...this.getOnlineOrderProducts]
+    },
+
+    getCurrentCustomer() {
+      this.currentCustomer = { ...this.getCurrentCustomer }
+      console.log('currentCustomer', this.currentCustomer)
     },
   },
   mounted() {
@@ -668,10 +735,13 @@ export default {
       const { usedShop } = this.loginInfo
 
       if (val.data.shopId === usedShop.id) {
-        if (usedShop.editable) {
+        if (usedShop.editable || usedShop.manuallyCreatable) {
           this.editPermission = true
         } else {
           this.editPermission = false
+          if (usedShop.manuallyCreatable === false && this.editPermission === false) {
+            toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+          }
         }
       }
       // check customers dafault
@@ -702,13 +772,17 @@ export default {
         formId: 4, // Hard code
         ctrlId: 1, // // Hard code
       }
-      if (id !== this.customerDefaultTypeId) {
+      if (id !== this.currentCustomer) {
         this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
           customerTypeId,
           listProducts,
           params,
         })
       }
+    },
+
+    getCurrentCustomer(val) {
+      this.currentCustomer = val
     },
 
     getCustomerIdInfo(id) {

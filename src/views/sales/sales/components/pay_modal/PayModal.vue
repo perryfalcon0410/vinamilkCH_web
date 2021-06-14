@@ -2,6 +2,7 @@
   <!-- START Popup -->
   <b-modal
     id="pay-modal"
+    ref="payModal"
     size="xl"
     title="Thanh toán hóa đơn"
     title-class="font-weight-bold text-brand-1"

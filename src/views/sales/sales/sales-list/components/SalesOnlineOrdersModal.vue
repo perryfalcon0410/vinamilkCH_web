@@ -303,7 +303,7 @@ import {
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { formatDateToLocale, reverseVniDate } from '@core/utils/filter'
+import { reverseVniDate, formatISOtoVNI } from '@core/utils/filter'
 import {
   ValidationProvider,
 } from 'vee-validate'
@@ -404,7 +404,7 @@ export default {
       return this.ONLINE_ORDERS_GETTER().map(data => ({
         id: data.id,
         orderNumber: data.orderNumber,
-        createdAt: formatDateToLocale(data.createdAt),
+        createdAt: `${formatISOtoVNI(data.createdAt, data.createdAt)}`,
         orderInfo: data.orderInfo,
         quantity: data.quantity,
         totalPrice: data.totalPrice,
