@@ -168,11 +168,12 @@ export default {
     },
     [CREATE_RED_BILL_ACTION]({}, val) {
       RedInvoiceService
-        .createRedBill(val)
+        .createRedBill(val.paramsCreateRedInvoice)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }
