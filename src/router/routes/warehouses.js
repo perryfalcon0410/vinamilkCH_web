@@ -46,7 +46,7 @@ export default [
           to: '/warehouses/input',
         },
         {
-          text: 'Xem chi tiết',
+          text: 'Cập nhật',
           active: true,
         },
       ],

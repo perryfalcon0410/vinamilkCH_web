@@ -6,6 +6,38 @@
     <v-card-actions
       title="Tìm kiếm"
     >
+      <!-- START - Trans Code -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+        class="h8"
+      >
+        <div
+          class="mt-sm-1 mt-xl-0"
+        >
+          Mã nhập hàng
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            id="form-input-trans-code"
+            v-model="transCode"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="transCode"
+              class="cursor-pointer text-gray"
+              @click="transCode = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Trans Code -->
+
       <!-- START - Bill Number -->
       <b-col
         xl
@@ -176,6 +208,7 @@ export default {
   data() {
     return {
       billNumber: '',
+      transCode: '',
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
       inputTypesSelected: null,
@@ -219,6 +252,7 @@ export default {
 
     onClickSearchButton() {
       const searchData = {
+        transCode: this.transCode?.trim(),
         redInvoiceNo: this.billNumber?.trim(),
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),

@@ -10,14 +10,14 @@
       align-v="end"
     >
       <div class="d-flex flex-column">
-        <strong style="font-size: 17px"> {{ inputOrderShopData.shopName }} </strong>
-        <div> {{ inputOrderShopData.address }} </div>
-        <div> Tel: {{ inputOrderShopData.phone }} - Fax: {{ inputOrderShopData.fax }}</div>
+        <strong style="font-size: 17px; font-style: italic"> {{ inputOrderShopData.shopName }} </strong>
+        <i> {{ inputOrderShopData.address }} </i>
+        <i> Tel: {{ inputOrderShopData.phone }} - Fax: {{ inputOrderShopData.fax }}</i>
       </div>
       <div class="d-flex flex-column">
-        <strong style="font-size: 20px"> CÔNG TY CP SỮA VIỆT NAM </strong>
-        <div> Số 10 Tân Trào, Phường Tân Phú, Q7, Tp.HCM </div>
-        <div> Tel: (84.8) 54 155 555 - Fax: (84.8) 54 161 226 </div>
+        <strong style="font-size: 20px; font-style: italic"> CÔNG TY CP SỮA VIỆT NAM </strong>
+        <i> Số 10 Tân Trào, Phường Tân Phú, Q7, Tp.HCM </i>
+        <i> Tel: (84.8) 54 155 555 - Fax: (84.8) 54 161 226 </i>
       </div>
     </b-row>
     <!-- END - Header -->
@@ -32,41 +32,41 @@
         <strong style="font-size: 30px">
           HOÁ ĐƠN NHẬP HÀNG
         </strong>
-        <b-row class="mx-0">
+        <b-row class="mx-0 font-italic">
           <div class="w-35">
             Loại nhập hàng:
           </div>  <strong>{{ inputOrderInfoData.type }}</strong>
         </b-row>
-        <b-row class="mx-0">
+        <b-row class="mx-0 font-italic">
           <div class="w-35">
             Mã nhập hàng:
           </div>  <strong>{{ inputOrderInfoData.transCode }}</strong>
         </b-row>
-        <b-row class="mx-0">
+        <b-row class="mx-0 font-italic">
           <div class="w-35">
             Số PO:
           </div>  <strong>{{ inputOrderInfoData.poNumber }}</strong>
         </b-row>
-        <b-row class="mx-0">
+        <b-row class="mx-0 font-italic">
           <div class="w-35">
             Số hóa đơn:
           </div>  <strong>{{ inputOrderInfoData.invoiceNumber }}</strong>
         </b-row>
       </div>
 
-      <div class="d-flex flex-column w-25">
-        <b-row class="mx-0">
-          <div class="w-50">
+      <div class="d-flex flex-column w-50">
+        <b-row class="mx-0 font-italic">
+          <div class="w-25">
             Ngày nhập:
-          </div>  <strong>{{ $formatISOtoVNI(inputOrderInfoData.orderDate) }}</strong>
+          </div>  <strong>{{ $formatISOtoVNI(inputOrderInfoData.orderDate, true) }}</strong>
         </b-row>
-        <b-row class="mx-0">
-          <div class="w-50">
+        <b-row class="mx-0 font-italic">
+          <div class="w-25">
             Số nội bộ:
           </div>  <strong>{{ inputOrderInfoData.internalNumber }}</strong>
         </b-row>
-        <b-row class="mx-0">
-          <div class="w-50">
+        <b-row class="mx-0 font-italic">
+          <div class="w-25">
             Ngày hóa đơn:
           </div>  <strong>{{ $formatISOtoVNI(inputOrderInfoData.transDate) }}</strong>
         </b-row>
@@ -116,7 +116,7 @@
           <td
             colspan="1"
             style="width: 1%"
-            class="text-right pr-1 border-left-0"
+            class="text-right pr-50 border-left-0"
           >
             <strong>{{ $formatNumberToLocale(item.totalPrice ) }}</strong>
           </td>
@@ -140,13 +140,13 @@
           <th class="px-1">
             ĐVT
           </th>
-          <th class="text-right px-2">
+          <th class="text-right px-50 w-5">
             SL
           </th>
-          <th class="text-right px-1 w-15">
+          <th class="text-right px-50 w-10">
             Giá
           </th>
-          <th class="text-right px-1">
+          <th class="text-right px-50 w-15">
             T.Tiền
           </th>
         </tr>
@@ -169,13 +169,13 @@
           <td class="px-1">
             {{ products.unit }}
           </td>
-          <td class="text-right px-1">
+          <td class="text-right px-50">
             {{ $formatNumberToLocale(products.quantity) }}
           </td>
-          <td class="text-right px-1">
+          <td class="text-right px-50">
             {{ $formatNumberToLocale(products.price) }}
           </td>
-          <td class="text-right px-1">
+          <td class="text-right px-50">
             {{ $formatNumberToLocale(products.totalPrice) }}
           </td>
         </tr>
@@ -225,7 +225,7 @@
           <td
             colspan="1"
             style="width: 1%"
-            class="text-right pr-1 border-left-0"
+            class="text-right pr-50 border-left-0"
           >
             <strong>{{ $formatNumberToLocale(item.totalPrice) }}</strong>
           </td>
@@ -249,15 +249,15 @@
           <th class="px-1">
             ĐVT
           </th>
-          <th class="text-right px-2">
+          <th class="text-right px-50 w-5">
             SL
           </th>
           <th
-            class="text-right px-1 w-15"
+            class="text-right px-50 w-10"
           >
             Giá
           </th>
-          <th class="text-right px-1">
+          <th class="text-right px-50 w-15">
             T.Tiền
           </th>
         </tr>
@@ -281,13 +281,13 @@
           <td class="px-1">
             {{ products.unit }}
           </td>
-          <td class="text-right px-1">
+          <td class="text-right px-50">
             {{ $formatNumberToLocale(products.quantity) }}
           </td>
-          <td class="text-right px-1">
+          <td class="text-right px-50">
             {{ $formatNumberToLocale(products.price) }}
           </td>
-          <td class="text-right px-1">
+          <td class="text-right px-50">
             {{ $formatNumberToLocale(products.totalPrice) }}
           </td>
         </tr>
@@ -323,7 +323,7 @@
             align-v="center"
           >
             <strong>Tổng SL</strong> <strong
-              style="font-size: 20px"
+              style="font-size: 18px"
               class="ml-1"
             >
               {{ $formatNumberToLocale(inputOrderInfoData.totalQuantity) }}
@@ -343,7 +343,7 @@
               </div>
               <div
                 class="d-flex flex-column text-right ml-50"
-                style="font-size: 20px"
+                style="font-size: 18px"
               >
                 <strong>
                   {{ $formatNumberToLocale(inputOrderInfoData.totalPriceVat) }}

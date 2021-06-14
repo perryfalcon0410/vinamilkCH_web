@@ -29,45 +29,39 @@
             <!-- START - ID and Type -->
             <b-form-row>
               <b-col>
-                <b-form-group
-                  label="Mã nhập hàng"
-                  label-for="transCode"
-                >
-                  <b-form-input
-                    id="transCode"
-                    v-model="transCode"
-                    maxlength="40"
-                    disabled
-                  />
-                </b-form-group>
+                <div>
+                  Mã nhập hàng
+                </div>
+                <b-form-input
+                  id="transCode"
+                  v-model="transCode"
+                  maxlength="40"
+                  disabled
+                />
               </b-col>
 
               <b-col>
-                <b-form-group
-                  label="Loại nhập"
-                  label-for="importType"
-                >
-                  <b-form-input
-                    id="import-type"
-                    v-model="importTypeName"
-                    disabled
-                  />
-                </b-form-group>
+                <div>
+                  Loại nhập
+                </div>
+                <b-form-input
+                  id="import-type"
+                  v-model="importTypeName"
+                  disabled
+                />
               </b-col>
             </b-form-row>
             <!-- END - ID and Type -->
 
             <!-- START -  Stock  -->
-            <b-form-group
-              label="Kho hàng"
-              label-for="warehouse"
-            >
-              <b-form-input
-                id="warehouse"
-                v-model="wareHouseTypeName"
-                disabled
-              />
-            </b-form-group>
+            <div class="mt-1">
+              Kho hàng
+            </div>
+            <b-form-input
+              id="warehouse"
+              v-model="wareHouseTypeName"
+              disabled
+            />
             <!-- END -  Stock  -->
 
             <!-- START - Bill Number and Date -->
@@ -78,7 +72,7 @@
                   rules="required"
                   name="Số hóa đơn"
                 >
-                  <div>
+                  <div class="mt-1">
                     Số hóa đơn <sup class="text-danger">*</sup>
                   </div>
                   <b-form-input
@@ -97,7 +91,7 @@
                   rules="required"
                   name="Ngày hóa đơn"
                 >
-                  <div>
+                  <div class="mt-1">
                     Ngày hóa đơn <sup class="text-danger">*</sup>
                   </div>
                   <b-input-group
@@ -170,18 +164,16 @@
             <!-- END -   Internal number and PO no -->
 
             <!-- START -   Note -->
-            <b-form-group
-              label="Ghi chú"
-              label-class="mt-1"
-              label-for="note"
-            >
-              <b-form-textarea
-                id="note"
-                v-model="note"
-                maxlength="250"
-                :disabled="!isTransDate"
-              />
-            </b-form-group>
+            <div class="mt-1">
+              Ghi chú
+            </div>
+            <b-form-textarea
+              id="note"
+              v-model="note"
+              maxlength="250"
+              class="mb-1"
+              :disabled="!isTransDate"
+            />
             <!-- END -   Note -->
           </b-col>
           <!-- END - Form -->
@@ -355,6 +347,7 @@
                     class:'form-control w-25',
                     placeholder:'Nhập mã hoặc tên sản phẩm'
                   }"
+                  style="cursor: pointer"
                   @input="loadProducts"
                   @selected="productSelected"
                 >
