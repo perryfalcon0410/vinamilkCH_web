@@ -99,7 +99,7 @@
                 v-for="(value, index) in customersSearch"
                 :key="index"
                 class="px-0 my-1 border-bottom"
-                @click="getCustomerInfo"
+                @click="getCustomerInfo(value)"
               >
                 <!-- START - Section Content -->
                 <b-col
@@ -230,7 +230,7 @@
               <b-input-group class="input-group-merge">
                 <b-form-input
                   v-model="orderOnline.orderNumber"
-                  :disabled="salemtPromotionObjectSelected === salemtPromotionId || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0)"
+                  :disabled="isCheckmanualCreate || salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0)"
                 />
                 <b-input-group-append is-text>
                   <b-icon-three-dots-vertical @click="showNotifyModal" />
@@ -415,6 +415,7 @@ export default {
       minSearch: commonData.minSearchLength,
       minOnlineOrder: commonData.minOnlineOrderLength,
       salemtPromotionId: '1',
+      isCheckmanualCreate: false,
 
       // customer
       customer: {
@@ -427,6 +428,8 @@ export default {
         street: null,
         totalBill: null,
         scoreCumulated: null,
+        isDefault: null,
+        status: null,
       },
 
       // online order
@@ -577,13 +580,18 @@ export default {
     },
 
     totalOrderPrice() {
-      return this.orderProducts.reduce((sum, item) => sum + Number(item.productTotalPrice), 0)
+      return this.$formatNumberToLocale(this.orderProducts.reduce((sum, item) => sum + Number(item.sumProductTotalPrice), 0))
     },
     getPromotionPrograms() {
       if (this.GET_PROMOTION_PROGRAMS_GETTER) {
         return this.GET_PROMOTION_PROGRAMS_GETTER
       }
       return []
+    },
+
+    loginInfo() {
+      const login = JSON.parse(localStorage.getItem('userData'))
+      return login
     },
   },
   watch: {
@@ -664,7 +672,7 @@ export default {
     },
 
     showNotifyModal() {
-      if (this.salemtPromotionObjectSelected !== saleData.salemtPromotionObject[0].id) {
+      if (this.salemtPromotionObjectSelected && this.salemtPromotionObjectSelected !== saleData.salemtPromotionObject[0].id) {
         this.$refs.salesNotifyModal.show()
       }
     },
@@ -674,14 +682,15 @@ export default {
     },
 
     getCustomerInfo(val) {
-      this.customer.id = val.data.id
-      this.customer.shopId = val.data.shopId
-      this.customer.fullName = val.data.fullName
-      this.customer.phoneNumber = val.data.phoneNumber
-      this.customer.street = val.data.address
-      this.customer.totalBill = val.data.totalBill ?? 0
-      this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
-      this.$emit('getCustomerIdInfo', val.data.id)
+      this.customer.id = val.id
+      this.customer.shopId = val.shopId
+      this.customer.fullName = val.fullName
+      this.customer.phoneNumber = val.phoneNumber
+      this.customer.street = val.address
+      this.customer.totalBill = val.totalBill ?? 0
+      this.$emit('getCustomerTypeInfo', val.customerTypeId)
+      this.$emit('getCustomerIdInfo', val.id)
+      this.inputSearchFocused = false
     },
 
     getOnlineOrderInfo(id) {
@@ -729,7 +738,19 @@ export default {
       this.customer.street = this.customerDefault.street
       this.customer.totalBill = this.customerDefault.totalBill ?? 0
       this.customer.scoreCumulated = this.customerDefault.scoreCumulated
+      this.customer.isDefault = this.customerDefault.isDefault
+      this.customer.status = this.customerDefault.status
       this.$emit('getCustomerDefault', { data: this.customer })
+
+      // Check manualcreate
+      const { usedShop } = this.loginInfo
+      if (this.customer.shopId === usedShop.id) {
+        if (usedShop.manuallyCreatable) {
+          this.isCheckmanualCreate = false
+        } else {
+          this.isCheckmanualCreate = true
+        }
+      }
     },
 
     onChangeKeyWord() {

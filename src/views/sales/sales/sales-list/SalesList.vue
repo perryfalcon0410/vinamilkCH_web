@@ -13,83 +13,77 @@
         class="px-0 mr-1 shadow mb-1 mr-2 mb-sm-0 form-control-merge"
       >
         <b-input-group class="input-group-merge">
-          <b-form-input
+          <vue-autosuggest
             ref="search"
             v-model="searchOptions.keyWord"
-            class="form-control-merge"
-            placeholder="Tìm sản phẩm (F3)"
-            @focus="inputSearchFocused = true"
-            @blur="inputSearchFocused = false"
-            @keyup="onChangeKeyWord"
-          />
+            class="w-75"
+            :suggestions="productsSearch"
+            :input-props="{
+              id:'autosuggest__input',
+              class:'form-control',
+              placeholder:'Tìm sản phẩm (F3)',
+            }"
+            @input="onChangeKeyWord"
+            @selected="onclickAddProduct"
+            @click="checkShopId"
+          >
+            <template
+              slot-scope="{ suggestion }"
+            >
+              <b-row>
+                <!-- START - Section Image -->
+                <b-col
+                  cols="2"
+                  class="px-0"
+                >
+                  <b-img-lazy
+                    src="https://pngimg.com/uploads/nuclear_bomb/nuclear_bomb_PNG18.png"
+                    fluid
+                    width="60px"
+                  />
+                </b-col>
+                <!-- END - Section Image -->
+
+                <!-- START - Section Label -->
+                <b-col>
+                  <b-form-row>
+                    <b-col
+                      class="text-dark font-weight-bold"
+                      md="10"
+                    >
+                      {{ suggestion.item.productName }}
+                    </b-col>
+                    <b-col
+                      class="text-dark font-weight-bold"
+                      md="1"
+                    >
+                      {{ suggestion.item.productUnitPrice }}
+                    </b-col>
+                  </b-form-row>
+
+                  <b-form-row>
+                    <b-col
+                      class="my-1"
+                    >
+                      {{ suggestion.item.productCode }}
+                    </b-col>
+                  </b-form-row>
+                </b-col>
+                <!-- END - Section Label -->
+              </b-row>
+              <!-- <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }} -->
+            </template>
+          </vue-autosuggest>
           <b-input-group-append
             class="px-0 pb-0 m-0"
             is-text
           >
+
             <b-form-checkbox
               v-model="checkStockTotal"
             />
           </b-input-group-append>
         </b-input-group>
-
-        <!-- START - Product Popup -->
-        <b-collapse
-          v-model="inputSearchFocused"
-          class="position-absolute w-100"
-          style="zIndex:1"
-        >
-          <b-container
-            class="my-1 px-1 bg-white rounded border border-primary shadow-lg"
-          >
-            <b-row
-              v-for="(value,index) in productsSearch"
-              :key="index"
-              class="mx-0 my-1"
-              @click="editPermission ? onclickAddProduct(value) : '' "
-            >
-              <!-- START - Section Image -->
-              <b-col
-                cols="2"
-                class="px-0"
-              >
-                <b-img-lazy
-                  src="https://pngimg.com/uploads/nuclear_bomb/nuclear_bomb_PNG18.png"
-                  fluid
-                  width="60px"
-                />
-              </b-col>
-              <!-- END - Section Image -->
-
-              <!-- START - Section Label -->
-              <b-col>
-                <b-form-row>
-                  <b-col
-                    class="text-dark font-weight-bold"
-                    md="10"
-                  >
-                    {{ value.productName }}
-                  </b-col>
-                  <b-col
-                    class="text-dark font-weight-bold"
-                    md="1"
-                  >
-                    {{ value.productUnitPrice }}
-                  </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                  <b-col
-                    class="my-1"
-                  >
-                    {{ value.productCode }}
-                  </b-col>
-                </b-form-row>
-              </b-col>
-              <!-- END - Section Label -->
-            </b-row>
-          </b-container>
-        </b-collapse>
-        <!-- END - Product Popup -->
 
       </b-col>
       <!-- END - Search -->
@@ -144,6 +138,7 @@
           compact-mode
           line-numbers
           class="shadow"
+          max-height="800px"
         >
           <div
             slot="emptystate"
@@ -204,12 +199,14 @@
               />
               <!-- {{ props.row.quantity }} -->
               <b-input
+                ref="abc"
                 v-model="orderProducts[props.row.originalIndex].quantity"
                 :value="orderProducts[props.row.originalIndex].quantity"
                 :number="true"
                 maxlength="7"
                 class="text-center"
                 @change="onChangeQuantity(props.row.originalIndex)"
+                @keypress="$onlyNumberInput"
               />
               <b-icon-caret-up-fill
                 v-if="editPermission"
@@ -276,6 +273,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import toasts from '@/@core/utils/toasts/toasts'
+import { VueAutosuggest } from 'vue-autosuggest'
 import saleData from '@/@db/sale'
 import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
 import SalesForm from './components/SalesForm.vue'
@@ -305,6 +304,7 @@ import {
 
 export default {
   components: {
+    VueAutosuggest,
     SalesForm,
     // SalesProducts,
     PrintFormSalesReceipt,
@@ -316,6 +316,7 @@ export default {
       checkStockTotal: true,
       customerId: null,
       customer: {},
+      isCheckShopId: false, // check shop default
 
       columns: [
         {
@@ -359,7 +360,7 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          width: '140px',
+          width: '100px',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -401,7 +402,7 @@ export default {
       orderProducts: [],
       productInfos: [],
       productInfoTypeOptions: saleData.productInfoType,
-      productsSearch: [],
+      productsSearch: [{ data: '' }],
 
       isActive: false,
       bills: [
@@ -429,6 +430,9 @@ export default {
     ...mapGetters(CUSTOMER, [
       CUSTOMER_DEFAULT_GETTER,
     ]),
+    ...mapGetters(SALES, [
+      GET_TOP_SALE_PRODUCTS_GETTER,
+    ]),
     getProducts() {
       return this.GET_PRODUCTS_GETTER().map(data => ({
         productId: data.id,
@@ -437,8 +441,10 @@ export default {
         productUnit: data.uom1,
         productInventory: data.stockTotal,
         quantity: 1,
-        productUnitPrice: data.price,
-        productTotalPrice: this.totalPrice(1, Number(data.price)),
+        productUnitPrice: this.$formatNumberToLocale(data.price),
+        sumProductUnitPrice: data.price,
+        productTotalPrice: this.$formatNumberToLocale(this.totalPrice(1, Number(data.price))),
+        sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
     },
     getProductInfos() {
@@ -450,17 +456,25 @@ export default {
       }))
     },
     getProductSearch() {
-      return this.GET_TOP_SALE_PRODUCTS_GETTER().map(data => ({
-        checkStockTotal: data.checkStockTotal,
-        productName: data.productName,
-        productCode: data.productCode,
-        productUnit: data.uom1,
-        productInventory: data.stockTotal,
-        productUnitPrice: data.price,
-        quantity: 1,
-        productTotalPrice: this.totalPrice(1, Number(data.price)),
-        productImage: data.image,
-      }))
+      if (this.GET_TOP_SALE_PRODUCTS_GETTER) {
+        return [{
+          data: this.GET_TOP_SALE_PRODUCTS_GETTER.map(data => ({
+            name: data.productCode,
+            checkStockTotal: data.checkStockTotal,
+            productName: data.productName,
+            productCode: data.productCode,
+            productUnit: data.uom1,
+            productInventory: data.stockTotal,
+            productUnitPrice: this.$formatNumberToLocale(data.price),
+            sumProductUnitPrice: data.price,
+            quantity: 1,
+            productTotalPrice: this.$formatNumberToLocale(this.totalPrice(1, Number(data.price))),
+            sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
+            productImage: data.image,
+          })),
+        }]
+      }
+      return []
     },
     getOnlineOrderProducts() {
       return this.ONLINE_ORDER_PRODUCTS_BY_ID_GETTER().map(data => ({
@@ -470,8 +484,10 @@ export default {
         productUnit: data.uom1,
         productInventory: data.stockTotal,
         quantity: data.quantity,
-        productUnitPrice: data.price,
-        productTotalPrice: this.totalPrice(1, Number(data.price)),
+        productUnitPrice: this.$formatNumberToLocale(data.price),
+        sumProductUnitPrice: data.price,
+        productTotalPrice: this.$formatNumberToLocale(this.totalPrice(1, Number(data.price))),
+        sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
     },
     customerDefault() {
@@ -489,8 +505,10 @@ export default {
         productUnit: data.uom1,
         productInventory: data.stockTotal,
         quantity: data.quantity,
-        productUnitPrice: data.price,
-        productTotalPrice: this.totalPrice(1, Number(data.price)),
+        productUnitPrice: this.$formatNumberToLocale(data.price),
+        sumProductUnitPrice: data.price,
+        productTotalPrice: this.$formatNumberToLocale(this.totalPrice(1, Number(data.price))),
+        sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
     },
 
@@ -531,10 +549,13 @@ export default {
   created() {
     window.addEventListener('keydown', e => {
       if (e.key === 'F3') {
+        if (this.$refs.search && this.$refs.search.$el) {
+          this.$refs.search.$el.querySelector('input').focus()
+          this.$refs.search.$el.querySelector('input').click()
+        }
         if (e.which === 114) {
           e.preventDefault()
         }
-        this.$refs.search.focus()
       }
     })
   },
@@ -542,7 +563,6 @@ export default {
     ...mapGetters(SALES, [
       GET_PRODUCTS_GETTER,
       GET_PRODUCT_INFOS_GETTER,
-      GET_TOP_SALE_PRODUCTS_GETTER,
       ONLINE_ORDER_PRODUCTS_BY_ID_GETTER,
       UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
     ]),
@@ -564,7 +584,8 @@ export default {
     increaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
       this.orderProducts[index].quantity += 1
-      this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].productUnitPrice))
+      this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
+      this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
     },
 
     decreaseAmount(productId) {
@@ -574,15 +595,46 @@ export default {
         this.orderProducts[index].quantity = 0
       }
 
-      this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].productUnitPrice))
+      this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
+      this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
     },
 
     onClickDeleteProduct(index) {
       this.orderProducts.splice(index, 1)
     },
+    // check shop default
+    checkShopId() {
+      this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+      if (this.isCheckShopId === true) {
+        this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
+      } else {
+        toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
+      }
+    },
 
+    onChangeKeyWord() {
+      if (this.isCheckShopId === true) {
+        // this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+        this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
+        return
+      }
+      toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
+    },
     onclickAddProduct(index) {
-      this.orderProducts.push(index)
+      if (this.editPermission === true) {
+        if (index.item) {
+          const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
+          if (productIndex === -1) {
+            this.orderProducts.push(index.item)
+          } else {
+            this.orderProducts[productIndex].quantity += 1
+            this.orderProducts[productIndex].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice)))
+            this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
+          }
+        }
+      }
+      this.productsSearch = [{ data: null }]
+      this.searchOptions.keyWord = null
     },
 
     onClickAddButton() {
@@ -600,29 +652,18 @@ export default {
       }
     },
 
-    onChangeKeyWord() {
-      this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-      this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
-    },
-
     getOnlineOrderInfoForm(id) {
       this.id = id
       this.GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION(`${this.id}?formId=4&ctrlId=1`)
     },
     onChangeQuantity(index) {
-      this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].productUnitPrice))
+      this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
+      this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
     },
     getCustomerDefault(val) {
       this.customerId = val.data.id
       this.GET_PRODUCTS_ACTION(this.searchOptions)
-      const paramGetProductsTopSale = {
-        checkStockTotal: this.checkStockTotal ? 1 : 0,
-        keyWord: '',
-        customerId: this.customerId,
-        page: 0,
-        size: 10,
-      }
-      this.GET_TOP_SALE_PRODUCTS_ACTION(paramGetProductsTopSale)
+      this.searchOptions.customerId = this.customerId
 
       const { usedShop } = this.loginInfo
 
@@ -632,6 +673,12 @@ export default {
         } else {
           this.editPermission = false
         }
+      }
+      // check customers dafault
+      if (val.data.isDefault === true && val.data.status === 1) {
+        this.isCheckShopId = true
+      } else {
+        this.isCheckShopId = false
       }
     },
 

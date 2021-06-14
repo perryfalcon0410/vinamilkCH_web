@@ -173,7 +173,6 @@ export default {
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
-            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

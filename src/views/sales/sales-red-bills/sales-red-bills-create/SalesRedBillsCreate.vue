@@ -882,12 +882,8 @@ export default {
         saleOrderId: this.saleOrderIds,
       }
       if (productsData.length > 0) {
-        this.CREATE_RED_BILL_ACTION({
-          paramsCreateRedInvoice,
-          onSuccess: () => {
-            this.$router.replace({ name: 'sales-red-bills' })
-          },
-        })
+        this.CREATE_RED_BILL_ACTION(paramsCreateRedInvoice)
+        this.$router.replace({ name: 'sales-red-bills' })
         return
       }
       toasts.error('Hóa đơn cần chứa ít nhất một sản phẩm')
