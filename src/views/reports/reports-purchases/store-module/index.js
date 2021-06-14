@@ -5,8 +5,6 @@ import moment from 'moment'
 import {
   // GETTERS
   REPORT_INPUT_RECEIPT_DETAILS_GETTER,
-  REPORT_INPUT_RECEIPT_DETAILS_CONTENT_GETTER,
-  REPORT_INPUT_RECEIPT_DETAILS_PAGINATION_GETTER,
   PRINT_REPORT_INPUT_RECEIPT_DETAILS_GETTER,
   // ACTIONS
   GET_REPORT_INPUT_RECEIPT_DETAILS_ACTION,
@@ -28,12 +26,6 @@ export default {
     [REPORT_INPUT_RECEIPT_DETAILS_GETTER](state) {
       return state.reportInputReceiptDetails || {}
     },
-    [REPORT_INPUT_RECEIPT_DETAILS_CONTENT_GETTER](state) {
-      return state.reportInputReceiptDetailsContent || []
-    },
-    [REPORT_INPUT_RECEIPT_DETAILS_PAGINATION_GETTER](state) {
-      return state.reportInputReceiptDetailsPagination || {}
-    },
     [PRINT_REPORT_INPUT_RECEIPT_DETAILS_GETTER](state) {
       return state.printInputReceiptDetails || []
     },
@@ -48,8 +40,6 @@ export default {
         .then(res => {
           if (res.success) {
             state.reportInputReceiptDetails = res.data
-            state.reportInputReceiptDetailsContent = res.data.response.content
-            state.reportInputReceiptDetailsPagination = res.data.response
           } else {
             throw new Error(res.statusValue)
           }

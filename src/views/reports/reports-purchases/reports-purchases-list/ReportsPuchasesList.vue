@@ -116,10 +116,11 @@
           >
             <b-row
               v-if="props.column.field === 'totalPrice'"
+              v-show="totalInfo"
               class="mx-0"
               align-h="end"
             >
-              99999
+              {{ $formatNumberToLocale(totalInfo.totalAmount) }}
             </b-row>
           </template>
           <!-- END - Column filter -->
@@ -203,8 +204,6 @@ import {
   REPORT_PURCHASES,
   // Getters
   REPORT_INPUT_RECEIPT_DETAILS_GETTER,
-  REPORT_INPUT_RECEIPT_DETAILS_CONTENT_GETTER,
-  REPORT_INPUT_RECEIPT_DETAILS_PAGINATION_GETTER,
   PRINT_REPORT_INPUT_RECEIPT_DETAILS_GETTER,
   // Actions
   GET_REPORT_INPUT_RECEIPT_DETAILS_ACTION,
@@ -268,8 +267,11 @@ export default {
           label: 'Số tiền',
           field: 'totalPrice',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'HDKM',
@@ -293,24 +295,34 @@ export default {
   computed: {
     ...mapGetters(REPORT_PURCHASES, [
       REPORT_INPUT_RECEIPT_DETAILS_GETTER,
-      REPORT_INPUT_RECEIPT_DETAILS_CONTENT_GETTER,
-      REPORT_INPUT_RECEIPT_DETAILS_PAGINATION_GETTER,
       PRINT_REPORT_INPUT_RECEIPT_DETAILS_GETTER,
     ]),
     getReportInputReceiptDetails() {
-      return this.REPORT_INPUT_RECEIPT_DETAILS_CONTENT_GETTER.map(data => ({
-        poNumber: data.poNumber,
-        internalNumber: data.internalNumber,
-        receiptNumber: data.redInvoiceNo,
-        receiptDate: data.billDate,
-        paidDate: data.dateOfPayment,
-        totalPrice: this.$formatNumberToLocale(data.totalAmount),
-        hdkm: data.promotionalOrders,
-      }))
+      if (this.REPORT_INPUT_RECEIPT_DETAILS_GETTER.response) {
+        return this.REPORT_INPUT_RECEIPT_DETAILS_GETTER.response.content.map(data => ({
+          poNumber: data.poNumber,
+          internalNumber: data.internalNumber,
+          receiptNumber: data.redInvoiceNo,
+          receiptDate: data.billDate,
+          paidDate: data.dateOfPayment,
+          totalPrice: this.$formatNumberToLocale(data.totalAmount),
+          hdkm: data.promotionalOrders,
+        }))
+      }
+      return []
     },
 
+    totalInfo() {
+      if (this.REPORT_INPUT_RECEIPT_DETAILS_GETTER.info) {
+        return this.REPORT_INPUT_RECEIPT_DETAILS_GETTER.info
+      }
+      return {}
+    },
     reportInputReceiptDetailsPagination() {
-      return this.REPORT_INPUT_RECEIPT_DETAILS_PAGINATION_GETTER
+      if (this.REPORT_INPUT_RECEIPT_DETAILS_GETTER.response) {
+        return this.REPORT_INPUT_RECEIPT_DETAILS_GETTER.response
+      }
+      return {}
     },
 
     paginationDetailContent() {
@@ -331,6 +343,7 @@ export default {
   },
   methods: {
     printReport() {
+      console.log(this.totalInfo)
       this.PRINT_REPORT_INPUT_RECEIPT_DETAILS_ACTION(this.searchData)
     },
     exportReport() {

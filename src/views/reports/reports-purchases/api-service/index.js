@@ -15,6 +15,12 @@ export default {
   exportInputReceiptDetailExcel(args) {
     return axios.get(exportInputReceiptDetailExcelEndpoint, {
       params: formatURLParams(args),
+      responseType: 'blob',
+      config: {
+        header: {
+          'Content-Type': 'application/json',
+        },
+      },
     })
   },
   printInputReceiptDetails(args) {

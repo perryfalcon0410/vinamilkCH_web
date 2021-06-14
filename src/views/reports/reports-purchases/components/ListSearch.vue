@@ -182,6 +182,9 @@ export default {
       }
     },
   },
+  created() {
+    this.onSearch()
+  },
   mounted() {
     this.configToDate = {
       ...this.configToDate,
@@ -191,13 +194,11 @@ export default {
       ...this.configFromDate,
       maxDate: this.toDate,
     }
-    this.onClickSearchButton()
   },
   methods: {
     ...mapActions(REPORT_PURCHASES, [
       GET_REPORT_INPUT_RECEIPT_DETAILS_ACTION,
     ]),
-
     onSearch() {
       const searchData = {
         fromDate: reverseVniDate(this.fromDate),
