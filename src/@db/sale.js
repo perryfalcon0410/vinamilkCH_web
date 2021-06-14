@@ -43,6 +43,11 @@ export default {
     { id: '0', label: 'Hoá đơn offline' },
     { id: '1', label: 'Hoá đơn online' },
   ],
+  programPromotionType: [
+    { id: '19', label: 'ZV19' },
+    { id: '20', label: 'ZV20' },
+    { id: '21', label: 'ZV21' },
+  ],
   pageSizeRecommendProducts: 8,
   pageNumberRecommendProducts: 0,
 }

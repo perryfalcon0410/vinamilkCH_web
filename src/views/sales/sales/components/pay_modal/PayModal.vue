@@ -162,14 +162,16 @@
                     >
                       <div>Giảm giá</div>
 
-                      <b-col cols="3">
-                        <b-input-group
-                          v-model="value.amount.percentage"
-                        >
-                          <b-form-input
-                            v-if="value.amount"
+                      <b-col cols="5">
+                        <b-input-group>
+                          <b-input-group-prepend is-text>
+                            {{ value.amount.percentage }}%
+                          </b-input-group-prepend>
+                          <cleave
                             v-model="value.amount.amount"
-                            disabled
+                            class="form-control"
+                            :raw="false"
+                            :options="options.amount"
                           />
                         </b-input-group>
                       </b-col>
@@ -183,16 +185,19 @@
                       <div>Số tiền</div>
 
                       <b-col cols="3">
-                        <b-form-input
+                        <cleave
                           v-if="value.amount"
                           v-model="value.amount.amount"
                           :disabled="value.promotionType === Number(promotionTypeOption[0].id) && !value.isUse"
+                          class="form-control"
+                          :raw="false"
+                          :options="options.amount"
                           @change="onChangePromotionAmout(value.amount.amount, value.amount.maxAmount)"
                         />
                       </b-col>
                     </b-row>
                     <div class="ml-1">
-                      Tối đa: {{ value.amount.maxAmount }}
+                      Tối đa: {{ $formatNumberToLocale(value.amount.maxAmount) }}
                     </div>
                   </div>
                 </div>
@@ -263,94 +268,6 @@
             </b-col>
           <!-- END - Table Promotion -->
           </div>
-
-          <!-- START - Table 4 -->
-          <b-col class="p-0 mt-1">
-            <!-- START - Title -->
-            <b-row
-              v-b-toggle.collapseAccumulationBỉthDay
-              align-v="center"
-              class="bg-primary mx-0 p-1"
-            >
-              <b-check />
-              <div class="text-white">
-                Tích lũy - Quà sinh nhật 2021
-              </div>
-              <b-icon-chevron-down
-                class="ml-auto"
-                color="white"
-              />
-            </b-row>
-            <!-- END - Title -->
-
-            <!-- START - Body -->
-            <b-collapse
-              id="collapseAccumulationBỉthDay"
-              visible
-            >
-              <b-row
-                class="mx-0 p-1"
-                align-v="center"
-              >
-                <div>Giảm giá</div>
-
-                <b-col cols="3">
-                  <b-input-group
-                    prepend="20%"
-                  >
-                    <b-form-input disabled />
-                  </b-input-group>
-                </b-col>
-
-              </b-row>
-            </b-collapse>
-            <!-- END - Body -->
-          </b-col>
-          <!-- END - Table 4 -->
-
-          <!-- START - Table 5 -->
-          <b-col class="p-0 mt-1">
-            <!-- START - Title -->
-            <b-row
-              v-b-toggle.collapseAccumulationNewYear
-              align-v="center"
-              class="bg-primary mx-0 p-1"
-            >
-              <b-check />
-              <div class="text-white">
-                Tích lũy - Quà tết 2021
-              </div>
-              <b-icon-chevron-down
-                class="ml-auto"
-                color="white"
-              />
-            </b-row>
-            <!-- END - Title -->
-
-            <!-- START - Body -->
-            <b-collapse
-              id="collapseAccumulationNewYear"
-              visible
-            >
-              <b-row
-                class="mx-0 p-1"
-                align-v="center"
-              >
-                <div>Giảm giá</div>
-
-                <b-col cols="3">
-                  <b-form-input disabled />
-                </b-col>
-              </b-row>
-
-              <div class="ml-1">
-                Quà tặng <i class="ml-1">01 bộ tô chén dĩa Minh Long</i>
-              </div>
-
-            </b-collapse>
-            <!-- END - Body -->
-          </b-col>
-          <!-- END - Table 5 -->
         </b-col>
         <!-- START - Section table -->
 
@@ -384,8 +301,11 @@
                 </b-col>
 
                 <b-col>
-                  <b-form-input
+                  <cleave
                     v-model="pay.totalAmount"
+                    class="form-control"
+                    :raw="false"
+                    :options="options.amount"
                     disabled
                   />
                 </b-col>
@@ -404,8 +324,11 @@
                 </b-col>
 
                 <b-col>
-                  <b-form-input
+                  <cleave
                     v-model="pay.promotionAmount"
+                    class="form-control"
+                    :raw="false"
+                    :options="options.amount"
                     disabled
                   />
                 </b-col>
@@ -439,9 +362,11 @@
                       <b-input-group
                         class="input-group-merge"
                       >
-                        <b-form-input
+                        <cleave
                           v-model="pay.accumulate.accumulateAmount"
                           class="form-control-merge"
+                          :raw="false"
+                          :options="options.amount"
                         />
                       </b-input-group>
                     </b-col>
@@ -469,9 +394,7 @@
                   >
 
                     <b-col>
-                      <b-input-group
-                        class="input-group-merge"
-                      >
+                      <b-input-group class="input-group-merge">
                         <b-input-group-prepend
                           is-text
                           class="cursor-pointer"
@@ -483,19 +406,19 @@
                         </b-input-group-prepend>
                         <b-form-input
                           v-model="pay.voucher.voucherSerials"
-                          class="form-control-merge"
                           disabled
                         />
                       </b-input-group>
                     </b-col>
 
                     <b-col>
-                      <b-form-input
+                      <cleave
                         v-model="pay.voucher.totalVoucherAmount"
+                        :raw="false"
+                        :options="options.amount"
                         disabled
                       />
                     </b-col>
-
                   </b-row>
                 </b-col>
               </b-row>
@@ -540,8 +463,10 @@
                     </b-col>
 
                     <b-col>
-                      <b-form-input
+                      <cleave
                         v-model="pay.discount.discountAmount"
+                        :raw="false"
+                        :options="options.amount"
                         disabled
                       />
                     </b-col>
@@ -564,8 +489,11 @@
                 </b-col>
 
                 <b-col>
-                  <b-form-input
+                  <cleave
                     v-model="pay.needPaymentAmount"
+                    class="form-control"
+                    :raw="false"
+                    :options="options.amount"
                     disabled
                   />
                 </b-col>
@@ -595,8 +523,10 @@
                     </b-col>
 
                     <b-col>
-                      <b-form-input
+                      <cleave
                         v-model="pay.salePayment.salePaymentAmount"
+                        :raw="false"
+                        :options="options.amount"
                         @keyup="extraAmountCalculation"
                       />
                     </b-col>
@@ -620,8 +550,11 @@
                 </b-col>
 
                 <b-col>
-                  <b-form-input
+                  <cleave
                     v-model="pay.extraAmount"
+                    class="form-control"
+                    :raw="false"
+                    :options="options.amount"
                     disabled
                   />
                 </b-col>
@@ -728,6 +661,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import Cleave from 'vue-cleave-component'
 import saleData from '@/@db/sale'
 
 import {
@@ -754,6 +688,7 @@ import VoucherModal from '../voucher-modal/VoucherModal.vue'
 export default {
   components: {
     VoucherModal,
+    Cleave,
   },
   props: {
     visible: {
@@ -795,8 +730,8 @@ export default {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left col-6',
-          tdClass: 'text-left col-6',
+          thClass: 'text-left col-5',
+          tdClass: 'text-left col-5',
         },
         {
           label: 'Tồn kho',
@@ -810,8 +745,8 @@ export default {
           field: 'quantity',
           sortable: false,
           type: 'number',
-          thClass: 'text-center col-2',
-          tdClass: 'text-center col-2',
+          thClass: 'text-center col-3',
+          tdClass: 'text-center col-3',
         },
       ],
 
@@ -854,6 +789,14 @@ export default {
 
       // validation rules
       number,
+
+      // Cleave
+      options: {
+        amount: {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand',
+        },
+      },
     }
   },
   computed: {
@@ -921,10 +864,12 @@ export default {
         contraintType: data.contraintType,
         products: data.products || [],
         amount: data.amount,
+        programType: data.programType,
         isEditable: data.isEditable,
         numberLimited: data.numberLimited,
         isSelected: data.promotionType === Number(this.promotionTypeOption[0].id) && data.isUse,
         isInsertItemProducts: (data.products === null && data.amount === null),
+        levelNumber: data.levelNumber,
       }))
     },
     getItemsProduct() {
@@ -936,6 +881,50 @@ export default {
     getPromotionCalculation() {
       this.pay.promotionAmount = this.getPromotionCalculation.promotionAmount
       this.pay.needPaymentAmount = this.getPromotionCalculation.paymentAmount
+      if (this.getPromotionCalculation.resultZV1921) {
+        this.promotionPrograms = [...this.promotionPrograms.map(program => {
+          if (program.programType === saleData.programPromotionType[0].label) {
+            const indexPromotionCalculationZV19 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[0].label)
+            if (indexPromotionCalculationZV19 !== -1) {
+              const promotionCalculationZV19 = this.getPromotionCalculation.resultZV1921.find(p => p.programType === saleData.programPromotionType[0].label)
+              promotionCalculationZV19.products = promotionCalculationZV19.products || []
+              return promotionCalculationZV19
+            }
+          }
+
+          if (program.programType === saleData.programPromotionType[1].label) {
+            const indexPromotionCalculationZV20 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[1].label)
+            if (indexPromotionCalculationZV20 !== -1) {
+              const promotionCalculationZV20 = this.getPromotionCalculation.resultZV1921.find(p => p.programType === saleData.programPromotionType[1].label)
+              promotionCalculationZV20.products = promotionCalculationZV20.products || []
+              return promotionCalculationZV20
+            }
+          }
+
+          if (program.programType === saleData.programPromotionType[2].label) {
+            const indexPromotionCalculationZV21 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[2].label)
+            if (indexPromotionCalculationZV21 !== -1) {
+              const promotionCalculationZV21 = this.getPromotionCalculation.resultZV1921.find(p => p.programType === saleData.programPromotionType[2].label)
+              promotionCalculationZV21.products = promotionCalculationZV21.products || []
+              return promotionCalculationZV21
+            }
+          }
+          return program
+        })]
+      } else {
+        const indexPromotionProgramZV19 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[0].label)
+        const indexPromotionProgramZV20 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[1].label)
+        const indexPromotionProgramZV21 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[2].label)
+        if (indexPromotionProgramZV19 !== -1) {
+          this.promotionPrograms.splice(indexPromotionProgramZV19, 1)
+        }
+        if (indexPromotionProgramZV20 !== -1) {
+          this.promotionPrograms.splice(indexPromotionProgramZV20, 1)
+        }
+        if (indexPromotionProgramZV21 !== -1) {
+          this.promotionPrograms.splice(indexPromotionProgramZV21, 1)
+        }
+      }
     },
   },
 
@@ -1181,14 +1170,20 @@ export default {
     },
     onClickPromotionCalculation() {
       const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.amount !== null && p.isSelected && p.isUse)
+      const paramOrderRequest = {
+        customerId: this.customer.id,
+        orderType: Number(this.orderSelected),
+        products: this.orderProducts,
+      }
       this.GET_PROMOTION_CALCULATION_ACTION({
         customerId: this.customer.id,
         orderType: Number(this.orderSelected),
         totalAmount: this.pay.totalAmount,
         saveAmount: this.pay.accumulate.accumulateAmount,
-        voucherAmount: this.pay.voucher.totalVoucherAmount,
+        voucherAmount: this.pay.voucher.totalVoucherAmount || 0,
         saleOffAmount: this.pay.discount.discountAmount,
         promotionInfo: paramPromotionAmountInfos,
+        orderRequest: paramOrderRequest,
       })
     },
     onChangePromotionAmout(amount, maxAmout) {
