@@ -206,6 +206,8 @@ export default {
           label: 'Số chứng từ',
           field: 'licenseNumber',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-center',
         },
         {
           label: 'Mã sản phẩm',

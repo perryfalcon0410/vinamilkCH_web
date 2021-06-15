@@ -197,7 +197,7 @@
           <vue-good-table
             :columns="columnsProducts"
             :rows="productDetail"
-            style-class="vgt-table bordered"
+            style-class="vgt-table striped"
             compact-mode
             line-numbers
           >
@@ -300,7 +300,7 @@ export default {
           type: 'number',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-left',
+          tdClass: 'text-center',
         },
         {
           label: 'Ngày hóa đơn',

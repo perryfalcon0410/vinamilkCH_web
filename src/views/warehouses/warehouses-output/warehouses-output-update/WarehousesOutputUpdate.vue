@@ -112,7 +112,7 @@
             <b-form-input
               v-model.trim="warehousesOutput.internalNumber"
               :state="touched ? passed : null"
-              :disabled="warehousesOutput.receiptType !== warehousesOptions[0].id"
+              disabled
             />
           </b-col>
 
@@ -227,7 +227,7 @@
           <b-button
             variant="someThing"
             class="align-items-button-center btn-brand-1 text-uppercase"
-            :hidden="isDisableSave && warehousesOutput.receiptType !== warehousesOptions[0].id"
+            :hidden="isDisableSave && warehousesOutput.receiptType === warehousesOptions[0].id"
             @click="onClickUpdateWarehousesOutput"
           >
             <b-icon-download
@@ -344,11 +344,71 @@ export default {
           tdClass: 'text-right',
         },
         {
+          label: 'Đã xuất trả/tổng nhập',
+          field: 'export',
+          sortable: false,
+        },
+        {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
+        },
+      ],
+      columnsCustom: [
+        {
+          label: 'Mã sản phẩm',
+          field: 'productCode',
+          sortable: false,
+        },
+        {
+          label: 'Số lượng',
+          field: 'quantity',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Tên sản phẩm',
+          field: 'productName',
+          sortable: false,
+        },
+        {
+          label: 'Giá',
+          field: 'price',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'ĐVT',
+          field: 'unit',
+          sortable: false,
+        },
+        {
+          label: 'Thành tiền',
+          field: 'totalPrice',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Số lượng trả',
+          field: 'quantityReturn',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-left',
+          tdClass: 'text-right',
         },
       ],
 
@@ -395,7 +455,8 @@ export default {
         productDVT: data.unit,
         productPriceTotal: this.$formatNumberToLocale(data.totalPrice),
         productQuantity: data.quantity,
-        productReturnAmount: data.export,
+        productReturnAmount: data.quantity,
+        export: `${data.export}/${data.quantity}`,
       }))
     },
   },
@@ -421,6 +482,9 @@ export default {
         this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.adjustmentDate)
       } if (this.warehousesOutput.receiptType === warehousesData.outputTypes[2].id) {
         this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.borrowDate)
+      }
+      if (this.outputTypeSelected !== this.poOutputType) {
+        this.columns = this.columnsCustom
       }
 
       // enable or disable button save
@@ -477,6 +541,7 @@ export default {
         productPriceTotal: this.$formatNumberToLocale(item.totalPrice),
         productQuantity: item.quantity,
         productReturnAmount: item.quantity,
+        export: item.export,
       }))
       // clear data
       this.warehousesOutput.redInvoiceNo = ''

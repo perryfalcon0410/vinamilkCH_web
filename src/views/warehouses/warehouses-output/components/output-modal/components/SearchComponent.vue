@@ -15,6 +15,7 @@
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
           <validation-provider
             v-slot="{ errors }"
@@ -22,7 +23,7 @@
             name="mã nhập hàng"
           >
             <div
-              class="h8 mt-sm-1 mt-xl-0"
+              class="mt-sm-1 mt-xl-0"
             >
               Mã nhập hàng
             </div>
@@ -52,6 +53,7 @@
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
           <validation-provider
             v-slot="{ errors }"
@@ -59,7 +61,7 @@
             name="số hóa đơn"
           >
             <div
-              class="h8 mt-sm-1 mt-xl-0"
+              class="mt-sm-1 mt-xl-0"
             >
               Số hóa đơn
             </div>
@@ -89,6 +91,7 @@
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
           <validation-provider
             v-slot="{ errors }"
@@ -96,7 +99,7 @@
             name="số nội bộ"
           >
             <div
-              class="h8 mt-sm-1 mt-xl-0"
+              class="mt-sm-1 mt-xl-0"
             >
               Số nội bộ
             </div>
@@ -126,6 +129,7 @@
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
           <validation-provider
             v-slot="{ errors }"
@@ -133,7 +137,7 @@
             name="PO No"
           >
             <div
-              class="h8 mt-sm-1 mt-xl-0"
+              class="mt-sm-1 mt-xl-0"
             >
               PO No
             </div>
@@ -163,6 +167,7 @@
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
           <validation-provider
             v-slot="{ errors }"
@@ -170,7 +175,7 @@
             name="từ ngày"
           >
             <div
-              class="h8 mt-sm-1 mt-xl-0"
+              class="mt-sm-1 mt-xl-0"
             >
               Từ ngày
             </div>
@@ -189,7 +194,7 @@
               <vue-flat-pickr
                 v-model="fromDate"
                 :config="configFromDate"
-                class="form-control h8"
+                class="form-control"
                 placeholder="Chọn ngày"
               />
             </b-row>
@@ -201,6 +206,7 @@
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
           <validation-provider
             v-slot="{ errors }"
@@ -208,7 +214,7 @@
             name="đến ngày"
           >
             <div
-              class="h8 mt-sm-1 mt-xl-0"
+              class="mt-sm-1 mt-xl-0"
             >
               Đến ngày
             </div>
@@ -227,7 +233,7 @@
               <vue-flat-pickr
                 v-model="toDate"
                 :config="configToDate"
-                class="form-control h8"
+                class="form-control"
                 placeholder="Chọn ngày"
               />
             </b-row>
@@ -239,9 +245,10 @@
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
           <div
-            class="h8 text-white"
+            class="text-white"
             onmousedown="return false;"
             style="cursor: context-menu;"
           >

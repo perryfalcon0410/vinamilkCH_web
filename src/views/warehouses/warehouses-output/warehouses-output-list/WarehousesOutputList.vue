@@ -10,19 +10,49 @@
       <v-card-actions
         title="Tìm kiếm"
       >
+        <!-- START - Export No -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+          class="h8"
+        >
+          <div class="mt-sm-1 mt-xl-0">
+            Mã xuất hàng
+          </div>
+          <b-input-group class="input-group-merge">
+            <b-form-input
+              v-model="searchOptions.exportNo"
+              class="text-brand-3"
+              maxlength="20"
+              placeholder="Nhập mã xuất hàng"
+              trim
+            />
+            <b-input-group-append is-text>
+              <b-icon-x
+                v-show="searchOptions.exportNo"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.exportNo = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+        <!-- END - Export No -->
+
         <!-- START - Red Invoice No -->
         <b-col
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
-          <div class="h8 mt-sm-1 mt-xl-0">
+          <div class="mt-sm-1 mt-xl-0">
             Số hoá đơn
           </div>
           <b-input-group class="input-group-merge">
             <b-form-input
               v-model="searchOptions.redInvoiceNo"
-              class="h8 text-brand-3"
+              class="text-brand-3"
               maxlength="20"
               placeholder="Nhập số hoá đơn"
               trim
@@ -43,9 +73,10 @@
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="mt-sm-1 mt-xl-0"
           >
             Từ ngày
           </div>
@@ -64,7 +95,7 @@
             <vue-flat-pickr
               v-model="fromDate"
               :config="configFromDate"
-              class="form-control h8"
+              class="form-control"
               placeholder="Chọn ngày"
             />
           </b-row>
@@ -76,9 +107,10 @@
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="mt-sm-1 mt-xl-0"
           >
             Đến ngày
           </div>
@@ -97,7 +129,7 @@
             <vue-flat-pickr
               v-model="toDate"
               :config="configToDate"
-              class="form-control h8"
+              class="form-control"
               placeholder="Chọn ngày"
             />
           </b-row>
@@ -111,7 +143,7 @@
           sm="4"
           class="h8"
         >
-          <div class="h8 mt-sm-1 mt-xl-0">
+          <div class="mt-sm-1 mt-xl-0">
             Loại xuất
           </div>
           <tree-select
@@ -130,9 +162,10 @@
           xl
           lg="3"
           sm="4"
+          class="h8"
         >
           <div
-            class="h8 text-white"
+            class="text-white"
             onmousedown="return false;"
             style="cursor: context-menu;"
           >
@@ -140,7 +173,7 @@
           </div>
           <b-button
             id="form-button-search"
-            class="btn-brand-1 align-items-button-center mt-sm-1 mt-xl-0 h8"
+            class="btn-brand-1 align-items-button-center mt-sm-1 mt-xl-0"
             variant="someThing"
             @click="onClickSearchWarehousesOutput()"
           >
@@ -168,7 +201,7 @@
         </strong>
         <b-button-group>
           <b-button
-            class="btn-brand-1 h8 align-items-button-center"
+            class="btn-brand-1 align-items-button-center"
             variant="someThing"
             @click="onClickCreateButton"
           >
@@ -511,7 +544,8 @@ export default {
           field: 'note',
           thClass: 'text-left',
           tdClass: 'text-left',
-          width: '200px',
+          width: '300px',
+          maxlength: 100,
         },
         {
           label: 'Thao tác',
@@ -661,13 +695,14 @@ export default {
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         type: this.warehousesTypeSelected,
+        transCode: this.searchOptions.exportNo,
+        size: this.paginationData.size,
+        page: this.paginationData.page,
         ...this.decentralization,
       }
 
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER
-      this.paginationData = { ...this.paginationData, ...searchData }
-      this.onPaginationChange()
       this.pageNumber = 1
     },
     onClickDeleteWarehousesOutput(id, type, code, index, date) {
