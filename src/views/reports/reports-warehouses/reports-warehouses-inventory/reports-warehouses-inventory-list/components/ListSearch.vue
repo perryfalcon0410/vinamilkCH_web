@@ -210,7 +210,7 @@ export default {
     },
     onClickSearchButton() {
       this.onSearch()
-      this.$emit('onClickSearchButton', this.date)
+      this.$emit('onClickSearchButton')
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)

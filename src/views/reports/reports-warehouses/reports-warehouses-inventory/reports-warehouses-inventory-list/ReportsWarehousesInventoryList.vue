@@ -195,7 +195,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { reverseVniDate } from '@/@core/utils/filter'
 import ListSearch from './components/ListSearch.vue'
 import {
   REPORT_WAREHOUSES_INVENTORY,
@@ -400,7 +399,8 @@ export default {
   methods: {
     exportExcel() {
       this.EXPORT_REPORT_INVENTORIES_ACTION({
-        stockDate: reverseVniDate(this.stockDate),
+        productCodes: this.paginationData.productCodes,
+        stockDate: this.paginationData.stockDate,
         ...this.decentralization,
       })
     },
@@ -414,8 +414,7 @@ export default {
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
-    onClickSearchButton(date) {
-      this.stockDate = date
+    onClickSearchButton() {
       this.pageNumber = 1
     },
     onPageChange(params) {

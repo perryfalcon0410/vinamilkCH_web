@@ -263,4 +263,20 @@ export default [
       resource: 'ReportsSalesAmountReceiptPerCustomer',
     },
   },
+  // báo cáo danh sách voucher
+  {
+    path: '/reports/vouchers',
+    name: 'reports-vouchers',
+    component: () => import('@/views/reports/reports-vouchers/reports-vouchers-list/ReportsVouchersList.vue'),
+    meta: {
+      pageTitle: 'Báo cáo danh sách voucher',
+      breadcrumb: [
+        {
+          text: 'Danh sách voucher',
+          active: true,
+        },
+      ],
+      resource: 'ReportsVouchers',
+    },
+  },
 ]

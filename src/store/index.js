@@ -36,6 +36,7 @@ import reportSales from '@/views/reports/reports-sales/reports-sales/store-modul
 import reportSalesSaleReceiptPerCustomer from '@/views/reports/reports-sales/reports-sales-sale-receipt-per-customer/store-module'
 import reportSalesSaleOnDeliveryType from '@/views/reports/reports-sales/reports-sales-sale-receipt-on-delivery-type/store-module'
 import reportPurchases from '@/views/reports/reports-purchases/store-module'
+import reportVouchers from '@/views/reports/reports-vouchers/store-module'
 // Systems
 import app from './app'
 import appConfig from './app-config'
@@ -88,6 +89,7 @@ export default new Vuex.Store({
     reportSales,
     reportSalesSaleOnDeliveryType,
     reportPurchases,
+    reportVouchers,
   },
   strict: process.env.DEV,
 })

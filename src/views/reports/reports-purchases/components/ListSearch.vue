@@ -31,19 +31,19 @@
               align-v="center"
               @keypress="$onlyDateInput"
             >
-              <b-icon-x
-                v-show="fromDate"
-                style="position: absolute; right: 15px"
-                class="cursor-pointer text-gray"
-                scale="1.3"
-                data-clear
-              />
               <vue-flat-pickr
                 v-model="fromDate"
                 :state="touched ? passed : null"
                 :config="configFromDate"
                 class="form-control h8"
                 placeholder="Chọn ngày"
+              />
+              <b-icon-x
+                v-show="fromDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
               />
             </b-row>
             <small class="text-danger">{{ errors[0] }}</small>
