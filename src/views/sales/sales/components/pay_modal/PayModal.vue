@@ -168,11 +168,8 @@
                           <b-input-group-prepend is-text>
                             {{ value.amount.percentage }}%
                           </b-input-group-prepend>
-                          <cleave
+                          <b-form-input
                             v-model="value.amount.amount"
-                            class="form-control"
-                            :raw="false"
-                            :options="options.amount"
                           />
                         </b-input-group>
                       </b-col>
@@ -186,13 +183,10 @@
                       <div>Số tiền</div>
 
                       <b-col cols="3">
-                        <cleave
+                        <b-form-input
                           v-if="value.amount"
                           v-model="value.amount.amount"
                           :disabled="value.promotionType === Number(promotionTypeOption[0].id) && !value.isUse"
-                          class="form-control"
-                          :raw="false"
-                          :options="options.amount"
                           @change="onChangePromotionAmout(value.amount.amount, value.amount.maxAmount)"
                         />
                       </b-col>
@@ -302,11 +296,8 @@
                 </b-col>
 
                 <b-col>
-                  <cleave
+                  <b-form-input
                     v-model="pay.totalAmount"
-                    class="form-control"
-                    :raw="false"
-                    :options="options.amount"
                     disabled
                   />
                 </b-col>
@@ -325,11 +316,8 @@
                 </b-col>
 
                 <b-col>
-                  <cleave
+                  <b-form-input
                     v-model="pay.promotionAmount"
-                    class="form-control"
-                    :raw="false"
-                    :options="options.amount"
                     disabled
                   />
                 </b-col>
@@ -363,11 +351,8 @@
                       <b-input-group
                         class="input-group-merge"
                       >
-                        <cleave
+                        <b-form-input
                           v-model="pay.accumulate.accumulateAmount"
-                          class="form-control-merge"
-                          :raw="false"
-                          :options="options.amount"
                         />
                       </b-input-group>
                     </b-col>
@@ -413,10 +398,8 @@
                     </b-col>
 
                     <b-col>
-                      <cleave
+                      <b-form-input
                         v-model="pay.voucher.totalVoucherAmount"
-                        :raw="false"
-                        :options="options.amount"
                         disabled
                       />
                     </b-col>
@@ -464,10 +447,8 @@
                     </b-col>
 
                     <b-col>
-                      <cleave
+                      <b-form-input
                         v-model="pay.discount.discountAmount"
-                        :raw="false"
-                        :options="options.amount"
                         disabled
                       />
                     </b-col>
@@ -490,11 +471,8 @@
                 </b-col>
 
                 <b-col>
-                  <cleave
+                  <b-form-input
                     v-model="pay.needPaymentAmount"
-                    class="form-control"
-                    :raw="false"
-                    :options="options.amount"
                     disabled
                   />
                 </b-col>
@@ -524,10 +502,8 @@
                     </b-col>
 
                     <b-col>
-                      <cleave
+                      <b-form-input
                         v-model="pay.salePayment.salePaymentAmount"
-                        :raw="false"
-                        :options="options.amount"
                         @keyup="extraAmountCalculation"
                       />
                     </b-col>
@@ -551,11 +527,8 @@
                 </b-col>
 
                 <b-col>
-                  <cleave
+                  <b-form-input
                     v-model="pay.extraAmount"
-                    class="form-control"
-                    :raw="false"
-                    :options="options.amount"
                     disabled
                   />
                 </b-col>
@@ -662,7 +635,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import Cleave from 'vue-cleave-component'
 import saleData from '@/@db/sale'
 
 import {
@@ -689,7 +661,6 @@ import VoucherModal from '../voucher-modal/VoucherModal.vue'
 export default {
   components: {
     VoucherModal,
-    Cleave,
   },
   props: {
     visible: {
@@ -759,10 +730,10 @@ export default {
       pay: {
         totalQuantity: 0,
         totalAmount: null,
-        promotionAmount: 0,
+        promotionAmount: null,
         accumulate: {
           accumulatePoint: null,
-          accumulateAmount: 0,
+          accumulateAmount: null,
         },
         voucher: {
           voucherSerials: '',
@@ -774,12 +745,12 @@ export default {
         },
         discount: {
           discountCode: '',
-          discountAmount: 0,
+          discountAmount: null,
         },
-        needPaymentAmount: 0,
+        needPaymentAmount: null,
         salePayment: {
           salePaymentType: saleData.salePaymentType[0].id,
-          salePaymentAmount: 0,
+          salePaymentAmount: null,
         },
         extraAmount: null,
       },
@@ -790,14 +761,6 @@ export default {
 
       // validation rules
       number,
-
-      // Cleave
-      options: {
-        amount: {
-          numeral: true,
-          numeralThousandsGroupStyle: 'thousand',
-        },
-      },
     }
   },
   computed: {
@@ -819,22 +782,13 @@ export default {
     },
 
     totalOrderPrice() {
-      return this.orderProducts.reduce((sum, item) => sum + Number(item.productTotalPrice), 0)
+      return this.orderProducts.reduce((sum, item) => sum + Number(item.sumProductTotalPrice), 0)
     },
 
     needPayment() {
-      return this.pay.totalAmount - this.pay.accumulate.accumulateAmount - this.pay.voucher.totalVoucherAmount - this.pay.discount.discountAmount
+      return this.pay.totalAmount - Number(this.pay.accumulate.accumulateAmount) - Number(this.pay.voucher.totalVoucherAmount) - Number(this.pay.discount.discountAmount)
     },
 
-    changePayment() {
-      const change = 0
-      if (this.payment !== 0) {
-        if (this.payment > this.needPayment) {
-          return Number(this.payment) - Number(this.needPayment)
-        }
-      }
-      return change
-    },
     getPromotionPrograms() {
       return this.GET_PROMOTION_PROGRAMS_GETTER
     },
@@ -994,17 +948,17 @@ export default {
 
     resetDiscount() {
       this.pay.discount.discountCode = ''
-      this.pay.discount.discountAmount = null
+      this.pay.discount.discountAmount = 0
     },
 
     resetOrderPayment() {
       this.pay.totalQuantity = 0
       this.pay.totalAmount = null
-      this.pay.promotionAmount = 0
+      this.pay.promotionAmount = null
       this.pay.accumulate.accumulatePoint = null
-      this.pay.accumulate.accumulateAmount = 0
-      this.pay.needPaymentAmount = 0
-      this.pay.salePayment.salePaymentAmount = 0
+      this.pay.accumulate.accumulateAmount = null
+      this.pay.needPaymentAmount = null
+      this.pay.salePayment.salePaymentAmount = null
       this.pay.extraAmount = null
       this.resetDiscount()
     },

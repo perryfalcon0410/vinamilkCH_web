@@ -551,7 +551,8 @@ export default {
               }
             })
             .catch(error => {
-              toasts.error(error.message)
+              console.log(error)
+              toasts.error('Server không hoạt động, vui lòng liên hệ admin')
             })
         }
       })
@@ -643,7 +644,8 @@ export default {
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          console.log(error)
+          toasts.error('Server không hoạt động, vui lòng liên hệ admin')
         })
     },
   },
