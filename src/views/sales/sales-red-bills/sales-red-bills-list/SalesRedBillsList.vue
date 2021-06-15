@@ -239,11 +239,12 @@
         <vue-good-table
           :columns="columns"
           :rows="listRedBill"
+          mode="remote"
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
-            perPage: paginationData.size,
-            setCurrentPage: pageNumber,
+            perPage: searchData.size,
+            setCurrentPage: searchData.page + 1,
           }"
           line-numbers
           :total-rows="getRedBillPagination.totalElements"
@@ -293,7 +294,7 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="paginationData.size"
+                  v-model="searchData.size"
                   size="sm"
                   :options="perPageSizeOptions"
                   class="mx-1"
@@ -304,7 +305,7 @@
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="getRedBillPagination.totalElements"
-                :per-page="paginationData.size"
+                :per-page="searchData.size"
                 first-number
                 last-number
                 align="right"
@@ -367,7 +368,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ $formatNumberToLocale(totalInfo.sumTotalMoney) }}
+              {{ $formatNumberToLocale(totalInfo.sumAmountNotVat) }}
             </b-row>
             <b-row
               v-show="getRedBillPagination.totalElements"
@@ -383,7 +384,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ $formatNumberToLocale(totalInfo.sumAmountNotVat) }}
+              {{ $formatNumberToLocale(totalInfo.sumTotalMoney) }}
             </b-row>
           </template>
           <!-- START - Column filter -->
@@ -452,10 +453,16 @@ export default {
     return {
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
-      paginationData: {
+      searchData: {
         size: commonData.perPageSizes[0],
-        page: this.pageNumber,
+        page: commonData.pageNumber - 1,
         sort: null,
+      },
+      searchOption: {
+        searchKeywords: null,
+        invoiceNumber: null,
+        fromDate: null,
+        toDate: null,
       },
       // decentralization
       decentralization: {
@@ -590,9 +597,9 @@ export default {
           address: data.officeAddress,
           VATCode: data.taxCode,
           quantity: this.$formatNumberToLocale(data.totalQuantity),
-          goodsMoney: this.$formatNumberToLocale(data.totalMoney),
+          goodsMoney: this.$formatNumberToLocale(data.amountNotVat),
           GTGT: this.$formatNumberToLocale(data.amountGTGT),
-          totalMoney: this.$formatNumberToLocale(data.amountNotVat),
+          totalMoney: this.$formatNumberToLocale(data.totalMoney),
           note: data.note,
           printDate: this.$formatISOtoVNI(data.printDate),
         }))
@@ -606,11 +613,14 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
-      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.getRedBillPagination.totalElements
-        ? this.getRedBillPagination.totalElements : (this.paginationData.size * this.pageNumber)
+      const { page, size } = this.searchData
+      const { totalElements } = this.getRedBillPagination
 
-      return `${minPageSize} - ${maxPageSize} của ${this.getRedBillPagination.totalElements} mục`
+      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
+      const maxPageSize = (size * (page + 1)) > totalElements
+        ? totalElements : (size * (page + 1))
+
+      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },
   },
 
@@ -642,14 +652,16 @@ export default {
       UPDATE_RED_BILLS_ACTION,
     ]),
     onSearch() {
-      const searchData = {
+      this.searchOption = {
         searchKeywords: this.customer,
         invoiceNumber: this.invoiceNumber,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         ...this.decentralization,
+        ...this.searchData,
       }
-      this.GET_RED_INVOICES_ACTION(searchData)
+      this.searchData = { ...this.searchData, ...this.searchOption }
+      this.GET_RED_INVOICES_ACTION(this.searchOption)
     },
     addSaleRedBillsCreate() {
       this.$router.push({ name: 'sales-red-bills-create' })
@@ -658,32 +670,40 @@ export default {
       window.print()
     },
     // START - Pagination func
-    onPaginationChange() {
-      const searchStr = {
-        fromDate: reverseVniDate(this.fromDate),
-        toDate: reverseVniDate(this.toDate),
+
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
+    },
+
+    onSearchClick() {
+      this.searchOption = {
         searchKeywords: this.customer,
         invoiceNumber: this.invoiceNumber,
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
+        ...this.decentralization,
       }
-      this.GET_RED_INVOICES_ACTION({ ...searchStr, ...this.paginationData, ...this.decentralization })
+      this.updateSearchData({
+        // page: commonData.pageNumber - 1,
+        ...this.searchOption,
+      })
+      this.onPaginationChange()
     },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
+    onPaginationChange() {
+      this.GET_RED_INVOICES_ACTION({ ...this.searchData })
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updateSearchData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
+      })
       this.onPaginationChange()
     },
     // END - Pagination func
-
-    onSearchClick() {
-      this.onSearch()
-      this.pageNumber = 1
-    },
     // auto select rows when focus feld oderNumber
     focusRows(params) {
       if (params.column.field === 'numberBill') {

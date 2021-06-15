@@ -5,10 +5,7 @@
   >
     <!-- START - Search -->
     <sales-returned-goods-list-search
-      @updateSearchData="paginationData = {
-        ...paginationData,
-        ...$event }"
-      @updatePageElement="updatePageNumber"
+      @onClickSearchButton="onClickSearchButton"
     />
     <!-- END - Search -->
 
@@ -46,8 +43,8 @@
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize,
-            setCurrentPage: pageNumber,
+            perPage: searchData.size,
+            setCurrentPage: searchData.page + 1,
           }"
           compact-mode
           line-numbers
@@ -134,7 +131,7 @@
           >
             <b-row
               v-show="orderReturnPagination.totalElements"
-              class="v-pagination px-1 mx-0"
+              class="v-pagination px-1 mx-0 d-print-none"
               align-h="between"
               align-v="center"
             >
@@ -147,18 +144,18 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="searchData.size"
                   size="sm"
-                  :options="paginationOptions"
+                  :options="perPageSizeOptions"
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span class="text-nowrap"> {{ paginationDetailContent }} </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="orderReturnPagination.totalElements"
-                :per-page="elementSize"
+                :per-page="searchData.size"
                 first-number
                 last-number
                 align="right"
@@ -239,13 +236,11 @@ export default {
   data() {
     return {
       isOrderDetailsModal: false,
-      selectedRow: 0,
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
-      paginationOptions: commonData.perPageSizes,
-      paginationData: {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
+      searchData: {
+        size: commonData.perPageSizes[0],
+        page: commonData.pageNumber - 1,
         sort: null,
       },
       // decentralization
@@ -351,11 +346,14 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.orderReturnPagination.totalElements
-        ? this.orderReturnPagination.totalElements : (this.elementSize * this.pageNumber)
+      const { page, size } = this.searchData
+      const { totalElements } = this.orderReturnPagination
 
-      return `${minPageSize} - ${maxPageSize} của ${this.orderReturnPagination.totalElements} mục`
+      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
+      const maxPageSize = (size * (page + 1)) > totalElements
+        ? totalElements : (size * (page + 1))
+
+      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },
     getOderReturns() {
       if (this.RETURNED_GOODS_GETTER.response && this.RETURNED_GOODS_GETTER.response.content) {
@@ -467,10 +465,6 @@ export default {
     formatter(value) {
       return value.toLowerCase()
     },
-
-    updatePageNumber() {
-      this.pageNumber = 1
-    },
     showOrderDetailsModal(idDetail) {
       this.isOrderDetailsModal = !this.isOrderDetailsModal
       this.GET_RETURN_GOODS_DETAIL_ACTION({
@@ -478,18 +472,29 @@ export default {
         ...this.decentralization,
       })
     },
-    onPaginationChange() {
-      this.GET_RETURNED_GOODS_ACTION(this.paginationData)
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
     },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
+    onClickSearchButton(event) {
+      this.updateSearchData({
+        // page: commonData.pageNumber - 1,
+        ...event,
+      })
+      this.onPaginationChange()
+    },
+    onPaginationChange() {
+      this.GET_RETURNED_GOODS_ACTION({ ...this.searchData, ...this.decentralization })
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      console.log(params)
+      this.updateSearchData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
+      })
       this.onPaginationChange()
     },
 

@@ -37,6 +37,41 @@
         </b-input-group>
       </b-col>
       <!-- END - Full Name -->
+
+      <!-- START - Phone -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+        class="h8"
+      >
+        <div
+          class="mt-sm-1 mt-xl-0"
+        >
+          Di động
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model.trim="customerPhone"
+            autocomplete="on"
+            placeholder="Nhập chính xác 4 số cuối"
+            maxlength="10"
+            @keypress="$onlyNumberInput"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="customerPhone"
+              class="cursor-pointer text-gray"
+              @click="customerPhone = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Phone -->
       <!-- START - Return Code -->
       <b-col
         xl
@@ -167,15 +202,8 @@
 </template>
 
 <script>
-import {
-  mapActions,
-} from 'vuex'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { reverseVniDate } from '@/@core/utils/filter'
-import {
-  RETURNEDGOODS,
-  GET_RETURNED_GOODS_ACTION,
-} from '../../store-module/type'
 
 export default {
   components: {
@@ -187,6 +215,7 @@ export default {
       returnCode: '',
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
+      customerPhone: null,
 
       // decentralization
       decentralization: {
@@ -229,24 +258,22 @@ export default {
   },
 
   methods: {
-    ...mapActions(RETURNEDGOODS, [GET_RETURNED_GOODS_ACTION]),
     onSearch() {
       const searchData = {
         searchKeywords: this.searchKeywords,
+        customerPhone: this.customerPhone,
         returnNumber: this.returnCode,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         ...this.decentralization,
       }
       this.updateSearchData(searchData)
-      this.GET_RETURNED_GOODS_ACTION(searchData)
     },
     onClickSearchButton() {
-      this.$emit('updatePageElement')
       this.onSearch()
     },
     updateSearchData(data) {
-      this.$emit('updateSearchData', data)
+      this.$emit('onClickSearchButton', data)
     },
   },
 }

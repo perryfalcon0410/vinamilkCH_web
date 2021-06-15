@@ -40,8 +40,9 @@
             :columns="columns"
             :rows="saleOders"
             style-class="vgt-table bordered"
+            max-height="600px"
             :pagination-options="{
-              enabled: true,
+              enabled: false,
               perPage: elementSize,
               setCurrentPage: pageNumber,
             }"
@@ -114,63 +115,6 @@
               </b-row>
             </template>
             <!-- START - Column filter -->
-
-            <!-- START - Pagination -->
-            <template
-              slot="pagination-bottom"
-              slot-scope="props"
-            >
-              <b-row
-                v-show="salesOrderPagination.totalElements"
-                class="v-pagination px-1 mx-0"
-                align-h="between"
-                align-v="center"
-              >
-                <div
-                  class="d-flex align-items-center"
-                >
-                  <span
-                    class="text-nowrap"
-                  >
-                    Số hàng hiển thị
-                  </span>
-                  <b-form-select
-                    v-model="elementSize"
-                    size="sm"
-                    :options="paginationOptions"
-                    class="mx-1"
-                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
-                  />
-                  <span class="text-nowrap"> {{ paginationDetailContent }} </span>
-                </div>
-                <b-pagination
-                  v-model="pageNumber"
-                  :total-rows="salesOrderPagination.totalElements"
-                  :per-page="elementSize"
-                  first-number
-                  last-number
-                  align="right"
-                  prev-class="prev-item"
-                  next-class="next-item"
-                  class="mt-1"
-                  @input="(value)=>props.pageChanged({currentPage: value})"
-                >
-                  <template slot="prev-text">
-                    <feather-icon
-                      icon="ChevronLeftIcon"
-                      size="18"
-                    />
-                  </template>
-                  <template slot="next-text">
-                    <feather-icon
-                      icon="ChevronRightIcon"
-                      size="18"
-                    />
-                  </template>
-                </b-pagination>
-              </b-row>
-            </template>
-          <!-- END - Pagination -->
           </vue-good-table>
         </b-col>
         <!-- END - Table -->
@@ -317,12 +261,6 @@ export default {
       }
       return ''
     },
-    salesOrderPagination() {
-      if (this.RETURNED_GOOD_CHOOSE_GETTER) {
-        return this.RETURNED_GOOD_CHOOSE_GETTER
-      }
-      return {}
-    },
   },
   watch: {
     getSaleOders() {
@@ -361,14 +299,6 @@ export default {
     onPerPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
-    },
-
-    paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehousesComboPagination.totalElements
-        ? this.warehousesComboPagination.totalElements : (this.elementSize * this.pageNumber)
-
-      return `${minPageSize} - ${maxPageSize} của ${this.warehousesComboPagination.totalElements} mục`
     },
   },
 }

@@ -689,7 +689,7 @@ export default {
     onclickAddProduct(index) {
       const { usedShop } = this.loginInfo
 
-      if (this.editOnlinePermission === true) {
+      if (this.editOnlinePermission === true && this.isCheckShopId === true) {
         if (index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
           if (productIndex === -1) {
@@ -792,6 +792,13 @@ export default {
 
     getCustomerIdInfo(id) {
       this.$emit('getCustomerIdInfo', id)
+
+      // check customers dafault
+      if (id) {
+        this.isCheckShopId = true
+      } else {
+        this.isCheckShopId = false
+      }
     },
 
     billHandle(bill, index) {
