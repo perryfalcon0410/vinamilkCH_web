@@ -309,7 +309,7 @@
         <b-button
           variant="info"
           class="d-flex w-100 my-1 align-items-center justify-content-center"
-          :disabled="orderOnline.orderNumber.length < minOnlineOrder && salemtPromotionObjectSelected !== salemtPromotionId"
+          :disabled="orderOnline.orderNumber.length < minOnlineOrder && salemtPromotionObjectSelected !== salemtPromotionId || totalQuantity === 0"
           @click="showPayModal"
         >
           <b-icon-cash-stack
@@ -419,7 +419,7 @@ export default {
       minSearch: commonData.minSearchLength,
       minOnlineOrder: commonData.minOnlineOrderLength,
       salemtPromotionId: '1',
-      isCheckmanualCreate: false,
+      isCheckmanualCreate: true,
       currentCustomer: {},
 
       // customer
@@ -638,11 +638,11 @@ export default {
       if (e.key === 'F4') {
         this.$refs.search.focus()
       }
-      if (e.key === 'F8') {
-        if (this.orderOnline.onlineOrderId != null && this.orderOnline.orderNumber.length > 0) {
-          this.$refs.payModal.$refs.payModal.show()
-        }
-      }
+      // if (e.key === 'F8') {
+      //   if (this.orderOnline.onlineOrderId != null && this.orderOnline.orderNumber.length > 0) {
+      //     this.$refs.payModal.$refs.payModal.show()
+      //   }
+      // }
     })
   },
   methods: {
@@ -766,9 +766,9 @@ export default {
       const { usedShop } = this.loginInfo
       if (this.customer.shopId === usedShop.id) {
         if (usedShop.manuallyCreatable) {
-          this.isCheckmanualCreate = false
-        } else {
           this.isCheckmanualCreate = true
+        } else {
+          this.isCheckmanualCreate = false
         }
       }
     },

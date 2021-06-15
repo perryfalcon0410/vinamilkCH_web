@@ -493,10 +493,14 @@ export default {
       CUSTOMER_DEFAULT_GETTER,
     ]),
     ...mapGetters(SALES, [
+      GET_PRODUCTS_GETTER,
+      GET_PRODUCT_INFOS_GETTER,
       GET_TOP_SALE_PRODUCTS_GETTER,
+      ONLINE_ORDER_PRODUCTS_BY_ID_GETTER,
+      UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
     ]),
     getProducts() {
-      return this.GET_PRODUCTS_GETTER().map(data => ({
+      return this.GET_PRODUCTS_GETTER.map(data => ({
         productId: data.id,
         productCode: data.productCode,
         productName: data.productName,
@@ -510,7 +514,7 @@ export default {
       }))
     },
     getProductInfos() {
-      return this.GET_PRODUCT_INFOS_GETTER().map(data => ({
+      return this.GET_PRODUCT_INFOS_GETTER.map(data => ({
         catId: data.id,
         productInfoCode: data.productInfoCode,
         productInfoName: data.productInfoName,
@@ -539,7 +543,7 @@ export default {
       return []
     },
     getOnlineOrderProducts() {
-      return this.ONLINE_ORDER_PRODUCTS_BY_ID_GETTER().map(data => ({
+      return this.ONLINE_ORDER_PRODUCTS_BY_ID_GETTER.map(data => ({
         productId: data.productId,
         productCode: data.productCode,
         productName: data.productName,
@@ -560,7 +564,7 @@ export default {
     },
 
     getCustomerTypeProducts() {
-      return this.UPDATE_PRICE_TYPE_CUSTOMER_GETTER().map(data => ({
+      return this.UPDATE_PRICE_TYPE_CUSTOMER_GETTER.map(data => ({
         productId: data.productId,
         productCode: data.productCode,
         productName: data.productName,
@@ -626,12 +630,6 @@ export default {
     })
   },
   methods: {
-    ...mapGetters(SALES, [
-      GET_PRODUCTS_GETTER,
-      GET_PRODUCT_INFOS_GETTER,
-      ONLINE_ORDER_PRODUCTS_BY_ID_GETTER,
-      UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
-    ]),
     ...mapActions(SALES, [
       GET_PRODUCTS_ACTION,
       GET_PRODUCT_INFOS_ACTION,

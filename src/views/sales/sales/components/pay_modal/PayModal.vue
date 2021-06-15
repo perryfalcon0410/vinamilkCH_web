@@ -913,7 +913,12 @@ export default {
           orderType: Number(saleData.orderType[0].id),
           products: paramProducts,
         })
-        this.$root.$emit('bv::toggle::modal', 'pay-modal')
+
+        if (this.totalQuantity === 0 || (this.orderSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')) {
+          this.$root.$emit('bv::hide::modal', 'pay-modal')
+        } else {
+          this.$root.$emit('bv::show::modal', 'pay-modal')
+        }
       }
     })
   },
