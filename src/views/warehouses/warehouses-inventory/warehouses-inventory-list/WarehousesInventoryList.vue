@@ -31,7 +31,10 @@
             variant="someThing"
             @click="onClickCreateButton"
           >
-            <b-icon-plus />
+            <b-icon-plus
+              scale="2"
+              class="mr-50"
+            />
             Thêm mới
           </b-button>
         </b-button-group>
@@ -100,6 +103,7 @@
               <b-icon-pencil-fill
                 v-b-popover.hover.top="'Chỉnh sửa'"
                 class="cursor-pointer"
+                scale="1.2"
                 @click="onClickUpdateButton(props.row.id)"
               />
             </b-row>
@@ -267,7 +271,7 @@ export default {
           id: data.id,
           countingDate: formatISOtoVNI(data.countingDate),
           stockCountingCode: data.stockCountingCode,
-          warehouseType: data.wareHouseTypeId,
+          warehouseType: data.wareHouseTypeName,
           createUser: data.createdBy,
           createDate: formatISOtoVNI(data.createdAt),
           updateUser: data.updatedBy,

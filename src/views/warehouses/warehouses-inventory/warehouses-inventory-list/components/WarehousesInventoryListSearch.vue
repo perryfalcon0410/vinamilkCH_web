@@ -1,6 +1,8 @@
 <template>
   <!-- START - Search -->
-  <b-form>
+  <b-form
+    @keydown.enter="onClickSearchButton"
+  >
     <v-card-actions
       title="Tìm kiếm"
     >
@@ -9,9 +11,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Mã kiểm kê
         </div>
@@ -21,9 +24,9 @@
           <b-form-input
             id="form-input-stock-counting-code"
             v-model="stockCountingCode"
-            class="h8 text-brand-3"
             maxlength="40"
-            @keyup.enter="onClickSearchButton"
+            placeholder="Nhập mã kiểm kê"
+            trim
           />
           <b-input-group-append
             is-text
@@ -43,9 +46,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Từ ngày
         </div>
@@ -76,9 +80,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Đến ngày
         </div>
@@ -110,9 +115,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Kho
         </div>
@@ -128,19 +134,21 @@
 
       <!-- START - Search button -->
       <b-col
-        lg="4"
-        md="12"
+        xl
+        lg="3"
+        sm="4"
+        class="h8"
       >
         <!--"onmousedown" is prevent hightlight text -->
         <div
-          class="h8 text-white"
+          class="text-white"
           onmousedown="return false;"
           style="cursor: context-menu;"
         >
           Tìm kiếm
         </div>
         <b-button
-          class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
+          class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0"
           variant="someThing"
           @click="onClickSearchButton()"
         >
@@ -230,7 +238,7 @@ export default {
     ]),
     onClickSearchButton() {
       const searchData = {
-        stockCountingCode: this.stockCountingCode?.trim(),
+        stockCountingCode: this.stockCountingCode,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         warehouseTypeId: this.warehouseType,
