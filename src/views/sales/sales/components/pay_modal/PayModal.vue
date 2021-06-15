@@ -686,6 +686,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    editOnlinePermission: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -914,7 +918,7 @@ export default {
           products: paramProducts,
         })
 
-        if (this.totalQuantity === 0 || (this.orderSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')) {
+        if (this.totalQuantity === 0 || this.editOnlinePermission === false || (this.orderSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')) {
           this.$root.$emit('bv::hide::modal', 'pay-modal')
         } else {
           this.$root.$emit('bv::show::modal', 'pay-modal')

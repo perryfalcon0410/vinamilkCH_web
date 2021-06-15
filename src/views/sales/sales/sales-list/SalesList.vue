@@ -251,7 +251,7 @@
               class="d-flex align-items-center"
             >
               <b-icon-caret-down-fill
-                v-if="editPermission"
+                v-if="editOnlinePermission === false"
                 class="cursor-pointer"
                 font-scale="1.5"
                 @click="decreaseAmount(props.row.productId)"
@@ -264,11 +264,12 @@
                 :number="true"
                 maxlength="7"
                 class="text-center"
+                :disabled="editOnlinePermission === false"
                 @change="onChangeQuantity(props.row.originalIndex)"
                 @keypress="$onlyNumberInput"
               />
               <b-icon-caret-up-fill
-                v-if="editPermission"
+                v-if="editOnlinePermission === false"
                 class="cursor-pointer"
                 font-scale="1.5"
                 @click="increaseAmount(props.row.productId)"
@@ -281,7 +282,7 @@
               v-else-if="props.column.field === 'tableProductFeature'"
             >
               <b-icon-trash-fill
-                v-if="editPermission"
+                v-if="editOnlinePermission"
                 color="red"
                 class="cursor-pointer"
                 @click="onClickDeleteProduct(props.row.originalIndex)"
@@ -312,7 +313,7 @@
       <!-- START - Section Form pay -->
       <sales-form
         :order-products="orderProducts"
-        :edit-permission="editPermission"
+        :edit-online-permission="editOnlinePermission"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
@@ -477,7 +478,8 @@ export default {
 
       // online order
       id: null,
-      editPermission: false,
+      editOnlinePermission: false,
+      editManualPermission: false,
 
       // price customer change customerTypeId
       customerType: null,
@@ -505,7 +507,7 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         productUnit: data.uom1,
-        productInventory: data.stockTotal,
+        productInventory: this.$formatNumberToLocale(data.stockTotal),
         quantity: 1,
         productUnitPrice: this.$formatNumberToLocale(data.price),
         sumProductUnitPrice: data.price,
@@ -685,7 +687,9 @@ export default {
       toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
     },
     onclickAddProduct(index) {
-      if (this.editPermission === true) {
+      const { usedShop } = this.loginInfo
+
+      if (this.editOnlinePermission === true) {
         if (index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
           if (productIndex === -1) {
@@ -697,6 +701,11 @@ export default {
           }
         }
       }
+
+      if (usedShop.manuallyCreatable === false && this.editManualPermission === false) {
+        toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+      }
+
       this.productsSearch = [{ data: null }]
       this.searchOptions.keyWord = null
     },
@@ -730,15 +739,14 @@ export default {
       this.searchOptions.customerId = this.customerId
 
       const { usedShop } = this.loginInfo
-
+      // check edit permission online, manual
       if (val.data.shopId === usedShop.id) {
         if (usedShop.editable || usedShop.manuallyCreatable) {
-          this.editPermission = true
+          this.editOnlinePermission = true
+          this.editManualPermission = true
         } else {
-          this.editPermission = false
-          if (usedShop.manuallyCreatable === false && this.editPermission === false) {
-            toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
-          }
+          this.editOnlinePermission = false
+          this.editManualPermission = false
         }
       }
       // check customers dafault
@@ -754,9 +762,9 @@ export default {
 
       if (val.shopId === usedShop.id) {
         if (usedShop.editable) {
-          this.editPermission = true
+          this.editOnlinePermission = true
         } else {
-          this.editPermission = false
+          this.editOnlinePermission = false
         }
       }
     },

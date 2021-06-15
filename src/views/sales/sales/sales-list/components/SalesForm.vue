@@ -139,7 +139,7 @@
               Tiền tích lũy
             </b-col>
             <b-col>
-              {{ customer.totalBill }}
+              {{ $formatNumberToLocale(customer.totalBill) }}
             </b-col>
           </b-row>
           <!-- END - Cumulative points -->
@@ -309,7 +309,7 @@
         <b-button
           variant="info"
           class="d-flex w-100 my-1 align-items-center justify-content-center"
-          :disabled="orderOnline.orderNumber.length < minOnlineOrder && salemtPromotionObjectSelected !== salemtPromotionId || totalQuantity === 0"
+          :disabled="orderOnline.orderNumber.length < minOnlineOrder && salemtPromotionObjectSelected !== salemtPromotionId || totalQuantity === 0 || editOnlinePermission === false"
           @click="showPayModal"
         >
           <b-icon-cash-stack
@@ -324,6 +324,7 @@
             :delivery-selected="salemtDeliveryTypeSelected"
             :customer="customer"
             :order-online="orderOnline"
+            :edit-online-permission="editOnlinePermission"
           />
         </b-button>
         <!-- END - Button pay -->
@@ -405,7 +406,7 @@ export default {
       type: Array,
       default: () => [],
     },
-    editPermission: {
+    editOnlinePermission: {
       type: Boolean,
       default: true,
     },
@@ -582,7 +583,7 @@ export default {
       return this.ONLINE_ORDER_CUSTOMER_BY_ID_GETTER
     },
     totalQuantity() {
-      return this.orderProducts.reduce((sum, item) => sum + Number(item.quantity), 0)
+      return this.$formatNumberToLocale(this.orderProducts.reduce((sum, item) => sum + Number(item.quantity), 0))
     },
 
     totalOrderPrice() {
@@ -683,8 +684,8 @@ export default {
         products: paramProducts,
       })
 
-      if (this.editPermission === true) {
-        this.$root.$emit('bv::toggle::modal', 'pay-modal')
+      if (this.editOnlinePermission === true) {
+        this.$root.$emit('bv::show::modal', 'pay-modal')
       }
     },
 
@@ -737,7 +738,7 @@ export default {
       this.customer.lastName = this.onlineOrderCustomer.customer.lastName
       this.customer.fullName = `${this.onlineOrderCustomer.customer.lastName} ${this.onlineOrderCustomer.customer.firstName}`
       this.customer.phoneNumber = this.onlineOrderCustomer.customer.mobiPhone
-      this.customer.street = this.onlineOrderCustomer.customer.street
+      this.customer.street = this.onlineOrderCustomer.customer.address
       this.customer.scoreCumulated = this.onlineOrderCustomer.customer.scoreCumulated
       this.customer.shopId = this.onlineOrderCustomer.customer.shopId
       this.customer.typeId = this.onlineOrderCustomer.customer.customerTypeId
@@ -754,7 +755,7 @@ export default {
       this.customer.lastName = this.customerDefault.lastName
       this.customer.fullName = `${this.customer.lastName} ${this.customer.firstName}`
       this.customer.phoneNumber = this.customerDefault.mobiPhone
-      this.customer.street = this.customerDefault.street
+      this.customer.street = this.customerDefault.address
       this.customer.totalBill = this.customerDefault.totalBill ?? 0
       this.customer.scoreCumulated = this.customerDefault.scoreCumulated
       this.customer.isDefault = this.customerDefault.isDefault
