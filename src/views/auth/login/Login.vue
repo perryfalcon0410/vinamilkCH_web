@@ -550,8 +550,7 @@ export default {
                 throw new Error(res.statusValue)
               }
             })
-            .catch(error => {
-              console.log(error)
+            .catch(() => {
               toasts.error('Server không hoạt động, vui lòng liên hệ admin')
             })
         }
@@ -643,8 +642,7 @@ export default {
             throw new Error(statusValue)
           }
         })
-        .catch(error => {
-          console.log(error)
+        .catch(() => {
           toasts.error('Server không hoạt động, vui lòng liên hệ admin')
         })
     },
