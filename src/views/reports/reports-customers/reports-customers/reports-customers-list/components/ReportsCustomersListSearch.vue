@@ -402,7 +402,7 @@ export default {
   },
 
   beforeMount() {
-    this.GET_CUSTOMER_TYPES_ACTION({ ...this.decentralization })
+    this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
     this.GET_SHOP_LOCATIONS_SEARCH_ACTION({ ...this.decentralization })
   },
   mounted() {

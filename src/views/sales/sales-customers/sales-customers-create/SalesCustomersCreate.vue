@@ -46,7 +46,7 @@
                       Họ và tên đệm <sup class="text-danger">*</sup>
                     </div>
                     <b-form-input
-                      v-model.trim="lastName"
+                      v-model="lastName"
                       :state="touched ? passed : null"
                       autocomplete="on"
                       maxlength="250"
@@ -65,7 +65,7 @@
                       Tên <sup class="text-danger">*</sup>
                     </div>
                     <b-form-input
-                      v-model.trim="firstName"
+                      v-model="firstName"
                       autocomplete="on"
                       :state="touched ? passed : null"
                       maxlength="250"
@@ -112,12 +112,24 @@
                       class="m-0"
                       :state="touched ? passed : null"
                     >
-                      <vue-flat-pickr
-                        v-model="birthDay"
-                        :config="configBitrhDay"
-                        class="form-control"
-                        placeholder="Chọn ngày"
-                      />
+                      <b-row
+                        class="v-flat-pickr-group mx-0"
+                        align-v="center"
+                      >
+                        <b-icon-x
+                          v-show="birthDay"
+                          style="position: absolute; right: 15px"
+                          class="cursor-pointer text-gray"
+                          scale="1.3"
+                          data-clear
+                        />
+                        <vue-flat-pickr
+                          v-model="birthDay"
+                          :config="configBitrhDay"
+                          class="form-control"
+                          placeholder="Chọn ngày"
+                        />
+                      </b-row>
                       <small class="text-danger">{{ errors[0] }}</small>
                     </b-form-group>
                   </validation-provider>
@@ -194,7 +206,7 @@
                 Ghi chú
               </div>
               <b-form-textarea
-                v-model.trim="note"
+                v-model="note"
                 maxlength="3950"
               />
               <!-- END - Customer Note -->
@@ -232,48 +244,42 @@
               <!-- END - Customer IdentityCard -->
 
               <!-- START - Customer ID Date -->
-              <validation-provider
-                v-slot="{ errors, passed }"
-                :rules="`${customerID ? 'required' : ''}|dateFormatVNI`"
-                name="ngày cấp"
+              <div
+                class="mt-1"
               >
-                <div class="mt-1">
-                  Ngày cấp
-                </div>
-                <b-form-group
-                  class="m-0"
-                  :state="customerID ? passed : null"
+                Ngày cấp
+              </div>
+              <b-row
+                class="v-flat-pickr-group mx-0"
+                align-v="center"
+                @keypress="$onlyDateInput"
+              >
+                <b-icon-x
+                  v-show="customerIDDate && customerID"
+                  style="position: absolute; right: 20px"
+                  class="cursor-pointer text-gray"
+                  scale="1.3"
+                  data-clear
+                />
+                <vue-flat-pickr
+                  v-model="customerIDDate"
+                  :config="configIDDate"
+                  class="form-control"
+                  placeholder="Chọn ngày"
                   :disabled="customerID ? false : true"
-                  @keypress="$onlyDateInput"
-                >
-                  <vue-flat-pickr
-                    v-model="customerIDDate"
-                    :config="configIDDate"
-                    class="form-control"
-                    placeholder="Chọn ngày"
-                  />
-                </b-form-group>
-                <small class="text-danger">{{ errors[0] }}</small>
-              </validation-provider>
+                />
+              </b-row>
               <!-- END - Customer ID Date -->
 
               <!-- START - Customer ID Location -->
-              <validation-provider
-                v-slot="{ errors, passed }"
-                :rules="`${customerID ? 'required' : ''}`"
-                name="nơi cấp"
-              >
-                <div class="mt-1">
-                  Nơi cấp
-                </div>
-                <b-form-input
-                  v-model.trim="customerIDLocation"
-                  :disabled="customerID ? false : true"
-                  :state="customerID ? passed : null"
-                  maxlength="200"
-                />
-                <small class="text-danger">{{ errors[0] }}</small>
-              </validation-provider>
+              <div class="mt-1">
+                Nơi cấp
+              </div>
+              <b-form-input
+                v-model="customerIDLocation"
+                :disabled="customerID ? false : true"
+                maxlength="200"
+              />
               <!-- END - Customer ID Location -->
             </b-col>
           <!-- END - Section 2 -->
@@ -341,7 +347,7 @@
               Số nhà <sup class="text-danger">*</sup>
             </div>
             <b-form-input
-              v-model.trim="homeNumber"
+              v-model="homeNumber"
               maxlength="200"
               :state="touched ? passed : null"
             />
@@ -424,7 +430,7 @@
             Cơ quan
           </div>
           <b-form-input
-            v-model.trim="workingOffice"
+            v-model="workingOffice"
             maxlength="200"
           />
           <!-- END - Office-->
@@ -434,7 +440,7 @@
             Địa chỉ cơ quan
           </div>
           <b-form-input
-            v-model.trim="officeAddress"
+            v-model="officeAddress"
             maxlength="200"
           />
           <!-- END - Office Address-->
@@ -775,7 +781,7 @@ export default {
   },
 
   created() {
-    this.GET_CUSTOMER_TYPES_ACTION({ ...this.decentralization })
+    this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
     this.GET_PROVINCES_ACTION({ ...this.decentralization })
     this.GET_CARD_TYPES_ACTION({ ...this.decentralization })
     this.GET_CLOSELY_TYPES_ACTION({ ...this.decentralization })
@@ -830,8 +836,8 @@ export default {
         if (success) {
           this.CREATE_CUSTOMER_ACTION({
             customer: {
-              firstName: this.firstName,
-              lastName: this.lastName,
+              firstName: this.firstName?.trim(),
+              lastName: this.lastName?.trim(),
               genderId: this.gendersSelected,
               barCode: this.barCode,
               dob: formatVniDateToISO(this.birthDay),
@@ -840,16 +846,16 @@ export default {
               isPrivate: this.customerPrivate,
               idNo: this.customerID,
               idNoIssuedDate: this.customerID ? formatVniDateToISO(this.customerIDDate) : null,
-              idNoIssuedPlace: this.customerID ? this.customerIDLocation : null,
+              idNoIssuedPlace: this.customerID ? this.customerIDLocation?.trim() : null,
               mobiPhone: this.phoneNumber,
               email: this.customerEmail,
               areaId: this.precinctsSelected,
-              street: this.homeNumber,
+              street: this.homeNumber?.trim(),
               address: null,
-              workingOffice: this.workingOffice,
-              officeAddress: this.officeAddress,
+              workingOffice: this.workingOffice?.trim(),
+              officeAddress: this.officeAddress?.trim(),
               taxCode: this.taxCode,
-              noted: this.note,
+              noted: this.note?.trim(),
               closelyTypeId: this.closelyTypesSelected,
               cardTypeId: this.cardTypesSelected,
             },

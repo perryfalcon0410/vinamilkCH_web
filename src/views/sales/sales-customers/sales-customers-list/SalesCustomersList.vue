@@ -236,10 +236,9 @@ export default {
         {
           label: 'Họ tên',
           field: 'nameText',
-          width: '140px',
           thClass: 'text-left',
           tdClass: 'text-left',
-          sortable: true,
+          width: '200px',
         },
         {
           label: 'Điện thoại',

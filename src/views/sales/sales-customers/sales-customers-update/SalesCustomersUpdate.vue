@@ -42,7 +42,7 @@
                       Họ và tên đệm <sup class="text-danger">*</sup>
                     </div>
                     <b-form-input
-                      v-model.trim="lastName"
+                      v-model="lastName"
                       :state="touched ? passed : null"
                       autocomplete="on"
                       maxlength="250"
@@ -61,7 +61,7 @@
                       Tên <sup class="text-danger">*</sup>
                     </div>
                     <b-form-input
-                      v-model.trim="firstName"
+                      v-model="firstName"
                       autocomplete="on"
                       :state="touched ? passed : null"
                       maxlength="250"
@@ -108,12 +108,24 @@
                       class="m-0"
                       :state="touched ? passed : null"
                     >
-                      <vue-flat-pickr
-                        v-model="birthDay"
-                        :config="configBitrhDay"
-                        class="form-control"
-                        placeholder="Chọn ngày"
-                      />
+                      <b-row
+                        class="v-flat-pickr-group mx-0"
+                        align-v="center"
+                      >
+                        <b-icon-x
+                          v-show="birthDay"
+                          style="position: absolute; right: 15px"
+                          class="cursor-pointer text-gray"
+                          scale="1.3"
+                          data-clear
+                        />
+                        <vue-flat-pickr
+                          v-model="birthDay"
+                          :config="configBitrhDay"
+                          class="form-control"
+                          placeholder="Chọn ngày"
+                        />
+                      </b-row>
                       <small class="text-danger">{{ errors[0] }}</small>
                     </b-form-group>
                   </validation-provider>
@@ -191,7 +203,7 @@
                 Ghi chú
               </div>
               <b-form-textarea
-                v-model.trim="note"
+                v-model="note"
                 maxlength="3950"
               />
               <!-- END - Customer Note -->
@@ -237,49 +249,40 @@
               <!-- END - Customer IdentityCard -->
 
               <!-- START - Customer ID Date -->
-              <validation-provider
-                v-slot="{ errors, touched, passed }"
-                :rules="`${customerID ? 'required' : ''}|dateFormatVNI`"
-                name="ngày cấp"
+              <div class="mt-1">
+                Ngày cấp
+              </div>
+              <b-row
+                class="v-flat-pickr-group mx-0"
+                align-v="center"
+                @keypress="$onlyDateInput"
               >
-                <div class="mt-1">
-                  Ngày cấp
-                </div>
-                <b-form-group
-                  class="m-0"
-                  :state="touched ? passed : null"
+                <b-icon-x
+                  v-show="customerIDDate && customerID"
+                  style="position: absolute; right: 20px"
+                  class="cursor-pointer text-gray"
+                  scale="1.3"
+                  data-clear
+                />
+                <vue-flat-pickr
+                  v-model="customerIDDate"
+                  :config="configIDDate"
+                  class="form-control"
+                  placeholder="Chọn ngày"
                   :disabled="customerID ? false : true"
-                >
-                  <b-input-group @keypress="$onlyDateInput">
-                    <vue-flat-pickr
-                      v-model="customerIDDate"
-                      :config="configIDDate"
-                      class="form-control"
-                      placeholder="Chọn ngày"
-                    />
-                  </b-input-group>
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </b-form-group>
-              </validation-provider>
+                />
+              </b-row>
               <!-- END - Customer ID Date -->
 
               <!-- START - Customer ID Location -->
-              <validation-provider
-                v-slot="{ errors, passed, touched }"
-                :rules="`${customerID ? 'required' : ''}`"
-                name="nơi cấp"
-              >
-                <div class="mt-1">
-                  Nơi cấp
-                </div>
-                <b-form-input
-                  v-model.trim="customerIDLocation"
-                  :disabled="customerID ? false : true"
-                  :state="touched ? passed : null"
-                  maxlength="200"
-                />
-                <small class="text-danger">{{ errors[0] }}</small>
-              </validation-provider>
+              <div class="mt-1">
+                Nơi cấp
+              </div>
+              <b-form-input
+                v-model="customerIDLocation"
+                :disabled="customerID ? false : true"
+                maxlength="200"
+              />
               <!-- END - Customer ID Location -->
 
               <!-- START - Customer Sales -->
@@ -373,7 +376,7 @@
               Số nhà <sup class="text-danger">*</sup>
             </div>
             <b-form-input
-              v-model.trim="homeNumber"
+              v-model="homeNumber"
               maxlength="200"
               :state="touched ? passed : null"
             />
@@ -456,7 +459,7 @@
             Cơ quan
           </div>
           <b-form-input
-            v-model.trim="workingOffice"
+            v-model="workingOffice"
             maxlength="200"
           />
           <!-- END - Office-->
@@ -466,7 +469,7 @@
             Địa chỉ cơ quan
           </div>
           <b-form-input
-            v-model.trim="officeAddress"
+            v-model="officeAddress"
             maxlength="200"
           />
           <!-- END - Office Address-->
@@ -917,8 +920,8 @@ export default {
             customer: {
               id: this.customerId,
               customerCode: this.customerCode,
-              firstName: this.firstName,
-              lastName: this.lastName,
+              firstName: this.firstName?.trim(),
+              lastName: this.lastName?.trim(),
               genderId: this.gendersSelected,
               barCode: this.barCode,
               dob: formatVniDateToISO(this.birthDay),
@@ -927,15 +930,15 @@ export default {
               isPrivate: this.customerPrivate,
               idNo: this.customerID,
               idNoIssuedDate: this.customerID ? formatVniDateToISO(this.customerIDDate) : null,
-              idNoIssuedPlace: this.customerID ? this.customerIDLocation : null,
+              idNoIssuedPlace: this.customerID ? this.customerIDLocation?.trim() : null,
               mobiPhone: this.phoneNumber,
               email: this.customerEmail,
               areaId: this.precinctsSelected,
-              street: this.homeNumber,
-              workingOffice: this.workingOffice,
-              officeAddress: this.officeAddress,
+              street: this.homeNumber?.trim(),
+              workingOffice: this.workingOffice?.trim(),
+              officeAddress: this.officeAddress?.trim(),
               taxCode: this.taxCode,
-              noted: this.note,
+              noted: this.note?.trim(),
               closelyTypeId: this.closelyTypesSelected,
               cardTypeId: this.cardTypesSelected,
             },
@@ -960,7 +963,7 @@ export default {
       // console.log(`note:                      ${(this.note || null) === this.customer.noted} | (${typeof (this.note || null)}) ->|  ${(this.note || null)} === ${this.customer.noted} (${typeof this.customer.noted})`)
       // console.log(`customerID:                ${(this.customerID || null) === this.customer.idNo} | (${typeof (this.customerID || null)}) ->|  ${(this.customerID || null)} === ${this.customer.idNo} (${typeof this.customer.idNo})`)
       // console.log(`customerIDDate:            ${this.customerIDDate === (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')} | (${typeof this.customerIDDate}) ->|  ${this.customerIDDate} === ${(this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')} (${typeof (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')})`)
-      // console.log(`customerIDLocation:        ${this.customerIDLocation === this.customer.idNoIssuedPlace} | (${typeof this.customerIDLocation}) ->|  ${this.customerIDLocation} === ${this.customer.idNoIssuedPlace} (${typeof this.customer.idNoIssuedPlace})`)
+      // console.log(`customerIDLocation:        ${(this.customerIDLocation || null) === this.customer.idNoIssuedPlace} | (${typeof (this.customerIDLocation || null)}) ->|  ${(this.customerIDLocation || null)} === ${this.customer.idNoIssuedPlace} (${typeof this.customer.idNoIssuedPlace})`)
       // console.log(`phoneNumber:               ${(this.phoneNumber || null) === this.customer.mobiPhone} | (${typeof (this.phoneNumber || null)}) ->|  ${(this.phoneNumber || null)} === ${this.customer.mobiPhone} (${typeof this.customer.mobiPhone})`)
       // console.log(`customerEmail:             ${(this.customerEmail || null) === this.customer.email} | (${typeof (this.customerEmail || null)}) ->|  ${(this.customerEmail || null)} === ${this.customer.email} (${typeof this.customer.email})`)
       // console.log(`homeNumber:                ${(this.homeNumber || null) === this.customer.street} | (${typeof (this.homeNumber || null)}) ->|  ${(this.homeNumber || null)} === ${this.customer.street} (${typeof this.customer.street})`)
@@ -986,7 +989,7 @@ export default {
         && (this.note || null) === this.customer.noted
         && (this.customerID || null) === this.customer.idNo
         && this.customerIDDate === (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')
-        && this.customerIDLocation === this.customer.idNoIssuedPlace
+        && (this.customerIDLocation || null) === this.customer.idNoIssuedPlace
         // START - Contact
         && this.phoneNumber === this.customer.mobiPhone
         && this.customerEmail === this.customer.email

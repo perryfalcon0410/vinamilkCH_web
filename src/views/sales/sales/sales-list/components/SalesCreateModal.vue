@@ -334,6 +334,11 @@ export default {
       },
       goNext: () => {},
 
+      decentralization: {
+        formId: 9,
+        ctrlId: 6,
+      },
+
       // validation rules
       number,
       required,
@@ -416,7 +421,7 @@ export default {
     provincesSelected() {
       this.districtsSelected = null
       if (this.provincesSelected) {
-        this.GET_DISTRICTS_ACTION({ formId: 9, ctrlId: 6, provinceId: this.provincesSelected })
+        this.GET_DISTRICTS_ACTION({ ...this.decentralization, provinceId: this.provincesSelected })
       }
       if (this.shopLocations && this.isFirstTimeGetLocations) {
         this.districtsSelected = this.shopLocations.districtId
@@ -425,7 +430,7 @@ export default {
     districtsSelected() {
       this.precinctsSelected = null
       if (this.districtsSelected) {
-        this.GET_PRECINCTS_ACTION({ formId: 9, ctrlId: 6, districtId: this.districtsSelected })
+        this.GET_PRECINCTS_ACTION({ ...this.decentralization, districtId: this.districtsSelected })
       }
       if (this.shopLocations && this.isFirstTimeGetLocations) {
         this.precinctsSelected = this.shopLocations.precinctId
@@ -439,9 +444,9 @@ export default {
   },
 
   mounted() {
-    this.GET_PROVINCES_ACTION({ formId: 9, ctrlId: 6 })
-    this.GET_SHOP_LOCATIONS_ACTION({ formId: 9, ctrlId: 6 })
-    this.GET_CUSTOMER_TYPES_ACTION({ formId: 9, ctrlId: 6 })
+    this.GET_PROVINCES_ACTION({ ...this.decentralization })
+    this.GET_SHOP_LOCATIONS_ACTION({ ...this.decentralization })
+    this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
   },
 
   // START - Methods

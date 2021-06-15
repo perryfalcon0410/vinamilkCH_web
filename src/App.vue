@@ -121,7 +121,7 @@ export default {
 
     getCustomerTypes() {
       if (localStorage.getItem('userData')) {
-        this.GET_CUSTOMER_TYPES_ACTION({ ...this.decentralization })
+        this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
       }
     },
   },

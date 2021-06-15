@@ -352,6 +352,7 @@ export default {
           field: 'note',
           thClass: 'text-left',
           tdClass: 'text-left',
+          width: '200px',
         },
         {
           label: 'Thao tác',
