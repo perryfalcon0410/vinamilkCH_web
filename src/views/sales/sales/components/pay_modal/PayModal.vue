@@ -825,6 +825,7 @@ export default {
         isSelected: data.promotionType === Number(this.promotionTypeOption[0].id) && data.isUse,
         isInsertItemProducts: (data.products === null && data.amount === null),
         levelNumber: data.levelNumber,
+        totalQty: data.totalQty,
       }))
     },
     getItemsProduct() {
@@ -843,7 +844,7 @@ export default {
             if (indexPromotionCalculationZV19 !== -1) {
               const promotionCalculationZV19 = this.getPromotionCalculation.resultZV1921.find(p => p.programType === saleData.programPromotionType[0].label)
               promotionCalculationZV19.products = promotionCalculationZV19.products || []
-              return promotionCalculationZV19
+              return { ...promotionCalculationZV19, isSelected: true }
             }
           }
 
@@ -852,7 +853,7 @@ export default {
             if (indexPromotionCalculationZV20 !== -1) {
               const promotionCalculationZV20 = this.getPromotionCalculation.resultZV1921.find(p => p.programType === saleData.programPromotionType[1].label)
               promotionCalculationZV20.products = promotionCalculationZV20.products || []
-              return promotionCalculationZV20
+              return { ...promotionCalculationZV20, isSelected: true }
             }
           }
 
@@ -861,11 +862,27 @@ export default {
             if (indexPromotionCalculationZV21 !== -1) {
               const promotionCalculationZV21 = this.getPromotionCalculation.resultZV1921.find(p => p.programType === saleData.programPromotionType[2].label)
               promotionCalculationZV21.products = promotionCalculationZV21.products || []
-              return promotionCalculationZV21
+              return { ...promotionCalculationZV21, isSelected: true }
             }
           }
           return program
         })]
+
+        const indexZV19resultZV1921 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[0].label)
+        const indexZV20resultZV1921 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[1].label)
+        const indexZV21resultZV1921 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[2].label)
+        if (indexZV19resultZV1921 === -1) {
+          const indexPromotionProgramZV19 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[0].label)
+          if (indexPromotionProgramZV19) this.promotionPrograms.splice(indexPromotionProgramZV19, 1)
+        }
+        if (indexZV20resultZV1921 === -1) {
+          const indexPromotionProgramZV20 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[1].label)
+          if (indexPromotionProgramZV20) this.promotionPrograms.splice(indexPromotionProgramZV20, 1)
+        }
+        if (indexZV21resultZV1921 === -1) {
+          const indexPromotionProgramZV21 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[2].label)
+          if (indexPromotionProgramZV21) this.promotionPrograms.splice(indexPromotionProgramZV21, 1)
+        }
       } else {
         const indexPromotionProgramZV19 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[0].label)
         const indexPromotionProgramZV20 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[1].label)
@@ -1133,7 +1150,7 @@ export default {
       this.GET_PROMOTION_CALCULATION_ACTION({
         customerId: this.customer.id,
         orderType: Number(this.orderSelected),
-        totalAmount: this.pay.totalAmount,
+        totalOrderAmount: this.pay.totalAmount,
         saveAmount: this.pay.accumulate.accumulateAmount,
         voucherAmount: this.pay.voucher.totalVoucherAmount || 0,
         saleOffAmount: this.pay.discount.discountAmount,
@@ -1152,8 +1169,8 @@ export default {
 
     createSaleOrder() {
       let isValid = true
-      this.promotionPrograms = this.promotionPrograms.filter(p => p.isUse && p.isSelected)
-      this.promotionPrograms.forEach(program => {
+      const parampromotionInfo = this.promotionPrograms.filter(p => p.isUse && p.isSelected)
+      parampromotionInfo.forEach(program => {
         program.products.forEach(product => {
           if (program.isEditable) {
             if (product.quantity > product.stockQuantity) {
@@ -1178,17 +1195,17 @@ export default {
             orderOnlineId: this.orderOnline.onlineOrderId,
             onlineNumber: this.orderOnline.orderNumber,
             products: this.orderProducts,
-            promotionInfo: this.promotionPrograms,
-            totalOrderAmount: this.pay.totalAmount,
-            promotionAmount: this.pay.promotionAmount,
-            accumulatedAmount: this.pay.accumulate.accumulateAmount,
-            discountAmount: this.pay.discount.discountAmount,
+            promotionInfo: parampromotionInfo,
+            totalOrderAmount: this.pay.totalAmount || 0,
+            promotionAmount: this.pay.promotionAmount || 0,
+            accumulatedAmount: this.pay.accumulate.accumulateAmount || 0,
+            discountAmount: this.pay.discount.discountAmount || 0,
             discountCode: this.pay.discount.discountCode,
-            voucherAmount: this.pay.voucher.totalVoucherAmount,
+            voucherAmount: this.pay.voucher.totalVoucherAmount || 0,
             vouchers: this.pay.voucher.vouchers,
-            remainAmount: this.pay.needPaymentAmount,
-            paymentAmount: this.pay.salePayment.salePaymentAmount,
-            extraAmount: this.pay.extraAmount,
+            remainAmount: this.pay.needPaymentAmount || 0,
+            paymentAmount: this.pay.salePayment.salePaymentAmount || 0,
+            extraAmount: this.pay.extraAmount || 0,
           },
           onSuccess: () => {
             this.$root.$emit('bv::hide::modal', 'pay-modal')
