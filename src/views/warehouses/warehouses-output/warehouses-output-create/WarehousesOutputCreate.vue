@@ -653,6 +653,7 @@ export default {
       this.warehousesOutput.id = data.tranInfo.id
       this.warehousesOutput.billDate = data.tranInfo.adjustmentDate
       this.warehousesOutput.note = data.tranInfo.description
+      this.warehousesOutput.code = data.tranInfo.adjustmentCode
       this.exportAll = true
       this.products = data.products
       this.totalQuantity = data.totalQuantity

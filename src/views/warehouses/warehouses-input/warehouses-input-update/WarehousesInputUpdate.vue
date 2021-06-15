@@ -291,7 +291,7 @@
                   <b-row
                     v-if="props.column.field === 'quantity'"
                     class="mx-0"
-                    align-h="end"
+                    align-h="center"
                   >
                     {{ $formatNumberToLocale(totalPromotionQuantity) }}
                   </b-row>
@@ -299,7 +299,7 @@
                   <b-row
                     v-else-if="props.column.field === 'productCode'"
                     class="mx-0"
-                    align-h="end"
+                    align-h="center"
                   >
                     {{ totalPromotionCode }}
                   </b-row>
@@ -474,7 +474,7 @@ export default {
           field: 'productCode',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-left',
+          tdClass: 'text-center',
         },
         {
           label: 'Số lượng',
@@ -485,7 +485,7 @@ export default {
             enabled: true,
           },
           thClass: 'text-left',
-          tdClass: 'text-right',
+          tdClass: 'text-center',
         },
         {
           label: 'Giá',
@@ -493,14 +493,14 @@ export default {
           type: 'number',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-right',
+          tdClass: 'text-center',
         },
         {
           label: 'Tên hàng',
           field: 'name',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-left',
+          tdClass: 'text-center',
         },
         {
           label: 'ĐVT',
@@ -516,14 +516,14 @@ export default {
           type: 'number',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-right',
+          tdClass: 'text-center',
         },
         {
           label: 'SO No',
           field: 'soNo',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-left',
+          tdClass: 'text-center',
         },
         {
           label: '',
