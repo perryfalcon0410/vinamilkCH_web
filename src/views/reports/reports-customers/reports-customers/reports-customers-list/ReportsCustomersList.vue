@@ -205,7 +205,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatISOtoVNI } from '@core/utils/filter'
+import { formatISOtoVNI, reverseVniDate } from '@core/utils/filter'
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
@@ -366,7 +366,24 @@ export default {
     ]),
     // Start - xuat excel
     onClickExcelExportButton() {
-      this.EXPORT_REPORT_CUSTOMERS_ACTION({ ...this.decentralization })
+      const searchData = {
+        keySearch: this.paginationData.keySearch,
+        areaCode: this.paginationData.areasSelected,
+        customerPhone: this.paginationData.customerPhone,
+        customerStatus: this.paginationData.statusSelected,
+        customerType: this.paginationData.customerType,
+        fromCreateDate: reverseVniDate(this.paginationData.fromCreateDate),
+        toCreateDate: reverseVniDate(this.paginationData.toCreateDate),
+        fromPurchaseDate: reverseVniDate(this.paginationData.fromPurchaseDate),
+        toPurchaseDate: reverseVniDate(this.paginationData.toPurchaseDate),
+        fromSaleAmount: this.paginationData.fromSaleAmount,
+        toSaleAmount: this.paginationData.toSaleAmount,
+        fromSaleDate: reverseVniDate(this.paginationData.fromSaleDate),
+        toSaleDate: reverseVniDate(this.paginationData.toSaleDate),
+        formId: 1,
+        ctrlId: 1,
+      }
+      this.EXPORT_REPORT_CUSTOMERS_ACTION(searchData)
     },
     // End - xuat excel
 
