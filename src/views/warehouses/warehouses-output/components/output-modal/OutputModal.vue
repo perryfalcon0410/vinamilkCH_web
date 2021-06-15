@@ -428,8 +428,7 @@ export default {
           totalPrice: data.totalPrice,
           export: `${data.export}/${data.quantity}`,
           productReturnAmount: 0,
-          productReturnExportOriginal: data.export,
-          productReturnAmountOriginal: data.quantity,
+          quantity: `${data.quantity - data.export}/${data.quantity}`,
         }))
       }
     },

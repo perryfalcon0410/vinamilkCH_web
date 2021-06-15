@@ -558,6 +558,7 @@ export default {
       searchOptions: {
         redInvoiceNo: '', // số hóa đơn
         type: '',
+        exportNo: '',
         page: commonData.pageNumber,
         size: commonData.perPageSizes[0],
       },

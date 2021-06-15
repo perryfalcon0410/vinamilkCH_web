@@ -638,8 +638,10 @@ export default {
       this.exportAll = true
       this.totalQuantity = data.totalQuantity
       this.totalProduct = data.products.length
-      this.quantityReturn = data.products.quantity
       this.hideFilter = true
+      this.products.forEach((item, index) => {
+        this.products[index].quantityReturn = item.quantity
+      })
 
       // clear data
       this.warehousesOutput.redInvoiceNo = ''
@@ -655,8 +657,10 @@ export default {
       this.products = data.products
       this.totalQuantity = data.totalQuantity
       this.totalProduct = data.products.length
-      this.quantityReturn = data.products.quantity
       this.hideFilter = false
+      this.products.forEach((item, index) => {
+        this.products[index].quantityReturn = item.quantity
+      })
 
       // clear data
       this.warehousesOutput.redInvoiceNo = ''
