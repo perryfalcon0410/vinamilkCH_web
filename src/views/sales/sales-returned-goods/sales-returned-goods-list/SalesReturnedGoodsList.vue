@@ -486,7 +486,7 @@ export default {
       this.GET_RETURNED_GOODS_ACTION({ ...this.searchData, ...this.decentralization })
     },
     onPageChange(params) {
-      console.log(params)
+      // console.log(params)
       this.updateSearchData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
