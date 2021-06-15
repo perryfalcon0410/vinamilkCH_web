@@ -124,7 +124,6 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            console.log(res.data)
             state.printInputOutputData = res.data
           } else {
             throw new Error(res.statusValue)

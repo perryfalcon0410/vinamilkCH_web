@@ -344,7 +344,6 @@ export default {
     ]),
 
     onClickExcelExportButton() {
-      console.log(this.reportsSalesReceiptOnDeliveryType)
       this.EXPORT_REPORT_SALE_ON_DELIVERY_TYPE_ACTION({
         ...this.searchData,
         ...this.decentralization,

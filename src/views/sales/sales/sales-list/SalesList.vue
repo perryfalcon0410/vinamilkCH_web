@@ -598,7 +598,6 @@ export default {
 
     getCurrentCustomer() {
       this.currentCustomer = { ...this.getCurrentCustomer }
-      console.log('currentCustomer', this.currentCustomer)
     },
   },
   mounted() {

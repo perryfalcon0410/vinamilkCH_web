@@ -668,7 +668,6 @@ export default {
 
     selectCustomer(customer) {
       if (customer.item) {
-        // console.log('1')
         this.customerInfo.customerId = customer.item.customerId
         this.customerInfo.customerCode = customer.item.customerCode
         this.customerInfo.customerName = customer.item.customerName
@@ -676,7 +675,6 @@ export default {
         this.customerInfo.customerPhone = customer.item.mobilePhone
         this.customers = [{ data: null }]
       }
-      // console.log(customer.item.customerName)
     },
 
     loadProducts(text) {

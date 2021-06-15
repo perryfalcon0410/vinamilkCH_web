@@ -343,7 +343,6 @@ export default {
   },
   methods: {
     printReport() {
-      console.log(this.totalInfo)
       this.PRINT_REPORT_INPUT_RECEIPT_DETAILS_ACTION(this.searchData)
     },
     exportReport() {
