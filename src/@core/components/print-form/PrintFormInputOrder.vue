@@ -5,7 +5,7 @@
   >
     <!-- START - Header -->
     <b-row
-      class="mx-0 my-1 border-bottom-dark"
+      class="mx-0 my-1 border-bottom-dark font-italic"
       align-h="around"
       align-v="end"
     >
@@ -32,40 +32,42 @@
         <strong style="font-size: 30px">
           HOÁ ĐƠN NHẬP HÀNG
         </strong>
-        <b-row class="mx-0 font-italic">
-          <div class="w-35">
-            Loại nhập hàng:
-          </div>  <strong>{{ inputOrderInfoData.type }}</strong>
-        </b-row>
-        <b-row class="mx-0 font-italic">
-          <div class="w-35">
-            Mã nhập hàng:
-          </div>  <strong>{{ inputOrderInfoData.transCode }}</strong>
-        </b-row>
-        <b-row class="mx-0 font-italic">
-          <div class="w-35">
-            Số PO:
-          </div>  <strong>{{ inputOrderInfoData.poNumber }}</strong>
-        </b-row>
-        <b-row class="mx-0 font-italic">
-          <div class="w-35">
-            Số hóa đơn:
-          </div>  <strong>{{ inputOrderInfoData.invoiceNumber }}</strong>
-        </b-row>
+        <div class="font-italic">
+          <b-row class="mx-0">
+            <div class="w-35">
+              Loại nhập hàng:
+            </div>  <strong>{{ inputOrderInfoData.type }}</strong>
+          </b-row>
+          <b-row class="mx-0">
+            <div class="w-35">
+              Mã nhập hàng:
+            </div>  <strong>{{ inputOrderInfoData.transCode }}</strong>
+          </b-row>
+          <b-row class="mx-0">
+            <div class="w-35">
+              Số PO:
+            </div>  <strong>{{ inputOrderInfoData.poNumber }}</strong>
+          </b-row>
+          <b-row class="mx-0">
+            <div class="w-35">
+              Số hóa đơn:
+            </div>  <strong>{{ inputOrderInfoData.invoiceNumber }}</strong>
+          </b-row>
+        </div>
       </div>
 
-      <div class="d-flex flex-column w-50">
-        <b-row class="mx-0 font-italic">
+      <div class="d-flex flex-column w-50 font-italic">
+        <b-row class="mx-0">
           <div class="w-25">
             Ngày nhập:
           </div>  <strong>{{ $formatISOtoVNI(inputOrderInfoData.orderDate, true) }}</strong>
         </b-row>
-        <b-row class="mx-0 font-italic">
+        <b-row class="mx-0">
           <div class="w-25">
             Số nội bộ:
           </div>  <strong>{{ inputOrderInfoData.internalNumber }}</strong>
         </b-row>
-        <b-row class="mx-0 font-italic">
+        <b-row class="mx-0">
           <div class="w-25">
             Ngày hóa đơn:
           </div>  <strong>{{ $formatISOtoVNI(inputOrderInfoData.transDate) }}</strong>

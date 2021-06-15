@@ -67,32 +67,32 @@ $background-odd: #edf2f7;
 // END - Layout Table
 
 // sorting icons
-.vgt-wrap {
-  .vgt-table {
-    th.sortable {
-      &:before {
-        border-top-color: $border-color;
-      }
-      &:after {
-        border-bottom-color: $border-color;
-      }
-    }
-    thead {
-      th {
-        &.sorting-desc {
-          &::before {
-            border-top-color: $primary;
-          }
-        }
-        &.sorting-asc {
-          &::after {
-            border-bottom-color: $primary;
-          }
-        }
-      }
-    }
-  }
-}
+// .vgt-wrap {
+//   .vgt-table {
+//     th.sortable {
+//       &:before {
+//         border-top-color: $border-color;
+//       }
+//       &:after {
+//         border-bottom-color: $border-color;
+//       }
+//     }
+//     thead {
+//       th {
+//         &.sorting-desc {
+//           &::before {
+//             border-top-color: $primary;
+//           }
+//         }
+//         &.sorting-asc {
+//           &::after {
+//             border-bottom-color: $primary;
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
 
 // pagination in rtl
 .vgt-wrap.rtl {

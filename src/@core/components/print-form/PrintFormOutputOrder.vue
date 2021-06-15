@@ -5,7 +5,7 @@
   >
     <!-- START - Header -->
     <b-row
-      class="mx-0 my-1 border-bottom-dark"
+      class="mx-0 my-1 border-bottom-dark font-italic"
       align-h="around"
       align-v="end"
     >
@@ -32,29 +32,31 @@
         <strong style="font-size: 30px">
           HOÁ ĐƠN XUẤT HÀNG
         </strong>
-        <b-row class="mx-0">
-          <div class="w-35">
-            Loại xuất hàng:
-          </div>  <strong>{{ inputOrderInfoData.type }}</strong>
-        </b-row>
-        <b-row class="mx-0">
-          <div class="w-35">
-            Mã xuất hàng:
-          </div>  <strong>{{ inputOrderInfoData.transCode }}</strong>
-        </b-row>
-        <b-row class="mx-0">
-          <div class="w-35">
-            Số PO:
-          </div>  <strong>{{ inputOrderInfoData.poNumber }}</strong>
-        </b-row>
-        <b-row class="mx-0">
-          <div class="w-35">
-            Số hóa đơn:
-          </div>  <strong>{{ inputOrderInfoData.invoiceNumber }}</strong>
-        </b-row>
+        <div class="font-italic">
+          <b-row class="mx-0">
+            <div class="w-35">
+              Loại xuất hàng:
+            </div>  <strong>{{ inputOrderInfoData.type }}</strong>
+          </b-row>
+          <b-row class="mx-0">
+            <div class="w-35">
+              Mã xuất hàng:
+            </div>  <strong>{{ inputOrderInfoData.transCode }}</strong>
+          </b-row>
+          <b-row class="mx-0">
+            <div class="w-35">
+              Số PO:
+            </div>  <strong>{{ inputOrderInfoData.poNumber }}</strong>
+          </b-row>
+          <b-row class="mx-0">
+            <div class="w-35">
+              Số hóa đơn:
+            </div>  <strong>{{ inputOrderInfoData.invoiceNumber }}</strong>
+          </b-row>
+        </div>
       </div>
 
-      <div class="d-flex flex-column w-25">
+      <div class="d-flex flex-column w-25 font-italic">
         <b-row class="mx-0">
           <div class="w-50">
             Ngày xuất hàng:

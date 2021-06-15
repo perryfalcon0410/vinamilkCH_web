@@ -231,7 +231,6 @@ import {
   SHOP_LOCATIONS_SEARCH_GETTER,
   CUSTOMER_TYPES_GETTER,
   // ACTIONS
-  GET_CUSTOMERS_ACTION,
   GET_SHOP_LOCATIONS_SEARCH_ACTION,
   GET_CUSTOMER_TYPES_ACTION,
 } from '../../store-module/type'
@@ -241,12 +240,6 @@ export default {
     VCardActions,
   },
 
-  props: {
-    perPageSize: {
-      type: Number,
-      default: 20,
-    },
-  },
   data() {
     return {
       customerName: null,
@@ -258,6 +251,11 @@ export default {
       gendersSelected: null,
       areasSelected: null,
       privateCustomer: true,
+
+      apiStatus: { // success or fail
+        customerTypes: false,
+        shopLocationsSearch: false,
+      },
 
       // decentralization
       decentralization: {
@@ -285,26 +283,39 @@ export default {
         default: data.default,
       }))
     },
+    apiStatusResult() {
+      return Object.values(this.apiStatus).every((val, i, arr) => val && arr[0])
+    },
   },
 
   watch: {
     areaOptions() {
       this.areaSelectedDefault()
     },
-  },
-
-  beforeMount() {
-    this.GET_CUSTOMER_TYPES_ACTION({ ...this.decentralization })
-    this.GET_SHOP_LOCATIONS_SEARCH_ACTION({ ...this.decentralization })
+    apiStatusResult() {
+      if (this.apiStatusResult) {
+        this.onSearch()
+      }
+    },
   },
 
   mounted() {
-    this.onSearch()
+    this.GET_CUSTOMER_TYPES_ACTION({
+      data: { ...this.decentralization },
+      onSuccess: () => {
+        this.apiStatus.customerTypes = true
+      },
+    })
+    this.GET_SHOP_LOCATIONS_SEARCH_ACTION({
+      data: { ...this.decentralization },
+      onSuccess: () => {
+        this.apiStatus.shopLocationsSearch = true
+      },
+    })
   },
 
   methods: {
     ...mapActions(CUSTOMER, [
-      GET_CUSTOMERS_ACTION,
       GET_SHOP_LOCATIONS_SEARCH_ACTION,
       GET_CUSTOMER_TYPES_ACTION,
     ]),
@@ -321,17 +332,14 @@ export default {
         genderId: this.gendersSelected,
         areaId: this.areasSelected,
         isShop: this.privateCustomer,
-        size: this.perPageSize,
-        ...this.decentralization,
       }
-      this.updateSearchData(searchData)
-      this.GET_CUSTOMERS_ACTION(searchData)
+      this.getCustomers(searchData)
     },
     onClickSearchButton() {
       this.onSearch()
     },
-    updateSearchData(data) {
-      this.$emit('updateSearchData', data)
+    getCustomers(data) {
+      this.$emit('onSearchClick', data)
     },
   },
 }

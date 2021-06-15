@@ -5,8 +5,7 @@
   >
     <!-- START - Search -->
     <sales-customers-list-search
-      :per-page-size="paginationData.size"
-      @updateSearchData="updateSearchData"
+      @onSearchClick="onSearchClick"
     />
     <!-- END - Search -->
 
@@ -51,24 +50,20 @@
         class="py-1"
       >
         <vue-good-table
-          mode="remote"
           :columns="columns"
-          :rows="customers"
-          style-class="vgt-table striped"
-          :pagination-options="{
-            enabled: true,
-            perPage: paginationData.size,
-            setCurrentPage: pageNumber,
-          }"
+          :rows="customersData"
+          :total-rows="getCustomerPagination.totalElements"
+          mode="remote"
           compact-mode
           line-numbers
-          :total-rows="getCustomerPagination.totalElements"
-          :sort-options="{
-            enabled: false,
-            initialSortBy: [{field: 'nameText', type: 'asc'}]
+          style-class="vgt-table"
+          :pagination-options="{
+            enabled: true,
+            perPage: searchData.size,
+            setCurrentPage: searchData.page + 1,
           }"
-          @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
+          @on-sort-change="onSortChange"
           @on-per-page-change="onPerPageChange"
         >
           >
@@ -137,7 +132,7 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="paginationData.size"
+                  v-model="searchData.size"
                   size="sm"
                   :options="perPageSizeOptions"
                   class="mx-1"
@@ -148,7 +143,7 @@
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="getCustomerPagination.totalElements"
-                :per-page="paginationData.size"
+                :per-page="searchData.size"
                 first-number
                 last-number
                 align="right"
@@ -204,6 +199,11 @@ import {
   EXPORT_CUSTOMERS_ACTION,
 } from '../store-module/type'
 
+window.onbeforeunload = e => {
+  e.preventDefault()
+  return 'something'
+}
+
 export default {
   components: {
     SalesCustomersListSearch,
@@ -212,9 +212,9 @@ export default {
     return {
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
-      paginationData: {
+      searchData: {
         size: commonData.perPageSizes[0],
-        page: this.pageNumber,
+        page: commonData.pageNumber - 1,
         sort: null,
       },
 
@@ -224,7 +224,7 @@ export default {
         ctrlId: 1,
       },
 
-      customers: [],
+      customersData: [],
 
       columns: [
         {
@@ -239,6 +239,7 @@ export default {
           width: '140px',
           thClass: 'text-left',
           tdClass: 'text-left',
+          sortable: true,
         },
         {
           label: 'Điện thoại',
@@ -311,30 +312,43 @@ export default {
           status: data.status,
           customerTypeId: data.customerTypeId,
           createdAt: data.createdAt,
-          feature: '',
         }))
       }
       return []
     },
-    getCustomerPagination() {
+    getCustomerPagination() { // TODO: sửa chỗ này
       if (this.CUSTOMERS_GETTER) {
+        // const customersData = { ...this.CUSTOMERS_GETTER }
+        // console.log(customersData)
+        // return {
+        //   ...customersData,
+        //   size: customersData.size,
+        //   page: customersData.number,
+        //   totalElements: customersData.totalElements,
+        // }
         return this.CUSTOMERS_GETTER
       }
-      return {}
+      return null
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
-      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.getCustomerPagination.totalElements
-        ? this.getCustomerPagination.totalElements : (this.paginationData.size * this.pageNumber)
+      const { page, size } = this.searchData
+      const { totalElements } = this.getCustomerPagination
 
-      return `${minPageSize} - ${maxPageSize} của ${this.getCustomerPagination.totalElements} mục`
+      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
+      const maxPageSize = (size * (page + 1)) > totalElements
+        ? totalElements : (size * (page + 1))
+
+      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },
   },
 
   watch: {
     getCustomers() {
-      this.customers = [...this.getCustomers]
+      this.customersData = [...this.getCustomers]
     },
+    // getCustomerPagination() {  // TODO: sửa chỗ này
+    //   this.searchData = [...this.getCustomerPagination]
+    // },
   },
 
   mounted() {
@@ -380,37 +394,43 @@ export default {
     },
 
     onClickExcelExportButton() {
-      this.EXPORT_CUSTOMERS_ACTION({ ...this.paginationData, ...this.decentralization })
+      this.EXPORT_CUSTOMERS_ACTION({ ...this.searchData, ...this.decentralization })
     },
-    // START - Pagination func
-    updateSearchData(event) {
-      this.pageNumber = 1
-      this.updatePaginationData({
+
+    // START - Vue Good Table func
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
+    },
+    onSearchClick(event) {
+      this.updateSearchData({
+        // page: commonData.pageNumber - 1,
         ...event,
       })
+      this.onPaginationChange()
+      // this.pageNumber = commonData.pageNumber
     },
     onPaginationChange() {
-      this.GET_CUSTOMERS_ACTION({ ...this.paginationData, ...this.decentralization })
-    },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
+      this.GET_CUSTOMERS_ACTION({ ...this.searchData, ...this.decentralization })
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updateSearchData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ size: params.currentPerPage })
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
+      })
       this.onPaginationChange()
     },
-    // END - Pagination func
+    onSortChange(params) {
+      this.updateSearchData({
+        sort: `${params[0].field},${params[0].type}`,
+      })
+      this.onPaginationChange()
+    },
+    // END - Vue Good Table func
 
-    // onSortChange(params) {
-    // this.updatePaginationData({
-    //   sort: `${params.field},${params.sortType}`,
-    // })
-    // this.onPaginationChange()
-    // },
   },
 }
 </script>

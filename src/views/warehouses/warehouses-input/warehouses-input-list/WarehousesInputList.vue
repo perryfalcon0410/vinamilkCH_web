@@ -56,8 +56,6 @@
           :total-rows="receiptPagination.totalElements"
           :sort-options="{
             enabled: false,
-            multipleColumns: true,
-            initialSortBy: [{field: 'nameText', type: 'desc'}]
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"

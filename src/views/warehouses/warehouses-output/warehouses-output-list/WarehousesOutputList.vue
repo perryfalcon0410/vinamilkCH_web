@@ -189,7 +189,7 @@
           mode="remote"
           :columns="columns"
           :rows="warehousesOutputList"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -199,8 +199,7 @@
           line-numbers
           :total-rows="warehousesOutputPagination.totalElements"
           :sort-options="{
-            enabled: false,
-            multipleColumns: true,
+            enabled: true,
             initialSortBy: [
               {field: 'code', type: 'desc'},
             ]

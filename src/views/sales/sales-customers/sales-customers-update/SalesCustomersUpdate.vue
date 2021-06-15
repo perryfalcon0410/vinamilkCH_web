@@ -45,7 +45,7 @@
                       v-model.trim="lastName"
                       :state="touched ? passed : null"
                       autocomplete="on"
-                      maxlength="200"
+                      maxlength="250"
                     />
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
@@ -64,7 +64,7 @@
                       v-model.trim="firstName"
                       autocomplete="on"
                       :state="touched ? passed : null"
-                      maxlength="200"
+                      maxlength="250"
                     />
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
@@ -192,7 +192,7 @@
               </div>
               <b-form-textarea
                 v-model.trim="note"
-                maxlength="4000"
+                maxlength="3950"
               />
               <!-- END - Customer Note -->
 
@@ -598,7 +598,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import router from '@/router/index'
 import {
   ValidationProvider,
   ValidationObserver,
@@ -825,7 +824,7 @@ export default {
   },
 
   mounted() {
-    this.GET_CUSTOMER_TYPES_ACTION({ ...this.decentralization })
+    this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
     this.GET_PROVINCES_ACTION({ ...this.decentralization })
     this.GET_CARD_TYPES_ACTION({ ...this.decentralization })
     this.GET_CLOSELY_TYPES_ACTION({ ...this.decentralization })
@@ -941,7 +940,7 @@ export default {
               cardTypeId: this.cardTypesSelected,
             },
             onSuccess: () => {
-              router.replace({ name: 'sales-customers' })
+              this.navigateBack()
             },
           })
         }

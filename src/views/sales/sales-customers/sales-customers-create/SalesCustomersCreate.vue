@@ -49,7 +49,7 @@
                       v-model.trim="lastName"
                       :state="touched ? passed : null"
                       autocomplete="on"
-                      maxlength="200"
+                      maxlength="250"
                     />
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
@@ -68,7 +68,7 @@
                       v-model.trim="firstName"
                       autocomplete="on"
                       :state="touched ? passed : null"
-                      maxlength="200"
+                      maxlength="250"
                     />
                     <small class="text-danger">{{ errors[0] }}</small>
                   </validation-provider>
@@ -195,7 +195,7 @@
               </div>
               <b-form-textarea
                 v-model.trim="note"
-                maxlength="4000"
+                maxlength="3950"
               />
               <!-- END - Customer Note -->
             </b-col>

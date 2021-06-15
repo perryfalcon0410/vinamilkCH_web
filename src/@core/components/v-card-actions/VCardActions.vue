@@ -53,10 +53,14 @@ export default {
       type: Boolean,
       default: true,
     },
+    expandDefault: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
-      visible: true,
+      visible: this.expandDefault,
     }
   },
   methods: {
