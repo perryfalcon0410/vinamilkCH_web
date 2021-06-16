@@ -527,6 +527,7 @@ export default {
       if (this.GET_TOP_SALE_PRODUCTS_GETTER) {
         return [{
           data: this.GET_TOP_SALE_PRODUCTS_GETTER.map(data => ({
+            productId: data.id,
             name: data.productCode,
             checkStockTotal: data.checkStockTotal,
             productName: data.productName,
