@@ -79,6 +79,7 @@
           >
             <b-row
               v-if="props.column.field === 'totalValue'"
+              v-show="salesReceiptsTotal.totalAmount"
               class="mx-0"
               align-h="end"
             >
@@ -87,6 +88,7 @@
 
             <b-row
               v-else-if="props.column.field === 'payments'"
+              v-show="salesReceiptsTotal.allTotal"
               class="mx-0"
               align-h="end"
             >

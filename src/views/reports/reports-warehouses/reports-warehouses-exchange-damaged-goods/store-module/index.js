@@ -5,8 +5,6 @@ import moment from 'moment'
 import {
   // GETTERS
   REPORT_EXCHANGE_DAMAGED_GOODS_GETTER,
-  REPORT_EXCHANGE_DAMAGED_GOODS_INFO_GETTER,
-  REPORT_EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER,
   REASON_EXCHANGE_DAMAGED_GOODS_GETTER,
   PRODUCT_LIST_GETTER,
   PRODUCT_LIST_PAGINATION_GETTER,
@@ -24,9 +22,7 @@ export default {
 
   // START - STATE
   state: {
-    reportExchangeDamagedGoods: [],
-    reportExchangeDamagedGoodsInfo: {},
-    reportExchangeDamagedGoodsPagination: {},
+    reportExchangeDamagedGoods: {},
     reportReasonExchangeDamagedGoods: [],
     productList: [],
     productListPagination: {},
@@ -37,12 +33,6 @@ export default {
   getters: {
     [REPORT_EXCHANGE_DAMAGED_GOODS_GETTER](state) {
       return state.reportExchangeDamagedGoods
-    },
-    [REPORT_EXCHANGE_DAMAGED_GOODS_INFO_GETTER](state) {
-      return state.reportExchangeDamagedGoodsInfo
-    },
-    [REPORT_EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER](state) {
-      return state.reportExchangeDamagedGoodsPagination
     },
     [REASON_EXCHANGE_DAMAGED_GOODS_GETTER](state) {
       return state.reportReasonExchangeDamagedGoods
@@ -69,9 +59,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.reportExchangeDamagedGoods = res.data.response.content
-            state.reportExchangeDamagedGoodsInfo = res.data.info
-            state.reportExchangeDamagedGoodsPagination = res.data.response
+            state.reportExchangeDamagedGoods = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -100,8 +88,8 @@ export default {
         .exportReportExchangeDamagedGoods(val)
         .then(response => response.data)
         .then(res => {
-          const fileName = `DB_BC_doi_hang_hong_Filled_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
-          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          const fileName = `Bao_cao_doi_hang_hong_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
+          const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {

@@ -7,12 +7,14 @@ import {
   REPORT_WAREHOUSES_PROMOTIONS_GETTER,
   PRODUCT_GETTER,
   PRODUCT_CAT_GETTER,
+  PRINT_REPORT_PROMOTION_GETTER,
 
   // Actions
   GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS,
   GET_PRODUCT_ACTION,
   GET_PRODUCT_CAT_ACTION,
   EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION,
+  PRINT_REPORT_PROMOTION_ACTION,
 } from './type'
 
 export default {
@@ -21,6 +23,7 @@ export default {
     promotionData: [],
     productData: [],
     productCatData: [],
+    printData: {},
   },
   getters: {
     [REPORT_WAREHOUSES_PROMOTIONS_GETTER](state) {
@@ -31,6 +34,9 @@ export default {
     },
     [PRODUCT_CAT_GETTER](state) {
       return state.productCatData
+    },
+    [PRINT_REPORT_PROMOTION_GETTER](state) {
+      return state.printData
     },
   },
   mutations: {},
@@ -90,6 +96,21 @@ export default {
           const fileName = `Bao_cao_hang_khuyen_mai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_REPORT_PROMOTION_ACTION]({ state }, val) {
+      ReportService
+        .printReportPromotion(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printData = res.data || {}
+          } else {
+            throw new Error(res.statusValue)
+          }
         })
         .catch(error => {
           toasts.error(error.message)

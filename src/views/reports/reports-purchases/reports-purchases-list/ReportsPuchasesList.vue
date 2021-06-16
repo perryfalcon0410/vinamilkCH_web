@@ -6,6 +6,7 @@
 
     <!-- START - Search -->
     <list-search
+      class="d-print-none"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />
@@ -187,6 +188,9 @@
     </div>
     <!-- END - Input receipt list-->
 
+    <!-- STAT - Print form -->
+    <print-form-report-input-orders-detail />
+    <!-- END - Print form -->
   </b-container>
 </template>
 
@@ -199,12 +203,12 @@ import {
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
+import PrintFormReportInputOrdersDetail from '@core/components/print-form/PrintFormReportInputOrdersDetail.vue'
 import ListSearch from '../components/ListSearch.vue'
 import {
   REPORT_PURCHASES,
   // Getters
   REPORT_INPUT_RECEIPT_DETAILS_GETTER,
-  PRINT_REPORT_INPUT_RECEIPT_DETAILS_GETTER,
   // Actions
   GET_REPORT_INPUT_RECEIPT_DETAILS_ACTION,
   EXPORT_REPORT_INPUT_RECEIPT_DETAILS_ACTION,
@@ -214,6 +218,7 @@ import {
 export default {
   components: {
     ListSearch,
+    PrintFormReportInputOrdersDetail,
   },
   data() {
     return {
@@ -295,7 +300,6 @@ export default {
   computed: {
     ...mapGetters(REPORT_PURCHASES, [
       REPORT_INPUT_RECEIPT_DETAILS_GETTER,
-      PRINT_REPORT_INPUT_RECEIPT_DETAILS_GETTER,
     ]),
     getReportInputReceiptDetails() {
       if (this.REPORT_INPUT_RECEIPT_DETAILS_GETTER.response) {
@@ -343,7 +347,14 @@ export default {
   },
   methods: {
     printReport() {
-      this.PRINT_REPORT_INPUT_RECEIPT_DETAILS_ACTION(this.searchData)
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_REPORT_INPUT_RECEIPT_DETAILS_ACTION({
+        ...this.searchData,
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
     },
     exportReport() {
       this.EXPORT_REPORT_INPUT_RECEIPT_DETAILS_ACTION(this.searchData)
@@ -363,7 +374,7 @@ export default {
       }
     },
     onPaginationChange() {
-      this.GET_REPORT_INPUT_RECEIPT_DETAILS_ACTION({ ...this.paginationData, formId: this.formId, ctrlId: this.ctrlId })
+      this.GET_REPORT_INPUT_RECEIPT_DETAILS_ACTION({ ...this.paginationData })
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }

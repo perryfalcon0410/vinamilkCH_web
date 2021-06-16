@@ -17,8 +17,6 @@ export default {
   // State
   state: {
     reportInputReceiptDetails: {},
-    reportInputReceiptDetailsContent: [],
-    reportInputReceiptDetailsPagination: {},
     printInputReceiptDetails: [],
   },
   // Getters
@@ -54,7 +52,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           const fileName = `Bang_ke_chi_tiet_don_nhap_hang_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
-          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {

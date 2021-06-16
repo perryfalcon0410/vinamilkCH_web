@@ -27,6 +27,26 @@
       </b-col>
       <!-- END - Full Name -->
 
+      <!-- START - Phone -->
+      <b-col
+        xl
+        md="3"
+        sm="4"
+      >
+        <div
+          class="h8 mt-sm-1 mt-xl-0"
+        >
+          Số điện thoại
+        </div>
+        <b-form-input
+          v-model="phoneNumber"
+          class="h8 text-brand-3 height-button-brand-1"
+          placeholder="Nhập SĐT khách hàng"
+          @keyup.enter="onClickSearchButton"
+        />
+      </b-col>
+      <!-- END - Phone -->
+
       <!-- START - Bill Number -->
       <b-col
         xl
@@ -180,6 +200,7 @@ export default {
       printOptions: receiptData.printState,
       printStateSelected: null,
 
+      phoneNumber: null,
       customerName: null,
       billNumber: null,
       fromDate: this.$earlyMonth,
@@ -226,6 +247,7 @@ export default {
 
     onSearch() {
       const searchData = {
+        customerPhone: this.phoneNumber?.trim(),
         searchKeywords: this.customerName?.trim(),
         orderNumber: this.billNumber?.trim(),
         fromDate: reverseVniDate(this.fromDate),

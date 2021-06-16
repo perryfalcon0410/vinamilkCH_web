@@ -5,6 +5,7 @@ import {
   getProductCatListsEndpoint,
   getProductListsEndpoint,
   exportsWarehousesPromotionEndpoint,
+  printReportPromotionEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -27,6 +28,11 @@ export default {
     return axios.get(exportsWarehousesPromotionEndpoint, {
       params: formatURLParams(args),
       responseType: 'blob',
+    })
+  },
+  printReportPromotion(args) {
+    return axios.get(printReportPromotionEndpoint, {
+      params: formatURLParams(args),
     })
   },
 }

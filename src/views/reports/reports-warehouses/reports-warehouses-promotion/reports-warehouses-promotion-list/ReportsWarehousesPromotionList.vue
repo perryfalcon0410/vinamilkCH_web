@@ -6,12 +6,13 @@
 
     <!-- START - Search -->
     <reports-warehouses-promotion-list-search
+      class="d-print-none"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />
     <!-- END - Search -->
 
-    <div class="bg-white rounded shadow rounded my-1">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
@@ -156,6 +157,7 @@
       </b-col>
       <!-- END - Table -->
     </div>
+    <print-form-report-promotion />
   </b-container>
 </template>
 <script>
@@ -170,17 +172,22 @@ import {
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
+import PrintFormReportPromotion from '@core/components/print-form/PrintFormPromotionProducts.vue'
 import ReportsWarehousesPromotionListSearch from './components/ReportsWarehousesPromotionListSearch.vue'
 import {
   REPORT_WAREHOUSES_PROMOTIONS,
+
   REPORT_WAREHOUSES_PROMOTIONS_GETTER,
+
   GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS,
   EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION,
+  PRINT_REPORT_PROMOTION_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
     ReportsWarehousesPromotionListSearch,
+    PrintFormReportPromotion,
   },
   data() {
     return {
@@ -351,7 +358,19 @@ export default {
     ...mapActions(REPORT_WAREHOUSES_PROMOTIONS, [
       GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS,
       EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION,
+      PRINT_REPORT_PROMOTION_ACTION,
     ]),
+    onClickPrintButton() {
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_REPORT_PROMOTION_ACTION({
+        ...this.searchOptions,
+        ...this.decentralization,
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
+    },
     // Start - xuat excel
     onClickExcelExportButton() {
       this.EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION({ ...this.decentralization, ...this.searchOptions })

@@ -46,7 +46,9 @@
                   </b-col>
                   <b-col>
                     <b-input
+                      v-model.trim="voucherProgram"
                       placeholder="Nhập tên chương trình khuyến mãi"
+                      @keyup.enter="onClickSearchButton"
                     />
                   </b-col>
                 </b-row>
@@ -172,8 +174,9 @@
                   </b-col>
                   <b-col>
                     <b-input
-                      v-model="voucher"
+                      v-model.trim="voucher"
                       placeholder="Nhập mã/tên/serial voucher"
+                      @keyup.enter="onClickSearchButton"
                     />
                   </b-col>
                   <b-col>
@@ -181,8 +184,9 @@
                   </b-col>
                   <b-col>
                     <b-input
-                      v-model="customer"
+                      v-model.trim="customer"
                       placeholder="Nhập mã/họ tênkhách hàng"
+                      @keyup.enter="onClickSearchButton"
                     />
                   </b-col>
                   <b-col>
@@ -190,8 +194,10 @@
                   </b-col>
                   <b-col>
                     <b-input
-                      v-model="phoneNumber"
+                      v-model.trim="phoneNumber"
                       placeholder="Nhập SĐT khách hàng"
+                      @keyup.enter="onClickSearchButton"
+                      @keypress="$onlyNumberInput"
                     />
                   </b-col>
                 </b-row>
@@ -316,7 +322,16 @@ import {
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
+import { reverseVniDate } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import {
+  mapActions,
+} from 'vuex'
+import {
+  REPORT_VOUCHERS,
+  // Actions
+  GET_REPORT_VOUCHERS_USED_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -328,6 +343,7 @@ export default {
     return {
       dateFormatVNI,
       // search
+      voucherProgram: null,
       voucher: null,
       customer: null,
       phoneNumber: null,
@@ -364,8 +380,83 @@ export default {
       ctrlId: 7,
     }
   },
-  updated() {
-    this.$root.$emit('bv::toggle::collapse', 'collapse-1')
+  watch: {
+    promoFromDate() {
+      this.configPromotionToDate = {
+        ...this.configPromotionToDate,
+        minDate: this.promoFromDate,
+      }
+    },
+    promoToDate() {
+      this.configPromotionFromDate = {
+        ...this.configPromotionFromDate,
+        maxDate: this.promoToDate,
+      }
+    },
+
+    usedFromDate() {
+      this.configUsedToDate = {
+        ...this.configUsedToDate,
+        minDate: this.usedFromDate,
+      }
+    },
+    usedToDate() {
+      this.configUsedFromDate = {
+        ...this.configUsedFromDate,
+        maxDate: this.usedToDate,
+      }
+    },
+  },
+  created() {
+    this.onSearch()
+  },
+  mounted() {
+    this.configPromotionToDate = {
+      ...this.configPromotionToDate,
+      minDate: this.promoFromDate,
+    }
+    this.configPromotionFromDate = {
+      ...this.configPromotionFromDate,
+      maxDate: this.promoToDate,
+    }
+
+    this.configUsedToDate = {
+      ...this.configUsedToDate,
+      minDate: this.usedFromDate,
+    }
+    this.configUsedFromDate = {
+      ...this.configUsedFromDate,
+      maxDate: this.usedToDate,
+    }
+  },
+  methods: {
+    ...mapActions(REPORT_VOUCHERS, [
+      GET_REPORT_VOUCHERS_USED_ACTION,
+    ]),
+    onSearch() {
+      const searchData = {
+        customerKeywords: this.customer,
+        customerMobiPhone: this.phoneNumber,
+        voucherKeywords: this.voucher,
+        voucherProgramName: this.voucherProgram,
+        fromProgramDate: reverseVniDate(this.promoFromDate),
+        toProgramDate: reverseVniDate(this.promoToDate),
+        fromUseDate: reverseVniDate(this.usedFromDate),
+        toUseDate: reverseVniDate(this.usedToDate),
+        formId: this.formId,
+        ctrlId: this.ctrlId,
+      }
+      this.updateSearchData(searchData)
+      this.GET_REPORT_VOUCHERS_USED_ACTION(searchData)
+    },
+
+    onClickSearchButton() {
+      this.onSearch()
+      this.$emit('onClickSearchButton')
+    },
+    updateSearchData(data) {
+      this.$emit('updateSearchData', data)
+    },
   },
 }
 </script>

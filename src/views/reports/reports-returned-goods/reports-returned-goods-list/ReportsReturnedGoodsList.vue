@@ -5,6 +5,7 @@
   >
     <!-- START - Search -->
     <reports-returned-goods-list-search
+      class="d-print-none"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />
@@ -19,7 +20,7 @@
         align-v="center"
       >
         <strong class="text-brand-1">
-          Danh sách khách hàng
+          Danh sách đơn trả hàng
         </strong>
         <b-button-group>
           <b-button
@@ -226,7 +227,6 @@ import {
   REPORT_RETURNED_GOODS,
   // Getters
   REPORT_RETURNED_GOODS_GETTER,
-  PRINT_RETURN_GOODS_GETTER,
   // Actions
   GET_REPORT_RETURNED_GOODS_ACTION,
   EXPORT_REPORT_RETURNED_GOODS_ACTION,
@@ -372,7 +372,6 @@ export default {
   computed: {
     ...mapGetters(REPORT_RETURNED_GOODS, [
       REPORT_RETURNED_GOODS_GETTER,
-      PRINT_RETURN_GOODS_GETTER,
     ]),
     getReportReturnedgoodLists() {
       if (this.REPORT_RETURNED_GOODS_GETTER.response && this.REPORT_RETURNED_GOODS_GETTER.response.content) {
@@ -440,7 +439,15 @@ export default {
 
     // printReport
     printReport() {
-      this.PRINT_RETURN_GOODS_ACTION({ ...this.searchOptions, ...this.decentralization })
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_RETURN_GOODS_ACTION({
+        ...this.searchOptions,
+        ...this.decentralization,
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
     },
     // printReport
 

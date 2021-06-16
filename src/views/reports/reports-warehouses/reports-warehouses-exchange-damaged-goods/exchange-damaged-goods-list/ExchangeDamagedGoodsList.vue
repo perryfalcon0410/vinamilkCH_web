@@ -18,17 +18,9 @@
         align-v="center"
       >
         <strong class="text-brand-1">
-          Tồn kho sản phẩm
+          Danh sách biên bản đổi hàng hỏng
         </strong>
         <b-button-group>
-          <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
-            variant="someThing"
-            size="sm"
-          >
-            <b-icon-printer-fill />
-            In
-          </b-button>
           <b-button
             class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
             variant="someThing"
@@ -100,33 +92,18 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'stockQuantity'"
+              v-if="props.column.field === 'quantity'"
               class="mx-0"
               align-h="end"
             >
-              {{ $formatNumberToLocale(reportExchangeInfo.totalQuantity) }}
-            </b-row>
-
-            <b-row
-              v-else-if="props.column.field === 'packetQuantity'"
-              class="mx-0"
-              align-h="end"
-            >
-              {{ $formatNumberToLocale(reportExchangeInfo.totalPackageQuantity) }}
+              {{ $formatNumberToLocale(total[7]) }}
             </b-row>
             <b-row
-              v-else-if="props.column.field === 'unitQuantity'"
+              v-else-if="props.column.field === 'amount'"
               class="mx-0"
               align-h="end"
             >
-              {{ $formatNumberToLocale(reportExchangeInfo.totalUnitQuantity) }}
-            </b-row>
-            <b-row
-              v-else-if="props.column.field === 'totalAmount'"
-              class="mx-0"
-              align-h="end"
-            >
-              {{ $formatNumberToLocale(reportExchangeInfo.totalAmount) }}
+              {{ $formatNumberToLocale(total[8]) }}
             </b-row>
           </template>
           <template
@@ -209,8 +186,6 @@ import {
   REPORT_EXCHANGE_DAMAGED_GOODS,
   // GETTERS
   REPORT_EXCHANGE_DAMAGED_GOODS_GETTER,
-  REPORT_EXCHANGE_DAMAGED_GOODS_INFO_GETTER,
-  REPORT_EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER,
   // ACTIONS
   EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
 } from '../store-module/type'
@@ -288,6 +263,9 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -295,6 +273,9 @@ export default {
           label: 'Thành tiền',
           field: 'amount',
           sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
           thClass: 'text-right',
           tdClass: 'text-right',
         },
@@ -319,33 +300,34 @@ export default {
   computed: {
     ...mapGetters(REPORT_EXCHANGE_DAMAGED_GOODS, [
       REPORT_EXCHANGE_DAMAGED_GOODS_GETTER,
-      REPORT_EXCHANGE_DAMAGED_GOODS_INFO_GETTER,
-      REPORT_EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER,
     ]),
     reportInventory() {
-      return this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.map(data => ({
-        transDate: formatISOtoVNI(data.transDate),
-        transNumber: data.transNumber,
-        customerCode: data.customerCode,
-        customerName: data.customerName,
-        address: data.address,
-        productCode: data.productCode,
-        productName: data.productName,
-        quantity: this.$formatNumberToLocale(data.quantity),
-        amount: this.$formatNumberToLocale(data.amount),
-        reason: data.categoryName,
-        phoneNumber: data.phone,
-      }))
-    },
-    reportExchangeInfo() {
-      if (this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER) {
-        return this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER
+      if (this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.response) {
+        return this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.response.content.map(data => ({
+          transDate: formatISOtoVNI(data[0]),
+          transNumber: data[1],
+          customerCode: data[2],
+          customerName: data[3],
+          address: data[4],
+          productCode: data[5],
+          productName: data[6],
+          quantity: this.$formatNumberToLocale(data[7]),
+          amount: this.$formatNumberToLocale(data[8]),
+          reason: data[9],
+          phoneNumber: data[10],
+        }))
       }
       return {}
     },
+    total() {
+      if (this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.totals) {
+        return this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.totals
+      }
+      return []
+    },
     reportExchangePagnigation() {
-      if (this.REPORT_EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER) {
-        return this.REPORT_EXCHANGE_DAMAGED_GOODS_PAGINATION_GETTER
+      if (this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.response) {
+        return this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.response
       }
       return {}
     },
@@ -364,6 +346,7 @@ export default {
   },
   methods: {
     exportExcel() {
+      console.log(this.total[7])
       this.EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(this.searchData)
     },
     ...mapActions(REPORT_EXCHANGE_DAMAGED_GOODS, [

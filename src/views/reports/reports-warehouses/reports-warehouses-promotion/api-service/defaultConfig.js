@@ -5,3 +5,4 @@ export const getReportsWarehousesPromotionEndpoint = `${reports}${products}/prom
 export const getProductCatListsEndpoint = `${sales}${products}/all-product-cat`
 export const getProductListsEndpoint = `${sales}${products}/choose-product`
 export const exportsWarehousesPromotionEndpoint = `${reports}${products}/promotions/excel`
+export const printReportPromotionEndpoint = `${reports}/${products}/promotions/print`

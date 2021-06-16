@@ -3,12 +3,11 @@
     size="lg"
     :visible="visible"
     title="Chọn sản phẩm"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     footer-class="justify-content-center"
     content-class="bg-light"
     class="d-print-none"
     footer-border-variant="light"
-    hide-header-close
     centered
     @hidden="onModalClose"
   >
@@ -34,7 +33,7 @@
             v-model="searchOptions.productCodes"
             class="h8 text-brand-3 height-button-brand-1"
             placeholder="Nhập mã sản phẩm"
-            @keyup.enter="onClickSearchButton"
+            @keyup.enter="onSearchClick"
           />
         </b-col>
         <!-- END - Product code -->
@@ -54,7 +53,7 @@
             v-model="searchOptions.productName"
             class="h8 text-brand-3 height-button-brand-1"
             placeholder="Nhập tên sản phẩm"
-            @keyup.enter="onClickSearchButton"
+            @keyup.enter="onSearchClick"
           />
         </b-col>
         <!-- END - Product name -->
@@ -225,8 +224,9 @@
     <!-- START - Footer -->
     <template #modal-footer="{ cancel }">
       <b-button
-        variant="primary"
-        class="d-flex align-items-center text-uppercase"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center"
+        variant="someThing"
+        size="sm"
         @click="onSaveClick"
       >
         <b-icon
@@ -238,8 +238,8 @@
         Lưu
       </b-button>
       <b-button
-        variant="secondary"
-        class="d-flex align-items-center text-uppercase"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center ml-1"
+        size="sm"
         @click="cancel()"
       >
         <b-icon

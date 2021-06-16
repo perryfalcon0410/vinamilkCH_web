@@ -491,14 +491,12 @@
 </template>
 
 <script>
-// import { mapActions, mapGetters } from 'vuex'
-// import {
-//   REPORT_RETURNED_GOODS,
-//   // Getters
-//   PRINT_INPUT_ORDER_DETIAL_GETTER,
-//   // Actions
-//   PRINT_INPUT_ORDER_DETIAL_ACTION,
-// } from '@/views/reports/reports-returned-goods/store-module/type'
+import { mapGetters } from 'vuex'
+import {
+  REPORT_RETURNED_GOODS,
+  // Getters
+  PRINT_RETURN_GOODS_GETTER,
+} from '@/views/reports/reports-returned-goods/store-module/type'
 
 export default {
   data() {
@@ -506,17 +504,12 @@ export default {
 
     }
   },
-  // computed: {
-  //   ...mapGetters(REPORT_RETURNED_GOODS, [PRINT_INPUT_ORDER_DETIAL_GETTER]),
-  // },
-
-  // mounted() {
-  //   this.PRINT_INPUT_ORDER_DETIAL_ACTION({ ...this.decentralization })
-  // },
-
-  // methods: {
-  //   ...mapActions(REPORT_RETURNED_GOODS, [PRINT_INPUT_ORDER_DETIAL_ACTION]),
-  // },
+  computed: {
+    ...mapGetters(REPORT_RETURNED_GOODS, [PRINT_RETURN_GOODS_GETTER]),
+  },
+  updated() {
+    window.print()
+  },
 }
 </script>
 <style lang="scss" scoped>

@@ -132,7 +132,7 @@
           <div
             class="h8 mt-sm-1 mt-xl-0"
           >
-            Nhóm khách hàng
+            Lý do
           </div>
           <tree-select
             v-model="reasonSelected"
