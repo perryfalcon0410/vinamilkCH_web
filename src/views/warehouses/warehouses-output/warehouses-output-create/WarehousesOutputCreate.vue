@@ -805,11 +805,11 @@ export default {
               isRemainAll: this.exportAll,
               receiptImportId: Number(this.warehousesOutput.id),
               note: this.warehousesOutput.note,
-              litQuantityRemain: [this.products.map(item => ({
+              litQuantityRemain: [...this.products.map(item => ({
                 id: item.id,
                 quantity: Number(item.quantityReturn) || 0,
               })),
-              this.rowsProductPromotion.map(item => ({
+              ...this.rowsProductPromotion.map(item => ({
                 id: item.id,
                 quantity: Number(item.quantity) || 0,
               })),
