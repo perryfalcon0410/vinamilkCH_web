@@ -26,7 +26,7 @@
               scale="2"
               color="red"
             />
-            <strong class="ml-1 text-brand-1">Khuyến mãi</strong>
+            <strong class="ml-1 text-brand-1 h7">Khuyến mãi</strong>
           </b-row>
 
           <div
@@ -158,7 +158,7 @@
                 <div v-else-if="value.amount">
                   <div v-if="value.amount.percentage > 0">
                     <b-row
-                      class="mx-0 p-1"
+                      class="mx-0 p-1 h7"
                       align-v="center"
                     >
                       <div>Giảm giá</div>
@@ -168,8 +168,12 @@
                           <b-input-group-prepend is-text>
                             {{ value.amount.percentage }}%
                           </b-input-group-prepend>
-                          <b-form-input
+                          <cleave
                             v-model="value.amount.amount"
+                            class="form-control"
+                            :raw="true"
+                            :options="options.number"
+                            disabled
                           />
                         </b-input-group>
                       </b-col>
@@ -177,21 +181,24 @@
                   </div>
                   <div v-else>
                     <b-row
-                      class="mx-0 p-1"
+                      class="mx-0 p-1 h7"
                       align-v="center"
                     >
                       <div>Số tiền</div>
 
                       <b-col cols="3">
-                        <b-form-input
+                        <cleave
                           v-if="value.amount"
                           v-model="value.amount.amount"
+                          class="form-control"
+                          :raw="true"
+                          :options="options.number"
                           :disabled="value.promotionType === Number(promotionTypeOption[0].id) && !value.isUse"
-                          @change="onChangePromotionAmout(value.amount.amount, value.amount.maxAmount)"
+                          @change.native="onChangePromotionAmout(value.amount.amount, value.amount.maxAmount)"
                         />
                       </b-col>
                     </b-row>
-                    <div class="ml-1">
+                    <div class="ml-1 h7">
                       Tối đa: {{ $formatNumberToLocale(value.amount.maxAmount) }}
                     </div>
                   </div>
@@ -276,7 +283,7 @@
               scale="2"
               class="text-brand-1"
             />
-            <strong class="ml-1">Thanh toán</strong>
+            <strong class="ml-1 h7">Thanh toán</strong>
           </b-row>
 
           <b-form class="">
@@ -286,7 +293,10 @@
                 class="mx-0"
                 align-v="center"
               >
-                <b-col cols="4">
+                <b-col
+                  cols="4"
+                  class="h7"
+                >
                   <strong>Tổng tiền hàng
                     <strong class="d-inline-flex text-white px-1 ml-1 bg-brand-1 rounded-pill">
                       {{ pay.totalQuantity }}
@@ -296,8 +306,15 @@
                 </b-col>
 
                 <b-col>
-                  <b-form-input
+                  <!-- <b-form-input
                     v-model="pay.totalAmount"
+                    disabled
+                  /> -->
+                  <cleave
+                    v-model="pay.totalAmount"
+                    class="form-control"
+                    :raw="true"
+                    :options="options.number"
                     disabled
                   />
                 </b-col>
@@ -311,13 +328,19 @@
                 class="mx-0"
                 align-v="center"
               >
-                <b-col cols="4">
+                <b-col
+                  cols="4"
+                  class="h7"
+                >
                   <strong>Giảm giá</strong>
                 </b-col>
 
                 <b-col>
-                  <b-form-input
+                  <cleave
                     v-model="pay.promotionAmount"
+                    class="form-control"
+                    :raw="true"
+                    :options="options.number"
                     disabled
                   />
                 </b-col>
@@ -328,11 +351,13 @@
             <!-- START - Money accumulated -->
             <b-form-group>
               <b-row
-
                 class="mx-0"
                 align-v="center"
               >
-                <b-col cols="4">
+                <b-col
+                  cols="4"
+                  class="h7"
+                >
                   <strong>Tiền tích lũy</strong>
                 </b-col>
 
@@ -351,8 +376,11 @@
                       <b-input-group
                         class="input-group-merge"
                       >
-                        <b-form-input
+                        <cleave
                           v-model="pay.accumulate.accumulateAmount"
+                          class="form-control"
+                          :raw="true"
+                          :options="options.number"
                         />
                       </b-input-group>
                     </b-col>
@@ -366,11 +394,13 @@
             <!-- START - Voucher -->
             <b-form-group>
               <b-row
-
                 class="mx-0"
                 align-v="center"
               >
-                <b-col cols="4">
+                <b-col
+                  cols="4"
+                  class="h7"
+                >
                   <strong>Voucher</strong>
                 </b-col>
 
@@ -398,8 +428,11 @@
                     </b-col>
 
                     <b-col>
-                      <b-form-input
+                      <cleave
                         v-model="pay.voucher.totalVoucherAmount"
+                        class="form-control"
+                        :raw="true"
+                        :options="options.number"
                         disabled
                       />
                     </b-col>
@@ -412,11 +445,13 @@
             <!-- START - Discount code -->
             <b-form-group>
               <b-row
-
                 class="mx-0"
                 align-v="center"
               >
-                <b-col cols="4">
+                <b-col
+                  cols="4"
+                  class="h7"
+                >
                   <strong>Mã giảm giá</strong>
                 </b-col>
 
@@ -447,8 +482,11 @@
                     </b-col>
 
                     <b-col>
-                      <b-form-input
+                      <cleave
                         v-model="pay.discount.discountAmount"
+                        class="form-control"
+                        :raw="true"
+                        :options="options.number"
                         disabled
                       />
                     </b-col>
@@ -462,17 +500,22 @@
             <!-- START - Customer need to pay -->
             <b-form-group>
               <b-row
-
                 class="mx-0"
                 align-v="center"
               >
-                <b-col cols="4">
+                <b-col
+                  cols="4"
+                  class="h7"
+                >
                   <strong>Khách cần trả</strong>
                 </b-col>
 
                 <b-col>
-                  <b-form-input
+                  <cleave
                     v-model="pay.needPaymentAmount"
+                    class="form-control"
+                    :raw="true"
+                    :options="options.number"
                     disabled
                   />
                 </b-col>
@@ -483,11 +526,13 @@
             <!-- START - Payment customers -->
             <b-form-group>
               <b-row
-
                 class="mx-0"
                 align-v="center"
               >
-                <b-col cols="4">
+                <b-col
+                  cols="4"
+                  class="h7"
+                >
                   <strong>Khách thanh toán</strong>
                 </b-col>
                 <b-col>
@@ -502,9 +547,12 @@
                     </b-col>
 
                     <b-col>
-                      <b-form-input
+                      <cleave
                         v-model="pay.salePayment.salePaymentAmount"
-                        @keyup="extraAmountCalculation"
+                        class="form-control"
+                        :raw="true"
+                        :options="options.number"
+                        @keyup.native="extraAmountCalculation"
                       />
                     </b-col>
 
@@ -522,13 +570,19 @@
                 class="mx-0"
                 align-v="center"
               >
-                <b-col cols="4">
+                <b-col
+                  cols="4"
+                  class="h7"
+                >
                   <strong>Tiền thừa trả khách</strong>
                 </b-col>
 
                 <b-col>
-                  <b-form-input
+                  <cleave
                     v-model="pay.extraAmount"
+                    class="form-control"
+                    :raw="true"
+                    :options="options.number"
                     disabled
                   />
                 </b-col>
@@ -635,8 +689,8 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import Cleave from 'vue-cleave-component'
 import saleData from '@/@db/sale'
-
 import {
   SALES,
   // GETTERS
@@ -648,7 +702,6 @@ import {
   GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
 
   // ACTIONS
-  GET_PRODUCTS_ACTION,
   CREATE_SALE_ORDER_ACTION,
   GET_DISCOUNT_BY_CODE_ACTION,
   GET_PROMOTION_FREE_ITEMS_ACTION,
@@ -661,6 +714,7 @@ import VoucherModal from '../voucher-modal/VoucherModal.vue'
 export default {
   components: {
     VoucherModal,
+    Cleave,
   },
   props: {
     visible: {
@@ -765,6 +819,13 @@ export default {
 
       // validation rules
       number,
+
+      options: {
+        number: {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand',
+        },
+      },
     }
   },
   computed: {
@@ -790,7 +851,7 @@ export default {
     },
 
     needPayment() {
-      return this.pay.totalAmount - Number(this.pay.accumulate.accumulateAmount) - Number(this.pay.voucher.totalVoucherAmount) - Number(this.pay.discount.discountAmount)
+      return Number(this.pay.totalAmount) - Number(this.pay.accumulate.accumulateAmount) - Number(this.pay.voucher.totalVoucherAmount) - Number(this.pay.discount.discountAmount)
     },
 
     getPromotionPrograms() {
@@ -836,7 +897,7 @@ export default {
       this.allProducts = [...this.getItemsProduct]
     },
     needPayment() {
-      this.pay.needPaymentAmount = this.needPayment
+      this.pay.needPaymentAmount = Number(this.needPayment)
     },
     getPromotionCalculation() {
       this.pay.promotionAmount = this.getPromotionCalculation.promotionAmount
@@ -907,22 +968,22 @@ export default {
   created() {
     window.addEventListener('keydown', e => {
       if (e.key === 'F8') {
-        const paramProducts = this.orderProducts.map(data => ({
-          productId: data.productId,
-          productCode: data.productCode,
-          quantity: data.quantity,
-        }))
-        this.GET_PROMOTION_PROGRAMS_ACTION({
-          customerId: this.customer.id,
-          orderType: Number(saleData.orderType[0].id),
-          products: paramProducts,
-        })
+        // const paramProducts = this.orderProducts.map(data => ({
+        //   productId: data.productId,
+        //   productCode: data.productCode,
+        //   quantity: data.quantity,
+        // }))
+        // this.GET_PROMOTION_PROGRAMS_ACTION({
+        //   customerId: this.customer.id,
+        //   orderType: Number(saleData.orderType[0].id),
+        //   products: paramProducts,
+        // })
 
-        if (this.totalQuantity === 0 || this.editOnlinePermission === false || (this.orderSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')) {
-          this.$root.$emit('bv::hide::modal', 'pay-modal')
-        } else {
-          this.$root.$emit('bv::show::modal', 'pay-modal')
-        }
+        // if (this.totalQuantity === 0 || this.editOnlinePermission === false || (this.orderSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')) {
+        //   this.$root.$emit('bv::hide::modal', 'pay-modal')
+        // } else {
+        //   this.$root.$emit('bv::show::modal', 'pay-modal')
+        // }
       }
     })
   },
@@ -935,7 +996,6 @@ export default {
   },
   methods: {
     ...mapActions(SALES, [
-      GET_PRODUCTS_ACTION,
       CREATE_SALE_ORDER_ACTION,
       GET_DISCOUNT_BY_CODE_ACTION,
       GET_PROMOTION_FREE_ITEMS_ACTION,
@@ -974,7 +1034,7 @@ export default {
 
     resetDiscount() {
       this.pay.discount.discountCode = ''
-      this.pay.discount.discountAmount = 0
+      this.pay.discount.discountAmount = null
     },
 
     resetOrderPayment() {
@@ -989,9 +1049,6 @@ export default {
       this.resetDiscount()
     },
 
-    totalPrice(amount, price) {
-      return amount * (price || 0)
-    },
     onChangeQuantity(id, params) {
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.programId === id) {
@@ -1156,13 +1213,14 @@ export default {
         orderType: Number(this.orderSelected),
         products: this.orderProducts,
       }
+
       this.GET_PROMOTION_CALCULATION_ACTION({
         customerId: this.customer.id,
         orderType: Number(this.orderSelected),
-        totalOrderAmount: this.pay.totalAmount,
-        saveAmount: this.pay.accumulate.accumulateAmount,
-        voucherAmount: this.pay.voucher.totalVoucherAmount || 0,
-        saleOffAmount: this.pay.discount.discountAmount,
+        totalOrderAmount: Number(this.pay.totalAmount),
+        saveAmount: Number(this.pay.accumulate.accumulateAmount),
+        voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
+        saleOffAmount: Number(this.pay.discount.discountAmount),
         promotionInfo: paramPromotionAmountInfos,
         orderRequest: paramOrderRequest,
       })
@@ -1205,16 +1263,16 @@ export default {
             onlineNumber: this.orderOnline.orderNumber,
             products: this.orderProducts,
             promotionInfo: parampromotionInfo,
-            totalOrderAmount: this.pay.totalAmount || 0,
-            promotionAmount: this.pay.promotionAmount || 0,
-            accumulatedAmount: this.pay.accumulate.accumulateAmount || 0,
-            discountAmount: this.pay.discount.discountAmount || 0,
+            totalOrderAmount: Number(this.pay.totalAmount) || 0,
+            promotionAmount: Number(this.pay.promotionAmount) || 0,
+            accumulatedAmount: Number(this.pay.accumulate.accumulateAmount) || 0,
+            discountAmount: Number(this.pay.discount.discountAmount) || 0,
             discountCode: this.pay.discount.discountCode,
-            voucherAmount: this.pay.voucher.totalVoucherAmount || 0,
+            voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
             vouchers: this.pay.voucher.vouchers,
-            remainAmount: this.pay.needPaymentAmount || 0,
-            paymentAmount: this.pay.salePayment.salePaymentAmount || 0,
-            extraAmount: this.pay.extraAmount || 0,
+            remainAmount: Number(this.pay.needPaymentAmount) || 0,
+            paymentAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
+            extraAmount: Number(this.pay.extraAmount) || 0,
           },
           onSuccess: () => {
             this.$root.$emit('bv::hide::modal', 'pay-modal')
