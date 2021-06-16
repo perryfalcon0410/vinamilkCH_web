@@ -3,12 +3,16 @@
     fluid
     class="d-flex flex-column"
   >
+    <!-- START - Search -->
     <list-search
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton($event)"
     />
+    <!-- END - Search -->
 
-    <b-form class="bg-white rounded shadow rounded my-1">
+    <!-- START - List -->
+    <div class="bg-white rounded shadow rounded my-1">
+      <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
@@ -36,6 +40,9 @@
           </b-button>
         </b-button-group>
       </b-row>
+      <!-- END - Header -->
+
+      <!-- START - Table -->
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
@@ -183,7 +190,10 @@
           <!-- START - Column filter -->
         </vue-good-table>
       </b-col>
-    </b-form>
+    <!-- END - Table -->
+    </div>
+    <!-- END - List -->
+
   </b-container>
 </template>
 

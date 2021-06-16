@@ -21,7 +21,7 @@
       <!-- END - Search -->
 
       <!-- START - Coupon list -->
-      <b-form class="bg-white rounded shadow rounded mt-1">
+      <div class="bg-white rounded shadow rounded mt-1">
         <!-- START - Header -->
         <b-row
           class="justify-content-between border-bottom p-1 mx-0"
@@ -170,7 +170,7 @@
           </vue-good-table>
         </b-col>
         <!-- END - Table -->
-      </b-form>
+      </div>
       <!-- END - Coupon list -->
 
       <!-- START - Product list -->

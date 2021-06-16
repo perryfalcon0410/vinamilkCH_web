@@ -11,7 +11,7 @@
         ...$event }"
     />
 
-    <b-form class="bg-white rounded shadow rounded my-1 d-print-none">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <b-row
         class="justify-content-between border-bottom mx-0 px-1"
         style="padding: 5px 0"
@@ -213,7 +213,7 @@
         :discount-details="discountTable"
         @close="isInvoiceDetailModal = false"
       />
-    </b-form>
+    </div>
 
     <!-- START - Print form -->
     <print-form-sales-receipt />

@@ -82,6 +82,14 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 // END - Common
 
 // START - Button
+
+// Common css for all button
+.btn {
+  padding: 7px 14px;
+  height: $height-button-brand-1;
+  font-weight: bolder;
+}
+
 .shadow-brand-1:hover {
   box-shadow: 2px 10px 20px 1px rgba($brand-1, 0.3);
 }
@@ -101,12 +109,6 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   }
 }
 
-.btn {
-  padding: 7px 14px;
-  height: $height-button-brand-1;
-  font-weight: bolder;
-}
-
 .aligns-items-button-center {
   display: flex;
   align-items: center;
@@ -115,18 +117,11 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 // END - Button
 
 // START - Input
-.form-control:focus {
-  border-color: $brand-1 !important;
-}
 .form-control,
 input {
   height: $height-input-brand-1;
   color: $brand-3;
-}
-
-// border input for vue-treeselect
-.input-group:not(.bootstrap-touchspin):focus-within .input-group-text {
-  border-color: $brand-1 !important;
+  font-size: $font-size-brand-1;
 }
 
 // icon X color for flat-pickr

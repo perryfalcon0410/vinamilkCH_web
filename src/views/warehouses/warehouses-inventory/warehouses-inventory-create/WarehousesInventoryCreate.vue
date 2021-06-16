@@ -125,7 +125,7 @@
     <!-- END - Section search -->
 
     <!-- START - Section product Import list -->
-    <b-form class="bg-white rounded shadow my-1">
+    <div class="bg-white rounded shadow my-1">
       <!-- START - Title -->
       <b-form class="border-bottom p-1">
         <strong
@@ -330,7 +330,7 @@
       </b-col>
       <!-- END - Body -->
 
-    </b-form>
+    </div>
     <!-- END - Section product Import list -->
 
     <!-- START - Modal import -->

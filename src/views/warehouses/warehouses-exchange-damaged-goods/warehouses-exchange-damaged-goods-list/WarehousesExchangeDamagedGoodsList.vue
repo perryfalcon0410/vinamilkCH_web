@@ -12,7 +12,7 @@
     <!-- END - Search -->
 
     <!-- START - Product Import list -->
-    <b-form class="bg-white rounded shadow my-1">
+    <div class="bg-white rounded shadow my-1">
       <!-- START - Title -->
       <b-row
         class="justify-content-between border-bottom px-1 mx-0"
@@ -217,7 +217,7 @@
       </b-col>
       <!-- END - Table -->
 
-    </b-form>
+    </div>
     <!-- END - Product Import list -->
 
     <!-- START - Product Modal Delete -->

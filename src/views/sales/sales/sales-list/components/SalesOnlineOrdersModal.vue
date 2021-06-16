@@ -157,7 +157,7 @@
       <!-- END - Search -->
 
       <!-- START - Coupon list -->
-      <b-form class="bg-white rounded shadow rounded mt-1">
+      <div class="bg-white rounded shadow rounded mt-1">
         <!-- START - Table -->
         <b-col class="py-1">
           <vue-good-table
@@ -290,8 +290,10 @@
             Đóng
           </b-button>
         </b-col>
-        <!-- END - Coupon list -->
-      </b-form></b-container>
+      </div>
+      <!-- END - Coupon list -->
+
+    </b-container>
   </b-modal>
 </template>
 

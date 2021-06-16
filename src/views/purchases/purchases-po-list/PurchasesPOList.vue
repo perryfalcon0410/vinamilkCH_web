@@ -187,7 +187,7 @@
     <!-- END - Search -->
 
     <!-- START - Product  list -->
-    <b-form class="bg-white rounded shadow my-1">
+    <div class="bg-white rounded shadow my-1">
       <!-- START - Title -->
       <b-form-row class="align-items-center border-bottom p-1">
         <strong
@@ -300,7 +300,7 @@
       </b-row>
     <!-- END - Group Button -->
 
-    </b-form>
+    </div>
     <!-- END - Product  list -->
 
     <!-- START - Modal -->

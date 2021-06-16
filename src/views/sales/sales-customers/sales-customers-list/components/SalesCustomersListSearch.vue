@@ -13,7 +13,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="mt-sm-1 mt-xl-0"
@@ -45,7 +45,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="mt-sm-1 mt-xl-0"
@@ -80,7 +80,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="mt-sm-1 mt-xl-0"
@@ -102,7 +102,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="mt-sm-1 mt-xl-0"
@@ -124,7 +124,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="mt-sm-1 mt-xl-0"
@@ -146,7 +146,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="mt-sm-1 mt-xl-0"
@@ -168,7 +168,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="text-white mt-sm-1 mt-xl-0"
@@ -191,7 +191,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <!--"onmousedown" is prevent hightlight text -->
         <div

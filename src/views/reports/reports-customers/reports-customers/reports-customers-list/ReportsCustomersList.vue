@@ -12,7 +12,7 @@
     <!-- END - Search -->
 
     <!-- START - Customer list -->
-    <b-form class="v-search bg-white rounded shadow rounded my-1 d-print-none">
+    <div class="v-search bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom px-1 mx-0"
@@ -193,7 +193,7 @@
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
-    </b-form>
+    </div>
     <!-- END - Customer list -->
 
   </b-container>

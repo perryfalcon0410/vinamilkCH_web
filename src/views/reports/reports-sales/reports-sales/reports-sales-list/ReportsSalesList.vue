@@ -14,7 +14,7 @@
     <!-- END - Search -->
 
     <!-- START - Report Output list -->
-    <b-form class="bg-white rounded shadow rounded my-1 d-print-none">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
@@ -174,7 +174,7 @@
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
-    </b-form>
+    </div>
     <!-- END - Report Output list -->
 
     <!-- STAT - Print form -->

@@ -8,7 +8,7 @@
 
   // value input
   .vue-treeselect__single-value {
-    font-size: 13px;
+    font-size: $font-size-brand-1;
     color: $brand-3;
   }
 }
@@ -31,7 +31,7 @@
   .vue-treeselect__label {
     // line break is allowed or not
     white-space: unset;
-    font-size: 13px;
+    font-size: $font-size-brand-1;
     color: $brand-3;
   }
 }

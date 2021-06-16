@@ -13,7 +13,7 @@
     <!-- END - Search -->
 
     <!-- START - Warehouses Inventory List -->
-    <b-form class="bg-white rounded shadow rounded my-1">
+    <div class="bg-white rounded shadow rounded my-1">
       <!-- START - Title -->
       <b-form-row
         class="justify-content-between border-bottom px-1 mx-0"
@@ -171,7 +171,7 @@
       </b-col>
       <!-- END - Table -->
 
-    </b-form>
+    </div>
     <!-- END - Warehouses Inventory List -->
   </b-container>
 </template>

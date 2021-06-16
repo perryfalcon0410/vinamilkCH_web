@@ -10,7 +10,7 @@
     <!-- END - Search -->
 
     <!-- START - Customer list -->
-    <b-form class="bg-white rounded shadow rounded my-1 d-print-none">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="border-bottom px-1 mx-0"
@@ -171,7 +171,7 @@
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
-    </b-form>
+    </div>
     <!-- END - Customer list -->
   </b-container>
 </template>
@@ -198,11 +198,6 @@ import {
   GET_CUSTOMERS_ACTION,
   EXPORT_CUSTOMERS_ACTION,
 } from '../store-module/type'
-
-window.onbeforeunload = e => {
-  e.preventDefault()
-  return 'something'
-}
 
 export default {
   components: {

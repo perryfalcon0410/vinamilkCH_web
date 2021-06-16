@@ -41,6 +41,9 @@ $brand-3: #202124 !default;
 $height-button-brand-1: 34px;
 $height-input-brand-1: 34px;
 
+// Font size system
+$font-size-brand-1: 14px;
+
 // Spacing
 //
 // Control the default styling of most Bootstrap elements by modifying these
@@ -53,7 +56,7 @@ $container-max-widths: (
   md: 720px,
   lg: 960px,
   xl: 1140px,
-  xxl: 1440px // Custom xxl size,
+  xxl: 1440px // Custom xxl size,,
 ) !default;
 // scss-docs-end container-max-widths
 

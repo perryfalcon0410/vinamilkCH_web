@@ -10,7 +10,7 @@
     <!-- END - Search -->
 
     <!-- START - List of orders returned -->
-    <b-form class="bg-white rounded shadow rounded my-1">
+    <div class="bg-white rounded shadow rounded my-1">
       <b-row
         class="justify-content-between border-bottom px-1 mx-0"
         style="padding: 5px 0"
@@ -185,7 +185,7 @@
       </b-col>
     <!-- End table -->
 
-    </b-form>
+    </div>
     <!-- END - List of orders returned -->
 
     <!-- START - Modal -->

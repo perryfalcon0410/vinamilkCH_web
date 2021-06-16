@@ -99,7 +99,7 @@
         <!-- END - Search button -->
       </v-card-actions>
       <!-- START- Table -->
-      <b-form class="bg-white rounded shadow rounded mt-1 p-1">
+      <div class="bg-white rounded shadow rounded mt-1 p-1">
         <vue-good-table
           ref="products-table"
           :columns="columns"
@@ -218,7 +218,7 @@
           </template>
           <!-- END - Pagination -->
         </vue-good-table>
-      </b-form>
+      </div>
       <!-- END Body -->
     </b-container>
 

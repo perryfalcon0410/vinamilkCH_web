@@ -56,7 +56,7 @@ label {
     border-radius: $input-border-radius;
     .form-control,
     .input-group-text {
-      border-color: $primary;
+      border-color: $brand-1;
       box-shadow: none;
 
       &.is-valid {
@@ -324,6 +324,7 @@ select.form-control {
       left: 0;
     }
   }
+  // START - Checkbox color
   .custom-control-input:checked ~ .custom-control-label::before {
     border-color: $brand-1;
     background-color: $brand-1;
@@ -335,10 +336,16 @@ select.form-control {
     box-shadow: none !important;
   }
 
+  .custom-control-input:disabled:checked ~ .custom-control-label::before {
+    background-color: rgba($brand-1, 0.65);
+    box-shadow: 0 2px 4px 0 rgba($custom-control-indicator-checked-bg, 0.4) !important;
+  }
+
   .custom-control-input:focus ~ .custom-control-label::before {
     border-color: none;
     box-shadow: 0 2px 4px 0 rgba($custom-control-indicator-checked-bg, 0.4) !important;
   }
+  // END - Checkbox color
 }
 
 // Custom-checkbox when not disabled and active
@@ -385,7 +392,7 @@ select.form-control {
     &:focus,
     &:not(:active) {
       &:not(:placeholder-shown) ~ label {
-        color: rgba($primary, 1) !important;
+        color: rgba($brand-1, 1) !important;
         transition: all 0.25s ease-in-out;
         opacity: 1;
       }
@@ -532,7 +539,7 @@ select.form-control {
 
 /* Textarea with Counter */
 .textarea-counter-value {
-  background-color: $primary;
+  background-color: $brand-1;
   color: $white;
   padding: 1px 6px;
   font-size: 0.6rem;

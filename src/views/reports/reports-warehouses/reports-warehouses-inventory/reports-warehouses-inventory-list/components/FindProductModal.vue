@@ -127,7 +127,7 @@
         <!-- END - Search button -->
       </v-card-actions>
       <!-- START- Table -->
-      <b-form class="bg-white rounded shadow rounded mt-1 p-1">
+      <div class="bg-white rounded shadow rounded mt-1 p-1">
         <div class="pt-0">
           <strong class="text-blue-vinamilk pt-2">
             Tổng cộng: {{ $formatNumberToLocale(totalProductFound) }} sản phẩm
@@ -234,7 +234,7 @@
           </template>
           <!-- END - Pagination -->
         </vue-good-table>
-      </b-form>
+      </div>
       <!-- END Body -->
     </b-container>
 

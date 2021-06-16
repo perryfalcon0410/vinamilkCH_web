@@ -11,7 +11,7 @@
     <!-- END - Search -->
 
     <!-- START - Product list -->
-    <b-form class="bg-white rounded shadow rounded my-1 d-print-none">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Title -->
       <b-row
         class="justify-content-between border-bottom px-1 mx-0"
@@ -209,7 +209,7 @@
       </b-col>
       <!-- END - Table -->
 
-    </b-form>
+    </div>
     <!-- END - Product  list -->
 
     <!-- START - Product Modal Delete -->

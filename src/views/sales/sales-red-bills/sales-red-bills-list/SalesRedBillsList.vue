@@ -160,7 +160,7 @@
     </b-form>
     <!-- END - Search -->
 
-    <b-form class="d-print-none bg-white rounded shadow my-1">
+    <div class="d-print-none bg-white rounded shadow my-1">
       <!-- START - Header -->
       <b-row
         class="border-bottom mx-0 px-1"
@@ -391,7 +391,7 @@
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
-    </b-form>
+    </div>
 
     <!-- START - Red Bill Modal Delete -->
     <b-modal

@@ -29,11 +29,12 @@ export default {
   actions: {
     [GET_CUSTOMER_TYPES_ACTION]({ state }, val) {
       CustomerService
-        .getCustomerTypes(val)
+        .getCustomerTypes(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.customerTypes = res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

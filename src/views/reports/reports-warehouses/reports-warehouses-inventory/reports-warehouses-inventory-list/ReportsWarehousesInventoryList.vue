@@ -10,7 +10,7 @@
         ...$event }"
     />
 
-    <b-form class="bg-white rounded shadow rounded my-1">
+    <div class="bg-white rounded shadow rounded my-1">
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
@@ -185,7 +185,7 @@
           <!-- START - Column filter -->
         </vue-good-table>
       </b-col>
-    </b-form>
+    </div>
   </b-container>
 </template>
 
