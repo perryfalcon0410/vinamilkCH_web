@@ -10,7 +10,10 @@
       title="Thêm khách hàng"
     >
       <b-form-row>
-        <b-col md="6">
+        <b-col
+          md="6"
+          class="h7"
+        >
           <validation-provider
             v-slot="{ errors, passed, touched }"
             rules="required"
@@ -27,7 +30,10 @@
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
         </b-col>
-        <b-col md="6">
+        <b-col
+          md="6"
+          class="h7"
+        >
           <validation-provider
             v-slot="{ errors, passed, touched }"
             rules="required"
@@ -45,7 +51,10 @@
           </validation-provider>
         </b-col>
         <!-- START - Customer BirthDay and Gender -->
-        <b-col md="12">
+        <b-col
+          md="12"
+          class="h7"
+        >
           <b-form-row>
             <b-col>
               <validation-provider
@@ -92,7 +101,10 @@
         </b-col>
         <!-- END - Customer BirthDay and Gender -->
 
-        <b-col md="6">
+        <b-col
+          md="6"
+          class="h7"
+        >
           <validation-provider
             v-slot="{ errors, passed }"
             rules="phoneNumber|required"
@@ -112,7 +124,10 @@
           </validation-provider>
         </b-col>
 
-        <b-col md="6">
+        <b-col
+          md="6"
+          class="h7"
+        >
           <validation-provider
             v-slot="{ errors, passed}"
             rules="email"
@@ -133,7 +148,10 @@
           </validation-provider>
         </b-col>
 
-        <b-col md="12">
+        <b-col
+          md="12"
+          class="h7"
+        >
           <validation-provider
             v-slot="{ errors, passed}"
             name="Số nhà"
@@ -150,7 +168,10 @@
           </validation-provider>
         </b-col>
 
-        <b-col md="12">
+        <b-col
+          md="12"
+          class="h7"
+        >
           <!-- START - Customer District and Wards -->
           <b-form-row>
             <b-col>
@@ -220,7 +241,10 @@
         <!-- END - Customer District and Wards -->
         </b-col>
 
-        <b-col md="12">
+        <b-col
+          md="12"
+          class="h7"
+        >
           <!-- START - Customer loyal -->
           <b-form-checkbox
             v-model="customerSpecial"
@@ -231,7 +255,10 @@
         <!-- END - Customer loyal -->
         </b-col>
 
-        <b-col md="12">
+        <b-col
+          md="12"
+          class="h7"
+        >
           <!-- START - Customer Note -->
           <b-form-group
             label="Ghi chú"

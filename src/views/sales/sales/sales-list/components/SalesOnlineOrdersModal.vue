@@ -21,10 +21,11 @@
           <b-col
             xl
             sm="6"
+            class="h7"
           >
             <!-- START - Full Name -->
             <div
-              class="h8 mt-lg-1 mt-xl-0"
+              class="mt-lg-1 mt-xl-0"
             >
               Số hóa đơn
             </div>
@@ -42,9 +43,10 @@
           <b-col
             xl
             sm="6"
+            class="h7"
           >
             <div
-              class="h8 mt-sm-1 mt-xl-0"
+              class="mt-sm-1 mt-xl-0"
             >
               Trạng thái
             </div>
@@ -62,6 +64,7 @@
           <b-col
             xl
             sm="6"
+            class="h7"
           >
             <validation-provider
               v-slot="{ errors }"
@@ -97,6 +100,7 @@
           <b-col
             xl
             sm="6"
+            class="h7"
           >
             <validation-provider
               v-slot="{ errors }"

@@ -21,6 +21,7 @@
           <b-col
             xl
             sm="6"
+            class="h7"
           >
             <!-- START - Full Name -->
             <b-form-group
@@ -43,6 +44,7 @@
           <b-col
             xl
             sm="6"
+            class="h7"
           >
             <b-form-group
               label="Số điện thoại"
@@ -62,6 +64,7 @@
           <b-col
             xl
             sm="6"
+            class="h7"
           >
             <b-form-group
               label="CMND"
@@ -352,7 +355,7 @@ export default {
           shopId: data.shopId,
           code: data.customerCode,
           fullName: `${data.lastName} ${data.firstName}`,
-          phoneNumber: data.mobiPhone,
+          phoneNumber: data.mobiPhone ? data.mobiPhone : data.phone,
           birthDay: formatDateToLocale(data.dob),
           date: formatDateToLocale(data.createdAt),
           address: data.address,

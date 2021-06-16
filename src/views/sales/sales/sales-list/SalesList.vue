@@ -10,7 +10,7 @@
       <b-col
         sm="7"
         xl="4"
-        class="px-0 mr-1 shadow mb-1 mr-2 mb-sm-0 form-control-merge"
+        class="px-0 mr-1 shadow mb-1 mr-2 mb-sm-0 h7"
       >
         <b-input-group class="input-group-merge">
           <vue-autosuggest
@@ -244,37 +244,36 @@
             <!-- END - tableProductInventory -->
 
             <!-- START - quantity -->
-            <span
+            <div
               v-else-if="props.column.field === 'quantity'"
               align-v="center"
               align-h="start"
               class="d-flex align-items-center"
             >
               <b-icon-caret-down-fill
-                v-if="editOnlinePermission === false"
+                v-if="editOnlinePermission"
                 class="cursor-pointer"
                 font-scale="1.5"
                 @click="decreaseAmount(props.row.productId)"
               />
-              <!-- {{ props.row.quantity }} -->
               <b-input
                 ref="abc"
                 v-model="orderProducts[props.row.originalIndex].quantity"
                 :value="orderProducts[props.row.originalIndex].quantity"
                 :number="true"
                 maxlength="7"
-                class="text-center"
+                class="text-center h7"
                 :disabled="editOnlinePermission === false"
                 @change="onChangeQuantity(props.row.originalIndex)"
                 @keypress="$onlyNumberInput"
               />
               <b-icon-caret-up-fill
-                v-if="editOnlinePermission === false"
+                v-if="editOnlinePermission"
                 class="cursor-pointer"
                 font-scale="1.5"
                 @click="increaseAmount(props.row.productId)"
               />
-            </span>
+            </div>
             <!-- END - quantity -->
 
             <!-- START - tableProductFeature -->
@@ -319,6 +318,7 @@
         @getCustomerIdInfo="getCustomerIdInfo"
         @getCustomerDefault="getCustomerDefault"
         @getOnlineCustomer="getOnlineCustomer"
+        @getCustomerCreate="getCustomerCreate"
         @currentCustomer="getCurrentCustomer"
       />
       <!-- END - Section Form pay -->
@@ -689,6 +689,8 @@ export default {
     },
     onclickAddProduct(index) {
       const { usedShop } = this.loginInfo
+      console.log('this.isCheckShopId', this.isCheckShopId)
+      this.editOnlinePermission = false
 
       if (this.editOnlinePermission === true && this.isCheckShopId === true) {
         if (index.item) {
@@ -738,18 +740,8 @@ export default {
       this.customerId = val.data.id
       this.GET_PRODUCTS_ACTION(this.searchOptions)
       this.searchOptions.customerId = this.customerId
+      this.editOnlinePermission = true
 
-      const { usedShop } = this.loginInfo
-      // check edit permission online, manual
-      if (val.data.shopId === usedShop.id) {
-        if (usedShop.editable || usedShop.manuallyCreatable) {
-          this.editOnlinePermission = true
-          this.editManualPermission = true
-        } else {
-          this.editOnlinePermission = false
-          this.editManualPermission = false
-        }
-      }
       // check customers dafault
       if (val.data.isDefault === true && val.data.status === 1) {
         this.isCheckShopId = true
@@ -768,6 +760,7 @@ export default {
           this.editOnlinePermission = false
         }
       }
+      console.log('getCustomer online', val)
     },
 
     getCustomerTypeInfo(id) {
@@ -789,6 +782,10 @@ export default {
 
     getCurrentCustomer(val) {
       this.currentCustomer = val
+    },
+
+    getCustomerCreate(val) {
+      console.log('getCustomerCreate', val)
     },
 
     getCustomerIdInfo(id) {

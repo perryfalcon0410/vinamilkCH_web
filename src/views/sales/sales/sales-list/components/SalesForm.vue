@@ -57,7 +57,7 @@
         id="collapseCustomer"
         visible
       >
-        <b-col class="px-0">
+        <b-col class="px-0 h7">
           <!-- START - Search -->
           <b-input-group class="input-group-merge mt-1">
             <b-input-group-prepend is-text>
@@ -67,7 +67,7 @@
               ref="search"
               v-model="search"
               placeholder="Tìm khách hàng (F4)"
-              @mouseover="search.length >= minSearch ? inputSearchFocused = true : inputSearchFocused"
+              @mouseout="search.length >= minSearch ? inputSearchFocused = true : inputSearchFocused"
               @blur="inputSearchFocused = false"
               @keyup.enter="showSearchModal"
               @keyup="onChangeKeyWord"
@@ -182,7 +182,7 @@
         id="collapseDelivery"
         visible
       >
-        <b-col class="px-0">
+        <b-col class="px-0 h7">
           <!-- START - Order type -->
           <b-row
             class="mt-1"
@@ -203,10 +203,13 @@
 
           <!-- START - Delivery type -->
           <b-row
-            class="mt-1"
+            class="mt-1 "
             align-v="center"
           >
-            <b-col cols="4">
+            <b-col
+              cols="4"
+              class="h7"
+            >
               Loại giao hàng
             </b-col>
             <b-col>
@@ -220,7 +223,7 @@
 
           <!-- START - Online order number -->
           <b-row
-            class="mt-1"
+            class="mt-1 h7"
             align-v="center"
           >
             <b-col cols="4">
@@ -290,7 +293,7 @@
         <!-- END - Temporary calculation -->
 
         <!-- START - Note -->
-        <b-col class="px-0 mt-1">
+        <b-col class="px-0 mt-1 h7">
           <b-input-group class="input-group-merge">
 
             <b-input-group-prepend is-text>
@@ -551,7 +554,7 @@ export default {
           shopId: data.shopId,
           code: data.customerCode,
           fullName: `${data.lastName} ${data.firstName}`,
-          phoneNumber: data.mobiPhone,
+          phoneNumber: data.mobiPhone || data.phone,
           birthDay: formatDateToLocale(data.dob),
           date: formatDateToLocale(data.createdAt),
           address: data.address,
@@ -633,18 +636,32 @@ export default {
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
     this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4, salemtDeliveryTypeSelected: this.salemtDeliveryTypeSelected })
     this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
-  },
-  created() {
+
     window.addEventListener('keydown', e => {
       if (e.key === 'F4') {
         this.$refs.search.focus()
       }
-      // if (e.key === 'F8') {
-      //   if (this.orderOnline.onlineOrderId != null && this.orderOnline.orderNumber.length > 0) {
-      //     this.$refs.payModal.$refs.payModal.show()
-      //   }
-      // }
+
+      if (e.key === 'F8') {
+        if (this.totalQuantity === 0 || this.editOnlinePermission === false || (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')) {
+          this.$root.$emit('bv::hide::modal', 'pay-modal')
+        } else {
+          this.$root.$emit('bv::show::modal', 'pay-modal')
+        }
+      }
     })
+  },
+  created() {
+    // window.addEventListener('keydown', e => {
+    //   if (e.key === 'F4') {
+    //     this.$refs.search.focus()
+    //   }
+    //   // if (e.key === 'F8') {
+    //   //   if (this.orderOnline.onlineOrderId != null && this.orderOnline.orderNumber.length > 0) {
+    //   //     this.$refs.payModal.$refs.payModal.show()
+    //   //   }
+    //   // }
+    // })
   },
   methods: {
     ...mapActions(CUSTOMER, [
@@ -700,15 +717,16 @@ export default {
     },
 
     getCustomerInfo(val) {
-      this.customer.id = val.id
-      this.customer.shopId = val.shopId
-      this.customer.fullName = val.fullName
-      this.customer.phoneNumber = val.phoneNumber
-      this.customer.street = val.address
-      this.customer.totalBill = val.totalBill ?? 0
-      this.$emit('getCustomerTypeInfo', val.customerTypeId)
-      this.$emit('getCustomerIdInfo', val.id)
+      this.customer.id = val.data.id
+      this.customer.shopId = val.data.shopId
+      this.customer.fullName = val.data.fullName
+      this.customer.phoneNumber = val.data.phoneNumber
+      this.customer.street = val.data.address
+      this.customer.totalBill = val.data.totalBill ?? 0
+      this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
+      this.$emit('getCustomerIdInfo', val.data.id)
       this.inputSearchFocused = false
+      console.log(val.data.phoneNumber)
     },
 
     getOnlineOrderInfo(id) {
@@ -726,6 +744,7 @@ export default {
       this.customer.totalBill = val.totalBill ?? 0
       this.customer.scoreCumulated = val.scoreCumulated
       this.customer.typeId = val.customerTypeId
+      this.$emit('getCustomerCreate', val)
     },
 
     onClickAgreeButton() {
@@ -775,19 +794,11 @@ export default {
     },
 
     onChangeKeyWord() {
-      const name = {
+      const searchKeywords = {
         searchKeywords: this.search.trim(),
       }
 
-      const phone = {
-        phoneNumber: this.search,
-      }
-
-      const code = {
-        phoneNumber: this.search,
-      }
-
-      this.GET_CUSTOMERS_ACTION(name || phone || code)
+      this.GET_CUSTOMERS_ACTION(searchKeywords)
     },
 
     resetOrderNumber(item) {
