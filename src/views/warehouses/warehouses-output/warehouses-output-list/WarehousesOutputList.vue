@@ -691,19 +691,20 @@ export default {
       })
     },
     onClickSearchWarehousesOutput() {
-      const searchData = {
-        redInvoiceNo: this.searchOptions.redInvoiceNo,
-        fromDate: reverseVniDate(this.fromDate),
-        toDate: reverseVniDate(this.toDate),
-        type: this.warehousesTypeSelected,
-        transCode: this.searchOptions.exportNo,
-        size: this.paginationData.size,
-        page: this.paginationData.page,
-        ...this.decentralization,
-      }
+      // const searchData = {
+      //   redInvoiceNo: this.searchOptions.redInvoiceNo,
+      //   fromDate: reverseVniDate(this.fromDate),
+      //   toDate: reverseVniDate(this.toDate),
+      //   type: this.warehousesTypeSelected,
+      //   transCode: this.searchOptions.exportNo,
+      //   size: this.paginationData.size,
+      //   page: this.paginationData.page,
+      //   ...this.decentralization,
+      // }
 
-      this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
+      // this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(searchData)
       this.warehousesOutputList = this.GET_WAREHOUSES_OUTPUT_LIST_GETTER
+      this.onPaginationChange()
       this.pageNumber = 1
     },
     onClickDeleteWarehousesOutput(id, type, code, index, date) {
@@ -733,6 +734,17 @@ export default {
       this.closeNotifyModal()
     },
     onPaginationChange() {
+      const searchData = {
+        redInvoiceNo: this.searchOptions.redInvoiceNo,
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
+        type: this.warehousesTypeSelected,
+        transCode: this.searchOptions.exportNo,
+        size: this.paginationData.size,
+        page: this.paginationData.page,
+        ...this.decentralization,
+      }
+      this.paginationData = searchData
       this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(this.paginationData)
     },
     updatePaginationData(newProps) {

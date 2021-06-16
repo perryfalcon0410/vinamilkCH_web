@@ -177,7 +177,7 @@
             <div
               class="mt-sm-1 mt-xl-0"
             >
-              Từ ngày
+              Từ ngày hóa đơn
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"
@@ -216,7 +216,7 @@
             <div
               class="mt-sm-1 mt-xl-0"
             >
-              Đến ngày
+              Đến ngày hóa đơn
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"

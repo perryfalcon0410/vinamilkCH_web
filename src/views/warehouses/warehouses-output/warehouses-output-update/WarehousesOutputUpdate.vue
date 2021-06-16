@@ -46,7 +46,7 @@
                 no-options-text="Không có dữ liệu"
                 disabled
               />
-              <b-input-group-append>
+              <!-- <b-input-group-append>
                 <b-icon-three-dots-vertical
                   v-b-popover.hover.right="'Chọn phiếu xuất'"
                   scale="1.4"
@@ -54,7 +54,7 @@
                   :disabled="warehousesOutput.receiptType === warehousesOptions[0].id"
                   @click="showModal()"
                 />
-              </b-input-group-append>
+              </b-input-group-append> -->
             </div>
           </b-col>
         </b-form-row>
@@ -137,7 +137,7 @@
         </div>
         <b-form-textarea
           v-model="warehousesOutput.note"
-          maxlength="4000"
+          maxlength="250"
           class="mb-1"
           :disabled="isDisableSave"
         />
@@ -364,12 +364,12 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
+          field: 'productQuantity',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
+          // filterOptions: {
+          //   enabled: true,
+          // },
           thClass: 'text-right',
           tdClass: 'text-right',
         },
@@ -380,7 +380,7 @@ export default {
         },
         {
           label: 'Giá',
-          field: 'price',
+          field: 'productPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           thClass: 'text-right',
@@ -388,12 +388,12 @@ export default {
         },
         {
           label: 'ĐVT',
-          field: 'unit',
+          field: 'productDVT',
           sortable: false,
         },
         {
           label: 'Thành tiền',
-          field: 'totalPrice',
+          field: 'productPriceTotal',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           thClass: 'text-right',
@@ -401,12 +401,12 @@ export default {
         },
         {
           label: 'Số lượng trả',
-          field: 'quantityReturn',
+          field: 'productReturnAmount',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
+          // filterOptions: {
+          //   enabled: true,
+          // },
           thClass: 'text-left',
           tdClass: 'text-right',
         },
@@ -450,12 +450,12 @@ export default {
       return this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.map(data => ({
         productID: data.id,
         productCode: data.productCode,
-        productPrice: this.$formatNumberToLocale(data.price),
+        productPrice: data.price,
         productName: data.productName,
         productDVT: data.unit,
-        productPriceTotal: this.$formatNumberToLocale(data.totalPrice),
+        productPriceTotal: data.totalPrice,
         productQuantity: data.quantity,
-        productReturnAmount: data.quantity,
+        productReturnAmount: data.export || data.quantity,
         export: `${data.export}/${data.quantity}`,
       }))
     },
@@ -483,7 +483,7 @@ export default {
       } if (this.warehousesOutput.receiptType === warehousesData.outputTypes[2].id) {
         this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.borrowDate)
       }
-      if (this.outputTypeSelected !== this.poOutputType) {
+      if (this.receiptType !== warehousesData.outputTypes[0].id) {
         this.columns = this.columnsCustom
       }
 

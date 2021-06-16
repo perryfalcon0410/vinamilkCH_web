@@ -278,6 +278,7 @@ export default {
       list: this.$store.getters['customer/LIST_CUSTOMER'],
       listDelete: [],
       productDetail: [],
+      productPromoDetail: [],
       columns: [
         {
           label: 'Ngày nhập',
@@ -465,9 +466,20 @@ export default {
             productReturnExportOriginal: data.export,
             quantity: data.quantity,
           }))
+          this.productPromoDetail = poProducts.info.map(data => ({
+            id: data.id,
+            productCode: data.productCode,
+            productName: data.productName,
+            price: data.price || 0,
+            unit: data.unit,
+            totalPrice: data.totalPrice || 0,
+            soNo: data.soNo,
+            quantity: data.quantity,
+          }))
           const poTranData = {
             tranInfo: trans,
             products: this.productDetail,
+            productsPromo: this.productPromoDetail,
           }
           this.$emit('choonsenTrans', poTranData)
           this.$root.$emit('bv::hide::modal', 'output-modal')

@@ -277,6 +277,59 @@
               <!-- END - Customer filter -->
             </vue-good-table>
             <!-- END - Table Product -->
+            <!-- START - Table Product promotion 2 -->
+            <div v-if="outputTypeSelected === poOutputType">
+              <div style="padding: 5px 0;">
+                <strong class="text-brand-1">
+                  Danh sách sản phẩm khuyến mãi
+                </strong>
+              </div>
+
+              <vue-good-table
+                :columns="poPromotionColumns"
+                :rows="rowsProductPromotion"
+                style-class="vgt-table striped"
+                compact-mode
+                line-numbers
+              >
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
+                <!-- END - Empty rows -->
+
+                <!-- START - Custom filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'quantity'"
+                    v-show="totalPromoProductQuantity"
+                    class="mx-0"
+                    align-h="center"
+                  >
+                    {{ $formatNumberToLocale(totalPromoProductQuantity) }}
+                  </b-row>
+
+                  <b-row
+                    v-else-if="props.column.field === 'productCode'"
+                    v-show="totalPromoProduct"
+                    class="mx-0"
+                    align-h="center"
+                  >
+                    {{ $formatNumberToLocale(totalPromoProduct) }}
+                  </b-row>
+
+                </template>
+                <!-- END - Custom filter -->
+
+              </vue-good-table>
+            </div>
+            <!-- START - Table Product promotion 2 -->
 
             <!-- START - Button -->
             <b-row class="m-1 justify-content-end">
@@ -335,7 +388,8 @@
       Dữ liệu đang được tạo, bạn có muốn đóng
       <template #modal-footer>
         <b-button
-          variant="primary"
+          variant="someThing"
+          class="btn-brand-1"
           @click="onClickAgreeButton()"
         >
           Đồng ý
@@ -423,6 +477,7 @@ export default {
         billDate: this.$nowDate,
       },
       products: [],
+      rowsProductPromotion: [],
       dateNow: getNow(),
       configDate: {
         wrap: true,
@@ -550,6 +605,66 @@ export default {
           tdClass: 'text-right',
         },
       ],
+      poPromotionColumns: [
+        {
+          label: 'Mã sản phẩm',
+          field: 'productCode',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Số lượng',
+          field: 'quantity',
+          filterOptions: {
+            enabled: true,
+          },
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Tên sản phẩm',
+          field: 'productName',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Giá',
+          field: 'price',
+          type: 'number',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'ĐVT',
+          field: 'unit',
+          type: 'number',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Thành tiền',
+          field: 'totalPrice',
+          type: 'number',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'SO No',
+          field: 'soNo',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-center',
+        },
+      ],
     }
   },
 
@@ -581,7 +696,7 @@ export default {
     exportAll() {
       if (this.exportAll) {
         this.products.forEach((item, index) => {
-          this.products[index].quantityReturn = item.quantity
+          this.products[index].quantityReturn = item.quantity - item.productReturnExportOriginal
         })
       } else {
         this.products.forEach((item, index) => {
@@ -629,6 +744,7 @@ export default {
       this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
       this.warehousesOutput.poNumber = data.tranInfo.pocoNumber
       this.products = data.products
+      this.rowsProductPromotion = data.productsPromo
     },
     dataFromBorrow(data) {
       this.warehousesOutput.id = data.tranInfo.id
@@ -638,7 +754,7 @@ export default {
       this.exportAll = true
       this.totalQuantity = data.totalQuantity
       this.totalProduct = data.products.length
-      this.hideFilter = true
+      this.hideFilter = false
       this.products.forEach((item, index) => {
         this.products[index].quantityReturn = item.quantity
       })
@@ -689,11 +805,15 @@ export default {
               isRemainAll: this.exportAll,
               receiptImportId: Number(this.warehousesOutput.id),
               note: this.warehousesOutput.note,
-              litQuantityRemain: this.products.map(item => ({
+              litQuantityRemain: [this.products.map(item => ({
                 id: item.id,
                 quantity: Number(item.quantityReturn) || 0,
-                shopId: item.shopId,
               })),
+              this.rowsProductPromotion.map(item => ({
+                id: item.id,
+                quantity: Number(item.quantity) || 0,
+              })),
+              ],
             },
           )
         } else if (this.outputTypeSelected === warehousesData.outputTypes[0].id) toasts.error('Không đủ sản phẩm trả.')
