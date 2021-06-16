@@ -205,7 +205,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatISOtoVNI, reverseVniDate } from '@core/utils/filter'
+import { formatISOtoVNI } from '@core/utils/filter'
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
@@ -372,14 +372,14 @@ export default {
         customerPhone: this.paginationData.customerPhone,
         customerStatus: this.paginationData.statusSelected,
         customerType: this.paginationData.customerType,
-        fromCreateDate: reverseVniDate(this.paginationData.fromCreateDate),
-        toCreateDate: reverseVniDate(this.paginationData.toCreateDate),
-        fromPurchaseDate: reverseVniDate(this.paginationData.fromPurchaseDate),
-        toPurchaseDate: reverseVniDate(this.paginationData.toPurchaseDate),
+        fromCreateDate: this.paginationData.fromCreateDate,
+        toCreateDate: this.paginationData.toCreateDate,
+        fromPurchaseDate: this.paginationData.fromPurchaseDate,
+        toPurchaseDate: this.paginationData.toPurchaseDate,
         fromSaleAmount: this.paginationData.fromSaleAmount,
         toSaleAmount: this.paginationData.toSaleAmount,
-        fromSaleDate: reverseVniDate(this.paginationData.fromSaleDate),
-        toSaleDate: reverseVniDate(this.paginationData.toSaleDate),
+        fromSaleDate: this.paginationData.fromSaleDate,
+        toSaleDate: this.paginationData.toSaleDate,
         formId: 1,
         ctrlId: 1,
       }
