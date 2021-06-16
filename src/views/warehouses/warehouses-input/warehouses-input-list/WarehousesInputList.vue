@@ -79,7 +79,7 @@
               <b-icon-bricks
                 v-b-popover.hover="'Thao tác'"
                 scale="1.3"
-                class="ml-4"
+                class="ml-3"
               />
             </b-row>
             <div v-else>
@@ -103,8 +103,8 @@
                 scale="1.2"
                 @click="onClickPrintButton(props.row)"
               />
-              <b-icon-eye-fill
-                v-b-popover.hover.top="'Xem chi tiết'"
+              <b-icon-pencil-fill
+                v-b-popover.hover.top="'Chỉnh sửa'"
                 class="cursor-pointer ml-1"
                 scale="1.2"
                 @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
@@ -118,6 +118,12 @@
                 @click="onClickDeleteButton(props.row.id, props.row.inputTypes, props.row.originalIndex, props.row.transCode)"
               />
             </b-row>
+            <div
+              v-else-if="props.column.field === 'quantity' || props.column.field === 'price'"
+              style="padding-left: 3px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>

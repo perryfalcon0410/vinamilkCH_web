@@ -24,6 +24,9 @@
           <b-form-input
             id="form-input-trans-code"
             v-model="transCode"
+            maxlength="40"
+            placeholder="Nhập mã nhập hàng"
+            trim
           />
           <b-input-group-append
             is-text
@@ -56,6 +59,9 @@
           <b-form-input
             id="form-input-bill-number"
             v-model="billNumber"
+            maxlength="40"
+            placeholder="Nhập số hóa đơn"
+            trim
           />
           <b-input-group-append
             is-text
@@ -252,8 +258,8 @@ export default {
 
     onClickSearchButton() {
       const searchData = {
-        transCode: this.transCode?.trim(),
-        redInvoiceNo: this.billNumber?.trim(),
+        transCode: this.transCode,
+        redInvoiceNo: this.billNumber,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         type: this.inputTypesSelected,
