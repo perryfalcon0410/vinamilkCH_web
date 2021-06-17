@@ -8,6 +8,7 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <validation-provider
           v-slot="{ errors, passed }"
@@ -15,7 +16,7 @@
           name="số biên bản"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="mt-sm-1 mt-xl-0"
           >
             Số biên bản
           </div>
@@ -23,9 +24,10 @@
             class="input-group-merge"
           >
             <b-form-input
-              v-model.trim="minutesCode"
-              :state="minutesCode ? passed : null"
+              v-model.trim="transCode"
+              :state="transCode ? passed : null"
               maxlength="20"
+              placeholder="Nhập số biên bản"
               class="h9"
               @keyup.enter="onClickSearchButton"
             />
@@ -33,9 +35,9 @@
               is-text
             >
               <b-icon-x
-                v-show="minutesCode"
+                v-show="transCode"
                 class="cursor-pointer text-gray"
-                @click="minutesCode = null"
+                @click="transCode = null"
               />
             </b-input-group-append>
           </b-input-group>
@@ -49,9 +51,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class=" mt-sm-1 mt-xl-0"
         >
           Từ ngày
         </div>
@@ -70,7 +73,7 @@
           <vue-flat-pickr
             v-model="fromDate"
             :config="configFromDate"
-            class="form-control h8"
+            class="form-control "
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -82,9 +85,10 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class=" mt-sm-1 mt-xl-0"
         >
           Đến ngày
         </div>
@@ -103,7 +107,7 @@
           <vue-flat-pickr
             v-model="toDate"
             :config="configToDate"
-            class="form-control h8"
+            class="form-control "
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -112,12 +116,13 @@
 
       <!-- START - Reason -->
       <b-col
-        xl
+        xxl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class=" mt-sm-1 mt-xl-0"
         >
           Lý do
         </div>
@@ -134,20 +139,21 @@
         xl
         lg="3"
         sm="4"
+        class="h8"
       >
         <div
-          class="h8 text-white"
+          class=" text-white"
           onmousedown="return false;"
           style="cursor: context-menu;"
         >
           Tìm kiếm
         </div>
         <b-button
-          class="btn-brand-1 h9 align-items-button-center mt-sm-1 mt-xl-0"
+          class="btn-brand-1 align-items-button-center mt-sm-1 mt-xl-0"
           variant="someThing"
           @click="onClickSearchButton()"
         >
-          <b-icon-search class="mr-1" />
+          <b-icon-search class="mr-50" />
           Tìm kiếm
         </b-button>
       </b-col>
@@ -193,7 +199,7 @@ export default {
       code,
       dateFormatVNI,
 
-      minutesCode: '',
+      transCode: '',
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
 
@@ -252,6 +258,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    this.onSearch()
   },
 
   methods: {
@@ -261,20 +268,18 @@ export default {
     ]),
     onSearch() {
       const searchData = {
-        transCode: this.minutesCode,
+        transCode: this.transCode,
         reasonId: this.reasonObj.reasonSelected,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        ...this.decentralization,
       }
-      this.updateSearchData(searchData)
-      this.GET_EXCHANGE_DAMAGED_GOODS_ACTION(searchData)
+      this.getExchanges(searchData)
     },
     onClickSearchButton() {
       this.onSearch()
     },
-    updateSearchData(data) {
-      this.$emit('updateSearchData', data)
+    getExchanges(data) {
+      this.$emit('onSearchClick', data)
     },
   },
 }

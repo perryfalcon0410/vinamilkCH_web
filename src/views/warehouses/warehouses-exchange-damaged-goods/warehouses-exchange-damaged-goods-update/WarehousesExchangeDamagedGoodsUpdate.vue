@@ -348,7 +348,6 @@ import { VueAutosuggest } from 'vue-autosuggest'
 import toasts from '@core/utils/toasts/toasts'
 // import { getNow } from '@/@core/utils/utils'
 import {
-  formatVniDateToISO,
   formatISOtoVNI,
   getTimeOfDate,
 } from '@/@core/utils/filter'
@@ -622,7 +621,17 @@ export default {
         this.exchangeGoodsInfo.reason = this.exchangeDamagedGoods.reason
         this.exchangeGoodsInfo.quantity = this.exchangeDamagedGoods.quantity
         this.exchangeGoodsInfo.totalAmount = this.exchangeDamagedGoods.totalAmount
-        this.damagedProduct = [...this.exchangeDamagedGoods.listProducts]
+        this.damagedProduct = this.exchangeDamagedGoods.listProducts.map(data => ({
+          id: data.id,
+          productId: data.productId,
+          productCode: data.productCode,
+          productName: data.productName,
+          unit: data.unit,
+          price: data.price,
+          type: 1,
+          quantity: data.quantity,
+          totalPrice: data.quantity,
+        }))
         // END - Exchange Damaged Goods
       }
     },
@@ -631,18 +640,20 @@ export default {
       this.$refs.formContainer.validate().then(success => {
         if (success && this.checkDuplicatesName() > -1) {
           if (this.damagedProduct.length > 0) {
+            console.log(this.damagedProduct)
             this.UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION({
               exchangeDamagedGoods: {
                 customerId: this.exchangeGoodsInfo.customerId,
                 id: this.exchangeDamagedGoodsId,
-                lstExchangeDetail: [...this.damagedProduct],
-                quantity: this.exchangeGoodsInfo.quantity,
+                lstExchangeDetail: this.damagedProduct.map(data => ({
+                  id: data.id,
+                  productId: data.productId,
+                  quantity: data.quantity,
+                  type: data.type,
+                })),
                 reason: this.exchangeGoodsInfo.reason,
                 reasonId: this.exchangeGoodsInfo.reasonId,
-                shopId: this.exchangeGoodsInfo.shopId,
-                totalAmount: this.exchangeGoodsInfo.totalAmount,
                 transCode: this.exchangeGoodsInfo.transCode,
-                transDate: formatVniDateToISO(this.exchangeGoodsInfo.transDate),
               },
               onSuccess: () => {
                 this.navigateBack()
@@ -694,13 +705,15 @@ export default {
       if (this.damagedProduct) {
         const obj = {
           count: this.damagedProduct.length,
-          id: product.item.id,
+          id: null,
+          productId: product.item.id,
           productCode: product.item.productCode,
           productName: product.item.productName,
           productDVT: product.item.productDVT,
           productPrice: product.item.productPrice,
           productQuantity: 1,
           productPriceTotal: null,
+          type: 0,
         }
         if (existedProductIndex === -1) {
           obj.productPriceTotal = obj.productPrice * obj.productQuantity
@@ -729,6 +742,7 @@ export default {
 
     onClickDeleteButton(index) {
       this.damagedProduct.splice(index, 1)
+      this.damagedProduct[index].type = 2
     },
     checkFieldsValueLength() {
       if (

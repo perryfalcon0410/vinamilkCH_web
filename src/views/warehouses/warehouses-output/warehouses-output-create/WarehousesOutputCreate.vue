@@ -256,11 +256,11 @@
               <template
                 slot="column-filter"
                 slot-scope="props"
+                class="h8"
               >
                 <b-row
                   v-if="props.column.field === 'quantity'"
-                  class="h7 mr-1"
-                  align-h="end"
+                  align-h="end pr-1"
                   :hidden="hideFilter"
                 >
                   {{ $formatNumberToLocale(totalQuantity) }}

@@ -5,9 +5,7 @@
   >
     <!-- START - Search -->
     <warehouses-exchange-damaged-goods-list-search
-      @updateSearchData="paginationData = {
-        ...paginationData,
-        ...$event }"
+      @onSearchClick="onSearchClick"
     />
     <!-- END - Search -->
 
@@ -27,7 +25,7 @@
         </strong>
 
         <b-button
-          class="btn-brand-1 h9 align-items-button-center rounded"
+          class="btn-brand-1 align-items-button-center"
           variant="someThing"
           @click="onClickAddNewButton"
         >
@@ -51,8 +49,8 @@
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize,
-            setCurrentPage: pageNumber,
+            perPage: searchData.size,
+            setCurrentPage: searchData.page + 1,
           }"
           compact-mode
           line-numbers
@@ -60,7 +58,7 @@
           :sort-options="{
             enabled: false,
             multipleColumns: true,
-            initialSortBy: [{field: 'minutesCode', type: 'desc'}]
+            initialSortBy: [{field: 'transCode', type: 'desc'}]
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
@@ -170,24 +168,18 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="searchData.size"
                   size="sm"
                   :options="paginationOptions"
                   class="mx-1"
                   @input="(value)=>props.perPageChanged({currentPerPage: value})"
                 />
-                <span
-                  class="text-nowrap"
-                >{{ pageNumber === 1 ? 1 : (pageNumber * elementSize) - elementSize +1 }}
-                  -
-                  {{ (elementSize * pageNumber) > exchangeDamagedGoodsPagination.totalElements ?
-                    exchangeDamagedGoodsPagination.totalElements : (elementSize * pageNumber) }}
-                  của {{ exchangeDamagedGoodsPagination.totalElements }} mục </span>
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="exchangeDamagedGoodsPagination.totalElements"
-                :per-page="elementSize"
+                :per-page="searchData.size"
                 first-number
                 last-number
                 align="right"
@@ -233,7 +225,7 @@
           Hủy
         </b-button>
         <b-button
-          class="btn-brand-1 h9 align-items-button-center rounded"
+          class="btn-brand-1 align-items-button-center rounded"
           variant="someThing"
           @click="confirmDelete"
         >
@@ -281,15 +273,20 @@ export default {
 
       isDeleteModalShow: false,
       isDisabledFeature: true,
+      serverParams: {
+        sort: {
+          field: 'date',
+          type: 'desc',
+        },
+      },
 
-      elementSize: commonData.perPageSizes[0],
+      elementSize: commonData.pageNumber,
       pageNumber: 1,
       paginationOptions: commonData.perPageSizes,
-      paginationData: {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
+      searchData: {
+        size: commonData.perPageSizes[0],
+        page: commonData.pageNumber - 1,
         sort: null,
-        reasonId: this.reasonSelected,
       },
 
       decentralization: {
@@ -307,23 +304,24 @@ export default {
         {
           label: 'Ngày',
           field: 'date',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số biên bản',
-          field: 'minutesCode',
+          field: 'transCode',
           firstSortType: 'desc',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
+          formatFn: this.$formatNumberToLocale,
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
+          thClass: 'text-right',
           tdClass: 'text-right',
         },
         {
@@ -333,13 +331,13 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
+          thClass: 'text-right',
           tdClass: 'text-right',
         },
         {
           label: 'Lý do',
           field: 'reason',
-          thClass: 'text-center',
+          thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
@@ -347,8 +345,8 @@ export default {
           field: 'feature',
           sortable: false,
           width: '100px',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
       ],
       exchangeDamagedGoods: [],
@@ -363,7 +361,7 @@ export default {
         return this.EXCHANGE_DAMAGED_GOODS_GETTER.response.content.map(data => ({
           id: data.id,
           date: data.transDate === '' ? '' : formatISOtoVNI(data.transDate),
-          minutesCode: data.transCode,
+          transCode: data.transCode,
           quantity: data.quantity,
           exchangeDamagedGoodsQuantity: data.quantity,
           price: data.totalAmount,
@@ -386,6 +384,16 @@ export default {
       }
       return {}
     },
+    paginationDetailContent() {
+      const { page, size } = this.searchData
+      const { totalElements } = this.exchangeDamagedGoodsPagination
+
+      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
+      const maxPageSize = (size * (page + 1)) > totalElements
+        ? totalElements : (size * (page + 1))
+
+      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
+    },
   },
   watch: {
     getExchangeDamagedGoods() {
@@ -393,9 +401,7 @@ export default {
     },
   },
   mounted() {
-    this.GET_EXCHANGE_DAMAGED_GOODS_ACTION({
-      ...this.decentralization,
-    })
+
   },
 
   methods: {
@@ -431,22 +437,33 @@ export default {
       this.exchangeDamagedGoods.splice(this.exchangeDamagedGoodsIndex, 1)
       this.exchangeDamagedGoodsPagination.totalElements -= 1
     },
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
+    },
 
-    onClickFeature() {
-      this.isDisabledFeature = !this.isDisabledFeature
+    onSearchClick(event) {
+      this.updateSearchData({
+        // page: commonData.pageNumber - 1,
+        ...event,
+      })
+      this.onPaginationChange()
+      // this.pageNumber = commonData.pageNumber
     },
     onPaginationChange() {
-      this.GET_EXCHANGE_DAMAGED_GOODS_ACTION(this.paginationData)
-    },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
+      this.GET_EXCHANGE_DAMAGED_GOODS_ACTION({ ...this.searchData, ...this.decentralization })
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updateSearchData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.updateSearchData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    onSortChange(params) {
+      this.updateSearchData({
+        sort: `${params[0].field},${params[0].type}`,
+      })
       this.onPaginationChange()
     },
   },

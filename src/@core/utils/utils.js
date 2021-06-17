@@ -116,7 +116,7 @@ export const capitalizeFirstLetter = string => {
 
 export const getNow = () => {
   const date = moment().format('DD/MM/YYYY')
-  const time = moment().format('hh:mm')
+  const time = moment().format('LT')
   const dateTime = `${date} lúc ${time}`
   return dateTime
 }
