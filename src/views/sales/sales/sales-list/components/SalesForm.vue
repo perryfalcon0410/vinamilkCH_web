@@ -18,7 +18,7 @@
             font-scale="2"
             class="mx-1"
           />
-          04/11/2020 19:24
+          {{ customer.createdAt }}
         </b-row>
         <!-- END - Date  -->
 
@@ -67,21 +67,13 @@
               ref="search"
               v-model="search"
               placeholder="Tìm khách hàng (F4)"
-              @mouseout="search.length >= minSearch ? inputSearchFocused = true : inputSearchFocused"
-              @blur="inputSearchFocused = false"
+              @mouseover="search.length >= minSearch ? inputSearchFocused = true : inputSearchFocused"
+              @mouseleave="inputSearchFocused = false"
               @keyup.enter="showSearchModal"
               @keyup="onChangeKeyWord"
             />
-            <sales-search-modal
-              ref="salesSearchModal"
-              @getCustomerInfo="getCustomerInfo"
-            />
             <b-input-group-append is-text>
               <b-icon-plus @click="showModalCreate" />
-              <sales-create-modal
-                ref="salesCreateModal"
-                @getCreateInfo="getCreateInfo"
-              />
             </b-input-group-append>
           </b-input-group>
           <!-- END - Search -->
@@ -237,10 +229,6 @@
                 />
                 <b-input-group-append is-text>
                   <b-icon-three-dots-vertical @click="showNotifyModal" />
-                  <sales-online-orders-modal
-                    ref="salesOnlineOrderModal"
-                    @getOnlineOrderInfo="getOnlineOrderInfo"
-                  />
                 </b-input-group-append>
               </b-input-group>
             </b-col>
@@ -351,9 +339,29 @@
           </template>
         </b-modal>
         <!-- END - Notify Modal Close -->
-
       </b-col>
       <!-- END - Section pay -->
+
+      <!-- START - Sales Create Modal -->
+      <sales-create-modal
+        ref="salesCreateModal"
+        @getCreateInfo="getCreateInfo"
+      />
+      <!-- END - Sales Create Modal -->
+
+      <!-- START - Sales Online Order Modal -->
+      <sales-online-orders-modal
+        ref="salesOnlineOrderModal"
+        @getOnlineOrderInfo="getOnlineOrderInfo"
+      />
+      <!-- END - Sales Online Order Modal -->
+
+      <!-- START - Sales Search Modal -->
+      <sales-search-modal
+        ref="salesSearchModal"
+        @getCustomerInfo="getCustomerInfo"
+      />
+      <!-- END - Sales Search Modal -->
 
     </b-form>
   </b-col>
@@ -366,7 +374,7 @@ import {
 } from 'vuex'
 import saleData from '@/@db/sale'
 import commonData from '@/@db/common'
-import { formatDateToLocale } from '@core/utils/filter'
+import { formatDateToLocale, getTimeOfDate } from '@core/utils/filter'
 import {
   CUSTOMER,
   // GETTERS
@@ -375,22 +383,22 @@ import {
   SALEMT_PROMOTION_OBJECT_GETTER,
   SALEMT_DELIVERY_TYPE_GETTER,
   CUSTOMER_DEFAULT_GETTER,
-  CUSTOMERS_GETTER,
   // ACTIONS
   GET_CUSTOMER_BY_ID_ACTION,
   GET_SALEMT_PROMOTION_OBJECT_ACTION,
   GET_SALEMT_DELIVERY_TYPE_ACTION,
   GET_CUSTOMER_DEFAULT_ACTION,
-  GET_CUSTOMERS_ACTION,
 } from '../../../sales-customers/store-module/type'
 import {
   SALES,
   // Getter
   ONLINE_ORDER_CUSTOMER_BY_ID_GETTER,
+  CUSTOMERS_SALE_GETTER,
   GET_PROMOTION_PROGRAMS_GETTER,
   // Action
   GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION,
   GET_PROMOTION_PROGRAMS_ACTION,
+  GET_CUSTOMERS_SALE_ACTION,
 } from '../../store-module/type'
 import SalesCreateModal from './SalesCreateModal.vue'
 import SalesSearchModal from './SalesSearchModal.vue'
@@ -440,6 +448,7 @@ export default {
         isDefault: null,
         status: null,
         typeId: null,
+        createdAt: null,
       },
 
       // online order
@@ -539,22 +548,22 @@ export default {
       SALEMT_PROMOTION_OBJECT_GETTER,
       SALEMT_DELIVERY_TYPE_GETTER,
       CUSTOMER_DEFAULT_GETTER,
-      CUSTOMERS_GETTER,
     }),
 
     ...mapGetters(SALES, {
       ONLINE_ORDER_CUSTOMER_BY_ID_GETTER,
       GET_PROMOTION_PROGRAMS_GETTER,
+      CUSTOMERS_SALE_GETTER,
     }),
 
     getCustomerSearch() {
-      if (this.CUSTOMERS_GETTER.content) {
-        return this.CUSTOMERS_GETTER.content.map(data => ({
+      if (this.CUSTOMERS_SALE_GETTER.content) {
+        return this.CUSTOMERS_SALE_GETTER.content.map(data => ({
           id: data.id,
           shopId: data.shopId,
           code: data.customerCode,
           fullName: `${data.lastName} ${data.firstName}`,
-          phoneNumber: data.mobiPhone || data.phone,
+          phoneNumber: data.mobiPhone,
           birthDay: formatDateToLocale(data.dob),
           date: formatDateToLocale(data.createdAt),
           address: data.address,
@@ -610,6 +619,7 @@ export default {
     },
     salemtPromotionObjectSelected() {
       this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
+      this.$emit('salemtPromotionObjectSelected', this.salemtPromotionObjectSelected)
     },
     salemtDeliveryTypeSelected() {
       this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4 })
@@ -627,10 +637,6 @@ export default {
     getCustomerSearch() {
       this.customersSearch = [...this.getCustomerSearch]
     },
-    // getPromotionPrograms() {
-    //   this.promotionPrograms = [...this.getPromotionPrograms]
-    //   console.log(this.promotionPrograms)
-    // },
   },
   mounted() {
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
@@ -643,7 +649,7 @@ export default {
       }
 
       if (e.key === 'F8') {
-        if (this.totalQuantity === 0 || this.editOnlinePermission === false || (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')) {
+        if (this.totalQuantity === 0 || this.editOnlinePermission === false || this.salemtPromotionObjectSelected === undefined || (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')) {
           this.$root.$emit('bv::hide::modal', 'pay-modal')
         } else {
           this.$root.$emit('bv::show::modal', 'pay-modal')
@@ -652,16 +658,6 @@ export default {
     })
   },
   created() {
-    // window.addEventListener('keydown', e => {
-    //   if (e.key === 'F4') {
-    //     this.$refs.search.focus()
-    //   }
-    //   // if (e.key === 'F8') {
-    //   //   if (this.orderOnline.onlineOrderId != null && this.orderOnline.orderNumber.length > 0) {
-    //   //     this.$refs.payModal.$refs.payModal.show()
-    //   //   }
-    //   // }
-    // })
   },
   methods: {
     ...mapActions(CUSTOMER, [
@@ -669,12 +665,12 @@ export default {
       GET_SALEMT_PROMOTION_OBJECT_ACTION,
       GET_SALEMT_DELIVERY_TYPE_ACTION,
       GET_CUSTOMER_DEFAULT_ACTION,
-      GET_CUSTOMERS_ACTION,
     ]),
 
     ...mapActions(SALES, [
       GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION,
       GET_PROMOTION_PROGRAMS_ACTION,
+      GET_CUSTOMERS_SALE_ACTION,
     ]),
 
     showModalCreate() {
@@ -744,6 +740,7 @@ export default {
       this.customer.totalBill = val.totalBill ?? 0
       this.customer.scoreCumulated = val.scoreCumulated
       this.customer.typeId = val.customerTypeId
+      this.customer.createdAt = `${formatDateToLocale(val.createdAt)} ${getTimeOfDate(val.createdAt)}`
       this.$emit('getCustomerCreate', val)
     },
 
@@ -761,6 +758,7 @@ export default {
       this.customer.scoreCumulated = this.onlineOrderCustomer.customer.scoreCumulated
       this.customer.shopId = this.onlineOrderCustomer.customer.shopId
       this.customer.typeId = this.onlineOrderCustomer.customer.customerTypeId
+      this.customer.createdAt = `${formatDateToLocale(this.onlineOrderCustomer.customer.createdAt)} ${getTimeOfDate(this.onlineOrderCustomer.customer.createdAt)}`
       this.orderOnline.orderNumber = this.onlineOrderCustomer.orderNumber
       this.quantity = this.onlineOrderCustomer.quantity
       this.totalPrice = this.onlineOrderCustomer.totalPrice
@@ -780,6 +778,7 @@ export default {
       this.customer.isDefault = this.customerDefault.isDefault
       this.customer.status = this.customerDefault.status
       this.customer.typeId = this.customerDefault.customerTypeId
+      this.customer.createdAt = `${formatDateToLocale(this.customerDefault.createdAt)} ${getTimeOfDate(this.customerDefault.createdAt)}`
       this.$emit('getCustomerDefault', { data: this.customer })
 
       // Check manualcreate
@@ -798,13 +797,14 @@ export default {
         searchKeywords: this.search.trim(),
       }
 
-      this.GET_CUSTOMERS_ACTION(searchKeywords)
+      this.GET_CUSTOMERS_SALE_ACTION(searchKeywords)
     },
 
     resetOrderNumber(item) {
       if (item.id === saleData.salemtPromotionObject[0].id) {
         this.orderOnline.orderNumber = ''
       }
+      this.$emit('salemtPromotionObjectSelected', this.salemtPromotionObjectSelected)
     },
   },
 }

@@ -18,6 +18,7 @@ import {
   getPromotionCalculationEndpoint,
   getItemsProductsProgramEndpoint,
   getVoucherBySerialEndpoint,
+  getCustomerToSaleEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -104,6 +105,12 @@ export default {
 
   getVoucherBySerial(args) {
     return axios.get(`${getVoucherBySerialEndpoint}/${args.serial}`, {
+      params: formatURLParams(args),
+    })
+  },
+
+  getCustomersToSale(args) {
+    return axios.get(getCustomerToSaleEndpoint, {
       params: formatURLParams(args),
     })
   },

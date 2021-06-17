@@ -3,6 +3,7 @@ const VOUCHERS = '/vouchers'
 const SALES = '/sales'
 const ONLINE_ORDERS = '/online-orders'
 const PRODUCT = '/products'
+const CUSTOMER = 'customers/'
 
 export const getVouchersEndpoint = `${PROMOTION}/${VOUCHERS}`
 
@@ -37,3 +38,5 @@ export const getPromotionCalculationEndpoint = `${SALES}/promotion-calculation`
 export const getItemsProductsProgramEndpoint = `${SALES}/promotion-products`
 
 export const getVoucherBySerialEndpoint = `${PROMOTION}/${VOUCHERS}/code`
+
+export const getCustomerToSaleEndpoint = `${CUSTOMER}/customers-to-sale`

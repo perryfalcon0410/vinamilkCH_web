@@ -22,6 +22,7 @@ import {
   GET_PROMOTION_CALCULATION_GETTER,
   GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
   GET_VOUCHER_BY_SERIAL_GETTER,
+  CUSTOMERS_SALE_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -43,6 +44,7 @@ import {
   GET_PROMOTION_CALCULATION_ACTION,
   GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
   GET_VOUCHER_BY_SERIAL_ACTION,
+  GET_CUSTOMERS_SALE_ACTION,
 } from './type'
 
 export default {
@@ -68,6 +70,7 @@ export default {
     promotionCalculation: {},
     itemsProductsProgram: [],
     voucherBySerial: {},
+    customer: {},
   },
 
   getters: {
@@ -127,6 +130,9 @@ export default {
     },
     [GET_VOUCHER_BY_SERIAL_GETTER](state) {
       return state.voucherBySerial || {}
+    },
+    [CUSTOMERS_SALE_GETTER](state) {
+      return state.customer
     },
   },
 
@@ -415,6 +421,21 @@ export default {
         .then(res => {
           if (res.success) {
             state.voucherBySerial = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_CUSTOMERS_SALE_ACTION]({ state }, val) {
+      SalesServices
+        .getCustomersToSale(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.customer = res.data
           } else {
             throw new Error(res.statusValue)
           }

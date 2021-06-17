@@ -251,7 +251,6 @@
               class="d-flex align-items-center"
             >
               <b-icon-caret-down-fill
-                v-if="editOnlinePermission"
                 class="cursor-pointer"
                 font-scale="1.5"
                 @click="decreaseAmount(props.row.productId)"
@@ -263,12 +262,10 @@
                 :number="true"
                 maxlength="7"
                 class="text-center h7"
-                :disabled="editOnlinePermission === false"
                 @change="onChangeQuantity(props.row.originalIndex)"
                 @keypress="$onlyNumberInput"
               />
               <b-icon-caret-up-fill
-                v-if="editOnlinePermission"
                 class="cursor-pointer"
                 font-scale="1.5"
                 @click="increaseAmount(props.row.productId)"
@@ -281,7 +278,6 @@
               v-else-if="props.column.field === 'tableProductFeature'"
             >
               <b-icon-trash-fill
-                v-if="editOnlinePermission"
                 color="red"
                 class="cursor-pointer"
                 @click="onClickDeleteProduct(props.row.originalIndex)"
@@ -320,6 +316,7 @@
         @getOnlineCustomer="getOnlineCustomer"
         @getCustomerCreate="getCustomerCreate"
         @currentCustomer="getCurrentCustomer"
+        @salemtPromotionObjectSelected="salemtPromotionObjectSelected"
       />
       <!-- END - Section Form pay -->
 
@@ -688,7 +685,7 @@ export default {
       toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
     },
     onclickAddProduct(index) {
-      const { usedShop } = this.loginInfo
+      //  const { usedShop } = this.loginInfo
       this.editOnlinePermission = false
 
       if (this.editOnlinePermission === true && this.isCheckShopId === true) {
@@ -702,10 +699,6 @@ export default {
             this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
           }
         }
-      }
-
-      if (usedShop.manuallyCreatable === false && this.editManualPermission === false) {
-        toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
       }
 
       this.productsSearch = [{ data: null }]
@@ -763,19 +756,19 @@ export default {
 
     getCustomerTypeInfo(id) {
       this.customerType = id
-      const listProducts = this.getProducts
-      const customerTypeId = id
-      const params = {
-        formId: 4, // Hard code
-        ctrlId: 1, // // Hard code
-      }
-      if (id !== this.currentCustomer) {
-        this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
-          customerTypeId,
-          listProducts,
-          params,
-        })
-      }
+      // const listProducts = this.getProducts
+      // const customerTypeId = id
+      // const params = {
+      //   formId: 4, // Hard code
+      //   ctrlId: 1, // // Hard code
+      // }
+      // if (id !== this.currentCustomer) {
+      //   this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
+      //     customerTypeId,
+      //     listProducts,
+      //     params,
+      //   })
+      // }
     },
 
     getCurrentCustomer(val) {

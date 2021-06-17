@@ -387,6 +387,7 @@ export default {
       street: null,
       customerSpecial: false,
       note: null,
+      createdAt: null,
       customerGroups: null,
       provincesSelected: null,
       districtsSelected: null,
@@ -534,6 +535,7 @@ export default {
         address: this.customerCreate.address,
         scoreCumulated: this.customerCreate.scoreCumulated,
         customerTypeId: this.customerCreate.customerTypeId,
+        createdAt: this.customerCreate.createdAt,
       })
     },
 
