@@ -263,7 +263,6 @@ export default {
     },
     inputOrderInfoData() {
       if (this.PRINT_OUT_IN_PUT_ORDER_GETTER.info) {
-        console.log(this.PRINT_OUT_IN_PUT_ORDER_GETTER.info)
         return this.PRINT_OUT_IN_PUT_ORDER_GETTER.info
       }
       return {

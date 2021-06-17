@@ -225,58 +225,40 @@ export default {
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'nameText',
-          thClass: 'text-left',
-          tdClass: 'text-left',
           width: '200px',
         },
         {
           label: 'Điện thoại',
           field: 'mobiPhone',
-          type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Ngày sinh',
           field: 'dob',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          formatFn: value => this.formatFn(value, 'dob'),
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Giới tính',
           field: 'genderId',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          formatFn: value => this.formatFn(value, 'genderId'),
+          formatFn: getGenderLabel,
         },
         {
           label: 'Trạng thái',
           field: 'status',
-          type: 'boolean',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          formatFn: value => this.formatFn(value, 'status'),
+          formatFn: getCustomerStatusLabel,
         },
         {
           label: 'Nhóm',
           field: 'customerTypeId',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          formatFn: value => this.formatFn(value, 'customerTypeId'),
+          formatFn: getCustomerTypeLabel,
         },
         {
           label: 'Ngày tạo',
           field: 'createdAt',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          formatFn: value => this.formatFn(value, 'createdAt'),
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Chức năng',
@@ -356,23 +338,6 @@ export default {
       GET_CUSTOMERS_ACTION,
       EXPORT_CUSTOMERS_ACTION,
     ]),
-
-    formatFn(value, field) {
-      switch (field) {
-        case 'dob':
-          return this.$formatISOtoVNI(value)
-        case 'genderId':
-          return getGenderLabel(value)
-        case 'status':
-          return getCustomerStatusLabel(value)
-        case 'customerTypeId':
-          return getCustomerTypeLabel(value)
-        case 'createdAt':
-          return this.$formatISOtoVNI(value)
-        default:
-          return value
-      }
-    },
 
     navigateToCreate() {
       this.$router.push({ name: 'sales-customers-create' })

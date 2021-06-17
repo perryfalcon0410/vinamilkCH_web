@@ -55,7 +55,7 @@
           line-numbers
           :total-rows="receiptPagination.totalElements"
           :sort-options="{
-            enabled: false,
+            enabled: true,
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
@@ -139,7 +139,7 @@
               v-show="receiptPagination.totalElements"
               v-if="props.column.field === 'quantity'"
               class="mx-0 h7 text-brand-3"
-              align-h="start"
+              align-h="end"
             >
               {{ $formatNumberToLocale(totalQuantity) }}
             </b-row>
@@ -148,7 +148,7 @@
               v-show="receiptPagination.totalElements"
               v-else-if="props.column.field === 'price'"
               class="mx-0 h7 text-brand-3"
-              align-h="start"
+              align-h="end"
             >
               {{ $formatNumberToLocale(totalPrice) }}
             </b-row>
@@ -252,7 +252,6 @@
 <script>
 import commonData from '@/@db/common'
 import {
-  getInputTypeslabel,
   resizeAbleTable,
 } from '@core/utils/utils'
 import {
@@ -302,27 +301,19 @@ export default {
         {
           label: 'Ngày',
           field: 'transDate',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          formatFn: value => this.formatFn(value, 'transDate'),
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Mã nhập hàng',
           field: 'transCode',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
@@ -331,9 +322,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          formatFn: value => this.formatFn(value, 'quantity'),
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Số tiền',
@@ -342,30 +331,25 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          formatFn: value => this.formatFn(value, 'price'),
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Loại nhập',
           field: 'inputTypes',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          formatFn: value => this.formatFn(value, 'inputTypes'),
+          formatFn: this.$getInputTypeslabel,
         },
         {
           label: 'Ghi chú',
           field: 'note',
-          thClass: 'text-left',
-          tdClass: 'text-left',
           width: '200px',
         },
         {
           label: 'Thao tác',
           field: 'feature',
-          thClass: 'text-left',
+          thClass: 'text-center',
           tdClass: 'text-center',
           width: '90px',
+          sortable: false,
         },
       ],
     }
@@ -431,20 +415,6 @@ export default {
       REMOVE_RECEIPT_ACTION,
       PRINT_OUT_IN_PUT_ORDER_ACTION,
     ]),
-    formatFn(value, field) {
-      switch (field) {
-        case 'transDate':
-          return this.$formatISOtoVNI(value)
-        case 'quantity':
-          return this.$formatNumberToLocale(value)
-        case 'price':
-          return this.$formatNumberToLocale(value)
-        case 'inputTypes':
-          return getInputTypeslabel(value)
-        default:
-          return value
-      }
-    },
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-input-create' })
     },

@@ -231,12 +231,6 @@
           compact-mode
           line-numbers
           :total-rows="warehousesOutputPagination.totalElements"
-          :sort-options="{
-            enabled: true,
-            initialSortBy: [
-              {field: 'code', type: 'desc'},
-            ]
-          }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
@@ -313,7 +307,7 @@
               v-if="props.column.field === 'quantity'"
               v-show="warehousesOutputPagination.totalElements"
               class="h7"
-              align-h="start"
+              align-h="end"
             >
               {{ $formatNumberToLocale(totalQuantity) }}
             </b-row>
@@ -322,7 +316,7 @@
               v-else-if="props.column.field === 'price'"
               v-show="warehousesOutputPagination.totalElements"
               class="h7 px-0 mx-0"
-              align-h="start"
+              align-h="end"
             >
               {{ $formatNumberToLocale(totalPrice) }}
             </b-row>
@@ -428,7 +422,6 @@ import {
   reverseVniDate,
 } from '@/@core/utils/filter'
 import {
-  getOutputTypeslabel,
   resizeAbleTable,
 } from '@core/utils/utils'
 import warehousesData from '@/@db/warehouses'
@@ -487,63 +480,49 @@ export default {
         {
           label: 'Ngày',
           field: 'date',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          formatFn: value => this.formatFn(value, 'date'),
+          formatFn: this.$formatISOtoVNI,
         },
         {
           label: 'Mã xuất hàng',
           field: 'code',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
           field: 'billNumber',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          type: 'number',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-left',
           filterOptions: {
             enabled: true,
           },
-          formatFn: value => this.formatFn(value, 'quantity'),
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Số tiền',
           field: 'price',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-left',
           filterOptions: {
             enabled: true,
           },
-          formatFn: value => this.formatFn(value, 'price'),
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Loại xuất',
           field: 'inputTypes',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          formatFn: value => this.formatFn(value, 'inputTypes'),
+          type: 'boolean',
+          formatFn: this.$getOutputTypeslabel,
         },
         {
           label: 'Ghi chú',
           field: 'note',
-          thClass: 'text-left',
-          tdClass: 'text-left',
           width: '300px',
           maxlength: 100,
         },
@@ -551,7 +530,7 @@ export default {
           label: 'Thao tác',
           field: 'feature',
           thClass: 'text-center',
-          tdClass: 'text-left',
+          tdClass: 'text-center',
           width: '90px',
         },
       ],
@@ -650,20 +629,6 @@ export default {
       PRINT_OUT_IN_PUT_ORDER_ACTION,
       DELETE_WAREHOUSES_ACTION,
     ]),
-    formatFn(value, field) {
-      switch (field) {
-        case 'date':
-          return this.$formatISOtoVNI(value)
-        case 'quantity':
-          return this.$formatNumberToLocale(value)
-        case 'price':
-          return this.$formatNumberToLocale(value)
-        case 'inputTypes':
-          return getOutputTypeslabel(value)
-        default:
-          return value
-      }
-    },
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-output-create' })
     },

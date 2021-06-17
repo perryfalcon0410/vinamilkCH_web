@@ -159,7 +159,10 @@
         <vue-good-table
           :columns="columns"
           :rows="getProductOfWarehouseOutput"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
+          :sort-options="{
+            enabled: false,
+          }"
           compact-mode
           line-numbers
         >
@@ -171,6 +174,7 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+
           <!-- START - Header slot -->
           <div slot="table-actions">
             <b-form-checkbox
@@ -215,6 +219,7 @@
             </div>
           </template>
           <!-- END - Rows -->
+
         </vue-good-table>
         <!-- END - Table Product -->
 
@@ -304,111 +309,80 @@ export default {
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
           field: 'productQuantity',
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
         },
         {
           label: 'Giá',
           field: 'productPrice',
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
         },
         {
           label: 'Đã xuất trả/tổng nhập',
           field: 'export',
-          sortable: false,
         },
         {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
       ],
       columnsCustom: [
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          sortable: false,
         },
         {
           label: 'Số lượng',
           field: 'productQuantity',
           formatFn: this.$formatNumberToLocale,
-          sortable: false,
+          type: 'number',
           // filterOptions: {
           //   enabled: true,
           // },
-          thClass: 'text-right',
-          tdClass: 'text-right',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          sortable: false,
         },
         {
           label: 'Giá',
           field: 'productPrice',
           formatFn: this.$formatNumberToLocale,
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
-          sortable: false,
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
+          type: 'number',
           formatFn: this.$formatNumberToLocale,
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
         },
         {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
           formatFn: this.$formatNumberToLocale,
-          sortable: false,
           // filterOptions: {
           //   enabled: true,
           // },
-          thClass: 'text-left',
-          tdClass: 'text-right',
         },
       ],
 

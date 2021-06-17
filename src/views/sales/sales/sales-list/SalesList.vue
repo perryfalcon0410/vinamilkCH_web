@@ -689,7 +689,6 @@ export default {
     },
     onclickAddProduct(index) {
       const { usedShop } = this.loginInfo
-      console.log('this.isCheckShopId', this.isCheckShopId)
       this.editOnlinePermission = false
 
       if (this.editOnlinePermission === true && this.isCheckShopId === true) {
@@ -760,7 +759,6 @@ export default {
           this.editOnlinePermission = false
         }
       }
-      console.log('getCustomer online', val)
     },
 
     getCustomerTypeInfo(id) {

@@ -346,7 +346,6 @@ export default {
   },
   methods: {
     exportExcel() {
-      console.log(this.total[7])
       this.EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(this.searchData)
     },
     ...mapActions(REPORT_EXCHANGE_DAMAGED_GOODS, [
