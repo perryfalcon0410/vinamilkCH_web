@@ -10,6 +10,8 @@ import {
   isEmpty,
   onlyNumberInput,
   onlyDateInput,
+  getInputTypeslabel,
+  getOutputTypeslabel,
 } from '@core/utils/utils'
 import {
   formatDateToLocale,
@@ -78,6 +80,10 @@ moment.locale('vi')
 Vue.prototype.$isEmpty = isEmpty
 Vue.prototype.$onlyNumberInput = onlyNumberInput
 Vue.prototype.$onlyDateInput = onlyDateInput
+Vue.prototype.$getInputTypeslabel = getInputTypeslabel
+Vue.prototype.$getOutputTypeslabel = getOutputTypeslabel
+
+// filter
 Vue.prototype.$formatNumberToLocale = formatNumberToLocale
 Vue.prototype.$formatISOtoVNI = formatISOtoVNI
 Vue.prototype.$formatVniDateToISO = formatVniDateToISO

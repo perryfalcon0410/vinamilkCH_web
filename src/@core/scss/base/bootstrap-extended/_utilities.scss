@@ -9,10 +9,13 @@
 // ================================================================================================
 
 // Sizes Variable for height and width mixins
+
+// Ex: height-150 - width-200
 $sizes-px: (
   // in px
     50: 50px,
   100: 100px,
+  120: 120px,
   150: 150px,
   200: 200px,
   250: 250px,
@@ -29,6 +32,7 @@ $sizes-px: (
   800: 800px
 ) !default;
 
+// Ex: height-15-per - width-20-per
 $sizes-per: (
   // in %
     5: 5%,
@@ -258,10 +262,11 @@ $sizes-per: (
 
 // height & width in PX
 @each $name, $size in $sizes-px {
+  // Ex: height-100
   .height-#{$name} {
     height: $size !important;
   }
-
+  // Ex: width-150
   .width-#{$name} {
     width: $size !important;
   }
@@ -269,10 +274,11 @@ $sizes-per: (
 
 // height & width in %
 @each $name, $size in $sizes-per {
+  // Ex: height-5-per
   .height-#{$name}-per {
     height: $size !important;
   }
-
+  // Ex: width-15-per
   .width-#{$name}-per {
     width: $size !important;
   }

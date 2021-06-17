@@ -34,43 +34,52 @@
         </strong>
         <div class="font-italic">
           <b-row class="mx-0">
-            <div class="w-35">
+            <div class="width-100">
               Loại xuất hàng:
-            </div>  <strong>{{ inputOrderInfoData.type }}</strong>
+            </div>  <strong>{{ $getOutputTypeslabel( inputOrderInfoData.transType) }}</strong>
           </b-row>
           <b-row class="mx-0">
-            <div class="w-35">
+            <div class="width-100">
               Mã xuất hàng:
             </div>  <strong>{{ inputOrderInfoData.transCode }}</strong>
           </b-row>
           <b-row class="mx-0">
-            <div class="w-35">
+            <div class="width-100">
               Số PO:
             </div>  <strong>{{ inputOrderInfoData.poNumber }}</strong>
           </b-row>
           <b-row class="mx-0">
-            <div class="w-35">
+            <div class="width-100">
               Số hóa đơn:
             </div>  <strong>{{ inputOrderInfoData.invoiceNumber }}</strong>
           </b-row>
         </div>
       </div>
 
-      <div class="d-flex flex-column w-25 font-italic">
-        <b-row class="mx-0">
-          <div class="w-50">
+      <div class="d-flex flex-column font-italic">
+        <b-row
+          class="mx-0"
+        >
+          <div class="width-120">
             Ngày xuất hàng:
-          </div>  <strong>{{ $formatISOtoVNI(inputOrderInfoData.orderDate) }}</strong>
+          </div>
+          <strong>{{ $formatISOtoVNI(inputOrderInfoData.transDate, true) }}</strong>
         </b-row>
-        <b-row class="mx-0">
-          <div class="w-50">
+        <b-row
+          class="mx-0"
+        >
+          <div class="width-120">
             Số nội bộ:
-          </div>  <strong>{{ inputOrderInfoData.internalNumber }}</strong>
+          </div>
+          <strong>{{ inputOrderInfoData.internalNumber }}</strong>
         </b-row>
-        <b-row class="mx-0">
-          <div class="w-50">
+        <b-row
+          class="mx-0"
+        >
+          <div class="width-120">
             Ngày hóa đơn:
-          </div>  <strong>{{ $formatISOtoVNI(inputOrderInfoData.transDate) }}</strong>
+          </div>
+          <strong>{{ $formatISOtoVNI(inputOrderInfoData.orderDate) }}</strong>
         </b-row>
       </div>
     </b-row>
@@ -124,27 +133,26 @@
         </tr>
         <tr>
           <th
-            style="width: 1%"
-            class="px-1"
+            style="width: 5px"
           >
             STT
           </th>
-          <th class="px-1">
+          <th class="px-50">
             Mã SP
           </th>
-          <th class="px-1">
+          <th class="px-50">
             Tên SP
           </th>
-          <th class="px-1">
+          <th class="px-50">
             ĐVT
           </th>
-          <th class="text-right px-2">
+          <th class="text-right px-50">
             SL
           </th>
-          <th class="text-right px-1 w-15">
+          <th class="text-right px-50">
             Giá
           </th>
-          <th class="text-right px-1">
+          <th class="text-right px-50">
             T.Tiền
           </th>
         </tr>
@@ -255,10 +263,11 @@ export default {
     },
     inputOrderInfoData() {
       if (this.PRINT_OUT_IN_PUT_ORDER_GETTER.info) {
+        console.log(this.PRINT_OUT_IN_PUT_ORDER_GETTER.info)
         return this.PRINT_OUT_IN_PUT_ORDER_GETTER.info
       }
       return {
-        type: 'type',
+        transType: 'type',
         transCode: 'transCode',
         poNumber: 'poNumber',
         invoiceNumber: 'invoiceNumber',
