@@ -80,7 +80,7 @@
             <b-row
               v-if="props.column.field === 'totalValue'"
               v-show="salesReceiptsTotal.totalAmount"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ salesReceiptsTotal.totalAmount }}
@@ -89,7 +89,7 @@
             <b-row
               v-else-if="props.column.field === 'payments'"
               v-show="salesReceiptsTotal.allTotal"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ (salesReceiptsTotal.allTotal) }}
@@ -139,6 +139,18 @@
                   @click="showInvoiceDetailModal(props.row.id, props.row.numberBill)"
                 />
               </span>
+            </span>
+            <span
+              v-else-if="props.column.field === 'discountMoney' || props.column.field === 'moneyAccumulated'"
+              style="padding-right: 10px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </span>
+            <span
+              v-else-if="props.column.field === 'totalValue' || props.column.field === 'payments'"
+              style="padding-right: 9px"
+            >
+              {{ props.formattedRow[props.column.field] }}
             </span>
             <span v-else>
               {{ props.formattedRow[props.column.field] }}
@@ -313,6 +325,7 @@ export default {
         {
           label: 'Tổng giá trị',
           field: 'totalValue',
+          type: 'number',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -324,11 +337,13 @@ export default {
           label: 'Tiển giảm giá',
           field: 'discountMoney',
           sortable: false,
+          type: 'number',
           thClass: 'text-right',
-          tdClass: 'text-rigt',
+          tdClass: 'text-right',
         },
         {
           label: 'Tiền tích lũy',
+          type: 'number',
           field: 'moneyAccumulated',
           sortable: false,
           thClass: 'text-right',
@@ -338,6 +353,7 @@ export default {
           label: 'Tiền phải trả',
           field: 'payments',
           sortable: false,
+          type: 'number',
           filterOptions: {
             enabled: true,
           },

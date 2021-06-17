@@ -6,6 +6,8 @@
     <!-- START - Form and list -->
     <validation-observer
       ref="formContainer"
+      v-slot="{invalid}"
+      slim
     >
       <b-col>
         <b-row>
@@ -110,7 +112,9 @@
 
               <b-col>
                 <validation-provider
+                  v-slot="{ errors, passed, touched }"
                   rules="required"
+                  name="Ngày hóa đơn"
                 >
                   <div class="h9">
                     Ngày hóa đơn <sup
@@ -125,11 +129,13 @@
                       v-model="billDate"
                       :disabled="inputTypeSelected != '0' ? true : false"
                       :config="configDate"
+                      :state="touched ? passed : null"
                       class="form-control h8 text-brand-3"
                       placeholder="Chọn ngày"
                     />
 
                   </b-input-group>
+                  <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
               </b-col>
             </b-form-row>
@@ -164,7 +170,7 @@
                   name="PO No"
                 >
                   <div class="mt-1 h9">
-                    POCo No
+                    PO No
                     <sup
                       v-show="inputTypeSelected === '0'"
                       class="text-danger"
@@ -445,7 +451,8 @@
                   >
                     <template slot-scope="{ suggestion }">
                       <div class="cursor-pointer">
-                        <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                        {{ suggestions }}
+                        <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.name }}
                       </div>
                     </template>
                   </vue-autosuggest>
@@ -462,6 +469,7 @@
                 <b-button
                   class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
                   variant="someThing"
+                  :disabled="invalid"
                   @click="create"
                 >
                   <b-icon
@@ -834,7 +842,16 @@ export default {
     getProducts() {
       if (this.PRODUCTS_GETTER) {
         // để show lên vue-autosuggest thì phải để [{data: value}]
-        return [{ data: this.PRODUCTS_GETTER }]
+        return [{
+          data: this.PRODUCTS_GETTER.map(data => ({
+            productId: data.id,
+            productCode: data.productCode,
+            name: data.productName,
+            price: data.price,
+            totalPrice: data.stockTotal,
+            unit: data.uom1,
+          })),
+        }]
       }
       return []
     },
@@ -994,12 +1011,12 @@ export default {
       if (this.promotionRow.length === 0) {
         const obj = {
           importType: this.status,
-          poCoNumber: this.poNo,
-          internalNumber: this.internalNumber,
-          redInvoiceNo: this.billNumber,
+          poCoNumber: this.poNo?.trim(),
+          internalNumber: this.internalNumber?.trim(),
+          redInvoiceNo: this.billNumber.toUpperCase()?.trim(),
           orderDate: formatVniDateToISO(this.billDate),
           poId: this.poId,
-          note: this.note,
+          note: this.note?.trim(),
         }
         if (obj.importType === -1) {
           toasts.error('Cần chọn ít nhất 1 sản phẩm khuyến mãi')
@@ -1020,15 +1037,13 @@ export default {
           if (success) {
             this.CREATE_SALE_IMPORT_ACTION({
               importType: 0,
-              poCoNumber: this.poNo,
-              internalNumber: this.internalNumber,
-              redInvoiceNo: this.billNumber,
+              poCoNumber: this.poNo?.trim(),
+              internalNumber: this.internalNumber?.trim(),
+              redInvoiceNo: this.billNumber.toUpperCase()?.trim(),
               orderDate: formatVniDateToISO(this.billDate),
-              note: this.note,
+              note: this.note?.trim(),
               lst: this.promotionRow,
             })
-          } else {
-            toasts.error('Ngày không được để trống')
           }
         })
       }
@@ -1056,13 +1071,13 @@ export default {
         const index = this.rowsProductPromotion.findIndex(e => e.productId === product.item.id)
         if (this.rowsProductPromotion) {
           const obj = {
-            productId: product.item.id,
+            productId: product.item.productId,
             productCode: product.item.productCode,
             productName: product.item.productName,
             quantity: 1, // default quantity
             price: product.item.price || 0,
             totalPrice: product.item.stockTotal || 0,
-            unit: product.item.uom1,
+            unit: product.item.unit,
           }
           if (index === -1) {
             this.rowsProductPromotion.push(obj)
