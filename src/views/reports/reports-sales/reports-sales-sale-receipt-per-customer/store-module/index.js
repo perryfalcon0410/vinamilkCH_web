@@ -7,7 +7,6 @@ import {
   // GETTERS
   REPORT_SALES_SALE_RECEIPT_GETTER,
   REPORT_SALES_CUSTOMER_TYPES_GETTER,
-  REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER,
   // ACTIONS
   GET_CUSTOMERS_TYPES_ACTION,
   GET_SALE_RECEIPTS_ACTION,
@@ -20,7 +19,6 @@ export default {
   // STATE
   state: {
     reportSalesSaleReceipt: [],
-    reportSalesSaleReceiptContent: [],
     reportSalesCustomerType: [],
   },
 
@@ -32,9 +30,7 @@ export default {
     [REPORT_SALES_SALE_RECEIPT_GETTER](state) {
       return state.reportSalesSaleReceipt
     },
-    [REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER](state) {
-      return state.reportSalesSaleReceiptContent
-    },
+
   },
 
   // ACTIONS

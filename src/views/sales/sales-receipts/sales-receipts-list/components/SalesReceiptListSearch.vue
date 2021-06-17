@@ -195,6 +195,12 @@ export default {
   components: {
     VCardActions,
   },
+  props: {
+    perPage: {
+      type: Number,
+      default: null,
+    },
+  },
   data() {
     return {
       printOptions: receiptData.printState,
@@ -257,7 +263,7 @@ export default {
         ctrlId: 7, // hard code
       }
       this.updateSearchData(searchData)
-      this.GET_SALES_RECEIPTS_ACTION(searchData)
+      this.GET_SALES_RECEIPTS_ACTION({ ...searchData, size: this.perPage })
     },
     onClickSearchButton() {
       this.$emit('onClickSearchButton')

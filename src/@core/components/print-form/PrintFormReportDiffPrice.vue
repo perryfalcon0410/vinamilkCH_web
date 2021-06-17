@@ -50,507 +50,170 @@
     </b-row>
     <!-- END - Total view -->
 
-    <!-- START - Table 1 -->
-    <b-col class="px-0">
-      <table>
-        <!-- START - Header -->
-        <thead>
-          <!-- START - Header 1 -->
-          <tr>
-            <th
-              colspan="10"
-            >
-              <strong class="mx-1">Số HĐ: 1234 - Ngày HĐ: 18/02/2021 - Số PO: 555 - Số nội bộ: 789 - Mã
-                nhập hàng: IMP.MT10081.21.00001
-              </strong>
-              <div class="text-center">
-                Tổng cộng: 10
-              </div>
-            </th>
-          </tr>
-          <!-- END - Header 1 -->
-
-          <!-- START - Header 2 -->
-          <tr>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              STT
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Mã SP
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Tên SP
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              ĐVT
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              SL
-            </th>
-            <th
-              colspan="2"
-              class="text-center"
-            >
-              Đầu vào
-            </th>
-            <th
-              colspan="2"
-              class="text-center"
-            >
-              Đầu ra
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Chênh lệch
-            </th>
-          </tr>
-          <!-- END - Header 2 -->
-
-          <!-- START - Header 3 -->
-          <tr>
-            <!-- Đầu vào -->
-            <th class="text-center">
-              Giá
-            </th>
-            <th class="text-center">
-              T.Tiền
-            </th>
-            <!-- Đầu ra -->
-            <th class="text-center">
-              Giá
-            </th>
-            <th class="text-center">
-              T.Tiền
-            </th>
-          </tr>
-        <!-- END - Header 3 -->
-
-        </thead>
-        <!-- END - Header -->
-
-        <!-- START - Body -->
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>02BC10</td>
-            <td>SBot Dielac Canxi HG 400g</td>
-            <td>Hộp</td>
-            <td>10</td>
-            <td />
-            <td />
-            <td />
-            <td />
-            <td />
-          </tr>
-        </tbody>
-        <!-- END - Body -->
-
-      </table>
-    </b-col>
-    <!-- END - Table 1 -->
-
     <!-- START - Table 2 -->
-    <b-col class="px-0 mt-1">
-      <table>
-        <!-- START - Header -->
-        <thead>
-          <!-- START - Header 1 -->
-          <tr>
-            <th
-              colspan="10"
-            >
-              <strong class="mx-1">
-                Số HĐ: hoadon123 - Ngày HĐ: 19/02/2021 - Số PO: 260170045 - Số nội bộ: 29439945 - Mã nhập hàng: IMP.MT10081.21.00004
-              </strong>
-              <b-row
-                class="mx-0"
-                align-h="center"
+    <div
+      v-for="(item,index) in reportData"
+      :key="index"
+    >
+      <b-col class="px-0 pb-1">
+        <table>
+          <!-- START - Header -->
+          <thead>
+            <!-- START - Header 1 -->
+            <tr>
+              <th
+                colspan="10"
               >
-                <div class="ml-5">
-                  Tổng cộng: 108
-                </div>
-                <div class="mx-5">
-                  140,852,816
-                </div>
-                <div>
-                  1,045,112
-                </div>
-              </b-row>
-            </th>
-          </tr>
-          <!-- END - Header 1 -->
+                <strong class="mx-1">
+                  Số HĐ: số hđ - Ngày HĐ: ngày hđ - Số PO: số Po - Số nội bộ: 29439945 - Mã nhập hàng: IMP.MT10081.21.00004
+                </strong>
+                <b-row
+                  class="mx-0"
+                  align-h="center"
+                >
+                  <div class="ml-5">
+                    Tổng cộng: 108
+                  </div>
+                  <div class="mx-5">
+                    140,852,816
+                  </div>
+                  <div>
+                    1,045,112
+                  </div>
+                </b-row>
+              </th>
+            </tr>
+            <!-- END - Header 1 -->
 
-          <!-- START - Header 2 -->
-          <tr>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              STT
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Mã SP
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Tên SP
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              ĐVT
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              SL
-            </th>
-            <th
-              colspan="2"
-              class="text-center"
-            >
-              Đầu vào
-            </th>
-            <th
-              colspan="2"
-              class="text-center"
-            >
-              Đầu ra
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Chênh lệch
-            </th>
-          </tr>
-          <!-- END - Header 2 -->
+            <!-- START - Header 2 -->
+            <tr>
+              <th
+                rowspan="2"
+                class="text-center"
+              >
+                STT
+              </th>
+              <th
+                rowspan="2"
+                class="text-center"
+              >
+                Mã SP
+              </th>
+              <th
+                rowspan="2"
+                class="text-center"
+              >
+                Tên SP
+              </th>
+              <th
+                rowspan="2"
+                class="text-center"
+              >
+                ĐVT
+              </th>
+              <th
+                rowspan="2"
+                class="text-center"
+              >
+                SL
+              </th>
+              <th
+                colspan="2"
+                class="text-center"
+              >
+                Đầu vào
+              </th>
+              <th
+                colspan="2"
+                class="text-center"
+              >
+                Đầu ra
+              </th>
+              <th
+                rowspan="2"
+                class="text-center"
+              >
+                Chênh lệch
+              </th>
+            </tr>
+            <!-- END - Header 2 -->
 
-          <!-- START - Header 3 -->
-          <tr>
-            <!-- Đầu vào -->
-            <th class="text-center">
-              Giá
-            </th>
-            <th class="text-center">
-              T.Tiền
-            </th>
-            <!-- Đầu ra -->
-            <th class="text-center">
-              Giá
-            </th>
-            <th class="text-center">
-              T.Tiền
-            </th>
-          </tr>
+            <!-- START - Header 3 -->
+            <tr>
+              <!-- Đầu vào -->
+              <th class="text-center">
+                Giá
+              </th>
+              <th class="text-center">
+                T.Tiền
+              </th>
+              <!-- Đầu ra -->
+              <th class="text-center">
+                Giá
+              </th>
+              <th class="text-center">
+                T.Tiền
+              </th>
+            </tr>
           <!-- END - Header 3 -->
-        </thead>
-        <!-- END - Header -->
+          </thead>
+          <!-- END - Header -->
 
-        <!-- START - Body -->
-        <tbody>
-          <tr>
-            <td>2</td>
-            <td>02BC10</td>
-            <td>SP Vinamilk giảm cân HG 525g</td>
-            <td>Hộp</td>
-            <td>100</td>
-            <td>1,354,354</td>
-            <td>135,435,400</td>
-            <td>10,049</td>
-            <td>1,004,900</td>
-            <td />
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>02BC10</td>
-            <td>SP Vinamilk giảm cân HG 525g</td>
-            <td>Hộp</td>
-            <td>100</td>
-            <td>1,354,354</td>
-            <td>135,435,400</td>
-            <td>10,049</td>
-            <td>1,004,900</td>
-            <td />
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>02BC10</td>
-            <td>SP Vinamilk giảm cân HG 525g</td>
-            <td>Hộp</td>
-            <td>100</td>
-            <td>1,354,354</td>
-            <td>135,435,400</td>
-            <td>10,049</td>
-            <td>1,004,900</td>
-            <td />
-          </tr>
-        </tbody>
+          <!-- START - Body -->
+          <tbody>
+            <tr>
+              <td>2</td>
+              <td>02BC10</td>
+              <td>SP Vinamilk giảm cân HG 525g</td>
+              <td>Hộp</td>
+              <td>100</td>
+              <td>1,354,354</td>
+              <td>135,435,400</td>
+              <td>10,049</td>
+              <td>1,004,900</td>
+              <td />
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>02BC10</td>
+              <td>SP Vinamilk giảm cân HG 525g</td>
+              <td>Hộp</td>
+              <td>100</td>
+              <td>1,354,354</td>
+              <td>135,435,400</td>
+              <td>10,049</td>
+              <td>1,004,900</td>
+              <td />
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>02BC10</td>
+              <td>SP Vinamilk giảm cân HG 525g</td>
+              <td>Hộp</td>
+              <td>100</td>
+              <td>1,354,354</td>
+              <td>135,435,400</td>
+              <td>10,049</td>
+              <td>1,004,900</td>
+              <td />
+            </tr>
+          </tbody>
         <!-- END - Body -->
 
-      </table>
-    </b-col>
-    <!-- END - Table 2 -->
-
-    <!-- START - Table 3 -->
-    <b-col class="px-0 mt-1">
-      <table>
-        <!-- START - Header -->
-        <thead>
-          <!-- START - Header 1 -->
-          <tr>
-            <th
-              colspan="10"
-            >
-              <strong class="mx-1">Số HĐ: 1234 - Ngày HĐ: 18/02/2021 - Số PO: 555 - Số nội bộ: 789 - Mã
-                nhập hàng: IMP.MT10081.21.00001
-              </strong>
-              <div class="text-center">
-                Tổng cộng: 10
-              </div>
-            </th>
-          </tr>
-          <!-- END - Header 1 -->
-
-          <!-- START - Header 2 -->
-          <tr>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              STT
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Mã SP
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Tên SP
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              ĐVT
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              SL
-            </th>
-            <th
-              colspan="2"
-              class="text-center"
-            >
-              Đầu vào
-            </th>
-            <th
-              colspan="2"
-              class="text-center"
-            >
-              Đầu ra
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Chênh lệch
-            </th>
-          </tr>
-          <!-- END - Header 2 -->
-
-          <!-- START - Header 3 -->
-          <tr>
-            <!-- Đầu vào -->
-            <th class="text-center">
-              Giá
-            </th>
-            <th class="text-center">
-              T.Tiền
-            </th>
-            <!-- Đầu ra -->
-            <th class="text-center">
-              Giá
-            </th>
-            <th class="text-center">
-              T.Tiền
-            </th>
-          </tr>
-        <!-- END - Header 3 -->
-
-        </thead>
-        <!-- END - Header -->
-
-        <!-- START - Body -->
-        <tbody>
-          <tr>
-            <td>5</td>
-            <td>02BC10</td>
-            <td>SBot Dielac Canxi HG 400g</td>
-            <td>Hộp</td>
-            <td>10</td>
-            <td />
-            <td />
-            <td />
-            <td />
-            <td />
-          </tr>
-        </tbody>
-        <!-- END - Body -->
-
-      </table>
-    </b-col>
-    <!-- END - Table 3 -->
-
-    <!-- START - Table 4 -->
-    <b-col class="px-0 mt-1">
-      <table>
-        <!-- START - Header -->
-        <thead>
-          <!-- START - Header 1 -->
-          <tr>
-            <th
-              colspan="10"
-            >
-              <strong class="mx-1">Số HĐ: 1234 - Ngày HĐ: 18/02/2021 - Số PO: 555 - Số nội bộ: 789 - Mã
-                nhập hàng: IMP.MT10081.21.00001
-              </strong>
-              <div class="text-center">
-                Tổng cộng: 10
-              </div>
-            </th>
-          </tr>
-          <!-- END - Header 1 -->
-
-          <!-- START - Header 2 -->
-          <tr>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              STT
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Mã SP
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Tên SP
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              ĐVT
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              SL
-            </th>
-            <th
-              colspan="2"
-              class="text-center"
-            >
-              Đầu vào
-            </th>
-            <th
-              colspan="2"
-              class="text-center"
-            >
-              Đầu ra
-            </th>
-            <th
-              rowspan="2"
-              class="text-center"
-            >
-              Chênh lệch
-            </th>
-          </tr>
-          <!-- END - Header 2 -->
-
-          <!-- START - Header 3 -->
-          <tr>
-            <!-- Đầu vào -->
-            <th class="text-center">
-              Giá
-            </th>
-            <th class="text-center">
-              T.Tiền
-            </th>
-            <!-- Đầu ra -->
-            <th class="text-center">
-              Giá
-            </th>
-            <th class="text-center">
-              T.Tiền
-            </th>
-          </tr>
-        <!-- END - Header 3 -->
-
-        </thead>
-        <!-- END - Header -->
-
-        <!-- START - Body -->
-        <tbody>
-          <tr>
-            <td>6</td>
-            <td>02BC10</td>
-            <td>SBot Dielac Canxi HG 400g</td>
-            <td>Hộp</td>
-            <td>10</td>
-            <td />
-            <td />
-            <td />
-            <td />
-            <td />
-          </tr>
-        </tbody>
-        <!-- END - Body -->
-
-      </table>
-    </b-col>
-    <!-- END - Table 4 -->
-  </b-container>
+        </table>
+      </b-col>
+      <!-- END - Table 2 -->
+    </div></b-container>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import {
+  REPORT_WAREHOUSES_DIFFERENCE_PRICE,
+
+  PRINT_REPORT_DIFFERENCE_GETTER,
+} from '@/views/reports/reports-warehouses/report-warehouses-price-difference/store-module/type'
+
 export default {
   props: {
     rows: {
@@ -618,6 +281,36 @@ export default {
         },
       ],
     }
+  },
+  computed: {
+    ...mapGetters(REPORT_WAREHOUSES_DIFFERENCE_PRICE, [PRINT_REPORT_DIFFERENCE_GETTER]),
+
+    reportData() {
+      if (this.PRINT_REPORT_DIFFERENCE_GETTER) {
+        return this.PRINT_REPORT_DIFFERENCE_GETTER
+      }
+      return {
+        id: 'id',
+        redInvoiceNo: 'redInvoiceNo',
+        poNumber: 'poNumber',
+        internalNumber: 'internalNumber',
+        transDate: 'transDate',
+        orderDate: 'orderDate',
+        productCode: 'productCode',
+        productName: 'productName',
+        unit: 'unit',
+        quantity: 'quantity',
+        inputPrice: 'inputPrice',
+        totalInput: 'totalInput',
+        outputPrice: 'outputPrice',
+        totalOutput: 'totalOutput',
+        priceChange: 'priceChange',
+      }
+    },
+  },
+  updated() {
+    console.log(this.reportData)
+  //   window.print()
   },
 }
 </script>

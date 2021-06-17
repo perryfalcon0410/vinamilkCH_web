@@ -169,7 +169,6 @@ import {
   REPORT_SALES_SALE_RECEIPT,
   // Getters
   REPORT_SALES_SALE_RECEIPT_GETTER,
-  REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER,
   // Actions
   GET_SALE_RECEIPTS_ACTION,
   EXPORT_REPORT_SALE_RECEIPT_AMOUNT_ACTION,
@@ -228,15 +227,18 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(REPORT_SALES_SALE_RECEIPT, [
+      REPORT_SALES_SALE_RECEIPT_GETTER,
+    ]),
     getTotalInfo() {
-      if (this.REPORT_SALES_SALE_RECEIPT_GETTER().totals) {
-        return this.REPORT_SALES_SALE_RECEIPT_GETTER().totals
+      if (this.REPORT_SALES_SALE_RECEIPT_GETTER.totals) {
+        return this.REPORT_SALES_SALE_RECEIPT_GETTER.totals
       }
       return {}
     },
     reportSalesSaleReceiptPagination() {
-      if (this.REPORT_SALES_SALE_RECEIPT_GETTER().response) {
-        return this.REPORT_SALES_SALE_RECEIPT_GETTER().response
+      if (this.REPORT_SALES_SALE_RECEIPT_GETTER.response) {
+        return this.REPORT_SALES_SALE_RECEIPT_GETTER.response
       }
       return {}
     },
@@ -248,17 +250,23 @@ export default {
       return `${minPageSize} - ${maxPageSize} của ${this.reportSalesSaleReceiptPagination.totalElements} mục`
     },
     getReportSalesReceiptAmountDates() {
-      return this.REPORT_SALES_SALE_RECEIPT_GETTER().dates
+      if (this.REPORT_SALES_SALE_RECEIPT_GETTER) {
+        return this.REPORT_SALES_SALE_RECEIPT_GETTER.dates
+      }
+      return []
     },
     getReportSalesReceiptAmount() {
-      return this.REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER().map(data => ({
-        customerCode: data[0],
-        customerName: data[1],
-        address: data[2],
-      }))
+      if (this.REPORT_SALES_SALE_RECEIPT_GETTER.response) {
+        return this.REPORT_SALES_SALE_RECEIPT_GETTER.response.content.map(data => ({
+          customerCode: data[0],
+          customerName: data[1],
+          address: data[2],
+        }))
+      }
+      return []
     },
     getReportSalesReceiptAmountPrice() {
-      return this.REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER()
+      return this.REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER
     },
   },
   watch: {
@@ -313,10 +321,6 @@ export default {
     ...mapActions(REPORT_SALES_SALE_RECEIPT, [
       GET_SALE_RECEIPTS_ACTION,
       EXPORT_REPORT_SALE_RECEIPT_AMOUNT_ACTION,
-    ]),
-    ...mapGetters(REPORT_SALES_SALE_RECEIPT, [
-      REPORT_SALES_SALE_RECEIPT_GETTER,
-      REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER,
     ]),
     onClickExcelExportButton() {
       this.EXPORT_REPORT_SALE_RECEIPT_AMOUNT_ACTION({

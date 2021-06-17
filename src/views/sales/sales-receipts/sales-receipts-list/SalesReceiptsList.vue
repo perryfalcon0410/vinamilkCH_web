@@ -5,6 +5,7 @@
   >
 
     <sales-receipt-list-search
+      :per-page="paginationData.size"
       @onClickSearchButton="onClickSearchButton"
       @updateSearchData="paginationData = {
         ...paginationData,
@@ -517,7 +518,10 @@ export default {
     },
     // -------------- pagnigation function--------------
     onPaginationChange() {
-      this.GET_SALES_RECEIPTS_ACTION({ ...this.paginationData, ...this.decentralization })
+      this.GET_SALES_RECEIPTS_ACTION({
+        ...this.paginationData,
+        ...this.decentralization,
+      })
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
@@ -527,7 +531,11 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.paginationData.size = params.currentPerPage
+      this.updatePaginationData({
+        page: params.currentPage - 1,
+        size: params.currentPerPage,
+      })
       this.onPaginationChange()
     },
     onClickSearchButton() {

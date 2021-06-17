@@ -6,12 +6,13 @@
 
     <!-- START - Search -->
     <reports-warehouses-output-list-search
+      class="d-print-none"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />
     <!-- END - Search -->
 
-    <div class="bg-white rounded shadow rounded my-1">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
@@ -155,6 +156,7 @@
       </b-col>
       <!-- END - Table -->
     </div>
+    <print-form-report-diff-price />
   </b-container>
 </template>
 <script>
@@ -167,6 +169,7 @@ import commonData from '@/@db/common'
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
+import PrintFormReportDiffPrice from '@core/components/print-form/PrintFormReportDiffPrice.vue'
 import ReportsWarehousesOutputListSearch from './components/ReportsWarehousesOutputListSearch.vue'
 import {
   REPORT_WAREHOUSES_DIFFERENCE_PRICE,
@@ -175,11 +178,13 @@ import {
   // ACTIONS
   GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
   EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
+  PRINT_REPORT_DIFFERENCE_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
     ReportsWarehousesOutputListSearch,
+    PrintFormReportDiffPrice,
   },
   data() {
     return {
@@ -369,8 +374,18 @@ export default {
     ...mapActions(REPORT_WAREHOUSES_DIFFERENCE_PRICE, [
       GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
       EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
+      PRINT_REPORT_DIFFERENCE_ACTION,
     ]),
-
+    onClickPrintButton() {
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_REPORT_DIFFERENCE_ACTION({
+        ...this.searchData,
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
+    },
     onClickExcelExportButton() {
       this.EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION({ ...this.decentralization, ...this.searchData })
     },

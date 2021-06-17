@@ -5,6 +5,7 @@ import {
   getProductListsEndpoint,
   getProductCatListsEndpoint,
   exportDifferencePriceEndPoint,
+  printReportDifferencePriceEndPoint,
 } from './defaultConfig'
 
 export default {
@@ -27,6 +28,11 @@ export default {
     return axios.get(exportDifferencePriceEndPoint, {
       params: formatURLParams(args),
       responseType: 'blob',
+    })
+  },
+  printReportDifferencePrice(args) {
+    return axios.get(printReportDifferencePriceEndPoint, {
+      params: formatURLParams(args),
     })
   },
 }

@@ -8,11 +8,13 @@ import {
   GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER,
   PRODUCT_GETTER,
   PRODUCT_CAT_GETTER,
+  PRINT_REPORT_DIFFERENCE_GETTER,
   // ACTIONS
   GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
   GET_PRODUCT_ACTION,
   GET_PRODUCT_CAT_ACTION,
   EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
+  PRINT_REPORT_DIFFERENCE_ACTION,
 } from './type'
 
 export default {
@@ -22,6 +24,7 @@ export default {
     differencePrices: {},
     productData: {},
     productCatData: [],
+    printData: {},
   },
 
   getters: {
@@ -33,6 +36,9 @@ export default {
     },
     [PRODUCT_CAT_GETTER](state) {
       return state.productCatData
+    },
+    [PRINT_REPORT_DIFFERENCE_GETTER](state) {
+      return state.printData
     },
   },
 
@@ -95,6 +101,21 @@ export default {
             const fileName = `Bao_cao_hang_khuyen_mai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
             const blob = new Blob([res], { type: 'data:application/xlsx' })
             FileSaver.saveAs(blob, fileName)
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_REPORT_DIFFERENCE_ACTION]({ state }, val) {
+      DifferencePriceServices
+        .printReportDifferencePrice(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printData = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }
