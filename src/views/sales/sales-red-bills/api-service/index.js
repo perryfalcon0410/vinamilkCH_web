@@ -11,6 +11,7 @@ import {
   deleteRedBillEndpoint,
   exportRedBillsEndpoint,
   updateRedBillsEndpoint,
+  printRedBillsByIdEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -60,5 +61,10 @@ export default {
   },
   updateRedBills(args) {
     return axios.put(updateRedBillsEndpoint, args)
+  },
+  printRedBillsById(args) {
+    return axios.get(`${printRedBillsByIdEndpoint}/${args.id}`, {
+      params: formatURLParams(args.params),
+    })
   },
 }

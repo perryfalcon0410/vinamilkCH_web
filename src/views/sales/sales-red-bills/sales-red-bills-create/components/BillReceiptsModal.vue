@@ -34,12 +34,13 @@
           lg="3"
           sm="4"
         >
-          <div>
+          <div class="h8 mt-sm-1 mt-xl-0">
             {{ 'Số hóa đơn' }}
           </div>
           <b-form-input
             v-model="searchOptions.invoiceNumberKeywords"
             trim
+            class="h8 text-brand-3"
             placeholder="Nhập số hóa đơn"
           />
         </b-col>
@@ -155,7 +156,7 @@
             ref="bill-of-sales-table"
             :columns="columnsInvoice"
             :rows="billSales"
-            style-class="vgt-table bordered"
+            style-class="vgt-table striped"
             :pagination-options="{
               enabled: true,
               perPage: elementSize

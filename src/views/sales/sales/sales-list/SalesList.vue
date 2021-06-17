@@ -455,7 +455,7 @@ export default {
         keyWord: '',
         checkStockTotal: true,
         catId: null,
-        customerId: 507,
+        customerId: null,
         status: null,
         size: 10,
         page: 0,
@@ -608,7 +608,7 @@ export default {
     },
   },
   mounted() {
-    this.GET_PRODUCTS_ACTION(this.searchOptions)
+    // this.GET_PRODUCTS_ACTION(this.searchOptions)
     const index = this.productInfoTypeOptions.findIndex(i => i.name === 'Ngành hàng')
     const paramGetProductInfo = {
       type: Number(this.productInfoTypeOptions[index].id),
@@ -737,9 +737,9 @@ export default {
     },
     getCustomerDefault(val) {
       this.customerId = val.data.id
-      this.GET_PRODUCTS_ACTION(this.searchOptions)
       this.searchOptions.customerId = this.customerId
       this.editOnlinePermission = true
+      this.GET_PRODUCTS_ACTION(this.searchOptions)
 
       // check customers dafault
       if (val.data.isDefault === true && val.data.status === 1) {

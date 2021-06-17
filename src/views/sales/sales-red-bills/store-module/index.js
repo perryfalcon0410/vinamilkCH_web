@@ -1,4 +1,5 @@
 import RedInvoiceService from '@/views/sales/sales-red-bills/api-service'
+import moment from 'moment'
 import {
   // GETTERS
   RED_INVOICES_GETTER,
@@ -9,6 +10,7 @@ import {
   PRODUCTS_GETTER,
   GET_INVOICE_DETAIL_GETTER,
   GET_INVOICE_DETAIL_INFO_GETTER,
+  PRINT_RED_INVOICES_GETTER,
   // ACTIONS
   GET_RED_INVOICES_ACTION,
   GET_CUSTOMERS_ACTION,
@@ -22,6 +24,8 @@ import {
   DELETE_RED_INVOICE_ACTION,
   EXPORT_RED_BILLS_ACTION,
   UPDATE_RED_BILLS_ACTION,
+  PRINT_RED_INVOICES_ACTION,
+
 } from './type'
 import toasts from '../../../../@core/utils/toasts/toasts'
 
@@ -40,6 +44,7 @@ export default {
     productOfBills: [],
     invoiceDetail: {},
     invoiceDetailInfo: {},
+    printdata: [],
   },
 
   // GETTERS
@@ -71,6 +76,10 @@ export default {
     [GET_INVOICE_DETAIL_INFO_GETTER](state) {
       return state.invoiceDetailInfo
     },
+    [PRINT_RED_INVOICES_GETTER](state) {
+      return state.printdata
+    },
+
   },
 
   // MUTATIONS
@@ -224,7 +233,7 @@ export default {
             } else {
               const elem = window.document.createElement('a')
               elem.href = window.URL.createObjectURL(blob)
-              elem.download = 'Hoa_don_do_Filled'
+              elem.download = `Hoa_Don_VAT_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}`
               document.body.appendChild(elem)
               elem.click()
               document.body.removeChild(elem)
@@ -242,6 +251,22 @@ export default {
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
+            val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_RED_INVOICES_ACTION]({ state }, val) {
+      RedInvoiceService
+        .printRedBillsById(val.data)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printdata = res.data || {}
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)

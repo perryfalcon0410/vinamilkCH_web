@@ -184,20 +184,20 @@
             text-field="name"
           />
           <b-button
-            variant="danger"
-            class="align-items-button-center h8"
-            @click="onClickPrintButton"
-          >
-            <b-icon-printer-fill class="mr-50" />
-            IN HĐ
-          </b-button>
-          <b-button
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
             @click="onClickExportRedBills"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />
             Xuất Excel
+          </b-button>
+          <b-button
+            variant="someThing"
+            class="align-items-button-center h8 ml-1 btn-brand-1"
+            @click="onClickPrintButton"
+          >
+            <b-icon-printer-fill class="mr-50" />
+            In HĐ
           </b-button>
           <b-button
             class="align-items-button-center h8 ml-1 btn-brand-1"
@@ -441,6 +441,7 @@ import {
   DELETE_RED_INVOICE_ACTION,
   EXPORT_RED_BILLS_ACTION,
   UPDATE_RED_BILLS_ACTION,
+  PRINT_RED_INVOICES_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -493,7 +494,7 @@ export default {
       listRedBill: [],
       // select rows delete
       valueShowModalBillOfSaleList: false,
-      templateOptionSelected: redBillData.templateOptions[0].item,
+      templateOptionSelected: redBillData.templateOptions[1].item,
       configDate: {
         wrap: true,
         allowInput: true,
@@ -650,6 +651,7 @@ export default {
       DELETE_RED_INVOICE_ACTION,
       EXPORT_RED_BILLS_ACTION,
       UPDATE_RED_BILLS_ACTION,
+      PRINT_RED_INVOICES_ACTION,
     ]),
     onSearch() {
       this.searchOption = {
@@ -667,7 +669,25 @@ export default {
       this.$router.push({ name: 'sales-red-bills-create' })
     },
     onClickPrintButton() {
-      window.print()
+      if (this.selectedRedBillRows && this.selectedRedBillRows.length > 0) {
+        if (this.selectedRedBillRows.length === 1) {
+          this.$root.$emit('bv::hide::popover')
+          this.$root.$emit('bv::disable::popover')
+          this.PRINT_RED_INVOICES_ACTION({
+            data: {
+              id: this.selectedRedBillRows[0].id,
+              params: { ...this.decentralization },
+            },
+            onSuccess: () => {
+              this.$root.$emit('bv::enable::popover')
+            },
+          })
+          return
+        }
+        toasts.error('chỉ cho phép in lần lượt từng hóa đơn!')
+      } else {
+        toasts.error('Vui lòng chọn hoá đơn đỏ để in!')
+      }
     },
     // START - Pagination func
 

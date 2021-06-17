@@ -10,3 +10,4 @@ export const getInvoiceDetailEndpoint = `${SALES}${RED_INVOICES}/show-invoice-de
 export const deleteRedBillEndpoint = `${SALES}${RED_INVOICES}/delete`
 export const exportRedBillsEndpoint = `${SALES}/excel`
 export const updateRedBillsEndpoint = `${SALES}${RED_INVOICES}/update`
+export const printRedBillsByIdEndpoint = `${SALES}${RED_INVOICES}/print`

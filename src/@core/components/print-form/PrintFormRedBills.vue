@@ -14,10 +14,12 @@
         </div>
       </div>
 
-      <div>15</div>
-      <div>4</div>
-      <div>2021</div>
-      <div>Số HĐ: 20210415143541</div>
+      <div>
+        Ngày {{ $moment().format('DD') }} tháng {{ $moment().format('MM') }} năm {{ $moment().format('YYYY') }}
+      </div>
+      <!-- <div>tháng {{ $moment().format('MM') }}</div>
+      <div>năm {{ $moment().format('YYYY') }}</div> -->
+      <div>Số HĐ: {{ redBillInfoData.redInvoiceNumber }}</div>
     </b-row>
 
     <b-row
@@ -26,53 +28,79 @@
       align-v="center"
     >
       <div>
-        <div>Viettel</div>
-        <div>285 CMT8</div>
-        <div>02345</div>
+        <div>{{ redBillInfoData.shopName }}</div>
+        <div>{{ redBillInfoData.shopAddress }}</div>
+        <div>{{ redBillInfoData.shopTel }}</div>
       </div>
       <div>Tiền mặt</div>
-      <div>02345</div>
+      <div>{{ $formatNumberToLocale(redBillInfoData.amount) }}</div>
     </b-row>
 
-    <table class="mt-5">
+    <table class="mt-5 align-text-bottom">
       <tbody>
-        <tr>
-          <td>1</td>
-          <td>SP Dielac Alpha Step 2 HG 400g</td>
-          <td>02BA22</td>
-          <td>Hộp</td>
-          <td>2</td>
-          <td>25.000</td>
-          <td>50.000</td>
-          <td>0T2</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>SP Dielac Alpha Step 2 HG 400g</td>
-          <td>02BA22</td>
-          <td>Hộp</td>
-          <td>2</td>
-          <td>25.000</td>
-          <td>50.000</td>
-          <td>0T2</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>SP Dielac Alpha Step 2 HG 400g</td>
-          <td>02BA22</td>
-          <td>Hộp</td>
-          <td>2</td>
-          <td>25.000</td>
-          <td>50.000</td>
-          <td>0T2</td>
+        <tr
+          v-for="(item,index) in redBillData"
+          :key="item.productCode"
+        >
+          <td>{{ index + 1 }}</td>
+          <td>{{ item.productName }}</td>
+          <td>{{ item.productCode }}</td>
+          <td>{{ item.uom1 }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ $formatNumberToLocale(item.price) }}</td>
+          <td>{{ $formatNumberToLocale(item.intoMoney) }}</td>
+          <td>{{ item.note }}</td>
         </tr>
       </tbody>
     </table>
+
+    <b-row
+      class="mx-0 mt-5"
+      align-h="end"
+      align-v="end"
+    >
+      <b-col cols="5">
+        {{ redBillInfoData.totalAmountString }}
+      </b-col>
+      <b-col cols="4">
+        <div>{{ $formatNumberToLocale(redBillInfoData.amount) }}</div>
+        <div>{{ $formatNumberToLocale(redBillInfoData.valueAddedTax) }}</div>
+        <div>{{ $formatNumberToLocale(redBillInfoData.totalAmountNumber) }}</div>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
 <script>
+
+import { mapGetters } from 'vuex'
+
+import {
+  RED_INVOICE,
+  // Getters
+  PRINT_RED_INVOICES_GETTER,
+} from '@/views/sales/sales-red-bills/store-module/type'
+
 export default {
+  computed: {
+    ...mapGetters(RED_INVOICE, [PRINT_RED_INVOICES_GETTER]),
+
+    redBillInfoData() {
+      if (this.PRINT_RED_INVOICES_GETTER.info) {
+        return this.PRINT_RED_INVOICES_GETTER.info
+      }
+      return {}
+    },
+    redBillData() {
+      if (this.PRINT_RED_INVOICES_GETTER.response) {
+        return this.PRINT_RED_INVOICES_GETTER.response
+      }
+      return null
+    },
+  },
+  updated() {
+    window.print()
+  },
 
 }
 </script>

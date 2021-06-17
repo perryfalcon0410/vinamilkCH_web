@@ -25,41 +25,48 @@
               <div class="h8 mt-1">
                 Mã khách hàng
               </div>
-              <b-form-input
+              <vue-autosuggest
                 v-model="redBill.customerCode"
-                :disabled="isDisabled"
                 maxlength="200"
-                @focus="focus"
-                @blur="inputSearchFocusedKH = false"
+                :suggestions="customers"
+                :input-props="{
+                  id:'autosuggest__input_customers',
+                  class:'form-control',
+                }"
                 @input="loadCustomers"
-                @keyup.enter="keyEnter"
-                @keydown.up="keyUp"
-                @keydown.down="keyDown"
-              />
-              <b-collapse
-                v-model="inputSearchFocusedKH"
-                class="position-absolute mr-lg-0 mb-3"
-                style="zIndex:1;"
+                @selected="selectCustomer"
               >
-                <b-container
-                  class="my-1 bg-white rounded border border-primary shadow-lg"
+                <template
+                  slot-scope="{ suggestion }"
                 >
-                  <b-col>
-                    <b-row
-                      v-for="(customer, index) in customers"
-                      :key="index"
-                      class="my-1 cursor-pointer"
-                      :class="{'item-active': index === cursor}"
-                      @click="selectCustomer(customer)"
-                      @mouseover="$event.target.classList.add('item-active')"
-                      @mouseout="$event.target.classList.remove('item-active')"
-                    >
-                      <b>{{ customer.customerName }}</b>
-                      {{ customer.customerCode }} - {{ customer.mobiPhone }}
-                    </b-row>
-                  </b-col>
-                </b-container>
-              </b-collapse>
+                  <b-row>
+                    <!-- START - Section Label -->
+                    <b-col>
+
+                      <b-form-row>
+                        <b-col
+                          class="my-1"
+                        >
+                          <b>{{ suggestion.item.customerName }}</b>
+                        </b-col>
+                      </b-form-row>
+                      <b-form-row>
+                        <b-col
+                          class="text-dark font-weight-bold"
+                          md="10"
+                        >
+                          {{ suggestion.item.customerCode }} - {{ suggestion.item.mobiPhone }}
+                        </b-col>
+                      </b-form-row>
+                    </b-col>
+                  <!-- END - Section Label -->
+                  </b-row>
+                  <!-- <div class="cursor-pointer"> -->
+
+                  <!-- <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }} -->
+                  <!-- </div> -->
+                </template>
+              </vue-autosuggest>
             </b-col>
 
             <b-col>
@@ -286,7 +293,7 @@
                   </b-col>
                 </div>
                 <div v-else-if="props.column.field === 'note'">
-                  <b-col>
+                  <b-col class="align-middle">
                     <b-form-input
                       v-model="products[props.row.originalIndex].note"
                       maxlength="4000"
@@ -295,13 +302,21 @@
                 </div>
                 <div v-else-if="props.column.field === 'button'">
                   <div v-if="props.row.button === '1'">
+                    <!-- <b-icon-trash-fill
+                      v-b-popover.hover.top="'Xóa'"
+                      class="cursor-pointer"
+                      color="red"
+                      scale="1.2"
+                    /> -->
                     <b-button
                       variant="light"
                       class="rounded-circle px-1"
                       @click="onClickDeleteItem(props.row.originalIndex)"
                     >
-                      <b-icon-x
-                        v-b-popover.hover="'Xóa'"
+                      <b-icon-trash-fill
+                        v-b-popover.hover.top="'Xóa'"
+                        class="cursor-pointer"
+                        color="red"
                       />
                     </b-button>
                   </div>
@@ -319,7 +334,7 @@
               >
                 <b-row
                   v-if="props.column.field === 'quantity'"
-                  class="h7"
+                  class="h7 px-0 mx-1"
                   align-h="center"
                 >
                   {{ $formatNumberToLocale(totalQuantity) }}
@@ -344,42 +359,27 @@
               <!-- START - Action bottom -->
               <div
                 slot="table-actions-bottom"
-                class="mx-1 my-2 px-2"
+                class="m-2"
               >
-                <b-form-input
+                <vue-autosuggest
                   v-model="productSearch"
-                  class="w-25"
-                  placeholder="Nhập mã hoặc tên sản phẩm"
-                  type="text"
-                  autocomplete="off"
-                  @focus="searchProductFocus"
+                  :suggestions="productRows"
+                  :input-props="{
+                    id:'autosuggest__input',
+                    class:'form-control w-25',
+                    placeholder:'Nhập mã hoặc tên sản phẩm'
+                  }"
                   @input="loadProducts"
-                  @keyup.enter="searchProductKeyEnter"
-                  @keydown.up="searchProductKeyUp"
-                  @keydown.down="searchProductKeyDown"
-                  @click="click"
-                />
-                <b-collapse
-                  v-model="inputSearchFocusedSP"
-                  class="position-absolute mr-lg-0 mb-3"
-                  style="zIndex:9999"
+                  @selected="selectProduct"
                 >
-                  <b-container
-                    class="my-1 bg-white rounded border border-primary shadow-lg"
+                  <template
+                    slot-scope="{ suggestion }"
                   >
-                    <b-row
-                      v-for="(product, index) in allProducts"
-                      :key="index"
-                      class="my-1 cursor-pointer"
-                      :class="{'item-active': index === cursorProduct}"
-                      @click="selectProduct(product)"
-                      @mouseover="$event.target.classList.add('item-active')"
-                      @mouseout="$event.target.classList.remove('item-active')"
-                    >
-                      <b>{{ product.productCode }}</b> - {{ product.productName }}
-                    </b-row>
-                  </b-container>
-                </b-collapse>
+                    <div class="cursor-pointer">
+                      <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                    </div>
+                  </template>
+                </vue-autosuggest>
               </div>
               <!-- END - Action bottom -->
 
@@ -415,7 +415,7 @@
                   icon="printer-fill"
                   class="mr-50"
                 />
-                LƯU & IN
+                Lưu & In
               </b-button>
 
               <b-button
@@ -446,6 +446,7 @@
 import toasts from '@/@core/utils/toasts/toasts'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'
+import { VueAutosuggest } from 'vue-autosuggest'
 import {
   mapActions,
   mapGetters,
@@ -475,6 +476,7 @@ import {
 
 export default {
   components: {
+    VueAutosuggest,
     BillReceiptsModal,
     ValidationProvider,
     ValidationObserver,
@@ -505,37 +507,46 @@ export default {
         note: '',
         shopId: 0,
       },
-      cursor: -1,
-      cursorProduct: -1,
       productSearch: null,
       quantityPerBox: redBillData.quantityPerBox,
       products: [],
+      productRows: [{ data: '' }],
+      customers: [{ data: '' }],
       saleOrderIds: [],
       columns: [
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
+          thClass: 'text-left',
+          tdClass: 'text-left align-middle',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
+          thClass: 'text-left',
+          tdClass: 'text-left align-middle',
           sortable: false,
         },
         {
           label: 'Ngành hàng',
           field: 'industry',
+          thClass: 'text-center',
+          tdClass: 'text-center align-middle',
           sortable: false,
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
-          type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-center align-middle',
           sortable: false,
         },
         {
           label: 'Số lượng',
           field: 'quantity',
+          thClass: 'text-center',
+          tdClass: 'text-right align-middle',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -544,13 +555,15 @@ export default {
         {
           label: 'Đơn giá',
           field: 'productPrice',
-          type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-right align-middle',
           sortable: false,
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
-          type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right align-middle',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -559,12 +572,15 @@ export default {
         {
           label: 'VAT %',
           field: 'vat',
-          type: 'number',
+          thClass: 'text-center',
+          tdClass: 'text-right align-middle',
           sortable: false,
         },
         {
           label: 'Tiền thuế GTGT',
           field: 'productExported',
+          thClass: 'text-right',
+          tdClass: 'text-right align-middle',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -573,11 +589,15 @@ export default {
         {
           label: 'Ghi chú',
           field: 'note',
+          thClass: 'text-center',
+          tdClass: 'text-left align-middle',
           sortable: false,
         },
         {
           label: '',
           field: 'button',
+          thClass: 'text-center',
+          tdClass: 'align-middle',
           sortable: false,
         },
       ],
@@ -597,33 +617,39 @@ export default {
     }
   },
   computed: {
-    customers() {
+    getCustomers() {
       if (this.CUSTOMERS_GETTER()) {
-        return this.CUSTOMERS_GETTER().map(data => ({
-          id: data.id,
-          customerCode: data.customerCode,
-          customerName: `${data.lastName} ${data.firstName}`,
-          officeWorking: data.officeAddress,
-          officeAddress: data.officeAddress,
-          taxCode: data.taxCode,
-          mobiPhone: data.mobiPhone,
-        }))
+        return [{
+          data: this.CUSTOMERS_GETTER().map(data => ({
+            name: data.customerCode,
+            id: data.id,
+            customerCode: data.customerCode,
+            customerName: `${data.lastName} ${data.firstName}`,
+            officeWorking: data.officeAddress,
+            officeAddress: data.officeAddress,
+            taxCode: data.taxCode,
+            mobiPhone: data.mobiPhone,
+          })),
+        }]
       }
       return []
     },
     allProducts() {
-      return this.PRODUCTS_GETTER().map(data => ({
-        productId: data.id,
-        productCode: data.productCode,
-        productName: data.productName,
-        groupVat: data.groupVat,
-        unit: data.uom1,
-        quantity: 1,
-        price: data.price,
-        vat: data.vat,
-        vatAmount: data.vatAmount,
-        note: data.note,
-      }))
+      return [{
+        data: this.PRODUCTS_GETTER().map(data => ({
+          name: data.productCode,
+          productId: data.id,
+          productCode: data.productCode,
+          productName: data.productName,
+          groupVat: data.groupVat,
+          unit: data.uom1,
+          quantity: 1,
+          price: data.price,
+          vat: data.vat,
+          vatAmount: data.vatAmount,
+          note: data.note,
+        })),
+      }]
     },
     getTotalQuantity() {
       return this.products.reduce((accum, item) => accum + Number(item.quantity), 0)
@@ -636,6 +662,12 @@ export default {
     },
   },
   watch: {
+    getCustomers() {
+      this.customers = [...this.getCustomers]
+    },
+    allProducts() {
+      this.productRows = [...this.allProducts]
+    },
     getTotalQuantity() {
       this.totalQuantity = this.getTotalQuantity
     },
@@ -647,13 +679,13 @@ export default {
     },
   },
   beforeMount() {
-    // this.redBill.printDate = this.$nowDate
+    this.redBill.printDate = this.$nowDate
   },
   mounted() {
-    this.GET_CUSTOMERS_ACTION({
-      formId: this.formId,
-      ctrlId: this.ctrlId,
-    })
+    // this.GET_CUSTOMERS_ACTION({
+    //   formId: this.formId,
+    //   ctrlId: this.ctrlId,
+    // })
   },
   methods: {
     ...mapGetters(RED_INVOICE, [
@@ -672,121 +704,70 @@ export default {
       this.$root.$emit('bv::toggle::modal', 'bill-receipt-modal')
     },
     loadCustomers() {
-      this.cursor = -1
       if (this.redBill.customerCode.length >= commonData.minSearchLength) {
-        this.inputSearchFocusedKH = true
         const searchData = {
           searchKeywords: this.redBill.customerCode?.trim(),
         }
 
         this.GET_CUSTOMERS_ACTION({ ...searchData, isShop: true })
       } else {
-        this.inputSearchFocusedKH = false
+        this.customers = [{ data: null }]
       }
     },
     selectCustomer(customer) {
-      this.redBill.customerCode = customer.customerCode
-      this.redBill.customerId = customer.id
-      this.redBill.customerName = customer.customerName
-      this.redBill.officeWorking = customer.officeWorking
-      this.redBill.officeAddress = customer.officeAddress
-      this.redBill.taxCode = customer.taxCode
-    },
-    focus() {
-      this.cursor = -1
-      this.inputSearchFocusedKH = this.redBill.customerCode.length >= commonData.minSearchLength
-    },
-    keyUp() {
-      if (this.cursor > 0) {
-        this.cursor -= 1
+      if (customer && customer.item) {
+        this.redBill.customerCode = customer.item.customerCode
+        this.redBill.customerId = customer.item.id
+        this.redBill.customerName = customer.item.customerName
+        this.redBill.officeWorking = customer.item.officeWorking
+        this.redBill.officeAddress = customer.item.officeAddress
+        this.redBill.taxCode = customer.item.taxCode
       }
+      this.customers = [{ data: null }]
     },
-    keyDown() {
-      if (this.cursor < this.customers.length) {
-        this.cursor += 1
-      }
-    },
-    keyEnter() {
-      if (this.inputSearchFocusedKH && this.customers[this.cursor]) {
-        this.selectCustomer(this.customers[this.cursor])
-        this.inputSearchFocusedKH = false
-      }
-    },
+    // choose products func
     loadProducts() {
-      this.cursorProduct = -1
-      if (this.productSearch === null) return
       if (this.productSearch.length >= commonData.minSearchLength) {
-        this.inputSearchFocusedSP = true
-
         this.GET_PRODUCTS_ACTION({
           keyWord: this.productSearch?.trim(),
           formId: this.formId,
           ctrlId: this.ctrlId,
         })
       } else {
-        this.inputSearchFocusedSP = false
+        this.productRows = [{ data: null }]
       }
     },
     selectProduct(product) {
+      if (product && product.item) {
+        const existedProductIndex = this.products.findIndex(products => products.productCode === product.productCode)
+        if (existedProductIndex === -1) {
+          this.products.push({
+            productId: product.item.productId,
+            productCode: product.item.productCode,
+            productName: product.item.productName,
+            industry: product.item.groupVat,
+            productDVT: product.item.unit,
+            quantity: 1,
+            productPrice: this.$formatNumberToLocale(product.item.price),
+            productPriceTotal: this.$formatNumberToLocale(product.item.price),
+            productPriceOriginal: product.item.price,
+            productPriceTotalOriginal: product.item.price,
+            vat: product.item.vat,
+            productExported: this.$formatNumberToLocale(product.item.vatAmount),
+            productExportedOriginal: product.item.vatAmount,
+            sumProductExportedOriginal: product.item.vatAmount,
+            note: product.item.note,
+            button: '1',
+          })
+        } else {
+          this.products[existedProductIndex].quantity += product.item.quantity
+          this.onChangeQuantityAndPrice(existedProductIndex)
+          this.onChangeVAT(existedProductIndex)
+          this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
+        }
+      }
       this.productSearch = null
-      const existedProductIndex = this.products.findIndex(products => products.productCode === product.productCode)
-      if (existedProductIndex === -1) {
-        this.products.push({
-          productId: product.productId,
-          productCode: product.productCode,
-          productName: product.productName,
-          industry: product.groupVat,
-          productDVT: product.unit,
-          quantity: 1,
-          productPrice: this.$formatNumberToLocale(product.price),
-          productPriceTotal: this.$formatNumberToLocale(product.price),
-          productPriceOriginal: product.price,
-          productPriceTotalOriginal: product.price,
-          vat: product.vat,
-          productExported: this.$formatNumberToLocale(product.vatAmount),
-          productExportedOriginal: product.vatAmount,
-          sumProductExportedOriginal: product.vatAmount,
-          note: product.note,
-          button: '1',
-        })
-      } else {
-        this.products[existedProductIndex].quantity += product.quantity
-        this.onChangeQuantityAndPrice(existedProductIndex)
-        this.onChangeVAT(existedProductIndex)
-        this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
-      }
-      this.inputSearchFocusedSP = false
-      this.productSearch = null
-    },
-    searchProductFocus() {
-      this.cursorProduct = -1
-      this.inputSearchFocusedSP = this.productSearch !== null && this.productSearch.length >= commonData.minSearchLength
-    },
-    searchProductKeyUp() {
-      if (this.cursorProduct > 0) {
-        this.cursorProduct -= 1
-      }
-    },
-    searchProductKeyDown() {
-      if (this.cursorProduct < this.allProducts.length) {
-        this.cursorProduct += 1
-      }
-    },
-    searchProductKeyEnter() {
-      if (this.inputSearchFocusedSP && this.allProducts[this.cursorProduct]) {
-        this.selectProduct(this.allProducts[this.cursorProduct])
-        this.inputSearchFocusedSP = false
-      }
-    },
-    click() {
-      if (this.productSearch === null) return
-      if (this.productSearch.length >= commonData.minSearchLength) {
-        this.GET_PRODUCTS_ACTION({
-          keyWord: this.productSearch?.trim(),
-          formId: this.formId,
-          ctrlId: this.ctrlId,
-        })
-      }
+      this.productRows = [{ data: null }]
     },
     insertProducsFromBillSales(invoiceData) {
       const invoiceDetail = { ...invoiceData.invoiceDetail }
