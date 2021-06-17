@@ -48,7 +48,7 @@
           mode="remote"
           :columns="columns"
           :rows="promotionRows"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: paginationData.size,
@@ -232,22 +232,22 @@ export default {
           label: 'Ngày hóa đơn',
           field: 'adjustmentDate',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Loại hóa đơn',
           field: 'adjustmentType',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ngành hàng',
           field: 'productInfoName',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã sản phẩm',
@@ -267,8 +267,8 @@ export default {
           label: 'ĐVT',
           field: 'dvt',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',

@@ -1,181 +1,197 @@
 <template>
 
   <!-- START - Search -->
-  <b-form
-    @keyup.enter="onClickSearchButton"
+  <validation-observer
+    ref="formContainer"
+    v-slot="{invalid}"
+    slim
   >
-    <v-card-actions
-      title="Tìm kiếm"
-    >
-      <!-- START - Online Code-->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
+    <b-form>
+      <v-card-actions
+        title="Tìm kiếm"
       >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
+        <!-- START - Online Code-->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          Số hóa đơn
-        </div>
-        <b-input-group
-          class="input-group-merge"
-        >
-          <b-form-input
-            v-model="onlineCode"
-            class="h8 text-brand-3"
-            placeholder="Nhập số hóa đơn"
-            @keyup.enter="onClickSearchButton"
-          />
-          <b-input-group-append
-            is-text
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
           >
-            <b-icon-x
-              v-show="onlineCode"
-              class="cursor-pointer text-gray"
-              @click="onlineCode = null"
+            Số hóa đơn
+          </div>
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model="onlineCode"
+              trim
+              class="h8 text-brand-3"
+              placeholder="Nhập số hóa đơn"
             />
-          </b-input-group-append>
-        </b-input-group>
-      </b-col>
-      <!-- END - Online Code -->
-
-      <!-- START - Date From -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Từ ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-          @keypress="$onlyDateInput"
-        >
-          <b-icon-x
-            v-show="fromDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            data-clear
-          />
-          <vue-flat-pickr
-            v-model="fromDate"
-            :config="configFromDate"
-            class="form-control h8"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-      </b-col>
-      <!-- END - Date From -->
-
-      <!-- START - Date To -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Đến ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-          @keypress="$onlyDateInput"
-        >
-          <b-icon-x
-            v-show="toDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            data-clear
-          />
-          <vue-flat-pickr
-            v-model="toDate"
-            :config="configToDate"
-            class="form-control h8"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-
-      </b-col>
-      <!-- END - Date To -->
-
-      <!-- START - Group -->
-      <b-col
-        xl
-        md="3"
-        sm="4"
-      >
-        <div class="h8 mt-sm-1 mt-xl-0">
-          Sản phẩm
-        </div>
-        <b-input-group
-          class="input-group-merge"
-        >
-          <b-form-input
-            v-model="ids"
-            class="h8 text-brand-3"
-            placeholder="Mã sản phẩm"
-            @keyup.enter="onClickSearchButton"
-          />
-          <b-input-group-append
-            is-text
-          >
-            <!-- Icon-- Delete-text -->
-            <b-icon-x
-              v-show="ids"
+            <b-input-group-append
               is-text
-              class="cursor-pointer text-gray"
-              @click="ids = null"
-            />
-            <!-- Icon-- Three-dot -->
-            <b-icon-three-dots-vertical
-              class="cursor-pointer"
-              @click="onSelectProductModalClick"
-            />
-          </b-input-group-append>
-        </b-input-group>
-      </b-col>
-      <!-- END - Group -->
+            >
+              <b-icon-x
+                v-show="onlineCode"
+                class="cursor-pointer text-gray"
+                @click="onlineCode = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+        <!-- END - Online Code -->
 
-      <!-- START - Search button -->
-      <b-col
-        xl
-        sm="4"
-        md="3"
-      >
-        <div
-          class="h8 text-white"
+        <!-- START - Date From -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          Tìm kiếm
-        </div>
-        <b-button
-          class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
-          variant="someThing"
-          @click="onClickSearchButton()"
-        >
-          <b-icon-search class="mr-50" />
-          Tìm kiếm
-        </b-button>
-      </b-col>
-      <!-- END - Search button -->
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="required"
+            name="Từ ngày"
+          >
+            <div class="h8 mt-sm-1 mt-xl-0">
+              Từ ngày <span class="text-danger">*</span>
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+            >
+              <b-icon-x
+                v-show="fromDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
+              />
+              <vue-flat-pickr
+                v-model="fromDate"
+                :state="touched ? passed : null"
+                :config="configFromDate"
+                class="form-control h8"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+        </b-col>
+        <!-- END - Date From -->
 
-      <!-- START - Modal find product -->
-      <find-product-modal
-        :visible="selectProductModalVisible"
-        @onModalClose="onModalCloseClick"
-        @onSaveClick="onSaveClick"
-      />
-      <!-- START - Modal find product -->
-    </v-card-actions>
-  </b-form>
+        <!-- START - Date To -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="required"
+            name="Đến ngày"
+          >
+            <div class="h8 mt-sm-1 mt-xl-0">
+              Đến ngày <span class="text-danger">*</span>
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+            >
+              <b-icon-x
+                v-show="toDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
+              />
+              <vue-flat-pickr
+                v-model="toDate"
+                :state="touched ? passed : null"
+                :config="configToDate"
+                class="form-control h8"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+
+        </b-col>
+        <!-- END - Date To -->
+
+        <!-- START - Group -->
+        <b-col
+          xl
+          md="3"
+          sm="4"
+        >
+          <div class="h8 mt-sm-1 mt-xl-0">
+            Sản phẩm
+          </div>
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model="ids"
+              class="h8 text-brand-3"
+              placeholder="Mã sản phẩm"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <!-- Icon-- Delete-text -->
+              <b-icon-x
+                v-show="ids"
+                is-text
+                class="cursor-pointer text-gray"
+                @click="ids = null"
+              />
+              <!-- Icon-- Three-dot -->
+              <b-icon-three-dots-vertical
+                class="cursor-pointer"
+                @click="onSelectProductModalClick"
+              />
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+        <!-- END - Group -->
+
+        <!-- START - Search button -->
+        <b-col
+          xl
+          sm="4"
+          md="3"
+        >
+          <div
+            class="h8 text-white"
+          >
+            Tìm kiếm
+          </div>
+          <b-button
+            class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+            variant="someThing"
+            :disabled="invalid"
+            @click="onClickSearchButton()"
+          >
+            <b-icon-search class="mr-50" />
+            Tìm kiếm
+          </b-button>
+        </b-col>
+        <!-- END - Search button -->
+
+        <!-- START - Modal find product -->
+        <find-product-modal
+          :visible="selectProductModalVisible"
+          @onModalClose="onModalCloseClick"
+          @onSaveClick="onSaveClick"
+        />
+        <!-- START - Modal find product -->
+      </v-card-actions>
+    </b-form>
+  </validation-observer>
   <!-- END - Search -->
 </template>
 
@@ -185,6 +201,13 @@ import {
 } from 'vuex'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  ValidationProvider,
+  ValidationObserver,
+} from 'vee-validate'
+import {
+  required,
+} from '@/@core/utils/validations/validations'
 import FindProductModal from './FindProductsModal.vue'
 import {
   REPORT_WAREHOUSES_PROMOTIONS,
@@ -195,6 +218,8 @@ export default {
   components: {
     VCardActions,
     FindProductModal,
+    ValidationProvider,
+    ValidationObserver,
   },
   data() {
     return {
@@ -204,6 +229,7 @@ export default {
       ids: null,
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
+      required,
 
       // decentralization
       decentralization: {
@@ -215,6 +241,7 @@ export default {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
+        maxDate: this.toDate,
       },
       configToDate: {
         wrap: true,
@@ -233,12 +260,22 @@ export default {
         minDate: this.fromDate,
       }
     },
+    toDate() {
+      this.configFromDate = {
+        ...this.configFromDate,
+        maxDate: this.toDate,
+      }
+    },
   },
   mounted() {
     this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
+    }
+    this.configFromDate = {
+      ...this.configFromDate,
+      maxDate: this.toDate,
     }
   },
 
@@ -265,7 +302,7 @@ export default {
         orderNumber: this.onlineCode,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        productCodes: this.ids,
+        productCodes: this.ids?.replace(/\s+/g, ''),
       }
       this.updateSearchData(searchData)
       this.GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS(searchData)

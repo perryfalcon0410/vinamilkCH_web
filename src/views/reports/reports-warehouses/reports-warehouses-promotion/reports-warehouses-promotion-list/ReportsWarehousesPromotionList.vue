@@ -49,7 +49,7 @@
           :columns="columns"
           mode="remote"
           :rows="promotionRows"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: paginationData.size,
@@ -92,7 +92,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ totalInfo.totalPrice }}
+              {{ $formatNumberToLocale(totalInfo.totalPrice) }}
             </b-row>
           </template>
           <!-- START - Column filter -->
@@ -167,6 +167,9 @@ import {
 } from 'vuex'
 import commonData from '@/@db/common'
 import {
+  required,
+} from '@/@core/utils/validations/validations'
+import {
   formatISOtoVNI,
 } from '@core/utils/filter'
 import {
@@ -205,6 +208,7 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
+      required,
       promotionRows: [],
 
       columns: [
@@ -212,8 +216,8 @@ export default {
           label: 'Ngày bán',
           field: 'orderDate',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
@@ -308,7 +312,7 @@ export default {
       if (this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.response && this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.response.content) {
         return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.response.content.map(data => ({
           orderNumber: data.orderNumber,
-          industry: data.industry,
+          industry: data.productCatName,
           productCode: data.productCode,
           productName: data.productName,
           dvt: data.uom,

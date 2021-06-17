@@ -30,10 +30,11 @@
           </div>
           <b-form-input
             id="form-input-customer"
-            v-model="searchOptions.productCode"
+            v-model="searchOptions.productCodes"
+            trim
             class="h8 text-brand-3 height-button-brand-1"
             placeholder="Nhập mã sản phẩm"
-            @keyup.enter="onClickSearchButton"
+            @keyup.enter="onSearchClick"
           />
         </b-col>
         <!-- END - Product code -->
@@ -51,9 +52,10 @@
           </div>
           <b-form-input
             v-model="searchOptions.productName"
+            trim
             class="h8 text-brand-3 height-button-brand-1"
             placeholder="Nhập tên sản phẩm"
-            @keyup.enter="onClickSearchButton"
+            @keyup.enter="onSearchClick"
           />
         </b-col>
         <!-- END - Product name -->
@@ -297,7 +299,7 @@ export default {
       width: window.innerWidth,
       prodcutCatSelected: null,
       searchOptions: {
-        productCode: '',
+        productCodes: '',
         productName: '',
       },
       selectedProductRow: [],

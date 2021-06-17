@@ -171,6 +171,9 @@ import {
   ValidationProvider,
   ValidationObserver,
 } from 'vee-validate'
+import {
+  required,
+} from '@/@core/utils/validations/validations'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { reverseVniDate } from '@/@core/utils/filter'
 import FindProductModal from './FindProductsModal.vue'
@@ -194,6 +197,7 @@ export default {
       ids: null,
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
+      required,
 
       // decentralization
       decentralization: {
@@ -265,7 +269,7 @@ export default {
       const searchData = {
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        productCodes: this.ids,
+        productCodes: this.ids?.replace(/\s+/g, ''),
       }
       this.$emit('onClickSearchButton', searchData)
       this.updateSearchData(searchData)
