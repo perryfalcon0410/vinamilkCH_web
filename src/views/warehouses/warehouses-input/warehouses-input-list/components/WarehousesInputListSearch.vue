@@ -11,7 +11,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="mt-sm-1 mt-xl-0"
@@ -46,7 +46,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="mt-sm-1 mt-xl-0"
@@ -81,7 +81,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="mt-sm-1 mt-xl-0"
@@ -103,7 +103,7 @@
           <vue-flat-pickr
             v-model="fromDate"
             :config="configFromDate"
-            class="form-control h8"
+            class="form-control h7"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -115,7 +115,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="mt-sm-1 mt-xl-0"
@@ -137,7 +137,7 @@
           <vue-flat-pickr
             v-model="toDate"
             :config="configToDate"
-            class="form-control h8"
+            class="form-control h7"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -150,7 +150,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class="mt-sm-1 mt-xl-0"
@@ -172,7 +172,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <!--"onmousedown" is prevent hightlight text -->
         <div

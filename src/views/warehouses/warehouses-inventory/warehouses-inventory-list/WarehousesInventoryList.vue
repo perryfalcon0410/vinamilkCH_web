@@ -5,10 +5,7 @@
   >
     <!-- START - Search -->
     <warehouses-inventory-list-search
-      @updatePageElement="updatePageNumber"
-      @updateSearchData="paginationData = {
-        ...paginationData,
-        ...$event }"
+      @onSearchClick="onSearchClick"
     />
     <!-- END - Search -->
 
@@ -213,6 +210,11 @@ export default {
       },
       warehouseInventories: [],
 
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+
       columns: [
         {
           label: 'Ngày',
@@ -321,22 +323,28 @@ export default {
         },
       })
     },
-    onPaginationChange() {
-      this.GET_WAREHOUSE_INVENTORIES_ACTION(this.paginationData)
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
     },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
+    onSearchClick(event) {
+      this.updateSearchData({
+        ...event,
+      })
+      this.onPaginationChange()
+    },
+    onPaginationChange() {
+      this.GET_WAREHOUSE_INVENTORIES_ACTION({ ...this.searchData, ...this.decentralization })
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updateSearchData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
+      })
       this.onPaginationChange()
-    },
-    updatePageNumber() {
-      this.pageNumber = 1
     },
   },
 }

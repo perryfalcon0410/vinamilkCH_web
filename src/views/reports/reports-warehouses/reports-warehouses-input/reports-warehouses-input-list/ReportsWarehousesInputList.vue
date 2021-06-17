@@ -506,7 +506,10 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: 1, size: params.currentPerPage })
+      this.updatePaginationData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
+      })
       this.onPaginationChange()
     },
     onClickExcelExportButton() {

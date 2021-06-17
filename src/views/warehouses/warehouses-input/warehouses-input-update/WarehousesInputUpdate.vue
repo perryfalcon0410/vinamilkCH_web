@@ -352,7 +352,7 @@
                   @selected="productSelected"
                 >
                   <template slot-scope="{ suggestion }">
-                    <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                    <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.name }}
                   </template>
                 </vue-autosuggest>
               </div>
@@ -608,7 +608,16 @@ export default {
     },
     getSuggestProducts() {
       if (this.PRODUCTS_GETTER) {
-        return [{ data: this.PRODUCTS_GETTER }]
+        return [{
+          data: this.PRODUCTS_GETTER.map(data => ({
+            productId: data.id,
+            productCode: data.productCode,
+            price: data.price,
+            name: data.productName,
+            totalPrice: data.stockTotal,
+            unit: data.uom1,
+          })),
+        }]
       }
       return []
     },
@@ -698,13 +707,15 @@ export default {
         const index = this.promotions.findIndex(e => e.productId === product.item.id)
         if (this.promotions) {
           const obj = {
+            id: -1,
             productId: product.item.id,
             productCode: product.item.productCode,
-            productName: product.item.productName,
             quantity: 1, // default quantity
             price: product.item.price || 0,
-            totalPrice: product.item.stockTotal || 0,
-            unit: product.item.uom1,
+            name: product.item.name,
+            totalPrice: product.item.totalPrice || 0,
+            unit: product.item.unit,
+            soNo: '',
           }
           if (index === -1) {
             this.promotions.push(obj)

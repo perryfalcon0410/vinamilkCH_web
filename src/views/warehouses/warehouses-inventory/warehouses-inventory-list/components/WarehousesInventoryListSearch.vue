@@ -246,13 +246,11 @@ export default {
         ctrlId: 7,
       }
 
-      this.$emit('updatePageElement')
-      this.updateSearchData(searchData)
-      this.GET_WAREHOUSE_INVENTORIES_ACTION(searchData)
+      this.getInventories(searchData)
     },
 
-    updateSearchData(data) {
-      this.$emit('updateSearchData', data)
+    getInventories(data) {
+      this.$emit('onSearchClick', data)
     },
   },
 }
