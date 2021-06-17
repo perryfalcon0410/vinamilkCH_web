@@ -8,11 +8,17 @@ label {
 
 // placeholder specific scss
 .form-control {
+  height: $height-input-brand-1;
+  color: $brand-3;
+  font-size: $font-size-brand-1;
+
   &::placeholder {
     transition: all 0.2s ease;
   }
 
   &:focus {
+    border-color: $brand-1;
+
     &::placeholder {
       transform: translate(5px);
       transition: all 0.2s ease;
@@ -342,7 +348,7 @@ select.form-control {
   }
 
   .custom-control-input:focus ~ .custom-control-label::before {
-    border-color: none;
+    border-color: $brand-1;
     box-shadow: 0 2px 4px 0 rgba($custom-control-indicator-checked-bg, 0.4) !important;
   }
   // END - Checkbox color

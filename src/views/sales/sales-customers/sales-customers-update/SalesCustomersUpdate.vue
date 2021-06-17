@@ -19,7 +19,7 @@
         >
           <b-row class="flex-grow-1 mx-0">
             <!-- START - Section 1 -->
-            <b-col sm="8">
+            <b-col>
               <label class="font-weight-bold w-100 text-center mb-2 h5"><strong>Thông tin cá nhân</strong></label>
 
               <!-- START - Customer Code -->
@@ -219,7 +219,6 @@
 
             <!-- START - Section 2 -->
             <b-col
-              sm
               style="margin-top: -5px"
               class="bg-light pt-3"
             >

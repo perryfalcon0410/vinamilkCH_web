@@ -8,37 +8,6 @@
       title="Tìm kiếm"
       class="d-print-none"
     >
-      <!-- START - Full Name -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-        class="h7"
-      >
-        <div
-          class="mt-sm-1 mt-xl-0"
-        >
-          Khách hàng
-        </div>
-        <b-input-group
-          class="input-group-merge"
-        >
-          <b-form-input
-            v-model="customerName"
-            placeholder="Nhập họ tên/mã"
-          />
-          <b-input-group-append
-            is-text
-          >
-            <b-icon-x
-              v-show="customerName"
-              class="cursor-pointer text-gray"
-              @click="customerName = null"
-            />
-          </b-input-group-append>
-        </b-input-group>
-      </b-col>
-      <!-- END - Full Name -->
 
       <!-- START - Phone -->
       <b-col
@@ -74,6 +43,38 @@
         </b-input-group>
       </b-col>
       <!-- END - Phone -->
+
+      <!-- START - Full Name -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+        class="h7"
+      >
+        <div
+          class="mt-sm-1 mt-xl-0"
+        >
+          Khách hàng
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model="customerName"
+            placeholder="Nhập họ tên/mã"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="customerName"
+              class="cursor-pointer text-gray"
+              @click="customerName = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <!-- END - Full Name -->
 
       <!-- START - Group -->
       <b-col

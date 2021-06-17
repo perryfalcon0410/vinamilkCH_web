@@ -19,7 +19,7 @@
         >
           <b-row class="flex-grow-1 mx-0">
             <!-- START - Section 1 -->
-            <b-col sm="8">
+            <b-col>
               <label class="font-weight-bold w-100 text-center h5"><strong>Thông tin cá nhân</strong></label>
 
               <!-- START - Customer Code -->
@@ -215,7 +215,6 @@
 
             <!-- START - Section 2 -->
             <b-col
-              sm
               style="margin-top: -5px"
               class="bg-light pt-3"
             >
@@ -289,9 +288,9 @@
 
         <!-- START - Form Contact information -->
         <b-col
-          md
-          lg="6"
           xl="3"
+          lg="6"
+          md
           class="bg-white shadow rounded ml-lg-1 mt-1 mt-lg-0 pb-1"
         >
           <label class="font-weight-bold w-100 text-center h5"><strong>Thông tin liên hệ</strong></label>
@@ -467,9 +466,9 @@
 
         <!-- START - Form Membership card -->
         <b-col
-          md
-          lg="6"
           xl="3"
+          lg="6"
+          md
           class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
         >
           <label class="font-weight-bold w-100 text-center h5"><strong>Thẻ thành viên</strong></label>

@@ -1,13 +1,13 @@
 export default {
   outputTypes: [
-    { id: '1', label: 'Xuất trả PO' },
-    { id: '2', label: 'Xuất điều chỉnh' },
-    { id: '3', label: 'Xuất vay mượn' },
+    { id: '0', label: 'Xuất trả PO' },
+    { id: '1', label: 'Xuất điều chỉnh' },
+    { id: '2', label: 'Xuất vay mượn' },
   ],
   inputTypes: [
-    { id: '1', label: 'Nhập hàng' },
-    { id: '2', label: 'Nhập điều chỉnh' },
-    { id: '3', label: 'Nhập vay mượn' },
+    { id: '0', label: 'Nhập hàng' },
+    { id: '1', label: 'Nhập điều chỉnh' },
+    { id: '2', label: 'Nhập vay mượn' },
   ],
   reasonTypes: [
     { id: '0', label: 'Hàng hỏng tại cửa hàng' },
