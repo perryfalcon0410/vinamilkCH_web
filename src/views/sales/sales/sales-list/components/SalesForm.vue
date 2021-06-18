@@ -838,8 +838,11 @@ export default {
       this.search = null
     },
 
-    getSuggestionValue() {
-      return null
+    getSuggestionValue(suggestion) {
+      this.customer.fullName = suggestion.item.fullName
+      this.customer.phoneNumber = suggestion.item.phoneNumber
+      this.customer.totalBill = suggestion.item.totalBill
+      this.customer.street = suggestion.item.address
     },
   },
 }
