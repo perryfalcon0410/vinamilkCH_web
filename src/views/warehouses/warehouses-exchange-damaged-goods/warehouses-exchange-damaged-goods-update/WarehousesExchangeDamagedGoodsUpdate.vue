@@ -640,7 +640,7 @@ export default {
       this.$refs.formContainer.validate().then(success => {
         if (success && this.checkDuplicatesName() > -1) {
           if (this.damagedProduct.length > 0) {
-            console.log(this.damagedProduct)
+            // console.log(this.damagedProduct)
             this.UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION({
               exchangeDamagedGoods: {
                 customerId: this.exchangeGoodsInfo.customerId,

@@ -714,8 +714,8 @@ export default {
       this.currentCustomer = val
     },
 
-    getCustomerCreate(val) {
-      console.log('getCustomerCreate', val)
+    getCustomerCreate() {
+      // console.log('getCustomerCreate', val)
     },
 
     getCustomerIdInfo(id) {

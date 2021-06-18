@@ -722,7 +722,7 @@ export default {
       this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
       this.$emit('getCustomerIdInfo', val.data.id)
       this.inputSearchFocused = false
-      console.log(val.data.phoneNumber)
+      // console.log(val.data.phoneNumber)
     },
 
     getOnlineOrderInfo(id) {
