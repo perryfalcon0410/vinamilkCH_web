@@ -23,7 +23,7 @@
             rules="required"
             name="Từ ngày"
           >
-            <div class="h8 mt-sm-1 mt-xl-0">
+            <div class="h7 mt-sm-1 mt-xl-0">
               Từ ngày <span class="text-danger">*</span>
             </div>
             <b-row
@@ -35,7 +35,7 @@
                 v-model="fromDate"
                 :state="touched ? passed : null"
                 :config="configFromDate"
-                class="form-control h8"
+                class="form-control h7"
                 placeholder="Chọn ngày"
               />
               <b-icon-x
@@ -62,7 +62,7 @@
             rules="required"
             name="Đến ngày"
           >
-            <div class="h8 mt-sm-1 mt-xl-0">
+            <div class="h7 mt-sm-1 mt-xl-0">
               Đến ngày <span class="text-danger">*</span>
             </div>
             <b-row
@@ -81,7 +81,7 @@
                 v-model="toDate"
                 :state="touched ? passed : null"
                 :config="configToDate"
-                class="form-control h8"
+                class="form-control h7"
                 placeholder="Chọn ngày"
               />
             </b-row>
@@ -103,7 +103,7 @@
             Tìm kiếm
           </div>
           <b-button
-            class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
             variant="someThing"
             :disabled="invalid"
             @click="onClickSearchButton()"

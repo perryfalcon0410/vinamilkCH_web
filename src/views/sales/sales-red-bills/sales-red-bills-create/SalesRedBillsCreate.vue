@@ -22,7 +22,7 @@
           <!-- START - Archive Export ID and Type -->
           <b-form-row>
             <b-col>
-              <div class="h8 mt-1">
+              <div class="h7 mt-1">
                 Mã khách hàng
               </div>
               <vue-autosuggest
@@ -70,7 +70,7 @@
             </b-col>
 
             <b-col>
-              <div class="h8 mt-1">
+              <div class="h7 mt-1">
                 Tên khách hàng
               </div>
               <b-form-input
@@ -85,7 +85,7 @@
           <!-- START - Archive Export Bill Number and Date -->
           <b-form-row>
             <b-col>
-              <div class="h8 mt-1">
+              <div class="h7 mt-1">
                 Số hoá đơn
               </div>
               <b-form-input
@@ -99,7 +99,7 @@
                 rules="required|dateFormatVNI"
                 name="ngày in"
               >
-                <div class="h8 mt-1">
+                <div class="h7 mt-1">
                   Ngày in <span class="text-danger">*</span>
                 </div>
                 <b-form-group
@@ -109,7 +109,7 @@
                   <vue-flat-pickr
                     v-model="redBill.printDate"
                     :config="configDate"
-                    class="form-control h8 text-brand-3"
+                    class="form-control h7 text-brand-3"
                     placeholder="Chọn ngày"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -127,7 +127,7 @@
                 rules="required"
                 name="tên đơn vị"
               >
-                <div class="h8 mt-1">
+                <div class="h7 mt-1">
                   Tên đơn vị <span class="text-danger">*</span>
                 </div>
                 <b-form-input
@@ -145,7 +145,7 @@
                 rules="required"
                 name="mã số thuế"
               >
-                <div class="h8 mt-1">
+                <div class="h7 mt-1">
                   Mã số thuế <span class="text-danger">*</span>
                 </div>
                 <b-form-input
@@ -165,7 +165,7 @@
             rules="required"
             name="địa chỉ cơ quan"
           >
-            <div class="h8 mt-1">
+            <div class="h7 mt-1">
               Địa chỉ cơ quan <span class="text-danger">*</span>
             </div>
             <b-form-input
@@ -180,7 +180,7 @@
           <!-- START - Archive Export Internal number and PO no -->
           <b-form-row>
             <b-col>
-              <div class="h8 mt-1">
+              <div class="h7 mt-1">
                 Người mua hàng
               </div>
               <b-form-input
@@ -191,7 +191,7 @@
             </b-col>
 
             <b-col>
-              <div class="h8 mt-1">
+              <div class="h7 mt-1">
                 Hình thức thanh toán
               </div>
               <tree-select
@@ -206,7 +206,7 @@
           <!-- END - Archive Export Internal number and PO no -->
 
           <!-- START - Archive Export Note -->
-          <div class="h8 mt-1">
+          <div class="h7 mt-1">
             Ghi chú
           </div>
           <b-form-textarea
@@ -232,7 +232,7 @@
             </strong>
             <b-button
               variant="someThing"
-              class="btn-brand-1 h8"
+              class="btn-brand-1 h7"
               @click="showBillOfSaleList"
             >
               Chọn HĐBH
@@ -366,7 +366,7 @@
                   :suggestions="productRows"
                   :input-props="{
                     id:'autosuggest__input',
-                    class:'form-control w-25',
+                    class:'form-control w-25 h7',
                     placeholder:'Nhập mã hoặc tên sản phẩm'
                   }"
                   @input="loadProducts"

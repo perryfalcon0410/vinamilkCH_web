@@ -83,6 +83,7 @@ export default [
       breadcrumb: [
         {
           text: 'Danh sách sản phẩm nhập xuất điểu chỉnh',
+          active: true,
         },
       ],
       resource: 'ReportsWarehousesAdjustment',
@@ -128,7 +129,7 @@ export default [
       pageTitle: 'Báo cáo đổi hàng hỏng',
       breadcrumb: [
         {
-          text: 'Danh sách báo cáo đổ hàng hỏng',
+          text: 'Danh sách báo cáo đổi hàng hỏng',
           active: true,
         },
       ],

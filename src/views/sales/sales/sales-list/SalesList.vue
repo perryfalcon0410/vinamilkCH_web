@@ -24,7 +24,7 @@
             class="w-100"
             :input-props="{
               id:'autosuggest__input',
-              class:'form-control pr-3',
+              class:'form-control pr-3 h7',
               placeholder:'Tìm sản phẩm (F3)',
             }"
             @input="onChangeKeyWord"

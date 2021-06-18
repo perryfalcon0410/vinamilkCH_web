@@ -24,7 +24,7 @@
         </strong>
         <b-button-group>
           <b-button
-            class="btn-brand-1 h9 align-items-button-center rounded ml-1"
+            class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickPrintButton"
           >
@@ -32,7 +32,7 @@
             In
           </b-button>
           <b-button
-            class="btn-brand-1 h9 align-items-button-center rounded ml-1"
+            class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickExcelExportButton"
           >

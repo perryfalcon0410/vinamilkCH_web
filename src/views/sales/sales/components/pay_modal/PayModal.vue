@@ -43,7 +43,7 @@
               >
                 <b-check
                   v-model="value.isSelected"
-                  :disabled="!value.isUse"
+                  :disabled="value.promotionType === Number(promotionTypeOption[0].id) && value.isUse === true"
                 />
                 <div class="text-white">
                   {{ value.promotionProgramName }}
@@ -1270,8 +1270,8 @@ export default {
             discountCode: this.pay.discount.discountCode,
             voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
             vouchers: this.pay.voucher.vouchers,
-            remainAmount: Number(this.pay.needPaymentAmount) || 0,
-            paymentAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
+            paymentAmount: Number(this.pay.needPaymentAmount) || 0,
+            remainAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
             extraAmount: Number(this.pay.extraAmount) || 0,
           },
           onSuccess: () => {

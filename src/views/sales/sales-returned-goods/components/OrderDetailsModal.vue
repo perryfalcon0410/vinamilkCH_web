@@ -149,13 +149,14 @@
     <template #modal-footer="{ cancel }">
       <b-button
         variant="secondary"
-        class="d-flex align-items-center text-uppercase"
+        class="d-flex align-items-center text-uppercase h8"
         @click="cancel()"
       >
         <b-icon
           icon="x"
           width="20"
           height="20"
+          class="mr-50"
         />
         Đóng
       </b-button>

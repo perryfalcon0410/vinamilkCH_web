@@ -24,7 +24,7 @@
           sm="4"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Mã sản phẩm
           </div>
@@ -32,7 +32,7 @@
             id="form-input-customer"
             v-model="searchOptions.productCodes"
             trim
-            class="h8 text-brand-3 height-button-brand-1"
+            class="h7 text-brand-3 height-button-brand-1"
             placeholder="Nhập mã sản phẩm"
             @keyup.enter="onSearchClick"
           />
@@ -46,14 +46,14 @@
           class=" pr-0"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Tên sản phẩm
           </div>
           <b-form-input
             v-model="searchOptions.productName"
             trim
-            class="h8 text-brand-3 height-button-brand-1"
+            class="h7 text-brand-3 height-button-brand-1"
             placeholder="Nhập tên sản phẩm"
             @keyup.enter="onSearchClick"
           />
@@ -67,7 +67,7 @@
           class=" pr-0"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Ngành hàng
           </div>
@@ -83,13 +83,13 @@
         <!-- START - Search button -->
         <b-col>
           <div
-            class="h8 text-white"
+            class="h7 text-white"
           >
             Tìm kiếm
           </div>
           <b-button
             id="form-button-search"
-            class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
+            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
             variant="someThing"
             @click="onSearchClick"
           >
@@ -226,27 +226,28 @@
     <!-- START - Footer -->
     <template #modal-footer="{ cancel }">
       <b-button
-        variant="primary"
-        class="d-flex align-items-center text-uppercase"
+        variant="none"
+        class="d-flex align-items-center text-uppercase btn-brand-1 h8"
         @click="onSaveClick"
       >
         <b-icon
           icon="check2"
           width="20"
           height="20"
-          class="mr-1"
+          class="mr-50"
         />
         Lưu
       </b-button>
       <b-button
         variant="secondary"
-        class="d-flex align-items-center text-uppercase"
+        class="d-flex align-items-center text-uppercase h8"
         @click="cancel()"
       >
         <b-icon
           icon="x"
           width="20"
           height="20"
+          class="mr-50"
         />
         Đóng
       </b-button>

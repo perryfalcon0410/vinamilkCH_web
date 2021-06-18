@@ -8,7 +8,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <validation-provider
           v-slot="{ errors, passed }"
@@ -28,7 +28,7 @@
               :state="transCode ? passed : null"
               maxlength="20"
               placeholder="Nhập số biên bản"
-              class="h9"
+              class="h7"
               @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append
@@ -51,7 +51,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class=" mt-sm-1 mt-xl-0"
@@ -66,7 +66,7 @@
           <b-icon-x
             v-show="fromDate"
             style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
+            class="cursor-pointer text-gray h7"
             scale="1.3"
             data-clear
           />
@@ -88,7 +88,7 @@
         class="h8"
       >
         <div
-          class=" mt-sm-1 mt-xl-0"
+          class=" mt-sm-1 mt-xl-0 h7"
         >
           Đến ngày
         </div>
@@ -100,7 +100,7 @@
           <b-icon-x
             v-show="toDate"
             style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
+            class="cursor-pointer text-gray h7"
             scale="1.3"
             data-clear
           />
@@ -122,7 +122,7 @@
         class="h8"
       >
         <div
-          class=" mt-sm-1 mt-xl-0"
+          class=" mt-sm-1 mt-xl-0 h7"
         >
           Lý do
         </div>
@@ -130,6 +130,7 @@
           v-model="reasonObj.reasonSelected"
           :options="reasonObj.reasonOptions"
           placeholder="Tất cả"
+          class="h7"
           no-options-text="Không có dữ liệu"
         />
       </b-col>

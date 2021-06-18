@@ -14,7 +14,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Từ ngày
         </div>
@@ -33,7 +33,7 @@
           <vue-flat-pickr
             v-model="fromDate"
             :config="configFromDate"
-            class="form-control h8"
+            class="form-control h7"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -47,7 +47,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Đến ngày
         </div>
@@ -66,7 +66,7 @@
           <vue-flat-pickr
             v-model="toDate"
             :config="configToDate"
-            class="form-control h8"
+            class="form-control h7"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -86,7 +86,7 @@
           Tìm kiếm
         </div>
         <b-button
-          class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+          class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
           variant="someThing"
           @click="onClickSearchButton()"
         >

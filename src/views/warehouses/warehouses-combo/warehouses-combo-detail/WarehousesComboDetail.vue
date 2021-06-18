@@ -30,18 +30,17 @@
             <!-- START - ID and Type -->
             <b-form-row>
               <b-col>
-                <b-form-group
-                  label="Mã giao dịch"
-                  label-for="id"
-                >
-                  <b-form-input
-                    id="id"
-                    v-model="id"
-                    maxlength="40"
-                    trim
-                    disabled
-                  />
-                </b-form-group>
+                <div class="h7">
+                  Mã giao dịch
+                </div>
+                <b-form-input
+                  id="id"
+                  v-model="id"
+                  maxlength="40"
+                  class="h7"
+                  trim
+                  disabled
+                />
               </b-col>
 
               <b-col>
@@ -58,17 +57,16 @@
             <!-- END - ID and Type -->
 
             <!-- START -   Note -->
-            <b-form-group
-              label="Ghi chú"
-              label-for="note"
-            >
-              <b-form-textarea
-                id="note"
-                v-model="note"
-                maxlength="4000"
-                disabled
-              />
-            </b-form-group>
+            <div class="h7">
+              Ghi chú
+            </div>
+            <b-form-textarea
+              id="note"
+              v-model="note"
+              maxlength="4000"
+              disabled
+              class="h7"
+            />
             <!-- END -   Note -->
           </b-col>
           <!-- END - Form -->
@@ -79,7 +77,7 @@
           >
             <!-- START - Table combo list -->
             <div class="d-inline-flex rounded-top my-1">
-              <strong>
+              <strong class="text-brand-1">
                 Danh sách combo
               </strong>
             </div>
@@ -104,7 +102,7 @@
             <br>
             <!-- START - Table combo exchange -->
             <div class="d-inline-flex rounded-top my-1">
-              <strong>
+              <strong class="text-brand-1">
                 Quy đổi combo
               </strong>
             </div>
@@ -146,7 +144,7 @@
               <b-button-group>
 
                 <b-button
-                  class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+                  class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
                   @click="navigateBack"
                 >
                   <b-icon

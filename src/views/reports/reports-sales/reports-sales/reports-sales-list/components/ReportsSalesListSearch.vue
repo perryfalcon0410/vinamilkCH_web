@@ -16,13 +16,13 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Số hóa đơn
         </div>
         <b-form-input
           v-model="redInvoiceNo"
-          class="h8"
+          class="h7"
           maxlength="40"
           placeholder="Nhập số hóa đơn"
           @keyup.enter="onClickSearchButton"
@@ -42,7 +42,7 @@
           name="Từ ngày"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Từ ngày <span class="text-danger">*</span>
           </div>
@@ -61,7 +61,7 @@
               v-model="fromDate"
               :state="touched ? passed : null"
               :config="configFromDate"
-              class="form-control h8 text-brand-3"
+              class="form-control h7 text-brand-3"
               placeholder="Chọn ngày"
             />
           </b-row>
@@ -82,7 +82,7 @@
           name="Đến ngày"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Đến ngày <span class="text-danger">*</span>
           </div>
@@ -101,7 +101,7 @@
               v-model="toDate"
               :state="touched ? passed : null"
               :config="configToDate"
-              class="form-control h8 text-brand-3"
+              class="form-control h7 text-brand-3"
               placeholder="Chọn ngày"
             />
           </b-row>
@@ -117,14 +117,14 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Sản phẩm
         </div>
         <b-input-group class="input-group-merge ">
           <b-form-input
             v-model.trim="productCodes"
-            class="h8"
+            class="h7"
             placeholder="Nhập mã sản phẩm"
           />
           <b-input-group-append
@@ -154,7 +154,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Người thu tiền
         </div>
@@ -175,7 +175,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Kênh bán
         </div>
@@ -196,13 +196,13 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Khách hàng
         </div>
         <b-form-input
           v-model="customer"
-          class="h8"
+          class="h7"
           maxlength="200"
           placeholder="Nhập họ tên/mã"
           @keyup.enter="onClickSearchButton"
@@ -217,13 +217,13 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Số điện thoại
         </div>
         <b-form-input
           v-model="phoneNumber"
-          class="h8"
+          class="h7"
           maxlength="10"
           placeholder="Nhập SĐT khách hàng"
           @keyup.enter="onClickSearchButton"
@@ -239,7 +239,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Doanh số hóa đơn
         </div>
@@ -249,7 +249,7 @@
           <b-col>
             <b-form-input
               v-model="minIncome"
-              class="h8"
+              class="h7"
               :number="true"
               maxlength="12"
               @keyup.enter="onClickSearchButton"
@@ -259,7 +259,7 @@
           <b-col>
             <b-form-input
               v-model="maxIncome"
-              class="h8"
+              class="h7"
               :number="true"
               maxlength="12"
               @keyup.enter="onClickSearchButton"
@@ -277,14 +277,14 @@
         sm="4"
       >
         <div
-          class="h8 text-white"
+          class="h7 text-white"
           onmousedown="return false;"
           style="cursor: context-menu;"
         >
           Tìm kiếm
         </div>
         <b-button
-          class="btn-brand-1 h9 align-items-button-center mt-sm-1 mt-xl-0"
+          class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
           variant="someThing"
           :disabled="invalid"
           @click="onClickSearchButton()"

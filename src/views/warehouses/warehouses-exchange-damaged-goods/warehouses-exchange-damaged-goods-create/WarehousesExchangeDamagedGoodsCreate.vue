@@ -273,7 +273,7 @@
             <b-button-group>
               <b-button
                 variant="someThing"
-                class="btn-brand-1 rounded text-uppercase aligns-items-button-center"
+                class="btn-brand-1 rounded text-uppercase aligns-items-button-center h8"
                 :disabled="invalid"
                 @click="onClickSaveButton"
               >
@@ -284,7 +284,7 @@
               </b-button>
 
               <b-button
-                class="btn-brand-1 ml-1 rounded text-uppercase aligns-items-button-center"
+                class="btn-brand-1 ml-1 rounded text-uppercase aligns-items-button-center h8"
                 @click="navigateBack"
               >
                 <b-icon-x

@@ -14,7 +14,7 @@
           <!-- START - Form -->
           <b-col
             xl="4"
-            class="bg-white shadow rounded mr-xl-1"
+            class="bg-white shadow rounded mr-xl-1 h7"
           >
             <!-- START - Date -->
             <b-row class="my-1">
@@ -32,58 +32,53 @@
             <!-- START - ID and Type -->
             <b-form-row>
               <b-col>
-                <b-form-group
-                  label="Mã nhập hàng"
-                  label-for="id"
-                >
-                  <b-form-input
-                    id="id"
-                    v-model="id"
-                    maxlength="40"
-                    disabled
-                  />
-                </b-form-group>
+                <div class="mt-1">
+                  Mã xuất hàng
+                </div>
+                <b-form-input
+                  id="id"
+                  v-model="id"
+                  maxlength="40"
+                  class="h7"
+                  disabled
+                />
               </b-col>
 
               <b-col>
-                <b-form-group
-                  label="Loại nhập"
-                  label-for="id"
-                >
-                  <div class="d-flex align-items-center">
-                    <tree-select
-                      v-model="inputTypeSelected"
-                      :options="inputTypeOptions"
-                      no-options-text="Không có dữ liệu"
-                      no-results-text="Không tìm thấy kết quả"
-                      placeholder="Chọn loại nhập hàng"
-                      @select="clearFormText"
+                <div class="mt-1">
+                  Loại nhập
+                </div>
+                <div class="d-flex align-items-center">
+                  <tree-select
+                    v-model="inputTypeSelected"
+                    :options="inputTypeOptions"
+                    no-options-text="Không có dữ liệu"
+                    no-results-text="Không tìm thấy kết quả"
+                    placeholder="Chọn loại nhập hàng"
+                    @select="clearFormText"
+                  />
+                  <b-input-group-append>
+                    <b-icon-three-dots-vertical
+                      v-b-popover.hover="'Chọn đơn nhập'"
+                      scale="1.5"
+                      class="cursor-pointer"
+                      @click="showModal"
                     />
-                    <b-input-group-append>
-                      <b-icon-three-dots-vertical
-                        v-b-popover.hover="'Chọn đơn nhập'"
-                        scale="1.5"
-                        class="cursor-pointer"
-                        @click="showModal"
-                      />
-                    </b-input-group-append>
-                  </div>
-                </b-form-group>
+                  </b-input-group-append>
+                </div>
               </b-col>
             </b-form-row>
             <!-- END - ID and Type -->
 
             <!-- START -  Stock  -->
-            <b-form-group
-              label="Kho hàng"
-              label-for="warehouse"
-            >
-              <b-form-input
-                id="warehouse"
-                v-model="warehousesType.wareHouseTypeName"
-                disabled
-              />
-            </b-form-group>
+            <div class="mt-1">
+              Kho hàng
+            </div>
+            <b-form-input
+              id="warehouse"
+              v-model="warehousesType.wareHouseTypeName"
+              disabled
+            />
             <!-- END -  Stock  -->
 
             <!-- START - Bill Number and Date -->
@@ -94,7 +89,7 @@
                   :rules="`${inputTypeSelected === '0' ? 'required' : ''}`"
                   name="số hóa đơn"
                 >
-                  <div class="h9">
+                  <div class="h7">
                     Số hóa đơn <sup
                       v-show="inputTypeSelected === '0'"
                       class="text-danger"
@@ -116,7 +111,7 @@
                   rules="required"
                   name="Ngày hóa đơn"
                 >
-                  <div class="h9">
+                  <div class="h7">
                     Ngày hóa đơn <sup
                       v-show="inputTypeSelected === '0'"
                       class="text-danger"
@@ -130,7 +125,7 @@
                       :disabled="inputTypeSelected != '0' ? true : false"
                       :config="configDate"
                       :state="touched ? passed : null"
-                      class="form-control h8 text-brand-3"
+                      class="form-control h7 text-brand-3"
                       placeholder="Chọn ngày"
                     />
 
@@ -149,7 +144,7 @@
                   :rules="`${inputTypeSelected === '0' ? 'required' : ''}`"
                   name="số nội bộ"
                 >
-                  <div class="mt-1 h9">
+                  <div class="mt-1 h7">
                     Số nội bộ <sup
                       v-show="inputTypeSelected === '0'"
                       class="text-danger"
@@ -158,6 +153,7 @@
                   <b-form-input
                     v-model="internalNumber"
                     :state="touched && inputTypeSelected === '0' ? passed : null"
+                    class="h7"
                     :disabled="inputTypeSelected !== '0' ? true : false"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -169,7 +165,7 @@
                   :rules="inputTypeSelected === '0' ? 'required' : ''"
                   name="PO No"
                 >
-                  <div class="mt-1 h9">
+                  <div class="mt-1 h7">
                     PO No
                     <sup
                       v-show="inputTypeSelected === '0'"
@@ -183,6 +179,7 @@
                     <b-form-input
                       v-model="poNo"
                       :state="inputTypeSelected === '0' && touched ? passed : null"
+                      class="h7"
                       :disabled="inputTypeSelected != '0' ? true : false"
                     />
                   </b-input-group>
@@ -193,17 +190,15 @@
             <!-- END -   Internal number and PO no -->
 
             <!-- START -   Note -->
-            <b-form-group
-              label="Ghi chú"
-              class="mt-1"
-              label-for="note"
-            >
-              <b-form-textarea
-                id="note"
-                v-model="note"
-                maxlength="250"
-              />
-            </b-form-group>
+
+            <div class="mt-1">
+              Ghi chú
+            </div>
+            <b-form-textarea
+              id="note"
+              v-model="note"
+              maxlength="250"
+            />
             <!-- END -   Note -->
           </b-col>
           <!-- END - Form -->
@@ -214,7 +209,7 @@
           >
             <!-- START - Table Product -->
             <div class="d-inline-flex rounded-top px-1 my-1">
-              <strong>
+              <strong class="text-brand-1">
                 Sản phẩm
               </strong>
             </div>
@@ -292,7 +287,7 @@
             <div v-if="isShowPoPromoTable">
 
               <div class="d-inline-flex rounded-top px-1 my-1">
-                <strong>
+                <strong class="text-brand-1">
                   Hàng khuyến mãi
                 </strong>
               </div>
@@ -345,7 +340,7 @@
               <div
                 class="d-inline-flex rounded-top px-1 my-1"
               >
-                <strong>
+                <strong class="text-brand-1">
                   Hàng khuyến mãi
                 </strong>
               </div>
@@ -467,7 +462,7 @@
             <b-row class="m-1 justify-content-end">
               <b-button-group>
                 <b-button
-                  class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
+                  class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder mr-1"
                   variant="someThing"
                   :disabled="invalid"
                   @click="create"
@@ -479,7 +474,7 @@
                 </b-button>
 
                 <b-button
-                  class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+                  class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
                   @click="navigateBack"
                 >
                   <b-icon

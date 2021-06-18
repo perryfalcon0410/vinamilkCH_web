@@ -24,14 +24,14 @@
         </strong>
         <b-button-group>
           <b-button
-            class="rounded btn-brand-1"
+            class="rounded btn-brand-1 h7"
             variant="someThing"
           >
             <b-icon-printer-fill class="mr-50" />
             In
           </b-button>
           <b-button
-            class="ml-1 rounded btn-brand-1"
+            class="ml-1 rounded btn-brand-1 h7"
             variant="someThing"
             @click="onClickExcelExportButton"
           >

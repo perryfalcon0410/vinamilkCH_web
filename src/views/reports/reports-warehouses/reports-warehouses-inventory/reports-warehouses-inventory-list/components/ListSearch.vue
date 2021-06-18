@@ -22,7 +22,7 @@
             name="Ngày"
           >
             <div
-              class="h8 mt-lg-1 mt-xl-0"
+              class="h7 mt-lg-1 mt-xl-0"
             >
               Ngày <span class="text-danger">*</span>
             </div>
@@ -70,7 +70,7 @@
           md="3"
           sm="4"
         >
-          <div class="h8 mt-lg-1 mt-xl-0">
+          <div class="h7 mt-lg-1 mt-xl-0">
             Sản phẩm
           </div>
           <b-input-group
@@ -79,7 +79,7 @@
           >
             <b-form-input
               v-model="productCodes"
-              class="h8 text-brand-3"
+              class="h7 text-brand-3"
               placeholder="Mã sản phẩm"
               @keyup.enter="onClickSearchButton"
             />
@@ -107,20 +107,20 @@
           class="h-25"
         >
           <div
-            class="h8 text-white"
+            class="h7 text-white"
           >
             Tìm kiếm
           </div>
           <b-button
             id="form-button-search"
-            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
             variant="someThing"
             size="sm"
             :disabled="invalid"
             style="height: 30px;"
             @click="onClickSearchButton"
           >
-            <b-icon-search class="mr-1" />
+            <b-icon-search class="mr-50" />
             Tìm kiếm
           </b-button>
         </b-col>

@@ -21,7 +21,7 @@
               sm="4"
             >
               <div
-                class="h8 mt-sm-1 mt-xl-0"
+                class="h7 mt-sm-1 mt-xl-0"
               >
                 Khách hàng
               </div>
@@ -30,7 +30,7 @@
               >
                 <b-form-input
                   v-model="keySearch"
-                  class="h8 text-brand-3"
+                  class="h7 text-brand-3"
                   placeholder="Nhập họ tên/mã"
                   @keyup.enter="onClickSearchButton"
                 />
@@ -52,7 +52,7 @@
               xl
               lg="3"
               sm="4"
-              class="h8"
+              class="h7"
             >
               <div
                 class="mt-sm-1 mt-xl-0"
@@ -76,7 +76,7 @@
               sm="4"
             >
               <div
-                class="h8 mt-sm-1 mt-xl-0"
+                class="h7 mt-sm-1 mt-xl-0"
               >
                 Số điện thoại
               </div>
@@ -85,7 +85,7 @@
               >
                 <b-form-input
                   v-model="customerPhone"
-                  class="h8 text-brand-3"
+                  class="h7 text-brand-3"
                   placeholder="Nhập SĐT"
                   maxlength="10"
                   @keyup.enter="onClickSearchButton"
@@ -115,7 +115,7 @@
               sm="4"
             >
               <div
-                class="h8 mt-sm-1 mt-xl-0"
+                class="h7 mt-sm-1 mt-xl-0"
               >
                 Nhóm khách hàng
               </div>
@@ -135,7 +135,7 @@
               xl
               lg="3"
               sm="4"
-              class="h8"
+              class="h7"
             >
               <div
                 class="mt-sm-1 mt-xl-0"
@@ -165,7 +165,7 @@
               sm="4"
             >
               <div
-                class="h8 mt-sm-1 mt-xl-0"
+                class="h7 mt-sm-1 mt-xl-0"
               >
                 Từ ngày tạo
               </div>
@@ -184,7 +184,7 @@
                 <vue-flat-pickr
                   v-model="fromCreateDate"
                   :config="configFromDate"
-                  class="form-control h8"
+                  class="form-control h7"
                   placeholder="Chọn ngày"
                 />
               </b-row>
@@ -202,7 +202,7 @@
               sm="4"
             >
               <div
-                class="h8 mt-sm-1 mt-xl-0"
+                class="h7 mt-sm-1 mt-xl-0"
               >
                 Đến ngày tạo
               </div>
@@ -221,7 +221,7 @@
                 <vue-flat-pickr
                   v-model="toCreateDate"
                   :config="configToDate"
-                  class="form-control h8"
+                  class="form-control h7"
                   placeholder="Chọn ngày"
                 />
               </b-row>
@@ -242,7 +242,7 @@
               sm="4"
             >
               <div
-                class="h8 mt-sm-1 mt-xl-0"
+                class="h7 mt-sm-1 mt-xl-0"
               >
                 Từ ngày MHC
               </div>
@@ -261,7 +261,7 @@
                 <vue-flat-pickr
                   v-model="fromPurchaseDate"
                   :config="configFromPurchaseDate"
-                  class="form-control h8"
+                  class="form-control h7"
                   placeholder="Chọn ngày"
                 />
               </b-row>
@@ -279,7 +279,7 @@
               sm="4"
             >
               <div
-                class="h8 mt-sm-1 mt-xl-0"
+                class="h7 mt-sm-1 mt-xl-0"
               >
                 Đến ngày MHC
               </div>
@@ -298,7 +298,7 @@
                 <vue-flat-pickr
                   v-model="toPurchaseDate"
                   :config="configToPurchaseDate"
-                  class="form-control h8"
+                  class="form-control h7"
                   placeholder="Chọn ngày"
                 />
               </b-row>
@@ -320,7 +320,7 @@
               sm="4"
             >
               <div
-                class="h8 mt-sm-1 mt-xl-0"
+                class="h7 mt-sm-1 mt-xl-0"
               >
                 Từ doanh số
               </div>
@@ -329,7 +329,7 @@
               >
                 <b-form-input
                   v-model="fromSaleAmount"
-                  class="h8 text-brand-3"
+                  class="h7 text-brand-3"
                   placeholder="Từ doanh số"
                   :number="true"
                   maxlength="12"
@@ -356,7 +356,7 @@
               sm="4"
             >
               <div
-                class="h8 mt-sm-1 mt-xl-0"
+                class="h7 mt-sm-1 mt-xl-0"
               >
                 Đến doanh số
               </div>
@@ -365,7 +365,7 @@
               >
                 <b-form-input
                   v-model="toSaleAmount"
-                  class="h8 text-brand-3"
+                  class="h7 text-brand-3"
                   placeholder="Đến doanh số"
                   :number="true"
                   maxlength="12"
@@ -396,7 +396,7 @@
               sm="4"
             >
               <div
-                class="h8 mt-sm-1 mt-xl-0"
+                class="h7 mt-sm-1 mt-xl-0"
               >
                 Từ ngày doanh số
               </div>
@@ -415,7 +415,7 @@
                 <vue-flat-pickr
                   v-model="fromSaleDate"
                   :config="configFromSaleDate"
-                  class="form-control h8"
+                  class="form-control h7"
                   placeholder="Chọn ngày"
                 />
               </b-row>
@@ -429,7 +429,7 @@
               sm="4"
             >
               <div
-                class="h8 mt-sm-1 mt-xl-0"
+                class="h7 mt-sm-1 mt-xl-0"
               >
                 Đến ngày doanh số
               </div>
@@ -448,7 +448,7 @@
                 <vue-flat-pickr
                   v-model="toSaleDate"
                   :config="configToSaleDate"
-                  class="form-control h8"
+                  class="form-control h7"
                   placeholder="Chọn ngày"
                 />
               </b-row>
@@ -463,12 +463,12 @@
           class="p-1"
         >
           <div
-            class="h8 text-white"
+            class="h7 text-white"
           >
             Tìm kiếm
           </div>
           <b-button
-            class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
             variant="someThing"
             @click="onClickSearchButton()"
           >

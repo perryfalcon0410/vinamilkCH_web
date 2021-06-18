@@ -12,7 +12,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Số hóa đơn
         </div>
@@ -21,7 +21,7 @@
         >
           <b-form-input
             v-model.trim="orderNumber"
-            class="h8"
+            class="h7"
             placeholder="Nhập số hóa đơn"
             @keyup.enter="onSearchClick"
           />
@@ -45,7 +45,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Khách hàng
         </div>
@@ -54,7 +54,7 @@
         >
           <b-form-input
             v-model.trim="customerName"
-            class="h8"
+            class="h7"
             autocomplete="on"
             placeholder="Nhập họ tên/mã"
             @keyup.enter="onSearchClick"
@@ -79,7 +79,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Sản phẩm
         </div>
@@ -88,7 +88,7 @@
         >
           <b-form-input
             v-model.trim="productCode"
-            class="h8"
+            class="h7"
             autocomplete="on"
             placeholder="Nhập mã sản phẩm"
             @keyup.enter="onSearchClick"
@@ -113,7 +113,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Từ ngày
         </div>
@@ -132,7 +132,7 @@
           <vue-flat-pickr
             v-model="fromDate"
             :config="configFromDate"
-            class="form-control h8"
+            class="form-control h7"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -146,7 +146,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Đến ngày
         </div>
@@ -165,7 +165,7 @@
           <vue-flat-pickr
             v-model="toDate"
             :config="configToDate"
-            class="form-control h8"
+            class="form-control h7"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -181,14 +181,14 @@
       >
         <!--"onmousedown" is prevent hightlight text -->
         <div
-          class="h8 text-white"
+          class="h7 text-white"
           onmousedown="return false;"
           style="cursor: context-menu;"
         >
           Tìm kiếm
         </div>
         <b-button
-          class="btn-brand-1 h9 align-items-button-center mt-sm-1 mt-xl-0"
+          class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
           variant="someThing"
           @click="onSearchClick()"
         >

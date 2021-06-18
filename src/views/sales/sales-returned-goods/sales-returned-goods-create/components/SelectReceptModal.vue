@@ -126,7 +126,7 @@
     <template #modal-footer="{ cancel }">
       <b-button
         variant="secondary"
-        class="d-flex align-items-center text-uppercase"
+        class="d-flex align-items-center text-uppercase h8"
         @click="cancel()"
       >
         <b-icon

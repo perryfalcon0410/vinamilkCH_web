@@ -122,7 +122,7 @@
                   <vue-flat-pickr
                     v-model="warehousesOutput.billDate"
                     :config="configDate"
-                    class="form-control h8"
+                    class="form-control h7"
                     :disabled="outputTypeSelected !== poOutputType"
                     readonly
                   />
@@ -265,7 +265,7 @@
               <template
                 slot="column-filter"
                 slot-scope="props"
-                class="h8"
+                class="h7"
               >
                 <b-row
                   v-if="props.column.field === 'productCode'"

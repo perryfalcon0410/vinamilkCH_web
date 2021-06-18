@@ -17,7 +17,7 @@
           sm="4"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Số biên bản
           </div>
@@ -26,7 +26,7 @@
           >
             <b-form-input
               v-model="transCode"
-              class="h8 text-brand-3"
+              class="h7 text-brand-3"
               @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append
@@ -54,7 +54,7 @@
             name="Từ ngày"
           >
             <div
-              class="h8 mt-sm-1 mt-xl-0"
+              class="h7 mt-sm-1 mt-xl-0"
             >
               Từ ngày <span class="text-danger">*</span>
             </div>
@@ -74,7 +74,7 @@
                 v-model="fromDate"
                 :state="touched ? passed : null"
                 :config="configFromDate"
-                class="form-control h8"
+                class="form-control h7"
                 placeholder="Chọn ngày"
               />
             </b-row>
@@ -95,7 +95,7 @@
             name="Đến ngày"
           >
             <div
-              class="h8 mt-sm-1 mt-xl-0"
+              class="h7 mt-sm-1 mt-xl-0"
             >
               Đến ngày <span class="text-danger">*</span>
             </div>
@@ -115,7 +115,7 @@
                 v-model="toDate"
                 :config="configToDate"
                 :state="touched ? passed : null"
-                class="form-control h8"
+                class="form-control h7"
                 placeholder="Chọn ngày"
               />
             </b-row>
@@ -130,7 +130,7 @@
           sm="4"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Lý do
           </div>
@@ -150,7 +150,7 @@
           md="3"
           sm="4"
         >
-          <div class="h8 mt-sm-1 mt-xl-0">
+          <div class="h7 mt-sm-1 mt-xl-0">
             Sản phẩm
           </div>
           <b-input-group
@@ -159,7 +159,7 @@
           >
             <b-form-input
               v-model="productCodes"
-              class="h8 text-brand-3"
+              class="h7 text-brand-3"
               placeholder="Mã sản phẩm"
               @keyup.enter="onClickSearchButton"
             />
@@ -187,13 +187,13 @@
           class="h-25"
         >
           <div
-            class="h8 text-white"
+            class="h7 text-white"
           >
             Tìm kiếm
           </div>
           <b-button
             id="form-button-search"
-            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
             variant="someThing"
             :disabled="invalid"
             style="height: 30px;"

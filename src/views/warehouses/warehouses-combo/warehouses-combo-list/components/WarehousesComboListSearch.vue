@@ -15,7 +15,7 @@
         class="h7"
       >
         <div
-          class="mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Mã giao dịch
         </div>
@@ -24,6 +24,7 @@
         >
           <b-form-input
             v-model.trim="transCode"
+            class="h7"
             placeholder="Nhập mã giao dịch"
             @keyup.enter="onClickSearchButton"
           />
@@ -48,7 +49,7 @@
         class="h7"
       >
         <div
-          class="mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Từ ngày
         </div>
@@ -67,7 +68,7 @@
           <vue-flat-pickr
             v-model="fromDate"
             :config="configFromDate"
-            class="form-control"
+            class="form-control h7"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -82,7 +83,7 @@
         class="h7"
       >
         <div
-          class="mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Đến ngày
         </div>
@@ -101,7 +102,7 @@
           <vue-flat-pickr
             v-model="toDate"
             :config="configToDate"
-            class="form-control"
+            class="form-control h7"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -117,7 +118,7 @@
         class="h7"
       >
         <div
-          class="mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Loại giao dịch
         </div>
@@ -144,7 +145,7 @@
         </div>
         <b-button
           id="form-button-search"
-          class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0"
+          class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
           variant="someThing"
           @click="onClickSearchButton()"
         >

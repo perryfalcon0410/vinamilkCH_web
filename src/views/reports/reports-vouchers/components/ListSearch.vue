@@ -77,7 +77,7 @@
                               v-model="promoFromDate"
                               :state="touched ? passed : null"
                               :config="configPromotionFromDate"
-                              class="form-control h8"
+                              class="form-control h7"
                               placeholder="Chọn ngày"
                             />
                             <b-icon-x
@@ -115,7 +115,7 @@
                               v-model="promoToDate"
                               :state="touched ? passed : null"
                               :config="configPromotionToDate"
-                              class="form-control h8"
+                              class="form-control h7"
                               placeholder="Chọn ngày"
                             />
                             <b-icon-x
@@ -226,7 +226,7 @@
                               v-model="usedFromDate"
                               :state="touched ? passed : null"
                               :config="configUsedFromDate"
-                              class="form-control h8"
+                              class="form-control h7"
                               placeholder="Chọn ngày"
                             />
                             <b-icon-x
@@ -265,7 +265,7 @@
                               v-model="usedToDate"
                               :state="touched ? passed : null"
                               :config="configUsedToDate"
-                              class="form-control h8"
+                              class="form-control h7"
                               placeholder="Chọn ngày"
                             />
                             <b-icon-x
@@ -294,12 +294,12 @@
         <!-- START - Search button -->
         <b-col sm="2">
           <div
-            class="h8 text-white"
+            class="h7 text-white"
           >
             Tìm kiếm
           </div>
           <b-button
-            class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
             variant="someThing"
             :disabled="invalid"
             @click="onClickSearchButton()"

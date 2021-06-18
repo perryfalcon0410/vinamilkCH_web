@@ -92,7 +92,7 @@
           >
             <!-- START - Table combo list -->
             <div class="d-inline-flex rounded-top px-1 my-1">
-              <strong>
+              <strong class="text-brand-1">
                 Danh sách combo
               </strong>
             </div>
@@ -191,7 +191,7 @@
             <br>
             <!-- START - Table combo exchange -->
             <div class="d-inline-flex rounded-top px-1 my-1">
-              <strong>
+              <strong class="text-brand-1">
                 Quy đổi combo
               </strong>
             </div>
@@ -238,7 +238,7 @@
             <b-row class="mr-0 my-1 justify-content-end">
               <b-button-group>
                 <b-button
-                  class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center mr-1"
+                  class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center mr-1"
                   variant="someThing"
                   @click="save"
                 >
@@ -249,7 +249,7 @@
                 </b-button>
 
                 <b-button
-                  class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+                  class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
                   @click="navigateBack"
                 >
                   <b-icon

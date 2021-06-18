@@ -19,7 +19,7 @@
         </strong>
         <b-button-group>
           <b-button
-            class="rounded bg-brand-1 text-white"
+            class="rounded bg-brand-1 text-white h8"
             variant="someThing"
             size="sm"
             @click="onClickPrintExportButton"
@@ -28,7 +28,7 @@
             In
           </b-button>
           <b-button
-            class="ml-1 rounded bg-brand-1 text-white"
+            class="ml-1 rounded bg-brand-1 text-white h8"
             variant="someThing"
             size="sm"
             @click="onClickExcelExportButton"

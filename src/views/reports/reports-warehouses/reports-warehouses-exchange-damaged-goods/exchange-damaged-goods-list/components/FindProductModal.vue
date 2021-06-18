@@ -24,7 +24,7 @@
           sm="4"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Mã sản phẩm
           </div>
@@ -34,7 +34,7 @@
             <b-form-input
               id="form-input-customer"
               v-model="searchOptions.productCodes"
-              class="h8 text-brand-3 height-button-brand-1"
+              class="h7 text-brand-3 height-button-brand-1"
               placeholder="Nhập mã sản phẩm"
               @keyup.enter="onSearchClick"
             />
@@ -60,7 +60,7 @@
           class=" pr-0"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Tên sản phẩm
           </div>
@@ -69,7 +69,7 @@
           >
             <b-form-input
               v-model="searchOptions.productName"
-              class="h8 text-brand-3 height-button-brand-1"
+              class="h7 text-brand-3 height-button-brand-1"
               placeholder="Nhập tên sản phẩm"
               @keyup.enter="onSearchClick"
             />
@@ -95,7 +95,7 @@
           class=" pr-0"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Ngành hàng
           </div>
@@ -112,13 +112,13 @@
         <!-- START - Search button -->
         <b-col>
           <div
-            class="h8 text-white"
+            class="h7 text-white"
           >
             Tìm kiếm
           </div>
           <b-button
             id="form-button-search"
-            class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
+            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
             variant="someThing"
             @click="onSearchClick"
           >
@@ -247,7 +247,7 @@
     <!-- START - Footer -->
     <template #modal-footer="{ }">
       <b-button
-        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder d-flex justify-content-center align-items-center"
         variant="someThing"
         size="sm"
         @click="save()"
@@ -261,7 +261,7 @@
         Chọn
       </b-button>
       <b-button
-        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder d-flex justify-content-center align-items-center ml-1"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder d-flex justify-content-center align-items-center ml-1"
         size="sm"
         @click="cancel()"
       >

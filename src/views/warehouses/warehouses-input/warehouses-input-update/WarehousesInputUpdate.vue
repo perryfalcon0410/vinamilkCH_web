@@ -47,6 +47,7 @@
                 <b-form-input
                   id="import-type"
                   v-model="importTypeName"
+                  class="h7"
                   disabled
                 />
               </b-col>
@@ -60,6 +61,7 @@
             <b-form-input
               id="warehouse"
               v-model="wareHouseTypeName"
+              class="h7"
               disabled
             />
             <!-- END -  Stock  -->
@@ -72,13 +74,14 @@
                   rules="required"
                   name="Số hóa đơn"
                 >
-                  <div class="mt-1">
+                  <div class="mt-1 h7">
                     Số hóa đơn <sup class="text-danger">*</sup>
                   </div>
                   <b-form-input
                     v-model="billNumber"
                     :state="touched ? passed : null"
                     :disabled="importType !== inputType"
+                    class="h7"
                     maxlength="50"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -91,7 +94,7 @@
                   rules="required"
                   name="Ngày hóa đơn"
                 >
-                  <div class="mt-1">
+                  <div class="mt-1 h7">
                     Ngày hóa đơn <sup class="text-danger">*</sup>
                   </div>
                   <b-input-group
@@ -101,7 +104,7 @@
                     <vue-flat-pickr
                       v-model="billDate"
                       :config="configDate"
-                      class="form-control h9"
+                      class="form-control h7"
                       placeholder="Chọn ngày"
                       :disabled="!canEdit"
                     />
@@ -120,13 +123,14 @@
                   :rules="isBorrowType ? null : required"
                   name="Số nội bộ"
                 >
-                  <div class="mt-1">
+                  <div class="mt-1 h7">
                     Số nội bộ <sup class="text-danger">*</sup>
                   </div>
                   <b-form-input
                     v-model="internalNumber"
                     :state="touched ? passed : null"
                     :disabled="!canEdit"
+                    class="h7"
                     maxlength="50"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -139,7 +143,7 @@
                   :rules="importType === inputType ? required : null"
                   name="PO No"
                 >
-                  <div class="mt-1">
+                  <div class="mt-1 h7">
                     PO No
                     <sup
                       v-show="importType === inputType"
@@ -154,6 +158,7 @@
                       v-model="poNumber"
                       :state="importType === inputType && touched ? passed : null"
                       :disabled="!canEdit"
+                      class="h7"
                       maxlength="50"
                     />
                   </b-input-group>
@@ -164,14 +169,14 @@
             <!-- END -   Internal number and PO no -->
 
             <!-- START -   Note -->
-            <div class="mt-1">
+            <div class="mt-1 h7">
               Ghi chú
             </div>
             <b-form-textarea
               id="note"
               v-model="note"
               maxlength="250"
-              class="mb-1"
+              class="mb-1 h7"
               :disabled="!isTransDate"
             />
             <!-- END -   Note -->
@@ -185,7 +190,7 @@
             <div v-if="totalProductQuantity > 0">
               <!-- START - Table Product -->
               <div class="d-inline-flex rounded-top my-1">
-                <strong>
+                <strong class="text=brand-1">
                   Sản phẩm
                 </strong>
               </div>
@@ -267,8 +272,8 @@
 
             <div v-if="showPromotionsTable">
               <!-- START - Table Product promotion -->
-              <div class="d-inline-flex rounded-top my-1">
-                <strong>
+              <div class="d-inline-flex rounded-top my-">
+                <strong class="text=brand=1">
                   Hàng khuyến mãi
                 </strong>
               </div>

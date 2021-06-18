@@ -31,7 +31,7 @@
         >
           <b-icon-plus
             scale="2"
-            class="mr-50"
+            class="mr-50 h8"
           />
           Thêm mới
         </b-button>

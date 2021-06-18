@@ -95,7 +95,7 @@
               <vue-flat-pickr
                 v-model="warehousesOutput.orderDate"
                 :config="configDate"
-                class="form-control h8 text-brand-3"
+                class="form-control h7 text-brand-3"
                 disabled
               />
             </b-input-group>
@@ -231,7 +231,7 @@
         >
           <b-button
             variant="someThing"
-            class="align-items-button-center btn-brand-1 text-uppercase"
+            class="align-items-button-center btn-brand-1 text-uppercase h8"
             :hidden="isDisableSave && warehousesOutput.receiptType === warehousesOptions[0].id"
             @click="onClickUpdateWarehousesOutput"
           >
@@ -242,7 +242,7 @@
           </b-button>
 
           <b-button
-            class="align-items-button-center text-uppercase ml-1"
+            class="align-items-button-center text-uppercase ml-1 h8"
             @click="navigateBack"
           >
             <b-icon-x

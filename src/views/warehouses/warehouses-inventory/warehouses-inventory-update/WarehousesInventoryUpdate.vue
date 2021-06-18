@@ -15,21 +15,18 @@
           lg="2"
           md="4"
         >
-          <b-form-group
-            label="Mã kiểm kê"
-            label-class="h8"
-            label-for="form-input-counting-code"
-          >
-            <b-form-input
-              id="form-input-counting-code"
-              v-model="countingCode"
-              class="h9"
-              size="sm"
-              maxlength="40"
-              trim
-              disabled
-            />
-          </b-form-group>
+          <div class="h7">
+            Mã kiểm kê
+          </div>
+          <b-form-input
+            id="form-input-counting-code"
+            v-model="countingCode"
+            class="h7"
+            size="sm"
+            maxlength="40"
+            trim
+            disabled
+          />
         </b-col>
         <!-- END - Inventory code -->
 
@@ -38,21 +35,18 @@
           lg="2"
           md="4"
         >
-          <b-form-group
-            label="Ngày"
-            label-class="h8"
-            label-for="form-input-counting-date"
-          >
-            <b-form-input
-              id="form-input-counting-date"
-              v-model="countingDate"
-              class="h9"
-              size="sm"
-              maxlength="20"
-              trim
-              disabled
-            />
-          </b-form-group>
+          <div class="h7">
+            Ngày
+          </div>
+          <b-form-input
+            id="form-input-counting-date"
+            v-model="countingDate"
+            class="h7"
+            size="sm"
+            maxlength="20"
+            trim
+            disabled
+          />
 
         </b-col>
         <!-- END - Date -->
@@ -61,18 +55,15 @@
           lg="2"
           md="4"
         >
-          <b-form-group
-            label-class="h8"
-            label="Kho"
-            label-for="form-input-warehouse-type"
-          >
-            <tree-select
-              v-model="warehouseType"
-              :options="warehouseTypes"
-              placeholder="Tất cả"
-              disabled
-            />
-          </b-form-group>
+          <div class="h7">
+            Kho
+          </div>
+          <tree-select
+            v-model="warehouseType"
+            :options="warehouseTypes"
+            placeholder="Tất cả"
+            disabled
+          />
         </b-col>
         <!-- END - Warehouse -->
       </b-row>
@@ -224,7 +215,7 @@
         <b-button-group class="float-right my-1">
           <b-button
             variant="someThing"
-            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
             @click="onClickSaveButton()"
           >
             <b-icon-download />
@@ -233,7 +224,7 @@
 
           <b-button
             variant="someThing"
-            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
             :disabled="originalProducts.length === 0"
             @click="onClickExportButton()"
           >
@@ -242,7 +233,7 @@
           </b-button>
 
           <b-button
-            class="ml-1"
+            class="ml-1 rounded h8 btn-brand-1"
             @click="onClickCloseButton()"
           >
             <b-icon-x />
@@ -266,13 +257,13 @@
       <template #modal-footer>
         <b-button
           variant="someThing"
-          class="btn-brand-1 aligns-items-button-center"
+          class="btn-brand-1 aligns-items-button-center h8"
           @click="onClickConfirmCloseButton()"
         >
           Đồng ý
         </b-button>
         <b-button
-          class="aligns-items-button-center"
+          class="aligns-items-button-center h8"
           @click="isModalCloseShow = !isModalCloseShow"
         >
           Đóng

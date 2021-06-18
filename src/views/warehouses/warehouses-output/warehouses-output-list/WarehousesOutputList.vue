@@ -162,7 +162,7 @@
           xl
           lg="3"
           sm="4"
-          class="h8"
+          class="h7"
         >
           <div
             class="text-white"
@@ -173,7 +173,7 @@
           </div>
           <b-button
             id="form-button-search"
-            class="btn-brand-1 align-items-button-center mt-sm-1 mt-xl-0"
+            class="btn-brand-1 align-items-button-center mt-sm-1 mt-xl-0 h8"
             variant="someThing"
             @click="onClickSearchWarehousesOutput()"
           >
@@ -201,7 +201,7 @@
         </strong>
         <b-button-group>
           <b-button
-            class="btn-brand-1 align-items-button-center"
+            class="btn-brand-1 align-items-button-center h8"
             variant="someThing"
             @click="onClickCreateButton"
           >

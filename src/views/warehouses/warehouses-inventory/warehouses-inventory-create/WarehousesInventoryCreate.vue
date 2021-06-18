@@ -15,21 +15,19 @@
           lg="2"
           md="4"
         >
-          <b-form-group
-            label="Mã kiểm kê"
-            label-class="h8"
-            label-for="form-input-stock-counting-code"
-          >
-            <b-form-input
-              id="form-input-stock-counting-code"
-              v-model="stockCountingCode"
-              class="h9"
-              size="sm"
-              maxlength="40"
-              trim
-              disabled
-            />
-          </b-form-group>
+
+          <div class="h7">
+            Mã kiểm kê
+          </div>
+          <b-form-input
+            id="form-input-stock-counting-code"
+            v-model="stockCountingCode"
+            class="h7"
+            size="sm"
+            maxlength="40"
+            trim
+            disabled
+          />
         </b-col>
         <!-- END - Inventory code -->
 
@@ -38,21 +36,19 @@
           lg="2"
           md="4"
         >
-          <b-form-group
-            label="Ngày"
-            label-class="h8"
-            label-for="form-input-counting-date"
-          >
-            <b-form-input
-              id="form-input-counting-date"
-              v-model="countingDate"
-              class="h9"
-              size="sm"
-              maxlength="20"
-              trim
-              disabled
-            />
-          </b-form-group>
+
+          <div class="h7">
+            Ngày
+          </div>
+          <b-form-input
+            id="form-input-counting-date"
+            v-model="countingDate"
+            class="h7"
+            size="sm"
+            maxlength="20"
+            trim
+            disabled
+          />
 
         </b-col>
         <!-- END - Date -->
@@ -61,18 +57,16 @@
           lg="2"
           md="4"
         >
-          <b-form-group
-            label-class="h8"
-            label="Kho"
-            label-for="form-input-warehouse-type"
-          >
-            <tree-select
-              v-model="warehouseType"
-              :options="warehouseTypes"
-              placeholder="Tất cả"
-              disabled
-            />
-          </b-form-group>
+          <div class="h7">
+            Kho
+          </div>
+          <tree-select
+            v-model="warehouseType"
+            :options="warehouseTypes"
+            class="h7"
+            placeholder="Tất cả"
+            disabled
+          />
         </b-col>
         <!-- END - Warehouse -->
 
@@ -85,7 +79,7 @@
         >
           <b-button
             id="form-button-get-inventory"
-            class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
+            class="shadow-brand-1 bg-brand-1 text-white h8 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
             variant="someThing"
             style="height: 30px;"
             @click="onClickGetInventoryStocksButton()"
@@ -104,7 +98,7 @@
         >
           <b-button
             id="form-button-import"
-            class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
+            class="shadow-brand-1 bg-brand-1 text-white h8 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
             variant="someThing"
             style="height: 30px;"
             @click="onClickImportButton()"
@@ -299,7 +293,7 @@
         <b-button-group class="float-right my-1">
           <b-button
             variant="someThing"
-            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white font-weight-bolder h8"
             :disabled="isCreated"
             @click="onClickSaveButton()"
           >
@@ -309,7 +303,7 @@
 
           <b-button
             variant="someThing"
-            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white font-weight-bolder h8"
             :disabled="!isCreated"
             @click="onClickExportButton()"
           >
@@ -318,7 +312,7 @@
           </b-button>
 
           <b-button
-            class="ml-1"
+            class="ml-1 rounded h8 btn-brand-1"
             @click="onClickCloseButton()"
           >
             <b-icon-x />
@@ -404,7 +398,7 @@
       <template #modal-footer>
         <b-button
           variant="someThing"
-          class="btn-brand-1 aligns-items-button-center"
+          class="btn-brand-1 aligns-items-button-center h8"
           size="sm"
           @click="onClickAgreeImportButton()"
         >
@@ -418,7 +412,7 @@
         </b-button>
         <b-button
           variant="secondary"
-          class="d-flex align-items-center"
+          class="d-flex align-items-center h8"
           size="sm"
           @click="isImportModalShow = !isImportModalShow"
         >
@@ -444,13 +438,13 @@
       <template #modal-footer>
         <b-button
           variant="someThing"
-          class="btn-brand-1 aligns-items-button-center"
+          class="btn-brand-1 aligns-items-button-center h8"
           @click="onClickAgreeButton()"
         >
           Đồng ý
         </b-button>
         <b-button
-          class="aligns-items-button-center"
+          class="aligns-items-button-center h8"
           @click="isCreateModalShow = !isCreateModalShow"
         >
           Đóng
@@ -468,13 +462,13 @@
       <template #modal-footer>
         <b-button
           variant="someThing"
-          class="btn-brand-1 aligns-items-button-center"
+          class="btn-brand-1 aligns-items-button-center h8"
           @click="onClickConfirmCloseButton()"
         >
           Đồng ý
         </b-button>
         <b-button
-          class="aligns-items-button-center"
+          class="aligns-items-button-center h8"
           @click="isModalCloseShow = !isModalCloseShow"
         >
           Đóng

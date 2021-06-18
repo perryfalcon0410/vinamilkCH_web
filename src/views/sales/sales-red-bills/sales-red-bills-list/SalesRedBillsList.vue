@@ -13,7 +13,7 @@
          sm="4"
        >
          <div
-           class="h8 mt-sm-1 mt-xl-0"
+           class="h7 mt-sm-1 mt-xl-0"
          >
            Khách hàng
          </div>
@@ -22,7 +22,7 @@
          >
            <b-form-input
              v-model.trim="customer"
-             class="h8"
+             class="h7"
              placeholder="Nhập Mã/SĐT/Tên khách hàng"
              @keyup.enter="onClickSearchButton"
            />
@@ -43,7 +43,7 @@
           sm="4"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Số hóa đơn
           </div>
@@ -52,7 +52,7 @@
           >
             <b-form-input
               v-model.trim="invoiceNumber"
-              class="h8"
+              class="h7"
               placeholder="Nhập số hóa đơn"
               @keyup.enter="onClickSearchButton"
             />
@@ -75,7 +75,7 @@
           sm="4"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Từ ngày
           </div>
@@ -94,7 +94,7 @@
             <vue-flat-pickr
               v-model="fromDate"
               :config="configFromDate"
-              class="form-control h8"
+              class="form-control h7"
               placeholder="Chọn ngày"
             />
           </b-row>
@@ -108,7 +108,7 @@
           sm="4"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Đến ngày
           </div>
@@ -127,7 +127,7 @@
             <vue-flat-pickr
               v-model="toDate"
               :config="configToDate"
-              class="form-control h8"
+              class="form-control h7"
               placeholder="Chọn ngày"
             />
           </b-row>
@@ -141,7 +141,7 @@
           sm="4"
         >
           <div
-            class="h8 text-white"
+            class="h7 text-white"
             onmousedown="return false;"
             style="cursor: context-menu;"
           >

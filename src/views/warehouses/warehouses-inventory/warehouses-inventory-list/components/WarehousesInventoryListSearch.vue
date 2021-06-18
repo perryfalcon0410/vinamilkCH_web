@@ -24,6 +24,7 @@
           <b-form-input
             id="form-input-stock-counting-code"
             v-model="stockCountingCode"
+            class="h7"
             maxlength="40"
             placeholder="Nhập mã kiểm kê"
             trim
@@ -127,6 +128,7 @@
           :options="warehouseTypes"
           :searchable="false"
           placeholder="Tất cả"
+          class="h7"
           no-options-text="Không có dữ liệu"
         />
       </b-col>

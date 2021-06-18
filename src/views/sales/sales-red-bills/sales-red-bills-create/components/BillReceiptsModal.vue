@@ -18,12 +18,12 @@
           lg="3"
           sm="4"
         >
-          <div class="h8 mt-sm-1 mt-xl-0">
+          <div class="h7 mt-sm-1 mt-xl-0">
             {{ 'Khách hàng' }}
           </div>
           <b-form-input
             v-model="searchOptions.customerKeywords"
-            class="h8 text-brand-3"
+            class="h7 text-brand-3"
             placeholder="Nhập khách hàng"
             trim
           />
@@ -34,13 +34,13 @@
           lg="3"
           sm="4"
         >
-          <div class="h8 mt-sm-1 mt-xl-0">
+          <div class="h7 mt-sm-1 mt-xl-0">
             {{ 'Số hóa đơn' }}
           </div>
           <b-form-input
             v-model="searchOptions.invoiceNumberKeywords"
             trim
-            class="h8 text-brand-3"
+            class="h7 text-brand-3"
             placeholder="Nhập số hóa đơn"
           />
         </b-col>
@@ -52,7 +52,7 @@
           sm="4"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Từ ngày
           </div>
@@ -71,7 +71,7 @@
             <vue-flat-pickr
               v-model="fromDate"
               :config="configFromDate"
-              class="form-control h8"
+              class="form-control h7"
               placeholder="Chọn ngày"
             />
           </b-row>
@@ -85,7 +85,7 @@
           sm="4"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Đến ngày
           </div>
@@ -104,7 +104,7 @@
             <vue-flat-pickr
               v-model="toDate"
               :config="configToDate"
-              class="form-control h8"
+              class="form-control h7"
               placeholder="Chọn ngày"
             />
           </b-row>
@@ -117,7 +117,7 @@
           sm="4"
         >
           <div
-            class="h8 text-white"
+            class="h7 text-white"
             onmousedown="return false;"
             style="cursor: context-menu;"
           >
@@ -125,11 +125,11 @@
           </div>
           <b-button
             id="form-button-search"
-            class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
             variant="someThing"
             @click="onClickSearchButton()"
           >
-            <b-icon-search class="mr-1" />
+            <b-icon-search class="mr-50" />
             Tìm kiếm
           </b-button>
         </b-col>
@@ -356,7 +356,7 @@
     <template #modal-footer>
       <b-button
         variant="someThing"
-        class="btn-brand-1 aligns-items-button-center"
+        class="btn-brand-1 aligns-items-button-center h8"
         :disabled="isCheckValue"
         @click="onClickChooseButton()"
       >

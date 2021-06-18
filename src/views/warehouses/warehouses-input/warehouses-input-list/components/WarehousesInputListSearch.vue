@@ -25,6 +25,7 @@
             id="form-input-trans-code"
             v-model="transCode"
             maxlength="40"
+            class="h7"
             placeholder="Nhập mã nhập hàng"
             trim
           />
@@ -60,6 +61,7 @@
             id="form-input-bill-number"
             v-model="billNumber"
             maxlength="40"
+            class="h7"
             placeholder="Nhập số hóa đơn"
             trim
           />
@@ -162,6 +164,7 @@
           :options="inputTypeOptions"
           :searchable="false"
           placeholder="Tất cả"
+          class="h7"
           no-options-text="Không có dữ liệu"
         />
       </b-col>

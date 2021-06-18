@@ -6,7 +6,7 @@
     @keyup.enter="onClickSearchButton"
   >
     <v-card-actions
-      title="điều kiện"
+      title="Điều kiện"
     >
       <!-- START from date -->
       <b-col
@@ -15,7 +15,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Từ ngày
         </div>
@@ -34,7 +34,7 @@
           <vue-flat-pickr
             v-model="fromDate"
             :config="configFromDate"
-            class="form-control h8"
+            class="form-control h7"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -48,7 +48,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Đến ngày
         </div>
@@ -67,7 +67,7 @@
           <vue-flat-pickr
             v-model="toDate"
             :config="configToDate"
-            class="form-control h8"
+            class="form-control h7"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -81,7 +81,7 @@
         md="3"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Nhóm khách hàng
         </div>
@@ -103,7 +103,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Mã khách hàng
         </div>
@@ -112,7 +112,7 @@
         >
           <b-form-input
             v-model="customerCode"
-            class="h8 text-brand-3"
+            class="h7 text-brand-3"
             placeholder="Nhập mã khách hàng"
             @keyup.enter="onClickSearchButton"
           />
@@ -136,7 +136,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Số điện thoại
         </div>
@@ -145,7 +145,7 @@
         >
           <b-form-input
             v-model="phoneNumber"
-            class="h8 text-brand-3"
+            class="h7 text-brand-3"
             placeholder="Nhập SĐT khách hàng"
             @keyup.enter="onClickSearchButton"
           />
@@ -169,7 +169,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Số lượng
         </div>
@@ -180,12 +180,12 @@
             <b-input-group>
               <b-form-input
                 v-model="min"
-                class="h8 text-brand-3"
+                class="h7 text-brand-3"
                 @keyup.enter="onClickSearchButton"
               />
               <b-form-input
                 v-model="max"
-                class="h8 text-brand-3"
+                class="h7 text-brand-3"
                 @keyup.enter="onClickSearchButton"
               />
             </b-input-group>
@@ -200,12 +200,12 @@
         md="3"
       >
         <div
-          class="h8 text-white"
+          class="h7 text-white"
         >
           Tìm kiếm
         </div>
         <b-button
-          class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+          class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
           variant="someThing"
           @click="onClickSearchButton()"
         >

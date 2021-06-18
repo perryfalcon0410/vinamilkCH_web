@@ -267,7 +267,7 @@
             <b-button
               variant="someThing"
               :disabled="invalid"
-              class="btn-brand-1 align-items-button-center"
+              class="btn-brand-1 align-items-button-center h8"
               @click="onSubmit"
             >
               <b-icon-arrow90deg-left
@@ -278,10 +278,13 @@
             </b-button>
 
             <b-button
-              class="align-items-button-center ml-1"
+              class="align-items-button-center ml-1 h8"
               @click="onCloseButtonClick"
             >
-              <b-icon-x scale="1.5" />
+              <b-icon-x
+                scale="1.5"
+                class="mr-50"
+              />
               ĐÓNG
             </b-button>
           </b-row>

@@ -23,7 +23,7 @@
         </strong>
         <b-button-group>
           <b-button
-            class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+            class="shadow-brand-1 ml-1 h8 rounded bg-brand-1 text-white font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="exportReport"
           >

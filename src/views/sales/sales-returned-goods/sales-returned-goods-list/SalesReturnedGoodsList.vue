@@ -21,7 +21,7 @@
         </strong>
         <b-button-group>
           <b-button
-            class="btn-brand-1 h9 align-items-button-center"
+            class="btn-brand-1 h8 align-items-button-center"
             variant="someThing"
             @click="showSalesReturnedGoodsCreate"
           >
