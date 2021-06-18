@@ -65,7 +65,7 @@
                 colspan="10"
               >
                 <strong class="mx-1">
-                  Số HĐ: {{ item.response.redInvoiceNo }} - Ngày HĐ: {{ $formatISOtoVNI(item.response.orderDate) }} - Số PO: {{ item.response.poNumber }} - Số nội bộ: {{ item.response.internalNumber }}- Mã nhập hàng: {{ item.response.transCode }}
+                  Số HĐ: {{ item.response.redInvoiceNo }} - Ngày HĐ: {{ $formatISOtoVNI(item.response.orderDate) }} - Số PO: {{ item.response.poNumber }} - Số nội bộ: {{ item.response.internalNumber }} - Mã nhập hàng: {{ item.response.transCode }}
                 </strong>
                 <b-row
                   class="mx-0"
@@ -165,16 +165,30 @@
               v-for="(product,stt) in reportData[index].info"
               :key="product.id"
             >
-              <td> {{ stt + 1 }} </td>
+              <td class="text-right pr-1">
+                {{ stt + 1 }}
+              </td>
               <td> {{ product.productCode }} </td>
               <td> {{ product.productName }} </td>
               <td> {{ product.unit }} </td>
-              <td> {{ $formatNumberToLocale(product.quantity) }} </td>
-              <td> {{ $formatNumberToLocale(product.inputPrice) }} </td>
-              <td> {{ $formatNumberToLocale(product.totalInput) }} </td>
-              <td> {{ $formatNumberToLocale(product.outputPrice) }} </td>
-              <td> {{ $formatNumberToLocale(product.totalOutput) }} </td>
-              <td> {{ $formatNumberToLocale(product.priceChange) }} </td>
+              <td class="text-right">
+                {{ $formatNumberToLocale(product.quantity) }}
+              </td>
+              <td class="text-right">
+                {{ $formatNumberToLocale(product.inputPrice) }}
+              </td>
+              <td class="text-right">
+                {{ $formatNumberToLocale(product.totalInput) }}
+              </td>
+              <td class="text-right">
+                {{ $formatNumberToLocale(product.outputPrice) }}
+              </td>
+              <td class="text-right">
+                {{ $formatNumberToLocale(product.totalOutput) }}
+              </td>
+              <td class="text-right">
+                {{ $formatNumberToLocale(product.priceChange) }}
+              </td>
             </tr>
           </tbody>
         <!-- END - Body -->
@@ -285,7 +299,7 @@ export default {
   },
 
   updated() {
-    window.print()
+    // window.print()
   },
 }
 </script>

@@ -5,6 +5,7 @@
   >
     <!-- START - Search -->
     <list-search
+      :per-page-size="paginationData.size"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton($event)"
     />
@@ -187,6 +188,7 @@ import {
   // GETTERS
   REPORT_EXCHANGE_DAMAGED_GOODS_GETTER,
   // ACTIONS
+  GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
   EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
 } from '../store-module/type'
 
@@ -349,6 +351,7 @@ export default {
       this.EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(this.searchData)
     },
     ...mapActions(REPORT_EXCHANGE_DAMAGED_GOODS, [
+      GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
       EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION,
     ]),
     // pagnigation funcs
@@ -360,7 +363,7 @@ export default {
       this.searchData = { ...event }
     },
     onPaginationChange() {
-      this.GET_REPORT_WAREHOUSES_INVENTORY_ACTION(this.paginationData)
+      this.GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(this.paginationData)
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
@@ -373,6 +376,7 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
+      this.paginationData.size = params.currentPerPage
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },

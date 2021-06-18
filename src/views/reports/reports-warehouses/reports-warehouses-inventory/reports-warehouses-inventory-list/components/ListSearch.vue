@@ -162,6 +162,12 @@ export default {
     ValidationProvider,
     ValidationObserver,
   },
+  props: {
+    perPageSize: {
+      type: Number,
+      default: null,
+    },
+  },
   data() {
     return {
       isShowFindProductModal: false,
@@ -206,7 +212,7 @@ export default {
         ...this.decentralization,
       }
       this.updateSearchData(searchData)
-      this.GET_REPORT_WAREHOUSES_INVENTORY_ACTION(searchData)
+      this.GET_REPORT_WAREHOUSES_INVENTORY_ACTION({ ...searchData, size: this.perPageSize })
     },
     onClickSearchButton() {
       this.onSearch()

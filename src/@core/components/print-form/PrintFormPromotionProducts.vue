@@ -11,19 +11,19 @@
       align-v="center"
     >
       <div class="d-flex flex-column">
-        <strong style="font-size: 17px"> CH GTSP Hải Dương </strong>
+        <strong style="font-size: 17px"> {{ shopInfo.shopName }} </strong>
         <p class="mt-1">
-          Add: 8 Hoàng Hoa Thám - Hải Dương
+          Add: {{ shopInfo.address }}
         </p>
-        <p>Tel: (84.320) 3 838 399</p>
+        <p>Tel: {{ shopInfo.phone }}</p>
       </div>
 
       <div class="d-flex flex-column align-items-center">
         <strong style="font-size: 30px"> Hàng khuyến mãi </strong>
         <p class="my-1">
-          Từ ngày {{ commonInfo.fromDate }} đến {{ commonInfo.toDate }}
+          Từ ngày {{ $formatISOtoVNI(commonInfo.fromDate) }} đến {{ $formatISOtoVNI(commonInfo.toDate) }}
         </p>
-        <p>Ngày in : 23/04/2021 - 11:33:28AM</p>
+        <p>Ngày in : {{ $moment(commonInfo.reportDate).locale('en').format('DD/MM/YYYY - HH:mm:ss A') }}</p>
       </div>
 
       <!-- START - Invisible element to align title -->
@@ -31,7 +31,7 @@
         class="d-flex flex-column"
         style="opacity: 0"
       >
-        <strong style="font-size: 17px"> CH GTSP Hải Dương </strong>
+        <strong style="font-size: 17px"> {{ shopInfo.shopName }} </strong>
       </div>
       <!-- END - Invisible element to align title -->
     </b-row>
@@ -44,15 +44,29 @@
       align-v="end"
       style="background-color: gray"
     >
-      <div>Tổng Cộng: <strong>4</strong></div>
-
-      <div><strong>81.190</strong></div>
-
+      <b-col />
+      <b-col class="text-right">
+        <div>
+          <span class="pr-5">Tổng Cộng: </span><strong style="margin-right: 10px">{{ $formatNumberToLocale(commonInfo.totalQuantity) }}</strong>
+        </div>
+      </b-col>
+      <b-col
+        class="text-right"
+        sm="1"
+        style="padding-right: 5px"
+      >
+        <div><strong>{{ $formatNumberToLocale(commonInfo.totalPrice) }}</strong></div>
+        <b-col />
+      </b-col>
     </b-row>
     <!-- END - Total section -->
 
     <!-- START - Table 1 -->
-    <b-col class="px-0">
+    <b-col
+      v-for="(item,index) in reportData"
+      :key="index"
+      class="px-0 pb-1"
+    >
       <table>
         <!-- START - Header -->
         <thead>
@@ -65,14 +79,24 @@
                 class="mx-0"
                 align-h="around"
               >
-                <div><i>Ngành hàng:</i> <strong class="pl-3">A</strong>
-                </div>
-                <div><i class="pr-5">Tổng Cộng:</i>
-                  <strong>1</strong>
-                </div>
-                <div>
-                  <strong>20,041</strong>
-                </div>
+                <b-col>
+                  <div><i>Ngành hàng:</i> <strong class="pl-3">{{ item.productCatName }}</strong>
+                  </div>
+                </b-col>
+                <b-col class="text-right">
+                  <div><i class="pr-5">Tổng Cộng:</i>
+                    <strong class="mr-50">{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
+                  </div>
+                </b-col>
+                <b-col
+                  class="text-right"
+                  sm="1"
+                  style="padding-right: 2px"
+                >
+                  <div>
+                    <strong>{{ $formatNumberToLocale(item.totalPrice) }}</strong>
+                  </div>
+                </b-col>
               </b-row>
             </th>
           </tr>
@@ -133,27 +157,27 @@
 
         <!-- START - Body -->
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>02BC10</td>
-            <td>SBot Dielac Canxi HG 400g</td>
-            <td>Hộp</td>
-            <td>10</td>
-            <td />
-            <td />
-            <td />
-            <td>43,200</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>02BC10</td>
-            <td>SBot Dielac Canxi HG 400g</td>
-            <td>Hộp</td>
-            <td>10</td>
-            <td />
-            <td />
-            <td />
-            <td>43,200</td>
+          <tr
+            v-for="(product,stt) in reportData[index].productCats"
+            :key="product.id"
+          >
+            <td class="text-right pr-1">
+              {{ stt + 1 }}
+            </td>
+            <td> {{ $moment(product.orderDate).locale('en').format('DD/MM/YYYY HH:mm:ss A') }} </td>
+            <td> {{ product.orderNumber }} </td>
+            <td> {{ product.productCode }} </td>
+            <td> {{ product.productName }} </td>
+            <td> {{ product.uom }} </td>
+            <td class="text-right">
+              {{ product.quantity }}
+            </td>
+            <td class="text-right">
+              {{ $formatNumberToLocale(product.price) }}
+            </td>
+            <td class="text-right">
+              {{ $formatNumberToLocale(product.totalPrice) }}
+            </td>
           </tr>
         </tbody>
         <!-- END - Body -->
@@ -191,10 +215,23 @@ export default {
   computed: {
     ...mapGetters(REPORT_WAREHOUSES_PROMOTIONS, [PRINT_REPORT_PROMOTION_GETTER]),
     commonInfo() {
-      if (PRINT_REPORT_PROMOTION_GETTER) {
-        return PRINT_REPORT_PROMOTION_GETTER
+      if (this.PRINT_REPORT_PROMOTION_GETTER) {
+        return this.PRINT_REPORT_PROMOTION_GETTER
       }
       return {}
+    },
+    shopInfo() {
+      if (this.PRINT_REPORT_PROMOTION_GETTER.shop) {
+        return this.PRINT_REPORT_PROMOTION_GETTER.shop
+      }
+      return {}
+    },
+
+    reportData() {
+      if (this.PRINT_REPORT_PROMOTION_GETTER.productCats) {
+        return this.PRINT_REPORT_PROMOTION_GETTER.productCats
+      }
+      return []
     },
   },
   updated() {

@@ -130,7 +130,7 @@
       <div class="bg-white rounded shadow rounded mt-1 p-1">
         <div class="pt-0">
           <strong class="text-blue-vinamilk pt-2">
-            Tổng cộng: {{ $formatNumberToLocale(totalProductFound) }} sản phẩm
+            Tổng cộng: {{ $formatNumberToLocale(selectedProductRow.length) }} sản phẩm
           </strong>
         </div>
         <vue-good-table
@@ -314,7 +314,6 @@ export default {
         page: this.pageNumber,
         sort: null,
       },
-      totalProductFound: 0,
       // searchOptions
       searchOptions: {
         productCodes: '',
@@ -379,7 +378,6 @@ export default {
   watch: {
     getProducts() {
       this.products = [...this.getProducts]
-      this.totalProductFound = this.products.length
     },
     pageNumber() {
       this.onPaginationChange()

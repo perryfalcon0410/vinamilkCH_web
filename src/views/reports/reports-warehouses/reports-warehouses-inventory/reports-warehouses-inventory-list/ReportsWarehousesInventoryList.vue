@@ -4,6 +4,7 @@
     class="d-flex flex-column"
   >
     <list-search
+      :per-page-size="paginationData.size"
       @onClickSearchButton="onClickSearchButton($event)"
       @updateSearchData="paginationData = {
         ...paginationData,
@@ -201,6 +202,7 @@ import {
   REPORT_WAREHOUSES_INVENTORY_GETTER,
   REPORT_WAREHOUSES_INVENTORY_INFO_GETTER,
   REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER,
+  GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
   EXPORT_REPORT_INVENTORIES_ACTION,
 } from '../store-module/type'
 
@@ -405,6 +407,7 @@ export default {
       })
     },
     ...mapActions(REPORT_WAREHOUSES_INVENTORY, [
+      GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
       EXPORT_REPORT_INVENTORIES_ACTION,
     ]),
     // pagnigation funcs
@@ -422,6 +425,7 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
+      this.paginationData.size = params.currentPerPage
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },

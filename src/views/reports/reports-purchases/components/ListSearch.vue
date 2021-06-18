@@ -145,6 +145,12 @@ export default {
     ValidationProvider,
     ValidationObserver,
   },
+  props: {
+    perPageSize: {
+      type: Number,
+      default: null,
+    },
+  },
   data() {
     return {
       dateFormatVNI,
@@ -207,7 +213,7 @@ export default {
         ctrlId: this.ctrlId,
       }
       this.updateSearchData(searchData)
-      this.GET_REPORT_INPUT_RECEIPT_DETAILS_ACTION(searchData)
+      this.GET_REPORT_INPUT_RECEIPT_DETAILS_ACTION({ ...searchData, size: this.perPageSize })
     },
 
     onClickSearchButton() {

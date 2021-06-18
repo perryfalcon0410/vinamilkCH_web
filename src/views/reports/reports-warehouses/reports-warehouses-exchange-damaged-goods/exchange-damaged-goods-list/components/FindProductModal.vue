@@ -133,7 +133,7 @@
       <div class="bg-white rounded shadow rounded mt-1 p-1">
         <div class="pt-0">
           <strong class="text-blue-vinamilk pt-2">
-            Tổng cộng: {{ $formatNumberToLocale(totalProductFound) }} sản phẩm
+            Tổng cộng: {{ $formatNumberToLocale(selectedProductRow.length) }} sản phẩm
           </strong>
         </div>
 
@@ -320,7 +320,6 @@ export default {
         page: this.pageNumber,
         sort: null,
       },
-      totalProductFound: 0,
       // searchOptions
       searchOptions: {
         productCodes: '',
@@ -385,7 +384,6 @@ export default {
   watch: {
     getProducts() {
       this.products = [...this.getProducts]
-      this.totalProductFound = this.products.length
     },
     pageNumber() {
       this.onPaginationChange()
@@ -461,6 +459,7 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
+      this.paginationData.size = params.currentPerPage
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },
@@ -469,6 +468,7 @@ export default {
         ...this.decentralization,
         ...this.searchOptions,
         catId: this.productCategorySelected,
+        size: this.paginationData.size,
       })
       this.pageNumber = 1
     },

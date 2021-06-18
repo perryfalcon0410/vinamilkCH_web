@@ -1,204 +1,228 @@
 <template>
-  <b-form
-    @keyup.enter="onClickSearchButton"
+  <validation-observer
+    ref="formContainer"
+    v-slot="{invalid}"
+    slim
   >
-    <v-card-actions
-      title="Điều kiện"
+    <b-form
+      @keyup.enter="onClickSearchButton"
     >
-      <!-- START - Bill Number -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
+      <v-card-actions
+        title="Điều kiện"
       >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
+        <!-- START - Bill Number -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          Số biên bản
-        </div>
-        <b-input-group
-          class="input-group-merge"
-        >
-          <b-form-input
-            v-model="transCode"
-            class="h8 text-brand-3"
-            @keyup.enter="onClickSearchButton"
-          />
-          <b-input-group-append
-            is-text
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
           >
-            <b-icon-x
-              v-show="transCode"
-              class="cursor-pointer text-gray"
-              @click="transCode = null"
+            Số biên bản
+          </div>
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model="transCode"
+              class="h8 text-brand-3"
+              @keyup.enter="onClickSearchButton"
             />
-          </b-input-group-append>
-        </b-input-group>
-      </b-col>
-      <!-- END - Bill Number -->
-
-      <!-- START - Date From -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Từ ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-          @keypress="$onlyDateInput"
-        >
-          <b-icon-x
-            v-show="fromDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            @click="fromDate = null"
-          />
-          <vue-flat-pickr
-            v-model="fromDate"
-            :config="configFromDate"
-            class="form-control h8"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-      </b-col>
-      <!-- END - Date From -->
-
-      <!-- START - Date To -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Đến ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-          @keypress="$onlyDateInput"
-        >
-          <b-icon-x
-            v-show="toDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            @click="toDate = null"
-          />
-          <vue-flat-pickr
-            v-model="toDate"
-            :config="configToDate"
-            class="form-control h8"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-
-      </b-col>
-      <!-- END - Date To -->
-
-      <b-col
-        xl
-        md="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Lý do
-        </div>
-        <tree-select
-          v-model="reasonDisplayed"
-          title="Lý do"
-          :options="reasonOptions"
-          :searchable="false"
-          placeholder="Chọn lý do đổi trả hàng"
-          no-options-text="Không có dữ liệu"
-          size="sm"
-          @select="select"
-        />
-      </b-col>
-      <b-col
-        xl
-        md="3"
-        sm="4"
-      >
-        <div class="h8 mt-sm-1 mt-xl-0">
-          Sản phẩm
-        </div>
-        <b-input-group
-          class="input-group-merge"
-          size="md"
-        >
-          <b-form-input
-            v-model="productCodes"
-            class="h8 text-brand-3"
-            placeholder="Mã sản phẩm"
-            @keyup.enter="onClickSearchButton"
-          />
-          <b-input-group-append
-            is-text
-          >
-            <!-- Icon-- Delete-text -->
-            <b-icon-x
-              v-show="productCodes"
+            <b-input-group-append
               is-text
-              class="cursor-pointer text-gray"
-              @click="productCodes = null"
-            />
-            <b-icon-three-dots-vertical
-              @click="showFindProductModal"
-            />
-          </b-input-group-append>
-        </b-input-group>
-      </b-col>
-      <!-- START - Search button -->
-      <b-col
-        xl
-        sm="4"
-        md="3"
-        class="h-25"
-      >
-        <div
-          class="h8 text-white"
+            >
+              <b-icon-x
+                v-show="transCode"
+                class="cursor-pointer text-gray"
+                @click="transCode = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+        <!-- END - Bill Number -->
+
+        <!-- START - Date From -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          Tìm kiếm
-        </div>
-        <b-button
-          id="form-button-search"
-          class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
-          variant="someThing"
-          size="sm"
-          style="height: 30px;"
-          @click="onClickSearchButton"
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="required"
+            name="Từ ngày"
+          >
+            <div
+              class="h8 mt-sm-1 mt-xl-0"
+            >
+              Từ ngày <span class="text-danger">*</span>
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+            >
+              <b-icon-x
+                v-show="fromDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                @click="fromDate = null"
+              />
+              <vue-flat-pickr
+                v-model="fromDate"
+                :state="touched ? passed : null"
+                :config="configFromDate"
+                class="form-control h8"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+        </b-col>
+        <!-- END - Date From -->
+
+        <!-- START - Date To -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          <b-icon-search class="mr-1" />
-          Tìm kiếm
-        </b-button>
-      </b-col>
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="required"
+            name="Đến ngày"
+          >
+            <div
+              class="h8 mt-sm-1 mt-xl-0"
+            >
+              Đến ngày <span class="text-danger">*</span>
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+            >
+              <b-icon-x
+                v-show="toDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                @click="toDate = null"
+              />
+              <vue-flat-pickr
+                v-model="toDate"
+                :config="configToDate"
+                :state="touched ? passed : null"
+                class="form-control h8"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+        </b-col>
+        <!-- END - Date To -->
+
+        <b-col
+          xl
+          md="3"
+          sm="4"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Lý do
+          </div>
+          <tree-select
+            v-model="reasonDisplayed"
+            title="Lý do"
+            :options="reasonOptions"
+            :searchable="false"
+            placeholder="Chọn lý do đổi trả hàng"
+            no-options-text="Không có dữ liệu"
+            size="sm"
+            @select="select"
+          />
+        </b-col>
+        <b-col
+          xl
+          md="3"
+          sm="4"
+        >
+          <div class="h8 mt-sm-1 mt-xl-0">
+            Sản phẩm
+          </div>
+          <b-input-group
+            class="input-group-merge"
+            size="md"
+          >
+            <b-form-input
+              v-model="productCodes"
+              class="h8 text-brand-3"
+              placeholder="Mã sản phẩm"
+              @keyup.enter="onClickSearchButton"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <!-- Icon-- Delete-text -->
+              <b-icon-x
+                v-show="productCodes"
+                is-text
+                class="cursor-pointer text-gray"
+                @click="productCodes = null"
+              />
+              <b-icon-three-dots-vertical
+                @click="showFindProductModal"
+              />
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+        <!-- START - Search button -->
+        <b-col
+          xl
+          sm="4"
+          md="3"
+          class="h-25"
+        >
+          <div
+            class="h8 text-white"
+          >
+            Tìm kiếm
+          </div>
+          <b-button
+            id="form-button-search"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
+            variant="someThing"
+            :disabled="invalid"
+            style="height: 30px;"
+            @click="onClickSearchButton"
+          >
+            <b-icon-search class="mr-1" />
+            Tìm kiếm
+          </b-button>
+        </b-col>
       <!-- END - Search button -->
-    </v-card-actions>
-    <find-product-modal
-      :visible="isShowFindProductModal"
-      @close="isShowFindProductModal = false"
-      @onSaveClick="onSaveClick($event)"
-    />
-  </b-form>
+      </v-card-actions>
+      <find-product-modal
+        :visible="isShowFindProductModal"
+        @close="isShowFindProductModal = false"
+        @onSaveClick="onSaveClick($event)"
+      />
+    </b-form>
+  </validation-observer>
 </template>
 
 <script>
+import {
+  ValidationProvider,
+  ValidationObserver,
+} from 'vee-validate'
 import VCardActions from '@/@core/components/v-card-actions/VCardActions.vue'
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import toasts from '@core/utils/toasts/toasts'
 import {
   mapActions,
   mapGetters,
@@ -216,6 +240,14 @@ export default {
   components: {
     FindProductModal,
     VCardActions,
+    ValidationProvider,
+    ValidationObserver,
+  },
+  props: {
+    perPageSize: {
+      type: Number,
+      default: null,
+    },
   },
   data() {
     return {
@@ -303,12 +335,8 @@ export default {
         reason: this.reasonSelected,
         ...this.decentralization,
       }
-      if (this.searchData.fromDate !== null && this.searchData.toDate !== null) {
-        this.updateSearchData(this.searchData)
-        this.GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(this.searchData)
-      } else {
-        toasts.error('Ngày không được để trống')
-      }
+      this.updateSearchData(this.searchData)
+      this.GET_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION({ ...this.searchData, size: this.perPageSize })
     },
     onClickSearchButton() {
       this.onSearch()

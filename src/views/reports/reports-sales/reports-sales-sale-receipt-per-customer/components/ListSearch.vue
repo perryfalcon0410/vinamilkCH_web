@@ -1,230 +1,258 @@
 <template>
-
-  <!-- START - Search -->
-  <b-form
-    class="d-print-none"
-    @keyup.enter="onClickSearchButton"
+  <validation-observer
+    ref="formContainer"
+    v-slot="{invalid}"
+    slim
   >
-    <v-card-actions
-      title="điều kiện"
+    <!-- START - Search -->
+    <b-form
+      class="d-print-none"
     >
-      <!-- START from date -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
+      <v-card-actions
+        title="điều kiện"
       >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
+        <!-- START from date -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          Từ ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-          @keypress="$onlyDateInput"
-        >
-          <b-icon-x
-            v-show="fromDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            data-clear
-          />
-          <vue-flat-pickr
-            v-model="fromDate"
-            :config="configFromDate"
-            class="form-control h8"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-      </b-col>
-      <!-- END from date -->
-
-      <!-- START - Date To -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Đến ngày
-        </div>
-        <b-row
-          class="v-flat-pickr-group mx-0"
-          align-v="center"
-          @keypress="$onlyDateInput"
-        >
-          <b-icon-x
-            v-show="toDate"
-            style="position: absolute; right: 15px"
-            class="cursor-pointer text-gray"
-            scale="1.3"
-            data-clear
-          />
-          <vue-flat-pickr
-            v-model="toDate"
-            :config="configToDate"
-            class="form-control h8"
-            placeholder="Chọn ngày"
-          />
-        </b-row>
-      </b-col>
-      <!-- END - Date To -->
-
-      <!-- START - Customer group -->
-      <b-col
-        xl
-        sm="4"
-        md="3"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Nhóm khách hàng
-        </div>
-        <tree-select
-          v-model="customerTypesSelected"
-          :options="customerTypeOptions"
-          title="Nhóm khách hàng"
-          :searchable="false"
-          no-options-text="Không có dữ liệu"
-        />
-      </b-col>
-      <!-- END - Customer group -->
-
-      <!-- START - Customer Code-->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Mã khách hàng
-        </div>
-        <b-input-group
-          class="input-group-merge"
-        >
-          <b-form-input
-            v-model="customerCode"
-            class="h8 text-brand-3"
-            placeholder="Nhập mã khách hàng"
-            @keyup.enter="onClickSearchButton"
-          />
-          <b-input-group-append
-            is-text
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="required"
+            name="Từ ngày"
           >
-            <b-icon-x
-              v-show="customerCode"
-              class="cursor-pointer text-gray"
-              @click="customerCode = null"
-            />
-          </b-input-group-append>
-        </b-input-group>
-      </b-col>
-      <!-- END - Customer Code -->
+            <div
+              class="h8 mt-sm-1 mt-xl-0"
+            >
+              Từ ngày
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+            >
+              <b-icon-x
+                v-show="fromDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
+              />
+              <vue-flat-pickr
+                v-model="fromDate"
+                :state="touched ? passed : null"
+                :config="configFromDate"
+                class="form-control h8"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+        </b-col>
+        <!-- END from date -->
 
-      <!-- START - Phone number-->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
+        <!-- START - Date To -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          Số điện thoại
-        </div>
-        <b-input-group
-          class="input-group-merge"
-        >
-          <b-form-input
-            v-model="phoneNumber"
-            class="h8 text-brand-3"
-            placeholder="Nhập SĐT khách hàng"
-            @keyup.enter="onClickSearchButton"
-          />
-          <b-input-group-append
-            is-text
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="required"
+            name="Đến ngày"
           >
-            <b-icon-x
-              v-show="phoneNumber"
-              class="cursor-pointer text-gray"
-              @click="phoneNumber = null"
+            <div
+              class="h8 mt-sm-1 mt-xl-0"
+            >
+              Đến ngày
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+            >
+              <b-icon-x
+                v-show="toDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
+              />
+              <vue-flat-pickr
+                v-model="toDate"
+                :config="configToDate"
+                :state="touched ? passed : null"
+                class="form-control h8"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+        </b-col>
+        <!-- END - Date To -->
+
+        <!-- START - Customer group -->
+        <b-col
+          xl
+          sm="4"
+          md="3"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Nhóm khách hàng
+          </div>
+          <tree-select
+            v-model="customerTypesSelected"
+            :options="customerTypeOptions"
+            title="Nhóm khách hàng"
+            :searchable="false"
+            no-options-text="Không có dữ liệu"
+          />
+        </b-col>
+        <!-- END - Customer group -->
+
+        <!-- START - Customer Code-->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Mã khách hàng
+          </div>
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model="customerCode"
+              class="h8 text-brand-3"
+              placeholder="Nhập mã khách hàng"
+              @keyup.enter="onClickSearchButton"
             />
-          </b-input-group-append>
-        </b-input-group>
-      </b-col>
-      <!-- END - Phone number -->
-
-      <!-- START -Income-->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-      >
-        <div
-          class="h8 mt-sm-1 mt-xl-0"
-        >
-          Doanh số
-        </div>
-        <b-row
-          no-gutters
-        >
-          <b-form-group>
-            <b-input-group>
-              <b-form-input
-                v-model="min"
-                class="h8 text-brand-3"
-                @keyup.enter="onClickSearchButton"
-                @keypress="$onlyNumberInput"
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="customerCode"
+                class="cursor-pointer text-gray"
+                @click="customerCode = null"
               />
-              <b-form-input
-                v-model="max"
-                class="h8 text-brand-3"
-                @keyup.enter="onClickSearchButton"
-                @keypress="$onlyNumberInput"
-              />
-            </b-input-group>
-          </b-form-group>
-        </b-row>
-      </b-col>
-      <!-- END - Income -->
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+        <!-- END - Customer Code -->
 
-      <!-- START - Search button -->
-      <b-col
-        xl
-        sm="4"
-        md="3"
-      >
-        <div
-          class="h8 text-white"
+        <!-- START - Phone number-->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          Tìm kiếm
-        </div>
-        <b-button
-          class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
-          variant="someThing"
-          @click="onClickSearchButton()"
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Số điện thoại
+          </div>
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model="phoneNumber"
+              class="h8 text-brand-3"
+              placeholder="Nhập SĐT khách hàng"
+              @keyup.enter="onClickSearchButton"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="phoneNumber"
+                class="cursor-pointer text-gray"
+                @click="phoneNumber = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+        <!-- END - Phone number -->
+
+        <!-- START -Income-->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
         >
-          <b-icon-search class="mr-50" />
-          Tìm kiếm
-        </b-button>
-      </b-col>
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Doanh số
+          </div>
+          <b-row
+            no-gutters
+          >
+            <b-form-group>
+              <b-input-group>
+                <b-form-input
+                  v-model="min"
+                  class="h8 text-brand-3"
+                  @keyup.enter="onClickSearchButton"
+                  @keypress="$onlyNumberInput"
+                />
+                <b-form-input
+                  v-model="max"
+                  class="h8 text-brand-3"
+                  @keyup.enter="onClickSearchButton"
+                  @keypress="$onlyNumberInput"
+                />
+              </b-input-group>
+            </b-form-group>
+          </b-row>
+        </b-col>
+        <!-- END - Income -->
+
+        <!-- START - Search button -->
+        <b-col
+          xl
+          sm="4"
+          md="3"
+        >
+          <div
+            class="h8 text-white"
+          >
+            Tìm kiếm
+          </div>
+          <b-button
+            class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+            variant="someThing"
+            :disabled="invalid"
+            @click="onClickSearchButton()"
+          >
+            <b-icon-search class="mr-50" />
+            Tìm kiếm
+          </b-button>
+        </b-col>
       <!-- END - Search button -->
-    </v-card-actions>
-  </b-form>
+      </v-card-actions>
+    </b-form>
+  </validation-observer>
 </template>
 
 <script>
 import {
+  ValidationProvider,
+  ValidationObserver,
+} from 'vee-validate'
+import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import {
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
 import { reverseVniDate } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import toasts from '@core/utils/toasts/toasts'
@@ -240,6 +268,14 @@ import {
 export default {
   components: {
     VCardActions,
+    ValidationProvider,
+    ValidationObserver,
+  },
+  props: {
+    perPageSize: {
+      type: Number,
+      default: null,
+    },
   },
   data() {
     return {
@@ -247,6 +283,7 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
+      dateFormatVNI,
       // search
       customerTypesSelected: null,
       min: null,
@@ -318,15 +355,11 @@ export default {
         phoneNumber: this.phoneNumber?.trim(),
         ...this.decentralization,
       }
-      if (searchData.fromDate !== null && searchData.toDate !== null) {
-        if (searchData.toAmount >= searchData.fromAmount) {
-          this.updateSearchData(searchData)
-          this.GET_SALE_RECEIPTS_ACTION(searchData)
-        } else {
-          toasts.error('Doanh số đến không hợp lệ')
-        }
+      if (searchData.toAmount >= searchData.fromAmount) {
+        this.updateSearchData(searchData)
+        this.GET_SALE_RECEIPTS_ACTION({ ...searchData, size: this.perPageSize })
       } else {
-        toasts.error('Ngày không được để trống')
+        toasts.error('Doanh số đến không hợp lệ')
       }
     },
 

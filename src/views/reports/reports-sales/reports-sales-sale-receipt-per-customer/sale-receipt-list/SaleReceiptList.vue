@@ -234,7 +234,7 @@ export default {
       if (this.REPORT_SALES_SALE_RECEIPT_GETTER.totals) {
         return this.REPORT_SALES_SALE_RECEIPT_GETTER.totals
       }
-      return {}
+      return []
     },
     reportSalesSaleReceiptPagination() {
       if (this.REPORT_SALES_SALE_RECEIPT_GETTER.response) {
@@ -266,40 +266,47 @@ export default {
       return []
     },
     getReportSalesReceiptAmountPrice() {
-      return this.REPORT_SALES_SALE_RECEIPT_CONTENT_GETTER
+      if (this.REPORT_SALES_SALE_RECEIPT_GETTER.response) {
+        return this.REPORT_SALES_SALE_RECEIPT_GETTER.response.content
+      }
+      return []
     },
   },
   watch: {
     // add columns dynamically
     getReportSalesReceiptAmountDates() {
-      this.labelName = []
-      this.columns = [...this.initalCol]
-      this.getReportSalesReceiptAmountDates.forEach((item, index) => {
-        const obj = {
-          label: item,
-          field: `${index + 3}`,
-          sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        }
-        this.labelName.push(obj)
-        this.columns.push(obj)
-      })
-      this.columns.push(this.lastCol)
+      if (this.getReportSalesReceiptAmountDates) {
+        this.labelName = []
+        this.columns = [...this.initalCol]
+        this.getReportSalesReceiptAmountDates.forEach((item, index) => {
+          const obj = {
+            label: item,
+            field: `${index + 3}`,
+            sortable: false,
+            filterOptions: {
+              enabled: true,
+            },
+            thClass: 'text-right',
+            tdClass: 'text-right',
+          }
+          this.labelName.push(obj)
+          this.columns.push(obj)
+        })
+        this.columns.push(this.lastCol)
+      }
     },
     getReportSalesReceiptAmount() {
       this.rows = [...this.getReportSalesReceiptAmount]
     },
     getReportSalesReceiptAmountPrice() {
-      for (let i = 0; i <= this.rows.length - 1; i += 1) {
-        for (let j = 3; j <= this.getReportSalesReceiptAmountPrice[i].length - 1; j += 1) {
-          if (j < this.getReportSalesReceiptAmountPrice[i].length - 1) {
-            this.rows[i][j] = this.$formatNumberToLocale(this.getReportSalesReceiptAmountPrice[i][j])
-          } else {
-            this.rows[i].sumTotal = this.getReportSalesReceiptAmountPrice[i][j]
+      if (this.rows.length > 0) {
+        for (let i = 0; i <= this.rows.length - 1; i += 1) {
+          for (let j = 3; j <= this.getReportSalesReceiptAmountPrice[i].length - 1; j += 1) {
+            if (j < this.getReportSalesReceiptAmountPrice[i].length - 1) {
+              this.rows[i][j] = this.$formatNumberToLocale(this.getReportSalesReceiptAmountPrice[i][j])
+            } else {
+              this.rows[i].sumTotal = this.getReportSalesReceiptAmountPrice[i][j]
+            }
           }
         }
       }
@@ -350,6 +357,7 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
+      this.paginationData.size = params.currentPerPage
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },

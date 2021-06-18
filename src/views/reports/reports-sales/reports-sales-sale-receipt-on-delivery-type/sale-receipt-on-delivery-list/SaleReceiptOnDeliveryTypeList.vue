@@ -178,6 +178,7 @@ import {
   REPORT_SALES_DELIVERY_TYPES_CONTENT_GETTER,
   // ACTIONS
   EXPORT_REPORT_SALE_ON_DELIVERY_TYPE_ACTION,
+  GET_SALE_ON_DELIVERY_TYPE_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -294,8 +295,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(REPORT_SALES_SALE_ON_DELIVERY_TYPE, [
+      REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER,
+      REPORT_SALES_DELIVERY_TYPES_CONTENT_GETTER,
+    ]),
     reportsSalesReceiptOnDeliveryType() {
-      return this.REPORT_SALES_DELIVERY_TYPES_CONTENT_GETTER().map(data => ({
+      return this.REPORT_SALES_DELIVERY_TYPES_CONTENT_GETTER.map(data => ({
         customerCode: data.customerCode,
         customerName: data.customerName,
         address: data.customerAddress,
@@ -311,14 +316,14 @@ export default {
       }))
     },
     totalInfo() {
-      if (this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER().info) {
-        return this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER().info
+      if (this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER.info) {
+        return this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER.info
       }
       return {}
     },
     reportSalesSaleReceiptPagination() {
-      if (this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER().response) {
-        return this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER().response
+      if (this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER.response) {
+        return this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER.response
       }
       return {}
     },
@@ -337,10 +342,7 @@ export default {
   methods: {
     ...mapActions(REPORT_SALES_SALE_ON_DELIVERY_TYPE, [
       EXPORT_REPORT_SALE_ON_DELIVERY_TYPE_ACTION,
-    ]),
-    ...mapGetters(REPORT_SALES_SALE_ON_DELIVERY_TYPE, [
-      REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER,
-      REPORT_SALES_DELIVERY_TYPES_CONTENT_GETTER,
+      GET_SALE_ON_DELIVERY_TYPE_ACTION,
     ]),
 
     onClickExcelExportButton() {
@@ -358,7 +360,7 @@ export default {
       }
     },
     onPaginationChange() {
-      this.GET_SALE_RECEIPTS_ACTION(this.paginationData)
+      this.GET_SALE_ON_DELIVERY_TYPE_ACTION(this.paginationData)
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
@@ -371,6 +373,7 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
+      this.paginationData.size = params.currentPerPage
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },
