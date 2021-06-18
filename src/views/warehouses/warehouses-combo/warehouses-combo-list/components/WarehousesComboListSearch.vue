@@ -12,9 +12,10 @@
         xl
         lg="3"
         sm="4"
+        class="h7"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Mã giao dịch
         </div>
@@ -23,7 +24,6 @@
         >
           <b-form-input
             v-model.trim="transCode"
-            class="h8"
             placeholder="Nhập mã giao dịch"
             @keyup.enter="onClickSearchButton"
           />
@@ -45,9 +45,10 @@
         xl
         lg="3"
         sm="4"
+        class="h7"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Từ ngày
         </div>
@@ -66,7 +67,7 @@
           <vue-flat-pickr
             v-model="fromDate"
             :config="configFromDate"
-            class="form-control h8"
+            class="form-control"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -78,9 +79,10 @@
         xl
         lg="3"
         sm="4"
+        class="h7"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Đến ngày
         </div>
@@ -99,7 +101,7 @@
           <vue-flat-pickr
             v-model="toDate"
             :config="configToDate"
-            class="form-control h8"
+            class="form-control"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -112,9 +114,10 @@
         xl
         md="3"
         sm="4"
+        class="h7"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="mt-sm-1 mt-xl-0"
         >
           Loại giao dịch
         </div>
@@ -135,13 +138,13 @@
         md="3"
       >
         <div
-          class="h8 text-white"
+          class="text-white"
         >
           Tìm kiếm
         </div>
         <b-button
           id="form-button-search"
-          class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+          class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0"
           variant="someThing"
           @click="onClickSearchButton()"
         >

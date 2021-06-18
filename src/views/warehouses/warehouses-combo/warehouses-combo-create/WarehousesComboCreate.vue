@@ -31,9 +31,13 @@
             <b-form-row>
               <b-col>
                 <b-form-group
-                  label="Mã giao dịch"
                   label-for="id"
                 >
+                  <div
+                    class="mt-sm-1 mt-xl-0"
+                  >
+                    Mã giao dịch
+                  </div>
                   <b-form-input
                     id="id"
                     v-model="id"
@@ -46,9 +50,13 @@
 
               <b-col>
                 <b-form-group
-                  label="Loại giao dịch"
                   label-for="id"
                 >
+                  <div
+                    class="mt-sm-1 mt-xl-0"
+                  >
+                    Loại giao dịch
+                  </div>
                   <tree-select
                     v-model="tradingTypeSelected"
                     :options="tradingTypeOptions"
@@ -61,9 +69,13 @@
 
             <!-- START -   Note -->
             <b-form-group
-              label="Ghi chú"
               label-for="note"
             >
+              <div
+                class="mt-sm-1 mt-xl-0"
+              >
+                Ghi chú
+              </div>
               <b-form-textarea
                 id="note"
                 v-model="note"
@@ -87,7 +99,7 @@
             <vue-good-table
               :columns="comboListColumns"
               :rows="comboListRows"
-              style-class="vgt-table bordered"
+              style-class="vgt-table"
               compact-mode
               line-numbers
             >
@@ -106,7 +118,7 @@
                 <b-row
                   v-if="props.column.field === 'numProduct'"
                   v-show="totalQuantity"
-                  class="mx-0"
+                  class="mx-0 h7 text-brand-3"
                   align-h="end"
                 >
                   {{ $formatNumberToLocale(totalQuantity) }}
@@ -125,6 +137,7 @@
                     maxlength="7"
                     :state="isPricePositive(comboListRows[props.index].numProduct,props.index)"
                     @change="onChangeQuantity(props.row.originalIndex)"
+                    @keyup.enter="onChangeQuantity(props.row.originalIndex)"
                     @keypress="$onlyNumberInput"
                   />
                 </span>
@@ -186,7 +199,7 @@
               :key="componentKey"
               :columns="comboExchangeColumns"
               :rows="comboExchangeRows"
-              style-class="vgt-table bordered"
+              style-class="vgt-table"
               compact-mode
               line-numbers
             >
@@ -205,8 +218,8 @@
                 <b-row
                   v-if="props.column.field === 'quantity'"
                   v-show="totalExchangeQuantity"
-                  class="mx-0"
-                  align-h="center"
+                  class="mx-0 h7 text-brand-3"
+                  align-h="end"
                 >
                   {{ $formatNumberToLocale(totalExchangeQuantity) }}
                 </b-row>
@@ -216,7 +229,7 @@
                 slot-scope="props"
               >
                 <div v-if="props.column.field === 'quantity'">
-                  {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
+                  {{ props.formattedRow[props.column.field] }}
                 </div>
               </template>
             </vue-good-table>
@@ -317,25 +330,25 @@ export default {
           label: 'Mã combo',
           field: 'comboCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Số lượng',
           field: 'numProduct',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           filterOptions: {
             enabled: true,
           },
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Giá',
           field: 'price',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tên combo',
@@ -348,6 +361,8 @@ export default {
           label: '',
           field: 'function',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
       // -----------------Combo List-----------------
@@ -358,22 +373,18 @@ export default {
           label: 'Mã combo',
           field: 'comboCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Tỉ lệ quy đổi',
           field: 'exchangeRate',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Số lượng',
@@ -382,22 +393,20 @@ export default {
             enabled: true,
           },
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá',
           field: 'price',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
       ],
       // -----------------Combo Exchange-----------------
@@ -412,7 +421,17 @@ export default {
 
     getProducts() {
       if (this.COMBO_PRODUCTS_GETTER) {
-        return [{ data: this.COMBO_PRODUCTS_GETTER }]
+        return [{
+          data: this.COMBO_PRODUCTS_GETTER.map(data => ({
+            name: data.productCode,
+            id: data.id,
+            productCode: data.productCode,
+            numProduct: 1,
+            productPrice: data.productPrice,
+            productName: data.productName,
+            status: data.status,
+          })),
+        }]
       }
       return []
     },
@@ -427,7 +446,7 @@ export default {
         comboCode: data.comboProductCode,
         productCode: data.productCode,
         exchangeRate: data.factor,
-        price: this.$formatNumberToLocale(data.productPrice),
+        price: data.productPrice,
         productName: data.productName,
       }))
     },

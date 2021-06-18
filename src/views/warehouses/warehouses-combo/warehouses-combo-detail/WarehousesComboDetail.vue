@@ -86,7 +86,7 @@
             <vue-good-table
               :columns="comboListColumns"
               :rows="combos"
-              style-class="vgt-table bordered"
+              style-class="vgt-table"
               compact-mode
               line-numbers
             >
@@ -111,7 +111,7 @@
             <vue-good-table
               :columns="comboExchangeColumns"
               :rows="products"
-              style-class="vgt-table bordered"
+              style-class="vgt-table"
               compact-mode
               line-numbers
             >
@@ -131,8 +131,8 @@
               >
                 <b-row
                   v-if="props.column.field === 'quantity'"
-                  class="mx-0"
-                  align-h="center"
+                  class="mx-0 h7 text-brand-3"
+                  align-h="end"
                 >
                   {{ $formatNumberToLocale(totalQuantity) }}
                 </b-row>
@@ -205,29 +205,25 @@ export default {
           label: 'Mã combo',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá',
           field: 'productPrice',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tên combo',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
       ],
       // -----------------Combo List-----------------
@@ -238,22 +234,17 @@ export default {
           label: 'Mã combo',
           field: 'comboProductCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Tỉ lệ quy đổi',
           field: 'factor',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          type: 'number',
         },
         {
           label: 'Số lượng',
@@ -262,22 +253,20 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá',
           field: 'price',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
       ],
       // -----------------Combo Exchange-----------------
@@ -291,8 +280,8 @@ export default {
         return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().combos.map(data => ({
           productCode: data.productCode,
           productName: data.productName,
-          quantity: this.$formatNumberToLocale(data.quantity),
-          productPrice: this.$formatNumberToLocale(data.productPrice),
+          quantity: data.quantity,
+          productPrice: data.productPrice,
         }))
       }
       return []
@@ -304,8 +293,8 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           factor: data.factor,
-          quantity: this.$formatNumberToLocale(data.quantity),
-          price: this.$formatNumberToLocale(data.price),
+          quantity: data.quantity,
+          price: data.price,
         })) || []
       }
       return []

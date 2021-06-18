@@ -25,7 +25,7 @@
         </strong>
         <b-button-group>
           <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+            class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="navigateToCreate"
           >
@@ -45,7 +45,7 @@
           mode="remote"
           :columns="columns"
           :rows="warehousesCombos"
-          style-class="vgt-table bordered"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -73,7 +73,7 @@
           <!-- END - Empty rows -->
 
           <!-- START - Columns -->
-          <template
+          <!-- <template
             slot="table-column"
             slot-scope="props"
           >
@@ -88,7 +88,7 @@
             <div v-else>
               {{ props.column.label }}
             </div>
-          </template>
+          </template> -->
           <!-- END - Columns -->
 
           <!-- START - Rows -->
@@ -115,17 +115,17 @@
           >
             <b-row
               v-if="props.column.field === 'quantity'"
-              class="h7 text-right"
+              class="mx-0 h7 text-brand-3"
               align-h="end"
             >
-              {{ totalQuantity || null }}
+              {{ $formatNumberToLocale(totalQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'price'"
-              class="h7"
+              class="mx-0 h7 text-brand-3"
               align-h="end"
             >
-              {{ totalPrice || null }}
+              {{ $formatNumberToLocale(totalPrice) }}
             </b-row>
           </template>
           <!-- START - Column filter -->
@@ -206,7 +206,7 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  getWarehousesStatuslabel,
+  // getWarehousesStatuslabel,
   resizeAbleTable,
 } from '@core/utils/utils'
 import WarehousesComboListSearch from './components/WarehousesComboListSearch.vue'
@@ -243,43 +243,37 @@ export default {
           label: 'Ngày',
           field: 'transDate',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Mã giao dịch',
           field: 'transCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
+          type: 'number',
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền',
           field: 'price',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Loại giao dịch',
           field: 'transType',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          formatFn: value => this.$getWarehousesStatuslabel(String(value)),
         },
         {
-          label: 'Chức năng',
           field: 'feature',
           sortable: false,
           width: '30px',
@@ -296,11 +290,11 @@ export default {
     getWarehousesCombo() {
       if (this.WAREHOUSES_COMBO_GETTER.response && this.WAREHOUSES_COMBO_GETTER.response.content) {
         return this.WAREHOUSES_COMBO_GETTER.response.content.map(data => ({
-          transDate: this.$formatISOtoVNI(data.transDate),
+          transDate: data.transDate,
           transCode: data.transCode,
-          quantity: this.$formatNumberToLocale(data.totalQuantity),
-          price: this.$formatNumberToLocale(data.totalAmount),
-          transType: getWarehousesStatuslabel(String(data.transType)),
+          quantity: data.totalQuantity,
+          price: data.totalAmount,
+          transType: data.transType,
           feature: '',
           id: data.id,
         }))
@@ -310,13 +304,13 @@ export default {
 
     totalQuantity() {
       if (this.WAREHOUSES_COMBO_GETTER.info && this.WAREHOUSES_COMBO_GETTER.info.totalQuantity) {
-        return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_GETTER.info.totalQuantity)
+        return this.WAREHOUSES_COMBO_GETTER.info.totalQuantity
       }
       return 0
     },
     totalPrice() {
       if (this.WAREHOUSES_COMBO_GETTER.info && this.WAREHOUSES_COMBO_GETTER.info.totalPrice) {
-        return this.$formatNumberToLocale(this.WAREHOUSES_COMBO_GETTER.info.totalPrice)
+        return this.WAREHOUSES_COMBO_GETTER.info.totalPrice
       }
       return 0
     },

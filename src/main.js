@@ -11,6 +11,7 @@ import {
   onlyNumberInput,
   onlyDateInput,
   getInputTypeslabel,
+  getWarehousesStatuslabel,
   getOutputTypeslabel,
 } from '@core/utils/utils'
 import {
@@ -82,6 +83,7 @@ Vue.prototype.$onlyNumberInput = onlyNumberInput
 Vue.prototype.$onlyDateInput = onlyDateInput
 Vue.prototype.$getInputTypeslabel = getInputTypeslabel
 Vue.prototype.$getOutputTypeslabel = getOutputTypeslabel
+Vue.prototype.$getWarehousesStatuslabel = getWarehousesStatuslabel
 
 // filter
 Vue.prototype.$formatNumberToLocale = formatNumberToLocale
