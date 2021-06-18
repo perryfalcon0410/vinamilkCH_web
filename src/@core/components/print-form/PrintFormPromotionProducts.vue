@@ -198,7 +198,6 @@ export default {
     },
   },
   updated() {
-    console.log(this.commonInfo)
     window.print()
   },
 }
