@@ -18,9 +18,9 @@
           CTY CP SUA VIET NAM - VINAMILK
         </div>
         <strong style="font-size: 17px">
-          {{ printSalesReceiptData.nameShop }}
+          {{ printSalesReceiptData.shopName }}
         </strong>
-        <div>Tel: {{ printSalesReceiptData.phone }}</div>
+        <div>Tel: {{ printSalesReceiptData.shopPhone }}</div>
         <div>{{ printSalesReceiptData.shopAddress }}</div>
 
         <strong class="mt-1">
@@ -47,7 +47,7 @@
         KH: {{ printSalesReceiptData.customerName }} - {{ printSalesReceiptData.customerPhone }}
       </div>
       <div>
-        DC: {{ printSalesReceiptData.address }}
+        DC: {{ printSalesReceiptData.customerAddress }}
       </div>
       <div>
         Loại giao hàng: {{ deliveryTypeLabel }}
@@ -57,9 +57,6 @@
       </div>
       <div>
         Ngày: {{ $formatISOtoVNI( printSalesReceiptData.orderDate, true) }}
-      </div>
-      <div>
-        NV: nmson
       </div>
     </div>
     <!-- END - Customer info -->
@@ -82,76 +79,87 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+    </table>
+
+    <!-- START - Products -->
+    <table
+      v-for="(product,itemIndex) in printSalesReceiptData.products"
+      :key="itemIndex"
+    >
+      <tbody
+        v-for="item in product.listOrderItems"
+        :key="item.productId"
+      >
         <tr>
           <td colspan="4">
-            SP Dielac Alpha Step 2 HG 400g
+            {{ item.productName }}
           </td>
         </tr>
         <tr>
           <td>
-            02BA22
+            {{ item.productCode }}
           </td>
           <td class="text-right">
-            4
+            {{ item.quantity }}
           </td>
           <td class="text-right">
-            20,052
+            {{ $formatNumberToLocale(item.price) }}
           </td>
           <td class="text-right">
-            80,671
+            {{ $formatNumberToLocale(item.totalPrice) }}
           </td>
         </tr>
-        <tr>
-          <td>
+        <tr v-show="item.totalDiscountPrice">
+          <td colspan="3">
             Giảm giá
           </td>
           <td class="text-right">
-            4
-          </td>
-          <td class="text-right">
-            -1,000
-          </td>
-          <td class="text-right">
-            -4,000
+            {{ $formatNumberToLocale(item.totalDiscountPrice) }}
           </td>
         </tr>
+      </tbody>
+      <tbody v-show="product.displayType">
+        <td colspan="4">
+          {{ product.groupName }}
+        </td>
+      </tbody>
+      <tbody
+        v-for="item in product.listFreeItems"
+        :key="item.productCode"
+      >
+        <td colspan="3">
+          {{ item.productName }}
+        </td>
+        <td class="text-right">
+          {{ item.quantity }}
+        </td>
+      </tbody>
+    </table>
+    <!-- END - Products -->
+
+    <!-- START - lstZM -->
+    <table
+      v-for="item in printSalesReceiptData.lstZM"
+      :key="item.promotionCode"
+    >
+      <tbody>
         <tr>
-          <td>
-            KM
-          </td>
-          <td class="text-right">
-            1
-          </td>
-          <td colspan="2">
-            Bo men goi YOKO hinh canh cut
+          <td colspan="4">
+            {{ item.promotionName }}
           </td>
         </tr>
         <tr>
           <td colspan="3">
-            SCA Vinamilk Love Yogurt Có Đường
+            {{ item.promotionCode }}
           </td>
-          <td class="text-right">
-            9
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            CH1220ONTOP_FARM
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            Giam Gia Don Hang 500k
-          </td>
-        </tr>
-        <tr>
-          <td class="4">
-            CH1220ONTOP_DH500
+          <td colspan="1">
+            {{ $formatNumberToLocale( item.amount ) }}
           </td>
         </tr>
       </tbody>
     </table>
+    <!-- END - lstZM -->
+
     <!-- END - Table -->
 
     <!-- STAT - Total section -->
@@ -197,34 +205,34 @@
           class="ml-50"
         >
           <div>
-            1,300,000,000
+            {{ $formatNumberToLocale( printSalesReceiptData.amount ) }}
           </div>
           <div>
-            180,300
+            {{ $formatNumberToLocale( printSalesReceiptData.amountNotVAT ) }}
           </div>
           <div>
-            180,300
+            {{ $formatNumberToLocale( printSalesReceiptData.promotionAmountNotVat ) }}
           </div>
           <div>
-            180,300
+            {{ $formatNumberToLocale( printSalesReceiptData.promotionAmount ) }}
           </div>
           <div>
-            180,300
+            {{ $formatNumberToLocale( printSalesReceiptData.accumulatedAmount ) }}
           </div>
           <div>
-            180,300
+            {{ $formatNumberToLocale( printSalesReceiptData.voucherAmount ) }}
           </div>
           <div>
-            180,300
+            {{ $formatNumberToLocale( printSalesReceiptData.totalNotVat ) }}
           </div>
           <div>
-            180,300
+            {{ $formatNumberToLocale( printSalesReceiptData.total ) }}
           </div>
           <div>
-            180,300
+            {{ $formatNumberToLocale( printSalesReceiptData.paymentAmount ) }}
           </div>
           <div>
-            180,300
+            {{ $formatNumberToLocale( printSalesReceiptData.extraAmount ) }}
           </div>
         </div>
       </b-row>

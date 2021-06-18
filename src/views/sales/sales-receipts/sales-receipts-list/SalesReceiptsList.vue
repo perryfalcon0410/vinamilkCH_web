@@ -25,7 +25,7 @@
           <b-button
             class="btn-brand-1 h8 align-items-button-center"
             variant="someThing"
-            @click="onClickPrintButton(1)"
+            @click="onClickPrintButton"
           >
             <b-icon-printer-fill />
             In
@@ -58,10 +58,6 @@
             multipleColumns: true,
           }"
           :total-rows="salesReceiptsPagination.totalElements"
-          :sort-options="{
-            enabled: false,
-            multipleColumns: true,
-          }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
@@ -100,8 +96,8 @@
             slot="table-column"
             slot-scope="props"
           >
-            <div v-if="props.column.label === 'Chức năng'">
-              <b-icon-bricks class="ml-1" />
+            <div v-if="props.column.field == 'manipulation'">
+              <b-icon-bricks />
             </div>
             <div v-else>
               {{ props.column.label }}
@@ -131,7 +127,7 @@
                 />
               </span>
             </span>
-            <span v-else-if="props.column.field == 'press'">
+            <span v-else-if="props.column.field == 'manipulation'">
               <span>
                 <b-icon-eye-fill
                   v-b-popover.hover="'Chi tiết hóa đơn'"
@@ -298,115 +294,78 @@ export default {
         {
           label: 'Số hóa đơn',
           field: 'numberBill',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'name',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Ngày bán',
           field: 'dayTime',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Tổng giá trị',
           field: 'totalValue',
           type: 'number',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
         },
         {
           label: 'Tiển giảm giá',
           field: 'discountMoney',
-          sortable: false,
           type: 'number',
-          thClass: 'text-right',
-          tdClass: 'text-right',
         },
         {
           label: 'Tiền tích lũy',
-          type: 'number',
           field: 'moneyAccumulated',
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
         },
         {
           label: 'Tiền phải trả',
           field: 'payments',
-          sortable: false,
           type: 'number',
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
         },
         {
           label: 'Ghi chú',
           field: 'note',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'In HĐ đỏ',
           field: 'print',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Công ty',
           field: 'company',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Mã số thuế',
           field: 'taxCode',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Ghi chú HĐĐ',
           field: 'noteHdd',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Chức năng',
-          field: 'press',
+          field: 'manipulation',
           sortable: false,
+          width: '30px',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
     }
@@ -503,12 +462,12 @@ export default {
       this.isInvoiceDetailModal = !this.isInvoiceDetailModal
       this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber: numberBill })
     },
-    onClickPrintButton(id) {
+    onClickPrintButton() {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
       this.PRINT_SALES_RECEIPT_ACTION({
         data: {
-          salesReceiptId: id, // hard code: id của hóa đơn bán hàng
+          salesReceiptId: 1, // hard code: id của hóa đơn bán hàng
           params: { ...this.decentralization },
         },
         onSuccess: () => {

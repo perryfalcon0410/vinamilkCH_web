@@ -251,7 +251,6 @@
           >
             <div
               v-if="props.column.field === 'feature'"
-              hidden
             >
               <b-icon-bricks
                 v-b-popover.hover="'Thao tác'"
@@ -270,7 +269,10 @@
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'feature'">
+            <div
+              v-if="props.column.field === 'feature'"
+              class="mx-0"
+            >
               <b-icon-printer-fill
                 v-b-popover.hover.top="'In phiếu'"
                 class="cursor-pointer text-brand-1"
@@ -523,18 +525,14 @@ export default {
         {
           label: 'Loại xuất',
           field: 'inputTypes',
-          type: 'boolean',
           formatFn: this.$getOutputTypeslabel,
-          width: '150px',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-          // formatFn: value => this.formatFn(value, 'inputTypes'),
         },
         {
           label: 'Ghi chú',
           field: 'note',
           width: '300px',
           maxlength: 100,
+          sortable: false,
         },
         {
           label: 'Thao tác',
@@ -542,6 +540,7 @@ export default {
           thClass: 'text-left',
           tdClass: 'text-left',
           width: '90px',
+          sortable: false,
         },
       ],
       searchOptions: {

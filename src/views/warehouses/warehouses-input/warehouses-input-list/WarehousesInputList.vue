@@ -342,7 +342,8 @@ export default {
         {
           label: 'Ghi chú',
           field: 'note',
-          width: '200px',
+          width: '300px',
+          sortable: false,
         },
         {
           label: 'Thao tác',

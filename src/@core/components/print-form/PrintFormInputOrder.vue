@@ -36,7 +36,7 @@
           <b-row class="mx-0">
             <div class="w-35">
               Loại nhập hàng:
-            </div>  <strong>{{ inputOrderInfoData.type }}</strong>
+            </div>  <strong>{{ $getInputTypeslabel(inputOrderInfoData.transType) }}</strong>
           </b-row>
           <b-row class="mx-0">
             <div class="w-35">
@@ -60,7 +60,7 @@
         <b-row class="mx-0">
           <div class="w-25">
             Ngày nhập:
-          </div>  <strong>{{ $formatISOtoVNI(inputOrderInfoData.orderDate, true) }}</strong>
+          </div>  <strong>{{ $formatISOtoVNI(inputOrderInfoData.transDate, true) }}</strong>
         </b-row>
         <b-row class="mx-0">
           <div class="w-25">
@@ -70,7 +70,7 @@
         <b-row class="mx-0">
           <div class="w-25">
             Ngày hóa đơn:
-          </div>  <strong>{{ $formatISOtoVNI(inputOrderInfoData.transDate) }}</strong>
+          </div>  <strong>{{ $formatISOtoVNI(inputOrderInfoData.orderDate) }}</strong>
         </b-row>
       </div>
     </b-row>
@@ -175,10 +175,10 @@
             {{ $formatNumberToLocale(products.quantity) }}
           </td>
           <td class="text-right px-50">
-            {{ $formatNumberToLocale(products.price) }}
+            {{ $formatNumberToLocale(products.priceNotVat) }}
           </td>
           <td class="text-right px-50">
-            {{ $formatNumberToLocale(products.totalPrice) }}
+            {{ $formatNumberToLocale(products.totalPriceNotVat) }}
           </td>
         </tr>
       </tbody>
@@ -287,10 +287,10 @@
             {{ $formatNumberToLocale(products.quantity) }}
           </td>
           <td class="text-right px-50">
-            {{ $formatNumberToLocale(products.price) }}
+            {{ $formatNumberToLocale(products.priceNotVat) }}
           </td>
           <td class="text-right px-50">
-            {{ $formatNumberToLocale(products.totalPrice) }}
+            {{ $formatNumberToLocale(products.totalPriceNotVat) }}
           </td>
         </tr>
       </tbody>
@@ -348,10 +348,10 @@
                 style="font-size: 18px"
               >
                 <strong>
-                  {{ $formatNumberToLocale(inputOrderInfoData.totalPriceVat) }}
+                  {{ $formatNumberToLocale(inputOrderInfoData.totalPriceNotVat) }}
                 </strong>
                 <strong>
-                  {{ $formatNumberToLocale(inputOrderInfoData.totalPriceNotVat) }}
+                  {{ $formatNumberToLocale(inputOrderInfoData.totalPriceVat) }}
                 </strong>
                 <strong>
                   {{ $formatNumberToLocale(inputOrderInfoData.totalPrice) }}
