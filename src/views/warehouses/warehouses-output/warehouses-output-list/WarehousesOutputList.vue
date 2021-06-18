@@ -486,7 +486,7 @@ export default {
         {
           label: 'Ngày',
           field: 'date',
-          formatFn: this.$formatISOtoVNI,
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Mã xuất hàng',
@@ -539,8 +539,8 @@ export default {
         {
           label: 'Thao tác',
           field: 'feature',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
           width: '90px',
         },
       ],

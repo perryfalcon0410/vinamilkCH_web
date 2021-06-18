@@ -159,7 +159,7 @@
         <vue-good-table
           :columns="columns"
           :rows="getProductOfWarehouseOutput"
-          style-class="vgt-table"
+          style-class="vgt-table striped"
           :sort-options="{
             enabled: false,
           }"
@@ -180,7 +180,7 @@
             <b-form-checkbox
               v-model="exportAll"
               class="m-1"
-              disabled
+              :disabled="warehousesOutput.receiptType !== warehousesOptions[0].id"
             >
               Trả nguyên đơn
             </b-form-checkbox>
@@ -311,18 +311,13 @@ export default {
           field: 'productCode',
         },
         {
-          label: 'Số lượng',
-          field: 'productQuantity',
-          type: 'number',
+          label: 'Tên sản phẩm',
+          field: 'productName',
         },
         {
           label: 'Giá',
           field: 'productPrice',
           type: 'number',
-        },
-        {
-          label: 'Tên sản phẩm',
-          field: 'productName',
         },
         {
           label: 'ĐVT',
@@ -346,15 +341,6 @@ export default {
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-        },
-        {
-          label: 'Số lượng',
-          field: 'productQuantity',
-          formatFn: this.$formatNumberToLocale,
-          type: 'number',
-          // filterOptions: {
-          //   enabled: true,
-          // },
         },
         {
           label: 'Tên sản phẩm',
@@ -421,7 +407,7 @@ export default {
       return this.GET_WAREHOUSES_OUTPUT_BY_ID_GETTER
     },
     getProductOfWarehouseOutput() {
-      return this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.map(data => ({
+      return [...this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.response.map(data => ({
         productID: data.id,
         productCode: data.productCode,
         productPrice: data.price,
@@ -429,9 +415,21 @@ export default {
         productDVT: data.unit,
         productPriceTotal: data.totalPrice,
         productQuantity: data.quantity,
-        productReturnAmount: data.export || data.quantity,
-        export: `${data.export}/${data.quantity}`,
-      }))
+        productReturnAmount: data.quantity,
+        export: `${data.quantity}/${data.importQuantity}`,
+      })),
+      ...this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.info.map(data => ({
+        productID: data.id,
+        productCode: data.productCode,
+        productPrice: data.price,
+        productName: data.productName,
+        productDVT: data.unit,
+        productPriceTotal: data.totalPrice,
+        productQuantity: data.quantity,
+        productReturnAmount: data.quantity,
+        export: `${data.quantity}/${data.importQuantity}`,
+      })),
+      ]
     },
   },
   watch: {
@@ -457,12 +455,33 @@ export default {
       } if (this.warehousesOutput.receiptType === warehousesData.outputTypes[2].id) {
         this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.borrowDate)
       }
-      if (this.receiptType !== warehousesData.outputTypes[0].id) {
+      if (this.warehousesOutput.receiptType !== warehousesData.outputTypes[0].id) {
         this.columns = this.columnsCustom
       }
 
       // enable or disable button save
       this.isDisableSave = this.warehousesOutput.transDate !== this.$nowDate
+    },
+    exportAll() {
+      if (this.exportAll) {
+        this.getProductOfWarehouseOutput.forEach((item, index) => {
+          this.getProductOfWarehouseOutput[index].productReturnAmount = item.productQuantity
+        })
+        // this.rowsProductPromotion.forEach((item, index) => {
+        //   this.rowsProductPromotion[index].quantityPromo = item.quantity
+        // })
+      } else {
+        this.getProductOfWarehouseOutput.forEach((item, index) => {
+          if (this.getProductOfWarehouseOutput[index].productReturnAmount === item.productQuantity) {
+            this.getProductOfWarehouseOutput[index].productReturnAmount = null
+          }
+        })
+        // this.rowsProductPromotion.forEach((item, index) => {
+        //   if (this.rowsProductPromotion[index].quantityPromo === item.quantity) {
+        //     this.rowsProductPromotion[index].quantityPromo = null
+        //   }
+        // })
+      }
     },
   },
   mounted() {
@@ -514,7 +533,7 @@ export default {
         productDVT: item.unit,
         productPriceTotal: this.$formatNumberToLocale(item.totalPrice),
         productQuantity: item.quantity,
-        productReturnAmount: item.quantity,
+        productReturnAmount: item.export,
         export: item.export,
       }))
       // clear data

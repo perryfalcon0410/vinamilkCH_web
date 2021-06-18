@@ -243,7 +243,16 @@
                     maxlength="19"
                     :readonly="exportAll && outputTypeSelected !== poOutputType"
                     @keypress="$onlyNumberInput"
-                    @change="changeQuantity"
+                    @change="changeQuantity(0)"
+                  />
+                </div>
+                <div v-if="props.column.field === 'quantity'">
+                  <b-form-input
+                    v-model="products[props.row.originalIndex].quantity"
+                    maxlength="19"
+                    :readonly="exportAll && outputTypeSelected !== poOutputType"
+                    @keypress="$onlyNumberInput"
+                    @change="changeQuantity(0)"
                   />
                 </div>
                 <div v-else>
@@ -258,13 +267,6 @@
                 slot-scope="props"
                 class="h8"
               >
-                <b-row
-                  v-if="props.column.field === 'quantity'"
-                  align-h="end pr-1"
-                  :hidden="hideFilter"
-                >
-                  {{ $formatNumberToLocale(totalQuantity) }}
-                </b-row>
                 <b-row
                   v-if="props.column.field === 'productCode'"
                   class="h7 ml-1"
@@ -301,22 +303,32 @@
                 </div>
                 <!-- END - Empty rows -->
 
+                <!-- START - Rows -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div v-if="props.column.field === 'quantityPromo'">
+                    <b-form-input
+                      v-model="rowsProductPromotion[props.row.originalIndex].quantityPromo"
+                      maxlength="19"
+                      @keypress="$onlyNumberInput"
+                      @change="changeQuantity(1)"
+                    />
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
+                <!-- END - Rows -->
+
                 <!-- START - Custom filter -->
                 <template
                   slot="column-filter"
                   slot-scope="props"
                 >
                   <b-row
-                    v-if="props.column.field === 'quantity'"
-                    v-show="totalPromoProductQuantity"
-                    class="mx-0"
-                    align-h="center"
-                  >
-                    {{ $formatNumberToLocale(totalPromoProductQuantity) }}
-                  </b-row>
-
-                  <b-row
-                    v-else-if="props.column.field === 'productCode'"
+                    v-if="props.column.field === 'productCode'"
                     v-show="totalPromoProduct"
                     class="mx-0"
                     align-h="center"
@@ -490,22 +502,11 @@ export default {
         ctrlId: 7,
       },
 
-      columns: [
+      columnsPO: [
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-        },
-        {
-          label: 'Số lượng',
-          field: 'quantity',
-          formatFn: this.$formatNumberToLocale,
-          sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
-          thClass: 'text-right',
-          tdClass: 'text-right',
         },
         {
           label: 'Tên sản phẩm',
@@ -543,9 +544,6 @@ export default {
           field: 'quantityReturn',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
           thClass: 'text-left',
           tdClass: 'text-right',
         },
@@ -555,17 +553,6 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-        },
-        {
-          label: 'Số lượng',
-          field: 'quantity',
-          formatFn: this.$formatNumberToLocale,
-          sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
-          thClass: 'text-right',
-          tdClass: 'text-right',
         },
         {
           label: 'Tên sản phẩm',
@@ -595,12 +582,9 @@ export default {
         },
         {
           label: 'Số lượng trả',
-          field: 'quantityReturn',
+          field: 'quantity',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
           thClass: 'text-left',
           tdClass: 'text-right',
         },
@@ -617,16 +601,6 @@ export default {
           tdClass: 'text-left',
         },
         {
-          label: 'Số lượng',
-          field: 'quantity',
-          filterOptions: {
-            enabled: true,
-          },
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
@@ -636,7 +610,6 @@ export default {
         {
           label: 'Giá',
           field: 'price',
-          type: 'number',
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
@@ -644,7 +617,6 @@ export default {
         {
           label: 'ĐVT',
           field: 'unit',
-          type: 'number',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-center',
@@ -652,17 +624,21 @@ export default {
         {
           label: 'Thành tiền',
           field: 'totalPrice',
-          type: 'number',
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
         },
         {
-          label: 'SO No',
-          field: 'soNo',
+          label: 'Đã xuất trả/tổng nhập',
+          field: 'export',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
+        },
+        {
+          label: 'Số lượng trả',
+          field: 'quantityPromo',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
       ],
     }
@@ -691,17 +667,25 @@ export default {
       this.exportAll = false
       if (this.outputTypeSelected !== this.poOutputType) {
         this.columns = this.columnsCustom
-      }
+      } else this.columns = this.columnsPO
     },
     exportAll() {
       if (this.exportAll) {
         this.products.forEach((item, index) => {
           this.products[index].quantityReturn = item.quantity - item.productReturnExportOriginal
         })
+        this.rowsProductPromotion.forEach((item, index) => {
+          this.rowsProductPromotion[index].quantityPromo = item.quantity - item.productReturnExportOriginal
+        })
       } else {
         this.products.forEach((item, index) => {
-          if (this.products[index].quantityReturn === item.quantity) {
+          if (this.products[index].quantityReturn === item.quantity - item.productReturnExportOriginal) {
             this.products[index].quantityReturn = null
+          }
+        })
+        this.rowsProductPromotion.forEach((item, index) => {
+          if (this.rowsProductPromotion[index].quantityPromo === item.quantity - item.productReturnExportOriginal) {
+            this.rowsProductPromotion[index].quantityPromo = null
           }
         })
       }
@@ -710,6 +694,7 @@ export default {
 
   mounted() {
     this.GET_WAREHOUSE_TYPE_ACTION({ ...this.decentralization })
+    this.columns = this.columnsPO
   },
 
   methods: {
@@ -755,9 +740,6 @@ export default {
       this.totalQuantity = data.totalQuantity
       this.totalProduct = data.products.length
       this.hideFilter = false
-      this.products.forEach((item, index) => {
-        this.products[index].quantityReturn = item.quantity
-      })
 
       // clear data
       this.warehousesOutput.redInvoiceNo = ''
@@ -775,9 +757,6 @@ export default {
       this.totalQuantity = data.totalQuantity
       this.totalProduct = data.products.length
       this.hideFilter = false
-      this.products.forEach((item, index) => {
-        this.products[index].quantityReturn = item.quantity
-      })
 
       // clear data
       this.warehousesOutput.redInvoiceNo = ''
@@ -785,8 +764,15 @@ export default {
       this.warehousesOutput.poNumber = ''
     },
     checkQuantity() {
-      this.products.forEach((item, index) => {
-        if (this.products[index].quantity - this.products[index].productReturnExportOriginal >= this.products[index].quantityReturn) {
+      this.products.forEach(item => {
+        if (item.quantity - item.productReturnExportOriginal >= item.quantityReturn) {
+          this.quantityCheck = true
+        } else {
+          this.quantityCheck = false
+        }
+      })
+      this.rowsProductPromotion.forEach(item => {
+        if (item.quantity - item.productReturnExportOriginal >= item.quantityPromo) {
           this.quantityCheck = true
         } else {
           this.quantityCheck = false
@@ -797,7 +783,7 @@ export default {
       if (this.outputTypeSelected === warehousesData.outputTypes[0].id) {
         this.checkQuantity()
       }
-      if (this.products.length !== 0) {
+      if (this.products.length > 0 || this.rowsProductPromotion.length > 0) {
         if (this.quantityCheck) {
           this.CREATE_EXPORT_ACTION(
             {
@@ -837,13 +823,22 @@ export default {
       this.outputTypeSelected = warehousesData.outputTypes[0].id
       this.warehousesOutput.billDate = this.$nowDate
     },
-    changeQuantity() {
+    changeQuantity(data) {
       this.exportAll = false
-      this.products.forEach((item, index) => {
-        if (Number(this.products[index].quantityReturn) === Number(item.quantity)) {
-          this.exportAll = true
-        }
-      })
+      if (data === 0) {
+        this.products.forEach((item, index) => {
+          if (Number(this.products[index].quantityReturn) === Number(item.quantity)) {
+            this.exportAll = true
+          }
+        })
+      }
+      if (data === 1) {
+        this.rowsProductPromotion.forEach((item, index) => {
+          if (Number(this.rowsProductPromotion[index].quantityPromo) === Number(item.quantity)) {
+            this.exportAll = true
+          }
+        })
+      }
     },
   },
 }

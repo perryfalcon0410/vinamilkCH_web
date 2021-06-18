@@ -94,7 +94,7 @@
                   v-b-popover.hover.top="'Xem chi tiết'"
                   class="cursor-pointer"
                   scale="1.3"
-                  @click="() => onPoItemSelected(props.row.id)"
+                  @click="() => onPoItemSelected(props.row.id, props.row.originalIndex)"
                 />
                 <b-button
                   variant="someThing"
@@ -185,7 +185,7 @@
         >
           <div class="text-brand-1">
             <strong>
-              Danh sách sản phẩm
+              Danh sách sản phẩm của đơn {{ redInvoiceNo }}
             </strong>
           </div>
 
@@ -198,6 +198,13 @@
             :columns="columnsProducts"
             :rows="productDetail"
             style-class="vgt-table striped"
+            :sort-options="{
+              enabled: false,
+              multipleColumns: true,
+              initialSortBy: [
+                {field: 'productCode', type: 'asc'},
+              ]
+            }"
             compact-mode
             line-numbers
           >
@@ -264,7 +271,7 @@ export default {
   data() {
     return {
       productDetailTable: false,
-
+      redInvoiceNo: null,
       elementSize: commonData.perPageSizes[0],
       pageNumber: commonData.pageNumber,
       paginationOptions: commonData.perPageSizes,
@@ -407,7 +414,7 @@ export default {
       if (this.getPoTrans.content) {
         this.poTrans = this.getPoTrans.content.map(data => ({
           id: data.id,
-          productCode: formatISOtoVNI(data.formatISOtoVNI),
+          productCode: data.productCode,
           transDate: formatISOtoVNI(data.transDate),
           transCode: data.transCode,
           redInvoiceNo: data.redInvoiceNo,
@@ -419,8 +426,8 @@ export default {
       return []
     },
     getExportPoTransDetail() {
-      if (this.getExportPoTransDetail.response) {
-        this.productDetail = this.getExportPoTransDetail.response.map(data => ({
+      if (this.getExportPoTransDetail) {
+        this.productDetail = [...this.getExportPoTransDetail.response.map(data => ({
           id: data.id,
           productCode: data.productCode,
           productName: data.productName,
@@ -430,7 +437,19 @@ export default {
           export: `${data.export}/${data.quantity}`,
           productReturnAmount: 0,
           quantity: `${data.quantity - data.export}/${data.quantity}`,
-        }))
+        })),
+        ...this.getExportPoTransDetail.info.map(data => ({
+          id: data.id,
+          productCode: data.productCode,
+          productName: data.productName,
+          price: data.price,
+          unit: data.unit,
+          totalPrice: data.totalPrice,
+          export: `${data.export}/${data.quantity}`,
+          productReturnAmount: 0,
+          quantity: `${data.quantity - data.export}/${data.quantity}`,
+        })),
+        ]
       }
     },
   },
@@ -441,13 +460,14 @@ export default {
       GET_EXPORT_PO_TRANS_ACTION,
       GET_EXPORT_PO_TRANS_DETAIL_ACTION,
     ]),
-    onPoItemSelected(id) {
+    onPoItemSelected(id, index) {
       this.GET_EXPORT_PO_TRANS_DETAIL_ACTION({
         id,
         onSuccess: () => {
           this.productDetailTable = true
         },
       })
+      this.redInvoiceNo = this.poTrans[index].redInvoiceNo
     },
     choonsenTrans(trans) {
       this.GET_EXPORT_PO_TRANS_DETAIL_ACTION({
@@ -473,7 +493,8 @@ export default {
             price: data.price || 0,
             unit: data.unit,
             totalPrice: data.totalPrice || 0,
-            soNo: data.soNo,
+            export: `${data.export}/${data.quantity}`,
+            productReturnExportOriginal: data.export,
             quantity: data.quantity,
           }))
           const poTranData = {
