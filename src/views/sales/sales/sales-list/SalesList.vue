@@ -5,22 +5,26 @@
   >
     <!-- START - Header -->
     <b-row
-      class="m-0 d-print-none"
+      class="mx-0 d-print-none"
     >
+      <!-- START - Search -->
       <b-col
-        sm="7"
         xl="4"
-        class="px-0 mr-1 shadow mb-1 mr-2 mb-sm-0 h7"
+        sm="7"
+        class="shadow px-0 mb-1 mr-2 mb-sm-0 h7"
       >
-        <b-input-group class="input-group-merge">
+        <b-row
+          class="mx-0"
+          align-v="center"
+        >
           <vue-autosuggest
             ref="search"
             v-model="searchOptions.keyWord"
-            class="w-75"
             :suggestions="productsSearch"
+            class="w-100"
             :input-props="{
               id:'autosuggest__input',
-              class:'form-control',
+              class:'form-control pr-3',
               placeholder:'Tìm sản phẩm (F3)',
             }"
             @input="onChangeKeyWord"
@@ -30,7 +34,7 @@
             <template
               slot-scope="{ suggestion }"
             >
-              <b-row>
+              <b-row class="mx-0">
                 <!-- START - Section Image -->
                 <b-col
                   cols="2"
@@ -69,80 +73,16 @@
                     </b-col>
                   </b-form-row>
                 </b-col>
-                <!-- END - Section Label -->
+              <!-- END - Section Label -->
               </b-row>
-              <!-- <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }} -->
+            <!-- <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }} -->
             </template>
           </vue-autosuggest>
-          <b-input-group-append
-            class="px-0 pb-0 m-0"
-            is-text
-          >
-
-            <b-form-checkbox
-              v-model="checkStockTotal"
-            />
-          </b-input-group-append>
-        </b-input-group>
-
-        <!-- START - Product Popup -->
-        <b-collapse
-          v-model="inputSearchFocused"
-          class="position-absolute w-100"
-          style="zIndex:1"
-        >
-          <b-container
-            class="my-1 px-1 bg-white rounded border border-primary shadow-lg"
-          >
-            <b-row
-              v-for="(value,index) in productsSearch"
-              :key="index"
-              class="mx-0 my-1"
-              @click="onclickAddProduct(value)"
-            >
-              <!-- START - Section Image -->
-              <b-col
-                cols="2"
-                class="px-0"
-              >
-                <b-img-lazy
-                  src="https://pngimg.com/uploads/nuclear_bomb/nuclear_bomb_PNG18.png"
-                  fluid
-                  width="60px"
-                />
-              </b-col>
-              <!-- END - Section Image -->
-
-              <!-- START - Section Label -->
-              <b-col>
-                <b-form-row>
-                  <b-col
-                    class="text-dark font-weight-bold"
-                    md="10"
-                  >
-                    {{ value.productName }}
-                  </b-col>
-                  <b-col
-                    class="text-dark font-weight-bold"
-                    md="1"
-                  >
-                    {{ value.productUnitPrice }}
-                  </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                  <b-col
-                    class="my-1"
-                  >
-                    {{ value.productCode }}
-                  </b-col>
-                </b-form-row>
-              </b-col>
-              <!-- END - Section Label -->
-            </b-row>
-          </b-container>
-        </b-collapse>
-        <!-- END - Product Popup -->
+          <b-form-checkbox
+            v-model="checkStockTotal"
+            style="position: absolute; right: 5px"
+          />
+        </b-row>
 
       </b-col>
       <!-- END - Search -->
@@ -370,7 +310,6 @@ export default {
   },
   data() {
     return {
-      inputSearchFocused: false,
       productImage: null,
       checkStockTotal: true,
       customerId: null,
