@@ -75,7 +75,10 @@
             slot="table-column"
             slot-scope="props"
           >
-            <b-row v-if="props.column.field === 'feature'">
+            <b-row
+              v-if="props.column.field === 'feature'"
+              hidden
+            >
               <b-icon-bricks
                 v-b-popover.hover="'Thao tác'"
                 scale="1.3"
@@ -120,7 +123,7 @@
             </b-row>
             <div
               v-else-if="props.column.field === 'quantity' || props.column.field === 'price'"
-              style="padding-left: 3px"
+              style="padding-right: 4px"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -135,23 +138,21 @@
             slot="column-filter"
             slot-scope="props"
           >
-            <b-row
+            <div
               v-show="receiptPagination.totalElements"
               v-if="props.column.field === 'quantity'"
-              class="mx-0 h7 text-brand-3"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(totalQuantity) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
               v-show="receiptPagination.totalElements"
               v-else-if="props.column.field === 'price'"
-              class="mx-0 h7 text-brand-3"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(totalPrice) }}
-            </b-row>
+            </div>
           </template>
           <!-- START - Custom filter -->
 
@@ -226,17 +227,17 @@
       Bạn có muốn xóa đợt nhập hàng {{ selectedReceiptCode }}?
       <template #modal-footer>
         <b-button
-          class="aligns-items-button-center ml-1"
-          @click="isDeleteModalShow = !isDeleteModalShow"
-        >
-          Đóng
-        </b-button>
-        <b-button
           variant="someThing"
           class="btn-brand-1 aligns-items-button-center"
           @click="confirmDelete"
         >
           Đồng ý
+        </b-button>
+        <b-button
+          class="aligns-items-button-center ml-1"
+          @click="isDeleteModalShow = !isDeleteModalShow"
+        >
+          Đóng
         </b-button>
       </template>
 

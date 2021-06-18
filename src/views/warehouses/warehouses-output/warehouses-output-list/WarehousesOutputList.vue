@@ -292,6 +292,12 @@
                 @click="onClickDeleteWarehousesOutput(props.row.id,props.row.inputTypes,props.row.code, props.row.originalIndex, $formatISOtoVNI(props.row.date))"
               />
             </div>
+            <div
+              v-else-if="props.column.field === 'quantity' || props.column.field === 'price'"
+              style="padding-right: 4px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -303,23 +309,23 @@
             slot="column-filter"
             slot-scope="props"
           >
-            <b-row
+            <div
               v-if="props.column.field === 'quantity'"
               v-show="warehousesOutputPagination.totalElements"
               class="h7"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalQuantity) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
               v-else-if="props.column.field === 'price'"
               v-show="warehousesOutputPagination.totalElements"
               class="h7 px-0 mx-0"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalPrice) }}
-            </b-row>
+            </div>
           </template>
           <!-- END - Customer filter -->
 

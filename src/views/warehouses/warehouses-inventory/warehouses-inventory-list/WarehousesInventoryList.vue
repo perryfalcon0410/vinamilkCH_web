@@ -46,7 +46,7 @@
           mode="remote"
           :columns="columns"
           :rows="warehouseInventories"
-          style-class="vgt-table bordered"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,

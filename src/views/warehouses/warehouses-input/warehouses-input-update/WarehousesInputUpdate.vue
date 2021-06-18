@@ -184,7 +184,7 @@
           >
             <div v-if="totalProductQuantity > 0">
               <!-- START - Table Product -->
-              <div class="d-inline-flex rounded-top px-1 my-1">
+              <div class="d-inline-flex rounded-top my-1">
                 <strong>
                   Sản phẩm
                 </strong>
@@ -193,7 +193,7 @@
               <vue-good-table
                 :columns="columns"
                 :rows="products"
-                style-class="vgt-table striped"
+                style-class="vgt-table"
                 compact-mode
                 line-numbers
               >
@@ -225,38 +225,49 @@
                   slot="column-filter"
                   slot-scope="props"
                 >
-                  <b-row
+                  <div
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0"
-                    align-h="end"
+                    class="mx-0 text-right"
                   >
                     {{ $formatNumberToLocale(totalProductQuantity) }}
-                  </b-row>
+                  </div>
 
-                  <b-row
+                  <div
                     v-else-if="props.column.field === 'totalPrice'"
-                    class="mx-0"
-                    align-h="end"
+                    class="mx-0 text-right"
                   >
                     {{ totalProductPrice }}
-                  </b-row>
+                  </div>
 
-                  <b-row
+                  <div
                     v-else-if="props.column.field === 'productCode'"
                     class="mx-0"
-                    align-h="end"
                   >
                     {{ totalProductCode }}
-                  </b-row>
+                  </div>
                 </template>
                 <!-- START - Column filter -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div
+                    v-if="props.column.field === 'quantity' || props.column.field === 'totalPrice'"
+                    style="padding-right: 4px"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
               </vue-good-table>
               <!-- END - Table Product -->
             </div>
 
             <div v-if="showPromotionsTable">
               <!-- START - Table Product promotion -->
-              <div class="d-inline-flex rounded-top px-1 my-1">
+              <div class="d-inline-flex rounded-top my-1">
                 <strong>
                   Hàng khuyến mãi
                 </strong>
@@ -265,7 +276,7 @@
               <vue-good-table
                 :columns="columns"
                 :rows="promotions"
-                style-class="vgt-table striped"
+                style-class="vgt-table"
                 compact-mode
                 line-numbers
               >
@@ -288,21 +299,19 @@
                   slot="column-filter"
                   slot-scope="props"
                 >
-                  <b-row
+                  <div
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0"
-                    align-h="center"
+                    class="mx-0 text-right"
                   >
                     {{ $formatNumberToLocale(totalPromotionQuantity) }}
-                  </b-row>
+                  </div>
 
-                  <b-row
+                  <div
                     v-else-if="props.column.field === 'productCode'"
                     class="mx-0"
-                    align-h="center"
                   >
                     {{ totalPromotionCode }}
-                  </b-row>
+                  </div>
                 </template>
                 <template
                   slot="table-row"
@@ -311,6 +320,7 @@
                   <div v-if="props.column.field === 'quantity' && canEdit">
                     <b-input
                       v-model="props.row.quantity"
+                      class="text-right"
                       maxlength="7"
                       :number="true"
                       :value="props.row.quantity"
@@ -329,6 +339,9 @@
                       scale="1.2"
                       @click="onClickDeleteButton(props.row.originalIndex)"
                     />
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
                   </div>
                 </template>
                 <!-- START - Column filter -->
@@ -473,8 +486,9 @@ export default {
           label: 'Mã hàng',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
+          filterOptions: {
+            enabled: true,
+          },
         },
         {
           label: 'Số lượng',
@@ -484,52 +498,39 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Giá',
           field: 'price',
           type: 'number',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Tên hàng',
           field: 'name',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'ĐVT',
           field: 'unit',
-          type: 'number',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           type: 'number',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'SO No',
           field: 'soNo',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: '',
           field: 'feature',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-center',
           tdClass: 'text-center',
         },
       ],
