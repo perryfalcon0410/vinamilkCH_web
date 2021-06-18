@@ -1,5 +1,6 @@
 <template>
   <b-container
+    id="popover"
     fluid
     class="d-none d-print-block px-0 text-brand-3"
   >
@@ -20,7 +21,7 @@
       <div class="d-flex flex-column align-items-center">
         <strong style="font-size: 30px"> Hàng khuyến mãi </strong>
         <p class="my-1">
-          Từ ngày 01/02/2021 đến 23/04/2021
+          Từ ngày {{ commonInfo.fromDate }} đến {{ commonInfo.toDate }}
         </p>
         <p>Ngày in : 23/04/2021 - 11:33:28AM</p>
       </div>
@@ -189,10 +190,17 @@ import {
 export default {
   computed: {
     ...mapGetters(REPORT_WAREHOUSES_PROMOTIONS, [PRINT_REPORT_PROMOTION_GETTER]),
+    commonInfo() {
+      if (PRINT_REPORT_PROMOTION_GETTER) {
+        return PRINT_REPORT_PROMOTION_GETTER
+      }
+      return {}
+    },
   },
-  // updated() {
-  //   window.print()
-  // },
+  updated() {
+    console.log(this.commonInfo)
+    window.print()
+  },
 }
 </script>
 

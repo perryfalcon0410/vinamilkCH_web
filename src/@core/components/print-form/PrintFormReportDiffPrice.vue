@@ -10,19 +10,19 @@
       align-v="center"
     >
       <div class="d-flex flex-column">
-        <strong style="font-size: 17px"> CH GTSP Hải Dương </strong>
+        <strong style="font-size: 17px"> {{ commonInfo.shopName }} </strong>
         <p class="mt-1">
-          Add: 8 Hoàng Hoa Thám - Hải Dương
+          Add: {{ commonInfo.address }}
         </p>
-        <p>Tel: (84.320) 3 838 399</p>
+        <p>Tel: {{ commonInfo.phone }} </p>
       </div>
 
       <div class="d-flex flex-column align-items-center">
         <strong style="font-size: 30px"> BÁO CÁO CHÊNH LỆCH GIÁ </strong>
         <p class="my-1">
-          Từ ngày 01/02/2021 đến 23/04/2021
+          Từ ngày {{ $formatISOtoVNI(totalData.fromDate) }} đến {{ $formatISOtoVNI(totalData.toDate) }}
         </p>
-        <p>Ngày in : 23/04/2021 - 11:33:28AM</p>
+        <p>Ngày in : {{ $moment(totalData.reportDate).locale('en').format('DD/MM/YYYY - HH:mm:ss A') }}</p>
       </div>
 
       <!-- START - Invisible element to align title -->
@@ -30,7 +30,7 @@
         class="d-flex flex-column"
         style="opacity: 0"
       >
-        <strong style="font-size: 17px"> CH GTSP Hải Dương </strong>
+        <strong style="font-size: 17px"> {{ commonInfo.shopName }} </strong>
       </div>
       <!-- END - Invisible element to align title -->
     </b-row>
@@ -43,10 +43,10 @@
       align-v="end"
       style="background-color: gray"
     >
-      <div>Tổng cộng: <strong>29</strong>
+      <div>Tổng cộng: <strong>{{ $formatNumberToLocale(totalData.totalQuantity) }}</strong>
       </div>
-      <strong>504,161</strong>
-      <strong>31,000</strong>
+      <strong>{{ $formatNumberToLocale(totalData.totalPriceInput) }}</strong>
+      <strong>{{ $formatNumberToLocale(totalData.totalPriceOutput) }}</strong>
     </b-row>
     <!-- END - Total view -->
 
@@ -65,20 +65,20 @@
                 colspan="10"
               >
                 <strong class="mx-1">
-                  Số HĐ: số hđ - Ngày HĐ: ngày hđ - Số PO: số Po - Số nội bộ: 29439945 - Mã nhập hàng: IMP.MT10081.21.00004
+                  Số HĐ: {{ item.response.redInvoiceNo }} - Ngày HĐ: {{ $formatISOtoVNI(item.response.orderDate) }} - Số PO: {{ item.response.poNumber }} - Số nội bộ: {{ item.response.internalNumber }}- Mã nhập hàng: {{ item.response.transCode }}
                 </strong>
                 <b-row
                   class="mx-0"
                   align-h="center"
                 >
                   <div class="ml-5">
-                    Tổng cộng: 108
+                    Tổng cộng: {{ $formatNumberToLocale(item.response.totalQuantity) }}
                   </div>
                   <div class="mx-5">
-                    140,852,816
+                    {{ $formatNumberToLocale(item.response.totalPriceInput) }}
                   </div>
                   <div>
-                    1,045,112
+                    {{ $formatNumberToLocale(item.response.totalPriceOutput) }}
                   </div>
                 </b-row>
               </th>
@@ -161,49 +161,28 @@
 
           <!-- START - Body -->
           <tbody>
-            <tr>
-              <td>2</td>
-              <td>02BC10</td>
-              <td>SP Vinamilk giảm cân HG 525g</td>
-              <td>Hộp</td>
-              <td>100</td>
-              <td>1,354,354</td>
-              <td>135,435,400</td>
-              <td>10,049</td>
-              <td>1,004,900</td>
-              <td />
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>02BC10</td>
-              <td>SP Vinamilk giảm cân HG 525g</td>
-              <td>Hộp</td>
-              <td>100</td>
-              <td>1,354,354</td>
-              <td>135,435,400</td>
-              <td>10,049</td>
-              <td>1,004,900</td>
-              <td />
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>02BC10</td>
-              <td>SP Vinamilk giảm cân HG 525g</td>
-              <td>Hộp</td>
-              <td>100</td>
-              <td>1,354,354</td>
-              <td>135,435,400</td>
-              <td>10,049</td>
-              <td>1,004,900</td>
-              <td />
+            <tr
+              v-for="(product,stt) in reportData[index].info"
+              :key="product.id"
+            >
+              <td> {{ stt + 1 }} </td>
+              <td> {{ product.productCode }} </td>
+              <td> {{ product.productName }} </td>
+              <td> {{ product.unit }} </td>
+              <td> {{ $formatNumberToLocale(product.quantity) }} </td>
+              <td> {{ $formatNumberToLocale(product.inputPrice) }} </td>
+              <td> {{ $formatNumberToLocale(product.totalInput) }} </td>
+              <td> {{ $formatNumberToLocale(product.outputPrice) }} </td>
+              <td> {{ $formatNumberToLocale(product.totalOutput) }} </td>
+              <td> {{ $formatNumberToLocale(product.priceChange) }} </td>
             </tr>
           </tbody>
         <!-- END - Body -->
 
         </table>
       </b-col>
-      <!-- END - Table 2 -->
-    </div></b-container>
+    </div>
+  </b-container>
 </template>
 
 <script>
@@ -287,30 +266,26 @@ export default {
 
     reportData() {
       if (this.PRINT_REPORT_DIFFERENCE_GETTER) {
+        return this.PRINT_REPORT_DIFFERENCE_GETTER.details
+      }
+      return []
+    },
+    totalData() {
+      if (this.PRINT_REPORT_DIFFERENCE_GETTER) {
         return this.PRINT_REPORT_DIFFERENCE_GETTER
       }
-      return {
-        id: 'id',
-        redInvoiceNo: 'redInvoiceNo',
-        poNumber: 'poNumber',
-        internalNumber: 'internalNumber',
-        transDate: 'transDate',
-        orderDate: 'orderDate',
-        productCode: 'productCode',
-        productName: 'productName',
-        unit: 'unit',
-        quantity: 'quantity',
-        inputPrice: 'inputPrice',
-        totalInput: 'totalInput',
-        outputPrice: 'outputPrice',
-        totalOutput: 'totalOutput',
-        priceChange: 'priceChange',
+      return {}
+    },
+    commonInfo() {
+      if (this.PRINT_REPORT_DIFFERENCE_GETTER.shop) {
+        return this.PRINT_REPORT_DIFFERENCE_GETTER.shop
       }
+      return {}
     },
   },
+
   updated() {
-    console.log(this.reportData)
-  //   window.print()
+    window.print()
   },
 }
 </script>
