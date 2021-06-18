@@ -15,7 +15,7 @@
           xl
           lg="3"
           sm="4"
-          class="h8"
+          class="h7"
         >
           <div class="mt-sm-1 mt-xl-0">
             Mã xuất hàng
@@ -44,7 +44,7 @@
           xl
           lg="3"
           sm="4"
-          class="h8"
+          class="h7"
         >
           <div class="mt-sm-1 mt-xl-0">
             Số hoá đơn
@@ -73,7 +73,7 @@
           xl
           lg="3"
           sm="4"
-          class="h8"
+          class="h7"
         >
           <div
             class="mt-sm-1 mt-xl-0"
@@ -107,7 +107,7 @@
           xl
           lg="3"
           sm="4"
-          class="h8"
+          class="h7"
         >
           <div
             class="mt-sm-1 mt-xl-0"
@@ -141,7 +141,7 @@
           xl
           lg="3"
           sm="4"
-          class="h8"
+          class="h7"
         >
           <div class="mt-sm-1 mt-xl-0">
             Loại xuất

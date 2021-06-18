@@ -229,14 +229,14 @@
           class="aligns-items-button-center ml-1"
           @click="isDeleteModalShow = !isDeleteModalShow"
         >
-          Hủy
+          Đóng
         </b-button>
         <b-button
           variant="someThing"
           class="btn-brand-1 aligns-items-button-center"
           @click="confirmDelete"
         >
-          Xóa
+          Đồng ý
         </b-button>
       </template>
 
