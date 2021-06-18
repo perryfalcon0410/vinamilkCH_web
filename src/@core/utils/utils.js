@@ -121,6 +121,13 @@ export const getNow = () => {
   return dateTime
 }
 
+export const getCurrentTime = () => {
+  const date = moment().format('DD/MM/YYYY')
+  const time = moment().format('LT')
+  const dateTime = `${date} ${time}`
+  return dateTime
+}
+
 export const isEmpty = value => value === undefined || value === '' || value === null
 
 export const onlyNumberInput = e => {

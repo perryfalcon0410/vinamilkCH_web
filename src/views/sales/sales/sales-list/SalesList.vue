@@ -624,9 +624,6 @@ export default {
       toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
     },
     onclickAddProduct(index) {
-      //  const { usedShop } = this.loginInfo
-      this.editOnlinePermission = false
-
       if (this.editOnlinePermission === true && this.isCheckShopId === true) {
         if (index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)

@@ -18,7 +18,7 @@
             font-scale="2"
             class="mx-1"
           />
-          {{ customer.createdAt }}
+          {{ currentDate }}
         </b-row>
         <!-- END - Date  -->
 
@@ -57,56 +57,70 @@
         id="collapseCustomer"
         visible
       >
-        <b-col class="px-0 h7">
+        <b-col
+          class="px-0 h7"
+          md="12"
+        >
           <!-- START - Search -->
-          <b-input-group class="input-group-merge mt-1">
-            <b-input-group-prepend is-text>
-              <b-icon-search />
-            </b-input-group-prepend>
-            <b-form-input
-              ref="search"
-              v-model="search"
-              placeholder="Tìm khách hàng (F4)"
-              @mouseover="search.length >= minSearch ? inputSearchFocused = true : inputSearchFocused"
-              @mouseleave="inputSearchFocused = false"
-              @keyup.enter="showSearchModal"
-              @keyup="onChangeKeyWord"
-            />
-            <b-input-group-append is-text>
-              <b-icon-plus @click="showModalCreate" />
-            </b-input-group-append>
-          </b-input-group>
-          <!-- END - Search -->
-
-          <!-- START - Customer Popup -->
-          <b-collapse
-            v-model="inputSearchFocused"
-            class="position-absolute w-100"
-            style="zIndex:1"
+          <b-row
+            class="px-0 mx-0 "
           >
-            <b-container
-              class="my-1 bg-white rounded border border-primary shadow-lg"
-            >
-              <b-col
-                v-for="(value, index) in customersSearch"
-                :key="index"
-                class="px-0 my-1 border-bottom"
-                @click="getCustomerInfo(value)"
+            <b-input-group class="input-group-merge mt-1">
+              <b-input-group-prepend
+                is-text
+                style="position: absolute; height: 100%"
               >
-                <!-- START - Section Content -->
-                <b-col
-                  class="text-dark font-weight-bold px-0"
+                <b-icon-search />
+              </b-input-group-prepend>
+              <vue-autosuggest
+                ref="search"
+                v-model="search"
+                :suggestions="customersSearch"
+                :get-suggestion-value="getSuggestionValue"
+                class="w-100"
+                align-v="center"
+                :input-props="{
+                  id:'autosuggest__input',
+                  class:'form-control pl-4',
+                  placeholder:'Tìm khách hàng (F4)',
+                }"
+                @input="onChangeKeyWord"
+                @selected="onclickChooseCustomer"
+                @keyup.enter="showSearchModal"
+              >
+                <template
+                  slot-scope="{ suggestion }"
                 >
-                  {{ value.fullName }}
-                </b-col>
-                <b-col class="text-dark px-0">
-                  {{ value.code }} - {{ value.phoneNumber }}
-                </b-col>
-                <!-- END - Section Content -->
-              </b-col>
-            </b-container>
-          </b-collapse>
-          <!-- END - Customer Popup -->
+                  <b-row class="mx-0">
+
+                    <!-- START - Section Label -->
+                    <b-col>
+                      <b-col
+                        class="text-dark font-weight-bold"
+                        md="10"
+                      >
+                        {{ suggestion.item.fullName }}
+                      </b-col>
+                      <b-col
+                        class="text-dark font-weight-bold border-bottom"
+                      >
+                        {{ suggestion.item.code }} - {{ suggestion.item.phoneNumber }}
+                      </b-col>
+                    </b-col>
+                  <!-- END - Section Label -->
+                  </b-row>
+                </template>
+              </vue-autosuggest>
+              <b-input-group-append
+                is-text
+                style="position: absolute; right: 0px; height: 100%"
+              >
+                <b-icon-plus @click="showModalCreate" />
+              </b-input-group-append>
+            </b-input-group>
+          </b-row>
+
+          <!-- END - Search -->
 
           <!-- START - Phone Number -->
           <b-row
@@ -375,6 +389,8 @@ import {
 import saleData from '@/@db/sale'
 import commonData from '@/@db/common'
 import { formatDateToLocale, getTimeOfDate } from '@core/utils/filter'
+import { getCurrentTime } from '@core/utils/utils'
+import { VueAutosuggest } from 'vue-autosuggest'
 import {
   CUSTOMER,
   // GETTERS
@@ -411,6 +427,7 @@ export default {
     SalesSearchModal,
     SalesOnlineOrdersModal,
     PayModal,
+    VueAutosuggest,
   },
   props: {
     orderProducts: {
@@ -426,13 +443,17 @@ export default {
     return {
       inputSearchFocused: false,
       isShowSalesSearchModal: false,
-      customersSearch: [],
+      item: {},
+      customersSearch: [
+        { data: '' },
+      ],
       search: '',
       minSearch: commonData.minSearchLength,
       minOnlineOrder: commonData.minOnlineOrderLength,
       salemtPromotionId: '1',
       isCheckmanualCreate: true,
       currentCustomer: {},
+      currentDate: getCurrentTime(),
 
       // customer
       customer: {
@@ -558,21 +579,23 @@ export default {
 
     getCustomerSearch() {
       if (this.CUSTOMERS_SALE_GETTER.content) {
-        return this.CUSTOMERS_SALE_GETTER.content.map(data => ({
-          id: data.id,
-          shopId: data.shopId,
-          code: data.customerCode,
-          fullName: `${data.lastName} ${data.firstName}`,
-          phoneNumber: data.mobiPhone,
-          birthDay: formatDateToLocale(data.dob),
-          date: formatDateToLocale(data.createdAt),
-          address: data.address,
-          idNo: data.idNo,
-          feature: '',
-          totalBill: data.totalBill,
-          customerTypeId: data.customerTypeId,
-          scoreCumulated: data.scoreCumulated,
-        }))
+        return [{
+          data: this.CUSTOMERS_SALE_GETTER.content.map(data => ({
+            id: data.id,
+            shopId: data.shopId,
+            code: data.customerCode,
+            fullName: `${data.lastName} ${data.firstName}`,
+            phoneNumber: data.mobiPhone,
+            birthDay: formatDateToLocale(data.dob),
+            date: formatDateToLocale(data.createdAt),
+            address: data.address,
+            idNo: data.idNo,
+            feature: '',
+            totalBill: data.totalBill,
+            customerTypeId: data.customerTypeId,
+            scoreCumulated: data.scoreCumulated,
+          })),
+        }]
       }
       return []
     },
@@ -645,7 +668,7 @@ export default {
 
     window.addEventListener('keydown', e => {
       if (e.key === 'F4') {
-        this.$refs.search.focus()
+        this.$refs.search.$el.querySelector('input').focus()
       }
 
       if (e.key === 'F8') {
@@ -796,8 +819,11 @@ export default {
       const searchKeywords = {
         searchKeywords: this.search.trim(),
       }
-
-      this.GET_CUSTOMERS_SALE_ACTION(searchKeywords)
+      if (this.search.length >= this.minSearch) {
+        this.GET_CUSTOMERS_SALE_ACTION(searchKeywords)
+      } else {
+        this.customersSearch = [{ data: null }]
+      }
     },
 
     resetOrderNumber(item) {
@@ -805,6 +831,15 @@ export default {
         this.orderOnline.orderNumber = ''
       }
       this.$emit('salemtPromotionObjectSelected', this.salemtPromotionObjectSelected)
+    },
+
+    onclickChooseCustomer() {
+      this.customersSearch = [{ data: null }]
+      this.search = null
+    },
+
+    getSuggestionValue() {
+      return null
     },
   },
 }

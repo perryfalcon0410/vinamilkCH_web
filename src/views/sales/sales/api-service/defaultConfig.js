@@ -3,7 +3,7 @@ const VOUCHERS = '/vouchers'
 const SALES = '/sales'
 const ONLINE_ORDERS = '/online-orders'
 const PRODUCT = '/products'
-const CUSTOMER = 'customers/'
+const CUSTOMER = 'customers'
 
 export const getVouchersEndpoint = `${PROMOTION}/${VOUCHERS}`
 
