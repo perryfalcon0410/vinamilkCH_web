@@ -299,7 +299,7 @@ export default {
   },
 
   updated() {
-    // window.print()
+    window.print()
   },
 }
 </script>

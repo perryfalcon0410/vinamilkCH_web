@@ -42,7 +42,6 @@ export default {
         .then(res => {
           if (res.success) {
             state.reportSalesSaleReceipt = res.data
-            state.reportSalesSaleReceiptContent = res.data.response.content
           } else {
             throw new Error(res.statusValue)
           }

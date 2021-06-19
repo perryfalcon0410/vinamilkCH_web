@@ -296,10 +296,12 @@ export default {
       }
     },
     getReportSalesReceiptAmount() {
-      this.rows = [...this.getReportSalesReceiptAmount]
+      if (this.getReportSalesReceiptAmount.length > 0) {
+        this.rows = [...this.getReportSalesReceiptAmount]
+      }
     },
     getReportSalesReceiptAmountPrice() {
-      if (this.rows.length > 0) {
+      if (this.getReportSalesReceiptAmountPrice.length > 0) {
         for (let i = 0; i <= this.rows.length - 1; i += 1) {
           for (let j = 3; j <= this.getReportSalesReceiptAmountPrice[i].length - 1; j += 1) {
             if (j < this.getReportSalesReceiptAmountPrice[i].length - 1) {
@@ -313,12 +315,14 @@ export default {
     },
 
     getTotalInfo() {
-      this.totalQuantity = []
-      this.getTotalInfo.forEach((item, index) => {
-        if (index > 2) {
-          this.totalQuantity.push(item)
-        }
-      })
+      if (this.getTotalInfo.length > 0) {
+        this.totalQuantity = []
+        this.getTotalInfo.forEach((item, index) => {
+          if (index > 2) {
+            this.totalQuantity.push(item)
+          }
+        })
+      }
     },
   },
   mounted() {

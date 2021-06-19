@@ -300,7 +300,11 @@ export default {
       }
     },
     reasonOptions() {
-      this.reasonDisplayed = this.reasonOptions[0].id
+      this.reasonOptions.forEach((item, index) => {
+        if (item.label === 'Tất cả') {
+          this.reasonDisplayed = this.reasonOptions[index].id
+        }
+      })
       this.onSearch()
     },
   },
