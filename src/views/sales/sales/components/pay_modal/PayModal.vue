@@ -599,7 +599,7 @@
     <!-- END - Body -->
 
     <!-- START - Footer -->
-    <template #modal-footer="{ ok, cancel }">
+    <template #modal-footer="{ ok }">
       <b-row
         class="mx-auto"
       >
@@ -1225,7 +1225,7 @@ export default {
         products: this.orderProducts,
       }
 
-      this.GET_PROMOTION_CALCULATION_ACTION({
+      const paramGetPromotionCalculationData = {
         customerId: this.customer.id,
         orderType: Number(this.orderSelected),
         totalOrderAmount: Number(this.pay.totalAmount),
@@ -1234,7 +1234,15 @@ export default {
         saleOffAmount: Number(this.pay.discount.discountAmount),
         promotionInfo: paramPromotionAmountInfos,
         orderRequest: paramOrderRequest,
-      })
+        promotionType: null,
+        programId: null,
+      }
+      const programZV21 = this.promotionPrograms.filter(p => p.programType === Number(saleData.programPromotionType[2].id) && p.isUse)
+      if (programZV21) {
+        paramGetPromotionCalculationData.promotionType = programZV21.promotionType
+        paramGetPromotionCalculationData.programId = programZV21.programId
+      }
+      this.GET_PROMOTION_CALCULATION_ACTION(paramGetPromotionCalculationData)
       this.isDisabledPaymentBtn = false
       this.isDisabledPrintAndPaymentBtn = false
     },
