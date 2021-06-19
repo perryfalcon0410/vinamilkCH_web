@@ -606,6 +606,7 @@
         <b-button
           variant="none"
           class="d-flex align-items-center text-uppercase btn-brand-1"
+          :disabled="isDisabledPromotionBtn"
           @click="onClickPromotionCalculation()"
         >
           Tính khuyến mãi
@@ -613,6 +614,7 @@
         <b-button
           variant="none"
           class="d-flex align-items-center ml-1 text-uppercase btn-brand-1"
+          :disabled="isDisabledPrintTempBtn"
           @click="ok()"
         >
           <b-icon-printer
@@ -624,7 +626,8 @@
         <b-button
           variant="none"
           class="d-flex align-items-center mx-1 text-uppercase btn-brand-1"
-          @click="ok()"
+          :disabled="isDisabledPrintAndPaymentBtn"
+          @click="createSaleOrderAndPrint()"
         >
           <b-icon-printer
             class="mr-1"
@@ -635,8 +638,8 @@
         <b-button
           variant="none"
           class="d-flex align-items-center text-uppercase btn-brand-1"
-          :disabled="pay.totalQuantity === 0"
-          @click="createSaleOrder"
+          :disabled="isDisabledPaymentBtn"
+          @click="createSaleOrder()"
         >
           <b-icon-cash-stack
             class="mr-1"
@@ -647,6 +650,7 @@
         <b-button
           variant="none"
           class="d-flex align-items-center mx-1 text-uppercase btn-brand-1"
+          :disabled="isDisabledRePrintBtn"
           @click="ok()"
         >
           <b-icon-printer
@@ -700,6 +704,8 @@ import {
   GET_PROMOTION_PROGRAMS_GETTER,
   GET_PROMOTION_CALCULATION_GETTER,
   GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
+  PRINT_SALES_GETTER,
+  CREATE_SALE_ORDER_GETTER,
 
   // ACTIONS
   CREATE_SALE_ORDER_ACTION,
@@ -708,6 +714,7 @@ import {
   GET_PROMOTION_PROGRAMS_ACTION,
   GET_PROMOTION_CALCULATION_ACTION,
   GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
+  PRINT_SALES_ACTION,
 } from '../../store-module/type'
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
 
@@ -786,6 +793,7 @@ export default {
       cursorProduct: -1,
       salePaymentTypeOptions: saleData.salePaymentType,
       pay: {
+        saleOrderId: null,
         totalQuantity: 0,
         totalAmount: null,
         promotionAmount: null,
@@ -816,7 +824,7 @@ export default {
       allProducts: [],
       formId: 5, // hard code permission
       ctrlId: 1, // hard code permission
-
+      printSaleData: {},
       // validation rules
       number,
 
@@ -826,6 +834,13 @@ export default {
           numeralThousandsGroupStyle: 'thousand',
         },
       },
+
+      // Enable/disable buttons
+      isDisabledPromotionBtn: false,
+      isDisabledPrintTempBtn: false,
+      isDisabledPrintAndPaymentBtn: false,
+      isDisabledPaymentBtn: false,
+      isDisabledRePrintBtn: false,
     }
   },
   computed: {
@@ -836,6 +851,8 @@ export default {
       GET_PROMOTION_PROGRAMS_GETTER,
       GET_PROMOTION_CALCULATION_GETTER,
       GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
+      PRINT_SALES_GETTER,
+      CREATE_SALE_ORDER_GETTER,
     ]),
 
     getDiscount() {
@@ -862,6 +879,12 @@ export default {
     },
     getPromotionCalculation() {
       return this.GET_PROMOTION_CALCULATION_GETTER
+    },
+    getPrintSaleData() {
+      return this.PRINT_SALES_GETTER
+    },
+    getCreateSale() {
+      return this.CREATE_SALE_ORDER_GETTER
     },
   },
   watch: {
@@ -963,36 +986,23 @@ export default {
         }
       }
     },
+    getPrintSaleData() {
+      this.printSaleData = { ...this.getPrintSaleData }
+    },
+    getCreateSale() {
+      this.saleOrderId = this.getCreateSale.orderId
+    },
   },
 
-  created() {
-    window.addEventListener('keydown', e => {
-      if (e.key === 'F8') {
-        // const paramProducts = this.orderProducts.map(data => ({
-        //   productId: data.productId,
-        //   productCode: data.productCode,
-        //   quantity: data.quantity,
-        // }))
-        // this.GET_PROMOTION_PROGRAMS_ACTION({
-        //   customerId: this.customer.id,
-        //   orderType: Number(saleData.orderType[0].id),
-        //   products: paramProducts,
-        // })
-
-        // if (this.totalQuantity === 0 || this.editOnlinePermission === false || (this.orderSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')) {
-        //   this.$root.$emit('bv::hide::modal', 'pay-modal')
-        // } else {
-        //   this.$root.$emit('bv::show::modal', 'pay-modal')
-        // }
-      }
-    })
-  },
   mounted() {
     window.addEventListener('keydown', e => {
       if (e.key === 'F9') {
         this.createSaleOrder()
       }
     })
+    this.isDisabledPaymentBtn = true
+    this.isDisabledPrintAndPaymentBtn = true
+    this.isDisabledRePrintBtn = true
   },
   methods: {
     ...mapActions(SALES, [
@@ -1002,6 +1012,7 @@ export default {
       GET_PROMOTION_PROGRAMS_ACTION,
       GET_PROMOTION_CALCULATION_ACTION,
       GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
+      PRINT_SALES_ACTION,
     ]),
 
     onVoucherButtonClick() {
@@ -1224,6 +1235,8 @@ export default {
         promotionInfo: paramPromotionAmountInfos,
         orderRequest: paramOrderRequest,
       })
+      this.isDisabledPaymentBtn = false
+      this.isDisabledPrintAndPaymentBtn = false
     },
     onChangePromotionAmout(amount, maxAmout) {
       if (amount > maxAmout) {
@@ -1275,11 +1288,33 @@ export default {
             extraAmount: Number(this.pay.extraAmount) || 0,
           },
           onSuccess: () => {
-            this.$root.$emit('bv::hide::modal', 'pay-modal')
-            this.resetOrderPayment()
+            this.isDisabledRePrintBtn = false
+            this.isDisabledPrintAndPaymentBtn = true
+            this.isisDisabledPrintTempBtn = true
+            this.isDisabledPromotionBtn = true
+            this.isDisabledPaymentBtn = true
           },
         })
       }
+    },
+    createSaleOrderAndPrint() {
+      this.createSaleOrder()
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_SALES_RECEIPT_ACTION({
+        data: {
+          salesReceiptId: this.saleOrderId,
+          formId: this.formId,
+          ctrlId: this.ctrlId,
+        },
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
+    },
+    cancel() {
+      this.$root.$emit('bv::hide::modal', 'pay-modal')
+      this.resetOrderPayment()
     },
   },
 }

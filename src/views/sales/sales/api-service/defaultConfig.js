@@ -40,3 +40,7 @@ export const getItemsProductsProgramEndpoint = `${SALES}/promotion-products`
 export const getVoucherBySerialEndpoint = `${PROMOTION}/${VOUCHERS}/code`
 
 export const getCustomerToSaleEndpoint = `${CUSTOMER}/customers-to-sale`
+
+export const printSalesEndpoint = `${SALES}/sale-orders/print-sale-order`
+
+export const printSalesTempEndpoint = `${SALES}/printtmp`

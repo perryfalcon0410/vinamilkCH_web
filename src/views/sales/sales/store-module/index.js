@@ -23,6 +23,9 @@ import {
   GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
   GET_VOUCHER_BY_SERIAL_GETTER,
   CUSTOMERS_SALE_GETTER,
+  PRINT_SALES_GETTER,
+  CREATE_SALE_ORDER_GETTER,
+  PRINT_SALES_TEMP_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -45,6 +48,8 @@ import {
   GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
   GET_VOUCHER_BY_SERIAL_ACTION,
   GET_CUSTOMERS_SALE_ACTION,
+  PRINT_SALES_ACTION,
+  PRINT_SALES_TEMP_ACTION,
 } from './type'
 
 export default {
@@ -71,6 +76,9 @@ export default {
     itemsProductsProgram: [],
     voucherBySerial: {},
     customer: {},
+    printSaleData: {},
+    createSaleData: {},
+    printSaleTempData: {},
   },
 
   getters: {
@@ -133,6 +141,15 @@ export default {
     },
     [CUSTOMERS_SALE_GETTER](state) {
       return state.customer
+    },
+    [PRINT_SALES_GETTER](state) {
+      return state.printSaleData || {}
+    },
+    [PRINT_SALES_TEMP_GETTER](state) {
+      return state.printSaleTempData || {}
+    },
+    [CREATE_SALE_ORDER_GETTER](state) {
+      return state.createSaleData || {}
     },
   },
 
@@ -307,13 +324,13 @@ export default {
           toasts.error(error.message)
         })
     },
-    [CREATE_SALE_ORDER_ACTION]({}, val) {
+    [CREATE_SALE_ORDER_ACTION]({ state }, val) {
       SalesServices
         .createSaleOrder(val.orderSale)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            state.createSaleData = res.data
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)
@@ -436,6 +453,38 @@ export default {
         .then(res => {
           if (res.success) {
             state.customer = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_SALES_ACTION]({ state }, val) {
+      SalesServices
+        .printSales(val.data)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printSaleData = res.data
+            val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_SALES_TEMP_ACTION]({ state }, val) {
+      SalesServices
+        .printSalesTemp(val.orderSale)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.createSaleData = res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

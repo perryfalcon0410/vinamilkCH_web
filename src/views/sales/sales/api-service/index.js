@@ -19,6 +19,8 @@ import {
   getItemsProductsProgramEndpoint,
   getVoucherBySerialEndpoint,
   getCustomerToSaleEndpoint,
+  printSalesEndpoint,
+  printSalesTempEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -113,5 +115,13 @@ export default {
     return axios.get(getCustomerToSaleEndpoint, {
       params: formatURLParams(args),
     })
+  },
+  printSales(args) {
+    return axios.get(`${printSalesEndpoint}/${args.salesReceiptId}`, {
+      params: formatURLParams(args),
+    })
+  },
+  printSalesTemp(args) {
+    return axios.post(printSalesTempEndpoint, args)
   },
 }
