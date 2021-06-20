@@ -6,13 +6,14 @@
 
     <!-- START - Search -->
     <reports-customers-non-transactional-list-search
+      class="d-print-none"
       :per-page-size="paginationData.size"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />
     <!-- END - Search -->
 
-    <div class="bg-white rounded shadow rounded my-1">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
@@ -44,7 +45,7 @@
       <!-- END - Header -->
 
       <!-- START - Table -->
-      <b-col class="py-1">
+      <b-col class="py-1 d-print-none">
         <vue-good-table
           :columns="columns"
           mode="remote"
@@ -135,6 +136,10 @@
       </b-col>
       <!-- END - Table -->
     </div>
+
+    <!-- STAT - Print form -->
+    <print-form-report-customer-no-order />
+    <!-- END - Print form -->
   </b-container>
 </template>
 <script>
@@ -150,6 +155,7 @@ import commonData from '@/@db/common'
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
+import PrintFormReportCustomerNoOrder from '@core/components/print-form/PrintFormReportCustomerNoOrder.vue'
 import ReportsCustomersNonTransactionalListSearch from './components/ReportsCustomersNonTransactionalListSearch.vue'
 import {
   REPORT_CUSTOMERS_NON_TRANSACTIONAL,
@@ -165,6 +171,7 @@ import {
 export default {
   components: {
     ReportsCustomersNonTransactionalListSearch,
+    PrintFormReportCustomerNoOrder,
   },
   data() {
     return {
@@ -300,6 +307,9 @@ export default {
     // Start - xuat excel
     onClickExcelExportButton() {
       this.EXPORT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION({ ...this.decentralization, ...this.searchData })
+    },
+    onClickPrintButton() {
+      window.print()
     },
   },
 }

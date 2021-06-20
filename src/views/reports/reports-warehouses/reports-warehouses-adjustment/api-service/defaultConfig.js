@@ -5,3 +5,4 @@ export const getReportsWarehousesAdjustmentEndpoint = `${reports}/in-out-adjustm
 export const getProductCatListsEndpoint = `${sales}${products}/all-product-cat`
 export const getProductListsEndpoint = `${sales}${products}/choose-product`
 export const exportsWarehousesAdjustmentEndpoint = `${reports}/in-out-adjustment/excel`
+export const printWarehousesAdjustmentEndpoint = `${reports}/in-out-adjustment/prrint`

@@ -424,6 +424,13 @@ export default {
 
   mounted() {
     resizeAbleTable()
+    // this.PRINT_RETURN_GOODS_ACTION({
+    //   ...this.searchOptions,
+    //   ...this.decentralization,
+    //   onSuccess: () => {
+    //     this.$root.$emit('bv::enable::popover')
+    //   },
+    // })
   },
   methods: {
     ...mapActions(REPORT_RETURNED_GOODS, [

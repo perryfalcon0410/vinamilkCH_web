@@ -3,6 +3,7 @@ import { formatURLParams } from '@/@core/utils/utils'
 import {
   getReportsCustomersNonTransactionalEndpoint,
   exportReportsCustomersNonTransactionalEndpoint,
+  printReportsCustomersNonTransactionalEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -15,6 +16,11 @@ export default {
     return axios.get(exportReportsCustomersNonTransactionalEndpoint, {
       params: formatURLParams(args),
       responseType: 'blob',
+    })
+  },
+  printReportsCustomersNonTransactional(args) {
+    return axios.get(printReportsCustomersNonTransactionalEndpoint, {
+      params: formatURLParams(args),
     })
   },
 }

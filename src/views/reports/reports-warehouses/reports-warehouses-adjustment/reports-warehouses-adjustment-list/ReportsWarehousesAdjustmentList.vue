@@ -25,14 +25,6 @@
           <b-button
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
-            @click="onClickPrintButton"
-          >
-            <b-icon-file-earmark-x-fill class="mr-50" />
-            In
-          </b-button>
-          <b-button
-            class="btn-brand-1 h8 align-items-button-center rounded ml-1"
-            variant="someThing"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />

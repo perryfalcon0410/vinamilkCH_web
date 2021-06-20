@@ -5,6 +5,7 @@ import {
   getProductCatListsEndpoint,
   getProductListsEndpoint,
   exportsWarehousesAdjustmentEndpoint,
+  printWarehousesAdjustmentEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -28,6 +29,11 @@ export default {
     return axios.get(exportsWarehousesAdjustmentEndpoint, {
       params: formatURLParams(args),
       responseType: 'blob',
+    })
+  },
+  printWarehousesAdjustment(args) {
+    return axios.get(printWarehousesAdjustmentEndpoint, {
+      params: formatURLParams(args),
     })
   },
 }
