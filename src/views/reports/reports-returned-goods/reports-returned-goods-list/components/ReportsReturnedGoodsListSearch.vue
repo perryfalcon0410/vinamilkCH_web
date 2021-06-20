@@ -8,6 +8,7 @@
   >
     <b-form
       class="d-print-none"
+      @keyup.enter="onClickSearchButton"
     >
       <v-card-actions
         title="Tìm kiếm"
@@ -25,9 +26,11 @@
           </div>
           <b-input-group
             class="input-group-merge"
+            @keyup.enter="onClickSearchButton"
           >
             <b-form-input
               v-model="reciept"
+              trim
               class="h7 text-brand-3"
               placeholder="Nhập mã trả hàng"
             />
@@ -158,6 +161,7 @@
               v-model="ids"
               class="h7 text-brand-3"
               placeholder="Mã sản phẩm"
+              @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append
               is-text
@@ -327,15 +331,19 @@ export default {
         toDate: reverseVniDate(this.toDate),
         reciept: this.reciept,
         reason: this.reasonSelected,
-        productKW: this.ids,
+        productKW: this.ids?.replace(/\s+/g, ''),
       }
       this.updateSearchData(searchData)
       this.GET_REPORT_RETURNED_GOODS_ACTION(searchData)
     },
 
     onClickSearchButton() {
-      this.onSearch()
-      this.$emit('onClickSearchButton')
+      this.$refs.formContainer.validate().then(success => {
+        if (success) {
+          this.onSearch()
+          this.$emit('onClickSearchButton')
+        }
+      })
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)

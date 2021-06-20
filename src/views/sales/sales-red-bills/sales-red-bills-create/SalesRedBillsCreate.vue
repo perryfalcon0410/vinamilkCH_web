@@ -335,7 +335,7 @@
                 <b-row
                   v-if="props.column.field === 'quantity'"
                   class="h7 px-0 mx-1"
-                  align-h="center"
+                  align-h="end"
                 >
                   {{ $formatNumberToLocale(totalQuantity) }}
                 </b-row>
@@ -517,36 +517,32 @@ export default {
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          thClass: 'text-left',
-          tdClass: 'text-left align-middle',
+          tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          thClass: 'text-left',
-          tdClass: 'text-left align-middle',
+          tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: 'Ngành hàng',
           field: 'industry',
-          thClass: 'text-center',
-          tdClass: 'text-center align-middle',
+          tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
-          thClass: 'text-center',
-          tdClass: 'text-center align-middle',
+          tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: 'Số lượng',
           field: 'quantity',
-          thClass: 'text-center',
-          tdClass: 'text-right align-middle',
+          type: 'number',
+          tdClass: 'align-middle',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -555,15 +551,15 @@ export default {
         {
           label: 'Đơn giá',
           field: 'productPrice',
-          thClass: 'text-center',
-          tdClass: 'text-right align-middle',
+          type: 'number',
+          tdClass: ' align-middle',
           sortable: false,
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
-          thClass: 'text-right',
-          tdClass: 'text-right align-middle',
+          type: 'number',
+          tdClass: 'align-middle',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -572,15 +568,15 @@ export default {
         {
           label: 'VAT %',
           field: 'vat',
-          thClass: 'text-center',
-          tdClass: 'text-right align-middle',
+          type: 'number',
+          tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: 'Tiền thuế GTGT',
           field: 'productExported',
-          thClass: 'text-right',
-          tdClass: 'text-right align-middle',
+          type: 'number',
+          tdClass: 'align-middle',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -589,8 +585,7 @@ export default {
         {
           label: 'Ghi chú',
           field: 'note',
-          thClass: 'text-center',
-          tdClass: 'text-left align-middle',
+          tdClass: 'align-middle',
           sortable: false,
         },
         {

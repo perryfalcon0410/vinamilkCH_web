@@ -46,7 +46,11 @@ export default {
         .then(res => {
           if (res.success) {
             state.reportSalesQuantityReceipt = res.data
-            state.reportSalesQuantityReceiptContent = res.data.response.content
+            // if (res.data) {
+            state.reportSalesQuantityReceiptContent = res.data
+            //   return
+            // }
+            // state.reportSalesQuantityReceiptContent = []
           } else {
             throw new Error(res.statusValue)
           }
@@ -75,13 +79,9 @@ export default {
         .exportReportSalesQuantityReceipts(val)
         .then(response => response.data)
         .then(res => {
-          if (res.success) {
-            const fileName = `Bao_cao_so_luong_ha_don_theo_khach_hang_Filled_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
-            const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-            FileSaver.saveAs(blob, fileName)
-          } else {
-            throw new Error(res.statusValue)
-          }
+          const fileName = `Bao_cao_so_luong_ha_don_theo_khach_hang_Filled_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
+          const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+          FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
           toasts.error(error.message)

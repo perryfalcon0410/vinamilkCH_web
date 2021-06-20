@@ -6,7 +6,9 @@
     v-slot="{invalid}"
     slim
   >
-    <b-form>
+    <b-form
+      @keyup.enter="onClickSearchButton"
+    >
       <v-card-actions
         title="Tìm kiếm"
       >
@@ -106,6 +108,7 @@
               v-model="ids"
               class="h7 text-brand-3"
               placeholder="Mã sản phẩm"
+              @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append
               is-text
@@ -275,8 +278,14 @@ export default {
       this.updateSearchData(searchData)
       this.GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION(searchData)
     },
+
     onClickSearchButton() {
-      this.onSearch()
+      this.$refs.formContainer.validate().then(success => {
+        if (success) {
+          this.onSearch()
+          this.$emit('onClickSearchButton')
+        }
+      })
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)

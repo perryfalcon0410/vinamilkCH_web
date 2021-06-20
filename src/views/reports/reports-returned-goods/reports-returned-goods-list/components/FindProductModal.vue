@@ -30,7 +30,8 @@
           </div>
           <b-form-input
             id="form-input-customer"
-            v-model="searchOptions.productCodes"
+            v-model="searchOptions.productCode"
+            trim
             class="h7 text-brand-3 height-button-brand-1"
             placeholder="Nhập mã sản phẩm"
             @keyup.enter="onSearchClick"
@@ -51,6 +52,7 @@
           </div>
           <b-form-input
             v-model="searchOptions.productName"
+            trim
             class="h7 text-brand-3 height-button-brand-1"
             placeholder="Nhập tên sản phẩm"
             @keyup.enter="onSearchClick"
@@ -99,13 +101,18 @@
       </v-card-actions>
       <!-- START- Table -->
       <div class="bg-white rounded shadow rounded mt-1 p-1">
+        <div class="pt-0">
+          <strong class="text-blue-vinamilk pt-2">
+            Tổng cộng: {{ $formatNumberToLocale(selectedProductRow.length) }} sản phẩm
+          </strong>
+        </div>
         <vue-good-table
           ref="products-table"
           :columns="columns"
           mode="remote"
           :rows="products"
           class="pb-1 m-1"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
           compact-mode
           line-numbers
           :pagination-options="{
@@ -297,7 +304,7 @@ export default {
       width: window.innerWidth,
       prodcutCatSelected: null,
       searchOptions: {
-        productCodes: '',
+        productCode: '',
         productName: '',
       },
       selectedProductRow: [],

@@ -616,12 +616,8 @@ export default {
     },
 
     onChangeKeyWord() {
-      if (this.isCheckShopId === true) {
-        // this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-        this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
-        return
-      }
-      toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
+      // this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+      this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
     },
     onclickAddProduct(index) {
       if (this.editOnlinePermission === true && this.isCheckShopId === true) {

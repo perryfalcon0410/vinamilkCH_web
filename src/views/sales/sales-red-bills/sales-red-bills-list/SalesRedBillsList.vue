@@ -670,21 +670,21 @@ export default {
     },
     onClickPrintButton() {
       if (this.selectedRedBillRows && this.selectedRedBillRows.length > 0) {
-        if (this.selectedRedBillRows.length === 1) {
+        this.selectedRedBillRows.forEach(data => {
           this.$root.$emit('bv::hide::popover')
           this.$root.$emit('bv::disable::popover')
           this.PRINT_RED_INVOICES_ACTION({
             data: {
-              id: this.selectedRedBillRows[0].id,
+              id: data.id,
               params: { ...this.decentralization },
             },
             onSuccess: () => {
               this.$root.$emit('bv::enable::popover')
             },
           })
-          return
-        }
-        toasts.error('chỉ cho phép in lần lượt từng hóa đơn!')
+        })
+        this.selectedRedBillRows = []
+        this.onSearchClick()
       } else {
         toasts.error('Vui lòng chọn hoá đơn đỏ để in!')
       }

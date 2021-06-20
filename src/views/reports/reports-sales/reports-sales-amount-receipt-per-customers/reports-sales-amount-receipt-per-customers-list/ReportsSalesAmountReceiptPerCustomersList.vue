@@ -75,7 +75,7 @@
             >
               <b-row
                 v-if="props.column.field === `${item.field}`"
-                class="mx-0"
+                class="h7 text-brand-3"
                 align-h="end"
               >
                 {{ (totalQuantity[item.index]) }}
@@ -83,7 +83,7 @@
             </b-col>
             <b-row
               v-if="props.column.field === 'sumTotal'"
-              class="mx-0"
+              class="h7 text-brand-3 mx-0"
               align-h="end"
             >
               {{ (totalQuantity[totalQuantity.length-1]) }}
@@ -199,22 +199,16 @@ export default {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
       ],
       lastCol: {
@@ -224,8 +218,7 @@ export default {
         filterOptions: {
           enabled: true,
         },
-        thClass: 'text-right',
-        tdClass: 'text-right',
+        type: 'number',
       },
     }
   },
@@ -235,7 +228,7 @@ export default {
       REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER,
     ]),
     getTotalInfo() {
-      if (this.REPORT_SALES__QUANTITY_SALE_RECEIPT_GETTER.totals) {
+      if (this.REPORT_SALES__QUANTITY_SALE_RECEIPT_GETTER && this.REPORT_SALES__QUANTITY_SALE_RECEIPT_GETTER.totals) {
         return this.REPORT_SALES__QUANTITY_SALE_RECEIPT_GETTER.totals
       }
       return {}
@@ -260,37 +253,44 @@ export default {
       return {}
     },
     getReportSalesReceiptQuantity() {
-      return this.REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER.map(data => ({
-        customerCode: data[0],
-        customerName: data[1],
-        address: data[2],
-      }))
+      if (this.REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER && this.REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER.response) {
+        return this.REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER.response.content.map(data => ({
+          customerCode: data[0],
+          customerName: data[1],
+          address: data[2],
+        }))
+      }
+      return []
     },
     getReportSalesReceiptQuantityPrice() {
-      return this.REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER
+      if (this.REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER && this.REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER.response) {
+        return this.REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER.response.content
+      }
+      return []
     },
   },
   watch: {
     // add columns dynamically
     getReportSalesReceiptQuantityDates() {
-      this.labelName = []
-      this.columns = [...this.initalCol]
-      this.getReportSalesReceiptQuantityDates.forEach((item, index) => {
-        const obj = {
-          index,
-          label: item,
-          field: `${index + 3}`,
-          sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        }
-        this.labelName.push(obj)
-        this.columns.push(obj)
-      })
-      this.columns.push(this.lastCol)
+      if (this.getReportSalesReceiptQuantityDates.length > 0) {
+        this.labelName = []
+        this.columns = [...this.initalCol]
+        this.getReportSalesReceiptQuantityDates.forEach((item, index) => {
+          const obj = {
+            index,
+            label: item,
+            field: `${index + 3}`,
+            sortable: false,
+            filterOptions: {
+              enabled: true,
+            },
+            type: 'number',
+          }
+          this.labelName.push(obj)
+          this.columns.push(obj)
+        })
+        this.columns.push(this.lastCol)
+      }
     },
     getReportSalesReceiptQuantity() {
       this.reportQuantityReceiptsList = [...this.getReportSalesReceiptQuantity]
@@ -308,11 +308,15 @@ export default {
     },
     getTotalInfo() {
       this.totalQuantity = []
-      this.getTotalInfo.forEach((item, index) => {
-        if (index > 2) {
-          this.totalQuantity.push(item)
-        }
-      })
+      if (this.getTotalInfo.length > 0) {
+        this.getTotalInfo.forEach((item, index) => {
+          if (index > 2) {
+            this.totalQuantity.push(item)
+          }
+        })
+        return
+      }
+      this.totalQuantity = []
     },
   },
   mounted() {

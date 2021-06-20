@@ -348,8 +348,8 @@ export default {
           label: 'Ngày trả',
           field: 'payDay',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Lý do trả',
