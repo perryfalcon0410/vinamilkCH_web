@@ -59,7 +59,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.reportExchangeDamagedGoods = res.data
+            state.reportExchangeDamagedGoods = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }

@@ -81,7 +81,7 @@
                     v-model="billNumber"
                     :state="touched ? passed : null"
                     :disabled="importType !== inputType"
-                    class="h7"
+                    class="h7 text-uppercase"
                     maxlength="50"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -757,7 +757,7 @@ export default {
             id: this.id,
             type: this.importType,
             note: this.note,
-            redInvoiceNo: this.billNumber?.trim(),
+            redInvoiceNo: this.billNumber?.toUpperCase()?.trim(),
             orderDate: formatVniDateToISO(this.billDate),
             internalNumber: this.internalNumber?.trim(),
             poCoNumber: this.poNumber?.trim(),

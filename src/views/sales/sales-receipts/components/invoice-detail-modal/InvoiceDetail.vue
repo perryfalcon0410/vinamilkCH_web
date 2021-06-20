@@ -16,31 +16,31 @@
     >
       <b-row
         v-if="props.column.field === 'number'"
-        class="mx-0"
+        class="mx-0 h7 text-brand-3"
         align-h="end"
       >
-        {{ total.totalQuantity }}
+        {{ $formatNumberToLocale(total.totalQuantity) }}
       </b-row>
       <b-row
         v-if="props.column.field === 'intoMoney'"
-        class="mx-0"
+        class="mx-0 h7 text-brand-3"
         align-h="end"
       >
-        {{ total.totalAmount }}
+        {{ $formatNumberToLocale(total.totalAmount) }}
       </b-row>
       <b-row
         v-else-if="props.column.field === 'discount'"
-        class="mx-0"
+        class="mx-0 h7 text-brand-3"
         align-h="end"
       >
-        {{ total.totalDiscount }}
+        {{ $formatNumberToLocale(total.totalDiscount) }}
       </b-row>
       <b-row
         v-else-if="props.column.field === 'bill'"
-        class="mx-0"
+        class="mx-0 h7 text-brand-3"
         align-h="end"
       >
-        {{ total.totalPayment }}
+        {{ $formatNumberToLocale(total.totalPayment) }}
       </b-row>
     </template>
   </vue-good-table>

@@ -80,7 +80,7 @@
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ salesReceiptsTotal.totalAmount }}
+              {{ $formatNumberToLocale(salesReceiptsTotal.totalAmount) }}
             </b-row>
 
             <b-row
@@ -89,7 +89,7 @@
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ (salesReceiptsTotal.allTotal) }}
+              {{ $formatNumberToLocale(salesReceiptsTotal.allTotal) }}
             </b-row>
           </template>
           <template
@@ -240,7 +240,6 @@ import {
 import {
   formatDateToLocale,
 } from '@core/utils/filter'
-import lodash from 'lodash'
 import commonData from '@/@db/common'
 import {
   resizeAbleTable,
@@ -251,12 +250,6 @@ import {
   SALESRECEIPTS,
   SALES_RECEIPTS_GETTER,
   SALES_RECEIPTS_DETAIL_GETTER,
-  SALES_RECEIPTS_DETAIL_TOTAL_GETTER,
-  SALES_RECEIPTS_DISCOUNT_GETTER,
-  SALES_RECEIPTS_PROMOTION_GETTER,
-  SALES_RECEIPT_DETAIL_INFOS_GETTER,
-  SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
-  SALES_RECEIPTS_PAGINATION_GETTER,
   // ACTIONS
   GET_SALES_RECEIPTS_ACTION,
   GET_SALES_RECEIPTS_DETAIL_ACTION,
@@ -374,71 +367,89 @@ export default {
     ...mapGetters(SALESRECEIPTS, [
       SALES_RECEIPTS_GETTER,
       SALES_RECEIPTS_DETAIL_GETTER,
-      SALES_RECEIPTS_DETAIL_TOTAL_GETTER,
-      SALES_RECEIPTS_DISCOUNT_GETTER,
-      SALES_RECEIPTS_PROMOTION_GETTER,
-      SALES_RECEIPT_DETAIL_INFOS_GETTER,
-      SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER,
-      SALES_RECEIPTS_PAGINATION_GETTER,
     ]),
     salesReceiptList() {
-      return this.SALES_RECEIPTS_GETTER.map(data => ({
-        id: data.id,
-        numberBill: data.orderNumber,
-        customerCode: data.customerNumber,
-        name: data.customerName,
-        dayTime: formatDateToLocale(data.orderDate),
-        totalValue: this.$formatNumberToLocale(data.amount),
-        note: data.note,
-        discountMoney: this.$formatNumberToLocale(data.totalPromotion),
-        moneyAccumulated: data.accumulation,
-        payments: this.$formatNumberToLocale(data.total),
-        print: (data.usedRedInvoice === true) ? 'Đã in' : 'Chưa in',
-        noteHdd: data.redInvoiceRemark,
-        company: data.comName,
-        taxCode: data.taxCode,
-        address: data.address,
-      }))
+      if (this.SALES_RECEIPTS_GETTER.response) {
+        return this.SALES_RECEIPTS_GETTER.response.content.map(data => ({
+          id: data.id,
+          numberBill: data.orderNumber,
+          customerCode: data.customerNumber,
+          name: data.customerName,
+          dayTime: formatDateToLocale(data.orderDate),
+          totalValue: this.$formatNumberToLocale(data.amount),
+          note: data.note,
+          discountMoney: this.$formatNumberToLocale(data.totalPromotion),
+          moneyAccumulated: data.accumulation,
+          payments: this.$formatNumberToLocale(data.total),
+          print: (data.usedRedInvoice === true) ? 'Đã in' : 'Chưa in',
+          noteHdd: data.redInvoiceRemark,
+          company: data.comName,
+          taxCode: data.taxCode,
+          address: data.address,
+        }))
+      }
+      return []
     },
     salesReceiptsTotal() {
-      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_GETTER, value => this.$formatNumberToLocale(value))
+      if (this.SALES_RECEIPTS_GETTER.info) {
+        return this.SALES_RECEIPTS_GETTER.info
+      }
+      return {}
     },
 
     detailTable() {
-      return this.SALES_RECEIPTS_DETAIL_GETTER.map(data => ({
-        productCode: data.productCode,
-        productName: data.productName,
-        unit: data.unit,
-        number: data.quantity,
-        price: this.$formatNumberToLocale(data.pricePerUnit),
-        intoMoney: this.$formatNumberToLocale(data.amount),
-        discount: this.$formatNumberToLocale(data.discount),
-        bill: this.$formatNumberToLocale(data.payment),
-      }))
+      if (this.SALES_RECEIPTS_DETAIL_GETTER.orderDetail) {
+        return this.SALES_RECEIPTS_DETAIL_GETTER.orderDetail.response.map(data => ({
+          productCode: data.productCode,
+          productName: data.productName,
+          unit: data.unit,
+          number: data.quantity,
+          price: this.$formatNumberToLocale(data.pricePerUnit),
+          intoMoney: this.$formatNumberToLocale(data.amount),
+          discount: this.$formatNumberToLocale(data.discount),
+          bill: this.$formatNumberToLocale(data.payment),
+        }))
+      }
+      return []
     },
     detailTableTotal() {
-      return lodash.mapValues(this.SALES_RECEIPTS_DETAIL_TOTAL_INFOS_GETTER, value => this.$formatNumberToLocale(value))
+      if (this.SALES_RECEIPTS_DETAIL_GETTER.orderDetail) {
+        return this.SALES_RECEIPTS_DETAIL_GETTER.orderDetail.info
+      }
+      return {}
     },
 
     discountTable() {
-      return this.SALES_RECEIPTS_DISCOUNT_GETTER
+      if (this.SALES_RECEIPTS_DETAIL_GETTER.discount) {
+        return this.SALES_RECEIPTS_DETAIL_GETTER.discount
+      }
+      return []
     },
     promotionTable() {
-      return this.SALES_RECEIPTS_PROMOTION_GETTER.map(data => ({
-        productCode: data.productNumber,
-        productName: data.productName,
-        number: data.quantity,
-        promotionProgram: data.promotionProgramName,
-      }))
+      if (this.SALES_RECEIPTS_DETAIL_GETTER.promotion) {
+        return this.SALES_RECEIPTS_DETAIL_GETTER.promotion.map(data => ({
+          productCode: data.productNumber,
+          productName: data.productName,
+          number: data.quantity,
+          promotionProgram: data.promotionProgramName,
+        }))
+      }
+      return []
     },
 
     // common info in receipt
     info() {
-      return lodash.mapValues(this.SALES_RECEIPT_DETAIL_INFOS_GETTER, value => value)
+      if (this.SALES_RECEIPTS_DETAIL_GETTER.infos) {
+        return this.SALES_RECEIPTS_DETAIL_GETTER.infos
+      }
+      return {}
     },
 
     salesReceiptsPagination() {
-      return this.SALES_RECEIPTS_PAGINATION_GETTER
+      if (this.SALES_RECEIPTS_GETTER.response) {
+        return this.SALES_RECEIPTS_GETTER.response
+      }
+      return {}
     },
     paginationDetailContent() {
       const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1

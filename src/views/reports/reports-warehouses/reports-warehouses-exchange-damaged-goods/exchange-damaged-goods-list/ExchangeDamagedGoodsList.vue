@@ -57,6 +57,16 @@
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
         >
+
+          <!-- START - Empty rows -->
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
+          <!-- END - Empty rows -->
+
           <!-- START - Columns -->
           <template
             slot="table-column"
@@ -319,7 +329,7 @@ export default {
           phoneNumber: data[10],
         }))
       }
-      return {}
+      return []
     },
     total() {
       if (this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.totals) {
