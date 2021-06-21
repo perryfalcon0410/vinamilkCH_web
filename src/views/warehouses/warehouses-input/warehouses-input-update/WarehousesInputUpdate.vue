@@ -190,7 +190,7 @@
             <div v-if="totalProductQuantity > 0">
               <!-- START - Table Product -->
               <div class="d-inline-flex rounded-top my-1">
-                <strong class="text=brand-1">
+                <strong class="text-brand-1">
                   Sản phẩm
                 </strong>
               </div>
@@ -232,21 +232,21 @@
                 >
                   <div
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0 text-right"
+                    class="mx-0 h7 text-brand-3 text-right"
                   >
                     {{ $formatNumberToLocale(totalProductQuantity) }}
                   </div>
 
                   <div
                     v-else-if="props.column.field === 'totalPrice'"
-                    class="mx-0 text-right"
+                    class="mx-0 h7 text-brand-3 text-right"
                   >
                     {{ totalProductPrice }}
                   </div>
 
                   <div
                     v-else-if="props.column.field === 'productCode'"
-                    class="mx-0"
+                    class="mx-0 h7 text-brand-3"
                   >
                     {{ totalProductCode }}
                   </div>
@@ -272,8 +272,8 @@
 
             <div v-if="showPromotionsTable">
               <!-- START - Table Product promotion -->
-              <div class="d-inline-flex rounded-top my-">
-                <strong class="text=brand=1">
+              <div class="d-inline-flex rounded-top my-1">
+                <strong class="text-brand-1">
                   Hàng khuyến mãi
                 </strong>
               </div>
@@ -306,14 +306,14 @@
                 >
                   <div
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0 text-right"
+                    class="mx-0 h7 text-brand-3 text-right"
                   >
                     {{ $formatNumberToLocale(totalPromotionQuantity) }}
                   </div>
 
                   <div
                     v-else-if="props.column.field === 'productCode'"
-                    class="mx-0"
+                    class="mx-0 h7 text-brand-3"
                   >
                     {{ totalPromotionCode }}
                   </div>
@@ -332,6 +332,12 @@
                       @change="updateQuantity(props.row.originalIndex, props.row.quantity)"
                       @keypress="$onlyNumberInput"
                     />
+                  </div>
+                  <div
+                    v-else-if="props.column.field === 'quantity'"
+                    style="padding-right: 4px"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
                   </div>
                   <div
                     v-else-if="props.column.field === 'feature' && canEdit"
@@ -710,11 +716,11 @@ export default {
     },
     productSelected(product) {
       if (product.item) {
-        const index = this.promotions.findIndex(e => e.productId === product.item.id)
+        const index = this.promotions.findIndex(e => e.productId === product.item.productId)
         if (this.promotions) {
           const obj = {
             id: -1,
-            productId: product.item.id,
+            productId: product.item.productId,
             productCode: product.item.productCode,
             quantity: 1, // default quantity
             price: product.item.price || 0,

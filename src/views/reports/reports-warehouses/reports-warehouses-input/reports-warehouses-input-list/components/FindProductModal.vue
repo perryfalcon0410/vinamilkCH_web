@@ -30,7 +30,7 @@
           </div>
           <b-form-input
             id="form-input-customer"
-            v-model="searchOptions.productCodes"
+            v-model="searchOptions.productCode"
             class="h7 text-brand-3 height-button-brand-1"
             placeholder="Nhập mã sản phẩm"
             trim
@@ -306,7 +306,7 @@ export default {
       width: window.innerWidth,
       prodcutCatSelected: null,
       searchOptions: {
-        productCodes: '',
+        productCode: '',
         productName: '',
       },
       selectedProductRow: [],

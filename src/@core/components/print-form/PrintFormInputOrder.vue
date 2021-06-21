@@ -11,8 +11,8 @@
     >
       <div class="d-flex flex-column">
         <strong style="font-size: 17px; font-style: italic"> {{ inputOrderShopData.shopName }} </strong>
-        <i> {{ inputOrderShopData.address }} </i>
-        <i> Tel: {{ inputOrderShopData.phone }} - Fax: {{ inputOrderShopData.fax }}</i>
+        <div> {{ inputOrderShopData.address }} </div>
+        <div> Tel: {{ inputOrderShopData.phone }} - Fax: {{ inputOrderShopData.fax }}</div>
       </div>
       <div class="d-flex flex-column">
         <strong style="font-size: 20px; font-style: italic"> CÔNG TY CP SỮA VIỆT NAM </strong>
@@ -78,47 +78,48 @@
 
     <!-- START - Table 1 -->
     <p class="mt-1">
-      <strong>Hàng bán</strong>
+      <strong style="font-size: 18px">Hàng bán</strong>
     </p>
 
     <table
       v-for="item in inputOrderSaleProductsData"
       :key="item.type"
       class="mt-1"
+      style="width: 100%"
     >
       <thead>
         <!-- START - Header 1 -->
         <tr>
           <td
             colspan="3"
-            class="pl-1 border-right-0"
+            class="pl-1 border-right-0 font-italic"
           >
             <div>Ngành hàng: <strong>{{ item.type }}</strong>
             </div>
           </td>
           <td
             colspan="1"
-            class="text-right border-right-0 border-left-0"
+            class="text-right border-right-0 border-left-0 font-italic"
           >
             Tổng SL:
           </td>
           <td
             colspan="1"
             style="width: 1%"
-            class="text-right border-right-0 border-left-0"
+            class="text-right border-right-0 border-left-0 font-italic"
           >
             <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
           </td>
           <td
             colspan="1"
-            class="text-right border-right-0 border-left-0"
+            class="text-right border-right-0 border-left-0 font-italic"
           >
             Tổng T.Tiền:
           </td>
           <td
             colspan="1"
             style="width: 1%"
-            class="text-right pr-50 border-left-0"
+            class="text-right pr-50 border-left-0 font-italic"
           >
             <strong>{{ $formatNumberToLocale(item.totalPrice ) }}</strong>
           </td>
@@ -126,26 +127,25 @@
         <!-- END - Header 1 -->
 
         <!-- START - Header 2 -->
-        <tr>
+        <tr class="font-italic">
           <th
-            style="width: 1%"
-            class="px-1"
+            class="px-1 w-5"
           >
             STT
           </th>
-          <th class="px-1">
+          <th class="px-1 w-10">
             Mã SP
           </th>
-          <th class="px-1">
+          <th class="px-1 w-40">
             Tên SP
           </th>
-          <th class="px-1">
+          <th class="px-1 w-10">
             ĐVT
           </th>
           <th class="text-right px-50 w-5">
             SL
           </th>
-          <th class="text-right px-50 w-10">
+          <th class="text-right px-50 w-15">
             Giá
           </th>
           <th class="text-right px-50 w-15">
@@ -187,7 +187,7 @@
 
     <!-- START - Table 2 -->
     <p class="mt-1">
-      <strong>Hàng khuyến mãi</strong>
+      <strong style="font-size: 18px">Hàng khuyến mãi</strong>
     </p>
 
     <table
@@ -200,34 +200,34 @@
         <tr>
           <td
             colspan="3"
-            class="pl-1 border-right-0"
+            class="pl-1 border-right-0 font-italic"
           >
             <div>Ngành hàng: <strong>{{ item.type }}</strong>
             </div>
           </td>
           <td
             colspan="1"
-            class="text-right border-right-0 border-left-0"
+            class="text-right border-right-0 border-left-0 font-italic"
           >
             Tổng SL:
           </td>
           <td
             colspan="1"
             style="width: 1%"
-            class="text-right border-right-0 border-left-0"
+            class="text-right border-right-0 border-left-0 font-italic"
           >
             <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
           </td>
           <td
             colspan="1"
-            class="text-right border-right-0 border-left-0"
+            class="text-right border-right-0 border-left-0 font-italic"
           >
             Tổng T.Tiền:
           </td>
           <td
             colspan="1"
             style="width: 1%"
-            class="text-right pr-50 border-left-0"
+            class="text-right pr-50 border-left-0 font-italic"
           >
             <strong>{{ $formatNumberToLocale(item.totalPrice) }}</strong>
           </td>
@@ -235,27 +235,26 @@
         <!-- END - Header 1 -->
 
         <!-- START - Header 2 -->
-        <tr>
+        <tr class="font-italic">
           <th
-            style="width: 1%"
-            class="px-1"
+            class="px-1 w-5"
           >
             STT
           </th>
-          <th class="px-1">
+          <th class="px-1 w-10">
             Mã SP
           </th>
-          <th class="px-1">
+          <th class="px-1 w-40">
             Tên SP
           </th>
-          <th class="px-1">
+          <th class="px-1 w-10">
             ĐVT
           </th>
           <th class="text-right px-50 w-5">
             SL
           </th>
           <th
-            class="text-right px-50 w-10"
+            class="text-right px-50 w-15"
           >
             Giá
           </th>
@@ -296,32 +295,29 @@
       </tbody>
     </table>
     <!-- END - Table 2 -->
-
     <!-- START - Fotter 1 -->
     <b-row
       class="mt-2"
       align-v="center"
-      align-h="between"
     >
       <!-- START - Note -->
       <b-col
         cols="5"
         style="width: 550px; word-wrap: break-word"
       >
-        <ins>Ghi chú:</ins>
+        <ins class="font-italic">Ghi chú:</ins>
         {{ inputOrderInfoData.note }}
       </b-col>
       <!-- END - Note -->
-
       <!-- START - Big total section -->
       <b-col>
         <b-row
-          class="mx-0"
+          class="mx-50"
           align-v="start"
           align-h="end"
         >
           <b-row
-            class="mx-0"
+            class="mx-0 font-italic"
             align-v="center"
           >
             <strong>Tổng SL</strong> <strong
@@ -334,7 +330,7 @@
 
           <div class="ml-2">
             <b-row
-              class="mx-0"
+              class="mx-0 font-italic"
               align-h="end"
               align-v="center"
             >
@@ -371,7 +367,7 @@
       class="mx-5 my-2"
       align-h="end"
     >
-      <p>Người nhập</p>
+      <p>NGƯỜI NHẬP</p>
     </b-row>
     <!-- END - Fotter  2-->
   </b-container>

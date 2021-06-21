@@ -50,7 +50,7 @@
           mode="remote"
           :columns="columns"
           :rows="warehousesInputs"
-          style-class="vgt-table bordered"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,

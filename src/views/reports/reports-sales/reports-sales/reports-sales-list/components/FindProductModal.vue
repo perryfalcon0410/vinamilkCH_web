@@ -305,7 +305,7 @@ export default {
       width: window.innerWidth,
       prodcutCatSelected: null,
       searchOptions: {
-        productCodes: '',
+        productCode: '',
         productName: '',
       },
       selectedProductRow: [],

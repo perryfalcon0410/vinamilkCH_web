@@ -51,7 +51,7 @@
           mode="remote"
           :columns="columns"
           :rows="warehousesInputOutputInventory"
-          style-class="vgt-table bordered"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
