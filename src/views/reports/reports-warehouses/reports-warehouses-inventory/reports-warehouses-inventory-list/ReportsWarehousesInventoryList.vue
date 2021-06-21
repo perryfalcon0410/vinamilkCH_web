@@ -377,7 +377,10 @@ export default {
       }))
     },
     reportInventoryInfo() {
-      return this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER
+      if (this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER) {
+        return this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER
+      }
+      return {}
     },
     reportInventoryPagination() {
       if (this.REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER) {

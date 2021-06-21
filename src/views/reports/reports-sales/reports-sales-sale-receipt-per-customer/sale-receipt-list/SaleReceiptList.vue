@@ -275,9 +275,9 @@ export default {
   watch: {
     // add columns dynamically
     getReportSalesReceiptAmountDates() {
+      this.labelName = []
+      this.columns = [...this.initalCol]
       if (this.getReportSalesReceiptAmountDates) {
-        this.labelName = []
-        this.columns = [...this.initalCol]
         this.getReportSalesReceiptAmountDates.forEach((item, index) => {
           const obj = {
             label: item,
@@ -296,33 +296,27 @@ export default {
       }
     },
     getReportSalesReceiptAmount() {
-      if (this.getReportSalesReceiptAmount.length > 0) {
-        this.rows = [...this.getReportSalesReceiptAmount]
-      }
+      this.rows = [...this.getReportSalesReceiptAmount]
     },
     getReportSalesReceiptAmountPrice() {
-      if (this.getReportSalesReceiptAmountPrice.length > 0) {
-        for (let i = 0; i <= this.rows.length - 1; i += 1) {
-          for (let j = 3; j <= this.getReportSalesReceiptAmountPrice[i].length - 1; j += 1) {
-            if (j < this.getReportSalesReceiptAmountPrice[i].length - 1) {
-              this.rows[i][j] = this.$formatNumberToLocale(this.getReportSalesReceiptAmountPrice[i][j])
-            } else {
-              this.rows[i].sumTotal = this.getReportSalesReceiptAmountPrice[i][j]
-            }
+      for (let i = 0; i <= this.rows.length - 1; i += 1) {
+        for (let j = 3; j <= this.getReportSalesReceiptAmountPrice[i].length - 1; j += 1) {
+          if (j < this.getReportSalesReceiptAmountPrice[i].length - 1) {
+            this.rows[i][j] = this.$formatNumberToLocale(this.getReportSalesReceiptAmountPrice[i][j])
+          } else {
+            this.rows[i].sumTotal = this.getReportSalesReceiptAmountPrice[i][j]
           }
         }
       }
     },
 
     getTotalInfo() {
-      if (this.getTotalInfo.length > 0) {
-        this.totalQuantity = []
-        this.getTotalInfo.forEach((item, index) => {
-          if (index > 2) {
-            this.totalQuantity.push(item)
-          }
-        })
-      }
+      this.totalQuantity = []
+      this.getTotalInfo.forEach((item, index) => {
+        if (index > 2) {
+          this.totalQuantity.push(item)
+        }
+      })
     },
   },
   mounted() {

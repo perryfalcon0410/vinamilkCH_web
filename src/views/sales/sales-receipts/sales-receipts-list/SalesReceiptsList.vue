@@ -139,13 +139,13 @@
             </span>
             <span
               v-else-if="props.column.field === 'discountMoney' || props.column.field === 'moneyAccumulated'"
-              style="padding-right: 10px"
+              class="mx-0"
             >
               {{ props.formattedRow[props.column.field] }}
             </span>
             <span
               v-else-if="props.column.field === 'totalValue' || props.column.field === 'payments'"
-              style="padding-right: 9px"
+              style="padding-right: 10px;"
             >
               {{ props.formattedRow[props.column.field] }}
             </span>
@@ -216,13 +216,11 @@
       <!-- End table -->
 
       <invoice-detail-modal
-        :visible="isInvoiceDetailModal"
         :information="info"
-        :details="detailTable"
+        :details="detailGrid"
         :details-total="detailTableTotal"
-        :promotion-details="promotionTable"
-        :discount-details="discountTable"
-        @close="isInvoiceDetailModal = false"
+        :promotion-details="promotionGrid"
+        :discount-details="discountGrid"
       />
     </div>
 
@@ -287,18 +285,26 @@ export default {
         {
           label: 'Số hóa đơn',
           field: 'numberBill',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'name',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ngày bán',
           field: 'dayTime',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Tổng giá trị',
@@ -307,16 +313,22 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tiển giảm giá',
           field: 'discountMoney',
           type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tiền tích lũy',
           field: 'moneyAccumulated',
           type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tiền phải trả',
@@ -325,32 +337,46 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Ghi chú',
           field: 'note',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'In HĐ đỏ',
           field: 'print',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           label: 'Công ty',
           field: 'company',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã số thuế',
           field: 'taxCode',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Ghi chú HĐĐ',
           field: 'noteHdd',
           sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-left',
         },
         {
           label: 'Chức năng',
@@ -383,9 +409,9 @@ export default {
           payments: this.$formatNumberToLocale(data.total),
           print: (data.usedRedInvoice === true) ? 'Đã in' : 'Chưa in',
           noteHdd: data.redInvoiceRemark,
-          company: data.comName,
-          taxCode: data.taxCode,
-          address: data.address,
+          company: data.redInvoiceCompanyName,
+          taxCode: data.redInvoiceTaxCode,
+          address: data.radInvoiceAddress,
         }))
       }
       return []
@@ -397,7 +423,7 @@ export default {
       return {}
     },
 
-    detailTable() {
+    detailGrid() {
       if (this.SALES_RECEIPTS_DETAIL_GETTER.orderDetail) {
         return this.SALES_RECEIPTS_DETAIL_GETTER.orderDetail.response.map(data => ({
           productCode: data.productCode,
@@ -419,13 +445,13 @@ export default {
       return {}
     },
 
-    discountTable() {
+    discountGrid() {
       if (this.SALES_RECEIPTS_DETAIL_GETTER.discount) {
         return this.SALES_RECEIPTS_DETAIL_GETTER.discount
       }
       return []
     },
-    promotionTable() {
+    promotionGrid() {
       if (this.SALES_RECEIPTS_DETAIL_GETTER.promotion) {
         return this.SALES_RECEIPTS_DETAIL_GETTER.promotion.map(data => ({
           productCode: data.productNumber,
@@ -470,8 +496,8 @@ export default {
       PRINT_SALES_RECEIPT_ACTION,
     ]),
     showInvoiceDetailModal(id, numberBill) {
-      this.isInvoiceDetailModal = !this.isInvoiceDetailModal
       this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber: numberBill })
+      this.$root.$emit('bv::toggle::modal', 'detail-modal')
     },
     onClickPrintButton() {
       this.$root.$emit('bv::hide::popover')

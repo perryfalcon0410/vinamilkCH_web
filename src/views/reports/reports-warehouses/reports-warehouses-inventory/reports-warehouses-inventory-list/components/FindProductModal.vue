@@ -33,7 +33,7 @@
           >
             <b-form-input
               id="form-input-customer"
-              v-model="searchOptions.productCodes"
+              v-model="searchOptions.productCode"
               class="h7 text-brand-3 height-button-brand-1"
               placeholder="Nhập mã sản phẩm"
               @keyup.enter="onSearchClick"
@@ -42,10 +42,10 @@
               is-text
             >
               <b-icon-x
-                v-show="searchOptions.productCodes"
+                v-show="searchOptions.productCode"
                 class="cursor-pointer text-gray"
                 scale="1.3"
-                @click="searchOptions.productCodes = null"
+                @click="searchOptions.productCode = null"
               />
             </b-input-group-append>
           </b-input-group>
@@ -317,7 +317,7 @@ export default {
       },
       // searchOptions
       searchOptions: {
-        productCodes: '',
+        productCode: '',
         productName: '',
       },
       selectedProductRow: [],

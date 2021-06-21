@@ -4,7 +4,9 @@
       <b-col
         cols="2"
       >
-        <b-row class="v-title bg-light p-1 w-75 rounded-pill  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mt-2 mb-1">
+        <b-row
+          class="v-title bg-light py-1 w-75 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-start mt-2 mb-1 header"
+        >
           Giảm giá & chiết khấu
         </b-row>
       </b-col>
@@ -19,11 +21,23 @@
       :rows="discounts"
       style-class="vgt-table striped"
       line-numbers
-      :search-options="{
-        enabled: true,
-        externalQuery: searchTerm
-      }"
-    />
+    >
+      <template
+        slot="table-row"
+        slot-scope="props"
+      >
+        <div
+          v-if="props.column.field === 'discountPrice'"
+          style="padding-right: 10px"
+        >
+          {{ props.formattedRow[props.column.field] }}
+        </div>
+        <div v-else>
+          {{ props.formattedRow[props.column.field] }}
+        </div>
+      </template>
+    <!-- END - Custom row -->
+    </vue-good-table>
     <!-- End table -->
   </div>
 </template>
@@ -38,7 +52,6 @@ export default {
   },
   data() {
     return {
-      searchTerm: '',
       columns: [
         {
           label: 'Phiếu/thẻ/Chương trình',

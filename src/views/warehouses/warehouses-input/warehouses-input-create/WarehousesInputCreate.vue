@@ -154,7 +154,7 @@
                     v-model="internalNumber"
                     :state="touched && inputTypeSelected === '0' ? passed : null"
                     class="h7"
-                    :disabled="inputTypeSelected !== '0' ? true : false"
+                    :disabled="canNotEdit"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -180,7 +180,7 @@
                       v-model="poNo"
                       :state="inputTypeSelected === '0' && touched ? passed : null"
                       class="h7"
-                      :disabled="inputTypeSelected != '0' ? true : false"
+                      :disabled="canNotEdit"
                     />
                   </b-input-group>
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -557,6 +557,7 @@ export default {
 
   data() {
     return {
+      canNotEdit: false,
       componentKey: 0,
       totalPoPromoProduct: 0,
       totalProduct: 0,
@@ -904,6 +905,13 @@ export default {
     },
     getProducts() {
       this.products = [...this.getProducts]
+    },
+    status() {
+      if (this.inputTypeSelected === '0' && this.status === -1) {
+        this.canNotEdit = false
+      } else {
+        this.canNotEdit = true
+      }
     },
   },
 

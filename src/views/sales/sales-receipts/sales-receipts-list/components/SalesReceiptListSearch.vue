@@ -18,12 +18,25 @@
         >
           Khách hàng
         </div>
-        <b-form-input
-          v-model="customerName"
-          class="h8 text-brand-3 height-button-brand-1"
-          placeholder="Nhập họ tên/mã"
-          @keyup.enter="onClickSearchButton"
-        />
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model="customerName"
+            class="h8 text-brand-3 height-button-brand-1"
+            placeholder="Nhập họ tên/mã"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="customerName"
+              class="cursor-pointer text-gray"
+              @click="customerName = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
       <!-- END - Full Name -->
 
@@ -38,12 +51,26 @@
         >
           Số điện thoại
         </div>
-        <b-form-input
-          v-model="phoneNumber"
-          class="h8 text-brand-3 height-button-brand-1"
-          placeholder="Nhập SĐT khách hàng"
-          @keyup.enter="onClickSearchButton"
-        />
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model="phoneNumber"
+            class="h8 text-brand-3 height-button-brand-1"
+            placeholder="Nhập SĐT khách hàng"
+            @keypress="$onlyNumberInput"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="phoneNumber"
+              class="cursor-pointer text-gray"
+              @click="phoneNumber = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
       <!-- END - Phone -->
 
@@ -58,12 +85,25 @@
         >
           Số hóa đơn
         </div>
-        <b-form-input
-          id="form-input-customer"
-          v-model="billNumber"
-          class="h8 text-brand-3 height-button-brand-1"
-          placeholder="Nhập số hóa đơn"
-        />
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            id="form-input-customer"
+            v-model="billNumber"
+            class="h8 text-brand-3 height-button-brand-1"
+            placeholder="Nhập số hóa đơn"
+          />
+          <b-input-group-append
+            is-text
+          >
+            <b-icon-x
+              v-show="billNumber"
+              class="cursor-pointer text-gray"
+              @click="billNumber = null"
+            />
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
       <!-- END - Bill Number -->
 

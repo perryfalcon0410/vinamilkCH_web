@@ -21,7 +21,7 @@
         <b-icon
           icon="slash-circle"
         />
-        Không nhập {{ status.success }}
+        Không nhập
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"

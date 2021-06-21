@@ -78,6 +78,13 @@
             <strong class="d-flex h-25 align-items-center rounded-top px-1">
               Sản phẩm
             </strong>
+            <b-form-file
+              ref="fileInput"
+              v-model="importFile"
+              accept=".xlsx, .xls, .xml"
+              style="display: none"
+              @input="handleFile"
+            />
             <b-button
               class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
               variant="someThing"
@@ -271,6 +278,7 @@ import {
   GET_PODETAIL_PRODUCTS_ACTION,
   GET_PODETAIL_PRODUCTS_PROMO_ACTION,
   GET_IMPORTEXCEL_ACTION,
+  IMPORT_PO_CONFIRM_ACTION,
   // MUTATIONS
   CLEAR_GRID_VIEW_MUTATION,
 } from '../../store-module/type'
@@ -288,6 +296,7 @@ export default {
   },
   data() {
     return {
+      importFile: null,
       poTable: 0,
       poPromoTable: 0,
       //
@@ -449,6 +458,7 @@ export default {
       GET_PODETAIL_PRODUCTS_ACTION,
       GET_PODETAIL_PRODUCTS_PROMO_ACTION,
       GET_IMPORTEXCEL_ACTION,
+      IMPORT_PO_CONFIRM_ACTION,
     ]),
     ...mapMutations(WAREHOUSEINPUT, [
       CLEAR_GRID_VIEW_MUTATION,
@@ -466,7 +476,15 @@ export default {
     },
     // Sync PoConfirms list
     syncPo() {
-      this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId }) // hard code
+      this.$refs.fileInput.$el.childNodes[0].click()
+    },
+    handleFile() {
+      const data = new FormData()
+      data.append('name', this.importFile.name)
+      data.append('file', this.importFile)
+      this.IMPORT_PO_CONFIRM_ACTION(data)
+        .then(this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId }))
+        .then(this.$refs.fileInput.$el.childNodes[0].value = '')
     },
     // Confirm import product from selected Po
     confirmImportButton() {
@@ -500,7 +518,7 @@ export default {
     },
     deny() {
       this.$root.$emit('bv::hide::modal', 'po-deny-modal')
-      this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId }) // hard code
+      this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
     },
   },
 }

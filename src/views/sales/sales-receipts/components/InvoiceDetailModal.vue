@@ -1,10 +1,11 @@
 <template>
   <!-- POPUP Invoice Details START -->
   <b-modal
+    id="detail-modal"
     size="xl"
     title="Thông tin chi tiết hóa đơn"
-    :visible="visible"
     hide-footer="true"
+    title-class="font-weight-bold text-brand-1"
   >
 
     <!-- Start Billing Information -->
@@ -13,7 +14,7 @@
         cols="2"
       >
         <b-row
-          class="v-title bg-light h-25 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1"
+          class="v-title bg-light h-25 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-start mb-1 header"
         >
           Thông tin thanh toán
         </b-row>
@@ -26,9 +27,9 @@
             Số hóa đơn:
           </b-col>
           <b-col cols="8">
-            <h2 class="text-center">
+            <h5 class="text-left">
               {{ information.orderNumber }}
-            </h2>
+            </h5>
           </b-col>
         </b-row>
 
@@ -37,9 +38,9 @@
             Khách hàng:
           </b-col>
           <b-col cols="8">
-            <h3 class="text-center">
+            <h5 class="text-left">
               {{ information.customerName }}
-            </h3>
+            </h5>
           </b-col>
         </b-row>
 
@@ -48,9 +49,9 @@
             Ngày thanh toán:
           </b-col>
           <b-col cols="8">
-            <h3 class="text-center">
-              {{ paidDate }}
-            </h3>
+            <h5 class="text-left">
+              {{ $formatISOtoVNI(information.orderDate) }}
+            </h5>
           </b-col>
         </b-row>
 
@@ -59,9 +60,9 @@
             Nhân viên:
           </b-col>
           <b-col cols="8">
-            <h3 class="text-center">
+            <h5 class="text-left">
               {{ information.saleMan }}
-            </h3>
+            </h5>
           </b-col>
         </b-row>
       </b-col>
@@ -111,7 +112,9 @@
       <b-col
         cols="2"
       >
-        <b-row class="v-title bg-light p-1 rounded-pill  border-top-info border-bottom-info border-right-info align-content-center justify-content-center mb-1">
+        <b-row
+          class="v-title bg-light py-1 rounded-pill  border-top-info border-bottom-info border-right-info align-content-center mb-1 header"
+        >
           Chi tiết hóa đơn
         </b-row>
       </b-col>
@@ -119,21 +122,21 @@
         cols="8"
       />
     </b-row>
-    <InvoiceDetail
-      :detail="details"
+    <invoice-detail
+      :data="details"
       :total="detailsTotal"
     />
     <!-- End Invoice details -->
 
     <!-- Start Discounts and discounts -->
-    <Discounts
+    <discounts
       v-show="discountDetails.length > 0"
       :discounts="discountDetails"
     />
     <!-- Start Discounts and discounts -->
 
     <!-- Start promotion -->
-    <Promotion
+    <promotion
       v-show="promotionDetails.length > 0"
       :promotiontable="promotionDetails"
     />
@@ -158,7 +161,6 @@
 </template>
 
 <script>
-import { formatISOtoVNI } from '@/@core/utils/filter'
 import InvoiceDetail from './invoice-detail-modal/InvoiceDetail.vue'
 import Discounts from './invoice-detail-modal/Discount.vue'
 import Promotion from './invoice-detail-modal/Promotion.vue'
@@ -170,9 +172,6 @@ export default {
     Promotion,
   },
   props: {
-    visible: {
-      type: Boolean,
-    },
     details: {
       type: Array,
       default: null,
@@ -186,7 +185,7 @@ export default {
       default: null,
     },
     information: {
-      type: Array,
+      type: Object,
       default: null,
     },
     discountDetails: {
@@ -196,21 +195,12 @@ export default {
   },
   data() {
     return {
-      date: null,
-      showDiscountTable: false,
-      showPromotionTable: false,
     }
-  },
-  computed: {
-    paidDate() {
-      return formatISOtoVNI(this.information.orderDate)
-    },
   },
 
   methods: {
     cancel() {
-      this.visible = !this.visible
-      this.$emit('close')
+      this.$root.$emit('bv::hide::modal', 'detail-modal')
     },
   },
 }
@@ -219,5 +209,9 @@ export default {
   .v-title {
     border-top-left-radius: 0rem !important;
     border-bottom-left-radius: 0rem !important
+  }
+  .header {
+    margin-left: 0.1rem;
+    border-color: #315899
   }
 </style>

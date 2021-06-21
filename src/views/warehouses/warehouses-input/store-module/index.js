@@ -25,6 +25,7 @@ import {
   NOT_IMPORT_REASONS_GETTER,
   PRINT_OUT_IN_PUT_ORDER_GETTER,
   STATUS_NOT_IMPORT_GETTER,
+  IMPORTED_POCONFIRM_GETTER,
   // ACTIONS
   GET_RECEIPTS_ACTION,
   EXPORT_RECEIPTS_ACTION,
@@ -47,6 +48,7 @@ import {
   GET_WAREHOUSES_TYPE_ACTION,
   GET_NOT_IMPORT_REASONS_ACTION,
   PRINT_OUT_IN_PUT_ORDER_ACTION,
+  IMPORT_PO_CONFIRM_ACTION,
   // mutations
   CLEAR_STATUS_NOT_IMPORT_MUTATION,
   CLEAR_GRID_VIEW_MUTATION,
@@ -79,6 +81,7 @@ export default {
     notImportReasons: [],
     printOutInputOrderData: [],
     statusNotImport: {},
+    importedPoconfirmData: {},
   },
 
   // START - GETTERS
@@ -142,6 +145,9 @@ export default {
     },
     [STATUS_NOT_IMPORT_GETTER](state) {
       return state.statusNotImport
+    },
+    [IMPORTED_POCONFIRM_GETTER](state) {
+      return state.importedPoconfirmData
     },
   },
 
@@ -297,7 +303,6 @@ export default {
         .then(res => {
           if (res.success) {
             state.statusNotImport = res.success
-            toasts.success(res.statusValue)
           } else {
             throw new Error(res.statusValue)
           }
@@ -484,6 +489,21 @@ export default {
           if (res.success) {
             state.printOutInputOrderData = res.data || {}
             val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [IMPORT_PO_CONFIRM_ACTION]({ state }, val) {
+      ReceiptImportService
+        .importPoConfirm(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.importedPoconfirmData = res.success
           } else {
             throw new Error(res.statusValue)
           }

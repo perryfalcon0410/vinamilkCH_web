@@ -1,6 +1,7 @@
 const SALES = '/sales'
 const COMMON = '/commons'
 
+export const importPoConfirmEndpoint = `${SALES}/po-confirm/xml`
 export const getPoConfirmEndpoint = `${SALES}/import/po-confirm`
 export const getPoProductsEndpoint = `${SALES}/import/po-detail0`
 export const getPoPromotionProductsEndpoint = `${SALES}/import/po-detail1`

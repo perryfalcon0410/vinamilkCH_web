@@ -2,42 +2,54 @@
   <!-- Start table -->
   <vue-good-table
     :columns="columns"
-    :rows="detail"
+    :rows="data"
     style-class="vgt-table striped"
     line-numbers
-    :search-options="{
-      enabled: true,
-      externalQuery: searchTerm
-    }"
   >
+    <!-- START - Custom row -->
+    <template
+      slot="table-row"
+      slot-scope="props"
+    >
+      <div
+        v-if="props.column.field === 'number' || props.column.field === 'price'|| props.column.field === 'intoMoney'|| props.column.field === 'discount'"
+        style="padding-right: 10px"
+      >
+        {{ props.formattedRow[props.column.field] }}
+      </div>
+      <div v-else>
+        {{ props.formattedRow[props.column.field] }}
+      </div>
+    </template>
+    <!-- END - Custom row -->
     <template
       slot="column-filter"
       slot-scope="props"
     >
       <b-row
         v-if="props.column.field === 'number'"
-        class="mx-0 h7 text-brand-3"
+        class="mx-50 h7 text-brand-3"
         align-h="end"
       >
         {{ $formatNumberToLocale(total.totalQuantity) }}
       </b-row>
       <b-row
         v-if="props.column.field === 'intoMoney'"
-        class="mx-0 h7 text-brand-3"
+        class="mx-50 h7 text-brand-3"
         align-h="end"
       >
         {{ $formatNumberToLocale(total.totalAmount) }}
       </b-row>
       <b-row
         v-else-if="props.column.field === 'discount'"
-        class="mx-0 h7 text-brand-3"
+        class="mx-50 h7 text-brand-3"
         align-h="end"
       >
         {{ $formatNumberToLocale(total.totalDiscount) }}
       </b-row>
       <b-row
         v-else-if="props.column.field === 'bill'"
-        class="mx-0 h7 text-brand-3"
+        class="mx-50 h7 text-brand-3"
         align-h="end"
       >
         {{ $formatNumberToLocale(total.totalPayment) }}
@@ -55,7 +67,7 @@ export default {
     visible: {
       type: Boolean,
     },
-    detail: {
+    data: {
       type: Array,
       default: null,
     },
@@ -66,7 +78,6 @@ export default {
   },
   data() {
     return {
-      searchTerm: '',
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -96,8 +107,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giá bán',
