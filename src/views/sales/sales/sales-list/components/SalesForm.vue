@@ -458,14 +458,17 @@ export default {
       // customer
       customer: {
         id: null,
+        code: null,
         shopId: null,
         firstName: null,
         lastName: null,
         fullName: null,
         phoneNumber: null,
+        email: null,
         street: null,
         totalBill: null,
         scoreCumulated: null,
+        amountCumulated: null,
         isDefault: null,
         status: null,
         typeId: null,
@@ -589,11 +592,14 @@ export default {
             birthDay: formatDateToLocale(data.dob),
             date: formatDateToLocale(data.createdAt),
             address: data.address,
+            email: data.email,
+            status: data.status,
             idNo: data.idNo,
-            feature: '',
             totalBill: data.totalBill,
             customerTypeId: data.customerTypeId,
             scoreCumulated: data.scoreCumulated,
+            amountCumulated: data.amountCumulated,
+            feature: '',
           })),
         }]
       }
@@ -761,6 +767,7 @@ export default {
       this.customer.street = val.address
       this.customer.totalBill = val.totalBill ?? 0
       this.customer.scoreCumulated = val.scoreCumulated
+      this.customer.amountCumulated = val.amountCumulated
       this.customer.typeId = val.customerTypeId
       this.customer.createdAt = `${formatDateToLocale(val.createdAt)} ${getTimeOfDate(val.createdAt)}`
       this.$emit('getCustomerCreate', val)
@@ -778,6 +785,7 @@ export default {
       this.customer.phoneNumber = this.onlineOrderCustomer.customer.mobiPhone
       this.customer.street = this.onlineOrderCustomer.customer.address
       this.customer.scoreCumulated = this.onlineOrderCustomer.customer.scoreCumulated
+      this.customer.amountCumulated = this.onlineOrderCustomer.customer.amountCumulated
       this.customer.shopId = this.onlineOrderCustomer.customer.shopId
       this.customer.typeId = this.onlineOrderCustomer.customer.customerTypeId
       this.customer.createdAt = `${formatDateToLocale(this.onlineOrderCustomer.customer.createdAt)} ${getTimeOfDate(this.onlineOrderCustomer.customer.createdAt)}`
@@ -797,6 +805,7 @@ export default {
       this.customer.street = this.customerDefault.address
       this.customer.totalBill = this.customerDefault.totalBill ?? 0
       this.customer.scoreCumulated = this.customerDefault.scoreCumulated
+      this.customer.amountCumulated = this.customerDefault.amountCumulated
       this.customer.isDefault = this.customerDefault.isDefault
       this.customer.status = this.customerDefault.status
       this.customer.typeId = this.customerDefault.customerTypeId
@@ -840,10 +849,20 @@ export default {
     },
 
     getSuggestionValue(suggestion) {
+      this.customer.id = suggestion.item.id
+      this.customer.code = suggestion.item.code
+      this.customer.email = suggestion.item.email
+      this.customer.shopId = suggestion.item.shopId
       this.customer.fullName = suggestion.item.fullName
       this.customer.phoneNumber = suggestion.item.phoneNumber
       this.customer.totalBill = suggestion.item.totalBill
       this.customer.street = suggestion.item.address
+      this.customer.totalBill = suggestion.item.totalBill
+      this.customer.scoreCumulated = suggestion.item.scoreCumulated
+      this.customer.amountCumulated = suggestion.item.amountCumulated
+      this.customer.status = suggestion.item.status
+      this.customer.typeId = suggestion.item.customerTypeId
+      console.log('getSuggestionValue', this.customer)
     },
   },
 }
