@@ -1,0 +1,79 @@
+import ReportsService from '@/views/reports/reports-sales/reports-sales-cat/api-service/index'
+import toasts from '@core/utils/toasts/toasts'
+import FileSaver from 'file-saver'
+import moment from 'moment'
+import {
+  // GETTERS
+  REPORT_SALES_CAT_GETTER,
+  CUSTOMER_TYPES_GETTER,
+
+  // ACTIONS
+  GET_REPORT_SALES_CAT_ACTION,
+  EXPORT_REPORT_SALES_CAT_ACTION,
+  GET_CUSTOMER_TYPES_ACTION,
+} from './type'
+
+export default {
+  namespaced: true,
+  // State
+  state: {
+    reportCustomerData: {},
+    customerTypes: [],
+    shopLocationsSearch: [],
+  },
+  // Getters
+  getters: {
+    [REPORT_SALES_CAT_GETTER](state) {
+      return state.reportCustomerData
+    },
+    [CUSTOMER_TYPES_GETTER](state) {
+      return state.customerTypes
+    },
+  },
+  // Actions
+  actions: {
+    [GET_REPORT_SALES_CAT_ACTION]({ state }, val) {
+      ReportsService
+        .getReportsSalesCat(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.reportCustomerData = res.data || {}
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [EXPORT_REPORT_SALES_CAT_ACTION]({}, val) {
+      ReportsService
+        .exportReportsSalesCat(val)
+        .then(response => response.data)
+        .then(res => {
+          const fileName = `Bao_cao_doanh_so_CAT_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          FileSaver.saveAs(blob, fileName)
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_CUSTOMER_TYPES_ACTION]({ state }, val) {
+      ReportsService
+        .getCustomerTypes(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.customerTypes = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+  },
+}

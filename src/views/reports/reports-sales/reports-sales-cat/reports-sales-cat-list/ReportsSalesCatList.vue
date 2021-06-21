@@ -4,7 +4,11 @@
     class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
-    <reports-sales-cat-list-search />
+    <reports-sales-cat-list-search
+      :per-page-size="paginationData.size"
+      @updateSearchData="updateSearchData"
+      @onClickSearchButton="onClickSearchButton($event)"
+    />
     <!-- END - Search -->
 
     <!-- START - sale receipt list -->
@@ -16,7 +20,7 @@
         align-v="center"
       >
         <strong class="text-brand-1">
-          Doanh số hóa đơn theo khách hàng
+          Doanh số CAT
         </strong>
         <b-button
           class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
@@ -33,6 +37,7 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
+          :rows="reportSalesCatList"
           mode="remote"
           style-class="vgt-table striped"
           compact-mode
@@ -41,6 +46,15 @@
             enabled: false,
             multipleColumns: true,
           }"
+          :total-rows="reportSalesCatPagination.totalElements"
+          :pagination-options="{
+            enabled: true,
+            perPage: paginationData.size,
+            setCurrentPage: pageNumber,
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
           <!-- START - Empty rows -->
           <div
@@ -50,6 +64,83 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+
+          <!-- START - Column filter -->
+          <template
+            slot="column-filter"
+            slot-scope="props"
+          >
+            <b-col
+              v-for="(item,index) in labelName"
+              :key="index"
+            >
+              <b-row
+                v-if="props.column.field === `${item.field}`"
+                class="h7"
+                align-h="end"
+              >
+                {{ $formatNumberToLocale(totalQuantity[index]) }}
+              </b-row>
+            </b-col>
+          </template>
+          <!-- END - Column filter -->
+
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="reportSalesCatPagination.totalElements"
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Số hàng hiển thị
+                </span>
+                <b-form-select
+                  v-model="paginationData.size"
+                  size="sm"
+                  :options="perPageSizeOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="reportSalesCatPagination.totalElements"
+                :per-page="paginationData.size"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
         </vue-good-table>
       </b-col>
     </div>
@@ -58,7 +149,23 @@
 </template>
 
 <script>
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
+import commonData from '@/@db/common'
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
 import ReportsSalesCatListSearch from './components/ReportsSalesCatListSearch.vue'
+import {
+  REPORT_SALES_CAT,
+  // Getters
+  REPORT_SALES_CAT_GETTER,
+  // Actions
+  GET_REPORT_SALES_CAT_ACTION,
+  EXPORT_REPORT_SALES_CAT_ACTION,
+} from '../store-module/type'
 
 export default {
   components: {
@@ -66,44 +173,172 @@ export default {
   },
   data() {
     return {
-      columns: [
+      // pagination
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
+      paginationData: {
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
+        sort: null,
+      },
+      // pagination
+      labelName: [],
+      totalQuantity: [],
+      searchData: {},
+      columns: [],
+      reportSalesCatList: [],
+      initalCol: [
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
-          label: '01/10/2020',
-          field: 'price',
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-        {
-          label: 'Tổng cộng',
-          field: 'sumTotal',
+          label: 'Tần suất',
+          field: 'frequency',
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
         },
       ],
     }
+  },
+  computed: {
+    ...mapGetters(REPORT_SALES_CAT, [
+      REPORT_SALES_CAT_GETTER,
+    ]),
+    reportSalesCatPagination() {
+      if (this.REPORT_SALES_CAT_GETTER && this.REPORT_SALES_CAT_GETTER.response) {
+        return this.REPORT_SALES_CAT_GETTER.response
+      }
+      return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.reportSalesCatPagination.totalElements
+        ? this.reportSalesCatPagination.totalElements : (this.paginationData.size * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.reportSalesCatPagination.totalElements} mục`
+    },
+    getReportSalesCatCatories() {
+      if (this.REPORT_SALES_CAT_GETTER && this.REPORT_SALES_CAT_GETTER.category) {
+        return this.REPORT_SALES_CAT_GETTER.category
+      }
+      return {}
+    },
+    getReportSalesCat() {
+      if (!this.REPORT_SALES_CAT_GETTER || !this.REPORT_SALES_CAT_GETTER.response) return []
+      const self = this
+      const temp = this.REPORT_SALES_CAT_GETTER.response.content
+      return temp.map(data => {
+        const obj = {
+          customerCode: data[0],
+          customerName: data[1],
+          address: data[2],
+          frequency: data[3],
+        }
+        data.forEach((value, index) => {
+          if (index > 3) {
+            obj[index] = self.$formatNumberToLocale(value)
+          }
+        })
+        return obj
+      })
+    },
+    getTotalInfo() {
+      if (this.REPORT_SALES_CAT_GETTER.totals) {
+        return this.REPORT_SALES_CAT_GETTER.totals
+      }
+      return {}
+    },
+  },
+  watch: {
+    // add columns dynamically
+    getReportSalesCatCatories() {
+      this.labelName = []
+      this.columns = [...this.initalCol]
+      const catLength = this.getReportSalesCatCatories.length
+      this.getReportSalesCatCatories.forEach((item, index) => {
+        const obj = {
+          index,
+          label: item,
+          field: `${index + 4}`,
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        }
+        if (index === catLength - 1) obj.label = 'Tổng cộng'
+        this.labelName.push(obj)
+        this.columns.push(obj)
+      })
+    },
+    getReportSalesCat() {
+      this.reportSalesCatList = [...this.getReportSalesCat]
+    },
+    getTotalInfo() {
+      this.totalQuantity = []
+      // const self = this
+      this.getTotalInfo.forEach((item, index) => {
+        if (index > 3) {
+          this.totalQuantity.push(item)
+        }
+      })
+      console.log(this.totalQuantity, this.labelName)
+    },
+  },
+  mounted() {
+    resizeAbleTable()
+  },
+  methods: {
+    ...mapActions(REPORT_SALES_CAT, [
+      GET_REPORT_SALES_CAT_ACTION,
+      EXPORT_REPORT_SALES_CAT_ACTION,
+    ]),
+    onClickExcelExportButton() {
+      this.EXPORT_REPORT_SALES_CAT_ACTION({
+        ...this.searchData,
+        ...this.decentralization,
+      })
+    },
+    // pagination funcs
+    updateSearchData(event) {
+      this.searchData = { ...event }
+      this.paginationData = {
+        ...this.paginationData,
+        ...event,
+      }
+    },
+    onPaginationChange() {
+      this.GET_REPORT_SALES_CAT_ACTION(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onClickSearchButton() {
+      this.pageNumber = 1
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    // pagigation funcs
   },
 }
 </script>
