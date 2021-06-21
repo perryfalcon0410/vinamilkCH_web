@@ -52,7 +52,7 @@
           mode="remote"
           :columns="columns"
           :rows="sales"
-          style-class="vgt-table bordered"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,

@@ -120,7 +120,7 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  :rules="isBorrowType ? null : required"
+                  :rules="importType === borrowType ? null : 'required'"
                   name="Số nội bộ"
                 >
                   <div class="mt-1 h7">
@@ -140,7 +140,7 @@
               <b-col>
                 <validation-provider
                   v-slot="{ errors, passed, touched }"
-                  :rules="importType === inputType ? required : null"
+                  :rules="importType === inputType ? 'required' : null"
                   name="PO No"
                 >
                   <div class="mt-1 h7">
@@ -187,7 +187,7 @@
           <b-col
             class="bg-white shadow rounded mt-1 mt-xl-0"
           >
-            <div v-if="totalProductQuantity > 0">
+            <div v-if="totalProductQuantity > 0 && !isPoConfirm">
               <!-- START - Table Product -->
               <div class="d-inline-flex rounded-top my-1">
                 <strong class="text-brand-1">
@@ -258,6 +258,96 @@
                 >
                   <div
                     v-if="props.column.field === 'quantity' || props.column.field === 'totalPrice'"
+                    style="padding-right: 4px"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
+              </vue-good-table>
+              <!-- END - Table Product -->
+            </div>
+
+            <div v-if="totalProductQuantity > 0 && isPoConfirm">
+              <!-- START - Table Product -->
+              <div class="d-inline-flex rounded-top my-1">
+                <strong class="text-brand-1">
+                  Sản phẩm
+                </strong>
+              </div>
+
+              <vue-good-table
+                :columns="inputTypeColumns"
+                :rows="products"
+                style-class="vgt-table"
+                compact-mode
+                line-numbers
+              >
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
+                <template
+                  slot="table-column"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'feature'"
+                  >
+                    <b-icon-bricks
+                      v-b-popover.hover="'Thao tác'"
+                      scale="1.3"
+                      class="ml-3"
+                    />
+                  </b-row>
+                  <div v-else>
+                    {{ props.column.label }}
+                  </div>
+                </template>
+                <!-- START - Column filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
+                >
+                  <div
+                    v-if="props.column.field === 'quantity'"
+                    class="mx-0 h7 text-brand-3 text-right"
+                  >
+                    {{ $formatNumberToLocale(totalProductQuantity) }}
+                  </div>
+
+                  <div
+                    v-else-if="props.column.field === 'totalPriceNotVat'"
+                    class="mx-0 h7 text-brand-3 text-right"
+                  >
+                    {{ totalProductPriceNotVat }}
+                  </div>
+
+                  <div
+                    v-else-if="props.column.field === 'totalPrice'"
+                    class="mx-0 h7 text-brand-3 text-right"
+                  >
+                    {{ totalProductPrice }}
+                  </div>
+
+                  <div
+                    v-else-if="props.column.field === 'productCode'"
+                    class="mx-0 h7 text-brand-3"
+                  >
+                    {{ totalProductCode }}
+                  </div>
+                </template>
+                <!-- START - Column filter -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div
+                    v-if="props.column.field === 'quantity' || props.column.field === 'totalPrice' || props.column.field === 'totalPriceNotVat'"
                     style="padding-right: 4px"
                   >
                     {{ props.formattedRow[props.column.field] }}
@@ -560,6 +650,72 @@ export default {
         ctrlId: 1,
       },
       // END - decentralization
+
+      inputTypeColumns: [
+        {
+          label: 'Mã hàng',
+          field: 'productCode',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Số lượng',
+          field: 'quantity',
+          type: 'number',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+        },
+        {
+          label: 'Giá',
+          field: 'priceNotVat',
+          type: 'number',
+          sortable: false,
+        },
+        {
+          label: 'Tên hàng',
+          field: 'name',
+          sortable: false,
+        },
+        {
+          label: 'ĐVT',
+          field: 'unit',
+          sortable: false,
+        },
+        {
+          label: 'Thành tiền (chưa VAT)',
+          field: 'totalPriceNotVat',
+          type: 'number',
+          sortable: false,
+        },
+        {
+          label: 'VAT',
+          field: 'vat',
+          type: 'number',
+          sortable: false,
+        },
+        {
+          label: 'Thành tiền (VAT)',
+          field: 'totalPrice',
+          type: 'number',
+          sortable: false,
+        },
+        {
+          label: 'SO No',
+          field: 'soNo',
+          sortable: false,
+        },
+        {
+          label: '',
+          field: 'feature',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+      ],
     }
   },
 
@@ -579,10 +735,13 @@ export default {
           productCode: data.productCode,
           quantity: this.$formatNumberToLocale(data.quantity),
           price: this.$formatNumberToLocale(data.price),
+          priceNotVat: this.$formatNumberToLocale(data.priceNotVat),
           name: data.productName,
           unit: data.unit,
           totalPrice: this.$formatNumberToLocale(data.totalPrice),
+          totalPriceNotVat: this.$formatNumberToLocale(data.amountNotVat),
           soNo: data.soNo,
+          vat: data.vat,
         }))
       }
       return []
@@ -592,6 +751,9 @@ export default {
     },
     totalProductPrice() {
       return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER.reduce((accum, item) => accum + Number(item.totalPrice), 0))
+    },
+    totalProductPriceNotVat() {
+      return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER.reduce((accum, item) => accum + Number(item.amountNotVat), 0))
     },
     totalProductCode() {
       return this.$formatNumberToLocale(this.PRODUCTS_BY_ID_GETTER.length)

@@ -275,9 +275,10 @@
         xl
         lg="3"
         sm="4"
+        class="h7"
       >
         <div
-          class="h7 text-white"
+          class="text-white mt-sm-1 mt-xl-0"
           onmousedown="return false;"
           style="cursor: context-menu;"
         >

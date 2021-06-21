@@ -140,7 +140,7 @@
           mode="remote"
           :columns="columns"
           :rows="products"
-          style-class="vgt-table bordered"
+          style-class="vgt-table"
           compact-mode
           line-numbers
           :sort-options="{
