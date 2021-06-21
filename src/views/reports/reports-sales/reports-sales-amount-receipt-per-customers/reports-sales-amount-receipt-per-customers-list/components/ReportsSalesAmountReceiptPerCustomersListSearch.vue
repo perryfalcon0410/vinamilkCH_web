@@ -123,7 +123,7 @@
           <div
             class="h7 mt-sm-1 mt-xl-0"
           >
-            Mã khách hàng
+            Khách hàng
           </div>
           <b-input-group
             class="input-group-merge"
@@ -132,7 +132,7 @@
               v-model="customerCode"
               trim
               class="h7 text-brand-3"
-              placeholder="Nhập mã khách hàng"
+              placeholder="Nhập mã/tên khách hàng"
               @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append
@@ -349,7 +349,7 @@ export default {
       GET_REPORT_SALES_QUANTITY_SALE_RECEIPTS_ACTION,
     ]),
     getcustomerTypeDefault() {
-      this.customerTypesSelected = 1 // hard code
+      this.customerTypesSelected = 3 // hard code
       this.onSearch()
     },
     checkValueMin(value) {
@@ -368,7 +368,7 @@ export default {
     },
     onSearch() {
       if (!this.customerTypesSelected) {
-        this.customerTypesSelected = 1
+        this.customerTypesSelected = 3
       }
       const searchData = {
         fromDate: reverseVniDate(this.fromDate),

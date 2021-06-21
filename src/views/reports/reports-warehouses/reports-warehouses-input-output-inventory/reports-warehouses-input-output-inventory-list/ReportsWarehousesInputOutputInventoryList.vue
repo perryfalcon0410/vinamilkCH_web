@@ -5,6 +5,7 @@
   >
     <!-- START - Search -->
     <reports-warehouses-input-output-inventory-list-search
+      class="d-print-none"
       @updatePageElement="updatePageNumber"
       @updateSearchData="paginationData = {
         ...paginationData,
@@ -13,7 +14,7 @@
     <!-- END - Search -->
 
     <!-- START - Report Output list -->
-    <div class="bg-white rounded shadow rounded my-1">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
@@ -45,7 +46,7 @@
 
       <!-- START - Table -->
       <b-col
-        class="py-1"
+        class="py-1 d-print-none"
       >
         <vue-good-table
           mode="remote"
@@ -293,6 +294,7 @@
       <!-- END - Table -->
     </div>
     <!-- END - Report Output list -->
+    <print-form-input-output-inventory />
   </b-container>
 </template>
 
@@ -305,6 +307,7 @@ import {
 import {
   formatNumberToLocale, replaceDotWithComma, formatDateToLocale,
 } from '@core/utils/filter'
+import PrintFormInputOutputInventory from '@core/components/print-form/PrintFormInputOutputInventory.vue'
 import ReportsWarehousesInputOutputInventoryListSearch from './components/ReportsWarehousesInputOutputInventoryListSearch.vue'
 import {
   REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY,
@@ -320,6 +323,7 @@ import {
 export default {
   components: {
     ReportsWarehousesInputOutputInventoryListSearch,
+    PrintFormInputOutputInventory,
   },
 
   data() {
@@ -734,10 +738,15 @@ export default {
       this.pageNumber = 1
     },
     printReport() {
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
       this.PRINT_INPUT_OUTPUT_INVENTORY_ACTION({
         fromDate: this.paginationData.fromDate,
         toDate: this.paginationData.toDate,
         ...this.decentralization,
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
       })
     },
   },

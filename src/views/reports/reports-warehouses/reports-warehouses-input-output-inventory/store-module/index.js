@@ -125,6 +125,7 @@ export default {
         .then(res => {
           if (res.success) {
             state.printInputOutputData = res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }
