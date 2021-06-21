@@ -27,6 +27,7 @@
               class:'form-control pr-3 h7',
               placeholder:'Tìm sản phẩm (F3)',
             }"
+            :salemt-promotion-object-selected="salemtPromotionObjectSelected"
             @input="onChangeKeyWord"
             @selected="onclickAddProduct"
             @click="checkShopId"
@@ -66,9 +67,7 @@
                   </b-form-row>
 
                   <b-form-row>
-                    <b-col
-                      class="my-1"
-                    >
+                    <b-col>
                       {{ suggestion.item.productCode }}
                     </b-col>
                   </b-form-row>
@@ -137,7 +136,7 @@
           compact-mode
           line-numbers
           class="shadow"
-          max-height="800px"
+          max-height="600px"
         >
           <div
             slot="emptystate"
@@ -200,6 +199,7 @@
                 v-model="orderProducts[props.row.originalIndex].quantity"
                 :value="orderProducts[props.row.originalIndex].quantity"
                 :number="true"
+                :disabled="editOnlinePermission === false"
                 maxlength="7"
                 class="text-center h7"
                 @change="onChangeQuantity(props.row.originalIndex)"
@@ -316,6 +316,7 @@ export default {
       customer: {},
       isCheckShopId: false, // check shop default
       currentCustomer: {},
+      selectedValue: null,
 
       columns: [
         {
@@ -413,9 +414,10 @@ export default {
       ],
 
       // online order
-      id: null,
-      editOnlinePermission: false,
-      editManualPermission: false,
+      onlineOrderId: null,
+      orderSelected: null,
+      editOnlinePermission: true,
+      editManualPermission: true,
 
       // price customer change customerTypeId
       customerType: null,
@@ -521,6 +523,10 @@ export default {
       const login = JSON.parse(localStorage.getItem('userData'))
       return login
     },
+
+    selectedProduct() {
+      return this.salemtPromotionObjectSelected
+    },
   },
   watch: {
     getProductInfos() {
@@ -530,7 +536,7 @@ export default {
       this.productsSearch = [...this.getProductSearch]
     },
     getProducts() {
-      this.orderProducts = [...this.getProducts]
+      this.orderProducts = []
     },
     getCustomerTypeProducts() {
       this.orderProducts = [...this.getCustomerTypeProducts]
@@ -541,6 +547,11 @@ export default {
 
     getCurrentCustomer() {
       this.currentCustomer = { ...this.getCurrentCustomer }
+    },
+
+    selectedProduct() {
+      this.selectedValue = this.selectedProduct
+      console.log('this.selectedValue', this.selectedValue)
     },
   },
   mounted() {
@@ -586,24 +597,30 @@ export default {
 
     increaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      this.orderProducts[index].quantity += 1
-      this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
-      this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
+      if (this.editOnlinePermission === true) {
+        this.orderProducts[index].quantity += 1
+        this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
+        this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
+      }
     },
 
     decreaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      this.orderProducts[index].quantity -= 1
-      if (this.orderProducts[index].quantity < 0) {
-        this.orderProducts[index].quantity = 0
-      }
+      if (this.editOnlinePermission === true) {
+        this.orderProducts[index].quantity -= 1
+        if (this.orderProducts[index].quantity < 0) {
+          this.orderProducts[index].quantity = 0
+        }
 
-      this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
-      this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
+        this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
+        this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
+      }
     },
 
     onClickDeleteProduct(index) {
-      this.orderProducts.splice(index, 1)
+      if (this.editOnlinePermission === true) {
+        this.orderProducts.splice(index, 1)
+      }
     },
     // check shop default
     checkShopId() {
@@ -620,6 +637,9 @@ export default {
       this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
     },
     onclickAddProduct(index) {
+      console.log('this.onlineOrderId add product', this.onlineOrderId)
+      console.log('orderSelected', this.orderSelected)
+
       if (this.editOnlinePermission === true && this.isCheckShopId === true) {
         if (index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
@@ -663,7 +683,6 @@ export default {
     getCustomerDefault(val) {
       this.customerId = val.data.id
       this.searchOptions.customerId = this.customerId
-      this.editOnlinePermission = true
       this.GET_PRODUCTS_ACTION(this.searchOptions)
 
       // check customers dafault
@@ -675,15 +694,20 @@ export default {
     },
 
     getOnlineCustomer(val) {
+      this.onlineOrderId = val.id
       const { usedShop } = this.loginInfo
 
-      if (val.shopId === usedShop.id) {
-        if (usedShop.editable) {
-          this.editOnlinePermission = true
-        } else {
-          this.editOnlinePermission = false
+      if (val.id !== null) {
+        if (val.shopId === usedShop.id) {
+          if (usedShop.editable) {
+            this.editOnlinePermission = true
+          } else {
+            this.editOnlinePermission = false
+          }
         }
       }
+      console.log('usedShop.editable', usedShop.editable)
+      console.log('val.id', val.id)
     },
 
     getCustomerTypeInfo(id) {
@@ -752,6 +776,18 @@ export default {
         }
         return bill
       })
+    },
+
+    salemtPromotionObjectSelected(val) {
+      this.orderSelected = val
+      const { usedShop } = this.loginInfo
+      if (val === '2') {
+        if (usedShop.id === this.currentCustomer.shopId) {
+          if (usedShop.manuallyCreatable === false) {
+            this.editManualPermission = false
+          }
+        }
+      }
     },
   },
 }

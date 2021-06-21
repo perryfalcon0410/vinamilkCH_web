@@ -340,13 +340,6 @@ export default {
       // validation rules
       dateFormatVNI,
 
-      // configDate: {
-      //   wrap: true,
-      //   allowInput: true,
-      //   dateFormat: 'd/m/Y hh:ss',
-      //   allowInvalidPreload: false,
-      // },
-
       configFromDate: {
         wrap: true,
         allowInput: true,
@@ -439,7 +432,10 @@ export default {
     },
   },
   mounted() {
-    this.GET_ONLINE_ORDERS_ACTION({ formId: 1, ctrlId: 4 }) // HARD
+    const defaultSearch = {
+      synStatus: saleData.synStatus[0].id,
+    }
+    this.GET_ONLINE_ORDERS_ACTION(defaultSearch)
   },
   methods: {
     ...mapGetters(SALES, [

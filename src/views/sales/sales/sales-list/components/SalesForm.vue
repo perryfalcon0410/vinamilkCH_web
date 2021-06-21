@@ -239,7 +239,7 @@
               <b-input-group class="input-group-merge">
                 <b-form-input
                   v-model="orderOnline.orderNumber"
-                  :disabled="isCheckmanualCreate || salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0)"
+                  :disabled="salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0)"
                 />
                 <b-input-group-append is-text>
                   <b-icon-three-dots-vertical @click="showNotifyModal" />
@@ -642,23 +642,20 @@ export default {
     },
     salemtPromotionObjectSelected() {
       this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
-      this.$emit('salemtPromotionObjectSelected', this.salemtPromotionObjectSelected)
     },
     salemtDeliveryTypeSelected() {
       this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4 })
     },
     onlineOrderCustomer() {
       this.getOnlineOrderCustomerById()
-      this.currentCustomer = { ...this.onlineOrderCustomer.customer }
-      this.$emit('currentCustomer', this.currentCustomer)
     },
     customerDefault() {
       this.getCustomerDefault()
-      this.currentCustomer = { ...this.customerDefault }
-      this.$emit('currentCustomer', this.currentCustomer)
+      this.customer = { ...this.customerDefault }
     },
     getCustomerSearch() {
       this.customersSearch = [...this.getCustomerSearch]
+      this.customer = { ...this.getCustomerSearch }
     },
   },
   mounted() {
@@ -679,6 +676,7 @@ export default {
         }
       }
     })
+    // this.$emit('currentCustomer', this.customer)
   },
   created() {
   },
@@ -746,6 +744,7 @@ export default {
       this.$emit('getCustomerIdInfo', val.data.id)
       this.inputSearchFocused = false
       // console.log(val.data.phoneNumber)
+      this.$emit('currentCustomer', this.customer)
     },
 
     getOnlineOrderInfo(id) {
@@ -803,6 +802,7 @@ export default {
       this.customer.typeId = this.customerDefault.customerTypeId
       this.customer.createdAt = `${formatDateToLocale(this.customerDefault.createdAt)} ${getTimeOfDate(this.customerDefault.createdAt)}`
       this.$emit('getCustomerDefault', { data: this.customer })
+      this.$emit('currentCustomer', this.customer)
 
       // Check manualcreate
       const { usedShop } = this.loginInfo
@@ -830,7 +830,8 @@ export default {
       if (item.id === saleData.salemtPromotionObject[0].id) {
         this.orderOnline.orderNumber = ''
       }
-      this.$emit('salemtPromotionObjectSelected', this.salemtPromotionObjectSelected)
+
+      this.$emit('salemtPromotionObjectSelected', item.id)
     },
 
     onclickChooseCustomer() {
