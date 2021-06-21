@@ -629,7 +629,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
-    this.onClickSearchWarehousesOutput()
+    this.onPaginationChange()
   },
 
   methods: {

@@ -246,15 +246,6 @@
                     @change="changeQuantity(0)"
                   />
                 </div>
-                <div v-if="props.column.field === 'quantity'">
-                  <b-form-input
-                    v-model="products[props.row.originalIndex].quantity"
-                    maxlength="19"
-                    :readonly="exportAll && outputTypeSelected !== poOutputType"
-                    @keypress="$onlyNumberInput"
-                    @change="changeQuantity(0)"
-                  />
-                </div>
                 <div v-else>
                   {{ props.formattedRow[props.column.field] }}
                 </div>
@@ -498,8 +489,8 @@ export default {
       },
 
       decentralization: {
-        formId: 5,
-        ctrlId: 7,
+        formId: 1,
+        ctrlId: 1,
       },
 
       columnsPO: [
@@ -765,13 +756,16 @@ export default {
     },
     checkQuantity() {
       this.products.forEach(item => {
-        if (item.quantity - item.productReturnExportOriginal >= item.quantityReturn) {
+        if (item.quantity - item.productReturnExportOriginal >= item.quantityReturn || item.quantityReturn == null) {
           this.quantityCheck = true
         } else {
           this.quantityCheck = false
         }
       })
-      this.rowsProductPromotion.forEach(item => {
+      this.rowsProductPromotion.forEach((item, index) => {
+        if (this.rowsProductPromotion[index].quantityPromo === null) {
+          this.rowsProductPromotion[index].quantityPromo = 0
+        }
         if (item.quantity - item.productReturnExportOriginal >= item.quantityPromo) {
           this.quantityCheck = true
         } else {
@@ -797,12 +791,12 @@ export default {
               })),
               ...this.rowsProductPromotion.map(item => ({
                 id: item.id,
-                quantity: Number(item.quantity) || 0,
+                quantity: Number(item.quantityPromo) || 0,
               })),
               ],
             },
           )
-        } else if (this.outputTypeSelected === warehousesData.outputTypes[0].id) toasts.error('Không đủ sản phẩm trả.')
+        } else toasts.error('Không đủ sản phẩm trả.')
       } else toasts.error('Vui lòng chọn phiếu.')
     },
     navigateBack() {

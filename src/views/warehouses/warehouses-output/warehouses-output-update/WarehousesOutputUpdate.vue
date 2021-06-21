@@ -407,29 +407,31 @@ export default {
       return this.GET_WAREHOUSES_OUTPUT_BY_ID_GETTER
     },
     getProductOfWarehouseOutput() {
-      return [...this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.response.map(data => ({
-        productID: data.id,
-        productCode: data.productCode,
-        productPrice: data.price,
-        productName: data.productName,
-        productDVT: data.unit,
-        productPriceTotal: data.totalPrice,
-        productQuantity: data.quantity,
-        productReturnAmount: data.quantity,
-        export: `${data.quantity}/${data.importQuantity}`,
-      })),
-      ...this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.info.map(data => ({
-        productID: data.id,
-        productCode: data.productCode,
-        productPrice: data.price,
-        productName: data.productName,
-        productDVT: data.unit,
-        productPriceTotal: data.totalPrice,
-        productQuantity: data.quantity,
-        productReturnAmount: data.quantity,
-        export: `${data.quantity}/${data.importQuantity}`,
-      })),
-      ]
+      if (this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.response && this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.info) {
+        return [...this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.response.map(data => ({
+          productID: data.id,
+          productCode: data.productCode,
+          productPrice: data.price,
+          productName: data.productName,
+          productDVT: data.unit,
+          productPriceTotal: data.totalPrice,
+          productQuantity: data.quantity,
+          productReturnAmount: data.quantity,
+          export: `${data.quantity}/${data.importQuantity}`,
+        })),
+        ...this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.info.map(data => ({
+          productID: data.id,
+          productCode: data.productCode,
+          productPrice: data.price,
+          productName: data.productName,
+          productDVT: data.unit,
+          productPriceTotal: data.totalPrice,
+          productQuantity: data.quantity,
+          productReturnAmount: data.quantity,
+          export: `${data.quantity}/${data.importQuantity}`,
+        })),
+        ]
+      } return []
     },
   },
   watch: {
