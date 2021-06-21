@@ -756,17 +756,14 @@ export default {
     },
     checkQuantity() {
       this.products.forEach(item => {
-        if (item.quantity - item.productReturnExportOriginal >= item.quantityReturn || item.quantityReturn == null) {
+        if (item.quantityReturn == null || item.quantity - item.productReturnExportOriginal >= item.quantityReturn) {
           this.quantityCheck = true
         } else {
           this.quantityCheck = false
         }
       })
-      this.rowsProductPromotion.forEach((item, index) => {
-        if (this.rowsProductPromotion[index].quantityPromo === null) {
-          this.rowsProductPromotion[index].quantityPromo = 0
-        }
-        if (item.quantity - item.productReturnExportOriginal >= item.quantityPromo) {
+      this.rowsProductPromotion.forEach(item => {
+        if (item.quantityPromo == null || item.quantity - item.productReturnExportOriginal >= item.quantityPromo) {
           this.quantityCheck = true
         } else {
           this.quantityCheck = false
