@@ -243,7 +243,7 @@
                     maxlength="19"
                     :readonly="exportAll && outputTypeSelected !== poOutputType"
                     @keypress="$onlyNumberInput"
-                    @change="changeQuantity(0)"
+                    @change="changeQuantity(props.row.originalIndex)"
                   />
                 </div>
                 <div v-else>
@@ -304,7 +304,7 @@
                       v-model="rowsProductPromotion[props.row.originalIndex].quantityPromo"
                       maxlength="19"
                       @keypress="$onlyNumberInput"
-                      @change="changeQuantity(1)"
+                      @change="changeQuantity(props.row.originalIndex)"
                     />
                   </div>
                   <div v-else>
@@ -748,6 +748,10 @@ export default {
       this.totalQuantity = data.totalQuantity
       this.totalProduct = data.products.length
       this.hideFilter = false
+      this.products.forEach((item, index) => {
+        this.products[index].quantityReturn = item.quantity
+        console.log(this.products[index].quantityReturn)
+      })
 
       // clear data
       this.warehousesOutput.redInvoiceNo = ''
@@ -814,21 +818,16 @@ export default {
       this.outputTypeSelected = warehousesData.outputTypes[0].id
       this.warehousesOutput.billDate = this.$nowDate
     },
-    changeQuantity(data) {
-      this.exportAll = false
-      if (data === 0) {
-        this.products.forEach((item, index) => {
-          if (Number(this.products[index].quantityReturn) === Number(item.quantity)) {
-            this.exportAll = true
-          }
-        })
+    changeQuantity(i) {
+      if (this.products) {
+        if (this.products[i].quantityReturn === this.products[i].quantity) {
+          this.exportAll = true
+        } else this.exportAll = false
       }
-      if (data === 1) {
-        this.rowsProductPromotion.forEach((item, index) => {
-          if (Number(this.rowsProductPromotion[index].quantityPromo) === Number(item.quantity)) {
-            this.exportAll = true
-          }
-        })
+      if (this.rowsProductPromotion) {
+        if (this.rowsProductPromotion[i].quantityPromo === this.rowsProductPromotion[i].quantity) {
+          this.exportAll = true
+        } else this.exportAll = false
       }
     },
   },
