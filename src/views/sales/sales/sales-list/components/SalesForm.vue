@@ -749,7 +749,6 @@ export default {
       this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
       this.$emit('getCustomerIdInfo', val.data.id)
       this.inputSearchFocused = false
-      // console.log(val.data.phoneNumber)
       this.$emit('currentCustomer', this.customer)
     },
 
@@ -862,7 +861,6 @@ export default {
       this.customer.amountCumulated = suggestion.item.amountCumulated
       this.customer.status = suggestion.item.status
       this.customer.typeId = suggestion.item.customerTypeId
-      console.log('getSuggestionValue', this.customer)
     },
   },
 }

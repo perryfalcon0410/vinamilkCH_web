@@ -551,7 +551,6 @@ export default {
 
     selectedProduct() {
       this.selectedValue = this.selectedProduct
-      console.log('this.selectedValue', this.selectedValue)
     },
   },
   mounted() {
@@ -637,9 +636,6 @@ export default {
       this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
     },
     onclickAddProduct(index) {
-      console.log('this.onlineOrderId add product', this.onlineOrderId)
-      console.log('orderSelected', this.orderSelected)
-
       if (this.editOnlinePermission === true && this.isCheckShopId === true) {
         if (index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
@@ -706,8 +702,6 @@ export default {
           }
         }
       }
-      console.log('usedShop.editable', usedShop.editable)
-      console.log('val.id', val.id)
     },
 
     getCustomerTypeInfo(id) {

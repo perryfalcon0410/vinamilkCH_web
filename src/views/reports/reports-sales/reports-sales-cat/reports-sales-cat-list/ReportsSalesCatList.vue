@@ -296,7 +296,6 @@ export default {
           this.totalQuantity.push(item)
         }
       })
-      console.log(this.totalQuantity, this.labelName)
     },
   },
   mounted() {
