@@ -844,7 +844,8 @@ export default {
       this.$emit('salemtPromotionObjectSelected', item.id)
     },
 
-    onclickChooseCustomer() {
+    onclickChooseCustomer(data) {
+      this.$emit('getIdCustomer', data.item)
       this.customersSearch = [{ data: null }]
       this.search = null
     },

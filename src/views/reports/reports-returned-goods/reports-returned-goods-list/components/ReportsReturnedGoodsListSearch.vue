@@ -140,7 +140,7 @@
           <tree-select
             v-model="reasonSelected"
             title="Nhóm khách hàng"
-            :options="reasonOptions"
+            :options="reasonTypeOptions"
             :searchable="false"
             placeholder="Tất cả"
             no-options-text="Không có dữ liệu"
@@ -222,6 +222,7 @@
 <script>
 import {
   mapActions,
+  mapGetters,
 } from 'vuex'
 import {
   ValidationProvider,
@@ -232,12 +233,13 @@ import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
 import { reverseVniDate } from '@/@core/utils/filter'
-import reportData from '@/@db/report'
 import {
   REPORT_RETURNED_GOODS,
+  REASON_RETURN_GOODS_GETTER,
 
   // Actions
   GET_REPORT_RETURNED_GOODS_ACTION,
+  GET_REASON_RETURN_GOODS_ACTION,
 } from '../../store-module/type'
 import FindProductModal from './FindProductModal.vue'
 
@@ -258,7 +260,7 @@ export default {
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
       ids: null,
-      reasonOptions: reportData.reasonTypes,
+      reasonTypeOptions: [],
       reasonSelected: null,
 
       // decentralization
@@ -281,7 +283,24 @@ export default {
       },
     }
   },
+  computed: {
+    ...mapGetters(REPORT_RETURNED_GOODS, [
+      REASON_RETURN_GOODS_GETTER,
+    ]),
+    getReasonType() {
+      if (this.REASON_RETURN_GOODS_GETTER) {
+        return this.REASON_RETURN_GOODS_GETTER.map(data => ({
+          id: data.apParamCode,
+          label: data.apParamName,
+        }))
+      }
+      return []
+    },
+  },
   watch: {
+    getReasonType() {
+      this.reasonTypeOptions = [...this.getReasonType]
+    },
     fromDate() {
       this.configToDate = {
         ...this.configToDate,
@@ -296,6 +315,7 @@ export default {
     },
   },
   mounted() {
+    this.GET_REASON_RETURN_GOODS_ACTION({ ...this.decentralization })
     this.onSearch()
     this.configToDate = {
       ...this.configToDate,
@@ -310,6 +330,7 @@ export default {
   methods: {
     ...mapActions(REPORT_RETURNED_GOODS, [
       GET_REPORT_RETURNED_GOODS_ACTION,
+      GET_REASON_RETURN_GOODS_ACTION,
     ]),
     onSelectProductModalClick() {
       this.selectProductModalVisible = true
@@ -332,6 +353,7 @@ export default {
         reciept: this.reciept,
         reason: this.reasonSelected,
         productKW: this.ids?.replace(/\s+/g, ''),
+        ...this.decentralization,
       }
       this.updateSearchData(searchData)
       this.GET_REPORT_RETURNED_GOODS_ACTION(searchData)

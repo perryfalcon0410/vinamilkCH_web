@@ -537,10 +537,10 @@ export default {
       return []
     },
     getReasonReturn() {
-      if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.products) {
-        return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.products.reasonReturn.map(data => ({
-          value: data.apCode,
-          text: data.apName,
+      if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.reasonReturn) {
+        return this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.reasonReturn.map(data => ({
+          id: data.apCode,
+          label: data.apName,
         }))
       }
       return []
@@ -568,6 +568,9 @@ export default {
     },
     getReasonReturn() {
       this.reasonReturn = [...this.getReasonReturn]
+      if (this.reasonReturn) {
+        this.reasonReturnOptions = this.reasonReturn
+      }
     },
   },
 

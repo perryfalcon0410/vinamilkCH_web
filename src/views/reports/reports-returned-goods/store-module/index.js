@@ -10,6 +10,7 @@ import {
   PRINT_INPUT_ORDER_DETIAL_GETTER, // temp
   PRINT_SELLS_GETTER, // temp
   PRINT_RETURN_GOODS_GETTER,
+  REASON_RETURN_GOODS_GETTER,
   // MUTATIONS
   CLEAR_ALL_PRODUCT_LISTS_CHECKED,
   // ACTIONS
@@ -20,6 +21,7 @@ import {
   PRINT_INPUT_ORDER_DETIAL_ACTION, // temp
   PRINT_SELLS_ACTION, // temp
   PRINT_RETURN_GOODS_ACTION,
+  GET_REASON_RETURN_GOODS_ACTION,
 } from './type'
 
 export default {
@@ -33,6 +35,7 @@ export default {
     printInputOrderDetailData: [], // temp
     printSellsData: [], // temp
     printReturnGoodsData: [],
+    reasonType: [],
   },
   // Getters
   getters: {
@@ -53,6 +56,9 @@ export default {
     },
     [PRINT_RETURN_GOODS_GETTER](state) { // temp
       return state.printReturnGoodsData
+    },
+    [REASON_RETURN_GOODS_GETTER](state) {
+      return state.reasonType
     },
 
   },
@@ -87,6 +93,22 @@ export default {
           const fileName = `Bao_cao_hang_tra_lai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+
+    [GET_REASON_RETURN_GOODS_ACTION]({ state }, val) {
+      ReportsService
+        .getReasonReturnGoods(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.reasonType = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
         })
         .catch(error => {
           toasts.error(error.message)

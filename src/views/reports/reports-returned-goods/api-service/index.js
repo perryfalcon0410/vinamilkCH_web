@@ -7,6 +7,7 @@ import {
   printInputOrderDetailEndpoint, // temp
   printSellsEndpoint, // temp
   printReturnGoodsEndpoint,
+  getReasonReturnGoodsEndpoint,
   // Sales
   getProductCatListsEndpoint,
   getProductListsEndpoint,
@@ -48,6 +49,11 @@ export default {
   },
   getProductCatlists(args) {
     return axios.get(getProductCatListsEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getReasonReturnGoods(args) {
+    return axios.get(getReasonReturnGoodsEndpoint, {
       params: formatURLParams(args),
     })
   },

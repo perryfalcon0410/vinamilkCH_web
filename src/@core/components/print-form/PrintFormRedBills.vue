@@ -33,7 +33,9 @@
         <div>{{ redBillInfoData.shopTel }}</div>
       </div>
       <div>Tiền mặt</div>
-      <div>{{ $formatNumberToLocale(redBillInfoData.amount) }}</div>
+      <div style="width: 6%;">
+        {{ $formatNumberToLocale(redBillInfoData.amount) }}
+      </div>
     </b-row>
 
     <table class="mt-5 align-text-bottom">
@@ -55,17 +57,59 @@
     </table>
 
     <b-row
-      class="mx-0 mt-5"
+      class="mx-0 mt-5 text-center"
+      align-v="end"
+    >
+      <div
+        class="width-60-per"
+      >
+        <div class="d-flex text-right">
+          <div class="width-80-per" />
+          <div class="width-20-per pr-5">
+            10
+          </div>
+        </div>
+        <div class="d-flex text-left">
+          <div class="width-70-per" />
+          <div class="width-30-per pl-4">
+            3
+          </div>
+        </div>
+      </div>
+      <div
+        class=" width-25-per"
+      >
+        <div class="text-right">
+          {{ $formatNumberToLocale(redBillInfoData.amount) }}
+        </div>
+        <div class="text-right">
+          {{ $formatNumberToLocale(redBillInfoData.valueAddedTax) }}
+        </div>
+        <div class="text-right">
+          {{ $formatNumberToLocale(redBillInfoData.totalAmountNumber) }}
+        </div>
+      </div>
+    </b-row>
+    <b-row
+      class="mx-0 text-center"
+      align-v="end"
+    >
+      <div
+        class="text-right width-60-per"
+      >
+        {{ redBillInfoData.totalAmountString }}
+      </div>
+    </b-row>
+    <b-row
+      class="mx-0 mt-5 text-center"
       align-h="end"
       align-v="end"
     >
-      <b-col cols="5">
-        {{ redBillInfoData.totalAmountString }}
-      </b-col>
-      <b-col cols="4">
-        <div>{{ $formatNumberToLocale(redBillInfoData.amount) }}</div>
-        <div>{{ $formatNumberToLocale(redBillInfoData.valueAddedTax) }}</div>
-        <div>{{ $formatNumberToLocale(redBillInfoData.totalAmountNumber) }}</div>
+      <b-col
+        class="text-center width-60-per"
+        cols="4"
+      >
+        Nguyễn Thị Thu Vân
       </b-col>
     </b-row>
   </div>

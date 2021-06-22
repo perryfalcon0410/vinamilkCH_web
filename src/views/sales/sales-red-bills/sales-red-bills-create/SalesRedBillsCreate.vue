@@ -734,7 +734,7 @@ export default {
     },
     selectProduct(product) {
       if (product && product.item) {
-        const existedProductIndex = this.products.findIndex(products => products.productCode === product.productCode)
+        const existedProductIndex = this.products.findIndex(products => products.productCode === product.item.productCode)
         if (existedProductIndex === -1) {
           this.products.push({
             productId: product.item.productId,

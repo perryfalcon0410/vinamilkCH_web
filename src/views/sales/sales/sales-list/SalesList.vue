@@ -23,13 +23,14 @@
             :suggestions="productsSearch"
             class="w-100"
             :input-props="{
-              id:'autosuggest__input',
+              id:'autosuggest__input_product',
               class:'form-control pr-3 h7',
               placeholder:'Tìm sản phẩm (F3)',
             }"
             :salemt-promotion-object-selected="salemtPromotionObjectSelected"
             @input="onChangeKeyWord"
             @selected="onclickAddProduct"
+            @focus="focusInputProduct"
             @click="checkShopId"
           >
             <template
@@ -257,6 +258,7 @@
         @getCustomerCreate="getCustomerCreate"
         @currentCustomer="getCurrentCustomer"
         @salemtPromotionObjectSelected="salemtPromotionObjectSelected"
+        @getIdCustomer="getIdCustomer"
       />
       <!-- END - Section Form pay -->
 
@@ -562,8 +564,6 @@ export default {
       // ctrlId: 7, // Hard code
     }
     this.GET_PRODUCT_INFOS_ACTION(paramGetProductInfo)
-
-    this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
   },
   created() {
     window.addEventListener('keydown', e => {
@@ -622,18 +622,23 @@ export default {
       }
     },
     // check shop default
+    focusInputProduct() {
+      if (this.isCheckShopId === false) {
+        toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
+      }
+    },
     checkShopId() {
       this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
       if (this.isCheckShopId === true) {
         this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
-      } else {
-        toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
       }
     },
 
     onChangeKeyWord() {
-      // this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-      this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
+      if (this.isCheckShopId === true) {
+        // this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+        this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
+      }
     },
     onclickAddProduct(index) {
       if (this.editOnlinePermission === true && this.isCheckShopId === true) {
@@ -731,10 +736,13 @@ export default {
 
     getCustomerIdInfo(id) {
       this.$emit('getCustomerIdInfo', id)
-
+    },
+    getIdCustomer(data) {
       // check customers dafault
-      if (id) {
+      if (data) {
         this.isCheckShopId = true
+        this.searchOptions.customerId = data.id
+        this.editOnlinePermission = true
       } else {
         this.isCheckShopId = false
       }

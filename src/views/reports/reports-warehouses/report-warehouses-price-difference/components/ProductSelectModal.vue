@@ -20,7 +20,7 @@
         <!-- START - Product code -->
         <b-col
           xl
-          md="3"
+          lg="3"
           sm="4"
         >
           <div
@@ -28,13 +28,29 @@
           >
             Mã sản phẩm
           </div>
-          <b-form-input
-            id="form-input-customer"
-            v-model="searchOptions.productCode"
-            class="h7 text-brand-3 height-button-brand-1"
-            placeholder="Nhập mã sản phẩm"
-            @keyup.enter="onClickSearchButton"
-          />
+          <b-input-group
+            refs="focusInput"
+            class="input-group-merge"
+            autofocus
+            @keyup.enter="onSearchClick"
+          >
+            <b-form-input
+              v-model="searchOptions.productCode"
+              trim
+              autofocus
+              class="h7 text-brand-3"
+              placeholder="Nhập mã sản phẩm"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="searchOptions.productCode"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.productCode = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
         </b-col>
         <!-- END - Product code -->
         <!-- START - Product name -->
@@ -49,12 +65,26 @@
           >
             Tên sản phẩm
           </div>
-          <b-form-input
-            v-model="searchOptions.productName"
-            class="h7 text-brand-3 height-button-brand-1"
-            placeholder="Nhập tên sản phẩm"
-            @keyup.enter="onClickSearchButton"
-          />
+          <b-input-group
+            class="input-group-merge"
+            @keyup.enter="onSearchClick"
+          >
+            <b-form-input
+              v-model="searchOptions.productName"
+              trim
+              class="h7 text-brand-3"
+              placeholder="Nhập tên sản phẩm"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="searchOptions.productName"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.productName = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
         </b-col>
         <!-- END - Product name -->
         <!-- START - Product cat -->

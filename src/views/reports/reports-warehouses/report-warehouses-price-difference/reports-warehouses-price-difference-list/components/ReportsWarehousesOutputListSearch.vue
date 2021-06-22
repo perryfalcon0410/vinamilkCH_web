@@ -254,7 +254,7 @@
       <!-- START - Modal -->
       <product-select-modal
         :visible="selectProductModalVisible"
-        @onCloseClick="onModalCloseClick"
+        @onModalClose="onModalCloseClick"
         @onSaveClick="onSaveClick"
       />
       <!-- END - Modal -->

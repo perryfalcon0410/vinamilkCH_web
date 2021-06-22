@@ -331,6 +331,8 @@ export default {
           field: 'comboCode',
           sortable: false,
           type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-left',
           formatFn: this.$formatNumberToLocale,
         },
         {
