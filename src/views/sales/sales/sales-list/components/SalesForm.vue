@@ -145,7 +145,7 @@
               Tiền tích lũy
             </b-col>
             <b-col>
-              {{ $formatNumberToLocale(customer.totalBill) }}
+              {{ $formatNumberToLocale(customer.amountCumulated) }}
             </b-col>
           </b-row>
           <!-- END - Cumulative points -->
@@ -682,7 +682,6 @@ export default {
         }
       }
     })
-    // this.$emit('currentCustomer', this.customer)
   },
   created() {
   },
@@ -742,7 +741,10 @@ export default {
     getCustomerInfo(val) {
       this.customer.id = val.data.id
       this.customer.shopId = val.data.shopId
+      this.customer.code = val.data.code
+      this.customer.email = val.data.email
       this.customer.fullName = val.data.fullName
+      this.customer.typeId = val.data.customerTypeId
       this.customer.phoneNumber = val.data.phoneNumber
       this.customer.street = val.data.address
       this.customer.totalBill = val.data.totalBill ?? 0

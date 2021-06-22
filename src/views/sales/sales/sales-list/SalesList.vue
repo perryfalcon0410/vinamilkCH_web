@@ -200,7 +200,7 @@
                 v-model="orderProducts[props.row.originalIndex].quantity"
                 :value="orderProducts[props.row.originalIndex].quantity"
                 :number="true"
-                :disabled="editOnlinePermission === false"
+                :disabled="editOnlinePermission === false && onlineOrderId !== null && isOnline === true"
                 maxlength="7"
                 class="text-center h7"
                 @change="onChangeQuantity(props.row.originalIndex)"
@@ -420,6 +420,7 @@ export default {
       orderSelected: null,
       editOnlinePermission: true,
       editManualPermission: true,
+      isOnline: false,
 
       // price customer change customerTypeId
       customerType: null,
@@ -641,7 +642,7 @@ export default {
       }
     },
     onclickAddProduct(index) {
-      if (this.editOnlinePermission === true && this.isCheckShopId === true) {
+      if ((this.editOnlinePermission === true && this.onlineOrderId !== null) || (this.editManualPermission === true && this.onlineOrderId === null) || this.isOnline === false) {
         if (index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
           if (productIndex === -1) {
@@ -652,6 +653,11 @@ export default {
             this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
           }
         }
+      }
+
+      if (this.editManualPermission === false && this.onlineOrderId === null && this.isOnline === true) {
+        toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+        return
       }
 
       this.productsSearch = [{ data: null }]
@@ -730,10 +736,6 @@ export default {
       this.currentCustomer = val
     },
 
-    getCustomerCreate() {
-      // console.log('getCustomerCreate', val)
-    },
-
     getCustomerIdInfo(id) {
       this.$emit('getCustomerIdInfo', id)
     },
@@ -783,10 +785,21 @@ export default {
     salemtPromotionObjectSelected(val) {
       this.orderSelected = val
       const { usedShop } = this.loginInfo
+      if (val === '1') {
+        this.isOnline = false
+      }
       if (val === '2') {
+        this.isOnline = true
         if (usedShop.id === this.currentCustomer.shopId) {
           if (usedShop.manuallyCreatable === false) {
             this.editManualPermission = false
+          } else {
+            this.editManualPermission = true
+          }
+          if (usedShop.editable === false) {
+            this.editOnlinePermission = false
+          } else {
+            this.editOnlinePermission = true
           }
         }
       }
