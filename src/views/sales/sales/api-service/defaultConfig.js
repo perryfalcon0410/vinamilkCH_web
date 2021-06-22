@@ -4,6 +4,8 @@ const SALES = '/sales'
 const ONLINE_ORDERS = '/online-orders'
 const PRODUCT = '/products'
 const CUSTOMER = 'customers'
+const APPARAM = '/apparams'
+const COMMON = '/commons'
 
 export const getVouchersEndpoint = `${PROMOTION}/${VOUCHERS}`
 
@@ -44,3 +46,5 @@ export const getCustomerToSaleEndpoint = `${CUSTOMER}/customers-to-sale`
 export const printSalesEndpoint = `${SALES}/sale-orders/print-sale-order`
 
 export const printSalesTempEndpoint = `${SALES}/printtmp`
+
+export const getSalesPaymentTypesEndpoint = `${COMMON}${APPARAM}/type/SALEMT_PAYMENT_TYPE`

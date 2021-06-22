@@ -43,10 +43,18 @@
               >
                 <b-check
                   v-model="value.isSelected"
-                  :disabled="value.promotionType === Number(promotionTypeOption[0].id) && value.isUse === true"
+                  :disabled="!value.isUse || (value.promotionType === Number(promotionTypeOption[0].id) && value.isUse)"
+                  @change="onChangeCheckProgramPromotion()"
                 />
                 <div class="text-white">
-                  {{ value.promotionProgramName }}
+                  {{ value.promotionProgramName }} <span v-if="value.products.length > 0">- Số suất: {{ $formatNumberToLocale(value.numberLimited) }}</span>
+                  <b-icon-shield-exclamation
+                    v-if="value.products.length > 0 && !value.isUse"
+                    v-b-popover.hover="{ 'customClass':'text-brand-2', content: 'Chương trình này không được sử dụng do số suất ko đủ' }"
+                    color="red"
+                    class="cursor-pointer ml-1 popover-danger"
+                    font-scale="1.5"
+                  />
                 </div>
                 <b-icon-chevron-down
                   class="ml-auto"
@@ -88,7 +96,7 @@
                           </template>
                           <b-form-input
                             v-model.number="promotionPrograms[index].products[props.row.originalIndex].quantity"
-                            :disabled="!value.isUse"
+                            :disabled="!value.isEditable"
                             @change="onChangeQuantity(value.programId, props)"
                             @keypress="$onlyNumberInput"
                           />
@@ -193,7 +201,7 @@
                           class="form-control"
                           :raw="true"
                           :options="options.number"
-                          :disabled="value.promotionType === Number(promotionTypeOption[0].id) && !value.isUse"
+                          :disabled="value.promotionType === Number(promotionTypeOption[0].id) || !value.isEditable"
                           @change.native="onChangePromotionAmout(value.amount.amount, value.amount.maxAmount)"
                         />
                       </b-col>
@@ -381,6 +389,7 @@
                           class="form-control"
                           :raw="true"
                           :options="options.number"
+                          @change.native="onChangeAccumulateAmount()"
                         />
                       </b-input-group>
                     </b-col>
@@ -605,14 +614,6 @@
       >
         <b-button
           variant="none"
-          class="d-flex align-items-center text-uppercase btn-brand-1"
-          :disabled="isDisabledPromotionBtn"
-          @click="onClickPromotionCalculation()"
-        >
-          Tính khuyến mãi
-        </b-button>
-        <b-button
-          variant="none"
           class="d-flex align-items-center ml-1 text-uppercase btn-brand-1"
           :disabled="isDisabledPrintTempBtn"
           @click="ok()"
@@ -706,6 +707,7 @@ import {
   GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
   PRINT_SALES_GETTER,
   CREATE_SALE_ORDER_GETTER,
+  GET_SALE_PAYMENT_TYPES_GETTER,
 
   // ACTIONS
   CREATE_SALE_ORDER_ACTION,
@@ -715,6 +717,7 @@ import {
   GET_PROMOTION_CALCULATION_ACTION,
   GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
   PRINT_SALES_ACTION,
+  GET_SALE_PAYMENT_TYPES_ACTION,
 } from '../../store-module/type'
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
 
@@ -776,6 +779,7 @@ export default {
           sortable: false,
           thClass: 'text-center col-2',
           tdClass: 'text-center col-2',
+          formatFn: value => this.$formatNumberToLocale(value),
         },
         {
           label: 'Số lượng tặng',
@@ -791,7 +795,7 @@ export default {
       test: [],
       cursor: -1,
       cursorProduct: -1,
-      salePaymentTypeOptions: saleData.salePaymentType,
+      salePaymentTypeOptions: [],
       pay: {
         saleOrderId: null,
         totalQuantity: 0,
@@ -804,9 +808,6 @@ export default {
         voucher: {
           voucherSerials: '',
           vouchers: [],
-          // voucherId: null,
-          // voucherCode: '',
-          // voucherAmount: 0,
           totalVoucherAmount: null,
         },
         discount: {
@@ -815,7 +816,7 @@ export default {
         },
         needPaymentAmount: null,
         salePayment: {
-          salePaymentType: saleData.salePaymentType[0].id,
+          salePaymentType: '',
           salePaymentAmount: null,
         },
         extraAmount: null,
@@ -836,11 +837,13 @@ export default {
       },
 
       // Enable/disable buttons
-      isDisabledPromotionBtn: false,
       isDisabledPrintTempBtn: false,
       isDisabledPrintAndPaymentBtn: false,
       isDisabledPaymentBtn: false,
       isDisabledRePrintBtn: false,
+
+      // Check paid
+      isPaid: false,
     }
   },
   computed: {
@@ -853,6 +856,7 @@ export default {
       GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
       PRINT_SALES_GETTER,
       CREATE_SALE_ORDER_GETTER,
+      GET_SALE_PAYMENT_TYPES_GETTER,
     ]),
 
     getDiscount() {
@@ -868,7 +872,7 @@ export default {
     },
 
     needPayment() {
-      return Number(this.pay.totalAmount) - Number(this.pay.accumulate.accumulateAmount) - Number(this.pay.voucher.totalVoucherAmount) - Number(this.pay.discount.discountAmount)
+      return Number(this.pay.totalAmount) - Number(this.pay.promotionAmount) - Number(this.pay.accumulate.accumulateAmount) - Number(this.pay.voucher.totalVoucherAmount) - Number(this.pay.discount.discountAmount)
     },
 
     getPromotionPrograms() {
@@ -886,6 +890,9 @@ export default {
     getCreateSale() {
       return this.CREATE_SALE_ORDER_GETTER
     },
+    getSalePaymentTypes() {
+      return this.GET_SALE_PAYMENT_TYPES_GETTER
+    },
   },
   watch: {
     getDiscount() {
@@ -899,7 +906,7 @@ export default {
       this.pay.totalQuantity = this.totalQuantity
     },
     getPromotionPrograms() {
-      this.promotionPrograms = this.getPromotionPrograms.map(data => ({
+      this.promotionPrograms = this.getPromotionPrograms.lstSalePromotions.map(data => ({
         promotionType: data.promotionType,
         isUse: data.isUse,
         programId: data.programId,
@@ -915,6 +922,12 @@ export default {
         levelNumber: data.levelNumber,
         totalQty: data.totalQty,
       }))
+
+      // get accumulate
+      this.pay.accumulate.accumulateAmount = this.customer.amountCumulated
+      this.pay.accumulate.accumulatePoint = this.customer.scoreCumulated
+
+      this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
     },
     getItemsProduct() {
       this.allProducts = [...this.getItemsProduct]
@@ -925,49 +938,42 @@ export default {
     getPromotionCalculation() {
       this.pay.promotionAmount = this.getPromotionCalculation.promotionAmount
       this.pay.needPaymentAmount = this.getPromotionCalculation.paymentAmount
-      if (this.getPromotionCalculation.resultZV1921) {
+      this.extraAmountCalculation()
+      if (this.getPromotionCalculation.lstSalePromotions) {
         this.promotionPrograms = [...this.promotionPrograms.map(program => {
           if (program.programType === saleData.programPromotionType[0].label) {
-            const indexPromotionCalculationZV19 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[0].label)
+            const indexPromotionCalculationZV19 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[0].label)
             if (indexPromotionCalculationZV19 !== -1) {
-              const promotionCalculationZV19 = this.getPromotionCalculation.resultZV1921.find(p => p.programType === saleData.programPromotionType[0].label)
+              const promotionCalculationZV19 = this.getPromotionCalculation.lstSalePromotions.find(p => p.programType === saleData.programPromotionType[0].label)
               promotionCalculationZV19.products = promotionCalculationZV19.products || []
               return { ...promotionCalculationZV19, isSelected: true }
             }
           }
 
           if (program.programType === saleData.programPromotionType[1].label) {
-            const indexPromotionCalculationZV20 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[1].label)
+            const indexPromotionCalculationZV20 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[1].label)
             if (indexPromotionCalculationZV20 !== -1) {
-              const promotionCalculationZV20 = this.getPromotionCalculation.resultZV1921.find(p => p.programType === saleData.programPromotionType[1].label)
+              const promotionCalculationZV20 = this.getPromotionCalculation.lstSalePromotions.find(p => p.programType === saleData.programPromotionType[1].label)
               promotionCalculationZV20.products = promotionCalculationZV20.products || []
               return { ...promotionCalculationZV20, isSelected: true }
             }
           }
 
-          if (program.programType === saleData.programPromotionType[2].label) {
-            const indexPromotionCalculationZV21 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[2].label)
-            if (indexPromotionCalculationZV21 !== -1) {
-              const promotionCalculationZV21 = this.getPromotionCalculation.resultZV1921.find(p => p.programType === saleData.programPromotionType[2].label)
-              promotionCalculationZV21.products = promotionCalculationZV21.products || []
-              return { ...promotionCalculationZV21, isSelected: true }
-            }
-          }
           return program
         })]
 
-        const indexZV19resultZV1921 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[0].label)
-        const indexZV20resultZV1921 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[1].label)
-        const indexZV21resultZV1921 = this.getPromotionCalculation.resultZV1921.findIndex(p => p.programType === saleData.programPromotionType[2].label)
-        if (indexZV19resultZV1921 === -1) {
+        const indexZV19lstSalePromotions = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[0].label)
+        const indexZV20lstSalePromotions = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[1].label)
+        const indexZV21lstSalePromotions = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[2].label)
+        if (indexZV19lstSalePromotions === -1) {
           const indexPromotionProgramZV19 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[0].label)
           if (indexPromotionProgramZV19) this.promotionPrograms.splice(indexPromotionProgramZV19, 1)
         }
-        if (indexZV20resultZV1921 === -1) {
+        if (indexZV20lstSalePromotions === -1) {
           const indexPromotionProgramZV20 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[1].label)
           if (indexPromotionProgramZV20) this.promotionPrograms.splice(indexPromotionProgramZV20, 1)
         }
-        if (indexZV21resultZV1921 === -1) {
+        if (indexZV21lstSalePromotions === -1) {
           const indexPromotionProgramZV21 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[2].label)
           if (indexPromotionProgramZV21) this.promotionPrograms.splice(indexPromotionProgramZV21, 1)
         }
@@ -992,6 +998,30 @@ export default {
     getCreateSale() {
       this.saleOrderId = this.getCreateSale.orderId
     },
+    orderProducts: {
+      handler() {
+        const paramProducts = this.orderProducts.map(data => ({
+          productId: data.productId,
+          productCode: data.productCode,
+          quantity: data.quantity,
+        }))
+        if (paramProducts.length > 0) {
+          this.GET_PROMOTION_PROGRAMS_ACTION({
+            customerId: this.customer.id,
+            orderType: Number(saleData.orderType[0].id),
+            products: paramProducts,
+          })
+        }
+      },
+      deep: true,
+    },
+    getSalePaymentTypes() {
+      this.salePaymentTypeOptions = [...this.getSalePaymentTypes.map(data => ({
+        id: data.value,
+        label: data.apParamName,
+      }))]
+      this.pay.salePayment.salePaymentType = this.salePaymentTypeOptions[0].id
+    },
   },
 
   mounted() {
@@ -999,6 +1029,10 @@ export default {
       if (e.key === 'F9') {
         this.createSaleOrder()
       }
+    })
+    this.GET_SALE_PAYMENT_TYPES_ACTION({
+      formId: this.formId,
+      ctrlId: this.ctrlId,
     })
     this.isDisabledPaymentBtn = true
     this.isDisabledPrintAndPaymentBtn = true
@@ -1013,6 +1047,7 @@ export default {
       GET_PROMOTION_CALCULATION_ACTION,
       GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
       PRINT_SALES_ACTION,
+      GET_SALE_PAYMENT_TYPES_ACTION,
     ]),
 
     onVoucherButtonClick() {
@@ -1048,18 +1083,6 @@ export default {
       this.pay.discount.discountAmount = null
     },
 
-    resetOrderPayment() {
-      this.pay.totalQuantity = 0
-      this.pay.totalAmount = null
-      this.pay.promotionAmount = null
-      this.pay.accumulate.accumulatePoint = null
-      this.pay.accumulate.accumulateAmount = null
-      this.pay.needPaymentAmount = null
-      this.pay.salePayment.salePaymentAmount = null
-      this.pay.extraAmount = null
-      this.resetDiscount()
-    },
-
     onChangeQuantity(id, params) {
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.programId === id) {
@@ -1080,6 +1103,7 @@ export default {
             }
             return {
               ...program,
+              isUse: true,
               products: [...program.products.map(product => {
                 if (product.productId !== params.row.productId || Number(product.quantity) < 0) {
                   return {
@@ -1114,6 +1138,7 @@ export default {
 
           return {
             ...program,
+            isUse: true,
             products: [...program.products.map(product => {
               if (product.productId === params.row.productId) {
                 if (Number(product.quantity) < 0) {
@@ -1217,8 +1242,8 @@ export default {
         return program
       })]
     },
-    onClickPromotionCalculation() {
-      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.amount !== null && p.isSelected && p.isUse)
+    onChangeCheckProgramPromotion() {
+      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => (p.amount !== null || p.programType === saleData.programPromotionType[2].label) && p.isSelected && p.isUse)
       const paramOrderRequest = {
         customerId: this.customer.id,
         orderType: Number(this.orderSelected),
@@ -1234,17 +1259,9 @@ export default {
         saleOffAmount: Number(this.pay.discount.discountAmount),
         promotionInfo: paramPromotionAmountInfos,
         orderRequest: paramOrderRequest,
-        promotionType: null,
-        programId: null,
       }
-      const programZV21 = this.promotionPrograms.filter(p => p.programType === Number(saleData.programPromotionType[2].id) && p.isUse)
-      if (programZV21) {
-        paramGetPromotionCalculationData.promotionType = programZV21.promotionType
-        paramGetPromotionCalculationData.programId = programZV21.programId
-      }
+
       this.GET_PROMOTION_CALCULATION_ACTION(paramGetPromotionCalculationData)
-      this.isDisabledPaymentBtn = false
-      this.isDisabledPrintAndPaymentBtn = false
     },
     onChangePromotionAmout(amount, maxAmout) {
       if (amount > maxAmout) {
@@ -1253,6 +1270,8 @@ export default {
     },
     extraAmountCalculation() {
       this.pay.extraAmount = Number(this.pay.salePayment.salePaymentAmount) - Number(this.pay.needPaymentAmount)
+      this.isDisabledPaymentBtn = Number(this.pay.extraAmount) < 0
+      this.isDisabledPrintAndPaymentBtn = Number(this.pay.extraAmount) < 0
     },
 
     createSaleOrder() {
@@ -1298,9 +1317,9 @@ export default {
           onSuccess: () => {
             this.isDisabledRePrintBtn = false
             this.isDisabledPrintAndPaymentBtn = true
-            this.isisDisabledPrintTempBtn = true
-            this.isDisabledPromotionBtn = true
+            this.isDisabledPrintTempBtn = true
             this.isDisabledPaymentBtn = true
+            this.isPaid = true
           },
         })
       }
@@ -1321,8 +1340,20 @@ export default {
       })
     },
     cancel() {
+      if (this.isPaid) {
+        this.$router.go(this.$router.currentRoute)
+      }
       this.$root.$emit('bv::hide::modal', 'pay-modal')
-      this.resetOrderPayment()
+      // this.resetOrderPayment()
+    },
+    onChangeAccumulateAmount() {
+      if (Number(this.pay.accumulate.accumulateAmount) < 0) {
+        this.pay.accumulate.accumulateAmount = 0
+      }
+
+      if (Number(this.pay.accumulate.accumulateAmount) > this.customer.amountCumulated) {
+        this.pay.accumulate.accumulateAmount = this.customer.amountCumulated
+      }
     },
   },
 }

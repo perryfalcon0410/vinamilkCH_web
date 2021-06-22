@@ -21,6 +21,7 @@ import {
   getCustomerToSaleEndpoint,
   printSalesEndpoint,
   printSalesTempEndpoint,
+  getSalesPaymentTypesEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -123,5 +124,10 @@ export default {
   },
   printSalesTemp(args) {
     return axios.post(printSalesTempEndpoint, args)
+  },
+  getSalesPaymentTypes(args) {
+    return axios.get(getSalesPaymentTypesEndpoint, {
+      params: formatURLParams(args),
+    })
   },
 }

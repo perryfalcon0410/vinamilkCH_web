@@ -26,6 +26,7 @@ import {
   PRINT_SALES_GETTER,
   CREATE_SALE_ORDER_GETTER,
   PRINT_SALES_TEMP_GETTER,
+  GET_SALE_PAYMENT_TYPES_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -50,6 +51,7 @@ import {
   GET_CUSTOMERS_SALE_ACTION,
   PRINT_SALES_ACTION,
   PRINT_SALES_TEMP_ACTION,
+  GET_SALE_PAYMENT_TYPES_ACTION,
 } from './type'
 
 export default {
@@ -79,6 +81,7 @@ export default {
     printSaleData: {},
     createSaleData: {},
     printSaleTempData: {},
+    salePaymentTypes: [],
   },
 
   getters: {
@@ -150,6 +153,9 @@ export default {
     },
     [CREATE_SALE_ORDER_GETTER](state) {
       return state.createSaleData || {}
+    },
+    [GET_SALE_PAYMENT_TYPES_GETTER](state) {
+      return state.salePaymentTypes || []
     },
   },
 
@@ -485,6 +491,21 @@ export default {
           if (res.success) {
             state.createSaleData = res.data
             val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_SALE_PAYMENT_TYPES_ACTION]({ state }, val) {
+      SalesServices
+        .getSalesPaymentTypes(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.salePaymentTypes = res.data
           } else {
             throw new Error(res.statusValue)
           }

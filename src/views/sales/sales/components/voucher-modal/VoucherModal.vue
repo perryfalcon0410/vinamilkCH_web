@@ -76,25 +76,25 @@
     <!-- END - Body -->
 
     <!-- START - Footer -->
-    <template #modal-footer="{ cancel }">
+    <template #modal-footer="{}">
       <b-row
         class="mx-auto"
       >
         <b-button
           variant="none"
-          class="d-flex align-items-center text-uppercase btn-brand-1"
+          class="d-flex align-items-center text-uppercase btn-brand-1 h8"
           @click="onClickChooeseVouchers()"
         >
           Chọn
         </b-button>
         <b-button
-          variant="none"
-          class="d-flex align-items-center text-uppercase"
+          variant="secondary"
+          class="ml-1 d-flex align-items-center text-uppercase h8"
           @click="cancel()"
         >
           <b-icon-x
             scale="2"
-            class="mr-1"
+            class="mr-50"
           />
           Đóng
         </b-button>
@@ -157,7 +157,7 @@ export default {
         },
         {
           label: 'Mã voucher',
-          field: 'poucherCode',
+          field: 'voucherCode',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -228,7 +228,11 @@ export default {
       if (this.isLocked) {
         toasts.error(this.message)
       } else {
-        this.vouchers.push(voucher)
+        const indexVoucher = this.vouchers.findIndex(v => v.id === voucher.id)
+        if (indexVoucher === -1) {
+          this.vouchers.push(voucher)
+          this.keyword = ''
+        }
       }
     },
   },
@@ -239,11 +243,6 @@ export default {
     ...mapActions(SALES, [
       GET_VOUCHER_BY_SERIAL_ACTION,
     ]),
-
-    // getVoucherInfo(id) {
-    //   this.$emit('getVoucherInfo', id)
-    //   this.$root.$emit('bv::hide::modal', 'VoucherModal')
-    // },
 
     onClickSearchButton() {
       const productIds = this.orderProducts.map(item => item.productId)
@@ -258,7 +257,14 @@ export default {
       this.GET_VOUCHER_BY_SERIAL_ACTION(paramsGetVoucherBySerial)
     },
     onClickChooeseVouchers() {
+      this.keyword = ''
+      this.vouchers = []
       this.$emit('getVoucherInfo', this.$refs['table-voucher'].selectedRows)
+      this.$root.$emit('bv::hide::modal', 'VoucherModal')
+    },
+    cancel() {
+      this.keyword = ''
+      this.vouchers = []
       this.$root.$emit('bv::hide::modal', 'VoucherModal')
     },
   },

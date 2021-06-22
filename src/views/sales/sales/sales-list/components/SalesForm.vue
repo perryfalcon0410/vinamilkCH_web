@@ -713,16 +713,16 @@ export default {
     },
 
     showPayModal() {
-      const paramProducts = this.orderProducts.map(data => ({
-        productId: data.productId,
-        productCode: data.productCode,
-        quantity: data.quantity,
-      }))
-      this.GET_PROMOTION_PROGRAMS_ACTION({
-        customerId: this.customer.id,
-        orderType: Number(saleData.orderType[0].id),
-        products: paramProducts,
-      })
+      // const paramProducts = this.orderProducts.map(data => ({
+      //   productId: data.productId,
+      //   productCode: data.productCode,
+      //   quantity: data.quantity,
+      // }))
+      // this.GET_PROMOTION_PROGRAMS_ACTION({
+      //   customerId: this.customer.id,
+      //   orderType: Number(saleData.orderType[0].id),
+      //   products: paramProducts,
+      // })
 
       if (this.editOnlinePermission === true) {
         this.$root.$emit('bv::show::modal', 'pay-modal')
@@ -746,6 +746,8 @@ export default {
       this.customer.phoneNumber = val.data.phoneNumber
       this.customer.street = val.data.address
       this.customer.totalBill = val.data.totalBill ?? 0
+      this.customer.scoreCumulated = val.data.scoreCumulated
+      this.customer.amountCumulated = val.data.amountCumulated
       this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
       this.$emit('getCustomerIdInfo', val.data.id)
       this.inputSearchFocused = false
