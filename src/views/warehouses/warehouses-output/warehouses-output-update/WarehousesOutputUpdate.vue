@@ -416,6 +416,7 @@ export default {
           productDVT: data.unit,
           productPriceTotal: data.totalPrice,
           productQuantity: data.quantity,
+          productImportQuantity: data.importQuantity,
           productReturnAmount: data.quantity,
           export: `${data.quantity}/${data.importQuantity}`,
         })),
@@ -467,7 +468,7 @@ export default {
     exportAll() {
       if (this.exportAll) {
         this.getProductOfWarehouseOutput.forEach((item, index) => {
-          this.getProductOfWarehouseOutput[index].productReturnAmount = item.productQuantity
+          this.getProductOfWarehouseOutput[index].productReturnAmount = item.productImportQuantity - item.productQuantity
         })
         // this.rowsProductPromotion.forEach((item, index) => {
         //   this.rowsProductPromotion[index].quantityPromo = item.quantity

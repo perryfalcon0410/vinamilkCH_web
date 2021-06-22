@@ -243,7 +243,7 @@
                     maxlength="19"
                     :readonly="exportAll && outputTypeSelected !== poOutputType"
                     @keypress="$onlyNumberInput"
-                    @change="changeQuantity(props.row.originalIndex)"
+                    @change="changeQuantity()"
                   />
                 </div>
                 <div v-else>
@@ -304,7 +304,7 @@
                       v-model="rowsProductPromotion[props.row.originalIndex].quantityPromo"
                       maxlength="19"
                       @keypress="$onlyNumberInput"
-                      @change="changeQuantity(props.row.originalIndex)"
+                      @change="changeQuantity()"
                     />
                   </div>
                   <div v-else>
@@ -818,17 +818,18 @@ export default {
       this.outputTypeSelected = warehousesData.outputTypes[0].id
       this.warehousesOutput.billDate = this.$nowDate
     },
-    changeQuantity(i) {
-      if (this.products) {
-        if (this.products[i].quantityReturn === this.products[i].quantity) {
-          this.exportAll = true
-        } else this.exportAll = false
-      }
-      if (this.rowsProductPromotion) {
-        if (this.rowsProductPromotion[i].quantityPromo === this.rowsProductPromotion[i].quantity) {
-          this.exportAll = true
-        } else this.exportAll = false
-      }
+    changeQuantity() {
+      this.exportAll = false
+      // if (this.products) {
+      //   if (this.products[i].quantityReturn === this.products[i].quantity) {
+      //     this.exportAll = true
+      //   } else this.exportAll = false
+      // }
+      // if (this.rowsProductPromotion) {
+      //   if (this.rowsProductPromotion[i].quantityPromo === this.rowsProductPromotion[i].quantity) {
+      //     this.exportAll = true
+      //   } else this.exportAll = false
+      // }
     },
   },
 }
