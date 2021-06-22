@@ -43,7 +43,7 @@
         <vue-good-table
           :columns="columns"
           :rows="rows"
-          style-class="vgt-table bordered"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -85,6 +85,12 @@
                 @click="navigateToUpdate(props.row.id)"
               />
             </div>
+            <div
+              v-else-if="props.column.field ==='totalAmount'"
+              style="padding-right: 10px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -97,7 +103,7 @@
           >
             <b-row
               v-if="props.column.field === 'stockQuantity'"
-              class="h7 mx-0"
+              class="h7 mx-0 text-brand-3"
               align-h="center"
             >
               {{ $formatNumberToLocale(reportInventoryInfo.totalQuantity) }}
@@ -105,21 +111,21 @@
 
             <b-row
               v-else-if="props.column.field === 'packetQuantity'"
-              class="h7 mx-0"
+              class="h7 mx-0 text-brand-3"
               align-h="center"
             >
               {{ $formatNumberToLocale(reportInventoryInfo.totalPackageQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'unitQuantity'"
-              class="h7 mx-0"
+              class="h7 mx-0 text-brand-3"
               align-h="center"
             >
               {{ $formatNumberToLocale(reportInventoryInfo.totalUnitQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'totalAmount'"
-              class="h7 mx-0"
+              class="h7 mx-50 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(reportInventoryInfo.totalAmount) }}

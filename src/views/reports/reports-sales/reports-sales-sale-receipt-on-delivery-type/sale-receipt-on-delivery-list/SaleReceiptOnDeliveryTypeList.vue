@@ -65,6 +65,23 @@
           </div>
           <!-- END - Empty rows -->
 
+          <!-- START - Rows -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'pay' || props.column.field === 'sales'"
+              style="padding-right: 10px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Rows -->
+
           <!-- START - Column filter -->
           <template
             slot="column-filter"
@@ -73,7 +90,7 @@
             <b-row
               v-if="props.column.field === 'receiptCode'"
               v-show="totalInfo"
-              class="h7"
+              class="h7 text-brand-3 mr-3"
               align-h="center"
             >
               {{ $formatNumberToLocale(totalInfo.saleOrder) }}
@@ -81,7 +98,7 @@
             <b-row
               v-else-if="props.column.field === 'sales'"
               v-show="totalInfo"
-              class="h7"
+              class="h7 text-brand-3 mx-50"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.totalAmount) }}
@@ -89,7 +106,7 @@
             <b-row
               v-else-if="props.column.field === 'pay'"
               v-show="totalInfo"
-              class="h7"
+              class="h7 text-brand-3 mx-50"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.allTotal) }}
@@ -243,8 +260,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Thanh toán',

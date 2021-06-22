@@ -106,6 +106,12 @@
                 @click="navigateToUpdate(props.row.id)"
               />
             </div>
+            <div
+              v-else-if="props.column.field === 'totalPrice'"
+              style="padding-right: 10px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -119,7 +125,7 @@
             <b-row
               v-if="props.column.field === 'totalPrice'"
               v-show="totalInfo"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.totalAmount) }}

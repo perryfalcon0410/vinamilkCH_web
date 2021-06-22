@@ -65,6 +65,23 @@
           </div>
           <!-- END - Empty rows -->
 
+          <!-- START - Row filter -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'sumTotal'"
+              style="padding-right: 10px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Row filter -->
+
           <!-- START - Column filter -->
           <template
             slot="column-filter"
@@ -76,7 +93,7 @@
             >
               <b-row
                 v-if="props.column.field === `${item.field}`"
-                class="h7"
+                class="h7 text-brand-3 pr-50"
                 align-h="end"
               >
                 {{ $formatNumberToLocale(totalQuantity[index]) }}
@@ -84,7 +101,7 @@
             </b-col>
             <b-row
               v-if="props.column.field === 'sumTotal'"
-              class="h7"
+              class="h7 text-brand-3 mx-50"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalQuantity[totalQuantity.length-1]) }}
@@ -287,7 +304,7 @@ export default {
               enabled: true,
             },
             thClass: 'text-right',
-            tdClass: 'text-right',
+            tdClass: 'text-right px-2',
           }
           this.labelName.push(obj)
           this.columns.push(obj)

@@ -109,6 +109,7 @@
             :options="customerTypeOptions"
             title="Nhóm khách hàng"
             :searchable="false"
+            placeholder="Tất cả"
             no-options-text="Không có dữ liệu"
           />
         </b-col>
@@ -321,15 +322,12 @@ export default {
         minDate: this.fromDate,
       }
     },
-    customerTypeOptions() {
-      this.customerTypesSelected = this.customerTypeOptions[0].id
-      this.onSearch()
-    },
   },
   created() {
     this.GET_CUSTOMERS_TYPES_ACTION({ ...this.decentralization })
   },
   mounted() {
+    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,

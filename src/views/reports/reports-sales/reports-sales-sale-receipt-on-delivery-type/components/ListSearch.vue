@@ -139,12 +139,12 @@
             Loại giao hàng
           </div>
           <tree-select
-            v-model="deliveryTypeDisplayed"
+            v-model="deliveryTypeSelected"
             :options="deliveryTypeOptions"
             title="Loại giao hàng"
             :searchable="false"
+            placeholder="Tất cả"
             no-options-text="Không có dữ liệu"
-            @select="select"
           />
         </b-col>
         <!-- END - Customer group -->
@@ -317,7 +317,6 @@ export default {
       dateFormatVNI,
       formId: 5,
       ctrlId: 7,
-      deliveryTypeDisplayed: null,
       // search
       receiptCode: null,
       deliveryTypeSelected: null,
@@ -344,9 +343,8 @@ export default {
   computed: {
     deliveryTypeOptions() {
       return this.REPORT_SALES_DELIVERY_TYPES_GETTER().map(data => ({
-        id: data.id,
+        id: data.value,
         label: data.apParamName,
-        value: data.value,
       }))
     },
   },
@@ -357,15 +355,12 @@ export default {
         minDate: this.fromDate,
       }
     },
-    deliveryTypeOptions() {
-      this.deliveryTypeDisplayed = this.deliveryTypeOptions[0].id
-      this.onSearch()
-    },
   },
   created() {
     this.GET_SALES_DELIVERY_TYPES_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
   },
   mounted() {
+    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
@@ -407,9 +402,6 @@ export default {
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)
-    },
-    select(node) {
-      this.deliveryTypeSelected = node.value
     },
   },
 }

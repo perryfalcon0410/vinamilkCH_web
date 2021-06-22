@@ -90,6 +90,13 @@ export const formatVniDateToISO = value => {
 // Replace . with ,
 export const replaceDotWithComma = value => {
   if (!value) return value
+  // equals to -1 if the value is decimal
+  if (value.lastIndexOf(',') !== -1) {
+    // replacing all dot to comma
+    const removedDotVal = value.split('.').join(',')
+    const newValue = removedDotVal.replace(/,([^,]*)$/, '.$1')
+    return newValue
+  }
   return value.split('.').join(',')
 }
 

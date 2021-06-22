@@ -33,7 +33,7 @@
             <b-form-row>
               <b-col>
                 <div class="mt-1">
-                  Mã xuất hàng
+                  Mã nhập hàng
                 </div>
                 <b-form-input
                   id="id"

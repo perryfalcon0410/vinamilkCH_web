@@ -82,6 +82,14 @@
             >
               {{ $formatNumberToLocale(salesReceiptsTotal.totalAmount) }}
             </b-row>
+            <b-row
+              v-if="props.column.field === 'discountMoney'"
+              v-show="salesReceiptsTotal.allPromotion"
+              class="mx-50 h7 text-brand-3"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(salesReceiptsTotal.allPromotion) }}
+            </b-row>
 
             <b-row
               v-else-if="props.column.field === 'payments'"
@@ -139,7 +147,7 @@
             </span>
             <span
               v-else-if="props.column.field === 'discountMoney' || props.column.field === 'moneyAccumulated'"
-              class="mx-0"
+              style="padding-right: 10px;"
             >
               {{ props.formattedRow[props.column.field] }}
             </span>
