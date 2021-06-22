@@ -398,6 +398,7 @@ export default {
         formId: 5,
         ctrlId: 7,
       },
+      listDamagedProducts: [],
       customerInfo: {
         customerId: '',
         customerCode: '',
@@ -634,6 +635,13 @@ export default {
         }))
         // END - Exchange Damaged Goods
       }
+      this.listDamagedProducts = this.damagedProduct.map(data => ({
+        id: data.id,
+        productId: data.productId,
+        productCode: data.productCode,
+        type: data.type,
+        quantity: data.quantity,
+      }))
     },
 
     updateExchangeDamagedGoods() {
@@ -644,7 +652,7 @@ export default {
               exchangeDamagedGoods: {
                 customerId: this.exchangeGoodsInfo.customerId,
                 id: this.exchangeDamagedGoodsId,
-                lstExchangeDetail: this.damagedProduct.map(data => ({
+                lstExchangeDetail: this.listDamagedProducts.map(data => ({
                   id: data.id,
                   productId: data.productId,
                   quantity: data.quantity,
@@ -701,6 +709,7 @@ export default {
 
     selectProduct(product) {
       const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.item.productCode)
+      const existedProduct = this.listDamagedProducts.findIndex(listDamagedProducts => listDamagedProducts.productCode === product.item.productCode)
       if (this.damagedProduct) {
         const obj = {
           count: this.damagedProduct.length,
@@ -717,9 +726,13 @@ export default {
         if (existedProductIndex === -1) {
           obj.productPriceTotal = obj.productPrice * obj.productQuantity
           this.damagedProduct.push(obj)
+          this.listDamagedProducts.push(obj)
         } else {
           this.damagedProduct[existedProductIndex].productQuantity = Number(this.damagedProduct[existedProductIndex].productQuantity) + obj.productQuantity
           this.damagedProduct[existedProductIndex].productPriceTotal = Number(obj.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
+          if (existedProduct !== -1) {
+            this.listDamagedProducts[existedProduct].productQuantity = Number(this.listDamagedProducts[existedProduct].productQuantity) + obj.productQuantity
+          }
         }
         this.productInfos.productName = null
         this.products = [{ data: null }]
@@ -740,8 +753,12 @@ export default {
     },
 
     onClickDeleteButton(index) {
+      this.listDamagedProducts.forEach((item, i) => {
+        if (this.damagedProduct[index].productCode === item.productCode) {
+          this.listDamagedProducts[i].type = 2
+        }
+      })
       this.damagedProduct.splice(index, 1)
-      this.damagedProduct[index].type = 2
     },
     checkFieldsValueLength() {
       if (
