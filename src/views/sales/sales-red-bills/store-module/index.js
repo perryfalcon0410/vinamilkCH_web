@@ -3,7 +3,6 @@ import moment from 'moment'
 import {
   // GETTERS
   RED_INVOICES_GETTER,
-  ERROR_CODE_GETTER,
   CUSTOMERS_GETTER,
   GET_BILL_OF_SALES_GETTER,
   GET_PRODUCTS_IN_SELECTED_BILL_GETTER,
@@ -60,9 +59,6 @@ export default {
     },
     [GET_PRODUCTS_IN_SELECTED_BILL_GETTER](state) {
       return state.productOfBills
-    },
-    [ERROR_CODE_GETTER](state) {
-      return state.errorCode
     },
     [CUSTOMERS_GETTER](state) {
       return state.customers

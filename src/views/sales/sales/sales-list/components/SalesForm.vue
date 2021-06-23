@@ -394,7 +394,6 @@ import { VueAutosuggest } from 'vue-autosuggest'
 import {
   CUSTOMER,
   // GETTERS
-  ERROR_CODE_GETTER,
   CUSTOMER_BY_ID_GETTER,
   SALEMT_PROMOTION_OBJECT_GETTER,
   SALEMT_DELIVERY_TYPE_GETTER,
@@ -567,7 +566,6 @@ export default {
   },
   computed: {
     ...mapGetters(CUSTOMER, {
-      ERROR_CODE_GETTER,
       CUSTOMER_BY_ID_GETTER,
       SALEMT_PROMOTION_OBJECT_GETTER,
       SALEMT_DELIVERY_TYPE_GETTER,
@@ -643,9 +641,6 @@ export default {
     },
   },
   watch: {
-    ERROR_CODE_GETTER() {
-      this.checkDuplicationID(this.ERROR_CODE_GETTER())
-    },
     salemtPromotionObjectSelected() {
       this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
     },

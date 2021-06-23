@@ -25,6 +25,7 @@
           <b-button
             class="btn-brand-1 h8 align-items-button-center"
             variant="someThing"
+            :disabled="!selectedRows.length"
             @click="onClickPrintButton"
           >
             <b-icon-printer-fill />
@@ -40,7 +41,7 @@
           mode="remote"
           :rows="salesReceiptList"
           class="pb-1"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: paginationData.size,
@@ -61,6 +62,7 @@
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
+          @on-selected-rows-change="selectionChanged"
         >
           <!-- START - Empty rows -->
           <div
@@ -270,6 +272,7 @@ export default {
     SalesReceiptListSearch,
     PrintFormSalesReceipt,
   },
+
   data() {
     return {
       decentralization: {
@@ -277,8 +280,8 @@ export default {
         ctrlId: 7,
       },
       isInvoiceDetailModal: false,
-      valueDateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      valueDateTo: new Date(),
+      valueDateFrom: this.$earlyMonth,
+      valueDateTo: this.$nowDate,
       selected: null,
 
       perPageSizeOptions: commonData.perPageSizes,
@@ -288,6 +291,8 @@ export default {
         page: this.pageNumber,
         sort: null,
       },
+
+      selectedRows: [], // array receipt
 
       columns: [
         {
@@ -397,6 +402,7 @@ export default {
       ],
     }
   },
+
   computed: {
     ...mapGetters(SALESRECEIPTS, [
       SALES_RECEIPTS_GETTER,
@@ -497,6 +503,7 @@ export default {
   mounted() {
     resizeAbleTable()
   },
+
   methods: {
     ...mapActions(SALESRECEIPTS, [
       GET_SALES_RECEIPTS_ACTION,
@@ -510,17 +517,21 @@ export default {
     onClickPrintButton() {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
-      this.PRINT_SALES_RECEIPT_ACTION({
-        data: {
-          salesReceiptId: 1, // hard code: id của hóa đơn bán hàng
-          params: { ...this.decentralization },
-        },
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
-      })
+      if (this.selectedRows.length) {
+        this.selectedRows.forEach(data => {
+          this.PRINT_SALES_RECEIPT_ACTION({
+            data: {
+              salesReceiptId: data.id,
+              params: { ...this.decentralization },
+            },
+            onSuccess: () => {
+              this.$root.$emit('bv::enable::popover')
+            },
+          })
+        })
+      }
     },
-    // -------------- pagnigation function--------------
+    // START - Pagination function
     onPaginationChange() {
       this.GET_SALES_RECEIPTS_ACTION({
         ...this.paginationData,
@@ -545,7 +556,11 @@ export default {
     onClickSearchButton() {
       this.pageNumber = 1
     },
-    // -------------- pagnigation function--------------
+    // END - Pagination function
+
+    selectionChanged(params) {
+      this.selectedRows = [...params.selectedRows]
+    },
   },
 }
 </script>

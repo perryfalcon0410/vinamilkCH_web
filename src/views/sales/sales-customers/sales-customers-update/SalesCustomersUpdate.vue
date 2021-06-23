@@ -231,15 +231,14 @@
                 <b-form-group
                   label="CMND"
                   label-for="IdentityCard"
-                  :state="touched ? stateInputValueID = passed : null"
-                  :invalid-feedback="invalidFeedbackID"
+                  :state="touched ? passed : null"
                 >
                   <b-form-input
                     id="IdentityCard"
                     v-model.trim="customerID"
                     maxlength="12"
                     minlength="9"
-                    :state="touched ? stateInputValueID = passed : null"
+                    :state="touched ? passed : null"
                     @keypress="$onlyNumberInput"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -623,8 +622,7 @@ import customerData from '@/@db/customer'
 import {
   CUSTOMER,
   // GETTERS
-  CUSTOMER_TYPES_GETTER,
-  ERROR_CODE_GETTER,
+  CUSTOMER_TYPES_UPDATE_GETTER,
   PROVINCES_GETTER,
   DISTRICTS_GETTER,
   PRECINCTS_GETTER,
@@ -632,12 +630,12 @@ import {
   CLOSELY_TYPES_GETTER,
   CUSTOMER_BY_ID_GETTER,
   // ACTIONS
-  GET_CUSTOMER_TYPES_ACTION,
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
   GET_PRECINCTS_ACTION,
   GET_CARD_TYPES_ACTION,
   GET_CLOSELY_TYPES_ACTION,
+  GET_CUSTOMER_TYPES_UPDATE_ACTION,
   UPDATE_CUSTOMER_ACTION,
   GET_CUSTOMER_BY_ID_ACTION,
 } from '../store-module/type'
@@ -700,8 +698,6 @@ export default {
       note: null,
       createdAt: null,
       customerID: '',
-      stateInputValueID: null,
-      invalidFeedbackID: null,
       customerIDDate: '',
       customerIDLocation: null,
       totalBill: null,
@@ -731,8 +727,7 @@ export default {
   // START - Computed
   computed: {
     ...mapGetters(CUSTOMER, {
-      CUSTOMER_TYPES_GETTER,
-      ERROR_CODE_GETTER,
+      CUSTOMER_TYPES_UPDATE_GETTER,
       PROVINCES_GETTER,
       DISTRICTS_GETTER,
       PRECINCTS_GETTER,
@@ -744,7 +739,7 @@ export default {
       return this.CUSTOMER_BY_ID_GETTER
     },
     customerTypeOptions() {
-      return this.CUSTOMER_TYPES_GETTER.map(data => ({
+      return this.CUSTOMER_TYPES_UPDATE_GETTER.map(data => ({
         id: data.id,
         label: data.name,
       }))
@@ -795,10 +790,6 @@ export default {
   // END - Computed
 
   watch: {
-    ERROR_CODE_GETTER() {
-      this.checkDuplicationID(this.ERROR_CODE_GETTER)
-    },
-
     provincesSelected() {
       this.districtsSelected = null
       if (this.provincesSelected) {
@@ -826,7 +817,7 @@ export default {
   },
 
   mounted() {
-    this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
+    this.GET_CUSTOMER_TYPES_UPDATE_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
     this.GET_PROVINCES_ACTION({ ...this.decentralization })
     this.GET_CARD_TYPES_ACTION({ ...this.decentralization })
     this.GET_CLOSELY_TYPES_ACTION({ ...this.decentralization })
@@ -850,7 +841,7 @@ export default {
   // START - Methods
   methods: {
     ...mapActions(CUSTOMER, [
-      GET_CUSTOMER_TYPES_ACTION,
+      GET_CUSTOMER_TYPES_UPDATE_ACTION,
       GET_PROVINCES_ACTION,
       GET_DISTRICTS_ACTION,
       GET_PRECINCTS_ACTION,
@@ -859,21 +850,6 @@ export default {
       UPDATE_CUSTOMER_ACTION,
       GET_CUSTOMER_BY_ID_ACTION,
     ]),
-
-    checkDuplicationID(errCode) {
-      switch (errCode) {
-        case 65000:
-          this.stateInputValueID = false
-          this.invalidFeedbackID = 'Số CMND đã tồn tại'
-          break
-        case 200:
-          this.stateInputValueID = true
-          break
-        default:
-          this.stateInputValueID = true
-          break
-      }
-    },
 
     getCustomerById() {
       if (this.customer) {
@@ -911,8 +887,6 @@ export default {
     },
 
     updateCustomer() {
-      this.checkDuplicationID(this.CREATE_CODE_ERROR)
-
       this.$refs.formContainer.validate().then(success => {
         if (success) {
           this.UPDATE_CUSTOMER_ACTION({

@@ -671,16 +671,12 @@ export default {
     onClickPrintButton() {
       if (this.selectedRedBillRows && this.selectedRedBillRows.length > 0) {
         this.selectedRedBillRows.forEach(data => {
-          this.$root.$emit('bv::hide::popover')
-          this.$root.$emit('bv::disable::popover')
           this.PRINT_RED_INVOICES_ACTION({
             data: {
               id: data.id,
               params: { ...this.decentralization },
             },
-            onSuccess: () => {
-              this.$root.$emit('bv::enable::popover')
-            },
+            onSuccess: () => {},
           })
         })
         this.selectedRedBillRows = []

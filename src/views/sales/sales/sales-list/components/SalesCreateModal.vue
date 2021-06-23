@@ -440,9 +440,6 @@ export default {
   // END - Computed
 
   watch: {
-    ERROR_CODE_GETTER() {
-      this.checkDuplicationID(this.ERROR_CODE_GETTER())
-    },
     shopLocations() {
       this.provincesSelected = this.shopLocations.provinceId
     },

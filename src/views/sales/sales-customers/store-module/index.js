@@ -10,8 +10,8 @@ import {
   CREATE_CUSTOMER_GETTER,
   SHOP_LOCATIONS_SEARCH_GETTER,
   SHOP_LOCATIONS_GETTER,
-  ERROR_CODE_GETTER,
   CUSTOMER_TYPES_GETTER,
+  CUSTOMER_TYPES_UPDATE_GETTER,
   CUSTOMER_DEFAULT_GETTER,
   PROVINCES_GETTER,
   DISTRICTS_GETTER,
@@ -27,6 +27,7 @@ import {
   CREATE_CUSTOMER_ACTION,
   UPDATE_CUSTOMER_ACTION,
   GET_CUSTOMER_TYPES_ACTION,
+  GET_CUSTOMER_TYPES_UPDATE_ACTION,
   EXPORT_CUSTOMERS_ACTION,
   GET_CUSTOMER_DEFAULT_ACTION,
 
@@ -49,8 +50,6 @@ export default {
   namespaced: true,
   // STATE
   state: {
-    errorCode: null,
-
     customerData: {},
     customerById: {},
     customerDefault: {},
@@ -58,6 +57,7 @@ export default {
     shopLocationsSearch: [],
     shopLocations: [],
     customerTypes: [],
+    customerTypesUpdate: [],
     provinces: [],
     districts: [],
     precincts: [],
@@ -82,6 +82,9 @@ export default {
     [CUSTOMER_TYPES_GETTER](state) {
       return state.customerTypes
     },
+    [CUSTOMER_TYPES_UPDATE_GETTER](state) {
+      return state.customerTypesUpdate
+    },
     [CUSTOMER_DEFAULT_GETTER](state) {
       return state.customerDefault
     },
@@ -90,9 +93,6 @@ export default {
     },
     [SHOP_LOCATIONS_GETTER](state) {
       return state.shopLocations
-    },
-    [ERROR_CODE_GETTER](state) {
-      return state.errorCode
     },
     [PROVINCES_GETTER](state) {
       return state.provinces
@@ -258,6 +258,22 @@ export default {
         .then(res => {
           if (res.success) {
             state.customerTypes = res.data
+            val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_CUSTOMER_TYPES_UPDATE_ACTION]({ state }, val) {
+      CustomerService
+        .getCustomerTypesUpdate(val.data)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.customerTypesUpdate = res.data
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)

@@ -11,6 +11,7 @@ import {
   getShopLocationsSearchEndpoint,
   getShopLocationsEndpoint,
   getCustomerTypesEndpoint,
+  getCustomerTypesUpdateEndpoint,
   getPrecinctsEndpoint,
   getDistrictsEndpoint,
   getProvincesEndpoint,
@@ -34,6 +35,11 @@ export default {
   },
   getCustomerTypes(args) {
     return axios.get(getCustomerTypesEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getCustomerTypesUpdate(args) {
+    return axios.get(getCustomerTypesUpdateEndpoint, {
       params: formatURLParams(args),
     })
   },

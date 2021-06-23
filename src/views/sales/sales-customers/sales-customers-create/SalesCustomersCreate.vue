@@ -20,7 +20,7 @@
           <b-row class="flex-grow-1 mx-0">
             <!-- START - Section 1 -->
             <b-col>
-              <label class="font-weight-bold w-100 text-center h5"><strong>Thông tin cá nhân</strong></label>
+              <label class="w-100 text-center h5"><strong>Thông tin cá nhân</strong></label>
 
               <!-- START - Customer Code -->
               <b-col class="px-0">
@@ -215,7 +215,6 @@
 
             <!-- START - Section 2 -->
             <b-col
-              style="margin-top: -5px"
               class="bg-light pt-3"
             >
               <!-- START - Customer IdentityCard -->
@@ -227,14 +226,13 @@
                 <b-form-group
                   label="CMND"
                   label-for="IdentityCard"
-                  :state="customerID ? stateInputValueID = passed : null"
-                  :invalid-feedback="invalidFeedbackID"
+                  :state="customerID ? passed : null"
                 >
                   <b-form-input
                     id="IdentityCard"
                     v-model.trim="customerID"
                     maxlength="12"
-                    :state="customerID ? stateInputValueID = passed : null"
+                    :state="customerID ? passed : null"
                     @keypress="$onlyNumberInput"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -591,7 +589,6 @@ import {
   CUSTOMER,
   // GETTERS
   CUSTOMER_TYPES_GETTER,
-  ERROR_CODE_GETTER,
   PROVINCES_GETTER,
   DISTRICTS_GETTER,
   PRECINCTS_GETTER,
@@ -665,8 +662,6 @@ export default {
       customerPrivate: false,
       note: null,
       customerID: null,
-      stateInputValueID: null,
-      invalidFeedbackID: null,
       customerIDDate: null,
       customerIDLocation: null,
       // END - Personal
@@ -695,7 +690,6 @@ export default {
   computed: {
     ...mapGetters(CUSTOMER, {
       CUSTOMER_TYPES_GETTER,
-      ERROR_CODE_GETTER,
       PROVINCES_GETTER,
       DISTRICTS_GETTER,
       PRECINCTS_GETTER,
@@ -752,9 +746,6 @@ export default {
   // END - Computed
 
   watch: {
-    ERROR_CODE_GETTER() {
-      this.checkDuplicationID(this.ERROR_CODE_GETTER)
-    },
     shopLocations() {
       this.provincesSelected = this.shopLocations.provinceId
     },
@@ -814,23 +805,7 @@ export default {
       GET_SHOP_LOCATIONS_ACTION,
     ]),
 
-    checkDuplicationID(errCode) {
-      switch (errCode) {
-        case 65000:
-          this.stateInputValueID = false
-          this.invalidFeedbackID = 'Số CMND đã tồn tại'
-          break
-        case 200:
-          this.stateInputValueID = true
-          break
-        default:
-          this.stateInputValueID = true
-          break
-      }
-    },
-
     createCustomer() {
-      this.checkDuplicationID(this.CREATE_CODE_ERROR)
       this.$refs.formContainer.validate().then(success => {
         if (success) {
           this.CREATE_CUSTOMER_ACTION({

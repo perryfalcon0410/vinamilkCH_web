@@ -10,6 +10,7 @@ export const getCustomerByIdEndpoint = `${CUSTOMER}`
 export const createCustomerEndpoint = `${CUSTOMER}/create`
 export const updateCustomerEndpoint = `${CUSTOMER}/update`
 export const getCustomerTypesEndpoint = `${CUSTOMER}/customer-types`
+export const getCustomerTypesUpdateEndpoint = `${CUSTOMER}/customer-types/customers`
 export const exportCustomersEndpoint = `${CUSTOMER}/export`
 export const getCustomerDefaultEndpoint = `${CUSTOMER}/default`
 

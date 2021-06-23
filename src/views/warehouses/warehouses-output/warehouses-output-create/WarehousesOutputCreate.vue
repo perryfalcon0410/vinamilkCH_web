@@ -750,7 +750,6 @@ export default {
       this.hideFilter = false
       this.products.forEach((item, index) => {
         this.products[index].quantityReturn = item.quantity
-        console.log(this.products[index].quantityReturn)
       })
 
       // clear data
