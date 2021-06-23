@@ -1028,17 +1028,25 @@ export default {
     },
     orderProducts: {
       handler() {
-        const paramProducts = this.orderProducts.map(data => ({
-          productId: data.productId,
-          productCode: data.productCode,
-          quantity: data.quantity,
-        }))
-        if (paramProducts.length > 0) {
-          this.GET_PROMOTION_PROGRAMS_ACTION({
-            customerId: this.customer.id,
-            orderType: Number(saleData.orderType[0].id),
-            products: paramProducts,
-          })
+        let isValidProduct = true
+        this.orderProducts.forEach(product => {
+          if (product.quantity <= 0) {
+            isValidProduct = false
+          }
+        })
+        if (isValidProduct) {
+          const paramProducts = this.orderProducts.map(data => ({
+            productId: data.productId,
+            productCode: data.productCode,
+            quantity: data.quantity,
+          }))
+          if (paramProducts.length > 0) {
+            this.GET_PROMOTION_PROGRAMS_ACTION({
+              customerId: this.customer.id,
+              orderType: Number(saleData.orderType[0].id),
+              products: paramProducts,
+            })
+          }
         }
       },
       deep: true,
