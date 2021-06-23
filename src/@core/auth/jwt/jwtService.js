@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import store from '@/store'
 import Vue from 'vue'
 import { initialAbility } from '@/libs/acl/config'
@@ -23,14 +24,13 @@ export default class JwtService {
 
     this.axiosIns.interceptors.request.use(
       config => {
-        store.commit('app/UPDATE_IS_LOADING', true)
+        store.commit('app/UPDATE_IS_LOADING', !config.params || !config.params.invisibleLoading)
+        delete config.params.invisibleLoading
 
         const accessToken = this.getToken()
 
         if (accessToken) {
-          // eslint-disable-next-line no-param-reassign
           config.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`
-          // eslint-disable-next-line no-param-reassign
           config.params = {
             ...config.params,
             formId: 1,
