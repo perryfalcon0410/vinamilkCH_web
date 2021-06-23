@@ -707,17 +707,6 @@ export default {
     },
 
     showPayModal() {
-      // const paramProducts = this.orderProducts.map(data => ({
-      //   productId: data.productId,
-      //   productCode: data.productCode,
-      //   quantity: data.quantity,
-      // }))
-      // this.GET_PROMOTION_PROGRAMS_ACTION({
-      //   customerId: this.customer.id,
-      //   orderType: Number(saleData.orderType[0].id),
-      //   products: paramProducts,
-      // })
-
       if (this.editOnlinePermission === true) {
         this.$root.$emit('bv::show::modal', 'pay-modal')
       }

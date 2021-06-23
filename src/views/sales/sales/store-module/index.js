@@ -73,7 +73,7 @@ export default {
     customerTypeProducts: [],
     productsInMonth: [],
     promotionFreeItems: [],
-    promotionPrograms: [],
+    promotionPrograms: {},
     promotionCalculation: {},
     itemsProductsProgram: [],
     voucherBySerial: {},
@@ -131,7 +131,7 @@ export default {
       return state.promotionFreeItems
     },
     [GET_PROMOTION_PROGRAMS_GETTER](state) {
-      return state.promotionPrograms || []
+      return state.promotionPrograms || {}
     },
     [GET_PROMOTION_CALCULATION_GETTER](state) {
       return state.promotionCalculation || {}
@@ -483,13 +483,12 @@ export default {
           toasts.error(error.message)
         })
     },
-    [PRINT_SALES_TEMP_ACTION]({ state }, val) {
+    [PRINT_SALES_TEMP_ACTION]({}, val) {
       SalesServices
         .printSalesTemp(val.orderSale)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.createSaleData = res.data
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)

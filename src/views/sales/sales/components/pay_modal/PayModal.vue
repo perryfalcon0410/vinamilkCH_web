@@ -163,7 +163,7 @@
                   </vue-good-table>
                 </div>
                 <div v-else-if="value.amount">
-                  <div v-if="value.amount.percentage > 0">
+                  <div v-if="value.amount.percentage !== null">
                     <b-row
                       class="mx-0 p-1 h7"
                       align-v="center"
@@ -172,7 +172,10 @@
 
                       <b-col cols="5">
                         <b-input-group>
-                          <b-input-group-prepend is-text>
+                          <b-input-group-prepend
+                            v-if="value.amount.percentage > 0"
+                            is-text
+                          >
                             {{ value.amount.percentage }}%
                           </b-input-group-prepend>
                           <cleave
@@ -206,7 +209,7 @@
                       </b-col>
                     </b-row>
                     <div
-                      v-if="value.amount.maxAmount > 0"
+                      v-if="value.amount.maxAmount > 0 || value.amount.maxAmount === null"
                       class="ml-1 h7"
                     >
                       Tối đa: {{ $formatNumberToLocale(value.amount.maxAmount) }}
@@ -682,6 +685,10 @@
       :customer="customer"
       @getVoucherInfo="getVoucherInfo"
     />
+
+    <!-- START - Print form -->
+    <print-form-sales-receipt />
+    <!-- END - Print form -->
   </b-modal>
   <!-- End Popup -->
 </template>
@@ -698,6 +705,11 @@ import {
 } from 'vuex'
 import Cleave from 'vue-cleave-component'
 import saleData from '@/@db/sale'
+import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
+import {
+  SALESRECEIPTS,
+  PRINT_SALES_RECEIPT_ACTION,
+} from '@/views/sales/sales-receipts/store-module/type'
 import {
   SALES,
   // GETTERS
@@ -707,7 +719,6 @@ import {
   GET_PROMOTION_PROGRAMS_GETTER,
   GET_PROMOTION_CALCULATION_GETTER,
   GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
-  PRINT_SALES_GETTER,
   CREATE_SALE_ORDER_GETTER,
   GET_SALE_PAYMENT_TYPES_GETTER,
 
@@ -721,12 +732,14 @@ import {
   PRINT_SALES_ACTION,
   GET_SALE_PAYMENT_TYPES_ACTION,
 } from '../../store-module/type'
+
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
 
 export default {
   components: {
     VoucherModal,
     Cleave,
+    PrintFormSalesReceipt,
   },
   props: {
     visible: {
@@ -856,7 +869,6 @@ export default {
       GET_PROMOTION_PROGRAMS_GETTER,
       GET_PROMOTION_CALCULATION_GETTER,
       GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
-      PRINT_SALES_GETTER,
       CREATE_SALE_ORDER_GETTER,
       GET_SALE_PAYMENT_TYPES_GETTER,
     ]),
@@ -908,34 +920,38 @@ export default {
       this.pay.totalQuantity = this.totalQuantity
     },
     getPromotionPrograms() {
-      this.promotionPrograms = this.getPromotionPrograms.lstSalePromotions.map(data => ({
-        promotionType: data.promotionType,
-        isUse: data.isUse,
-        programId: data.programId,
-        promotionProgramName: data.promotionProgramName,
-        contraintType: data.contraintType,
-        products: data.products || [],
-        amount: data.amount,
-        programType: data.programType,
-        isEditable: data.isEditable,
-        numberLimited: data.numberLimited,
-        isSelected: data.promotionType === Number(this.promotionTypeOption[0].id) && data.isUse,
-        isInsertItemProducts: (data.products === null && data.amount === null),
-        levelNumber: data.levelNumber,
-        totalQty: data.totalQty,
-      }))
+      if (this.getPromotionPrograms) {
+        this.promotionPrograms = this.getPromotionPrograms.lstSalePromotions.map(data => ({
+          promotionType: data.promotionType,
+          isUse: data.isUse,
+          programId: data.programId,
+          promotionProgramName: data.promotionProgramName,
+          contraintType: data.contraintType,
+          products: data.products || [],
+          amount: data.amount,
+          programType: data.programType,
+          isEditable: data.isEditable,
+          numberLimited: data.numberLimited,
+          isSelected: data.promotionType === Number(this.promotionTypeOption[0].id) && data.isUse,
+          isInsertItemProducts: (data.products === null && data.amount === null),
+          levelNumber: data.levelNumber,
+          totalQty: data.totalQty,
+        }))
+        this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
+      }
 
       // get accumulate
       this.pay.accumulate.accumulateAmount = this.customer.amountCumulated
       this.pay.accumulate.accumulatePoint = this.customer.scoreCumulated
-
-      this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
     },
     getItemsProduct() {
       this.allProducts = [...this.getItemsProduct]
     },
     needPayment() {
       this.pay.needPaymentAmount = Number(this.needPayment)
+      if (this.pay.needPaymentAmount < 0) {
+        this.pay.needPaymentAmount = 0
+      }
     },
     getPromotionCalculation() {
       this.pay.promotionAmount = this.getPromotionCalculation.promotionAmount
@@ -998,7 +1014,17 @@ export default {
       this.printSaleData = { ...this.getPrintSaleData }
     },
     getCreateSale() {
-      this.saleOrderId = this.getCreateSale.orderId
+      this.pay.saleOrderId = this.getCreateSale.orderId
+      this.PRINT_SALES_RECEIPT_ACTION({
+        data: {
+          salesReceiptId: this.pay.saleOrderId,
+          formId: this.formId,
+          ctrlId: this.ctrlId,
+        },
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
     },
     orderProducts: {
       handler() {
@@ -1027,11 +1053,6 @@ export default {
   },
 
   mounted() {
-    window.addEventListener('keydown', e => {
-      if (e.key === 'F9') {
-        this.createSaleOrder()
-      }
-    })
     this.GET_SALE_PAYMENT_TYPES_ACTION({
       formId: this.formId,
       ctrlId: this.ctrlId,
@@ -1051,7 +1072,9 @@ export default {
       PRINT_SALES_ACTION,
       GET_SALE_PAYMENT_TYPES_ACTION,
     ]),
-
+    ...mapActions(SALESRECEIPTS, [
+      PRINT_SALES_RECEIPT_ACTION,
+    ]),
     onVoucherButtonClick() {
       this.$root.$emit('bv::show::modal', 'VoucherModal')
     },
@@ -1274,6 +1297,19 @@ export default {
       this.pay.extraAmount = Number(this.pay.salePayment.salePaymentAmount) - Number(this.pay.needPaymentAmount)
       this.isDisabledPaymentBtn = Number(this.pay.extraAmount) < 0
       this.isDisabledPrintAndPaymentBtn = Number(this.pay.extraAmount) < 0
+      if (this.pay.extraAmount >= 0) {
+        window.addEventListener('keydown', e => {
+          if (e.key === 'F9') {
+            this.createSaleOrder()
+          }
+        })
+      } else {
+        window.removeEventListener('keydown', e => {
+          if (e.key === 'F9') {
+            this.createSaleOrder()
+          }
+        })
+      }
     },
 
     createSaleOrder() {
@@ -1330,23 +1366,12 @@ export default {
       this.createSaleOrder()
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
-      this.PRINT_SALES_RECEIPT_ACTION({
-        data: {
-          salesReceiptId: this.saleOrderId,
-          formId: this.formId,
-          ctrlId: this.ctrlId,
-        },
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
-      })
     },
     cancel() {
       if (this.isPaid) {
         this.$router.go(this.$router.currentRoute)
       }
       this.$root.$emit('bv::hide::modal', 'pay-modal')
-      // this.resetOrderPayment()
     },
     onChangeAccumulateAmount() {
       if (Number(this.pay.accumulate.accumulateAmount) < 0) {
