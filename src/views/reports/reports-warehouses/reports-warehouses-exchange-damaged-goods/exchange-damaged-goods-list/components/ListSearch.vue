@@ -135,11 +135,11 @@
             Lý do
           </div>
           <tree-select
-            v-model="reasonDisplayed"
+            v-model="reasonSelected"
             title="Lý do"
             :options="reasonOptions"
             :searchable="false"
-            placeholder="Chọn lý do đổi trả hàng"
+            placeholder="Tất cả"
             no-options-text="Không có dữ liệu"
             size="sm"
             @select="select"
@@ -257,7 +257,6 @@ export default {
       searchData: {},
       productCodes: null,
       transCode: null,
-      reasonDisplayed: null,
       reasonSelected: null,
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
@@ -286,9 +285,8 @@ export default {
     ]),
     reasonOptions() {
       return this.REASON_EXCHANGE_DAMAGED_GOODS_GETTER.map(data => ({
-        id: data.id,
+        id: data.categoryCode,
         label: data.categoryName,
-        reason: data.categoryCode,
       }))
     },
   },
@@ -299,19 +297,12 @@ export default {
         minDate: this.fromDate,
       }
     },
-    reasonOptions() {
-      this.reasonOptions.forEach((item, index) => {
-        if (item.label === 'Tất cả') {
-          this.reasonDisplayed = this.reasonOptions[index].id
-        }
-      })
-      this.onSearch()
-    },
   },
   created() {
     this.GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION({ ...this.decentralization })
   },
   mounted() {
+    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
@@ -351,9 +342,6 @@ export default {
     },
     showFindProductModal() {
       this.isShowFindProductModal = !this.isShowFindProductModal
-    },
-    select(node) {
-      this.reasonSelected = node.reason
     },
   },
 }
