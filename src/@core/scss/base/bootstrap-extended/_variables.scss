@@ -56,7 +56,7 @@ $container-max-widths: (
   md: 720px,
   lg: 960px,
   xl: 1140px,
-  xxl: 1440px // Custom xxl size,,
+  xxl: 1440px // Custom xxl size,,,,,
 ) !default;
 // scss-docs-end container-max-widths
 
@@ -64,17 +64,60 @@ $container-max-widths: (
 $spacer: 1rem !default;
 $spacers: () !default;
 // stylelint-disable-next-line scss/dollar-variable-default
+// Ex: padding -> p-10, pt-55 | margin -> m-15, ml-95
 $spacers: map-merge(
   (
     0: 0,
+    10: (
+      $spacer * 0.1,
+    ),
+    15: (
+      $spacer * 0.15,
+    ),
+    20: (
+      $spacer * 0.2,
+    ),
     25: (
       $spacer * 0.25,
+    ),
+    35: (
+      $spacer * 0.35,
+    ),
+    40: (
+      $spacer * 0.4,
+    ),
+    45: (
+      $spacer * 0.45,
     ),
     50: (
       $spacer * 0.5,
     ),
+    55: (
+      $spacer * 0.55,
+    ),
+    60: (
+      $spacer * 0.6,
+    ),
+    65: (
+      $spacer * 0.65,
+    ),
+    70: (
+      $spacer * 0.7,
+    ),
     75: (
       $spacer * 0.75,
+    ),
+    80: (
+      $spacer * 0.8,
+    ),
+    85: (
+      $spacer * 0.85,
+    ),
+    90: (
+      $spacer * 0.9,
+    ),
+    95: (
+      $spacer * 0.95,
     ),
     1: (
       $spacer,

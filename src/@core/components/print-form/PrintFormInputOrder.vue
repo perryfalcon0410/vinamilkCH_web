@@ -84,8 +84,7 @@
     <table
       v-for="item in inputOrderSaleProductsData"
       :key="item.type"
-      class="mt-1"
-      style="width: 100%"
+      class="mt-1 w-100"
     >
       <thead>
         <!-- START - Header 1 -->
@@ -105,8 +104,7 @@
           </td>
           <td
             colspan="1"
-            style="width: 1%"
-            class="text-right border-right-0 border-left-0 font-italic"
+            class="text-right border-right-0 border-left-0 font-italic width-1-per"
           >
             <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
           </td>
@@ -118,8 +116,7 @@
           </td>
           <td
             colspan="1"
-            style="width: 1%"
-            class="text-right pr-50 border-left-0 font-italic"
+            class="text-right pr-50 border-left-0 font-italic width-1-per"
           >
             <strong>{{ $formatNumberToLocale(item.totalPrice ) }}</strong>
           </td>
@@ -213,8 +210,7 @@
           </td>
           <td
             colspan="1"
-            style="width: 1%"
-            class="text-right border-right-0 border-left-0 font-italic"
+            class="text-right border-right-0 border-left-0 font-italic width-1-per"
           >
             <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
           </td>
@@ -226,8 +222,7 @@
           </td>
           <td
             colspan="1"
-            style="width: 1%"
-            class="text-right pr-50 border-left-0 font-italic"
+            class="text-right pr-50 border-left-0 font-italic width-1-per"
           >
             <strong>{{ $formatNumberToLocale(item.totalPrice) }}</strong>
           </td>
@@ -303,7 +298,8 @@
       <!-- START - Note -->
       <b-col
         cols="5"
-        style="width: 550px; word-wrap: break-word"
+        style="word-wrap: break-word"
+        class="width-550"
       >
         <ins class="font-italic">Ghi chú:</ins>
         {{ inputOrderInfoData.note }}
@@ -319,7 +315,7 @@
             style="width: 37%"
             align-v="center"
           >
-            <div style="padding-top: 1%;">
+            <div>
               <strong>Tổng SL</strong>
             </div>
           </div>
@@ -351,7 +347,7 @@
             </div>
           </div>
 
-          <div style="width: 25%">
+          <div class="w-25">
             <div
               class="mx-0 font-italic"
               align-h="end"

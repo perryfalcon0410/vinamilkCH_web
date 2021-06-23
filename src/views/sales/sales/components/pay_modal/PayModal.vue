@@ -5,7 +5,7 @@
     ref="payModal"
     size="xl"
     title="Thanh toán hóa đơn"
-    title-class="font-weight-bold text-brand-1"
+    title-class="font-weight-bolder text-brand-1"
     content-class="bg-white"
     footer-border-variant="white"
     hide-header-close
