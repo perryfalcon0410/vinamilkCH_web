@@ -1,5 +1,4 @@
 // Popovers
-
 .popover {
   box-shadow: $popover-box-shadow;
   // popover header style
@@ -9,10 +8,10 @@
   }
   // popover body style
   .popover-body {
+    color: $brand-1;
     border: 1px solid $popover-border-color;
-    border-top-color: $popover-bg;
-    border-bottom-left-radius: $popover-border-radius;
-    border-bottom-right-radius: $popover-border-radius;
+    border-radius: $popover-border-radius;
+    box-shadow: 2px 10px 20px 1px rgba(gray, 0.3);
   }
   // popover bottom arrow color like header
   &.bs-popover-bottom {
