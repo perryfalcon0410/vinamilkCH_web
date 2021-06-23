@@ -3,7 +3,7 @@
     size="lg"
     :visible="visible"
     title="Chọn sản phẩm"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     footer-class="justify-content-center"
     content-class="bg-light"
     footer-border-variant="light"
@@ -28,14 +28,29 @@
           >
             Mã sản phẩm
           </div>
-          <b-form-input
-            id="form-input-customer"
-            v-model="searchOptions.productCode"
-            class="h7 text-brand-3 height-button-brand-1"
-            placeholder="Nhập mã sản phẩm"
-            trim
-            @keyup.enter="onSearchClick"
-          />
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              id="form-input-customer"
+              v-model="searchOptions.productCode"
+              class="h7 text-brand-3 height-button-brand-1"
+              placeholder="Nhập mã sản phẩm"
+              trim
+              autofocus
+              @keyup.enter="onSearchClick"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="searchOptions.productCode"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.productCode = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+
         </b-col>
         <!-- END - Product code -->
         <!-- START - Product name -->
@@ -103,7 +118,7 @@
       <div class="bg-white rounded shadow rounded mt-1 p-1">
         <div class="pt-0">
           <strong class="text-blue-vinamilk pt-2">
-            Tổng cộng: {{ $formatNumberToLocale(selectedProductRow.length) }} sản phẩm
+            Tổng cộng: {{ $formatNumberToLocale(selectedProductRow.length) }} sản phẩm được chọn
           </strong>
         </div>
         <vue-good-table
@@ -494,3 +509,8 @@ export default {
   },
 }
 </script>
+<style>
+  .font-weight-bold {
+    font-weight: 600 !important;
+  }
+</style>

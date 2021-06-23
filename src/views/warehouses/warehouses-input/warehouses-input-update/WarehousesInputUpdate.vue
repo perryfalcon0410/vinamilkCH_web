@@ -885,9 +885,9 @@ export default {
             productId: product.item.productId,
             productCode: product.item.productCode,
             quantity: 1, // default quantity
-            price: product.item.price || 0,
+            price: 0,
             name: product.item.name,
-            totalPrice: product.item.totalPrice || 0,
+            totalPrice: 0,
             unit: product.item.unit,
             soNo: '',
           }
@@ -955,5 +955,8 @@ export default {
 <style>
   .item-active {
     padding-left: 5px;
+  }
+  table.vgt-table td {
+    vertical-align: middle;
   }
 </style>

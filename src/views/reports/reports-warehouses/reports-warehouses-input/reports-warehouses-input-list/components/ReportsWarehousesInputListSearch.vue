@@ -137,12 +137,27 @@
       >
         Số chứng từ
       </div>
-      <b-form-input
-        v-model="licenseNumber"
-        class="h7"
-        placeholder="Số hóa đơn/Số nội bộ/PO"
-        @keyup.enter="onClickSearchButton"
-      />
+      <b-input-group
+        class="input-group-merge"
+      >
+        <b-form-input
+          v-model="licenseNumber"
+          class="h7"
+          maxlength="20"
+          trim
+          placeholder="Số hóa đơn/Số nội bộ/PO"
+          @keyup.enter="onClickSearchButton"
+        />
+        <b-input-group-append
+          is-text
+        >
+          <b-icon-x
+            v-show="licenseNumber"
+            class="cursor-pointer text-gray"
+            @click="licenseNumber = null"
+          />
+        </b-input-group-append>
+      </b-input-group>
     </b-col>
     <!-- END - License -->
 

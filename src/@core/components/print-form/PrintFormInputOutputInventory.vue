@@ -17,19 +17,19 @@
           Add : {{ reportSalesShopData.address }}
         </p>
         <p>
-          Tel : {{ reportSalesShopData.tel }}
+          Tel : {{ reportSalesShopData.phone }}
         </p>
       </div>
 
-      <div class="d-flex flex-column align-items-center">
+      <div class="d-flex flex-column">
         <strong style="font-size: 30px;">
-          Báo cáo bán hàng
+          Báo cáo Xuất nhập Tồn
         </strong>
-        <p class="my-1">
-          Từ ngày: {{ reportDateData.fromDate }} Đến ngày: {{ reportDateData.toDate }}
+        <p class="mt-1">
+          Từ ngày: {{ $formatISOtoVNI(reportDateData.fromDate) }} đến {{ $formatISOtoVNI(reportDateData.toDate) }}
         </p>
         <p>
-          Ngày in : {{ $moment(reportDateData.reportDate).locale('en').format('DD/MM/YYYY - HH:mm:ss A') }}
+          Ngày in : {{ $formatISOtoVNI(reportDateData.reportDate, true) }}
         </p>
       </div>
 
@@ -71,6 +71,7 @@
 
     <table
       class="mt-1"
+      style="width: 100%"
     >
       <thead>
         <!-- START - Header -->

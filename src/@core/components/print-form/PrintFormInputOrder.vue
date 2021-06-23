@@ -312,24 +312,33 @@
       <!-- START - Big total section -->
       <b-col>
         <b-row
-          class="mx-50"
-          align-v="start"
-          align-h="end"
+          class="mx-0 width-100-per"
         >
-          <b-row
-            class="mx-0 font-italic"
+          <div
+            class="mx-0 font-italic text-right"
+            style="width: 37%"
             align-v="center"
           >
-            <strong>Tổng SL</strong> <strong
+            <div style="padding-top: 1%;">
+              <strong>Tổng SL</strong>
+            </div>
+          </div>
+          <div
+            class="mx-0 font-italic width-10-per text-right"
+            align-v="center"
+          >
+            <strong
               style="font-size: 18px"
               class="ml-1"
             >
               {{ $formatNumberToLocale(inputOrderInfoData.totalQuantity) }}
             </strong>
-          </b-row>
+          </div>
 
-          <div class="ml-2">
-            <b-row
+          <div
+            style="width: 26.5%"
+          >
+            <div
               class="mx-0 font-italic"
               align-h="end"
               align-v="center"
@@ -339,6 +348,15 @@
                 <strong class="text-right my-50">Tiền thuế GTGT</strong>
                 <strong class="text-right">Tổng cộng</strong>
               </div>
+            </div>
+          </div>
+
+          <div style="width: 25%">
+            <div
+              class="mx-0 font-italic"
+              align-h="end"
+              align-v="center"
+            >
               <div
                 class="d-flex flex-column text-right ml-50"
                 style="font-size: 18px"
@@ -353,7 +371,7 @@
                   {{ $formatNumberToLocale(inputOrderInfoData.totalPrice) }}
                 </strong>
               </div>
-            </b-row>
+            </div>
           </div>
         </b-row>
       </b-col>

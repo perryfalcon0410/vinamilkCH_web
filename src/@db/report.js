@@ -9,7 +9,6 @@ export default {
     { id: '0', label: 'Nhập hàng' },
     { id: '1', label: 'Nhập điều chỉnh' },
     { id: '2', label: 'Nhập vay mượn' },
-    { id: '3', label: 'Xuất trả PO' },
   ],
   saleChannels: [
     { id: '1', label: 'Offline' },
