@@ -66,33 +66,31 @@
             sm="6"
             class="h7"
           >
-            <validation-provider
-              v-slot="{ errors }"
-              rules="dateFormatVNI"
+            <div
+              class="h8 mt-lg-1 mt-xl-0"
             >
-              <div
-                class="h8 mt-lg-1 mt-xl-0"
-              >
-                Từ ngày
-              </div>
-              <b-input-group
-                class="input-group-merge"
-              >
-                <b-input-group-prepend
-                  is-text
-                  data-toggle
-                >
-                  <b-icon-calendar />
-                </b-input-group-prepend>
-                <vue-flat-pickr
-                  v-model="fromDate"
-                  :config="configFromDate"
-                  class="form-control h9"
-                  placeholder="Chọn ngày"
-                />
-              </b-input-group>
-              <small class="text-danger">{{ errors[0] }}</small>
-            </validation-provider>
+              Từ ngày
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+            >
+              <b-icon-x
+                v-show="toDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
+              />
+              <vue-flat-pickr
+                v-model="fromDate"
+                :config="configFromDate"
+                class="form-control h9"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
+
           </b-col>
           <!-- END - Date From -->
 
@@ -102,34 +100,31 @@
             sm="6"
             class="h7"
           >
-            <validation-provider
-              v-slot="{ errors }"
-              rules="dateFormatVNI"
+            <div
+              class="h8 mt-lg-1 mt-xl-0"
             >
-              <div
-                class="h8 mt-lg-1 mt-xl-0"
-              >
-                Đến ngày
-              </div>
-              <b-input-group
-                class="input-group-merge"
-              >
-                <b-input-group-prepend
-                  is-text
-                  data-toggle
-                >
-                  <b-icon-calendar />
-                </b-input-group-prepend>
-                <vue-flat-pickr
-                  v-model="toDate"
-                  :config="configToDate"
-                  class="form-control h9"
-                  placeholder="Chọn ngày"
-                />
-              </b-input-group>
+              Đến ngày
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+            >
+              <b-icon-x
+                v-show="toDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
+              />
+              <vue-flat-pickr
+                v-model="toDate"
+                :config="configToDate"
+                class="form-control h9"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
 
-              <small class="text-danger">{{ errors[0] }}</small>
-            </validation-provider>
           </b-col>
           <!-- END - Date To -->
 
@@ -310,9 +305,6 @@ import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
 import { reverseVniDate, formatISOtoVNI } from '@core/utils/filter'
-import {
-  ValidationProvider,
-} from 'vee-validate'
 import saleData from '@/@db/sale'
 import commonData from '@/@db/common'
 import {
@@ -326,7 +318,6 @@ import {
 
 export default {
   components: {
-    ValidationProvider,
   },
   props: {
     visible: {
@@ -339,6 +330,8 @@ export default {
     return {
       // validation rules
       dateFormatVNI,
+      fromDate: this.$earlyMonth,
+      toDate: this.$nowDate,
 
       configFromDate: {
         wrap: true,
@@ -362,8 +355,6 @@ export default {
       synStatusSelected: saleData.synStatus[0].id,
       synStatusOptions: saleData.synStatus,
       orderNumber: null,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
 
       columns: [
         {
@@ -423,6 +414,12 @@ export default {
     elementSize() {
       this.onPaginationChange()
     },
+    fromDate() {
+      this.configToDate = {
+        ...this.configToDate,
+        minDate: this.fromDate,
+      }
+    },
     isClicked() {
       if (this.synStatusSelected === '1') {
         this.isDisable = true
@@ -432,6 +429,10 @@ export default {
     },
   },
   mounted() {
+    this.configToDate = {
+      ...this.configToDate,
+      minDate: this.fromDate,
+    }
     const defaultSearch = {
       synStatus: saleData.synStatus[0].id,
     }

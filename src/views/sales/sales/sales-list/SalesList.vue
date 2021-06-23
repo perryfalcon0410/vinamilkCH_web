@@ -688,12 +688,12 @@ export default {
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
     },
     getCustomerDefault(val) {
-      this.customerId = val.data.id
+      this.customerId = val.id
       this.searchOptions.customerId = this.customerId
       this.GET_PRODUCTS_ACTION(this.searchOptions)
 
       // check customers dafault
-      if (val.data.isDefault === true && val.data.status === 1) {
+      if (val.isDefault === true && val.status === 1) {
         this.isCheckShopId = true
       } else {
         this.isCheckShopId = false
@@ -713,6 +713,7 @@ export default {
           }
         }
       }
+      console.log('online', val)
     },
 
     getCustomerTypeInfo(id) {

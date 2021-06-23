@@ -355,7 +355,7 @@ export default {
           shopId: data.shopId,
           code: data.customerCode,
           fullName: `${data.lastName} ${data.firstName}`,
-          phoneNumber: data.mobiPhone ? data.mobiPhone : data.phone,
+          phoneNumber: data.mobiPhone,
           birthDay: formatDateToLocale(data.dob),
           date: formatDateToLocale(data.createdAt),
           address: data.address,
