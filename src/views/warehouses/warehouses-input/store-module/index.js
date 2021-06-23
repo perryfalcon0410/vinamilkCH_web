@@ -48,12 +48,13 @@ import {
   GET_WAREHOUSES_TYPE_ACTION,
   GET_NOT_IMPORT_REASONS_ACTION,
   PRINT_OUT_IN_PUT_ORDER_ACTION,
-  IMPORT_PO_CONFIRM_ACTION,
+  GET_IMPORT_PO_CONFIRM_ACTION,
   // mutations
   CLEAR_STATUS_NOT_IMPORT_MUTATION,
   CLEAR_GRID_VIEW_MUTATION,
   CLEAR_ADJUST_GRID_VIEW_MUTATION,
   CLEAR_BORROW_GRID_VIEW_MUTATION,
+  CLEAR_IMPORT_PO_STATUS_MUTATION,
 } from './type'
 
 export default {
@@ -169,6 +170,9 @@ export default {
     [CLEAR_BORROW_GRID_VIEW_MUTATION](state) {
       state.importBorrowingsDetail = []
       state.importBorrowingsDetailInfo = {}
+    },
+    [CLEAR_IMPORT_PO_STATUS_MUTATION](state) {
+      state.importedPoconfirmData = null
     },
   },
 
@@ -497,13 +501,13 @@ export default {
           toasts.error(error.message)
         })
     },
-    [IMPORT_PO_CONFIRM_ACTION]({ state }, val) {
+    [GET_IMPORT_PO_CONFIRM_ACTION]({ state }, val) {
       ReceiptImportService
-        .importPoConfirm(val)
+        .getImportPoConfirm(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.importedPoconfirmData = res.success
+            state.importedPoconfirmData = res.data
           } else {
             throw new Error(res.statusValue)
           }

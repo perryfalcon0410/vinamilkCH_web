@@ -79,6 +79,7 @@ export default {
         {
           label: 'CTKM',
           field: 'promotionProgram',
+          width: '30%',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',

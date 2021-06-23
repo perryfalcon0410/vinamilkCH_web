@@ -419,7 +419,7 @@ export default {
           totalValue: this.$formatNumberToLocale(data.amount),
           note: data.note,
           discountMoney: this.$formatNumberToLocale(data.totalPromotion),
-          moneyAccumulated: data.accumulation,
+          moneyAccumulated: this.$formatNumberToLocale(data.customerPurchase),
           payments: this.$formatNumberToLocale(data.total),
           print: (data.usedRedInvoice === true) ? 'Đã in' : 'Chưa in',
           noteHdd: data.redInvoiceRemark,

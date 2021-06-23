@@ -5,6 +5,7 @@
   >
     <!-- START - search -->
     <list-search
+      :per-page-size="paginationData.size"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton"
     />
@@ -357,6 +358,7 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
+      this.paginationData.size = params.currentPerPage
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },

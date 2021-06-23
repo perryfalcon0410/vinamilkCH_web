@@ -10,19 +10,19 @@
       align-v="center"
     >
       <div class="d-flex flex-column">
-        <strong style="font-size: 17px"> CH GTSP Hải Dương </strong>
+        <strong style="font-size: 17px"> {{ commonInfo.shopName }} </strong>
         <p class="mt-1">
-          Add: 8 Hoàng Hoa Thám - Hải Dương
+          {{ commonInfo.address }}
         </p>
-        <p>Tel: (84.320) 3 838 399</p>
+        <p>Tel: {{ commonInfo.shopTel }}</p>
       </div>
 
       <div class="d-flex flex-column align-items-center">
         <strong style="font-size: 30px"> Tồn kho cửa hàng </strong>
         <p class="my-1">
-          Từ ngày 01/02/2021 đến 23/04/2021
+          Ngày : {{ $formatISOtoVNI(commonInfo.date) }}
         </p>
-        <p>Ngày in : 23/04/2021 - 11:33:28AM</p>
+        <p>Ngày in : {{ $formatPrintDate(commonInfo.printDate) }}</p>
       </div>
 
       <!-- START - Invisible element to align title -->
@@ -30,7 +30,7 @@
         class="d-flex flex-column"
         style="opacity: 0"
       >
-        <strong style="font-size: 17px"> CH GTSP Hải Dương </strong>
+        <strong style="font-size: 17px"> {{ commonInfo.shopName }}  </strong>
       </div>
       <!-- END - Invisible element to align title -->
     </b-row>
@@ -43,17 +43,21 @@
       align-v="end"
       style="background-color: gray"
     >
-      <strong> CH GTSP Hải Dương </strong>
-      <div>Tổng SL: <strong><ins>29</ins></strong>
+      <strong> {{ commonInfo.shopName }}  </strong>
+      <div>Tổng SL: <strong><ins> {{ $formatNumberToLocale(totalInfo.totalAmount) }} </ins></strong>
       </div>
-      <div>Tổng T.Tiền: <strong><ins>29</ins></strong>
+      <div>Tổng T.Tiền: <strong><ins> {{ $formatNumberToLocale(totalInfo.price) }} </ins></strong>
       </div>
 
     </b-row>
     <!-- END - Total section -->
 
     <!-- START - Table 1 -->
-    <b-col class="px-0">
+    <b-col
+      v-for="(item,index) in reportData"
+      :key="index"
+      class="px-0 pb-1"
+    >
       <table>
         <!-- START - Header -->
         <thead>
@@ -66,13 +70,13 @@
                 class="mx-0"
                 align-h="around"
               >
-                <div>Ngành hàng: <strong>A</strong>
+                <div>Ngành hàng: <strong>{{ item.category }}</strong>
                 </div>
                 <div>Tổng SL:
-                  <strong>504,161</strong>
+                  <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
                 </div>
                 <div>Tổng T.Tiền:
-                  <strong>31,000</strong>
+                  <strong> {{ $formatNumberToLocale(item.totalAmount) }} </strong>
                 </div>
               </b-row>
             </th>
@@ -82,64 +86,39 @@
           <!-- START - Header 2 -->
           <tr>
             <th
-              class="text-center"
+              class="text-left stt"
             >
               STT
             </th>
             <th
-              class="text-center"
+              class="text-left dotted"
             >
-              Mã KH
+              Mã SP
             </th>
             <th
-              class="text-center"
+              class="text-left dotted"
             >
-              Tên KH
+              Tên SP
             </th>
             <th
-              class="text-center"
+              class="text-center dotted"
             >
-              Địa chỉ
+              ĐVT
             </th>
             <th
-              class="text-center"
+              class="text-center dotted"
             >
-              Tần suất
+              SL
             </th>
             <th
-              class="text-center"
+              class="text-right dotted pr-50"
             >
-              A
+              Giá
             </th>
             <th
-              class="text-center"
+              class="text-right total pr-50"
             >
-              B
-            </th>
-            <th
-              class="text-center"
-            >
-              C
-            </th>
-            <th
-              class="text-center"
-            >
-              D
-            </th>
-            <th
-              class="text-center"
-            >
-              E
-            </th>
-            <th
-              class="text-center"
-            >
-              G
-            </th>
-            <th
-              class="text-center"
-            >
-              Tổng cộng
+              T.Tiền
             </th>
           </tr>
           <!-- END - Header 2 -->
@@ -149,33 +128,27 @@
 
         <!-- START - Body -->
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>02BC10</td>
-            <td>SBot Dielac Canxi HG 400g</td>
-            <td>Hộp</td>
-            <td>10</td>
-            <td />
-            <td />
-            <td />
-            <td />
-            <td>43,200</td>
-            <td />
-            <td />
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>02BC10</td>
-            <td>SBot Dielac Canxi HG 400g</td>
-            <td>Hộp</td>
-            <td>10</td>
-            <td />
-            <td />
-            <td />
-            <td />
-            <td>43,200</td>
-            <td />
-            <td />
+          <tr
+            v-for="(product,stt) in reportData[index].data"
+            :key="stt"
+          >
+            <td class="text-right pr-50">
+              {{ stt + 1 }}
+            </td>
+            <td>{{ product.productCode }} </td>
+            <td>{{ product.productName }}</td>
+            <td class="text-center">
+              {{ product.unit }}
+            </td>
+            <td class="text-right pr-50">
+              {{ $formatNumberToLocale(product.stockQuantity) }}
+            </td>
+            <td class="text-right pr-50">
+              {{ $formatNumberToLocale(product.price) }}
+            </td>
+            <td class="text-right pr-50">
+              {{ $formatNumberToLocale(product.totalAmount) }}
+            </td>
           </tr>
         </tbody>
         <!-- END - Body -->
@@ -202,6 +175,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import {
+  REPORT_WAREHOUSES_INVENTORY,
+  PRINT_REPORT_INVENTORY_GETTER,
+} from '@/views/reports/reports-warehouses/reports-warehouses-inventory/store-module/type'
+
 export default {
   data() {
     return {
@@ -263,6 +242,30 @@ export default {
       ],
     }
   },
+  computed: {
+    ...mapGetters(REPORT_WAREHOUSES_INVENTORY, [PRINT_REPORT_INVENTORY_GETTER]),
+    commonInfo() {
+      if (this.PRINT_REPORT_INVENTORY_GETTER) {
+        return this.PRINT_REPORT_INVENTORY_GETTER
+      }
+      return {}
+    },
+    totalInfo() {
+      if (this.PRINT_REPORT_INVENTORY_GETTER.totalInfo) {
+        return this.PRINT_REPORT_INVENTORY_GETTER.totalInfo
+      }
+      return {}
+    },
+    reportData() {
+      if (this.PRINT_REPORT_INVENTORY_GETTER.dataByCat) {
+        return this.PRINT_REPORT_INVENTORY_GETTER.dataByCat
+      }
+      return []
+    },
+  },
+  updated() {
+    window.print()
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -276,5 +279,15 @@ th {
 td {
   border-style: dotted;
   border-width: 2px;
+}
+.dotted {
+  border-left-style: dotted;
+  border-right-style: dotted;
+}
+.stt {
+  border-right-style: dotted;
+}
+.total {
+  border-left-style: dotted;
 }
 </style>

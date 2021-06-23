@@ -22,7 +22,7 @@ import {
   getWarehousesTypeEndpoint,
   getNotImportReasonsEndpoint,
   printOutInputOrderEndpoint,
-  importPoConfirmEndpoint,
+  getImportPoConfirmEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -127,9 +127,9 @@ export default {
       params: formatURLParams(args.params),
     })
   },
-  importPoConfirm(args) {
-    return axios.post(importPoConfirmEndpoint, args, {
-      'Content-Type': 'multipart/form-data',
+  getImportPoConfirm(args) {
+    return axios.get(getImportPoConfirmEndpoint, {
+      params: formatURLParams(args),
     })
   },
 }

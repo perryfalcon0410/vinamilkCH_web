@@ -78,13 +78,6 @@
             <strong class="d-flex h-25 align-items-center rounded-top px-1">
               Sản phẩm
             </strong>
-            <b-form-file
-              ref="fileInput"
-              v-model="importFile"
-              accept=".xlsx, .xls, .xml"
-              style="display: none"
-              @input="handleFile"
-            />
             <b-button
               class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
               variant="someThing"
@@ -107,25 +100,44 @@
             line-numbers
             class="py-1"
           >
+            <!-- row filter -->
+            <template
+              slot="table-row"
+              slot-scope="props"
+            >
+              <div
+                v-if="props.column.field === 'totalPriceVat'"
+                style="padding-right: 10px"
+              >
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+              <div v-else>
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+            </template>
+            <!-- row filter -->
+
+            <!-- column filter -->
             <template
               slot="column-filter"
               slot-scope="props"
             >
               <b-row
                 v-if="props.column.field === 'quantity'"
-                class="mx-0"
+                class="mx-0 h7 text-brand-3"
                 align-h="center"
               >
                 {{ $formatNumberToLocale(poProductInfo.totalQuantity) }}
               </b-row>
               <b-row
                 v-if="props.column.field === 'totalPriceVat'"
-                class="mx-0"
+                class="mx-50 h7 text-brand-3"
                 align-h="end"
               >
                 {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
               </b-row>
             </template>
+            <!-- column filter -->
             <!-- START - Empty rows -->
             <div
               slot="emptystate"
@@ -168,25 +180,43 @@
                   {{ props.column.label }}
                 </span>
               </template>
+              <!-- row filter -->
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <div
+                  v-if="props.column.field === 'totalPriceVat'"
+                  style="padding-right: 10px"
+                >
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+                <div v-else>
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+              </template>
+              <!-- row filter -->
+              <!-- column filter -->
               <template
                 slot="column-filter"
                 slot-scope="props"
               >
                 <b-row
                   v-if="props.column.field === 'quantity'"
-                  class="mx-0"
+                  class="mx-0 h7 text-brand-3"
                   align-h="center"
                 >
                   {{ poPromotionProductsInfo.totalQuantity }}
                 </b-row>
                 <b-row
                   v-if="props.column.field === 'totalPriceVat'"
-                  class="mx-0"
+                  class="mx-0 h7 text-brand-3"
                   align-h="end"
                 >
                   {{ poPromotionProductsInfo.totalPrice }}
                 </b-row>
               </template>
+              <!-- column filter -->
               <!-- START - Empty rows -->
               <div
                 slot="emptystate"
@@ -273,14 +303,16 @@ import {
   PODETAIL_PRODUCTS_PROMO_RES_GETTER,
   PODETAIL_PRODUCTS_INFO_GETTER,
   PODETAIL_PRODUCTS_PROMO_INFO_GETTER,
+  IMPORTED_POCONFIRM_GETTER,
   // ACTIONS
   GET_POCONFIRMS_ACTION,
   GET_PODETAIL_PRODUCTS_ACTION,
   GET_PODETAIL_PRODUCTS_PROMO_ACTION,
   GET_IMPORTEXCEL_ACTION,
-  IMPORT_PO_CONFIRM_ACTION,
+  GET_IMPORT_PO_CONFIRM_ACTION,
   // MUTATIONS
   CLEAR_GRID_VIEW_MUTATION,
+  CLEAR_IMPORT_PO_STATUS_MUTATION,
 } from '../../store-module/type'
 
 export default {
@@ -397,6 +429,7 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         price: this.$formatNumberToLocale(data.price),
+        priceNotVat: this.$formatNumberToLocale(data.priceNotVat),
         vat: this.$formatNumberToLocale(data.vat),
         unit: data.unit,
         quantity: this.$formatNumberToLocale(data.quantity),
@@ -422,6 +455,9 @@ export default {
     poPromotionProductsInfo() {
       return this.PODETAIL_PRODUCTS_PROMO_INFO_GETTER()
     },
+    getImportPoStatus() {
+      return this.IMPORTED_POCONFIRM_GETTER()
+    },
   },
   watch: {
     poConfirm() {
@@ -438,6 +474,16 @@ export default {
         this.isShowPoPromoTable = false
       }
     },
+    getImportPoStatus() {
+      if (this.getImportPoStatus === true) {
+        this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
+        this.CLEAR_IMPORT_PO_STATUS_MUTATION()
+      }
+      if (this.getImportPoStatus === false) {
+        toasts.error('Đồng bộ không thành công')
+        this.CLEAR_IMPORT_PO_STATUS_MUTATION()
+      }
+    },
   },
   mounted() {
     this.GET_POCONFIRMS_ACTION({
@@ -452,16 +498,18 @@ export default {
       PODETAIL_PRODUCTS_PROMO_RES_GETTER,
       PODETAIL_PRODUCTS_INFO_GETTER,
       PODETAIL_PRODUCTS_PROMO_INFO_GETTER,
+      IMPORTED_POCONFIRM_GETTER,
     ]),
     ...mapActions(WAREHOUSEINPUT, [
       GET_POCONFIRMS_ACTION,
       GET_PODETAIL_PRODUCTS_ACTION,
       GET_PODETAIL_PRODUCTS_PROMO_ACTION,
       GET_IMPORTEXCEL_ACTION,
-      IMPORT_PO_CONFIRM_ACTION,
+      GET_IMPORT_PO_CONFIRM_ACTION,
     ]),
     ...mapMutations(WAREHOUSEINPUT, [
       CLEAR_GRID_VIEW_MUTATION,
+      CLEAR_IMPORT_PO_STATUS_MUTATION,
     ]),
     // invidual selectOrder event for poconfrim list
     selectOrder(id, internalNumber, poNum, date) {
@@ -470,21 +518,13 @@ export default {
       this.Snb = internalNumber
       this.sysDate = date
       if (this.poConfirm.length > 0) {
-        this.GET_PODETAIL_PRODUCTS_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
-        this.GET_PODETAIL_PRODUCTS_PROMO_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
+        this.GET_PODETAIL_PRODUCTS_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId }) // hard code
+        this.GET_PODETAIL_PRODUCTS_PROMO_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId }) // hard code
       }
     },
     // Sync PoConfirms list
     syncPo() {
-      this.$refs.fileInput.$el.childNodes[0].click()
-    },
-    handleFile() {
-      const data = new FormData()
-      data.append('name', this.importFile.name)
-      data.append('file', this.importFile)
-      this.IMPORT_PO_CONFIRM_ACTION(data)
-        .then(this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId }))
-        .then(this.$refs.fileInput.$el.childNodes[0].value = '')
+      this.GET_IMPORT_PO_CONFIRM_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
     },
     // Confirm import product from selected Po
     confirmImportButton() {

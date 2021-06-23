@@ -228,15 +228,15 @@
               >
                 <b-row
                   v-if="props.column.field === 'productCode' && totalProduct !== 0"
-                  class="mx-0"
-                  align-h="center"
+                  class="mx-0 h7 text-brand-3"
+                  align-h="start"
                 >
                   {{ $formatNumberToLocale(totalProduct) }}
                 </b-row>
                 <!--START - Choose import po product-->
                 <b-row
                   v-if="props.column.field === 'quantity'"
-                  class="mx-0"
+                  class="mx-0 h7 text-brand-3"
                   align-h="center"
                 >
                   {{
@@ -247,21 +247,21 @@
                 </b-row>
                 <b-row
                   v-if="props.column.field === 'totalPriceNotVat'"
-                  class="mx-0"
+                  class="mx-50 h7 text-brand-3"
                   align-h="end"
                 >
                   {{ $formatNumberToLocale(poProductInfo.totalPriceNotVat) }}
                 </b-row>
                 <b-row
                   v-else-if="props.column.field === 'totalPriceVat'"
-                  class="mx-0"
+                  class="mx-50 h7 text-brand-3"
                   align-h="end"
                 >
                   {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
                 </b-row>
                 <b-row
                   v-else-if="props.column.field === 'totalPrice'"
-                  class="mx-0"
+                  class="mx-50 h7 text-brand-3"
                   align-h="end"
                 >
                   {{
@@ -271,6 +271,24 @@
                 </b-row>
               </template>
               <!-- START - Empty rows -->
+
+              <!-- START - Rows -->
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <div
+                  v-if="props.column.field === 'totalPriceNotVat' || props.column.field === 'totalPriceVat' || props.column.field === 'totalPrice'"
+                  style="padding-right: 10px"
+                >
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+                <div v-else>
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+              </template>
+              <!-- END - Rows -->
+
               <div
                 slot="emptystate"
                 class="text-center"
@@ -706,7 +724,7 @@ export default {
         },
         {
           label: 'Giá',
-          field: 'price',
+          field: 'priceNotVat',
           type: 'number',
           sortable: false,
           thClass: 'text-right',
@@ -749,8 +767,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
 
         {

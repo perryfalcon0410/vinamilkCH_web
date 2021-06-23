@@ -12,7 +12,9 @@
       slot-scope="props"
     >
       <div
-        v-if="props.column.field === 'number' || props.column.field === 'price'|| props.column.field === 'intoMoney'|| props.column.field === 'discount'"
+        v-if="props.column.field === 'number' || props.column.field === 'price'||
+          props.column.field === 'intoMoney'|| props.column.field === 'discount' ||
+          props.column.field === 'bill'"
         style="padding-right: 10px"
       >
         {{ props.formattedRow[props.column.field] }}

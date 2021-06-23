@@ -5,6 +5,7 @@ import {
   exportReportInventoriesEndpoint,
   getProductCatListsEndpoint,
   getProductListsEndpoint,
+  printReportInventoryEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -29,5 +30,9 @@ export default {
       params: formatURLParams(args),
     })
   },
-
+  printReportInventory(args) {
+    return axios.get(printReportInventoryEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
 }

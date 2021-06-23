@@ -12,9 +12,11 @@
       >
         <!-- START - promotionPrograms -->
         <b-col
-          class="pb-1 cursor-pointer box mx-1"
+          class="pb-1 cursor-pointer mx-1"
         >
-          <b-container>
+          <b-container
+            class="box"
+          >
 
             <!-- START - title & icon -->
             <div
@@ -101,7 +103,10 @@
                       rules="required"
                       name="Từ ngày"
                     >
-                      <b-row align-v="center">
+                      <b-row
+                        align-v="center"
+                        class="mb-1"
+                      >
                         <b-col>
                           Đến ngày <span class="text-danger">*</span>
                         </b-col>
@@ -143,8 +148,10 @@
         <!-- END - promotionPrograms -->
 
         <!-- START - used -->
-        <b-col class="pb-1 cursor-pointer box mx-1">
-          <b-container>
+        <b-col class="pb-1 cursor-pointer mx-1">
+          <b-container
+            class="box"
+          >
             <!-- START - title & icon -->
             <div
               v-b-toggle.collapse-2
@@ -212,7 +219,9 @@
                       rules="required"
                       name="Từ ngày"
                     >
-                      <b-row align-v="center">
+                      <b-row
+                        align-v="center"
+                      >
                         <b-col>
                           Từ ngày <span class="text-danger">*</span>
                         </b-col>
@@ -251,7 +260,10 @@
                       rules="required"
                       name="Đến ngày"
                     >
-                      <b-row align-v="center">
+                      <b-row
+                        align-v="center"
+                        class="mb-1"
+                      >
                         <b-col>
                           Đến ngày <span class="text-danger">*</span>
                         </b-col>
@@ -292,23 +304,20 @@
         <!-- END - used -->
 
         <!-- START - Search button -->
-        <b-col sm="2">
-          <div
-            class="h7 text-white"
-          >
-            Tìm kiếm
+        <div class="col-2 d-flex justify-content-center align-items-center">
+          <div>
+            <b-button
+              class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+              variant="someThing"
+              :disabled="invalid"
+              @click="onClickSearchButton()"
+            >
+              <b-icon-search class="mr-50" />
+              Tìm kiếm
+            </b-button>
           </div>
-          <b-button
-            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
-            variant="someThing"
-            :disabled="invalid"
-            @click="onClickSearchButton()"
-          >
-            <b-icon-search class="mr-50" />
-            Tìm kiếm
-          </b-button>
-        </b-col>
-        <!-- END - Search button -->
+          <!-- END - Search button -->
+        </div>
       </v-card-actions>
     </b-form>
   </validation-observer>
@@ -338,6 +347,12 @@ export default {
     VCardActions,
     ValidationProvider,
     ValidationObserver,
+  },
+  props: {
+    perPageSize: {
+      type: Number,
+      default: null,
+    },
   },
   data() {
     return {
@@ -428,6 +443,8 @@ export default {
       ...this.configUsedFromDate,
       maxDate: this.usedToDate,
     }
+    this.$root.$emit('bv::toggle::collapse', 'collapse-1')
+    this.$root.$emit('bv::toggle::collapse', 'collapse-2')
   },
   methods: {
     ...mapActions(REPORT_VOUCHERS, [
@@ -447,7 +464,7 @@ export default {
         ctrlId: this.ctrlId,
       }
       this.updateSearchData(searchData)
-      this.GET_REPORT_VOUCHERS_USED_ACTION(searchData)
+      this.GET_REPORT_VOUCHERS_USED_ACTION({ ...searchData, size: this.perPageSize })
     },
 
     onClickSearchButton() {

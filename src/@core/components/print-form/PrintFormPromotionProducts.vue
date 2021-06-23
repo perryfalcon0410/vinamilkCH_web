@@ -23,7 +23,7 @@
         <p class="my-1">
           Từ ngày {{ $formatISOtoVNI(commonInfo.fromDate) }} đến {{ $formatISOtoVNI(commonInfo.toDate) }}
         </p>
-        <p>Ngày in : {{ $moment(commonInfo.reportDate).locale('en').format('DD/MM/YYYY - HH:mm:ss A') }}</p>
+        <p>Ngày in : {{ $formatPrintDate(commonInfo.reportDate) }}</p>
       </div>
 
       <!-- START - Invisible element to align title -->

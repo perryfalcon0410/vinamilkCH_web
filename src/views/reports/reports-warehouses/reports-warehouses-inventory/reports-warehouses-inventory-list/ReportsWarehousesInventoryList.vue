@@ -4,6 +4,7 @@
     class="d-flex flex-column"
   >
     <list-search
+      class="d-print-none"
       :per-page-size="paginationData.size"
       @onClickSearchButton="onClickSearchButton($event)"
       @updateSearchData="paginationData = {
@@ -11,7 +12,7 @@
         ...$event }"
     />
 
-    <div class="bg-white rounded shadow rounded my-1">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
         align-v="center"
@@ -24,6 +25,7 @@
             class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder mr-1"
             variant="someThing"
             size="sm"
+            @click="printReport"
           >
             <b-icon-printer-fill />
             In
@@ -193,6 +195,7 @@
         </vue-good-table>
       </b-col>
     </div>
+    <print-form-report-inventory />
   </b-container>
 </template>
 
@@ -202,19 +205,24 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import PrintFormReportInventory from '@core/components/print-form/PrintFormReportInventory.vue'
 import ListSearch from './components/ListSearch.vue'
 import {
   REPORT_WAREHOUSES_INVENTORY,
+
   REPORT_WAREHOUSES_INVENTORY_GETTER,
   REPORT_WAREHOUSES_INVENTORY_INFO_GETTER,
   REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER,
+
   GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
   EXPORT_REPORT_INVENTORIES_ACTION,
+  PRINT_REPORT_INVENTORY_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
     ListSearch,
+    PrintFormReportInventory,
   },
   data() {
     return {
@@ -418,7 +426,19 @@ export default {
     ...mapActions(REPORT_WAREHOUSES_INVENTORY, [
       GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
       EXPORT_REPORT_INVENTORIES_ACTION,
+      PRINT_REPORT_INVENTORY_ACTION,
     ]),
+    printReport() {
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_REPORT_INVENTORY_ACTION({
+        productCodes: this.paginationData.productCodes,
+        stockDate: this.paginationData.stockDate,
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
+    },
     // pagnigation funcs
     onPaginationChange() {
       this.GET_REPORT_WAREHOUSES_INVENTORY_ACTION(this.paginationData)

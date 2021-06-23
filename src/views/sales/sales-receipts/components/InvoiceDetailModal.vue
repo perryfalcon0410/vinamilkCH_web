@@ -5,7 +5,6 @@
     size="xl"
     title="Thông tin chi tiết hóa đơn"
     hide-footer="true"
-    title-class="font-weight-bold text-brand-1"
   >
 
     <!-- Start Billing Information -->
@@ -14,7 +13,7 @@
         cols="2"
       >
         <b-row
-          class="v-title bg-light h-25 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-start mb-1 header"
+          class="v-title bg-light py-1 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-start mb-1 header"
         >
           Thông tin thanh toán
         </b-row>
@@ -214,4 +213,9 @@ export default {
     margin-left: 0.1rem;
     border-color: #315899
   }
+  .modal-title {
+  font-size: 14.98px;
+  color: #315899;
+  font-weight: bolder;
+}
 </style>
