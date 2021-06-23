@@ -1,7 +1,6 @@
 <template>
   <b-container
     fluid
-    class="px-0"
   >
     <!-- START - Form Container-->
     <validation-observer
@@ -9,319 +8,317 @@
       v-slot="{invalid}"
       slim
     >
-      <b-row
-        class="mx-0"
-      >
+      <b-row>
         <!-- START - Form Personal information -->
         <b-col
-          lg
-          class="d-flex shadow bg-white rounded px-0"
+          xl="3"
+          md="6"
+          class="shadow bg-white rounded pb-1"
         >
-          <b-row class="flex-grow-1 mx-0">
-            <!-- START - Section 1 -->
+          <label class="w-100 text-center mb-2 h5"><strong>Thông tin cá nhân</strong></label>
+
+          <!-- START - Customer Code -->
+          Mã khách hàng
+          <b-form-input
+            v-model.trim="customerCode"
+            disabled
+          />
+          <!-- END - Customer Code -->
+
+          <!-- START - Customer Name -->
+          <b-form-row>
             <b-col>
-              <label class="font-weight-bold w-100 text-center mb-2 h5"><strong>Thông tin cá nhân</strong></label>
-
-              <!-- START - Customer Code -->
-              Mã khách hàng
-              <b-form-input
-                v-model.trim="customerCode"
-                disabled
-              />
-              <!-- END - Customer Code -->
-
-              <!-- START - Customer Name -->
-              <b-form-row>
-                <b-col>
-                  <validation-provider
-                    v-slot="{ errors, passed, touched }"
-                    rules="required"
-                    name="họ và tên đệm"
-                  >
-                    <div class="mt-1">
-                      Họ và tên đệm <sup class="text-danger">*</sup>
-                    </div>
-                    <b-form-input
-                      v-model="lastName"
-                      :state="touched ? passed : null"
-                      autocomplete="on"
-                      maxlength="250"
-                    />
-                    <small class="text-danger">{{ errors[0] }}</small>
-                  </validation-provider>
-                </b-col>
-
-                <b-col>
-                  <validation-provider
-                    v-slot="{ errors, passed, touched }"
-                    rules="required"
-                    name="tên"
-                  >
-                    <div class="mt-1">
-                      Tên <sup class="text-danger">*</sup>
-                    </div>
-                    <b-form-input
-                      v-model="firstName"
-                      autocomplete="on"
-                      :state="touched ? passed : null"
-                      maxlength="250"
-                    />
-                    <small class="text-danger">{{ errors[0] }}</small>
-                  </validation-provider>
-                </b-col>
-              </b-form-row>
-              <!-- END - Customer Name -->
-
-              <!-- START - Customer Barcode -->
               <validation-provider
                 v-slot="{ errors, passed, touched }"
-                rules="code"
-                name="mã vạch"
+                rules="required"
+                name="họ và tên đệm"
               >
                 <div class="mt-1">
-                  Mã vạch
+                  Họ và tên đệm <sup class="text-danger">*</sup>
                 </div>
                 <b-form-input
-                  v-model.trim="barCode"
+                  v-model="lastName"
                   :state="touched ? passed : null"
-                  maxlength="40"
+                  autocomplete="on"
+                  maxlength="250"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
-              <!-- END - Customer Barcode -->
-
-              <!-- START - Customer BirthDay and Gender -->
-              <b-form-row>
-                <!-- BirthDay -->
-                <b-col
-                  @keypress="$onlyDateInput"
-                >
-                  <validation-provider
-                    v-slot="{ errors, touched, passed }"
-                    rules="required|dateFormatVNI|age"
-                    name="ngày sinh"
-                  >
-                    <div class="mt-1">
-                      Ngày sinh <sup class="text-danger">*</sup>
-                    </div>
-                    <b-form-group
-                      class="m-0"
-                      :state="touched ? passed : null"
-                    >
-                      <b-row
-                        class="v-flat-pickr-group mx-0"
-                        align-v="center"
-                      >
-                        <b-icon-x
-                          v-show="birthDay"
-                          style="position: absolute; right: 15px"
-                          class="cursor-pointer text-gray"
-                          scale="1.3"
-                          data-clear
-                        />
-                        <vue-flat-pickr
-                          v-model="birthDay"
-                          :config="configBitrhDay"
-                          class="form-control"
-                          placeholder="Chọn ngày"
-                        />
-                      </b-row>
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </b-form-group>
-                  </validation-provider>
-                </b-col>
-                <!-- gender -->
-                <b-col>
-                  <div
-                    class="mt-1"
-                  >
-                    Giới tính
-                  </div>
-                  <tree-select
-                    v-model="gendersSelected"
-                    :options="genderOptions"
-                    placeholder="Chọn giới tính"
-                    no-options-text="Không có dữ liệu"
-                  />
-                </b-col>
-              </b-form-row>
-              <!-- END - Customer BirthDay and Gender -->
-
-              <!-- START - Customer Group and State -->
-              <b-form-row>
-                <b-col>
-                  <validation-provider
-                    v-slot="{ errors }"
-                    rules="required"
-                    name="nhóm khách hàng"
-                  >
-                    <div
-                      class="mt-1"
-                    >
-                      Nhóm khách hàng <sup class="text-danger">*</sup>
-                    </div>
-                    <tree-select
-                      v-model="customerTypesSelected"
-                      :options="customerTypeOptions"
-                      placeholder="Chọn nhóm khách hàng"
-                      no-options-text="Không có dữ liệu"
-                      no-results-text="Không tìm thấy kết quả"
-                      :clearable="false"
-                    />
-                    <small class="text-danger">{{ errors[0] }}</small>
-                  </validation-provider>
-
-                </b-col>
-
-                <b-col>
-                  <div
-                    class="mt-1"
-                  >
-                    Trạng thái <sup class="text-danger">*</sup>
-                  </div>
-                  <tree-select
-                    v-model="customerStatusSelected"
-                    :options="customerStatusOptions"
-                    placeholder="Chọn trạng thái"
-                    :clearable="false"
-                  />
-                </b-col>
-              </b-form-row>
-              <!-- END - Customer Group and State -->
-
-              <!-- START - Customer loyal -->
-              <b-form-checkbox
-                v-model="customerPrivate"
-                class="mt-1"
-              >
-                Khách hàng riêng của cửa hàng
-              </b-form-checkbox>
-              <!-- END - Customer loyal -->
-
-              <!-- START - Customer Note -->
-              <div class="mt-1">
-                Ghi chú
-              </div>
-              <b-form-textarea
-                v-model="note"
-                maxlength="3950"
-              />
-              <!-- END - Customer Note -->
-
-              <!-- START - Customer Date Created -->
-              <div>
-                Ngày tạo: <strong>{{ `${$moment(createdAt).format("L")} ${countDays ? `(${countDays})` : ''}` }}</strong>
-              </div>
-              <!-- END - Customer Date Created -->
-
             </b-col>
-            <!-- END - Section 1 -->
 
-            <!-- START - Section 2 -->
-            <b-col
-              style="margin-top: -5px"
-              class="bg-light pt-3"
-            >
-              <!-- START - Customer IdentityCard -->
+            <b-col>
               <validation-provider
                 v-slot="{ errors, passed, touched }"
-                rules="identifyCard"
-                name="chứng minh nhân dân"
+                rules="required"
+                name="tên"
               >
+                <div class="mt-1">
+                  Tên <sup class="text-danger">*</sup>
+                </div>
+                <b-form-input
+                  v-model="firstName"
+                  autocomplete="on"
+                  :state="touched ? passed : null"
+                  maxlength="250"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-col>
+          </b-form-row>
+          <!-- END - Customer Name -->
+
+          <!-- START - Customer Barcode -->
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="code"
+            name="mã vạch"
+          >
+            <div class="mt-1">
+              Mã vạch
+            </div>
+            <b-form-input
+              v-model.trim="barCode"
+              :state="touched ? passed : null"
+              maxlength="40"
+            />
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+          <!-- END - Customer Barcode -->
+
+          <!-- START - Customer BirthDay and Gender -->
+          <b-form-row>
+            <!-- BirthDay -->
+            <b-col
+              @keypress="$onlyDateInput"
+            >
+              <validation-provider
+                v-slot="{ errors, touched, passed }"
+                rules="required|dateFormatVNI|age"
+                name="ngày sinh"
+              >
+                <div class="mt-1">
+                  Ngày sinh <sup class="text-danger">*</sup>
+                </div>
                 <b-form-group
-                  label="CMND"
-                  label-for="IdentityCard"
+                  class="m-0"
                   :state="touched ? passed : null"
                 >
-                  <b-form-input
-                    id="IdentityCard"
-                    v-model.trim="customerID"
-                    maxlength="12"
-                    minlength="9"
-                    :state="touched ? passed : null"
-                    @keypress="$onlyNumberInput"
-                  />
+                  <b-row
+                    class="v-flat-pickr-group mx-0"
+                    align-v="center"
+                  >
+                    <b-icon-x
+                      v-show="birthDay"
+                      style="position: absolute; right: 15px"
+                      class="cursor-pointer text-gray"
+                      scale="1.3"
+                      data-clear
+                    />
+                    <vue-flat-pickr
+                      v-model="birthDay"
+                      :config="configBitrhDay"
+                      class="form-control"
+                      placeholder="Chọn ngày"
+                    />
+                  </b-row>
                   <small class="text-danger">{{ errors[0] }}</small>
                 </b-form-group>
               </validation-provider>
-              <!-- END - Customer IdentityCard -->
-
-              <!-- START - Customer ID Date -->
-              <div class="mt-1">
-                Ngày cấp
-              </div>
-              <b-row
-                class="v-flat-pickr-group mx-0"
-                align-v="center"
-                @keypress="$onlyDateInput"
-              >
-                <b-icon-x
-                  v-show="customerIDDate && customerID"
-                  style="position: absolute; right: 20px"
-                  class="cursor-pointer text-gray"
-                  scale="1.3"
-                  data-clear
-                />
-                <vue-flat-pickr
-                  v-model="customerIDDate"
-                  :config="configIDDate"
-                  class="form-control"
-                  placeholder="Chọn ngày"
-                  :disabled="customerID ? false : true"
-                />
-              </b-row>
-              <!-- END - Customer ID Date -->
-
-              <!-- START - Customer ID Location -->
-              <div class="mt-1">
-                Nơi cấp
-              </div>
-              <b-form-input
-                v-model="customerIDLocation"
-                :disabled="customerID ? false : true"
-                maxlength="200"
-              />
-              <!-- END - Customer ID Location -->
-
-              <!-- START - Customer Sales -->
-              <b-col class="bg-light my-1 px-0">
-                <!-- START - Sales -->
-                <b-row>
-                  <!-- START - 1 -->
-                  <b-col>
-                    <div>Doanh số tháng này</div>
-                    <strong style="font-size: 20px;">
-                      {{ monthOrderAmount || 0 }}
-                    </strong>
-                  </b-col>
-                  <!-- END - 1 -->
-
-                  <!-- START - 2 -->
-                  <b-col>
-                    <div> Doanh số tổng</div>
-                    <strong style="font-size: 20px;">
-                      {{ totalBill || 0 }}
-                    </strong>
-                  </b-col>
-                <!-- END - 2 -->
-                </b-row>
-                <!-- END - Customer Sales -->
-
-              </b-col>
-              <!-- END - Section 2 -->
             </b-col>
-          </b-row>
+            <!-- gender -->
+            <b-col>
+              <div
+                class="mt-1"
+              >
+                Giới tính
+              </div>
+              <tree-select
+                v-model="gendersSelected"
+                :options="genderOptions"
+                placeholder="Chọn giới tính"
+                no-options-text="Không có dữ liệu"
+              />
+            </b-col>
+          </b-form-row>
+          <!-- END - Customer BirthDay and Gender -->
+
+          <!-- START - Customer Group and State -->
+          <b-form-row>
+            <b-col>
+              <validation-provider
+                v-slot="{ errors }"
+                rules="required"
+                name="nhóm khách hàng"
+              >
+                <div
+                  class="mt-1"
+                >
+                  Nhóm khách hàng <sup class="text-danger">*</sup>
+                </div>
+                <tree-select
+                  v-model="customerTypesSelected"
+                  :options="customerTypeOptions"
+                  placeholder="Chọn nhóm khách hàng"
+                  no-options-text="Không có dữ liệu"
+                  no-results-text="Không tìm thấy kết quả"
+                  :clearable="false"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+
+            </b-col>
+
+            <b-col>
+              <div
+                class="mt-1"
+              >
+                Trạng thái <sup class="text-danger">*</sup>
+              </div>
+              <tree-select
+                v-model="customerStatusSelected"
+                :options="customerStatusOptions"
+                placeholder="Chọn trạng thái"
+                :clearable="false"
+              />
+            </b-col>
+          </b-form-row>
+          <!-- END - Customer Group and State -->
+
+          <!-- START - Customer loyal -->
+          <b-form-checkbox
+            v-model="customerPrivate"
+            class="mt-1"
+          >
+            Khách hàng riêng của cửa hàng
+          </b-form-checkbox>
+          <!-- END - Customer loyal -->
+
+          <!-- START - Customer Note -->
+          <div class="mt-1">
+            Ghi chú
+          </div>
+          <b-form-textarea
+            v-model="note"
+            maxlength="3950"
+          />
+          <!-- END - Customer Note -->
+
+          <!-- START - Customer Date Created -->
+          <div>
+            Ngày tạo: <strong>{{ `${$moment(createdAt).format("L")} ${countDays ? `(${countDays})` : ''}` }}</strong>
+          </div>
+          <!-- END - Customer Date Created -->
+
+          <!-- END - Section 1 -->
+
         </b-col>
         <!-- END - Form Personal information -->
 
+        <!-- START - Form Personal ID -->
+        <b-col
+          xl
+          md="6"
+          class="bg-light pb-1"
+          style="box-shadow: 10px 10px 15px 1px #EEEEEE"
+        >
+          <label class="h5 text-light"><strong>Label</strong></label>
+
+          <!-- START - Customer IdentityCard -->
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="identifyCard"
+            name="chứng minh nhân dân"
+          >
+            <div
+              class="mt-1"
+            >
+              CMND
+            </div>
+            <b-form-input
+              id="IdentityCard"
+              v-model.trim="customerID"
+              maxlength="12"
+              :state="touched ? passed : null"
+              @keypress="$onlyNumberInput"
+            />
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+          <!-- END - Customer IdentityCard -->
+
+          <!-- START - Customer ID Date -->
+          <div class="mt-1">
+            Ngày cấp
+          </div>
+          <b-row
+            class="v-flat-pickr-group mx-0"
+            align-v="center"
+            @keypress="$onlyDateInput"
+          >
+            <b-icon-x
+              v-show="customerIDDate && customerID"
+              style="position: absolute; right: 20px"
+              class="cursor-pointer text-gray"
+              scale="1.3"
+              data-clear
+            />
+            <vue-flat-pickr
+              v-model="customerIDDate"
+              :config="configIDDate"
+              class="form-control"
+              placeholder="Chọn ngày"
+              :disabled="customerID ? false : true"
+            />
+          </b-row>
+          <!-- END - Customer ID Date -->
+
+          <!-- START - Customer ID Location -->
+          <div class="mt-1">
+            Nơi cấp
+          </div>
+          <b-form-input
+            v-model="customerIDLocation"
+            :disabled="customerID ? false : true"
+            maxlength="200"
+          />
+          <!-- END - Customer ID Location -->
+
+          <!-- START - Customer Sales -->
+          <!-- <b-col class="bg-light my-1 px-0"> -->
+          <!-- START - Sales -->
+          <!-- <b-row> -->
+          <!-- START - 1 -->
+          <!-- <b-col> -->
+          <!-- <div>Doanh số tháng này</div> -->
+          <!-- <strong style="font-size: 20px;"> -->
+          <!-- {{ monthOrderAmount || 0 }} -->
+          <!-- </strong>
+              </b-col> -->
+          <!-- END - 1 -->
+
+          <!-- START - 2 -->
+          <!-- <b-col>
+                <div> Doanh số tổng</div>
+                <strong style="font-size: 20px;">
+                  {{ totalBill || 0 }}
+                </strong>
+              </b-col> -->
+          <!-- END - 2 -->
+          <!-- </b-row> -->
+          <!-- END - Customer Sales -->
+
+          <!-- </b-col> -->
+          <!-- END - Customer Sales -->
+
+        </b-col>
+        <!-- END - Form Personal ID -->
+
         <!-- START - Form Contact information -->
         <b-col
-          md
-          lg="6"
           xl="3"
-          class="bg-white shadow rounded ml-lg-1 mt-1 mt-lg-0 pb-1"
+          md
+          class="bg-white shadow rounded pb-1 mt-1 ml-xl-1 mt-xl-0"
         >
-          <label class="font-weight-bold w-100 text-center h5"><strong>Thông tin liên hệ</strong></label>
+          <label class="w-100 text-center h5"><strong>Thông tin liên hệ</strong></label>
           <!-- START - Customer Phone Number -->
           <validation-provider
             v-slot="{ errors, passed, touched}"
@@ -490,16 +487,15 @@
           </validation-provider>
         <!-- END - Customer Tax code-->
         </b-col>
-        <!-- START - Form Contact information -->
+        <!-- END - Form Contact information -->
 
         <!-- START - Form Membership card -->
         <b-col
-          md
-          lg="6"
           xl="3"
-          class="bg-white shadow rounded mt-1 ml-md-1 ml-lg-0 mt-xl-0 ml-xl-1"
+          md
+          class="bg-white shadow rounded pb-1 mt-1 ml-md-1 mt-xl-0"
         >
-          <label class="font-weight-bold w-100 text-center h5"><strong>Thẻ thành viên</strong></label>
+          <label class="w-100 text-center h5"><strong>Thẻ thành viên</strong></label>
 
           <!-- START - Customer Card type -->
           <div
@@ -531,13 +527,12 @@
           />
         <!-- END - Customer Type -->
         </b-col>
-      <!-- START - Form Membership card -->
-
+        <!-- END - Form Membership card -->
       </b-row>
 
       <!-- START - Group Button -->
       <b-row
-        class="mx-0 my-1"
+        class="mx-0 py-1"
         align-v="center"
         align-h="end"
       >
@@ -564,7 +559,8 @@
           Đóng
         </b-button>
       </b-row>
-    <!-- END - Group Button -->
+      <!-- END - Group Button -->
+
     </validation-observer>
     <!-- END - Form Container-->
 
