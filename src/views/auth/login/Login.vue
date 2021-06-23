@@ -547,7 +547,7 @@ export default {
                 if (res.data) {
                   this.checkCaptchaExist(res.data.captcha)
                 }
-                throw new Error(res.statusValue)
+                toasts.error('Tên đăng nhập hoặc mật khẩu không chính xác.')
               }
             })
             .catch(() => {

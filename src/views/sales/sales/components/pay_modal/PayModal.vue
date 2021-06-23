@@ -50,7 +50,7 @@
                   {{ value.promotionProgramName }} <span v-if="value.products.length > 0">- Số suất: {{ $formatNumberToLocale(value.numberLimited) }}</span>
                   <b-icon-shield-exclamation
                     v-if="value.products.length > 0 && !value.isUse"
-                    v-b-popover.hover="{ 'customClass':'text-brand-2', content: 'Chương trình này không được sử dụng do số suất ko đủ' }"
+                    v-b-popover.hover="{ 'customClass':'text-danger', content: 'Chương trình này không được áp dụng do số suất không đủ' }"
                     color="red"
                     class="cursor-pointer ml-1 popover-danger"
                     font-scale="1.5"
@@ -206,7 +206,10 @@
                         />
                       </b-col>
                     </b-row>
-                    <div class="ml-1 h7">
+                    <div
+                      v-if="value.amount.maxAmount > 0"
+                      class="ml-1 h7"
+                    >
                       Tối đa: {{ $formatNumberToLocale(value.amount.maxAmount) }}
                     </div>
                   </div>
