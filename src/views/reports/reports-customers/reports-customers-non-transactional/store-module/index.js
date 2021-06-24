@@ -51,7 +51,7 @@ export default {
         .exportReportsCustomersNonTransactional(val)
         .then(response => response.data)
         .then(res => {
-          const fileName = `Bao_cao_hang_tra_lai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+          const fileName = `Bao_cao_khach_hang_khong_giao_dich_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)
         })

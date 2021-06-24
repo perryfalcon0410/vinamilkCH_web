@@ -316,9 +316,6 @@ export default {
     },
   },
   watch: {
-    customerTypeOptions() {
-      this.getcustomerTypeDefault()
-    },
     fromDate() {
       this.configToDate = {
         ...this.configToDate,
@@ -333,6 +330,7 @@ export default {
     },
   },
   mounted() {
+    this.onSearch()
     this.GET_CUSTOMERS_TYPES_ACTION({ ...this.decentralization })
     this.configToDate = {
       ...this.configToDate,
@@ -348,10 +346,6 @@ export default {
       GET_CUSTOMERS_TYPES_ACTION,
       GET_REPORT_SALES_QUANTITY_SALE_RECEIPTS_ACTION,
     ]),
-    getcustomerTypeDefault() {
-      this.customerTypesSelected = 3 // hard code
-      this.onSearch()
-    },
     checkValueMin(value) {
       if (this.max) {
         if (value > this.max) {
@@ -367,9 +361,6 @@ export default {
       }
     },
     onSearch() {
-      if (!this.customerTypesSelected) {
-        this.customerTypesSelected = 3
-      }
       const searchData = {
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),

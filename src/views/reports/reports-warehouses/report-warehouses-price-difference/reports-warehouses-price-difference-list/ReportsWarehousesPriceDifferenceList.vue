@@ -20,12 +20,13 @@
         align-v="center"
       >
         <strong class="text-brand-1">
-          Danh sách phiếu nhập xuất kho
+          Danh sách sản phẩm
         </strong>
         <b-button-group>
           <b-button
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
+            :disabled="differencePriceRows.length === 0"
             @click="onClickPrintButton"
           >
             <b-icon-printer-fill class="mr-50" />
@@ -34,6 +35,7 @@
           <b-button
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
+            :disabled="differencePriceRows.length === 0"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />
@@ -325,6 +327,7 @@ export default {
           redInvoiceNo: data.redInvoiceNo,
           poNumber: data.poNumber,
           internalNumber: data.internalNumber,
+          receptCode: data.transCode,
           transDate: this.$formatISOtoVNI(data.transDate),
           orderDate: this.$formatISOtoVNI(data.orderDate),
           productCode: data.productCode,

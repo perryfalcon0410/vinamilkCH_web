@@ -25,8 +25,9 @@
         >
           <b-form-input
             v-model="licenseNumber"
+            trim
             class="h7 text-brand-3"
-            placeholder="Nhập số chứng từ"
+            placeholder="Số hóa đơn/số nội bộ/số PO"
             @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append
@@ -135,6 +136,7 @@
         >
           <b-form-input
             v-model="ids"
+            trim
             class="h7 text-brand-3"
             placeholder="Mã sản phẩm"
             @keyup.enter="onClickSearchButton"
@@ -353,7 +355,7 @@ export default {
     },
   },
   mounted() {
-    this.onSearch()
+    // this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
@@ -388,8 +390,8 @@ export default {
         toTransDate: reverseVniDate(this.toDate),
         fromOrderDate: reverseVniDate(this.fromOrderDate),
         toOrderDate: reverseVniDate(this.toOrderDate),
-        licenseNumber: this.licenseNumber,
-        productCodes: this.ids,
+        code: this.licenseNumber,
+        ids: this.ids?.replace(/\s+/g, ''),
         isPaging: this.isPaging,
       }
       this.updateSearchData(searchData)

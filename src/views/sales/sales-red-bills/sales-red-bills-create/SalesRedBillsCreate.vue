@@ -7,9 +7,10 @@
     <validation-observer
       ref="formContainer"
       v-slot="{invalid}"
+      class="d-print-none"
       slim
     >
-      <b-row>
+      <b-row class="d-print-none">
         <!-- START - Form -->
         <b-col
           xl="3"
@@ -70,7 +71,7 @@
             </b-col>
 
             <b-col>
-              <div class="h7 mt-1">
+              <div class="h7 mt-1 d-print-none">
                 Tên khách hàng
               </div>
               <b-form-input
@@ -120,7 +121,7 @@
           <!-- END - Archive Export Bill Number and Date -->
 
           <!-- START - Archive Export ID and Type -->
-          <b-form-row>
+          <b-form-row class="d-print-none">
             <b-col>
               <validation-provider
                 v-slot="{ errors, passed, touched }"
@@ -409,7 +410,7 @@
                 variant="none"
                 class="ml-1 btn-brand-1 aligns-items-button-center"
                 :disabled="invalid"
-                @click="onClickCreateBill()"
+                @click="onClickCreateAndPrintBill()"
               >
                 <b-icon
                   icon="printer-fill"
@@ -439,6 +440,10 @@
     <!-- END - Form and list -->
 
     <bill-receipts-modal @productsOfBillSaleData="insertProducsFromBillSales($event)" />
+
+    <!-- START - Print form -->
+    <print-form-red-bills />
+    <!-- END - Print form -->
   </b-container>
 </template>
 
@@ -446,6 +451,7 @@
 import toasts from '@/@core/utils/toasts/toasts'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'
+import PrintFormRedBills from '@core/components/print-form/PrintFormRedBills.vue'
 import { VueAutosuggest } from 'vue-autosuggest'
 import {
   mapActions,
@@ -468,10 +474,12 @@ import {
   RED_INVOICE,
   CUSTOMERS_GETTER,
   PRODUCTS_GETTER,
+  ID_CREATE_RED_INVOICES_GETTER_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
   GET_PRODUCTS_ACTION,
   CREATE_RED_BILL_ACTION,
+  PRINT_RED_INVOICES_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -480,9 +488,12 @@ export default {
     BillReceiptsModal,
     ValidationProvider,
     ValidationObserver,
+    PrintFormRedBills,
   },
   data() {
     return {
+      idCreate: {},
+      isPrintData: false,
       isDisabled: false,
       inputSearchFocusedSP: false,
       inputSearchFocusedKH: false,
@@ -612,10 +623,15 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(RED_INVOICE, [
+      CUSTOMERS_GETTER,
+      PRODUCTS_GETTER,
+      ID_CREATE_RED_INVOICES_GETTER_GETTER,
+    ]),
     getCustomers() {
-      if (this.CUSTOMERS_GETTER()) {
+      if (this.CUSTOMERS_GETTER) {
         return [{
-          data: this.CUSTOMERS_GETTER().map(data => ({
+          data: this.CUSTOMERS_GETTER.map(data => ({
             name: data.customerCode,
             id: data.id,
             customerCode: data.customerCode,
@@ -630,21 +646,30 @@ export default {
       return []
     },
     allProducts() {
-      return [{
-        data: this.PRODUCTS_GETTER().map(data => ({
-          name: data.productCode,
-          productId: data.id,
-          productCode: data.productCode,
-          productName: data.productName,
-          groupVat: data.groupVat,
-          unit: data.uom1,
-          quantity: 1,
-          price: data.price,
-          vat: data.vat,
-          vatAmount: data.vatAmount,
-          note: data.note,
-        })),
-      }]
+      if (this.PRODUCTS_GETTER) {
+        return [{
+          data: this.PRODUCTS_GETTER.map(data => ({
+            name: data.productCode,
+            productId: data.id,
+            productCode: data.productCode,
+            productName: data.productName,
+            groupVat: data.groupVat,
+            unit: data.uom1,
+            quantity: 1,
+            price: data.price,
+            vat: data.vat,
+            vatAmount: data.vatAmount,
+            note: data.note,
+          })),
+        }]
+      }
+      return [{ data: '' }]
+    },
+    getIdCreateRedinvoice() {
+      if (this.ID_CREATE_RED_INVOICES_GETTER_GETTER) {
+        return this.ID_CREATE_RED_INVOICES_GETTER_GETTER
+      }
+      return {}
     },
     getTotalQuantity() {
       return this.products.reduce((accum, item) => accum + Number(item.quantity), 0)
@@ -657,6 +682,19 @@ export default {
     },
   },
   watch: {
+    getIdCreateRedinvoice() {
+      this.idCreate = { ...this.getIdCreateRedinvoice }
+      if (this.isPrintData) {
+        this.PRINT_RED_INVOICES_ACTION({
+          data: {
+            id: this.idCreate.id,
+            params: { ...this.decentralization },
+          },
+          onSuccess: () => {
+          },
+        })
+      }
+    },
     getCustomers() {
       this.customers = [...this.getCustomers]
     },
@@ -683,14 +721,11 @@ export default {
     // })
   },
   methods: {
-    ...mapGetters(RED_INVOICE, [
-      CUSTOMERS_GETTER,
-      PRODUCTS_GETTER,
-    ]),
     ...mapActions(RED_INVOICE, [
       GET_CUSTOMERS_ACTION,
       GET_PRODUCTS_ACTION,
       CREATE_RED_BILL_ACTION,
+      PRINT_RED_INVOICES_ACTION,
     ]),
     routeBack() {
       this.$router.back()
@@ -862,6 +897,44 @@ export default {
           paramsCreateRedInvoice,
           onSuccess: () => {
             this.$router.replace({ name: 'sales-red-bills' })
+          },
+        })
+        return
+      }
+      toasts.error('Hóa đơn cần chứa ít nhất một sản phẩm')
+    },
+    onClickCreateAndPrintBill() {
+      const productsData = this.products.map(data => ({
+        quantity: data.quantity,
+        groupVat: data.industry,
+        priceNotVat: data.productPriceOriginal,
+        productId: data.productId,
+        vat: data.vat,
+        noteRedInvoiceDetail: data.note,
+      }))
+      const paramsCreateRedInvoice = {
+        customerId: this.redBill.customerId,
+        printDate: formatVniDateToISO(this.redBill.printDate),
+        officeWorking: this.redBill.officeWorking,
+        officeAddress: this.redBill.officeAddress,
+        taxCode: this.redBill.taxCode,
+        redInvoiceNumber: this.redBill.billNumber,
+        totalQuantity: this.totalQuantity,
+        totalMoney: this.totalPriceTotal,
+        amountTotal: this.totalPriceTotal + this.totalProductExported,
+        paymentType: this.redBill.paymentType,
+        buyerName: this.redBill.buyer,
+        noteRedInvoice: this.redBill.note,
+        shopId: this.redBill.shopId,
+        productDataDTOS: productsData,
+        saleOrderId: this.saleOrderIds,
+      }
+      if (productsData.length > 0) {
+        this.CREATE_RED_BILL_ACTION({
+          paramsCreateRedInvoice,
+          onSuccess: () => {
+            console.log(this.idCreate)
+            this.isPrintData = true
           },
         })
         return

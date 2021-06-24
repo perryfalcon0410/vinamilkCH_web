@@ -7,9 +7,7 @@
     <!-- START - Search -->
     <reports-customers-non-transactional-list-search
       class="d-print-none"
-      :per-page-size="paginationData.size"
       @updateSearchData="updateSearchData"
-      @onClickSearchButton="onClickSearchButton"
     />
     <!-- END - Search -->
 
@@ -50,10 +48,10 @@
           :columns="columns"
           mode="remote"
           :rows="customerNonTransRows"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
-            perPage: paginationData.size,
+            perPage: elementSize,
             setCurrentPage: pageNumber,
           }"
           compact-mode
@@ -61,7 +59,6 @@
           :total-rows="CustomerNonTransPagination.totalElements"
           :sort-options="{
             enabled: false,
-            multipleColumns: true,
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
@@ -96,7 +93,7 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="paginationData.size"
+                  v-model="elementSize"
                   size="sm"
                   :options="perPageSizeOptions"
                   class="mx-1"
@@ -107,7 +104,7 @@
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="CustomerNonTransPagination.totalElements"
-                :per-page="paginationData.size"
+                :per-page="elementSize"
                 first-number
                 last-number
                 align="right"
@@ -176,10 +173,11 @@ export default {
   data() {
     return {
       perPageSizeOptions: commonData.perPageSizes,
-      pageNumber: commonData.pageNumber,
+      pageNumber: 1,
+      elementSize: commonData.perPageSizes[0],
       paginationData: {
-        size: commonData.perPageSizes[0],
-        page: this.pageNumber,
+        size: this.elementSize,
+        page: this.pageNumber - 1,
         sort: null,
       },
       searchData: {
@@ -258,9 +256,9 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
-      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.CustomerNonTransPagination.totalElements
-        ? this.CustomerNonTransPagination.totalElements : (this.paginationData.size * this.pageNumber)
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.CustomerNonTransPagination.totalElements
+        ? this.CustomerNonTransPagination.totalElements : (this.elementSize * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${this.CustomerNonTransPagination.totalElements} mục`
     },
@@ -280,29 +278,27 @@ export default {
       GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
     ]),
     // Start - pagination
-    updateSearchData(event) {
-      this.paginationData = {
-        ...this.paginationData,
-        ...event,
-      }
-      this.searchData = event
-    },
     onPaginationChange() {
-      this.GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION({ ...this.paginationData, ...this.decentralization })
+      this.GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION(this.paginationData)
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
+    },
+
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: 0, size: params.currentPerPage })
+      this.onPaginationChange()
     },
     onPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
-    onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange()
-    },
-    onClickSearchButton() {
-      this.pageNumber = 1 // hard code
+    updateSearchData(event) {
+      this.pageNumber = 1
+      this.searchData = event
+      this.updatePaginationData({
+        ...event,
+      })
     },
     // Start - xuat excel
     onClickExcelExportButton() {

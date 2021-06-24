@@ -7,7 +7,6 @@
     <reports-returned-goods-list-search
       class="d-print-none"
       @updateSearchData="updateSearchData"
-      @onClickSearchButton="onClickSearchButton"
     />
     <!-- END - Search -->
 
@@ -52,7 +51,7 @@
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
-            perPage: paginationData.size,
+            perPage: elementSize,
             setCurrentPage: pageNumber,
           }"
           compact-mode
@@ -161,7 +160,7 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="paginationData.size"
+                  v-model="elementSize"
                   size="sm"
                   :options="perPageSizeOptions"
                   class="mx-1"
@@ -172,7 +171,7 @@
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="reportReturnedgoodsPagination.totalElements"
-                :per-page="paginationData.size"
+                :per-page="elementSize"
                 first-number
                 last-number
                 align="right"
@@ -242,6 +241,7 @@ export default {
     return {
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
+      elementSize: commonData.perPageSizes[0],
       paginationData: {
         size: commonData.perPageSizes[0],
         page: this.pageNumber,
@@ -409,9 +409,9 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
-      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.reportReturnedgoodsPagination.totalElements
-        ? this.reportReturnedgoodsPagination.totalElements : (this.paginationData.size * this.pageNumber)
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.reportReturnedgoodsPagination.totalElements
+        ? this.reportReturnedgoodsPagination.totalElements : (this.elementSize * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${this.reportReturnedgoodsPagination.totalElements} mục`
     },
@@ -459,29 +459,27 @@ export default {
     // printReport
 
     // Start - pagination
-    updateSearchData(event) {
-      this.searchOptions = event
-      this.paginationData = {
-        ...this.paginationData,
-        ...event,
-      }
-    },
     onPaginationChange() {
-      this.GET_REPORT_RETURNED_GOODS_ACTION({ ...this.paginationData, ...this.decentralization })
+      this.GET_REPORT_RETURNED_GOODS_ACTION(this.paginationData)
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
+    },
+
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: 0, size: params.currentPerPage })
+      this.onPaginationChange()
     },
     onPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
-    onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange()
-    },
-    onClickSearchButton() {
-      this.pageNumber = 1 // hard code
+    updateSearchData(event) {
+      this.pageNumber = 1
+      this.searchOptions = event
+      this.updatePaginationData({
+        ...event,
+      })
     },
   },
 }

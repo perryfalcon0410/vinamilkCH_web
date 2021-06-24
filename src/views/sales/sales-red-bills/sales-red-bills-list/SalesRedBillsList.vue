@@ -24,7 +24,7 @@
              v-model.trim="customer"
              class="h7"
              placeholder="Nhập Mã/SĐT/Tên khách hàng"
-             @keyup.enter="onClickSearchButton"
+             @keyup.enter="onSearchClick"
            />
            <b-input-group-append
              is-text
@@ -54,7 +54,7 @@
               v-model.trim="invoiceNumber"
               class="h7"
               placeholder="Nhập số hóa đơn"
-              @keyup.enter="onClickSearchButton"
+              @keyup.enter="onSearchClick"
             />
             <b-input-group-append
               is-text

@@ -10,6 +10,7 @@ import {
   GET_INVOICE_DETAIL_GETTER,
   GET_INVOICE_DETAIL_INFO_GETTER,
   PRINT_RED_INVOICES_GETTER,
+  ID_CREATE_RED_INVOICES_GETTER_GETTER,
   // ACTIONS
   GET_RED_INVOICES_ACTION,
   GET_CUSTOMERS_ACTION,
@@ -44,6 +45,7 @@ export default {
     invoiceDetail: {},
     invoiceDetailInfo: {},
     printdata: [],
+    idCreateRedInvoice: {},
   },
 
   // GETTERS
@@ -74,6 +76,9 @@ export default {
     },
     [PRINT_RED_INVOICES_GETTER](state) {
       return state.printdata
+    },
+    [ID_CREATE_RED_INVOICES_GETTER_GETTER](state) {
+      return state.idCreateRedInvoice
     },
 
   },
@@ -171,13 +176,14 @@ export default {
           toasts.error(error.message)
         })
     },
-    [CREATE_RED_BILL_ACTION]({}, val) {
+    [CREATE_RED_BILL_ACTION]({ state }, val) {
       RedInvoiceService
         .createRedBill(val.paramsCreateRedInvoice)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
+            state.idCreateRedInvoice = res.data
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)

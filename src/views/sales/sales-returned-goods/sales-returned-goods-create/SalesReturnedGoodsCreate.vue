@@ -58,7 +58,7 @@
           <!-- START - List Item -->
           <b-list-group v-if="billInfo.id !== ''">
             <b-list-group-item
-              variant="secondary"
+              class="bg-light"
             >
               Ngày mua hàng
               <strong>:
@@ -66,7 +66,7 @@
               </strong>
             </b-list-group-item>
             <b-list-group-item
-              variant="secondary"
+              class="bg-light"
             >
               Nhân viên bán hàng
               <strong>:
@@ -74,7 +74,7 @@
               </strong>
             </b-list-group-item>
             <b-list-group-item
-              variant="secondary"
+              class="bg-light"
             >
               Khách hàng
               <strong>:
@@ -82,7 +82,7 @@
               </strong>
             </b-list-group-item>
             <b-list-group-item
-              variant="secondary"
+              class="bg-light"
             >
               Tiền trả lại
               <strong>:

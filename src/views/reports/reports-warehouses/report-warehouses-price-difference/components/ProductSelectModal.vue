@@ -129,6 +129,11 @@
       </v-card-actions>
       <!-- START- Table -->
       <div class="bg-white rounded shadow rounded mt-1 p-1">
+        <div class="pt-0">
+          <strong class="text-blue-vinamilk pt-2">
+            Tổng cộng: {{ $formatNumberToLocale(selectedProductRow.length) }} sản phẩm được chọn
+          </strong>
+        </div>
         <vue-good-table
           ref="products-table"
           :columns="columns"
