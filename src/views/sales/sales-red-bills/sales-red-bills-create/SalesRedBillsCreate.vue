@@ -933,7 +933,6 @@ export default {
         this.CREATE_RED_BILL_ACTION({
           paramsCreateRedInvoice,
           onSuccess: () => {
-            console.log(this.idCreate)
             this.isPrintData = true
           },
         })
