@@ -7,8 +7,7 @@ import {
   VOUCHER_BY_ID_GETTER,
   ONLINE_ORDERS_GETTER,
   ONLINE_ORDERS_PAGINATION_GETTER,
-  ONLINE_ORDER_PRODUCTS_BY_ID_GETTER,
-  ONLINE_ORDER_CUSTOMER_BY_ID_GETTER,
+  ONLINE_ORDER_BY_ID_GETTER,
   GET_PRODUCTS_GETTER,
   GET_PRODUCT_INFOS_GETTER,
   GET_TOP_SALE_PRODUCTS_GETTER,
@@ -32,8 +31,7 @@ import {
   GET_VOUCHERS_ACTION,
   GET_VOUCHER_BY_ID_ACTION,
   GET_ONLINE_ORDERS_ACTION,
-  GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION,
-  GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION,
+  GET_ONLINE_ORDER_BY_ID_ACTION,
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
   GET_TOP_SALE_PRODUCTS_ACTION,
@@ -62,7 +60,7 @@ export default {
     voucherInfo: {},
     onlineOrders: [],
     onlineOrderProducts: [],
-    onlineOrderCustomer: {},
+    onlineOrder: {},
     onlineOrderPagination: {},
     products: [],
     productInfos: [],
@@ -97,11 +95,8 @@ export default {
     [ONLINE_ORDERS_PAGINATION_GETTER](state) {
       return state.onlineOrderPagination
     },
-    [ONLINE_ORDER_PRODUCTS_BY_ID_GETTER](state) {
-      return state.onlineOrderProducts
-    },
-    [ONLINE_ORDER_CUSTOMER_BY_ID_GETTER](state) {
-      return state.onlineOrderCustomer
+    [ONLINE_ORDER_BY_ID_GETTER](state) {
+      return state.onlineOrder
     },
     [GET_PRODUCTS_GETTER](state) {
       return state.products
@@ -225,28 +220,13 @@ export default {
           toasts.error(error.message)
         })
     },
-    [GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION]({ state }, val) {
+    [GET_ONLINE_ORDER_BY_ID_ACTION]({ state }, val) {
       SalesServices
         .getOnlineOrderById(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.onlineOrderProducts = res.data.products
-          } else {
-            throw new Error(res.statusValue)
-          }
-        })
-        .catch(error => {
-          toasts.error(error.message)
-        })
-    },
-    [GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION]({ state }, val) {
-      SalesServices
-        .getOnlineOrderById(val)
-        .then(response => response.data)
-        .then(res => {
-          if (res.success) {
-            state.onlineOrderCustomer = res.data
+            state.onlineOrder = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -291,7 +271,11 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.topSaleProducts = res.data.content || []
+            if (res.data != null) {
+              state.topSaleProducts = res.data.content
+            } else {
+              state.topSaleProducts = []
+            }
           } else {
             throw new Error(res.statusValue)
           }

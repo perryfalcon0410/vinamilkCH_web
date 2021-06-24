@@ -286,13 +286,11 @@ import {
   GET_PRODUCTS_GETTER,
   GET_PRODUCT_INFOS_GETTER,
   GET_TOP_SALE_PRODUCTS_GETTER,
-  ONLINE_ORDER_PRODUCTS_BY_ID_GETTER,
   UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
   // Action
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
   GET_TOP_SALE_PRODUCTS_ACTION,
-  GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION,
   UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
 } from '../store-module/type'
 import {
@@ -439,7 +437,6 @@ export default {
       GET_PRODUCTS_GETTER,
       GET_PRODUCT_INFOS_GETTER,
       GET_TOP_SALE_PRODUCTS_GETTER,
-      ONLINE_ORDER_PRODUCTS_BY_ID_GETTER,
       UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
     ]),
     getProducts() {
@@ -486,20 +483,6 @@ export default {
       }
       return []
     },
-    getOnlineOrderProducts() {
-      return this.ONLINE_ORDER_PRODUCTS_BY_ID_GETTER.map(data => ({
-        productId: data.productId,
-        productCode: data.productCode,
-        productName: data.productName,
-        productUnit: data.uom1,
-        productInventory: data.stockTotal,
-        quantity: data.quantity,
-        productUnitPrice: this.$formatNumberToLocale(data.price),
-        sumProductUnitPrice: data.price,
-        productTotalPrice: this.$formatNumberToLocale(this.totalPrice(1, Number(data.price))),
-        sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
-      }))
-    },
     customerDefault() {
       return this.getCustomerDefault
     },
@@ -544,9 +527,9 @@ export default {
     getCustomerTypeProducts() {
       this.orderProducts = [...this.getCustomerTypeProducts]
     },
-    getOnlineOrderProducts() {
-      this.orderProducts = [...this.getOnlineOrderProducts]
-    },
+    // getOnlineOrderProducts() {
+    //   this.orderProducts = [...this.getOnlineOrderProducts]
+    // },
 
     getCurrentCustomer() {
       this.currentCustomer = { ...this.getCurrentCustomer }
@@ -584,7 +567,6 @@ export default {
       GET_PRODUCTS_ACTION,
       GET_PRODUCT_INFOS_ACTION,
       GET_TOP_SALE_PRODUCTS_ACTION,
-      GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION,
       UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
     ]),
     ...mapActions(CUSTOMER, [
@@ -679,9 +661,8 @@ export default {
       }
     },
 
-    getOnlineOrderInfoForm(id) {
-      this.id = id
-      this.GET_ONLINE_ORDER_PRODUCTS_BY_ID_ACTION(`${this.id}?formId=4&ctrlId=1`)
+    getOnlineOrderInfoForm(val) {
+      this.orderProducts = val
     },
     onChangeQuantity(index) {
       this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
@@ -713,7 +694,6 @@ export default {
           }
         }
       }
-      console.log('online', val)
     },
 
     getCustomerTypeInfo(id) {

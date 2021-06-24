@@ -407,11 +407,11 @@ import {
 import {
   SALES,
   // Getter
-  ONLINE_ORDER_CUSTOMER_BY_ID_GETTER,
+  ONLINE_ORDER_BY_ID_GETTER,
   CUSTOMERS_SALE_GETTER,
   GET_PROMOTION_PROGRAMS_GETTER,
   // Action
-  GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION,
+  GET_ONLINE_ORDER_BY_ID_ACTION,
   GET_PROMOTION_PROGRAMS_ACTION,
   GET_CUSTOMERS_SALE_ACTION,
 } from '../../store-module/type'
@@ -480,6 +480,7 @@ export default {
         orderNumber: '',
         orderNote: '',
       },
+
       quantity: null,
       totalPrice: null,
       salemtPromotionObjectSelected: saleData.salemtPromotionObject[0].id,
@@ -573,7 +574,7 @@ export default {
     }),
 
     ...mapGetters(SALES, {
-      ONLINE_ORDER_CUSTOMER_BY_ID_GETTER,
+      ONLINE_ORDER_BY_ID_GETTER,
       GET_PROMOTION_PROGRAMS_GETTER,
       CUSTOMERS_SALE_GETTER,
     }),
@@ -619,7 +620,24 @@ export default {
       }))
     },
     onlineOrderCustomer() {
-      return this.ONLINE_ORDER_CUSTOMER_BY_ID_GETTER
+      return this.ONLINE_ORDER_BY_ID_GETTER
+    },
+    getOnlineOrderProducts() {
+      if (this.ONLINE_ORDER_BY_ID_GETTER.products) {
+        return this.ONLINE_ORDER_BY_ID_GETTER.products.map(data => ({
+          productId: data.productId,
+          productCode: data.productCode,
+          productName: data.productName,
+          productUnit: data.uom1,
+          productInventory: data.stockTotal,
+          quantity: data.quantity,
+          productUnitPrice: this.$formatNumberToLocale(data.price),
+          sumProductUnitPrice: data.price,
+          productTotalPrice: this.$formatNumberToLocale(this.totalPriceProducts(1, Number(data.price))),
+          sumProductTotalPrice: this.totalPriceProducts(1, Number(data.price)),
+        }))
+      }
+      return []
     },
     totalQuantity() {
       return this.$formatNumberToLocale(this.orderProducts.reduce((sum, item) => sum + Number(item.quantity), 0))
@@ -658,6 +676,10 @@ export default {
       this.customersSearch = [...this.getCustomerSearch]
       this.customer = { ...this.getCustomerSearch }
     },
+    getOnlineOrderProducts() {
+      this.orderProducts = [...this.getOnlineOrderProducts]
+      this.$emit('getOnlineOrderInfoForm', this.orderProducts)
+    },
   },
   mounted() {
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
@@ -689,7 +711,7 @@ export default {
     ]),
 
     ...mapActions(SALES, [
-      GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION,
+      GET_ONLINE_ORDER_BY_ID_ACTION,
       GET_PROMOTION_PROGRAMS_ACTION,
       GET_CUSTOMERS_SALE_ACTION,
     ]),
@@ -722,6 +744,10 @@ export default {
       this.$refs.salesNotifyModal.hide()
     },
 
+    totalPriceProducts(amount, price) {
+      return amount * (price || 0)
+    },
+
     getCustomerInfo(val) {
       this.customer.id = val.data.id
       this.customer.shopId = val.data.shopId
@@ -742,8 +768,7 @@ export default {
 
     getOnlineOrderInfo(id) {
       this.orderOnline.onlineOrderId = id
-      this.GET_ONLINE_ORDER_CUSTOMER_BY_ID_ACTION(`${this.orderOnline.onlineOrderId}?formId=4&ctrlId=1`)
-      this.$emit('getOnlineOrderInfoForm', id)
+      this.GET_ONLINE_ORDER_BY_ID_ACTION(`${this.orderOnline.onlineOrderId}`)
     },
 
     getCreateInfo(val) {
