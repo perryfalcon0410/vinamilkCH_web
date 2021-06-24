@@ -251,7 +251,7 @@ export default {
             .then(response => response.data)
             .then(res => {
               if (res.success) {
-                this.navigateToLoginPage()
+                this.navigateToHomePage()
                 toasts.success(res.statusValue)
               } else {
                 throw new Error(res.statusValue)
@@ -264,8 +264,8 @@ export default {
       })
     },
 
-    navigateToLoginPage() {
-      this.$router.push({ name: 'auth-login' })
+    navigateToHomePage() {
+      this.$router.replace({ name: 'dashboard-ecommerce' })
     },
   },
 }

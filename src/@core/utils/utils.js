@@ -5,6 +5,7 @@ import {
   watch,
   toRefs,
 } from '@vue/composition-api'
+
 import customerData from '@/@db/customer'
 import commonData from '@/@db/common'
 import warehousesData from '@/@db/warehouses'
@@ -59,7 +60,8 @@ export const getGenderLabel = id => {
   return commonDataFound ? commonDataFound.label : null
 }
 
-export const getCustomerTypeLabel = id => {
+export const getCustomerTypeLabel = id => { // TODO: Hàm này bị lặp rất nhiều
+  // console.log(customerData.customerTypes)
   const customerDataFound = customerData.customerTypes.find(item => `${item.id}` === `${id}`)
   return customerDataFound ? customerDataFound.label : null
 }

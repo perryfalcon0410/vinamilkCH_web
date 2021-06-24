@@ -37,12 +37,18 @@ import { useWindowSize, useCssVar } from '@vueuse/core'
 import store from '@/store'
 import {
   mapActions,
+  mapGetters,
 } from 'vuex'
 import {
-  COMMON_CUSTOMER,
+  CUSTOMER,
   // ACTIONS
   GET_CUSTOMER_TYPES_ACTION,
-} from './store/common-customer/type'
+} from '@/views/sales/sales-customers/store-module/type'
+import {
+  APP,
+  // GETTERS
+  LOGIN_STATUS_GETTER,
+} from '@/store/app/type'
 
 const LayoutVertical = () => import('@/layouts/vertical/LayoutVertical.vue')
 const LayoutHorizontal = () => import('@/layouts/horizontal/LayoutHorizontal.vue')
@@ -73,6 +79,9 @@ export default {
   // ! We can move this computed: layout & contentLayoutType once we get to use Vue 3
   // Currently, router.currentRoute is not reactive and doesn't trigger any change
   computed: {
+    ...mapGetters(APP, [
+      LOGIN_STATUS_GETTER,
+    ]),
     layout() {
       if (this.$route.meta.layout === 'full') return 'layout-full'
       return `layout-${this.contentLayoutType}`
@@ -83,8 +92,14 @@ export default {
     isLoading() {
       return this.$store.state.app.isLoading
     },
-    userData() {
-      return localStorage.getItem('userData')
+    isLoggedIn() {
+      return this.LOGIN_STATUS_GETTER
+    },
+  },
+
+  watch: {
+    isLoggedIn() {
+      this.getCustomerTypes()
     },
   },
 
@@ -115,13 +130,16 @@ export default {
   },
 
   methods: {
-    ...mapActions(COMMON_CUSTOMER, [
+    ...mapActions(CUSTOMER, [
       GET_CUSTOMER_TYPES_ACTION,
     ]),
 
     getCustomerTypes() {
-      if (localStorage.getItem('userData')) {
-        this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
+      if (this.isLoggedIn) {
+        this.GET_CUSTOMER_TYPES_ACTION({
+          data: { ...this.decentralization },
+          onSuccess: () => { },
+        })
       }
     },
   },
