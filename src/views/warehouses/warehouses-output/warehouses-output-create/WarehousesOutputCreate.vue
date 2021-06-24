@@ -542,7 +542,7 @@ export default {
           field: 'quantityReturn',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-right',
           tdClass: 'text-right',
         },
       ],

@@ -4,6 +4,7 @@
     class="d-flex flex-column p-0"
   >
     <b-from
+      class="d-print-none"
       @keydown.enter="onClickSearchWarehousesOutput"
     >
       <!-- START - Search -->

@@ -618,7 +618,6 @@ export default {
           productReturnAmount: item.productReturnAmount,
           export: item.export,
         }
-        console.log(obj)
         if (item.productPrice !== 0) {
           this.products.push(obj)
         } else this.rowsProductPromotion.push(obj)

@@ -46,7 +46,7 @@
           <b-row class="mx-0">
             <div class="width-100">
               Số PO:
-            </div>  <strong>{{ inputOrderInfoData.poNumber }}</strong>
+            </div>  <strong>{{ inputOrderInfoData.pocoNumber }}</strong>
           </b-row>
           <b-row class="mx-0">
             <div class="width-100">
@@ -86,10 +86,6 @@
     <!-- END - Title -->
 
     <!-- START - Table 1 -->
-    <p class="mt-1">
-      <strong>Hàng bán</strong>
-    </p>
-
     <table
       v-for="item in inputOrderSaleProductsData"
       :key="item.type"
@@ -132,55 +128,83 @@
           </td>
         </tr>
         <tr>
-          <th
-            style="width: 5px"
-          >
+          <th>
             STT
           </th>
-          <th class="px-50">
+          <th
+            class="px-50"
+            style="width: 10%"
+          >
             Mã SP
           </th>
-          <th class="px-50">
+          <th
+            class="px-50"
+            style="width: 40%"
+          >
             Tên SP
           </th>
-          <th class="px-50">
+          <th
+            class="px-50"
+            style="width: 5%"
+          >
             ĐVT
           </th>
-          <th class="text-right px-50">
+          <th
+            class="text-right px-50"
+            style="width: 7%"
+          >
             SL
           </th>
-          <th class="text-right px-50">
+          <th
+            class="text-right px-50"
+            style="width: 15%"
+          >
             Giá
           </th>
-          <th class="text-right px-50">
+          <th
+            class="text-right px-50"
+            style="width: 30%"
+          >
             T.Tiền
           </th>
         </tr>
       </thead>
       <tbody>
         <tr
-          v-for="products in item.products"
+          v-for="(products, index) in item.products"
           :key="products.productCode"
         >
           <td class="px-1">
-            1
+            {{ index + 1 }}
           </td>
-          <td class="px-1">
+          <td
+            class="pl-1"
+          >
             {{ products.productCode }}
           </td>
-          <td class="px-1">
+          <td
+            class="px-1"
+          >
             {{ products.productName }}
           </td>
-          <td class="px-1">
+          <td
+            class="px-1"
+          >
             {{ products.unit }}
           </td>
-          <td class="text-right px-1">
+          <td
+            class="text-right px-1"
+          >
             {{ $formatNumberToLocale(products.quantity) }}
           </td>
-          <td class="text-right px-1">
+          <td
+            class="text-right px-1"
+          >
             {{ $formatNumberToLocale(products.price) }}
           </td>
-          <td class="text-right px-1">
+          <td
+            class="text-right px-1"
+          >
             {{ $formatNumberToLocale(products.totalPrice) }}
           </td>
         </tr>
@@ -268,7 +292,7 @@ export default {
       return {
         transType: 'type',
         transCode: 'transCode',
-        poNumber: 'poNumber',
+        pocoNumber: 'pocoNumber',
         invoiceNumber: 'invoiceNumber',
         transDate: 'transDate',
         internalNumber: 'internalNumber',
