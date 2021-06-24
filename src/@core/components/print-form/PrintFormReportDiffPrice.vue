@@ -22,7 +22,7 @@
         <p class="my-1">
           Từ ngày {{ $formatISOtoVNI(totalData.fromDate) }} đến {{ $formatISOtoVNI(totalData.toDate) }}
         </p>
-        <p>Ngày in : {{ $formatPrintDate(totalData.reportDate) }}</p>
+        <p>Ngày in : {{ $formatISOtoVNI(totalData.reportDate, true) }}</p>
       </div>
 
       <!-- START - Invisible element to align title -->
@@ -39,14 +39,17 @@
     <!-- START - Total view -->
     <b-row
       class="mx-0"
-      align-h="around"
       align-v="end"
       style="background-color: gray"
     >
-      <div>Tổng cộng: <strong>{{ $formatNumberToLocale(totalData.totalQuantity) }}</strong>
-      </div>
-      <strong>{{ $formatNumberToLocale(totalData.totalPriceInput) }}</strong>
-      <strong>{{ $formatNumberToLocale(totalData.totalPriceOutput) }}</strong>
+      <b-col class="text-right">
+        Tổng cộng: <strong>{{ $formatNumberToLocale(totalData.totalQuantity) }}</strong>
+      </b-col>
+      <b-col class="text-center">
+        <strong class="pr-4 mr-4">{{ $formatNumberToLocale(totalData.totalPriceInput) }}</strong>
+
+        <strong>{{ $formatNumberToLocale(totalData.totalPriceOutput) }}</strong>
+      </b-col>
     </b-row>
     <!-- END - Total view -->
 
@@ -55,7 +58,7 @@
       v-for="(item,index) in reportData"
       :key="index"
     >
-      <b-col class="px-0 pb-1">
+      <b-col class="px-0 mx-0 pb-1">
         <table>
           <!-- START - Header -->
           <thead>
@@ -69,17 +72,19 @@
                 </strong>
                 <b-row
                   class="mx-0"
-                  align-h="center"
+                  align-h="around"
                 >
-                  <div class="ml-5">
+                  <b-col class="text-right mr-3">
                     Tổng cộng: {{ $formatNumberToLocale(item.response.totalQuantity) }}
-                  </div>
-                  <div class="mx-5">
-                    {{ $formatNumberToLocale(item.response.totalPriceInput) }}
-                  </div>
-                  <div>
-                    {{ $formatNumberToLocale(item.response.totalPriceOutput) }}
-                  </div>
+                  </b-col>
+                  <b-col class="text-center">
+                    <b-row align-h="around">
+                      <span class="pl-5 ml-50">
+                        {{ $formatNumberToLocale(item.response.totalPriceInput) }}
+                      </span>
+                      <span style="padding-right: 8.5rem">{{ $formatNumberToLocale(item.response.totalPriceOutput) }}</span>
+                    </b-row>
+                  </b-col>
                 </b-row>
               </th>
             </tr>
@@ -126,6 +131,7 @@
               <th
                 colspan="2"
                 class="text-center"
+                style="width: 5%"
               >
                 Đầu ra
               </th>
@@ -165,13 +171,21 @@
               v-for="(product,stt) in reportData[index].info"
               :key="product.id"
             >
-              <td class="text-right pr-1">
+              <td
+                class="text-right pr-40"
+              >
                 {{ stt + 1 }}
               </td>
-              <td> {{ product.productCode }} </td>
-              <td> {{ product.productName }} </td>
-              <td> {{ product.unit }} </td>
-              <td class="text-right">
+              <td>
+                {{ product.productCode }}
+              </td>
+              <td>
+                {{ product.productName }}
+              </td>
+              <td>
+                {{ product.unit }}
+              </td>
+              <td>
                 {{ $formatNumberToLocale(product.quantity) }}
               </td>
               <td class="text-right">
@@ -309,10 +323,15 @@ table {
 }
 th {
   border-style: solid;
-  border-width: 2px;
+  border-width: 1.75px;
 }
 td {
   border-style: dotted;
-  border-width: 2px;
+  border-width: 1.75px;
+  word-wrap: break-word;
+}
+table {
+  table-layout: auto;
+  width: 100%;
 }
 </style>

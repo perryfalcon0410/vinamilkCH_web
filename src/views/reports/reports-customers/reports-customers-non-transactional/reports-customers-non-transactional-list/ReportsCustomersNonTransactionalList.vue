@@ -163,6 +163,7 @@ import {
   // Actions
   GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
   EXPORT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
+  PRINT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -276,6 +277,7 @@ export default {
     ...mapActions(REPORT_CUSTOMERS_NON_TRANSACTIONAL, [
       EXPORT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
       GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
+      PRINT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
     ]),
     // Start - pagination
     onPaginationChange() {
@@ -305,7 +307,17 @@ export default {
       this.EXPORT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION({ ...this.decentralization, ...this.searchData })
     },
     onClickPrintButton() {
-      window.print()
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION({
+        fromDate: this.searchData.fromDate,
+        toDate: this.searchData.toDate,
+        formId: this.searchData.formId,
+        ctrlId: this.searchData.ctrlId,
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
     },
   },
 }

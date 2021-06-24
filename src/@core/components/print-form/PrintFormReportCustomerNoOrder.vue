@@ -10,19 +10,19 @@
       align-v="center"
     >
       <div class="d-flex flex-column">
-        <strong style="font-size: 17px"> CH GTSP Hải Dương </strong>
+        <strong style="font-size: 17px"> {{ commonInfo.shopName }} </strong>
         <p class="mt-1">
-          Add: 8 Hoàng Hoa Thám - Hải Dương
+          Add: {{ commonInfo.address }}
         </p>
-        <p>Tel: (84.320) 3 838 399</p>
+        <p>Tel: {{ commonInfo.shopTel }}</p>
       </div>
 
       <div class="d-flex flex-column align-items-center">
         <strong style="font-size: 30px">Báo cáo KH không có giao dịch</strong>
         <p class="my-1">
-          Từ ngày 01/02/2021 đến 23/04/2021
+          Từ ngày {{ $formatISOtoVNI(commonInfo.fromDate) }} đến {{ $formatISOtoVNI(commonInfo.toDate) }}
         </p>
-        <p>Ngày in : 23/04/2021 - 11:33:28AM</p>
+        <p>Ngày in : {{ $formatISOtoVNI(commonInfo.printDate, true) }}</p>
       </div>
 
       <!-- START - Invisible element to align title -->
@@ -30,7 +30,7 @@
         class="d-flex flex-column"
         style="opacity: 0"
       >
-        <strong style="font-size: 17px"> CH GTSP Hải Dương </strong>
+        <strong style="font-size: 17px"> {{ commonInfo.shopName }} </strong>
       </div>
       <!-- END - Invisible element to align title -->
     </b-row>
@@ -45,6 +45,7 @@
           <tr>
             <th
               class="text-center"
+              style="width: 5%"
             >
               STT
             </th>
@@ -70,11 +71,22 @@
 
         <!-- START - Body -->
         <tbody>
-          <tr>
-            <td>1</td>
-            <td> CUS.MT10081.00003</td>
-            <td>Trinh Quang Dong</td>
-            <td>324,X.Đức Long,H.Quế Võ,Bắc Ninh,Việt Nam</td>
+          <tr
+            v-for="(customer,index) in reportData"
+            :key="index"
+          >
+            <td class="text-right pr-50">
+              {{ index + 1 }}
+            </td>
+            <td class="pl-40">
+              {{ customer.customerCode }}
+            </td>
+            <td class="pl-40">
+              {{ customer.customerName }}
+            </td>
+            <td class="pl-40">
+              {{ customer.address }}
+            </td>
           </tr>
         </tbody>
         <!-- END - Body -->
@@ -86,9 +98,33 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import {
+  REPORT_CUSTOMERS_NON_TRANSACTIONAL,
+  PRINT_REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER,
+} from '@/views/reports/reports-customers/reports-customers-non-transactional/store-module/type'
+
 export default {
   data() {
     return {}
+  },
+  computed: {
+    ...mapGetters(REPORT_CUSTOMERS_NON_TRANSACTIONAL, [PRINT_REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER]),
+    commonInfo() {
+      if (this.PRINT_REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER) {
+        return this.PRINT_REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER
+      }
+      return {}
+    },
+    reportData() {
+      if (this.PRINT_REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER.data) {
+        return this.PRINT_REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER.data
+      }
+      return []
+    },
+  },
+  updated() {
+    window.print()
   },
 }
 </script>
@@ -103,5 +139,10 @@ th {
 td {
   border-style: dotted;
   border-width: 2px;
+  word-wrap:break-word;
+}
+table {
+  width:100%;
+  table-layout:fixed;
 }
 </style>

@@ -1,5 +1,3 @@
-import moment from 'moment'
-
 export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)
 
 export const title = (value, replacer = ' ') => {
@@ -204,10 +202,4 @@ export const countDays = isoDate => {
   else ageString = ''
 
   return ageString
-}
-
-// format print date
-export const formatPrintDate = date => {
-  const formattedDate = moment(date).locale('en').format('DD/MM/YYYY - HH:mm:ss A')
-  return formattedDate
 }

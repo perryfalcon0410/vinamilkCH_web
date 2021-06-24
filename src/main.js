@@ -19,7 +19,6 @@ import {
   formatNumberToLocale,
   formatISOtoVNI,
   formatVniDateToISO,
-  formatPrintDate,
 } from '@/@core/utils/filter'
 import { permission } from '@/libs/acl/ability'
 
@@ -90,7 +89,6 @@ Vue.prototype.$getWarehousesStatuslabel = getWarehousesStatuslabel
 Vue.prototype.$formatNumberToLocale = formatNumberToLocale
 Vue.prototype.$formatISOtoVNI = formatISOtoVNI
 Vue.prototype.$formatVniDateToISO = formatVniDateToISO
-Vue.prototype.$formatPrintDate = formatPrintDate
 
 // get earlyMonth and now date
 Vue.prototype.$earlyMonth = formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
