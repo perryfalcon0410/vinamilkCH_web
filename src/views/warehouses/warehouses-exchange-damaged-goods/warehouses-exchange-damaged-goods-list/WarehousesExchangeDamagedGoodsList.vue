@@ -10,7 +10,7 @@
     <!-- END - Search -->
 
     <!-- START - Product Import list -->
-    <div class="bg-white rounded shadow my-1">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Title -->
       <b-row
         class="justify-content-between border-bottom px-1 mx-0"
@@ -23,18 +23,19 @@
         >
           Danh sách phiếu đổi hàng hỏng
         </strong>
-
-        <b-button
-          class="btn-brand-1 align-items-button-center"
-          variant="someThing"
-          @click="onClickAddNewButton"
-        >
-          <b-icon-plus
-            scale="2"
-            class="mr-50 h8"
-          />
-          Thêm mới
-        </b-button>
+        <b-button-group>
+          <b-button
+            class="btn-brand-1 align-items-button-center h8"
+            variant="someThing"
+            @click="onClickAddNewButton"
+          >
+            <b-icon-plus
+              scale="2"
+              class="mr-50"
+            />
+            Thêm mới
+          </b-button>
+        </b-button-group>
       </b-row>
       <!-- END - Title -->
 
@@ -46,7 +47,7 @@
           mode="remote"
           :columns="columns"
           :rows="exchangeDamagedGoods"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: searchData.size,
@@ -55,11 +56,6 @@
           compact-mode
           line-numbers
           :total-rows="exchangeDamagedGoodsPagination.totalElements"
-          :sort-options="{
-            enabled: false,
-            multipleColumns: true,
-            initialSortBy: [{field: 'transCode', type: 'desc'}]
-          }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
@@ -102,17 +98,18 @@
             <b-row
               v-if="props.column.field === 'feature' && isDisabledFeature"
               class="mx-0"
-              align-h="around"
             >
               <b-icon-pencil-fill
                 v-b-popover.hover.top="'Chỉnh sửa'"
-                class="cursor-pointer"
+                class="cursor-pointer text-brand-3"
+                scale="1.2"
                 @click="onClickUpdateButton(props.row.id)"
               />
 
               <b-icon-trash-fill
+                v-show="$formatISOtoVNI(props.row.date) === $nowDate"
                 v-b-popover.hover.top="'Xóa'"
-                class="cursor-pointer"
+                class="cursor-pointer ml-1"
                 color="red"
                 scale="1.2"
                 @click="onClickDeleteButton(props.row.id, props.row.originalIndex)"
@@ -248,7 +245,6 @@ import {
   code,
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { formatISOtoVNI } from '@/@core/utils/filter'
 // import toasts from '@core/utils/toasts/toasts'
 
 import WarehousesExchangeDamagedGoodsListSearch from './components/WarehousesExchangeDamagedGoodsListSearch.vue'
@@ -306,6 +302,7 @@ export default {
           field: 'date',
           thClass: 'text-left',
           tdClass: 'text-left',
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Số biên bản',
@@ -360,7 +357,7 @@ export default {
       if (this.EXCHANGE_DAMAGED_GOODS_GETTER.response) {
         return this.EXCHANGE_DAMAGED_GOODS_GETTER.response.content.map(data => ({
           id: data.id,
-          date: data.transDate === '' ? '' : formatISOtoVNI(data.transDate),
+          date: data.transDate === '' ? '' : data.transDate,
           transCode: data.transCode,
           quantity: data.quantity,
           exchangeDamagedGoodsQuantity: data.quantity,

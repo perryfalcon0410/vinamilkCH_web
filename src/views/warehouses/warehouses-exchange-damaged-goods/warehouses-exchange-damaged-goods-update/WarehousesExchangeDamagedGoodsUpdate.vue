@@ -631,7 +631,7 @@ export default {
           price: data.price,
           type: 1,
           quantity: data.quantity,
-          totalPrice: data.quantity,
+          totalPrice: data.totalPrice,
         }))
         // END - Exchange Damaged Goods
       }
@@ -718,20 +718,20 @@ export default {
           productCode: product.item.productCode,
           productName: product.item.productName,
           productDVT: product.item.productDVT,
-          productPrice: product.item.productPrice,
-          productQuantity: 1,
-          productPriceTotal: null,
+          price: product.item.price,
+          quantity: 1,
+          totalPrice: null,
           type: 0,
         }
         if (existedProductIndex === -1) {
-          obj.productPriceTotal = obj.productPrice * obj.productQuantity
+          obj.totalPrice = obj.price * obj.quantity
           this.damagedProduct.push(obj)
           this.listDamagedProducts.push(obj)
         } else {
-          this.damagedProduct[existedProductIndex].productQuantity = Number(this.damagedProduct[existedProductIndex].productQuantity) + obj.productQuantity
-          this.damagedProduct[existedProductIndex].productPriceTotal = Number(obj.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
+          this.damagedProduct[existedProductIndex].quantity = Number(this.damagedProduct[existedProductIndex].quantity) + obj.quantity
+          this.damagedProduct[existedProductIndex].totalPrice = Number(obj.price) * this.damagedProduct[existedProductIndex].quantity
           if (existedProduct !== -1) {
-            this.listDamagedProducts[existedProduct].productQuantity = Number(this.listDamagedProducts[existedProduct].productQuantity) + obj.productQuantity
+            this.listDamagedProducts[existedProduct].quantity = Number(this.listDamagedProducts[existedProduct].quantity) + obj.quantity
           }
         }
         this.productInfos.productName = null
@@ -755,6 +755,8 @@ export default {
     onClickDeleteButton(index) {
       this.listDamagedProducts.forEach((item, i) => {
         if (this.damagedProduct[index].productCode === item.productCode) {
+          this.listDamagedProducts[i].productId = null
+          this.listDamagedProducts[i].quantity = null
           this.listDamagedProducts[i].type = 2
         }
       })
@@ -791,6 +793,9 @@ export default {
 
     navigateBack() {
       this.$router.replace({ name: 'warehouses-exchange-damaged-goods' })
+      // console.log(this.listDamagedProducts)
+      // console.log(this.exchangeDamagedGoodsId)
+      // console.log(this.exchangeGoodsInfo.customerId)
     },
   },
 }

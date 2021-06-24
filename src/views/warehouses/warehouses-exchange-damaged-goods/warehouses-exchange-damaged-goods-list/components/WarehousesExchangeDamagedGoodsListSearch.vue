@@ -28,7 +28,6 @@
               :state="transCode ? passed : null"
               maxlength="20"
               placeholder="Nhập số biên bản"
-              class="h7"
               @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append
@@ -85,7 +84,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class=" mt-sm-1 mt-xl-0 h7"
@@ -119,10 +118,10 @@
         xxl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
-          class=" mt-sm-1 mt-xl-0 h7"
+          class=" mt-sm-1 mt-xl-0"
         >
           Lý do
         </div>
@@ -140,7 +139,7 @@
         xl
         lg="3"
         sm="4"
-        class="h8"
+        class="h7"
       >
         <div
           class=" text-white"
