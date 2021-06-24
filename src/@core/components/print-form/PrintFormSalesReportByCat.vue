@@ -10,46 +10,32 @@
       align-v="center"
     >
       <div class="d-flex flex-column">
-        <strong style="font-size: 17px"> CH GTSP Hải Dương </strong>
+        <strong style="font-size: 17px"> {{ printInfo.shopName }} </strong>
         <p class="mt-1">
-          Add: 8 Hoàng Hoa Thám - Hải Dương
+          Add: {{ printInfo.shopAddress }}
         </p>
-        <p>Tel: (84.320) 3 838 399</p>
+        <p>Tel: {{ printInfo.shopTel }}</p>
       </div>
 
       <div class="d-flex flex-column align-items-center">
         <strong style="font-size: 30px"> Báo cáo doanh số theo CAT </strong>
         <p class="my-1">
-          Từ ngày 01/02/2021 đến 23/04/2021
+          Từ ngày: {{ printInfo.fromDate }} đến ngày: {{ printInfo.toDate }}
         </p>
-        <p>Ngày in : 23/04/2021 - 11:33:28AM</p>
+        <p>Ngày in: {{ printInfo.printDate }}</p>
       </div>
-
       <!-- START - Invisible element to align title -->
       <div
         class="d-flex flex-column"
         style="opacity: 0"
       >
-        <strong style="font-size: 17px"> CH GTSP Hải Dương </strong>
+        <strong style="font-size: 17px;">
+          CH GTSP Hải Dương
+        </strong>
       </div>
       <!-- END - Invisible element to align title -->
     </b-row>
     <!-- END - Header -->
-
-    <!-- START - Total section -->
-    <b-row
-      class="mx-0"
-      align-h="around"
-      align-v="end"
-      style="background-color: gray"
-    >
-      <div>Tổng cộng: <strong><ins>29</ins></strong>
-      </div>
-      <strong><ins>504,161</ins></strong>
-      <strong><ins>31,000</ins></strong>
-      <strong><ins>31,000</ins></strong>
-    </b-row>
-    <!-- END - Total section -->
 
     <!-- START - Table 1 -->
     <b-col class="px-0">
@@ -57,66 +43,30 @@
         <!-- START - Header -->
         <thead>
           <!-- START - Header 2 -->
+          <tr
+            style="background-color: gray"
+          >
+            <th
+              class="text-right font-italic border-0"
+              colspan="4"
+            >
+              Tổng cộng:
+            </th>
+            <th
+              v-for="(item) in totalDetails"
+              :key="item"
+              class="text-right font-italic border-0"
+            >
+              <u>{{ $formatNumberToLocale(item) }}</u>
+            </th>
+          </tr>
           <tr>
             <th
+              v-for="(item) in columnList"
+              :key="item[0]"
               class="text-center"
             >
-              STT
-            </th>
-            <th
-              class="text-center"
-            >
-              Mã KH
-            </th>
-            <th
-              class="text-center"
-            >
-              Tên KH
-            </th>
-            <th
-              class="text-center"
-            >
-              Địa chỉ
-            </th>
-            <th
-              class="text-center"
-            >
-              Tần suất
-            </th>
-            <th
-              class="text-center"
-            >
-              A
-            </th>
-            <th
-              class="text-center"
-            >
-              B
-            </th>
-            <th
-              class="text-center"
-            >
-              C
-            </th>
-            <th
-              class="text-center"
-            >
-              D
-            </th>
-            <th
-              class="text-center"
-            >
-              E
-            </th>
-            <th
-              class="text-center"
-            >
-              G
-            </th>
-            <th
-              class="text-center"
-            >
-              Tổng cộng
+              {{ item }}
             </th>
           </tr>
           <!-- END - Header 2 -->
@@ -126,33 +76,26 @@
 
         <!-- START - Body -->
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>02BC10</td>
-            <td>SBot Dielac Canxi HG 400g</td>
-            <td>Hộp</td>
-            <td>10</td>
-            <td />
-            <td />
-            <td />
-            <td />
-            <td>43,200</td>
-            <td />
-            <td />
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>02BC10</td>
-            <td>SBot Dielac Canxi HG 400g</td>
-            <td>Hộp</td>
-            <td>10</td>
-            <td />
-            <td />
-            <td />
-            <td />
-            <td>43,200</td>
-            <td />
-            <td />
+          <tr
+            v-for="(rowData, index) in reportData"
+            :key="rowData[index][0]"
+          >
+            <td class="px-1">
+              {{ index + 1 }}
+            </td>
+            <td
+              v-for="(data, idx) in rowData"
+              :key="index + ' ' + idx"
+              :class="{'text-right': (idx > 3)}"
+              class="px-1"
+            >
+              <div v-if="idx <= 3">
+                {{ data }}
+              </div>
+              <div v-else>
+                {{ $formatNumberToLocale(data) }}
+              </div>
+            </td>
           </tr>
         </tbody>
         <!-- END - Body -->
@@ -164,66 +107,58 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import {
+  REPORT_SALES_CAT,
+  // Getters
+  PRINT_REPORT_GETTER,
+} from '@/views/reports/reports-sales/reports-sales-cat/store-module/type'
+
 export default {
   data() {
     return {
-      columns: [
-        {
-          label: 'Mã khách hàng',
-          field: 'customerCode',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Họ tên',
-          field: 'nameText',
-          width: '140px',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Điện thoại',
-          field: 'mobiPhone',
-          type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Ngày sinh',
-          field: 'dob',
-          type: 'date',
-          dateInputFormat: 'dd/MM/yyyy',
-          dateOutputFormat: 'dd/MM/yyyy',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Giới tính',
-          field: 'genderId',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Trạng thái',
-          field: 'status',
-          type: 'boolean',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Nhóm',
-          field: 'customerTypeId',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Ngày tạo',
-          field: 'createdAt',
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-      ],
+      titles: ['STT', 'Mã KH', 'Tên KH', 'Địa chỉ', 'Tần suất'],
     }
+  },
+  computed: {
+    ...mapGetters(REPORT_SALES_CAT, [
+      PRINT_REPORT_GETTER,
+    ]),
+
+    printInfo() {
+      return {
+        shopName: this.PRINT_REPORT_GETTER.shopName,
+        shopAddress: this.PRINT_REPORT_GETTER.shopAddress,
+        shopTel: this.PRINT_REPORT_GETTER.shopTel,
+        fromDate: this.PRINT_REPORT_GETTER.fromDate,
+        toDate: this.PRINT_REPORT_GETTER.toDate,
+        printDate: this.PRINT_REPORT_GETTER.printDate,
+      }
+    },
+
+    columnList() {
+      const titles = this.titles.concat(this.PRINT_REPORT_GETTER.category)
+      titles[titles.length - 1] = 'Tổng cộng'
+      return titles
+    },
+
+    // get data print
+    reportData() {
+      if (this.PRINT_REPORT_GETTER.reportData) {
+        return this.PRINT_REPORT_GETTER.reportData
+      }
+      return []
+    },
+    // get total info price
+    totalDetails() {
+      if (this.PRINT_REPORT_GETTER.total) {
+        return (this.PRINT_REPORT_GETTER.total || []).slice(3)
+      }
+      return {}
+    },
+  },
+  updated() {
+    window.print()
   },
 }
 </script>
@@ -239,4 +174,11 @@ td {
   border-style: dotted;
   border-width: 2px;
 }
+</style>
+<style type="text/css" media="print">
+    @page {
+        margin-top: 0;
+        margin-bottom: 0;
+        size: landscape;
+    }
 </style>

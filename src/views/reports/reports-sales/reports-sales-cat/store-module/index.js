@@ -6,11 +6,13 @@ import {
   // GETTERS
   REPORT_SALES_CAT_GETTER,
   CUSTOMER_TYPES_GETTER,
+  PRINT_REPORT_GETTER,
 
   // ACTIONS
   GET_REPORT_SALES_CAT_ACTION,
   EXPORT_REPORT_SALES_CAT_ACTION,
   GET_CUSTOMER_TYPES_ACTION,
+  PRINT_REPORT_ACTION,
 } from './type'
 
 export default {
@@ -20,6 +22,7 @@ export default {
     reportCustomerData: {},
     customerTypes: [],
     shopLocationsSearch: [],
+    printReportData: [],
   },
   // Getters
   getters: {
@@ -28,6 +31,9 @@ export default {
     },
     [CUSTOMER_TYPES_GETTER](state) {
       return state.customerTypes
+    },
+    [PRINT_REPORT_GETTER](state) { // temp
+      return state.printReportData
     },
   },
   // Actions
@@ -67,6 +73,21 @@ export default {
         .then(res => {
           if (res.success) {
             state.customerTypes = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [PRINT_REPORT_ACTION]({ state }, val) {
+      ReportsService
+        .printReport(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printReportData = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }

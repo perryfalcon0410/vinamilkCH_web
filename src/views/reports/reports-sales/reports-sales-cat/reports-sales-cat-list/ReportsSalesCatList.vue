@@ -5,6 +5,7 @@
   >
     <!-- START - Search -->
     <reports-sales-cat-list-search
+      class="d-print-none"
       :per-page-size="paginationData.size"
       @updateSearchData="updateSearchData"
       @onClickSearchButton="onClickSearchButton($event)"
@@ -22,14 +23,24 @@
         <strong class="text-brand-1">
           Doanh số CAT
         </strong>
-        <b-button
-          class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
-          variant="someThing"
-          @click="onClickExcelExportButton"
-        >
-          <b-icon-file-earmark-x-fill class="mr-50" />
-          Xuất excel
-        </b-button>
+        <b-button-group>
+          <b-button
+            class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
+            variant="someThing"
+            @click="printReport"
+          >
+            <b-icon-printer-fill />
+            In
+          </b-button>
+          <b-button
+            class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
+            variant="someThing"
+            @click="onClickExcelExportButton"
+          >
+            <b-icon-file-earmark-x-fill class="mr-50" />
+            Xuất excel
+          </b-button>
+        </b-button-group>
       </b-row>
       <!-- END - Header -->
 
@@ -145,6 +156,10 @@
       </b-col>
     </div>
     <!-- END - sale receipt list -->
+
+    <!-- STAT - Print form -->
+    <print-form-sales-report-by-cat />
+    <!-- END - Print form -->
   </b-container>
 </template>
 
@@ -157,6 +172,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import PrintFormSalesReportByCat from '@core/components/print-form/PrintFormSalesReportByCat.vue'
 import ReportsSalesCatListSearch from './components/ReportsSalesCatListSearch.vue'
 import {
   REPORT_SALES_CAT,
@@ -165,11 +181,13 @@ import {
   // Actions
   GET_REPORT_SALES_CAT_ACTION,
   EXPORT_REPORT_SALES_CAT_ACTION,
+  PRINT_REPORT_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
     ReportsSalesCatListSearch,
+    PrintFormSalesReportByCat,
   },
   data() {
     return {
@@ -305,11 +323,25 @@ export default {
     ...mapActions(REPORT_SALES_CAT, [
       GET_REPORT_SALES_CAT_ACTION,
       EXPORT_REPORT_SALES_CAT_ACTION,
+      PRINT_REPORT_ACTION,
     ]),
     onClickExcelExportButton() {
       this.EXPORT_REPORT_SALES_CAT_ACTION({
         ...this.searchData,
         ...this.decentralization,
+      })
+    },
+
+    // printReport
+    printReport() {
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_REPORT_ACTION({
+        ...this.searchOptions,
+        ...this.decentralization,
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
       })
     },
     // pagination funcs

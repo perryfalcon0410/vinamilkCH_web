@@ -5,6 +5,7 @@ import {
   getReportsSalesCatEndpoint,
   exportReportsSalesCatEndpoint,
   getCustomerTypesEndpoint,
+  printReportEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -22,6 +23,11 @@ export default {
   },
   getCustomerTypes(args) {
     return axios.get(getCustomerTypesEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  printReport(args) {
+    return axios.get(printReportEndpoint, {
       params: formatURLParams(args),
     })
   },
