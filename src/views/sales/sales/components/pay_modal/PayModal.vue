@@ -6,6 +6,7 @@
     size="xl"
     title="Thanh toán hóa đơn"
     title-class="font-weight-bolder text-brand-1"
+    class="d-print-none"
     content-class="bg-white"
     footer-border-variant="white"
     hide-header-close
@@ -375,31 +376,19 @@
                 </b-col>
 
                 <b-col>
-                  <b-row
-                    no-gutters
-                  >
-                    <b-col>
-                      <b-form-input
-                        v-model="pay.accumulate.accumulatePoint"
-                        disabled
-                      />
-                    </b-col>
-
-                    <b-col>
-                      <b-input-group
-                        class="input-group-merge"
-                      >
-                        <cleave
-                          v-model="pay.accumulate.accumulateAmount"
-                          class="form-control"
-                          :raw="true"
-                          :options="options.number"
-                          @change.native="onChangeAccumulateAmount()"
-                        />
-                      </b-input-group>
-                    </b-col>
-
-                  </b-row>
+                  <b-input-group class="input-group-merge">
+                    <b-form-input
+                      v-model="pay.accumulate.accumulatePoint"
+                      disabled
+                    />
+                    <cleave
+                      v-model="pay.accumulate.accumulateAmount"
+                      class="form-control"
+                      :raw="true"
+                      :options="options.number"
+                      @change.native="onChangeAccumulateAmount()"
+                    />
+                  </b-input-group>
                 </b-col>
               </b-row>
             </b-form-group>
@@ -469,43 +458,32 @@
                   <strong>Mã giảm giá</strong>
                 </b-col>
 
-                <b-col class="">
-                  <b-row
-                    no-gutters
+                <b-col>
+                  <b-input-group
+                    class="input-group-merge"
                   >
-
-                    <b-col>
-                      <b-input-group
-                        class="input-group-merge"
-                      >
-                        <b-form-input
-                          v-model="pay.discount.discountCode"
-                          class="form-control-merge"
-                          @keyup.enter="searchDiscount"
-                        />
-                        <b-input-group-append
-                          is-text
-                        >
-                          <b-icon-x
-                            scale="1.5"
-                            class="cursor-pointer"
-                            @click="resetDiscount"
-                          />
-                        </b-input-group-append>
-                      </b-input-group>
-                    </b-col>
-
-                    <b-col>
-                      <cleave
-                        v-model="pay.discount.discountAmount"
-                        class="form-control"
-                        :raw="true"
-                        :options="options.number"
-                        disabled
+                    <b-form-input
+                      v-model="pay.discount.discountCode"
+                      class="form-control-merge"
+                      @keyup.enter="searchDiscount"
+                    />
+                    <b-input-group-append
+                      is-text
+                    >
+                      <b-icon-x
+                        scale="1.0"
+                        class="cursor-pointer"
+                        @click="resetDiscount"
                       />
-                    </b-col>
-
-                  </b-row>
+                    </b-input-group-append>
+                    <cleave
+                      v-model="pay.discount.discountAmount"
+                      class="form-control"
+                      :raw="true"
+                      :options="options.number"
+                      disabled
+                    />
+                  </b-input-group>
                 </b-col>
               </b-row>
             </b-form-group>
@@ -613,7 +591,7 @@
     <!-- END - Body -->
 
     <!-- START - Footer -->
-    <template #modal-footer="{ ok }">
+    <template #modal-footer="{}">
       <b-row
         class="mx-auto"
       >
@@ -621,7 +599,7 @@
           variant="none"
           class="d-flex align-items-center ml-1 text-uppercase btn-brand-1"
           :disabled="isDisabledPrintTempBtn"
-          @click="ok()"
+          @click="printSaleOrderTemp()"
         >
           <b-icon-printer
             class="mr-1"
@@ -657,7 +635,7 @@
           variant="none"
           class="d-flex align-items-center mx-1 text-uppercase btn-brand-1"
           :disabled="isDisabledRePrintBtn"
-          @click="ok()"
+          @click="rePrintSaleOrder()"
         >
           <b-icon-printer
             class="mr-1"
@@ -687,7 +665,7 @@
     />
 
     <!-- START - Print form -->
-    <print-form-sales-receipt />
+    <print-form-sales-receipt :sale-order-print-info="saleOrderPrintInfo" />
     <!-- END - Print form -->
   </b-modal>
   <!-- End Popup -->
@@ -721,6 +699,7 @@ import {
   GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
   CREATE_SALE_ORDER_GETTER,
   GET_SALE_PAYMENT_TYPES_GETTER,
+  PRINT_SALES_TEMP_GETTER,
 
   // ACTIONS
   CREATE_SALE_ORDER_ACTION,
@@ -731,6 +710,7 @@ import {
   GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
   PRINT_SALES_ACTION,
   GET_SALE_PAYMENT_TYPES_ACTION,
+  PRINT_SALES_TEMP_ACTION,
 } from '../../store-module/type'
 
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
@@ -859,6 +839,9 @@ export default {
 
       // Check paid
       isPaid: false,
+
+      saleOrderPrintInfo: {},
+      isPrint: false,
     }
   },
   computed: {
@@ -871,6 +854,7 @@ export default {
       GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
       CREATE_SALE_ORDER_GETTER,
       GET_SALE_PAYMENT_TYPES_GETTER,
+      PRINT_SALES_TEMP_GETTER,
     ]),
 
     getDiscount() {
@@ -906,6 +890,9 @@ export default {
     },
     getSalePaymentTypes() {
       return this.GET_SALE_PAYMENT_TYPES_GETTER
+    },
+    getPrintSaleTempData() {
+      return this.PRINT_SALES_TEMP_GETTER
     },
   },
   watch: {
@@ -1015,16 +1002,17 @@ export default {
     },
     getCreateSale() {
       this.pay.saleOrderId = this.getCreateSale.orderId
-      this.PRINT_SALES_RECEIPT_ACTION({
-        data: {
-          salesReceiptId: this.pay.saleOrderId,
-          formId: this.formId,
-          ctrlId: this.ctrlId,
-        },
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
-      })
+      if (this.isPrint) {
+        this.PRINT_SALES_RECEIPT_ACTION({
+          data: {
+            salesReceiptId: this.pay.saleOrderId,
+            formId: this.formId,
+            ctrlId: this.ctrlId,
+          },
+          onSuccess: () => {
+          },
+        })
+      }
     },
     orderProducts: {
       handler() {
@@ -1058,6 +1046,9 @@ export default {
       }))]
       this.pay.salePayment.salePaymentType = this.salePaymentTypeOptions[0].id
     },
+    getPrintSaleTempData() {
+      this.saleOrderPrintInfo = { ...this.getPrintSaleTempData }
+    },
   },
 
   mounted() {
@@ -1068,6 +1059,11 @@ export default {
     this.isDisabledPaymentBtn = true
     this.isDisabledPrintAndPaymentBtn = true
     this.isDisabledRePrintBtn = true
+    window.addEventListener('keydown', e => {
+      if (e.key === 'F7') {
+        this.printSaleOrderTemp()
+      }
+    })
   },
   methods: {
     ...mapActions(SALES, [
@@ -1079,6 +1075,7 @@ export default {
       GET_ITEMS_PRODUCTS_PROGRAM_ACTION,
       PRINT_SALES_ACTION,
       GET_SALE_PAYMENT_TYPES_ACTION,
+      PRINT_SALES_TEMP_ACTION,
     ]),
     ...mapActions(SALESRECEIPTS, [
       PRINT_SALES_RECEIPT_ACTION,
@@ -1310,11 +1307,17 @@ export default {
           if (e.key === 'F9') {
             this.createSaleOrder()
           }
+          if (e.key === 'F8') {
+            this.createSaleOrderAndPrint()
+          }
         })
       } else {
         window.removeEventListener('keydown', e => {
           if (e.key === 'F9') {
             this.createSaleOrder()
+          }
+          if (e.key === 'F8') {
+            this.createSaleOrderAndPrint()
           }
         })
       }
@@ -1338,6 +1341,7 @@ export default {
       })
 
       if (isValid) {
+        this.isPrint = false
         this.CREATE_SALE_ORDER_ACTION({
           orderSale: {
             customerId: this.customer.id,
@@ -1366,14 +1370,29 @@ export default {
             this.isDisabledPrintTempBtn = true
             this.isDisabledPaymentBtn = true
             this.isPaid = true
+            window.removeEventListener('keydown', e => {
+              if (e.key === 'F7') {
+                this.printSaleOrderTemp()
+              }
+              if (e.key === 'F9') {
+                this.createSaleOrder()
+              }
+              if (e.key === 'F8') {
+                this.createSaleOrderAndPrint()
+              }
+            })
+            window.addEventListener('keydown', e => {
+              if (e.key === 'F10') {
+                this.rePrintSaleOrder()
+              }
+            })
           },
         })
       }
     },
     createSaleOrderAndPrint() {
       this.createSaleOrder()
-      this.$root.$emit('bv::hide::popover')
-      this.$root.$emit('bv::disable::popover')
+      this.isPrint = true
     },
     cancel() {
       if (this.isPaid) {
@@ -1389,6 +1408,54 @@ export default {
       if (Number(this.pay.accumulate.accumulateAmount) > this.customer.amountCumulated) {
         this.pay.accumulate.accumulateAmount = this.customer.amountCumulated
       }
+    },
+    printSaleOrderTemp() {
+      let isValid = true
+      const parampromotionInfo = this.promotionPrograms.filter(p => p.isUse && p.isSelected)
+      parampromotionInfo.forEach(program => {
+        program.products.forEach(product => {
+          if (program.isEditable) {
+            if (product.quantity > product.stockQuantity) {
+              isValid = false
+              toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
+            }
+          } else if (product.quantityMax > product.stockQuantity) {
+            isValid = false
+            toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
+          }
+        })
+      })
+
+      if (isValid) {
+        this.PRINT_SALES_TEMP_ACTION({
+          orderSale: {
+            customerId: this.customer.id,
+            paymentType: this.pay.salePayment.salePaymentType,
+            deliveryType: Number(this.deliverySelected),
+            orderType: Number(this.orderSelected),
+            note: this.orderOnline.orderNote,
+            orderOnlineId: this.orderOnline.onlineOrderId,
+            onlineNumber: this.orderOnline.orderNumber,
+            products: this.orderProducts,
+            promotionInfo: parampromotionInfo,
+            totalOrderAmount: Number(this.pay.totalAmount) || 0,
+            promotionAmount: Number(this.pay.promotionAmount) || 0,
+            accumulatedAmount: Number(this.pay.accumulate.accumulateAmount) || 0,
+            discountAmount: Number(this.pay.discount.discountAmount) || 0,
+            discountCode: this.pay.discount.discountCode,
+            voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
+            vouchers: this.pay.voucher.vouchers,
+            paymentAmount: Number(this.pay.needPaymentAmount) || 0,
+            remainAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
+            extraAmount: Number(this.pay.extraAmount) || 0,
+          },
+          onSuccess: () => {
+          },
+        })
+      }
+    },
+    rePrintSaleOrder() {
+      window.print()
     },
   },
 }

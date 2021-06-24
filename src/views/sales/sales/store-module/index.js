@@ -513,5 +513,21 @@ export default {
           toasts.error(error.message)
         })
     },
+    [PRINT_SALES_TEMP_ACTION]({ state }, val) {
+      SalesServices
+        .printSalesTemp(val.orderSale)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printSaleTempData = res.data
+            val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
   },
 }

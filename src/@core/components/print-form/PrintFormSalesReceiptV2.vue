@@ -264,10 +264,21 @@ import {
 } from '@/views/sales/sales-receipts/store-module/type'
 
 export default {
+  props: {
+    saleOrderPrintInfo: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  data() {
+    return {
+      printSalesReceiptData: {},
+    }
+  },
   computed: {
     ...mapGetters(SALESRECEIPTS, [PRINT_SALES_RECEIPT_GETTER]),
 
-    printSalesReceiptData() {
+    getPrintSalesReceiptData() {
       if (this.PRINT_SALES_RECEIPT_GETTER) {
         return this.PRINT_SALES_RECEIPT_GETTER
       }
@@ -281,7 +292,17 @@ export default {
       return null
     },
   },
-
+  watch: {
+    getPrintSalesReceiptData() {
+      this.printSalesReceiptData = { ...this.getPrintSalesReceiptData }
+    },
+    saleOrderPrintInfo: {
+      handler() {
+        this.printSalesReceiptData = this.saleOrderPrintInfo
+      },
+      deep: true,
+    },
+  },
   updated() {
     window.print()
   },
