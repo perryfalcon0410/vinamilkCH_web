@@ -14,4 +14,10 @@ export default {
     { id: '1', label: 'Offline' },
     { id: '2', label: 'Online' },
   ],
+
+  outputTypes: [
+    { id: '2', label: 'Xuất trả PO' },
+    { id: '1', label: 'Xuất điều chỉnh' },
+    { id: '3', label: 'Xuất vay mượn' },
+  ],
 }

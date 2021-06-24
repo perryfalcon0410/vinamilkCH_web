@@ -4,7 +4,11 @@
     class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
-    <reports-warehouses-output-list-search />
+    <reports-warehouses-output-list-search
+      class="d-print-none"
+      @updateSearchData="updateSearchData"
+      @onClickSearchButton="onClickSearchButton"
+    />
     <!-- END - Search -->
 
     <!-- START - Report Output list -->
@@ -22,6 +26,7 @@
             class="rounded bg-brand-1 text-white h8"
             variant="someThing"
             size="sm"
+            :disabled="getOutputGoods.length === 0"
             @click="onClickPrintExportButton"
           >
             <b-icon-printer-fill />
@@ -31,6 +36,7 @@
             class="ml-1 rounded bg-brand-1 text-white h8"
             variant="someThing"
             size="sm"
+            :disabled="getOutputGoods.length === 0"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill />
@@ -44,15 +50,33 @@
       <b-col class="py-1">
         <vue-good-table
           :columns="columns"
+          mode="remote"
           :rows="getOutputGoods"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize
+            perPage: elementSize,
+            setCurrentPage: pageNumber,
           }"
           compact-mode
           line-numbers
+          :total-rows="warehousesExportpagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+          }"
+          @on-sort-change="onSortChange"
+          @on-page-change="onPageChange"
+          @on-per-page-change="onPerPageChange"
         >
+          <!-- START - Empty rows -->
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
+          <!-- END - Empty rows -->
           <!-- START - Columns -->
           <template
             slot="table-column"
@@ -128,6 +152,63 @@
           </template>
           <!-- END - Column filter -->
 
+          <!-- START - Pagination -->
+          <template
+            slot="pagination-bottom"
+            slot-scope="props"
+          >
+            <b-row
+              v-show="warehousesExportpagination.totalElements"
+              class="v-pagination px-1 mx-0"
+              align-h="between"
+              align-v="center"
+            >
+              <div
+                class="d-flex align-items-center"
+              >
+                <span
+                  class="text-nowrap"
+                >
+                  Số hàng hiển thị
+                </span>
+                <b-form-select
+                  v-model="paginationData.size"
+                  size="sm"
+                  :options="perPageSizeOptions"
+                  class="mx-1"
+                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                />
+                <span class="text-nowrap">{{ paginationDetailContent }}</span>
+              </div>
+              <b-pagination
+                v-model="pageNumber"
+                :total-rows="warehousesExportpagination.totalElements"
+                :per-page="paginationData.size"
+                first-number
+                last-number
+                align="right"
+                prev-class="prev-item"
+                next-class="next-item"
+                class="mt-1"
+                @input="(value)=>props.pageChanged({currentPage: value})"
+              >
+                <template slot="prev-text">
+                  <feather-icon
+                    icon="ChevronLeftIcon"
+                    size="18"
+                  />
+                </template>
+                <template slot="next-text">
+                  <feather-icon
+                    icon="ChevronRightIcon"
+                    size="18"
+                  />
+                </template>
+              </b-pagination>
+            </b-row>
+          </template>
+          <!-- END - Pagination -->
+
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
@@ -137,17 +218,19 @@
 </template>
 
 <script>
+import commonData from '@/@db/common'
 import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatISOtoVNI } from '@/@core/utils/filter'
 import {
   REPORT_OUTPUT_GOODS,
   // Getters
   OUTPUT_GOODS_GETTER,
   // Actions
   GET_OUTPUT_GOODS_ACTION,
+  EXPORT_OUTPUT_GOODS_ACTION,
+  PRINT_OUTPUT_GOODS_ACTION,
 } from '../store-module/type'
 import ReportsWarehousesOutputListSearch from './components/ReportsWarehousesOutputListSearch.vue'
 
@@ -158,6 +241,15 @@ export default {
   data() {
     return {
       isShowDeleteModal: false,
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
+      paginationData: {
+        size: commonData.perPageSizes[0],
+        page: this.pageNumber,
+        sort: null,
+      },
+      searchOptions: {
+      },
       decentralization: {
         formId: 5, // Hard code
         ctrlId: 7, // Hard code
@@ -167,16 +259,16 @@ export default {
           label: 'Ngày xuất',
           field: 'transDate',
           sortable: false,
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Loại xuất',
-          field: 'transType',
+          field: 'exportType',
           sortable: false,
         },
         {
           label: 'Số hóa đơn',
           field: 'billNumber',
-          type: 'number',
           sortable: false,
         },
         {
@@ -192,6 +284,7 @@ export default {
         {
           label: 'Ngày hóa đơn',
           field: 'recieptDate',
+          formatFn: value => this.$formatISOtoVNI(value),
           sortable: false,
         },
         {
@@ -212,6 +305,7 @@ export default {
         {
           label: 'Số lượng',
           field: 'quantity',
+          type: 'number',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -221,6 +315,7 @@ export default {
         {
           label: 'Số lượng packet',
           field: 'packetQuantity',
+          type: 'number',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -230,6 +325,7 @@ export default {
         {
           label: 'Số lượng lẻ',
           field: 'outpacketQuantity',
+          type: 'number',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -237,14 +333,16 @@ export default {
           },
         },
         {
-          label: 'Giá trước thế',
+          label: 'Giá trước thuế',
           field: 'preTaxPrice',
+          type: 'number',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
         {
           label: 'Thành tiền',
           field: 'intoPrice',
+          type: 'number',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -254,12 +352,14 @@ export default {
         {
           label: 'Giá sau thuế',
           field: 'afTaxPrice',
+          type: 'number',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
         {
           label: 'Tổng cộng',
           field: 'finalPrice',
+          type: 'number',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -272,7 +372,7 @@ export default {
           sortable: false,
         },
         {
-          label: 'Mã nhập hàng',
+          label: 'Mã xuất hàng',
           field: 'importId',
           sortable: false,
         },
@@ -296,11 +396,6 @@ export default {
           field: 'note',
           sortable: false,
         },
-        {
-          label: 'Số đơn nhập PO',
-          field: 'poNo',
-          sortable: false,
-        },
       ],
     }
   },
@@ -312,13 +407,14 @@ export default {
       if (this.OUTPUT_GOODS_GETTER.response) {
         return this.OUTPUT_GOODS_GETTER.response.content.map(data => ({
           id: data.id,
-          transDate: formatISOtoVNI(data.exportDate),
-          billNumber: data.tranCode,
+          transDate: data.exportDate,
+          billNumber: data.orderNumber,
+          exportType: data.exportType,
           poNumber: data.poNumber,
           internalNumber: data.internalNumber,
-          recieptDate: formatISOtoVNI(data.orderDate),
-          group: null,
-          productId: data.productId,
+          recieptDate: data.orderDate,
+          group: data.productCategory,
+          productId: data.productCode,
           productName: data.productName,
           quantity: data.quantity,
           packetQuantity: data.packetQuantity,
@@ -328,12 +424,11 @@ export default {
           afTaxPrice: data.amountNotVat,
           finalPrice: data.totalAmount,
           specifications: `${data.packetUnit} ${data.convfact} ${data.unit}`,
-          importId: data.orderNumber,
+          importId: data.tranCode,
           store: data.shopName,
           chainStore: data.shopType,
           productGroup: data.productGroupCategory,
           note: data.noted,
-          poNo: null,
         }))
       }
       return []
@@ -344,28 +439,59 @@ export default {
       }
       return {}
     },
+    warehousesExportpagination() {
+      if (this.OUTPUT_GOODS_GETTER.response) {
+        return this.OUTPUT_GOODS_GETTER.response
+      }
+      return {}
+    },
+    paginationDetailContent() {
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.warehousesExportpagination.totalElements
+        ? this.warehousesExportpagination.totalElements : (this.paginationData.size * this.pageNumber)
+
+      return `${minPageSize} - ${maxPageSize} của ${this.warehousesExportpagination.totalElements} mục`
+    },
   },
   mounted() {
-    this.GET_OUTPUT_GOODS_ACTION({
-      ...this.decentralization,
-    })
+    // this.GET_OUTPUT_GOODS_ACTION({
+    //   ...this.decentralization,
+    // })
   },
   methods: {
     ...mapActions(REPORT_OUTPUT_GOODS, [
       GET_OUTPUT_GOODS_ACTION,
+      EXPORT_OUTPUT_GOODS_ACTION,
+      PRINT_OUTPUT_GOODS_ACTION,
     ]),
-    navigateToCreate() {
-      this.$router.push({ name: 'sales-customers-create' })
+    // start pagination
+    updateSearchData(event) {
+      this.searchOptions = event
+      this.paginationData = {
+        ...this.paginationData,
+        ...event,
+      }
     },
-    navigateToUpdate(id) {
-      this.$router.push({
-        name: 'sales-customers-update',
-        params: {
-          id,
-        },
-      })
+    onPaginationChange() {
+      this.GET_OUTPUT_GOODS_ACTION({ ...this.paginationData, ...this.decentralization })
     },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    onClickSearchButton() {
+      this.pageNumber = 1 // hard code
+    },
+    // End pâgination
     onClickExcelExportButton() {
+      this.EXPORT_OUTPUT_GOODS_ACTION({ ...this.decentralization, ...this.searchOptions })
     },
     onClickPrintExportButton() {
     },
