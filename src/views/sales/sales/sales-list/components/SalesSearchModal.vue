@@ -248,6 +248,7 @@
 
 <script>
 import commonData from '@/@db/common'
+import customerData from '@/@db/customer'
 import {
   mapActions,
   mapGetters,
@@ -390,7 +391,10 @@ export default {
     },
   },
   mounted() {
-    this.GET_CUSTOMERS_ACTION({ formId: 9, ctrlId: 6 }) // HARD
+    const activeCustomer = {
+      status: customerData.status[0].id,
+    }
+    this.GET_CUSTOMERS_ACTION(activeCustomer)
   },
   created() {
   },
@@ -405,8 +409,7 @@ export default {
         searchKeywords: this.searchKeywords.trim(),
         phoneNumber: this.phoneNumber,
         idNo: this.idNo.trim(),
-        formId: 9, // HARD
-        ctrlId: 6, // HARD
+        status: customerData.status[0].id,
       }
 
       this.GET_CUSTOMERS_ACTION(searchData)

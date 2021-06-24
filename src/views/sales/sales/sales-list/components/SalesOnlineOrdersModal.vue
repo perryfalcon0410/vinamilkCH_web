@@ -77,7 +77,7 @@
               @keypress="$onlyDateInput"
             >
               <b-icon-x
-                v-show="toDate"
+                v-show="fromDate"
                 style="position: absolute; right: 15px"
                 class="cursor-pointer text-gray"
                 scale="1.3"
@@ -86,7 +86,7 @@
               <vue-flat-pickr
                 v-model="fromDate"
                 :config="configFromDate"
-                class="form-control h9"
+                class="form-control h7"
                 placeholder="Chọn ngày"
               />
             </b-row>
@@ -120,7 +120,7 @@
               <vue-flat-pickr
                 v-model="toDate"
                 :config="configToDate"
-                class="form-control h9"
+                class="form-control h7"
                 placeholder="Chọn ngày"
               />
             </b-row>
@@ -164,10 +164,15 @@
             :rows="onlineOrders"
             style-class="vgt-table striped"
             :pagination-options="{
-              enabled: true
+              enabled: true,
+              perPage: searchData.size,
+              setCurrentPage: searchData.page + 1,
             }"
+            :total-rows="getOnlineOrderPagination.totalElements"
             compact-mode
             line-numbers
+            @on-page-change="onPageChange"
+            @on-per-page-change="onPerPageChange"
           >
             <!-- START - Empty rows -->
             <div
@@ -225,6 +230,7 @@
               slot-scope="props"
             >
               <b-row
+                v-show="getOnlineOrderPagination.totalElements"
                 class="v-pagination px-1 mx-0"
                 align-h="between"
                 align-v="center"
@@ -235,23 +241,21 @@
                   <span
                     class="text-nowrap"
                   >
-                    Hiển thị 1 đến
+                    Số hàng hiển thị
                   </span>
                   <b-form-select
-                    v-model="elementSize"
+                    v-model="searchData.size"
                     size="sm"
-                    :options="paginationOptions"
+                    :options="perPageSizeOptions"
                     class="mx-1"
                     @input="(value)=>props.perPageChanged({currentPerPage: value})"
                   />
-                  <span
-                    class="text-nowrap"
-                  > trong {{ onlineOrderPagination.totalElements }} mục </span>
+                  <span class="text-nowrap">{{ paginationDetailContent }}</span>
                 </div>
                 <b-pagination
                   v-model="pageNumber"
-                  :total-rows="onlineOrderPagination.totalElements"
-                  :per-page="elementSize"
+                  :total-rows="getOnlineOrderPagination.totalElements"
+                  :per-page="searchData.size"
                   first-number
                   last-number
                   align="right"
@@ -333,6 +337,24 @@ export default {
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
 
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
+      searchData: {
+        size: commonData.perPageSizes[0],
+        page: commonData.pageNumber - 1,
+        sort: null,
+      },
+      searchOptions: {
+        orderNumber: null,
+        synStatus: null,
+        fromDate: null,
+        toDate: null,
+      },
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
+
       configFromDate: {
         wrap: true,
         allowInput: true,
@@ -344,13 +366,9 @@ export default {
         dateFormat: 'd/m/Y',
         minDate: this.fromDate,
       },
-
-      selectedRow: 0,
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
-      paginationOptions: commonData.perPageSizes,
       isDisable: false,
       isClicked: 0,
+
       // search
       synStatusSelected: saleData.synStatus[0].id,
       synStatusOptions: saleData.synStatus,
@@ -390,8 +408,13 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(SALES, [
+      ONLINE_ORDERS_GETTER,
+      ONLINE_ORDERS_PAGINATION_GETTER,
+    ]),
+
     onlineOrders() {
-      return this.ONLINE_ORDERS_GETTER().map(data => ({
+      return this.ONLINE_ORDERS_GETTER.map(data => ({
         id: data.id,
         orderNumber: data.orderNumber,
         createdAt: `${formatISOtoVNI(data.createdAt, data.createdAt)}`,
@@ -403,17 +426,24 @@ export default {
         feature: '',
       }))
     },
-    onlineOrderPagination() {
-      return this.ONLINE_ORDERS_PAGINATION_GETTER()
+    getOnlineOrderPagination() {
+      if (this.ONLINE_ORDERS_GETTER) {
+        return this.ONLINE_ORDERS_GETTER
+      }
+      return {}
+    },
+    paginationDetailContent() {
+      const { page, size } = this.searchData
+      const { totalElements } = this.getOnlineOrderPagination
+
+      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
+      const maxPageSize = (size * (page + 1)) > totalElements
+        ? totalElements : (size * (page + 1))
+
+      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },
   },
   watch: {
-    pageNumber() {
-      this.onPaginationChange()
-    },
-    elementSize() {
-      this.onPaginationChange()
-    },
     fromDate() {
       this.configToDate = {
         ...this.configToDate,
@@ -429,6 +459,7 @@ export default {
     },
   },
   mounted() {
+    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
@@ -439,38 +470,60 @@ export default {
     this.GET_ONLINE_ORDERS_ACTION(defaultSearch)
   },
   methods: {
-    ...mapGetters(SALES, [
-      ONLINE_ORDERS_GETTER,
-      ONLINE_ORDERS_PAGINATION_GETTER,
-    ]),
     ...mapActions(SALES, [
       GET_ONLINE_ORDERS_ACTION,
     ]),
-
-    onClickSearchButton() {
-      const searchData = {
+    onSearch() {
+      this.searchOptions = {
         orderNumber: this.orderNumber?.trim(),
+        synStatus: this.synStatusSelected,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        synStatus: this.synStatusSelected,
-        formId: 1, // Hard
-        ctrlId: 4, // Hard
+        ...this.decentralization,
+        ...this.searchData,
       }
-      this.GET_ONLINE_ORDERS_ACTION(searchData)
+      this.searchData = { ...this.searchData, ...this.searchOptions }
+      this.GET_ONLINE_ORDERS_ACTION(this.searchOptions)
+    },
+
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
+    },
+
+    onPaginationChange() {
+      this.GET_ONLINE_ORDERS_ACTION({ ...this.searchData })
+    },
+
+    onClickSearchButton() {
+      this.searchOptions = {
+        orderNumber: this.orderNumber?.trim(),
+        synStatus: this.synStatusSelected,
+        fromDate: this.fromDate ? reverseVniDate(this.fromDate) : reverseVniDate(this.toDate),
+        toDate: this.toDate ? reverseVniDate(this.toDate) : reverseVniDate(this.fromDate),
+        ...this.decentralization,
+      }
+      this.updateSearchData({
+        ...this.searchOptions,
+      })
+      this.onPaginationChange()
       this.isClicked += 1
+    },
+
+    onPageChange(params) {
+      this.updateSearchData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+
+    onPerPageChange(params) {
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
+      })
+      this.onPaginationChange()
     },
 
     onClickCloseButton() {
       this.$refs.salesOnlineOrderModal.hide()
-    },
-
-    onPaginationChange() {
-      const paginationData = {
-        size: this.elementSize,
-        page: this.pageNumber - 1,
-      }
-
-      this.GET_ONLINE_ORDERS_ACTION(paginationData)
     },
 
     getOnlineOrderInfo(id) {
