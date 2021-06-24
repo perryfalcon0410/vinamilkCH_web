@@ -508,7 +508,7 @@ export default {
       this.countingDate = formatISOtoVNI(this.WAREHOUSE_INVENTORY_DETAIL_GETTER.info.countingDate)
       this.warehouseType = this.WAREHOUSE_INVENTORY_DETAIL_GETTER.info.warehouseType
 
-      this.products = this.WAREHOUSE_INVENTORY_DETAIL_GETTER.response.content.map(data => ({
+      this.products = this.WAREHOUSE_INVENTORY_DETAIL_GETTER.response.map(data => ({
         category: data.productCategory,
         productId: data.productId,
         productCode: data.productCode,

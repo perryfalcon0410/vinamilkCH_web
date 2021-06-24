@@ -3,7 +3,7 @@
     size="lg"
     :visible="visible"
     title="Chọn sản phẩm"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title-class="text-uppercase font-weight-bolder text-brand-1"
     footer-class="justify-content-center"
     content-class="bg-light"
     footer-border-variant="light"
@@ -28,14 +28,29 @@
           >
             Mã sản phẩm
           </div>
-          <b-form-input
-            id="form-input-customer"
-            v-model="searchOptions.productCode"
-            class="h7 text-brand-3 height-button-brand-1"
-            placeholder="Nhập mã sản phẩm"
-            trim
-            @keyup.enter="onSearchClick"
-          />
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              id="form-input-customer"
+              v-model="searchOptions.productCode"
+              class="h7 text-brand-3 height-button-brand-1"
+              placeholder="Nhập mã sản phẩm"
+              trim
+              autofocus
+              @keyup.enter="onSearchClick"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="searchOptions.productCode"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.productCode = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
+
         </b-col>
         <!-- END - Product code -->
         <!-- START - Product name -->
@@ -89,7 +104,7 @@
           </div>
           <b-button
             id="form-button-search"
-            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
+            class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder"
             variant="someThing"
             @click="onSearchClick"
           >

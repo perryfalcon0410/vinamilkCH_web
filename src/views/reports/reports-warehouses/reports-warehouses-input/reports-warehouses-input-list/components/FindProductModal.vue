@@ -3,7 +3,7 @@
     size="lg"
     :visible="visible"
     title="Chọn sản phẩm"
-    title-class="text-uppercase font-weight-bold text-brand-1"
+    title-class="text-uppercase font-weight-bolder text-brand-1"
     footer-class="justify-content-center"
     content-class="bg-light"
     footer-border-variant="light"
@@ -509,8 +509,3 @@ export default {
   },
 }
 </script>
-<style>
-  .font-weight-bold {
-    font-weight: 600 !important;
-  }
-</style>
