@@ -498,11 +498,16 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+          width: '300px',
         },
         {
           label: 'Giá',
@@ -516,6 +521,8 @@ export default {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
@@ -544,47 +551,6 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-        },
-        {
-          label: 'Tên sản phẩm',
-          field: 'productName',
-          sortable: false,
-        },
-        {
-          label: 'Giá',
-          field: 'price',
-          formatFn: this.$formatNumberToLocale,
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-        {
-          label: 'ĐVT',
-          field: 'unit',
-          sortable: false,
-        },
-        {
-          label: 'Thành tiền',
-          field: 'totalPrice',
-          formatFn: this.$formatNumberToLocale,
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-        {
-          label: 'Số lượng trả',
-          field: 'quantity',
-          formatFn: this.$formatNumberToLocale,
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
-        },
-      ],
-      poPromotionColumns: [
-        {
-          label: 'Mã sản phẩm',
-          field: 'productCode',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
@@ -601,6 +567,7 @@ export default {
         {
           label: 'Giá',
           field: 'price',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
@@ -615,6 +582,55 @@ export default {
         {
           label: 'Thành tiền',
           field: 'totalPrice',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Số lượng trả',
+          field: 'quantity',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+      ],
+      poPromotionColumns: [
+        {
+          label: 'Mã sản phẩm',
+          field: 'productCode',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Tên sản phẩm',
+          field: 'productName',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+          width: '300px',
+        },
+        {
+          label: 'Giá',
+          field: 'price',
+          sortable: false,
+          formatFn: this.$formatNumberToLocale,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'ĐVT',
+          field: 'unit',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Thành tiền',
+          field: 'totalPrice',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
@@ -627,6 +643,7 @@ export default {
         {
           label: 'Số lượng trả',
           field: 'quantityPromo',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
@@ -819,16 +836,6 @@ export default {
     },
     changeQuantity() {
       this.exportAll = false
-      // if (this.products) {
-      //   if (this.products[i].quantityReturn === this.products[i].quantity) {
-      //     this.exportAll = true
-      //   } else this.exportAll = false
-      // }
-      // if (this.rowsProductPromotion) {
-      //   if (this.rowsProductPromotion[i].quantityPromo === this.rowsProductPromotion[i].quantity) {
-      //     this.exportAll = true
-      //   } else this.exportAll = false
-      // }
     },
   },
 }

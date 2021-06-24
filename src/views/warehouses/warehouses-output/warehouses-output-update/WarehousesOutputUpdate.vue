@@ -158,7 +158,7 @@
         <!-- START - Table Product promotion -->
         <vue-good-table
           :columns="columns"
-          :rows="getProductOfWarehouseOutput"
+          :rows="products"
           style-class="vgt-table striped"
           :sort-options="{
             enabled: false,
@@ -197,7 +197,7 @@
             >
               <div v-if="warehousesOutput.receiptType == warehousesOptions[0].id">
                 <b-form-input
-                  v-model="getProductOfWarehouseOutput[props.row.originalIndex].productReturnAmount"
+                  v-model="products[props.row.originalIndex].productReturnAmount"
                   size="sm"
                   :disabled="isDisableSave"
                   @keypress="$onlyNumberInput"
@@ -206,7 +206,7 @@
               </div>
               <div v-else>
                 <b-form-input
-                  v-model="getProductOfWarehouseOutput[props.row.originalIndex].productReturnAmount"
+                  v-model="products[props.row.originalIndex].productReturnAmount"
                   size="sm"
                   disabled
                   @keypress="$onlyNumberInput"
@@ -222,6 +222,71 @@
 
         </vue-good-table>
         <!-- END - Table Product -->
+
+        <!-- START - Table Product promotion 2 -->
+        <div v-if="warehousesOutput.receiptType === poOutputType">
+          <div style="padding: 5px 0;">
+            <strong class="text-brand-1">
+              Danh sách sản phẩm khuyến mãi
+            </strong>
+          </div>
+
+          <vue-good-table
+            :columns="poPromotionColumns"
+            :rows="rowsProductPromotion"
+            style-class="vgt-table striped"
+            compact-mode
+            line-numbers
+          >
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
+
+            <!-- START - Rows -->
+            <template
+              slot="table-row"
+              slot-scope="props"
+            >
+              <div v-if="props.column.field === 'productReturnAmount'">
+                <b-form-input
+                  v-model="rowsProductPromotion[props.row.originalIndex].productReturnAmount"
+                  maxlength="19"
+                  :disabled="isDisableSave"
+                  @keypress="$onlyNumberInput"
+                  @change="changeQuantity()"
+                />
+              </div>
+              <div v-else>
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+            </template>
+            <!-- END - Rows -->
+
+            <!-- START - Custom filter -->
+            <template
+              slot="column-filter"
+              slot-scope="props"
+            >
+              <b-row
+                v-if="props.column.field === 'productCode'"
+                v-show="totalPromoProduct"
+                class="mx-0"
+                align-h="center"
+              >
+                {{ $formatNumberToLocale(totalPromoProduct) }}
+              </b-row>
+
+            </template>
+            <!-- END - Custom filter -->
+
+          </vue-good-table>
+        </div>
+        <!-- START - Table Product promotion 2 -->
 
         <!-- START - Button -->
         <b-row
@@ -304,63 +369,95 @@ export default {
   data() {
     return {
       warehousesOptions: warehousesData.outputTypes,
-      exportAll: true,
+      poOutputType: warehousesData.outputTypes[0].id,
+      exportAll: false,
+      products: [],
+      rowsProductPromotion: [],
       columns: [
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+          width: '300px',
         },
         {
           label: 'Giá',
           field: 'productPrice',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
-          type: 'number',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Đã xuất trả/tổng nhập',
           field: 'export',
+          sortable: false,
         },
         {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
       ],
       columnsCustom: [
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Giá',
           field: 'productPrice',
           formatFn: this.$formatNumberToLocale,
-          type: 'number',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
+          thClass: 'text-left',
+          tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
-          type: 'number',
           formatFn: this.$formatNumberToLocale,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng trả',
@@ -369,6 +466,59 @@ export default {
           // filterOptions: {
           //   enabled: true,
           // },
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+      ],
+      poPromotionColumns: [
+        {
+          label: 'Mã sản phẩm',
+          field: 'productCode',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+        },
+        {
+          label: 'Tên sản phẩm',
+          field: 'productName',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-left',
+          width: '300px',
+        },
+        {
+          label: 'Giá',
+          field: 'productPrice',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'ĐVT',
+          field: 'productDVT',
+          sortable: false,
+          thClass: 'text-left',
+          tdClass: 'text-center',
+        },
+        {
+          label: 'Thành tiền',
+          field: 'productPriceTotal',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
+        },
+        {
+          label: 'Đã xuất trả/tổng nhập',
+          field: 'export',
+          sortable: false,
+        },
+        {
+          label: 'Số lượng trả',
+          field: 'productReturnAmount',
+          sortable: false,
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
       ],
 
@@ -407,7 +557,7 @@ export default {
       return this.GET_WAREHOUSES_OUTPUT_BY_ID_GETTER
     },
     getProductOfWarehouseOutput() {
-      if (this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.response && this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.info) {
+      if (this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.response) {
         return [...this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.response.map(data => ({
           productID: data.id,
           productCode: data.productCode,
@@ -417,18 +567,7 @@ export default {
           productPriceTotal: data.totalPrice,
           productQuantity: data.quantity,
           productImportQuantity: data.importQuantity,
-          productReturnAmount: data.quantity,
-          export: `${data.quantity}/${data.importQuantity}`,
-        })),
-        ...this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER.info.map(data => ({
-          productID: data.id,
-          productCode: data.productCode,
-          productPrice: data.price,
-          productName: data.productName,
-          productDVT: data.unit,
-          productPriceTotal: data.totalPrice,
-          productQuantity: data.quantity,
-          productReturnAmount: data.quantity,
+          productReturnAmount: data.export,
           export: `${data.quantity}/${data.importQuantity}`,
         })),
         ]
@@ -465,25 +604,45 @@ export default {
       // enable or disable button save
       this.isDisableSave = this.warehousesOutput.transDate !== this.$nowDate
     },
+    getProductOfWarehouseOutput() {
+      this.getProductOfWarehouseOutput.forEach(item => {
+        const obj = {
+          productID: item.productID,
+          productCode: item.productCode,
+          productPrice: item.productPrice,
+          productName: item.productName,
+          productDVT: item.productDVT,
+          productPriceTotal: item.productPriceTotal,
+          productQuantity: item.productQuantity,
+          productImportQuantity: item.productImportQuantity,
+          productReturnAmount: item.productReturnAmount,
+          export: item.export,
+        }
+        console.log(obj)
+        if (item.productPrice !== 0) {
+          this.products.push(obj)
+        } else this.rowsProductPromotion.push(obj)
+      })
+    },
     exportAll() {
       if (this.exportAll) {
-        this.getProductOfWarehouseOutput.forEach((item, index) => {
-          this.getProductOfWarehouseOutput[index].productReturnAmount = item.productImportQuantity - item.productQuantity
+        this.products.forEach((item, index) => {
+          this.products[index].productReturnAmount = item.productImportQuantity - item.productQuantity
         })
-        // this.rowsProductPromotion.forEach((item, index) => {
-        //   this.rowsProductPromotion[index].quantityPromo = item.quantity
-        // })
+        this.rowsProductPromotion.forEach((item, index) => {
+          this.rowsProductPromotion[index].productReturnAmount = item.productImportQuantity - item.productQuantity
+        })
       } else {
-        this.getProductOfWarehouseOutput.forEach((item, index) => {
-          if (this.getProductOfWarehouseOutput[index].productReturnAmount === item.productQuantity) {
-            this.getProductOfWarehouseOutput[index].productReturnAmount = null
+        this.products.forEach((item, index) => {
+          if (this.products[index].productReturnAmount === item.productImportQuantity - item.productQuantity) {
+            this.products[index].productReturnAmount = null
           }
         })
-        // this.rowsProductPromotion.forEach((item, index) => {
-        //   if (this.rowsProductPromotion[index].quantityPromo === item.quantity) {
-        //     this.rowsProductPromotion[index].quantityPromo = null
-        //   }
-        // })
+        this.rowsProductPromotion.forEach((item, index) => {
+          if (this.rowsProductPromotion[index].productReturnAmount === item.productImportQuantity - item.productQuantity) {
+            this.rowsProductPromotion[index].productReturnAmount = null
+          }
+        })
       }
     },
   },
@@ -568,11 +727,16 @@ export default {
       this.warehousesOutput.code = ''
     },
     onClickUpdateWarehousesOutput() {
-      if (this.getProductOfWarehouseOutput) {
-        const products = this.getProductOfWarehouseOutput.map(data => ({
+      if (this.products) {
+        const products = [...this.products.map(data => ({
           id: data.productID,
           quantity: data.productReturnAmount,
-        }))
+        })),
+        ...this.rowsProductPromotion.map(data => ({
+          id: data.productID,
+          quantity: data.productReturnAmount,
+        })),
+        ]
 
         this.UPDATE_WAREHOUSES_OUTPUT_ACTION({
           updateWarehouseOutput: {
@@ -589,11 +753,6 @@ export default {
     },
     changeQuantity() {
       this.exportAll = false
-      this.getProductOfWarehouseOutput.forEach((item, index) => {
-        if (Number(this.getProductOfWarehouseOutput[index].productReturnAmount) === Number(item.productQuantity)) {
-          this.exportAll = true
-        }
-      })
     },
   },
 }

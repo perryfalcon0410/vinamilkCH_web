@@ -493,16 +493,22 @@ export default {
         {
           label: 'Mã xuất hàng',
           field: 'code',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
           field: 'billNumber',
           type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
           type: 'number',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
