@@ -78,49 +78,60 @@
             slot="column-filter"
             slot-scope="props"
           >
-            <b-row
+            <div
               v-show="warehousesInputPagination.totalElements"
               v-if="props.column.field === 'quantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ totalQuantity }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
               v-show="warehousesInputPagination.totalElements"
               v-else-if="props.column.field === 'packetQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ totalPacketQuantity }}
-            </b-row>
-            <b-row
+            </div>
+            <div
               v-show="warehousesInputPagination.totalElements"
               v-else-if="props.column.field === 'oddQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ totalOddQuantity }}
-            </b-row>
-            <b-row
+            </div>
+            <div
               v-show="warehousesInputPagination.totalElements"
               v-else-if="props.column.field === 'amount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ amount }}
-            </b-row>
-            <b-row
+            </div>
+            <div
               v-show="warehousesInputPagination.totalElements"
               v-else-if="props.column.field === 'total'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ total }}
-            </b-row>
+            </div>
           </template>
           <!-- START - Column filter -->
+          <!-- START - Custom row -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'quantity' || props.column.field === 'packetQuantity' || props.column.field === 'oddQuantity' || props.column.field === 'amount' || props.column.field === 'total'"
+              style="padding-right: 4px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Custom row -->
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"
@@ -242,181 +253,120 @@ export default {
         {
           label: 'Ngày nhập',
           field: 'transDate',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Loại nhập',
           field: 'inputType',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số PO',
           field: 'poNumber',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Ngày hóa đơn',
           field: 'orderDate',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Ngành hàng',
           field: 'industry',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Số lượng packet',
           field: 'packetQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Số lượng lẻ',
           field: 'oddQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá trước thuế',
           field: 'priceNotVat',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền',
           field: 'amount',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá sau thuế',
           field: 'price',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tổng cộng',
           field: 'total',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Quy cách',
           field: 'convfact',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Mã nhập hàng',
           field: 'transCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Cửa hàng',
           field: 'shopName',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Chuỗi cửa hàng',
           field: 'shopType',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Nhóm sản phẩm',
           field: 'productGroup',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Ghi chú',
           field: 'note',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số đơn trả PO',
           field: 'returnCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
       ],
       warehousesInputs: [],
@@ -436,7 +386,7 @@ export default {
           poNumber: data.poNumber,
           internalNumber: data.internalNumber,
           orderDate: formatISOtoVNI(data.orderDate),
-          industry: data.productGroup,
+          industry: data.productInfoName,
           productCode: data.productCode,
           productName: data.productName,
           quantity: data.quantity,
@@ -449,7 +399,7 @@ export default {
           convfact: data.convfact,
           transCode: data.transCode,
           shopName: data.shopName,
-          typeShop: data.typeShop,
+          shopType: data.typeShop,
           productGroup: data.productGroup,
           note: data.note,
           returnCode: data.returnCode,

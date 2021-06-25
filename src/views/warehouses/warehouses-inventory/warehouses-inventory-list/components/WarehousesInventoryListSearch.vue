@@ -58,6 +58,7 @@
           class="v-flat-pickr-group mx-0"
           align-v="center"
           @keypress="$onlyDateInput"
+          @change="validateFromDate"
         >
           <b-icon-x
             v-show="fromDate"
@@ -92,6 +93,7 @@
           class="v-flat-pickr-group mx-0"
           align-v="center"
           @keypress="$onlyDateInput"
+          @change="validateToDate"
         >
           <b-icon-x
             v-show="toDate"
@@ -169,6 +171,7 @@ import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { mapActions, mapGetters } from 'vuex'
 import { reverseVniDate } from '@/@core/utils/filter'
 import { dateFormatVNI } from '@/@core/utils/validations/validations'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   WAREHOUSEINVENTORY,
   GET_WAREHOUSE_INVENTORIES_ACTION,
@@ -253,6 +256,20 @@ export default {
 
     getInventories(data) {
       this.$emit('onSearchClick', data)
+    },
+    validateFromDate() {
+      const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
+      if (!pattern.test(this.fromDate)) {
+        toasts.error('Ngày tháng không tồn tại')
+        this.fromDate = this.$earlyMonth
+      }
+    },
+    validateToDate() {
+      const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
+      if (!pattern.test(this.toDate)) {
+        toasts.error('Ngày tháng không tồn tại')
+        this.toDate = this.$$nowDate
+      }
     },
   },
 }
