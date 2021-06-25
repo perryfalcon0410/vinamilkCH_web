@@ -46,7 +46,7 @@
           <b-row class="mx-0">
             <div class="width-100">
               Số PO:
-            </div>  <strong>{{ inputOrderInfoData.pocoNumber }}</strong>
+            </div>  <strong>{{ inputOrderInfoData.poNumber }}</strong>
           </b-row>
           <b-row class="mx-0">
             <div class="width-100">
