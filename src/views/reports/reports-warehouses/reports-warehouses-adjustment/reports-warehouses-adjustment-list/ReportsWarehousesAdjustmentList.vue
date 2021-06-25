@@ -24,6 +24,7 @@
           <b-button
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
+            :disabled="promotionRows.length === 0"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />
@@ -290,6 +291,7 @@ export default {
         {
           label: 'chức năng',
           field: 'feature',
+          hidden: 'true',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',

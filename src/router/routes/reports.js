@@ -82,7 +82,7 @@ export default [
       pageTitle: 'Báo cáo nhập xuất điều chỉnh',
       breadcrumb: [
         {
-          text: 'Danh sách sản phẩm nhập xuất điểu chỉnh',
+          text: 'Danh sách sản phẩm nhập xuất điều chỉnh',
           active: true,
         },
       ],

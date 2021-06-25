@@ -11,139 +11,114 @@
   >
     <!-- START - Form Info -->
     <b-row class="mx-0">
-      <!-- START - Section 1 -->
       <b-col
-        class="px-0"
-        cols="5"
+        xl="4"
+        lg="6"
+        md
+        class="bg-white shadow rounded py-1"
       >
-        <!-- START - Row 1 -->
-        <b-row>
-          <b-col
-            cols="4"
+
+        <!-- START - List Item -->
+        <b-list-group>
+          <b-list-group-item
+            class="bg-light"
           >
-            Ngày mua hàng:
-          </b-col>
-          <strong>
-            {{ orderDate }}
-          </strong>
-        </b-row>
-        <!-- END - Row 1 -->
+            Ngày mua hàng
+            <strong>:
+              {{ orderDate }}
+            </strong>
+          </b-list-group-item>
+          <b-list-group-item
+            class="bg-light"
+          >
+            ngày trả hàng
+            <strong>:
+              <!-- {{ billInfo.employeeName }} -->
+            </strong>
+          </b-list-group-item>
+          <b-list-group-item
+            class="bg-light"
+          >
+            Khách hàng
+            <strong>:
+              {{ (information.customerName) }}
+            </strong>
+          </b-list-group-item>
+          <b-list-group-item
+            class="bg-light"
+          >
+            Nhân viên bán hàng
+            <strong>:
+              {{ (information.userName) }}
+            </strong>
+          </b-list-group-item>
+          <b-list-group-item
+            class="bg-light"
+          >
+            Lý do trả hàng
+            <strong>:
+              {{ (information.reason) }}
+            </strong>
+          </b-list-group-item>
+        </b-list-group>
+        <!-- END - List Item -->
 
-        <!-- START - Row 2 -->
-        <b-row class="mt-1">
-          <b-col cols="4">
-            Khách hàng:
-          </b-col>
-          <strong>
-            {{ (information.customerName) }}
-          </strong>
-        </b-row>
-        <!-- END - Row 2 -->
-
-        <!-- START - Row 3 -->
-        <b-row class="mt-1">
-          <b-col cols="4">
-            Lý do trả hàng :
-          </b-col>
-          <strong>
-            {{ (information.reason) }}
-          </strong>
-        </b-row>
-        <!-- END - Row 3 -->
-
+        <!-- START - Feedback info -->
+        <b-col
+          class="mt-1 px-0"
+        >
+          <div class="mt-1">
+            Thông tin phản hồi
+          </div>
+          <b-form-textarea
+            id="textarea-plaintext"
+            readonly
+            :value="information.reasonDesc"
+          />
+        </b-col>
+        <!-- END - Feedback info -->
       </b-col>
-      <!-- END - Section 1 -->
+      <b-col>
 
-      <!-- START - Section 2 -->
-      <b-col class="px-0">
-        <!-- START - Row 1 -->
-        <b-row>
-          <b-col
-            cols="3"
+        <!-- Start Table -->
+        <b-card
+          no-body
+          class="mt-1"
+        >
+          <b-tabs
+            card
           >
-            Ngày trả hàng:
-          </b-col>
-          <strong>
-            {{ returnDate }}
-          </strong>
-        </b-row>
-        <!-- END - Row 1 -->
+            <!-- START - Product table -->
+            <b-tab
+              title="Sản phẩm"
+              active
+              class="p-0"
+            >
+              <Product
+                :producttable="productdetails"
+                :info-product-data="infoTotalProduct"
+              />
+            </b-tab>
+            <!-- END - Product table -->
 
-        <!-- START - Row 2 -->
-        <b-row class="mt-1">
-          <b-col
-            cols="3"
-          >
-            Nhân viên bán hàng:
-          </b-col>
-          <strong>
-            {{ (information.userName) }}
-          </strong>
-        </b-row>
-        <!-- END - Row 2 -->
+            <!-- START - Product promotion table -->
+            <b-tab
+              title="Hàng khuyến mãi"
+              class="p-0"
+            >
+              <SaleOff
+                :sale-off-table="saleOffDetails"
+                :info-promotion-data="infoTotalPromotion"
+              />
+            </b-tab>
+            <!-- END - Product promotion table -->
 
-        <!-- START - Row 3 -->
-        <b-row class="mt-1">
-          <b-col
-            cols="3"
-          >
-            Thông tin phản hồi :
-          </b-col>
-          <b-col
-            class="px-0"
-            cols="3"
-          >
-            <b-form-textarea
-              id="textarea-plaintext"
-              readonly
-              :value="information.reasonDesc"
-            />
-          </b-col>
-        </b-row>
-        <!-- END - Row 3 -->
-
+          </b-tabs>
+        </b-card>
+        <!-- End Table -->
       </b-col>
-      <!-- END - Section 2 -->
-
     </b-row>
     <!-- END - Form Info -->
-
-    <!-- Start Table -->
-    <b-card
-      no-body
-      class="mt-1"
-    >
-      <b-tabs
-        card
-      >
-        <!-- START - Product table -->
-        <b-tab
-          title="Sản phẩm"
-          active
-          class="p-0"
-        >
-          <Product
-            :producttable="productdetails"
-            :info-product-data="infoTotalProduct"
-          />
-        </b-tab>
-        <!-- END - Product table -->
-
-        <!-- START - Product promotion table -->
-        <b-tab
-          title="Hàng khuyến mãi"
-          class="p-0"
-        >
-          <SaleOff
-            :sale-off-table="saleOffDetails"
-            :info-promotion-data="infoTotalPromotion"
-          />
-        </b-tab>
-        <!-- END - Product promotion table -->
-
-      </b-tabs>
-    </b-card>
-    <!-- End Table -->
 
     <!-- START - Footer -->
     <template #modal-footer="{ cancel }">

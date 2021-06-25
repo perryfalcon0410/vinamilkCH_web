@@ -97,13 +97,9 @@ export default {
         .exportDifferencePrice(val)
         .then(response => response.data)
         .then(res => {
-          if (res.success) {
-            const fileName = `Bao_cao_hang_khuyen_mai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
-            const blob = new Blob([res], { type: 'data:application/xlsx' })
-            FileSaver.saveAs(blob, fileName)
-          } else {
-            throw new Error(res.statusValue)
-          }
+          const fileName = `Bao_cao_hang_khuyen_mai_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
           toasts.error(error.message)

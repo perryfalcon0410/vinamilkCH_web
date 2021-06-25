@@ -205,7 +205,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatISOtoVNI } from '@core/utils/filter'
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
@@ -265,6 +264,7 @@ export default {
           label: 'Ngày sinh',
           field: 'birthDay',
           sortable: false,
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Giới tính',
@@ -291,18 +291,20 @@ export default {
           label: 'Ngày tạo',
           field: 'createdAt',
           sortable: false,
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Ngày mua hàng cuối',
-          field: 'orderDate',
+          field: 'lastOrderDate',
           sortable: false,
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Doanh số',
           field: 'saleAmount',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
         },
       ],
     }
@@ -317,14 +319,14 @@ export default {
           customerCode: data.customerCode,
           fullName: data.fullName,
           mobiPhone: data.mobiPhone,
-          birthDay: formatISOtoVNI(data.birthDay),
+          birthDay: data.birthDay,
           gender: data.gender,
           address: data.address,
           status: data.status,
           cusTypeName: data.cusTypeName,
-          createdAt: formatISOtoVNI(data.createdAt),
-          orderDate: formatISOtoVNI(data.orderDate),
-          saleAmount: this.$formatNumberToLocale(data.saleAmount),
+          createdAt: data.createdAt,
+          lastOrderDate: data.lastOrderDate,
+          saleAmount: data.saleAmount,
         }))
       }
       return []
