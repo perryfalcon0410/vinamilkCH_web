@@ -151,7 +151,7 @@
           sm="4"
         >
           <div class="h7 mt-sm-1 mt-xl-0">
-            Sản phẩm
+            Mã sản phẩm
           </div>
           <b-input-group
             class="input-group-merge"
@@ -302,7 +302,6 @@ export default {
     this.GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION({ ...this.decentralization })
   },
   mounted() {
-    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,

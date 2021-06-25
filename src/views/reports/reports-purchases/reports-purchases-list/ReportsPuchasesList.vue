@@ -99,15 +99,8 @@
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'feature'">
-              <b-icon-pencil-fill
-                v-b-popover.hover="'Chỉnh sửa'"
-                class="cursor-pointer"
-                @click="navigateToUpdate(props.row.id)"
-              />
-            </div>
             <div
-              v-else-if="props.column.field === 'totalPrice'"
+              v-if="props.column.field === 'totalPrice'"
               style="padding-right: 10px"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -117,6 +110,7 @@
             </div>
           </template>
           <!-- END - Rows -->
+
           <!-- START - Column filter -->
           <template
             slot="column-filter"
@@ -291,13 +285,6 @@ export default {
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
-        },
-        {
-          label: 'function',
-          field: 'function',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
       ],
       rows: [],

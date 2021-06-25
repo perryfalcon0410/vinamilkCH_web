@@ -66,6 +66,23 @@
           </div>
           <!-- END - Empty rows -->
 
+          <!-- START - Rows -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'price' || props.column.field === 'sales'"
+              style="padding-right: 10px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Rows -->
+
           <!-- START - Header filter -->
           <template
             slot="table-column"

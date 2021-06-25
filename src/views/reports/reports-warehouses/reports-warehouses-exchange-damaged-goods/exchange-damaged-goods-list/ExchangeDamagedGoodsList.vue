@@ -93,7 +93,7 @@
               />
             </div>
             <div
-              v-else-if="props.column.field === 'amount'"
+              v-else-if="props.column.field === 'amount' || props.column.field === 'quantity'"
               style="padding-right: 10px"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -110,7 +110,7 @@
           >
             <b-row
               v-if="props.column.field === 'quantity'"
-              class="mx-0 text-brand-3 h7"
+              class="mx-50 text-brand-3 h7"
               align-h="end"
             >
               {{ $formatNumberToLocale(total[7]) }}
@@ -284,8 +284,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Thành tiền',

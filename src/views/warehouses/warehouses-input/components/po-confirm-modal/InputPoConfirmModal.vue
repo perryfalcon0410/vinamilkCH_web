@@ -106,7 +106,7 @@
               slot-scope="props"
             >
               <div
-                v-if="props.column.field === 'totalPriceVat'"
+                v-if="props.column.field === 'totalPriceVat' || props.column.field === 'quantity'"
                 style="padding-right: 10px"
               >
                 {{ props.formattedRow[props.column.field] }}
@@ -124,8 +124,8 @@
             >
               <b-row
                 v-if="props.column.field === 'quantity'"
-                class="mx-0 h7 text-brand-3"
-                align-h="center"
+                class="mx-50 h7 text-brand-3"
+                align-h="end"
               >
                 {{ $formatNumberToLocale(poProductInfo.totalQuantity) }}
               </b-row>
@@ -186,7 +186,7 @@
                 slot-scope="props"
               >
                 <div
-                  v-if="props.column.field === 'totalPriceVat'"
+                  v-if="props.column.field === 'totalPriceVat' || props.column.field === 'quantity'"
                   style="padding-right: 10px"
                 >
                   {{ props.formattedRow[props.column.field] }}
@@ -203,8 +203,8 @@
               >
                 <b-row
                   v-if="props.column.field === 'quantity'"
-                  class="mx-0 h7 text-brand-3"
-                  align-h="center"
+                  class="mx-50 h7 text-brand-3"
+                  align-h="end"
                 >
                   {{ poPromotionProductsInfo.totalQuantity }}
                 </b-row>
@@ -383,8 +383,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Thành tiền (VAT)',

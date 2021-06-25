@@ -188,9 +188,6 @@ export default {
       }
     },
   },
-  created() {
-    this.onSearch()
-  },
   mounted() {
     this.configToDate = {
       ...this.configToDate,

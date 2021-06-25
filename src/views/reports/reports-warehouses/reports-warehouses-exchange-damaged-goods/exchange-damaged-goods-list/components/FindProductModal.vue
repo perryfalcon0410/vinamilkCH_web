@@ -34,6 +34,8 @@
             <b-form-input
               id="form-input-customer"
               v-model="searchOptions.productCode"
+              autofocus
+              trim
               class="h7 text-brand-3 height-button-brand-1"
               placeholder="Nhập mã sản phẩm"
               @keyup.enter="onSearchClick"
@@ -69,6 +71,7 @@
           >
             <b-form-input
               v-model="searchOptions.productName"
+              trim
               class="h7 text-brand-3 height-button-brand-1"
               placeholder="Nhập tên sản phẩm"
               @keyup.enter="onSearchClick"
@@ -133,7 +136,7 @@
       <div class="bg-white rounded shadow rounded mt-1 p-1">
         <div class="pt-0">
           <strong class="text-blue-vinamilk pt-2">
-            Tổng cộng: {{ $formatNumberToLocale(selectedProductRow.length) }} sản phẩm
+            Tổng cộng: {{ $formatNumberToLocale(selectedProductRow.length) }} sản phẩm được chọn
           </strong>
         </div>
 
@@ -258,7 +261,7 @@
           height="15"
           class="mr-1"
         />
-        Chọn
+        Lưu
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder d-flex justify-content-center align-items-center ml-1"

@@ -236,8 +236,8 @@
                 <!--START - Choose import po product-->
                 <b-row
                   v-if="props.column.field === 'quantity'"
-                  class="mx-0 h7 text-brand-3"
-                  align-h="center"
+                  class="mx-50 h7 text-brand-3"
+                  align-h="end"
                 >
                   {{
                     $formatNumberToLocale(poProductInfo.totalQuantity) ||
@@ -278,7 +278,10 @@
                 slot-scope="props"
               >
                 <div
-                  v-if="props.column.field === 'totalPriceNotVat' || props.column.field === 'totalPriceVat' || props.column.field === 'totalPrice'"
+                  v-if="props.column.field === 'totalPriceNotVat' ||
+                    props.column.field === 'totalPriceVat' ||
+                    props.column.field === 'totalPrice' ||
+                    props.column.field === 'quantity'"
                   style="padding-right: 10px"
                 >
                   {{ props.formattedRow[props.column.field] }}
@@ -326,6 +329,23 @@
                 </div>
                 <!-- END - Empty rows -->
 
+                <!-- START - Custom row -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div
+                    v-if="props.column.field === 'quantity'"
+                    style="padding-right: 10px"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
+                <!-- END - Custom row -->
+
                 <!-- START - Custom filter -->
                 <template
                   slot="column-filter"
@@ -333,15 +353,15 @@
                 >
                   <b-row
                     v-if="props.column.field === 'productCode'"
-                    class="mx-0"
-                    align-h="center"
+                    class="mx-0 h7 text-brand-3"
+                    align-h="start"
                   >
                     {{ $formatNumberToLocale(totalPoPromoProduct) }}
                   </b-row>
                   <b-row
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0"
-                    align-h="center"
+                    class="mx-50 h7 text-brand-3"
+                    align-h="end"
                   >
                     {{ $formatNumberToLocale(poPromotionProductsInfo.totalQuantity) }}
                   </b-row>
@@ -388,7 +408,7 @@
                     v-if="props.column.field === 'quantity'"
                     v-show="totalPromoProductQuantity"
                     class="mx-0"
-                    align-h="center"
+                    align-h="right"
                   >
                     {{ $formatNumberToLocale(totalPromoProductQuantity) }}
                   </b-row>
@@ -657,8 +677,8 @@ export default {
             enabled: true,
           },
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giá',
@@ -719,8 +739,8 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giá',
@@ -798,8 +818,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giá',
