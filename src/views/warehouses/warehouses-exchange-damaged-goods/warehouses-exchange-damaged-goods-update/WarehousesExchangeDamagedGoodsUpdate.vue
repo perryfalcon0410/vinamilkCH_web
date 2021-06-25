@@ -421,7 +421,7 @@ export default {
             productName: '',
             quantity: 0,
             totalPrice: 0,
-            unit: '',
+            productDVT: '',
           },
         ],
       },
@@ -625,7 +625,7 @@ export default {
           productId: data.productId,
           productCode: data.productCode,
           productName: data.productName,
-          unit: data.unit,
+          productDVT: data.unit,
           price: data.price,
           type: 1,
           quantity: data.quantity,
@@ -754,8 +754,11 @@ export default {
 
     onClickDeleteButton(index) {
       this.listDamagedProducts.forEach((item, i) => {
-        if (this.damagedProduct[index].productCode === item.productCode) {
+        if (this.damagedProduct[index].productId === item.productId) {
           this.listDamagedProducts[i].type = 2
+        }
+        if (item.id === null && item.type === 2) {
+          this.listDamagedProducts.splice(i, 1)
         }
       })
       this.damagedProduct.splice(index, 1)
