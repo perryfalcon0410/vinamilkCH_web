@@ -207,16 +207,14 @@
               slot="table-row"
               slot-scope="props"
             >
-              <span v-if="props.column.field == 'productAmount'">
-                <div v-if="props.row.productAmount != ''">
-                  <b-form-input
-                    v-model.trim="damagedProduct[props.index].quantity"
-                    maxlength="10"
-                    @keypress="$onlyNumberInput"
-                    @change="onChangeQuantity(damagedProduct[props.index])"
-                  />
-                </div>
-              </span>
+              <div v-if="props.column.field == 'productAmount'">
+                <b-form-input
+                  v-model.trim="damagedProduct[props.index].quantity"
+                  maxlength="10"
+                  @keypress="$onlyNumberInput"
+                  @change="onChangeQuantity(damagedProduct[props.index])"
+                />
+              </div>
 
               <div v-if="props.column.field === 'feature'">
                 <b-icon-trash-fill
@@ -614,7 +612,7 @@ export default {
         this.exchangeGoodsInfo.transDate = formatISOtoVNI(this.exchangeDamagedGoods.transDate)
         this.exchangeGoodsInfo.transTime = getTimeOfDate(this.exchangeDamagedGoods.transDate)
         this.exchangeGoodsInfo.shopId = this.exchangeDamagedGoods.shopId
-        this.exchangeGoodsInfo.customerId = this.exchangeDamagedGoods.customerId
+        this.customerInfo.customerId = this.exchangeDamagedGoods.customerId
         this.customerInfo.customerName = this.exchangeDamagedGoods.customerName
         this.customerInfo.customerAddress = this.exchangeDamagedGoods.customerAddress
         this.customerInfo.customerPhone = this.exchangeDamagedGoods.customerPhone
@@ -650,7 +648,7 @@ export default {
           if (this.damagedProduct.length > 0) {
             this.UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION({
               exchangeDamagedGoods: {
-                customerId: this.exchangeGoodsInfo.customerId,
+                customerId: this.customerInfo.customerId,
                 id: this.exchangeDamagedGoodsId,
                 lstExchangeDetail: this.listDamagedProducts.map(data => ({
                   id: data.id,
@@ -741,7 +739,9 @@ export default {
 
     onChangeQuantity(props) {
       const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === props.productCode)
+      const existedIndex = this.listDamagedProducts.findIndex(damagedProduct => damagedProduct.productCode === props.productCode)
       this.damagedProduct[existedProductIndex].totalPrice = Number(props.price) * this.damagedProduct[existedProductIndex].quantity
+      this.listDamagedProducts[existedIndex].quantity = Number(props.quantity)
     },
 
     clearCustomer() {
@@ -755,8 +755,6 @@ export default {
     onClickDeleteButton(index) {
       this.listDamagedProducts.forEach((item, i) => {
         if (this.damagedProduct[index].productCode === item.productCode) {
-          this.listDamagedProducts[i].productId = null
-          this.listDamagedProducts[i].quantity = null
           this.listDamagedProducts[i].type = 2
         }
       })
@@ -793,9 +791,6 @@ export default {
 
     navigateBack() {
       this.$router.replace({ name: 'warehouses-exchange-damaged-goods' })
-      // console.log(this.listDamagedProducts)
-      // console.log(this.exchangeDamagedGoodsId)
-      // console.log(this.exchangeGoodsInfo.customerId)
     },
   },
 }
