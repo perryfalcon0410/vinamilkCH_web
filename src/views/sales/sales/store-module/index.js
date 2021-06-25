@@ -211,7 +211,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.onlineOrders = res.data.content
+            state.onlineOrders = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -442,7 +442,9 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.customer = res.data
+            if (res.data !== null) {
+              state.customer = res.data
+            }
           } else {
             throw new Error(res.statusValue)
           }

@@ -414,17 +414,20 @@ export default {
     ]),
 
     onlineOrders() {
-      return this.ONLINE_ORDERS_GETTER.map(data => ({
-        id: data.id,
-        orderNumber: data.orderNumber,
-        createdAt: `${formatISOtoVNI(data.createdAt, data.createdAt)}`,
-        orderInfo: data.orderInfo,
-        quantity: data.quantity,
-        totalPrice: data.totalPrice,
-        products: data.products,
-        customer: data.customer,
-        feature: '',
-      }))
+      if (this.ONLINE_ORDERS_GETTER.content) {
+        return this.ONLINE_ORDERS_GETTER.content.map(data => ({
+          id: data.id,
+          orderNumber: data.orderNumber,
+          createdAt: `${formatISOtoVNI(data.createdAt, data.createdAt)}`,
+          orderInfo: data.orderInfo,
+          quantity: data.quantity,
+          totalPrice: data.totalPrice,
+          products: data.products,
+          customer: data.customer,
+          feature: '',
+        }))
+      }
+      return []
     },
     getOnlineOrderPagination() {
       if (this.ONLINE_ORDERS_GETTER) {

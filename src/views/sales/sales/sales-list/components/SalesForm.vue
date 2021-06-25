@@ -115,7 +115,10 @@
                 is-text
                 style="position: absolute; right: 0px; height: 100%"
               >
-                <b-icon-plus @click="showModalCreate" />
+                <b-icon-plus
+                  v-b-popover.hover="'Thêm mới'"
+                  @click="showModalCreate"
+                />
               </b-input-group-append>
             </b-input-group>
           </b-row>

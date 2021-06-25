@@ -473,7 +473,7 @@ export default {
             productName: data.productName,
             productCode: data.productCode,
             productUnit: data.uom1,
-            productInventory: data.stockTotal,
+            productInventory: this.$formatNumberToLocale(data.stockTotal),
             productUnitPrice: this.$formatNumberToLocale(data.price),
             sumProductUnitPrice: data.price,
             quantity: 1,
@@ -688,17 +688,6 @@ export default {
 
     getOnlineCustomer(val) {
       this.onlineOrderId = val.id
-      const { usedShop } = this.loginInfo
-
-      if (val.id !== null) {
-        if (val.shopId === usedShop.id) {
-          if (usedShop.editable) {
-            this.editOnlinePermission = true
-          } else {
-            this.editOnlinePermission = false
-          }
-        }
-      }
     },
 
     getCustomerTypeInfo(id) {
@@ -773,9 +762,13 @@ export default {
       const { usedShop } = this.loginInfo
       if (val === '1') {
         this.isOnline = false
+        this.onlineOrderId = null
+        this.editOnlinePermission = true
+        this.editManualPermission = true
       }
       if (val === '2') {
         this.isOnline = true
+        this.onlineOrderId = null
         if (usedShop.id === this.currentCustomer.shopId) {
           if (usedShop.manuallyCreatable === false) {
             this.editManualPermission = false
