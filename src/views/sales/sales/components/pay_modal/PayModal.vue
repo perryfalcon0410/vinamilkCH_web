@@ -18,7 +18,9 @@
     >
       <b-row class="mx-0">
         <!-- START - Section table -->
-        <b-col class="shadow py-1">
+        <b-col
+          class="shadow py-1"
+        >
           <b-row
             class="mx-0 bg-light p-1 mb-1 w-25 rounded"
             align-v="center"

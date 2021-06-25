@@ -80,6 +80,7 @@
           </vue-autosuggest>
           <b-form-checkbox
             v-model="checkStockTotal"
+            v-b-popover.hover="'Hiển thị sản phẩm có tồn kho'"
             style="position: absolute; right: 5px"
           />
         </b-row>
@@ -219,6 +220,7 @@
               v-else-if="props.column.field === 'tableProductFeature'"
             >
               <b-icon-trash-fill
+                v-b-popover.hover="'Xóa sản phẩm'"
                 color="red"
                 class="cursor-pointer"
                 @click="onClickDeleteProduct(props.row.originalIndex)"
@@ -590,8 +592,8 @@ export default {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
       if (this.editOnlinePermission === true) {
         this.orderProducts[index].quantity -= 1
-        if (this.orderProducts[index].quantity < 0) {
-          this.orderProducts[index].quantity = 0
+        if (this.orderProducts[index].quantity <= 0) {
+          this.orderProducts[index].quantity = 1
         }
 
         this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
@@ -665,6 +667,9 @@ export default {
       this.orderProducts = val
     },
     onChangeQuantity(index) {
+      if (this.orderProducts[index].quantity <= 0) {
+        this.orderProducts[index].quantity = 1
+      }
       this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
     },

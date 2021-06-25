@@ -7,7 +7,6 @@
     title-class="text-uppercase font-weight-bold text-brand-1"
     content-class="bg-white"
     footer-border-variant="white"
-    hide-header-close
   >
     <!-- START - Body -->
     <b-container
@@ -28,7 +27,7 @@
           >
             <b-input
               v-model="keyword"
-              placeholder="Nhập mã/ tên/ serial"
+              placeholder="Nhập serial"
               :disabled="isLocked"
               @keyup="checkKeywordSearch()"
             />
