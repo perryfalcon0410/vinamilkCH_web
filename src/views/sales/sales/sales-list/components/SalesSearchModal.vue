@@ -383,6 +383,7 @@ export default {
     },
     elementSize() {
       this.paginationData.size = this.elementSize
+      this.paginationData.status = customerData.status[0].id
       this.onPaginationChange()
     },
     paginationData() {
