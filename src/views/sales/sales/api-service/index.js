@@ -76,9 +76,10 @@ export default {
   },
 
   getDiscountByCode(args) {
-    return axios.post(`${getDiscountByCodeEndpoint}/${args.code}`, args.products, {
+    return axios.post(`${getDiscountByCodeEndpoint}/${args.code}`, args.data, {
       params: {
-        customerId: args.customerId,
+        formId: args.formId,
+        ctrlId: args.ctrlId,
       },
     })
   },

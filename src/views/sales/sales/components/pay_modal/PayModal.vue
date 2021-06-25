@@ -383,7 +383,7 @@
                     />
                     <cleave
                       v-model="pay.accumulate.accumulateAmount"
-                      class="form-control"
+                      class="form-control pl-1"
                       :raw="true"
                       :options="options.number"
                       @change.native="onChangeAccumulateAmount()"
@@ -433,7 +433,7 @@
                     <b-col>
                       <cleave
                         v-model="pay.voucher.totalVoucherAmount"
-                        class="form-control"
+                        class="form-control pl-1"
                         :raw="true"
                         :options="options.number"
                         disabled
@@ -929,7 +929,7 @@ export default {
 
       // get accumulate
       this.pay.accumulate.accumulateAmount = this.customer.amountCumulated
-      this.pay.accumulate.accumulatePoint = this.customer.scoreCumulated
+      this.pay.accumulate.accumulatePoint = this.customer.amountCumulated
     },
     getItemsProduct() {
       this.allProducts = [...this.getItemsProduct]
@@ -1103,8 +1103,13 @@ export default {
 
       this.GET_DISCOUNT_BY_CODE_ACTION({
         code: this.pay.discount.discountCode,
-        customerId: this.customer.id,
-        products,
+        formId: this.formId,
+        ctrlId: this.ctrlId,
+        data: {
+          customerId: this.customer.id,
+          orderType: Number(this.orderSelected),
+          products,
+        },
       })
     },
 

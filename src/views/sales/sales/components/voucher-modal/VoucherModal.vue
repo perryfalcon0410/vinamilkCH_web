@@ -30,11 +30,13 @@
               v-model="keyword"
               placeholder="Nhập mã/ tên/ serial"
               :disabled="isLocked"
+              @keyup="checkKeywordSearch()"
             />
           </b-col>
           <b-button
             class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
             variant="someThing"
+            :disabled="isDisableSearch"
             @click="onClickSearchButton()"
           >
             <b-icon-search
@@ -200,6 +202,7 @@ export default {
       vouchers: [],
       isLocked: false,
       message: '',
+      isDisableSearch: false,
     }
   },
   computed: {
@@ -237,6 +240,7 @@ export default {
     },
   },
   mounted() {
+    this.isDisableSearch = true
   },
 
   methods: {
@@ -266,6 +270,9 @@ export default {
       this.keyword = ''
       this.vouchers = []
       this.$root.$emit('bv::hide::modal', 'VoucherModal')
+    },
+    checkKeywordSearch() {
+      this.isDisableSearch = this.keyword === ''
     },
   },
 }

@@ -25,7 +25,7 @@ export const getProductsHotEndpoint = `${SALES}${PRODUCT}/top-sale/customer`
 
 export const createSaleOrderEndpoint = `${SALES}`
 
-export const getDiscountByCodeEndpoint = `${PROMOTION}/promotion-program-discount/discount-code`
+export const getDiscountByCodeEndpoint = `${SALES}/discount-code`
 
 export const updatePriceTypeCustomerEndpoint = `${SALES}/${PRODUCT}/change/customer-type`
 
