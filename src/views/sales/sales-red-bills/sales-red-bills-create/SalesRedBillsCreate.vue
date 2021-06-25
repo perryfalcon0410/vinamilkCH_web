@@ -846,7 +846,6 @@ export default {
     checkValue(index) {
       if (this.products[index].vat === '0') {
         this.products[index].vat = 1
-        return
       }
       if (this.products[index].vat > 100) {
         this.products[index].vat = 100
