@@ -5,8 +5,7 @@
     ref="payModal"
     size="xl"
     title="Thanh toán hóa đơn"
-    title-class="font-weight-bolder text-brand-1"
-    class="d-print-none"
+    title-class="font-weight-bolder text-brand-1 d-print-none"
     content-class="bg-white"
     footer-border-variant="white"
     hide-header-close
@@ -14,7 +13,7 @@
     <!-- START - Body -->
     <b-container
       fluid
-      class="px-0"
+      class="px-0 d-print-none"
     >
       <b-row class="mx-0">
         <!-- START - Section table -->
@@ -595,7 +594,7 @@
     <!-- START - Footer -->
     <template #modal-footer="{}">
       <b-row
-        class="mx-auto"
+        class="mx-auto d-print-none"
       >
         <b-button
           variant="none"

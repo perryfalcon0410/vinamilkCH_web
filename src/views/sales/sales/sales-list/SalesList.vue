@@ -267,10 +267,6 @@
     </b-row>
     <!-- END - Body -->
 
-    <!-- START - Print form -->
-    <print-form-sales-receipt />
-    <!-- END - Print form -->
-
   </b-container>
 </template>
 
@@ -279,7 +275,6 @@ import { mapGetters, mapActions } from 'vuex'
 import toasts from '@/@core/utils/toasts/toasts'
 import { VueAutosuggest } from 'vue-autosuggest'
 import saleData from '@/@db/sale'
-import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
 import SalesForm from './components/SalesForm.vue'
 // import SalesProducts from './components/SalesProducts.vue'
 import {
@@ -308,7 +303,6 @@ export default {
     VueAutosuggest,
     SalesForm,
     // SalesProducts,
-    PrintFormSalesReceipt,
   },
   data() {
     return {

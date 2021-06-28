@@ -379,7 +379,7 @@ export default {
         ...event,
       })
       this.onPaginationChange()
-      // this.pageNumber = commonData.pageNumber
+      this.pageNumber = commonData.pageNumber // temp
     },
     onPaginationChange() {
       this.GET_CUSTOMERS_ACTION({ ...this.searchData, ...this.decentralization })
