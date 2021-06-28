@@ -100,6 +100,7 @@
         >
           Hóa đơn {{ index + 1 }}
           <b-icon-x
+            v-b-popover.hover="'Xóa'"
             class="cursor-pointer ml-1"
             font-scale="1.6"
             @click="onClickDeleteButton(index)"
@@ -244,6 +245,26 @@
           :edit-permission="editPermission"
         /> -->
         <!-- END - List suggestion -->
+
+        <!-- START - Notify Modal Close -->
+        <b-modal
+          ref="salesNotifyModal"
+          title="Thông báo"
+        >
+          Chọn đơn online sẽ xóa dữ liệu đơn hàng hiện tại
+          <template #modal-footer>
+            <b-button
+              variant="primary"
+              @click="onClickAgreeButton()"
+            >
+              Đồng ý
+            </b-button>
+            <b-button @click="closeNotifyModal">
+              Đóng
+            </b-button>
+          </template>
+        </b-modal>
+        <!-- END - Notify Modal Close -->
 
       </b-col>
       <!-- END - Section Table product and list suggestion-->
@@ -575,7 +596,7 @@ export default {
 
     increaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission === true) {
+      if (this.editOnlinePermission === true || this.editManualPermission === true) {
         this.orderProducts[index].quantity += 1
         this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
@@ -584,7 +605,7 @@ export default {
 
     decreaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission === true) {
+      if (this.editOnlinePermission === true || this.editManualPermission === true) {
         this.orderProducts[index].quantity -= 1
         if (this.orderProducts[index].quantity <= 0) {
           this.orderProducts[index].quantity = 1
@@ -760,9 +781,20 @@ export default {
         this.editOnlinePermission = true
         this.editManualPermission = true
       }
+
+      if (val === '2' && this.orderProducts.length > 0) {
+        if (val === '2' && usedShop.id === this.currentCustomer.shopId) {
+          if (usedShop.manuallyCreatable === false) {
+            this.$refs.salesNotifyModal.show()
+            // toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+          }
+        }
+      }
+
       if (val === '2') {
         this.isOnline = true
         this.onlineOrderId = null
+        console.log('usedShop.manuallyCreatable', usedShop.manuallyCreatable)
         if (usedShop.id === this.currentCustomer.shopId) {
           if (usedShop.manuallyCreatable === false) {
             this.editManualPermission = false
@@ -776,6 +808,11 @@ export default {
           }
         }
       }
+    },
+
+    onClickAgreeButton() {
+      this.orderProducts = []
+      this.$refs.salesNotifyModal.hide()
     },
   },
 }
