@@ -315,8 +315,7 @@
             <div
               v-if="props.column.field === 'quantity'"
               v-show="warehousesOutputPagination.totalElements"
-              class="h7"
-              align-h="end"
+              class="h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(totalQuantity) }}
             </div>
@@ -324,8 +323,7 @@
             <div
               v-else-if="props.column.field === 'price'"
               v-show="warehousesOutputPagination.totalElements"
-              class="h7 px-0 mx-0"
-              align-h="end"
+              class="h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(totalPrice) }}
             </div>

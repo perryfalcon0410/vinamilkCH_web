@@ -79,7 +79,7 @@
           <div class="width-120">
             Ngày hóa đơn:
           </div>
-          <strong>{{ $formatISOtoVNI(inputOrderInfoData.orderDate) }}</strong>
+          <strong>{{ $formatISOtoVNI(inputOrderInfoData.orderDate, true) }}</strong>
         </b-row>
       </div>
     </b-row>
@@ -97,12 +97,12 @@
             colspan="3"
             class="pl-1 border-right-0"
           >
-            <div>Ngành hàng: <strong>{{ item.type }}</strong>
+            <div class="oblique">Ngành hàng: <strong>{{ item.type }}</strong>
             </div>
           </td>
           <td
             colspan="1"
-            class="text-right border-right-0 border-left-0"
+            class="text-right border-right-0 border-left-0 oblique"
           >
             Tổng SL:
           </td>
@@ -111,11 +111,11 @@
             style="width: 1%"
             class="text-right border-right-0 border-left-0"
           >
-            <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
+            <strong class="pr-50">{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
           </td>
           <td
             colspan="1"
-            class="text-right border-right-0 border-left-0"
+            class="text-right border-right-0 border-left-0 oblique"
           >
             Tổng T.Tiền:
           </td>
@@ -178,32 +178,32 @@
             {{ index + 1 }}
           </td>
           <td
-            class="pl-1"
+            class="pl-50"
           >
             {{ products.productCode }}
           </td>
           <td
-            class="px-1"
+            class="px-50"
           >
             {{ products.productName }}
           </td>
           <td
-            class="px-1"
+            class="px-50"
           >
             {{ products.unit }}
           </td>
           <td
-            class="text-right px-1"
+            class="text-right px-50"
           >
             {{ $formatNumberToLocale(products.quantity) }}
           </td>
           <td
-            class="text-right px-1"
+            class="text-right px-50"
           >
             {{ $formatNumberToLocale(products.price) }}
           </td>
           <td
-            class="text-right px-1"
+            class="text-right px-50"
           >
             {{ $formatNumberToLocale(products.totalPrice) }}
           </td>
@@ -219,11 +219,11 @@
       align-h="end"
     >
       <div>
-        <strong>Tổng SL</strong> <strong class="ml-2 mr-4">{{ $formatNumberToLocale(inputOrderInfoData.totalQuantity) }}</strong>
+        <strong class="oblique">Tổng SL</strong> <strong class="ml-2 mr-4">{{ $formatNumberToLocale(inputOrderInfoData.totalQuantity) }}</strong>
       </div>
 
       <div>
-        <strong>Tổng T.Tiền</strong> <strong class="ml-2">{{ $formatNumberToLocale(inputOrderInfoData.totalPrice) }}</strong>
+        <strong class="oblique">Tổng T.Tiền</strong> <strong class="ml-2">{{ $formatNumberToLocale(inputOrderInfoData.totalPrice) }}</strong>
       </div>
     </b-row>
 
@@ -231,7 +231,7 @@
       class="mx-0"
       style="width: 550px; word-wrap: break-word"
     >
-      <ins>Ghi chú:</ins>
+      <ins class="oblique">Ghi chú:</ins>
       {{ inputOrderInfoData.note }}
     </b-col>
 
@@ -334,5 +334,8 @@ th {
 td, .td {
   border-style: dotted;
   border-width: 2px;
+}
+.oblique {
+  font-style: oblique;
 }
 </style>
