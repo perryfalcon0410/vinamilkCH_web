@@ -184,7 +184,6 @@ import {
 } from 'vuex'
 import {
   getGenderLabel,
-  getCustomerTypeLabel,
   getCustomerStatusLabel,
   resizeAbleTable,
 } from '@core/utils/utils'
@@ -194,6 +193,7 @@ import {
   CUSTOMER,
   // GETTERS
   CUSTOMERS_GETTER,
+  CUSTOMER_TYPES_LABEL_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
   EXPORT_CUSTOMERS_ACTION,
@@ -266,7 +266,7 @@ export default {
         {
           label: 'Nhóm',
           field: 'customerTypeId',
-          formatFn: getCustomerTypeLabel,
+          formatFn: value => this.$store.getters[`${CUSTOMER}/${CUSTOMER_TYPES_LABEL_GETTER}`](value),
         },
         {
           label: 'Ngày tạo',

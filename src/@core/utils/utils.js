@@ -60,12 +60,6 @@ export const getGenderLabel = id => {
   return commonDataFound ? commonDataFound.label : null
 }
 
-export const getCustomerTypeLabel = id => { // TODO: Hàm này bị lặp rất nhiều
-  // console.log(customerData.customerTypes)
-  const customerDataFound = customerData.customerTypes.find(item => `${item.id}` === `${id}`)
-  return customerDataFound ? customerDataFound.label : null
-}
-
 export const getCustomerStatusLabel = id => {
   const customerDataFound = customerData.status.find(item => `${item.id}` === `${id}`)
   return customerDataFound ? customerDataFound.label : null

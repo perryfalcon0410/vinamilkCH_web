@@ -11,6 +11,7 @@ import {
   SHOP_LOCATIONS_SEARCH_GETTER,
   SHOP_LOCATIONS_GETTER,
   CUSTOMER_TYPES_GETTER,
+  CUSTOMER_TYPES_LABEL_GETTER,
   CUSTOMER_TYPES_UPDATE_GETTER,
   CUSTOMER_DEFAULT_GETTER,
   PROVINCES_GETTER,
@@ -81,6 +82,13 @@ export default {
     },
     [CUSTOMER_TYPES_GETTER](state) {
       return state.customerTypes
+    },
+    [CUSTOMER_TYPES_LABEL_GETTER]: state => id => {
+      if (state.customerTypes) {
+        const customerDataFound = state.customerTypes.find(item => `${item.id}` === `${id}`)
+        return customerDataFound ? customerDataFound.name : 'label customer types'
+      }
+      return id
     },
     [CUSTOMER_TYPES_UPDATE_GETTER](state) {
       return state.customerTypesUpdate
