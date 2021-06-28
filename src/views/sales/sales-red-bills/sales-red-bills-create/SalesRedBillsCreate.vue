@@ -693,6 +693,7 @@ export default {
           onSuccess: () => {
           },
         })
+        this.$router.replace({ name: 'sales-red-bills' })
       }
     },
     getCustomers() {
