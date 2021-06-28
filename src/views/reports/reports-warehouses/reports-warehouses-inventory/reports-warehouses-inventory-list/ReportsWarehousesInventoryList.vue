@@ -22,18 +22,18 @@
         </strong>
         <b-button-group>
           <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder mr-1"
+            class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
-            size="sm"
+            :disabled="rows.length === 0"
             @click="printReport"
           >
             <b-icon-printer-fill />
             In
           </b-button>
           <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
+            class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
-            size="sm"
+            :disabled="rows.length === 0"
             @click="exportExcel"
           >
             <b-icon-file-earmark-x-fill />
@@ -88,7 +88,18 @@
               />
             </div>
             <div
-              v-else-if="props.column.field ==='totalAmount'"
+              v-else-if="props.column.field ==='productName'"
+              style="max-width: 400px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field ==='totalAmount' ||
+                props.column.field ==='stockQuantity' ||
+                props.column.field ==='packetQuantity' ||
+                props.column.field ==='unitQuantity' ||
+                props.column.field ==='minInventory' ||
+                props.column.field ==='maxInventory'"
               style="padding-right: 10px"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -105,23 +116,23 @@
           >
             <b-row
               v-if="props.column.field === 'stockQuantity'"
-              class="h7 mx-0 text-brand-3"
-              align-h="center"
+              class="h7 mx-50 text-brand-3"
+              align-h="end"
             >
               {{ $formatNumberToLocale(reportInventoryInfo.totalQuantity) }}
             </b-row>
 
             <b-row
               v-else-if="props.column.field === 'packetQuantity'"
-              class="h7 mx-0 text-brand-3"
-              align-h="center"
+              class="h7 mx-50 text-brand-3"
+              align-h="end"
             >
               {{ $formatNumberToLocale(reportInventoryInfo.totalPackageQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'unitQuantity'"
-              class="h7 mx-0 text-brand-3"
-              align-h="center"
+              class="h7 mx-50 text-brand-3"
+              align-h="end"
             >
               {{ $formatNumberToLocale(reportInventoryInfo.totalUnitQuantity) }}
             </b-row>
@@ -269,8 +280,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng packet',
@@ -280,8 +291,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng lẻ',
@@ -291,8 +302,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Giá',
@@ -344,22 +355,22 @@ export default {
           label: 'Tồn kho min',
           field: 'minInventory',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Tồn kho max',
           field: 'maxInventory',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right',
+          tdClass: 'text-right',
         },
         {
           label: 'Báo cáo',
           field: 'warning',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-center',
+          tdClass: 'text-center',
         },
       ],
       rows: [],

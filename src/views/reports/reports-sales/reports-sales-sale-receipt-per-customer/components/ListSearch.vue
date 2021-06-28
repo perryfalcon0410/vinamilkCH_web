@@ -132,7 +132,7 @@
             <b-form-input
               v-model="customerCode"
               class="h7 text-brand-3"
-              placeholder="Nhập mã khách hàng"
+              placeholder="Nhập mã/tên khách hàng"
               @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append

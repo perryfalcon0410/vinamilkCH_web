@@ -26,6 +26,7 @@
             class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
             variant="someThing"
             size="sm"
+            :disabled="reportInventory.length === 0"
             @click="exportExcel"
           >
             <b-icon-file-earmark-x-fill />

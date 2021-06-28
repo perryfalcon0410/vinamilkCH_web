@@ -22,7 +22,7 @@
         <p class="my-1">
           Từ ngày {{ $formatISOtoVNI(commonInfo.fromDate) }} đến {{ $formatISOtoVNI(commonInfo.toDate) }}
         </p>
-        <p>Ngày in : {{ $formatISOtoVNI(commonInfo.printDate, true) }}</p>
+        <p>Ngày in : {{ $formatPrintDate(commonInfo.printDate) }}</p>
       </div>
 
       <!-- START - Invisible element to align title -->

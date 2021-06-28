@@ -76,6 +76,11 @@
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
+            <div
+              v-else-if="props.column.field === 'customerName' || props.column.field === 'address'"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -225,6 +230,7 @@ export default {
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
+          width: '10rem',
         },
         {
           label: 'Địa chỉ',
@@ -232,6 +238,7 @@ export default {
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
+          width: '12rem',
         },
       ],
       lastCol: {

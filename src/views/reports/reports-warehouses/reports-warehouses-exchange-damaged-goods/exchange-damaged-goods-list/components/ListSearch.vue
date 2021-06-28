@@ -151,7 +151,7 @@
           sm="4"
         >
           <div class="h7 mt-sm-1 mt-xl-0">
-            Mã sản phẩm
+            Sản phẩm
           </div>
           <b-input-group
             class="input-group-merge"
@@ -193,7 +193,7 @@
           </div>
           <b-button
             id="form-button-search"
-            class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
+            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
             variant="someThing"
             :disabled="invalid"
             style="height: 30px;"

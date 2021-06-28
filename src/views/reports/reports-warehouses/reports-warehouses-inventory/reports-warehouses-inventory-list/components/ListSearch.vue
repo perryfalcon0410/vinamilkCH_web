@@ -34,7 +34,6 @@
               <b-input-group
                 id="form-input-date"
                 class="input-group-merge"
-                size="sm"
                 @keypress="$onlyDateInput"
               >
                 <b-input-group-prepend
@@ -47,7 +46,7 @@
                   v-model="date"
                   :config="configDate"
                   :state="touched ? passed : null"
-                  class="form-control h9"
+                  class="form-control h7"
                   placeholder="Chọn ngày"
                 />
                 <b-input-group-append
@@ -75,7 +74,6 @@
           </div>
           <b-input-group
             class="input-group-merge"
-            size="sm"
           >
             <b-form-input
               v-model="productCodes"
@@ -113,11 +111,9 @@
           </div>
           <b-button
             id="form-button-search"
-            class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
+            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
             variant="someThing"
-            size="sm"
             :disabled="invalid"
-            style="height: 30px;"
             @click="onClickSearchButton"
           >
             <b-icon-search class="mr-50" />
