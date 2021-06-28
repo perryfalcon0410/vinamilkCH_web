@@ -377,19 +377,30 @@
                 </b-col>
 
                 <b-col>
-                  <b-input-group class="input-group-merge">
-                    <b-form-input
-                      v-model="pay.accumulate.accumulatePoint"
-                      disabled
-                    />
-                    <cleave
-                      v-model="pay.accumulate.accumulateAmount"
-                      class="form-control pl-1"
-                      :raw="true"
-                      :options="options.number"
-                      @change.native="onChangeAccumulateAmount()"
-                    />
-                  </b-input-group>
+                  <b-row no-gutters>
+                    <b-col
+                      cols="6"
+                      class="h7"
+                    >
+                      <b-form-input
+                        v-model="pay.accumulate.accumulatePoint"
+                        disabled
+                      />
+                    </b-col>
+                    <b-col
+                      cols="6"
+                      class="h7"
+                    >
+                      <cleave
+                        v-model="pay.accumulate.accumulateAmount"
+                        class="form-control pl-1"
+                        :raw="true"
+                        :options="options.number"
+                        @change.native="onChangeAccumulateAmount()"
+                      />
+                    </b-col>
+                  </b-row>
+
                 </b-col>
               </b-row>
             </b-form-group>
@@ -408,12 +419,14 @@
                   <strong>Voucher</strong>
                 </b-col>
 
-                <b-col class="">
+                <b-col>
                   <b-row
                     no-gutters
                   >
-
-                    <b-col>
+                    <b-col
+                      cols="6"
+                      class="h7"
+                    >
                       <b-input-group class="input-group-merge">
                         <b-input-group-prepend
                           is-text
@@ -426,12 +439,14 @@
                         </b-input-group-prepend>
                         <b-form-input
                           v-model="pay.voucher.voucherSerials"
-                          disabled
+                          readonly
                         />
                       </b-input-group>
                     </b-col>
-
-                    <b-col>
+                    <b-col
+                      cols="6"
+                      class="h7"
+                    >
                       <cleave
                         v-model="pay.voucher.totalVoucherAmount"
                         class="form-control pl-1"
@@ -460,31 +475,35 @@
                 </b-col>
 
                 <b-col>
-                  <b-input-group
-                    class="input-group-merge"
-                  >
-                    <b-form-input
-                      v-model="pay.discount.discountCode"
-                      class="form-control-merge"
-                      @keyup.enter="searchDiscount"
-                    />
-                    <b-input-group-append
-                      is-text
-                    >
-                      <b-icon-x
-                        scale="1.0"
-                        class="cursor-pointer"
-                        @click="resetDiscount"
+                  <b-row no-gutters>
+                    <b-col>
+                      <b-input-group class="input-group-merge">
+                        <b-form-input
+                          v-model="pay.discount.discountCode"
+                          class="form-control-merge"
+                          @keyup.enter="searchDiscount"
+                        />
+                        <b-input-group-append
+                          is-text
+                        >
+                          <b-icon-x
+                            scale="1.0"
+                            class="cursor-pointer"
+                            @click="resetDiscount"
+                          />
+                        </b-input-group-append>
+                      </b-input-group>
+                    </b-col>
+                    <b-col>
+                      <cleave
+                        v-model="pay.discount.discountAmount"
+                        class="form-control pl-1"
+                        :raw="true"
+                        :options="options.number"
+                        disabled
                       />
-                    </b-input-group-append>
-                    <cleave
-                      v-model="pay.discount.discountAmount"
-                      class="form-control"
-                      :raw="true"
-                      :options="options.number"
-                      disabled
-                    />
-                  </b-input-group>
+                    </b-col>
+                  </b-row>
                 </b-col>
               </b-row>
             </b-form-group>
@@ -532,14 +551,20 @@
                   <b-row
                     no-gutters
                   >
-                    <b-col>
+                    <b-col
+                      cols="6"
+                      class="h7"
+                    >
                       <tree-select
                         v-model="pay.salePayment.salePaymentType"
                         :options="salePaymentTypeOptions"
                       />
                     </b-col>
 
-                    <b-col>
+                    <b-col
+                      cols="6"
+                      class="h7"
+                    >
                       <cleave
                         v-model="pay.salePayment.salePaymentAmount"
                         class="form-control"
@@ -597,6 +622,7 @@
         class="mx-auto d-print-none"
       >
         <b-button
+          ref="btnPrintSaleOrderTemp"
           variant="none"
           class="d-flex align-items-center ml-1 text-uppercase btn-brand-1"
           :disabled="isDisabledPrintTempBtn"
@@ -899,7 +925,7 @@ export default {
   watch: {
     getDiscount() {
       this.pay.discount.discountCode = this.getDiscount.discountCode
-      this.pay.discount.discountAmount = this.getDiscount.discountAmount
+      this.pay.discount.discountAmount = this.getDiscount.discountValue
     },
     totalOrderPrice() {
       this.pay.totalAmount = this.totalOrderPrice
@@ -1002,17 +1028,20 @@ export default {
       this.printSaleData = { ...this.getPrintSaleData }
     },
     getCreateSale() {
-      this.pay.saleOrderId = this.getCreateSale.orderId
-      if (this.isPrint) {
-        this.PRINT_SALES_RECEIPT_ACTION({
-          data: {
-            salesReceiptId: this.pay.saleOrderId,
-            formId: this.formId,
-            ctrlId: this.ctrlId,
-          },
-          onSuccess: () => {
-          },
-        })
+      if (this.getCreateSale.orderId) {
+        toasts.success('Lưu đơn hàng thành công')
+        this.pay.saleOrderId = this.getCreateSale.orderId
+        if (this.isPrint) {
+          this.PRINT_SALES_RECEIPT_ACTION({
+            data: {
+              salesReceiptId: this.pay.saleOrderId,
+              formId: this.formId,
+              ctrlId: this.ctrlId,
+            },
+            onSuccess: () => {
+            },
+          })
+        }
       }
     },
     orderProducts: {
@@ -1062,7 +1091,30 @@ export default {
     this.isDisabledRePrintBtn = true
     window.addEventListener('keydown', e => {
       if (e.key === 'F7') {
-        this.printSaleOrderTemp()
+        if (!this.isPaid) {
+          this.printSaleOrderTemp()
+        }
+      }
+    })
+    window.addEventListener('keydown', e => {
+      if (e.key === 'F8') {
+        if (!this.isPaid && Number(this.pay.extraAmount) > 0) {
+          this.createSaleOrder()
+        }
+      }
+    })
+    window.addEventListener('keydown', e => {
+      if (e.key === 'F9') {
+        if (!this.isPaid && Number(this.pay.extraAmount) > 0) {
+          this.createSaleOrderAndPrint()
+        }
+      }
+    })
+    window.addEventListener('keydown', e => {
+      if (e.key === 'F10') {
+        if (this.isPaid) {
+          this.rePrintSaleOrder()
+        }
       }
     })
   },
@@ -1308,25 +1360,6 @@ export default {
       this.pay.extraAmount = Number(this.pay.salePayment.salePaymentAmount) - Number(this.pay.needPaymentAmount)
       this.isDisabledPaymentBtn = Number(this.pay.extraAmount) < 0
       this.isDisabledPrintAndPaymentBtn = Number(this.pay.extraAmount) < 0
-      if (this.pay.extraAmount >= 0) {
-        window.addEventListener('keydown', e => {
-          if (e.key === 'F9') {
-            this.createSaleOrder()
-          }
-          if (e.key === 'F8') {
-            this.createSaleOrderAndPrint()
-          }
-        })
-      } else {
-        window.removeEventListener('keydown', e => {
-          if (e.key === 'F9') {
-            this.createSaleOrder()
-          }
-          if (e.key === 'F8') {
-            this.createSaleOrderAndPrint()
-          }
-        })
-      }
     },
 
     createSaleOrder() {
@@ -1376,22 +1409,6 @@ export default {
             this.isDisabledPrintTempBtn = true
             this.isDisabledPaymentBtn = true
             this.isPaid = true
-            window.removeEventListener('keydown', e => {
-              if (e.key === 'F7') {
-                this.printSaleOrderTemp()
-              }
-              if (e.key === 'F9') {
-                this.createSaleOrder()
-              }
-              if (e.key === 'F8') {
-                this.createSaleOrderAndPrint()
-              }
-            })
-            window.addEventListener('keydown', e => {
-              if (e.key === 'F10') {
-                this.rePrintSaleOrder()
-              }
-            })
           },
         })
       }
