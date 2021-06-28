@@ -15,8 +15,8 @@ export default [
     component: () => import('@/views/auth/reset-password/ResetPassword.vue'),
     meta: {
       layout: 'full',
-      resource: 'Auth',
-      redirectIfLoggedIn: true,
+      resource: 'ResetPassword',
+      // redirectIfLoggedIn: true,
     },
   },
   {

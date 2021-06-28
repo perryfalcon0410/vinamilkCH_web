@@ -226,6 +226,12 @@ export default {
       roles: [],
       permissions: [
         {
+          id: 0,
+          formCode: 'ResetPassword', // Đổi mật khẩu
+          orderNumber: 0,
+          controls: [],
+        },
+        {
           id: 1,
           formCode: 'DashboardEcommerce', // Trang chủ - Thương mại điện tử
           orderNumber: 1,

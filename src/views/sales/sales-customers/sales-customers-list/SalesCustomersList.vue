@@ -266,7 +266,7 @@ export default {
         {
           label: 'Nhóm',
           field: 'customerTypeId',
-          formatFn: value => this.$store.getters[`${CUSTOMER}/${CUSTOMER_TYPES_LABEL_GETTER}`](value),
+          formatFn: this.$store.getters[`${CUSTOMER}/${CUSTOMER_TYPES_LABEL_GETTER}`],
         },
         {
           label: 'Ngày tạo',
