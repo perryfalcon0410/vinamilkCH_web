@@ -11,8 +11,10 @@
     />
     <!-- END - Search -->
 
+    <print-form-report-output-store />
+
     <!-- START - Report Output list -->
-    <div class="bg-white rounded shadow rounded my-1">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
@@ -223,6 +225,10 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+
+import PrintFormReportOutputStore from '@core/components/print-form/PrintFormReportOutputStore.vue'
+import ReportsWarehousesOutputListSearch from './components/ReportsWarehousesOutputListSearch.vue'
+
 import {
   REPORT_OUTPUT_GOODS,
   // Getters
@@ -232,11 +238,11 @@ import {
   EXPORT_OUTPUT_GOODS_ACTION,
   PRINT_OUTPUT_GOODS_ACTION,
 } from '../store-module/type'
-import ReportsWarehousesOutputListSearch from './components/ReportsWarehousesOutputListSearch.vue'
 
 export default {
   components: {
     ReportsWarehousesOutputListSearch,
+    PrintFormReportOutputStore,
   },
   data() {
     return {
@@ -494,6 +500,15 @@ export default {
       this.EXPORT_OUTPUT_GOODS_ACTION({ ...this.decentralization, ...this.searchOptions })
     },
     onClickPrintExportButton() {
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_OUTPUT_GOODS_ACTION({
+        ...this.decentralization,
+        ...this.searchOptions,
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
     },
   },
 }
