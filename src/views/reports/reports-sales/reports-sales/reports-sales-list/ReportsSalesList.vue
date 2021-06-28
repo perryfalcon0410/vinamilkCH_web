@@ -80,41 +80,53 @@
             slot="column-filter"
             slot-scope="props"
           >
-            <b-row
+            <div
               v-show="salesPagination.totalElements"
               v-if="props.column.field === 'quantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ totalQuantity }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
               v-show="salesPagination.totalElements"
               v-else-if="props.column.field === 'total'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ total }}
-            </b-row>
-            <b-row
+            </div>
+            <div
               v-show="salesPagination.totalElements"
               v-else-if="props.column.field === 'promotion'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ totalPromotion }}
-            </b-row>
-            <b-row
+            </div>
+            <div
               v-show="salesPagination.totalElements"
               v-else-if="props.column.field === 'amount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ totalAmount }}
-            </b-row>
+            </div>
           </template>
           <!-- START - Column filter -->
+          <!-- START - Custom row -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'quantity' || props.column.field === 'total' || props.column.field === 'promotion' || props.column.field === 'amount'"
+              style="padding-right: 4px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Custom row -->
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"
@@ -237,151 +249,100 @@ export default {
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Ngày bán',
           field: 'sellDate',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Điện thoại',
           field: 'phoneNumber',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Ngành hàng',
           field: 'industry',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
           field: 'unit',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá bán',
           field: 'price',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tổng cộng',
           field: 'total',
-          sortable: false,
+          type: 'number',
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Khuyến mãi',
           field: 'promotion',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thanh toán',
           field: 'amount',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Mã nhân viên',
           field: 'userCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Tên nhân viên',
           field: 'userName',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Nhóm sản phẩm',
           field: 'productGroup',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Số đơn online',
           field: 'onlineCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Kênh bán',
           field: 'sellChannel',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
       ],
       sales: [],
@@ -479,8 +440,8 @@ export default {
       this.EXPORT_REPORT_SALES_ACTION({
         collecter: this.paginationData.collecter,
         customerKW: this.paginationData.customerKW?.trim(),
-        fromDate: reverseVniDate(this.paginationData.fromDate),
-        toDate: reverseVniDate(this.paginationData.toDate),
+        fromDate: this.paginationData.fromDate,
+        toDate: this.paginationData.toDate,
         fromInvoiceSales: this.paginationData.fromInvoiceSales,
         toInvoiceSales: this.paginationData.toInvoiceSales,
         orderNumber: this.paginationData.orderNumber?.trim(),

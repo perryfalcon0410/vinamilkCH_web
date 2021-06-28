@@ -53,229 +53,305 @@
       align-h="end"
       align-v="end"
     >
-      <div>
-        Tổng cộng: <strong>{{ reportTotalInfoData.beginningAmount }}</strong>
-      </div>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.beginningQty }}</strong>
+      <strong>
+        Tổng cộng: <strong>{{ reportTotalInfoData.beginningQty }}</strong>
+      </strong>
+      <strong class="text-right mx-4">{{ reportTotalInfoData.beginningAmount }}</strong>
       <strong class="text-right mx-4">{{ reportTotalInfoData.impTotalQty }}</strong>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.impAmount }}</strong>
+      <strong class="text-right mx-4">{{ reportTotalInfoData.impAdjustmentAmount }}</strong>
       <strong class="text-right mx-4">{{ reportTotalInfoData.expTotalQty }}</strong>
       <strong class="text-right mx-4">{{ reportTotalInfoData.expSalesAmount }}</strong>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.expAdjustmentAmount }}</strong>
+      <strong class="text-right mx-4">{{ reportTotalInfoData.expExchangeAmount }}</strong>
+      <strong class="text-right mx-4">{{ reportTotalInfoData.expExchangeQty }}</strong>
       <strong class="text-right mx-4">{{ reportTotalInfoData.endingQty }}</strong>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.endingAmount }}</strong>
+      <strong class="text-right">{{ reportTotalInfoData.endingAmount }}</strong>
     </b-row>
     <!-- END - Total view -->
 
     <!-- START - Table 1 -->
 
-    <table
-      class="mt-1"
-      style="width: 100%"
+    <div
+      v-for="cats in reportInputOutputinventoryData"
+      :key="cats.catId"
     >
-      <thead>
-        <!-- START - Header -->
-        <tr>
-          <th colspan="4" />
-          <th
-            colspan="3"
-            class="text-center"
-          >
-            Đầu kỳ
-          </th>
-          <th
-            colspan="5"
-            class="text-center"
-          >
-            Nhập trong kỳ
-          </th>
-          <th
-            colspan="8"
-            class="text-center"
-          >
-            Xuất trong kỳ
-          </th>
-          <th
-            colspan="3"
-            class="text-center"
-          >
-            Cuối kỳ
-          </th>
-        </tr>
-        <tr>
-          <th
-            style="width: 1%"
-            class="px-1"
-          >
-            STT
-          </th>
-          <th class="px-1">
-            Mã SP
-          </th>
-          <th class="px-1">
-            Tên SP
-          </th>
-          <th class="px-1">
-            ĐVT
-          </th>
-          <th class="text-right px-2">
-            SL
-          </th>
-          <th class="text-right px-1">
-            Giá
-          </th>
-          <th class="text-right px-1 w-15">
-            T.Tiền
-          </th>
-          <th class="text-right px-1">
-            Tổng
-          </th>
-          <th class="text-right px-1">
-            SL
-          </th>
-          <th class="text-right px-1">
-            T.Tiền
-          </th>
-          <th class="text-right px-1">
-            ĐC
-          </th>
-          <th class="text-right px-1">
-            T.Tiền
-          </th>
-          <th class="text-right px-1">
-            Tổng
-          </th>
-          <th class="text-right px-1">
-            BH
-          </th>
-          <th class="text-right px-1">
-            T.Tiền
-          </th>
-          <th class="text-right px-1">
-            KM
-          </th>
-          <th class="text-right px-1">
-            T.Tiền
-          </th>
-          <th class="text-right px-1">
-            ĐC
-          </th>
-          <th class="text-right px-1">
-            T.Tiền
-          </th>
-          <th class="text-right px-1">
-            ĐH
-          </th>
-          <th class="text-right px-1">
-            SL
-          </th>
-          <th class="text-right px-1">
-            Giá
-          </th>
-          <th class="text-right px-1">
-            T.Tiền
-          </th>
-        </tr>
-        <tr>
-          <th colspan="23">
-            <b-row
-              class="mx-0 py-1"
-              align-h="end"
-              align-v="end"
+      <table
+        class="mt-1"
+        style="width: 100%"
+      >
+        <thead>
+          <!-- START - Header -->
+          <tr>
+            <th colspan="4" />
+            <th
+              colspan="3"
+              class="text-center"
             >
-              <div>
-                Tổng cộng: <strong>{{ reportTotalInfoData.beginningAmount }}</strong>
-              </div>
-              <strong class="text-right mx-4">{{ reportTotalInfoData.beginningQty }}</strong>
-              <strong class="text-right mx-4">{{ reportTotalInfoData.impTotalQty }}</strong>
-              <strong class="text-right mx-4">{{ reportTotalInfoData.impAmount }}</strong>
-              <strong class="text-right mx-4">{{ reportTotalInfoData.expTotalQty }}</strong>
-              <strong class="text-right mx-4">{{ reportTotalInfoData.expSalesAmount }}</strong>
-              <strong class="text-right mx-4">{{ reportTotalInfoData.expAdjustmentAmount }}</strong>
-              <strong class="text-right mx-4">{{ reportTotalInfoData.endingQty }}</strong>
-              <strong class="text-right mx-4">{{ reportTotalInfoData.endingAmount }}</strong>
-            </b-row>
+              Đầu kỳ
+            </th>
+            <th
+              colspan="5"
+              class="text-center"
+            >
+              Nhập trong kỳ
+            </th>
+            <th
+              colspan="8"
+              class="text-center"
+            >
+              Xuất trong kỳ
+            </th>
+            <th
+              colspan="3"
+              class="text-center"
+            >
+              Cuối kỳ
+            </th>
+          </tr>
+          <tr>
+            <th
+              style="width: 1%"
+              class="px-1"
+            >
+              STT
+            </th>
+            <th class="px-1">
+              Mã SP
+            </th>
+            <th class="px-1">
+              Tên SP
+            </th>
+            <th class="px-1">
+              ĐVT
+            </th>
+            <th class="text-right px-2">
+              SL
+            </th>
+            <th class="text-right px-1">
+              Giá
+            </th>
+            <th class="text-right px-1">
+              T.Tiền
+            </th>
+            <th class="text-right px-1">
+              Tổng
+            </th>
+            <th class="text-right px-1">
+              SL
+            </th>
+            <th class="text-right px-1">
+              T.Tiền
+            </th>
+            <th class="text-right px-1">
+              ĐC
+            </th>
+            <th class="text-right px-1">
+              T.Tiền
+            </th>
+            <th class="text-right px-1">
+              Tổng
+            </th>
+            <th class="text-right px-1">
+              BH
+            </th>
+            <th class="text-right px-1">
+              T.Tiền
+            </th>
+            <th class="text-right px-1">
+              KM
+            </th>
+            <th class="text-right px-1">
+              T.Tiền
+            </th>
+            <th class="text-right px-1">
+              ĐC
+            </th>
+            <th class="text-right px-1">
+              T.Tiền
+            </th>
+            <th class="text-right px-1">
+              ĐH
+            </th>
+            <th class="text-right px-1">
+              SL
+            </th>
+            <th class="text-right px-1">
+              Giá
+            </th>
+            <th class="text-right px-1">
+              T.Tiền
+            </th>
+          </tr>
+        <!-- END - Header -->
+        </thead>
+        <tr>
+          <th
+            colspan="2"
+            class="text-right border-right-0"
+          >
+            Ngành hàng:
+          </th>
+          <th
+            colspan="2"
+            class="text-center border-0"
+          >
+            {{ cats.catName }}
+          </th>
+          <th
+            colspan="1"
+            class="text-right mx-2 border-0"
+          >
+            {{ cats.beginningQty }}
+          </th>
+          <th
+            colspan="1"
+            class="border-0"
+          />
+          <th
+            colspan="1"
+            class="text-right border-0"
+          >
+            {{ cats.beginningAmount }}
+          </th>
+          <th
+            colspan="1"
+            class="text-right border-0"
+          >
+            {{ cats.impTotalQty }}
+          </th>
+          <th
+            colspan="3"
+            class="border-0"
+          />
+          <th
+            colspan="1"
+            class="text-right border-0"
+          >
+            {{ cats.impAdjustmentAmount }}
+          </th>
+          <th
+            colspan="1"
+            class="text-right border-0"
+          >
+            {{ cats.expTotalQty }}
+          </th>
+          <th
+            colspan="2"
+            class="text-center border-0"
+          >
+            {{ cats.expSalesAmount }}
+          </th>
+          <th
+            colspan="2"
+            class="border-0"
+          />
+          <th
+            colspan="2"
+            class="text-center border-0"
+          >
+            {{ cats.expExchangeAmount }}
+          </th>
+          <th
+            colspan="1"
+            class="text-right border-0"
+          >
+            {{ cats.expExchangeQty }}
+          </th>
+          <th
+            colspan="1"
+            class="text-right border-0"
+          >
+            {{ cats.endingQty }}
+          </th>
+          <th
+            colspan="1"
+            class="border-0"
+          />
+          <th
+            colspan="1"
+            class="text-right border-left-0"
+          >
+            {{ cats.endingAmount }}
           </th>
         </tr>
-        <!-- END - Header -->
-      </thead>
-      <tbody>
-        <tr
-          v-for="(products, index) in reportInputOutputinventoryData"
-          :key="products.productCode"
-        >
-          <td class="px-1">
-            {{ index + 1 }}
-          </td>
-          <td class="px-1">
-            {{ products.productCode }}
-          </td>
-          <td class="px-1">
-            {{ products.productName }}
-          </td>
-          <td class="px-1">
-            {{ products.uom }}
-          </td>
-          <td class="px-1">
-            {{ $formatNumberToLocale(products.beginningQty) }}
-          </td>
-          <td class="px-1">
-            {{ $formatNumberToLocale(products.beginningPrice) }}
-          </td>
-          <td class="px-1">
-            {{ $formatNumberToLocale(products.beginningAmount) }}
-          </td>
-          <td class="px-1">
-            {{ $formatNumberToLocale(products.impTotalQty) }}
-          </td>
-          <td class="px-1">
-            {{ $formatNumberToLocale(products.impQty) }}
-          </td>
-          <td class="px-1">
-            {{ $formatNumberToLocale(products.impAmount) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.impAdjustmentQty) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.impAdjustmentAmount) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.expTotalQty) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.expSalesQty) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.expSalesAmount) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.expPromotionQty) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.expPromotionAmount) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.expAdjustmentQty) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.expAdjustmentAmount) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.expExchangeQty) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.endingQty) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.endingPrice) }}
-          </td>
-          <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.endingAmount) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        <tbody>
+          <tr
+            v-for="(products, index) in cats.products"
+            :key="products.productCode"
+          >
+            <td class="px-1">
+              {{ index + 1 }}
+            </td>
+            <td class="px-1">
+              {{ products.productCode }}
+            </td>
+            <td class="px-1">
+              {{ products.productName }}
+            </td>
+            <td class="px-1">
+              {{ products.uom }}
+            </td>
+            <td class="px-1">
+              {{ $formatNumberToLocale(products.beginningQty) }}
+            </td>
+            <td class="px-1">
+              {{ $formatNumberToLocale(products.beginningPrice) }}
+            </td>
+            <td class="px-1">
+              {{ $formatNumberToLocale(products.beginningAmount) }}
+            </td>
+            <td class="px-1">
+              {{ $formatNumberToLocale(products.impTotalQty) }}
+            </td>
+            <td class="px-1">
+              {{ $formatNumberToLocale(products.impQty) }}
+            </td>
+            <td class="px-1">
+              {{ $formatNumberToLocale(products.impAmount) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.impAdjustmentQty) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.impAdjustmentAmount) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.expTotalQty) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.expSalesQty) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.expSalesAmount) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.expPromotionQty) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.expPromotionAmount) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.expAdjustmentQty) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.expAdjustmentAmount) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.expExchangeQty) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.endingQty) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.endingPrice) }}
+            </td>
+            <td class="text-right px-1">
+              {{ $formatNumberToLocale(products.endingAmount) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <!-- END - Table 1 -->
 
     <!-- START - Fotter -->
@@ -336,8 +412,8 @@ export default {
       return {}
     },
     reportInputOutputinventoryData() {
-      if (this.PRINT_INPUT_OUTPUT_INVENTORY_GETTER.products) {
-        return this.PRINT_INPUT_OUTPUT_INVENTORY_GETTER.products
+      if (this.PRINT_INPUT_OUTPUT_INVENTORY_GETTER.cats) {
+        return this.PRINT_INPUT_OUTPUT_INVENTORY_GETTER.cats
       }
       return []
     },

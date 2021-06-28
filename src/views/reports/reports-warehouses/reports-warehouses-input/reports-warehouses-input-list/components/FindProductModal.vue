@@ -65,13 +65,26 @@
           >
             Tên sản phẩm
           </div>
-          <b-form-input
-            v-model="searchOptions.productName"
-            class="h7 text-brand-3 height-button-brand-1"
-            placeholder="Nhập tên sản phẩm"
-            trim
-            @keyup.enter="onSearchClick"
-          />
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model="searchOptions.productName"
+              class="h7 text-brand-3 height-button-brand-1"
+              placeholder="Nhập tên sản phẩm"
+              trim
+              @keyup.enter="onSearchClick"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="searchOptions.productName"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.productName = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
         </b-col>
         <!-- END - Product name -->
         <!-- START - Product cat -->
