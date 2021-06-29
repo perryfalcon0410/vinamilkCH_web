@@ -118,7 +118,7 @@
                 <b-row
                   v-if="props.column.field === 'numProduct'"
                   v-show="totalQuantity"
-                  class="mx-0 h7 text-brand-3"
+                  class="mx-50 h7 text-brand-3"
                   align-h="end"
                 >
                   {{ $formatNumberToLocale(totalQuantity) }}
@@ -154,8 +154,9 @@
                 </span>
                 <span v-if="props.column.field === 'function'">
                   <b-icon-trash-fill
+                    v-b-popover.hover.top="'Xóa'"
                     color="red"
-                    class="ml-1"
+                    class="ml-1 cursor-pointer"
                     @click="deleteProduct(props.index)"
                   />
                 </span>
@@ -218,7 +219,7 @@
                 <b-row
                   v-if="props.column.field === 'quantity'"
                   v-show="totalExchangeQuantity"
-                  class="mx-0 h7 text-brand-3"
+                  class="mx-50 h7 text-brand-3"
                   align-h="end"
                 >
                   {{ $formatNumberToLocale(totalExchangeQuantity) }}
@@ -228,7 +229,10 @@
                 slot="table-row"
                 slot-scope="props"
               >
-                <div v-if="props.column.field === 'quantity'">
+                <div
+                  v-if="props.column.field === 'quantity' || props.column.field === 'exchangeRate'"
+                  style="padding-right: 10px"
+                >
                   {{ props.formattedRow[props.column.field] }}
                 </div>
               </template>

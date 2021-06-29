@@ -48,6 +48,10 @@ export default {
     { id: '20', label: 'ZV20' },
     { id: '21', label: 'ZV21' },
   ],
+  printState: [
+    { id: '1', label: 'Đã in' },
+    { id: '0', label: 'Chưa in' },
+  ],
   pageSizeRecommendProducts: 8,
   pageNumberRecommendProducts: 0,
 }

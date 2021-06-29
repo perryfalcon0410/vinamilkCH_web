@@ -131,6 +131,7 @@
           >
             <b-form-input
               v-model="customerCode"
+              trim
               class="h7 text-brand-3"
               placeholder="Nhập mã/tên khách hàng"
               @keyup.enter="onClickSearchButton"
@@ -164,6 +165,7 @@
           >
             <b-form-input
               v-model="phoneNumber"
+              trim
               class="h7 text-brand-3"
               placeholder="Nhập SĐT khách hàng"
               @keyup.enter="onClickSearchButton"
@@ -199,12 +201,14 @@
               <b-input-group>
                 <b-form-input
                   v-model="min"
+                  trim
                   class="h7 text-brand-3"
                   @keyup.enter="onClickSearchButton"
                   @keypress="$onlyNumberInput"
                 />
                 <b-form-input
                   v-model="max"
+                  trim
                   class="h7 text-brand-3"
                   @keyup.enter="onClickSearchButton"
                   @keypress="$onlyNumberInput"
@@ -256,7 +260,6 @@ import {
 } from '@/@core/utils/validations/validations'
 import { reverseVniDate } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
-import toasts from '@core/utils/toasts/toasts'
 import {
   REPORT_SALES_SALE_RECEIPT,
   // GETTERS,
@@ -327,7 +330,6 @@ export default {
     this.GET_CUSTOMERS_TYPES_ACTION({ ...this.decentralization })
   },
   mounted() {
-    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
@@ -353,12 +355,8 @@ export default {
         phoneNumber: this.phoneNumber?.trim(),
         ...this.decentralization,
       }
-      if (searchData.toAmount >= searchData.fromAmount) {
-        this.updateSearchData(searchData)
-        this.GET_SALE_RECEIPTS_ACTION({ ...searchData, size: this.perPageSize })
-      } else {
-        toasts.error('Doanh số đến không hợp lệ')
-      }
+      this.updateSearchData(searchData)
+      this.GET_SALE_RECEIPTS_ACTION({ ...searchData, size: this.perPageSize })
     },
 
     onClickSearchButton() {

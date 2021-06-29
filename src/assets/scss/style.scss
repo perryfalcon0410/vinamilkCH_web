@@ -127,3 +127,11 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   }
 }
 // END - Input
+
+// sticky-position
+.move-column {
+  position: sticky;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+}

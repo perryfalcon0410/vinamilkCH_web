@@ -47,6 +47,9 @@
             perPage: paginationData.size,
             setCurrentPage: pageNumber,
           }"
+          :sort-options="{
+            enabled: false,
+          }"
           line-numbers
           :select-options="{
             enabled: true,
@@ -106,8 +109,14 @@
             slot="table-column"
             slot-scope="props"
           >
-            <div v-if="props.column.field == 'manipulation'">
-              <b-icon-bricks />
+            <div
+              v-if="props.column.field == 'name'"
+              style="max-width: 400px; min-width: 10rem"
+            />
+            <div
+              v-if="props.column.field == 'manipulation'"
+            >
+              <b-icon-bricks scale="1.25" />
             </div>
             <div v-else>
               {{ props.column.label }}
@@ -120,7 +129,7 @@
           >
             <span v-if="props.column.field == 'note'">
               <span>
-                <b-icon-file-earmark-excel
+                <b-icon-search
                   v-b-popover.hover="props.row.note"
                   class="cursor-pointer"
                   scale="1.5"
@@ -130,14 +139,16 @@
 
             <span v-else-if="props.column.field == 'noteHdd'">
               <span>
-                <b-icon-file-earmark-excel
+                <b-icon-search
                   v-b-popover.hover="props.row.noteHdd"
                   class="cursor-pointer"
                   scale="1.5"
                 />
               </span>
             </span>
-            <span v-else-if="props.column.field == 'manipulation'">
+            <span
+              v-else-if="props.column.field == 'manipulation'"
+            >
               <span>
                 <b-icon-eye-fill
                   v-b-popover.hover="'Chi tiết hóa đơn'"
@@ -330,7 +341,7 @@ export default {
           tdClass: 'text-right',
         },
         {
-          label: 'Tiển giảm giá',
+          label: 'Tiền giảm giá',
           field: 'discountMoney',
           type: 'number',
           thClass: 'text-right',
@@ -395,9 +406,8 @@ export default {
           label: 'Chức năng',
           field: 'manipulation',
           sortable: false,
-          width: '30px',
           thClass: 'text-center',
-          tdClass: 'text-center',
+          tdClass: 'move-column',
         },
       ],
     }
@@ -421,7 +431,7 @@ export default {
           discountMoney: this.$formatNumberToLocale(data.totalPromotion),
           moneyAccumulated: this.$formatNumberToLocale(data.customerPurchase),
           payments: this.$formatNumberToLocale(data.total),
-          print: (data.usedRedInvoice === true) ? 'Đã in' : 'Chưa in',
+          print: (data.usedRedInvoice === true) ? 'Có' : 'Không',
           noteHdd: data.redInvoiceRemark,
           company: data.redInvoiceCompanyName,
           taxCode: data.redInvoiceTaxCode,

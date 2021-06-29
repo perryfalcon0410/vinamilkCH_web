@@ -186,6 +186,7 @@
         </div>
         <tree-select
           v-model="printStateSelected"
+          placeholder="Tất cả"
           :options="printOptions"
         />
       </b-col>
@@ -227,7 +228,7 @@ import {
 } from 'vuex'
 import { reverseVniDate } from '@/@core/utils/filter'
 
-import receiptData from '@/@db/receipt'
+import receiptData from '@/@db/sale'
 
 import {
   SALESRECEIPTS,
@@ -279,7 +280,6 @@ export default {
   },
 
   mounted() {
-    this.printStateSelected = this.printOptions[0].id
     this.onSearch()
     this.configToDate = {
       ...this.configToDate,

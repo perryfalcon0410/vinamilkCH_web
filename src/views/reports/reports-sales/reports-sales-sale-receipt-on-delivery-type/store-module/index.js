@@ -75,7 +75,7 @@ export default {
         .exportReportSalesOnDeliveryType(val)
         .then(response => response.data)
         .then(res => {
-          const fileName = `Bao_cao_doanh_so_theo_loai_giao_hang_Filled_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
+          const fileName = `Bao_cao_doanh_so_theo_loai_giao_hang_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
           FileSaver.saveAs(blob, fileName)
         })

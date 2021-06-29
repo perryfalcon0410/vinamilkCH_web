@@ -20,11 +20,12 @@
         align-v="center"
       >
         <strong class="text-brand-1">
-          Doanh số hóa đơn theo khách hàng
+          Doanh số hóa đơn theo loại giao hàng
         </strong>
         <b-button
           class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
           variant="someThing"
+          :disabled="reportsSalesReceiptOnDeliveryType.length === 0"
           @click="onClickExcelExportButton"
         >
           <b-icon-file-earmark-x-fill class="mr-50" />
@@ -90,8 +91,8 @@
             <b-row
               v-if="props.column.field === 'receiptCode'"
               v-show="totalInfo"
-              class="h7 text-brand-3 mr-3"
-              align-h="center"
+              class="h7 text-brand-3 px-80"
+              align-h="start"
             >
               {{ $formatNumberToLocale(totalInfo.saleOrder) }}
             </b-row>
@@ -233,8 +234,8 @@ export default {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left',
+          tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',

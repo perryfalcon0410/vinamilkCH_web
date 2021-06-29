@@ -199,7 +199,7 @@
             <b-form-input
               v-model="phoneNumber"
               class="h7 text-brand-3"
-              placeholder="Nhập SĐT khách hàng"
+              placeholder="Nhập chính xác 4 số cuối"
               @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append
@@ -290,7 +290,6 @@ import {
 } from 'vuex'
 import { reverseVniDate } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
-import toasts from '@core/utils/toasts/toasts'
 import {
   REPORT_SALES_SALE_ON_DELIVERY_TYPE,
   // GETTERS,
@@ -360,7 +359,6 @@ export default {
     this.GET_SALES_DELIVERY_TYPES_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
   },
   mounted() {
-    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
@@ -388,12 +386,8 @@ export default {
         formId: this.formId,
         ctrlId: this.ctrlId,
       }
-      if (searchData.toTotal >= searchData.fromTotal) {
-        this.updateSearchData(searchData)
-        this.GET_SALE_ON_DELIVERY_TYPE_ACTION({ ...searchData, size: this.perPageSize })
-      } else {
-        toasts.error('Doanh số đến không hợp lệ')
-      }
+      this.updateSearchData(searchData)
+      this.GET_SALE_ON_DELIVERY_TYPE_ACTION({ ...searchData, size: this.perPageSize })
     },
 
     onClickSearchButton() {

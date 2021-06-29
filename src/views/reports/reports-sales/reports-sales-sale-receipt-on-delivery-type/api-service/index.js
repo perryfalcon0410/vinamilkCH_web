@@ -19,8 +19,13 @@ export default {
   },
   exportReportSalesOnDeliveryType(args) {
     return axios.get(exportReportSalesOnDeliveryTypeEndpoint, {
-      responseType: 'blob',
       params: formatURLParams(args),
+      responseType: 'blob',
+      config: {
+        header: {
+          'Content-Type': 'application/json',
+        },
+      },
     })
   },
 }
