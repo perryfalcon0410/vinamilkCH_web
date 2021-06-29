@@ -115,6 +115,10 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   align-items: center;
   justify-content: center;
 }
+.visited-action {
+  color: #6e6b7b !important;
+  background-color: #fff !important;
+}
 // END - Button
 
 // START - Input
@@ -134,4 +138,7 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   right: 0;
   background: #fff;
   border: 1px solid #ccc;
+}
+.check-auto-suggesst {
+  max-height: none !important;
 }

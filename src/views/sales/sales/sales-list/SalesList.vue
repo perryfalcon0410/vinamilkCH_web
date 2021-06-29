@@ -27,6 +27,7 @@
               class:'form-control pr-3 h7',
               placeholder:'Tìm sản phẩm (F3)',
             }"
+            :component-attr-class-autosuggest-results="(productsSearchLength < 11) ? 'autosuggest__results check-auto-suggesst' : 'autosuggest__results'"
             :salemt-promotion-object-selected="salemtPromotionObjectSelected"
             @input="onChangeKeyWord"
             @selected="onclickAddProduct"
@@ -90,25 +91,48 @@
 
       <!-- START - Bills -->
       <b-row
-        v-for="(bill, index) in bills"
-        :key="index"
+        v-for="bill in bills"
+        :key="bill.id"
       >
-        <b-button
-          variant="light"
-          class="d-flex align-items-center justify-content-center rounded shadow mr-1 px-1"
-          @click="clickBillButton(bill.id)"
+        <b-button-group
+          variant="someThing"
+          :class="`${bill.class}`"
+          class=" shadow-brand-1 bg-brand-1 text-white d-flex align-items-center justify-content-center rounded shadow mr-1 px-1 ml-2"
         >
-          Hóa đơn {{ index + 1 }}
+          <b-button
+            variant="someThing"
+            :class="`${bill.class}`"
+            class="bg-brand-1 text-white d-flex align-items-center justify-content-center"
+            @click="clickBillButton(bill.id)"
+          >
+            Hóa đơn {{ bill.id }}
+            <!-- <b-icon-x
+              class="cursor-pointer ml-1"
+              font-scale="1.6"
+              @click="onClickDeleteButton(bill.id)"
+            /> -->
+          </b-button>
           <b-icon-x
             v-b-popover.hover="'Xóa'"
             class="cursor-pointer ml-1"
             font-scale="1.6"
-            @click="onClickDeleteButton(index)"
+            @click="onClickDeleteButton(bill.id)"
           />
-        </b-button>
+        </b-button-group>
 
+        <!-- <div>
+          <b-icon-plus
+            font-scale="2.5"
+            class="cursor-pointer"
+            @click="onClickAddButton()"
+          />
+        </div> -->
+
+      </b-row>
+      <b-row class="ml-1">
         <div>
           <b-icon-plus
+            v-b-popover.hover.right="'Thêm mới hóa đơn'"
             font-scale="2.5"
             class="cursor-pointer"
             @click="onClickAddButton()"
@@ -330,6 +354,7 @@ export default {
       productImage: null,
       checkStockTotal: true,
       customerId: null,
+      currentCustomerId: null,
       customer: {},
       isCheckShopId: false, // check shop default
       currentCustomer: {},
@@ -404,7 +429,6 @@ export default {
           sortable: false,
         },
       ],
-
       searchOptions: {
         keyWord: '',
         checkStockTotal: true,
@@ -420,6 +444,7 @@ export default {
       productInfos: [],
       productInfoTypeOptions: saleData.productInfoType,
       productsSearch: [{ data: '' }],
+      productsSearchLength: 0,
 
       isActive: false,
       bills: [
@@ -427,6 +452,7 @@ export default {
           id: 1,
           products: [],
           active: true,
+          class: 'visited-action',
         },
       ],
 
@@ -537,6 +563,8 @@ export default {
     },
     getProductSearch() {
       this.productsSearch = [...this.getProductSearch]
+      this.productsSearchLength = this.productsSearch[0].data.length
+      this.getPriceOnChangeCustomer()
     },
     getProducts() {
       this.orderProducts = []
@@ -629,6 +657,7 @@ export default {
     },
     checkShopId() {
       this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+      this.searchOptions.size = 10
       if (this.isCheckShopId === true) {
         this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
       }
@@ -665,15 +694,36 @@ export default {
 
     onClickAddButton() {
       const lastIteminBill = this.bills[this.bills.length - 1]
+      if (lastIteminBill) {
+        this.bills.push({
+          id: lastIteminBill.id + 1,
+          products: [],
+          active: false,
+          class: '',
+        })
+        this.clickBillButton(lastIteminBill.id + 1)
+        return
+      }
       this.bills.push({
-        id: lastIteminBill.id + 1,
+        id: 1,
         products: [],
         active: false,
+        class: 'visited-action',
       })
     },
 
-    onClickDeleteButton(index) {
-      if (index !== 0) {
+    onClickDeleteButton(id) {
+      if (this.bills.length > 1) {
+        const index = this.bills.findIndex(item => item.id === id)
+        if (index > 0) {
+          if (this.bills[index].class === 'visited-action') {
+            this.bills[index - 1].class = 'visited-action'
+            this.clickBillButton(this.bills[index - 1].id)
+          }
+        } else {
+          this.bills[index + 1].class = 'visited-action'
+          this.clickBillButton(this.bills[index + 1].id)
+        }
         this.bills.splice(index, 1)
       }
     },
@@ -691,6 +741,7 @@ export default {
     getCustomerDefault(val) {
       this.customerId = val.id
       this.searchOptions.customerId = this.customerId
+      this.currentCustomerId = this.customerId
       this.GET_PRODUCTS_ACTION(this.searchOptions)
 
       // check customers dafault
@@ -703,10 +754,26 @@ export default {
 
     getOnlineCustomer(val) {
       this.onlineOrderId = val.id
+      this.searchOptions.customerId = val.id
+      // const { usedShop } = this.loginInfo
+
+      // if (val.id !== null) {
+      //   if (val.shopId === usedShop.id) {
+      //     if (usedShop.editable) {
+      //       this.editOnlinePermission = true
+      //     } else {
+      //       this.editOnlinePermission = false
+      //     }
+      //   }
+      // }
     },
 
-    getCustomerTypeInfo(id) {
-      this.customerType = id
+    getCustomerTypeInfo(val) {
+      this.customerType = val.customerTypeId
+      this.searchOptions.customerId = val.id
+      this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+      this.searchOptions.size = null
+      this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
       // const listProducts = this.getProducts
       // const customerTypeId = id
       // const params = {
@@ -735,12 +802,16 @@ export default {
         this.isCheckShopId = true
         this.searchOptions.customerId = data.id
         this.editOnlinePermission = true
+        this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+        this.searchOptions.size = null
+        this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
       } else {
         this.isCheckShopId = false
       }
     },
 
     billHandle(bill, index) {
+      console.log('abc')
       return {
         id: bill.id,
         index,
@@ -755,6 +826,7 @@ export default {
             ...bill,
             products: this.orderProducts,
             active: false,
+            class: '',
           }
         }
         return bill
@@ -766,6 +838,7 @@ export default {
           return {
             ...bill,
             active: true,
+            class: 'visited-action',
           }
         }
         return bill
@@ -813,6 +886,24 @@ export default {
     onClickAgreeButton() {
       this.orderProducts = []
       this.$refs.salesNotifyModal.hide()
+    },
+    getPriceOnChangeCustomer() {
+      if (this.searchOptions.customerId !== this.currentCustomerId) {
+        this.productsSearch[0].data.forEach(item => {
+          const index = this.orderProducts.findIndex(data => data.productCode === item.productCode)
+          if (index !== -1) {
+            const itemFind = this.productsSearch[0].data.find(data => data.productCode === this.orderProducts[index].productCode)
+            this.orderProducts[index].productUnitPrice = itemFind.productUnitPrice
+            this.orderProducts[index].sumProductTotalPrice = itemFind.sumProductTotalPrice
+            this.orderProducts[index].sumProductUnitPrice = itemFind.sumProductUnitPrice
+            this.orderProducts[index].productTotalPrice = itemFind.productTotalPrice
+
+            this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
+            this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
+          }
+        })
+        this.currentCustomerId = this.searchOptions.customerId
+      }
     },
   },
 }

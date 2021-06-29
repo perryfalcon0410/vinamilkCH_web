@@ -115,6 +115,7 @@
           <vue-good-table
             :columns="columns"
             :rows="customers"
+            mode="remote"
             style-class="vgt-table striped"
             :pagination-options="{
               enabled: true

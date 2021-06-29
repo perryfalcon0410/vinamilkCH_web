@@ -440,6 +440,30 @@
     </validation-observer>
     <!-- END - Form and list -->
 
+    <!-- START - Customer Modal Close -->
+    <b-modal
+      v-model="isModalShow"
+      title="Thông báo"
+    >
+      Thông tin sẽ không được cập nhật khi rời trang
+      <template #modal-footer>
+        <b-button
+          variant="someThing"
+          class="btn-brand-1 aligns-items-button-center"
+          @click="onClickAgreeButton()"
+        >
+          Đồng ý
+        </b-button>
+        <b-button
+          class="aligns-items-button-center"
+          @click="isModalShow = !isModalShow"
+        >
+          Đóng
+        </b-button>
+      </template>
+    </b-modal>
+    <!-- END - Customer Modal Close -->
+
     <bill-receipts-modal @productsOfBillSaleData="insertProducsFromBillSales($event)" />
 
     <!-- START - Print form -->
@@ -496,6 +520,8 @@ export default {
       idCreate: {},
       isPrintData: false,
       isDisabled: false,
+      isModalShow: false,
+      isFieldCheck: true,
       inputSearchFocusedSP: false,
       inputSearchFocusedKH: false,
       saleOptions: saleData.salePaymentType,
@@ -713,6 +739,23 @@ export default {
       this.totalProductExported = this.getTotalProductExported
     },
   },
+  beforeMount() {
+    this.redBill.printDate = this.$nowDate
+  },
+
+  // before page leave this will check input
+  beforeRouteLeave(to, from, next) {
+    if (this.isFieldCheck) {
+      if (this.checkFieldsValueLength()) {
+        this.isModalShow = !this.isModalShow
+        this.goNext = next
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
+  },
   mounted() {
     // this.GET_CUSTOMERS_ACTION({
     //   formId: this.formId,
@@ -729,6 +772,22 @@ export default {
     routeBack() {
       this.$router.back()
     },
+
+    onClickAgreeButton() {
+      this.isModalShow = !this.isModalShow
+      this.goNext()
+    },
+    checkFieldsValueLength() {
+      if (
+        // START FORM
+        this.redBill.customerId
+        || (this.products.length > 0)
+      ) {
+        return true
+      }
+      return false
+    },
+
     showBillOfSaleList() {
       this.$root.$emit('bv::toggle::modal', 'bill-receipt-modal')
     },
@@ -892,6 +951,7 @@ export default {
         saleOrderId: this.saleOrderIds,
       }
       if (productsData.length > 0) {
+        this.isFieldCheck = false
         this.CREATE_RED_BILL_ACTION({
           paramsCreateRedInvoice,
           onSuccess: () => {
@@ -933,6 +993,7 @@ export default {
           paramsCreateRedInvoice,
           onSuccess: () => {
             this.isPrintData = true
+            this.isFieldCheck = false
           },
         })
         return

@@ -204,7 +204,7 @@
             >
               <div v-if="props.column.field === 'feature'">
                 <b-button
-                  v-if="synStatusSelected"
+                  v-if="!Boolean(props.row.synStatus)"
                   class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
                   variant="someThing"
                   style="max-height: 30px;"
@@ -336,6 +336,7 @@ export default {
       dateFormatVNI,
       fromDate: this.$earlyMonth,
       toDate: this.$nowDate,
+      onlineOrders: [],
 
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
@@ -367,6 +368,7 @@ export default {
         minDate: this.fromDate,
       },
       isDisable: false,
+      isCheckStatusSelected: true,
       isClicked: 0,
 
       // search
@@ -414,7 +416,7 @@ export default {
       ONLINE_ORDERS_PAGINATION_GETTER,
     ]),
 
-    onlineOrders() {
+    getOnlineOrders() {
       if (this.ONLINE_ORDERS_GETTER.content) {
         return this.ONLINE_ORDERS_GETTER.content.map(data => ({
           id: data.id,
@@ -426,6 +428,7 @@ export default {
           totalPrice: data.totalPrice,
           products: data.products,
           customer: data.customer,
+          synStatus: data.synStatus,
           feature: '',
         }))
       }
@@ -449,30 +452,27 @@ export default {
     },
   },
   watch: {
+    getOnlineOrders() {
+      this.onlineOrders = [...this.getOnlineOrders]
+    },
     fromDate() {
       this.configToDate = {
         ...this.configToDate,
         minDate: this.fromDate,
       }
     },
-    isClicked() {
-      if (this.synStatusSelected === '1') {
-        this.isDisable = true
-      } else {
-        this.isDisable = false
-      }
-    },
   },
   mounted() {
-    this.onSearch()
+    // this.searchOptions = saleData.synStatus[0].id
+    // this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
     }
-    const defaultSearch = {
-      synStatus: saleData.synStatus[0].id,
-    }
-    this.GET_ONLINE_ORDERS_ACTION(defaultSearch)
+    // const defaultSearch = {
+    //   synStatus: saleData.synStatus[0].id,
+    // }
+    // this.GET_ONLINE_ORDERS_ACTION(defaultSearch)
   },
   methods: {
     ...mapActions(SALES, [
@@ -511,7 +511,7 @@ export default {
         ...this.searchOptions,
       })
       this.onPaginationChange()
-      this.isClicked += 1
+      // this.isClicked += 1
     },
 
     onPageChange(params) {
@@ -529,6 +529,10 @@ export default {
 
     onClickCloseButton() {
       this.$refs.salesOnlineOrderModal.hide()
+      this.fromDate = this.$earlyMonth
+      this.toDate = this.$nowDate
+      this.synStatusSelected = saleData.synStatus[0].id
+      this.orderNumber = null
     },
 
     getOnlineOrderInfo(id) {

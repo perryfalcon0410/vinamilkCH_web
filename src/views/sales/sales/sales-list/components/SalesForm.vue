@@ -43,6 +43,7 @@
         v-b-toggle.collapseCustomer
         align-v="center"
         class="bg-light"
+        @click="onCollapseCustomersClick()"
       >
         <b-icon-people
           font-scale="2"
@@ -50,7 +51,10 @@
           variant="info"
         />
         Khách hàng
-        <b-icon-chevron-down class="ml-auto mx-1" />
+        <b-icon-chevron-down
+          :class="isCheckRotate ? 'rotate' : 'rotate-down'"
+          class="ml-auto mx-1"
+        />
       </b-row>
 
       <b-collapse
@@ -177,6 +181,7 @@
         v-b-toggle.collapseDelivery
         align-v="center"
         class="bg-light mt-1"
+        @click="onCollapseClick()"
       >
         <b-icon-truck
           font-scale="2"
@@ -184,7 +189,10 @@
           variant="info"
         />
         Giao hàng
-        <b-icon-chevron-down class="ml-auto mx-1" />
+        <b-icon-chevron-down
+          :class="isClickRotate ? 'rotate' : 'rotate-down'"
+          class="ml-auto mx-1"
+        />
       </b-row>
 
       <b-collapse
@@ -307,6 +315,7 @@
             <b-form-input
               v-model="orderOnline.orderNote"
               placeholder="Ghi chú"
+              maxlength="4000"
             />
 
           </b-input-group>
@@ -415,6 +424,7 @@ import {
   GET_PROMOTION_PROGRAMS_GETTER,
   // Action
   GET_ONLINE_ORDER_BY_ID_ACTION,
+  GET_ONLINE_ORDERS_ACTION,
   GET_PROMOTION_PROGRAMS_ACTION,
   GET_CUSTOMERS_SALE_ACTION,
 } from '../../store-module/type'
@@ -443,7 +453,7 @@ export default {
   },
   data() {
     return {
-      inputSearchFocused: false,
+      isCheckRotate: false,
       isShowSalesSearchModal: false,
       item: {},
       customersSearch: [
@@ -482,6 +492,11 @@ export default {
       },
 
       // online order
+      searchData: {
+        fromDate: this.$earlyMonth,
+        toDate: this.$nowDate,
+        synStatus: saleData.synStatus[0].id,
+      },
       orderOnline: {
         onlineOrderId: null,
         orderNumber: '',
@@ -504,6 +519,7 @@ export default {
       tableProductCode: null,
       products: [],
       promotionPrograms: [],
+      isClickRotate: false,
       columns: [
         {
           label: '',
@@ -723,6 +739,7 @@ export default {
       GET_ONLINE_ORDER_BY_ID_ACTION,
       GET_PROMOTION_PROGRAMS_ACTION,
       GET_CUSTOMERS_SALE_ACTION,
+      GET_ONLINE_ORDERS_ACTION,
     ]),
 
     showModalCreate() {
@@ -746,6 +763,7 @@ export default {
     showNotifyModal() {
       if (this.salemtPromotionObjectSelected && this.salemtPromotionObjectSelected !== saleData.salemtPromotionObject[0].id) {
         this.$refs.salesNotifyModal.show()
+        this.GET_ONLINE_ORDERS_ACTION({ ...this.searchData })
       }
     },
 
@@ -769,9 +787,8 @@ export default {
       this.customer.totalBill = val.data.totalBill ?? 0
       this.customer.scoreCumulated = val.data.scoreCumulated
       this.customer.amountCumulated = val.data.amountCumulated
-      this.$emit('getCustomerTypeInfo', val.data.customerTypeId)
+      this.$emit('getCustomerTypeInfo', val.data)
       this.$emit('getCustomerIdInfo', val.data.id)
-      this.inputSearchFocused = false
       this.$emit('currentCustomer', this.customer)
     },
 
@@ -800,6 +817,7 @@ export default {
     },
 
     getOnlineOrderCustomerById() {
+      this.customer.id = this.onlineOrderCustomer.customer.id
       this.customer.firstName = this.onlineOrderCustomer.customer.firstName
       this.customer.lastName = this.onlineOrderCustomer.customer.lastName
       this.customer.fullName = `${this.onlineOrderCustomer.customer.lastName} ${this.onlineOrderCustomer.customer.firstName}`
@@ -890,6 +908,21 @@ export default {
 
     disableOnlineOrder() {
     },
+    onCollapseCustomersClick() {
+      this.isCheckRotate = !this.isCheckRotate
+    },
+    onCollapseClick() {
+      this.isClickRotate = !this.isClickRotate
+    },
   },
 }
 </script>
+<style lang="scss" scoped>
+  .rotate {
+    transition: all 0.5s;
+    transform: rotate(180deg);
+  }
+  .rotate-down {
+    transition: all 0.5s;
+  }
+</style>
