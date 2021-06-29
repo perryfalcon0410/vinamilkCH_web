@@ -330,7 +330,6 @@ export default {
     },
   },
   mounted() {
-    this.onSearch()
     this.GET_CUSTOMERS_TYPES_ACTION({ ...this.decentralization })
     this.configToDate = {
       ...this.configToDate,
