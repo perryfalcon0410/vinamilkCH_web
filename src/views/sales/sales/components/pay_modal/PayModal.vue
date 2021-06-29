@@ -391,11 +391,12 @@
                       class="h7"
                     >
                       <cleave
-                        v-model="pay.accumulate.accumulateAmount"
+                        v-model.number="pay.accumulate.accumulateAmount"
                         class="form-control pl-1"
                         :raw="true"
                         :options="options.number"
-                        @change.native="onChangeAccumulateAmount()"
+                        maxlenght="20"
+                        @keyup.native="onChangeAccumulateAmount()"
                       />
                     </b-col>
                   </b-row>
@@ -438,6 +439,7 @@
                         </b-input-group-prepend>
                         <b-form-input
                           v-model="pay.voucher.voucherSerials"
+                          class="pl-1"
                           readonly
                         />
                       </b-input-group>
@@ -480,6 +482,7 @@
                         <b-form-input
                           v-model="pay.discount.discountCode"
                           class="form-control-merge"
+                          maxlenght="4000"
                           @keyup.enter="searchDiscount"
                         />
                         <b-input-group-append
@@ -565,10 +568,11 @@
                       class="h7"
                     >
                       <cleave
-                        v-model="pay.salePayment.salePaymentAmount"
+                        v-model.number="pay.salePayment.salePaymentAmount"
                         class="form-control"
                         :raw="true"
                         :options="options.number"
+                        maxlenght="20"
                         @keyup.native="extraAmountCalculation"
                       />
                     </b-col>
@@ -660,7 +664,7 @@
         <b-button
           variant="none"
           class="d-flex align-items-center mx-1 text-uppercase btn-brand-1"
-          :disabled="isDisabledRePrintBtn"
+          :disabled="isDisabledRePrintBtns"
           @click="rePrintSaleOrder()"
         >
           <b-icon-printer
@@ -833,7 +837,7 @@ export default {
         },
         discount: {
           discountCode: '',
-          discountAmount: null,
+          discountAmount: 0,
         },
         needPaymentAmount: null,
         salePayment: {
@@ -923,8 +927,11 @@ export default {
   },
   watch: {
     getDiscount() {
-      this.pay.discount.discountCode = this.getDiscount.discountCode
-      this.pay.discount.discountAmount = this.getDiscount.discountValue
+      if (this.getDiscount !== null) {
+        this.pay.discount.discountCode = this.getDiscount.discountCode
+        this.pay.discount.discountAmount = this.getDiscount.discountValue
+      }
+      this.pay.discount.discountAmount = 0
     },
     totalOrderPrice() {
       this.pay.totalAmount = this.totalOrderPrice
@@ -954,7 +961,7 @@ export default {
       }
 
       // get accumulate
-      this.pay.accumulate.accumulateAmount = this.customer.amountCumulated
+      this.pay.accumulate.accumulateAmount = 0
       this.pay.accumulate.accumulatePoint = this.customer.amountCumulated
     },
     getItemsProduct() {
@@ -965,6 +972,7 @@ export default {
       if (this.pay.needPaymentAmount < 0) {
         this.pay.needPaymentAmount = 0
       }
+      this.extraAmountCalculation()
     },
     getPromotionCalculation() {
       this.pay.promotionAmount = this.getPromotionCalculation.promotionAmount
@@ -1167,7 +1175,7 @@ export default {
 
     resetDiscount() {
       this.pay.discount.discountCode = ''
-      this.pay.discount.discountAmount = null
+      this.pay.discount.discountAmount = 0
     },
 
     onChangeQuantity(id, params) {
@@ -1356,9 +1364,17 @@ export default {
       }
     },
     extraAmountCalculation() {
+      if (Number.isNaN(Number(this.pay.salePayment.salePaymentAmount))) {
+        this.pay.salePayment.salePaymentAmount = 0
+      }
+      // this.pay.salePayment.salePaymentAmount = Number.parseInt(this.pay.salePayment.salePaymentAmount, 0)
       this.pay.extraAmount = Number(this.pay.salePayment.salePaymentAmount) - Number(this.pay.needPaymentAmount)
-      this.isDisabledPaymentBtn = Number(this.pay.extraAmount) < 0
-      this.isDisabledPrintAndPaymentBtn = Number(this.pay.extraAmount) < 0
+      this.isDisabledPaymentBtn = (Number(this.pay.extraAmount) < 0)
+      this.isDisabledPrintAndPaymentBtn = (Number(this.pay.extraAmount) < 0)
+      if (this.isPaid) {
+        this.isDisabledPaymentBtn = this.isPaid
+        this.isDisabledPrintAndPaymentBtn = this.isPaid
+      }
     },
 
     createSaleOrder() {
@@ -1423,7 +1439,8 @@ export default {
       this.$root.$emit('bv::hide::modal', 'pay-modal')
     },
     onChangeAccumulateAmount() {
-      if (Number(this.pay.accumulate.accumulateAmount) < 0) {
+      this.pay.accumulate.accumulateAmount = Number.parseInt(this.pay.accumulate.accumulateAmount, 0)
+      if (Number(this.pay.accumulate.accumulateAmount) < 0 || Number.isNaN(Number(this.pay.accumulate.accumulateAmount))) {
         this.pay.accumulate.accumulateAmount = 0
       }
 
