@@ -233,7 +233,6 @@ import {
   CUSTOMER_TYPES_GETTER,
   // ACTIONS
   GET_SHOP_LOCATIONS_SEARCH_ACTION,
-  GET_CUSTOMER_TYPES_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -254,7 +253,7 @@ export default {
       privateCustomer: true,
 
       apiStatus: { // success or fail
-        customerTypes: false,
+        // customerTypes: false,
         shopLocationsSearch: false,
       },
 
@@ -301,12 +300,6 @@ export default {
   },
 
   mounted() {
-    this.GET_CUSTOMER_TYPES_ACTION({
-      data: { ...this.decentralization },
-      onSuccess: () => {
-        this.apiStatus.customerTypes = true
-      },
-    })
     this.GET_SHOP_LOCATIONS_SEARCH_ACTION({
       data: { ...this.decentralization },
       onSuccess: () => {
@@ -318,7 +311,6 @@ export default {
   methods: {
     ...mapActions(CUSTOMER, [
       GET_SHOP_LOCATIONS_SEARCH_ACTION,
-      GET_CUSTOMER_TYPES_ACTION,
     ]),
     areaSelectedDefault() {
       this.areasSelected = this.SHOP_LOCATIONS_SEARCH_GETTER.find(e => e.default === true).id

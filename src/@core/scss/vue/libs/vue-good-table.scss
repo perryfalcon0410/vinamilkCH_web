@@ -15,7 +15,7 @@ $background-odd: #edf2f7;
   #vgt-table {
     thead {
       tr:first-child {
-        background: $brand-1;
+        background-color: $brand-1;
 
         th {
           color: white;
@@ -43,11 +43,11 @@ $background-odd: #edf2f7;
         font-size: 12px;
 
         &:nth-of-type(odd) {
-          background: rgba($background-odd, 0.5);
+          background-color: #f6f8fb;
         }
 
         &:hover {
-          background: $background-hover;
+          background-color: $background-hover;
           border-color: $border-color-hover;
         }
 
