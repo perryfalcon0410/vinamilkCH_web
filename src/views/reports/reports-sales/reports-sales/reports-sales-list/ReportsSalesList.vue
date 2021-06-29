@@ -27,6 +27,7 @@
           <b-button
             class="rounded btn-brand-1 h8"
             variant="someThing"
+            :disabled="sales.length === 0"
             @click="onClickPrintButton"
           >
             <b-icon-printer-fill class="mr-50" />
@@ -35,6 +36,7 @@
           <b-button
             class="ml-1 rounded btn-brand-1 h8"
             variant="someThing"
+            :disabled="sales.length === 0"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />
@@ -85,7 +87,7 @@
               v-if="props.column.field === 'quantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ totalQuantity }}
+              {{ $formatNumberToLocale(totalQuantity) }}
             </div>
 
             <div
@@ -93,21 +95,21 @@
               v-else-if="props.column.field === 'total'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
+              {{ $formatNumberToLocale(total) }}
             </div>
             <div
               v-show="salesPagination.totalElements"
               v-else-if="props.column.field === 'promotion'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ totalPromotion }}
+              {{ $formatNumberToLocale(totalPromotion) }}
             </div>
             <div
               v-show="salesPagination.totalElements"
               v-else-if="props.column.field === 'amount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ totalAmount }}
+              {{ $formatNumberToLocale(totalAmount) }}
             </div>
           </template>
           <!-- START - Column filter -->
@@ -202,7 +204,7 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  formatISOtoVNI, formatNumberToLocale, reverseVniDate, replaceDotWithComma,
+  formatISOtoVNI, reverseVniDate,
 } from '@core/utils/filter'
 import PrintFormReportSales from '@core/components/print-form/PrintFormReportSales.vue'
 import ReportsSalesListSearch from './components/ReportsSalesListSearch.vue'
@@ -380,16 +382,16 @@ export default {
       return []
     },
     totalQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.sales.reduce((accum, item) => accum + Number(item.quantity), 0))))
+      return this.sales.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
     total() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.sales.reduce((accum, item) => accum + Number(item.total), 0))))
+      return this.sales.reduce((accum, item) => accum + Number(item.total), 0)
     },
     totalPromotion() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.sales.reduce((accum, item) => accum + Number(item.promotion), 0))))
+      return this.sales.reduce((accum, item) => accum + Number(item.promotion), 0)
     },
     totalAmount() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.sales.reduce((accum, item) => accum + Number(item.amount), 0))))
+      return this.sales.reduce((accum, item) => accum + Number(item.amount), 0)
     },
     salesPagination() {
       if (this.REPORT_SALES_GETTER) {

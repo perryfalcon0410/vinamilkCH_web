@@ -1,7 +1,7 @@
 const SALES = '/sales'
 const RED_INVOICES = '/red-invoices'
 export const getRedInvoiceEndpoint = `${SALES}${RED_INVOICES}`
-export const getCustomersEndpoint = '/customers'
+export const getCustomersEndpoint = '/customers/customers-to-sale'
 export const getBillOfSalesEndPoint = `${SALES}${RED_INVOICES}/bill-of-sale-list`
 export const getBillOfSaleProductsEndPoint = `${SALES}${RED_INVOICES}/show-info-product`
 export const getProductsEndPoint = `${SALES}${RED_INVOICES}/search-product`

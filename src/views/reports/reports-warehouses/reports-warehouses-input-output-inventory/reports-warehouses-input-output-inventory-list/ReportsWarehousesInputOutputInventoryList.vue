@@ -80,153 +80,155 @@
             slot="column-filter"
             slot-scope="props"
           >
-            <b-row
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-if="props.column.field === 'beginningQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ totalQuantity }}
-            </b-row>
+              {{ $formatNumberToLocale(totalBeginningQuantity) }}
+            </div>
 
-            <b-row
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'beginningAmount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ totalPacketQuantity }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalBeginningAmount) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'impTotalQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ totalOddQuantity }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalImpTotalQuantity) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'impQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ amount }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalImpQuantity) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'impAmount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalImpAmount) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'impAdjustmentQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalImpAdjustmentQuantity) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'impAdjustmentAmount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalImpAdjustmentAmount) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expTotalQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalExpTotalQuantity) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expSalesQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalExpSalesQuantity) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expSalesAmount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalExpSalesAmount) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expPromotionQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalExpPromotionQuantity) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expPromotionAmount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalExpPromotionAmount) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expAdjustmentQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalExpAdjustmentQuantity) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expAdjustmentAmount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalExpAdjustmentAmount) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expExchangeQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalExpExchangeQuantity) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expExchangeAmount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalExpExchangeAmount) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'endingQuantity'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
-            <b-row
+              {{ $formatNumberToLocale(totalEndingQuantity) }}
+            </div>
+            <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'endingAmount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
-            </b-row>
+              {{ $formatNumberToLocale(totalEndingAmount) }}
+            </div>
           </template>
           <!-- START - Column filter -->
+          <!-- START - Custom row -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'beginningQuantity' || props.column.field === 'beginningAmount' || props.column.field === 'impTotalQuantity' || props.column.field === 'impQuantity'
+                || props.column.field === 'impAmount' || props.column.field === 'impAdjustmentQuantity' || props.column.field === 'impAdjustmentAmount' || props.column.field === 'expTotalQuantity'
+                || props.column.field === 'expSalesQuantity' || props.column.field === 'expSalesAmount' || props.column.field === 'expPromotionQuantity' || props.column.field === 'expPromotionAmount'
+                || props.column.field === 'expAdjustmentQuantity' || props.column.field === 'expAdjustmentAmount' || props.column.field === 'expExchangeQuantity' || props.column.field === 'expExchangeAmount'
+                || props.column.field === 'endingQuantity' || props.column.field === 'endingAmount'"
+              style="padding-right: 4px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Custom row -->
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"
@@ -304,9 +306,6 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import {
-  formatNumberToLocale, replaceDotWithComma, formatDateToLocale,
-} from '@core/utils/filter'
 import PrintFormInputOutputInventory from '@core/components/print-form/PrintFormInputOutputInventory.vue'
 import ReportsWarehousesInputOutputInventoryListSearch from './components/ReportsWarehousesInputOutputInventoryListSearch.vue'
 import {
@@ -349,244 +348,193 @@ export default {
         {
           label: 'Ngành hàng',
           field: 'industry',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
+          width: '110px',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
           field: 'unit',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
         },
         {
           label: 'Tồn đầu kỳ',
           field: 'beginningQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá đầu kỳ',
           field: 'beginningPrice',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền đầu kỳ',
           field: 'beginningAmount',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tổng nhập trong kỳ',
           field: 'impTotalQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Nhập mua hàng',
           field: 'impQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá trị nhập mua hàng',
           field: 'impAmount',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Nhập điều chỉnh',
           field: 'impAdjustmentQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá trị nhập điều chỉnh',
           field: 'impAdjustmentAmount',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tổng xuất trong kỳ',
           field: 'expTotalQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Xuất bán hàng',
           field: 'expSalesQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá trị xuất bán hàng',
           field: 'expSalesAmount',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Xuất khuyến mãi',
           field: 'expPromotionQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá trị xuất khuyến mãi',
           field: 'expPromotionAmount',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Xuất điều chỉnh',
           field: 'expAdjustmentQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá trị xuất điều chỉnh',
           field: 'expAdjustmentAmount',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Xuất trả hàng',
           field: 'expExchangeQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá trị xuất trả hàng',
           field: 'expExchangeAmount',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tồn cuối kỳ',
           field: 'endingQuantity',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá cuối kỳ',
           field: 'endingPrice',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền cuối kỳ',
           field: 'endingAmount',
           type: 'number',
-          thClass: 'text-left',
-          tdClass: 'text-right',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
       ],
       warehousesInputOutputInventory: [],
@@ -630,58 +578,58 @@ export default {
       return []
     },
     totalBeginningQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.beginningQuantity), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.beginningQuantity), 0)
     },
     totalBeginningAmount() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.beginningAmount), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.beginningAmount), 0)
     },
     totalImpTotalQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impTotalQuantity), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impTotalQuantity), 0)
     },
     totalImpQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impQuantity), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impQuantity), 0)
     },
     totalImpAmount() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAmount), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAmount), 0)
     },
     totalImpAdjustmentQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAdjustmentQuantity), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAdjustmentQuantity), 0)
     },
     totalImpAdjustmentAmount() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAdjustmentAmount), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAdjustmentAmount), 0)
     },
     totalExpTotalQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expTotalQuantity), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expTotalQuantity), 0)
     },
     totalExpSalesQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expSalesQuantity), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expSalesQuantity), 0)
     },
     totalExpSalesAmount() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expSalesAmount), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expSalesAmount), 0)
     },
     totalExpPromotionQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expPromotionQuantity), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expPromotionQuantity), 0)
     },
     totalExpPromotionAmount() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expPromotionAmount), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expPromotionAmount), 0)
     },
     totalExpAdjustmentQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expAdjustmentQuantity), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expAdjustmentQuantity), 0)
     },
     totalExpAdjustmentAmount() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expAdjustmentAmount), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expAdjustmentAmount), 0)
     },
     totalExpExchangeQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expExchangeQuantity), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expExchangeQuantity), 0)
     },
     totalExpExchangeAmount() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expExchangeAmount), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expExchangeAmount), 0)
     },
     totalEndingQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.endingQuantity), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.endingQuantity), 0)
     },
     totalEndingAmount() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.endingAmount), 0))))
+      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.endingAmount), 0)
     },
     warehousesInputOutputInventoryPagination() {
       if (this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER) {
@@ -730,8 +678,8 @@ export default {
     onClickExcelExportButton() {
       this.EXPORT_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION({
         productCodes: this.paginationData.productCodes,
-        fromDate: formatDateToLocale(this.paginationData.fromDate),
-        toDate: formatDateToLocale(this.paginationData.toDate),
+        fromDate: this.paginationData.fromDate,
+        toDate: this.paginationData.toDate,
       })
     },
     updatePageNumber() {
@@ -752,3 +700,8 @@ export default {
   },
 }
 </script>
+<style>
+  .name-width {
+    width: 400px;
+  }
+</style>

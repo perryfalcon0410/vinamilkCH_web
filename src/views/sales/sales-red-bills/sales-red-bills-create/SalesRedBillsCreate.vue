@@ -33,6 +33,7 @@
                 :input-props="{
                   id:'autosuggest__input_customers',
                   class:'form-control',
+                  disabled: isDisabled ? true : false,
                 }"
                 @input="loadCustomers"
                 @selected="selectCustomer"
@@ -712,9 +713,6 @@ export default {
       this.totalProductExported = this.getTotalProductExported
     },
   },
-  beforeMount() {
-    this.redBill.printDate = this.$nowDate
-  },
   mounted() {
     // this.GET_CUSTOMERS_ACTION({
     //   formId: this.formId,
@@ -830,16 +828,13 @@ export default {
         this.redBill.officeAddress = invoiceDetail.officeAddress
         this.redBill.taxCode = invoiceDetail.taxCode
         this.redBill.shopId = invoiceDetail.shopId
-        // check disabled feild customerCode
-        if (this.redBill.customerCode) {
-          this.isDisabled = true
-        }
         this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
         this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
         this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
       }
 
       this.saleOrderIds = invoiceData.saleOrderIds
+      this.isDisabled = true
     },
     taxMoney(money, vat) {
       return (money * (vat / 100))

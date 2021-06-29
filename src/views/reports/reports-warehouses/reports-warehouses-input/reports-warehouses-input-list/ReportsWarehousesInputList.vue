@@ -83,7 +83,7 @@
               v-if="props.column.field === 'quantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ totalQuantity }}
+              {{ $formatNumberToLocale(totalQuantity) }}
             </div>
 
             <div
@@ -91,28 +91,28 @@
               v-else-if="props.column.field === 'packetQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ totalPacketQuantity }}
+              {{ $formatNumberToLocale(totalPacketQuantity) }}
             </div>
             <div
               v-show="warehousesInputPagination.totalElements"
               v-else-if="props.column.field === 'oddQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ totalOddQuantity }}
+              {{ $formatNumberToLocale(totalOddQuantity) }}
             </div>
             <div
               v-show="warehousesInputPagination.totalElements"
               v-else-if="props.column.field === 'amount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ amount }}
+              {{ $formatNumberToLocale(amount) }}
             </div>
             <div
               v-show="warehousesInputPagination.totalElements"
               v-else-if="props.column.field === 'total'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ total }}
+              {{ $formatNumberToLocale(total) }}
             </div>
           </template>
           <!-- START - Column filter -->
@@ -209,7 +209,7 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  formatISOtoVNI, formatNumberToLocale, reverseVniDate, replaceDotWithComma, formatVniDateToGlobal,
+  formatISOtoVNI, reverseVniDate, formatVniDateToGlobal,
 } from '@core/utils/filter'
 import ReportsWarehousesInputListSearch from './components/ReportsWarehousesInputListSearch.vue'
 import {
@@ -408,19 +408,19 @@ export default {
       return []
     },
     totalQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputs.reduce((accum, item) => accum + Number(item.quantity), 0))))
+      return this.warehousesInputs.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
     totalPacketQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputs.reduce((accum, item) => accum + Number(item.packetQuantity), 0))))
+      return this.warehousesInputs.reduce((accum, item) => accum + Number(item.packetQuantity), 0)
     },
     totalOddQuantity() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputs.reduce((accum, item) => accum + Number(item.oddQuantity), 0))))
+      return this.warehousesInputs.reduce((accum, item) => accum + Number(item.oddQuantity), 0)
     },
     amount() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputs.reduce((accum, item) => accum + Number(item.amount), 0))))
+      return this.warehousesInputs.reduce((accum, item) => accum + Number(item.amount), 0)
     },
     total() {
-      return replaceDotWithComma(formatNumberToLocale(Number(this.warehousesInputs.reduce((accum, item) => accum + Number(item.total), 0))))
+      return this.warehousesInputs.reduce((accum, item) => accum + Number(item.total), 0)
     },
     warehousesInputPagination() {
       if (this.REPORT_WAREHOUSES_INPUT_GETTER) {

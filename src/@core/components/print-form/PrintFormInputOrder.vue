@@ -118,7 +118,7 @@
             colspan="1"
             class="text-right pr-50 border-left-0 font-italic width-1-per"
           >
-            <strong>{{ $formatNumberToLocale(item.totalPrice ) }}</strong>
+            <strong>{{ $formatNumberToLocale(item.totalPriceNotVat) }}</strong>
           </td>
         </tr>
         <!-- END - Header 1 -->
