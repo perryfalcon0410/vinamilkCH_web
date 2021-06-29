@@ -85,17 +85,24 @@
             </b-col>
 
             <b-col>
-              <div
-                class="mt-1"
+              <validation-provider
+                v-slot="{ errors }"
+                rules="required"
+                name="Giới tính"
               >
-                Giới tính <sup class="text-danger">*</sup>
-              </div>
-              <tree-select
-                v-model="gendersSelected"
-                :options="genderOptions"
-                placeholder="Chọn giới tính"
-                no-options-text="Không có dữ liệu"
-              />
+                <div
+                  class="mt-1"
+                >
+                  Giới tính <sup class="text-danger">*</sup>
+                </div>
+                <tree-select
+                  v-model="gendersSelected"
+                  :options="genderOptions"
+                  placeholder="Chọn giới tính"
+                  no-options-text="Không có dữ liệu"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
             </b-col>
           </b-form-row>
         </b-col>
@@ -320,7 +327,6 @@ import {
 } from 'vee-validate'
 import Ripple from 'vue-ripple-directive'
 import { formatVniDateToISO } from '@/@core/utils/filter'
-import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
 import {
   CUSTOMER,
@@ -331,6 +337,7 @@ import {
   SHOP_LOCATIONS_GETTER,
   CREATE_CUSTOMER_GETTER,
   CUSTOMER_TYPES_GETTER,
+  GENDERS_GETTER,
   // ACTIONS
   CREATE_CUSTOMER_ACTION,
   GET_PROVINCES_ACTION,
@@ -338,6 +345,7 @@ import {
   GET_PRECINCTS_ACTION,
   GET_SHOP_LOCATIONS_ACTION,
   GET_CUSTOMER_TYPES_ACTION,
+  GET_GENDERS_ACTION,
 } from '../../../sales-customers/store-module/type'
 
 export default {
@@ -381,7 +389,6 @@ export default {
       lastName: null,
       firstName: null,
       birthDay: null,
-      genderOptions: commonData.genders,
       gendersSelected: null,
       phoneNumber: null,
       street: null,
@@ -405,6 +412,7 @@ export default {
       SHOP_LOCATIONS_GETTER,
       CREATE_CUSTOMER_GETTER,
       CUSTOMER_TYPES_GETTER,
+      GENDERS_GETTER,
     }),
     provinceOptions() {
       return this.PROVINCES_GETTER.map(data => ({
@@ -432,6 +440,12 @@ export default {
     },
     shopLocations() {
       return this.SHOP_LOCATIONS_GETTER
+    },
+    genderOptions() {
+      return this.GENDERS_GETTER.map(data => ({
+        id: data.id,
+        label: data.categoryName,
+      }))
     },
     getCustomerCreate() {
       return this.CREATE_CUSTOMER_GETTER
@@ -466,10 +480,14 @@ export default {
       this.customerCreate = { ...this.getCustomerCreate }
       this.getCreateInfo()
     },
+    gendersSelected() {
+      this.GET_GENDERS_ACTION({ ...this.decentralization })
+    },
   },
 
   mounted() {
     this.GET_PROVINCES_ACTION({ ...this.decentralization })
+    this.GET_GENDERS_ACTION({ ...this.decentralization })
     this.GET_SHOP_LOCATIONS_ACTION({ ...this.decentralization })
     this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
   },
@@ -483,6 +501,7 @@ export default {
       GET_PRECINCTS_ACTION,
       GET_SHOP_LOCATIONS_ACTION,
       GET_CUSTOMER_TYPES_ACTION,
+      GET_GENDERS_ACTION,
     ]),
 
     create() {
@@ -492,7 +511,7 @@ export default {
             customer: {
               firstName: this.firstName,
               lastName: this.lastName,
-              genderId: this.gendersSelected?.id,
+              genderId: this.gendersSelected,
               dob: formatVniDateToISO(this.birthDay),
               status: this.customerStatusSelected,
               isPrivate: this.customerSpecial,

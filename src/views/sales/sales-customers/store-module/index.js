@@ -22,6 +22,7 @@ import {
   SALEMT_PROMOTION_OBJECT_GETTER,
   SALEMT_DELIVERY_TYPE_GETTER,
   SALEMT_PAYMENT_TYPE_GETTER,
+  GENDERS_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
   GET_CUSTOMER_BY_ID_ACTION,
@@ -44,6 +45,7 @@ import {
   GET_SALEMT_PROMOTION_OBJECT_ACTION,
   GET_SALEMT_DELIVERY_TYPE_ACTION,
   GET_SALEMT_PAYMENT_TYPE_ACTION,
+  GET_GENDERS_ACTION,
 
 } from './type'
 
@@ -67,6 +69,7 @@ export default {
     salemtPromotions: [],
     salemtDeliveries: [],
     salemtPayments: [],
+    genders: [],
   },
 
   // GETTERS
@@ -125,6 +128,9 @@ export default {
     },
     [SALEMT_PAYMENT_TYPE_GETTER](state) {
       return state.salemtPayments
+    },
+    [GENDERS_GETTER](state) {
+      return state.genders
     },
   },
 
@@ -403,6 +409,21 @@ export default {
         .then(res => {
           if (res.success) {
             state.salemtPayments = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_GENDERS_ACTION]({ state }, val) {
+      CustomerService
+        .getGenders(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.genders = res.data
           } else {
             throw new Error(res.statusValue)
           }

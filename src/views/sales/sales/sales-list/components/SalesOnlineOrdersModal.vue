@@ -373,6 +373,7 @@ export default {
       synStatusSelected: saleData.synStatus[0].id,
       synStatusOptions: saleData.synStatus,
       orderNumber: null,
+      discountCode: null,
 
       columns: [
         {
@@ -418,6 +419,7 @@ export default {
         return this.ONLINE_ORDERS_GETTER.content.map(data => ({
           id: data.id,
           orderNumber: data.orderNumber,
+          discountCode: data.discountCode,
           createdAt: `${formatISOtoVNI(data.createdAt, data.createdAt)}`,
           orderInfo: data.orderInfo,
           quantity: data.quantity,

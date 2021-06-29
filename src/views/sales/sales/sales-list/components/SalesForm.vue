@@ -456,6 +456,10 @@ export default {
       isCheckmanualCreate: true,
       currentCustomer: {},
       currentDate: getCurrentTime(),
+      decentralization: {
+        formId: 1,
+        ctrlId: 4,
+      },
 
       // customer
       customer: {
@@ -482,12 +486,14 @@ export default {
         onlineOrderId: null,
         orderNumber: '',
         orderNote: '',
+        discountCode: null,
       },
 
       quantity: null,
       totalPrice: null,
       salemtPromotionObjectSelected: saleData.salemtPromotionObject[0].id,
       salemtDeliveryTypeSelected: saleData.salemtDeliveryType[0].id,
+      // salemtDeliveryTypeSelected: this.salemtDeliveryTypeOptions,
       data: null,
 
       // products
@@ -663,10 +669,10 @@ export default {
   },
   watch: {
     salemtPromotionObjectSelected() {
-      this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
+      this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ ...this.decentralization })
     },
     salemtDeliveryTypeSelected() {
-      this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4 })
+      this.GET_SALEMT_DELIVERY_TYPE_ACTION({ ...this.decentralization })
     },
     onlineOrderCustomer() {
       this.getOnlineOrderCustomerById()
@@ -685,9 +691,9 @@ export default {
     },
   },
   mounted() {
-    this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ formId: 1, ctrlId: 4 })
-    this.GET_SALEMT_DELIVERY_TYPE_ACTION({ formId: 1, ctrlId: 4, salemtDeliveryTypeSelected: this.salemtDeliveryTypeSelected })
-    this.GET_CUSTOMER_DEFAULT_ACTION({ formId: 1, ctrlId: 4 })
+    this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ ...this.decentralization })
+    this.GET_SALEMT_DELIVERY_TYPE_ACTION({ ...this.decentralization, salemtDeliveryTypeSelected: this.salemtDeliveryTypeSelected })
+    this.GET_CUSTOMER_DEFAULT_ACTION({ ...this.decentralization })
 
     window.addEventListener('keydown', e => {
       if (e.key === 'F4') {
@@ -806,6 +812,7 @@ export default {
       this.customer.typeId = this.onlineOrderCustomer.customer.customerTypeId
       this.customer.createdAt = `${formatDateToLocale(this.onlineOrderCustomer.customer.createdAt)} ${getTimeOfDate(this.onlineOrderCustomer.customer.createdAt)}`
       this.orderOnline.orderNumber = this.onlineOrderCustomer.orderNumber
+      this.orderOnline.discountCode = this.onlineOrderCustomer.discountCode
       this.quantity = this.onlineOrderCustomer.quantity
       this.totalPrice = this.onlineOrderCustomer.totalPrice
       this.$emit('getOnlineCustomer', this.customer)
