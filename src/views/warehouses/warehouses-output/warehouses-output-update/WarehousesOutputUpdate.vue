@@ -180,7 +180,7 @@
             <b-form-checkbox
               v-model="exportAll"
               class="m-1"
-              :disabled="warehousesOutput.receiptType !== warehousesOptions[0].id"
+              :disabled="isDisableSave || warehousesOutput.receiptType !== warehousesOptions[0].id"
             >
               Trả nguyên đơn
             </b-form-checkbox>
@@ -325,12 +325,6 @@
     </b-row>
     <!-- END - Form and list -->
     <!-- START - Modal -->
-    <adjustment-modal
-      @choonsenTrans="dataFromAdjustment($event)"
-    />
-    <borrowed-modal
-      @choonsenTrans="dataFromBorrow($event)"
-    />
     <!-- END - Modal -->
   </b-container>
 </template>
@@ -346,8 +340,6 @@ import {
   getTimeOfDate, formatISOtoVNI,
 } from '@/@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
-import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
-import BorrowedModal from '../components/borrowed-modal/OutputBorrowedModal.vue'
 import {
   WAREHOUSES_OUTPUT,
   // Getter
@@ -362,10 +354,6 @@ import {
 } from '../store-module/type'
 
 export default {
-  components: {
-    AdjustmentModal,
-    BorrowedModal,
-  },
   data() {
     return {
       warehousesOptions: warehousesData.outputTypes,
@@ -567,8 +555,8 @@ export default {
           productPriceTotal: data.totalPrice,
           productQuantity: data.quantity,
           productImportQuantity: data.importQuantity,
-          productReturnAmount: data.export,
-          export: `${data.quantity}/${data.importQuantity}`,
+          productReturnAmount: data.quantity,
+          export: `${data.export}/${data.importQuantity}`,
         })),
         ]
       } return []
@@ -680,50 +668,6 @@ export default {
         default:
           break
       }
-    },
-    dataFromBorrow(data) {
-      this.warehousesOutput.id = data.tranInfo.id
-      this.warehousesOutput.code = data.tranInfo.transCode
-      this.warehousesOutput.note = data.tranInfo.note
-      this.warehousesOutput.orderDate = data.tranInfo.adjustmentDate
-      this.getProductOfWarehouseOutput = data.products.map(item => ({
-        productID: item.id,
-        productCode: item.productCode,
-        productPrice: this.$formatNumberToLocale(item.price),
-        productName: item.productName,
-        productDVT: item.unit,
-        productPriceTotal: this.$formatNumberToLocale(item.totalPrice),
-        productQuantity: item.quantity,
-        productReturnAmount: item.export,
-        export: item.export,
-      }))
-      // clear data
-      this.warehousesOutput.redInvoiceNo = ''
-      this.warehousesOutput.internalNumber = ''
-      this.warehousesOutput.pocoNumber = ''
-      this.warehousesOutput.code = ''
-    },
-    dataFromAdjustment(data) {
-      this.warehousesOutput.id = data.tranInfo.id
-      this.warehousesOutput.code = data.tranInfo.transCode
-      this.warehousesOutput.note = data.tranInfo.note
-      this.warehousesOutput.orderDate = data.tranInfo.adjustmentDate
-      this.getProductOfWarehouseOutput = data.products.map(item => ({
-        productID: item.id,
-        productCode: item.productCode,
-        productPrice: this.$formatNumberToLocale(item.price),
-        productName: item.productName,
-        productDVT: item.unit,
-        productPriceTotal: this.$formatNumberToLocale(item.totalPrice),
-        productQuantity: item.quantity,
-        productReturnAmount: item.quantity,
-      }))
-
-      // clear data
-      this.warehousesOutput.redInvoiceNo = ''
-      this.warehousesOutput.internalNumber = ''
-      this.warehousesOutput.poNumber = ''
-      this.warehousesOutput.code = ''
     },
     onClickUpdateWarehousesOutput() {
       if (this.products) {
