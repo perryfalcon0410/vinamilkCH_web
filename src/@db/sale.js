@@ -49,6 +49,7 @@ export default {
     { id: '21', label: 'ZV21' },
   ],
   printState: [
+    { id: '', label: 'Tất cả' },
     { id: '1', label: 'Đã in' },
     { id: '0', label: 'Chưa in' },
   ],

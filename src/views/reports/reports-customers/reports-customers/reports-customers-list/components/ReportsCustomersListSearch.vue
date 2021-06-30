@@ -662,6 +662,7 @@ export default {
         fromSaleDate: reverseVniDate(this.fromSaleDate),
         toSaleDate: reverseVniDate(this.toSaleDate),
       }
+      console.log(searchData)
       this.updateSearchData(searchData)
       this.GET_REPORT_CUSTOMERS_ACTION(searchData)
     },

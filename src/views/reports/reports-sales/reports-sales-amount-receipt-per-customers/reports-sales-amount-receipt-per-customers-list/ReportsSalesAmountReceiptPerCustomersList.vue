@@ -20,7 +20,7 @@
         align-v="center"
       >
         <strong class="text-brand-1">
-          Doanh số hóa đơn theo khách hàng
+          Số lượng hóa đơn theo khách hàng
         </strong>
         <b-button
           class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
@@ -65,6 +65,29 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+
+          <!-- START - Row filter -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'sumTotal'"
+              style="padding-right: 10px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'customerName' || props.column.field === 'address'"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Row filter -->
+
           <!-- START - Column filter -->
           <template
             slot="column-filter"
@@ -76,7 +99,7 @@
             >
               <b-row
                 v-if="props.column.field === `${item.field}`"
-                class="h7 text-brand-3"
+                class="h7 text-brand-3 pr-50"
                 align-h="end"
               >
                 {{ (totalQuantity[item.index]) }}
@@ -84,7 +107,7 @@
             </b-col>
             <b-row
               v-if="props.column.field === 'sumTotal'"
-              class="h7 text-brand-3 mx-0"
+              class="h7 text-brand-3 mx-50"
               align-h="end"
             >
               {{ (totalQuantity[totalQuantity.length-1]) }}
@@ -204,11 +227,13 @@ export default {
         {
           label: 'Họ tên',
           field: 'customerName',
+          width: '10rem',
           sortable: false,
         },
         {
           label: 'Địa chỉ',
           field: 'address',
+          width: '12rem',
           sortable: false,
         },
       ],
@@ -286,6 +311,8 @@ export default {
               enabled: true,
             },
             type: 'number',
+            thClass: 'text-right',
+            tdClass: 'text-right px-2',
           }
           this.labelName.push(obj)
           this.columns.push(obj)

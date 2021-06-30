@@ -280,7 +280,7 @@
     <!-- END - Footer -->
     <deny-modal
       :id="denyId"
-      @deny="deny"
+      @deny="deny($event)"
       @close="close"
     />
   </b-modal>
@@ -556,9 +556,9 @@ export default {
     close() {
       this.$bvModal.hide('po-deny-modal')
     },
-    deny() {
+    deny(id) {
       this.$bvModal.hide('po-deny-modal')
-
+      this.$emit('clearView', id)
       this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
     },
   },

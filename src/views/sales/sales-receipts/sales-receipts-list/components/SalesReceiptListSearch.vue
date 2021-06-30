@@ -280,6 +280,7 @@ export default {
   },
 
   mounted() {
+    this.printStateSelected = this.printOptions[0].id
     this.onSearch()
     this.configToDate = {
       ...this.configToDate,

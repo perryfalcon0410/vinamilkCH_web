@@ -105,6 +105,14 @@
                 @click="navigateToUpdate(props.row.id)"
               />
             </div>
+            <div
+              v-else-if="props.column.field === 'quantity' ||
+                props.column.field === 'amount' ||
+                props.column.field === 'refunds'"
+              style="padding-right: 10px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -117,7 +125,7 @@
           >
             <b-row
               v-if="props.column.field === 'quantity'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
@@ -125,14 +133,14 @@
 
             <b-row
               v-else-if="props.column.field === 'amount'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.totalAmount) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'refunds'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.totalRefunds) }}
@@ -261,28 +269,28 @@ export default {
           field: 'returnCode',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Hóa đơn mua hàng',
           field: 'reciept',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Họ tên',
           field: 'fullName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left standard-width',
+          tdClass: 'text-left standard-width',
         },
         {
           label: 'Ngành hàng',
@@ -296,14 +304,14 @@ export default {
           field: 'productCode',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left standard-width',
+          tdClass: 'text-left standard-width',
         },
 
         {
@@ -321,7 +329,7 @@ export default {
             enabled: true,
           },
           thClass: 'text-right',
-          tdClass: 'text-right',
+          tdClass: 'text-right ws-nowrap',
         },
         {
           label: 'Giá bán',
@@ -335,21 +343,21 @@ export default {
           field: 'amount',
           sortable: false,
           thClass: 'text-right',
-          tdClass: 'text-right',
+          tdClass: 'text-right ws-nowrap',
         },
         {
           label: 'Tiền trả lại',
           field: 'refunds',
           sortable: false,
           thClass: 'text-right',
-          tdClass: 'text-right',
+          tdClass: 'text-right ws-nowrap',
         },
         {
           label: 'Ngày trả',
           field: 'payDay',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Lý do trả',
@@ -362,8 +370,8 @@ export default {
           label: 'Thông tin phản hồi',
           field: 'feedback',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left standard-width',
+          tdClass: 'text-left standard-width',
         },
 
       ],

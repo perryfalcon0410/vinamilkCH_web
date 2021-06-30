@@ -5,7 +5,7 @@
         cols="2"
       >
         <b-row
-          class="v-title bg-light py-1 w-75 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-start mt-2 mb-1 header"
+          class="v-title bg-light py-1 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-start mt-2 mb-1 header"
         >
           Giảm giá & chiết khấu
         </b-row>
@@ -54,14 +54,14 @@ export default {
     return {
       columns: [
         {
-          label: 'Phiếu/thẻ/Chương trình',
+          label: 'Phiếu/ Thẻ/ Chương trình',
           field: 'promotionName',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
-          label: 'Loại khuyễn mãi',
+          label: 'Loại khuyến mãi',
           field: 'voucherType',
           sortable: false,
           thClass: 'text-left',

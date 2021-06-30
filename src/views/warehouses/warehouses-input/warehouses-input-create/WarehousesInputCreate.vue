@@ -96,8 +96,9 @@
                 <b-form-input
                   v-model.trim="billNumber"
                   class="text-uppercase"
+                  maxlength="40"
                   :state="touched && inputTypeSelected === '0' ? passed : null"
-                  :disabled="inputTypeSelected != '0' ? true : false"
+                  :disabled="disableInput"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
@@ -118,19 +119,14 @@
                 <b-input-group
                   class="input-group-merge"
                 >
-                  <div class="h7">
-                    Số hóa đơn <sup
-                      v-show="inputTypeSelected === '0'"
-                      class="text-danger"
-                    >*</sup>
-                  </div>
-                  <b-form-input
-                    v-model.trim="billNumber"
-                    class="text-uppercase"
-                    :state="touched && inputTypeSelected === '0' ? passed : null"
+                  <vue-flat-pickr
+                    v-model="billDate"
                     :disabled="disableInput"
+                    :config="configDate"
+                    :state="touched ? passed : null"
+                    class="form-control h7 text-brand-3"
+                    placeholder="Chọn ngày"
                   />
-
                 </b-input-group>
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
@@ -155,8 +151,9 @@
                 <b-form-input
                   v-model="internalNumber"
                   :state="touched && inputTypeSelected === '0' ? passed : null"
+                  maxlength="40"
                   class="h7"
-                  :disabled="canNotEdit"
+                  :disabled="disableInput"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
@@ -182,7 +179,8 @@
                     v-model="poNo"
                     :state="inputTypeSelected === '0' && touched ? passed : null"
                     class="h7"
-                    :disabled="canNotEdit"
+                    maxlength="40"
+                    :disabled="disableInput"
                   />
                 </b-input-group>
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -405,8 +403,8 @@
                 <b-row
                   v-if="props.column.field === 'quantity'"
                   v-show="totalPromoProductQuantity"
-                  class="mx-0"
-                  align-h="right"
+                  class="mx-50 h7 text-brand-3"
+                  align-h="end"
                 >
                   {{ $formatNumberToLocale(totalPromoProductQuantity) }}
                 </b-row>
@@ -414,8 +412,8 @@
                 <b-row
                   v-else-if="props.column.field === 'productCode'"
                   v-show="totalPromoProduct"
-                  class="mx-0"
-                  align-h="center"
+                  class="mx-0 h7 text-brand-3"
+                  align-h="start"
                 >
                   {{ $formatNumberToLocale(totalPromoProduct) }}
                 </b-row>
@@ -454,8 +452,8 @@
                 <span v-if="props.column.field === 'function'">
                   <b-icon-trash-fill
                     v-b-popover.hover.top="'Xóa'"
-                    class="cursor-pointer mt-50"
-                    scale="1.5"
+                    class="cursor-pointer"
+                    scale="1.2"
                     color="red"
                     @click="onClickDeleteButton(props.index)"
                   />
@@ -539,6 +537,7 @@
     />
     <po-confirm-modal
       @inputChange="dataFromPoConfirm($event)"
+      @clearView="clearsViewIfNotImport($event)"
     />
     <confirm-modal />
     <!-- END - Modal -->
@@ -588,7 +587,7 @@ export default {
 
   data() {
     return {
-      canNotEdit: false,
+      disableInput: false,
       componentKey: 0,
       totalPoPromoProduct: 0,
       totalProduct: 0,
@@ -908,19 +907,7 @@ export default {
       }
     },
     inputTypeSelected() {
-      // rest all total row
-      this.rowsProduct = []
-      this.poProductInfo = {}
-      this.poPromotionProductsInfo = {}
-      this.poAdjustInfo = {}
-      this.poPromotionProducts = []
-      this.poBorrowingInfo = {}
-      this.status = -1
-      this.note = ''
-      this.poId = null
-      this.rowsProductPromotion = []
-      this.promotionRow = []
-      this.totalProduct = null
+      this.clearAllDataView()
       if (this.inputTypeSelected === '0') {
         this.columns = this.poConfirmColumn
         this.billDate = this.$nowDate
@@ -932,15 +919,18 @@ export default {
       if (this.inputTypeSelected !== '0') {
         this.columns = this.adjustBorrowColumns
       }
+      if (this.inputTypeSelected === '0' && this.status === -1) {
+        this.disableInput = false
+      }
     },
     getProducts() {
       this.products = [...this.getProducts]
     },
     status() {
       if (this.inputTypeSelected === '0' && this.status === -1) {
-        this.canNotEdit = false
+        this.disableInput = false
       } else {
-        this.canNotEdit = true
+        this.disableInput = true
       }
     },
   },
@@ -1101,7 +1091,7 @@ export default {
     },
     productSelected(product) {
       if (product.item) {
-        const index = this.rowsProductPromotion.findIndex(e => e.productId === product.item.id)
+        const index = this.rowsProductPromotion.findIndex(e => e.productId === product.item.productId)
         if (this.rowsProductPromotion) {
           const obj = {
             productId: product.item.productId,
@@ -1123,6 +1113,29 @@ export default {
       }
     },
     // END - Search product func
+    clearAllDataView() {
+      // rest all total row
+      this.rowsProduct = []
+      this.poProductInfo = {}
+      this.poPromotionProductsInfo = {}
+      this.poAdjustInfo = {}
+      this.poPromotionProducts = []
+      this.poBorrowingInfo = {}
+      this.status = -1
+      this.note = ''
+      this.billDate = this.$nowDate
+      this.poId = null
+      this.poNo = null
+      this.internalNumber = null
+      this.rowsProductPromotion = []
+      this.promotionRow = []
+      this.totalProduct = null
+    },
+    clearsViewIfNotImport(id) {
+      if (this.poId === id) {
+        this.clearAllDataView()
+      }
+    },
   },
 }
 </script>

@@ -96,6 +96,17 @@
                 @click="showOrderDetailsModal(props.row.idDetail)"
               />
             </div>
+            <div
+              v-if="props.column.field === 'amount' ||
+                props.column.field === 'discount' ||
+                props.column.field === 'quantity' "
+              style="padding-right: 10px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
           </template>
           <!-- END - Rows -->
 
@@ -107,7 +118,7 @@
             <b-row
               v-show="orderReturnPagination.totalElements"
               v-if="props.column.field === 'amount'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ totalAmount }}
@@ -115,8 +126,17 @@
 
             <b-row
               v-show="orderReturnPagination.totalElements"
+              v-else-if="props.column.field === 'discount'"
+              class="mx-50 h7 text-brand-3"
+              align-h="end"
+            >
+              {{ totalPromo }}
+            </b-row>
+
+            <b-row
+              v-show="orderReturnPagination.totalElements"
               v-else-if="props.column.field === 'quantity'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ totalQuantity }}
@@ -379,6 +399,12 @@ export default {
     totalQuantity() {
       if (this.RETURNED_GOODS_GETTER.info) {
         return replaceDotWithComma(formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.allTotal)))
+      }
+      return 0
+    },
+    totalPromo() {
+      if (this.RETURNED_GOODS_GETTER.info) {
+        return replaceDotWithComma(formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.allPromotion)))
       }
       return 0
     },

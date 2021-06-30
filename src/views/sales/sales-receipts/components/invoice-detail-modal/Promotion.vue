@@ -5,7 +5,7 @@
         cols="2"
       >
         <b-row
-          class="v-title bg-light py-1 w-75 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-start mt-2 mb-1 header"
+          class="v-title bg-light py-1 rounded-pill border-top-info border-bottom-info border-right-info align-content-center justify-content-start mt-2 mb-1 header"
         >
           Khuyến mãi
         </b-row>
