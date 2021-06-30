@@ -153,7 +153,7 @@
       <b-col
         sm="12"
         lg="8"
-        class="d-flex flex-column rounded px-0"
+        class="d-flex flex-column rounded px-0 pr-1"
       >
         <!-- START - Table product -->
         <vue-good-table

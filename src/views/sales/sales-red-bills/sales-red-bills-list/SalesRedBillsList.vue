@@ -240,7 +240,7 @@
           :columns="columns"
           :rows="listRedBill"
           mode="remote"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: searchData.size,

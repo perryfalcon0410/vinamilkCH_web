@@ -116,6 +116,7 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   justify-content: center;
 }
 
+// style class visited
 .visited-action {
   color: #6e6b7b !important;
   background-color: #fff !important;
@@ -161,3 +162,12 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 }
 
 // -- style applied for vgt-style --
+// hidden scroll vue-auto-suggesst
+.check-auto-suggesst {
+  max-height: none !important;
+}
+
+// Checking for too long text will get a newline
+.word-wrap {
+  word-wrap: break-word;
+}

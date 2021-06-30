@@ -1,7 +1,7 @@
 <template>
   <b-col
-    lg
-    class="d-print-none bg-white shadow rounded ml-lg-1 mt-sm-1 mt-lg-0"
+    lg="4"
+    class="d-print-none bg-white shadow rounded mt-sm-1 mt-lg-0"
   >
     <b-form>
       <!-- START - Date and name -->
@@ -10,8 +10,10 @@
         align-h="between"
       >
         <!-- START - Date  -->
-        <b-row
+        <b-col
           class="mx-0 "
+          cols="6"
+          align-h="between"
           align-v="center"
         >
           <b-icon-alarm-fill
@@ -19,12 +21,13 @@
             class="mx-1"
           />
           {{ currentDate }}
-        </b-row>
+        </b-col>
         <!-- END - Date  -->
 
         <!-- START - Name  -->
-        <b-row
-          class="mx-0 mt-md-1 mt-xl-0 px-1"
+        <b-col
+          class="mx-0 mt-md-1 mt-xl-0 px-1 word-wrap text-right"
+          cols="6"
           align-v="center"
         >
           <b-icon-person-fill
@@ -32,7 +35,7 @@
             class="mr-1"
           />
           {{ customer.fullName }}
-        </b-row>
+        </b-col>
         <!-- END - Name  -->
 
       </b-row>
@@ -80,7 +83,6 @@
                 ref="search"
                 v-model="search"
                 :suggestions="customersSearch"
-                :get-suggestion-value="getSuggestionValue"
                 class="w-100"
                 align-v="center"
                 :input-props="{
@@ -159,7 +161,7 @@
 
           <!-- START - Address -->
           <b-row
-            class="mt-1"
+            class="mt-1 word-wrap"
             align-v="center"
           >
             <b-col cols="4">
@@ -621,6 +623,7 @@ export default {
       if (this.CUSTOMERS_SALE_GETTER.content) {
         return [{
           data: this.CUSTOMERS_SALE_GETTER.content.map(data => ({
+            name: '',
             id: data.id,
             shopId: data.shopId,
             code: data.customerCode,
@@ -730,7 +733,7 @@ export default {
     },
     getCustomerSearch() {
       this.customersSearch = [...this.getCustomerSearch]
-      this.customer = { ...this.getCustomerSearch }
+      // this.customer = { ...this.getCustomerSearch }
     },
     onlineOrder() {
       this.getOnlineOrderById()
@@ -926,7 +929,7 @@ export default {
       this.$emit('salemtPromotionObjectSelected', item.id)
     },
 
-    getSuggestionValue(suggestion) {
+    onclickChooseCustomer(suggestion) {
       this.customer.id = suggestion.item.id
       this.customer.code = suggestion.item.code
       this.customer.email = suggestion.item.email
@@ -940,7 +943,26 @@ export default {
       this.customer.amountCumulated = suggestion.item.amountCumulated
       this.customer.status = suggestion.item.status
       this.customer.typeId = suggestion.item.customerTypeId
+      this.$emit('getIdCustomer', suggestion.item)
+      this.customersSearch = [{ data: null }]
+      this.search = null
     },
+
+    // getSuggestionValue(suggestion) {
+    //   this.customer.id = suggestion.item.id
+    //   this.customer.code = suggestion.item.code
+    //   this.customer.email = suggestion.item.email
+    //   this.customer.shopId = suggestion.item.shopId
+    //   this.customer.fullName = suggestion.item.fullName
+    //   this.customer.phoneNumber = suggestion.item.phoneNumber
+    //   this.customer.totalBill = suggestion.item.totalBill
+    //   this.customer.address = suggestion.item.address
+    //   this.customer.totalBill = suggestion.item.totalBill
+    //   this.customer.scoreCumulated = suggestion.item.scoreCumulated
+    //   this.customer.amountCumulated = suggestion.item.amountCumulated
+    //   this.customer.status = suggestion.item.status
+    //   this.customer.typeId = suggestion.item.customerTypeId
+    // },
 
     disableOnlineOrder() {
     },

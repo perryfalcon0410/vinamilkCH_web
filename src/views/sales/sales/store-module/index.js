@@ -26,6 +26,7 @@ import {
   CREATE_SALE_ORDER_GETTER,
   PRINT_SALES_TEMP_GETTER,
   GET_SALE_PAYMENT_TYPES_GETTER,
+  GET_LIMIT_AGE_CUSTOMERS_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -50,6 +51,7 @@ import {
   PRINT_SALES_ACTION,
   PRINT_SALES_TEMP_ACTION,
   GET_SALE_PAYMENT_TYPES_ACTION,
+  GET_LIMIT_AGE_CUSTOMERS_ACTION,
 } from './type'
 
 export default {
@@ -80,6 +82,7 @@ export default {
     createSaleData: {},
     printSaleTempData: {},
     salePaymentTypes: [],
+    limitAge: [],
   },
 
   getters: {
@@ -151,6 +154,9 @@ export default {
     },
     [GET_SALE_PAYMENT_TYPES_GETTER](state) {
       return state.salePaymentTypes || []
+    },
+    [GET_LIMIT_AGE_CUSTOMERS_GETTER](state) {
+      return state.limitAge
     },
   },
 
@@ -509,6 +515,21 @@ export default {
           if (res.success) {
             state.printSaleTempData = res.data
             val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_LIMIT_AGE_CUSTOMERS_ACTION]({ state }, val) {
+      SalesServices
+        .getLimitAgeCustomer(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.limitAge = res.data
           } else {
             throw new Error(res.statusValue)
           }

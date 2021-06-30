@@ -48,3 +48,5 @@ export const printSalesEndpoint = `${SALES}/sale-orders/print-sale-order`
 export const printSalesTempEndpoint = `${SALES}/printtmp`
 
 export const getSalesPaymentTypesEndpoint = `${COMMON}${APPARAM}/type/SALEMT_PAYMENT_TYPE`
+
+export const getLimitAgeCustomerEndpoint = `${COMMON}${APPARAM}/type/SALEMT_LIMIT_AGE_CUS`

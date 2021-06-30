@@ -116,12 +116,18 @@
             :columns="columns"
             :rows="customers"
             mode="remote"
-            style-class="vgt-table striped"
+            style-class="vgt-table"
             :pagination-options="{
-              enabled: true
+              enabled: true,
+              perPage: searchData.size,
+              setCurrentPage: searchData.page + 1,
             }"
             compact-mode
             line-numbers
+            :total-rows="customerPagination.totalElements"
+            @on-sort-change="onSortChange"
+            @on-page-change="onPageChange"
+            @on-per-page-change="onPerPageChange"
           >
             <!-- START - Empty rows -->
             <div
@@ -177,6 +183,7 @@
               slot-scope="props"
             >
               <b-row
+                v-show="customerPagination.totalElements"
                 class="v-pagination px-1 mx-0"
                 align-h="between"
                 align-v="center"
@@ -187,23 +194,21 @@
                   <span
                     class="text-nowrap"
                   >
-                    Hiển thị 1 đến
+                    Số hàng hiển thị
                   </span>
                   <b-form-select
-                    v-model="elementSize"
+                    v-model="searchData.size"
                     size="sm"
-                    :options="paginationOptions"
+                    :options="perPageSizeOptions"
                     class="mx-1"
                     @input="(value)=>props.perPageChanged({currentPerPage: value})"
                   />
-                  <span
-                    class="text-nowrap"
-                  > trong {{ customerPagination.totalElements }} mục </span>
+                  <span class="text-nowrap">{{ paginationDetailContent }}</span>
                 </div>
                 <b-pagination
                   v-model="pageNumber"
                   :total-rows="customerPagination.totalElements"
-                  :per-page="elementSize"
+                  :per-page="searchData.size"
                   first-number
                   last-number
                   align="right"
@@ -278,10 +283,19 @@ export default {
   data() {
     return {
       selectedRow: 0,
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
-      paginationOptions: commonData.perPageSizes,
-      paginationData: {},
+      perPageSizeOptions: commonData.perPageSizes,
+      pageNumber: commonData.pageNumber,
+      searchData: {
+        size: commonData.perPageSizes[0],
+        page: commonData.pageNumber - 1,
+        sort: null,
+      },
+
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
 
       // search
       searchKeywords: '',
@@ -290,6 +304,12 @@ export default {
       customerTypeId: '',
       shopId: '',
       scoreCumulated: '',
+      searchOption: {
+        searchKeywords: null,
+        phoneNumber: null,
+        idNo: null,
+        status: null,
+      },
 
       columns: [
         {
@@ -376,27 +396,25 @@ export default {
     customerPagination() {
       return this.CUSTOMERS_GETTER
     },
+    paginationDetailContent() {
+      const { page, size } = this.searchData
+      const { totalElements } = this.customerPagination
+
+      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
+      const maxPageSize = (size * (page + 1)) > totalElements
+        ? totalElements : (size * (page + 1))
+
+      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
+    },
   },
   watch: {
-    pageNumber() {
-      this.paginationData.page = this.pageNumber - 1
-      this.onPaginationChange()
-    },
-    elementSize() {
-      this.paginationData.size = this.elementSize
-      this.paginationData.status = customerData.status[0].id
-      this.onPaginationChange()
-    },
-    paginationData() {
-      this.pageNumber = 1
-      this.onPaginationChange()
-    },
   },
   mounted() {
-    const activeCustomer = {
-      status: customerData.status[0].id,
-    }
-    this.GET_CUSTOMERS_ACTION(activeCustomer)
+    this.onSearch()
+    // const activeCustomer = {
+    //   status: customerData.status[0].id,
+    // }
+    // this.GET_CUSTOMERS_ACTION(activeCustomer)
   },
   created() {
   },
@@ -406,16 +424,52 @@ export default {
       GET_CUSTOMER_BY_ID_ACTION,
     ]),
 
+    // func pagination
+    onSearch() {
+      this.searchOption = {
+        searchKeywords: this.searchKeywords.trim(),
+        phoneNumber: this.phoneNumber,
+        idNo: this.idNo.trim(),
+        status: customerData.status[0].id,
+        ...this.decentralization,
+        ...this.searchData,
+      }
+      this.searchData = { ...this.searchData, ...this.searchOption }
+      console.log(this.searchData)
+      this.GET_CUSTOMERS_ACTION(this.searchOption)
+    },
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
+    },
+
     onClickSearchButton() {
-      const searchData = {
+      this.searchOption = {
         searchKeywords: this.searchKeywords.trim(),
         phoneNumber: this.phoneNumber,
         idNo: this.idNo.trim(),
         status: customerData.status[0].id,
       }
-
-      this.GET_CUSTOMERS_ACTION(searchData)
+      this.updateSearchData({
+        // page: commonData.pageNumber - 1,
+        ...this.searchOption,
+      })
+      this.onPaginationChange()
     },
+    onPaginationChange() {
+      this.GET_CUSTOMERS_ACTION({ ...this.searchData })
+    },
+    onPageChange(params) {
+      this.updateSearchData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
+      })
+      this.onPaginationChange()
+    },
+    // func pagination
 
     onClickCloseButton() {
       this.$refs.salesSearchModal.hide()
@@ -426,10 +480,6 @@ export default {
       this.$emit('getCustomerInfo', {
         data: obj,
       })
-    },
-
-    onPaginationChange() {
-      this.GET_CUSTOMERS_ACTION(this.paginationData)
     },
   },
 }
