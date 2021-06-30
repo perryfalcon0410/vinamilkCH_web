@@ -930,8 +930,9 @@ export default {
       if (this.getDiscount !== null) {
         this.pay.discount.discountCode = this.getDiscount.discountCode
         this.pay.discount.discountAmount = this.getDiscount.discountValue
+      } else {
+        this.pay.discount.discountAmount = 0
       }
-      this.pay.discount.discountAmount = 0
     },
     totalOrderPrice() {
       this.pay.totalAmount = this.totalOrderPrice
@@ -962,7 +963,7 @@ export default {
 
       // get accumulate
       this.pay.accumulate.accumulateAmount = 0
-      this.pay.accumulate.accumulatePoint = this.customer.amountCumulated
+      this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
     },
     getItemsProduct() {
       this.allProducts = [...this.getItemsProduct]
@@ -1102,22 +1103,16 @@ export default {
           this.printSaleOrderTemp()
         }
       }
-    })
-    window.addEventListener('keydown', e => {
       if (e.key === 'F8') {
-        if (!this.isPaid && Number(this.pay.extraAmount) > 0) {
-          this.createSaleOrder()
-        }
-      }
-    })
-    window.addEventListener('keydown', e => {
-      if (e.key === 'F9') {
-        if (!this.isPaid && Number(this.pay.extraAmount) > 0) {
+        if (!this.isPaid && Number(this.pay.extraAmount) >= 0) {
           this.createSaleOrderAndPrint()
         }
       }
-    })
-    window.addEventListener('keydown', e => {
+      if (e.key === 'F9') {
+        if (!this.isPaid && Number(this.pay.extraAmount) >= 0) {
+          this.createSaleOrder()
+        }
+      }
       if (e.key === 'F10') {
         if (this.isPaid) {
           this.rePrintSaleOrder()
@@ -1367,10 +1362,18 @@ export default {
       if (Number.isNaN(Number(this.pay.salePayment.salePaymentAmount))) {
         this.pay.salePayment.salePaymentAmount = 0
       }
-      // this.pay.salePayment.salePaymentAmount = Number.parseInt(this.pay.salePayment.salePaymentAmount, 0)
-      this.pay.extraAmount = Number(this.pay.salePayment.salePaymentAmount) - Number(this.pay.needPaymentAmount)
-      this.isDisabledPaymentBtn = (Number(this.pay.extraAmount) < 0)
-      this.isDisabledPrintAndPaymentBtn = (Number(this.pay.extraAmount) < 0)
+      if (this.pay.salePayment.salePaymentAmount === null || this.pay.salePayment.salePaymentAmount === '') {
+        this.pay.extraAmount = null
+      } else {
+        this.pay.extraAmount = Number(this.pay.salePayment.salePaymentAmount) - Number(this.pay.needPaymentAmount)
+      }
+      if (Number(this.pay.extraAmount) < 0 || this.pay.extraAmount === null) {
+        this.isDisabledPaymentBtn = true
+        this.isDisabledPrintAndPaymentBtn = true
+      } else {
+        this.isDisabledPaymentBtn = false
+        this.isDisabledPrintAndPaymentBtn = false
+      }
       if (this.isPaid) {
         this.isDisabledPaymentBtn = this.isPaid
         this.isDisabledPrintAndPaymentBtn = this.isPaid
@@ -1494,7 +1497,19 @@ export default {
       }
     },
     rePrintSaleOrder() {
-      window.print()
+      if (this.isPrint) {
+        window.print()
+      } else {
+        this.PRINT_SALES_RECEIPT_ACTION({
+          data: {
+            salesReceiptId: this.pay.saleOrderId,
+            formId: this.formId,
+            ctrlId: this.ctrlId,
+          },
+          onSuccess: () => {
+          },
+        })
+      }
     },
   },
 }
