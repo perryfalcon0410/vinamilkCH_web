@@ -513,6 +513,7 @@ export default {
         orderNumber: '',
         orderNote: '',
         discountCode: null,
+        discountValue: null,
       },
 
       quantity: null,
@@ -655,6 +656,9 @@ export default {
         label: data.apParamName,
       }))
     },
+    onlineOrder() {
+      return this.ONLINE_ORDER_BY_ID_GETTER
+    },
     getOnlineOrderProducts() {
       if (this.ONLINE_ORDER_BY_ID_GETTER.products) {
         return this.ONLINE_ORDER_BY_ID_GETTER.products.map(data => ({
@@ -688,6 +692,7 @@ export default {
           isDefault: data.isDefault,
           totalBill: data.totalBill,
           amountCumulated: data.amountCumulated,
+          createdAt: data.createdAt,
         }))
       }
       return []
@@ -726,18 +731,23 @@ export default {
       this.customersSearch = [...this.getCustomerSearch]
       this.customer = { ...this.getCustomerSearch }
     },
+    onlineOrder() {
+      this.getOnlineOrderById()
+    },
     getOnlineOrderProducts() {
       this.orderProducts = [...this.getOnlineOrderProducts]
       this.$emit('getOnlineOrderInfoForm', this.orderProducts)
     },
     getOnlineOrderCustomers() {
       this.onlineOrderCustomers = [...this.getOnlineOrderCustomers]
+      console.log('this.onlineOrderCustomers', this.onlineOrderCustomers)
 
       if (this.onlineOrderCustomers.length > 1) {
         this.$refs.salesSearchModal.$refs.salesSearchModal.show()
       } else {
         const arrayToString = JSON.stringify(...this.onlineOrderCustomers)
         this.customer = JSON.parse(arrayToString)
+        this.$emit('getOnlineCustomer', this.customer)
       }
     },
   },
@@ -798,7 +808,7 @@ export default {
     },
 
     showNotifyModal() {
-      if (this.salemtPromotionObjectSelected && this.salemtPromotionObjectSelected !== saleData.salemtPromotionObject[0].id) {
+      if ((this.salemtPromotionObjectSelected && this.salemtPromotionObjectSelected !== saleData.salemtPromotionObject[0].id) && this.isDisabledOrder !== true) {
         this.$refs.salesNotifyModal.show()
         this.GET_ONLINE_ORDERS_ACTION({ ...this.searchData })
       }
@@ -880,6 +890,15 @@ export default {
           this.isCheckmanualCreate = false
         }
       }
+    },
+
+    getOnlineOrderById() {
+      this.orderOnline.orderNumber = this.onlineOrder.orderNumber
+      this.orderOnline.discountCode = this.onlineOrder.discountCode
+      this.orderOnline.discountValue = this.onlineOrder.discountValue
+      this.quantity = this.onlineOrder.quantity
+      this.totalPrice = this.onlineOrder.totalPrice
+      this.$emit('getOnlineCustomer', this.customer)
     },
 
     onChangeKeyWord() {

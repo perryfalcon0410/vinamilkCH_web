@@ -283,7 +283,7 @@
             >
               Đồng ý
             </b-button>
-            <b-button @click="closeNotifyModal">
+            <b-button @click="closeNotifyModal()">
               Đóng
             </b-button>
           </template>
@@ -901,6 +901,10 @@ export default {
 
     onClickAgreeButton() {
       this.orderProducts = []
+      this.$refs.salesNotifyModal.hide()
+      this.isDisabledOrder = true
+    },
+    closeNotifyModal() {
       this.$refs.salesNotifyModal.hide()
       this.isDisabledOrder = true
     },
