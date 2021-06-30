@@ -180,6 +180,7 @@
         </div>
         <b-form-checkbox
           v-model="privateCustomer"
+          class="ws-nowrap"
         >
           Khách hàng của cửa hàng
         </b-form-checkbox>

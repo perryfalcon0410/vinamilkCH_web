@@ -115,6 +115,7 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   align-items: center;
   justify-content: center;
 }
+
 .visited-action {
   color: #6e6b7b !important;
   background-color: #fff !important;
@@ -132,6 +133,14 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 }
 // END - Input
 
+// START - Text
+
+// ngăn string xuống dòng
+.ws-nowrap {
+  white-space: nowrap;
+}
+// END - Text
+
 // sticky-position
 .move-column {
   position: sticky;
@@ -139,6 +148,7 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   background: #fff;
   border: 1px solid #ccc;
 }
+
 .check-auto-suggesst {
   max-height: none !important;
 }
