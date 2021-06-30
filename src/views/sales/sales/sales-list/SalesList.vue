@@ -811,7 +811,6 @@ export default {
     },
 
     billHandle(bill, index) {
-      console.log('abc')
       return {
         id: bill.id,
         index,
@@ -867,7 +866,7 @@ export default {
       if (val === '2') {
         this.isOnline = true
         this.onlineOrderId = null
-        console.log('usedShop.manuallyCreatable', usedShop.manuallyCreatable)
+
         if (usedShop.id === this.currentCustomer.shopId) {
           if (usedShop.manuallyCreatable === false) {
             this.editManualPermission = false
