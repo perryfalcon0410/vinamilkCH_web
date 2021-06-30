@@ -251,43 +251,53 @@ export default {
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngày bán',
           field: 'sellDate',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Điện thoại',
           field: 'phoneNumber',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngành hàng',
           field: 'industry',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
+          thClass: 'text-nowrap',
         },
         {
           label: 'ĐVT',
           field: 'unit',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -297,12 +307,14 @@ export default {
           label: 'Giá bán',
           field: 'price',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tổng cộng',
           field: 'total',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -312,6 +324,7 @@ export default {
           label: 'Khuyến mãi',
           field: 'promotion',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -321,6 +334,7 @@ export default {
           label: 'Thanh toán',
           field: 'amount',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -329,22 +343,27 @@ export default {
         {
           label: 'Mã nhân viên',
           field: 'userCode',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên nhân viên',
           field: 'userName',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Nhóm sản phẩm',
           field: 'productGroup',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số đơn online',
           field: 'onlineCode',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Kênh bán',
           field: 'sellChannel',
+          thClass: 'text-nowrap',
         },
       ],
       sales: [],

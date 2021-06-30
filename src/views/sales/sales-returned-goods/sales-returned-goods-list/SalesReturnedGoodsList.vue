@@ -40,7 +40,7 @@
           mode="remote"
           :columns="columns"
           :rows="oderReturns"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
           :pagination-options="{
             enabled: true,
             perPage: searchData.size,
@@ -49,10 +49,6 @@
           compact-mode
           line-numbers
           :total-rows="orderReturnPagination.totalElements"
-          :sort-options="{
-            enabled: false,
-            multipleColumns: true,
-          }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
@@ -277,49 +273,42 @@ export default {
         {
           label: 'Mã trả hàng',
           field: 'orderReturnNumber',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Đơn hàng tham chiếu',
           field: 'orderNumber',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Nhân viên',
           field: 'userName',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerNumber',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
-          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Ngày trả hàng',
           field: 'dateReturn',
-          sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Tổng giá trị',
           field: 'amount',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
@@ -329,14 +318,12 @@ export default {
         {
           label: 'Tiền giảm giá',
           field: 'discount',
-          sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
         },
         {
           label: 'Thành tiền thanh toán',
           field: 'quantity',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
@@ -522,7 +509,12 @@ export default {
       })
       this.onPaginationChange()
     },
-
+    onSortChange(params) {
+      this.updateSearchData({
+        sort: `${params[0].field},${params[0].type}`,
+      })
+      this.onPaginationChange()
+    },
   },
 }
 </script>

@@ -348,24 +348,28 @@ export default {
         {
           label: 'Ngành hàng',
           field: 'industry',
-          width: '110px',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
+          thClass: 'text-nowrap',
         },
         {
           label: 'ĐVT',
           field: 'unit',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tồn đầu kỳ',
           field: 'beginningQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -375,12 +379,14 @@ export default {
           label: 'Giá đầu kỳ',
           field: 'beginningPrice',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền đầu kỳ',
           field: 'beginningAmount',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -390,6 +396,7 @@ export default {
           label: 'Tổng nhập trong kỳ',
           field: 'impTotalQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -399,6 +406,7 @@ export default {
           label: 'Nhập mua hàng',
           field: 'impQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -408,6 +416,7 @@ export default {
           label: 'Giá trị nhập mua hàng',
           field: 'impAmount',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -417,6 +426,7 @@ export default {
           label: 'Nhập điều chỉnh',
           field: 'impAdjustmentQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -426,6 +436,7 @@ export default {
           label: 'Giá trị nhập điều chỉnh',
           field: 'impAdjustmentAmount',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -435,6 +446,7 @@ export default {
           label: 'Tổng xuất trong kỳ',
           field: 'expTotalQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -444,6 +456,7 @@ export default {
           label: 'Xuất bán hàng',
           field: 'expSalesQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -453,6 +466,7 @@ export default {
           label: 'Giá trị xuất bán hàng',
           field: 'expSalesAmount',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -462,6 +476,7 @@ export default {
           label: 'Xuất khuyến mãi',
           field: 'expPromotionQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -471,6 +486,7 @@ export default {
           label: 'Giá trị xuất khuyến mãi',
           field: 'expPromotionAmount',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -480,6 +496,7 @@ export default {
           label: 'Xuất điều chỉnh',
           field: 'expAdjustmentQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -489,6 +506,7 @@ export default {
           label: 'Giá trị xuất điều chỉnh',
           field: 'expAdjustmentAmount',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -498,6 +516,7 @@ export default {
           label: 'Xuất trả hàng',
           field: 'expExchangeQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -507,6 +526,7 @@ export default {
           label: 'Giá trị xuất trả hàng',
           field: 'expExchangeAmount',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -516,6 +536,7 @@ export default {
           label: 'Tồn cuối kỳ',
           field: 'endingQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -525,12 +546,14 @@ export default {
           label: 'Giá cuối kỳ',
           field: 'endingPrice',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền cuối kỳ',
           field: 'endingAmount',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -702,6 +725,6 @@ export default {
 </script>
 <style>
   .name-width {
-    width: 400px;
+    max-width: 400px;
   }
 </style>

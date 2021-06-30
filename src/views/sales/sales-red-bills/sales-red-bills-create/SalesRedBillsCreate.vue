@@ -213,7 +213,7 @@
           </div>
           <b-form-textarea
             v-model="redBill.note"
-            maxlength="4000"
+            maxlength="250"
             class="mb-1"
           />
           <!-- END - Archive Export Note -->
@@ -270,6 +270,7 @@
                     maxlength="7"
                     type="text"
                     @keypress="$onlyNumberInput"
+                    @input="onInputValueQuantity(props.row.originalIndex)"
                     @change="onChangeQuantityAndPrice(props.row.originalIndex)"
                   />
                 </div>
@@ -279,7 +280,7 @@
                     maxlength="20"
                     type="text"
                     @keypress="$onlyNumberInput"
-                    @input="onInputValue(props.row.originalIndex)"
+                    @input="onInputValueProductPrice(props.row.originalIndex)"
                     @change="onChangeQuantityAndPrice(props.row.originalIndex)"
                   />
                 </div>
@@ -298,7 +299,7 @@
                   <b-col class="align-middle">
                     <b-form-input
                       v-model="products[props.row.originalIndex].note"
-                      maxlength="4000"
+                      maxlength="250"
                     />
                   </b-col>
                 </div>
@@ -906,14 +907,23 @@ export default {
         this.products[index].vat = 100
       }
     },
-    onInputValue(index) {
+    onInputValueProductPrice(index) {
+      if (this.products[index].productPrice === 0) {
+        this.products[index].productPrice = '1'
+      }
       this.products[index].productPriceOriginal = Number(this.products[index].productPrice)
+    },
+    onInputValueQuantity(index) {
+      if (this.products[index].quantity === 0) {
+        this.products[index].quantity = '1'
+      }
     },
     onChangeQuantityAndPrice(index) {
       this.products[index].note = `${Math.floor(this.products[index].quantity / this.quantityPerBox)}T${this.products[index].quantity % this.quantityPerBox}`
       this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal))
       this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal)
       this.products[index].productExported = this.$formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
+      this.products[index].productPriceOriginal = this.products[index].productPrice
       this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
       this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
       this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
@@ -949,6 +959,18 @@ export default {
         shopId: this.redBill.shopId,
         productDataDTOS: productsData,
         saleOrderId: this.saleOrderIds,
+      }
+      if (productsData.findIndex(product => product.quantity === '') !== -1) {
+        toasts.error('Số lượng không được để trống')
+        return
+      }
+      if (productsData.findIndex(product => product.priceNotVat === '') !== -1) {
+        toasts.error('Đơn giá không được để trống')
+        return
+      }
+      if (productsData.findIndex(product => product.vat === '') !== -1) {
+        toasts.error('VAT không được để trống')
+        return
       }
       if (productsData.length > 0) {
         this.isFieldCheck = false
@@ -987,6 +1009,18 @@ export default {
         shopId: this.redBill.shopId,
         productDataDTOS: productsData,
         saleOrderId: this.saleOrderIds,
+      }
+      if (productsData.findIndex(product => product.quantity === '') !== -1) {
+        toasts.error('Số lượng không được để trống')
+        return
+      }
+      if (productsData.findIndex(product => product.priceNotVat === '') !== -1) {
+        toasts.error('Đơn giá không được để trống')
+        return
+      }
+      if (productsData.findIndex(product => product.vat === '') !== -1) {
+        toasts.error('VAT không được để trống')
+        return
       }
       if (productsData.length > 0) {
         this.CREATE_RED_BILL_ACTION({
