@@ -728,7 +728,8 @@ export default {
             this.invoiceDetail.totalValueAddedTax = invoiceDetailData.info.totalValueAddedTax
             this.invoiceDetail.products = invoiceDetailData.response
             this.$emit('productsOfBillSaleData', { invoiceDetail: this.invoiceDetail, saleOrderIds: this.arrSaleOrderIds })
-            this.$root.$emit('bv::hide::modal', 'bill-receipt-modal')
+            this.$bvModal.hide('bill-receipt-modal')
+
             this.isHidden = false
             this.isCheckValue = true
           },

@@ -503,7 +503,8 @@ export default {
             productsPromo: this.productPromoDetail,
           }
           this.$emit('choonsenTrans', poTranData)
-          this.$root.$emit('bv::hide::modal', 'output-modal')
+          this.$bvModal.hide('output-modal')
+
           this.GET_EXPORT_PO_TRANS_ACTION()
         },
       })

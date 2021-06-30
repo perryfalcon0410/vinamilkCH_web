@@ -1,12 +1,10 @@
 <template>
   <b-modal
-    title="Xác nhận đóng"
-    :visible="visible"
-    size="sm"
+    id="confirmModal"
+    :title="title"
+    title-class="font-weight-bolder text-brand-1"
   >
-    <strong>
-      Dữ liệu đang được tạo, bạn có muốn đóng ?
-    </strong>
+    {{ content }}
     <template #modal-footer="{}">
       <b-button
         size="sm"
@@ -29,18 +27,24 @@
 <script>
 export default {
   props: {
-    visible: {
-      type: Boolean,
-      require: true,
-      default: false,
+    title: {
+      type: String,
+      default: 'Thông báo',
+    },
+    content: {
+      type: String,
+      default: 'Dữ liệu đang được tạo, bạn có muốn đóng?',
     },
   },
+
   methods: {
     ok() {
-      this.$router.back()
+      this.$emit('ok')
+      this.$bvModal.hide('confirmModal')
     },
     cancel() {
-      this.$emit('close')
+      this.$emit('cancel')
+      this.$bvModal.hide('confirmModal')
     },
   },
 }

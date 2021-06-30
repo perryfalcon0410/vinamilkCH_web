@@ -302,7 +302,7 @@ export default {
       }
     },
     close() {
-      this.$root.$emit('bv::hide::modal', 'adjustment-modal')
+      this.$bvModal.hide('adjustment-modal')
     },
   },
 }

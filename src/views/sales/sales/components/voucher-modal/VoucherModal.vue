@@ -263,12 +263,12 @@ export default {
       this.keyword = ''
       this.vouchers = []
       this.$emit('getVoucherInfo', this.$refs['table-voucher'].selectedRows)
-      this.$root.$emit('bv::hide::modal', 'VoucherModal')
+      this.$bvModal.hide('VoucherModal')
     },
     cancel() {
       this.keyword = ''
       this.vouchers = []
-      this.$root.$emit('bv::hide::modal', 'VoucherModal')
+      this.$bvModal.hide('VoucherModal')
     },
     checkKeywordSearch() {
       this.isDisableSearch = this.keyword === ''

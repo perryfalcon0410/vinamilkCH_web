@@ -328,13 +328,13 @@ export default {
           totalQuantity: this.totalQuantity,
         }
         this.$emit('choonsenTrans', adjustmentTranData)
-        this.$root.$emit('bv::hide::modal', 'output-adjustment-modal')
+        this.$bvModal.hide('output-adjustment-modal')
       } else {
         toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')
       }
     },
     close() {
-      this.$root.$emit('bv::hide::modal', 'output-adjustment-modal')
+      this.$bvModal.hide('output-adjustment-modal')
     },
     onPaginationChange() {
       this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)

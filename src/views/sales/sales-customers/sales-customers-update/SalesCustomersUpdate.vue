@@ -199,7 +199,7 @@
           </div>
           <b-form-textarea
             v-model="note"
-            maxlength="3950"
+            maxlength="250"
           />
           <!-- END - Customer Note -->
 
@@ -564,29 +564,12 @@
     </validation-observer>
     <!-- END - Form Container-->
 
-    <!-- START - Customer Modal Close -->
-    <b-modal
-      v-model="isModalShow"
-      title="Thông báo"
-    >
-      Thông tin khách hàng sẽ không được cập nhật khi rời trang
-      <template #modal-footer>
-        <b-button
-          variant="someThing"
-          class="btn-brand-1 aligns-items-button-center"
-          @click="onClickAgreeButton()"
-        >
-          Đồng ý
-        </b-button>
-        <b-button
-          class="aligns-items-button-center"
-          @click="isModalShow = !isModalShow"
-        >
-          Đóng
-        </b-button>
-      </template>
-    </b-modal>
-    <!-- END - Customer Modal Close -->
+    <!-- START - Confirm Modal -->
+    <confirm-modal
+      content="Thông tin khách hàng sẽ không được cập nhật khi rời trang"
+      @ok="onClickAgreeButton"
+    />
+    <!-- END - Confirm Modal -->
   </b-container>
 </template>
 
@@ -608,6 +591,7 @@ import {
   age,
   identifyCard,
 } from '@/@core/utils/validations/validations'
+import ConfirmModal from '@/@core/components/confirm-close-modal/ConfirmModal.vue'
 import {
   formatVniDateToISO,
   formatISOtoVNI,
@@ -640,14 +624,14 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
+    ConfirmModal,
   },
 
   // START - Data
   data() {
     return {
       customerId: `${this.$route.params.id}`,
-      isModalShow: false,
-      isFieldCheck: true,
+      isFieldCanCheck: true,
       isFirstTimeGetLocations: true,
 
       configBitrhDay: {
@@ -822,9 +806,9 @@ export default {
 
   // before page leave, this will check
   beforeRouteLeave(to, from, next) {
-    if (this.isFieldCheck) {
+    if (this.isFieldCanCheck) {
       if (!this.checkFieldsValueLength()) {
-        this.isModalShow = true
+        this.$bvModal.show('confirmModal')
         this.goNext = next
       } else {
         next()
@@ -979,12 +963,11 @@ export default {
     },
 
     onClickAgreeButton() {
-      this.isModalShow = false
       this.goNext()
     },
 
     onClickSaveButton() {
-      this.isFieldCheck = false
+      this.isFieldCanCheck = false
       this.updateCustomer()
     },
 

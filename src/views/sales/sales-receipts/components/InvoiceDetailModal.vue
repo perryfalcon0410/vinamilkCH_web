@@ -199,7 +199,7 @@ export default {
 
   methods: {
     cancel() {
-      this.$root.$emit('bv::hide::modal', 'detail-modal')
+      this.$bvModal.hide('detail-modal')
     },
   },
 }

@@ -302,7 +302,7 @@ export default {
       this.GET_IMPORT_BORROWINGS_DETAIL_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId })// hard code
     },
     close() {
-      this.$root.$emit('bv::hide::modal', 'borrowed-modal')
+      this.$bvModal.hide('borrowed-modal')
     },
   },
 }

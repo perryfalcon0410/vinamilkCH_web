@@ -545,19 +545,20 @@ export default {
     showModal() {
       if (this.poConfirm.length > 0) {
         this.denyId = this.current
-        this.$root.$emit('bv::toggle::modal', 'po-deny-modal')
+        this.$bvModal.show('po-deny-modal')
       } else {
         toasts.error('Bạn cần chọn tối thiểu 1 bản ghi PO')
       }
     },
     closePoModal() {
-      this.$root.$emit('bv::hide::modal', 'po-confirm-modal')
+      this.$bvModal.hide('po-confirm-modal')
     },
     close() {
-      this.$root.$emit('bv::hide::modal', 'po-deny-modal')
+      this.$bvModal.hide('po-deny-modal')
     },
     deny() {
-      this.$root.$emit('bv::hide::modal', 'po-deny-modal')
+      this.$bvModal.hide('po-deny-modal')
+
       this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
     },
   },

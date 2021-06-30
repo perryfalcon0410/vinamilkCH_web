@@ -547,7 +547,7 @@ export default {
                 } else {
                   this.roles = res.data.roles
                   // show modal
-                  this.$root.$emit('bv::toggle::modal', 'roleAndShopModal')
+                  this.$bvModal.show('roleAndShopModal')
                 }
               } else {
                 if (res.data) {

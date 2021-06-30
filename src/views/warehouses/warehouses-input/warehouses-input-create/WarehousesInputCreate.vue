@@ -1,7 +1,6 @@
 <template>
   <b-container
     fluid
-    class="p-0"
   >
     <!-- START - Form and list -->
     <validation-observer
@@ -9,279 +8,328 @@
       v-slot="{invalid}"
       slim
     >
-      <b-col>
-        <b-row>
-          <!-- START - Form -->
-          <b-col
-            xl="4"
-            class="bg-white shadow rounded mr-xl-1 h7"
-          >
-            <!-- START - Date -->
-            <b-row class="my-1">
-              <b-col cols="4">
-                Ngày nhập:
-              </b-col>
-              <b-col class="font-weight-bold">
-                <strong>
-                  {{ now }}
-                </strong>
-              </b-col>
-            </b-row>
-            <!-- END - Date -->
+      <b-row>
+        <!-- START - Form -->
+        <b-col
+          xl="4"
+          class="bg-white shadow rounded mr-xl-1 h7"
+        >
+          <!-- START - Date -->
+          <b-row class="mt-1">
+            <b-col cols="4">
+              Ngày nhập:
+            </b-col>
+            <b-col>
+              <strong>
+                {{ now }}
+              </strong>
+            </b-col>
+          </b-row>
+          <!-- END - Date -->
 
-            <!-- START - ID and Type -->
-            <b-form-row>
-              <b-col>
-                <div class="mt-1">
-                  Mã nhập hàng
+          <!-- START - ID and Type -->
+          <b-form-row>
+            <b-col>
+              <div class="mt-1">
+                Mã nhập hàng
+              </div>
+              <b-form-input
+                id="id"
+                v-model="id"
+                maxlength="40"
+                class="h7"
+                disabled
+              />
+            </b-col>
+
+            <b-col>
+              <div class="mt-1">
+                Loại nhập
+              </div>
+              <div class="d-flex align-items-center">
+                <tree-select
+                  v-model="inputTypeSelected"
+                  :options="inputTypeOptions"
+                  no-options-text="Không có dữ liệu"
+                  no-results-text="Không tìm thấy kết quả"
+                  placeholder="Chọn loại nhập hàng"
+                  @select="clearFormText"
+                />
+                <b-input-group-append>
+                  <b-icon-three-dots-vertical
+                    v-b-popover.hover="'Chọn đơn nhập'"
+                    scale="1.5"
+                    class="cursor-pointer"
+                    @click="showModal"
+                  />
+                </b-input-group-append>
+              </div>
+            </b-col>
+          </b-form-row>
+          <!-- END - ID and Type -->
+
+          <!-- START -  Stock  -->
+          <div class="mt-1">
+            Kho hàng
+          </div>
+          <b-form-input
+            id="warehouse"
+            v-model="warehousesType.wareHouseTypeName"
+            disabled
+          />
+          <!-- END -  Stock  -->
+
+          <!-- START - Bill Number and Date -->
+          <b-form-row>
+            <b-col>
+              <validation-provider
+                v-slot="{ errors, passed, touched }"
+                :rules="`${inputTypeSelected === '0' ? 'required' : ''}`"
+                name="số hóa đơn"
+              >
+                <div class="mt-1 h7">
+                  Số hóa đơn <sup
+                    v-show="inputTypeSelected === '0'"
+                    class="text-danger"
+                  >*</sup>
                 </div>
                 <b-form-input
-                  id="id"
-                  v-model="id"
-                  maxlength="40"
-                  class="h7"
-                  disabled
+                  v-model.trim="billNumber"
+                  class="text-uppercase"
+                  :state="touched && inputTypeSelected === '0' ? passed : null"
+                  :disabled="inputTypeSelected != '0' ? true : false"
                 />
-              </b-col>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-col>
 
-              <b-col>
-                <div class="mt-1">
-                  Loại nhập
+            <b-col>
+              <validation-provider
+                v-slot="{ errors, passed, touched }"
+                rules="required"
+                name="Ngày hóa đơn"
+              >
+                <div class="mt-1 h7">
+                  Ngày hóa đơn <sup
+                    v-show="inputTypeSelected === '0'"
+                    class="text-danger"
+                  >*</sup>
                 </div>
-                <div class="d-flex align-items-center">
-                  <tree-select
-                    v-model="inputTypeSelected"
-                    :options="inputTypeOptions"
-                    no-options-text="Không có dữ liệu"
-                    no-results-text="Không tìm thấy kết quả"
-                    placeholder="Chọn loại nhập hàng"
-                    @select="clearFormText"
-                  />
-                  <b-input-group-append>
-                    <b-icon-three-dots-vertical
-                      v-b-popover.hover="'Chọn đơn nhập'"
-                      scale="1.5"
-                      class="cursor-pointer"
-                      @click="showModal"
-                    />
-                  </b-input-group-append>
-                </div>
-              </b-col>
-            </b-form-row>
-            <!-- END - ID and Type -->
-
-            <!-- START -  Stock  -->
-            <div class="mt-1">
-              Kho hàng
-            </div>
-            <b-form-input
-              id="warehouse"
-              v-model="warehousesType.wareHouseTypeName"
-              disabled
-            />
-            <!-- END -  Stock  -->
-
-            <!-- START - Bill Number and Date -->
-            <b-form-row>
-              <b-col>
-                <validation-provider
-                  v-slot="{ errors, passed, touched }"
-                  :rules="`${inputTypeSelected === '0' ? 'required' : ''}`"
-                  name="số hóa đơn"
+                <b-input-group
+                  class="input-group-merge"
                 >
-                  <div class="h7">
-                    Số hóa đơn <sup
-                      v-show="inputTypeSelected === '0'"
-                      class="text-danger"
-                    >*</sup>
-                  </div>
-                  <b-form-input
-                    v-model.trim="billNumber"
-                    class="text-uppercase"
-                    :state="touched && inputTypeSelected === '0' ? passed : null"
+                  <vue-flat-pickr
+                    v-model="billDate"
                     :disabled="inputTypeSelected != '0' ? true : false"
+                    :config="configDate"
+                    :state="touched ? passed : null"
+                    class="form-control h7 text-brand-3"
+                    placeholder="Chọn ngày"
                   />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-col>
 
-              <b-col>
-                <validation-provider
-                  v-slot="{ errors, passed, touched }"
-                  rules="required"
-                  name="Ngày hóa đơn"
+                </b-input-group>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-col>
+          </b-form-row>
+          <!-- END -   Bill Number and Date -->
+
+          <!-- START -   Internal number and PO no -->
+          <b-form-row>
+            <b-col>
+              <validation-provider
+                v-slot="{ errors, passed, touched }"
+                :rules="`${inputTypeSelected === '0' ? 'required' : ''}`"
+                name="số nội bộ"
+              >
+                <div class="mt-1 h7">
+                  Số nội bộ <sup
+                    v-show="inputTypeSelected === '0'"
+                    class="text-danger"
+                  >*</sup>
+                </div>
+                <b-form-input
+                  v-model="internalNumber"
+                  :state="touched && inputTypeSelected === '0' ? passed : null"
+                  class="h7"
+                  :disabled="canNotEdit"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-col>
+            <b-col>
+              <validation-provider
+                v-slot="{ errors, passed, touched }"
+                :rules="inputTypeSelected === '0' ? 'required' : ''"
+                name="PO No"
+              >
+                <div class="mt-1 h7">
+                  PO No
+                  <sup
+                    v-show="inputTypeSelected === '0'"
+                    class="text-danger"
+                  >*</sup>
+                </div>
+                <b-input-group
+                  id="PoNo"
+                  class="input-group-merge"
                 >
-                  <div class="h7">
-                    Ngày hóa đơn <sup
-                      v-show="inputTypeSelected === '0'"
-                      class="text-danger"
-                    >*</sup>
-                  </div>
-                  <b-input-group
-                    class="input-group-merge"
-                  >
-                    <vue-flat-pickr
-                      v-model="billDate"
-                      :disabled="inputTypeSelected != '0' ? true : false"
-                      :config="configDate"
-                      :state="touched ? passed : null"
-                      class="form-control h7 text-brand-3"
-                      placeholder="Chọn ngày"
-                    />
-
-                  </b-input-group>
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-col>
-            </b-form-row>
-            <!-- END -   Bill Number and Date -->
-
-            <!-- START -   Internal number and PO no -->
-            <b-form-row>
-              <b-col>
-                <validation-provider
-                  v-slot="{ errors, passed, touched }"
-                  :rules="`${inputTypeSelected === '0' ? 'required' : ''}`"
-                  name="số nội bộ"
-                >
-                  <div class="mt-1 h7">
-                    Số nội bộ <sup
-                      v-show="inputTypeSelected === '0'"
-                      class="text-danger"
-                    >*</sup>
-                  </div>
                   <b-form-input
-                    v-model="internalNumber"
-                    :state="touched && inputTypeSelected === '0' ? passed : null"
+                    v-model="poNo"
+                    :state="inputTypeSelected === '0' && touched ? passed : null"
                     class="h7"
                     :disabled="canNotEdit"
                   />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-col>
-              <b-col>
-                <validation-provider
-                  v-slot="{ errors, passed, touched }"
-                  :rules="inputTypeSelected === '0' ? 'required' : ''"
-                  name="PO No"
-                >
-                  <div class="mt-1 h7">
-                    PO No
-                    <sup
-                      v-show="inputTypeSelected === '0'"
-                      class="text-danger"
-                    >*</sup>
-                  </div>
-                  <b-input-group
-                    id="PoNo"
-                    class="input-group-merge"
-                  >
-                    <b-form-input
-                      v-model="poNo"
-                      :state="inputTypeSelected === '0' && touched ? passed : null"
-                      class="h7"
-                      :disabled="canNotEdit"
-                    />
-                  </b-input-group>
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-col>
-            </b-form-row>
-            <!-- END -   Internal number and PO no -->
+                </b-input-group>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-col>
+          </b-form-row>
+          <!-- END -   Internal number and PO no -->
 
-            <!-- START -   Note -->
+          <!-- START -   Note -->
+          <div class="mt-1">
+            Ghi chú
+          </div>
+          <b-form-textarea
+            id="note"
+            v-model="note"
+            maxlength="250"
+          />
+          <!-- END -   Note -->
+        </b-col>
+        <!-- END - Form -->
 
-            <div class="mt-1">
-              Ghi chú
-            </div>
-            <b-form-textarea
-              id="note"
-              v-model="note"
-              maxlength="250"
-            />
-            <!-- END -   Note -->
-          </b-col>
-          <!-- END - Form -->
+        <!-- START - List -->
+        <b-col
+          class="bg-white shadow rounded mt-1 mt-xl-0"
+        >
+          <!-- START - Table Product -->
+          <div class="d-inline-flex rounded-top px-1 my-1">
+            <strong class="text-brand-1">
+              Sản phẩm
+            </strong>
+          </div>
 
-          <!-- START - List -->
-          <b-col
-            class="bg-white shadow rounded mt-1 mt-xl-0"
+          <vue-good-table
+            :columns="columns"
+            :rows="rowsProduct"
+            style-class="vgt-table striped"
+            compact-mode
+            line-numbers
           >
-            <!-- START - Table Product -->
+            <!-- START - Column filter -->
+            <template
+              slot="column-filter"
+              slot-scope="props"
+            >
+              <b-row
+                v-if="props.column.field === 'productCode' && totalProduct !== 0"
+                class="mx-0 h7 text-brand-3"
+                align-h="start"
+              >
+                {{ $formatNumberToLocale(totalProduct) }}
+              </b-row>
+              <!--START - Choose import po product-->
+              <b-row
+                v-if="props.column.field === 'quantity'"
+                class="mx-50 h7 text-brand-3"
+                align-h="end"
+              >
+                {{
+                  $formatNumberToLocale(poProductInfo.totalQuantity || poAdjustInfo.totalQuantity || poBorrowingInfo.totalQuantity)
+                }}
+              </b-row>
+              <b-row
+                v-if="props.column.field === 'totalPriceNotVat'"
+                class="mx-50 h7 text-brand-3"
+                align-h="end"
+              >
+                {{ $formatNumberToLocale(poProductInfo.totalPriceNotVat) }}
+              </b-row>
+              <b-row
+                v-else-if="props.column.field === 'totalPriceVat'"
+                class="mx-50 h7 text-brand-3"
+                align-h="end"
+              >
+                {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
+              </b-row>
+              <b-row
+                v-else-if="props.column.field === 'totalPrice'"
+                class="mx-50 h7 text-brand-3"
+                align-h="end"
+              >
+                {{
+                  $formatNumberToLocale(poAdjustInfo.totalPrice || poBorrowingInfo.totalPrice)
+                }}
+              </b-row>
+            </template>
+            <!-- START - Empty rows -->
+
+            <!-- START - Rows -->
+            <template
+              slot="table-row"
+              slot-scope="props"
+            >
+              <div
+                v-if="props.column.field === 'totalPriceNotVat' ||
+                  'totalPriceVat' ||
+                  'totalPrice' ||
+                  'quantity'"
+                style="padding-right: 10px"
+              >
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+              <div v-else>
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+            </template>
+            <!-- END - Rows -->
+
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
+          </vue-good-table>
+          <!-- END - Table Product -->
+
+          <br>
+
+          <!-- START - Table Product promotion 1 -->
+          <div v-if="isShowPoPromoTable">
+
             <div class="d-inline-flex rounded-top px-1 my-1">
               <strong class="text-brand-1">
-                Sản phẩm
+                Hàng khuyến mãi
               </strong>
             </div>
 
             <vue-good-table
-              :columns="columns"
-              :rows="rowsProduct"
-              style-class="vgt-table striped"
+              :columns="poPromotionColumns"
+              :rows="rowsProductPromotionLoad"
+              style-class="vgt-table"
               compact-mode
               line-numbers
             >
-              <!-- START - Column filter -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
-              >
-                <b-row
-                  v-if="props.column.field === 'productCode' && totalProduct !== 0"
-                  class="mx-0 h7 text-brand-3"
-                  align-h="start"
-                >
-                  {{ $formatNumberToLocale(totalProduct) }}
-                </b-row>
-                <!--START - Choose import po product-->
-                <b-row
-                  v-if="props.column.field === 'quantity'"
-                  class="mx-50 h7 text-brand-3"
-                  align-h="end"
-                >
-                  {{
-                    $formatNumberToLocale(poProductInfo.totalQuantity) ||
-                      $formatNumberToLocale(poAdjustInfo.totalQuantity) ||
-                      $formatNumberToLocale(poBorrowingInfo.totalQuantity)
-                  }}
-                </b-row>
-                <b-row
-                  v-if="props.column.field === 'totalPriceNotVat'"
-                  class="mx-50 h7 text-brand-3"
-                  align-h="end"
-                >
-                  {{ $formatNumberToLocale(poProductInfo.totalPriceNotVat) }}
-                </b-row>
-                <b-row
-                  v-else-if="props.column.field === 'totalPriceVat'"
-                  class="mx-50 h7 text-brand-3"
-                  align-h="end"
-                >
-                  {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
-                </b-row>
-                <b-row
-                  v-else-if="props.column.field === 'totalPrice'"
-                  class="mx-50 h7 text-brand-3"
-                  align-h="end"
-                >
-                  {{
-                    $formatNumberToLocale(poAdjustInfo.totalPrice) ||
-                      $formatNumberToLocale(poBorrowingInfo.totalPrice)
-                  }}
-                </b-row>
-              </template>
               <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
 
-              <!-- START - Rows -->
+              <!-- START - Custom row -->
               <template
                 slot="table-row"
                 slot-scope="props"
               >
                 <div
-                  v-if="props.column.field === 'totalPriceNotVat' ||
-                    props.column.field === 'totalPriceVat' ||
-                    props.column.field === 'totalPrice' ||
-                    props.column.field === 'quantity'"
+                  v-if="props.column.field === 'quantity'"
                   style="padding-right: 10px"
                 >
                   {{ props.formattedRow[props.column.field] }}
@@ -290,8 +338,53 @@
                   {{ props.formattedRow[props.column.field] }}
                 </div>
               </template>
-              <!-- END - Rows -->
+              <!-- END - Custom row -->
 
+              <!-- START - Custom filter -->
+              <template
+                slot="column-filter"
+                slot-scope="props"
+              >
+                <b-row
+                  v-if="props.column.field === 'productCode'"
+                  class="mx-0 h7 text-brand-3"
+                  align-h="start"
+                >
+                  {{ $formatNumberToLocale(totalPoPromoProduct) }}
+                </b-row>
+                <b-row
+                  v-if="props.column.field === 'quantity'"
+                  class="mx-50 h7 text-brand-3"
+                  align-h="end"
+                >
+                  {{ $formatNumberToLocale(poPromotionProductsInfo.totalQuantity) }}
+                </b-row>
+
+              </template>
+              <!-- END - Custom filter -->
+            </vue-good-table>
+          </div>
+          <!-- END - Table Product promotion 1 -->
+
+          <!-- START - Table Product promotion 2 -->
+          <div v-if="isShowPoPromoManualTable">
+
+            <div
+              class="d-inline-flex rounded-top px-1 my-1"
+            >
+              <strong class="text-brand-1">
+                Hàng khuyến mãi
+              </strong>
+            </div>
+
+            <vue-good-table
+              :columns="poPromotionColumns"
+              :rows="rowsProductPromotion"
+              style-class="vgt-table striped"
+              compact-mode
+              line-numbers
+            >
+              <!-- START - Empty rows -->
               <div
                 slot="emptystate"
                 class="text-center"
@@ -299,237 +392,137 @@
                 Không có dữ liệu
               </div>
               <!-- END - Empty rows -->
-            </vue-good-table>
-            <!-- END - Table Product -->
 
-            <br>
-
-            <!-- START - Table Product promotion 1 -->
-            <div v-if="isShowPoPromoTable">
-
-              <div class="d-inline-flex rounded-top px-1 my-1">
-                <strong class="text-brand-1">
-                  Hàng khuyến mãi
-                </strong>
-              </div>
-
-              <vue-good-table
-                :columns="poPromotionColumns"
-                :rows="rowsProductPromotionLoad"
-                style-class="vgt-table"
-                compact-mode
-                line-numbers
+              <!-- START - Custom filter -->
+              <template
+                slot="column-filter"
+                slot-scope="props"
               >
-                <!-- START - Empty rows -->
-                <div
-                  slot="emptystate"
-                  class="text-center"
+                <b-row
+                  v-if="props.column.field === 'quantity'"
+                  v-show="totalPromoProductQuantity"
+                  class="mx-0"
+                  align-h="right"
                 >
-                  Không có dữ liệu
-                </div>
-                <!-- END - Empty rows -->
+                  {{ $formatNumberToLocale(totalPromoProductQuantity) }}
+                </b-row>
 
-                <!-- START - Custom row -->
-                <template
-                  slot="table-row"
-                  slot-scope="props"
+                <b-row
+                  v-else-if="props.column.field === 'productCode'"
+                  v-show="totalPromoProduct"
+                  class="mx-0"
+                  align-h="center"
                 >
-                  <div
-                    v-if="props.column.field === 'quantity'"
-                    style="padding-right: 10px"
-                  >
-                    {{ props.formattedRow[props.column.field] }}
-                  </div>
-                  <div v-else>
-                    {{ props.formattedRow[props.column.field] }}
-                  </div>
-                </template>
-                <!-- END - Custom row -->
+                  {{ $formatNumberToLocale(totalPromoProduct) }}
+                </b-row>
 
-                <!-- START - Custom filter -->
-                <template
-                  slot="column-filter"
-                  slot-scope="props"
-                >
-                  <b-row
-                    v-if="props.column.field === 'productCode'"
-                    class="mx-0 h7 text-brand-3"
-                    align-h="start"
-                  >
-                    {{ $formatNumberToLocale(totalPoPromoProduct) }}
-                  </b-row>
-                  <b-row
-                    v-if="props.column.field === 'quantity'"
-                    class="mx-50 h7 text-brand-3"
-                    align-h="end"
-                  >
-                    {{ $formatNumberToLocale(poPromotionProductsInfo.totalQuantity) }}
-                  </b-row>
+              </template>
+              <!-- END - Custom filter -->
 
-                </template>
-                <!-- END - Custom filter -->
-              </vue-good-table>
-            </div>
-            <!-- END - Table Product promotion 1 -->
-
-            <!-- START - Table Product promotion 2 -->
-            <div v-if="isShowPoPromoManualTable">
-
-              <div
-                class="d-inline-flex rounded-top px-1 my-1"
+              <!-- START - Custom row-->
+              <template
+                slot="table-row"
+                slot-scope="props"
               >
-                <strong class="text-brand-1">
-                  Hàng khuyến mãi
-                </strong>
-              </div>
-
-              <vue-good-table
-                :columns="poPromotionColumns"
-                :rows="rowsProductPromotion"
-                style-class="vgt-table striped"
-                compact-mode
-                line-numbers
-              >
-                <!-- START - Empty rows -->
-                <div
-                  slot="emptystate"
-                  class="text-center"
-                >
-                  Không có dữ liệu
-                </div>
-                <!-- END - Empty rows -->
-
-                <!-- START - Custom filter -->
-                <template
-                  slot="column-filter"
-                  slot-scope="props"
-                >
-                  <b-row
-                    v-if="props.column.field === 'quantity'"
-                    v-show="totalPromoProductQuantity"
-                    class="mx-0"
-                    align-h="right"
-                  >
-                    {{ $formatNumberToLocale(totalPromoProductQuantity) }}
-                  </b-row>
-
-                  <b-row
-                    v-else-if="props.column.field === 'productCode'"
-                    v-show="totalPromoProduct"
-                    class="mx-0"
-                    align-h="center"
-                  >
-                    {{ $formatNumberToLocale(totalPromoProduct) }}
-                  </b-row>
-
-                </template>
-                <!-- END - Custom filter -->
-
-                <!-- START - Custom row-->
-                <template
-                  slot="table-row"
-                  slot-scope="props"
-                >
-                  <span v-if="props.column.field === 'productCode'">
-                    {{ rowsProductPromotion[props.index].productCode }}
-                  </span>
-                  <span v-if="props.column.field === 'quantity'">
-                    <b-form-input
-                      v-model.number="rowsProductPromotion[props.index].quantity"
-                      :state="isPositive(rowsProductPromotion[props.index].quantity)"
-                      maxlength="7"
-                      @keypress="$onlyNumberInput"
-                    />
-                  </span>
-                  <span v-if="props.column.field === 'price'">
-                    {{ rowsProductPromotion[props.index].price }}
-                  </span>
-                  <span v-if="props.column.field === 'productName'">
-                    {{ rowsProductPromotion[props.index].productName }}
-                  </span>
-                  <span v-if="props.column.field === 'unit'">
-                    {{ rowsProductPromotion[props.index].unit }}
-                  </span>
-                  <span v-if="props.column.field === 'totalPrice'">
-                    {{ rowsProductPromotion[props.index].totalPrice }}
-                  </span>
-                  <span v-if="props.column.field === 'function'">
-                    <b-icon-trash-fill
-                      v-b-popover.hover.top="'Xóa'"
-                      class="cursor-pointer mt-50"
-                      scale="1.5"
-                      color="red"
-                      @click="onClickDeleteButton(props.index)"
-                    />
-                    {{ count }}
-                  </span>
-                </template>
-                <!-- END - Custom row-->
-
-                <!-- START - Table action bottom -->
-                <div
-                  slot="table-actions-bottom"
-                  class="m-2"
-                >
-                  <vue-autosuggest
-                    v-model="productSearch"
-                    :suggestions="products"
-                    :input-props="{
-                      id:'autosuggest__input',
-                      class:'form-control w-25',
-                      placeholder:'Nhập mã hoặc tên sản phẩm'
-                    }"
-                    @input="loadProducts"
-                    @selected="productSelected"
-                  >
-                    <template slot-scope="{ suggestion }">
-                      <div class="cursor-pointer">
-                        {{ suggestions }}
-                        <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.name }}
-                      </div>
-                    </template>
-                  </vue-autosuggest>
-                </div>
-                <!-- END - Table action bottom -->
-
-              </vue-good-table>
-            </div>
-            <!-- START - Table Product promotion 2 -->
-
-            <!-- START - Button -->
-            <b-row class="m-1 justify-content-end">
-              <b-button-group>
-                <b-button
-                  class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder mr-1"
-                  variant="someThing"
-                  :disabled="invalid"
-                  @click="create"
-                >
-                  <b-icon
-                    icon="download"
+                <span v-if="props.column.field === 'productCode'">
+                  {{ rowsProductPromotion[props.index].productCode }}
+                </span>
+                <span v-if="props.column.field === 'quantity'">
+                  <b-form-input
+                    v-model.number="rowsProductPromotion[props.index].quantity"
+                    :state="isPositive(rowsProductPromotion[props.index].quantity)"
+                    maxlength="7"
+                    @keypress="$onlyNumberInput"
                   />
-                  Nhập hàng
-                </b-button>
-
-                <b-button
-                  class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
-                  @click="navigateBack"
-                >
-                  <b-icon
-                    icon="x"
+                </span>
+                <span v-if="props.column.field === 'price'">
+                  {{ rowsProductPromotion[props.index].price }}
+                </span>
+                <span v-if="props.column.field === 'productName'">
+                  {{ rowsProductPromotion[props.index].productName }}
+                </span>
+                <span v-if="props.column.field === 'unit'">
+                  {{ rowsProductPromotion[props.index].unit }}
+                </span>
+                <span v-if="props.column.field === 'totalPrice'">
+                  {{ rowsProductPromotion[props.index].totalPrice }}
+                </span>
+                <span v-if="props.column.field === 'function'">
+                  <b-icon-trash-fill
+                    v-b-popover.hover.top="'Xóa'"
+                    class="cursor-pointer mt-50"
                     scale="1.5"
+                    color="red"
+                    @click="onClickDeleteButton(props.index)"
                   />
-                  Đóng
-                </b-button>
-              </b-button-group>
-            </b-row>
-            <!-- END - Button -->
+                  {{ count }}
+                </span>
+              </template>
+              <!-- END - Custom row-->
 
-          </b-col>
-          <!-- END - List -->
+              <!-- START - Table action bottom -->
+              <div
+                slot="table-actions-bottom"
+                class="m-2"
+              >
+                <vue-autosuggest
+                  v-model="productSearch"
+                  :suggestions="products"
+                  :input-props="{
+                    id:'autosuggest__input',
+                    class:'form-control w-25',
+                    placeholder:'Nhập mã hoặc tên sản phẩm'
+                  }"
+                  @input="loadProducts"
+                  @selected="productSelected"
+                >
+                  <template slot-scope="{ suggestion }">
+                    <div class="cursor-pointer">
+                      {{ suggestions }}
+                      <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.name }}
+                    </div>
+                  </template>
+                </vue-autosuggest>
+              </div>
+              <!-- END - Table action bottom -->
 
-        </b-row>
-      </b-col>
+            </vue-good-table>
+          </div>
+          <!-- START - Table Product promotion 2 -->
+
+          <!-- START - Button -->
+          <b-row class="m-1 justify-content-end">
+            <b-button-group>
+              <b-button
+                class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder mr-1"
+                variant="someThing"
+                :disabled="invalid"
+                @click="create"
+              >
+                <b-icon
+                  icon="download"
+                />
+                Nhập hàng
+              </b-button>
+
+              <b-button
+                class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
+                @click="navigateBack"
+              >
+                <b-icon
+                  icon="x"
+                  scale="1.5"
+                />
+                Đóng
+              </b-button>
+            </b-button-group>
+          </b-row>
+          <!-- END - Button -->
+
+        </b-col>
+        <!-- END - List -->
+
+      </b-row>
     </validation-observer>
     <!-- END - Form and list -->
 
@@ -543,12 +536,8 @@
     <po-confirm-modal
       @inputChange="dataFromPoConfirm($event)"
     />
-    <confirm-close-modal
-      :visible="showConfirmCloseModal"
-      @close="showConfirmCloseModal = false"
-    >
+    <confirm-modal />
     <!-- END - Modal -->
-    </confirm-close-modal>
   </b-container>
 </template>
 
@@ -567,7 +556,7 @@ import { getNow } from '@core/utils/utils'
 import commonData from '@/@db/common'
 import toasts from '@core/utils/toasts/toasts'
 import warehousesData from '@/@db/warehouses'
-import ConfirmCloseModal from '@core/components/confirm-close-modal/ConfirmCloseModal.vue'
+import ConfirmModal from '@/@core/components/confirm-close-modal/ConfirmModal.vue'
 import { formatVniDateToISO } from '@/@core/utils/filter'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
@@ -588,7 +577,7 @@ export default {
     AdjustmentModal,
     BorrowedModal,
     PoConfirmModal,
-    ConfirmCloseModal,
+    ConfirmModal,
     ValidationProvider,
     ValidationObserver,
   },
@@ -638,7 +627,6 @@ export default {
       adjustmentModalVisible: false,
       borrowedModalVisible: false,
       poConfirmModalVisible: false,
-      showConfirmCloseModal: false,
       // END - Modal status
 
       // START - Input Type
@@ -980,13 +968,13 @@ export default {
     showModal() {
       switch (this.inputTypeSelected) {
         case '0':
-          this.$root.$emit('bv::toggle::modal', 'po-confirm-modal')
+          this.$bvModal.show('po-confirm-modal')
           break
         case '1':
-          this.$root.$emit('bv::toggle::modal', 'adjustment-modal')
+          this.$bvModal.show('adjustment-modal')
           break
         case '2':
-          this.$root.$emit('bv::toggle::modal', 'borrowed-modal')
+          this.$bvModal.show('borrowed-modal')
           break
         default:
           break
@@ -996,7 +984,7 @@ export default {
       if (this.status === -1 && this.promotionRow.length === 0 && !this.billNumber && !this.internalNumber && !this.poNo) {
         this.$router.replace({ name: 'warehouses-input' })
       } else {
-        this.showConfirmCloseModal = true
+        this.$bvModal.show('confirmModal')
       }
     },
     // ---------------------------Nhap hang-----------------------

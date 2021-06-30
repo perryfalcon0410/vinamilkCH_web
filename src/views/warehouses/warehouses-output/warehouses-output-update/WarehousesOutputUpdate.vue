@@ -657,13 +657,13 @@ export default {
       this.CLEAR_EXPORT_PRODUCTS_MUTATION()
       switch (this.warehousesOutput.receiptType) {
         case this.warehousesOptions[0].id:
-          this.$root.$emit('bv::toggle::modal', 'output-modal')
+          this.$bvModal.show('output-modal')
           break
         case this.warehousesOptions[1].id:
-          this.$root.$emit('bv::toggle::modal', 'output-adjustment-modal')
+          this.$bvModal.show('output-adjustment-modal')
           break
         case this.warehousesOptions[2].id:
-          this.$root.$emit('bv::toggle::modal', 'output-borrowed-modal')
+          this.$bvModal.show('output-borrowed-modal')
           break
         default:
           break

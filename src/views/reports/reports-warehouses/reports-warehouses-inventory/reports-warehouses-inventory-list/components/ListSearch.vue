@@ -218,7 +218,7 @@ export default {
       this.$emit('updateSearchData', data)
     },
     showFindProductModal() {
-      this.$root.$emit('bv::toggle::modal', 'find-product-modal')
+      this.$bvModal.show('find-product-modal')
     },
   },
 }

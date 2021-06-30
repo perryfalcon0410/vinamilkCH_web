@@ -718,9 +718,9 @@ export default {
 
       if (e.key === 'F8') {
         if (this.totalQuantity === 0 || this.editOnlinePermission === false || this.salemtPromotionObjectSelected === undefined || (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')) {
-          this.$root.$emit('bv::hide::modal', 'pay-modal')
+          this.$bvModal.hide('pay-modal')
         } else {
-          this.$root.$emit('bv::show::modal', 'pay-modal')
+          this.$bvModal.show('pay-modal')
         }
       }
     })
@@ -756,7 +756,7 @@ export default {
 
     showPayModal() {
       if (this.editOnlinePermission === true) {
-        this.$root.$emit('bv::show::modal', 'pay-modal')
+        this.$bvModal.show('pay-modal')
       }
     },
 

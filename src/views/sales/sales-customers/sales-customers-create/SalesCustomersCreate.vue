@@ -203,7 +203,7 @@
           </div>
           <b-form-textarea
             v-model="note"
-            maxlength="3950"
+            maxlength="250"
           />
           <!-- END - Customer Note -->
           <!-- END - Section 1 -->
@@ -533,29 +533,12 @@
     </validation-observer>
     <!-- END - Form Container-->
 
-    <!-- START - Customer Modal Close -->
-    <b-modal
-      v-model="isModalShow"
-      title="Thông báo"
-    >
-      Thông tin khách hàng sẽ không được cập nhật khi rời trang
-      <template #modal-footer>
-        <b-button
-          variant="someThing"
-          class="btn-brand-1 aligns-items-button-center"
-          @click="onClickAgreeButton()"
-        >
-          Đồng ý
-        </b-button>
-        <b-button
-          class="aligns-items-button-center"
-          @click="isModalShow = !isModalShow"
-        >
-          Đóng
-        </b-button>
-      </template>
-    </b-modal>
-    <!-- END - Customer Modal Close -->
+    <!-- START - Confirm Modal -->
+    <confirm-modal
+      content="Thông tin khách hàng sẽ không được cập nhật khi rời trang"
+      @ok="onClickAgreeButton"
+    />
+    <!-- END - Confirm Modal -->
   </b-container>
 </template>
 
@@ -577,6 +560,7 @@ import {
   age,
   identifyCard,
 } from '@/@core/utils/validations/validations'
+import ConfirmModal from '@/@core/components/confirm-close-modal/ConfirmModal.vue'
 import { formatVniDateToISO } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
@@ -605,13 +589,13 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
+    ConfirmModal,
   },
 
   // START - Data
   data() {
     return {
-      isModalShow: false,
-      isFieldCheck: true,
+      isFieldCanCheck: true,
       configBitrhDay: {
         wrap: true,
         allowInput: true,
@@ -765,7 +749,7 @@ export default {
     },
   },
 
-  created() {
+  mounted() {
     this.GET_CUSTOMER_TYPES_UPDATE_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
     this.GET_PROVINCES_ACTION({ ...this.decentralization })
     this.GET_CARD_TYPES_ACTION({ ...this.decentralization })
@@ -775,9 +759,9 @@ export default {
 
   // before page leave, this will check
   beforeRouteLeave(to, from, next) {
-    if (this.isFieldCheck) {
+    if (this.isFieldCanCheck) {
       if (this.checkFieldsValueLength()) {
-        this.isModalShow = !this.isModalShow
+        this.$bvModal.show('confirmModal')
         this.goNext = next
       } else {
         next()
@@ -875,12 +859,11 @@ export default {
     },
 
     onClickAgreeButton() {
-      this.isModalShow = !this.isModalShow
       this.goNext()
     },
 
     onClickSaveButton() {
-      this.isFieldCheck = false
+      this.isFieldCanCheck = false
       this.createCustomer()
     },
 

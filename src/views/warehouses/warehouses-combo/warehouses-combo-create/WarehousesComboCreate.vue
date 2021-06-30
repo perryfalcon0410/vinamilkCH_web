@@ -1,280 +1,272 @@
 <template>
   <b-container
     fluid
-    class="p-0"
   >
     <!-- START - Form and list -->
     <validation-observer
       ref="formContainer"
     >
-      <b-col>
-        <b-row>
-          <!-- START - Form -->
-          <b-col
-            xl="4"
-            class="bg-white shadow rounded mr-xl-1"
-          >
-            <!-- START - Date -->
-            <b-row class="my-1">
-              <b-col cols="4">
-                Ngày nhập:
-              </b-col>
-              <b-col>
-                <strong>
-                  {{ now }}
-                </strong>
-              </b-col>
-            </b-row>
-            <!-- END - Date -->
-
-            <!-- START - ID and Type -->
-            <b-form-row>
-              <b-col>
-                <b-form-group
-                  label-for="id"
-                >
-                  <div
-                    class="mt-sm-1 mt-xl-0"
-                  >
-                    Mã giao dịch
-                  </div>
-                  <b-form-input
-                    id="id"
-                    v-model="id"
-                    maxlength="40"
-                    trim
-                    disabled
-                  />
-                </b-form-group>
-              </b-col>
-
-              <b-col>
-                <b-form-group
-                  label-for="id"
-                >
-                  <div
-                    class="mt-sm-1 mt-xl-0"
-                  >
-                    Loại giao dịch
-                  </div>
-                  <tree-select
-                    v-model="tradingTypeSelected"
-                    :options="tradingTypeOptions"
-                    no-options-text="Không có dữ liệu"
-                  />
-                </b-form-group>
-              </b-col>
-            </b-form-row>
-            <!-- END - ID and Type -->
-
-            <!-- START -   Note -->
-            <b-form-group
-              label-for="note"
-            >
-              <div
-                class="mt-sm-1 mt-xl-0"
-              >
-                Ghi chú
-              </div>
-              <b-form-textarea
-                id="note"
-                v-model="note"
-                maxlength="250"
-              />
-            </b-form-group>
-            <!-- END -   Note -->
-          </b-col>
-          <!-- END - Form -->
-
-          <!-- START - List -->
-          <b-col
-            class="bg-white shadow rounded mt-1 mt-xl-0"
-          >
-            <!-- START - Table combo list -->
-            <div class="d-inline-flex rounded-top px-1 my-1">
-              <strong class="text-brand-1">
-                Danh sách combo
+      <b-row>
+        <!-- START - Form -->
+        <b-col
+          xl="4"
+          class="bg-white shadow rounded mr-xl-1"
+        >
+          <!-- START - Date -->
+          <b-row class="my-1">
+            <b-col cols="4">
+              Ngày nhập:
+            </b-col>
+            <b-col>
+              <strong>
+                {{ now }}
               </strong>
-            </div>
-            <vue-good-table
-              :columns="comboListColumns"
-              :rows="comboListRows"
-              style-class="vgt-table"
-              compact-mode
-              line-numbers
-            >
-              <!-- START - Empty rows -->
-              <div
-                slot="emptystate"
-                class="text-center"
-              >
-                Không có dữ liệu
-              </div>
-              <!-- END - Empty rows -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
-              >
-                <b-row
-                  v-if="props.column.field === 'numProduct'"
-                  v-show="totalQuantity"
-                  class="mx-50 h7 text-brand-3"
-                  align-h="end"
-                >
-                  {{ $formatNumberToLocale(totalQuantity) }}
-                </b-row>
-              </template>
-              <template
-                slot="table-row"
-                slot-scope="props"
-              >
-                <span v-if="props.column.field === 'comboCode'">
-                  {{ comboListRows[props.index].comboCode }}
-                </span>
-                <span v-if="props.column.field === 'numProduct'">
-                  <b-form-input
-                    v-model.number="comboListRows[props.index].numProduct"
-                    maxlength="7"
-                    :state="isPricePositive(comboListRows[props.index].numProduct,props.index)"
-                    @change="onChangeQuantity(props.row.originalIndex)"
-                    @keyup.enter="onChangeQuantity(props.row.originalIndex)"
-                    @keypress="$onlyNumberInput"
-                  />
-                </span>
-                <span v-if="props.column.field === 'price'">
-                  <b-form-input
-                    v-model.number="comboListRows[props.index].price"
-                    :state="isPositive(comboListRows[props.index].price,props.index)"
-                    maxlength="12"
-                    @keypress="$onlyNumberInput"
-                  />
-                </span>
-                <span v-if="props.column.field === 'comboName'">
-                  {{ comboListRows[props.index].comboName }}
-                </span>
-                <span v-if="props.column.field === 'function'">
-                  <b-icon-trash-fill
-                    v-b-popover.hover.top="'Xóa'"
-                    color="red"
-                    class="ml-1 cursor-pointer"
-                    @click="deleteProduct(props.index)"
-                  />
-                </span>
-              </template>
+            </b-col>
+          </b-row>
+          <!-- END - Date -->
 
-              <!-- START - Table action bottom -->
-              <div
-                slot="table-actions-bottom"
-                class="m-2"
-              >
-                <vue-autosuggest
-                  v-model="comboSearchQuery"
-                  :suggestions="products"
-                  :input-props="{
-                    id:'autosuggest__input',
-                    class:'form-control w-25',
-                    placeholder:'Nhập mã hoặc tên sản phẩm'
-                  }"
-                  @input="loadProducts"
-                  @selected="onComboSelected"
-                >
-                  <template slot-scope="{ suggestion }">
-                    <div class="cursor-pointer">
-                      <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
-                    </div>
-                  </template>
-                </vue-autosuggest>
-              </div>
-              <!-- END - Table action bottom -->
-
-            </vue-good-table>
-            <!-- END - Table Footer -->
-            <br>
-            <!-- START - Table combo exchange -->
-            <div class="d-inline-flex rounded-top px-1 my-1">
-              <strong class="text-brand-1">
-                Quy đổi combo
-              </strong>
-            </div>
-            <vue-good-table
-              :key="componentKey"
-              :columns="comboExchangeColumns"
-              :rows="comboExchangeRows"
-              style-class="vgt-table"
-              compact-mode
-              line-numbers
-            >
-              <!-- START - Empty rows -->
-              <div
-                slot="emptystate"
-                class="text-center"
-              >
-                Không có dữ liệu
-              </div>
-              <!-- END - Empty rows -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
-              >
-                <b-row
-                  v-if="props.column.field === 'quantity'"
-                  v-show="totalExchangeQuantity"
-                  class="mx-50 h7 text-brand-3"
-                  align-h="end"
-                >
-                  {{ $formatNumberToLocale(totalExchangeQuantity) }}
-                </b-row>
-              </template>
-              <template
-                slot="table-row"
-                slot-scope="props"
+          <!-- START - ID and Type -->
+          <b-form-row>
+            <b-col>
+              <b-form-group
+                label-for="id"
               >
                 <div
-                  v-if="props.column.field === 'quantity' || props.column.field === 'exchangeRate'"
-                  style="padding-right: 10px"
+                  class="mt-sm-1 mt-xl-0"
                 >
-                  {{ props.formattedRow[props.column.field] }}
+                  Mã giao dịch
                 </div>
-              </template>
-            </vue-good-table>
-            <!-- END - Table combo exchange -->
-            <!-- START - Button -->
-            <b-row class="mr-0 my-1 justify-content-end">
-              <b-button-group>
-                <b-button
-                  class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center mr-1"
-                  variant="someThing"
-                  @click="save"
-                >
-                  <b-icon
-                    icon="download"
-                  />
-                  Lưu
-                </b-button>
+                <b-form-input
+                  id="id"
+                  v-model="id"
+                  maxlength="40"
+                  trim
+                  disabled
+                />
+              </b-form-group>
+            </b-col>
 
-                <b-button
-                  class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
-                  @click="navigateBack"
+            <b-col>
+              <b-form-group
+                label-for="id"
+              >
+                <div
+                  class="mt-sm-1 mt-xl-0"
                 >
-                  <b-icon
-                    icon="x"
-                    scale="1.5"
-                  />
-                  Đóng
-                </b-button>
-              </b-button-group>
-            </b-row>
-            <!-- END - Button -->
-            <!-- END - List -->
+                  Loại giao dịch
+                </div>
+                <tree-select
+                  v-model="tradingTypeSelected"
+                  :options="tradingTypeOptions"
+                  no-options-text="Không có dữ liệu"
+                />
+              </b-form-group>
+            </b-col>
+          </b-form-row>
+          <!-- END - ID and Type -->
 
-          </b-col>
-        </b-row>
-      </b-col>
+          <!-- START -   Note -->
+          <b-form-group
+            label-for="note"
+          >
+            <div
+              class="mt-sm-1 mt-xl-0"
+            >
+              Ghi chú
+            </div>
+            <b-form-textarea
+              id="note"
+              v-model="note"
+              maxlength="250"
+            />
+          </b-form-group>
+          <!-- END -   Note -->
+        </b-col>
+        <!-- END - Form -->
+
+        <!-- START - List -->
+        <b-col
+          class="bg-white shadow rounded mt-1 mt-xl-0"
+        >
+          <!-- START - Table combo list -->
+          <div class="d-inline-flex rounded-top px-1 my-1">
+            <strong class="text-brand-1">
+              Danh sách combo
+            </strong>
+          </div>
+          <vue-good-table
+            :columns="comboListColumns"
+            :rows="comboListRows"
+            style-class="vgt-table"
+            compact-mode
+            line-numbers
+          >
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
+            <template
+              slot="column-filter"
+              slot-scope="props"
+            >
+              <b-row
+                v-if="props.column.field === 'numProduct'"
+                v-show="totalQuantity"
+                class="mx-50 h7 text-brand-3"
+                align-h="end"
+              >
+                {{ $formatNumberToLocale(totalQuantity) }}
+              </b-row>
+            </template>
+            <template
+              slot="table-row"
+              slot-scope="props"
+            >
+              <span v-if="props.column.field === 'comboCode'">
+                {{ comboListRows[props.index].comboCode }}
+              </span>
+              <span v-if="props.column.field === 'numProduct'">
+                <b-form-input
+                  v-model.number="comboListRows[props.index].numProduct"
+                  maxlength="7"
+                  :state="isPricePositive(comboListRows[props.index].numProduct,props.index)"
+                  @change="onChangeQuantity(props.row.originalIndex)"
+                  @keyup.enter="onChangeQuantity(props.row.originalIndex)"
+                  @keypress="$onlyNumberInput"
+                />
+              </span>
+              <span v-if="props.column.field === 'price'">
+                <b-form-input
+                  v-model.number="comboListRows[props.index].price"
+                  :state="isPositive(comboListRows[props.index].price,props.index)"
+                  maxlength="12"
+                  @keypress="$onlyNumberInput"
+                />
+              </span>
+              <span v-if="props.column.field === 'comboName'">
+                {{ comboListRows[props.index].comboName }}
+              </span>
+              <span v-if="props.column.field === 'function'">
+                <b-icon-trash-fill
+                  v-b-popover.hover.top="'Xóa'"
+                  color="red"
+                  class="ml-1 cursor-pointer"
+                  @click="deleteProduct(props.index)"
+                />
+              </span>
+            </template>
+
+            <!-- START - Table action bottom -->
+            <div
+              slot="table-actions-bottom"
+              class="m-2"
+            >
+              <vue-autosuggest
+                v-model="comboSearchQuery"
+                :suggestions="products"
+                :input-props="{
+                  id:'autosuggest__input',
+                  class:'form-control w-25',
+                  placeholder:'Nhập mã hoặc tên sản phẩm'
+                }"
+                @input="loadProducts"
+                @selected="onComboSelected"
+              >
+                <template slot-scope="{ suggestion }">
+                  <div class="cursor-pointer">
+                    <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                  </div>
+                </template>
+              </vue-autosuggest>
+            </div>
+            <!-- END - Table action bottom -->
+
+          </vue-good-table>
+          <!-- END - Table Footer -->
+          <br>
+          <!-- START - Table combo exchange -->
+          <div class="d-inline-flex rounded-top px-1 my-1">
+            <strong class="text-brand-1">
+              Quy đổi combo
+            </strong>
+          </div>
+          <vue-good-table
+            :key="componentKey"
+            :columns="comboExchangeColumns"
+            :rows="comboExchangeRows"
+            style-class="vgt-table"
+            compact-mode
+            line-numbers
+          >
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
+            <template
+              slot="column-filter"
+              slot-scope="props"
+            >
+              <b-row
+                v-if="props.column.field === 'quantity'"
+                v-show="totalExchangeQuantity"
+                class="mx-50 h7 text-brand-3"
+                align-h="end"
+              >
+                {{ $formatNumberToLocale(totalExchangeQuantity) }}
+              </b-row>
+            </template>
+            <template
+              slot="table-row"
+              slot-scope="props"
+            >
+              <div
+                v-if="props.column.field === 'quantity' || props.column.field === 'exchangeRate'"
+                style="padding-right: 10px"
+              />
+            </template>
+          </vue-good-table>
+          <!-- END - Table combo exchange -->
+          <!-- START - Button -->
+          <b-row class="mr-0 my-1 justify-content-end">
+            <b-button-group>
+              <b-button
+                class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center mr-1"
+                variant="someThing"
+                @click="save"
+              >
+                <b-icon
+                  icon="download"
+                />
+                Lưu
+              </b-button>
+
+              <b-button
+                class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
+                @click="navigateBack"
+              >
+                <b-icon
+                  icon="x"
+                  scale="1.5"
+                />
+                Đóng
+              </b-button>
+            </b-button-group>
+          </b-row>
+          <!-- END - Button -->
+          <!-- END - List -->
+
+        </b-col>
+      </b-row>
     </validation-observer>
-    <confirm-close-modal
-      :visible="showConfirmCloseModal"
-      @close="showConfirmCloseModal = false"
-    />
+    <!-- END - Form and list -->
   </b-container>
 </template>
 
@@ -302,9 +294,9 @@ export default {
   components: {
     VueAutosuggest,
   },
+
   data() {
     return {
-      showConfirmCloseModal: false,
       componentKey: 0,
       totalExchangeQuantity: 0,
       // Search combo
@@ -418,6 +410,7 @@ export default {
       // -----------------Combo Exchange-----------------
     }
   },
+
   computed: {
     ...mapGetters(WAREHOUSES_COMBO, [
       COMBO_PRODUCTS_GETTER,
@@ -470,6 +463,7 @@ export default {
       return this.comboExchangeRows.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
   },
+
   watch: {
     comboExchangeProducts() {
       this.comboExchangeRows = this.comboExchangeRows.concat(this.comboExchangeProducts)
@@ -486,9 +480,11 @@ export default {
       this.products = [...this.getProducts]
     },
   },
+
   mounted() {
     this.tradingTypeSelected = this.tradingTypeOptions[0].id
   },
+
   methods: {
     ...mapActions(WAREHOUSES_COMBO, [
       GET_COMBO_PRODUCTS_ACTION,

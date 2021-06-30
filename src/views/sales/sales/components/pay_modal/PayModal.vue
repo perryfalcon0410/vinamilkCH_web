@@ -1136,7 +1136,7 @@ export default {
       PRINT_SALES_RECEIPT_ACTION,
     ]),
     onVoucherButtonClick() {
-      this.$root.$emit('bv::show::modal', 'VoucherModal')
+      this.$bvModal.show('VoucherModal')
     },
 
     getVoucherInfo(vouchers) {
@@ -1439,7 +1439,7 @@ export default {
       if (this.isPaid) {
         this.$router.go(this.$router.currentRoute)
       }
-      this.$root.$emit('bv::hide::modal', 'pay-modal')
+      this.$bvModal.hide('pay-modal')
     },
     onChangeAccumulateAmount() {
       this.pay.accumulate.accumulateAmount = Number.parseInt(this.pay.accumulate.accumulateAmount, 0)

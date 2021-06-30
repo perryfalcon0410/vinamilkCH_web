@@ -522,7 +522,7 @@ export default {
     ]),
     showInvoiceDetailModal(id, numberBill) {
       this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber: numberBill })
-      this.$root.$emit('bv::toggle::modal', 'detail-modal')
+      this.$bvModal.show('detail-modal')
     },
     onClickPrintButton() {
       this.$root.$emit('bv::hide::popover')

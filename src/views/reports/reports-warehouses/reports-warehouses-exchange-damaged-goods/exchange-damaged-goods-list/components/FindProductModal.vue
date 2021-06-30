@@ -439,10 +439,10 @@ export default {
     ]),
     save() {
       this.$emit('onSaveClick', this.selectedProductRow)
-      this.$root.$emit('bv::hide::modal', 'find-product-modal')
+      this.$bvModal.hide('find-product-modal')
     },
     cancel() {
-      this.$root.$emit('bv::hide::modal', 'find-product-modal')
+      this.$bvModal.hide('find-product-modal')
     },
     // pagination funcs
     onPaginationChange() {

@@ -789,7 +789,7 @@ export default {
     },
 
     showBillOfSaleList() {
-      this.$root.$emit('bv::toggle::modal', 'bill-receipt-modal')
+      this.$bvModal.show('bill-receipt-modal')
     },
     loadCustomers() {
       if (this.redBill.customerCode.length >= commonData.minSearchLength) {

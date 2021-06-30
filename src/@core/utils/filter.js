@@ -198,8 +198,8 @@ export const countDays = isoDate => {
   else if ((age.years === 0) && (age.months === 0) && (age.days > 0)) ageString = `${age.days}${dayString}`
   else if ((age.years > 0) && (age.months === 0) && (age.days === 0)) ageString = `${age.years + yearString}`
   else if ((age.years > 0) && (age.months > 0) && (age.days === 0)) ageString = `${age.years + yearString} ${age.months}${monthString}`
-  else if ((age.years === 0) && (age.months > 0) && (age.days > 0)) ageString = `${age.months + monthString} ${age.days}${dayString}`
-  else if ((age.years > 0) && (age.months === 0) && (age.days > 0)) ageString = `${age.years + yearString} ${age.days}${dayString}`
+  else if ((age.years === 0) && (age.months > 0) && (age.days > 0)) ageString = `${age.months + monthString}`
+  else if ((age.years > 0) && (age.months === 0) && (age.days > 0)) ageString = `${age.years + yearString}`
   else if ((age.years === 0) && (age.months > 0) && (age.days === 0)) ageString = `${age.months + monthString}`
   else ageString = ''
 
