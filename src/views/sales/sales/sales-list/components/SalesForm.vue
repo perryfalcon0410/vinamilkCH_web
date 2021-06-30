@@ -250,10 +250,12 @@
               <b-input-group class="input-group-merge">
                 <b-form-input
                   v-model="orderOnline.orderNumber"
-                  :disabled="salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0)"
+                  :disabled="salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0) || isDisabledOrder === true"
                 />
                 <b-input-group-append is-text>
-                  <b-icon-three-dots-vertical @click="showNotifyModal" />
+                  <b-icon-three-dots-vertical
+                    @click="showNotifyModal"
+                  />
                 </b-input-group-append>
               </b-input-group>
             </b-col>
@@ -450,6 +452,14 @@ export default {
       type: Boolean,
       default: true,
     },
+    billCustomer: {
+      type: Object,
+      default: () => {},
+    },
+    isDisabledOrder: {
+      type: Boolean,
+      defautl: false,
+    },
   },
   data() {
     return {
@@ -490,6 +500,7 @@ export default {
         typeId: null,
         createdAt: null,
       },
+      onlineOrderCustomers: [],
 
       // online order
       searchData: {
@@ -644,9 +655,6 @@ export default {
         label: data.apParamName,
       }))
     },
-    onlineOrderCustomer() {
-      return this.ONLINE_ORDER_BY_ID_GETTER
-    },
     getOnlineOrderProducts() {
       if (this.ONLINE_ORDER_BY_ID_GETTER.products) {
         return this.ONLINE_ORDER_BY_ID_GETTER.products.map(data => ({
@@ -660,6 +668,26 @@ export default {
           sumProductUnitPrice: data.price,
           productTotalPrice: this.$formatNumberToLocale(this.totalPriceProducts(1, Number(data.price))),
           sumProductTotalPrice: this.totalPriceProducts(1, Number(data.price)),
+        }))
+      }
+      return []
+    },
+    getOnlineOrderCustomers() {
+      if (this.ONLINE_ORDER_BY_ID_GETTER.customers) {
+        return this.ONLINE_ORDER_BY_ID_GETTER.customers.map(data => ({
+          id: data.id,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          fullName: data.fullName,
+          shopId: data.shopId,
+          customerCode: data.customerCode,
+          customerTypeId: data.customerTypeId,
+          status: data.status,
+          phoneNumber: data.mobiPhone,
+          address: data.address,
+          isDefault: data.isDefault,
+          totalBill: data.totalBill,
+          amountCumulated: data.amountCumulated,
         }))
       }
       return []
@@ -690,9 +718,6 @@ export default {
     salemtDeliveryTypeSelected() {
       this.GET_SALEMT_DELIVERY_TYPE_ACTION({ ...this.decentralization })
     },
-    onlineOrderCustomer() {
-      this.getOnlineOrderCustomerById()
-    },
     customerDefault() {
       this.customer = { ...this.customerDefault }
       this.getCustomerDefault()
@@ -704,6 +729,16 @@ export default {
     getOnlineOrderProducts() {
       this.orderProducts = [...this.getOnlineOrderProducts]
       this.$emit('getOnlineOrderInfoForm', this.orderProducts)
+    },
+    getOnlineOrderCustomers() {
+      this.onlineOrderCustomers = [...this.getOnlineOrderCustomers]
+
+      if (this.onlineOrderCustomers.length > 1) {
+        this.$refs.salesSearchModal.$refs.salesSearchModal.show()
+      } else {
+        const arrayToString = JSON.stringify(...this.onlineOrderCustomers)
+        this.customer = JSON.parse(arrayToString)
+      }
     },
   },
   mounted() {
@@ -747,7 +782,9 @@ export default {
     },
 
     showSearchModal() {
-      this.$refs.salesSearchModal.$refs.salesSearchModal.show()
+      if (this.search.length < this.minSearch) {
+        this.$refs.salesSearchModal.$refs.salesSearchModal.show()
+      }
     },
 
     showSearchOnlineModal() {
@@ -816,26 +853,6 @@ export default {
       this.closeNotifyModal()
     },
 
-    getOnlineOrderCustomerById() {
-      this.customer.id = this.onlineOrderCustomer.customer.id
-      this.customer.firstName = this.onlineOrderCustomer.customer.firstName
-      this.customer.lastName = this.onlineOrderCustomer.customer.lastName
-      this.customer.fullName = `${this.onlineOrderCustomer.customer.lastName} ${this.onlineOrderCustomer.customer.firstName}`
-      this.customer.phoneNumber = this.onlineOrderCustomer.customer.mobiPhone
-      this.customer.address = this.onlineOrderCustomer.customer.address
-      this.customer.scoreCumulated = this.onlineOrderCustomer.customer.scoreCumulated
-      this.customer.amountCumulated = this.onlineOrderCustomer.customer.amountCumulated
-      this.customer.totalBill = this.onlineOrderCustomer.customer.totalBill
-      this.customer.shopId = this.onlineOrderCustomer.customer.shopId
-      this.customer.typeId = this.onlineOrderCustomer.customer.customerTypeId
-      this.customer.createdAt = `${formatDateToLocale(this.onlineOrderCustomer.customer.createdAt)} ${getTimeOfDate(this.onlineOrderCustomer.customer.createdAt)}`
-      this.orderOnline.orderNumber = this.onlineOrderCustomer.orderNumber
-      this.orderOnline.discountCode = this.onlineOrderCustomer.discountCode
-      this.quantity = this.onlineOrderCustomer.quantity
-      this.totalPrice = this.onlineOrderCustomer.totalPrice
-      this.$emit('getOnlineCustomer', this.customer)
-    },
-
     getCustomerDefault() {
       this.customer.id = this.customerDefault.id
       this.customer.shopId = this.customerDefault.shopId
@@ -873,7 +890,15 @@ export default {
         this.GET_CUSTOMERS_SALE_ACTION(searchKeywords)
       } else {
         this.customersSearch = [{ data: null }]
+        this.search = null
       }
+      this.search = null
+    },
+
+    onclickChooseCustomer(data) {
+      this.$emit('getIdCustomer', data.item)
+      this.customersSearch = [{ data: null }]
+      this.search = null
     },
 
     resetOrderNumber(item) {
@@ -882,12 +907,6 @@ export default {
       }
 
       this.$emit('salemtPromotionObjectSelected', item.id)
-    },
-
-    onclickChooseCustomer(data) {
-      this.$emit('getIdCustomer', data.item)
-      this.customersSearch = [{ data: null }]
-      this.search = null
     },
 
     getSuggestionValue(suggestion) {

@@ -296,6 +296,8 @@
       <!-- START - Section Form pay -->
       <sales-form
         :order-products="orderProducts"
+        :bill-customer="bills.customer"
+        :is-disabled-order="isDisabledOrder"
         :edit-online-permission="editOnlinePermission"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
@@ -358,6 +360,7 @@ export default {
       customer: {},
       isCheckShopId: false, // check shop default
       currentCustomer: {},
+      defaultCustomer: {},
       selectedValue: null,
 
       columns: [
@@ -451,6 +454,7 @@ export default {
         {
           id: 1,
           products: [],
+          customer: {},
           active: true,
           class: 'visited-action',
         },
@@ -462,6 +466,7 @@ export default {
       editOnlinePermission: true,
       editManualPermission: true,
       isOnline: false,
+      isDisabledOrder: false,
 
       // price customer change customerTypeId
       customerType: null,
@@ -526,9 +531,9 @@ export default {
       }
       return []
     },
-    customerDefault() {
-      return this.getCustomerDefault
-    },
+    // customerDefault() {
+    //   return this.getCustomerDefault
+    // },
     onlineCustomer() {
       return this.getOnlineCustomer
     },
@@ -578,6 +583,11 @@ export default {
 
     getCurrentCustomer() {
       this.currentCustomer = { ...this.getCurrentCustomer }
+    },
+
+    getDefaultCustomer() {
+      this.defaultCustomer = { ...this.getDefaultCustomer }
+      console.log('this.defaultCustomer', this.defaultCustomer)
     },
 
     selectedProduct() {
@@ -693,11 +703,14 @@ export default {
     },
 
     onClickAddButton() {
+      console.log('this.currentCustomer', this.currentCustomer)
+      console.log('bills', this.bills)
       const lastIteminBill = this.bills[this.bills.length - 1]
       if (lastIteminBill) {
         this.bills.push({
           id: lastIteminBill.id + 1,
           products: [],
+          customer: this.currentCustomer,
           active: false,
           class: '',
         })
@@ -707,6 +720,7 @@ export default {
       this.bills.push({
         id: 1,
         products: [],
+        customer: this.currentCustomer,
         active: false,
         class: 'visited-action',
       })
@@ -728,6 +742,34 @@ export default {
       }
     },
 
+    clickBillButton(billSelectedId) {
+      this.bills = this.bills.map(bill => {
+        if (bill.id === this.orderCurrentId) {
+          return {
+            ...bill,
+            products: this.orderProducts,
+            customer: this.currentCustomer,
+            active: false,
+            class: '',
+          }
+        }
+        return bill
+      })
+      this.bills = this.bills.map(bill => {
+        if (bill.id === billSelectedId) {
+          this.orderProducts = bill.products
+          this.currentCustomer = bill.customer
+          this.orderCurrentId = billSelectedId
+          return {
+            ...bill,
+            active: true,
+            class: 'visited-action',
+          }
+        }
+        return bill
+      })
+    },
+
     getOnlineOrderInfoForm(val) {
       this.orderProducts = val
     },
@@ -739,6 +781,7 @@ export default {
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
     },
     getCustomerDefault(val) {
+      this.defaultCustomer = val
       this.customerId = val.id
       this.searchOptions.customerId = this.customerId
       this.currentCustomerId = this.customerId
@@ -818,32 +861,6 @@ export default {
       }
     },
 
-    clickBillButton(billSelectedId) {
-      this.bills = this.bills.map(bill => {
-        if (bill.id === this.orderCurrentId) {
-          return {
-            ...bill,
-            products: this.orderProducts,
-            active: false,
-            class: '',
-          }
-        }
-        return bill
-      })
-      this.bills = this.bills.map(bill => {
-        if (bill.id === billSelectedId) {
-          this.orderProducts = bill.products
-          this.orderCurrentId = billSelectedId
-          return {
-            ...bill,
-            active: true,
-            class: 'visited-action',
-          }
-        }
-        return bill
-      })
-    },
-
     salemtPromotionObjectSelected(val) {
       this.orderSelected = val
       const { usedShop } = this.loginInfo
@@ -885,6 +902,7 @@ export default {
     onClickAgreeButton() {
       this.orderProducts = []
       this.$refs.salesNotifyModal.hide()
+      this.isDisabledOrder = true
     },
     getPriceOnChangeCustomer() {
       if (this.searchOptions.customerId !== this.currentCustomerId) {
