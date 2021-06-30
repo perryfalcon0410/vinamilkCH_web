@@ -118,13 +118,17 @@
                 <b-input-group
                   class="input-group-merge"
                 >
-                  <vue-flat-pickr
-                    v-model="billDate"
-                    :disabled="inputTypeSelected != '0' ? true : false"
-                    :config="configDate"
-                    :state="touched ? passed : null"
-                    class="form-control h7 text-brand-3"
-                    placeholder="Chọn ngày"
+                  <div class="h7">
+                    Số hóa đơn <sup
+                      v-show="inputTypeSelected === '0'"
+                      class="text-danger"
+                    >*</sup>
+                  </div>
+                  <b-form-input
+                    v-model.trim="billNumber"
+                    class="text-uppercase"
+                    :state="touched && inputTypeSelected === '0' ? passed : null"
+                    :disabled="disableInput"
                   />
 
                 </b-input-group>
