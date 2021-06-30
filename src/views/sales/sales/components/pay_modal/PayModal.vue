@@ -664,7 +664,7 @@
         <b-button
           variant="none"
           class="d-flex align-items-center mx-1 text-uppercase btn-brand-1"
-          :disabled="isDisabledRePrintBtns"
+          :disabled="isDisabledRePrintBtn"
           @click="rePrintSaleOrder()"
         >
           <b-icon-printer
@@ -1073,6 +1073,10 @@ export default {
               products: paramProducts,
             })
           }
+          if (this.pay.discount.discountCode !== '') {
+            this.pay.discount.discountCode = ''
+            this.pay.discount.discountAmount = 0
+          }
         }
       },
       deep: true,
@@ -1086,6 +1090,17 @@ export default {
     },
     getPrintSaleTempData() {
       this.saleOrderPrintInfo = { ...this.getPrintSaleTempData }
+    },
+    customer: {
+      handler() {
+        this.pay.salePayment.salePaymentAmount = null
+        this.pay.extraAmount = null
+        // get accumulate
+        this.pay.accumulate.accumulateAmount = 0
+        this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
+        this.extraAmountCalculation()
+      },
+      deep: true,
     },
   },
 
@@ -1104,12 +1119,12 @@ export default {
         }
       }
       if (e.key === 'F8') {
-        if (!this.isPaid && Number(this.pay.extraAmount) >= 0) {
+        if (!this.isPaid && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           this.createSaleOrderAndPrint()
         }
       }
       if (e.key === 'F9') {
-        if (!this.isPaid && Number(this.pay.extraAmount) >= 0) {
+        if (!this.isPaid && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           this.createSaleOrder()
         }
       }
