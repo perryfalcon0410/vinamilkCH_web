@@ -87,13 +87,6 @@
               {{ totalInfo.totalQuantity }}
             </b-row>
 
-            <b-row
-              v-else-if="props.column.field === 'payment'"
-              class="mx-0"
-              align-h="end"
-            >
-              {{ $formatNumberToLocale(totalInfo.totalPrice) }}
-            </b-row>
           </template>
           <!-- START - Column filter -->
 
@@ -216,28 +209,28 @@ export default {
           label: 'Ngày bán',
           field: 'orderDate',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
           field: 'orderNumber',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Ngành hàng',
           field: 'industry',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
@@ -247,56 +240,42 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-        {
-          label: 'Giá',
-          field: 'price',
-          sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        },
-        {
-          label: 'Thành tiền',
-          field: 'payment',
-          sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
           field: 'dvt',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Mã CTKM',
           field: 'promotionCode',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Số đơn online',
           field: 'onlineNumber',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Kênh Bán',
           field: 'orderType',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
 
@@ -317,8 +296,6 @@ export default {
           productName: data.productName,
           dvt: data.uom,
           quantity: data.quantity,
-          price: this.$formatNumberToLocale(data.price),
-          payment: this.$formatNumberToLocale(data.totalPrice),
           orderDate: formatISOtoVNI(data.orderDate),
           billType: data.billType,
           promotionCode: data.promotionCode,

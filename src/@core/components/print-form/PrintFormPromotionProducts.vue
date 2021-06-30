@@ -139,16 +139,6 @@
             >
               SL
             </th>
-            <th
-              class="text-center dotted"
-            >
-              Giá
-            </th>
-            <th
-              class="text-center total"
-            >
-              T.tiền
-            </th>
           </tr>
           <!-- END - Header 2 -->
 
@@ -171,12 +161,6 @@
             <td> {{ product.uom }} </td>
             <td class="text-right">
               {{ product.quantity }}
-            </td>
-            <td class="text-right">
-              {{ $formatNumberToLocale(product.price) }}
-            </td>
-            <td class="text-right">
-              {{ $formatNumberToLocale(product.totalPrice) }}
             </td>
           </tr>
         </tbody>

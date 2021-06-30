@@ -3,7 +3,7 @@
     size="lg"
     :visible="visible"
     title="Chọn sản phẩm"
-    title-class="text-uppercase font-weight-bold text-primary"
+    title-class="text-uppercase font-weight-bold text-brand-1"
     footer-class="justify-content-center"
     content-class="bg-light"
     footer-border-variant="light"
@@ -28,14 +28,25 @@
           >
             Mã sản phẩm
           </div>
-          <b-form-input
-            id="form-input-customer"
-            v-model="searchOptions.productCodes"
-            trim
-            class="h7 text-brand-3 height-button-brand-1"
-            placeholder="Nhập mã sản phẩm"
-            @keyup.enter="onSearchClick"
-          />
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model="searchOptions.productCodes"
+              trim
+              autofocus
+              class="h7 text-brand-3"
+              placeholder="Nhập mã sản phẩm"
+              @keyup.enter="onSearchClick"
+            />
+            <b-input-group-append is-text>
+              <b-icon-x
+                v-show="searchOptions.productCodes"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.productCodes = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
         </b-col>
         <!-- END - Product code -->
         <!-- START - Product name -->
@@ -50,13 +61,24 @@
           >
             Tên sản phẩm
           </div>
-          <b-form-input
-            v-model="searchOptions.productName"
-            trim
-            class="h7 text-brand-3 height-button-brand-1"
-            placeholder="Nhập tên sản phẩm"
-            @keyup.enter="onSearchClick"
-          />
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model="searchOptions.productName"
+              trim
+              class="h7 text-brand-3 height-button-brand-1"
+              placeholder="Nhập tên sản phẩm"
+              @keyup.enter="onSearchClick"
+            />
+            <b-input-group-append is-text>
+              <b-icon-x
+                v-show="searchOptions.productName"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.productName = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
         </b-col>
         <!-- END - Product name -->
         <!-- START - Product cat -->
@@ -101,6 +123,11 @@
       </v-card-actions>
       <!-- START- Table -->
       <div class="bg-white rounded shadow rounded mt-1 p-1">
+        <div class="pt-0">
+          <strong class="text-blue-vinamilk pt-2">
+            Tổng cộng: {{ $formatNumberToLocale(selectedProductRow.length) }} sản phẩm được chọn
+          </strong>
+        </div>
         <vue-good-table
           ref="products-table"
           :columns="columns"
