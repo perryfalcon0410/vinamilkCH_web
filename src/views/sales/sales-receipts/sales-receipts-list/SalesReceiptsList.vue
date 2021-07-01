@@ -157,14 +157,14 @@
               </span>
             </span>
             <span
-              v-else-if="props.column.field === 'discountMoney' || props.column.field === 'moneyAccumulated'"
-              style="padding-right: 10px;"
+              v-else-if="props.column.field === 'discountMoney' || 'moneyAccumulated'"
+              class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
             </span>
             <span
-              v-else-if="props.column.field === 'totalValue' || props.column.field === 'payments'"
-              style="padding-right: 10px;"
+              v-else-if="props.column.field === 'totalValue' || 'payments'"
+              class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
             </span>

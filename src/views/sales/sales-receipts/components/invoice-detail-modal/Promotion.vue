@@ -28,7 +28,7 @@
       >
         <div
           v-if="props.column.field === 'number'"
-          style="padding-right: 10px"
+          class="pr-70"
         >
           {{ props.formattedRow[props.column.field] }}
         </div>

@@ -109,7 +109,7 @@
               v-else-if="props.column.field === 'quantity' ||
                 props.column.field === 'amount' ||
                 props.column.field === 'refunds'"
-              style="padding-right: 10px"
+              class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>

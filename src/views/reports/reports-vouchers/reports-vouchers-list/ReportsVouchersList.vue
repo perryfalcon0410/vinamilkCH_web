@@ -73,7 +73,7 @@
           >
             <div
               v-if="props.column.field === 'price' || props.column.field === 'sales'"
-              style="padding-right: 10px"
+              class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>

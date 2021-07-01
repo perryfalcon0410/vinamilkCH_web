@@ -84,12 +84,11 @@
             <b-col>
               <validation-provider
                 v-slot="{ errors, passed, touched }"
-                :rules="`${inputTypeSelected === '0' ? 'required' : ''}`"
                 name="số hóa đơn"
               >
                 <div class="mt-1 h7">
                   Số hóa đơn <sup
-                    v-show="inputTypeSelected === '0'"
+                    v-show="status === -1"
                     class="text-danger"
                   >*</sup>
                 </div>
@@ -278,7 +277,7 @@
                   'totalPriceVat' ||
                   'totalPrice' ||
                   'quantity'"
-                style="padding-right: 10px"
+                class="pr-70"
               >
                 {{ props.formattedRow[props.column.field] }}
               </div>
@@ -332,7 +331,7 @@
               >
                 <div
                   v-if="props.column.field === 'quantity'"
-                  style="padding-right: 10px"
+                  class="pr-10"
                 >
                   {{ props.formattedRow[props.column.field] }}
                 </div>
@@ -1096,7 +1095,7 @@ export default {
           const obj = {
             productId: product.item.productId,
             productCode: product.item.productCode,
-            productName: product.item.productName,
+            productName: product.item.name,
             quantity: 1, // default quantity
             price: product.item.price || 0,
             totalPrice: product.item.stockTotal || 0,
@@ -1139,3 +1138,15 @@ export default {
   },
 }
 </script>
+<style>
+.table {
+    display: table;
+}
+.table-cell-sm{
+    display: table-cell;
+    max-width: 7.8rem;
+}
+.table-cell-xl{
+    display: table-cell;
+}
+</style>

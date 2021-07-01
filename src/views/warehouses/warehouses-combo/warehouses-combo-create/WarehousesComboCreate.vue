@@ -229,7 +229,7 @@
             >
               <div
                 v-if="props.column.field === 'quantity' || props.column.field === 'exchangeRate'"
-                style="padding-right: 10px"
+                class="pr-70"
               />
             </template>
           </vue-good-table>

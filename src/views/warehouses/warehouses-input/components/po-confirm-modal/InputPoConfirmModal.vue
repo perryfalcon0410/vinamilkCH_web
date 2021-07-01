@@ -23,7 +23,7 @@
             />
             <b-col>
               <strong>
-                POCo No
+                PO No
               </strong>
             </b-col>
             <b-col>
@@ -46,7 +46,9 @@
             :class="{ 'text-brand-1': current == item.id }"
             @click="selectOrder(item.id, item.internalNumber, item.poCoNumber, item.date)"
           >
-            <b-col cols="1">
+            <b-col
+              cols="1"
+            >
               {{ index + 1 }}
             </b-col>
             <b-col>
@@ -107,7 +109,7 @@
             >
               <div
                 v-if="props.column.field === 'totalPriceVat' || props.column.field === 'quantity'"
-                style="padding-right: 10px"
+                class="pr-70"
               >
                 {{ props.formattedRow[props.column.field] }}
               </div>
@@ -187,7 +189,7 @@
               >
                 <div
                   v-if="props.column.field === 'totalPriceVat' || props.column.field === 'quantity'"
-                  style="padding-right: 10px"
+                  class="pr-70"
                 >
                   {{ props.formattedRow[props.column.field] }}
                 </div>
@@ -350,21 +352,21 @@ export default {
           field: 'soNo',
           sortable: false,
           type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left ws-nowrap',
+          tdClass: 'text-left  ws-nowrap',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left  ws-nowrap',
+          tdClass: 'text-left  ws-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left  ws-nowrap',
           tdClass: 'text-left',
         },
         {
@@ -372,8 +374,8 @@ export default {
           field: 'price',
           sortable: false,
           type: 'number',
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right  ws-nowrap',
+          tdClass: 'text-right  ws-nowrap',
         },
         {
           label: 'Số lượng',
@@ -383,8 +385,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right  ws-nowrap',
+          tdClass: 'text-right  ws-nowrap',
         },
         {
           label: 'Thành tiền (VAT)',
@@ -394,8 +396,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right  ws-nowrap',
+          tdClass: 'text-right  ws-nowrap',
         },
       ],
     }

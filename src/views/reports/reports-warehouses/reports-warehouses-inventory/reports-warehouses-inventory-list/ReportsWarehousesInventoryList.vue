@@ -100,7 +100,7 @@
                 props.column.field ==='unitQuantity' ||
                 props.column.field ==='minInventory' ||
                 props.column.field ==='maxInventory'"
-              style="padding-right: 10px"
+              class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>

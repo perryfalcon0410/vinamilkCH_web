@@ -104,6 +104,15 @@
                 @click="navigateToUpdate(props.row.id)"
               />
             </div>
+            <div
+              v-else-if="props.column.field === 'quantity' ||
+                'outpacketQuantity' ||
+                'intoPrice' ||
+                'finalPrice'"
+              class="pr-70"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -117,7 +126,7 @@
           >
             <b-row
               v-if="props.column.field === 'quantity'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(getTotalValues.totalQuantity) }}
@@ -125,28 +134,28 @@
 
             <b-row
               v-else-if="props.column.field === 'packetQuantity'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(getTotalValues.totalPacketQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'outpacketQuantity'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(getTotalValues.totalUnitQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'intoPrice'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(getTotalValues.totalAmountNotVat) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'finalPrice'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(getTotalValues.totalAmount) }}

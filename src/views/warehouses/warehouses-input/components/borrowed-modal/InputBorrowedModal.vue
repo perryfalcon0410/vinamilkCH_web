@@ -22,22 +22,22 @@
           </strong>
 
           <b-col
-            class="bg-white shadow rounded text-dark"
+            class="bg-white shadow rounded text-dark table"
           >
             <!-- START - Header -->
-            <b-row class="py-1">
+            <b-row class="py-1 table-row">
               <b-col cols="1" />
-              <b-col>
+              <b-col class="pl-110 table-cell-sm ws-nowrap">
                 <strong>
                   Số chứng từ
                 </strong>
               </b-col>
-              <b-col>
+              <b-col class="pl-110 table-cell-sm">
                 <strong>
                   Ngày
                 </strong>
               </b-col>
-              <b-col>
+              <b-col class="pl-110 table-cell-xl">
                 <strong>
                   Ghi chú
                 </strong>
@@ -53,17 +53,20 @@
               class="border-bottom border-white bg-light py-1 cursor-pointer"
               @click="selectOrder(item.id,item.borrowDate,item.note)"
             >
-              <b-col cols="1">
+              <b-col
+                cols="1"
+                class="table-cell-sm"
+              >
                 {{ index + 1 }}
               </b-col>
-              <b-col>
+              <b-col class="table-cell-sm">
                 {{ item.poBorrowCode }}
               </b-col>
-              <b-col>
+              <b-col class="table-cell-sm">
                 {{ item.borrowDate }}
               </b-col>
               <b-col
-                class="text-wrap"
+                class="text-wrap table-cell-xl"
               >
                 {{ item.note }}
               </b-col>

@@ -202,14 +202,12 @@
                   v-model="min"
                   class="h7 text-brand-3"
                   @keypress="$onlyNumberInput"
-                  @change="checkValueMin"
                   @keyup.enter="onClickSearchButton"
                 />
                 <b-form-input
                   v-model="max"
                   class="h7 text-brand-3"
                   @keypress="$onlyNumberInput"
-                  @change="checkValueMax"
                   @keyup.enter="onClickSearchButton"
                 />
               </b-input-group>
@@ -258,6 +256,7 @@ import {
 } from '@/@core/utils/validations/validations'
 import { reverseVniDate } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   REPORT_SALES_QUANTITY_SALE_RECEIPT,
   // GETTERS,
@@ -301,6 +300,8 @@ export default {
         dateFormat: 'd/m/Y',
         minDate: this.fromDate,
       },
+      formattedFromDate: null,
+      formattedToDate: null,
     }
     // search
   },
@@ -317,12 +318,16 @@ export default {
   },
   watch: {
     fromDate() {
+      const dateParts = this.fromDate.split('/')
+      this.formattedFromDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
       this.configToDate = {
         ...this.configToDate,
         minDate: this.fromDate,
       }
     },
     toDate() {
+      const dateParts = this.toDate.split('/')
+      this.formattedToDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
       this.configFromDate = {
         ...this.configFromDate,
         maxDate: this.toDate,
@@ -330,6 +335,12 @@ export default {
     },
   },
   mounted() {
+    const fromDateParts = this.fromDate.split('/')
+    this.formattedFromDate = new Date(+fromDateParts[2], fromDateParts[1] - 1, +fromDateParts[0])
+
+    const toDateParts = this.toDate.split('/')
+    this.formattedToDate = new Date(+toDateParts[2], toDateParts[1] - 1, +toDateParts[0])
+
     this.GET_CUSTOMERS_TYPES_ACTION({ ...this.decentralization })
     this.configToDate = {
       ...this.configToDate,
@@ -345,32 +356,24 @@ export default {
       GET_CUSTOMERS_TYPES_ACTION,
       GET_REPORT_SALES_QUANTITY_SALE_RECEIPTS_ACTION,
     ]),
-    checkValueMin(value) {
-      if (this.max) {
-        if (value > this.max) {
-          this.max = null
-        }
-      }
-    },
-    checkValueMax(value) {
-      if (this.min) {
-        if (this.min > value) {
-          this.min = null
-        }
-      }
-    },
     onSearch() {
-      const searchData = {
-        fromDate: reverseVniDate(this.fromDate),
-        toDate: reverseVniDate(this.toDate),
-        fromAmount: this.min,
-        toAmount: this.max,
-        customerTypeId: this.customerTypesSelected,
-        keySearch: this.customerCode,
-        phoneNumber: this.phoneNumber,
+      const diffTime = Math.abs(this.formattedFromDate - this.formattedToDate)
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) // 1000 * 3600 * 24 number of milliseconds per day
+      if (diffDays <= 365) {
+        const searchData = {
+          fromDate: reverseVniDate(this.fromDate),
+          toDate: reverseVniDate(this.toDate),
+          fromAmount: this.min,
+          toAmount: this.max,
+          customerTypeId: this.customerTypesSelected,
+          keySearch: this.customerCode,
+          phoneNumber: this.phoneNumber,
+        }
+        this.updateSearchData(searchData)
+        this.GET_REPORT_SALES_QUANTITY_SALE_RECEIPTS_ACTION(searchData)
+      } else {
+        toasts.error('Vui lòng chọn khoảng thời gian trong giới hạn 12 tháng')
       }
-      this.updateSearchData(searchData)
-      this.GET_REPORT_SALES_QUANTITY_SALE_RECEIPTS_ACTION(searchData)
     },
 
     onClickSearchButton() {

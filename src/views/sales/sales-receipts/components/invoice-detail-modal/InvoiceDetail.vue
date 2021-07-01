@@ -15,7 +15,7 @@
         v-if="props.column.field === 'number' || props.column.field === 'price'||
           props.column.field === 'intoMoney'|| props.column.field === 'discount' ||
           props.column.field === 'bill'"
-        style="padding-right: 10px"
+        class="pr-70"
       >
         {{ props.formattedRow[props.column.field] }}
       </div>

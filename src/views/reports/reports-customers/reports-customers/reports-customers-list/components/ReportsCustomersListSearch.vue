@@ -86,7 +86,7 @@
                 <b-form-input
                   v-model="customerPhone"
                   class="h7 text-brand-3"
-                  placeholder="Nhập SĐT"
+                  placeholder="Nhập chính xác 4 số cuối"
                   maxlength="10"
                   @keyup.enter="onClickSearchButton"
                   @keypress="$onlyNumberInput"
@@ -625,7 +625,6 @@ export default {
     this.GET_SHOP_LOCATIONS_SEARCH_ACTION({ ...this.decentralization })
   },
   mounted() {
-    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromCreateDate,

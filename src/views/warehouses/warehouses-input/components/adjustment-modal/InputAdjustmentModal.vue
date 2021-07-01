@@ -18,26 +18,31 @@
         >
           <strong
             class="text-dark mx-1 mb-1 "
-          >Danh sách nhập/xuất hàng
+          >
+            Danh sách nhập/xuất hàng
           </strong>
 
           <b-col
-            class="bg-white shadow rounded text-dark"
+            class="bg-white shadow rounded text-dark table"
           >
             <!-- START - Header -->
-            <b-row class="py-1">
-              <b-col cols="1" />
-              <b-col>
+            <b-row class="py-1 table-row">
+              <b-col
+                cols="1"
+              />
+              <b-col class="pl-110 table-cell-sm ws-nowrap">
                 <strong>
                   Số chứng từ
                 </strong>
               </b-col>
-              <b-col>
+              <b-col
+                class="pl-110 table-cell-sm"
+              >
                 <strong>
                   Ngày
                 </strong>
               </b-col>
-              <b-col>
+              <b-col class="pl-110 table-cell-xl">
                 <strong>
                   Ghi chú
                 </strong>
@@ -49,21 +54,26 @@
             <b-row
               v-for="(item, index) in importAdjustmentsList"
               :key="item.id"
-              class="border-bottom border-white bg-light py-1 cursor-pointer"
+              class="border-bottom border-white bg-light py-1 cursor-pointer table-row"
               :class="{ 'text-brand-1': current == item.id }"
               @click="selectOrder(item.id,item.adjustmentDate,item.description)"
             >
-              <b-col cols="1">
+              <b-col
+                cols="1"
+                class="table-cell-sm"
+              >
                 {{ index + 1 }}
               </b-col>
-              <b-col>
+              <b-col
+                class="table-cell-sm"
+              >
                 {{ item.adjustmentCode }}
               </b-col>
-              <b-col>
+              <b-col class="table-cell-sm">
                 {{ item.adjustmentDate }}
               </b-col>
               <b-col
-                class="text-wrap"
+                class="text-wrap table-cell-xl"
               >
                 {{ item.description }}
               </b-col>
@@ -98,6 +108,23 @@
                 Không có dữ liệu
               </div>
               <!-- END - Empty rows -->
+
+              <!-- START - Row filter -->
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <div
+                  v-if="props.column.field === 'totalPrice' || 'price' || 'quantity'"
+                  class="pr-70"
+                >
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+                <div v-else>
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+              </template>
+              <!-- END - Row filter -->
             </vue-good-table>
           </b-col>
         </b-col>
@@ -178,14 +205,14 @@ export default {
           label: 'Số chứng từ',
           field: 'licenseNumber',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-left ws-nowrap',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left ws-nowrap',
           tdClass: 'text-left',
         },
         {
@@ -200,23 +227,23 @@ export default {
           field: 'price',
           sortable: false,
           type: 'number',
-          thClass: 'text-right',
-          tdClass: 'text-center',
+          thClass: 'text-right ws-nowrap',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
           type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-right ws-nowrap',
+          tdClass: 'text-right',
         },
         {
           label: 'Thành tiền (VAT)',
           field: 'totalPrice',
           sortable: false,
           type: 'number',
-          thClass: 'text-right',
+          thClass: 'text-right ws-nowrap',
           tdClass: 'text-right',
         },
       ],
