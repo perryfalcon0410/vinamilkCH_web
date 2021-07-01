@@ -127,6 +127,12 @@
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
+            <div
+              v-else-if="props.column.field === 'productName'"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -253,43 +259,56 @@ export default {
         {
           label: 'Ngày nhập',
           field: 'transDate',
+          thClass: 'text-nowrap move-column-header-first',
+          tdClass: 'move-column-first',
         },
         {
           label: 'Loại nhập',
           field: 'inputType',
+          thClass: 'text-nowrap move-column-header-second',
+          tdClass: 'move-column-second',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
+          thClass: 'text-nowrap move-column-header-third',
+          tdClass: 'move-column-third',
         },
         {
           label: 'Số PO',
           field: 'poNumber',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngày hóa đơn',
           field: 'orderDate',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngành hàng',
           field: 'industry',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -299,6 +318,7 @@ export default {
           label: 'Số lượng packet',
           field: 'packetQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -308,6 +328,7 @@ export default {
           label: 'Số lượng lẻ',
           field: 'oddQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -317,12 +338,14 @@ export default {
           label: 'Giá trước thuế',
           field: 'priceNotVat',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền',
           field: 'amount',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -332,41 +355,50 @@ export default {
           label: 'Giá sau thuế',
           field: 'price',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tổng cộng',
           field: 'total',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Quy cách',
           field: 'convfact',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã nhập hàng',
           field: 'transCode',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Cửa hàng',
           field: 'shopName',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Chuỗi cửa hàng',
           field: 'shopType',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Nhóm sản phẩm',
           field: 'productGroup',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ghi chú',
           field: 'note',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số đơn trả PO',
           field: 'returnCode',
+          thClass: 'text-nowrap',
         },
       ],
       warehousesInputs: [],
@@ -479,3 +511,57 @@ export default {
   },
 }
 </script>
+<style>
+  .name-width {
+    width: max-content;
+    max-width: 400px;
+  }
+  tr th.line-numbers {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 0;
+    background: inherit !important;
+  }
+  .move-column-header-first {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky !important;
+    left: 30px;
+    top: 0.9px;
+    background: #315899 !important;
+    z-index: 99;
+  }
+  .move-column-header-second {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky !important;
+    left: 120px;
+    top: 0.9px;
+    background: #315899 !important;
+    z-index: 99;
+  }
+  .move-column-header-third {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky !important;
+    left: 190px;
+    top: 0.9px;
+    background: #315899 !important;
+    z-index: 99;
+  }
+  .move-column-first {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 30px;
+    background: inherit;
+  }
+  .move-column-second {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 120px;
+    background: inherit;
+  }
+  .move-column-third {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 190px;
+    background: inherit;
+  }
+</style>

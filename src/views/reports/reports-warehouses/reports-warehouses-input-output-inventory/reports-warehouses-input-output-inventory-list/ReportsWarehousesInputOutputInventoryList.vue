@@ -224,6 +224,12 @@
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
+            <div
+              v-else-if="props.column.field === 'productName'"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -348,17 +354,20 @@ export default {
         {
           label: 'Ngành hàng',
           field: 'industry',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap move-column-header-first',
+          tdClass: 'move-column-first',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap move-column-header-second',
+          tdClass: 'move-column-second',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap move-column-header-third',
+          tdClass: 'move-column-third',
         },
         {
           label: 'ĐVT',
@@ -725,6 +734,55 @@ export default {
 </script>
 <style>
   .name-width {
+    width: max-content;
     max-width: 400px;
+  }
+  tr th.line-numbers {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 0;
+    background: inherit !important;
+  }
+  .move-column-header-first {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky !important;
+    left: 30px;
+    top: 0.9px;
+    background: #315899 !important;
+    z-index: 99;
+  }
+  .move-column-header-second {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky !important;
+    left: 120px;
+    top: 0.9px;
+    background: #315899 !important;
+    z-index: 99;
+  }
+  .move-column-header-third {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky !important;
+    left: 190px;
+    top: 0.9px;
+    background: #315899 !important;
+    z-index: 99;
+  }
+  .move-column-first {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 30px;
+    background: inherit;
+  }
+  .move-column-second {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 120px;
+    background: inherit;
+  }
+  .move-column-third {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 190px;
+    background: inherit;
   }
 </style>

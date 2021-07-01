@@ -124,6 +124,12 @@
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
+            <div
+              v-else-if="props.column.field === 'customerName' || props.column.field === 'productName' || props.column.field === 'userName'"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -500,3 +506,9 @@ export default {
   },
 }
 </script>
+<style>
+  .name-width {
+    width: max-content;
+    max-width: 400px;
+  }
+</style>

@@ -41,7 +41,7 @@ $background-odd: #edf2f7;
     tbody {
       tr {
         font-size: 12px;
-
+        background-color: $white;
         &:nth-of-type(odd) {
           background-color: #f6f8fb;
         }

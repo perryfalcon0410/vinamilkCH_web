@@ -456,6 +456,8 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    this.$root.$emit('bv::toggle::collapse', 'collapse-1')
+    this.$root.$emit('bv::toggle::collapse', 'collapse-2')
   },
 
   methods: {

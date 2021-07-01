@@ -50,8 +50,8 @@ export default {
   ],
   printState: [
     { id: '', label: 'Tất cả' },
-    { id: '1', label: 'Đã in' },
-    { id: '0', label: 'Chưa in' },
+    { id: '1', label: 'Đã in HĐĐ' },
+    { id: '0', label: 'Chưa in HĐĐ' },
   ],
   pageSizeRecommendProducts: 8,
   pageNumberRecommendProducts: 0,
