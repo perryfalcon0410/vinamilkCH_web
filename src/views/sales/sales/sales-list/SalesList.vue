@@ -587,7 +587,6 @@ export default {
 
     getDefaultCustomer() {
       this.defaultCustomer = { ...this.getDefaultCustomer }
-      console.log('this.defaultCustomer', this.defaultCustomer)
     },
 
     selectedProduct() {
@@ -703,8 +702,6 @@ export default {
     },
 
     onClickAddButton() {
-      console.log('this.currentCustomer', this.currentCustomer)
-      console.log('bills', this.bills)
       const lastIteminBill = this.bills[this.bills.length - 1]
       if (lastIteminBill) {
         this.bills.push({

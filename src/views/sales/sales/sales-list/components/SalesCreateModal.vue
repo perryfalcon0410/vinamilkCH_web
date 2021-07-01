@@ -460,7 +460,10 @@ export default {
     provincesSelected() {
       this.districtsSelected = null
       if (this.provincesSelected) {
-        this.GET_DISTRICTS_ACTION({ ...this.decentralization, provinceId: this.provincesSelected })
+        this.GET_DISTRICTS_ACTION({
+          data: { ...this.decentralization, provinceId: this.provincesSelected },
+          onSuccess: () => {},
+        })
       }
       if (this.shopLocations && this.isFirstTimeGetLocations) {
         this.districtsSelected = this.shopLocations.districtId
@@ -469,7 +472,10 @@ export default {
     districtsSelected() {
       this.precinctsSelected = null
       if (this.districtsSelected) {
-        this.GET_PRECINCTS_ACTION({ ...this.decentralization, districtId: this.districtsSelected })
+        this.GET_PRECINCTS_ACTION({
+          data: { ...this.decentralization, districtId: this.districtsSelected },
+          onSuccess: () => {},
+        })
       }
       if (this.shopLocations && this.isFirstTimeGetLocations) {
         this.precinctsSelected = this.shopLocations.precinctId

@@ -93,7 +93,7 @@
             >
               <validation-provider
                 v-slot="{ errors, touched, passed }"
-                rules="required|dateFormatVNI|age"
+                rules="required|dateFormatVNI"
                 name="ngày sinh"
               >
                 <div class="mt-1">
@@ -147,7 +147,7 @@
             <b-col>
               <validation-provider
                 v-slot="{ errors }"
-                rules="required"
+                :rules="`${isEdit !== 0 ? 'required' : ''}`"
                 name="nhóm khách hàng"
               >
                 <div
@@ -158,6 +158,7 @@
                 <tree-select
                   v-model="customerTypesSelected"
                   :options="customerTypeOptions"
+                  :disabled="isEdit === 0"
                   placeholder="Chọn nhóm khách hàng"
                   no-options-text="Không có dữ liệu"
                   no-results-text="Không tìm thấy kết quả"
@@ -638,7 +639,6 @@ export default {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
-        maxDate: new Date().fp_incr(-5479),
       },
       configIDDate: {
         wrap: true,
@@ -662,6 +662,10 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
+
+      // START - Common
+      isEdit: null,
+      // END - Common
 
       // START - Personal
       customerCode: null,
@@ -771,23 +775,40 @@ export default {
 
   watch: {
     provincesSelected() {
-      this.districtsSelected = null
       if (this.provincesSelected) {
-        this.GET_DISTRICTS_ACTION({ ...this.decentralization, provinceId: this.provincesSelected })
-      }
-      if (this.customer.areaDetailDTO && this.isFirstTimeGetLocations) {
-        this.districtsSelected = this.customer.areaDetailDTO.districtId
+        this.GET_DISTRICTS_ACTION({
+          data: {
+            ...this.decentralization,
+            provinceId: this.provincesSelected,
+          },
+          onSuccess: () => {
+            if (this.isFirstTimeGetLocations === false) {
+              this.districtsSelected = this.districtOptions[0].id
+            }
+            // Load quận huyện mặc định từ api về lần đầu
+            if (this.customer.areaDetailDTO && this.isFirstTimeGetLocations) {
+              this.districtsSelected = this.customer.areaDetailDTO.districtId
+            }
+          },
+        })
       }
     },
 
     districtsSelected() {
-      this.precinctsSelected = null
       if (this.districtsSelected) {
-        this.GET_PRECINCTS_ACTION({ ...this.decentralization, districtId: this.districtsSelected })
-      }
-      if (this.customer.areaDetailDTO && this.isFirstTimeGetLocations) {
-        this.precinctsSelected = this.customer.areaDetailDTO.precinctId
-        this.isFirstTimeGetLocations = false
+        this.GET_PRECINCTS_ACTION({
+          data: { ...this.decentralization, districtId: this.districtsSelected },
+          onSuccess: () => {
+            if (this.isFirstTimeGetLocations === false) {
+              this.precinctsSelected = this.precinctOptions[0].id
+            }
+            // Load phường xã mặc định từ api về lần đầu
+            if (this.customer.areaDetailDTO && this.isFirstTimeGetLocations) {
+              this.precinctsSelected = this.customer.areaDetailDTO.precinctId
+              this.isFirstTimeGetLocations = false
+            }
+          },
+        })
       }
     },
 
@@ -833,6 +854,8 @@ export default {
 
     getCustomerById() {
       if (this.customer) {
+        // START - Common
+        this.isEdit = Number(this.customer.isEdit)
         // START - Personal
         this.customerCode = this.customer.customerCode
         this.firstName = this.customer.firstName

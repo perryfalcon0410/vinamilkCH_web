@@ -740,7 +740,6 @@ export default {
     },
     getOnlineOrderCustomers() {
       this.onlineOrderCustomers = [...this.getOnlineOrderCustomers]
-      console.log('this.onlineOrderCustomers', this.onlineOrderCustomers)
 
       if (this.onlineOrderCustomers.length > 1) {
         this.$refs.salesSearchModal.$refs.salesSearchModal.show()

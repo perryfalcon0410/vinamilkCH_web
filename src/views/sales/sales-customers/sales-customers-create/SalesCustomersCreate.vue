@@ -98,7 +98,7 @@
             >
               <validation-provider
                 v-slot="{ errors, touched, passed }"
-                rules="required|dateFormatVNI|age"
+                rules="required|dateFormatVNI"
                 name="ngày sinh"
               >
                 <div class="mt-1">
@@ -600,7 +600,6 @@ export default {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
-        maxDate: new Date().fp_incr(-5479),
       },
       configIDDate: {
         wrap: true,
@@ -731,20 +730,39 @@ export default {
     provincesSelected() {
       this.districtsSelected = null
       if (this.provincesSelected) {
-        this.GET_DISTRICTS_ACTION({ ...this.decentralization, provinceId: this.provincesSelected })
-      }
-      if (this.shopLocations && this.isFirstTimeGetLocations) {
-        this.districtsSelected = this.shopLocations.districtId
+        this.GET_DISTRICTS_ACTION({
+          data: {
+            ...this.decentralization,
+            provinceId: this.provincesSelected,
+          },
+          onSuccess: () => {
+            if (this.isFirstTimeGetLocations === false) {
+              this.districtsSelected = this.districtOptions[0].id
+            }
+            // Load quận huyện mặc định từ api về lần đầu
+            if (this.shopLocations && this.isFirstTimeGetLocations) {
+              this.districtsSelected = this.shopLocations.districtId
+            }
+          },
+        })
       }
     },
     districtsSelected() {
       this.precinctsSelected = null
       if (this.districtsSelected) {
-        this.GET_PRECINCTS_ACTION({ ...this.decentralization, districtId: this.districtsSelected })
-      }
-      if (this.shopLocations && this.isFirstTimeGetLocations) {
-        this.precinctsSelected = this.shopLocations.precinctId
-        this.isFirstTimeGetLocations = false
+        this.GET_PRECINCTS_ACTION({
+          data: { ...this.decentralization, districtId: this.districtsSelected },
+          onSuccess: () => {
+            if (this.isFirstTimeGetLocations === false) {
+              this.precinctsSelected = this.precinctOptions[0].id
+            }
+            // Load phường xã mặc định từ api về lần đầu
+            if (this.shopLocations && this.isFirstTimeGetLocations) {
+              this.precinctsSelected = this.shopLocations.precinctId
+              this.isFirstTimeGetLocations = false
+            }
+          },
+        })
       }
     },
   },

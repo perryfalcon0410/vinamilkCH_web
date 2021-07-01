@@ -217,7 +217,7 @@ export default {
           toasts.error(error.message)
         })
     },
-
+    // Dùng để load vị trí các shop cho thanh tìm kiếm
     [GET_SHOP_LOCATIONS_SEARCH_ACTION]({ state }, val) {
       CustomerService
         .getShopLocationsSearch(val.data)
@@ -235,6 +235,7 @@ export default {
         })
     },
 
+    // Dùng để load vị trí mặc định của shop hiện tại trong form
     [GET_SHOP_LOCATIONS_ACTION]({ state }, val) {
       CustomerService
         .getShopLocations(val)
@@ -314,11 +315,12 @@ export default {
     },
     [GET_DISTRICTS_ACTION]({ state }, val) {
       CustomerService
-        .getDistricts(val)
+        .getDistricts(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.districts = res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }
@@ -329,11 +331,12 @@ export default {
     },
     [GET_PRECINCTS_ACTION]({ state }, val) {
       CustomerService
-        .getPrecincts(val)
+        .getPrecincts(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.precincts = res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }
