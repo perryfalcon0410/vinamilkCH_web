@@ -521,8 +521,8 @@ export default {
 
       quantity: null,
       totalPrice: null,
-      salemtPromotionObjectSelected: saleData.salemtPromotionObject[0].id,
-      salemtDeliveryTypeSelected: saleData.salemtDeliveryType[0].id,
+      salemtPromotionObjectSelected: null,
+      salemtDeliveryTypeSelected: null,
       // salemtDeliveryTypeSelected: this.salemtDeliveryTypeOptions,
       data: null,
 
@@ -603,6 +603,8 @@ export default {
           sortable: false,
         },
       ],
+
+      salemtPromotionObjectOptions: [],
     }
   },
   computed: {
@@ -648,16 +650,18 @@ export default {
     customerDefault() {
       return this.CUSTOMER_DEFAULT_GETTER
     },
-    salemtPromotionObjectOptions() {
+    getSalemtPromotionObjectOptions() {
       return this.SALEMT_PROMOTION_OBJECT_GETTER.map(data => ({
         id: data.value,
         label: data.apParamName,
+        apParamCode: data.apParamCode,
       }))
     },
     salemtDeliveryTypeOptions() {
       return this.SALEMT_DELIVERY_TYPE_GETTER.map(data => ({
         id: data.value,
         label: data.apParamName,
+        apParamCode: data.apParamCode,
       }))
     },
     onlineOrder() {
@@ -721,12 +725,12 @@ export default {
     },
   },
   watch: {
-    salemtPromotionObjectSelected() {
-      this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ ...this.decentralization })
-    },
-    salemtDeliveryTypeSelected() {
-      this.GET_SALEMT_DELIVERY_TYPE_ACTION({ ...this.decentralization })
-    },
+    // salemtPromotionObjectSelected() {
+    //   this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ ...this.decentralization })
+    // },
+    // salemtDeliveryTypeSelected() {
+    //   this.GET_SALEMT_DELIVERY_TYPE_ACTION({ ...this.decentralization })
+    // },
     customerDefault() {
       this.customer = { ...this.customerDefault }
       this.getCustomerDefault()
@@ -752,6 +756,13 @@ export default {
         this.customer = JSON.parse(arrayToString)
         this.$emit('getOnlineCustomer', this.customer)
       }
+    },
+    getSalemtPromotionObjectOptions() {
+      this.salemtPromotionObjectOptions = [...this.getSalemtPromotionObjectOptions]
+      this.getDefaultPromotionObjectSelected()
+    },
+    salemtDeliveryTypeOptions() {
+      this.GetSalemtDeliveryTypeDefault()
     },
   },
   mounted() {
@@ -910,16 +921,16 @@ export default {
         this.GET_CUSTOMERS_SALE_ACTION(searchKeywords)
       } else {
         this.customersSearch = [{ data: null }]
-        this.search = null
+        this.search = ''
       }
-      this.search = null
+      this.search = ''
     },
 
-    onclickChooseCustomer(data) {
-      this.$emit('getIdCustomer', data.item)
-      this.customersSearch = [{ data: null }]
-      this.search = null
-    },
+    // onclickChooseCustomer(data) {
+    //   this.$emit('getIdCustomer', data.item)
+    //   this.customersSearch = [{ data: null }]
+    //   this.search = null
+    // },
 
     resetOrderNumber(item) {
       if (item.id === saleData.salemtPromotionObject[0].id) {
@@ -938,14 +949,28 @@ export default {
       this.customer.phoneNumber = suggestion.item.phoneNumber
       this.customer.totalBill = suggestion.item.totalBill
       this.customer.address = suggestion.item.address
-      this.customer.totalBill = suggestion.item.totalBill
+      this.customer.totalBill = suggestion.item.totalBill ?? 0
       this.customer.scoreCumulated = suggestion.item.scoreCumulated
       this.customer.amountCumulated = suggestion.item.amountCumulated
       this.customer.status = suggestion.item.status
       this.customer.typeId = suggestion.item.customerTypeId
       this.$emit('getIdCustomer', suggestion.item)
       this.customersSearch = [{ data: null }]
-      this.search = null
+      this.search = ''
+    },
+    getDefaultPromotionObjectSelected() {
+      if (this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE')) {
+        this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE').id
+        return
+      }
+      this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions[0].id
+    },
+    GetSalemtDeliveryTypeDefault() {
+      if (this.salemtDeliveryTypeOptions.find(data => data.apParamCode === 'DELIVERY_001')) {
+        this.salemtDeliveryTypeSelected = this.salemtDeliveryTypeOptions.find(data => data.apParamCode === 'DELIVERY_001').id
+        return
+      }
+      this.salemtDeliveryTypeSelected = this.salemtDeliveryTypeOptions[0].id
     },
 
     // getSuggestionValue(suggestion) {

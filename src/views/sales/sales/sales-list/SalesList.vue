@@ -472,7 +472,13 @@ export default {
       customerType: null,
       productId: null,
       quantity: null,
+      productChangePrice: [],
       customerDefaultTypeId: null,
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
 
       orderCurrentId: 1, // Id of order current
     }
@@ -566,7 +572,7 @@ export default {
     getProductSearch() {
       this.productsSearch = [...this.getProductSearch]
       this.productsSearchLength = this.productsSearch[0].data.length
-      this.getPriceOnChangeCustomer()
+      // this.getPriceOnChangeCustomer()
     },
     getProducts() {
       this.orderProducts = []
@@ -801,22 +807,15 @@ export default {
     getCustomerTypeInfo(val) {
       this.customerType = val.customerTypeId
       this.searchOptions.customerId = val.id
-      this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-      this.searchOptions.size = null
-      this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
-      // const listProducts = this.getProducts
-      // const customerTypeId = id
-      // const params = {
-      //   formId: 4, // Hard code
-      //   ctrlId: 1, // // Hard code
-      // }
-      // if (id !== this.currentCustomer) {
-      //   this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
-      //     customerTypeId,
-      //     listProducts,
-      //     params,
-      //   })
-      // }
+      this.productChangePrice = this.orderProducts.map(data => ({
+        productId: data.productId,
+        quantity: data.quantity,
+      }))
+      this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
+        customerTypeId: this.customerType,
+        products: this.productChangePrice,
+        params: this.decentralization,
+      })
     },
 
     getCurrentCustomer(val) {
@@ -829,12 +828,19 @@ export default {
     getIdCustomer(data) {
       // check customers dafault
       if (data) {
+        this.customerType = data.customerTypeId
         this.isCheckShopId = true
         this.searchOptions.customerId = data.id
         this.editOnlinePermission = true
-        this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-        this.searchOptions.size = null
-        this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
+        this.productChangePrice = this.orderProducts.map(item => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        }))
+        this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
+          customerTypeId: this.customerType,
+          products: this.productChangePrice,
+          params: this.decentralization,
+        })
       } else {
         this.isCheckShopId = false
       }
@@ -893,24 +899,6 @@ export default {
     closeNotifyModal() {
       this.$refs.salesNotifyModal.hide()
       this.isDisabledOrder = true
-    },
-    getPriceOnChangeCustomer() {
-      if (this.searchOptions.customerId !== this.currentCustomerId) {
-        this.productsSearch[0].data.forEach(item => {
-          const index = this.orderProducts.findIndex(data => data.productCode === item.productCode)
-          if (index !== -1) {
-            const itemFind = this.productsSearch[0].data.find(data => data.productCode === this.orderProducts[index].productCode)
-            this.orderProducts[index].productUnitPrice = itemFind.productUnitPrice
-            this.orderProducts[index].sumProductTotalPrice = itemFind.sumProductTotalPrice
-            this.orderProducts[index].sumProductUnitPrice = itemFind.sumProductUnitPrice
-            this.orderProducts[index].productTotalPrice = itemFind.productTotalPrice
-
-            this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
-            this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
-          }
-        })
-        this.currentCustomerId = this.searchOptions.customerId
-      }
     },
   },
 }

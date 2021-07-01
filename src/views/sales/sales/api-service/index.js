@@ -86,7 +86,9 @@ export default {
   },
 
   updatePriceTypeCustomer(args) {
-    return axios.post(`${updatePriceTypeCustomerEndpoint}/${args.customerTypeId}`, args.listProducts)
+    return axios.post(`${updatePriceTypeCustomerEndpoint}/${args.customerTypeId}`, args.products, {
+      params: formatURLParams(args.params),
+    })
   },
   getProductsTopSaleInMonth(args) {
     return axios.get(getProductsTopSaleMonthEndpoint, {

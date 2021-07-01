@@ -350,13 +350,6 @@ import {
   GET_CUSTOMER_TYPES_ACTION,
   GET_GENDERS_ACTION,
 } from '../../../sales-customers/store-module/type'
-import {
-  SALES,
-  // Getter
-  GET_LIMIT_AGE_CUSTOMERS_GETTER,
-  // Action
-  GET_LIMIT_AGE_CUSTOMERS_ACTION,
-} from '../../store-module/type'
 
 export default {
   name: 'SalesCreateModal',
@@ -371,8 +364,6 @@ export default {
   },
   data() {
     return {
-      maxDate: null, // check limit age
-      dayOfYear: 365, // day of year
       configBitrhDay: {
         wrap: true,
         allowInput: true,
@@ -411,14 +402,7 @@ export default {
       districtsSelected: null,
       precinctsSelected: null,
       customerStatusSelected: customerData.status[0].id,
-      provinceOptions: [],
-      precinctOptions: [],
-      districtOptions: [],
-      precinctsCurrent: 0,
-      districtCurrent: 0,
-      districts: null,
       customerCreate: {},
-      limitAge: [],
     }
   },
   // START - Computed
@@ -431,18 +415,14 @@ export default {
       CREATE_CUSTOMER_GETTER,
       CUSTOMER_TYPES_GETTER,
       GENDERS_GETTER,
-      GET_LIMIT_AGE_CUSTOMERS_GETTER,
     }),
-    ...mapGetters(SALES, {
-      GET_LIMIT_AGE_CUSTOMERS_GETTER,
-    }),
-    getProvinceOptions() {
+    provinceOptions() {
       return this.PROVINCES_GETTER.map(data => ({
         id: data.id,
         label: data.areaName,
       }))
     },
-    getDistrictOptions() {
+    districtOptions() {
       if (this.provincesSelected) {
         return this.DISTRICTS_GETTER.map(data => ({
           id: data.id,
@@ -451,7 +431,7 @@ export default {
       }
       return []
     },
-    getPrecinctOptions() {
+    precinctOptions() {
       if (this.districtsSelected) {
         return this.PRECINCTS_GETTER.map(data => ({
           id: data.id,
@@ -472,48 +452,32 @@ export default {
     getCustomerCreate() {
       return this.CREATE_CUSTOMER_GETTER
     },
-    getLimitAgeCustomer() {
-      if (this.GET_LIMIT_AGE_CUSTOMERS_GETTER) {
-        return this.GET_LIMIT_AGE_CUSTOMERS_GETTER
-      }
-      return []
-    },
   },
   // END - Computed
 
   watch: {
-    getProvinceOptions() {
-      this.provinceOptions = this.getProvinceOptions
-    },
-    getDistrictOptions() {
-      this.districtOptions = [...this.getDistrictOptions]
-      this.districtCurrent += 1
-      if (this.districtCurrent > 2 && this.provincesSelected && !this.isFirstTimeGetLocations) {
-        this.districtsSelected = this.districtOptions[0].id
-        this.provinceCurrent = this.provincesSelected
-      }
-    },
-
-    getPrecinctOptions() {
-      this.precinctOptions = [...this.getPrecinctOptions]
-      if (this.districtCurrent > 2 && this.districtsSelected && !this.isFirstTimeGetLocations) {
-        this.precinctsSelected = this.precinctOptions[0].id
-      }
-    },
 
     shopLocations() {
       this.provincesSelected = this.shopLocations.provinceId
     },
     provincesSelected() {
-      // this.districtsSelected = null
+      this.districtsSelected = null
       if (this.provincesSelected) {
         this.GET_DISTRICTS_ACTION({
-          data: { ...this.decentralization, provinceId: this.provincesSelected },
-          onSuccess: () => {},
+          data: {
+            ...this.decentralization,
+            provinceId: this.provincesSelected,
+          },
+          onSuccess: () => {
+            if (this.isFirstTimeGetLocations === false) {
+              this.districtsSelected = this.districtOptions[0].id
+            }
+            // Load quận huyện mặc định từ api về lần đầu
+            if (this.shopLocations && this.isFirstTimeGetLocations) {
+              this.districtsSelected = this.shopLocations.districtId
+            }
+          },
         })
-      }
-      if (this.shopLocations && this.isFirstTimeGetLocations) {
-        this.districtsSelected = this.shopLocations.districtId
       }
     },
     districtsSelected() {
@@ -521,12 +485,17 @@ export default {
       if (this.districtsSelected) {
         this.GET_PRECINCTS_ACTION({
           data: { ...this.decentralization, districtId: this.districtsSelected },
-          onSuccess: () => {},
+          onSuccess: () => {
+            if (this.isFirstTimeGetLocations === false) {
+              this.precinctsSelected = this.precinctOptions[0].id
+            }
+            // Load phường xã mặc định từ api về lần đầu
+            if (this.shopLocations && this.isFirstTimeGetLocations) {
+              this.precinctsSelected = this.shopLocations.precinctId
+              this.isFirstTimeGetLocations = false
+            }
+          },
         })
-      }
-      if (this.shopLocations && this.isFirstTimeGetLocations) {
-        this.precinctsSelected = this.shopLocations.precinctId
-        this.isFirstTimeGetLocations = false
       }
     },
     getCustomerCreate() {
@@ -536,10 +505,6 @@ export default {
     gendersSelected() {
       this.GET_GENDERS_ACTION({ ...this.decentralization })
     },
-    getLimitAgeCustomer() {
-      this.limitAge = [...this.getLimitAgeCustomer]
-      this.getDefaultMaxDate()
-    },
   },
 
   mounted() {
@@ -547,7 +512,6 @@ export default {
     this.GET_GENDERS_ACTION({ ...this.decentralization })
     this.GET_SHOP_LOCATIONS_ACTION({ ...this.decentralization })
     this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
-    this.GET_LIMIT_AGE_CUSTOMERS_ACTION({ ...this.decentralization })
   },
 
   // START - Methods
@@ -560,10 +524,6 @@ export default {
       GET_SHOP_LOCATIONS_ACTION,
       GET_CUSTOMER_TYPES_ACTION,
       GET_GENDERS_ACTION,
-    ]),
-
-    ...mapActions(SALES, [
-      GET_LIMIT_AGE_CUSTOMERS_ACTION,
     ]),
 
     create() {
@@ -630,15 +590,6 @@ export default {
       this.districtsSelected = null
       this.precinctsSelected = null
       this.districtCurrent = 0
-    },
-    // check day of birth
-    getDefaultMaxDate() {
-      const limitAge = Number(this.limitAge.find(data => data.status === 1).value)
-      this.maxDate = (limitAge * this.dayOfYear) + Math.floor(limitAge / 3)
-      this.configBitrhDay = {
-        ...this.configBitrhDay,
-        maxDate: new Date().fp_incr(-this.maxDate),
-      }
     },
   },
   // END - Methods

@@ -435,7 +435,7 @@ export default {
         ...this.searchData,
       }
       this.searchData = { ...this.searchData, ...this.searchOption }
-      console.log(this.searchData)
+      // console.log(this.searchData)
       this.GET_CUSTOMERS_ACTION(this.searchOption)
     },
     updateSearchData(newProps) {

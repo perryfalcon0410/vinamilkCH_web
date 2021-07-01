@@ -344,7 +344,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            // toasts.success(res.statusValue)
             state.customerTypeProducts = res.data.products
           } else {
             throw new Error(res.statusValue)
