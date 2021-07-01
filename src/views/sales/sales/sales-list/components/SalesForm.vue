@@ -250,6 +250,7 @@
               <b-input-group class="input-group-merge">
                 <b-form-input
                   v-model="orderOnline.orderNumber"
+                  maxlength="50"
                   :disabled="salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0) || isDisabledOrder === true"
                 />
                 <b-input-group-append is-text>
@@ -328,7 +329,7 @@
         <b-button
           variant="info"
           class="d-flex w-100 my-1 align-items-center justify-content-center"
-          :disabled="orderOnline.orderNumber.length < minOnlineOrder && salemtPromotionObjectSelected !== salemtPromotionId || totalQuantity === 0 || editOnlinePermission === false"
+          :disabled="totalQuantity === 0"
           @click="showPayModal"
         >
           <b-icon-cash-stack
@@ -801,9 +802,7 @@ export default {
     },
 
     showPayModal() {
-      if (this.editOnlinePermission === true) {
-        this.$bvModal.show('pay-modal')
-      }
+      this.$bvModal.show('pay-modal')
     },
 
     showNotifyModal() {

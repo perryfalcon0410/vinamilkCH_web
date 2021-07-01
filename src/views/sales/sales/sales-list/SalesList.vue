@@ -531,9 +531,6 @@ export default {
       }
       return []
     },
-    // customerDefault() {
-    //   return this.getCustomerDefault
-    // },
     onlineCustomer() {
       return this.getOnlineCustomer
     },
@@ -577,9 +574,6 @@ export default {
     getCustomerTypeProducts() {
       this.orderProducts = [...this.getCustomerTypeProducts]
     },
-    // getOnlineOrderProducts() {
-    //   this.orderProducts = [...this.getOnlineOrderProducts]
-    // },
 
     getCurrentCustomer() {
       this.currentCustomer = { ...this.getCurrentCustomer }
@@ -594,12 +588,9 @@ export default {
     },
   },
   mounted() {
-    // this.GET_PRODUCTS_ACTION(this.searchOptions)
     const index = this.productInfoTypeOptions.findIndex(i => i.name === 'Ngành hàng')
     const paramGetProductInfo = {
       type: Number(this.productInfoTypeOptions[index].id),
-      // formId: 5, // Hard code
-      // ctrlId: 7, // Hard code
     }
     this.GET_PRODUCT_INFOS_ACTION(paramGetProductInfo)
   },
@@ -674,7 +665,6 @@ export default {
 
     onChangeKeyWord() {
       if (this.isCheckShopId === true) {
-        // this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
         this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
       }
     },
@@ -872,7 +862,6 @@ export default {
         if (val === '2' && usedShop.id === this.currentCustomer.shopId) {
           if (usedShop.manuallyCreatable === false) {
             this.$refs.salesNotifyModal.show()
-            // toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
           }
         }
       }
