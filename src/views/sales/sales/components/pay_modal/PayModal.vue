@@ -1102,6 +1102,17 @@ export default {
       },
       deep: true,
     },
+    'pay.salePayment.salePaymentType': {
+      handler() {
+        if (this.pay.salePayment.salePaymentType === undefined || this.pay.salePayment.salePaymentType === '') {
+          this.isDisabledPaymentBtn = true
+          this.isDisabledPrintAndPaymentBtn = true
+        } else {
+          this.extraAmountCalculation()
+        }
+      },
+      deep: true,
+    },
   },
 
   mounted() {
@@ -1120,11 +1131,16 @@ export default {
       }
       if (e.key === 'F8') {
         if (!this.isPaid && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
-          this.createSaleOrderAndPrint()
+          if (this.pay.salePayment.salePaymentType !== undefined) {
+            this.createSaleOrderAndPrint()
+          }
         }
       }
       if (e.key === 'F9') {
         if (!this.isPaid && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
+          if (this.pay.salePayment.salePaymentType !== undefined) {
+            this.createSaleOrder()
+          }
           this.createSaleOrder()
         }
       }
@@ -1172,13 +1188,22 @@ export default {
       }))
 
       this.GET_DISCOUNT_BY_CODE_ACTION({
-        code: this.pay.discount.discountCode,
-        formId: this.formId,
-        ctrlId: this.ctrlId,
         data: {
-          customerId: this.customer.id,
-          orderType: Number(this.orderSelected),
-          products,
+          code: this.pay.discount.discountCode,
+          formId: this.formId,
+          ctrlId: this.ctrlId,
+          dataGetCode: {
+            customerId: this.customer.id,
+            orderType: Number(this.orderSelected),
+            products,
+          },
+        },
+        onSuccess: () => {
+        },
+        onFailure: () => {
+          if (Number(this.pay.discount.discountAmount) === 0) {
+            this.pay.discount.discountCode = ''
+          }
         },
       })
     },

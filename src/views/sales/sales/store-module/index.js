@@ -191,12 +191,14 @@ export default {
 
     [GET_DISCOUNT_BY_CODE_ACTION]({ state }, val) {
       SalesServices
-        .getDiscountByCode(val)
+        .getDiscountByCode(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.discount = res.data
+            val.onSuccess()
           } else {
+            val.onFailure()
             throw new Error(res.statusValue)
           }
         })
