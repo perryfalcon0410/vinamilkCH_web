@@ -10,38 +10,31 @@
         sm="4"
         class="h7"
       >
-        <validation-provider
-          v-slot="{ errors, passed }"
-          rules="code"
-          name="số biên bản"
+        <div
+          class="mt-sm-1 mt-xl-0"
         >
-          <div
-            class="mt-sm-1 mt-xl-0"
+          Số biên bản
+        </div>
+        <b-input-group
+          class="input-group-merge"
+        >
+          <b-form-input
+            v-model.trim="transCode"
+            :state="transCode ? passed : null"
+            maxlength="40"
+            placeholder="Nhập số biên bản"
+            @keyup.enter="onClickSearchButton"
+          />
+          <b-input-group-append
+            is-text
           >
-            Số biên bản
-          </div>
-          <b-input-group
-            class="input-group-merge"
-          >
-            <b-form-input
-              v-model.trim="transCode"
-              :state="transCode ? passed : null"
-              maxlength="20"
-              placeholder="Nhập số biên bản"
-              @keyup.enter="onClickSearchButton"
+            <b-icon-x
+              v-show="transCode"
+              class="cursor-pointer text-gray"
+              @click="transCode = null"
             />
-            <b-input-group-append
-              is-text
-            >
-              <b-icon-x
-                v-show="transCode"
-                class="cursor-pointer text-gray"
-                @click="transCode = null"
-              />
-            </b-input-group-append>
-          </b-input-group>
-          <small class="text-danger">{{ errors[0] }}</small>
-        </validation-provider>
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
       <!-- END - Minute Code -->
 
@@ -171,9 +164,6 @@ import {
   mapGetters,
 } from 'vuex'
 import {
-  ValidationProvider,
-} from 'vee-validate'
-import {
   code,
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
@@ -190,7 +180,6 @@ import {
 
 export default {
   components: {
-    ValidationProvider,
     VCardActions,
   },
   data() {

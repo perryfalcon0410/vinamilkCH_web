@@ -126,22 +126,20 @@
             slot="column-filter"
             slot-scope="props"
           >
-            <b-row
-              v-show="exchangeDamagedGoodsPagination.totalElements"
+            <div
               v-if="props.column.field === 'quantity'"
-              class="mx-0"
-              align-h="end"
+              v-show="exchangeDamagedGoodsPagination.totalElements"
+              class="h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(getTotalValues.totalQuantity) }}
-            </b-row>
-            <b-row
-              v-show="exchangeDamagedGoodsPagination.totalElements"
+            </div>
+            <div
               v-else-if="props.column.field === 'price'"
-              class="mx-0"
-              align-h="end"
+              v-show="exchangeDamagedGoodsPagination.totalElements"
+              class="h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(getTotalValues.totalAmount) }}
-            </b-row>
+            </div>
           </template>
           <!-- END - Filter -->
 

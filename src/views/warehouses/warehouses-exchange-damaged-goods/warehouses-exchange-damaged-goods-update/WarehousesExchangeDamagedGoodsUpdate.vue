@@ -35,6 +35,7 @@
               v-model.trim="exchangeGoodsInfo.transCode"
               :state="touched ? passed : null"
               maxlength="40"
+              disabled
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
