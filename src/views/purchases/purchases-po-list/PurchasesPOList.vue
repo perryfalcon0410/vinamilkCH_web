@@ -228,7 +228,7 @@
               align-h="center"
               class="mx-0"
             >
-              <b-icon-bricks />
+              <v-icon-manipulation />
             </b-row>
             <div v-else>
               {{ props.column.label }}
@@ -310,11 +310,13 @@
 </template>
 
 <script>
+import VIconManipulation from '@core/components/v-icons/IconManipulation.vue'
 import PoDetailModal from './components/PODetailModal.vue'
 
 export default {
   components: {
     PoDetailModal,
+    VIconManipulation,
   },
   data() {
     return {

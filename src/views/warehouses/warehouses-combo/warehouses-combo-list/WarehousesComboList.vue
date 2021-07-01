@@ -97,9 +97,7 @@
             slot-scope="props"
           >
             <div v-if="props.column.field === 'feature'">
-              <b-icon-eye-fill
-                v-b-popover.hover="'Xem chi tiết'"
-                class="text-brand-1 cursor-pointer"
+              <v-icon-detail
                 @click="navigateToDetail(props.row.id)"
               />
             </div>
@@ -209,6 +207,8 @@ import {
   // getWarehousesStatuslabel,
   resizeAbleTable,
 } from '@core/utils/utils'
+// Icons
+import VIconDetail from '@core/components/v-icons/IconDetail.vue'
 import WarehousesComboListSearch from './components/WarehousesComboListSearch.vue'
 import {
   WAREHOUSES_COMBO,
@@ -224,6 +224,7 @@ import {
 export default {
   components: {
     WarehousesComboListSearch,
+    VIconDetail,
   },
   data() {
     return {

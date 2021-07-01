@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import {
-  ToastPlugin,
-  ModalPlugin,
   BootstrapVue,
   BootstrapVueIcons,
 } from 'bootstrap-vue'
@@ -63,8 +61,6 @@ import '@core/scss/vue/libs/vue-autosuggest.scss'
 dotenv.config()
 
 // BSV Plugin Registration
-Vue.use(ToastPlugin)
-Vue.use(ModalPlugin)
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
 

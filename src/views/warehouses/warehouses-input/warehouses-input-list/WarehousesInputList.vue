@@ -79,11 +79,7 @@
               v-if="props.column.field === 'feature'"
               hidden
             >
-              <b-icon-bricks
-                v-b-popover.hover="'Thao tác'"
-                scale="1.3"
-                class="ml-3"
-              />
+              <v-icon-manipulation />
             </b-row>
             <div v-else>
               {{ props.column.label }}
@@ -100,24 +96,17 @@
               v-if="props.column.field === 'feature'"
               class="mx-0"
             >
-              <b-icon-printer-fill
-                v-b-popover.hover.top="'In phiếu'"
-                class="cursor-pointer text-brand-1"
-                scale="1.2"
+              <v-icon-printer
                 @click="onClickPrintButton(props.row)"
               />
-              <b-icon-pencil-fill
-                v-b-popover.hover.top="'Chỉnh sửa'"
-                class="cursor-pointer ml-1"
-                scale="1.2"
+              <v-icon-edit
+                class="ml-1"
+                popover-position="top"
                 @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
               />
-              <b-icon-trash-fill
+              <v-icon-remove
                 v-show="$formatISOtoVNI(props.row.transDate) === $nowDate"
-                v-b-popover.hover.top="'Xóa'"
-                class="cursor-pointer ml-1"
-                color="red"
-                scale="1.2"
+                class="ml-1"
                 @click="onClickDeleteButton(props.row.id, props.row.inputTypes, props.row.originalIndex, props.row.transCode)"
               />
             </b-row>
@@ -260,6 +249,12 @@ import {
   mapActions,
 } from 'vuex'
 import PrintFormInputOrder from '@core/components/print-form/PrintFormInputOrder.vue'
+// Icons
+import VIconManipulation from '@core/components/v-icons/IconManipulation.vue'
+import VIconRemove from '@/@core/components/v-icons/IconRemove.vue'
+import VIconEdit from '@core/components/v-icons/IconEdit.vue'
+import VIconPrinter from '@core/components/v-icons/IconPrinter.vue'
+
 import WarehousesInputListSearch from './components/WarehousesInputListSearch.vue'
 import {
   WAREHOUSEINPUT,
@@ -276,6 +271,10 @@ export default {
   components: {
     WarehousesInputListSearch,
     PrintFormInputOrder,
+    VIconEdit,
+    VIconManipulation,
+    VIconRemove,
+    VIconPrinter,
   },
   data() {
     return {

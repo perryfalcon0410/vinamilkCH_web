@@ -150,10 +150,8 @@
               v-else-if="props.column.field == 'manipulation'"
             >
               <span>
-                <b-icon-eye-fill
-                  v-b-popover.hover="'Chi tiết hóa đơn'"
-                  class="cursor-pointer"
-                  scale="1.5"
+                <v-icon-detail
+                  popover-content="Chi tiết hóa đơn"
                   @click="showInvoiceDetailModal(props.row.id, props.row.numberBill)"
                 />
               </span>
@@ -264,6 +262,8 @@ import {
   resizeAbleTable,
 } from '@core/utils/utils'
 import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
+// Icons
+import VIconDetail from '@core/components/v-icons/IconDetail.vue'
 import {
   // GETTERS
   SALESRECEIPTS,
@@ -282,6 +282,7 @@ export default {
     InvoiceDetailModal,
     SalesReceiptListSearch,
     PrintFormSalesReceipt,
+    VIconDetail,
   },
 
   data() {

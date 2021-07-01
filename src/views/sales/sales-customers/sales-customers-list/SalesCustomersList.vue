@@ -81,11 +81,8 @@
             slot="table-column"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'feature'">
-              <b-icon-bricks
-                v-b-popover.hover="'Thao tác'"
-                scale="1.3"
-              />
+            <div v-if="props.column.field === 'manipulation'">
+              <v-icon-manipulation />
             </div>
 
             <div v-else>
@@ -99,10 +96,8 @@
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'feature'">
-              <b-icon-pencil-fill
-                v-b-popover.hover="'Chỉnh sửa'"
-                class="cursor-pointer"
+            <div v-if="props.column.field === 'manipulation'">
+              <v-icon-edit
                 @click="navigateToUpdate(props.row.id)"
               />
             </div>
@@ -188,6 +183,8 @@ import {
   resizeAbleTable,
 } from '@core/utils/utils'
 
+import VIconManipulation from '@core/components/v-icons/IconManipulation.vue'
+import VIconEdit from '@core/components/v-icons/IconEdit.vue'
 import SalesCustomersListSearch from './components/SalesCustomersListSearch.vue'
 import {
   CUSTOMER,
@@ -202,6 +199,8 @@ import {
 export default {
   components: {
     SalesCustomersListSearch,
+    VIconManipulation,
+    VIconEdit,
   },
   data() {
     return {
@@ -274,8 +273,8 @@ export default {
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
-          label: 'Chức năng',
-          field: 'feature',
+          label: 'Thao tác',
+          field: 'manipulation',
           sortable: false,
           width: '30px',
           thClass: 'text-center',

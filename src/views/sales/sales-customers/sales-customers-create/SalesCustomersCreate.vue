@@ -728,7 +728,6 @@ export default {
       this.provincesSelected = this.shopLocations.provinceId
     },
     provincesSelected() {
-      this.districtsSelected = null
       if (this.provincesSelected) {
         this.GET_DISTRICTS_ACTION({
           data: {
@@ -748,7 +747,6 @@ export default {
       }
     },
     districtsSelected() {
-      this.precinctsSelected = null
       if (this.districtsSelected) {
         this.GET_PRECINCTS_ACTION({
           data: { ...this.decentralization, districtId: this.districtsSelected },
