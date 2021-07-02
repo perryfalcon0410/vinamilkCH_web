@@ -114,7 +114,7 @@
           </b-button>
           <b-icon-x
             v-b-popover.hover="'Xóa'"
-            class="cursor-pointer ml-1"
+            class="cursor-pointer"
             font-scale="1.6"
             @click="onClickDeleteButton(bill.id)"
           />

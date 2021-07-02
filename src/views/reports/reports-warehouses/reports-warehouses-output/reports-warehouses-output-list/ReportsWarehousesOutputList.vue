@@ -54,7 +54,7 @@
           :columns="columns"
           mode="remote"
           :rows="getOutputGoods"
-          style-class="vgt-table"
+          style-class="vgt-table table-horizontal-scroll"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -219,6 +219,22 @@
             </b-row>
           </template>
           <!-- END - Pagination -->
+          <!-- START - Custom row -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'productName'"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Custom row -->
 
         </vue-good-table>
       </b-col>
@@ -273,52 +289,65 @@ export default {
         {
           label: 'Ngày xuất',
           field: 'transDate',
+          width: '120px', // hard width
           sortable: false,
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'min-w scroll-column column-first',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Loại xuất',
           field: 'exportType',
+          width: '120px', // hard width
           sortable: false,
-          thClass: 'min-w',
-          tdClass: 'min-w',
+          thClass: 'min-w text-nowrap scroll-column-header column-second',
+          tdClass: 'min-w scroll-column column-second',
         },
         {
           label: 'Số hóa đơn',
           field: 'billNumber',
+          width: '140px', // hard width
           sortable: false,
+          thClass: 'text-nowrap scroll-column-header column-third',
+          tdClass: 'min-w scroll-column column-third',
         },
         {
           label: 'Số PO',
           field: 'poNumber',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngày hóa đơn',
           field: 'recieptDate',
           formatFn: value => this.$formatISOtoVNI(value),
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngành hàng',
           field: 'group',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productId',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
           tdClass: 'min-w',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số lượng',
@@ -326,6 +355,7 @@ export default {
           type: 'number',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -334,6 +364,7 @@ export default {
           label: 'Số lượng packet',
           field: 'packetQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -344,6 +375,7 @@ export default {
           label: 'Số lượng lẻ',
           field: 'outpacketQuantity',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -354,6 +386,7 @@ export default {
           label: 'Giá trước thuế',
           field: 'preTaxPrice',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
@@ -361,6 +394,7 @@ export default {
           label: 'Thành tiền',
           field: 'intoPrice',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -371,6 +405,7 @@ export default {
           label: 'Giá sau thuế',
           field: 'afTaxPrice',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
@@ -378,6 +413,7 @@ export default {
           label: 'Tổng cộng',
           field: 'finalPrice',
           type: 'number',
+          thClass: 'text-nowrap',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -388,35 +424,40 @@ export default {
           label: 'Quy cách',
           field: 'specifications',
           sortable: false,
-          tdClass: 'min-w',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã xuất hàng',
           field: 'importId',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Cửa hàng',
           field: 'store',
           sortable: false,
           tdClass: 'min-w',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Chuỗi cửa hàng',
           field: 'chainStore',
           sortable: false,
           tdClass: 'min-w',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Nhóm sản phẩm',
           field: 'productGroup',
           sortable: false,
           tdClass: 'min-w',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ghi chú',
           field: 'note',
           sortable: false,
+          thClass: 'text-nowrap',
         },
       ],
     }
@@ -533,4 +574,34 @@ export default {
 .min-w {
   min-width: 8rem;
 }
+  .name-width {
+    width: max-content;
+    max-width: 400px;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  thead tr:last-child th:nth-child(2) {
+    left: 35px;
+    z-index: 1;
+  }
+  thead tr:last-child th:nth-child(3) {
+    left: 155px;
+    z-index: 1;
+  }
+  thead tr:last-child th:nth-child(4) {
+    left: 275px;
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+
+  /* tùy chỉnh left khi scroll*/
+   .column-first {
+    left: 35px;
+  }
+   .column-second {
+    left: 155px;
+  }
+  .column-third {
+    left: 275px;
+  }
+  /* tùy chỉnh left khi scroll*/
 </style>

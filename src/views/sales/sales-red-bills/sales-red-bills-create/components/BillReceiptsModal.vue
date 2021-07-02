@@ -10,6 +10,7 @@
     <b-container
       fluid
       class="d-flex flex-column"
+      @keyup.enter="onClickSearchButton"
     >
       <!-- START - Search -->
       <v-card-actions title="Tìm kiếm">
@@ -21,12 +22,25 @@
           <div class="h7 mt-sm-1 mt-xl-0">
             {{ 'Khách hàng' }}
           </div>
-          <b-form-input
-            v-model="searchOptions.customerKeywords"
-            class="h7 text-brand-3"
-            placeholder="Nhập khách hàng"
-            trim
-          />
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model.trim="searchOptions.customerKeywords"
+              class="h7 text-brand-3"
+              placeholder="Nhập Mã/SĐT/Tên khách hàng"
+              @keyup.enter="onClickSearchButton"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="searchOptions.customerKeywords"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.customerKeywords = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
         </b-col>
 
         <b-col
@@ -37,12 +51,25 @@
           <div class="h7 mt-sm-1 mt-xl-0">
             {{ 'Số hóa đơn' }}
           </div>
-          <b-form-input
-            v-model="searchOptions.invoiceNumberKeywords"
-            trim
-            class="h7 text-brand-3"
-            placeholder="Nhập số hóa đơn"
-          />
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model.trim="searchOptions.invoiceNumberKeywords"
+              class="h7 text-brand-3"
+              placeholder="Nhập số hóa đơn"
+              @keyup.enter="onClickSearchButton"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="searchOptions.invoiceNumberKeywords"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.invoiceNumberKeywords = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
         </b-col>
 
         <!-- START - Date From -->
