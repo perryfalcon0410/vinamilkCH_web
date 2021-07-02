@@ -280,6 +280,8 @@ export default {
           label: 'Loại xuất',
           field: 'exportType',
           sortable: false,
+          thClass: 'min-w',
+          tdClass: 'min-w',
         },
         {
           label: 'Số hóa đơn',
@@ -316,6 +318,7 @@ export default {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          tdClass: 'min-w',
         },
         {
           label: 'Số lượng',
@@ -385,6 +388,7 @@ export default {
           label: 'Quy cách',
           field: 'specifications',
           sortable: false,
+          tdClass: 'min-w',
         },
         {
           label: 'Mã xuất hàng',
@@ -395,16 +399,19 @@ export default {
           label: 'Cửa hàng',
           field: 'store',
           sortable: false,
+          tdClass: 'min-w',
         },
         {
           label: 'Chuỗi cửa hàng',
           field: 'chainStore',
           sortable: false,
+          tdClass: 'min-w',
         },
         {
           label: 'Nhóm sản phẩm',
           field: 'productGroup',
           sortable: false,
+          tdClass: 'min-w',
         },
         {
           label: 'Ghi chú',
@@ -522,3 +529,8 @@ export default {
   },
 }
 </script>
+<style>
+.min-w {
+  min-width: 8rem;
+}
+</style>

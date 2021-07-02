@@ -110,10 +110,6 @@
             slot-scope="props"
           >
             <div
-              v-if="props.column.field == 'name'"
-              style="max-width: 400px; min-width: 10rem"
-            />
-            <div
               v-if="props.column.field == 'manipulation'"
             >
               <b-icon-bricks scale="1.25" />
@@ -322,8 +318,8 @@ export default {
         {
           label: 'Họ tên',
           field: 'name',
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left standard-width',
+          tdClass: 'text-left standard-width',
         },
         {
           label: 'Ngày bán',
@@ -407,8 +403,8 @@ export default {
           label: 'Chức năng',
           field: 'manipulation',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'move-column',
+          thClass: 'text-center move-header',
+          tdClass: 'text-center move-column',
         },
       ],
     }
@@ -575,3 +571,19 @@ export default {
   },
 }
 </script>
+<style>
+.move-header {
+  position: sticky !important;
+  right: 0;
+  top: 0;
+  z-index: 99;
+  background: #315899 !important;
+}
+.move-column {
+  position: sticky;
+  right: 0;
+  z-index: 99;
+  background: inherit;
+}
+
+</style>

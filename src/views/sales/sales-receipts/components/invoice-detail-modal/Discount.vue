@@ -62,7 +62,7 @@ export default {
         },
         {
           label: 'Loại khuyến mãi',
-          field: 'voucherType',
+          field: 'promotionType',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',

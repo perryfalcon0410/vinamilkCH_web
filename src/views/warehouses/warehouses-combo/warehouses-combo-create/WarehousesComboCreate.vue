@@ -166,7 +166,7 @@
               class="m-2"
             >
               <vue-autosuggest
-                v-model="comboSearchQuery"
+                v-model.trim="comboSearchQuery"
                 :suggestions="products"
                 :input-props="{
                   id:'autosuggest__input',
@@ -230,7 +230,9 @@
               <div
                 v-if="props.column.field === 'quantity' || props.column.field === 'exchangeRate'"
                 class="pr-70"
-              />
+              >
+                {{ props.formattedRow[props.column.field] }}
+              </div>
             </template>
           </vue-good-table>
           <!-- END - Table combo exchange -->

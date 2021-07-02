@@ -27,17 +27,17 @@
             <!-- START - Header -->
             <b-row class="py-1 table-row">
               <b-col cols="1" />
-              <b-col class="pl-110 table-cell-sm ws-nowrap">
+              <b-col class="pl-11 table-cell-sm ws-nowrap">
                 <strong>
                   Số chứng từ
                 </strong>
               </b-col>
-              <b-col class="pl-110 table-cell-sm">
+              <b-col class="pl-11 table-cell-sm">
                 <strong>
                   Ngày
                 </strong>
               </b-col>
-              <b-col class="pl-110 table-cell-xl">
+              <b-col class="pl-11 table-cell-xl">
                 <strong>
                   Ghi chú
                 </strong>
