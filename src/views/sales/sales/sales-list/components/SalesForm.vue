@@ -390,6 +390,7 @@
       <!-- START - Sales Search Modal -->
       <sales-search-modal
         ref="salesSearchModal"
+        :online-order-customers="onlineOrderCustomers"
         @getCustomerInfo="getCustomerInfo"
       />
       <!-- END - Sales Search Modal -->

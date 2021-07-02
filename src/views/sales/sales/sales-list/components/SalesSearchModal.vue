@@ -279,6 +279,10 @@ export default {
       required: true,
       default: false,
     },
+    onlineOrderCustomers: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -310,6 +314,7 @@ export default {
         idNo: null,
         status: null,
       },
+      customers: [],
 
       columns: [
         {
@@ -370,7 +375,7 @@ export default {
       CUSTOMERS_GETTER,
       CUSTOMER_BY_ID_GETTER,
     ]),
-    customers() {
+    getCustomers() {
       if (this.CUSTOMERS_GETTER.content) {
         return this.CUSTOMERS_GETTER.content.map(data => ({
           id: data.id,
@@ -408,6 +413,12 @@ export default {
     },
   },
   watch: {
+    getCustomers() {
+      this.customers = [...this.getCustomers]
+    },
+    onlineOrderCustomers() {
+      this.customers = [...this.onlineOrderCustomers]
+    },
   },
   mounted() {
     this.onSearch()
