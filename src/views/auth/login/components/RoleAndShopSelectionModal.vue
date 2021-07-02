@@ -9,7 +9,7 @@
       <div
         class="mt-1"
       >
-        Vai trò
+        Vai trò <sup class="text-danger">*</sup>
       </div>
       <tree-select
         v-model="roleSelected"
@@ -22,7 +22,7 @@
       <div
         class="mt-1"
       >
-        Cửa hàng
+        Cửa hàng <sup class="text-danger">*</sup>
       </div>
       <tree-select
         v-model="shopSelected"

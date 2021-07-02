@@ -535,6 +535,7 @@ export default {
             .then(response => response.data)
             .then(res => {
               if (res.success) {
+                // Check captcha exist
                 if (res.data) {
                   this.checkCaptchaExist(res.data.captcha)
                 }
@@ -550,14 +551,19 @@ export default {
                   this.$bvModal.show('roleAndShopModal')
                 }
               } else {
+                // Check captcha exist
                 if (res.data) {
                   this.checkCaptchaExist(res.data.captcha)
                 }
-                toasts.error('Tên đăng nhập hoặc mật khẩu không chính xác.')
+                throw new Error(res.statusValue)
+              }
+
+              if (!res) {
+                throw new Error('Server không hoạt động, vui lòng liên hệ Quản trị')
               }
             })
-            .catch(() => {
-              toasts.error('Server không hoạt động, vui lòng liên hệ admin')
+            .catch(error => {
+              toasts.error(error.message)
             })
         }
       })

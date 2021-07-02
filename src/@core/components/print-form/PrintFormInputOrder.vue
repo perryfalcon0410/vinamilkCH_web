@@ -118,7 +118,7 @@
             colspan="1"
             class="text-right pr-50 border-left-0 font-italic width-1-per"
           >
-            <strong>{{ $formatNumberToLocale(item.totalPriceNotVat) }}</strong>
+            <strong>{{ $formatNumberToLocale(inputOrderInfoData.transType === 0 ? item.totalPriceNotVat : item.totalPrice) }}</strong>
           </td>
         </tr>
         <!-- END - Header 1 -->
@@ -172,10 +172,10 @@
             {{ $formatNumberToLocale(products.quantity) }}
           </td>
           <td class="text-right px-50">
-            {{ $formatNumberToLocale(products.priceNotVat) }}
+            {{ $formatNumberToLocale( inputOrderInfoData.transType === 0 ? products.priceNotVat : products.price ) }}
           </td>
           <td class="text-right px-50">
-            {{ $formatNumberToLocale(products.totalPriceNotVat) }}
+            {{ $formatNumberToLocale( inputOrderInfoData.transType === 0 ? products.totalPriceNotVat : products.totalPrice ) }}
           </td>
         </tr>
       </tbody>

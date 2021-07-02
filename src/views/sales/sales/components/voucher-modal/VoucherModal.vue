@@ -4,14 +4,14 @@
     id="VoucherModal"
     size="xl"
     title="Chọn voucher"
-    title-class="text-uppercase font-weight-bold text-brand-1"
+    title-class="text-uppercase font-weight-bold text-brand-1 d-print-none"
     content-class="bg-white"
     footer-border-variant="white"
   >
     <!-- START - Body -->
     <b-container
       fluid
-      class="px-0"
+      class="px-0 d-print-none"
     >
       <b-col class="px-0">
         <strong class="text-brand-1">

@@ -1,7 +1,7 @@
 <template>
   <b-container
     fluid
-    class="p-0"
+    class="p-0 d-print-none"
   >
     <!-- START - Header -->
     <b-row

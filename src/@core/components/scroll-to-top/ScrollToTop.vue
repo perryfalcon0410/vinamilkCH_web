@@ -1,6 +1,6 @@
 <template>
   <div
-    class="btn-scroll-to-top"
+    class="btn-scroll-to-top d-print-none"
     :class="{'show': y > 1}"
   >
     <!-- We have wrapper because ripple effect give position relative to this absolute positioned btn -->

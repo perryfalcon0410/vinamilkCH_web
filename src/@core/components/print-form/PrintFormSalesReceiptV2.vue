@@ -1,7 +1,7 @@
 <template>
   <div
     class="d-none d-print-block text-brand-3"
-    style="width: 400px"
+    style="width: 340px"
   >
     <!-- START - Header -->
     <b-row
@@ -57,6 +57,9 @@
       </div>
       <div>
         Ngày: {{ $formatISOtoVNI( printSalesReceiptData.orderDate, true) }}
+      </div>
+      <div>
+        NV: {{ printSalesReceiptData.userName }}
       </div>
     </div>
     <!-- END - Customer info -->

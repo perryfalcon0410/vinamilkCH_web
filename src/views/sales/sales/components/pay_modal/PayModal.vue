@@ -8,6 +8,7 @@
     title-class="font-weight-bolder text-brand-1 d-print-none"
     content-class="bg-white"
     footer-border-variant="white"
+    hide-header-close
   >
     <!-- START - Body -->
     <b-container
