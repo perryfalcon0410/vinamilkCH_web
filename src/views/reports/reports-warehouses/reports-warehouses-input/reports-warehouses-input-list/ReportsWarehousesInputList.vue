@@ -50,7 +50,7 @@
           mode="remote"
           :columns="columns"
           :rows="warehousesInputs"
-          style-class="vgt-table"
+          style-class="vgt-table table-horizontal-scroll"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -215,7 +215,7 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  formatISOtoVNI, reverseVniDate, formatVniDateToGlobal,
+  formatISOtoVNI,
 } from '@core/utils/filter'
 import ReportsWarehousesInputListSearch from './components/ReportsWarehousesInputListSearch.vue'
 import {
@@ -259,20 +259,20 @@ export default {
         {
           label: 'Ngày nhập',
           field: 'transDate',
-          thClass: 'text-nowrap move-column-header-first',
-          tdClass: 'move-column-first',
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Loại nhập',
           field: 'inputType',
-          thClass: 'text-nowrap move-column-header-second',
-          tdClass: 'move-column-second',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
-          thClass: 'text-nowrap move-column-header-third',
-          tdClass: 'move-column-third',
+          thClass: 'text-nowrap scroll-column-header column-third',
+          tdClass: 'scroll-column column-third',
         },
         {
           label: 'Số PO',
@@ -499,10 +499,10 @@ export default {
         productCodes: this.paginationData.productCodes,
         internalNumber: this.paginationData.internalNumber,
         importType: this.paginationData.importType,
-        fromOrderDate: formatVniDateToGlobal(reverseVniDate(this.paginationData.fromOrderDate)),
-        fromDate: formatVniDateToGlobal(reverseVniDate(this.paginationData.fromDate)),
-        toOrderDate: formatVniDateToGlobal(reverseVniDate(this.paginationData.toOrderDate)),
-        toDate: formatVniDateToGlobal(reverseVniDate(this.paginationData.toDate)),
+        fromOrderDate: this.paginationData.fromOrderDate,
+        fromDate: this.paginationData.fromDate,
+        toOrderDate: this.paginationData.toOrderDate,
+        toDate: this.paginationData.toDate,
       })
     },
     updatePageNumber() {
@@ -516,52 +516,30 @@ export default {
     width: max-content;
     max-width: 400px;
   }
-  tr th.line-numbers {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky;
-    left: 0;
-    background: inherit !important;
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  thead tr:last-child th:nth-child(2) {
+    left: 35px;
+    z-index: 1;
   }
-  .move-column-header-first {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky !important;
-    left: 30px;
-    top: 0.9px;
-    background: #315899 !important;
-    z-index: 99;
+  thead tr:last-child th:nth-child(3) {
+    left: 140px;
+    z-index: 1;
   }
-  .move-column-header-second {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky !important;
-    left: 120px;
-    top: 0.9px;
-    background: #315899 !important;
-    z-index: 99;
+  thead tr:last-child th:nth-child(4) {
+    left: 252px;
+    z-index: 1;
   }
-  .move-column-header-third {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky !important;
-    left: 190px;
-    top: 0.9px;
-    background: #315899 !important;
-    z-index: 99;
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+
+  /* tùy chỉnh left khi scroll*/
+   .column-first {
+    left: 35px;
   }
-  .move-column-first {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky;
-    left: 30px;
-    background: inherit;
+   .column-second {
+    left: 130px;
   }
-  .move-column-second {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky;
-    left: 120px;
-    background: inherit;
+  .column-third {
+    left: 220px;
   }
-  .move-column-third {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky;
-    left: 190px;
-    background: inherit;
-  }
+  /* tùy chỉnh left khi scroll*/
 </style>

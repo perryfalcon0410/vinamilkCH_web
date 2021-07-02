@@ -52,7 +52,7 @@
           mode="remote"
           :columns="columns"
           :rows="warehousesInputOutputInventory"
-          style-class="vgt-table table-horizotal-scroll"
+          style-class="vgt-table table-horizontal-scroll"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,

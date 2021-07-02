@@ -258,17 +258,19 @@ export default {
       this.$emit('onSearchClick', data)
     },
     validateFromDate() {
+      const validate = this.$moment(this.fromDate, 'DD/MM/YYYY').isValid()
       const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
-      if (!pattern.test(this.fromDate)) {
+      if (pattern.test(this.fromDate) === false || validate === false) {
         toasts.error('Ngày tháng không tồn tại')
         this.fromDate = this.$earlyMonth
       }
     },
     validateToDate() {
+      const validate = this.$moment(this.toDate, 'DD/MM/YYYY').isValid()
       const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
-      if (!pattern.test(this.toDate)) {
+      if (pattern.test(this.toDate) === false || validate === false) {
         toasts.error('Ngày tháng không tồn tại')
-        this.toDate = this.$$nowDate
+        this.toDate = this.$nowDate
       }
     },
   },

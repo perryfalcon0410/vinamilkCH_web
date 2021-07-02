@@ -72,12 +72,23 @@
       >
         <b-row class="mt-1">
           <b-col>
+            Tiền tích lũy:
+          </b-col>
+          <b-col>
+            <h5>
+              {{ $formatNumberToLocale(information.memberCardAmount) }}
+            </h5>
+          </b-col>
+        </b-row>
+
+        <b-row class="mt-1">
+          <b-col>
             Phải thanh toán:
           </b-col>
           <b-col>
-            <h3>
+            <h5>
               {{ $formatNumberToLocale(information.total) }}
-            </h3>
+            </h5>
           </b-col>
         </b-row>
 
@@ -86,9 +97,9 @@
             Đã thanh toán:
           </b-col>
           <b-col>
-            <h3>
+            <h5>
               {{ $formatNumberToLocale(information.totalPaid) }}
-            </h3>
+            </h5>
           </b-col>
         </b-row>
 
@@ -97,9 +108,9 @@
             Tiền trả lại:
           </b-col>
           <b-col>
-            <h3>
+            <h5>
               {{ $formatNumberToLocale(information.balance) }}
-            </h3>
+            </h5>
           </b-col>
         </b-row>
       </b-col>
