@@ -52,7 +52,7 @@
           mode="remote"
           :columns="columns"
           :rows="warehousesInputOutputInventory"
-          style-class="vgt-table"
+          style-class="vgt-table table-horizotal-scroll"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -354,20 +354,20 @@ export default {
         {
           label: 'Ngành hàng',
           field: 'industry',
-          thClass: 'text-nowrap move-column-header-first',
-          tdClass: 'move-column-first',
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          thClass: 'text-nowrap move-column-header-second',
-          tdClass: 'move-column-second',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          thClass: 'text-nowrap move-column-header-third',
-          tdClass: 'move-column-third',
+          thClass: 'text-nowrap scroll-column-header column-third',
+          tdClass: 'scroll-column column-third',
         },
         {
           label: 'ĐVT',
@@ -737,52 +737,30 @@ export default {
     width: max-content;
     max-width: 400px;
   }
-  tr th.line-numbers {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky;
-    left: 0;
-    background: inherit !important;
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  thead tr:last-child th:nth-child(2) {
+    left: 35px;
+    z-index: 1;
   }
-  .move-column-header-first {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky !important;
-    left: 30px;
-    top: 0.9px;
-    background: #315899 !important;
-    z-index: 99;
+  thead tr:last-child th:nth-child(3) {
+    left: 140px;
+    z-index: 1;
   }
-  .move-column-header-second {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky !important;
-    left: 120px;
-    top: 0.9px;
-    background: #315899 !important;
-    z-index: 99;
+  thead tr:last-child th:nth-child(4) {
+    left: 252px;
+    z-index: 1;
   }
-  .move-column-header-third {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky !important;
-    left: 190px;
-    top: 0.9px;
-    background: #315899 !important;
-    z-index: 99;
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+
+  /* tùy chỉnh left khi scroll*/
+   .column-first {
+    left: 35px;
   }
-  .move-column-first {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky;
-    left: 30px;
-    background: inherit;
+   .column-second {
+    left: 140px;
   }
-  .move-column-second {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky;
-    left: 120px;
-    background: inherit;
+  .column-third {
+    left: 252px;
   }
-  .move-column-third {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky;
-    left: 190px;
-    background: inherit;
-  }
+  /* tùy chỉnh left khi scroll*/
 </style>
