@@ -122,6 +122,7 @@
           class="v-flat-pickr-group mx-0"
           align-v="center"
           @keypress="$onlyDateInput"
+          @change="validateFromDate"
         >
           <b-icon-x
             v-show="fromDate"
@@ -155,6 +156,7 @@
           class="v-flat-pickr-group mx-0"
           align-v="center"
           @keypress="$onlyDateInput"
+          @change="validateToDate"
         >
           <b-icon-x
             v-show="toDate"
@@ -221,7 +223,7 @@
 
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
-
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   mapActions,
   mapGetters,
@@ -316,6 +318,21 @@ export default {
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)
+    },
+
+    validateFromDate() {
+      const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
+      if (!pattern.test(this.fromDate)) {
+        toasts.error('Ngày tháng không tồn tại')
+        this.fromDate = this.$earlyMonth
+      }
+    },
+    validateToDate() {
+      const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
+      if (!pattern.test(this.toDate)) {
+        toasts.error('Ngày tháng không tồn tại')
+        this.toDate = this.$nowDate
+      }
     },
   },
 }
