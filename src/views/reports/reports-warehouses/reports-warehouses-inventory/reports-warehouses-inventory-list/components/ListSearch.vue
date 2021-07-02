@@ -31,34 +31,20 @@
               align-v="center"
               @keypress="$onlyDateInput"
             >
-              <b-input-group
-                id="form-input-date"
-                class="input-group-merge"
-                @keypress="$onlyDateInput"
-              >
-                <b-input-group-prepend
-                  is-text
-                  data-toggle
-                >
-                  <b-icon-calendar />
-                </b-input-group-prepend>
-                <vue-flat-pickr
-                  v-model="date"
-                  :config="configDate"
-                  :state="touched ? passed : null"
-                  class="form-control h7"
-                  placeholder="Chọn ngày"
-                />
-                <b-input-group-append
-                  is-text
-                >
-                  <b-icon-x
-                    v-show="date"
-                    class="cursor-pointer text-gray"
-                    @click="date = null"
-                  />
-                </b-input-group-append>
-              </b-input-group>
+              <b-icon-x
+                v-show="date"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
+              />
+              <vue-flat-pickr
+                v-model="date"
+                :config="configDate"
+                :state="touched ? passed : null"
+                class="form-control h7"
+                placeholder="Chọn ngày"
+              />
             </b-row>
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>

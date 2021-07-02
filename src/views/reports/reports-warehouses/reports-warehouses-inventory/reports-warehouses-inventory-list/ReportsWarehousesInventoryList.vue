@@ -62,6 +62,14 @@
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
         >
+          <!-- START - Empty rows -->
+          <div
+            slot="emptystate"
+            class="text-center"
+          >
+            Không có dữ liệu
+          </div>
+          <!-- END - Empty rows -->
           <!-- START - Columns -->
           <template
             slot="table-column"
@@ -255,21 +263,21 @@ export default {
           label: 'Ngành hàng',
           field: 'productCategory',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
@@ -280,7 +288,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
@@ -291,7 +299,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
@@ -302,14 +310,14 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Giá',
           field: 'price',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
@@ -320,56 +328,56 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Quy cách',
           field: 'specification',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Cửa hàng',
           field: 'shop',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Chuỗi cửa hàng',
           field: 'shopType',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Nhóm sản phẩm',
           field: 'productGroup',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Tồn kho min',
           field: 'minInventory',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Tồn kho max',
           field: 'maxInventory',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Báo cáo',
           field: 'warning',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-center text-nowrap',
           tdClass: 'text-center',
         },
       ],

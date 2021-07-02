@@ -560,6 +560,7 @@ export default {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
+        maxDate: this.$nowDate,
       },
       configToDate: {
         wrap: true,

@@ -74,6 +74,19 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+          <!-- START - Table rows -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field ==='productName'"
+              style="max-width: 400px"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Table row -->
           <!-- START - Column filter -->
           <template
             slot="column-filter"

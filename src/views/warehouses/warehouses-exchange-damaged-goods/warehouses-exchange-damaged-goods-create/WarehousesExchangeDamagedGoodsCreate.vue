@@ -516,7 +516,7 @@ export default {
         data: this.CUSTOMERS_GETTER.map(data => ({
           customerId: data.id,
           customerCode: data.customerCode,
-          customerName: `${data.lastName} ${data.firstName}`,
+          customerName: data.fullName,
           address: data.address,
           mobilePhone: data.mobiPhone,
         })),
@@ -526,9 +526,7 @@ export default {
       return this.CUSTOMERS_GETTER.map(data => ({
         customerId: data.id,
         customerCode: data.customerCode,
-        customerName: `${data.lastName} ${data.firstName}`,
-        address: data.address,
-        mobilePhone: data.mobiPhone,
+        customerName: data.fullName,
       }))
     },
 
@@ -619,7 +617,7 @@ export default {
     },
 
     checkDuplicatesName() {
-      return this.getAllCustomer.findIndex(x => x.customerName.toLowerCase() === this.customerInfo.customerName.toLowerCase())
+      return this.getAllCustomer.findIndex(x => x.customerName === this.customerInfo.customerName)
     },
 
     customerOptions(text) {
