@@ -622,7 +622,7 @@ export default {
     },
   },
   updated() {
-    // window.print()
+    window.print()
   },
   methods: {
     getDetails(items) {
