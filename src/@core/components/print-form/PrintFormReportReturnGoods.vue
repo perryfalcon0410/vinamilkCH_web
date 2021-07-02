@@ -10,18 +10,28 @@
       align-v="center"
     >
       <div class="d-flex flex-column">
-        <strong style="font-size: 17px"> {{ commonData.shopName }} </strong>
+        <strong
+          style="font-size: 17px"
+          class="mt-1"
+        > {{ commonData.shopName }} </strong>
         <p class="mt-1">
           Add: {{ commonData.address }}
         </p>
-        <p>Tel: {{ commonData.shopTel }}</p>
+        <p>
+          Tel: {{ commonData.shopTel }}
+        </p>
       </div>
 
       <div class="d-flex flex-column align-items-center">
         <strong style="font-size: 30px"> Hàng trả lại </strong>
-        <p class="my-1">
-          Từ ngày {{ $formatISOtoVNI(commonData.fromDate) }} đến {{ $formatISOtoVNI(commonData.toDate) }}
-        </p>
+        <b-row class="mt-1">
+          <p class="mr-2">
+            Từ ngày {{ $formatISOtoVNI(commonData.fromDate) }}
+          </p>
+          <p>
+            Đến ngày {{ $formatISOtoVNI(commonData.toDate) }}
+          </p>
+        </b-row>
         <p>Ngày in : {{ $formatPrintDate(commonData.printDate) }}</p>
       </div>
 
@@ -38,21 +48,48 @@
 
     <!-- START - Total section 1 -->
     <b-row
-      class="mx-0 second-sector"
-      align-h="around"
+      class="mx-0 second-sector width-100-per"
       align-v="end"
       style="background-color: gray; border-style: dotted; border-width: 2px"
     >
-      <div style="visibility: hidden;"><strong>Ngành hàng: A </strong>
+      <div
+        style="visibility: hidden; width: 44%;"
+        class="ml-1"
+      ><strong>Ngành hàng: A </strong>
       </div>
-      <div>Tổng SL: <strong>{{ $formatNumberToLocale(totalInfoReturnedGood.totalQuantity) }}</strong>
+      <div
+        style="width: 6.4%;"
+        class="text-right"
+      ><strong>Tổng SL:</strong>
       </div>
-      <div>Tổng T.Tiền:
+      <div
+        style="width: 6.5%;"
+        class="text-right"
+      >
+        <strong>{{ $formatNumberToLocale(totalInfoReturnedGood.totalQuantity) }}</strong>
+      </div>
+      <div
+        style="width: 10.4%;"
+        class="text-right"
+      ><strong>Tổng T.Tiền:</strong>
+
+      </div>
+      <div
+        style="width: 14.5%;"
+        class="text-right"
+      >
         <strong>{{ $formatNumberToLocale(totalInfoReturnedGood.totalAmount) }}</strong>
       </div>
-      <div>Tổng TTL:
-        <strong>{{ $formatNumberToLocale(totalInfoReturnedGood.totalRefunds) }}</strong>
+      <div
+        style="width: 5.2%;"
+        class="text-right"
+      ><strong>Tổng TTL:</strong>
+
       </div>
+      <div
+        style="width: 11.6%;"
+        class="text-right"
+      > <strong>{{ $formatNumberToLocale(totalInfoReturnedGood.totalRefunds) }}</strong></div>
     </b-row>
     <!-- END - Total section  1-->
 
@@ -63,19 +100,47 @@
       class="pb-1"
     >
       <b-row
-        class="mx-0"
-        align-h="around"
+        class="mx-0 width-100-per"
         align-v="end"
         style="border-style: dotted; border-width: 2px"
       >
-        <div><strong>Ngành hàng: {{ item.category }} </strong>
+        <div
+          style="width: 44%;"
+          class="ml-1"
+        ><strong>Ngành hàng: {{ item.category }} </strong>
         </div>
-        <div>Tổng SL: <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
+        <div
+          style="width: 6.4%;"
+          class="text-right"
+        ><strong>Tổng SL:</strong>
         </div>
-        <div>Tổng T.Tiền:
+        <div
+          style="width: 6.5%;"
+          class="text-right"
+        >
+          <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
+        </div>
+        <div
+          style="width: 10.4%;"
+          class="text-right"
+        ><strong>Tổng T.Tiền:</strong>
+
+        </div>
+        <div
+          style="width: 14.5%;"
+          class="text-right"
+        >
           <strong>{{ $formatNumberToLocale(item.totalAmount) }}</strong>
         </div>
-        <div>Tổng TTL:
+        <div
+          style="width: 5.2%;"
+          class="text-right"
+        > <strong>Tổng TTL:</strong>
+        </div>
+        <div
+          style="width: 11.6%;"
+          class="text-right"
+        >
           <strong>{{ $formatNumberToLocale(item.totalRefunds) }}</strong>
         </div>
       </b-row>
@@ -83,8 +148,8 @@
 
       <!-- START - Table 1 -->
       <b-col
-        v-for="(product,stt) in item.reportPrintProductDTOS"
-        :key="stt"
+        v-for="order in item.orderReturnGoods"
+        :key="order.returnNumber"
         class="px-0 pb-1"
       >
         <table>
@@ -96,7 +161,7 @@
                 colspan="10"
               >
                 <strong class="mx-1">
-                  Mã trả hàng:{{ product.returnCode }} - Mã hóa đơn:{{ product.reciept }} - KH: {{ product.fullName }}
+                  Mã trả hàng:{{ order.returnNumber }} - Mã hóa đơn:{{ order.orderNumber }} - KH: {{ order.customerName }}
                 </strong>
                 <b-row
                   class="mx-0 width-100-per"
@@ -105,37 +170,36 @@
                     style="width: 45%;"
                   />
                   <div
-                    style="width: 9%;"
+                    style="width: 6.4%;"
                     class="text-right"
                   >Tổng SL:
                   </div>
                   <div
-                    style="width: 6%;"
+                    style="width: 6.5%;"
                     class="text-right"
-                  ><strong class="text-right">{{ $formatNumberToLocale(product.totalQuantity) }}</strong>
+                  ><strong class="text-right">{{ 1000 }}</strong>
                   </div>
                   <div
-                    style="width: 12%;"
+                    style="width: 10.4%;"
                     class="text-right"
                   >Tổng T.Tiền:
                   </div>
                   <div
-                    style="width: 12.3%;"
+                    style="width: 14.5%;"
                     class="text-right"
-                  ><strong class="pl-5 pr-1 text-right">{{ $formatNumberToLocale(product.totalAmount) }}</strong>
+                  ><strong>{{ 1000 }}</strong>
                   </div>
                   <div
-                    style="width: 15.7%;"
-                    class="d-flex justify-content-between"
+                    style="width: 5.2%;"
+                    class="text-right"
                   >
-                    <div
-                      style="font-size: 14px"
-                    >
-                      Tổng&nbsp;TTL:
-                    </div>
-                    <div class="  text-right">
-                      <strong class="pr-1">{{ $formatNumberToLocale(product.totalRefunds) }}</strong>
-                    </div>
+                    Tổng&nbsp;TTL:
+                  </div>
+                  <div
+                    style="width: 11.6%;"
+                    class="text-right"
+                  >
+                    {{ 1000 }}
                   </div>
                 </b-row>
               </th>
@@ -144,28 +208,52 @@
 
             <!-- START - Header 2 -->
             <tr>
-              <th>
+              <th
+                style="width: 1%"
+                class="px-50"
+              >
                 STT
               </th>
-              <th>
+              <th
+                style="width: 10%"
+                class="px-50"
+              >
                 Mã SP
               </th>
-              <th>
+              <th
+                style="width: 34%"
+                class="px-50"
+              >
                 Tên SP
               </th>
-              <th>
+              <th
+                style="width: 5%"
+                class="px-50"
+              >
                 ĐVT
               </th>
-              <th>
+              <th
+                style="width: 7%"
+                class="px-50 text-right"
+              >
                 SL
               </th>
-              <th>
+              <th
+                style="width: 10%"
+                class="px-50 text-right"
+              >
                 Giá
               </th>
-              <th>
+              <th
+                style="width: 15%"
+                class="px-50 text-right"
+              >
                 T.Tiền
               </th>
-              <th style="width: 15%">
+              <th
+                style="width: 17%"
+                class="px-50 text-right"
+              >
                 Tiền trả lại
               </th>
             </tr>
@@ -176,22 +264,33 @@
 
           <!-- START - Body -->
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>02BC10</td>
-              <td>SBot Dielac Canxi HG 400g</td>
-              <td>Hộp</td>
-              <td class="text-right pr-1">
-                10
+            <tr
+              v-for="(product, stt) in order.reportPrintProductDTOS"
+              :key="stt"
+            >
+              <td class="px-1">
+                {{ stt }}
               </td>
-              <td class="text-right pr-1">
-                10,000
+              <td class="px-50">
+                {{ product.productCode }}
               </td>
-              <td class="text-right pr-1">
-                12,0000
+              <td class="px-50">
+                {{ product.productName }}
               </td>
-              <td class="text-right pr-1">
-                15,0000
+              <td class="px-50">
+                {{ product.unit }}
+              </td>
+              <td class="px-50 text-right">
+                {{ product.quantity }}
+              </td>
+              <td class="px-50 text-right">
+                {{ product.price }}
+              </td>
+              <td class="px-50 text-right">
+                {{ product.totalAmount }}
+              </td>
+              <td class="px-50 text-right">
+                {{ product.totalRefunds }}
               </td>
             </tr>
           </tbody>
