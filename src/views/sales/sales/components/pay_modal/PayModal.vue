@@ -947,11 +947,12 @@ export default {
           promotionType: data.promotionType,
           isUse: data.isUse,
           programId: data.programId,
+          programType: data.programType,
           promotionProgramName: data.promotionProgramName,
+          promotionProgramCode: data.promotionProgramCode,
           contraintType: data.contraintType,
           products: data.products || [],
           amount: data.amount,
-          programType: data.programType,
           isEditable: data.isEditable,
           numberLimited: data.numberLimited,
           isSelected: data.promotionType === Number(this.promotionTypeOption[0].id) && data.isUse,
@@ -1423,8 +1424,8 @@ export default {
 
     createSaleOrder() {
       let isValid = true
-      const parampromotionInfo = this.promotionPrograms.filter(p => p.isUse && p.isSelected)
-      parampromotionInfo.forEach(program => {
+      const paramPromotionInfo = this.promotionPrograms.filter(p => p.isUse && p.isSelected)
+      paramPromotionInfo.forEach(program => {
         program.products.forEach(product => {
           if (program.isEditable) {
             if (product.quantity > product.stockQuantity) {
@@ -1450,7 +1451,7 @@ export default {
             orderOnlineId: this.orderOnline.onlineOrderId,
             onlineNumber: this.orderOnline.orderNumber,
             products: this.orderProducts,
-            promotionInfo: parampromotionInfo,
+            promotionInfo: paramPromotionInfo,
             totalOrderAmount: Number(this.pay.totalAmount) || 0,
             promotionAmount: Number(this.pay.promotionAmount) || 0,
             accumulatedAmount: Number(this.pay.accumulate.accumulateAmount) || 0,
