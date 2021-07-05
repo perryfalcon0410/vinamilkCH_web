@@ -40,6 +40,7 @@
                   v-model="lastName"
                   :state="touched ? passed : null"
                   autocomplete="on"
+                  :disabled="canDisableInputField(customer.lastName)"
                   maxlength="250"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -59,6 +60,7 @@
                   v-model="firstName"
                   autocomplete="on"
                   :state="touched ? passed : null"
+                  :disabled="canDisableInputField(customer.firstName)"
                   maxlength="250"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -79,6 +81,7 @@
             <b-form-input
               v-model.trim="barCode"
               :state="touched ? passed : null"
+              :disabled="canDisableInputField(customer.barCode)"
               maxlength="40"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -108,7 +111,7 @@
                     align-v="center"
                   >
                     <b-icon-x
-                      v-show="birthDay"
+                      v-show="birthDay && !canDisableInputField(customer.dob)"
                       style="position: absolute; right: 15px"
                       class="cursor-pointer text-gray"
                       scale="1.3"
@@ -118,6 +121,7 @@
                       v-model="birthDay"
                       :config="configBitrhDay"
                       class="form-control"
+                      :disabled="canDisableInputField(customer.dob)"
                       placeholder="Chọn ngày"
                     />
                   </b-row>
@@ -125,7 +129,8 @@
                 </b-form-group>
               </validation-provider>
             </b-col>
-            <!-- gender -->
+
+            <!-- Gender -->
             <b-col>
               <div
                 class="mt-1"
@@ -136,18 +141,20 @@
                 v-model="gendersSelected"
                 :options="genderOptions"
                 placeholder="Chọn giới tính"
+                :disabled="canDisableInputField(customer.genderId)"
                 no-options-text="Không có dữ liệu"
               />
             </b-col>
           </b-form-row>
           <!-- END - Customer BirthDay and Gender -->
 
-          <!-- START - Customer Group and State -->
+          <!-- START - Customer Group and status -->
           <b-form-row>
+            <!-- Customer Group -->
             <b-col>
               <validation-provider
                 v-slot="{ errors }"
-                :rules="`${isEdit !== 0 ? 'required' : ''}`"
+                rules="required"
                 name="nhóm khách hàng"
               >
                 <div
@@ -158,7 +165,7 @@
                 <tree-select
                   v-model="customerTypesSelected"
                   :options="customerTypeOptions"
-                  :disabled="isEdit === 0"
+                  :disabled="canDisableInputField(customer.customerTypeId)"
                   placeholder="Chọn nhóm khách hàng"
                   no-options-text="Không có dữ liệu"
                   no-results-text="Không tìm thấy kết quả"
@@ -169,6 +176,7 @@
 
             </b-col>
 
+            <!-- Customer status -->
             <b-col>
               <div
                 class="mt-1"
@@ -179,6 +187,7 @@
                 v-model="customerStatusSelected"
                 :options="customerStatusOptions"
                 placeholder="Chọn trạng thái"
+                :disabled="canDisableInputField(customer.status)"
                 :clearable="false"
               />
             </b-col>
@@ -188,6 +197,7 @@
           <!-- START - Customer loyal -->
           <b-form-checkbox
             v-model="customerPrivate"
+            :disabled="canDisableInputField(customer.isPrivate)"
             class="mt-1"
           >
             Khách hàng riêng của cửa hàng
@@ -200,6 +210,7 @@
           </div>
           <b-form-textarea
             v-model="note"
+            :disabled="canDisableInputField(customer.noted)"
             maxlength="250"
           />
           <!-- END - Customer Note -->
@@ -209,8 +220,6 @@
             Ngày tạo: <strong>{{ `${$moment(createdAt).format("L")} ${countDays ? `(${countDays})` : ''}` }}</strong>
           </div>
           <!-- END - Customer Date Created -->
-
-          <!-- END - Section 1 -->
 
         </b-col>
         <!-- END - Form Personal information -->
@@ -238,6 +247,7 @@
             <b-form-input
               id="IdentityCard"
               v-model.trim="customerID"
+              :disabled="canDisableInputField(customer.idNo)"
               maxlength="12"
               :state="touched ? passed : null"
               @keypress="$onlyNumberInput"
@@ -256,7 +266,7 @@
             @keypress="$onlyDateInput"
           >
             <b-icon-x
-              v-show="customerIDDate && customerID"
+              v-show="customerIDDate && customerID && !canDisableInputField(customer.idNoIssuedDate)"
               style="position: absolute; right: 20px"
               class="cursor-pointer text-gray"
               scale="1.3"
@@ -267,7 +277,7 @@
               :config="configIDDate"
               class="form-control"
               placeholder="Chọn ngày"
-              :disabled="customerID ? false : true"
+              :disabled="!customerID || canDisableInputField(customer.idNoIssuedDate)"
             />
           </b-row>
           <!-- END - Customer ID Date -->
@@ -278,7 +288,7 @@
           </div>
           <b-form-input
             v-model="customerIDLocation"
-            :disabled="customerID ? false : true"
+            :disabled="!customerID || canDisableInputField(customer.idNoIssuedPlace)"
             maxlength="200"
           />
           <!-- END - Customer ID Location -->
@@ -331,6 +341,7 @@
             </div>
             <b-form-input
               v-model.trim="phoneNumber"
+              :disabled="canDisableInputField(customer.mobiPhone)"
               autocomplete="on"
               type="tel"
               :state="touched ? passed : null"
@@ -353,6 +364,7 @@
             <b-form-input
               id="Email"
               v-model.trim="customerEmail"
+              :disabled="canDisableInputField(customer.email)"
               type="email"
               autocomplete="on"
               maxlength="200"
@@ -373,6 +385,7 @@
             </div>
             <b-form-input
               v-model="homeNumber"
+              :disabled="canDisableInputField(customer.street)"
               maxlength="200"
               :state="touched ? passed : null"
             />
@@ -393,6 +406,7 @@
             </div>
             <tree-select
               v-model="provincesSelected"
+              :disabled="canDisableInputField(customer.areaDetailDTO ? Number(customer.areaDetailDTO.provinceId) : null)"
               :options="provinceOptions"
               placeholder="Chọn tỉnh/ thành"
               no-options-text="Không có dữ liệu"
@@ -417,6 +431,7 @@
                 </div>
                 <tree-select
                   v-model="districtsSelected"
+                  :disabled="canDisableInputField(customer.areaDetailDTO ? Number(customer.areaDetailDTO.districtId) : null)"
                   :options="districtOptions"
                   placeholder="Chọn quận/ huyện"
                   no-options-text="Vui lòng chọn tỉnh/ thành"
@@ -439,6 +454,7 @@
                 </div>
                 <tree-select
                   v-model="precinctsSelected"
+                  :disabled="canDisableInputField(customer.areaDetailDTO ? Number(customer.areaDetailDTO.precinctId) : null)"
                   :options="precinctOptions"
                   placeholder="Chọn phường/ xã"
                   no-options-text="Vui lòng chọn quận/ huyện"
@@ -456,6 +472,7 @@
           </div>
           <b-form-input
             v-model="workingOffice"
+            :disabled="canDisableInputField(customer.workingOffice)"
             maxlength="200"
           />
           <!-- END - Office-->
@@ -466,6 +483,7 @@
           </div>
           <b-form-input
             v-model="officeAddress"
+            :disabled="canDisableInputField(customer.officeAddress)"
             maxlength="200"
           />
           <!-- END - Office Address-->
@@ -481,6 +499,7 @@
             </div>
             <b-form-input
               v-model.trim="taxCode"
+              :disabled="canDisableInputField(customer.taxCode)"
               :state="touched ? passed : null"
               maxlength="40"
             />
@@ -508,6 +527,7 @@
             v-model="cardTypesSelected"
             :options="cardTypeOptions"
             placeholder="Chọn loại thẻ"
+            :disabled="canDisableInputField(customer.cardTypeId)"
             no-options-text="Không có dữ liệu"
             no-results-text="Không tìm thấy kết quả"
           />
@@ -521,6 +541,7 @@
           </div>
           <tree-select
             v-model="closelyTypesSelected"
+            :disabled="canDisableInputField(customer.closelyTypeId)"
             :options="closelyTypeOptions"
             placeholder="Chọn loại khách hàng"
             no-options-text="Không có dữ liệu"
@@ -851,6 +872,19 @@ export default {
       UPDATE_CUSTOMER_ACTION,
       GET_CUSTOMER_BY_ID_ACTION,
     ]),
+
+    canDisableInputField(valueInput) {
+      switch (this.isEdit) {
+        case 0:
+          return true
+        case 1:
+          return !!valueInput
+        case 2:
+          return !valueInput
+        default:
+          return false
+      }
+    },
 
     getCustomerById() {
       if (this.customer) {

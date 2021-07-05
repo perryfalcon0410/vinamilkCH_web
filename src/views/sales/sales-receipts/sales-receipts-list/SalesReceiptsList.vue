@@ -28,7 +28,7 @@
             :disabled="!selectedRows.length"
             @click="onClickPrintButton"
           >
-            <b-icon-printer-fill />
+            <b-icon-printer-fill class="mr-25" />
             In
           </b-button>
         </b-button-group>

@@ -11,8 +11,8 @@
     >
       <div class="d-flex flex-column align-items-center">
         <b-img
-          src="https://www.ngoisaoso.vn/uploads/news/2016/05/12/he-thong-nhan-dien-thuong-hieu-vinamilk-3.png"
-          width="100px"
+          src="@/assets/images/logo/VinamilkLogo.png"
+          width="120px"
         />
         <div class="mb-50">
           CTY CP SUA VIET NAM - VINAMILK
@@ -38,7 +38,7 @@
     </b-row>
     <!-- END - Header -->
 
-    <!-- START - Customer info -->
+    <!-- START - Order info -->
     <div>
       <div>
         Số HĐ: <strong>{{ printSalesReceiptData.orderNumber }}</strong>
@@ -56,13 +56,13 @@
         Doanh số tích lũy: {{ $formatNumberToLocale(printSalesReceiptData.customerPurchase) }}
       </div>
       <div>
-        Ngày: {{ $formatISOtoVNI( printSalesReceiptData.orderDate, true) }}
+        Ngày: {{ $formatPrintDate( printSalesReceiptData.orderDate, true) }}
       </div>
       <div>
         NV: {{ printSalesReceiptData.userName }}
       </div>
     </div>
-    <!-- END - Customer info -->
+    <!-- END - Order info -->
 
     <!-- START - Table -->
     <table>
@@ -155,7 +155,10 @@
           <td colspan="3">
             {{ item.promotionCode }}
           </td>
-          <td colspan="1">
+          <td
+            colspan="1"
+            class="text-right"
+          >
             {{ $formatNumberToLocale( item.amount ) }}
           </td>
         </tr>
