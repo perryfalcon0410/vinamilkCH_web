@@ -366,14 +366,14 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
           width: '300px',
         },
@@ -382,7 +382,7 @@ export default {
           field: 'productPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
 
         },
@@ -390,7 +390,7 @@ export default {
           label: 'ĐVT',
           field: 'productDVT',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-center',
         },
         {
@@ -398,19 +398,21 @@ export default {
           field: 'productPriceTotal',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Đã xuất trả/tổng nhập',
           field: 'export',
           sortable: false,
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
       ],
@@ -418,33 +420,33 @@ export default {
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Giá',
           field: 'productPrice',
           formatFn: this.$formatNumberToLocale,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
           formatFn: this.$formatNumberToLocale,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
@@ -454,7 +456,7 @@ export default {
           // filterOptions: {
           //   enabled: true,
           // },
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
       ],
@@ -463,14 +465,14 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
           width: '300px',
         },
@@ -479,33 +481,35 @@ export default {
           field: 'productPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-center',
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Đã xuất trả/tổng nhập',
           field: 'export',
           sortable: false,
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
       ],
@@ -556,6 +560,7 @@ export default {
           productQuantity: data.quantity,
           productImportQuantity: data.importQuantity,
           productReturnAmount: data.quantity,
+          productExport: data.export,
           export: `${data.export}/${data.importQuantity}`,
         })),
         ]
@@ -604,30 +609,41 @@ export default {
           productQuantity: item.productQuantity,
           productImportQuantity: item.productImportQuantity,
           productReturnAmount: item.productReturnAmount,
+          productExport: item.productExport,
           export: item.export,
         }
         if (item.productPrice !== 0) {
           this.products.push(obj)
         } else this.rowsProductPromotion.push(obj)
       })
+      // this.products.forEach(item => {
+      //   if (item.productExport === item.productImportQuantity) {
+      //     this.exportAll = true
+      //   } else this.exportAll = false
+      // })
+      // this.rowsProductPromotion.forEach(item => {
+      //   if (item.productExport === item.productImportQuantity) {
+      //     this.exportAll = true
+      //   } else this.exportAll = false
+      // })
     },
     exportAll() {
       if (this.exportAll) {
         this.products.forEach((item, index) => {
-          this.products[index].productReturnAmount = item.productImportQuantity - item.productQuantity
+          this.products[index].productReturnAmount = item.productImportQuantity - item.productExport
         })
         this.rowsProductPromotion.forEach((item, index) => {
-          this.rowsProductPromotion[index].productReturnAmount = item.productImportQuantity - item.productQuantity
+          this.rowsProductPromotion[index].productReturnAmount = item.productImportQuantity - item.productExport
         })
       } else {
         this.products.forEach((item, index) => {
-          if (this.products[index].productReturnAmount === item.productImportQuantity - item.productQuantity) {
-            this.products[index].productReturnAmount = null
+          if (this.products[index].productReturnAmount === item.productImportQuantity - item.productExport) {
+            this.products[index].productReturnAmount = item.productQuantity
           }
         })
         this.rowsProductPromotion.forEach((item, index) => {
-          if (this.rowsProductPromotion[index].productReturnAmount === item.productImportQuantity - item.productQuantity) {
-            this.rowsProductPromotion[index].productReturnAmount = null
+          if (this.rowsProductPromotion[index].productReturnAmount === item.productImportQuantity - item.productExport) {
+            this.rowsProductPromotion[index].productReturnAmount = item.productQuantity
           }
         })
       }

@@ -177,7 +177,7 @@
                   <div
                     style="width: 6.5%;"
                     class="text-right"
-                  ><strong class="text-right">{{ 1000 }}</strong>
+                  ><strong class="text-right">{{ order.orderQuantity }}</strong>
                   </div>
                   <div
                     style="width: 10.4%;"
@@ -187,7 +187,7 @@
                   <div
                     style="width: 14.5%;"
                     class="text-right"
-                  ><strong>{{ 1000 }}</strong>
+                  ><strong>{{ order.orderAmount }}</strong>
                   </div>
                   <div
                     style="width: 5.2%;"
@@ -199,7 +199,7 @@
                     style="width: 11.6%;"
                     class="text-right"
                   >
-                    {{ 1000 }}
+                    {{ order.orderRefund }}
                   </div>
                 </b-row>
               </th>
@@ -269,7 +269,7 @@
               :key="stt"
             >
               <td class="px-1">
-                {{ stt }}
+                {{ stt + 1 }}
               </td>
               <td class="px-50">
                 {{ product.productCode }}

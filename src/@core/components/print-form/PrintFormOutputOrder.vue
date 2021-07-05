@@ -91,18 +91,18 @@
       :key="item.type"
       class="mt-1"
     >
-      <thead>
+      <thead class="oblique">
         <tr>
           <td
             colspan="3"
             class="pl-1 border-right-0"
           >
-            <div class="oblique">Ngành hàng: <strong>{{ item.type }}</strong>
+            <div>Ngành hàng: <strong>{{ item.type }}</strong>
             </div>
           </td>
           <td
             colspan="1"
-            class="text-right border-right-0 border-left-0 oblique"
+            class="text-right border-right-0 border-left-0"
           >
             Tổng SL:
           </td>
@@ -115,7 +115,7 @@
           </td>
           <td
             colspan="1"
-            class="text-right border-right-0 border-left-0 oblique"
+            class="text-right border-right-0 border-left-0"
           >
             Tổng T.Tiền:
           </td>
@@ -241,10 +241,12 @@
     >
       <div>
         <p>Người nhận hàng</p>
+        <br>
         <p>..................................</p>
       </div>
       <div>
         <p>Người xuất hàng</p>
+        <br>
         <p>..................................</p>
       </div>
     </b-row>

@@ -56,9 +56,9 @@ export const formatISOtoVNI = (isoTime, includeTime, includeText) => {
   const date = (`0${dateObj.getDate()}`).slice(-2)
   const month = (`0${dateObj.getMonth() + 1}`).slice(-2)
   const year = dateObj.getFullYear()
-  const hours = dateObj.getHours()
-  const minutes = dateObj.getMinutes()
-  const seconds = dateObj.getSeconds()
+  const hours = (`0${dateObj.getHours()}`).slice(-2)
+  const minutes = (`0${dateObj.getMinutes()}`).slice(-2)
+  const seconds = (`0${dateObj.getSeconds()}`).slice(-2)
 
   if (includeTime !== undefined && includeTime) {
     return `${date}/${month}/${year} ${hours}:${minutes}:${seconds}`
