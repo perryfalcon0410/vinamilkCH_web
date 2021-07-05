@@ -542,7 +542,6 @@ export default {
               street: this.street,
               noted: this.note,
               areaId: this.precinctsSelected,
-              // customerTypeId: this.customerTypesSelected,
             },
             onSuccess: () => {
               this.getCreateInfo()

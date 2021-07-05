@@ -422,10 +422,6 @@ export default {
   },
   mounted() {
     this.onSearch()
-    // const activeCustomer = {
-    //   status: customerData.status[0].id,
-    // }
-    // this.GET_CUSTOMERS_ACTION(activeCustomer)
   },
   created() {
   },
@@ -446,7 +442,6 @@ export default {
         ...this.searchData,
       }
       this.searchData = { ...this.searchData, ...this.searchOption }
-      // console.log(this.searchData)
       this.GET_CUSTOMERS_ACTION(this.searchOption)
     },
     updateSearchData(newProps) {
@@ -461,7 +456,6 @@ export default {
         status: customerData.status[0].id,
       }
       this.updateSearchData({
-        // page: commonData.pageNumber - 1,
         ...this.searchOption,
       })
       this.onPaginationChange()

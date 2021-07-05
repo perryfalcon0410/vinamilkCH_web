@@ -296,7 +296,7 @@
       <!-- START - Section Form pay -->
       <sales-form
         :order-products="orderProducts"
-        :bill-customer="bills.customer"
+        :bills="bills"
         :is-disabled-order="isDisabledOrder"
         :edit-online-permission="editOnlinePermission"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
@@ -572,7 +572,6 @@ export default {
     getProductSearch() {
       this.productsSearch = [...this.getProductSearch]
       this.productsSearchLength = this.productsSearch[0].data.length
-      // this.getPriceOnChangeCustomer()
     },
     getProducts() {
       this.orderProducts = []
@@ -791,17 +790,6 @@ export default {
     getOnlineCustomer(val) {
       this.onlineOrderId = val.id
       this.searchOptions.customerId = val.id
-      // const { usedShop } = this.loginInfo
-
-      // if (val.id !== null) {
-      //   if (val.shopId === usedShop.id) {
-      //     if (usedShop.editable) {
-      //       this.editOnlinePermission = true
-      //     } else {
-      //       this.editOnlinePermission = false
-      //     }
-      //   }
-      // }
     },
 
     getCustomerTypeInfo(val) {

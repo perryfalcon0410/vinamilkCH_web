@@ -456,9 +456,9 @@ export default {
       type: Boolean,
       default: true,
     },
-    billCustomer: {
-      type: Object,
-      default: () => {},
+    bills: {
+      type: Array,
+      default: () => [],
     },
     isDisabledOrder: {
       type: Boolean,
@@ -726,19 +726,13 @@ export default {
     },
   },
   watch: {
-    // salemtPromotionObjectSelected() {
-    //   this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ ...this.decentralization })
-    // },
-    // salemtDeliveryTypeSelected() {
-    //   this.GET_SALEMT_DELIVERY_TYPE_ACTION({ ...this.decentralization })
-    // },
     customerDefault() {
       this.customer = { ...this.customerDefault }
       this.getCustomerDefault()
+      this.bills.customer = this.customer
     },
     getCustomerSearch() {
       this.customersSearch = [...this.getCustomerSearch]
-      // this.customer = { ...this.getCustomerSearch }
     },
     onlineOrder() {
       this.getOnlineOrderById()
@@ -926,12 +920,6 @@ export default {
       }
       this.search = ''
     },
-
-    // onclickChooseCustomer(data) {
-    //   this.$emit('getIdCustomer', data.item)
-    //   this.customersSearch = [{ data: null }]
-    //   this.search = null
-    // },
 
     resetOrderNumber(item) {
       if (item.id === saleData.salemtPromotionObject[0].id) {

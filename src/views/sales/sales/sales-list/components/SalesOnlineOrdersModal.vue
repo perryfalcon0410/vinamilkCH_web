@@ -463,16 +463,10 @@ export default {
     },
   },
   mounted() {
-    // this.searchOptions = saleData.synStatus[0].id
-    // this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
     }
-    // const defaultSearch = {
-    //   synStatus: saleData.synStatus[0].id,
-    // }
-    // this.GET_ONLINE_ORDERS_ACTION(defaultSearch)
   },
   methods: {
     ...mapActions(SALES, [
@@ -511,7 +505,6 @@ export default {
         ...this.searchOptions,
       })
       this.onPaginationChange()
-      // this.isClicked += 1
     },
 
     onPageChange(params) {
