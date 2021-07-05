@@ -525,12 +525,12 @@ export default {
       customerPhone: null,
       statuOptions: customerData.status,
       statusSelected: null,
-      fromCreateDate: this.$earlyMonth,
-      toCreateDate: this.$nowDate,
+      fromCreateDate: null,
+      toCreateDate: null,
       // fromPurchaseDate: this.$earlyMonth,
       // toPurchaseDate: this.$nowDate,
-      // fromSaleDate: this.$earlyMonth,
-      // toSaleDate: this.$nowDate,
+      fromSaleDate: this.$earlyMonth,
+      toSaleDate: this.$nowDate,
       fromSaleAmount: null,
       toSaleAmount: null,
       customerType: null,
@@ -625,6 +625,7 @@ export default {
     this.GET_SHOP_LOCATIONS_SEARCH_ACTION({ ...this.decentralization })
   },
   mounted() {
+    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromCreateDate,

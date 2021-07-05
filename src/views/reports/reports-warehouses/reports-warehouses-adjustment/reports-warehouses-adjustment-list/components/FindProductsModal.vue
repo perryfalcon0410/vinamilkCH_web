@@ -7,7 +7,6 @@
     footer-class="justify-content-center"
     content-class="bg-light"
     footer-border-variant="light"
-    hide-header-close
     centered
     @hidden="onModalClose"
   >
@@ -28,14 +27,27 @@
           >
             Mã sản phẩm
           </div>
-          <b-form-input
-            id="form-input-customer"
-            v-model="searchOptions.productCode"
-            trim
-            class="h7 text-brand-3 height-button-brand-1"
-            placeholder="Nhập mã sản phẩm"
-            @keyup.enter="onSearchClick"
-          />
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              id="form-input-customer"
+              v-model="searchOptions.productCode"
+              trim
+              class="h7 text-brand-3 height-button-brand-1"
+              placeholder="Nhập mã sản phẩm"
+              @keyup.enter="onSearchClick"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="searchOptions.productCode"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.productCode = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
         </b-col>
         <!-- END - Product code -->
         <!-- START - Product name -->
@@ -50,13 +62,26 @@
           >
             Tên sản phẩm
           </div>
-          <b-form-input
-            v-model="searchOptions.productName"
-            trim
-            class="h7 text-brand-3 height-button-brand-1"
-            placeholder="Nhập tên sản phẩm"
-            @keyup.enter="onSearchClick"
-          />
+          <b-input-group
+            class="input-group-merge"
+          >
+            <b-form-input
+              v-model="searchOptions.productName"
+              trim
+              class="h7 text-brand-3 height-button-brand-1"
+              placeholder="Nhập tên sản phẩm"
+              @keyup.enter="onSearchClick"
+            />
+            <b-input-group-append
+              is-text
+            >
+              <b-icon-x
+                v-show="searchOptions.productName"
+                class="cursor-pointer text-gray"
+                @click="searchOptions.productName = null"
+              />
+            </b-input-group-append>
+          </b-input-group>
         </b-col>
         <!-- END - Product name -->
         <!-- START - Product cat -->
@@ -103,7 +128,7 @@
       <div class="bg-white rounded shadow rounded mt-1 p-1">
         <div class="pt-0">
           <strong class="text-blue-vinamilk pt-2">
-            Tổng cộng: {{ $formatNumberToLocale(selectedProductRow.length) }} sản phẩm
+            Tổng cộng: {{ $formatNumberToLocale(selectedProductRow.length) }} sản phẩm được chọn
           </strong>
         </div>
         <vue-good-table

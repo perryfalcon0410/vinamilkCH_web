@@ -107,8 +107,7 @@
             </div>
             <div
               v-else-if="props.column.field === 'quantity' ||
-                props.column.field === 'amount' ||
-                props.column.field === 'refunds'"
+                'amount' || 'refunds' || 'price'"
               class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -269,21 +268,21 @@ export default {
           field: 'returnCode',
           sortable: false,
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Hóa đơn mua hàng',
           field: 'reciept',
           sortable: false,
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left ',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Họ tên',
@@ -304,7 +303,7 @@ export default {
           field: 'productCode',
           sortable: false,
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Tên sản phẩm',
@@ -329,7 +328,7 @@ export default {
             enabled: true,
           },
           thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          tdClass: 'text-right ws-nowrap',
         },
         {
           label: 'Giá bán',
@@ -343,21 +342,21 @@ export default {
           field: 'amount',
           sortable: false,
           thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          tdClass: 'text-right ws-nowrap',
         },
         {
           label: 'Tiền trả lại',
           field: 'refunds',
           sortable: false,
           thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          tdClass: 'text-right ws-nowrap',
         },
         {
           label: 'Ngày trả',
           field: 'payDay',
           sortable: false,
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Lý do trả',

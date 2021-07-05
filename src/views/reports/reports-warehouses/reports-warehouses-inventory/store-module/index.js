@@ -85,7 +85,7 @@ export default {
         .exportReportInventories(val)
         .then(response => response.data)
         .then(res => {
-          const fileName = `Ton_kho_cua_hang_Filled_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
+          const fileName = `Tồn kho cửa hàng_Filled_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}_${Math.floor(Math.random() * 1000)}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
           FileSaver.saveAs(blob, fileName)
         })

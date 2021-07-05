@@ -44,7 +44,6 @@
               <b-icon-x
                 v-show="searchOptions.productCode"
                 class="cursor-pointer text-gray"
-                scale="1.3"
                 @click="searchOptions.productCode = null"
               />
             </b-input-group-append>
@@ -79,7 +78,6 @@
               <b-icon-x
                 v-show="searchOptions.productName"
                 class="cursor-pointer text-gray"
-                scale="1.3"
                 @click="searchOptions.productName = null"
               />
             </b-input-group-append>

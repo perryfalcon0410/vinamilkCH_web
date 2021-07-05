@@ -1,10 +1,11 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column px-0"
+    class="d-flex flex-column"
   >
     <!-- START - Search -->
     <reports-warehouses-input-list-search
+      class="d-print-none"
       @updatePageElement="updatePageNumber"
       @updateSearchData="paginationData = {
         ...paginationData,
@@ -13,7 +14,7 @@
     <!-- END - Search -->
 
     <!-- START - Report Output list -->
-    <div class="bg-white rounded shadow rounded my-1">
+    <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
       <b-row
         class="justify-content-between border-bottom p-1 mx-0"
@@ -26,6 +27,7 @@
           <b-button
             class="rounded btn-brand-1 h7"
             variant="someThing"
+            @click="printReport"
           >
             <b-icon-printer-fill class="mr-50" />
             In
@@ -205,6 +207,7 @@
       <!-- END - Table -->
     </div>
     <!-- END - Report Output list -->
+    <print-form-shop-import />
   </b-container>
 </template>
 
@@ -217,6 +220,7 @@ import {
 import {
   formatISOtoVNI,
 } from '@core/utils/filter'
+import PrintFormShopImport from '@core/components/print-form/PrintFormShopImport.vue'
 import ReportsWarehousesInputListSearch from './components/ReportsWarehousesInputListSearch.vue'
 import {
   REPORT_WAREHOUSES_INPUT,
@@ -225,11 +229,13 @@ import {
   // ACTIONS
   GET_REPORT_WAREHOUSES_INPUT_ACTION,
   EXPORT_REPORT_WAREHOUSES_INPUT_ACTION,
+  PRINT_SHOP_IMPORT_REPORT_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
     ReportsWarehousesInputListSearch,
+    PrintFormShopImport,
   },
 
   data() {
@@ -475,6 +481,7 @@ export default {
     ...mapActions(REPORT_WAREHOUSES_INPUT, [
       GET_REPORT_WAREHOUSES_INPUT_ACTION,
       EXPORT_REPORT_WAREHOUSES_INPUT_ACTION,
+      PRINT_SHOP_IMPORT_REPORT_ACTION,
     ]),
 
     onPaginationChange() {
@@ -507,6 +514,22 @@ export default {
     },
     updatePageNumber() {
       this.pageNumber = 1
+    },
+    printReport() {
+      this.$root.$emit('bv::hide::popover')
+      this.$root.$emit('bv::disable::popover')
+      this.PRINT_SHOP_IMPORT_REPORT_ACTION({
+        // productCodes: this.paginationData.productCodes,
+        // internalNumber: this.paginationData.internalNumber,
+        // importType: this.paginationData.importType,
+        // fromOrderDate: this.paginationData.fromOrderDate,
+        // fromDate: this.paginationData.fromDate,
+        // toOrderDate: this.paginationData.toOrderDate,
+        // toDate: this.paginationData.toDate,
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
     },
   },
 }

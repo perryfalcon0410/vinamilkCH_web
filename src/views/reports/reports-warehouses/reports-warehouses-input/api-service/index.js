@@ -5,6 +5,7 @@ import {
   exportExcelEndpoint,
   getProductCatListsEndpoint,
   getProductListsEndpoint,
+  printShopImportReportEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -26,6 +27,11 @@ export default {
   },
   getProductCatlists(args) {
     return axios.get(getProductCatListsEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  printShopImportReport(args) {
+    return axios.get(printShopImportReportEndpoint, {
       params: formatURLParams(args),
     })
   },

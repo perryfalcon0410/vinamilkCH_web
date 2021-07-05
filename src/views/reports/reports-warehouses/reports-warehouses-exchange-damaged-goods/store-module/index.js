@@ -88,7 +88,7 @@ export default {
         .exportReportExchangeDamagedGoods(val)
         .then(response => response.data)
         .then(res => {
-          const fileName = `Bao_cao_doi_hang_hong_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
+          const fileName = `BC đổi hàng hỏng_Filled_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}_${Math.floor(Math.random() * 1000)}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
         })

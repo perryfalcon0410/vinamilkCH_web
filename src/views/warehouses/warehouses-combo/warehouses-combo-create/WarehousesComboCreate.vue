@@ -574,7 +574,7 @@ export default {
     loadProducts(text) {
       if (text.length >= commonData.minSearchLength) {
         const searchData = {
-          keyWord: text,
+          keyWord: text?.trim(),
           formId: this.formId,
           ctrlId: this.ctrlId,
         }

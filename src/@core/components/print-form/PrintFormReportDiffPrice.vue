@@ -22,7 +22,7 @@
         <p class="my-1">
           Từ ngày {{ $formatISOtoVNI(totalData.fromDate) }} đến {{ $formatISOtoVNI(totalData.toDate) }}
         </p>
-        <p>Ngày in : {{ $formatISOtoVNI(totalData.reportDate, true) }}</p>
+        <p>Ngày in : {{ $formatPrintDate(totalData.reportDate) }}</p>
       </div>
 
       <!-- START - Invisible element to align title -->

@@ -7,9 +7,6 @@
     <sales-receipt-list-search
       :per-page="paginationData.size"
       @onClickSearchButton="onClickSearchButton"
-      @updateSearchData="paginationData = {
-        ...paginationData,
-        ...$event }"
     />
 
     <div class="bg-white rounded shadow rounded my-1 d-print-none">
@@ -46,9 +43,6 @@
             enabled: true,
             perPage: paginationData.size,
             setCurrentPage: pageNumber,
-          }"
-          :sort-options="{
-            enabled: false,
           }"
           line-numbers
           :select-options="{
@@ -301,30 +295,34 @@ export default {
       },
 
       selectedRows: [], // array receipt
-
+      searchData: {
+        size: commonData.perPageSizes[0],
+        page: commonData.pageNumber - 1,
+        sort: null,
+      },
       columns: [
         {
           label: 'Số hóa đơn',
           field: 'numberBill',
-          thClass: 'text-left',
+          thClass: 'text-left ws-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
-          thClass: 'text-left',
+          thClass: 'text-left ws-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'name',
-          thClass: 'text-left standard-width',
+          thClass: 'text-left standard-width ws-nowrap',
           tdClass: 'text-left standard-width',
         },
         {
           label: 'Ngày bán',
           field: 'dayTime',
-          thClass: 'text-center',
+          thClass: 'text-center ws-nowrap',
           tdClass: 'text-center',
         },
         {
@@ -334,21 +332,21 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-right ws-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Tiền giảm giá',
           field: 'discountMoney',
           type: 'number',
-          thClass: 'text-right',
+          thClass: 'text-right ws-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Tiền tích lũy',
           field: 'moneyAccumulated',
           type: 'number',
-          thClass: 'text-right',
+          thClass: 'text-right ws-nowrap',
           tdClass: 'text-right',
         },
         {
@@ -358,46 +356,46 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-right ws-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Ghi chú',
           field: 'note',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-center ws-nowrap',
           tdClass: 'text-center',
         },
         {
           label: 'In HĐ đỏ',
           field: 'print',
-          thClass: 'text-center',
+          thClass: 'text-center ws-nowrap',
           tdClass: 'text-center',
         },
         {
           label: 'Công ty',
           field: 'company',
-          thClass: 'text-left',
+          thClass: 'text-left ws-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Mã số thuế',
           field: 'taxCode',
-          thClass: 'text-left',
+          thClass: 'text-left ws-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
-          thClass: 'text-left',
+          thClass: 'text-left ws-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Ghi chú HĐĐ',
           field: 'noteHdd',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-left',
+          thClass: 'text-center ws-nowrap',
+          tdClass: 'text-center',
         },
         {
           label: 'Chức năng',
@@ -428,7 +426,7 @@ export default {
           discountMoney: this.$formatNumberToLocale(data.totalPromotion),
           moneyAccumulated: this.$formatNumberToLocale(data.customerPurchase),
           payments: this.$formatNumberToLocale(data.total),
-          print: (data.usedRedInvoice === true) ? 'Có' : 'Không',
+          print: (data.usedRedInvoice === true) ? 'Đã in' : 'Chưa in',
           noteHdd: data.redInvoiceRemark,
           company: data.redInvoiceCompanyName,
           taxCode: data.redInvoiceTaxCode,
@@ -560,8 +558,15 @@ export default {
       })
       this.onPaginationChange()
     },
-    onClickSearchButton() {
-      this.pageNumber = 1
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
+    },
+    onClickSearchButton(event) {
+      this.updateSearchData({
+        ...event,
+      })
+      this.onPaginationChange()
+      this.pageNumber = commonData.pageNumber // temp
     },
     // END - Pagination function
 
@@ -575,7 +580,7 @@ export default {
 .move-header {
   position: sticky !important;
   right: 0;
-  top: 0;
+  top: auto;
   z-index: 99;
   background: #315899 !important;
 }

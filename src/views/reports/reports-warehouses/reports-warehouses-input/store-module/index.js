@@ -6,6 +6,7 @@ import {
   REPORT_WAREHOUSES_INPUT_GETTER,
   PRODUCT_LISTS_GETTER,
   PRODUCT_CAT_LISTS_GETTER,
+  PRINT_SHOP_IMPORT_REPORT_GETTER,
   // MUTATIONS
   CLEAR_ALL_PRODUCT_LISTS_CHECKED,
   // ACTIONS
@@ -13,6 +14,7 @@ import {
   EXPORT_REPORT_WAREHOUSES_INPUT_ACTION,
   GET_PRODUCT_LISTS_ACTIONS,
   GET_PRODUCT_CAT_LISTS_ACTIONS,
+  PRINT_SHOP_IMPORT_REPORT_ACTION,
 } from './type'
 
 export default {
@@ -23,6 +25,7 @@ export default {
     productData: {},
     productCatData: [],
     selectedProductRow: [],
+    printData: {},
   },
 
   getters: {
@@ -34,6 +37,9 @@ export default {
     },
     [PRODUCT_CAT_LISTS_GETTER](state) {
       return state.productCatData
+    },
+    [PRINT_SHOP_IMPORT_REPORT_GETTER](state) {
+      return state.printData
     },
   },
 
@@ -104,6 +110,22 @@ export default {
         .then(res => {
           if (res.success) {
             state.productCatData = res.data || []
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+
+    [PRINT_SHOP_IMPORT_REPORT_ACTION]({ state }, val) {
+      ReportsWarehousesInputServices
+        .printShopImportReport(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.printData = res.data || {}
           } else {
             throw new Error(res.statusValue)
           }

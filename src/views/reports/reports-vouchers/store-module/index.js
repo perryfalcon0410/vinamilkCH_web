@@ -45,7 +45,7 @@ export default {
         .exportVouchersExcelEndpoint(val)
         .then(response => response.data)
         .then(res => {
-          const fileName = `Bao_cao_danh_sach_voucher_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+          const fileName = `Báo cáo danh sách voucher_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}_${Math.floor(Math.random() * 1000)}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
         })

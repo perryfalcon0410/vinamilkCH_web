@@ -32,10 +32,8 @@
             class="input-group-merge"
           >
             <b-form-input
-              id="form-input-customer"
-              v-model="searchOptions.productCode"
+              v-model.trim="searchOptions.productCode"
               autofocus
-              trim
               class="h7 text-brand-3 height-button-brand-1"
               placeholder="Nhập mã sản phẩm"
               @keyup.enter="onSearchClick"
@@ -46,7 +44,6 @@
               <b-icon-x
                 v-show="searchOptions.productCode"
                 class="cursor-pointer text-gray"
-                scale="1.3"
                 @click="searchOptions.productCode = null"
               />
             </b-input-group-append>
@@ -70,8 +67,7 @@
             class="input-group-merge"
           >
             <b-form-input
-              v-model="searchOptions.productName"
-              trim
+              v-model.trim="searchOptions.productName"
               class="h7 text-brand-3 height-button-brand-1"
               placeholder="Nhập tên sản phẩm"
               @keyup.enter="onSearchClick"
@@ -82,7 +78,6 @@
               <b-icon-x
                 v-show="searchOptions.productName"
                 class="cursor-pointer text-gray"
-                scale="1.3"
                 @click="searchOptions.productName = null"
               />
             </b-input-group-append>
