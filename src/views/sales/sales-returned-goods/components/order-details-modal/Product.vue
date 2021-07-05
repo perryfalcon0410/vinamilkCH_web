@@ -29,28 +29,28 @@
           class="mx-0"
           align-h="end"
         >
-          {{ (infoProductData.totalQuantity) }}
+          {{ $formatNumberToLocale(infoProductData.totalQuantity) }}
         </b-row>
         <b-row
           v-else-if="props.column.field === 'totalPrice'"
           class="mx-0"
           align-h="end"
         >
-          {{ (infoProductData.totalAmount) }}
+          {{ $formatNumberToLocale(infoProductData.totalAmount) }}
         </b-row>
         <b-row
           v-if="props.column.field === 'discount'"
           class="mx-0"
           align-h="end"
         >
-          {{ (infoProductData.totalDiscount) }}
+          {{ $formatNumberToLocale(infoProductData.totalDiscount) }}
         </b-row>
         <b-row
           v-else-if="props.column.field === 'paymentReturn'"
           class="mx-0"
           align-h="end"
         >
-          {{ (infoProductData.allTotal) }}
+          {{ $formatNumberToLocale(infoProductData.allTotal) }}
         </b-row>
       </template>
       <!-- START - Column filter -->

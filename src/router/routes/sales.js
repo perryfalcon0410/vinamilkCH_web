@@ -154,4 +154,24 @@ export default [
       resource: 'SalesReturnedGoodsCreate',
     },
   },
+  // Chi tiết đơn trả hàng
+  {
+    path: '/sales/returned-goods/detail/:id',
+    name: 'sales-returned-goods-detail',
+    component: () => import('@/views/sales/sales-returned-goods/sales-returned-goods-detail/SalesReturnedGoodsDetail.vue'),
+    meta: {
+      pageTitle: 'Hàng trả lại',
+      breadcrumb: [
+        {
+          text: 'Danh sách đơn trả hàng',
+          to: '/sales/returned-goods',
+        },
+        {
+          text: 'Chi tiết đơn trả hàng',
+          active: true,
+        },
+      ],
+      resource: 'SalesReturnedGoodsDetail',
+    },
+  },
 ]

@@ -29,28 +29,21 @@
           class="mx-0"
           align-h="end"
         >
-          {{ (infoPromotionData.totalQuantity) }}
-        </b-row>
-        <b-row
-          v-else-if="props.column.field === 'totalPrice'"
-          class="mx-0"
-          align-h="end"
-        >
-          {{ (infoPromotionData.totalAmount) }}
+          {{ $formatNumberToLocale(infoPromotionData.totalQuantity) }}
         </b-row>
         <b-row
           v-if="props.column.field === 'discount'"
           class="mx-0"
           align-h="end"
         >
-          {{ (infoPromotionData.totalDiscount) }}
+          {{ $formatNumberToLocale(infoPromotionData.totalDiscount) }}
         </b-row>
         <b-row
           v-else-if="props.column.field === 'paymentReturn'"
           class="mx-0"
           align-h="end"
         >
-          {{ (infoPromotionData.allTotal) }}
+          {{ $formatNumberToLocale(infoPromotionData.allTotal) }}
         </b-row>
       </template>
       <!-- START - Column filter -->
@@ -114,13 +107,6 @@ export default {
         {
           label: 'Giá bán',
           field: 'pricePerUnit',
-          thClass: 'text-right',
-          tdClass: 'text-right',
-          sortable: false,
-        },
-        {
-          label: 'Tổng tiền',
-          field: 'totalPrice',
           thClass: 'text-right',
           tdClass: 'text-right',
           sortable: false,

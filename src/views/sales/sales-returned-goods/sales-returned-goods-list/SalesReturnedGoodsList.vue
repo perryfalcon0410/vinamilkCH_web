@@ -85,11 +85,9 @@
             slot-scope="props"
           >
             <div v-if="props.column.field === 'feature'">
-              <b-icon-eye-fill
-                v-b-popover.hover="'Xem chi tiết'"
-                class="text-brand-1 cursor-pointer"
+              <v-icon-detail
                 scale="1.5"
-                @click="showOrderDetailsModal(props.row.idDetail)"
+                @click="navigateToDetail(props.row.idDetail)"
               />
             </div>
             <div
@@ -205,7 +203,7 @@
     <!-- END - List of orders returned -->
 
     <!-- START - Modal -->
-    <order-details-modal
+    <!-- <order-details-modal
       :productdetails="detailReturnProducts"
       :sale-off-details="detailReturnPromotions"
       :information="detailReturnInfo"
@@ -213,7 +211,7 @@
       :info-total-promotion="infoPromotion"
       :visible="isOrderDetailsModal"
       @close="isOrderDetailsModal = false"
-    />
+    /> -->
     <!-- END - Modal -->
   </b-container>
 </template>
@@ -227,26 +225,24 @@ import {
   resizeAbleTable,
 } from '@core/utils/utils'
 import {
-  formatNumberToLocale,
   replaceDotWithComma,
 } from '@/@core/utils/filter'
+import VIconDetail from '@core/components/v-icons/IconDetail.vue'
 import commonData from '@/@db/common'
-import lodash from 'lodash'
-import OrderDetailsModal from '../components/OrderDetailsModal.vue'
+// import OrderDetailsModal from '../components/OrderDetailsModal.vue'
 import SalesReturnedGoodsListSearch from './components/SalesReturnedGoodsListSearch.vue'
 import {
   // GETTERS
   RETURNEDGOODS,
   RETURNED_GOODS_GETTER,
-  RETURN_GOODS_DETAIL_GETTER,
   // ACTION
   GET_RETURNED_GOODS_ACTION,
-  GET_RETURN_GOODS_DETAIL_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
-    OrderDetailsModal,
+    // OrderDetailsModal,
+    VIconDetail,
     SalesReturnedGoodsListSearch,
   },
   data() {
@@ -344,7 +340,6 @@ export default {
   computed: {
     ...mapGetters(RETURNEDGOODS, [
       RETURNED_GOODS_GETTER,
-      RETURN_GOODS_DETAIL_GETTER,
     ]),
     orderReturnPagination() {
       if (this.RETURNED_GOODS_GETTER.response) {
@@ -378,90 +373,32 @@ export default {
           quantity: this.$formatNumberToLocale(data.total),
           discount: this.$formatNumberToLocale(data.totalPromotion),
           amount: this.$formatNumberToLocale(data.amount),
-          feature: '',
         }))
       }
       return []
     },
     totalQuantity() {
       if (this.RETURNED_GOODS_GETTER.info) {
-        return replaceDotWithComma(formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.allTotal)))
+        return replaceDotWithComma(this.$formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.allTotal)))
       }
       return 0
     },
     totalPromo() {
       if (this.RETURNED_GOODS_GETTER.info) {
-        return replaceDotWithComma(formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.allPromotion)))
+        return replaceDotWithComma(this.$formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.allPromotion)))
       }
       return 0
     },
     totalAmount() {
       if (this.RETURNED_GOODS_GETTER.info) {
-        return replaceDotWithComma(formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.totalAmount)))
+        return replaceDotWithComma(this.$formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.totalAmount)))
       }
       return 0
-    },
-
-    // return goods detail
-    getDetailReturnProducts() {
-      if (this.RETURN_GOODS_DETAIL_GETTER.productReturn && this.RETURN_GOODS_DETAIL_GETTER.productReturn.response) {
-        return this.RETURN_GOODS_DETAIL_GETTER.productReturn.response.map(data => ({
-          productCode: data.productCode,
-          productName: data.productName,
-          unit: data.unit,
-          quantity: this.$formatNumberToLocale(data.quantity),
-          pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
-          totalPrice: this.$formatNumberToLocale(data.totalPrice),
-          discount: this.$formatNumberToLocale(data.discount),
-          paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
-        }))
-      }
-      return []
-    },
-
-    getDetailReturnPromotions() {
-      if (this.RETURN_GOODS_DETAIL_GETTER.promotionReturn && this.RETURN_GOODS_DETAIL_GETTER.promotionReturn.response) {
-        return this.RETURN_GOODS_DETAIL_GETTER.promotionReturn.response.map(data => ({
-          productCode: data.productCode,
-          productName: data.productName,
-          unit: data.unit,
-          quantity: this.$formatNumberToLocale(data.quantity),
-          pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
-          totalPrice: this.$formatNumberToLocale(data.totalPrice),
-          discount: this.$formatNumberToLocale(data.discount),
-          paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
-        }))
-      }
-      return []
-    },
-    detailReturnInfo() {
-      if (this.RETURN_GOODS_DETAIL_GETTER.infos) {
-        return lodash.mapValues(this.RETURN_GOODS_DETAIL_GETTER.infos, value => value)
-      }
-      return {}
-    },
-    infoProduct() {
-      if (this.RETURN_GOODS_DETAIL_GETTER.productReturn && this.RETURN_GOODS_DETAIL_GETTER.productReturn.info) {
-        return lodash.mapValues(this.RETURN_GOODS_DETAIL_GETTER.productReturn.info, value => this.$formatNumberToLocale(value))
-      }
-      return {}
-    },
-    infoPromotion() {
-      if (this.RETURN_GOODS_DETAIL_GETTER.promotionReturn && this.RETURN_GOODS_DETAIL_GETTER.promotionReturn.info) {
-        return lodash.mapValues(this.RETURN_GOODS_DETAIL_GETTER.promotionReturn.info, value => this.$formatNumberToLocale(value))
-      }
-      return {}
     },
   },
   watch: {
     getOderReturns() {
       this.oderReturns = [...this.getOderReturns]
-    },
-    getDetailReturnPromotions() {
-      this.detailReturnPromotions = [...this.getDetailReturnPromotions]
-    },
-    getDetailReturnProducts() {
-      this.detailReturnProducts = [...this.getDetailReturnProducts]
     },
   },
   mounted() {
@@ -470,7 +407,6 @@ export default {
   methods: {
     ...mapActions(RETURNEDGOODS, [
       GET_RETURNED_GOODS_ACTION,
-      GET_RETURN_GOODS_DETAIL_ACTION,
     ]),
     showSalesReturnedGoodsCreate() {
       this.$router.push({ name: 'sales-returned-goods-create' })
@@ -478,11 +414,12 @@ export default {
     formatter(value) {
       return value.toLowerCase()
     },
-    showOrderDetailsModal(idDetail) {
-      this.isOrderDetailsModal = !this.isOrderDetailsModal
-      this.GET_RETURN_GOODS_DETAIL_ACTION({
-        id: idDetail,
-        ...this.decentralization,
+    navigateToDetail(id) {
+      this.$router.push({
+        name: 'sales-returned-goods-detail',
+        params: {
+          id,
+        },
       })
     },
     updateSearchData(newProps) {

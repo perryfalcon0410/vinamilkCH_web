@@ -20,7 +20,8 @@
           class="input-group-merge"
         >
           <b-form-input
-            v-model.trim="searchKeywords"
+            v-model="searchKeywords"
+            trim
             class="h7"
             placeholder="Nhập họ tên/mã"
             @keyup.enter="onClickSearchButton"
@@ -87,7 +88,8 @@
           class="input-group-merge"
         >
           <b-form-input
-            v-model.trim="returnCode"
+            v-model="returnCode"
+            trim
             class="h7"
             placeholder="Nhập mã trả hàng"
             @keyup.enter="onClickSearchButton"
@@ -119,6 +121,7 @@
         <b-row
           class="v-flat-pickr-group mx-0"
           align-v="center"
+          @change="validateFromDate"
           @keypress="$onlyDateInput"
         >
           <b-icon-x
@@ -152,6 +155,7 @@
         <b-row
           class="v-flat-pickr-group mx-0"
           align-v="center"
+          @change="validateToDate"
           @keypress="$onlyDateInput"
         >
           <b-icon-x
@@ -203,6 +207,7 @@
 
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import toasts from '@/@core/utils/toasts/toasts'
 import { reverseVniDate } from '@/@core/utils/filter'
 
 export default {
@@ -274,6 +279,23 @@ export default {
     },
     updateSearchData(data) {
       this.$emit('onClickSearchButton', data)
+    },
+
+    validateFromDate() {
+      const validate = this.$moment(this.fromDate, 'DD/MM/YYYY').isValid()
+      const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
+      if (pattern.test(this.fromDate) === false || validate === false) {
+        toasts.error('Ngày tháng không tồn tại')
+        this.fromDate = this.$earlyMonth
+      }
+    },
+    validateToDate() {
+      const validate = this.$moment(this.toDate, 'DD/MM/YYYY').isValid()
+      const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
+      if (pattern.test(this.toDate) === false || validate === false) {
+        toasts.error('Ngày tháng không tồn tại')
+        this.toDate = this.$nowDate
+      }
     },
   },
 }

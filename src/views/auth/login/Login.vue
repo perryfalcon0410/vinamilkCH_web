@@ -290,6 +290,10 @@ export default {
               id: 1,
               controlCode: 'SalesReturnedGoodsCreate', // Thêm mới
             },
+            {
+              id: 2,
+              controlCode: 'SalesReturnedGoodsDetail', // Chi tiết
+            },
           ],
         },
         {

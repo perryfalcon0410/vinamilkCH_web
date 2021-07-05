@@ -130,11 +130,12 @@ export default {
     // START - RETURN GOODS DETAIL
     [GET_RETURN_GOODS_DETAIL_ACTION]({ state }, val) {
       OderReturnService
-        .getReturnGoodDetail(val)
+        .getReturnGoodDetail(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.productDetailData = res.data || {}
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

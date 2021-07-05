@@ -25,7 +25,7 @@
           >
             Ngày mua hàng
             <strong>:
-              {{ orderDate }}
+              {{ this.$formatISOtoVNI(information.orderDate) }}
             </strong>
           </b-list-group-item>
           <b-list-group-item
@@ -33,7 +33,7 @@
           >
             ngày trả hàng
             <strong>:
-              <!-- {{ billInfo.employeeName }} -->
+              {{ this.$formatISOtoVNI(information.returnDate) }}
             </strong>
           </b-list-group-item>
           <b-list-group-item
@@ -181,14 +181,6 @@ export default {
     return {
       modalShow: false,
     }
-  },
-  computed: {
-    orderDate() {
-      return (this.$formatISOtoVNI(this.information.orderDate))
-    },
-    returnDate() {
-      return (this.$formatISOtoVNI(this.information.returnDate))
-    },
   },
   methods: {
     onCloseModal() {
