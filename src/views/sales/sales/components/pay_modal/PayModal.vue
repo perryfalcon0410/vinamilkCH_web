@@ -696,7 +696,7 @@
     />
 
     <!-- START - Print form -->
-    <print-form-sales-receipt :sale-order-print-info="saleOrderPrintInfo" />
+    <print-form-sales-receipt />
     <!-- END - Print form -->
   </b-modal>
   <!-- End Popup -->
@@ -730,7 +730,6 @@ import {
   GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
   CREATE_SALE_ORDER_GETTER,
   GET_SALE_PAYMENT_TYPES_GETTER,
-  PRINT_SALES_TEMP_GETTER,
 
   // ACTIONS
   CREATE_SALE_ORDER_ACTION,
@@ -849,8 +848,10 @@ export default {
       },
       inputSearchFocusedSP: false,
       allProducts: [],
-      formId: 5, // hard code permission
-      ctrlId: 1, // hard code permission
+      decentralization: { // hard code permission
+        formId: 5,
+        ctrlId: 7,
+      },
       printSaleData: {},
       // validation rules
       number,
@@ -871,7 +872,6 @@ export default {
       // Check paid
       isPaid: false,
 
-      saleOrderPrintInfo: {},
       isPrint: false,
     }
   },
@@ -885,7 +885,6 @@ export default {
       GET_ITEMS_PRODUCTS_PROGRAM_GETTER,
       CREATE_SALE_ORDER_GETTER,
       GET_SALE_PAYMENT_TYPES_GETTER,
-      PRINT_SALES_TEMP_GETTER,
     ]),
 
     getDiscount() {
@@ -921,9 +920,6 @@ export default {
     },
     getSalePaymentTypes() {
       return this.GET_SALE_PAYMENT_TYPES_GETTER
-    },
-    getPrintSaleTempData() {
-      return this.PRINT_SALES_TEMP_GETTER
     },
   },
   watch: {
@@ -1045,11 +1041,9 @@ export default {
           this.PRINT_SALES_RECEIPT_ACTION({
             data: {
               salesReceiptId: this.pay.saleOrderId,
-              formId: this.formId,
-              ctrlId: this.ctrlId,
+              params: { ...this.decentralization },
             },
-            onSuccess: () => {
-            },
+            onSuccess: () => {},
           })
         }
       }
@@ -1090,9 +1084,6 @@ export default {
       }))]
       this.pay.salePayment.salePaymentType = this.salePaymentTypeOptions[0].id
     },
-    getPrintSaleTempData() {
-      this.saleOrderPrintInfo = { ...this.getPrintSaleTempData }
-    },
     customer: {
       handler() {
         this.pay.salePayment.salePaymentAmount = null
@@ -1119,8 +1110,7 @@ export default {
 
   mounted() {
     this.GET_SALE_PAYMENT_TYPES_ACTION({
-      formId: this.formId,
-      ctrlId: this.ctrlId,
+      ...this.decentralization,
     })
     this.isDisabledPaymentBtn = true
     this.isDisabledPrintAndPaymentBtn = true
@@ -1191,9 +1181,8 @@ export default {
 
       this.GET_DISCOUNT_BY_CODE_ACTION({
         data: {
+          ...this.decentralization,
           code: this.pay.discount.discountCode,
-          formId: this.formId,
-          ctrlId: this.ctrlId,
           dataGetCode: {
             customerId: this.customer.id,
             orderType: Number(this.orderSelected),
@@ -1342,8 +1331,7 @@ export default {
         this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
           keyWord: this.pay.productSearch,
           promotionId: programId,
-          formId: this.formId,
-          ctrlId: this.ctrlId,
+          ...this.decentralization,
         })
       } else {
         this.inputSearchFocusedSP = false
@@ -1354,8 +1342,7 @@ export default {
       if (this.pay.productSearch.length >= commonData.minSearchLength) {
         this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
           promotionId: programId,
-          formId: this.formId,
-          ctrlId: this.ctrlId,
+          ...this.decentralization,
         })
       }
     },
@@ -1533,8 +1520,7 @@ export default {
             remainAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
             extraAmount: Number(this.pay.extraAmount) || 0,
           },
-          onSuccess: () => {
-          },
+          onSuccess: () => {},
         })
       }
     },
@@ -1545,8 +1531,7 @@ export default {
         this.PRINT_SALES_RECEIPT_ACTION({
           data: {
             salesReceiptId: this.pay.saleOrderId,
-            formId: this.formId,
-            ctrlId: this.ctrlId,
+            params: { ...this.decentralization },
           },
           onSuccess: () => {
           },

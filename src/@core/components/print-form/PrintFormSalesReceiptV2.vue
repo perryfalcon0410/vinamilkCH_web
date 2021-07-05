@@ -56,7 +56,7 @@
         Doanh số tích lũy: {{ $formatNumberToLocale(printSalesReceiptData.customerPurchase) }}
       </div>
       <div>
-        Ngày: {{ $formatPrintDate( printSalesReceiptData.orderDate, true) }}
+        Ngày: {{ $formatPrintDate(printSalesReceiptData.orderDate) }}
       </div>
       <div>
         NV: {{ printSalesReceiptData.userName }}
@@ -121,7 +121,7 @@
           </td>
         </tr>
       </tbody>
-      <tbody v-show="product.displayType">
+      <tbody v-show="Boolean(Number(product.displayType))">
         <td colspan="4">
           {{ product.groupName }}
         </td>
@@ -269,24 +269,88 @@ import {
   PRINT_SALES_RECEIPT_GETTER,
 } from '@/views/sales/sales-receipts/store-module/type'
 
+import {
+  SALES,
+  // GETTERS
+  PRINT_SALES_TEMP_GETTER,
+} from '@/views/sales/sales/store-module/type'
+
 export default {
-  props: {
-    saleOrderPrintInfo: {
-      type: Object,
-      default: () => {},
-    },
-  },
   data() {
     return {
-      printSalesReceiptData: {},
+      printSalesReceiptData: {
+        shopName: 'CH CTSP Hải Dương',
+        shopPhone: '0887444226',
+        shopAddress: '9 Hoàng Hoa Thám - Hải Dương',
+        shopEmail: 'shop1@gamil.com',
+        customerName: 'KHÁCH HÀNG MẶC ĐINH',
+        customerPhone: '0341356686',
+        customerAddress: '123, Phường Cô Giang, Quận 1, TP Hồ Chí Minh',
+        deliveryType: 8,
+        customerPurchase: 6.2162596E7,
+        orderNumber: 'SAL.SHOP1.21070300001',
+        orderDate: '2021-07-03T09:50:28.450',
+        userName: 'Tuấn Nguyễn',
+        products: [
+          {
+            displayType: 1,
+            groupName: 'ZV19_001, ZV20_001',
+            listOrderItems: [
+              {
+                productId: 1,
+                productName: 'Sữa dinh dưỡng không đường vị tự nhiên - Hộp 1L',
+                productCode: 'SP0001',
+                price: 55000.0,
+                quantity: 10,
+                totalPrice: 550000.0,
+                totalDiscountPrice: -10000,
+              },
+            ],
+            listFreeItems: [
+              {
+                productName: 'Sữa dinh dưỡng không đường vị tự nhiên - Hộp 1L',
+                productCode: 'SP0001',
+                quantity: 2,
+              },
+            ],
+          },
+        ],
+        lstZM: [
+          {
+            promotionName: 'Chương trình ZV19 V1, Chương trình ZV20 V1',
+            promotionCode: 'ZV19_001, ZV20_001',
+            amount: -62333.16948699951,
+          },
+        ],
+        amount: 1727000.0,
+        amountNotVAT: 1299001.0,
+        promotionAmountNotVat: -140900.1,
+        promotionAmount: -389483.0,
+        discountAmount: -0.0,
+        accumulatedAmount: -0.0,
+        voucherAmount: -0.0,
+        totalNotVat: 1158100.9,
+        total: 2000000.0,
+        paymentAmount: 1337517.0,
+        extraAmount: 662483.0,
+      },
     }
   },
+
   computed: {
     ...mapGetters(SALESRECEIPTS, [PRINT_SALES_RECEIPT_GETTER]),
+    ...mapGetters(SALES, [PRINT_SALES_TEMP_GETTER]),
 
     getPrintSalesReceiptData() {
       if (this.PRINT_SALES_RECEIPT_GETTER) {
         return this.PRINT_SALES_RECEIPT_GETTER
+      }
+      return null
+    },
+
+    getPrintSalesReceiptTempData() {
+      if (this.PRINT_SALES_TEMP_GETTER) {
+        return this.PRINT_SALES_TEMP_GETTER
       }
       return null
     },
@@ -298,17 +362,16 @@ export default {
       return null
     },
   },
+
   watch: {
     getPrintSalesReceiptData() {
       this.printSalesReceiptData = { ...this.getPrintSalesReceiptData }
     },
-    saleOrderPrintInfo: {
-      handler() {
-        this.printSalesReceiptData = this.saleOrderPrintInfo
-      },
-      deep: true,
+    getPrintSalesReceiptTempData() {
+      this.printSalesReceiptData = { ...this.getPrintSalesReceiptTempData }
     },
   },
+
   updated() {
     window.print()
   },
