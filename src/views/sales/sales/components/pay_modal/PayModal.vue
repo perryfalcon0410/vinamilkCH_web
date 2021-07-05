@@ -430,6 +430,17 @@
                     >
                       <b-input-group class="input-group-merge">
                         <b-input-group-prepend
+                          v-if="pay.isVoucherLocked === true"
+                          is-text
+                          class="cursor-pointer"
+                        >
+                          <b-icon-three-dots-vertical
+                            scale="1.5"
+                          />
+                        </b-input-group-prepend>
+
+                        <b-input-group-prepend
+                          v-if="pay.isVoucherLocked === false"
                           is-text
                           class="cursor-pointer"
                           @click="onVoucherButtonClick()"
@@ -845,6 +856,7 @@ export default {
           salePaymentAmount: null,
         },
         extraAmount: null,
+        isVoucherLocked: false,
       },
       inputSearchFocusedSP: false,
       allProducts: [],
@@ -955,8 +967,13 @@ export default {
           isInsertItemProducts: (data.products === null && data.amount === null),
           levelNumber: data.levelNumber,
           totalQty: data.totalQty,
+          totalAmtExTax: data.totalAmtExTax,
+          totalAmtInTax: data.totalAmtInTax,
+          zv23Amount: data.zv23Amount,
+          isReturn: data.isReturn,
         }))
         this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
+        this.pay.isVoucherLocked = this.getPromotionPrograms.lockVoucher
       }
 
       // get accumulate
@@ -1065,8 +1082,9 @@ export default {
           if (paramProducts.length > 0) {
             this.GET_PROMOTION_PROGRAMS_ACTION({
               customerId: this.customer.id,
-              orderType: Number(saleData.orderType[0].id),
+              orderType: Number(this.orderSelected),
               products: paramProducts,
+              invisibleLoading: true,
             })
           }
           if (this.pay.discount.discountCode !== '') {

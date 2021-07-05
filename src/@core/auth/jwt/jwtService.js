@@ -24,7 +24,10 @@ export default class JwtService {
 
     this.axiosIns.interceptors.request.use(
       config => {
-        store.commit('app/UPDATE_IS_LOADING', true)
+        store.commit('app/UPDATE_IS_LOADING', !config.params || !config.params.invisibleLoading)
+        if (config.params && config.params.invisibleLoading) {
+          delete config.params.invisibleLoading
+        }
 
         const accessToken = this.getToken()
 

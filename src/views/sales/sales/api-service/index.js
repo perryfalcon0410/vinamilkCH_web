@@ -99,7 +99,11 @@ export default {
     return axios.post(getPromotionFreeItemsEndpoint, args)
   },
   getPromotionPrograms(args) {
-    return axios.post(getPromotionProgramsEndpoint, args)
+    return axios.post(getPromotionProgramsEndpoint, args, {
+      params: {
+        invisibleLoading: args.invisibleLoading,
+      },
+    })
   },
   getPromotionCalculation(args) {
     return axios.post(getPromotionCalculationEndpoint, args)
