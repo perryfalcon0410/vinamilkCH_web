@@ -434,7 +434,7 @@ export default {
         },
         {
           id: 23,
-          formCode: 'ReportsPurchases', // Báo cáo - Mua hàng
+          formCode: 'ReportsPurchases', // Báo cáo - Bảng kê chi tiết đơn nhập hàng
           orderNumber: 1,
           controls: [],
         },
