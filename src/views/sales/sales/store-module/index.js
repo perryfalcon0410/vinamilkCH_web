@@ -431,12 +431,17 @@ export default {
     },
     [GET_VOUCHER_BY_SERIAL_ACTION]({ state }, val) {
       SalesServices
-        .getVoucherBySerial(val)
+        .getVoucherBySerial(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.voucherBySerial = res.data
+            val.onSuccess()
           } else {
+            // 11008 do bên BE quy định, dùng để check cho trường hợp voucher bị khoá
+            if (res.statusCode === 11008) {
+              val.onFailure()
+            }
             throw new Error(res.statusValue)
           }
         })

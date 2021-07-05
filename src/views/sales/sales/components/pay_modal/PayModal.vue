@@ -165,7 +165,7 @@
                   </vue-good-table>
                 </div>
                 <div v-else-if="value.amount">
-                  <div v-if="value.amount.percentage !== null">
+                  <div v-if="value.amount.percentage !== 0">
                     <b-row
                       class="mx-0 p-1 h7"
                       align-v="center"
@@ -1104,8 +1104,12 @@ export default {
     },
     customer: {
       handler() {
+        // clean data
         this.pay.salePayment.salePaymentAmount = null
         this.pay.extraAmount = null
+        this.pay.voucher.voucherSerials = ''
+        this.pay.voucher.vouchers = []
+        this.pay.voucher.totalVoucherAmount = null
         // get accumulate
         this.pay.accumulate.accumulateAmount = 0
         this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null

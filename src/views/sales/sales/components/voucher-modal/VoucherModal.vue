@@ -111,7 +111,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import toasts from '@core/utils/toasts/toasts'
 import {
   SALES,
   // GETTERS
@@ -225,16 +224,10 @@ export default {
         price: this.getVoucher.price,
         activeTime: this.getVoucher.activeTime,
       }
-      this.isLocked = this.getVoucher.isLocked
-      this.message = this.getVoucher.message
-      if (this.isLocked) {
-        toasts.error(this.message)
-      } else {
-        const indexVoucher = this.vouchers.findIndex(v => v.id === voucher.id)
-        if (indexVoucher === -1) {
-          this.vouchers.push(voucher)
-          this.keyword = ''
-        }
+      const indexVoucher = this.vouchers.findIndex(v => v.id === voucher.id)
+      if (indexVoucher === -1) {
+        this.vouchers.push(voucher)
+        this.keyword = ''
       }
     },
   },
@@ -249,15 +242,24 @@ export default {
 
     onClickSearchButton() {
       const productIds = this.orderProducts.map(item => item.productId)
-      const paramsGetVoucherBySerial = {
-        serial: this.keyword,
-        customerId: this.customer.id,
-        productIds: productIds.toString(),
-        ctrlId: this.ctrlId,
-        formId: this.formId,
-      }
 
-      this.GET_VOUCHER_BY_SERIAL_ACTION(paramsGetVoucherBySerial)
+      this.GET_VOUCHER_BY_SERIAL_ACTION({
+        data: {
+          serial: this.keyword,
+          customerId: this.customer.id,
+          productIds: productIds.toString(),
+          ctrlId: this.ctrlId,
+          formId: this.formId,
+        },
+        onSuccess: () => {
+
+        },
+        onFailure: () => {
+          this.keyword = ''
+          this.isLocked = true
+          this.isDisableSearch = true
+        },
+      })
     },
     onClickChooeseVouchers() {
       this.keyword = ''
