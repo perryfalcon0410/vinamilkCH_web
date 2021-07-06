@@ -740,9 +740,6 @@ export default {
       this.totalProductExported = this.getTotalProductExported
     },
   },
-  beforeMount() {
-    this.redBill.printDate = this.$nowDate
-  },
 
   // before page leave this will check input
   beforeRouteLeave(to, from, next) {

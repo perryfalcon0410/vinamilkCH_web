@@ -5,8 +5,7 @@
   >
 
     <sales-receipt-list-search
-      :per-page="paginationData.size"
-      @onClickSearchButton="onClickSearchButton"
+      @onSearchClick="onSearchClick"
     />
 
     <div class="bg-white rounded shadow rounded my-1 d-print-none">
@@ -55,11 +54,13 @@
             selectAllByGroup: true,
             multipleColumns: true,
           }"
+          :sort-options="{
+            enabled: false,
+          }"
           :total-rows="salesReceiptsPagination.totalElements"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
-          @on-selected-rows-change="selectionChanged"
         >
           <!-- START - Empty rows -->
           <div
@@ -407,6 +408,8 @@ export default {
           tdClass: 'text-center move-column',
         },
       ],
+
+      salesReceiptList: [],
     }
   },
 
@@ -415,7 +418,7 @@ export default {
       SALES_RECEIPTS_GETTER,
       SALES_RECEIPTS_DETAIL_GETTER,
     ]),
-    salesReceiptList() {
+    getSalesReceiptList() {
       if (this.SALES_RECEIPTS_GETTER.response) {
         return this.SALES_RECEIPTS_GETTER.response.content.map(data => ({
           id: data.id,
@@ -507,6 +510,12 @@ export default {
     },
   },
 
+  watch: {
+    getSalesReceiptList() {
+      this.salesReceiptList = [...this.getSalesReceiptList]
+    },
+  },
+
   mounted() {
     resizeAbleTable()
   },
@@ -538,43 +547,39 @@ export default {
         })
       }
     },
-    // START - Pagination function
-    onPaginationChange() {
-      this.GET_SALES_RECEIPTS_ACTION({
-        ...this.paginationData,
-        ...this.decentralization,
-      })
-    },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
-    },
-    onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
-    },
-    onPerPageChange(params) {
-      this.paginationData.size = params.currentPerPage
-      this.updatePaginationData({
-        page: params.currentPage - 1,
-        size: params.currentPerPage,
-      })
-      this.onPaginationChange()
-    },
+    // START - Vue Good Table func
     updateSearchData(newProps) {
       this.searchData = { ...this.searchData, ...newProps }
     },
-    onClickSearchButton(event) {
+    onSearchClick(event) {
       this.updateSearchData({
+        // page: commonData.pageNumber - 1,
         ...event,
       })
       this.onPaginationChange()
       this.pageNumber = commonData.pageNumber // temp
     },
-    // END - Pagination function
-
-    selectionChanged(params) {
-      this.selectedRows = [...params.selectedRows]
+    onPaginationChange() {
+      this.GET_SALES_RECEIPTS_ACTION({ ...this.searchData, ...this.decentralization })
     },
+    onPageChange(params) {
+      this.updateSearchData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
+      })
+      this.onPaginationChange()
+    },
+    onSortChange(params) {
+      this.updateSearchData({
+        sort: `${params[0].field},${params[0].type}`,
+      })
+      this.onPaginationChange()
+    },
+    // END - Vue Good Table func
   },
 }
 </script>

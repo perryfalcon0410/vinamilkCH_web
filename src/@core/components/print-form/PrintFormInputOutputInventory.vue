@@ -442,6 +442,6 @@ td, .td {
     @page {
         margin-top: 0;
         margin-bottom: 0;
-        size: landscape;
+        size: A3 landscape;
     }
 </style>

@@ -275,6 +275,12 @@ export default {
         dateFormat: 'd/m/Y',
         minDate: this.fromDate,
       },
+
+      // decentralization
+      decentralization: {
+        formId: 1,
+        ctrlId: 1,
+      },
     }
   },
   watch: {
@@ -311,18 +317,15 @@ export default {
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
         usedRedInvoice: this.printStateSelected,
-        formId: 5, // hard code
-        ctrlId: 7, // hard code
+        ...this.decentralization,
       }
-      this.updateSearchData(searchData)
-      this.GET_SALES_RECEIPTS_ACTION({ ...searchData, size: this.perPage })
+      this.getSalesReceipts(searchData)
     },
     onClickSearchButton() {
-      this.$emit('onClickSearchButton')
       this.onSearch()
     },
-    updateSearchData(data) {
-      this.$emit('updateSearchData', data)
+    getSalesReceipts(data) {
+      this.$emit('onSearchClick', data)
     },
 
     validateFromDate() {
