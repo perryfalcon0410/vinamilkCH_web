@@ -506,9 +506,3 @@ export default {
   },
 }
 </script>
-<style>
-  .name-width {
-    width: max-content;
-    max-width: 400px;
-  }
-</style>

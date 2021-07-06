@@ -39,14 +39,36 @@
     <!-- START - Total section -->
     <b-row
       class="mx-0"
-      align-h="around"
       align-v="end"
       style="background-color: gray"
     >
-      <strong> {{ commonInfo.shopName }}  </strong>
-      <div>Tổng SL: <strong><ins> {{ $formatNumberToLocale(totalInfo.totalAmount) }} </ins></strong>
+      <div
+        class="ml-1"
+        style="width: 44%"
+      >
+        <strong> {{ commonInfo.shopName }}  </strong>
       </div>
-      <div>Tổng T.Tiền: <strong><ins> {{ $formatNumberToLocale(totalInfo.price) }} </ins></strong>
+      <div
+        style="width: 16.6%;"
+        class="text-right font-italic"
+      >Tổng SL:
+      </div>
+      <div
+        style="width: 8%;"
+        class="text-right"
+      >
+        <strong><ins> {{ $formatNumberToLocale(totalInfo.stockQuantity) }} </ins></strong>
+      </div>
+      <div
+        style="width: 12.1%;"
+        class="text-right font-italic"
+      >Tổng T.Tiền:
+      </div>
+      <div
+        style="width: 17.7%;"
+        class="text-right"
+      >
+        <strong><ins> {{ $formatNumberToLocale(totalInfo.totalAmount) }} </ins></strong>
       </div>
 
     </b-row>
@@ -58,65 +80,87 @@
       :key="index"
       class="px-0 pb-1"
     >
+      <b-row
+        class="mx-0 width-100-per"
+        style="border-width: 2px 2px 0 2px; border-style: solid;"
+      >
+        <div
+          class="ml-1 font-italic"
+          style="width: 7%"
+        >Ngành hàng:
+        </div>
+        <div
+          style="width: 37.1%;"
+        >
+          <strong>{{ item.category }}</strong>
+        </div>
+        <div
+          style="width: 16.6%;"
+          class="text-right font-italic"
+        >
+          Tổng SL:
+        </div>
+        <div
+          style="width: 8%;"
+          class="text-right"
+        >
+          <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
+        </div>
+        <div
+          style="width: 12.1%;"
+          class="text-right font-italic"
+        >Tổng T.Tiền:
+        </div>
+        <div
+          style="width: 17.7%;"
+          class="text-right"
+        >
+          <strong> {{ $formatNumberToLocale(item.totalAmount) }} </strong>
+        </div>
+      </b-row>
       <table>
-        <!-- START - Header -->
-        <thead>
-          <!-- START - Header 1 -->
+        <thead class="oblique">
+          <!-- START - Header  -->
           <tr>
             <th
-              colspan="12"
-            >
-              <b-row
-                class="mx-0"
-                align-h="around"
-              >
-                <div>Ngành hàng: <strong>{{ item.category }}</strong>
-                </div>
-                <div>Tổng SL:
-                  <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
-                </div>
-                <div>Tổng T.Tiền:
-                  <strong> {{ $formatNumberToLocale(item.totalAmount) }} </strong>
-                </div>
-              </b-row>
-            </th>
-          </tr>
-          <!-- END - Header 1 -->
-
-          <!-- START - Header 2 -->
-          <tr>
-            <th
-              class="text-left stt"
+              class="stt px-50"
+              style="width: 1%"
             >
               STT
             </th>
             <th
-              class="text-left dotted"
+              class="px-50 dotted"
+              style="width: 10%"
             >
               Mã SP
             </th>
             <th
-              class="text-left dotted"
+              class="px-50 dotted"
+              style="width: 34%"
             >
               Tên SP
             </th>
             <th
-              class="text-center dotted"
+              class="px-50 dotted"
+              style="width: 5%"
             >
               ĐVT
             </th>
             <th
-              class="text-center dotted"
+              style="width: 7%"
+              class="px-50 dotted text-right"
             >
               SL
             </th>
             <th
-              class="text-right dotted pr-50"
+              class="text-right dotted px-50"
+              style="width: 10%"
             >
               Giá
             </th>
             <th
-              class="text-right total pr-50"
+              style="width: 15%"
+              class="text-right total px-50"
             >
               T.Tiền
             </th>
@@ -132,21 +176,25 @@
             v-for="(product,stt) in reportData[index].data"
             :key="stt"
           >
-            <td class="text-right pr-50">
+            <td class="px-1">
               {{ stt + 1 }}
             </td>
-            <td>{{ product.productCode }} </td>
-            <td>{{ product.productName }}</td>
-            <td class="text-center">
+            <td class="pl-50">
+              {{ product.productCode }}
+            </td>
+            <td class="px-50">
+              {{ product.productName }}
+            </td>
+            <td class="px-50">
               {{ product.unit }}
             </td>
-            <td class="text-right pr-50">
+            <td class="text-right px-50">
               {{ $formatNumberToLocale(product.stockQuantity) }}
             </td>
-            <td class="text-right pr-50">
+            <td class="text-right px-50">
               {{ $formatNumberToLocale(product.price) }}
             </td>
-            <td class="text-right pr-50">
+            <td class="text-right px-50">
               {{ $formatNumberToLocale(product.totalAmount) }}
             </td>
           </tr>
@@ -264,7 +312,7 @@ export default {
     },
   },
   updated() {
-    window.print()
+    // window.print()
   },
 }
 </script>

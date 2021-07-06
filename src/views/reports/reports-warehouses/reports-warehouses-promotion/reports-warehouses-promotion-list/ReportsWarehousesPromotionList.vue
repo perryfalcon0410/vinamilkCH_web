@@ -81,7 +81,7 @@
           >
             <div
               v-if="props.column.field ==='productName'"
-              style="max-width: 400px"
+              class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>

@@ -167,28 +167,30 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 
 // scroll ngang table giữ nguyên cột theo yêu cầu
 .table-horizontal-scroll {
-  .scroll-column-header {  // style scroll header
+  .scroll-column-header {
+    // style scroll header
     position: -webkit-sticky; /* for Safari */
     position: sticky !important;
     background: #315899 !important;
     top: 0.9px;
     z-index: 1;
   }
-  .scroll-column { // style scroll columns
-    position: -webkit-sticky; 
+  .scroll-column {
+    // style scroll columns
+    position: -webkit-sticky;
     position: sticky;
     background: inherit;
   }
 
   // style scroll columns line-number
   tr th.line-numbers {
-    position: -webkit-sticky; 
+    position: -webkit-sticky;
     position: sticky;
     left: -1px;
     background: inherit !important;
   }
   thead tr th.line-numbers {
-    position: -webkit-sticky; 
+    position: -webkit-sticky;
     position: sticky !important;
     background: $brand-1 !important;
     left: -1px;
@@ -201,14 +203,17 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
     z-index: 1;
   }
   // style scroll columns line-number
-  
+
   // style scroll row filter
   thead tr:last-child th {
-    position: -webkit-sticky; 
+    position: -webkit-sticky;
     position: sticky !important;
     background: $white;
   }
   // style scroll row filter
-
 }
 // scroll ngang table giữ nguyên columns theo yêu cầu
+.name-width {
+  width: max-content;
+  max-width: 400px;
+}

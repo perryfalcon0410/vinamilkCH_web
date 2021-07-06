@@ -574,10 +574,6 @@ export default {
 .min-w {
   min-width: 8rem;
 }
-  .name-width {
-    width: max-content;
-    max-width: 400px;
-  }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
   thead tr:last-child th:nth-child(2) {
     left: 35px;
