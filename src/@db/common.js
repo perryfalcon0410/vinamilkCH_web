@@ -17,4 +17,9 @@ export default {
   pageNumber: 1,
   minSearchLength: 4,
   minOnlineOrderLength: 1,
+  showStatus: {
+    invisible: 1,
+    enable: 2,
+    disable: 3,
+  },
 }

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { Ability } from '@casl/ability'
+import commonData from '@/@db/common'
 import { initialAbility } from './config'
 
 //  Read ability from localStorage
@@ -9,21 +10,21 @@ import { initialAbility } from './config'
 const userData = JSON.parse(localStorage.getItem('userData'))
 const existingAbility = userData ? userData.ability : null
 
-export const permission = subject => {
-  const ability = Vue.prototype.$ability.j.find(item => item.subject === subject)
+export const permission = (formCode, controlCode) => {
+  const form = Vue.prototype.$ability.j.find(item => item.subject === formCode)
 
-  if (ability) {
-    return {
-      can: true,
-      data: {
-        formId: ability.formId,
-        ctrlId: ability.ctrlId,
-      },
+  if (form) {
+    const control = form.controls.find(item => item.controlCode === controlCode)
+
+    if (control) {
+      return {
+        showStatus: control.showStatus,
+      }
     }
   }
 
   return {
-    can: false,
+    showStatus: commonData.showStatus.invisible,
   }
 }
 

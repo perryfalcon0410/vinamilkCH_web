@@ -12,7 +12,7 @@ export default [
     name: 'dashboard-analytics',
     component: () => import('@/views/dashboard/analytics/Analytics.vue'),
     meta: {
-      resource: 'DashboardEcommerce',
+      resource: 'DashboardAnalytics',
     },
   },
 ]
