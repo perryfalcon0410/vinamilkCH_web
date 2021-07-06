@@ -20,7 +20,7 @@
           <!-- START - Goods return date -->
           <b-row class="mx-0">
             <b-col
-              cols="3"
+              cols="5"
               class="px-0"
             >
               Ngày trả hàng
@@ -58,7 +58,7 @@
           <!-- START - List Item -->
           <b-list-group v-if="billInfo.id !== ''">
             <b-list-group-item
-              class="bg-light"
+              class="bg-light item-list-group"
             >
               Ngày mua hàng
               <strong>:
@@ -66,7 +66,7 @@
               </strong>
             </b-list-group-item>
             <b-list-group-item
-              class="bg-light"
+              class="bg-light item-list-group"
             >
               Nhân viên bán hàng
               <strong>:
@@ -74,7 +74,7 @@
               </strong>
             </b-list-group-item>
             <b-list-group-item
-              class="bg-light"
+              class="bg-light item-list-group"
             >
               Khách hàng
               <strong>:
@@ -82,7 +82,7 @@
               </strong>
             </b-list-group-item>
             <b-list-group-item
-              class="bg-light"
+              class="bg-light item-list-group"
             >
               Tiền trả lại
               <strong>:
@@ -631,3 +631,9 @@ export default {
   },
 }
 </script>
+<style>
+.item-list-group {
+  border-color: #fff !important;
+  padding-left: 0.75rem;
+}
+</style>

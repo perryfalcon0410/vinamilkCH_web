@@ -392,8 +392,8 @@ export default {
         toTransDate: reverseVniDate(this.toDate),
         fromOrderDate: reverseVniDate(this.fromOrderDate),
         toOrderDate: reverseVniDate(this.toOrderDate),
-        code: this.licenseNumber,
-        ids: this.ids?.replace(/\s+/g, ''),
+        licenseNumber: this.licenseNumber,
+        productCodes: this.ids?.replace(/\s+/g, ''),
         isPaging: this.isPaging,
       }
       this.updateSearchData(searchData)

@@ -84,14 +84,14 @@ export default {
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
           sortable: false,
         },

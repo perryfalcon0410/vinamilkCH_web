@@ -14,41 +14,31 @@
 
         <!-- START - List Item -->
         <b-list-group>
-          <b-list-group-item
-            class="bg-light"
-          >
+          <b-list-group-item>
             Ngày mua hàng
             <strong>:
               {{ this.$formatISOtoVNI(detailReturnInfo.orderDate) }}
             </strong>
           </b-list-group-item>
-          <b-list-group-item
-            class="bg-light"
-          >
+          <b-list-group-item>
             ngày trả hàng
             <strong>:
               {{ this.$formatISOtoVNI(detailReturnInfo.returnDate) }}
             </strong>
           </b-list-group-item>
-          <b-list-group-item
-            class="bg-light"
-          >
+          <b-list-group-item>
             Khách hàng
             <strong>:
               {{ (detailReturnInfo.customerName) }}
             </strong>
           </b-list-group-item>
-          <b-list-group-item
-            class="bg-light"
-          >
+          <b-list-group-item>
             Nhân viên bán hàng
             <strong>:
               {{ (detailReturnInfo.userName) }}
             </strong>
           </b-list-group-item>
-          <b-list-group-item
-            class="bg-light"
-          >
+          <b-list-group-item>
             Lý do trả hàng
             <strong>:
               {{ (detailReturnInfo.reason) }}
@@ -252,3 +242,8 @@ export default {
   },
 }
 </script>
+<style>
+.list-group-item:hover {
+  background-color: #fff !important;
+}
+</style>
