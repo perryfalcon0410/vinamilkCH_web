@@ -119,11 +119,15 @@ export default {
         })
     },
     [PRINT_WAREHOUSES_OUTPUT_ACTION]({ }, val) {
-      const fileName = `${val.transCode}.pdf`
       WarehousesService
         .printWarehouseOutput(val)
         .then(response => response.data)
         .then(res => {
+          if (res.type === 'application/json') {
+            throw new Error('Không có dữ liệu xuất')
+          }
+
+          const fileName = `${val.transCode}.pdf`
           const blob = new Blob([res], { type: 'application/pdf' })
           FileSaver.saveAs(blob, fileName)
         })

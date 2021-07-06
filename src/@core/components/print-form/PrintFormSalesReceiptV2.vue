@@ -21,7 +21,7 @@
           {{ printSalesReceiptData.shopName }}
         </strong>
         <div>Tel: {{ printSalesReceiptData.shopPhone }}</div>
-        <div>{{ printSalesReceiptData.shopAddress }}</div>
+        <div>Add: {{ printSalesReceiptData.shopAddress }}</div>
 
         <strong class="mt-1">
           <div>

@@ -257,6 +257,10 @@ export default {
         .exportCustomers(val)
         .then(response => response.data)
         .then(res => {
+          if (res.type === 'application/json') {
+            throw new Error('Không có dữ liệu xuất')
+          }
+
           const fileName = `Danh_sach_khach_hang_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)

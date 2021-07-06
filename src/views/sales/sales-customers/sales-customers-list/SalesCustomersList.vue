@@ -36,6 +36,7 @@
           <b-button
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
+            :disabled="customersData.length > 0 ? false : true"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />

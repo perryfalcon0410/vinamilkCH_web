@@ -226,11 +226,15 @@ export default {
         })
     },
     [GET_IMPORTEXCEL_ACTION]({}, val) {
-      const fileName = `Danh sach san pham_PO_nhap hang_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
       ReceiptImportService
         .getImportExcel(val)
         .then(response => response.data)
         .then(res => {
+          if (res.type === 'application/json') {
+            throw new Error('Không có dữ liệu xuất')
+          }
+
+          const fileName = `Danh sach san pham_PO_nhap hang_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
         })
@@ -443,11 +447,15 @@ export default {
         })
     },
     [PRINT_WAREHOUSES_INPUT_ACTION]({}, val) {
-      const fileName = `${val.transCode}.pdf`
       ReceiptImportService
         .printWarehouseInput(val)
         .then(response => response.data)
         .then(res => {
+          if (res.type === 'application/json') {
+            throw new Error('Không có dữ liệu xuất')
+          }
+
+          const fileName = `${val.transCode}.pdf`
           const blob = new Blob([res], { type: 'application/pdf' })
           FileSaver.saveAs(blob, fileName)
         })

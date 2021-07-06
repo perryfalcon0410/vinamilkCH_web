@@ -148,51 +148,52 @@
           </b-form-row>
           <!-- END - Customer BirthDay and Gender -->
 
-          <!-- START - Customer Group and status -->
-          <b-form-row>
-            <!-- Customer Group -->
-            <b-col>
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                name="nhóm khách hàng"
-              >
-                <div
-                  class="mt-1"
-                >
-                  Nhóm khách hàng <sup class="text-danger">*</sup>
-                </div>
-                <tree-select
-                  v-model="customerTypesSelected"
-                  :options="customerTypeOptions"
-                  :disabled="canDisableInputField(customer.customerTypeId)"
-                  placeholder="Chọn nhóm khách hàng"
-                  no-options-text="Không có dữ liệu"
-                  no-results-text="Không tìm thấy kết quả"
-                  :clearable="false"
-                />
-                <small class="text-danger">{{ errors[0] }}</small>
-              </validation-provider>
-
-            </b-col>
-
-            <!-- Customer status -->
-            <b-col>
+          <!-- START - Customer Group -->
+          <b-col
+            class="px-0"
+          >
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required"
+              name="nhóm khách hàng"
+            >
               <div
                 class="mt-1"
               >
-                Trạng thái <sup class="text-danger">*</sup>
+                Nhóm khách hàng <sup class="text-danger">*</sup>
               </div>
               <tree-select
-                v-model="customerStatusSelected"
-                :options="customerStatusOptions"
-                placeholder="Chọn trạng thái"
-                :disabled="canDisableInputField(customer.status)"
+                v-model="customerTypesSelected"
+                :options="customerTypeOptions"
+                :disabled="canDisableInputField(customer.customerTypeId)"
+                placeholder="Chọn nhóm khách hàng"
+                no-options-text="Không có dữ liệu"
+                no-results-text="Không tìm thấy kết quả"
                 :clearable="false"
               />
-            </b-col>
-          </b-form-row>
-          <!-- END - Customer Group and State -->
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-col>
+          <!-- END - Customer Group -->
+
+          <!-- START - Customer status -->
+          <b-col
+            class="px-0"
+          >
+            <div
+              class="mt-1"
+            >
+              Trạng thái <sup class="text-danger">*</sup>
+            </div>
+            <tree-select
+              v-model="customerStatusSelected"
+              :options="customerStatusOptions"
+              placeholder="Chọn trạng thái"
+              :disabled="canDisableInputField(customer.status)"
+              :clearable="false"
+            />
+          </b-col>
+          <!-- END - Customer status -->
 
           <!-- START - Customer loyal -->
           <b-form-checkbox

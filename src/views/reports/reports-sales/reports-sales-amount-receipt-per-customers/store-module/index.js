@@ -79,6 +79,10 @@ export default {
         .exportReportSalesQuantityReceipts(val)
         .then(response => response.data)
         .then(res => {
+          if (res.type === 'application/json') {
+            throw new Error('Không có dữ liệu xuất')
+          }
+
           const fileName = `Bao_cao_so_luong_ha_don_theo_khach_hang_Filled_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
           FileSaver.saveAs(blob, fileName)

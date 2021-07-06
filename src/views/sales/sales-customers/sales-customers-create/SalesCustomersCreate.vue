@@ -147,46 +147,49 @@
           </b-form-row>
           <!-- END - Customer BirthDay and Gender -->
 
-          <!-- START - Customer Group and State -->
-          <b-form-row>
-            <b-col>
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                name="nhóm khách hàng"
-              >
-                <div
-                  class="mt-1"
-                >
-                  Nhóm khách hàng <sup class="text-danger">*</sup>
-                </div>
-                <tree-select
-                  v-model="customerTypesSelected"
-                  :options="customerTypeOptions"
-                  placeholder="Chọn nhóm khách hàng"
-                  no-options-text="Không có dữ liệu"
-                  no-results-text="Không tìm thấy kết quả"
-                />
-                <small class="text-danger">{{ errors[0] }}</small>
-              </validation-provider>
-
-            </b-col>
-
-            <b-col>
+          <!-- START - Customer Group -->
+          <b-col
+            class="px-0"
+          >
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required"
+              name="nhóm khách hàng"
+            >
               <div
                 class="mt-1"
               >
-                Trạng thái <sup class="text-danger">*</sup>
+                Nhóm khách hàng <sup class="text-danger">*</sup>
               </div>
               <tree-select
-                v-model="customerStatusSelected"
-                :options="customerStatusOptions"
-                placeholder="Chọn trạng thái"
-                disabled
+                v-model="customerTypesSelected"
+                :options="customerTypeOptions"
+                placeholder="Chọn nhóm khách hàng"
+                no-options-text="Không có dữ liệu"
+                no-results-text="Không tìm thấy kết quả"
               />
-            </b-col>
-          </b-form-row>
-          <!-- END - Customer Group and State -->
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-col>
+          <!-- END - Customer Group -->
+
+          <!-- START - Customer status -->
+          <b-col
+            class="px-0"
+          >
+            <div
+              class="mt-1"
+            >
+              Trạng thái <sup class="text-danger">*</sup>
+            </div>
+            <tree-select
+              v-model="customerStatusSelected"
+              :options="customerStatusOptions"
+              placeholder="Chọn trạng thái"
+              disabled
+            />
+          </b-col>
+          <!-- END - Customer status -->
 
           <!-- START - Customer loyal -->
           <b-form-checkbox

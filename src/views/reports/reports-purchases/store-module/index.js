@@ -51,6 +51,10 @@ export default {
         .exportInputReceiptDetailExcel(val)
         .then(response => response.data)
         .then(res => {
+          if (res.type === 'application/json') {
+            throw new Error('Không có dữ liệu xuất')
+          }
+
           const fileName = `Bảng kê chi tiết hóa đơn nhập hàng_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}_${Math.floor(Math.random() * 1000)}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)

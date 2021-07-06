@@ -85,6 +85,10 @@ export default {
         .exportReportInventories(val)
         .then(response => response.data)
         .then(res => {
+          if (res.type === 'application/json') {
+            throw new Error('Không có dữ liệu xuất')
+          }
+
           const fileName = `Tồn kho cửa hàng_Filled_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}_${Math.floor(Math.random() * 1000)}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
           FileSaver.saveAs(blob, fileName)
