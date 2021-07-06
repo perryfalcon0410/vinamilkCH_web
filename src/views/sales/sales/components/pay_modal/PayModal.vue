@@ -18,11 +18,12 @@
       <b-row class="mx-0">
         <!-- START - Section table -->
         <b-col
-          class="shadow py-1"
+          class="shadow py-1 scrollspy-promotion-program"
         >
           <b-row
             class="mx-0 bg-light p-1 mb-1 w-25 rounded"
             align-v="center"
+            rows="5"
           >
             <b-icon-gift
               scale="2"
@@ -1564,3 +1565,11 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+  .scrollspy-promotion-program {
+    position:relative;
+    height:500px;
+    overflow-y:auto
+  }
+</style>
