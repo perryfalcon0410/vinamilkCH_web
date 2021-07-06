@@ -936,10 +936,11 @@ export default {
   },
   watch: {
     getDiscount() {
+      console.log(this.getDiscount)
       if (this.getDiscount !== null) {
-        this.pay.discount.discountCode = this.getDiscount.discountCode
-        this.pay.discount.discountAmount = this.getDiscount.discountValue
+        this.pay.discount.discountAmount = this.getDiscount.amount.amount
       } else {
+        this.pay.discount.discountCode = ''
         this.pay.discount.discountAmount = 0
       }
     },

@@ -117,7 +117,7 @@ export default {
       return state.allProduct
     },
     [GET_DISCOUNT_BY_CODE_GETTER](state) {
-      return state.discount || {}
+      return state.discount
     },
     [UPDATE_PRICE_TYPE_CUSTOMER_GETTER](state) {
       return state.customerTypeProducts
