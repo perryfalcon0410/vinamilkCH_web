@@ -208,7 +208,11 @@
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import toasts from '@/@core/utils/toasts/toasts'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 
 export default {
   components: {
@@ -218,8 +222,8 @@ export default {
     return {
       searchKeywords: '',
       returnCode: '',
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       customerPhone: null,
 
       // decentralization
@@ -286,7 +290,7 @@ export default {
       const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
       if (pattern.test(this.fromDate) === false || validate === false) {
         toasts.error('Ngày tháng không tồn tại')
-        this.fromDate = this.$earlyMonth
+        this.fromDate = earlyMonth()
       }
     },
     validateToDate() {

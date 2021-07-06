@@ -278,6 +278,8 @@ import {
 } from '@/@core/utils/validations/validations'
 import {
   reverseVniDate,
+  earlyMonth,
+  nowDate,
 } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import ProductSelectModal from '../../components/ProductSelectModal.vue'
@@ -297,10 +299,10 @@ export default {
     return {
       required,
       selectProductModalVisible: false,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
-      fromOrderDate: this.$earlyMonth,
-      toOrderDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
+      fromOrderDate: earlyMonth(),
+      toOrderDate: nowDate(),
       product: null,
       licenseNumber: null,
       productCode: null,

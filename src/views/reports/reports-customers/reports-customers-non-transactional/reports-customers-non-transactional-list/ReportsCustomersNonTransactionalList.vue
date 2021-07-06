@@ -145,10 +145,10 @@ import {
   mapGetters,
 } from 'vuex'
 import commonData from '@/@db/common'
-// import {
-//   formatISOtoVNI,
-//   reverseVniDate,
-// } from '@core/utils/filter'
+import {
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
@@ -182,8 +182,8 @@ export default {
         sort: null,
       },
       searchData: {
-        fromDate: this.$earlyMonth,
-        toDate: this.$nowDate,
+        fromDate: earlyMonth(),
+        toDate: nowDate(),
       },
       customerNonTransRows: [],
       columns: [

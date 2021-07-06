@@ -258,7 +258,11 @@ import {
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
   REPORT_SALES_SALE_RECEIPT,
@@ -294,8 +298,8 @@ export default {
       max: null,
       customerCode: null,
       phoneNumber: null,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       configFromDate: {
         wrap: true,
         allowInput: true,

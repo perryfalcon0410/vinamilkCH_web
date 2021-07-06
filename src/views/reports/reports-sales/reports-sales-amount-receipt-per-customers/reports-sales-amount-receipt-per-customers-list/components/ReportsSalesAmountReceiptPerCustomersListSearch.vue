@@ -254,7 +254,11 @@ import {
 import {
   required,
 } from '@/@core/utils/validations/validations'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import toasts from '@/@core/utils/toasts/toasts'
 import {
@@ -285,8 +289,8 @@ export default {
       required,
       customerCode: null,
       phoneNumber: null,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
 
       configFromDate: {
         wrap: true,

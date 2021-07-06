@@ -220,7 +220,11 @@ import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   REPORT_SALES_CAT,
 
@@ -250,8 +254,8 @@ export default {
 
       customerKW: null,
       customerPhone: null,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       customerType: null,
 
       // decentralization

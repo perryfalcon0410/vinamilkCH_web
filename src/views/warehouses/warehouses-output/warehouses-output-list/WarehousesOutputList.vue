@@ -427,6 +427,8 @@ import {
 } from 'vuex'
 import {
   reverseVniDate,
+  earlyMonth,
+  nowDate,
 } from '@/@core/utils/filter'
 import {
   resizeAbleTable,
@@ -472,8 +474,8 @@ export default {
         page: this.pageNumber - 1,
         sort: null,
       },
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       decentralization: {
         formId: 1,
         ctrlId: 1,

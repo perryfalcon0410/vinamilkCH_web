@@ -203,7 +203,11 @@
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { mapActions } from 'vuex'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
 import {
   WAREHOUSEINPUT,
@@ -218,8 +222,8 @@ export default {
     return {
       billNumber: '',
       transCode: '',
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       inputTypesSelected: null,
       inputTypeOptions: warehousesData.inputTypes,
 

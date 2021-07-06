@@ -167,8 +167,11 @@ import {
   code,
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { reverseVniDate } from '@/@core/utils/filter'
-
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   WAREHOUSES_EXCHANGE_DAMAGED_GOODS,
   // Getters
@@ -189,8 +192,8 @@ export default {
       dateFormatVNI,
 
       transCode: '',
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
 
       reasonObj: {
         reasonSelected: null,

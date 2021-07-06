@@ -246,6 +246,8 @@ import {
 } from 'vuex'
 import {
   formatDateToLocale,
+  earlyMonth,
+  nowDate,
 } from '@core/utils/filter'
 import commonData from '@/@db/common'
 import {
@@ -282,8 +284,8 @@ export default {
         ctrlId: 7,
       },
       isInvoiceDetailModal: false,
-      valueDateFrom: this.$earlyMonth,
-      valueDateTo: this.$nowDate,
+      valueDateFrom: earlyMonth(),
+      valueDateTo: nowDate(),
       selected: null,
 
       perPageSizeOptions: commonData.perPageSizes,

@@ -492,7 +492,11 @@ import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import customerData from '@/@db/customer'
 import {
   REPORT_CUSTOMERS,
@@ -529,8 +533,8 @@ export default {
       toCreateDate: null,
       // fromPurchaseDate: this.$earlyMonth,
       // toPurchaseDate: this.$nowDate,
-      fromSaleDate: this.$earlyMonth,
-      toSaleDate: this.$nowDate,
+      fromSaleDate: earlyMonth(),
+      toSaleDate: nowDate(),
       fromSaleAmount: null,
       toSaleAmount: null,
       customerType: null,

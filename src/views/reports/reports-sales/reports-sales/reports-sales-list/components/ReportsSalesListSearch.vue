@@ -379,7 +379,11 @@ import {
 import {
   required,
 } from '@/@core/utils/validations/validations'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   REPORT_SALES,
   BILL_COLLECTORS_GETTER,
@@ -399,8 +403,8 @@ export default {
   data() {
     return {
       selectProductModalVisible: false,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       redInvoiceNo: null,
       productCodes: null,
       billCollectorSelected: null,

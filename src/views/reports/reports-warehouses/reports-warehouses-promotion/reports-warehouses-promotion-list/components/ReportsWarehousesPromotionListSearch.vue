@@ -204,7 +204,11 @@ import {
   mapActions,
 } from 'vuex'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   ValidationProvider,
   ValidationObserver,
@@ -231,8 +235,8 @@ export default {
       isSearchFocus: false,
       onlineCode: '',
       ids: null,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       required,
 
       // decentralization

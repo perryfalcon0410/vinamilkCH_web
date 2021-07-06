@@ -406,7 +406,12 @@ import {
 } from 'vuex'
 import saleData from '@/@db/sale'
 import commonData from '@/@db/common'
-import { formatDateToLocale, getTimeOfDate } from '@core/utils/filter'
+import {
+  formatDateToLocale,
+  getTimeOfDate,
+  earlyMonth,
+  nowDate,
+} from '@core/utils/filter'
 import { getCurrentTime } from '@core/utils/utils'
 import { VueAutosuggest } from 'vue-autosuggest'
 import {
@@ -508,8 +513,8 @@ export default {
 
       // online order
       searchData: {
-        fromDate: this.$earlyMonth,
-        toDate: this.$nowDate,
+        fromDate: earlyMonth(),
+        toDate: nowDate(),
         synStatus: saleData.synStatus[0].id,
       },
       orderOnline: {

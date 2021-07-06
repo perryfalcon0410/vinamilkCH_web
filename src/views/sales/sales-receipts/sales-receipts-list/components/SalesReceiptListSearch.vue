@@ -228,7 +228,12 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { reverseVniDate } from '@/@core/utils/filter'
+
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 
 import receiptData from '@/@db/sale'
 
@@ -256,8 +261,8 @@ export default {
       phoneNumber: null,
       customerName: null,
       billNumber: null,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
 
       configFromDate: {
         wrap: true,
@@ -324,7 +329,7 @@ export default {
       const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
       if (!pattern.test(this.fromDate)) {
         toasts.error('Ngày tháng không tồn tại')
-        this.fromDate = this.$earlyMonth
+        this.fromDate = earlyMonth()
       }
     },
     validateToDate() {

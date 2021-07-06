@@ -331,7 +331,11 @@ import {
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
   mapActions,
@@ -362,10 +366,10 @@ export default {
       voucher: null,
       customer: null,
       phoneNumber: null,
-      promoFromDate: this.$earlyMonth,
-      promoToDate: this.$nowDate,
-      usedFromDate: this.$earlyMonth,
-      usedToDate: this.$nowDate,
+      promoFromDate: earlyMonth(),
+      promoToDate: nowDate(),
+      usedFromDate: earlyMonth(),
+      usedToDate: nowDate(),
       // search
       configPromotionFromDate: {
         wrap: true,

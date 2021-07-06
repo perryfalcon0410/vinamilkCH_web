@@ -288,7 +288,11 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
   REPORT_SALES_SALE_ON_DELIVERY_TYPE,
@@ -323,8 +327,8 @@ export default {
       max: null,
       customerCode: null,
       phoneNumber: null,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       configFromDate: {
         wrap: true,
         allowInput: true,

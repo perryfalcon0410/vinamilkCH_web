@@ -129,7 +129,11 @@ import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   mapActions,
 } from 'vuex'
@@ -155,8 +159,8 @@ export default {
     return {
       dateFormatVNI,
       // search
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       // search
       configFromDate: {
         wrap: true,

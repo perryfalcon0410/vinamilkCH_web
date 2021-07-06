@@ -13,7 +13,6 @@ import {
   getOutputTypeslabel,
 } from '@core/utils/utils'
 import {
-  formatDateToLocale,
   formatNumberToLocale,
   formatISOtoVNI,
   formatVniDateToISO,
@@ -87,10 +86,6 @@ Vue.prototype.$formatNumberToLocale = formatNumberToLocale
 Vue.prototype.$formatISOtoVNI = formatISOtoVNI
 Vue.prototype.$formatVniDateToISO = formatVniDateToISO
 Vue.prototype.$formatPrintDate = formatPrintDate
-
-// get earlyMonth and now date
-Vue.prototype.$earlyMonth = formatDateToLocale(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
-Vue.prototype.$nowDate = formatDateToLocale(new Date())
 
 Vue.prototype.$permission = permission
 

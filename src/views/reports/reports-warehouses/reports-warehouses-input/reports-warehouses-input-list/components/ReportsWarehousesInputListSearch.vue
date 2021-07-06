@@ -287,7 +287,11 @@
 import reportData from '@/@db/report'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { mapActions } from 'vuex'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   ValidationProvider,
   ValidationObserver,
@@ -313,10 +317,10 @@ export default {
     return {
       required,
       selectProductModalVisible: false,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
-      fromOrderDate: this.$earlyMonth,
-      toOrderDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
+      fromOrderDate: earlyMonth(),
+      toOrderDate: nowDate(),
       licenseNumber: null,
       productCodes: null,
       inputTypesSelected: null,

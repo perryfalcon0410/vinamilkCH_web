@@ -399,7 +399,11 @@ import {
   mapGetters,
   mapMutations,
 } from 'vuex'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import toasts from '@/@core/utils/toasts/toasts'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
@@ -447,8 +451,8 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
 
       configFromDate: {
         wrap: true,

@@ -227,7 +227,11 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import FindProductModal from './FindProductModal.vue'
 import {
   REPORT_EXCHANGE_DAMAGED_GOODS,
@@ -258,8 +262,8 @@ export default {
       productCodes: null,
       transCode: null,
       reasonSelected: null,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       configFromDate: {
         wrap: true,
         allowInput: true,

@@ -308,7 +308,12 @@ import {
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { reverseVniDate, formatISOtoVNI } from '@core/utils/filter'
+import {
+  reverseVniDate,
+  formatISOtoVNI,
+  earlyMonth,
+  nowDate,
+} from '@core/utils/filter'
 import saleData from '@/@db/sale'
 import commonData from '@/@db/common'
 import {
@@ -334,8 +339,8 @@ export default {
     return {
       // validation rules
       dateFormatVNI,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       onlineOrders: [],
 
       perPageSizeOptions: commonData.perPageSizes,
@@ -522,8 +527,8 @@ export default {
 
     onClickCloseButton() {
       this.$refs.salesOnlineOrderModal.hide()
-      this.fromDate = this.$earlyMonth
-      this.toDate = this.$nowDate
+      this.fromDate = earlyMonth()
+      this.toDate = nowDate()
       this.synStatusSelected = saleData.synStatus[0].id
       this.orderNumber = null
     },

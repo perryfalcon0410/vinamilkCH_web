@@ -208,7 +208,11 @@ import {
   mapActions,
 } from 'vuex'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   RETURNEDGOODS,
   GET_RETURNED_GOOD_CHOOSE_ACTION,
@@ -220,8 +224,8 @@ export default {
   },
   data() {
     return {
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       orderNumber: '',
       customerName: '',
       productCode: '',

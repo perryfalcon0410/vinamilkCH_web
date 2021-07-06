@@ -166,7 +166,11 @@ import {
 } from 'vuex'
 
 import warehousesData from '@/@db/warehouses'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   WAREHOUSES_COMBO,
   GET_WAREHOUSES_COMBO_ACTIONS,
@@ -181,8 +185,8 @@ export default {
     return {
       isSearchFocus: false,
       transCode: null,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       warehousesTypeOptions: warehousesData.transTypes,
       transTypeSelected: null,
 

@@ -169,7 +169,11 @@
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { mapActions, mapGetters } from 'vuex'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import { dateFormatVNI } from '@/@core/utils/validations/validations'
 import toasts from '@/@core/utils/toasts/toasts'
 import {
@@ -188,8 +192,8 @@ export default {
       dateFormatVNI,
 
       stockCountingCode: '',
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       warehouseType: null,
 
       configFromDate: {
@@ -262,7 +266,7 @@ export default {
       const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
       if (pattern.test(this.fromDate) === false || validate === false) {
         toasts.error('Ngày tháng không tồn tại')
-        this.fromDate = this.$earlyMonth
+        this.fromDate = earlyMonth()
       }
     },
     validateToDate() {

@@ -284,7 +284,11 @@ import {
   code,
   required,
 } from '@/@core/utils/validations/validations'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   WAREHOUSES_OUTPUT,
   // Actions
@@ -308,8 +312,8 @@ export default {
       redInvoiceNo: '',
       internalNumber: '',
       poNo: '',
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
 
       configFromDate: {
         wrap: true,

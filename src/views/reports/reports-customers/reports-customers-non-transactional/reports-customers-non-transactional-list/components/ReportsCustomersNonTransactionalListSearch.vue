@@ -135,7 +135,11 @@ import {
 } from '@/@core/utils/validations/validations'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   REPORT_CUSTOMERS_NON_TRANSACTIONAL,
 
@@ -155,8 +159,8 @@ export default {
       dateFormatVNI,
 
       isSearchFocus: false,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       // decentralization
       decentralization: {
         formId: 1,

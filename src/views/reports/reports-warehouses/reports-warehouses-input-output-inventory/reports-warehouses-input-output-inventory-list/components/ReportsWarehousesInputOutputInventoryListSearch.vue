@@ -174,7 +174,11 @@ import {
 import {
   required,
 } from '@/@core/utils/validations/validations'
-import { reverseVniDate } from '@/@core/utils/filter'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+} from '@/@core/utils/filter'
 import {
   REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY,
   GET_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
@@ -193,8 +197,8 @@ export default {
     return {
       required,
       selectProductModalVisible: false,
-      fromDate: this.$earlyMonth,
-      toDate: this.$nowDate,
+      fromDate: earlyMonth(),
+      toDate: nowDate(),
       productCodes: null,
 
       configFromDate: {

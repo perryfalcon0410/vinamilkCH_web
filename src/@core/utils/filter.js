@@ -141,6 +141,12 @@ export const getTimeOfDate = value => {
   return new Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
 }
 
+export const formatPrintDate = date => moment(date).locale('en').format('DD/MM/YYYY - HH:mm:ss A')
+
+export const earlyMonth = () => moment().startOf('month').format('DD/MM/YYYY')
+
+export const nowDate = () => moment().format('DD/MM/YYYY')
+
 // count from isoDate to now
 export const countDays = isoDate => {
   const now = new Date()
@@ -205,5 +211,3 @@ export const countDays = isoDate => {
 
   return ageString
 }
-
-export const formatPrintDate = date => moment(date).locale('en').format('DD/MM/YYYY - HH:mm:ss A')
