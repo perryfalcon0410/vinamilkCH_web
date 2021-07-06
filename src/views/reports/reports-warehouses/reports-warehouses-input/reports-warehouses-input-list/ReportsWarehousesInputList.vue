@@ -519,13 +519,13 @@ export default {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
       this.PRINT_SHOP_IMPORT_REPORT_ACTION({
-        // productCodes: this.paginationData.productCodes,
-        // internalNumber: this.paginationData.internalNumber,
-        // importType: this.paginationData.importType,
-        // fromOrderDate: this.paginationData.fromOrderDate,
-        // fromDate: this.paginationData.fromDate,
-        // toOrderDate: this.paginationData.toOrderDate,
-        // toDate: this.paginationData.toDate,
+        productCodes: this.paginationData.productCodes,
+        internalNumber: this.paginationData.internalNumber,
+        importType: this.paginationData.importType,
+        fromOrderDate: this.paginationData.fromOrderDate,
+        fromDate: this.paginationData.fromDate,
+        toOrderDate: this.paginationData.toOrderDate,
+        toDate: this.paginationData.toDate,
         onSuccess: () => {
           this.$root.$emit('bv::enable::popover')
         },

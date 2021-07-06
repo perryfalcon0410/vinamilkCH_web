@@ -118,50 +118,56 @@
             slot="table-row"
             slot-scope="props"
           >
-            <span v-if="props.column.field == 'note'">
-              <span>
+            <div v-if="props.column.field == 'note'">
+              <div>
                 <b-icon-search
                   v-b-popover.hover="props.row.note"
                   class="cursor-pointer"
                   scale="1.5"
                 />
-              </span>
-            </span>
+              </div>
+            </div>
 
-            <span v-else-if="props.column.field == 'noteHdd'">
-              <span>
+            <div v-else-if="props.column.field == 'noteHdd'">
+              <div>
                 <b-icon-search
                   v-b-popover.hover="props.row.noteHdd"
                   class="cursor-pointer"
                   scale="1.5"
                 />
-              </span>
-            </span>
-            <span
+              </div>
+            </div>
+            <div
               v-else-if="props.column.field == 'manipulation'"
             >
-              <span>
+              <div>
                 <v-icon-detail
                   popover-content="Chi tiết hóa đơn"
                   @click="showInvoiceDetailModal(props.row.id, props.row.numberBill)"
                 />
-              </span>
-            </span>
-            <span
-              v-else-if="props.column.field === 'discountMoney' || 'moneyAccumulated'"
+              </div>
+            </div>
+            <div
+              v-else-if="props.column.field === 'discountMoney' || props.column.field === 'moneyAccumulated'"
               class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
-            </span>
-            <span
-              v-else-if="props.column.field === 'totalValue' || 'payments'"
+            </div>
+            <div
+              v-else-if="props.column.field === 'totalValue' || props.column.field === 'payments'"
               class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
-            </span>
-            <span v-else>
+            </div>
+            <div
+              v-else-if="props.column.field === 'name'"
+              class="name-width"
+            >
               {{ props.formattedRow[props.column.field] }}
-            </span>
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
           </template>
 
           <!-- START - Pagination -->
@@ -246,7 +252,6 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  formatDateToLocale,
   earlyMonth,
   nowDate,
 } from '@core/utils/filter'
@@ -319,14 +324,15 @@ export default {
         {
           label: 'Họ tên',
           field: 'name',
-          thClass: 'text-left standard-width ws-nowrap',
-          tdClass: 'text-left standard-width',
+          thClass: 'text-left ws-nowrap',
+          tdClass: 'text-left',
         },
         {
           label: 'Ngày bán',
           field: 'dayTime',
           thClass: 'text-center ws-nowrap',
           tdClass: 'text-center',
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Tổng giá trị',
@@ -337,6 +343,7 @@ export default {
           },
           thClass: 'text-right ws-nowrap',
           tdClass: 'text-right',
+          formatFn: value => this.$formatNumberToLocale(value),
         },
         {
           label: 'Tiền giảm giá',
@@ -344,6 +351,7 @@ export default {
           type: 'number',
           thClass: 'text-right ws-nowrap',
           tdClass: 'text-right',
+          formatFn: value => this.$formatNumberToLocale(value),
         },
         {
           label: 'Tiền tích lũy',
@@ -351,6 +359,7 @@ export default {
           type: 'number',
           thClass: 'text-right ws-nowrap',
           tdClass: 'text-right',
+          formatFn: value => this.$formatNumberToLocale(value),
         },
         {
           label: 'Tiền phải trả',
@@ -361,6 +370,7 @@ export default {
           },
           thClass: 'text-right ws-nowrap',
           tdClass: 'text-right',
+          formatFn: value => this.$formatNumberToLocale(value),
         },
         {
           label: 'Ghi chú',
@@ -374,6 +384,7 @@ export default {
           field: 'print',
           thClass: 'text-center ws-nowrap',
           tdClass: 'text-center',
+          formatFn: value => (value === true ? 'Đã in ' : 'Chưa in'),
         },
         {
           label: 'Công ty',
@@ -425,13 +436,13 @@ export default {
           numberBill: data.orderNumber,
           customerCode: data.customerNumber,
           name: data.customerName,
-          dayTime: formatDateToLocale(data.orderDate),
-          totalValue: this.$formatNumberToLocale(data.amount),
+          dayTime: data.orderDate,
+          totalValue: data.amount,
           note: data.note,
-          discountMoney: this.$formatNumberToLocale(data.totalPromotion),
-          moneyAccumulated: this.$formatNumberToLocale(data.customerPurchase),
-          payments: this.$formatNumberToLocale(data.total),
-          print: (data.usedRedInvoice === true) ? 'Đã in' : 'Chưa in',
+          discountMoney: data.totalPromotion,
+          moneyAccumulated: data.customerPurchase,
+          payments: data.total,
+          print: data.usedRedInvoice,
           noteHdd: data.redInvoiceRemark,
           company: data.redInvoiceCompanyName,
           taxCode: data.redInvoiceTaxCode,
@@ -454,10 +465,10 @@ export default {
           productName: data.productName,
           unit: data.unit,
           number: data.quantity,
-          price: this.$formatNumberToLocale(data.pricePerUnit),
-          intoMoney: this.$formatNumberToLocale(data.amount),
-          discount: this.$formatNumberToLocale(data.discount),
-          bill: this.$formatNumberToLocale(data.payment),
+          price: data.pricePerUnit,
+          intoMoney: data.amount,
+          discount: data.discount,
+          bill: data.payment,
         }))
       }
       return []
@@ -597,5 +608,8 @@ export default {
   z-index: 99;
   background: inherit;
 }
-
+.name-width {
+  width: max-content;
+  max-width: 400px;
+}
 </style>

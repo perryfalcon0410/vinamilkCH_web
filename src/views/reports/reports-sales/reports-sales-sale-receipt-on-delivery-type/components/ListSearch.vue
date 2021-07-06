@@ -29,6 +29,7 @@
           >
             <b-form-input
               v-model="receiptCode"
+              placeholder="Nhập số hóa đơn"
               class="h7 text-brand-3"
               @keyup.enter="onClickSearchButton"
             />

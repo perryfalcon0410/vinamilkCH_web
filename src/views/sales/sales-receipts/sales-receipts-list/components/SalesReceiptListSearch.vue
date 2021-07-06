@@ -14,7 +14,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Khách hàng
         </div>
@@ -23,7 +23,7 @@
         >
           <b-form-input
             v-model="customerName"
-            class="h8 text-brand-3 height-button-brand-1"
+            class="h7 text-brand-3 height-button-brand-1"
             placeholder="Nhập họ tên/mã"
             @keyup.enter="onClickSearchButton"
           />
@@ -47,7 +47,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Số điện thoại
         </div>
@@ -56,7 +56,7 @@
         >
           <b-form-input
             v-model="phoneNumber"
-            class="h8 text-brand-3 height-button-brand-1"
+            class="h7 text-brand-3 height-button-brand-1"
             placeholder="Nhập SĐT khách hàng"
             @keypress="$onlyNumberInput"
             @keyup.enter="onClickSearchButton"
@@ -81,7 +81,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Số hóa đơn
         </div>
@@ -91,7 +91,7 @@
           <b-form-input
             id="form-input-customer"
             v-model="billNumber"
-            class="h8 text-brand-3 height-button-brand-1"
+            class="h7 text-brand-3 height-button-brand-1"
             placeholder="Nhập số hóa đơn"
           />
           <b-input-group-append
@@ -114,7 +114,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Từ ngày
         </div>
@@ -134,7 +134,7 @@
           <vue-flat-pickr
             v-model="fromDate"
             :config="configFromDate"
-            class="form-control h8 text-brand-3 height-button-brand-1"
+            class="form-control h7 text-brand-3 height-button-brand-1"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -148,7 +148,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Đến ngày
         </div>
@@ -168,7 +168,7 @@
           <vue-flat-pickr
             v-model="toDate"
             :config="configToDate"
-            class="form-control h8 text-brand-3 height-button-brand-1"
+            class="form-control h7 text-brand-3 height-button-brand-1"
             placeholder="Chọn ngày"
           />
         </b-row>
@@ -207,7 +207,7 @@
         </div>
         <b-button
           id="form-button-search"
-          class="shadow-brand-1 bg-brand-1 text-white h9 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+          class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
           variant="someThing"
           @click="onClickSearchButton"
         >

@@ -111,6 +111,7 @@ export default {
           },
           thClass: 'text-right',
           tdClass: 'text-right',
+          formatFn: value => this.$formatNumberToLocale(value),
         },
         {
           label: 'Giá bán',
@@ -119,6 +120,7 @@ export default {
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
+          formatFn: value => this.$formatNumberToLocale(value),
         },
         {
           label: 'Thành tiền',
@@ -130,6 +132,7 @@ export default {
           },
           thClass: 'text-right',
           tdClass: 'text-right',
+          formatFn: value => this.$formatNumberToLocale(value),
         },
         {
           label: 'Giảm giá',
@@ -151,6 +154,7 @@ export default {
           },
           thClass: 'text-right',
           tdClass: 'text-right',
+          formatFn: value => this.$formatNumberToLocale(value),
         },
       ],
     }

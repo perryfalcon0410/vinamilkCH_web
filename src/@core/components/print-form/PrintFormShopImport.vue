@@ -15,10 +15,10 @@
           class="mt-1"
         > {{ commonData.shopName }} </strong>
         <p class="mt-1">
-          Add: {{ commonData.shopAddress }}
+          Add: {{ commonData.address }}
         </p>
         <p>
-          Tel: {{ commonData.shopPhone }}
+          Tel: {{ commonData.shopTel }}
         </p>
       </div>
 
@@ -65,7 +65,7 @@
         style="width: 6.5%;"
         class="text-right"
       >
-        <strong>{{ $formatNumberToLocale(commonData.totalQuantity) }}</strong>
+        <strong><u>{{ $formatNumberToLocale(totalData.quantity) }}</u></strong>
       </div>
       <div
         style="width: 10.4%;"
@@ -77,26 +77,24 @@
         style="width: 14.5%;"
         class="text-right"
       >
-        <strong>{{ $formatNumberToLocale(commonData.totalAmount) }}</strong>
+        <strong>{{ $formatNumberToLocale(totalData.total) }}</strong>
       </div>
     </b-row>
     <!-- END - Total section  1-->
 
     <!-- START - Total section 2 -->
     <div
-      v-for="(item,index) in productData"
-      :key="index"
+      v-if="lstPo.orderImport.length > 0"
       class="pb-1"
     >
       <b-row
-        class="mx-0 width-100-per"
+        class="mx-0 width-100-per top-border-only"
         align-v="end"
-        style="border-style: dotted; border-width: 2px"
       >
         <div
           style="width: 44%;"
           class="ml-1"
-        ><strong>Loại: A </strong>
+        ><strong class="big-font"><i>Loại: {{ lstPo.type }}</i> </strong>
         </div>
         <div
           style="width: 6.4%;"
@@ -107,7 +105,7 @@
           style="width: 6.5%;"
           class="text-right"
         >
-          <strong> 1000 </strong>
+          <strong> {{ $formatNumberToLocale(lstPo.totalQuantity) }} </strong>
         </div>
         <div
           style="width: 10.4%;"
@@ -119,16 +117,20 @@
           style="width: 14.5%;"
           class="text-right"
         >
-          <strong> 1000 </strong>
+          <strong> {{ $formatNumberToLocale(lstPo.totalAmount) }} </strong>
         </div>
       </b-row>
       <!-- END - Total section 2 -->
 
       <!-- START - Table 1 -->
       <b-col
+        v-for="(item,index) in lstPo.orderImport"
+        :key="index"
         class="px-0 pb-1"
       >
-        <table>
+        <table
+          class="mb-50"
+        >
           <!-- START - Header -->
           <thead>
             <!-- START - Header 1 -->
@@ -137,33 +139,33 @@
                 colspan="10"
               >
                 <strong class="mx-1">
-                  Số HĐ: 123 - Ngày HĐ: - Số PO <span>- Số nội bộ</span> <span>- Mã nhập hàng</span>
+                  Số HĐ: {{ item.orderNumber }} <span class="pl-1">- Ngày HĐ: {{ $formatISOtoVNI(item.orderDate) }}</span> <span class="pl-1">- Số PO: {{ item.poNumber }}</span> <span class="pl-5">- Số nội bộ: {{ item.internalNumber }}</span> <span class="pl-1">- Mã nhập hàng: {{ item.importNumber }}</span>
                 </strong>
                 <b-row
                   class="mx-0 width-100-per"
                 >
                   <div
-                    style="width: 45%;"
+                    style="width: 55%;"
                   />
                   <div
-                    style="width: 6.6%;"
+                    style="width: 10.7%;"
                     class="text-right"
                   >Tổng SL:
                   </div>
                   <div
-                    style="width: 6.5%;"
+                    style="width: 8%;"
                     class="text-right"
-                  ><strong class="text-right">100</strong>
+                  ><strong class="text-right">{{ $formatNumberToLocale(item.orderQuantity) }}</strong>
                   </div>
                   <div
-                    style="width: 10.4%;"
+                    style="width: 12.4%;"
                     class="text-right"
                   >T.Tiền:
                   </div>
                   <div
-                    style="width: 14.5%;"
+                    style="width: 12.5%;"
                     class="text-right"
-                  ><strong>100</strong>
+                  ><strong>{{ $formatNumberToLocale(item.orderTotal) }}</strong>
                   </div>
                 </b-row>
               </th>
@@ -172,19 +174,10 @@
 
             <!-- START - Header 2 -->
             <tr>
-              <th colspan="7">
-                <b-row>
-                  <b-col>
-                    Ngành hàng: A
-                  </b-col>
-                  <b-col>
-                    Tổng số lượng: B <span>Tổng thành tiền: C</span>
-                  </b-col>
-                </b-row>
-              </th>
-            </tr>
-            <tr>
-              <th>
+              <th
+                class="text-center"
+                style="width: 5%"
+              >
                 STT
               </th>
               <th>
@@ -206,77 +199,514 @@
                 T.Tiền
               </th>
               <!-- END - Header 2 -->
-
+            </tr>
+            <tr style="border-bottom: 2px dotted cyan;">
+              <th colspan="7">
+                <b-row>
+                  <b-col>
+                    Ngành hàng: A
+                  </b-col>
+                  <b-col>
+                    <b-row class="width-100-per mx-0">
+                      <span style="width: 30%; text-align: right">Tổng SL:</span> <span style="width: 16.4%; text-align: right"> {{ $formatNumberToLocale(item.orderQuantity) }}</span>
+                      <span
+                        style="width: 25%; text-align: right"
+                      >T.Tiền:</span> <span style="width: 25.5%; text-align: right;"> {{ $formatNumberToLocale(item.orderTotal) }}</span>
+                    </b-row>
+                  </b-col>
+                </b-row>
+              </th>
             </tr>
           </thead>
           <!-- END - Header -->
 
           <!-- START - Body -->
           <tbody>
-            <tr>
-              <td class="px-1">
-                ok
+            <tr
+              v-for="(product,stt) in item.data"
+              :key="stt"
+            >
+              <td class="text-right pr-50">
+                {{ stt + 1 }}
               </td>
               <td class="px-50">
-                ok
+                {{ product.productCode }}
               </td>
               <td class="px-50">
-                ok
+                {{ product.productName }}
               </td>
               <td class="px-50">
-                ok
+                {{ product.uom1 }}
               </td>
               <td class="px-50 text-right">
-                ok
+                {{ $formatNumberToLocale(product.quantity) }}
               </td>
               <td class="px-50 text-right">
-                ok
+                {{ $formatNumberToLocale(product.price) }}
               </td>
               <td class="px-50 text-right">
-                ok
+                {{ $formatNumberToLocale(product.total) }}
               </td>
             </tr>
-            <div class="d-flex flex-row justify-content-end pb-5">
-              <div
-                class="flex-container mt-50 mb-2"
-                style="margin-right: -1px"
-              >
-                <div class="flex-item">
-                  <b-row class="text-right">
-                    <b-col>
-                      <strong>Điều chỉnh:</strong>
-                    </b-col>
-                    <b-col>
-                      69
-                    </b-col>
-                  </b-row>
-                </div>
-                <div class="flex-item">
-                  <b-row class="text-right">
-                    <b-col>
-                      <strong>VAT:</strong>
-                    </b-col>
-                    <b-col>
-                      69
-                    </b-col>
-                  </b-row>
-                </div>
-                <div class="flex-item">
-                  <b-row class="text-right">
-                    <b-col>
-                      <strong>T.Cộng:</strong>
-                    </b-col>
-                    <b-col>
-                      69
-                    </b-col>
-                  </b-row>
-                </div>
-              </div>
-            </div>
           </tbody>
         <!-- END - Body -->
 
         </table>
+        <div class="d-flex flex-row justify-content-end pb-5">
+          <div
+            class="flex-container"
+          >
+            <div class="flex-item">
+              <b-row class="text-right">
+                <b-col>
+                  <strong>Điều chỉnh:</strong>
+                </b-col>
+                <b-col>
+                  69
+                </b-col>
+              </b-row>
+            </div>
+            <div class="flex-item">
+              <b-row class="text-right">
+                <b-col>
+                  <strong>VAT:</strong>
+                </b-col>
+                <b-col>
+                  69
+                </b-col>
+              </b-row>
+            </div>
+            <div class="flex-item">
+              <b-row class="text-right">
+                <b-col>
+                  <strong>T.Cộng:</strong>
+                </b-col>
+                <b-col>
+                  69
+                </b-col>
+              </b-row>
+            </div>
+          </div>
+        </div>
+      </b-col>
+    </div>
+    <!-- END - Table 1 -->
+
+    <!-- START - Total section 2 -->
+    <div
+      v-if="lstAdjust.orderImport.length > 0"
+      class="pb-1"
+    >
+      <b-row
+        class="mx-0 width-100-per top-border-only"
+        align-v="end"
+      >
+        <div
+          style="width: 44%;"
+          class="ml-1"
+        ><strong class="big-font"><i>Loại: {{ lstAdjust.type }}</i> </strong>
+        </div>
+        <div
+          style="width: 6.4%;"
+          class="text-right"
+        ><strong>Tổng SL:</strong>
+        </div>
+        <div
+          style="width: 6.5%;"
+          class="text-right"
+        >
+          <strong> {{ $formatNumberToLocale(lstAdjust.totalQuantity) }} </strong>
+        </div>
+        <div
+          style="width: 10.4%;"
+          class="text-right"
+        ><strong>T.Tiền:</strong>
+
+        </div>
+        <div
+          style="width: 14.5%;"
+          class="text-right"
+        >
+          <strong> {{ $formatNumberToLocale(lstAdjust.totalAmount) }} </strong>
+        </div>
+      </b-row>
+      <!-- END - Total section 2 -->
+
+      <!-- START - Table 1 -->
+      <b-col
+        v-for="(item,index) in lstAdjust.orderImport"
+        :key="index"
+        class="px-0 pb-1"
+      >
+        <table
+          class="mb-50"
+        >
+          <!-- START - Header -->
+          <thead>
+            <!-- START - Header 1 -->
+            <tr>
+              <th
+                colspan="10"
+              >
+                <strong class="mx-1">
+                  Số HĐ: {{ item.orderNumber }} <span class="pl-1">- Ngày HĐ: {{ $formatISOtoVNI(item.orderDate) }}</span> <span class="pl-1">- Số PO: {{ item.poNumber }}</span> <span class="pl-5">- Số nội bộ: {{ item.internalNumber }}</span> <span class="pl-1">- Mã nhập hàng: {{ item.importNumber }}</span>
+                </strong>
+                <b-row
+                  class="mx-0 width-100-per"
+                >
+                  <div
+                    style="width: 55%;"
+                  />
+                  <div
+                    style="width: 10.7%;"
+                    class="text-right"
+                  >Tổng SL:
+                  </div>
+                  <div
+                    style="width: 8%;"
+                    class="text-right"
+                  ><strong class="text-right">{{ $formatNumberToLocale(item.orderQuantity) }}</strong>
+                  </div>
+                  <div
+                    style="width: 12.4%;"
+                    class="text-right"
+                  >T.Tiền:
+                  </div>
+                  <div
+                    style="width: 12.5%;"
+                    class="text-right"
+                  ><strong>{{ $formatNumberToLocale(item.orderTotal) }}</strong>
+                  </div>
+                </b-row>
+              </th>
+            </tr>
+            <!-- END - Header 1 -->
+
+            <!-- START - Header 2 -->
+            <tr>
+              <th
+                class="text-center"
+                style="width: 5%"
+              >
+                STT
+              </th>
+              <th>
+                Mã SP
+              </th>
+              <th>
+                Tên SP
+              </th>
+              <th>
+                ĐVT
+              </th>
+              <th>
+                SL
+              </th>
+              <th>
+                Giá
+              </th>
+              <th>
+                T.Tiền
+              </th>
+              <!-- END - Header 2 -->
+            </tr>
+            <tr>
+              <th colspan="7">
+                <b-row>
+                  <b-col>
+                    Ngành hàng: A
+                  </b-col>
+                  <b-col>
+                    <b-row class="width-100-per mx-0">
+                      <span style="width: 30%; text-align: right">Tổng SL:</span> <span style="width: 16.4%; text-align: right"> {{ $formatNumberToLocale(item.orderQuantity) }}</span>
+                      <span
+                        style="width: 25%; text-align: right"
+                      >T.Tiền:</span> <span style="width: 25.5%; text-align: right;"> {{ $formatNumberToLocale(item.orderTotal) }}</span>
+                    </b-row>
+                  </b-col>
+                </b-row>
+              </th>
+            </tr>
+          </thead>
+          <!-- END - Header -->
+
+          <!-- START - Body -->
+          <tbody>
+            <tr
+              v-for="(product,stt) in item.data"
+              :key="stt"
+            >
+              <td class="text-right pr-50">
+                {{ stt + 1 }}
+              </td>
+              <td class="px-50">
+                {{ product.productCode }}
+              </td>
+              <td class="px-50">
+                {{ product.productName }}
+              </td>
+              <td class="px-50">
+                {{ product.uom1 }}
+              </td>
+              <td class="px-50 text-right">
+                {{ $formatNumberToLocale(product.quantity) }}
+              </td>
+              <td class="px-50 text-right">
+                {{ $formatNumberToLocale(product.price) }}
+              </td>
+              <td class="px-50 text-right">
+                {{ $formatNumberToLocale(product.total) }}
+              </td>
+            </tr>
+          </tbody>
+        <!-- END - Body -->
+
+        </table>
+        <div class="d-flex flex-row justify-content-end pb-5">
+          <div
+            class="flex-container"
+          >
+            <div class="flex-item">
+              <b-row class="text-right">
+                <b-col>
+                  <strong>Điều chỉnh:</strong>
+                </b-col>
+                <b-col>
+                  69
+                </b-col>
+              </b-row>
+            </div>
+            <div class="flex-item">
+              <b-row class="text-right">
+                <b-col>
+                  <strong>VAT:</strong>
+                </b-col>
+                <b-col>
+                  69
+                </b-col>
+              </b-row>
+            </div>
+            <div class="flex-item">
+              <b-row class="text-right">
+                <b-col>
+                  <strong>T.Cộng:</strong>
+                </b-col>
+                <b-col>
+                  69
+                </b-col>
+              </b-row>
+            </div>
+          </div>
+        </div>
+      </b-col>
+    </div>
+    <!-- END - Table 1 -->
+    <!-- START - Total section 2 -->
+    <div
+      v-if="lstBorrow.orderImport.length > 0"
+      class="pb-1"
+    >
+      <b-row
+        class="mx-0 width-100-per top-border-only"
+        align-v="end"
+      >
+        <div
+          style="width: 44%;"
+          class="ml-1"
+        ><strong class="big-font"><i>Loại: {{ lstBorrow.type }}</i> </strong>
+        </div>
+        <div
+          style="width: 6.4%;"
+          class="text-right"
+        ><strong>Tổng SL:</strong>
+        </div>
+        <div
+          style="width: 6.5%;"
+          class="text-right"
+        >
+          <strong> {{ $formatNumberToLocale(lstBorrow.totalQuantity) }} </strong>
+        </div>
+        <div
+          style="width: 10.4%;"
+          class="text-right"
+        ><strong>T.Tiền:</strong>
+
+        </div>
+        <div
+          style="width: 14.5%;"
+          class="text-right"
+        >
+          <strong> {{ $formatNumberToLocale(lstBorrow.totalAmount) }} </strong>
+        </div>
+      </b-row>
+      <!-- END - Total section 2 -->
+
+      <!-- START - Table 1 -->
+      <b-col
+        v-for="(item,index) in lstBorrow.orderImport"
+        :key="index"
+        class="px-0 pb-1"
+      >
+        <table
+          class="mb-50"
+        >
+          <!-- START - Header -->
+          <thead>
+            <!-- START - Header 1 -->
+            <tr>
+              <th
+                colspan="10"
+              >
+                <strong class="mx-1">
+                  Số HĐ: {{ item.orderNumber }} <span class="pl-1">- Ngày HĐ: {{ $formatISOtoVNI(item.orderDate) }}</span> <span class="pl-1">- Số PO: {{ item.poNumber }}</span> <span class="pl-5">- Số nội bộ: {{ item.internalNumber }}</span> <span class="pl-1">- Mã nhập hàng: {{ item.importNumber }}</span>
+                </strong>
+                <b-row
+                  class="mx-0 width-100-per"
+                >
+                  <div
+                    style="width: 55%;"
+                  />
+                  <div
+                    style="width: 10.7%;"
+                    class="text-right"
+                  >Tổng SL:
+                  </div>
+                  <div
+                    style="width: 8%;"
+                    class="text-right"
+                  ><strong class="text-right">{{ $formatNumberToLocale(item.orderQuantity) }}</strong>
+                  </div>
+                  <div
+                    style="width: 12.4%;"
+                    class="text-right"
+                  >T.Tiền:
+                  </div>
+                  <div
+                    style="width: 12.5%;"
+                    class="text-right"
+                  ><strong>{{ $formatNumberToLocale(item.orderTotal) }}</strong>
+                  </div>
+                </b-row>
+              </th>
+            </tr>
+            <!-- END - Header 1 -->
+
+            <!-- START - Header 2 -->
+            <tr>
+              <th
+                class="text-center"
+                style="width: 5%"
+              >
+                STT
+              </th>
+              <th>
+                Mã SP
+              </th>
+              <th>
+                Tên SP
+              </th>
+              <th>
+                ĐVT
+              </th>
+              <th>
+                SL
+              </th>
+              <th>
+                Giá
+              </th>
+              <th>
+                T.Tiền
+              </th>
+              <!-- END - Header 2 -->
+            </tr>
+            <tr>
+              <th colspan="7">
+                <b-row>
+                  <b-col>
+                    Ngành hàng: A
+                  </b-col>
+                  <b-col>
+                    <b-row class="width-100-per mx-0">
+                      <span style="width: 30%; text-align: right">Tổng SL:</span> <span style="width: 16.4%; text-align: right"> {{ $formatNumberToLocale(item.orderQuantity) }}</span>
+                      <span
+                        style="width: 25%; text-align: right"
+                      >T.Tiền:</span> <span style="width: 25.5%; text-align: right;"> {{ $formatNumberToLocale(item.orderTotal) }}</span>
+                    </b-row>
+                  </b-col>
+                </b-row>
+              </th>
+            </tr>
+          </thead>
+          <!-- END - Header -->
+
+          <!-- START - Body -->
+          <tbody>
+            <tr
+              v-for="(product,stt) in item.data"
+              :key="stt"
+            >
+              <td class="text-right pr-50">
+                {{ stt + 1 }}
+              </td>
+              <td class="px-50">
+                {{ product.productCode }}
+              </td>
+              <td class="px-50">
+                {{ product.productName }}
+              </td>
+              <td class="px-50">
+                {{ product.uom1 }}
+              </td>
+              <td class="px-50 text-right">
+                {{ $formatNumberToLocale(product.quantity) }}
+              </td>
+              <td class="px-50 text-right">
+                {{ $formatNumberToLocale(product.price) }}
+              </td>
+              <td class="px-50 text-right">
+                {{ $formatNumberToLocale(product.total) }}
+              </td>
+            </tr>
+          </tbody>
+        <!-- END - Body -->
+
+        </table>
+        <div class="d-flex flex-row justify-content-end pb-5">
+          <div
+            class="flex-container"
+          >
+            <div class="flex-item">
+              <b-row class="text-right">
+                <b-col>
+                  <strong>Điều chỉnh:</strong>
+                </b-col>
+                <b-col>
+                  69
+                </b-col>
+              </b-row>
+            </div>
+            <div class="flex-item">
+              <b-row class="text-right">
+                <b-col>
+                  <strong>VAT:</strong>
+                </b-col>
+                <b-col>
+                  69
+                </b-col>
+              </b-row>
+            </div>
+            <div class="flex-item">
+              <b-row class="text-right">
+                <b-col>
+                  <strong>T.Cộng:</strong>
+                </b-col>
+                <b-col>
+                  69
+                </b-col>
+              </b-row>
+            </div>
+          </div>
+        </div>
       </b-col>
     </div>
     <!-- END - Table 1 -->
@@ -309,6 +739,9 @@ import {
 export default {
   data() {
     return {
+      lstPo: { orderImport: [] },
+      lstAdjust: { orderImport: [] },
+      lstBorrow: { orderImport: [] },
     }
   },
   computed: {
@@ -316,16 +749,47 @@ export default {
       PRINT_SHOP_IMPORT_REPORT_GETTER,
     ]),
     commonData() {
-      if (this.PRINT_SHOP_IMPORT_REPORT_GETTER.info) {
-        return this.PRINT_SHOP_IMPORT_REPORT_GETTER.info
+      if (this.PRINT_SHOP_IMPORT_REPORT_GETTER) {
+        return this.PRINT_SHOP_IMPORT_REPORT_GETTER
       }
       return {}
     },
-    productData() {
-      if (this.PRINT_SHOP_IMPORT_REPORT_GETTER.response) {
-        return this.PRINT_SHOP_IMPORT_REPORT_GETTER.response.lstPo
+    totalData() {
+      if (this.PRINT_SHOP_IMPORT_REPORT_GETTER.totalInfo) {
+        return this.PRINT_SHOP_IMPORT_REPORT_GETTER.totalInfo
+      }
+      return {
+        show: true,
+      }
+    },
+    getLstPo() {
+      if (this.PRINT_SHOP_IMPORT_REPORT_GETTER.lstPO) {
+        return this.PRINT_SHOP_IMPORT_REPORT_GETTER.lstPO
       }
       return {}
+    },
+    getLstAdjust() {
+      if (this.PRINT_SHOP_IMPORT_REPORT_GETTER.lstAdjust) {
+        return this.PRINT_SHOP_IMPORT_REPORT_GETTER.lstAdjust
+      }
+      return {}
+    },
+    getLstBorrow() {
+      if (this.PRINT_SHOP_IMPORT_REPORT_GETTER.lstBorrow) {
+        return this.PRINT_SHOP_IMPORT_REPORT_GETTER.lstBorrow
+      }
+      return {}
+    },
+  },
+  watch: {
+    getLstPo() {
+      this.lstPo = { ...this.getLstPo }
+    },
+    getLstAdjust() {
+      this.lstAdjust = { ...this.getLstAdjust }
+    },
+    getLstBorrow() {
+      this.lstBorrow = { ...this.getLstBorrow }
     },
   },
   updated() {
@@ -336,8 +800,8 @@ export default {
 <style lang="scss" scoped>
 table {
   position: relative;
+  border: 2px solid;
   width: 100%;
-  border-collapse: collapse;
 }
 th {
   border-style: solid;
@@ -346,6 +810,14 @@ th {
 td {
   border-style: dotted;
   border-width: 2px;
+}
+
+.top-border-only {
+  border-top: 3px solid rgb(100, 99, 99);
+}
+.bot-border-dotted {
+  border-bottom: 2px dotted;
+  border-collapse: collapse;
 }
 .total {
     background: rgb(192, 186, 186)
@@ -356,11 +828,14 @@ td {
     right: 0;
     border: 2px dotted;
     height: auto;
-    min-width: 338px;
+    min-width: 330px;
     flex-direction: column;
     align-items: center;
 }
 .flex-item > .row {
     min-width: 338px;
+}
+.big-font {
+  font-size: 17px;
 }
 </style>
