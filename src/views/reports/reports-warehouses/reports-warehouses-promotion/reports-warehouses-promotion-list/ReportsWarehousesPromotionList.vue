@@ -309,7 +309,7 @@ export default {
           productName: data.productName,
           dvt: data.uom,
           quantity: data.quantity,
-          orderDate: formatISOtoVNI(data.orderDate),
+          orderDate: formatISOtoVNI(data.orderDate, true),
           billType: data.billType,
           promotionCode: data.promotionCode,
           onlineNumber: data.onlineNumber,

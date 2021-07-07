@@ -107,7 +107,7 @@
               />
 
               <b-icon-trash-fill
-                v-show="$formatISOtoVNI(props.row.date) === $nowDate"
+                v-show="$formatISOtoVNI(props.row.date) === nowDate"
                 v-b-popover.hover.top="'Xóa'"
                 class="cursor-pointer ml-1"
                 color="red"
@@ -245,6 +245,7 @@ import {
 } from '@/@core/utils/validations/validations'
 // import toasts from '@core/utils/toasts/toasts'
 
+import { nowDate } from '@/@core/utils/filter'
 import WarehousesExchangeDamagedGoodsListSearch from './components/WarehousesExchangeDamagedGoodsListSearch.vue'
 import {
   WAREHOUSES_EXCHANGE_DAMAGED_GOODS,
@@ -273,6 +274,7 @@ export default {
           type: 'desc',
         },
       },
+      nowDate: nowDate(),
 
       elementSize: commonData.pageNumber,
       pageNumber: 1,

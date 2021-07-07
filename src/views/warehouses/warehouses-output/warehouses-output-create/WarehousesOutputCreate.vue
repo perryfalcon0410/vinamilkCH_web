@@ -420,6 +420,9 @@ import {
   required,
 } from '@/@core/utils/validations/validations'
 import { getNow } from '@core/utils/utils'
+import {
+  nowDate,
+} from '@/@core/utils/filter'
 import toasts from '@/@core/utils/toasts/toasts'
 import OutputModal from '../components/output-modal/OutputModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
@@ -474,8 +477,8 @@ export default {
         internalNumber: '', // số nội bộ
         poNumber: '',
         note: '',
-        transDate: this.$nowDate,
-        billDate: this.$nowDate,
+        transDate: nowDate(),
+        billDate: nowDate(),
       },
       products: [],
       rowsProductPromotion: [],
@@ -673,6 +676,7 @@ export default {
       this.transDate = ''
       this.note = ''
       this.products = []
+      this.rowsProductPromotion = []
       this.hideFilter = true
       this.exportAll = false
       if (this.outputTypeSelected !== this.poOutputType) {
@@ -834,10 +838,19 @@ export default {
       this.warehousesOutput.code = ''
       this.warehousesOutput.note = ''
       this.outputTypeSelected = warehousesData.outputTypes[0].id
-      this.warehousesOutput.billDate = this.$nowDate
+      this.warehousesOutput.billDate = nowDate()
     },
     changeQuantity() {
-      this.exportAll = false
+      this.products.forEach(item => {
+        if (Number(item.quantityReturn) === item.quantity - item.productReturnExportOriginal) {
+          this.exportAll = true
+          this.rowsProductPromotion.forEach(i => {
+            if (Number(i.quantityPromo) === item.quantity - item.productReturnExportOriginal) {
+              this.exportAll = true
+            } else this.exportAll = false
+          })
+        } else this.exportAll = false
+      })
     },
   },
 }

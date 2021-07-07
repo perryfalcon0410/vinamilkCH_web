@@ -287,7 +287,7 @@
                 @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
               />
               <b-icon-trash-fill
-                v-show="$formatISOtoVNI(props.row.date) === $nowDate"
+                v-show="$formatISOtoVNI(props.row.date) === nowDate"
                 v-b-popover.hover.top="'Xóa'"
                 class="cursor-pointer ml-1"
                 color="red"
@@ -476,6 +476,7 @@ export default {
       },
       fromDate: earlyMonth(),
       toDate: nowDate(),
+      nowDate: nowDate(),
       decentralization: {
         formId: 1,
         ctrlId: 1,
@@ -562,7 +563,7 @@ export default {
         wrap: true,
         allowInput: true,
         dateFormat: 'd/m/Y',
-        maxDate: this.$nowDate,
+        maxDate: nowDate(),
       },
       configToDate: {
         wrap: true,
@@ -696,7 +697,7 @@ export default {
         id: this.warehousesOutputSelected.id,
         type: this.warehousesOutputSelected.type,
       }
-      if (this.warehousesOutputSelected.date === this.$nowDate) {
+      if (this.warehousesOutputSelected.date === nowDate()) {
         this.warehousesOutputList.splice(this.warehousesOutputSelected.index, 1)
       }
       this.DELETE_WAREHOUSES_ACTION(paramDeleteWarehousesOutput)

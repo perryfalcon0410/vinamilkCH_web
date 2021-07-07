@@ -46,15 +46,6 @@
                 no-options-text="Không có dữ liệu"
                 disabled
               />
-              <!-- <b-input-group-append>
-                <b-icon-three-dots-vertical
-                  v-b-popover.hover.right="'Chọn phiếu xuất'"
-                  scale="1.4"
-                  class="cursor-pointer"
-                  :disabled="warehousesOutput.receiptType === warehousesOptions[0].id"
-                  @click="showModal()"
-                />
-              </b-input-group-append> -->
             </div>
           </b-col>
         </b-form-row>
@@ -181,6 +172,7 @@
               v-model="exportAll"
               class="m-1"
               :disabled="isDisableSave || warehousesOutput.receiptType !== warehousesOptions[0].id"
+              @change="clickExportAll()"
             >
               Trả nguyên đơn
             </b-form-checkbox>
@@ -337,7 +329,7 @@ import {
 } from 'vuex'
 import warehousesData from '@/@db/warehouses'
 import {
-  getTimeOfDate, formatISOtoVNI,
+  getTimeOfDate, formatISOtoVNI, nowDate,
 } from '@/@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
 import {
@@ -359,6 +351,7 @@ export default {
       warehousesOptions: warehousesData.outputTypes,
       poOutputType: warehousesData.outputTypes[0].id,
       exportAll: false,
+      quantityCheck: true,
       products: [],
       rowsProductPromotion: [],
       columns: [
@@ -595,7 +588,7 @@ export default {
       }
 
       // enable or disable button save
-      this.isDisableSave = this.warehousesOutput.transDate !== this.$nowDate
+      this.isDisableSave = this.warehousesOutput.transDate !== nowDate()
     },
     getProductOfWarehouseOutput() {
       this.getProductOfWarehouseOutput.forEach(item => {
@@ -616,37 +609,16 @@ export default {
           this.products.push(obj)
         } else this.rowsProductPromotion.push(obj)
       })
-      // this.products.forEach(item => {
-      //   if (item.productExport === item.productImportQuantity) {
-      //     this.exportAll = true
-      //   } else this.exportAll = false
-      // })
-      // this.rowsProductPromotion.forEach(item => {
-      //   if (item.productExport === item.productImportQuantity) {
-      //     this.exportAll = true
-      //   } else this.exportAll = false
-      // })
-    },
-    exportAll() {
-      if (this.exportAll) {
-        this.products.forEach((item, index) => {
-          this.products[index].productReturnAmount = item.productImportQuantity - item.productExport
-        })
-        this.rowsProductPromotion.forEach((item, index) => {
-          this.rowsProductPromotion[index].productReturnAmount = item.productImportQuantity - item.productExport
-        })
-      } else {
-        this.products.forEach((item, index) => {
-          if (this.products[index].productReturnAmount === item.productImportQuantity - item.productExport) {
-            this.products[index].productReturnAmount = item.productQuantity
-          }
-        })
-        this.rowsProductPromotion.forEach((item, index) => {
-          if (this.rowsProductPromotion[index].productReturnAmount === item.productImportQuantity - item.productExport) {
-            this.rowsProductPromotion[index].productReturnAmount = item.productQuantity
-          }
-        })
-      }
+      this.products.forEach(item => {
+        if (item.productImportQuantity === item.productExport) {
+          this.exportAll = true
+          this.rowsProductPromotion.forEach(i => {
+            if (i.productImportQuantity === i.productExport) {
+              this.exportAll = true
+            } else this.exportAll = false
+          })
+        } else this.exportAll = false
+      })
     },
   },
   mounted() {
@@ -685,33 +657,78 @@ export default {
           break
       }
     },
-    onClickUpdateWarehousesOutput() {
-      if (this.products) {
-        const products = [...this.products.map(data => ({
-          id: data.productID,
-          quantity: data.productReturnAmount,
-        })),
-        ...this.rowsProductPromotion.map(data => ({
-          id: data.productID,
-          quantity: data.productReturnAmount,
-        })),
-        ]
-
-        this.UPDATE_WAREHOUSES_OUTPUT_ACTION({
-          updateWarehouseOutput: {
-            id: this.warehousesOutput.id,
-            type: this.warehousesOutput.receiptType,
-            note: this.warehousesOutput.note,
-            listProductRemain: products,
-          },
-          onSuccess: () => {
-            this.navigateBack()
-          },
+    clickExportAll() {
+      if (this.exportAll) {
+        this.products.forEach((item, index) => {
+          this.products[index].productReturnAmount = item.productImportQuantity - item.productExport + item.productQuantity
         })
+        this.rowsProductPromotion.forEach((item, index) => {
+          this.rowsProductPromotion[index].productReturnAmount = item.productImportQuantity - item.productExport + item.productQuantity
+        })
+      } else {
+        this.products.forEach((item, index) => {
+          this.products[index].productReturnAmount = null
+        })
+        this.rowsProductPromotion.forEach((item, index) => {
+          this.rowsProductPromotion[index].productReturnAmount = null
+        })
+      }
+    },
+    checkQuantity() {
+      this.products.forEach(item => {
+        if (item.productReturnAmount == null || item.productImportQuantity - item.productExport + item.productQuantity >= item.productReturnAmount) {
+          this.quantityCheck = true
+          this.rowsProductPromotion.forEach(i => {
+            if (i.productReturnAmount == null || i.productImportQuantity - i.productExport + i.productQuantity >= i.productReturnAmount) {
+              this.quantityCheck = true
+            } else {
+              this.quantityCheck = false
+            }
+          })
+        } else {
+          this.quantityCheck = false
+        }
+      })
+    },
+    onClickUpdateWarehousesOutput() {
+      this.checkQuantity()
+      if (this.quantityCheck) {
+        if (this.products) {
+          const products = [...this.products.map(data => ({
+            id: data.productID,
+            quantity: data.productReturnAmount,
+          })),
+          ...this.rowsProductPromotion.map(data => ({
+            id: data.productID,
+            quantity: data.productReturnAmount,
+          })),
+          ]
+
+          this.UPDATE_WAREHOUSES_OUTPUT_ACTION({
+            updateWarehouseOutput: {
+              id: this.warehousesOutput.id,
+              type: this.warehousesOutput.receiptType,
+              note: this.warehousesOutput.note,
+              listProductRemain: products,
+            },
+            onSuccess: () => {
+              this.navigateBack()
+            },
+          })
+        }
       } else toasts.error('Số lượng trả phải nhỏ hơn số lượng sản phẩm!')
     },
     changeQuantity() {
-      this.exportAll = false
+      this.products.forEach(item => {
+        if (Number(item.productReturnAmount) + item.productExport - item.productQuantity === item.productImportQuantity) {
+          this.exportAll = true
+          this.rowsProductPromotion.forEach(i => {
+            if (Number(i.productReturnAmount) + i.productExport - i.productQuantity === i.productImportQuantity) {
+              this.exportAll = true
+            } else this.exportAll = false
+          })
+        } else this.exportAll = false
+      })
     },
   },
 }
