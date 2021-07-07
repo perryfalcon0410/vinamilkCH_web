@@ -1157,7 +1157,6 @@ export default {
           if (this.pay.salePayment.salePaymentType !== undefined) {
             this.createSaleOrder()
           }
-          this.createSaleOrder()
         }
       }
       if (e.key === 'F10') {
