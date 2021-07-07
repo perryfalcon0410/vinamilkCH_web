@@ -531,7 +531,7 @@ import {
   required,
 } from '@/@core/utils/validations/validations'
 import {
-  formatISOtoVNI, formatVniDateToISO,
+  formatISOtoVNI, formatVniDateToISO, nowDate,
 } from '@core/utils/filter'
 import warehousesData from '@/@db/warehouses'
 import {
@@ -567,7 +567,7 @@ export default {
       transDate: null,
       transDateTime: null,
       wareHouseTypeName: null,
-      today: this.$nowDate,
+      today: nowDate(),
       importTypeName: null,
       warehousesInputOptions: warehousesData.inputTypes,
       configDate: {

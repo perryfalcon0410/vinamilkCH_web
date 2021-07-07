@@ -367,7 +367,6 @@ export default {
   },
 
   mounted() {
-    this.onClickSearchButton()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,

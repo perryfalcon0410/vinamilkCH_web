@@ -105,7 +105,7 @@
                 @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
               />
               <v-icon-remove
-                v-show="$formatISOtoVNI(props.row.transDate) === $nowDate"
+                v-show="$formatISOtoVNI(props.row.transDate) === nowDate"
                 class="ml-1"
                 @click="onClickDeleteButton(props.row.id, props.row.inputTypes, props.row.originalIndex, props.row.transCode)"
               />
@@ -248,6 +248,9 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
+import {
+  nowDate,
+} from '@/@core/utils/filter'
 import PrintFormInputOrder from '@core/components/print-form/PrintFormInputOrder.vue'
 // Icons
 import VIconManipulation from '@core/components/v-icons/IconManipulation.vue'
@@ -297,6 +300,7 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
+      nowDate: nowDate(),
       columns: [
         {
           label: 'Ngày',

@@ -75,12 +75,9 @@
           >
             <b-row
               v-if="props.column.field === 'feature'"
-              class="pl-1"
+              hidden
             >
-              <b-icon-bricks
-                v-b-popover.hover="'Thao tác'"
-                scale="1.3"
-              />
+              <v-icon-manipulation />
             </b-row>
             <div v-else>
               {{ props.column.label }}
@@ -95,12 +92,10 @@
           >
             <b-row
               v-if="props.column.field === 'feature'"
-              class="pl-1"
             >
-              <b-icon-pencil-fill
-                v-b-popover.hover.top="'Chỉnh sửa'"
-                class="cursor-pointer"
-                scale="1.2"
+              <v-icon-edit
+                class="ml-1"
+                popover-position="left"
                 @click="onClickUpdateButton(props.row.id)"
               />
             </b-row>
@@ -179,6 +174,8 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
+import VIconManipulation from '@core/components/v-icons/IconManipulation.vue'
+import VIconEdit from '@core/components/v-icons/IconEdit.vue'
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
@@ -195,6 +192,8 @@ import {
 export default {
   components: {
     WarehousesInventoryListSearch,
+    VIconManipulation,
+    VIconEdit,
   },
   data() {
     return {
@@ -219,38 +218,26 @@ export default {
         {
           label: 'Ngày',
           field: 'countingDate',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Mã kiểm kê',
           field: 'stockCountingCode',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Kho',
           field: 'warehouseType',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Người tạo',
           field: 'createUser',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Chỉnh sửa lần cuối',
           field: 'updateDate',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Người chỉnh sửa',
           field: 'updateUser',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Thao tác',

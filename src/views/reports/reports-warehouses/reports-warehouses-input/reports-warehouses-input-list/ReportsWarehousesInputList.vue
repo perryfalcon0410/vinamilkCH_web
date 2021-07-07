@@ -27,6 +27,7 @@
           <b-button
             class="rounded btn-brand-1 h7"
             variant="someThing"
+            :disabled="warehousesInputs.length === 0"
             @click="printReport"
           >
             <b-icon-printer-fill class="mr-50" />
@@ -35,6 +36,7 @@
           <b-button
             class="ml-1 rounded btn-brand-1 h7"
             variant="someThing"
+            :disabled="warehousesInputs.length === 0"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />
