@@ -115,7 +115,9 @@
                 slot-scope="props"
               >
                 <div
-                  v-if="props.column.field === 'totalPrice' || 'price' || 'quantity'"
+                  v-if="props.column.field === 'totalPrice' ||
+                    props.column.field ==='price' ||
+                    props.column.field ==='quantity'"
                   class="pr-70"
                 >
                   {{ props.formattedRow[props.column.field] }}

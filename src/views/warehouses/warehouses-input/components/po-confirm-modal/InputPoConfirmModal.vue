@@ -81,14 +81,12 @@
               Sản phẩm
             </strong>
             <b-button
-              class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+              class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-center"
               variant="someThing"
               @click="syncPo"
             >
               <b-icon
                 icon="arrow-repeat"
-                width="20"
-                height="20"
               />
               Tải PO
             </b-button>
@@ -239,7 +237,7 @@
     <!-- START - Footer -->
     <template #modal-footer="{}">
       <b-button
-        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-center"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-center"
         variant="someThing"
         @click="confirmImportButton"
       >
@@ -249,7 +247,7 @@
         Nhập hàng
       </b-button>
       <b-button
-        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-center"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-center"
         variant="something"
         @click="showModal()"
       >
@@ -259,7 +257,7 @@
         Không nhập
       </b-button>
       <b-button
-        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-center"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-center"
         variant="someThing"
         @click="exportExcel"
       >
@@ -269,7 +267,7 @@
         Xuất excel
       </b-button>
       <b-button
-        class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder height-button-brand-1 align-items-button-center"
+        class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
         @click="closePoModal"
       >
         <b-icon
@@ -493,6 +491,7 @@ export default {
       ctrlId: this.ctrlId,
     })
   },
+
   methods: {
     ...mapGetters(WAREHOUSEINPUT, [
       POCONFIRM_GETTER,

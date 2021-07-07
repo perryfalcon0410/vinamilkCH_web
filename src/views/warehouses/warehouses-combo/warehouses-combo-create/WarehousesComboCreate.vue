@@ -274,7 +274,7 @@
 
 <script>
 import warehousesData from '@/@db/warehouses'
-import { formatVniDateToISO } from '@/@core/utils/filter'
+import { formatVniDateToISO, nowDate } from '@/@core/utils/filter'
 import { getNow } from '@/@core/utils/utils'
 import commonData from '@/@db/common'
 import { VueAutosuggest } from 'vue-autosuggest'
@@ -313,7 +313,7 @@ export default {
       tradingTypeOptions: warehousesData.tradingTypes,
       tradingTypeSelected: null,
 
-      transDate: this.$nowDate,
+      transDate: nowDate(),
       comboExchangeRows: [],
       comboListRows: [],
 

@@ -202,6 +202,7 @@ export default {
   },
   data() {
     return {
+      reportSalesSaleReceiptPagination: {},
       // pagination
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
@@ -221,23 +222,17 @@ export default {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
           width: '10rem',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
           width: '12rem',
         },
       ],
@@ -247,6 +242,7 @@ export default {
         sortable: false,
         thClass: 'text-right',
         tdClass: 'text-right',
+        formatFn: this.$formatNumberToLocale,
       },
     }
   },
@@ -260,7 +256,7 @@ export default {
       }
       return []
     },
-    reportSalesSaleReceiptPagination() {
+    getReportSalesSaleReceiptPagination() {
       if (this.REPORT_SALES_SALE_RECEIPT_GETTER.response) {
         return this.REPORT_SALES_SALE_RECEIPT_GETTER.response
       }
@@ -333,7 +329,6 @@ export default {
         }
       }
     },
-
     getTotalInfo() {
       this.totalQuantity = []
       this.getTotalInfo.forEach((item, index) => {
@@ -342,8 +337,12 @@ export default {
         }
       })
     },
+    getReportSalesSaleReceiptPagination() {
+      this.reportSalesSaleReceiptPagination = { ...this.getReportSalesSaleReceiptPagination }
+    },
   },
   mounted() {
+    this.columns = [...this.initalCol]
     resizeAbleTable()
   },
   methods: {

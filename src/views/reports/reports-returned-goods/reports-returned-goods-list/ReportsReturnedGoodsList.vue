@@ -107,8 +107,20 @@
             </div>
             <div
               v-else-if="props.column.field === 'quantity' ||
-                'amount' || 'refunds' || 'price'"
+                props.column.field ==='amount' ||
+                props.column.field ==='refunds' ||
+                props.column.field ==='price'"
               class="pr-70"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'productCode' ||
+                props.column.field ==='productName' ||
+                props.column.field ==='reasonForPayment' ||
+                props.column.field ==='feedback' ||
+                props.column.field ==='fullName'"
+              class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -288,15 +300,15 @@ export default {
           label: 'Họ tên',
           field: 'fullName',
           sortable: false,
-          thClass: 'text-left text-nowrap standard-width',
-          tdClass: 'text-left standard-width',
+          thClass: 'text-left text-nowrap',
+          tdClass: 'text-left',
         },
         {
           label: 'Ngành hàng',
           field: 'industry',
           sortable: false,
-          thClass: 'text-left text-nowrap standard-width',
-          tdClass: 'text-left standard-width',
+          thClass: 'text-left text-nowrap ',
+          tdClass: 'text-left ',
         },
         {
           label: 'Mã sản phẩm',
@@ -362,15 +374,15 @@ export default {
           label: 'Lý do trả',
           field: 'reasonForPayment',
           sortable: false,
-          thClass: 'text-left text-nowrap standard-width',
-          tdClass: 'text-left standard-width',
+          thClass: 'text-left text-nowrap',
+          tdClass: 'text-left',
         },
         {
           label: 'Thông tin phản hồi',
           field: 'feedback',
           sortable: false,
-          thClass: 'text-left text-nowrap standard-width',
-          tdClass: 'text-left standard-width',
+          thClass: 'text-left text-nowrap',
+          tdClass: 'text-left',
         },
 
       ],

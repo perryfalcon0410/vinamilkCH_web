@@ -382,6 +382,8 @@ export default {
         },
       ],
       rows: [],
+      reportInventoryInfo: {},
+      reportInventoryPagination: {},
     }
   },
   computed: {
@@ -409,13 +411,13 @@ export default {
         warning: data.warning,
       }))
     },
-    reportInventoryInfo() {
+    getReportInventoryInfo() {
       if (this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER) {
         return this.REPORT_WAREHOUSES_INVENTORY_INFO_GETTER
       }
       return {}
     },
-    reportInventoryPagination() {
+    getReportInventoryPagination() {
       if (this.REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER) {
         return this.REPORT_WAREHOUSES_INVENTORY_PAGINATION_GETTER
       }
@@ -432,6 +434,12 @@ export default {
   watch: {
     reportInventory() {
       this.rows = [...this.reportInventory]
+    },
+    getReportInventoryInfo() {
+      this.reportInventoryInfo = { ...this.getReportInventoryInfo }
+    },
+    getReportInventoryPagination() {
+      this.reportInventoryPagination = { ...this.getReportInventoryPagination }
     },
   },
   methods: {

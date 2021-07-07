@@ -84,11 +84,12 @@
             <b-col>
               <validation-provider
                 v-slot="{ errors, passed, touched }"
+                :rules="inputTypeSelected === '0' ? 'required' : ''"
                 name="số hóa đơn"
               >
                 <div class="mt-1 h7">
                   Số hóa đơn <sup
-                    v-show="status === -1"
+                    v-show="inputTypeSelected === '0'"
                     class="text-danger"
                   >*</sup>
                 </div>
@@ -97,7 +98,7 @@
                   class="text-uppercase"
                   maxlength="40"
                   :state="touched && inputTypeSelected === '0' ? passed : null"
-                  :disabled="disableInput"
+                  :disabled="inputTypeSelected !== '0' ? true : false"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
@@ -538,7 +539,9 @@
       @inputChange="dataFromPoConfirm($event)"
       @clearView="clearsViewIfNotImport($event)"
     />
-    <confirm-modal />
+    <confirm-modal
+      @ok="routerBack()"
+    />
     <!-- END - Modal -->
   </b-container>
 </template>
@@ -552,6 +555,7 @@ import {
   number,
   required,
 } from '@/@core/utils/validations/validations'
+import { nowDate, formatVniDateToISO } from '@/@core/utils/filter'
 import { VueAutosuggest } from 'vue-autosuggest'
 import { mapGetters, mapActions } from 'vuex'
 import { getNow } from '@core/utils/utils'
@@ -559,7 +563,7 @@ import commonData from '@/@db/common'
 import toasts from '@core/utils/toasts/toasts'
 import warehousesData from '@/@db/warehouses'
 import ConfirmModal from '@/@core/components/confirm-close-modal/ConfirmModal.vue'
-import { formatVniDateToISO } from '@/@core/utils/filter'
+
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
 import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
@@ -613,11 +617,11 @@ export default {
         dateFormat: 'd/m/Y',
       },
       now: getNow(),
-
+      isFieldCanCheck: true,
       // START - Input form
-      billNumber: '',
-      internalNumber: '',
-      billDate: this.$nowDate,
+      billNumber: null,
+      internalNumber: null,
+      billDate: nowDate(),
       poNo: null,
       note: '',
       poId: null,
@@ -909,7 +913,7 @@ export default {
       this.clearAllDataView()
       if (this.inputTypeSelected === '0') {
         this.columns = this.poConfirmColumn
-        this.billDate = this.$nowDate
+        this.billDate = nowDate()
         this.isShowPoPromoManualTable = true
       } else {
         this.isShowPoPromoTable = false
@@ -940,7 +944,19 @@ export default {
       ...this.decentralization,
     })
   },
-
+  // before page leave, this will check
+  beforeRouteLeave(to, from, next) {
+    if (this.isFieldCanCheck) {
+      if (this.checkFieldsValueLength()) {
+        this.$bvModal.show('confirmModal')
+        this.goNext = next
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
+  },
   methods: {
     ...mapActions(WAREHOUSEINPUT, [
       CREATE_SALE_IMPORT_ACTION,
@@ -974,11 +990,15 @@ export default {
       }
     },
     navigateBack() {
-      if (this.status === -1 && this.promotionRow.length === 0 && !this.billNumber && !this.internalNumber && !this.poNo) {
-        this.$router.replace({ name: 'warehouses-input' })
-      } else {
+      if (this.checkFieldsValueLength()) {
         this.$bvModal.show('confirmModal')
+      } else {
+        this.$router.replace({ name: 'warehouses-input' })
       }
+    },
+    routerBack() {
+      this.isFieldCanCheck = false
+      this.$router.replace({ name: 'warehouses-input' })
     },
     // ---------------------------Nhap hang-----------------------
     dataFromPoConfirm(data) {
@@ -1030,6 +1050,8 @@ export default {
     },
     // ------------------------------Nhap vay muon----------------------------
     create() {
+      this.isFieldCanCheck = false
+      // this mean status = 0 || 1 || 2
       if (this.promotionRow.length === 0) {
         const obj = {
           importType: this.status,
@@ -1043,6 +1065,7 @@ export default {
         if (obj.importType === -1) {
           toasts.error('Cần chọn ít nhất 1 sản phẩm khuyến mãi')
         }
+        // status = 1 || 2
         if (obj.poId !== null && this.status !== 0) {
           this.CREATE_SALE_IMPORT_ACTION(obj)
         }
@@ -1122,18 +1145,27 @@ export default {
       this.poBorrowingInfo = {}
       this.status = -1
       this.note = ''
-      this.billDate = this.$nowDate
+      this.billDate = nowDate()
       this.poId = null
       this.poNo = null
       this.internalNumber = null
       this.rowsProductPromotion = []
       this.promotionRow = []
       this.totalProduct = null
+      this.billNumber = null
     },
     clearsViewIfNotImport(id) {
       if (this.poId === id) {
         this.clearAllDataView()
       }
+    },
+    checkFieldsValueLength() {
+      if (this.billNumber || this.internalNumber
+      || this.poNo || this.poId
+      || this.rowsProductPromotion.length > 0) {
+        return true
+      }
+      return false
     },
   },
 }

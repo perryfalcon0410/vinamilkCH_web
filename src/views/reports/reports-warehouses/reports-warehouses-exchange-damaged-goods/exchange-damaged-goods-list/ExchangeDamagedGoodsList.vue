@@ -231,52 +231,37 @@ export default {
           label: 'Ngày biên bản',
           field: 'transDate',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Số biên bản',
           field: 'transNumber',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
           type: 'number',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
-          label: 'Mã sản phẩn',
+          label: 'Mã sản phẩm',
           field: 'productCode',
-          type: 'number',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
@@ -302,18 +287,16 @@ export default {
           label: 'Lý do',
           field: 'reason',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Điện thoại',
           field: 'phoneNumber',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
       ],
       rows: [],
+      total: [],
+      reportExchangePagnigation: {},
     }
   },
   computed: {
@@ -338,13 +321,13 @@ export default {
       }
       return []
     },
-    total() {
+    getTotal() {
       if (this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.totals) {
         return this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.totals
       }
       return []
     },
-    reportExchangePagnigation() {
+    getReportExchangePagnigation() {
       if (this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.response) {
         return this.REPORT_EXCHANGE_DAMAGED_GOODS_GETTER.response
       }
@@ -361,6 +344,12 @@ export default {
   watch: {
     reportInventory() {
       this.rows = [...this.reportInventory]
+    },
+    getTotal() {
+      this.total = [...this.getTotal]
+    },
+    getReportExchangePagnigation() {
+      this.reportExchangePagnigation = [...this.getReportExchangePagnigation]
     },
   },
   methods: {

@@ -61,6 +61,7 @@
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
+          @on-selected-rows-change="selectionChanged"
         >
           <!-- START - Empty rows -->
           <div
@@ -118,27 +119,8 @@
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field == 'note'">
-              <div>
-                <b-icon-search
-                  v-b-popover.hover="props.row.note"
-                  class="cursor-pointer"
-                  scale="1.5"
-                />
-              </div>
-            </div>
-
-            <div v-else-if="props.column.field == 'noteHdd'">
-              <div>
-                <b-icon-search
-                  v-b-popover.hover="props.row.noteHdd"
-                  class="cursor-pointer"
-                  scale="1.5"
-                />
-              </div>
-            </div>
             <div
-              v-else-if="props.column.field == 'manipulation'"
+              v-if="props.column.field == 'manipulation'"
             >
               <div>
                 <v-icon-detail
@@ -160,7 +142,7 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'name'"
+              v-else-if="props.column.field === 'name' || props.column.field === 'note' || props.column.field === 'noteHdd'"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -390,19 +372,19 @@ export default {
           label: 'Công ty',
           field: 'company',
           thClass: 'text-left ws-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Mã số thuế',
           field: 'taxCode',
           thClass: 'text-left ws-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           thClass: 'text-left ws-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Ghi chú HĐĐ',
@@ -591,6 +573,9 @@ export default {
       this.onPaginationChange()
     },
     // END - Vue Good Table func
+    selectionChanged(params) {
+      this.selectedRows = [...params.selectedRows]
+    },
   },
 }
 </script>
@@ -607,9 +592,5 @@ export default {
   right: 0;
   z-index: 99;
   background: inherit;
-}
-.name-width {
-  width: max-content;
-  max-width: 400px;
 }
 </style>

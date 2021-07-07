@@ -11,6 +11,7 @@
     <tree-select
       v-model="reasonSelected"
       :options="reasonOptions"
+      placeholder="Chọn lý do"
     />
     <template #modal-footer="{}">
       <b-button

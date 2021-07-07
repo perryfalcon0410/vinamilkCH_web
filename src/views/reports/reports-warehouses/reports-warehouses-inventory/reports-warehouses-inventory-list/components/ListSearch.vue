@@ -128,7 +128,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { reverseVniDate } from '@/@core/utils/filter'
+import { reverseVniDate, nowDate } from '@/@core/utils/filter'
 import FindProductModal from './FindProductModal.vue'
 import {
   REPORT_WAREHOUSES_INVENTORY,
@@ -154,7 +154,7 @@ export default {
     return {
       isShowFindProductModal: false,
       dateFormatVNI,
-      date: this.$nowDate,
+      date: nowDate(),
       productCodes: null,
       configDate: {
         wrap: true,
@@ -167,9 +167,6 @@ export default {
         ctrlId: 1,
       },
     }
-  },
-  mounted() {
-    this.onSearch()
   },
   methods: {
     ...mapGetters(REPORT_WAREHOUSES_INVENTORY, [

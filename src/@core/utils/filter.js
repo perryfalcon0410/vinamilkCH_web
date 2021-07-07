@@ -141,7 +141,7 @@ export const getTimeOfDate = value => {
   return new Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
 }
 
-export const formatPrintDate = date => moment(date).locale('en').format('DD/MM/YYYY - HH:mm:ss A')
+export const formatPrintDate = date => moment(date).format('DD/MM/YYYY - HH:mm:ss A')
 
 export const earlyMonth = () => moment().startOf('month').format('DD/MM/YYYY')
 
