@@ -23,6 +23,9 @@ module.exports = {
         '@axios': path.resolve(__dirname, 'src/libs/axios'),
       },
     },
+    output: {
+      filename: '[name].[hash].bundle.js',
+    },
   },
   chainWebpack: config => {
     config.module
