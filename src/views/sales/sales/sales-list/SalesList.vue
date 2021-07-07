@@ -454,7 +454,11 @@ export default {
         {
           id: 1,
           products: [],
-          customer: {},
+          customer: {
+            fullName: null,
+            mobiPhone: null,
+            address: null,
+          },
           active: true,
           class: 'visited-action',
         },
@@ -702,7 +706,11 @@ export default {
         this.bills.push({
           id: lastIteminBill.id + 1,
           products: [],
-          customer: this.currentCustomer,
+          customer: {
+            fullName: this.defaultCustomer.fullName,
+            mobiPhone: this.defaultCustomer.mobiPhone,
+            address: this.defaultCustomer.address,
+          },
           active: false,
           class: '',
         })
@@ -712,7 +720,11 @@ export default {
       this.bills.push({
         id: 1,
         products: [],
-        customer: this.currentCustomer,
+        customer: {
+          fullName: this.currentCustomer.fullName,
+          mobiPhone: this.currentCustomer.mobiPhone,
+          address: this.currentCustomer.address,
+        },
         active: false,
         class: 'visited-action',
       })
@@ -740,7 +752,11 @@ export default {
           return {
             ...bill,
             products: this.orderProducts,
-            customer: this.currentCustomer,
+            customer: {
+              fullName: this.currentCustomer.fullName,
+              mobiPhone: this.currentCustomer.mobiPhone,
+              address: this.currentCustomer.address,
+            },
             active: false,
             class: '',
           }
@@ -750,7 +766,8 @@ export default {
       this.bills = this.bills.map(bill => {
         if (bill.id === billSelectedId) {
           this.orderProducts = bill.products
-          this.currentCustomer = bill.customer
+          this.defaultCustomer.fullName = bill.customer.fullName
+          this.defaultCustomer.mobiPhone = bill.customer.mobiPhone
           this.orderCurrentId = billSelectedId
           return {
             ...bill,
@@ -760,6 +777,8 @@ export default {
         }
         return bill
       })
+      console.log('bills', this.bills)
+      console.log('default custoemr', this.defaultCustomer)
     },
 
     getOnlineOrderInfoForm(val) {

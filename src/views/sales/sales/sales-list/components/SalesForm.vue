@@ -734,7 +734,6 @@ export default {
     customerDefault() {
       this.customer = { ...this.customerDefault }
       this.getCustomerDefault()
-      this.bills.customer = this.customer
     },
     getCustomerSearch() {
       this.customersSearch = [...this.getCustomerSearch]
@@ -890,7 +889,7 @@ export default {
       this.customer.status = this.customerDefault.status
       this.customer.typeId = this.customerDefault.customerTypeId
       this.customer.createdAt = `${formatDateToLocale(this.customerDefault.createdAt)} ${getTimeOfDate(this.customerDefault.createdAt)}`
-      this.$emit('getCustomerDefault', this.customer)
+      this.$emit('getCustomerDefault', this.customerDefault)
       this.$emit('currentCustomer', this.customer)
 
       // Check manualcreate
@@ -966,22 +965,6 @@ export default {
       }
       this.salemtDeliveryTypeSelected = this.salemtDeliveryTypeOptions[0].id
     },
-
-    // getSuggestionValue(suggestion) {
-    //   this.customer.id = suggestion.item.id
-    //   this.customer.code = suggestion.item.code
-    //   this.customer.email = suggestion.item.email
-    //   this.customer.shopId = suggestion.item.shopId
-    //   this.customer.fullName = suggestion.item.fullName
-    //   this.customer.phoneNumber = suggestion.item.phoneNumber
-    //   this.customer.totalBill = suggestion.item.totalBill
-    //   this.customer.address = suggestion.item.address
-    //   this.customer.totalBill = suggestion.item.totalBill
-    //   this.customer.scoreCumulated = suggestion.item.scoreCumulated
-    //   this.customer.amountCumulated = suggestion.item.amountCumulated
-    //   this.customer.status = suggestion.item.status
-    //   this.customer.typeId = suggestion.item.customerTypeId
-    // },
 
     disableOnlineOrder() {
     },
