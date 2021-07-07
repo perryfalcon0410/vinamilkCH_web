@@ -73,6 +73,19 @@
           </div>
           <!-- END - Empty rows -->
 
+          <!-- START - Rows -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field ==='address'"
+              class="name-width word-wrap"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"

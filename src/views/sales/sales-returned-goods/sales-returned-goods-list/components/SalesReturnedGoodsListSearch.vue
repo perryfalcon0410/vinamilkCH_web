@@ -298,7 +298,7 @@ export default {
       const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
       if (pattern.test(this.toDate) === false || validate === false) {
         toasts.error('Ngày tháng không tồn tại')
-        this.toDate = this.$nowDate
+        this.toDate = nowDate()
       }
     },
   },

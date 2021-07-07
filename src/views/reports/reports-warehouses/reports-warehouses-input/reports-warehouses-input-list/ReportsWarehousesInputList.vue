@@ -536,28 +536,28 @@ export default {
 </script>
 <style>
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
-  thead tr:last-child th:nth-child(2) {
+  .table-horizontal-scroll thead tr:last-child th:nth-child(2) {
     left: 35px;
     z-index: 1;
   }
-  thead tr:last-child th:nth-child(3) {
+  .table-horizontal-scroll thead tr:last-child th:nth-child(3) {
     left: 140px;
     z-index: 1;
   }
-  thead tr:last-child th:nth-child(4) {
+  .table-horizontal-scroll thead tr:last-child th:nth-child(4) {
     left: 252px;
     z-index: 1;
   }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
 
   /* tùy chỉnh left khi scroll*/
-   .column-first {
+  .table-horizontal-scroll .column-first {
     left: 35px;
   }
-   .column-second {
+  .table-horizontal-scroll .column-second {
     left: 130px;
   }
-  .column-third {
+  .table-horizontal-scroll .column-third {
     left: 220px;
   }
   /* tùy chỉnh left khi scroll*/

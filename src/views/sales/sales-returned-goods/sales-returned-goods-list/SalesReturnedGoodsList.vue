@@ -269,38 +269,27 @@ export default {
         {
           label: 'Mã trả hàng',
           field: 'orderReturnNumber',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Đơn hàng tham chiếu',
           field: 'orderNumber',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Nhân viên',
           field: 'userName',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerNumber',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Ngày trả hàng',
           field: 'dateReturn',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Tổng giá trị',
@@ -308,14 +297,14 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tiền giảm giá',
           field: 'discount',
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền thanh toán',
@@ -323,8 +312,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Chức năng',
@@ -362,17 +351,15 @@ export default {
         return this.RETURNED_GOODS_GETTER.response.content.map(data => ({
           id: data.id,
           idDetail: data.id,
-          createdAt: this.$formatISOtoVNI(data.createdAt),
           orderReturnNumber: data.orderNumber,
           orderNumber: data.orderNumberRef,
           userName: data.userName,
           customerNumber: data.customerNumber,
           customerName: data.customerName,
-          dateReturn: this.$formatISOtoVNI(data.dateReturn),
-          orderDate: this.$formatISOtoVNI(data.orderDate),
-          quantity: this.$formatNumberToLocale(data.total),
-          discount: this.$formatNumberToLocale(data.totalPromotion),
-          amount: this.$formatNumberToLocale(data.amount),
+          dateReturn: data.dateReturn,
+          quantity: data.total,
+          discount: data.totalPromotion,
+          amount: data.amount,
         }))
       }
       return []

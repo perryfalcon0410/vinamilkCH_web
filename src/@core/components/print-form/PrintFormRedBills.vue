@@ -15,7 +15,13 @@
       </div>
 
       <div>
-        Ngày {{ $moment().format('DD') }} tháng {{ $moment().format('MM') }} năm {{ $moment().format('YYYY') }}
+        {{ $moment().format('DD') }}
+      </div>
+      <div>
+        {{ $moment().format('MM') }}
+      </div>
+      <div>
+        {{ $moment().format('YYYY') }}
       </div>
       <!-- <div>tháng {{ $moment().format('MM') }}</div>
       <div>năm {{ $moment().format('YYYY') }}</div> -->
@@ -34,7 +40,7 @@
       </div>
       <div>Tiền mặt</div>
       <div style="width: 6%;">
-        {{ $formatNumberToLocale(redBillInfoData.amount) }}
+        <!-- {{ $formatNumberToLocale(redBillInfoData.amount) }} -->
       </div>
     </b-row>
 
@@ -48,9 +54,15 @@
           <td>{{ item.productName }}</td>
           <td>{{ item.productCode }}</td>
           <td>{{ item.uom1 }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ $formatNumberToLocale(item.price) }}</td>
-          <td>{{ $formatNumberToLocale(item.intoMoney) }}</td>
+          <td class="text-right">
+            {{ item.quantity }}
+          </td>
+          <td class="text-right">
+            {{ $formatNumberToLocale(item.price) }}
+          </td>
+          <td class="text-right">
+            {{ $formatNumberToLocale(item.intoMoney) }}
+          </td>
           <td>{{ item.note }}</td>
         </tr>
       </tbody>
@@ -72,7 +84,7 @@
         <div class="d-flex text-left">
           <div class="width-70-per" />
           <div class="width-30-per pl-4">
-            3
+            {{ count }}
           </div>
         </div>
       </div>
@@ -126,6 +138,11 @@ import {
 } from '@/views/sales/sales-red-bills/store-module/type'
 
 export default {
+  data() {
+    return {
+      count: 0,
+    }
+  },
   computed: {
     ...mapGetters(RED_INVOICE, [PRINT_RED_INVOICES_GETTER]),
 
@@ -140,6 +157,11 @@ export default {
         return this.PRINT_RED_INVOICES_GETTER.response
       }
       return null
+    },
+  },
+  watch: {
+    redBillData() {
+      this.count = this.redBillData.length
     },
   },
   updated() {

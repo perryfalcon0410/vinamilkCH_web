@@ -310,6 +310,7 @@
 <script>
 import {
   formatVniDateToISO,
+  nowDate,
 } from '@/@core/utils/filter'
 import { getNow } from '@/@core/utils/utils'
 import {
@@ -618,7 +619,7 @@ export default {
       }
       this.CREATE_RETURNED_GOOD_ACTION({
         ...this.decentralization,
-        dateReturn: formatVniDateToISO(this.$nowDate),
+        dateReturn: formatVniDateToISO(nowDate()),
         orderNumber: this.billInfo.orderNumber,
         reasonId: this.selectedReason,
         reasonDescription: this.feedbackInfomation,

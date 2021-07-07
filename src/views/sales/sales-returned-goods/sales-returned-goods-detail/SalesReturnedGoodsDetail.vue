@@ -167,11 +167,11 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
-          quantity: this.$formatNumberToLocale(data.quantity),
-          pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
-          totalPrice: this.$formatNumberToLocale(data.totalPrice),
-          discount: this.$formatNumberToLocale(data.discount),
-          paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
+          quantity: data.quantity,
+          pricePerUnit: data.pricePerUnit,
+          totalPrice: data.totalPrice,
+          discount: data.discount,
+          paymentReturn: data.paymentReturn,
         }))
       }
       return []
@@ -183,11 +183,11 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
-          quantity: this.$formatNumberToLocale(data.quantity),
-          pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
-          totalPrice: this.$formatNumberToLocale(data.totalPrice),
-          discount: this.$formatNumberToLocale(data.discount),
-          paymentReturn: this.$formatNumberToLocale(data.paymentReturn),
+          quantity: data.quantity,
+          pricePerUnit: data.pricePerUnit,
+          totalPrice: data.totalPrice,
+          discount: data.discount,
+          paymentReturn: data.paymentReturn,
         }))
       }
       return []

@@ -1,4 +1,5 @@
 import RedInvoiceService from '@/views/sales/sales-red-bills/api-service'
+import FileSaver from 'file-saver'
 import moment from 'moment'
 import {
   // GETTERS
@@ -227,20 +228,16 @@ export default {
     [EXPORT_RED_BILLS_ACTION]({}, val) {
       RedInvoiceService
         .exportRedBills(val)
+        .then(response => response.data)
         .then(res => {
-          if (res.status === 200 && res.data != null) {
-            const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' })
-            if (window.navigator.msSaveOrOpenBlob) {
-              window.navigator.msSaveOrOpenBlob(blob, 'Hoa_don_do_Filled')
-            } else {
-              const elem = window.document.createElement('a')
-              elem.href = window.URL.createObjectURL(blob)
-              elem.download = `Hoa_Don_VAT_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}`
-              document.body.appendChild(elem)
-              elem.click()
-              document.body.removeChild(elem)
-            }
+          console.log(res)
+          if (res.type === 'application/json') {
+            throw new Error('Không có dữ liệu xuất')
           }
+
+          const fileName = `Hoa_Don_VAT_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
           toasts.error(error.message)
