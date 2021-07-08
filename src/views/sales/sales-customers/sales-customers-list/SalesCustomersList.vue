@@ -61,7 +61,6 @@
           :pagination-options="{
             enabled: true,
             perPage: searchData.size,
-            setCurrentPage: searchData.page + 1,
           }"
           @on-page-change="onPageChange"
           @on-sort-change="onSortChange"
@@ -137,7 +136,7 @@
                 <span class="text-nowrap">{{ paginationDetailContent }}</span>
               </div>
               <b-pagination
-                v-model="pageNumber"
+                v-model="searchData.page"
                 :total-rows="getCustomerPagination.totalElements"
                 :per-page="searchData.size"
                 first-number
@@ -206,10 +205,10 @@ export default {
   data() {
     return {
       perPageSizeOptions: commonData.perPageSizes,
-      pageNumber: commonData.pageNumber,
       searchData: {
         size: commonData.perPageSizes[0],
-        page: commonData.pageNumber - 1,
+        page: commonData.pageNumber,
+        totalElements: 0, // default unknown value
         sort: null,
       },
 
@@ -305,28 +304,20 @@ export default {
       }
       return []
     },
-    getCustomerPagination() { // TODO: sửa chỗ này
-      if (this.CUSTOMERS_GETTER) {
-        // const customersData = { ...this.CUSTOMERS_GETTER }
-        // console.log(customersData)
-        // return {
-        //   ...customersData,
-        //   size: customersData.size,
-        //   page: customersData.number,
-        //   totalElements: customersData.totalElements,
-        // }
-        return this.CUSTOMERS_GETTER
+    getCustomerPagination() {
+      const paginationData = { ...this.CUSTOMERS_GETTER }
+      if (paginationData) {
+        return {
+          totalElements: paginationData.totalElements,
+        }
       }
-      return null
+      return { totalElements: 0 }
     },
     paginationDetailContent() {
-      const { page, size } = this.searchData
-      const { totalElements } = this.getCustomerPagination
-
-      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
-      const maxPageSize = (size * (page + 1)) > totalElements
-        ? totalElements : (size * (page + 1))
-
+      const { size, page, totalElements } = this.searchData
+      const minPageSize = page === 0 ? 1 : (page * size) - size + 1
+      const maxPageSize = (size * page) > totalElements
+        ? totalElements : (size * page)
       return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },
   },
@@ -335,9 +326,9 @@ export default {
     getCustomers() {
       this.customersData = [...this.getCustomers]
     },
-    // getCustomerPagination() {  // TODO: sửa chỗ này
-    //   this.searchData = [...this.getCustomerPagination]
-    // },
+    getCustomerPagination() {
+      this.updateSearchData({ ...this.getCustomerPagination })
+    },
   },
 
   mounted() {
@@ -371,33 +362,24 @@ export default {
     updateSearchData(newProps) {
       this.searchData = { ...this.searchData, ...newProps }
     },
-    onSearchClick(event) {
-      this.updateSearchData({
-        // page: commonData.pageNumber - 1,
-        ...event,
-      })
-      this.onPaginationChange()
-      this.pageNumber = commonData.pageNumber // temp
+    onPaginationChange(data, params) {
+      this.updateSearchData(data)
+      this.GET_CUSTOMERS_ACTION({ ...this.searchData, ...this.decentralization, ...params })
     },
-    onPaginationChange() {
-      this.GET_CUSTOMERS_ACTION({ ...this.searchData, ...this.decentralization })
+    onSearchClick(event) {
+      this.onPaginationChange(
+        { page: commonData.pageNumber, ...event },
+        { page: commonData.pageNumber - 1 },
+      )
     },
     onPageChange(params) {
-      this.updateSearchData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
+      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
     },
     onPerPageChange(params) {
-      this.updateSearchData({
-        size: params.currentPerPage,
-        page: commonData.pageNumber - 1,
-      })
-      this.onPaginationChange()
+      this.onPaginationChange({ size: params.currentPerPage })
     },
     onSortChange(params) {
-      this.updateSearchData({
-        sort: `${params[0].field},${params[0].type}`,
-      })
-      this.onPaginationChange()
+      this.onPaginationChange({ sort: `${params[0].field},${params[0].type}` })
     },
     // END - Vue Good Table func
 

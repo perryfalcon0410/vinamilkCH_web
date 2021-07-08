@@ -230,7 +230,6 @@ export default {
         .exportRedBills(val)
         .then(response => response.data)
         .then(res => {
-          console.log(res)
           if (res.type === 'application/json') {
             throw new Error('Không có dữ liệu xuất')
           }

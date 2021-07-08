@@ -282,6 +282,9 @@ select.form-control {
 .custom-select {
   -moz-appearance: none; // For firefox
   -webkit-appearance: none; // for chrome
+  &:focus {
+    border-color: $brand-1;
+  }
 }
 
 // Custom Checkbox

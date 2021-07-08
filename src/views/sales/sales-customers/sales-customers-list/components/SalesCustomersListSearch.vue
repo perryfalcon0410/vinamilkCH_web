@@ -284,27 +284,27 @@ export default {
         default: data.default,
       }))
     },
-    apiStatusResult() {
-      return Object.values(this.apiStatus).every((val, i, arr) => val && arr[0])
-    },
+    // apiStatusResult() {
+    //   return Object.values(this.apiStatus).every((val, i, arr) => val && arr[0])
+    // },
   },
 
   watch: {
     areaOptions() {
       this.areaSelectedDefault()
     },
-    apiStatusResult() {
-      if (this.apiStatusResult) {
-        this.onSearch()
-      }
-    },
+    // apiStatusResult() {
+    //   if (this.apiStatusResult) {
+    //      this.onSearch()
+    //   }
+    // },
   },
 
   mounted() {
     this.GET_SHOP_LOCATIONS_SEARCH_ACTION({
       data: { ...this.decentralization },
       onSuccess: () => {
-        this.apiStatus.shopLocationsSearch = true
+        // this.apiStatus.shopLocationsSearch = true
       },
     })
   },
@@ -314,8 +314,10 @@ export default {
       GET_SHOP_LOCATIONS_SEARCH_ACTION,
     ]),
     areaSelectedDefault() {
-      this.areasSelected = this.SHOP_LOCATIONS_SEARCH_GETTER.find(e => e.default === true).id
-      this.onSearch()
+      if (this.SHOP_LOCATIONS_SEARCH_GETTER) {
+        this.areasSelected = this.SHOP_LOCATIONS_SEARCH_GETTER.find(e => e.default === true).id
+        this.onSearch()
+      }
     },
     onSearch() {
       const searchData = {

@@ -777,8 +777,6 @@ export default {
         }
         return bill
       })
-      console.log('bills', this.bills)
-      console.log('default custoemr', this.defaultCustomer)
     },
 
     getOnlineOrderInfoForm(val) {

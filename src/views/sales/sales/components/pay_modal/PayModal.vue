@@ -936,7 +936,6 @@ export default {
   },
   watch: {
     getDiscount() {
-      console.log(this.getDiscount)
       if (this.getDiscount !== null) {
         this.pay.discount.discountAmount = this.getDiscount.amount.amount
       } else {

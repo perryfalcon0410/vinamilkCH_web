@@ -301,7 +301,6 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
-      nowDate: nowDate(),
       columns: [
         {
           label: 'Ngày',
