@@ -459,6 +459,7 @@ export default {
       outputTypesOptions: warehousesData.outputTypes,
       exportAll: false,
       quantityCheck: true,
+      nullCheck: true,
       hideFilter: true,
       columnType: null,
 
@@ -796,30 +797,49 @@ export default {
         }
       })
     },
+    checkNull() {
+      this.products.forEach(item => {
+        if (item.quantityReturn != null) {
+          this.nullCheck = true
+        } else {
+          this.nullCheck = false
+          this.rowsProductPromotion.forEach(i => {
+            if (i.quantityPromo != null) {
+              this.nullCheck = true
+            } else {
+              this.nullCheck = false
+            }
+          })
+        }
+      })
+    },
     createExport() {
       if (this.outputTypeSelected === warehousesData.outputTypes[0].id) {
         this.checkQuantity()
+        this.checkNull()
       }
       if (this.products.length > 0 || this.rowsProductPromotion.length > 0) {
-        if (this.quantityCheck) {
-          this.CREATE_EXPORT_ACTION(
-            {
-              importType: Number(this.outputTypeSelected),
-              isRemainAll: this.exportAll,
-              receiptImportId: Number(this.warehousesOutput.id),
-              note: this.warehousesOutput.note,
-              litQuantityRemain: [...this.products.map(item => ({
-                id: item.id,
-                quantity: Number(item.quantityReturn) || 0,
-              })),
-              ...this.rowsProductPromotion.map(item => ({
-                id: item.id,
-                quantity: Number(item.quantityPromo) || 0,
-              })),
-              ],
-            },
-          )
-        } else toasts.error('Không đủ sản phẩm trả.')
+        if (this.nullCheck) {
+          if (this.quantityCheck) {
+            this.CREATE_EXPORT_ACTION(
+              {
+                importType: Number(this.outputTypeSelected),
+                isRemainAll: this.exportAll,
+                receiptImportId: Number(this.warehousesOutput.id),
+                note: this.warehousesOutput.note,
+                litQuantityRemain: [...this.products.map(item => ({
+                  id: item.id,
+                  quantity: Number(item.quantityReturn) || 0,
+                })),
+                ...this.rowsProductPromotion.map(item => ({
+                  id: item.id,
+                  quantity: Number(item.quantityPromo) || 0,
+                })),
+                ],
+              },
+            )
+          } else toasts.error('Không đủ sản phẩm trả.')
+        } else toasts.error('Không để trống tất cả sản phẩm.')
       } else toasts.error('Vui lòng chọn phiếu.')
     },
     navigateBack() {

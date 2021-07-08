@@ -6,7 +6,7 @@
   >
     <!-- START - Header -->
     <b-row
-      class="mx-0 my-1"
+      class="mx-0"
       align-h="between"
       align-v="center"
     >
@@ -39,25 +39,18 @@
 
     <!-- START - Total section -->
     <b-row
-      class="mx-0"
-      align-h="around"
+      class="mx-0 width-100-per"
       align-v="end"
-      style="background-color: gray"
+      style="background-color: grey"
     >
-      <b-col />
-      <b-col class="text-right">
-        <div>
-          <span class="pr-5">Tổng Cộng: </span><strong style="margin-right: 10px">{{ $formatNumberToLocale(commonInfo.totalQuantity) }}</strong>
-        </div>
-      </b-col>
-      <b-col
+      <div
         class="text-right"
-        sm="1"
-        style="padding-right: 5px"
+        style="width: 99.5%"
       >
-        <div><strong>{{ $formatNumberToLocale(commonInfo.totalPrice) }}</strong></div>
-        <b-col />
-      </b-col>
+        <strong class="pr-5 font-italic">Tổng Cộng:</strong>
+        <strong>{{ $formatNumberToLocale(commonInfo.totalQuantity) }}</strong>
+      </div>
+
     </b-row>
     <!-- END - Total section -->
 
@@ -76,27 +69,19 @@
               colspan="12"
             >
               <b-row
-                class="mx-0"
-                align-h="around"
+                class="mx-0 width-100-per"
               >
-                <b-col>
-                  <div><i>Ngành hàng:</i> <strong class="pl-3">{{ item.productCatName }}</strong>
-                  </div>
-                </b-col>
-                <b-col class="text-right">
-                  <div><i class="pr-5">Tổng Cộng:</i>
-                    <strong class="mr-50">{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
-                  </div>
-                </b-col>
-                <b-col
+                <div
+                  style="width: 20%"
+                  class="pl-1"
+                ><i>Ngành hàng:</i> <strong class="pl-3">{{ item.productCatName }}</strong>
+                </div>
+                <div
                   class="text-right"
-                  sm="1"
-                  style="padding-right: 2px"
-                >
-                  <div>
-                    <strong>{{ $formatNumberToLocale(item.totalPrice) }}</strong>
-                  </div>
-                </b-col>
+                  style="width: 79.7%"
+                ><i class="pr-5">Tổng Cộng:</i>
+                  <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
+                </div>
               </b-row>
             </th>
           </tr>
@@ -105,37 +90,44 @@
           <!-- START - Header 2 -->
           <tr>
             <th
-              class="text-center stt"
+              class="stt px-50"
+              style="width: 1%"
             >
               STT
             </th>
             <th
-              class="text-center dotted"
+              class="dotted px-50"
+              style="width: 14%"
             >
               Ngày bán
             </th>
             <th
-              class="text-center dotted"
+              class="dotted px-50"
+              style="width: 20%"
             >
               Hóa đơn
             </th>
             <th
-              class="text-center dotted"
+              class="dotted px-50"
+              style="width: 8%"
             >
               Mã SP
             </th>
             <th
-              class="text-center dotted"
+              class="dotted px-50"
+              style="width: 46%"
             >
               Tên SP
             </th>
             <th
-              class="text-center dotted"
+              class="dotted px-50"
+              style="width: 4%"
             >
               ĐVT
             </th>
             <th
-              class="text-center dotted"
+              class="dotted px-50"
+              style="width: 8%"
             >
               SL
             </th>
@@ -151,15 +143,25 @@
             v-for="(product,stt) in reportData[index].productCats"
             :key="product.id"
           >
-            <td class="text-right pr-1">
+            <td class="text-center px-1">
               {{ stt + 1 }}
             </td>
-            <td> {{ $moment(product.orderDate).locale('en').format('DD/MM/YYYY HH:mm:ss A') }} </td>
-            <td> {{ product.orderNumber }} </td>
-            <td> {{ product.productCode }} </td>
-            <td> {{ product.productName }} </td>
-            <td> {{ product.uom }} </td>
-            <td class="text-right">
+            <td class="px-50">
+              {{ $moment(product.orderDate).locale('en').format('DD/MM/YYYY HH:mm:ss A') }}
+            </td>
+            <td class="px-50">
+              {{ product.orderNumber }}
+            </td>
+            <td class="px-50">
+              {{ product.productCode }}
+            </td>
+            <td class="px-50">
+              {{ product.productName }}
+            </td>
+            <td class="px-50">
+              {{ product.uom }}
+            </td>
+            <td class="text-right px-50">
               {{ product.quantity }}
             </td>
           </tr>
@@ -230,11 +232,11 @@ table {
 }
 th {
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
 }
 td {
   border-style: dotted;
-  border-width: 2px;
+  border-width: 1px;
 }
 .dotted {
   border-left-style: dotted;

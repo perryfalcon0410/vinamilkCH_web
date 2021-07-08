@@ -604,6 +604,8 @@ export default {
                 reasonId: this.reasonObj.reasonSelected,
                 lstExchangeDetail: this.damagedProduct.map(item => ({
                   productId: item.id,
+                  productCode: item.productCode,
+                  productName: item.productName,
                   quantity: item.productQuantity,
                 })),
               },

@@ -48,48 +48,47 @@
 
     <!-- START - Total section 1 -->
     <b-row
-      class="mx-0 second-sector width-100-per"
+      class="mx-0 second-sector width-100-per total"
       align-v="end"
-      style="background-color: gray; border-style: dotted; border-width: 2px"
+      style="border-style: dashed; border-width: 1px 1px 0 1px"
     >
       <div
-        style="visibility: hidden; width: 44%;"
-        class="ml-1"
+        style="visibility: hidden; width: 40%;"
       ><strong>Ngành hàng: A </strong>
       </div>
       <div
         style="width: 6.4%;"
-        class="text-right"
-      ><strong>Tổng SL:</strong>
+        class="text-right text-nowrap italic"
+      >Tổng SL:
       </div>
       <div
         style="width: 6.5%;"
         class="text-right"
       >
-        <strong>{{ $formatNumberToLocale(totalInfoReturnedGood.totalQuantity) }}</strong>
+        <strong><ins>{{ $formatNumberToLocale(totalInfoReturnedGood.totalQuantity) }}</ins></strong>
       </div>
       <div
         style="width: 10.4%;"
-        class="text-right"
-      ><strong>Tổng T.Tiền:</strong>
+        class="text-right text-nowrap italic"
+      >Tổng T.Tiền:
 
       </div>
       <div
-        style="width: 14.5%;"
+        style="width: 14%;"
         class="text-right"
       >
-        <strong>{{ $formatNumberToLocale(totalInfoReturnedGood.totalAmount) }}</strong>
+        <strong><ins>{{ $formatNumberToLocale(totalInfoReturnedGood.totalAmount) }}</ins></strong>
       </div>
       <div
-        style="width: 5.2%;"
-        class="text-right"
-      ><strong>Tổng TTL:</strong>
+        style="width: 10.5%;"
+        class="text-right text-nowrap italic"
+      >Tổng TTL:
 
       </div>
       <div
         style="width: 11.6%;"
         class="text-right"
-      > <strong>{{ $formatNumberToLocale(totalInfoReturnedGood.totalRefunds) }}</strong></div>
+      > <strong><ins>{{ $formatNumberToLocale(totalInfoReturnedGood.totalRefunds) }}</ins></strong></div>
     </b-row>
     <!-- END - Total section  1-->
 
@@ -102,17 +101,17 @@
       <b-row
         class="mx-0 width-100-per"
         align-v="end"
-        style="border-style: dotted; border-width: 2px"
+        style="border-style: dashed; border-width: 1px 1px 0 1px"
       >
         <div
-          style="width: 44%;"
+          style="width: 38.5%;"
           class="ml-1"
         ><strong>Ngành hàng: {{ item.category }} </strong>
         </div>
         <div
           style="width: 6.4%;"
-          class="text-right"
-        ><strong>Tổng SL:</strong>
+          class="text-right text-nowrap italic"
+        >Tổng SL:
         </div>
         <div
           style="width: 6.5%;"
@@ -122,20 +121,20 @@
         </div>
         <div
           style="width: 10.4%;"
-          class="text-right"
-        ><strong>Tổng T.Tiền:</strong>
+          class="text-right text-nowrap italic"
+        >Tổng T.Tiền:
 
         </div>
         <div
-          style="width: 14.5%;"
+          style="width: 14%;"
           class="text-right"
         >
           <strong>{{ $formatNumberToLocale(item.totalAmount) }}</strong>
         </div>
         <div
-          style="width: 5.2%;"
-          class="text-right"
-        > <strong>Tổng TTL:</strong>
+          style="width: 10.5%;"
+          class="text-right text-nowrap italic"
+        > Tổng TTL:
         </div>
         <div
           style="width: 11.6%;"
@@ -167,11 +166,11 @@
                   class="mx-0 width-100-per"
                 >
                   <div
-                    style="width: 45%;"
+                    style="width: 40%;"
                   />
                   <div
                     style="width: 6.4%;"
-                    class="text-right"
+                    class="text-right text-nowrap italic"
                   >Tổng SL:
                   </div>
                   <div
@@ -181,17 +180,17 @@
                   </div>
                   <div
                     style="width: 10.4%;"
-                    class="text-right"
+                    class="text-right text-nowrap italic"
                   >Tổng T.Tiền:
                   </div>
                   <div
-                    style="width: 14.5%;"
+                    style="width: 14%;"
                     class="text-right"
                   ><strong>{{ order.orderAmount }}</strong>
                   </div>
                   <div
-                    style="width: 5.2%;"
-                    class="text-right"
+                    style="width: 10.5%;"
+                    class="text-right text-nowrap italic"
                   >
                     Tổng&nbsp;TTL:
                   </div>
@@ -199,7 +198,7 @@
                     style="width: 11.6%;"
                     class="text-right"
                   >
-                    {{ order.orderRefund }}
+                    <strong> {{ order.orderRefund }}</strong>
                   </div>
                 </b-row>
               </th>
@@ -371,16 +370,30 @@ table {
 }
 th {
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
+  font-weight: normal;
+}
+.italic {
+  font-style: italic;
 }
 td {
-  border-style: dotted;
-  border-width: 2px;
+  border-style: dashed;
+  border-width: 1px;
 }
 .second-sector {
   border-top-style: none;
-  border-right-style: dotted;
-  border-left-style: dotted;
-  border-width: 2px;
+  border-right-style: dashed;
+  border-left-style: dashed;
+  border-width: 1px;
 }
+.total {
+    background: rgb(192, 186, 186)
+}
+</style>
+<style type="text/css" media="print">
+    @page {
+        margin-top: 0;
+        margin-bottom: 0;
+        size: portrait;
+    }
 </style>

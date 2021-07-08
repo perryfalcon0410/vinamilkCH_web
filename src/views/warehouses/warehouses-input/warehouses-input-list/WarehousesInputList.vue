@@ -287,7 +287,7 @@ export default {
       selectedReceiptType: '',
       selectedReceiptIndex: '',
       selectedReceiptCode: '',
-      nowDate: nowDate(),
+      // nowDate: nowDate(),
       elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
       paginationOptions: commonData.perPageSizes,
