@@ -369,7 +369,6 @@
 </template>
 
 <script>
-import reportData from '@/@db/report'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import { mapGetters, mapActions } from 'vuex'
 import {
@@ -387,8 +386,10 @@ import {
 import {
   REPORT_SALES,
   BILL_COLLECTORS_GETTER,
+  SALES_CHANNEL_GETTER,
   GET_REPORT_SALES_ACTION,
   GET_BILL_COLLECTORS_ACTION,
+  GET_SALES_CHANNEL_ACTION,
 } from '../../store-module/type'
 import FindProductModal from './FindProductModal.vue'
 
@@ -410,8 +411,7 @@ export default {
       billCollectorSelected: null,
       customer: null,
       phoneNumber: null,
-      saleChannelSelected: reportData.saleChannels[0].id,
-      saleChannelOptions: reportData.saleChannels,
+      saleChannelSelected: null,
       minIncome: null,
       maxIncome: null,
 
@@ -433,11 +433,18 @@ export default {
   computed: {
     ...mapGetters(REPORT_SALES, [
       BILL_COLLECTORS_GETTER,
+      SALES_CHANNEL_GETTER,
     ]),
     billCollectorOptions() {
       return this.BILL_COLLECTORS_GETTER.map(data => ({
         id: data.id,
         label: data.fullName,
+      }))
+    },
+    saleChannelOptions() {
+      return this.SALES_CHANNEL_GETTER.map(data => ({
+        id: data.value,
+        label: data.apParamName,
       }))
     },
   },
@@ -449,10 +456,14 @@ export default {
         minDate: this.fromDate,
       }
     },
+    saleChannelOptions() {
+      this.saleChannelSelectedDefault()
+    },
   },
 
   beforeMount() {
     this.GET_BILL_COLLECTORS_ACTION({ formId: 1, ctrlId: 1 })
+    this.GET_SALES_CHANNEL_ACTION({ formId: 1, ctrlId: 1 })
   },
 
   mounted() {
@@ -468,6 +479,7 @@ export default {
     ...mapActions(REPORT_SALES, [
       GET_REPORT_SALES_ACTION,
       GET_BILL_COLLECTORS_ACTION,
+      GET_SALES_CHANNEL_ACTION,
     ]),
     onSelectProductModalClick() {
       this.selectProductModalVisible = !this.selectProductModalVisible
@@ -510,6 +522,9 @@ export default {
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)
+    },
+    saleChannelSelectedDefault() {
+      this.saleChannelSelected = this.SALES_CHANNEL_GETTER.find(e => e.value === '1').value // Mặc định kênh bán Offline
     },
   },
 }

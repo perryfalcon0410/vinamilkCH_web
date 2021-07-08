@@ -87,7 +87,7 @@
               v-if="props.column.field === 'beginningQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalBeginningQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.beginningQty) }}
             </div>
 
             <div
@@ -95,119 +95,119 @@
               v-else-if="props.column.field === 'beginningAmount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalBeginningAmount) }}
+              {{ $formatNumberToLocale(totalInfo.beginningAmount) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'impTotalQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalImpTotalQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.impTotalQty) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'impQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalImpQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.impQty) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'impAmount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalImpAmount) }}
+              {{ $formatNumberToLocale(totalInfo.impAmount) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'impAdjustmentQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalImpAdjustmentQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.impAdjustmentQty) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'impAdjustmentAmount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalImpAdjustmentAmount) }}
+              {{ $formatNumberToLocale(totalInfo.impAdjustmentAmount) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expTotalQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalExpTotalQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.expTotalQty) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expSalesQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalExpSalesQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.expSalesQty) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expSalesAmount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalExpSalesAmount) }}
+              {{ $formatNumberToLocale(totalInfo.expSalesAmount) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expPromotionQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalExpPromotionQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.expPromotionQty) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expPromotionAmount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalExpPromotionAmount) }}
+              {{ $formatNumberToLocale(totalInfo.expPromotionAmount) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expAdjustmentQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalExpAdjustmentQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.expAdjustmentQty) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expAdjustmentAmount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalExpAdjustmentAmount) }}
+              {{ $formatNumberToLocale(totalInfo.expAdjustmentAmount) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expExchangeQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalExpExchangeQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.expExchangeQty) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'expExchangeAmount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalExpExchangeAmount) }}
+              {{ $formatNumberToLocale(totalInfo.expExchangeAmount) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'endingQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalEndingQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.endingQty) }}
             </div>
             <div
               v-show="warehousesInputOutputInventoryPagination.totalElements"
               v-else-if="props.column.field === 'endingAmount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalEndingAmount) }}
+              {{ $formatNumberToLocale(totalInfo.endingAmount) }}
             </div>
           </template>
           <!-- START - Column filter -->
@@ -581,8 +581,8 @@ export default {
       PRINT_INPUT_OUTPUT_INVENTORY_GETTER,
     ]),
     getwarehousesInputOutputInventory() {
-      if (this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.content) {
-        return this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.content.map(data => ({
+      if (this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.response) {
+        return this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.response.content.map(data => ({
           industry: data.catName,
           productCode: data.productCode,
           productName: data.productName,
@@ -611,63 +611,15 @@ export default {
       }
       return []
     },
-    totalBeginningQuantity() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.beginningQuantity), 0)
-    },
-    totalBeginningAmount() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.beginningAmount), 0)
-    },
-    totalImpTotalQuantity() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impTotalQuantity), 0)
-    },
-    totalImpQuantity() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impQuantity), 0)
-    },
-    totalImpAmount() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAmount), 0)
-    },
-    totalImpAdjustmentQuantity() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAdjustmentQuantity), 0)
-    },
-    totalImpAdjustmentAmount() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.impAdjustmentAmount), 0)
-    },
-    totalExpTotalQuantity() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expTotalQuantity), 0)
-    },
-    totalExpSalesQuantity() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expSalesQuantity), 0)
-    },
-    totalExpSalesAmount() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expSalesAmount), 0)
-    },
-    totalExpPromotionQuantity() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expPromotionQuantity), 0)
-    },
-    totalExpPromotionAmount() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expPromotionAmount), 0)
-    },
-    totalExpAdjustmentQuantity() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expAdjustmentQuantity), 0)
-    },
-    totalExpAdjustmentAmount() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expAdjustmentAmount), 0)
-    },
-    totalExpExchangeQuantity() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expExchangeQuantity), 0)
-    },
-    totalExpExchangeAmount() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.expExchangeAmount), 0)
-    },
-    totalEndingQuantity() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.endingQuantity), 0)
-    },
-    totalEndingAmount() {
-      return this.warehousesInputOutputInventory.reduce((accum, item) => accum + Number(item.endingAmount), 0)
+    totalInfo() {
+      if (this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.info) {
+        return this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.info
+      }
+      return {}
     },
     warehousesInputOutputInventoryPagination() {
-      if (this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER) {
-        return this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER
+      if (this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.response) {
+        return this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.response
       }
       return {}
     },
@@ -725,6 +677,7 @@ export default {
       this.PRINT_INPUT_OUTPUT_INVENTORY_ACTION({
         fromDate: this.paginationData.fromDate,
         toDate: this.paginationData.toDate,
+        productCodes: this.paginationData.productCodes,
         ...this.decentralization,
         onSuccess: () => {
           this.$root.$emit('bv::enable::popover')

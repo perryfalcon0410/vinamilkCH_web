@@ -49,10 +49,9 @@
 
     <!-- START - Total view -->
     <b-row
-      class="mx-0"
+      class="ml-0 background-lightgray"
       align-h="around"
       align-v="end"
-      style="background-color: gray"
     >
       <div class="col-5">
         Tổng số HĐ: <strong>{{ reportSalesInfoData.someBills }}</strong>
@@ -89,13 +88,13 @@
           <th class="px-1">
             Tên KH
           </th>
-          <th class="text-right px-2">
+          <th class="text-right px-1">
             Ngành
           </th>
           <th class="text-right px-1">
             Mã SP
           </th>
-          <th class="text-right px-1 w-15">
+          <th class="text-right px-1">
             Tên SP
           </th>
           <th class="text-right px-1">
@@ -122,7 +121,7 @@
       <tbody>
         <tr
           v-for="(products, index) in reportSalesData"
-          :key="products.productCode"
+          :key="index"
         >
           <td class="px-1">
             {{ index + 1 }}
@@ -250,11 +249,17 @@ td, .td {
   border-style: dotted;
   border-width: 2px;
 }
+.background-lightgray {
+  background-color: lightgray !important;
+}
 </style>
 <style type="text/css" media="print">
     @page {
         margin-top: 0;
         margin-bottom: 0;
         size: landscape;
+    }
+    body {
+      -webkit-print-color-adjust: exact !important;
     }
 </style>

@@ -21,7 +21,7 @@ export default {
   namespaced: true,
 
   state: {
-    warehousesInput: [],
+    warehousesInput: {},
     productData: {},
     productCatData: [],
     selectedProductRow: [],
@@ -56,7 +56,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.warehousesInput = res.data.response
+            state.warehousesInput = res.data
           } else {
             throw new Error(res.statusValue)
           }

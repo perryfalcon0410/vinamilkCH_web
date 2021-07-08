@@ -10,6 +10,7 @@ import {
   PRODUCT_CATS_GETTER,
   BILL_COLLECTORS_GETTER,
   PRINT_REPORT_SALES_GETTER,
+  SALES_CHANNEL_GETTER,
   // MUTATIONS
   CLEAR_ALL_PRODUCTS_CHECKED_MUTATION,
   // ACTIONS
@@ -19,18 +20,20 @@ import {
   GET_PRODUCT_CATS_ACTION,
   GET_BILL_COLLECTORS_ACTION,
   PRINT_REPORT_SALES_ACTION,
+  GET_SALES_CHANNEL_ACTION,
 } from './type'
 
 export default {
   namespaced: true,
 
   state: {
-    reportSales: [],
+    reportSales: {},
     productData: {},
     productCatData: [],
     selectedProductRow: [],
     billCollectors: [],
     printReportSalesData: {},
+    salesChannel: [],
   },
 
   getters: {
@@ -49,6 +52,9 @@ export default {
     [PRINT_REPORT_SALES_GETTER](state) {
       return state.printReportSalesData
     },
+    [SALES_CHANNEL_GETTER](state) {
+      return state.salesChannel
+    },
   },
 
   mutations: {
@@ -64,7 +70,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.reportSales = res.data.response
+            state.reportSales = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -144,7 +150,21 @@ export default {
         .then(res => {
           if (res.success) {
             state.printReportSalesData = res.data
-            val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_SALES_CHANNEL_ACTION]({ state }, val) {
+      ReportsSalesServices
+        .getSalesChannel(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.salesChannel = res.data
           } else {
             throw new Error(res.statusValue)
           }

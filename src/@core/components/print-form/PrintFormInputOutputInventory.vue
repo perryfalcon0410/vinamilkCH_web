@@ -276,7 +276,7 @@
         <tbody>
           <tr
             v-for="(products, index) in cats.products"
-            :key="products.productCode"
+            :key="index"
           >
             <td class="px-1">
               {{ index + 1 }}

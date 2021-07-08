@@ -87,7 +87,7 @@
               v-if="props.column.field === 'quantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
             </div>
 
             <div
@@ -95,21 +95,28 @@
               v-else-if="props.column.field === 'total'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(total) }}
+              {{ $formatNumberToLocale(totalInfo.totalTotal) }}
+            </div>
+            <div
+              v-show="salesPagination.totalElements"
+              v-else-if="props.column.field === 'promotionNotVAT'"
+              class="mx-0 h7 text-brand-3 text-right"
+            >
+              {{ $formatNumberToLocale(totalInfo.totalPromotionNotVAT) }}
             </div>
             <div
               v-show="salesPagination.totalElements"
               v-else-if="props.column.field === 'promotion'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalPromotion) }}
+              {{ $formatNumberToLocale(totalInfo.totalPromotion) }}
             </div>
             <div
               v-show="salesPagination.totalElements"
               v-else-if="props.column.field === 'amount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalAmount) }}
+              {{ $formatNumberToLocale(totalInfo.totalPay) }}
             </div>
           </template>
           <!-- START - Column filter -->
@@ -119,7 +126,7 @@
             slot-scope="props"
           >
             <div
-              v-if="props.column.field === 'quantity' || props.column.field === 'total' || props.column.field === 'promotion' || props.column.field === 'amount'"
+              v-if="props.column.field === 'quantity' || props.column.field === 'total' || props.column.field === 'promotionNotVAT' || props.column.field === 'promotion' || props.column.field === 'amount'"
               style="padding-right: 4px"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -210,7 +217,7 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  formatISOtoVNI, reverseVniDate,
+  formatISOtoVNI,
 } from '@core/utils/filter'
 import PrintFormReportSales from '@core/components/print-form/PrintFormReportSales.vue'
 import ReportsSalesListSearch from './components/ReportsSalesListSearch.vue'
@@ -327,7 +334,17 @@ export default {
           formatFn: this.$formatNumberToLocale,
         },
         {
-          label: 'Khuyến mãi',
+          label: 'Chiết khấu (trước VAT)',
+          field: 'promotionNotVAT',
+          type: 'number',
+          thClass: 'text-nowrap',
+          filterOptions: {
+            enabled: true,
+          },
+          formatFn: this.$formatNumberToLocale,
+        },
+        {
+          label: 'Chiết khấu (sau VAT)',
           field: 'promotion',
           type: 'number',
           thClass: 'text-nowrap',
@@ -381,8 +398,8 @@ export default {
       REPORT_SALES_GETTER,
     ]),
     getSales() {
-      if (this.REPORT_SALES_GETTER.content) {
-        return this.REPORT_SALES_GETTER.content.map(data => ({
+      if (this.REPORT_SALES_GETTER.response) {
+        return this.REPORT_SALES_GETTER.response.content.map(data => ({
           redInvoiceNo: data.orderNumber,
           sellDate: formatISOtoVNI(data.orderDate),
           customerCode: data.customerCode,
@@ -395,6 +412,7 @@ export default {
           quantity: data.quantity,
           price: data.price,
           total: data.total,
+          promotionNotVAT: data.promotionNotVAT,
           promotion: data.promotion,
           amount: data.pay,
           userCode: data.employeeCode,
@@ -406,21 +424,15 @@ export default {
       }
       return []
     },
-    totalQuantity() {
-      return this.sales.reduce((accum, item) => accum + Number(item.quantity), 0)
-    },
-    total() {
-      return this.sales.reduce((accum, item) => accum + Number(item.total), 0)
-    },
-    totalPromotion() {
-      return this.sales.reduce((accum, item) => accum + Number(item.promotion), 0)
-    },
-    totalAmount() {
-      return this.sales.reduce((accum, item) => accum + Number(item.amount), 0)
+    totalInfo() {
+      if (this.REPORT_SALES_GETTER.info) {
+        return this.REPORT_SALES_GETTER.info
+      }
+      return {}
     },
     salesPagination() {
-      if (this.REPORT_SALES_GETTER) {
-        return this.REPORT_SALES_GETTER
+      if (this.REPORT_SALES_GETTER.response) {
+        return this.REPORT_SALES_GETTER.response
       }
       return {}
     },
@@ -488,16 +500,14 @@ export default {
       this.PRINT_REPORT_SALES_ACTION({
         collecter: this.paginationData.collecter,
         customerKW: this.paginationData.customerKW?.trim(),
-        fromDate: reverseVniDate(this.paginationData.fromDate),
-        toDate: reverseVniDate(this.paginationData.toDate),
+        fromDate: this.paginationData.fromDate,
+        toDate: this.paginationData.toDate,
         fromInvoiceSales: this.paginationData.fromInvoiceSales,
         toInvoiceSales: this.paginationData.toInvoiceSales,
         orderNumber: this.paginationData.orderNumber?.trim(),
         phoneNumber: this.paginationData.phoneNumber?.trim(),
         productKW: this.paginationData.productKW?.trim(),
         salesChannel: this.paginationData.salesChannel,
-        formId: 1,
-        ctrlId: 1,
         onSuccess: () => {
           this.$root.$emit('bv::enable::popover')
         },

@@ -87,7 +87,7 @@
               v-if="props.column.field === 'quantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
             </div>
 
             <div
@@ -95,28 +95,28 @@
               v-else-if="props.column.field === 'packetQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalPacketQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.totalWholeSale) }}
             </div>
             <div
               v-show="warehousesInputPagination.totalElements"
               v-else-if="props.column.field === 'oddQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalOddQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.totalRetail) }}
             </div>
             <div
               v-show="warehousesInputPagination.totalElements"
               v-else-if="props.column.field === 'amount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(amount) }}
+              {{ $formatNumberToLocale(totalInfo.totalAmount) }}
             </div>
             <div
               v-show="warehousesInputPagination.totalElements"
               v-else-if="props.column.field === 'total'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(total) }}
+              {{ $formatNumberToLocale(totalInfo.total) }}
             </div>
           </template>
           <!-- START - Column filter -->
@@ -418,8 +418,8 @@ export default {
       REPORT_WAREHOUSES_INPUT_GETTER,
     ]),
     getWarehousesInputs() {
-      if (this.REPORT_WAREHOUSES_INPUT_GETTER.content) {
-        return this.REPORT_WAREHOUSES_INPUT_GETTER.content.map(data => ({
+      if (this.REPORT_WAREHOUSES_INPUT_GETTER.response) {
+        return this.REPORT_WAREHOUSES_INPUT_GETTER.response.content.map(data => ({
           transDate: formatISOtoVNI(data.transDate),
           inputType: data.importType,
           redInvoiceNo: data.redInvoiceNo,
@@ -447,24 +447,15 @@ export default {
       }
       return []
     },
-    totalQuantity() {
-      return this.warehousesInputs.reduce((accum, item) => accum + Number(item.quantity), 0)
-    },
-    totalPacketQuantity() {
-      return this.warehousesInputs.reduce((accum, item) => accum + Number(item.packetQuantity), 0)
-    },
-    totalOddQuantity() {
-      return this.warehousesInputs.reduce((accum, item) => accum + Number(item.oddQuantity), 0)
-    },
-    amount() {
-      return this.warehousesInputs.reduce((accum, item) => accum + Number(item.amount), 0)
-    },
-    total() {
-      return this.warehousesInputs.reduce((accum, item) => accum + Number(item.total), 0)
+    totalInfo() {
+      if (this.REPORT_WAREHOUSES_INPUT_GETTER.info) {
+        return this.REPORT_WAREHOUSES_INPUT_GETTER.info
+      }
+      return {}
     },
     warehousesInputPagination() {
-      if (this.REPORT_WAREHOUSES_INPUT_GETTER) {
-        return this.REPORT_WAREHOUSES_INPUT_GETTER
+      if (this.REPORT_WAREHOUSES_INPUT_GETTER.response) {
+        return this.REPORT_WAREHOUSES_INPUT_GETTER.response
       }
       return {}
     },

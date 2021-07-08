@@ -7,6 +7,7 @@ import {
   getProductsEndpoint,
   getBillCollectorsEndpoint,
   printReportSalesEndpoint,
+  getSalesChannelEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -38,6 +39,11 @@ export default {
   },
   printReportSales(args) {
     return axios.get(printReportSalesEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getSalesChannel(args) {
+    return axios.get(getSalesChannelEndpoint, {
       params: formatURLParams(args),
     })
   },
