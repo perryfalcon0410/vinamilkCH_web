@@ -3,399 +3,422 @@
     lg="4"
     class="d-print-none bg-white shadow rounded mt-sm-1 mt-lg-0"
   >
-    <b-form>
-      <!-- START - Date and name -->
-      <b-row
-        class="my-1"
-        align-h="between"
-      >
-        <!-- START - Date  -->
-        <b-col
-          class="mx-0 "
-          cols="6"
+    <validation-observer
+      ref="formContainer"
+      class="d-print-none"
+    >
+      <b-form>
+        <!-- START - Date and name -->
+        <b-row
+          class="my-1"
           align-h="between"
-          align-v="center"
         >
-          <b-icon-alarm-fill
-            font-scale="2"
-            class="mx-1"
-          />
-          {{ currentDate }}
-        </b-col>
-        <!-- END - Date  -->
+          <!-- START - Date  -->
+          <b-col
+            class="mx-0 "
+            cols="6"
+            align-h="between"
+            align-v="center"
+          >
+            <b-icon-alarm-fill
+              font-scale="2"
+              class="mx-1"
+            />
+            {{ currentDate }}
+          </b-col>
+          <!-- END - Date  -->
 
-        <!-- START - Name  -->
-        <b-col
-          class="mx-0 mt-md-1 mt-xl-0 px-1 word-wrap text-right"
-          cols="6"
-          align-v="center"
-        >
-          <b-icon-person-fill
-            font-scale="2"
-            class="mr-1"
-          />
-          {{ customer.fullName }}
-        </b-col>
+          <!-- START - Name  -->
+          <b-col
+            class="mx-0 mt-md-1 mt-xl-0 px-1 word-wrap text-right"
+            cols="6"
+            align-v="center"
+          >
+            <b-icon-person-fill
+              font-scale="2"
+              class="mr-1"
+            />
+            {{ customer.fullName }}
+          </b-col>
         <!-- END - Name  -->
 
-      </b-row>
-      <!-- END - Date and name -->
+        </b-row>
+        <!-- END - Date and name -->
 
-      <!-- START - Section customer -->
-      <b-row
-        v-b-toggle.collapseCustomer
-        align-v="center"
-        class="bg-light"
-        @click="onCollapseCustomersClick()"
-      >
-        <b-icon-people
-          font-scale="2"
-          class="m-1"
-          variant="info"
-        />
-        Khách hàng
-        <b-icon-chevron-down
-          :class="isCheckRotate ? 'rotate' : 'rotate-down'"
-          class="ml-auto mx-1"
-        />
-      </b-row>
-
-      <b-collapse
-        id="collapseCustomer"
-        visible
-      >
-        <b-col
-          class="px-0 h7"
-          md="12"
+        <!-- START - Section customer -->
+        <b-row
+          v-b-toggle.collapseCustomer
+          align-v="center"
+          class="bg-light"
+          @click="onCollapseCustomersClick()"
         >
-          <!-- START - Search -->
-          <b-row
-            class="px-0 mx-0 "
+          <b-icon-people
+            font-scale="2"
+            class="m-1"
+            variant="info"
+          />
+          Khách hàng
+          <b-icon-chevron-down
+            :class="isCheckRotate ? 'rotate' : 'rotate-down'"
+            class="ml-auto mx-1"
+          />
+        </b-row>
+
+        <b-collapse
+          id="collapseCustomer"
+          visible
+        >
+          <b-col
+            class="px-0 h7"
+            md="12"
           >
-            <b-input-group class="input-group-merge mt-1">
-              <b-input-group-prepend
-                is-text
-                style="position: absolute; height: 100%"
-              >
-                <b-icon-search />
-              </b-input-group-prepend>
-              <vue-autosuggest
-                ref="search"
-                v-model="search"
-                :suggestions="customersSearch"
-                class="w-100"
-                align-v="center"
-                :input-props="{
-                  id:'autosuggest__input',
-                  class:'form-control pl-4',
-                  placeholder:'Tìm khách hàng (F4)',
-                }"
-                @input="onChangeKeyWord"
-                @selected="onclickChooseCustomer"
-                @keyup.enter="showSearchModal"
-              >
-                <template
-                  slot-scope="{ suggestion }"
-                >
-                  <b-row class="mx-0">
-
-                    <!-- START - Section Label -->
-                    <b-col>
-                      <b-col
-                        class="text-dark font-weight-bold"
-                        md="10"
-                      >
-                        {{ suggestion.item.fullName }}
-                      </b-col>
-                      <b-col
-                        class="text-dark font-weight-bold border-bottom"
-                      >
-                        {{ suggestion.item.code }} - {{ suggestion.item.phoneNumber }}
-                      </b-col>
-                    </b-col>
-                  <!-- END - Section Label -->
-                  </b-row>
-                </template>
-              </vue-autosuggest>
-              <b-input-group-append
-                is-text
-                style="position: absolute; right: 0px; height: 100%"
-              >
-                <b-icon-plus
-                  v-b-popover.hover="'Thêm mới'"
-                  @click="showModalCreate"
-                />
-              </b-input-group-append>
-            </b-input-group>
-          </b-row>
-
-          <!-- END - Search -->
-
-          <!-- START - Phone Number -->
-          <b-row
-            class="mt-1"
-            align-v="center"
-          >
-            <b-col cols="4">
-              Điện thoại
-            </b-col>
-            <b-col>
-              {{ customer.phoneNumber }}
-            </b-col>
-          </b-row>
-          <!-- END - Phone Number -->
-
-          <!-- START - Cumulative points -->
-          <b-row
-            class="mt-1"
-            align-v="center"
-          >
-            <b-col cols="4">
-              Doanh số tích lũy
-            </b-col>
-            <b-col>
-              {{ $formatNumberToLocale(customer.totalBill) }}
-            </b-col>
-          </b-row>
-          <!-- END - Cumulative points -->
-
-          <!-- START - Address -->
-          <b-row
-            class="mt-1 word-wrap"
-            align-v="center"
-          >
-            <b-col cols="4">
-              Địa chỉ
-            </b-col>
-            <b-col>
-              {{ customer.address }}
-            </b-col>
-          <!-- END - Address -->
-
-          </b-row>
-        <!-- END - Address -->
-        </b-col>
-      </b-collapse>
-      <!-- END - Section customer -->
-
-      <!-- START - Section delivery -->
-      <b-row
-        v-b-toggle.collapseDelivery
-        align-v="center"
-        class="bg-light mt-1"
-        @click="onCollapseClick()"
-      >
-        <b-icon-truck
-          font-scale="2"
-          class="m-1"
-          variant="info"
-        />
-        Giao hàng
-        <b-icon-chevron-down
-          :class="isClickRotate ? 'rotate' : 'rotate-down'"
-          class="ml-auto mx-1"
-        />
-      </b-row>
-
-      <b-collapse
-        id="collapseDelivery"
-        visible
-      >
-        <b-col class="px-0 h7">
-          <!-- START - Order type -->
-          <b-row
-            class="mt-1"
-            align-v="center"
-          >
-            <b-col cols="4">
-              Loại đơn hàng
-            </b-col>
-            <b-col>
-              <tree-select
-                v-model="salemtPromotionObjectSelected"
-                :options="salemtPromotionObjectOptions"
-                @select="resetOrderNumber"
-              />
-            </b-col>
-          </b-row>
-          <!-- END - Order type -->
-
-          <!-- START - Delivery type -->
-          <b-row
-            class="mt-1 "
-            align-v="center"
-          >
-            <b-col
-              cols="4"
-              class="h7"
+            <!-- START - Search -->
+            <b-row
+              class="px-0 mx-0 "
             >
-              Loại giao hàng
-            </b-col>
-            <b-col>
-              <tree-select
-                v-model="salemtDeliveryTypeSelected"
-                :options="salemtDeliveryTypeOptions"
-              />
-            </b-col>
-          </b-row>
-          <!-- END - Delivery type -->
+              <b-input-group class="input-group-merge mt-1">
+                <b-input-group-prepend
+                  is-text
+                  style="position: absolute; height: 100%"
+                >
+                  <b-icon-search />
+                </b-input-group-prepend>
+                <vue-autosuggest
+                  ref="search"
+                  v-model="search"
+                  :suggestions="customersSearch"
+                  class="w-100"
+                  align-v="center"
+                  :input-props="{
+                    id:'autosuggest__input',
+                    class:'form-control pl-4',
+                    placeholder:'Tìm khách hàng (F4)',
+                  }"
+                  @input="onChangeKeyWord"
+                  @selected="onclickChooseCustomer"
+                  @keyup.enter="showSearchModal"
+                >
+                  <template
+                    slot-scope="{ suggestion }"
+                  >
+                    <b-row class="mx-0">
 
-          <!-- START - Online order number -->
-          <b-row
-            class="mt-1 h7"
-            align-v="center"
-          >
-            <b-col cols="4">
-              Số đơn online
-            </b-col>
-            <b-col>
-              <b-input-group class="input-group-merge">
-                <b-form-input
-                  v-model="orderOnline.orderNumber"
-                  maxlength="50"
-                  :disabled="salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0) || isDisabledOrder === true"
-                />
-                <b-input-group-append is-text>
-                  <b-icon-three-dots-vertical
-                    @click="showNotifyModal"
+                      <!-- START - Section Label -->
+                      <b-col>
+                        <b-col
+                          class="text-dark font-weight-bold"
+                          md="10"
+                        >
+                          {{ suggestion.item.fullName }}
+                        </b-col>
+                        <b-col
+                          class="text-dark font-weight-bold border-bottom"
+                        >
+                          {{ suggestion.item.code }} - {{ suggestion.item.phoneNumber }}
+                        </b-col>
+                      </b-col>
+                    <!-- END - Section Label -->
+                    </b-row>
+                  </template>
+                </vue-autosuggest>
+                <b-input-group-append
+                  is-text
+                  style="position: absolute; right: 0px; height: 100%"
+                >
+                  <b-icon-plus
+                    v-b-popover.hover="'Thêm mới'"
+                    @click="showModalCreate"
                   />
                 </b-input-group-append>
               </b-input-group>
-            </b-col>
-          </b-row>
-        <!-- END - Online order number -->
-        </b-col>
-      </b-collapse>
-      <!-- END - Section delivery -->
+            </b-row>
 
-      <!-- START - Section pay -->
-      <b-row
-        align-v="center"
-        class="bg-light mt-1"
-      >
-        <b-icon-cash-stack
-          font-scale="2"
-          class="m-1"
-          variant="info"
-        />
-        Thanh toán
-      </b-row>
+            <!-- END - Search -->
 
-      <b-col class="px-0">
-        <!-- START - Product amount -->
+            <!-- START - Phone Number -->
+            <b-row
+              class="mt-1"
+              align-v="center"
+            >
+              <b-col cols="4">
+                Điện thoại
+              </b-col>
+              <b-col>
+                {{ customer.phoneNumber }}
+              </b-col>
+            </b-row>
+            <!-- END - Phone Number -->
+
+            <!-- START - Cumulative points -->
+            <b-row
+              class="mt-1"
+              align-v="center"
+            >
+              <b-col cols="4">
+                Doanh số tích lũy
+              </b-col>
+              <b-col>
+                {{ $formatNumberToLocale(customer.totalBill) }}
+              </b-col>
+            </b-row>
+            <!-- END - Cumulative points -->
+
+            <!-- START - Address -->
+            <b-row
+              class="mt-1 word-wrap"
+              align-v="center"
+            >
+              <b-col cols="4">
+                Địa chỉ
+              </b-col>
+              <b-col>
+                {{ customer.address }}
+              </b-col>
+            <!-- END - Address -->
+
+            </b-row>
+          <!-- END - Address -->
+          </b-col>
+        </b-collapse>
+        <!-- END - Section customer -->
+
+        <!-- START - Section delivery -->
         <b-row
-          class="mt-1"
+          v-b-toggle.collapseDelivery
           align-v="center"
+          class="bg-light mt-1"
+          @click="onCollapseClick()"
         >
-          <b-col>
-            Số lượng sản phẩm
-          </b-col>
-          <b-col class="text-center text-dark font-weight-bold bg-light rounded py-1">
-            {{ totalQuantity }}
-          </b-col>
+          <b-icon-truck
+            font-scale="2"
+            class="m-1"
+            variant="info"
+          />
+          Giao hàng
+          <b-icon-chevron-down
+            :class="isClickRotate ? 'rotate' : 'rotate-down'"
+            class="ml-auto mx-1"
+          />
         </b-row>
-        <!-- END - Product amount -->
 
-        <!-- START - Temporary calculation -->
+        <b-collapse
+          id="collapseDelivery"
+          visible
+        >
+          <b-col class="px-0 h7">
+            <!-- START - Order type -->
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required"
+              name="Loại đơn hàng"
+            >
+              <b-row
+                class="mt-1"
+                align-v="center"
+              >
+                <b-col cols="4">
+                  Loại đơn hàng
+                </b-col>
+                <b-col>
+                  <tree-select
+                    v-model="salemtPromotionObjectSelected"
+                    :options="salemtPromotionObjectOptions"
+                    @select="resetOrderNumber"
+                  />
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </b-col>
+              </b-row>
+            </validation-provider>
+
+            <!-- END - Order type -->
+
+            <!-- START - Delivery type -->
+            <b-row
+              class="mt-1 "
+              align-v="center"
+            >
+              <b-col
+                cols="4"
+                class="h7"
+              >
+                Loại giao hàng
+              </b-col>
+              <b-col>
+                <tree-select
+                  v-model="salemtDeliveryTypeSelected"
+                  :options="salemtDeliveryTypeOptions"
+                />
+              </b-col>
+            </b-row>
+            <!-- END - Delivery type -->
+
+            <!-- START - Online order number -->
+            <validation-provider
+              v-slot="{ errors, passed, touched }"
+              rules="required"
+              name="Số đơn online"
+            >
+              <b-row
+                class="mt-1 h7"
+                align-v="center"
+              >
+
+                <b-col cols="4">
+                  Số đơn online
+                </b-col>
+                <b-col>
+                  <b-input-group class="input-group-merge">
+                    <b-form-input
+                      v-model="orderOnline.orderNumber"
+                      maxlength="50"
+                      :state="touched ? passed : null"
+                      :disabled="salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0) || isDisabledOrder === true"
+                    />
+                    <b-input-group-append is-text>
+                      <b-icon-three-dots-vertical
+                        @click="showNotifyModal"
+                      />
+                    </b-input-group-append>
+                  </b-input-group>
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </b-col>
+              </b-row>
+            </validation-provider>
+
+          <!-- END - Online order number -->
+          </b-col>
+        </b-collapse>
+        <!-- END - Section delivery -->
+
+        <!-- START - Section pay -->
         <b-row
-          class="mt-1"
           align-v="center"
-        >
-          <b-col>
-            Tạm tính
-          </b-col>
-          <b-col class="text-center text-dark font-weight-bold bg-light rounded py-1">
-            {{ totalOrderPrice }}
-          </b-col>
-        </b-row>
-        <!-- END - Temporary calculation -->
-
-        <!-- START - Note -->
-        <b-col class="px-0 mt-1 h7">
-          <b-input-group class="input-group-merge">
-
-            <b-input-group-prepend is-text>
-              <b-icon-pencil-fill />
-            </b-input-group-prepend>
-            <b-form-input
-              v-model="orderOnline.orderNote"
-              placeholder="Ghi chú"
-              maxlength="4000"
-            />
-
-          </b-input-group>
-        </b-col>
-        <!-- END - Note -->
-
-        <!-- START - Button pay -->
-        <b-button
-          variant="info"
-          class="d-flex w-100 my-1 align-items-center justify-content-center"
-          :disabled="totalQuantity === 0"
-          @click="showPayModal"
+          class="bg-light mt-1"
         >
           <b-icon-cash-stack
             font-scale="2"
-            class="mr-1"
+            class="m-1"
+            variant="info"
           />
-          Thanh toán (F8)
-          <pay-modal
-            ref="payModal"
-            :order-products="orderProducts"
-            :order-selected="salemtPromotionObjectSelected"
-            :delivery-selected="salemtDeliveryTypeSelected"
-            :customer="customer"
-            :order-online="orderOnline"
-            :edit-online-permission="editOnlinePermission"
-          />
-        </b-button>
-        <!-- END - Button pay -->
+          Thanh toán
+        </b-row>
 
-        <!-- START - Notify Modal Close -->
-        <b-modal
-          ref="salesNotifyModal"
-          title="Thông báo"
-        >
-          Chọn đơn online sẽ xóa dữ liệu đơn hàng hiện tại
-          <template #modal-footer>
-            <b-button
-              variant="primary"
-              @click="onClickAgreeButton()"
-            >
-              Đồng ý
-            </b-button>
-            <b-button @click="closeNotifyModal">
-              Đóng
-            </b-button>
-          </template>
-        </b-modal>
+        <b-col class="px-0">
+          <!-- START - Product amount -->
+          <b-row
+            class="mt-1"
+            align-v="center"
+          >
+            <b-col>
+              Số lượng sản phẩm
+            </b-col>
+            <b-col class="text-center text-dark font-weight-bold bg-light rounded py-1">
+              {{ totalQuantity }}
+            </b-col>
+          </b-row>
+          <!-- END - Product amount -->
+
+          <!-- START - Temporary calculation -->
+          <b-row
+            class="mt-1"
+            align-v="center"
+          >
+            <b-col>
+              Tạm tính
+            </b-col>
+            <b-col class="text-center text-dark font-weight-bold bg-light rounded py-1">
+              {{ totalOrderPrice }}
+            </b-col>
+          </b-row>
+          <!-- END - Temporary calculation -->
+
+          <!-- START - Note -->
+          <b-col class="px-0 mt-1 h7">
+            <b-input-group class="input-group-merge">
+
+              <b-input-group-prepend is-text>
+                <b-icon-pencil-fill />
+              </b-input-group-prepend>
+              <b-form-input
+                v-model="orderOnline.orderNote"
+                placeholder="Ghi chú"
+                maxlength="4000"
+              />
+
+            </b-input-group>
+          </b-col>
+          <!-- END - Note -->
+
+          <!-- START - Button pay -->
+          <b-button
+            variant="info"
+            class="d-flex w-100 my-1 align-items-center justify-content-center"
+            :disabled="totalQuantity === 0"
+            @click="showPayModal"
+          >
+            <b-icon-cash-stack
+              font-scale="2"
+              class="mr-1"
+            />
+            Thanh toán (F8)
+            <pay-modal
+              ref="payModal"
+              :order-products="orderProducts"
+              :order-selected="salemtPromotionObjectSelected"
+              :delivery-selected="salemtDeliveryTypeSelected"
+              :customer="customer"
+              :order-online="orderOnline"
+              :edit-online-permission="editOnlinePermission"
+            />
+          </b-button>
+          <!-- END - Button pay -->
+
+          <!-- START - Notify Modal Close -->
+          <b-modal
+            ref="salesNotifyModal"
+            title="Thông báo"
+          >
+            Chọn đơn online sẽ xóa dữ liệu đơn hàng hiện tại
+            <template #modal-footer>
+              <b-button
+                variant="primary"
+                @click="onClickAgreeButton()"
+              >
+                Đồng ý
+              </b-button>
+              <b-button @click="closeNotifyModal">
+                Đóng
+              </b-button>
+            </template>
+          </b-modal>
         <!-- END - Notify Modal Close -->
-      </b-col>
-      <!-- END - Section pay -->
+        </b-col>
+        <!-- END - Section pay -->
 
-      <!-- START - Sales Create Modal -->
-      <sales-create-modal
-        ref="salesCreateModal"
-        @getCreateInfo="getCreateInfo"
-      />
-      <!-- END - Sales Create Modal -->
+        <!-- START - Sales Create Modal -->
+        <sales-create-modal
+          ref="salesCreateModal"
+          @getCreateInfo="getCreateInfo"
+        />
+        <!-- END - Sales Create Modal -->
 
-      <!-- START - Sales Online Order Modal -->
-      <sales-online-orders-modal
-        ref="salesOnlineOrderModal"
-        @getOnlineOrderInfo="getOnlineOrderInfo"
-      />
-      <!-- END - Sales Online Order Modal -->
+        <!-- START - Sales Online Order Modal -->
+        <sales-online-orders-modal
+          ref="salesOnlineOrderModal"
+          @getOnlineOrderInfo="getOnlineOrderInfo"
+        />
+        <!-- END - Sales Online Order Modal -->
 
-      <!-- START - Sales Search Modal -->
-      <sales-search-modal
-        ref="salesSearchModal"
-        :online-order-customers="onlineOrderCustomers"
-        @getCustomerInfo="getCustomerInfo"
-      />
+        <!-- START - Sales Search Modal -->
+        <sales-search-modal
+          ref="salesSearchModal"
+          :online-order-customers="onlineOrderCustomers"
+          @getCustomerInfo="getCustomerInfo"
+        />
       <!-- END - Sales Search Modal -->
 
-    </b-form>
+      </b-form>
+    </validation-observer>
   </b-col>
 </template>
 
@@ -404,6 +427,10 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import {
+  ValidationObserver,
+  ValidationProvider,
+} from 'vee-validate'
 import saleData from '@/@db/sale'
 import commonData from '@/@db/common'
 import {
@@ -451,6 +478,8 @@ export default {
     SalesOnlineOrdersModal,
     PayModal,
     VueAutosuggest,
+    ValidationObserver,
+    ValidationProvider,
   },
   props: {
     orderProducts: {
@@ -529,7 +558,6 @@ export default {
       totalPrice: null,
       salemtPromotionObjectSelected: null,
       salemtDeliveryTypeSelected: null,
-      // salemtDeliveryTypeSelected: this.salemtDeliveryTypeOptions,
       data: null,
 
       // products
@@ -815,11 +843,23 @@ export default {
     },
 
     showPayModal() {
-      this.$bvModal.show('pay-modal')
+      if (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[0].id) {
+        this.$bvModal.show('pay-modal')
+      }
+
+      if (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id || this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[2].id) {
+        if (this.salemtPromotionObjectSelected !== undefined) {
+          this.$refs.formContainer.validate().then(success => {
+            if (success) {
+              this.$bvModal.show('pay-modal')
+            }
+          })
+        }
+      }
     },
 
     showNotifyModal() {
-      if ((this.salemtPromotionObjectSelected && this.salemtPromotionObjectSelected !== saleData.salemtPromotionObject[0].id) && this.isDisabledOrder !== true) {
+      if (this.isDisabledOrder !== true) {
         this.$refs.salesNotifyModal.show()
         this.GET_ONLINE_ORDERS_ACTION({ ...this.searchData })
       }
