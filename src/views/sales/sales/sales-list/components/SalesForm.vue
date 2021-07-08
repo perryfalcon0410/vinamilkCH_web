@@ -21,8 +21,8 @@
             align-v="center"
           >
             <b-icon-alarm-fill
-              font-scale="2"
-              class="mx-1"
+              font-scale="1.7"
+              class="mr-1"
             />
             {{ currentDate }}
           </b-col>
@@ -35,7 +35,7 @@
             align-v="center"
           >
             <b-icon-person-fill
-              font-scale="2"
+              font-scale="1.7"
               class="mr-1"
             />
             {{ customer.fullName }}
@@ -52,9 +52,9 @@
           class="bg-light"
           @click="onCollapseCustomersClick()"
         >
-          <b-icon-alarm-fill
+          <b-icon-people
             font-scale="1.7"
-            class="mr-1"
+            class="mx-1 margin-icon"
           />
           Khách hàng
           <b-icon-chevron-down
@@ -188,9 +188,9 @@
           class="bg-light mt-1"
           @click="onCollapseClick()"
         >
-          <b-icon-person-fill
+          <b-icon-truck
             font-scale="1.7"
-            class="mr-1"
+            class="mx-1 margin-icon"
           />
           Giao hàng
           <b-icon-chevron-down
@@ -294,9 +294,8 @@
           class="bg-light mt-1"
         >
           <b-icon-cash-stack
-            font-scale="2"
-            class="m-1"
-            variant="info"
+            font-scale="1.7"
+            class="mx-1 margin-icon"
           />
           Thanh toán
         </b-row>
@@ -349,13 +348,13 @@
 
           <!-- START - Button pay -->
           <b-button
-            variant="info"
-            class="d-flex w-100 my-1 align-items-center justify-content-center"
+            variant="someThing"
+            class="btn-brand-1 d-flex w-100 my-1 align-items-center justify-content-center"
             :disabled="totalQuantity === 0"
             @click="showPayModal"
           >
             <b-icon-cash-stack
-              font-scale="2"
+              font-scale="1.7"
               class="mr-1"
             />
             Thanh toán (F8)
