@@ -14,10 +14,10 @@
         <strong style="font-size: 20px"> CÔNG TY CP SỮA VIỆT NAM </strong>
         <strong style="font-size: 17px"> {{ reportInfos.shopName }} </strong>
         <strong>{{ reportInfos.address }} </strong>
-        <strong> {{ reportInfos.dateOfPrinting }} </strong>
+        <strong> Ngày in: {{ reportInfos.dateOfPrinting }} </strong>
       </div>
       <b-img
-        src="https://cdn.shopify.com/s/files/1/0506/2613/4215/files/vinamilk_logo_3869x.png?v=1603646389"
+        src="@/assets/images/logo/VinamilkLogo.png"
         alt="logo"
         width="200px"
       />
@@ -35,7 +35,7 @@
           BẢNG KÊ CHI TIẾT CÁC HOÁ ĐƠN NHẬP HÀNG
         </strong>
         <p class="my-1">
-          Từ ngày {{ reportInfos.fromDate }} đến {{ reportInfos.toDate }}
+          Từ ngày {{ $formatISOtoVNI(reportInfos.fromDate) }} <span class="pl-1">đến {{ $formatISOtoVNI(reportInfos.toDate) }}</span>
         </p>
       </div>
     </b-row>
@@ -70,7 +70,7 @@
             Tiền HĐ
           </th>
           <th class="t px-1">
-            Đơn hàng khuyến mãi
+            HĐ khuyến mãi
           </th>
         </tr>
       </thead>
@@ -79,7 +79,7 @@
           v-for="(products, index) in reportData"
           :key="index"
         >
-          <td class="text-right px-1">
+          <td class="text-right px-40">
             {{ index +1 }}
           </td>
           <td class="px-1">
@@ -98,7 +98,7 @@
             {{ products.dateOfPayment }}
           </td>
           <td class="text-right px-1">
-            {{ $formatNumberToLocale(products.totalAmount) }}
+            {{ $formatNumberToLocale(products.totalAmount) || '' }}
           </td>
           <td class="px-1">
             {{ products.promotionalOrders }}
@@ -114,7 +114,7 @@
       style="width: 85%"
       align-h="end"
     >
-      <strong> Tổng cộng: <ins class="ml-5">{{ $formatNumberToLocale(reportInfos.totalAmount) }}</ins> </strong>
+      <strong> <i>Tổng cộng:<i> <ins class="ml-5">{{ $formatNumberToLocale(reportInfos.totalAmount) }}</ins> </i></i></strong>
     </b-row>
 
     <b-row

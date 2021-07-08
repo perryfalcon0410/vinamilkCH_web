@@ -20,9 +20,9 @@
       <div class="d-flex flex-column align-items-center">
         <strong style="font-size: 30px"> BÁO CÁO CHÊNH LỆCH GIÁ </strong>
         <p class="my-1">
-          Từ ngày {{ $formatISOtoVNI(totalData.fromDate) }} đến {{ $formatISOtoVNI(totalData.toDate) }}
+          Từ ngày: {{ $formatISOtoVNI(totalData.fromDate) }} <span class="pl-1">Đến ngày: {{ $formatISOtoVNI(totalData.toDate) }}</span>
         </p>
-        <p>Ngày in : {{ $formatPrintDate(totalData.reportDate) }}</p>
+        <p>Ngày in: {{ $formatPrintDate(totalData.reportDate) }}</p>
       </div>
 
       <!-- START - Invisible element to align title -->
@@ -38,18 +38,15 @@
 
     <!-- START - Total view -->
     <b-row
-      class="mx-0"
-      align-v="end"
-      style="background-color: gray"
+      class="mx-0 width-100-per text-right"
+      style="background: rgb(192, 186, 186)"
     >
-      <b-col class="text-right">
-        Tổng cộng: <strong>{{ $formatNumberToLocale(totalData.totalQuantity) }}</strong>
-      </b-col>
-      <b-col class="text-center">
-        <strong class="pr-4 mr-4">{{ $formatNumberToLocale(totalData.totalPriceInput) }}</strong>
-
-        <strong>{{ $formatNumberToLocale(totalData.totalPriceOutput) }}</strong>
-      </b-col>
+      <span style="width: 51.8%; font-size: 15px">
+        <i>Tổng cộng:</i>
+      </span>
+      <strong style="width: 8%">{{ $formatNumberToLocale(totalData.totalQuantity) }}</strong>
+      <strong style="width: 14.9%">{{ $formatNumberToLocale(totalData.totalPriceInput) }}</strong>
+      <strong style="width: 14.9%">{{ $formatNumberToLocale(totalData.totalPriceOutput) }}</strong>
     </b-row>
     <!-- END - Total view -->
 
@@ -71,20 +68,32 @@
                   Số HĐ: {{ item.response.redInvoiceNo }} - Ngày HĐ: {{ $formatISOtoVNI(item.response.orderDate) }} - Số PO: {{ item.response.poNumber }} - Số nội bộ: {{ item.response.internalNumber }} - Mã nhập hàng: {{ item.response.transCode }}
                 </strong>
                 <b-row
-                  class="mx-0"
-                  align-h="around"
+                  class="mx-0 width-100-per text-right"
                 >
-                  <b-col class="text-right mr-3">
-                    Tổng cộng: {{ $formatNumberToLocale(item.response.totalQuantity) }}
-                  </b-col>
-                  <b-col class="text-center">
-                    <b-row align-h="around">
-                      <span class="pl-5 ml-50">
-                        {{ $formatNumberToLocale(item.response.totalPriceInput) }}
-                      </span>
-                      <span style="padding-right: 8.5rem">{{ $formatNumberToLocale(item.response.totalPriceOutput) }}</span>
-                    </b-row>
-                  </b-col>
+                  <span style="width: 51.9%;">
+                    <i
+                      style="font-weigth: normal;"
+                      class="normal-font"
+                    >Tổng cộng:</i>
+                  </span>
+                  <span
+                    style="width: 8%;"
+                    class="normal-font"
+                  >
+                    {{ $formatNumberToLocale(item.response.totalQuantity) }}
+                  </span>
+                  <span
+                    style="width: 15%;"
+                    class="normal-font"
+                  >
+                    {{ $formatNumberToLocale(item.response.totalPriceInput) }}
+                  </span>
+                  <span
+                    style="width: 15%;"
+                    class="normal-font"
+                  >
+                    {{ $formatNumberToLocale(item.response.totalPriceOutput) }}
+                  </span>
                 </b-row>
               </th>
             </tr>
@@ -95,43 +104,49 @@
               <th
                 rowspan="2"
                 class="text-center"
+                style="width: 5%"
               >
                 STT
               </th>
               <th
                 rowspan="2"
                 class="text-center"
+                style="width: 10%"
               >
                 Mã SP
               </th>
               <th
                 rowspan="2"
                 class="text-center"
+                style="width: 35%"
               >
                 Tên SP
               </th>
               <th
                 rowspan="2"
                 class="text-center"
+                style="width: 5%"
               >
                 ĐVT
               </th>
               <th
                 rowspan="2"
                 class="text-center"
+                style="width: 5%"
               >
                 SL
               </th>
               <th
                 colspan="2"
                 class="text-center"
+                style="width: 15%"
               >
                 Đầu vào
               </th>
               <th
                 colspan="2"
                 class="text-center"
-                style="width: 5%"
+                style="width: 15%"
               >
                 Đầu ra
               </th>
@@ -147,17 +162,29 @@
             <!-- START - Header 3 -->
             <tr>
               <!-- Đầu vào -->
-              <th class="text-center">
+              <th
+                class="text-center"
+                style="width: 7%"
+              >
                 Giá
               </th>
-              <th class="text-center">
+              <th
+                class="text-center"
+                style="width: 8%"
+              >
                 T.Tiền
               </th>
               <!-- Đầu ra -->
-              <th class="text-center">
+              <th
+                class="text-center"
+                style="width: 7%"
+              >
                 Giá
               </th>
-              <th class="text-center">
+              <th
+                class="text-center"
+                style="width: 8%"
+              >
                 T.Tiền
               </th>
             </tr>
@@ -185,7 +212,7 @@
               <td>
                 {{ product.unit }}
               </td>
-              <td>
+              <td class="text-right">
                 {{ $formatNumberToLocale(product.quantity) }}
               </td>
               <td class="text-right">
@@ -318,20 +345,21 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-table {
-  width: 100%;
-}
 th {
   border-style: solid;
-  border-width: 1.75px;
+  border-width: 2px;
 }
 td {
   border-style: dotted;
-  border-width: 1.75px;
+  border-width: 2px;
   word-wrap: break-word;
 }
 table {
   table-layout: auto;
   width: 100%;
+  border-collapse: collapse;
+}
+.normal-font {
+  font-weight: normal;
 }
 </style>

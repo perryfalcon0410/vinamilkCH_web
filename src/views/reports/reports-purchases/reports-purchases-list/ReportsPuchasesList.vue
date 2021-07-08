@@ -28,6 +28,7 @@
           <b-button
             class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
+            :disabled="rows.length === 0"
             @click="printReport"
           >
             <b-icon-printer-fill />
@@ -36,6 +37,7 @@
           <b-button
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
+            :disabled="rows.length === 0"
             @click="exportReport"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />
@@ -288,6 +290,8 @@ export default {
         },
       ],
       rows: [],
+      totalInfo: {},
+      reportInputReceiptDetailsPagination: {},
     }
   },
 
@@ -310,13 +314,13 @@ export default {
       return []
     },
 
-    totalInfo() {
+    getTotalInfo() {
       if (this.REPORT_INPUT_RECEIPT_DETAILS_GETTER.info) {
         return this.REPORT_INPUT_RECEIPT_DETAILS_GETTER.info
       }
       return {}
     },
-    reportInputReceiptDetailsPagination() {
+    getReportInputReceiptDetailsPagination() {
       if (this.REPORT_INPUT_RECEIPT_DETAILS_GETTER.response) {
         return this.REPORT_INPUT_RECEIPT_DETAILS_GETTER.response
       }
@@ -334,6 +338,12 @@ export default {
   watch: {
     getReportInputReceiptDetails() {
       this.rows = [...this.getReportInputReceiptDetails]
+    },
+    getTotalInfo() {
+      this.totalInfo = { ...this.getTotalInfo }
+    },
+    getReportInputReceiptDetailsPagination() {
+      this.reportInputReceiptDetailsPagination = { ...this.getReportInputReceiptDetailsPagination }
     },
   },
   mounted() {

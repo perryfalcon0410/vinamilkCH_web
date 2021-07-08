@@ -98,6 +98,12 @@
                 @click="navigateToUpdate(props.row.id)"
               />
             </div>
+            <div
+              v-else-if="props.column.field === 'fullName' || props.column.field === 'address'"
+              class="line-overflow name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -416,3 +422,9 @@ export default {
   },
 }
 </script>
+<style scoped>
+.line-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>

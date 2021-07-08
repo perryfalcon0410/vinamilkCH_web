@@ -245,7 +245,6 @@ export default {
         {
           label: 'Họ tên',
           field: 'customerName',
-          type: 'number',
           sortable: false,
         },
         {
@@ -349,7 +348,7 @@ export default {
       this.total = [...this.getTotal]
     },
     getReportExchangePagnigation() {
-      this.reportExchangePagnigation = [...this.getReportExchangePagnigation]
+      this.reportExchangePagnigation = { ...this.getReportExchangePagnigation }
     },
   },
   methods: {

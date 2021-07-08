@@ -239,6 +239,7 @@
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-center"
         variant="someThing"
+        :disabled="poConfirm.length === 0"
         @click="confirmImportButton"
       >
         <b-icon
@@ -249,6 +250,7 @@
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-center"
         variant="something"
+        :disabled="poConfirm.length === 0"
         @click="showModal()"
       >
         <b-icon
@@ -259,6 +261,7 @@
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-center"
         variant="someThing"
+        :disabled="poConfirm.length === 0"
         @click="exportExcel"
       >
         <b-icon
@@ -529,27 +532,15 @@ export default {
     },
     // Confirm import product from selected Po
     confirmImportButton() {
-      if (this.poConfirm.length > 0) {
-        this.$emit('inputChange', [this.sysDate, this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, this.Snb, this.poNumber, this.current])
-        this.closePoModal()
-      } else {
-        toasts.error('Bạn cần chọn tối thiểu 1 bản ghi PO')
-      }
+      this.$emit('inputChange', [this.sysDate, this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, this.Snb, this.poNumber, this.current])
+      this.closePoModal()
     },
     exportExcel() {
-      if (this.poConfirm.length <= 0) {
-        toasts.error('Không có dữ liệu kết xuất')
-      } else {
-        this.GET_IMPORTEXCEL_ACTION({ id: this.current, formId: 5, ctrlId: 7 }) // hard code
-      }
+      this.GET_IMPORTEXCEL_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId }) // hard code
     },
     showModal() {
-      if (this.poConfirm.length > 0) {
-        this.denyId = this.current
-        this.$bvModal.show('po-deny-modal')
-      } else {
-        toasts.error('Bạn cần chọn tối thiểu 1 bản ghi PO')
-      }
+      this.denyId = this.current
+      this.$bvModal.show('po-deny-modal')
     },
     closePoModal() {
       this.$bvModal.hide('po-confirm-modal')

@@ -332,7 +332,7 @@
               >
                 <div
                   v-if="props.column.field === 'quantity'"
-                  class="pr-10"
+                  class="pr-70"
                 >
                   {{ props.formattedRow[props.column.field] }}
                 </div>
@@ -676,7 +676,6 @@ export default {
         {
           label: 'Giá',
           field: 'price',
-          type: 'number',
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',

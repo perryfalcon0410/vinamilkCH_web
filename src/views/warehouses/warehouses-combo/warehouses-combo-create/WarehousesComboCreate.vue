@@ -171,7 +171,7 @@
                 :input-props="{
                   id:'autosuggest__input',
                   class:'form-control w-25',
-                  placeholder:'Nhập mã hoặc tên sản phẩm'
+                  placeholder:'Nhập mã hoặc tên combo'
                 }"
                 @input="loadProducts"
                 @selected="onComboSelected"

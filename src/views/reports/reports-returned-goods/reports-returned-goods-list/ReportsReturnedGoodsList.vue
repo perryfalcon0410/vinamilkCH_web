@@ -115,8 +115,7 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'productCode' ||
-                props.column.field ==='productName' ||
+              v-else-if="props.column.field === 'productName' ||
                 props.column.field ==='reasonForPayment' ||
                 props.column.field ==='feedback' ||
                 props.column.field ==='fullName'"
