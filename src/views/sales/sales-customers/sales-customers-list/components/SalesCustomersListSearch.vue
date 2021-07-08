@@ -60,6 +60,7 @@
           class="input-group-merge"
         >
           <b-form-input
+            id="customerName"
             v-model="customerName"
             placeholder="Nhập họ tên/mã"
           />
