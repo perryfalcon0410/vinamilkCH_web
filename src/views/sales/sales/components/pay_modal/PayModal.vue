@@ -19,16 +19,23 @@
         <b-col
           class="shadow py-1 scrollspy-promotion-program"
         >
-          <b-row
-            class="mx-0 bg-light p-1 mb-1 w-25 rounded"
-            align-v="center"
-            rows="5"
-          >
-            <b-icon-gift
-              scale="2"
-              color="red"
-            />
-            <strong class="ml-1 text-brand-1 h7">Khuyến mãi</strong>
+          <b-row>
+            <div
+              class="mx-1 bg-light p-1 mb-1 pl-2 pr-2 rounded"
+              align-v="center"
+              align-h="center"
+            >
+              <b-icon-gift
+                scale="1.5"
+                color="red"
+              />
+              <strong
+                class="ml-1 text-brand-1 h7 mt-1"
+                align-v="center"
+              >
+                Khuyến mãi
+              </strong>
+            </div>
           </b-row>
 
           <div
@@ -327,7 +334,7 @@
                   /> -->
                   <cleave
                     v-model="pay.totalAmount"
-                    class="form-control"
+                    class="form-control h6"
                     :raw="true"
                     :options="options.number"
                     disabled
@@ -353,7 +360,7 @@
                 <b-col>
                   <cleave
                     v-model="pay.promotionAmount"
-                    class="form-control"
+                    class="form-control h6"
                     :raw="true"
                     :options="options.number"
                     disabled
@@ -380,7 +387,7 @@
                   <b-row no-gutters>
                     <b-col
                       cols="6"
-                      class="h7"
+                      class="h6"
                     >
                       <b-form-input
                         v-model="pay.accumulate.accumulatePoint"
@@ -393,7 +400,7 @@
                     >
                       <cleave
                         v-model.number="pay.accumulate.accumulateAmount"
-                        class="form-control pl-1"
+                        class="form-control pl-1 h6"
                         :raw="true"
                         :options="options.number"
                         maxlenght="20"
@@ -426,7 +433,7 @@
                   >
                     <b-col
                       cols="6"
-                      class="h7"
+                      class="h6"
                     >
                       <b-input-group class="input-group-merge">
                         <b-input-group-prepend
@@ -451,7 +458,7 @@
                         </b-input-group-prepend>
                         <b-form-input
                           v-model="pay.voucher.voucherSerials"
-                          class="pl-1"
+                          class="pl-1 h6"
                           readonly
                         />
                       </b-input-group>
@@ -462,7 +469,7 @@
                     >
                       <cleave
                         v-model="pay.voucher.totalVoucherAmount"
-                        class="form-control pl-1"
+                        class="form-control pl-1 h6"
                         :raw="true"
                         :options="options.number"
                         disabled
@@ -511,7 +518,7 @@
                     <b-col>
                       <cleave
                         v-model="pay.discount.discountAmount"
-                        class="form-control pl-1"
+                        class="form-control pl-1 h6"
                         :raw="true"
                         :options="options.number"
                         disabled
@@ -539,7 +546,7 @@
                 <b-col>
                   <cleave
                     v-model="pay.needPaymentAmount"
-                    class="form-control"
+                    class="form-control h6"
                     :raw="true"
                     :options="options.number"
                     disabled
@@ -613,7 +620,7 @@
                 <b-col>
                   <cleave
                     v-model="pay.extraAmount"
-                    class="form-control"
+                    class="form-control h6"
                     :raw="true"
                     :options="options.number"
                     disabled
@@ -639,7 +646,7 @@
         <b-button
           ref="btnPrintSaleOrderTemp"
           variant="none"
-          class="d-flex align-items-center ml-1 text-uppercase btn-brand-1"
+          class="d-flex align-items-center ml-1 btn-brand-1"
           :disabled="isDisabledPrintTempBtn"
           @click="printSaleOrderTemp()"
         >
@@ -651,7 +658,7 @@
         </b-button>
         <b-button
           variant="none"
-          class="d-flex align-items-center mx-1 text-uppercase btn-brand-1"
+          class="d-flex align-items-center mx-1 btn-brand-1"
           :disabled="isDisabledPrintAndPaymentBtn"
           @click="createSaleOrderAndPrint()"
         >
@@ -663,7 +670,7 @@
         </b-button>
         <b-button
           variant="none"
-          class="d-flex align-items-center text-uppercase btn-brand-1"
+          class="d-flex align-items-center btn-brand-1"
           :disabled="isDisabledPaymentBtn"
           @click="createSaleOrder()"
         >
@@ -675,7 +682,7 @@
         </b-button>
         <b-button
           variant="none"
-          class="d-flex align-items-center mx-1 text-uppercase btn-brand-1"
+          class="d-flex align-items-center mx-1 btn-brand-1"
           :disabled="isDisabledRePrintBtn"
           @click="rePrintSaleOrder()"
         >
@@ -687,7 +694,7 @@
         </b-button>
         <b-button
           variant="none"
-          class="d-flex align-items-center text-uppercase btn-brand-1"
+          class="d-flex align-items-center btn-brand-1"
           @click="cancel()"
         >
           <b-icon-x

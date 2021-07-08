@@ -298,9 +298,10 @@ export default {
   watch: {
     // add columns dynamically
     getReportSalesReceiptQuantityDates() {
+      this.columns = []
+      this.labelName = []
+      this.columns = [...this.initalCol]
       if (this.getReportSalesReceiptQuantityDates.length > 0) {
-        this.labelName = []
-        this.columns = [...this.initalCol]
         this.getReportSalesReceiptQuantityDates.forEach((item, index) => {
           const obj = {
             index,
@@ -348,6 +349,8 @@ export default {
     },
   },
   mounted() {
+    this.columns = [...this.initalCol]
+    this.columns.push(this.lastCol)
     resizeAbleTable()
   },
   methods: {

@@ -576,6 +576,18 @@ export default {
                     },
                   ],
                 },
+                {
+                  id: 79,
+                  formCode: 'SalesReturnedGoodsDetail',
+                  formName: 'Xem chi tiết hàng trả lại',
+                  parentFormId: 12,
+                  type: 3,
+                  url: '/sales/returned-goods/detail/:id',
+                  description: null,
+                  orderNumber: 2,
+                  subForms: null,
+                  controls: [],
+                },
               ],
               controls: [
                 {

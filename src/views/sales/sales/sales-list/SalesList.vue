@@ -39,7 +39,7 @@
             >
               <b-row class="mx-0">
                 <!-- START - Section Image -->
-                <b-col
+                <!-- <b-col
                   cols="2"
                   class="px-0"
                 >
@@ -48,20 +48,20 @@
                     fluid
                     width="60px"
                   />
-                </b-col>
+                </b-col> -->
                 <!-- END - Section Image -->
 
                 <!-- START - Section Label -->
                 <b-col>
                   <b-form-row>
                     <b-col
-                      class="text-dark font-weight-bold"
+                      class="text-brand-3 font-weight-bold"
                       md="10"
                     >
-                      {{ suggestion.item.productName }}
+                      {{ suggestion.item.productCode }}
                     </b-col>
                     <b-col
-                      class="text-dark font-weight-bold"
+                      class="text-dark font-weight-bold text-right"
                       md="1"
                     >
                       {{ suggestion.item.productUnitPrice }}
@@ -69,8 +69,8 @@
                   </b-form-row>
 
                   <b-form-row>
-                    <b-col>
-                      {{ suggestion.item.productCode }}
+                    <b-col class="h8">
+                      {{ suggestion.item.productName }}
                     </b-col>
                   </b-form-row>
                 </b-col>
@@ -97,12 +97,12 @@
         <b-button-group
           variant="someThing"
           :class="`${bill.class}`"
-          class=" shadow-brand-1 bg-brand-1 text-white d-flex align-items-center justify-content-center rounded shadow mr-1 px-1 ml-2"
+          class=" shadow-brand-1 bg-btn-order d-flex align-items-center justify-content-center rounded shadow mr-1 px-1 ml-2"
         >
           <b-button
             variant="someThing"
             :class="`${bill.class}`"
-            class="bg-brand-1 text-white d-flex align-items-center justify-content-center"
+            class="bg-btn-order d-flex align-items-center justify-content-center"
             @click="clickBillButton(bill.id)"
           >
             Hóa đơn {{ bill.id }}
@@ -216,9 +216,9 @@
               align-h="start"
               class="d-flex align-items-center"
             >
-              <b-icon-caret-down-fill
+              <b-icon-dash
                 class="cursor-pointer"
-                font-scale="1.5"
+                font-scale="2"
                 @click="decreaseAmount(props.row.productId)"
               />
               <b-input
@@ -232,9 +232,9 @@
                 @change="onChangeQuantity(props.row.originalIndex)"
                 @keypress="$onlyNumberInput"
               />
-              <b-icon-caret-up-fill
+              <b-icon-plus
                 class="cursor-pointer"
-                font-scale="1.5"
+                font-scale="2"
                 @click="increaseAmount(props.row.productId)"
               />
             </div>
@@ -369,22 +369,16 @@ export default {
           field: 'productId',
           sortable: false,
           hidden: true,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'ĐVT',
@@ -405,7 +399,7 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          width: '100px',
+          width: '110px',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',

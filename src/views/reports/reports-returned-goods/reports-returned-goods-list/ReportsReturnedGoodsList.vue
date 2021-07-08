@@ -25,6 +25,7 @@
           <b-button
             class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
+            :disabled="reportReturnRows.length === 0"
             @click="printReport"
           >
             <b-icon-printer-fill />
@@ -33,6 +34,7 @@
           <b-button
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
+            :disabled="reportReturnRows.length === 0"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />

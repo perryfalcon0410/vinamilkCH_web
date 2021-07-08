@@ -52,10 +52,9 @@
           class="bg-light"
           @click="onCollapseCustomersClick()"
         >
-          <b-icon-people
-            font-scale="2"
-            class="m-1"
-            variant="info"
+          <b-icon-alarm-fill
+            font-scale="1.7"
+            class="mr-1"
           />
           Khách hàng
           <b-icon-chevron-down
@@ -189,10 +188,9 @@
           class="bg-light mt-1"
           @click="onCollapseClick()"
         >
-          <b-icon-truck
-            font-scale="2"
-            class="m-1"
-            variant="info"
+          <b-icon-person-fill
+            font-scale="1.7"
+            class="mr-1"
           />
           Giao hàng
           <b-icon-chevron-down
@@ -306,7 +304,7 @@
         <b-col class="px-0">
           <!-- START - Product amount -->
           <b-row
-            class="mt-1"
+            class="mt-1 text-brand-3"
             align-v="center"
           >
             <b-col>
@@ -320,7 +318,7 @@
 
           <!-- START - Temporary calculation -->
           <b-row
-            class="mt-1"
+            class="mt-1 text-brand-3"
             align-v="center"
           >
             <b-col>
@@ -1018,6 +1016,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  .margin-icon {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
   .rotate {
     transition: all 0.5s;
     transform: rotate(180deg);

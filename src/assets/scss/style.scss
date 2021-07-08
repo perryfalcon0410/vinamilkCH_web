@@ -44,6 +44,9 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 }
 
 //Font-size
+.h6 {
+  font-size: 15px;
+}
 .h7 {
   font-size: 14px;
 }
@@ -118,8 +121,12 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 
 // style class visited
 .visited-action {
-  color: #6e6b7b !important;
-  background-color: #fff !important;
+  color: #fff !important;
+  background-color:#315899 !important;
+}
+.bg-btn-order {
+  color: #6e6b7b;
+  background-color: #fff;
 }
 // END - Button
 

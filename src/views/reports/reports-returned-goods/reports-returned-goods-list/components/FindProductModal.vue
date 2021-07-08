@@ -39,7 +39,6 @@
               trim
               autofocus
               class="h7 text-brand-3"
-              placeholder="Nhập mã sản phẩm"
             />
             <b-input-group-append
               is-text
@@ -73,7 +72,6 @@
               v-model="searchOptions.productName"
               trim
               class="h7 text-brand-3"
-              placeholder="Nhập tên sản phẩm"
             />
             <b-input-group-append
               is-text

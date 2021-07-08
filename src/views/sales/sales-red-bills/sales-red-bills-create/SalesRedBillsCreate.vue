@@ -477,6 +477,10 @@
 import toasts from '@/@core/utils/toasts/toasts'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'
+import {
+  nowDate,
+  formatVniDateToISO,
+} from '@/@core/utils/filter'
 import PrintFormRedBills from '@core/components/print-form/PrintFormRedBills.vue'
 import { VueAutosuggest } from 'vue-autosuggest'
 import {
@@ -492,7 +496,7 @@ import {
   required,
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-import { formatVniDateToISO } from '@/@core/utils/filter'
+
 import saleData from '@/@db/sale'
 import BillReceiptsModal from './components/BillReceiptsModal.vue'
 import {
@@ -537,7 +541,7 @@ export default {
         customerCode: '',
         customerName: '',
         billNumber: '',
-        printDate: '',
+        printDate: nowDate(),
         officeWorking: '',
         taxCode: '',
         officeAddress: '',

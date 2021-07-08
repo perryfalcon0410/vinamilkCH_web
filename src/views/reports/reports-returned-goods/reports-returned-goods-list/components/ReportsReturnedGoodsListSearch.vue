@@ -32,7 +32,6 @@
               v-model="reciept"
               trim
               class="h7 text-brand-3"
-              placeholder="Nhập mã trả hàng"
             />
             <b-input-group-append
               is-text
@@ -320,7 +319,7 @@ export default {
   },
   mounted() {
     this.GET_REASON_RETURN_GOODS_ACTION({ ...this.decentralization })
-    this.onSearch()
+    // this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,

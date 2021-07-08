@@ -67,7 +67,7 @@
             class="h7"
           >
             <div
-              class="h8 mt-lg-1 mt-xl-0"
+              class="h7 mt-lg-1 mt-xl-0"
             >
               Từ ngày
             </div>
@@ -101,7 +101,7 @@
             class="h7"
           >
             <div
-              class="h8 mt-lg-1 mt-xl-0"
+              class="h7 mt-lg-1 mt-xl-0"
             >
               Đến ngày
             </div>
@@ -140,12 +140,12 @@
             >
               <b-button
                 id="form-button-search"
-                class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
+                class="shadow-brand-1 bg-brand-1 text-white h8 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
                 variant="someThing"
                 style="height: 30px;"
                 @click="onClickSearchButton()"
               >
-                <b-icon-search />
+                <b-icon-search class="mr-50" />
                 Tìm kiếm
               </b-button>
             </b-form-group>
@@ -215,7 +215,7 @@
                     class="mr-1"
                     scale="1.3"
                   />
-                  CHỌN ĐƠN
+                  Chọn đơn
                 </b-button>
               </div>
               <div v-else>
@@ -394,15 +394,11 @@ export default {
           label: 'Ngày đơn hàng',
           field: 'createdAt',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Thông tin đơn hàng',
           field: 'orderInfo',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: '',
