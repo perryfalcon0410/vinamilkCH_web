@@ -232,7 +232,7 @@
 
             <!-- START - Delivery type -->
             <b-row
-              class="mt-1 "
+              class="mt-1"
               align-v="center"
             >
               <b-col

@@ -978,6 +978,7 @@ export default {
           totalAmtInTax: data.totalAmtInTax,
           zv23Amount: data.zv23Amount,
           isReturn: data.isReturn,
+          lstProductId: data.lstProductId,
         }))
         this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
         this.pay.isVoucherLocked = this.getPromotionPrograms.lockVoucher
@@ -1111,6 +1112,31 @@ export default {
     },
     customer: {
       handler() {
+        let isValidProduct = true
+        this.orderProducts.forEach(product => {
+          if (product.quantity <= 0) {
+            isValidProduct = false
+          }
+        })
+        if (isValidProduct) {
+          const paramProducts = this.orderProducts.map(data => ({
+            productId: data.productId,
+            productCode: data.productCode,
+            quantity: data.quantity,
+          }))
+          if (paramProducts.length > 0) {
+            this.GET_PROMOTION_PROGRAMS_ACTION({
+              customerId: this.customer.id,
+              orderType: Number(this.orderSelected),
+              products: paramProducts,
+              invisibleLoading: true,
+            })
+          }
+          if (this.pay.discount.discountCode !== '') {
+            this.pay.discount.discountCode = ''
+            this.pay.discount.discountAmount = 0
+          }
+        }
         // clean data
         this.pay.salePayment.salePaymentAmount = null
         this.pay.extraAmount = null
@@ -1132,6 +1158,46 @@ export default {
         } else {
           this.extraAmountCalculation()
         }
+      },
+      deep: true,
+    },
+    orderSelected: {
+      handler() {
+        let isValidProduct = true
+        this.orderProducts.forEach(product => {
+          if (product.quantity <= 0) {
+            isValidProduct = false
+          }
+        })
+        if (isValidProduct) {
+          const paramProducts = this.orderProducts.map(data => ({
+            productId: data.productId,
+            productCode: data.productCode,
+            quantity: data.quantity,
+          }))
+          if (paramProducts.length > 0) {
+            this.GET_PROMOTION_PROGRAMS_ACTION({
+              customerId: this.customer.id,
+              orderType: Number(this.orderSelected),
+              products: paramProducts,
+              invisibleLoading: true,
+            })
+          }
+          if (this.pay.discount.discountCode !== '') {
+            this.pay.discount.discountCode = ''
+            this.pay.discount.discountAmount = 0
+          }
+        }
+        // clean data
+        this.pay.salePayment.salePaymentAmount = null
+        this.pay.extraAmount = null
+        this.pay.voucher.voucherSerials = ''
+        this.pay.voucher.vouchers = []
+        this.pay.voucher.totalVoucherAmount = null
+        // get accumulate
+        this.pay.accumulate.accumulateAmount = 0
+        this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
+        this.extraAmountCalculation()
       },
       deep: true,
     },
