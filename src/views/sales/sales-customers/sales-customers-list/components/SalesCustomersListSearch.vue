@@ -26,6 +26,7 @@
         >
           <b-form-input
             v-model.trim="phoneNumber"
+            data-test="phoneNumber"
             autocomplete="on"
             placeholder="Nhập chính xác 4 số cuối"
             maxlength="10"
@@ -60,8 +61,8 @@
           class="input-group-merge"
         >
           <b-form-input
-            id="customerName"
             v-model="customerName"
+            data-test="customerName"
             placeholder="Nhập họ tên/mã"
           />
           <b-input-group-append
@@ -91,6 +92,7 @@
         </div>
         <tree-select
           v-model="customerTypesSelected"
+          data-test="customerTypes"
           :options="customerTypeOptions"
           :searchable="false"
           placeholder="Tất cả"
@@ -112,6 +114,7 @@
           Trạng thái
         </div>
         <tree-select
+          id="status"
           v-model="statusSelected"
           :options="statuOptions"
           :searchable="false"
@@ -134,6 +137,7 @@
           Giới tính
         </div>
         <tree-select
+          id="genders"
           v-model="gendersSelected"
           :options="genderOptions"
           :searchable="false"
@@ -156,6 +160,7 @@
           Khu vực
         </div>
         <tree-select
+          id="areas"
           v-model="areasSelected"
           :options="areaOptions"
           placeholder="Tất cả"
@@ -205,6 +210,7 @@
           Tìm kiếm
         </div>
         <b-button
+          id="btnSearch"
           class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0"
           variant="someThing"
           @click="onClickSearchButton()"
@@ -253,7 +259,7 @@ export default {
       gendersSelected: null,
       areasSelected: null,
       privateCustomer: true,
-
+      customerTypeOptions: null,
       apiStatus: { // success or fail
         // customerTypes: false,
         shopLocationsSearch: false,
@@ -272,18 +278,24 @@ export default {
       SHOP_LOCATIONS_SEARCH_GETTER,
       CUSTOMER_TYPES_GETTER,
     ]),
-    customerTypeOptions() {
-      return this.CUSTOMER_TYPES_GETTER.map(data => ({
-        id: data.id,
-        label: data.name,
-      }))
+    getCustomerTypeOptions() {
+      if (this.CUSTOMER_TYPES_GETTER) {
+        return this.CUSTOMER_TYPES_GETTER.map(data => ({
+          id: data.id,
+          label: data.name,
+        }))
+      }
+      return []
     },
     areaOptions() {
-      return this.SHOP_LOCATIONS_SEARCH_GETTER.map(data => ({
-        id: data.id,
-        label: data.provinceAndDistrictName,
-        default: data.default,
-      }))
+      if (this.SHOP_LOCATIONS_SEARCH_GETTER) {
+        return this.SHOP_LOCATIONS_SEARCH_GETTER.map(data => ({
+          id: data.id,
+          label: data.provinceAndDistrictName,
+          default: data.default,
+        }))
+      }
+      return []
     },
     // apiStatusResult() {
     //   return Object.values(this.apiStatus).every((val, i, arr) => val && arr[0])
@@ -299,6 +311,9 @@ export default {
     //      this.onSearch()
     //   }
     // },
+    getCustomerTypeOptions() {
+      this.customerTypeOptions = [...this.getCustomerTypeOptions]
+    },
   },
 
   mounted() {
