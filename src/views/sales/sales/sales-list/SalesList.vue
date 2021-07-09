@@ -472,6 +472,7 @@ export default {
       quantity: null,
       productChangePrice: [],
       customerDefaultTypeId: null,
+      customerTypeCurent: null,
       // decentralization
       decentralization: {
         formId: 1,
@@ -549,8 +550,8 @@ export default {
         quantity: data.quantity,
         productUnitPrice: this.$formatNumberToLocale(data.price),
         sumProductUnitPrice: data.price,
-        productTotalPrice: this.$formatNumberToLocale(this.totalPrice(1, Number(data.price))),
-        sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
+        productTotalPrice: this.$formatNumberToLocale(data.totalPrice),
+        sumProductTotalPrice: data.totalPrice,
       }))
     },
 
@@ -784,6 +785,7 @@ export default {
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
     },
     getCustomerDefault(val) {
+      this.customerTypeCurent = val.customerTypeId
       this.defaultCustomer = val
       this.customerId = val.id
       this.searchOptions.customerId = this.customerId
@@ -813,15 +815,18 @@ export default {
       // check customers dafault
       this.customerType = val.customerTypeId
       this.searchOptions.customerId = val.id
-      this.productChangePrice = this.orderProducts.map(data => ({
-        productId: data.productId,
-        quantity: data.quantity,
-      }))
-      this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
-        customerTypeId: this.customerType,
-        products: this.productChangePrice,
-        params: this.decentralization,
-      })
+      if (this.customerTypeCurent !== this.customerType) {
+        this.productChangePrice = this.orderProducts.map(data => ({
+          productId: data.productId,
+          quantity: data.quantity,
+        }))
+        this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
+          customerTypeId: this.customerType,
+          products: this.productChangePrice,
+          params: this.decentralization,
+        })
+        this.customerTypeCurent = this.customerType
+      }
     },
 
     getCurrentCustomer(val) {
@@ -838,15 +843,18 @@ export default {
         this.isCheckShopId = true
         this.searchOptions.customerId = data.id
         this.editOnlinePermission = true
-        this.productChangePrice = this.orderProducts.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity,
-        }))
-        this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
-          customerTypeId: this.customerType,
-          products: this.productChangePrice,
-          params: this.decentralization,
-        })
+        if (this.customerTypeCurent !== this.customerType) {
+          this.productChangePrice = this.orderProducts.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity,
+          }))
+          this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
+            customerTypeId: this.customerType,
+            products: this.productChangePrice,
+            params: this.decentralization,
+          })
+          this.customerTypeCurent = this.customerType
+        }
       } else {
         this.isCheckShopId = false
       }
