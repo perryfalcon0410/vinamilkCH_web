@@ -132,8 +132,14 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'productName'"
+              v-else-if="props.column.field === 'productName' || props.column.field === 'note'"
               class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'convfact' || props.column.field === 'transCode' || props.column.field === 'shopName' || props.column.field === 'shopType' || props.column.field === 'productGroup'"
+              style="width: max-content"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>

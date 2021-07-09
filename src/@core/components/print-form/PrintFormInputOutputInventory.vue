@@ -2,10 +2,11 @@
   <b-container
     fluid
     class="d-none d-print-block px-0 text-brand-3"
+    style="font-size: 12px !important"
   >
     <!-- START - Header -->
     <b-row
-      class="mx-0 my-1"
+      class="mx-0 my-0"
       align-h="between"
       align-v="center"
     >
@@ -109,98 +110,105 @@
           </tr>
           <tr>
             <th
-              style="width: 1%"
-              class="px-1"
+              class="pl-50"
             >
               STT
             </th>
-            <th class="px-1">
+            <th class="pl-50">
               Mã SP
             </th>
-            <th class="px-1">
+            <th class="pl-50 w-40">
               Tên SP
             </th>
-            <th class="px-1">
+            <th class="pl-50">
               ĐVT
             </th>
-            <th class="text-right px-2">
+            <th class="pl-50">
               SL
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               Giá
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               T.Tiền
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               Tổng
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               SL
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               T.Tiền
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               ĐC
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               T.Tiền
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               Tổng
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               BH
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               T.Tiền
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               KM
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               T.Tiền
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               ĐC
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               T.Tiền
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               ĐH
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               SL
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               Giá
             </th>
-            <th class="text-right px-1">
+            <th class="pl-50">
               T.Tiền
             </th>
           </tr>
         <!-- END - Header -->
         </thead>
-        <tr>
+        <tr class="font-italic">
           <th
-            colspan="2"
-            class="text-right border-right-0"
+            colspan="1"
+            class="border-right-0 border-dotted"
+          />
+          <th
+            colspan="1"
+            class="text-right border-0 text-nowrap"
           >
             Ngành hàng:
           </th>
           <th
-            colspan="2"
+            colspan="1"
             class="text-center border-0"
           >
             {{ cats.catName }}
           </th>
           <th
             colspan="1"
+            class="border-0"
+          />
+          <th
+            colspan="1"
             class="text-right mx-2 border-0"
           >
-            {{ cats.beginningQty }}
+            {{ $formatNumberToLocale(cats.beginningQty) }}
           </th>
           <th
             colspan="1"
@@ -210,57 +218,13 @@
             colspan="1"
             class="text-right border-0"
           >
-            {{ cats.beginningAmount }}
+            {{ $formatNumberToLocale(cats.beginningAmount) }}
           </th>
           <th
             colspan="1"
             class="text-right border-0"
           >
-            {{ cats.impTotalQty }}
-          </th>
-          <th
-            colspan="3"
-            class="border-0"
-          />
-          <th
-            colspan="1"
-            class="text-right border-0"
-          >
-            {{ cats.impAdjustmentAmount }}
-          </th>
-          <th
-            colspan="1"
-            class="text-right border-0"
-          >
-            {{ cats.expTotalQty }}
-          </th>
-          <th
-            colspan="2"
-            class="text-center border-0"
-          >
-            {{ cats.expSalesAmount }}
-          </th>
-          <th
-            colspan="2"
-            class="border-0"
-          />
-          <th
-            colspan="2"
-            class="text-center border-0"
-          >
-            {{ cats.expExchangeAmount }}
-          </th>
-          <th
-            colspan="1"
-            class="text-right border-0"
-          >
-            {{ cats.expExchangeQty }}
-          </th>
-          <th
-            colspan="1"
-            class="text-right border-0"
-          >
-            {{ cats.endingQty }}
+            {{ $formatNumberToLocale(cats.impTotalQty) }}
           </th>
           <th
             colspan="1"
@@ -268,9 +232,73 @@
           />
           <th
             colspan="1"
-            class="text-right border-left-0"
+            class="border-0"
+          />
+          <th
+            colspan="1"
+            class="border-0"
+          />
+          <th
+            colspan="1"
+            class="text-right border-0"
           >
-            {{ cats.endingAmount }}
+            {{ $formatNumberToLocale(cats.impAdjustmentAmount) }}
+          </th>
+          <th
+            colspan="1"
+            class="text-right border-0"
+          >
+            {{ $formatNumberToLocale(cats.expTotalQty) }}
+          </th>
+          <th
+            colspan="1"
+            class="border-0"
+          />
+          <th
+            colspan="1"
+            class="text-right border-0"
+          >
+            {{ $formatNumberToLocale(cats.expSalesAmount) }}
+          </th>
+          <th
+            colspan="1"
+            class="border-0"
+          />
+          <th
+            colspan="1"
+            class="border-0"
+          />
+          <th
+            colspan="1"
+            class="border-0"
+          />
+          <th
+            colspan="1"
+            class="text-right border-0"
+          >
+            {{ $formatNumberToLocale(cats.expExchangeAmount) }}
+          </th>
+          <th
+            colspan="1"
+            class="text-right border-0"
+          >
+            {{ $formatNumberToLocale(cats.expExchangeQty) }}
+          </th>
+          <th
+            colspan="1"
+            class="text-right border-0"
+          >
+            {{ $formatNumberToLocale(cats.endingQty) }}
+          </th>
+          <th
+            colspan="1"
+            class="border-0"
+          />
+          <th
+            colspan="1"
+            class="text-right border-left-0 border-dotted"
+          >
+            {{ $formatNumberToLocale(cats.endingAmount) }}
           </th>
         </tr>
         <tbody>
@@ -278,73 +306,73 @@
             v-for="(products, index) in cats.products"
             :key="index"
           >
-            <td class="px-1">
+            <td class="pl-50">
               {{ index + 1 }}
             </td>
-            <td class="px-1">
+            <td class="pl-50">
               {{ products.productCode }}
             </td>
-            <td class="px-1">
+            <td class="pl-50">
               {{ products.productName }}
             </td>
-            <td class="px-1">
+            <td class="pl-50">
               {{ products.uom }}
             </td>
-            <td class="px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.beginningQty) }}
             </td>
-            <td class="px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.beginningPrice) }}
             </td>
-            <td class="px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.beginningAmount) }}
             </td>
-            <td class="px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.impTotalQty) }}
             </td>
-            <td class="px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.impQty) }}
             </td>
-            <td class="px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.impAmount) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.impAdjustmentQty) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.impAdjustmentAmount) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.expTotalQty) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.expSalesQty) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.expSalesAmount) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.expPromotionQty) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.expPromotionAmount) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.expAdjustmentQty) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.expAdjustmentAmount) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.expExchangeQty) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.endingQty) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-50">
               {{ $formatNumberToLocale(products.endingPrice) }}
             </td>
-            <td class="text-right px-1">
+            <td class="pl-1">
               {{ $formatNumberToLocale(products.endingAmount) }}
             </td>
           </tr>
@@ -433,9 +461,9 @@ th {
   border-style: solid;
   border-width: 2px;
 }
-td, .td {
+td, .td, .border-dotted {
   border-style: dotted;
-  border-width: 2px;
+  border-width: 1px;
 }
 </style>
 <style type="text/css" media="print">
