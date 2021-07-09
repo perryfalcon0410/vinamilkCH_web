@@ -638,6 +638,7 @@ export default {
         id: data.id,
         productId: data.productId,
         productCode: data.productCode,
+        productName: data.productName,
         type: data.type,
         quantity: data.quantity,
       }))
@@ -654,6 +655,8 @@ export default {
                 lstExchangeDetail: this.listDamagedProducts.map(data => ({
                   id: data.id,
                   productId: data.productId,
+                  productCode: data.productCode,
+                  productName: data.productName,
                   quantity: data.quantity,
                   type: data.type,
                 })),

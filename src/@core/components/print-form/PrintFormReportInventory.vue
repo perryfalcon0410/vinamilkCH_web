@@ -38,9 +38,8 @@
 
     <!-- START - Total section -->
     <b-row
-      class="mx-0"
+      class="mx-0 mb-50 total-header"
       align-v="end"
-      style="background-color: gray"
     >
       <div
         class="ml-1"
@@ -65,7 +64,7 @@
       >Tổng T.Tiền:
       </div>
       <div
-        style="width: 17.7%;"
+        style="width: 17%;"
         class="text-right"
       >
         <strong><ins> {{ $formatNumberToLocale(totalInfo.totalAmount) }} </ins></strong>
@@ -86,11 +85,11 @@
       >
         <div
           class="ml-1 font-italic"
-          style="width: 7%"
+          style="width: 10%"
         >Ngành hàng:
         </div>
         <div
-          style="width: 37.1%;"
+          style="width: 34%;"
         >
           <strong>{{ item.category }}</strong>
         </div>
@@ -112,7 +111,7 @@
         >Tổng T.Tiền:
         </div>
         <div
-          style="width: 17.7%;"
+          style="width: 17%;"
           class="text-right"
         >
           <strong> {{ $formatNumberToLocale(item.totalAmount) }} </strong>
@@ -129,31 +128,31 @@
               STT
             </th>
             <th
-              class="px-50 dotted"
+              class="px-50 dashed"
               style="width: 10%"
             >
               Mã SP
             </th>
             <th
-              class="px-50 dotted"
+              class="px-50 dashed"
               style="width: 34%"
             >
               Tên SP
             </th>
             <th
-              class="px-50 dotted"
+              class="px-50 dashed"
               style="width: 5%"
             >
               ĐVT
             </th>
             <th
               style="width: 7%"
-              class="px-50 dotted text-right"
+              class="px-50 dashed text-right"
             >
               SL
             </th>
             <th
-              class="text-right dotted px-50"
+              class="text-right dashed px-50"
               style="width: 10%"
             >
               Giá
@@ -325,17 +324,31 @@ th {
   border-width: 2px;
 }
 td {
-  border-style: dotted;
-  border-width: 2px;
+  border-style: dashed;
+  border-width: 1px;
 }
-.dotted {
-  border-left-style: dotted;
-  border-right-style: dotted;
+.dashed {
+  border-left-style: dashed;
+  border-right-style: dashed;
 }
 .stt {
-  border-right-style: dotted;
+  border-right-style: dashed;
 }
 .total {
-  border-left-style: dotted;
+  border-left-style: dashed;
 }
+.total-header{
+  background: rgb(192, 186, 186);
+  border-radius: 3px;
+}
+</style>
+<style type="text/css" media="print">
+    @page {
+        margin-top: 0;
+        margin-bottom: 0;
+        size: portrait;
+    }
+    body {
+      -webkit-print-color-adjust: exact !important;
+    }
 </style>

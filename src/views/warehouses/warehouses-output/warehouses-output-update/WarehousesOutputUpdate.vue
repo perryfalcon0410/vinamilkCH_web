@@ -289,7 +289,7 @@
           <b-button
             variant="someThing"
             class="align-items-button-center btn-brand-1 text-uppercase h8"
-            :hidden="isDisableSave && warehousesOutput.receiptType === warehousesOptions[0].id"
+            :hidden="isDisableSave"
             @click="onClickUpdateWarehousesOutput"
           >
             <b-icon-download
@@ -691,7 +691,9 @@ export default {
       })
     },
     onClickUpdateWarehousesOutput() {
-      this.checkQuantity()
+      if (this.warehousesOutput.receiptType === warehousesData.outputTypes[0].id) {
+        this.checkQuantity()
+      }
       if (this.quantityCheck) {
         if (this.products) {
           const products = [...this.products.map(data => ({

@@ -39,13 +39,12 @@
 
     <!-- START - Total section -->
     <b-row
-      class="mx-0 width-100-per"
+      class="mx-0 mb-50 width-100-per total-header"
       align-v="end"
-      style="background-color: grey"
     >
       <div
         class="text-right"
-        style="width: 99.5%"
+        style="width: 99.1%"
       >
         <strong class="pr-5 font-italic">Tổng Cộng:</strong>
         <strong>{{ $formatNumberToLocale(commonInfo.totalQuantity) }}</strong>
@@ -72,13 +71,13 @@
                 class="mx-0 width-100-per"
               >
                 <div
-                  style="width: 20%"
+                  style="width: 30%"
                   class="pl-1"
                 ><i>Ngành hàng:</i> <strong class="pl-3">{{ item.productCatName }}</strong>
                 </div>
                 <div
                   class="text-right"
-                  style="width: 79.7%"
+                  style="width: 69.5%"
                 ><i class="pr-5">Tổng Cộng:</i>
                   <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
                 </div>
@@ -97,7 +96,7 @@
             </th>
             <th
               class="dotted px-50"
-              style="width: 14%"
+              style="width: 24%"
             >
               Ngày bán
             </th>
@@ -115,7 +114,7 @@
             </th>
             <th
               class="dotted px-50"
-              style="width: 46%"
+              style="width: 36%"
             >
               Tên SP
             </th>
@@ -126,7 +125,7 @@
               ĐVT
             </th>
             <th
-              class="dotted px-50"
+              class="dotted px-50 sl"
               style="width: 8%"
             >
               SL
@@ -235,17 +234,42 @@ th {
   border-width: 1px;
 }
 td {
-  border-style: dotted;
+  border-style: dashed;
   border-width: 1px;
 }
+thead tr{
+  border-style: solid;
+  border-color: black;
+  border-width: 2px;
+  font-weight: bold;
+  border-radius: 2px;
+}
 .dotted {
-  border-left-style: dotted;
-  border-right-style: dotted;
+  border-left-style: dashed;
+  border-right-style: dashed;
 }
 .stt {
-  border-right-style: dotted;
+  border-right-style: dashed;
+}
+.sl{
+  border-right-style: solid;
+  border-right-width: 2px;
 }
 .total {
-  border-left-style: dotted;
+  border-left-style: dashed;
 }
+.total-header {
+    background: rgb(192, 186, 186);
+    border-radius: 3px;
+}
+</style>
+<style type="text/css" media="print">
+    @page {
+        margin-top: 0;
+        margin-bottom: 0;
+        size: portrait;
+    }
+    body {
+      -webkit-print-color-adjust: exact !important;
+    }
 </style>

@@ -5,7 +5,7 @@
   >
     <!-- START - Header -->
     <b-row
-      class="mx-0 my-1"
+      class="mx-0 mt-1"
       align-h="between"
       align-v="center"
     >
@@ -26,10 +26,10 @@
         <strong style="font-size: 30px"> Hàng trả lại </strong>
         <b-row class="mt-1">
           <p class="mr-2">
-            Từ ngày {{ $formatISOtoVNI(commonData.fromDate) }}
+            Từ ngày :{{ $formatISOtoVNI(commonData.fromDate) }}
           </p>
           <p>
-            Đến ngày {{ $formatISOtoVNI(commonData.toDate) }}
+            Đến ngày :{{ $formatISOtoVNI(commonData.toDate) }}
           </p>
         </b-row>
         <p>Ngày in : {{ $formatPrintDate(commonData.printDate) }}</p>
@@ -57,18 +57,18 @@
       ><strong>Ngành hàng: A </strong>
       </div>
       <div
-        style="width: 6.4%;"
+        style="width: 10.1%;"
         class="text-right text-nowrap italic"
       >Tổng SL:
       </div>
       <div
-        style="width: 6.5%;"
+        style="width: 6.8%;"
         class="text-right"
       >
         <strong><ins>{{ $formatNumberToLocale(totalInfoReturnedGood.totalQuantity) }}</ins></strong>
       </div>
       <div
-        style="width: 10.4%;"
+        style="width: 9.8%;"
         class="text-right text-nowrap italic"
       >Tổng T.Tiền:
 
@@ -80,13 +80,13 @@
         <strong><ins>{{ $formatNumberToLocale(totalInfoReturnedGood.totalAmount) }}</ins></strong>
       </div>
       <div
-        style="width: 10.5%;"
+        style="width: 7.7%;"
         class="text-right text-nowrap italic"
       >Tổng TTL:
 
       </div>
       <div
-        style="width: 11.6%;"
+        style="width: 10.9%;"
         class="text-right"
       > <strong><ins>{{ $formatNumberToLocale(totalInfoReturnedGood.totalRefunds) }}</ins></strong></div>
     </b-row>
@@ -104,23 +104,23 @@
         style="border-style: dashed; border-width: 1px 1px 0 1px"
       >
         <div
-          style="width: 38.5%;"
-          class="ml-1"
-        ><strong>Ngành hàng: {{ item.category }} </strong>
+          style="width: 39.5%;"
+          class="ml-50"
+        ><strong><i>Ngành hàng: {{ item.category }} </i></strong>
         </div>
         <div
-          style="width: 6.4%;"
+          style="width: 9.9%;"
           class="text-right text-nowrap italic"
         >Tổng SL:
         </div>
         <div
-          style="width: 6.5%;"
+          style="width: 6.8%;"
           class="text-right"
         >
           <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
         </div>
         <div
-          style="width: 10.4%;"
+          style="width: 9.8%;"
           class="text-right text-nowrap italic"
         >Tổng T.Tiền:
 
@@ -132,12 +132,12 @@
           <strong>{{ $formatNumberToLocale(item.totalAmount) }}</strong>
         </div>
         <div
-          style="width: 10.5%;"
+          style="width: 7.7%;"
           class="text-right text-nowrap italic"
         > Tổng TTL:
         </div>
         <div
-          style="width: 11.6%;"
+          style="width: 10.9%;"
           class="text-right"
         >
           <strong>{{ $formatNumberToLocale(item.totalRefunds) }}</strong>
@@ -159,9 +159,11 @@
               <th
                 colspan="10"
               >
-                <strong class="mx-1">
-                  Mã trả hàng:{{ order.returnNumber }} - Mã hóa đơn:{{ order.orderNumber }} - KH: {{ order.customerName }}
-                </strong>
+                <b-row class="mx-0 width-100-per">
+                  <i class="mb-1 ml-50">
+                    Mã trả hàng:{{ order.returnNumber }} - Mã hóa đơn:{{ order.orderNumber }} - KH: {{ order.customerName }}
+                  </i>
+                </b-row>
                 <b-row
                   class="mx-0 width-100-per"
                 >
@@ -169,36 +171,36 @@
                     style="width: 40%;"
                   />
                   <div
-                    style="width: 6.4%;"
+                    style="width: 10.1%;"
                     class="text-right text-nowrap italic"
                   >Tổng SL:
                   </div>
                   <div
-                    style="width: 6.5%;"
+                    style="width: 6.8%;"
                     class="text-right"
-                  ><strong class="text-right">{{ order.orderQuantity }}</strong>
+                  ><strong class="text-right">{{ $formatNumberToLocale(order.orderQuantity) }}</strong>
                   </div>
                   <div
-                    style="width: 10.4%;"
+                    style="width: 9.8%;"
                     class="text-right text-nowrap italic"
                   >Tổng T.Tiền:
                   </div>
                   <div
                     style="width: 14%;"
                     class="text-right"
-                  ><strong>{{ order.orderAmount }}</strong>
+                  ><strong>{{ $formatNumberToLocale(order.orderAmount) }}</strong>
                   </div>
                   <div
-                    style="width: 10.5%;"
+                    style="width: 7.7%;"
                     class="text-right text-nowrap italic"
                   >
                     Tổng&nbsp;TTL:
                   </div>
                   <div
-                    style="width: 11.6%;"
+                    style="width: 10.9%;"
                     class="text-right"
                   >
-                    <strong> {{ order.orderRefund }}</strong>
+                    <strong> {{ $formatNumberToLocale(order.orderRefund) }}</strong>
                   </div>
                 </b-row>
               </th>
@@ -206,7 +208,7 @@
             <!-- END - Header 1 -->
 
             <!-- START - Header 2 -->
-            <tr>
+            <tr class="second-tr">
               <th
                 style="width: 1%"
                 class="px-50"
@@ -220,38 +222,38 @@
                 Mã SP
               </th>
               <th
-                style="width: 34%"
+                style="width: 27%"
                 class="px-50"
               >
                 Tên SP
               </th>
               <th
-                style="width: 5%"
+                style="width: 6%"
                 class="px-50"
               >
                 ĐVT
               </th>
               <th
                 style="width: 7%"
-                class="px-50 text-right"
+                class="px-50 t"
               >
                 SL
               </th>
               <th
-                style="width: 10%"
-                class="px-50 text-right"
+                style="width: 8.5%"
+                class="px-50 "
               >
                 Giá
               </th>
               <th
-                style="width: 15%"
-                class="px-50 text-right"
+                style="width: 14%"
+                class="px-50"
               >
                 T.Tiền
               </th>
               <th
                 style="width: 17%"
-                class="px-50 text-right"
+                class="px-50 "
               >
                 Tiền trả lại
               </th>
@@ -280,16 +282,16 @@
                 {{ product.unit }}
               </td>
               <td class="px-50 text-right">
-                {{ product.quantity }}
+                {{ $formatNumberToLocale(product.quantity) }}
               </td>
               <td class="px-50 text-right">
-                {{ product.price }}
+                {{ $formatNumberToLocale(product.price) }}
               </td>
               <td class="px-50 text-right">
-                {{ product.totalAmount }}
+                {{ $formatNumberToLocale(product.totalAmount) }}
               </td>
               <td class="px-50 text-right">
-                {{ product.totalRefunds }}
+                {{ $formatNumberToLocale(product.totalRefunds) }}
               </td>
             </tr>
           </tbody>
@@ -369,7 +371,7 @@ table {
   width: 100%;
 }
 th {
-  border-style: solid;
+  border-style: dashed;
   border-width: 1px;
   font-weight: normal;
 }
@@ -379,6 +381,11 @@ th {
 td {
   border-style: dashed;
   border-width: 1px;
+}
+.second-tr th{
+  border-style: solid;
+  border-width: 2px;
+  font-weight: bold;
 }
 .second-sector {
   border-top-style: none;
@@ -395,5 +402,8 @@ td {
         margin-top: 0;
         margin-bottom: 0;
         size: portrait;
+    }
+    body {
+      -webkit-print-color-adjust: exact !important;
     }
 </style>
