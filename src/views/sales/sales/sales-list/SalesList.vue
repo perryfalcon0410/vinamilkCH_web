@@ -197,9 +197,10 @@
             <b-row
               v-if="props.column.field === 'productInventory'"
               align-v="center"
-              class="mx-0"
+              align-h="end"
+              class="mx-0 pr-1"
             >
-              {{ props.row.productInventory }}
+              {{ $formatNumberToLocale(props.row.productInventory) }}
               <b-icon-shield-exclamation
                 v-if="props.row.productInventory < props.row.quantity"
                 color="red"
@@ -218,7 +219,7 @@
             >
               <b-icon-dash
                 class="cursor-pointer"
-                font-scale="2"
+                font-scale="1.7"
                 @click="decreaseAmount(props.row.productId)"
               />
               <b-input
@@ -228,13 +229,13 @@
                 :number="true"
                 :disabled="editOnlinePermission === false && onlineOrderId !== null && isOnline === true"
                 maxlength="7"
-                class="text-center h7"
+                class="text-center h7 p-input"
                 @change="onChangeQuantity(props.row.originalIndex)"
                 @keypress="$onlyNumberInput"
               />
               <b-icon-plus
                 class="cursor-pointer"
-                font-scale="2"
+                font-scale="1.7"
                 @click="increaseAmount(props.row.productId)"
               />
             </div>
@@ -374,51 +375,50 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          tdClass: 'align-middle',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          tdClass: 'align-middle',
         },
         {
           label: 'ĐVT',
           field: 'productUnit',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          tdClass: 'align-middle',
         },
         {
           label: 'Tồn kho',
           field: 'productInventory',
+          formatFn: this.$formatNumberToLocale,
           type: 'number',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          tdClass: 'align-middle',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          width: '110px',
+          width: '135px',
           sortable: false,
           thClass: 'text-center',
-          tdClass: 'text-center',
+          tdClass: 'text-center align-middle',
         },
         {
           label: 'Đơn giá',
           field: 'productUnitPrice',
           sortable: false,
           type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          tdClass: 'pr-2 align-middle',
         },
         {
           label: 'Thành tiền',
           field: 'productTotalPrice',
           sortable: false,
           type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          tdClass: 'pr-2 align-middle',
         },
         {
           label: 'Chức năng',
@@ -497,7 +497,7 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         productUnit: data.uom1,
-        productInventory: this.$formatNumberToLocale(data.stockTotal),
+        productInventory: data.stockTotal,
         quantity: 1,
         productUnitPrice: this.$formatNumberToLocale(data.price),
         sumProductUnitPrice: data.price,
@@ -523,7 +523,7 @@ export default {
             productName: data.productName,
             productCode: data.productCode,
             productUnit: data.uom1,
-            productInventory: this.$formatNumberToLocale(data.stockTotal),
+            productInventory: data.stockTotal,
             productUnitPrice: this.$formatNumberToLocale(data.price),
             sumProductUnitPrice: data.price,
             quantity: 1,
@@ -804,6 +804,13 @@ export default {
     },
 
     getCustomerTypeInfo(val) {
+      // check customers dafault
+      if (val) {
+        this.isCheckShopId = true
+      } else {
+        this.isCheckShopId = false
+      }
+      // check customers dafault
       this.customerType = val.customerTypeId
       this.searchOptions.customerId = val.id
       this.productChangePrice = this.orderProducts.map(data => ({
@@ -902,3 +909,8 @@ export default {
   },
 }
 </script>
+<style>
+.p-input {
+  padding: 0.438rem 0.7rem;
+}
+</style>

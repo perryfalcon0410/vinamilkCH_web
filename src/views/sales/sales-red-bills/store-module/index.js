@@ -212,11 +212,12 @@ export default {
     },
     [DELETE_RED_INVOICE_ACTION]({}, val) {
       RedInvoiceService
-        .deleteRedBill(val)
+        .deleteRedBill(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             toasts.success(res.statusValue)
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

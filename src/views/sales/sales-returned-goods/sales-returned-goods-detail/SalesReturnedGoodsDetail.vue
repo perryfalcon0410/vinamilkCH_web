@@ -54,11 +54,18 @@
           <div class="mt-1">
             Thông tin phản hồi
           </div>
-          <b-form-textarea
+          <b-list-group>
+            <b-list-group-item class="min-height">
+              <strong>
+                {{ detailReturnInfo.reasonDesc }}
+              </strong>
+            </b-list-group-item>
+          </b-list-group>
+          <!-- <b-form-textarea
             id="textarea-plaintext"
             readonly
             :value="detailReturnInfo.reasonDesc"
-          />
+          /> -->
         </b-col>
         <!-- END - Feedback info -->
 
@@ -245,5 +252,8 @@ export default {
 <style>
 .list-group-item:hover {
   background-color: #fff !important;
+}
+.min-height {
+  min-height: 5rem;
 }
 </style>

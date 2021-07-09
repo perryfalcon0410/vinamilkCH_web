@@ -178,28 +178,28 @@
                 >
                   <b-row
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0"
+                    class="mx-0 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.totalQuantity) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'totalPrice'"
-                    class="mx-0"
+                    class="mx-0 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.totalAmount) }}
                   </b-row>
                   <b-row
                     v-if="props.column.field === 'discount'"
-                    class="mx-0"
+                    class="mx-0 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.totalDiscount) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'payment'"
-                    class="mx-0"
+                    class="mx-0 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.allTotal) }}
@@ -239,14 +239,14 @@
                 >
                   <b-row
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0"
+                    class="mx-0 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getPromotionInfo.totalQuantity) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'payment'"
-                    class="mx-0"
+                    class="mx-0 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getPromotionInfo.allTotal) }}

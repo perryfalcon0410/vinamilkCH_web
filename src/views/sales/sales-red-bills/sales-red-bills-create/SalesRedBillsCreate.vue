@@ -135,7 +135,7 @@
                 <b-form-input
                   v-model="redBill.officeWorking"
                   :state="touched ? passed : null"
-                  maxlength="200"
+                  maxlength="250"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
@@ -173,7 +173,7 @@
             <b-form-input
               v-model="redBill.officeAddress"
               :state="touched ? passed : null"
-              maxlength="200"
+              maxlength="250"
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>

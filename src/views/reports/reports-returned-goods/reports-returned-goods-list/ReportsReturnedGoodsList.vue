@@ -237,7 +237,7 @@ import {
   mapGetters,
 } from 'vuex'
 import {
-  getReportReasonTypeslabel,
+  // getReportReasonTypeslabel,
   resizeAbleTable,
 } from '@core/utils/utils'
 import PrintFormReportReturnGoods from '@core/components/print-form/PrintFormReportReturnGoods.vue'
@@ -409,7 +409,7 @@ export default {
           amount: this.$formatNumberToLocale(data.amount),
           refunds: this.$formatNumberToLocale(data.refunds),
           payDay: this.$formatISOtoVNI(data.payDay),
-          reasonForPayment: getReportReasonTypeslabel(String(data.reasonForPayment)),
+          reasonForPayment: data.reasonForPayment,
           feedback: data.feedback,
         }))
       }

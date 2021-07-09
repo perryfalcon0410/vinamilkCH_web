@@ -971,20 +971,22 @@ export default {
     },
 
     onclickChooseCustomer(suggestion) {
-      this.customer.id = suggestion.item.id
-      this.customer.code = suggestion.item.code
-      this.customer.email = suggestion.item.email
-      this.customer.shopId = suggestion.item.shopId
-      this.customer.fullName = suggestion.item.fullName
-      this.customer.phoneNumber = suggestion.item.phoneNumber
-      this.customer.totalBill = suggestion.item.totalBill
-      this.customer.address = suggestion.item.address
-      this.customer.totalBill = suggestion.item.totalBill ?? 0
-      this.customer.scoreCumulated = suggestion.item.scoreCumulated
-      this.customer.amountCumulated = suggestion.item.amountCumulated
-      this.customer.status = suggestion.item.status
-      this.customer.typeId = suggestion.item.customerTypeId
-      this.$emit('getIdCustomer', suggestion.item)
+      if (suggestion) {
+        this.customer.id = suggestion.item.id
+        this.customer.code = suggestion.item.code
+        this.customer.email = suggestion.item.email
+        this.customer.shopId = suggestion.item.shopId
+        this.customer.fullName = suggestion.item.fullName
+        this.customer.phoneNumber = suggestion.item.phoneNumber
+        this.customer.totalBill = suggestion.item.totalBill
+        this.customer.address = suggestion.item.address
+        this.customer.totalBill = suggestion.item.totalBill ?? 0
+        this.customer.scoreCumulated = suggestion.item.scoreCumulated
+        this.customer.amountCumulated = suggestion.item.amountCumulated
+        this.customer.status = suggestion.item.status
+        this.customer.typeId = suggestion.item.customerTypeId
+        this.$emit('getIdCustomer', suggestion.item)
+      }
       this.customersSearch = [{ data: null }]
       this.search = ''
     },

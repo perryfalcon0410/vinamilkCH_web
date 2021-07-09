@@ -356,7 +356,7 @@
             <b-row
               v-show="getRedBillPagination.totalElements"
               v-if="props.column.field === 'quantity'"
-              class="mx-0"
+              class="mx-0 h7 text-brand-3 text-right"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.sumTotalQuantity) }}
@@ -365,7 +365,7 @@
             <b-row
               v-show="getRedBillPagination.totalElements"
               v-else-if="props.column.field === 'goodsMoney'"
-              class="mx-0"
+              class="mx-0 h7 text-brand-3 text-right"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.sumAmountNotVat) }}
@@ -373,7 +373,7 @@
             <b-row
               v-show="getRedBillPagination.totalElements"
               v-else-if="props.column.field === 'GTGT'"
-              class="mx-0"
+              class="mx-0 h7 text-brand-3 text-right"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.sumAmountGTGT) }}
@@ -381,7 +381,7 @@
             <b-row
               v-show="getRedBillPagination.totalElements"
               v-else-if="props.column.field === 'totalMoney'"
-              class="mx-0"
+              class="mx-0 h7 text-brand-3 text-right"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.sumTotalMoney) }}
@@ -515,20 +515,24 @@ export default {
           label: 'Tên công ty',
           field: 'company',
           sortable: false,
+          tdClass: 'align-middle',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
+          tdClass: 'align-middle',
         },
         {
           label: 'Mã số thuế',
           field: 'VATCode',
+          tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: 'Số lượng',
           field: 'quantity',
+          tdClass: 'align-middle pr-1',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -539,6 +543,7 @@ export default {
         {
           label: 'Tiền hàng',
           field: 'goodsMoney',
+          tdClass: 'align-middle pr-1',
           sortable: false,
           type: 'number',
           formatFn: this.$formatNumberToLocale,
@@ -546,6 +551,7 @@ export default {
         {
           label: 'Tiền thuế GTGT',
           field: 'GTGT',
+          tdClass: 'align-middle pr-1',
           sortable: false,
           type: 'number',
           formatFn: this.$formatNumberToLocale,
@@ -553,6 +559,7 @@ export default {
         {
           label: 'Tổng cộng tiền',
           field: 'totalMoney',
+          tdClass: 'align-middle pr-1',
           sortable: false,
           type: 'number',
           formatFn: this.$formatNumberToLocale,
@@ -560,12 +567,14 @@ export default {
         {
           label: 'Ngày in',
           field: 'printDate',
+          tdClass: 'align-middle',
           sortable: false,
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Ghi chú HĐĐ đỏ',
           field: 'note',
+          tdClass: 'align-middle',
           sortable: false,
         },
       ],
@@ -765,13 +774,20 @@ export default {
     },
     confirmDelete() {
       this.isDeleteModalShow = !this.isDeleteModalShow
-      this.DELETE_RED_INVOICE_ACTION({ ids: this.ids, ...this.decentralization })
-      this.selectedRedBillRows.forEach(item => {
-        const findIndex = this.listRedBill.findIndex(e => e.id === item.id)
-        this.listRedBill.splice(findIndex, 1)
+      this.DELETE_RED_INVOICE_ACTION({
+        data: {
+          ids: this.ids,
+          ...this.decentralization,
+        },
+        onSuccess: () => {
+          this.selectedRedBillRows.forEach(item => {
+            const findIndex = this.listRedBill.findIndex(e => e.id === item.id)
+            this.listRedBill.splice(findIndex, 1)
+          })
+          this.getRedBillPagination.totalElements -= this.selectedRedBillRows.length
+          this.selectedRedBillRows = []
+        },
       })
-      this.getRedBillPagination.totalElements -= this.selectedRedBillRows.length
-      this.selectedRedBillRows = []
     },
     onClickExportRedBills() {
       if (this.selectedRedBillRows && this.selectedRedBillRows.length > 0) {
