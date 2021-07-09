@@ -24,7 +24,7 @@
           <b-form-input
             v-model="customerName"
             class="h7 text-brand-3 height-button-brand-1"
-            placeholder="Nhập họ tên/mã"
+            placeholder="Nhập họ tên/ mã"
             @keyup.enter="onClickSearchButton"
           />
           <b-input-group-append
@@ -57,7 +57,7 @@
           <b-form-input
             v-model="phoneNumber"
             class="h7 text-brand-3 height-button-brand-1"
-            placeholder="Nhập SĐT khách hàng"
+            placeholder="Nhập chính xác 4 số cuối"
             @keypress="$onlyNumberInput"
             @keyup.enter="onClickSearchButton"
           />
@@ -182,7 +182,7 @@
         sm="4"
       >
         <div
-          class="h8 mt-sm-1 mt-xl-0"
+          class="h7 mt-sm-1 mt-xl-0"
         >
           Trạng thái
         </div>

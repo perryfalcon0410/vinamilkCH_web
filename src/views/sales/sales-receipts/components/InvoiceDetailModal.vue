@@ -27,7 +27,7 @@
           </b-col>
           <b-col cols="8">
             <h5 class="text-left">
-              {{ information.orderNumber }}
+              <strong>{{ information.orderNumber }}</strong>
             </h5>
           </b-col>
         </b-row>
@@ -38,7 +38,7 @@
           </b-col>
           <b-col cols="8">
             <h5 class="text-left">
-              {{ information.customerName }}
+              <strong>{{ information.customerName }}</strong>
             </h5>
           </b-col>
         </b-row>
@@ -49,7 +49,7 @@
           </b-col>
           <b-col cols="8">
             <h5 class="text-left">
-              {{ $formatISOtoVNI(information.orderDate) }}
+              <strong>{{ $formatISOtoVNI(information.orderDate) }}</strong>
             </h5>
           </b-col>
         </b-row>
@@ -60,56 +60,56 @@
           </b-col>
           <b-col cols="8">
             <h5 class="text-left">
-              {{ information.saleMan }}
+              <strong>{{ information.saleMan }}</strong>
             </h5>
           </b-col>
         </b-row>
       </b-col>
 
       <b-col
-        cols="4"
+        cols="5"
         align-self="end"
       >
         <b-row class="mt-1">
-          <b-col>
+          <b-col cols="4">
             Tiền tích lũy:
           </b-col>
-          <b-col>
+          <b-col cols="8">
             <h5>
-              {{ $formatNumberToLocale(information.memberCardAmount) }}
+              <strong>{{ $formatNumberToLocale(information.memberCardAmount) }}</strong>
             </h5>
           </b-col>
         </b-row>
 
         <b-row class="mt-1">
-          <b-col>
+          <b-col cols="4">
             Phải thanh toán:
           </b-col>
-          <b-col>
+          <b-col cols="8">
             <h5>
-              {{ $formatNumberToLocale(information.total) }}
+              <strong>{{ $formatNumberToLocale(information.total) }}</strong>
             </h5>
           </b-col>
         </b-row>
 
         <b-row class="mt-1">
-          <b-col>
+          <b-col cols="4">
             Đã thanh toán:
           </b-col>
-          <b-col>
+          <b-col cols="8">
             <h5>
-              {{ $formatNumberToLocale(information.totalPaid) }}
+              <strong>{{ $formatNumberToLocale(information.totalPaid) }}</strong>
             </h5>
           </b-col>
         </b-row>
 
         <b-row class="mt-1">
-          <b-col>
+          <b-col cols="4">
             Tiền trả lại:
           </b-col>
-          <b-col>
+          <b-col cols="8">
             <h5>
-              {{ $formatNumberToLocale(information.balance) }}
+              <strong>{{ $formatNumberToLocale(information.balance) }}</strong>
             </h5>
           </b-col>
         </b-row>
