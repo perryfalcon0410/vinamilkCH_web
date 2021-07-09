@@ -561,79 +561,10 @@ export default {
       tableProductId: null,
       tableProductAmount: null,
       tableProductUnitPrice: null,
-      tableProductTotalPrice: null,
       tableProductCode: null,
       products: [],
       promotionPrograms: [],
       isClickRotate: false,
-      columns: [
-        {
-          label: '',
-          field: 'tableProductId',
-          sortable: false,
-          hidden: true,
-          thClass: 'text-left',
-          tdClass: 'text-left',
-        },
-        {
-          label: 'Mã sản phẩm',
-          field: 'tableProductCode',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Tên sản phẩm',
-          field: 'tableProductName',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'ĐVT',
-          field: 'tableProductUnit',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Tồn kho',
-          field: 'tableProductInventory',
-          type: 'number',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Số lượng',
-          field: 'tableProductAmount',
-          type: 'number',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Đơn giá',
-          field: 'tableProductUnitPrice',
-          sortable: false,
-          type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Thành tiền',
-          field: 'tableProductTotalPrice',
-          sortable: false,
-          type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          label: 'Chức năng',
-          field: 'tableProductFeature',
-          sortable: false,
-        },
-      ],
 
       salemtPromotionObjectOptions: [],
     }
@@ -696,7 +627,10 @@ export default {
       }))
     },
     onlineOrder() {
-      return this.ONLINE_ORDER_BY_ID_GETTER
+      if (this.ONLINE_ORDER_BY_ID_GETTER.data !== null) {
+        return this.ONLINE_ORDER_BY_ID_GETTER
+      }
+      return {}
     },
     getOnlineOrderProducts() {
       if (this.ONLINE_ORDER_BY_ID_GETTER.products) {
@@ -742,12 +676,6 @@ export default {
 
     totalOrderPrice() {
       return this.$formatNumberToLocale(this.orderProducts.reduce((sum, item) => sum + Number(item.sumProductTotalPrice), 0))
-    },
-    getPromotionPrograms() {
-      if (this.GET_PROMOTION_PROGRAMS_GETTER) {
-        return this.GET_PROMOTION_PROGRAMS_GETTER
-      }
-      return []
     },
 
     loginInfo() {
@@ -888,8 +816,7 @@ export default {
     },
 
     getOnlineOrderInfo(id) {
-      this.orderOnline.onlineOrderId = id
-      this.GET_ONLINE_ORDER_BY_ID_ACTION(`${this.orderOnline.onlineOrderId}`)
+      this.GET_ONLINE_ORDER_BY_ID_ACTION(`${id}`)
     },
 
     getCreateInfo(val) {
@@ -941,6 +868,7 @@ export default {
     },
 
     getOnlineOrderById() {
+      this.orderOnline.onlineOrderId = this.onlineOrder.id
       this.orderOnline.orderNumber = this.onlineOrder.orderNumber
       this.orderOnline.discountCode = this.onlineOrder.discountCode
       this.orderOnline.discountValue = this.onlineOrder.discountValue
@@ -978,7 +906,6 @@ export default {
         this.customer.shopId = suggestion.item.shopId
         this.customer.fullName = suggestion.item.fullName
         this.customer.phoneNumber = suggestion.item.phoneNumber
-        this.customer.totalBill = suggestion.item.totalBill
         this.customer.address = suggestion.item.address
         this.customer.totalBill = suggestion.item.totalBill ?? 0
         this.customer.scoreCumulated = suggestion.item.scoreCumulated

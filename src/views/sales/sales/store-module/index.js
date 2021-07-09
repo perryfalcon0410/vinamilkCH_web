@@ -234,7 +234,9 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.onlineOrder = res.data
+            if (res.data !== null) {
+              state.onlineOrder = res.data
+            }
           } else {
             throw new Error(res.statusValue)
           }
