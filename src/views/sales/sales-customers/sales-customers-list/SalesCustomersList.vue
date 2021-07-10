@@ -208,7 +208,6 @@ export default {
       searchData: {
         size: commonData.perPageSizes[0],
         page: commonData.pageNumber,
-        totalElements: 0, // default unknown value
         sort: null,
       },
 
@@ -314,7 +313,8 @@ export default {
       return { totalElements: 0 }
     },
     paginationDetailContent() {
-      const { size, page, totalElements } = this.searchData
+      const { size, page } = this.searchData
+      const { totalElements } = this.getCustomerPagination
       const minPageSize = page === 0 ? 1 : (page * size) - size + 1
       const maxPageSize = (size * page) > totalElements
         ? totalElements : (size * page)
@@ -325,9 +325,6 @@ export default {
   watch: {
     getCustomers() {
       this.customersData = [...this.getCustomers]
-    },
-    getCustomerPagination() {
-      this.updateSearchData({ ...this.getCustomerPagination })
     },
   },
 
