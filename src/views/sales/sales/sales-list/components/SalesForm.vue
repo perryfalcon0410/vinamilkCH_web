@@ -768,18 +768,14 @@ export default {
     },
 
     showPayModal() {
-      if (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[0].id) {
+      if (this.salemtPromotionObjectSelected === this.salemtPromotionObjectOptions[0].id) {
         this.$bvModal.show('pay-modal')
-      }
-
-      if (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id || this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[2].id) {
-        if (this.salemtPromotionObjectSelected !== undefined) {
-          this.$refs.formContainer.validate().then(success => {
-            if (success) {
-              this.$bvModal.show('pay-modal')
-            }
-          })
-        }
+      } else if (this.salemtPromotionObjectSelected !== undefined) {
+        this.$refs.formContainer.validate().then(success => {
+          if (success) {
+            this.$bvModal.show('pay-modal')
+          }
+        })
       }
     },
 
