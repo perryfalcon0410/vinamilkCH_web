@@ -202,6 +202,8 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusCreateButton(), 0)"
+            :disabled="$componentPermission(statusCreateButton())"
             class="btn-brand-1 align-items-button-center h8"
             variant="someThing"
             @click="onClickCreateButton"
@@ -253,10 +255,7 @@
             <div
               v-if="props.column.field === 'feature'"
             >
-              <b-icon-bricks
-                v-b-popover.hover="'Thao tác'"
-                scale="1.3"
-              />
+              <v-icon-manipulation />
             </div>
 
             <div v-else>
@@ -274,24 +273,22 @@
               v-if="props.column.field === 'feature'"
               class="mx-0"
             >
-              <b-icon-printer-fill
-                v-b-popover.hover.top="'In phiếu'"
-                class="cursor-pointer text-brand-1"
-                scale="1.2"
+              <v-icon-printer
+                v-show="$componentPermission(statusPrintButton(), 0)"
+                :disabled="$componentPermission(statusPrintButton())"
                 @click="onClickPrintButton(props.row)"
               />
-              <b-icon-pencil-fill
-                v-b-popover.hover.top="'Chỉnh sửa'"
-                class="cursor-pointer ml-1 text-brand-3"
-                scale="1.2"
+              <v-icon-edit
+                v-show="$componentPermission(statusUpdateButton(), 0)"
+                :disabled="$componentPermission(statusUpdateButton())"
+                class="ml-1"
+                popover-position="top"
                 @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
               />
-              <b-icon-trash-fill
-                v-show="$formatISOtoVNI(props.row.date) === nowDate"
-                v-b-popover.hover.top="'Xóa'"
-                class="cursor-pointer ml-1"
-                color="red"
-                scale="1.2"
+              <v-icon-remove
+                v-show="$formatISOtoVNI(props.row.date) === nowDate && $componentPermission(statusDeleteButton(), 0)"
+                :disabled="$componentPermission(statusDeleteButton())"
+                class="ml-1"
                 @click="onClickDeleteWarehousesOutput(props.row.id,props.row.inputTypes,props.row.code, props.row.originalIndex, $formatISOtoVNI(props.row.date))"
               />
             </div>
@@ -438,6 +435,12 @@ import commonData from '@/@db/common'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import PrintFormOutputOrder from '@core/components/print-form/PrintFormOutputOrder.vue'
 
+// Icons
+import VIconManipulation from '@core/components/v-icons/IconManipulation.vue'
+import VIconRemove from '@/@core/components/v-icons/IconRemove.vue'
+import VIconEdit from '@core/components/v-icons/IconEdit.vue'
+import VIconPrinter from '@core/components/v-icons/IconPrinter.vue'
+
 import {
   WAREHOUSES_OUTPUT,
   // GETTERS
@@ -453,6 +456,10 @@ export default {
   components: {
     VCardActions,
     PrintFormOutputOrder,
+    VIconEdit,
+    VIconManipulation,
+    VIconRemove,
+    VIconPrinter,
   },
 
   data() {
@@ -633,6 +640,11 @@ export default {
   },
 
   mounted() {
+    this.statusCreateButton()
+    this.statusUpdateButton()
+    this.statusDeleteButton()
+    this.statusPrintButton()
+
     resizeAbleTable()
     this.configToDate = {
       ...this.configToDate,
@@ -647,6 +659,20 @@ export default {
       PRINT_OUT_IN_PUT_ORDER_ACTION,
       DELETE_WAREHOUSES_ACTION,
     ]),
+
+    statusCreateButton() {
+      return this.$permission('WarehousesOutput', 'WarehousesOutputCreate').showStatus
+    },
+    statusUpdateButton() {
+      return this.$permission('WarehousesOutput', 'WarehousesOutputUpdate').showStatus
+    },
+    statusDeleteButton() {
+      return this.$permission('WarehousesOutput', 'WarehousesOutputDelete').showStatus
+    },
+    statusPrintButton() {
+      return this.$permission('WarehousesOutput', 'WarehousesOutputPrint').showStatus
+    },
+
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-output-create' })
     },

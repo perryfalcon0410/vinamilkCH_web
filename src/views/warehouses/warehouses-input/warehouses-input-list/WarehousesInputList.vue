@@ -24,6 +24,8 @@
           Danh sách phiếu nhập hàng
         </strong>
         <b-button
+          v-show="$componentPermission(statusCreateButton(), 0)"
+          :disabled="$componentPermission(statusCreateButton())"
           class="btn-brand-1 h8 align-items-button-center rounded"
           variant="someThing"
           @click="onClickCreateButton"
@@ -97,15 +99,20 @@
               class="mx-0"
             >
               <v-icon-printer
+                v-show="$componentPermission(statusPrintButton(), 0)"
+                :disabled="$componentPermission(statusPrintButton())"
                 @click="onClickPrintButton(props.row)"
               />
               <v-icon-edit
+                v-show="$componentPermission(statusUpdateButton(), 0)"
+                :disabled="$componentPermission(statusUpdateButton())"
                 class="ml-1"
                 popover-position="top"
                 @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
               />
               <v-icon-remove
-                v-show="$formatISOtoVNI(props.row.transDate) === nowDate"
+                v-show="$formatISOtoVNI(props.row.transDate) === nowDate && $componentPermission(statusDeleteButton(), 0)"
+                :disabled="$componentPermission(statusDeleteButton())"
                 class="ml-1"
                 @click="onClickDeleteButton(props.row.id, props.row.inputTypes, props.row.originalIndex, props.row.transCode)"
               />
@@ -279,6 +286,7 @@ export default {
     VIconRemove,
     VIconPrinter,
   },
+
   data() {
     return {
       isDeleteModalShow: false,
@@ -410,6 +418,11 @@ export default {
   },
 
   mounted() {
+    this.statusCreateButton()
+    this.statusUpdateButton()
+    this.statusDeleteButton()
+    this.statusPrintButton()
+
     resizeAbleTable()
   },
 
@@ -420,6 +433,20 @@ export default {
       REMOVE_RECEIPT_ACTION,
       PRINT_OUT_IN_PUT_ORDER_ACTION,
     ]),
+
+    statusCreateButton() {
+      return this.$permission('WarehousesInput', 'WarehousesInputCreate').showStatus
+    },
+    statusUpdateButton() {
+      return this.$permission('WarehousesInput', 'WarehousesInputUpdate').showStatus
+    },
+    statusDeleteButton() {
+      return this.$permission('WarehousesInput', 'WarehousesInputDelete').showStatus
+    },
+    statusPrintButton() {
+      return this.$permission('WarehousesInput', 'WarehousesInputPrint').showStatus
+    },
+
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-input-create' })
     },

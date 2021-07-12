@@ -1,10 +1,10 @@
 <template>
   <b-icon-trash-fill
     v-b-popover.hover="{content: popoverContent, placement: popoverPosition}"
-    class="cursor-pointer"
+    :class="['cursor-pointer', {'icon-disabled': disabled}]"
     color="red"
     scale="1.2"
-    @click="$emit('click')"
+    @click="clickEvent"
   />
 </template>
 
@@ -18,6 +18,18 @@ export default {
     popoverContent: {
       type: String,
       default: 'Xóa',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  methods: {
+    clickEvent(e) {
+      if (this.disabled) {
+        return e.preventDefault()
+      }
+      return this.$emit('click')
     },
   },
 }

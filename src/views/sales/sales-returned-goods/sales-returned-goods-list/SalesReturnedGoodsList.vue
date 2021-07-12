@@ -21,6 +21,8 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusCreateButton(), 0)"
+            :disabled="$componentPermission(statusCreateButton())"
             class="btn-brand-1 h8 align-items-button-center"
             variant="someThing"
             @click="showSalesReturnedGoodsCreate"
@@ -245,6 +247,7 @@ export default {
     VIconDetail,
     SalesReturnedGoodsListSearch,
   },
+
   data() {
     return {
       isOrderDetailsModal: false,
@@ -326,6 +329,7 @@ export default {
       ],
     }
   },
+
   computed: {
     ...mapGetters(RETURNEDGOODS, [
       RETURNED_GOODS_GETTER,
@@ -383,18 +387,26 @@ export default {
       return 0
     },
   },
+
   watch: {
     getOderReturns() {
       this.oderReturns = [...this.getOderReturns]
     },
   },
+
   mounted() {
+    this.statusCreateButton()
+
     resizeAbleTable()
   },
+
   methods: {
     ...mapActions(RETURNEDGOODS, [
       GET_RETURNED_GOODS_ACTION,
     ]),
+    statusCreateButton() {
+      return this.$permission('SalesReturnedGoods', 'SalesReturnedGoodsCreate').showStatus
+    },
     showSalesReturnedGoodsCreate() {
       this.$router.push({ name: 'sales-returned-goods-create' })
     },

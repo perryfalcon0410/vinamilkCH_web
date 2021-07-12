@@ -25,6 +25,8 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusCreateButton(), 0)"
+            :disabled="$componentPermission(statusCreateButton())"
             class="btn-brand-1 align-items-button-center h8"
             variant="someThing"
             @click="onClickAddNewButton"
@@ -68,21 +70,17 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+
           <!-- START - Column -->
           <template
             slot="table-column"
             slot-scope="props"
           >
             <div
-              v-if="props.column.field === 'feature'"
+              v-if="props.column.field === 'manipulation'"
               hidden
             >
-              <b-icon-bricks
-                v-b-popover.hover="'Thao tác'"
-                class="cursor-pointer"
-                scale="1.3"
-                @click="onClickFeature()"
-              />
+              <v-icon-manipulation />
             </div>
             <div v-else>
               {{ props.column.label }}
@@ -96,22 +94,20 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'feature' && isDisabledFeature"
+              v-if="props.column.field === 'manipulation' && isDisabledFeature"
               class="mx-0"
             >
-              <b-icon-pencil-fill
-                v-b-popover.hover.top="'Chỉnh sửa'"
-                class="cursor-pointer text-brand-3"
-                scale="1.2"
+              <v-icon-edit
+                v-show="$componentPermission(statusUpdateButton(), 0)"
+                :disabled="$componentPermission(statusUpdateButton())"
+                class="ml-1"
+                popover-position="top"
                 @click="onClickUpdateButton(props.row.id)"
               />
-
-              <b-icon-trash-fill
-                v-show="$formatISOtoVNI(props.row.date) === nowDate"
-                v-b-popover.hover.top="'Xóa'"
-                class="cursor-pointer ml-1"
-                color="red"
-                scale="1.2"
+              <v-icon-remove
+                v-show="$formatISOtoVNI(props.row.date) === nowDate && $componentPermission(statusDeleteButton(), 0)"
+                :disabled="$componentPermission(statusDeleteButton())"
+                class="ml-1"
                 @click="onClickDeleteButton(props.row.id, props.row.originalIndex)"
               />
             </b-row>
@@ -243,7 +239,10 @@ import {
   code,
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
-// import toasts from '@core/utils/toasts/toasts'
+// Icons
+import VIconManipulation from '@core/components/v-icons/IconManipulation.vue'
+import VIconRemove from '@/@core/components/v-icons/IconRemove.vue'
+import VIconEdit from '@core/components/v-icons/IconEdit.vue'
 
 import { nowDate } from '@/@core/utils/filter'
 import WarehousesExchangeDamagedGoodsListSearch from './components/WarehousesExchangeDamagedGoodsListSearch.vue'
@@ -259,7 +258,11 @@ import {
 export default {
   components: {
     WarehousesExchangeDamagedGoodsListSearch,
+    VIconEdit,
+    VIconManipulation,
+    VIconRemove,
   },
+
   data() {
     return {
       // validation rules
@@ -338,8 +341,8 @@ export default {
           tdClass: 'text-left',
         },
         {
-          label: 'Chức năng',
-          field: 'feature',
+          label: 'Thao tác',
+          field: 'manipulation',
           sortable: false,
           width: '100px',
           thClass: 'text-left',
@@ -349,6 +352,7 @@ export default {
       exchangeDamagedGoods: [],
     }
   },
+
   computed: {
     ...mapGetters(WAREHOUSES_EXCHANGE_DAMAGED_GOODS, [
       EXCHANGE_DAMAGED_GOODS_GETTER,
@@ -392,13 +396,17 @@ export default {
       return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },
   },
+
   watch: {
     getExchangeDamagedGoods() {
       this.exchangeDamagedGoods = [...this.getExchangeDamagedGoods]
     },
   },
-  mounted() {
 
+  mounted() {
+    this.statusCreateButton()
+    this.statusUpdateButton()
+    this.statusDeleteButton()
   },
 
   methods: {
@@ -406,6 +414,17 @@ export default {
       GET_EXCHANGE_DAMAGED_GOODS_ACTION,
       REMOVE_EXCHANGE_DAMAGED_GOODS_ACTION,
     ]),
+
+    statusCreateButton() {
+      return this.$permission('WarehousesExchangeDamagedGoods', 'WarehousesExchangeDamagedGoodsCreate').showStatus
+    },
+    statusUpdateButton() {
+      return this.$permission('WarehousesExchangeDamagedGoods', 'WarehousesExchangeDamagedGoodsUpdate').showStatus
+    },
+    statusDeleteButton() {
+      return this.$permission('WarehousesExchangeDamagedGoods', 'WarehousesExchangeDamagedGoodsDelete').showStatus
+    },
+
     onClickAddNewButton() {
       this.$router.push({ name: 'warehouses-exchange-damaged-goods-create' })
     },

@@ -24,6 +24,8 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusCreateButton(), 0)"
+            :disabled="$componentPermission(statusCreateButton())"
             class="btn-brand-1 h8 align-items-button-center rounded"
             variant="someThing"
             @click="onClickCreateButton"
@@ -68,6 +70,7 @@
           >
             Không có dữ liệu
           </div>
+
           <!-- START - Column -->
           <template
             slot="table-column"
@@ -94,6 +97,7 @@
               v-if="props.column.field === 'feature'"
             >
               <v-icon-edit
+                :disabled="$componentPermission(statusUpdateButton())"
                 class="ml-1"
                 popover-position="left"
                 @click="onClickUpdateButton(props.row.id)"
@@ -104,6 +108,7 @@
             </div>
           </template>
           <!-- END - Row -->
+
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"
@@ -195,6 +200,7 @@ export default {
     VIconManipulation,
     VIconEdit,
   },
+
   data() {
     return {
       fromDate: formatISOtoVNI(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
@@ -242,6 +248,7 @@ export default {
         {
           label: 'Thao tác',
           field: 'feature',
+          hidden: !this.$componentPermission(this.statusUpdateButton(), 0),
           width: '30px',
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -291,6 +298,9 @@ export default {
   },
 
   mounted() {
+    this.statusCreateButton()
+    this.statusUpdateButton()
+
     resizeAbleTable()
   },
 
@@ -298,6 +308,13 @@ export default {
     ...mapActions(WAREHOUSEINVENTORY, [
       GET_WAREHOUSE_INVENTORIES_ACTION,
     ]),
+
+    statusCreateButton() {
+      return this.$permission('WarehousesInventory', 'WarehousesInventoryCreate').showStatus
+    },
+    statusUpdateButton() {
+      return this.$permission('WarehousesInventory', 'WarehousesInventoryUpdate').showStatus
+    },
 
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-inventory-create' })
@@ -334,5 +351,6 @@ export default {
       this.onPaginationChange()
     },
   },
+
 }
 </script>

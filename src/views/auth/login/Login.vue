@@ -578,14 +578,14 @@ export default {
                 },
               ],
               controls: [
-                {
-                  id: 12,
-                  controlCode: 'WarehousesExchangeDamagedGoodsCreate',
-                  controlName: 'Thêm mới',
-                  formId: 12,
-                  description: null,
-                  showStatus: 2,
-                },
+                // {
+                //   id: 12,
+                //   controlCode: 'WarehousesExchangeDamagedGoodsCreate',
+                //   controlName: 'Thêm mới',
+                //   formId: 12,
+                //   description: null,
+                //   showStatus: 2,
+                // },
                 {
                   id: 115,
                   controlCode: 'SalesReturnedGoodsCreate',
@@ -692,14 +692,14 @@ export default {
                 },
               ],
               controls: [
-                {
-                  id: 13,
-                  controlCode: 'WarehousesComboCreate',
-                  controlName: 'Thêm mới',
-                  formId: 13,
-                  description: null,
-                  showStatus: 2,
-                },
+                // {
+                //   id: 13,
+                //   controlCode: 'WarehousesComboCreate',
+                //   controlName: 'Thêm mới',
+                //   formId: 13,
+                //   description: null,
+                //   showStatus: 2,
+                // },
                 {
                   id: 39,
                   controlCode: 'WarehousesInputCreate',

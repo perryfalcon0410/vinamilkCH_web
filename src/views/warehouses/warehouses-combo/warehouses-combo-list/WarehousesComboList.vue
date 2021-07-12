@@ -25,7 +25,9 @@
         </strong>
         <b-button-group>
           <b-button
-            class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
+            v-show="$componentPermission(statusCreateButton(), 0)"
+            :disabled="$componentPermission(statusCreateButton())"
+            class="btn-brand-1 rounded h8 align-items-button-center"
             variant="someThing"
             @click="navigateToCreate"
           >
@@ -106,6 +108,7 @@
             </div>
           </template>
           <!-- END - Rows -->
+
           <!-- START - Column filter -->
           <template
             slot="column-filter"
@@ -226,6 +229,7 @@ export default {
     WarehousesComboListSearch,
     VIconDetail,
   },
+
   data() {
     return {
       elementSize: commonData.perPageSizes[0],
@@ -284,6 +288,7 @@ export default {
       ],
     }
   },
+
   computed: {
     ...mapGetters(WAREHOUSES_COMBO, [
       WAREHOUSES_COMBO_GETTER,
@@ -336,7 +341,10 @@ export default {
       this.warehousesCombos = [...this.getWarehousesCombo]
     },
   },
+
   mounted() {
+    this.statusCreateButton()
+
     resizeAbleTable()
   },
 
@@ -344,23 +352,11 @@ export default {
     ...mapActions(WAREHOUSES_COMBO, [
       GET_WAREHOUSES_COMBO_ACTIONS,
     ]),
-    onPaginationChange() {
-      this.GET_WAREHOUSES_COMBO_ACTIONS(this.paginationData)
+
+    statusCreateButton() {
+      return this.$permission('WarehousesCombo', 'WarehousesComboCreate').showStatus
     },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
-    },
-    onClickSearchButton() {
-      this.pageNumber = 1
-    },
-    onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
-    },
-    onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange()
-    },
+
     navigateToCreate() {
       this.$router.push({ name: 'warehouses-combo-create' })
     },
@@ -372,6 +368,27 @@ export default {
         },
       })
     },
+    onClickSearchButton() {
+      this.pageNumber = 1
+    },
+
+    // START - Vue Good Table func
+    onPaginationChange() {
+      this.GET_WAREHOUSES_COMBO_ACTIONS(this.paginationData)
+    },
+    updatePaginationData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    // END - Vue Good Table func
+
   },
 }
 </script>
