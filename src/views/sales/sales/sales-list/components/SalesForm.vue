@@ -270,7 +270,7 @@
                       v-model="orderOnline.orderNumber"
                       maxlength="50"
                       :state="touched ? passed : null"
-                      :disabled="salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0) || isDisabledOrder === true"
+                      :disabled="checkApParramCode || salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0) || isDisabledOrder === true"
                     />
                     <b-input-group-append is-text>
                       <b-icon-three-dots-vertical
@@ -350,7 +350,7 @@
           <b-button
             variant="someThing"
             class="btn-brand-1 d-flex w-100 my-1 align-items-center justify-content-center"
-            :disabled="totalQuantity === 0"
+            :disabled="totalQuantity === 0 || isDisabled"
             @click="showPayModal"
           >
             <b-icon-cash-stack
@@ -495,6 +495,10 @@ export default {
       type: Boolean,
       defautl: false,
     },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -567,6 +571,7 @@ export default {
       isClickRotate: false,
 
       salemtPromotionObjectOptions: [],
+      checkApParramCode: false, // check disabled so hoa don
     }
   },
   computed: {
@@ -715,6 +720,16 @@ export default {
     },
     salemtDeliveryTypeOptions() {
       this.GetSalemtDeliveryTypeDefault()
+    },
+    salemtPromotionObjectSelected() {
+      if (this.salemtPromotionObjectSelected) {
+        const apParramCode = this.salemtPromotionObjectOptions.find(data => data.id === this.salemtPromotionObjectSelected).apParamCode
+        if (apParramCode.match(/ONLINE.*/)) {
+          this.checkApParramCode = false
+        } else {
+          this.checkApParramCode = true
+        }
+      }
     },
   },
   mounted() {

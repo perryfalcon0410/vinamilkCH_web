@@ -178,28 +178,28 @@
                 >
                   <b-row
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-50 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.totalQuantity) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'totalPrice'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-50 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.totalAmount) }}
                   </b-row>
                   <b-row
                     v-if="props.column.field === 'discount'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-50 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.totalDiscount) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'payment'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-50 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.allTotal) }}
@@ -239,14 +239,14 @@
                 >
                   <b-row
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-0  h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getPromotionInfo.totalQuantity) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'payment'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-0  h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getPromotionInfo.allTotal) }}
@@ -381,22 +381,16 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
@@ -405,43 +399,46 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          tdClass: 'pr-2',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá bán',
           field: 'pricePerUnit',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          tdClass: 'pr-2',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tổng tiền',
           field: 'totalPrice',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          tdClass: 'pr-2',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giảm giá',
           field: 'discount',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          tdClass: 'pr-2',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tiền trả lại',
           field: 'payment',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          tdClass: 'pr-2',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Ghi chú',
           field: 'note',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
       ],
       promotionTable: [
@@ -449,22 +446,16 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Số lượng',
@@ -473,29 +464,30 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          tdClass: 'pr-2',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá bán',
           field: 'pricePerUnit',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          tdClass: 'pr-2',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tiền trả lại',
           field: 'payment',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          tdClass: 'pr-2',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Ghi chú',
           field: 'note',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
       ],
     }
@@ -511,12 +503,12 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
-          quantity: this.$formatNumberToLocale(data.quantity),
-          pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
-          totalPrice: this.$formatNumberToLocale(data.totalPrice),
-          discount: this.$formatNumberToLocale(data.discount),
-          payment: this.$formatNumberToLocale(data.paymentReturn),
-          note: this.$formatNumberToLocale(data.note),
+          quantity: data.quantity,
+          pricePerUnit: data.pricePerUnit,
+          totalPrice: data.totalPrice,
+          discount: data.discount,
+          payment: data.paymentReturn,
+          note: data.note,
         }))
       }
       return []
@@ -527,11 +519,11 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           unit: data.unit,
-          quantity: this.$formatNumberToLocale(data.quantity),
-          pricePerUnit: this.$formatNumberToLocale(data.pricePerUnit),
-          totalPrice: this.$formatNumberToLocale(data.totalPrice),
-          discount: this.$formatNumberToLocale(data.discount),
-          payment: this.$formatNumberToLocale(data.paymentReturn),
+          quantity: data.quantity,
+          pricePerUnit: data.pricePerUnit,
+          totalPrice: data.totalPrice,
+          discount: data.discount,
+          payment: data.paymentReturn,
           note: data.note,
         }))
       }

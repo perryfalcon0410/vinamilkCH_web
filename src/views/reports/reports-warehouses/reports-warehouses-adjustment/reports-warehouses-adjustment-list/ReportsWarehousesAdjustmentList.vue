@@ -205,6 +205,8 @@ export default {
         ctrlId: 1,
       },
       promotionRows: [],
+      adjustmentPagination: {},
+      totalInfo: {},
 
       columns: [
         {
@@ -307,13 +309,13 @@ export default {
       }
       return []
     },
-    totalInfo() {
+    getTotalInfo() {
       if (this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.info) {
         return this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.info
       }
       return {}
     },
-    adjustmentPagination() {
+    getAdjustmentPagination() {
       if (this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER) {
         return this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER
       }
@@ -331,6 +333,12 @@ export default {
   watch: {
     getAdjustmentLists() {
       this.promotionRows = [...this.getAdjustmentLists]
+    },
+    getTotalInfo() {
+      this.totalInfo = { ...this.getTotalInfo }
+    },
+    getAdjustmentPagination() {
+      this.adjustmentPagination = { ...this.getAdjustmentPagination }
     },
   },
   mounted() {

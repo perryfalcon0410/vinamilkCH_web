@@ -35,7 +35,6 @@
               id="form-input-customer"
               v-model="searchOptions.productCode"
               class="h7 text-brand-3 height-button-brand-1"
-              placeholder="Nhập mã sản phẩm"
               trim
               autofocus
               @keyup.enter="onSearchClick"
@@ -71,7 +70,6 @@
             <b-form-input
               v-model="searchOptions.productName"
               class="h7 text-brand-3 height-button-brand-1"
-              placeholder="Nhập tên sản phẩm"
               trim
               @keyup.enter="onSearchClick"
             />

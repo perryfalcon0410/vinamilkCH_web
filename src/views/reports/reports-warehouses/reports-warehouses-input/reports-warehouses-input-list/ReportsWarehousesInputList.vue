@@ -416,6 +416,8 @@ export default {
         },
       ],
       warehousesInputs: [],
+      warehousesInputPagination: {},
+      totalInfo: {},
     }
   },
 
@@ -453,13 +455,13 @@ export default {
       }
       return []
     },
-    totalInfo() {
+    getTotalInfo() {
       if (this.REPORT_WAREHOUSES_INPUT_GETTER.info) {
         return this.REPORT_WAREHOUSES_INPUT_GETTER.info
       }
       return {}
     },
-    warehousesInputPagination() {
+    getWarehousesInputPagination() {
       if (this.REPORT_WAREHOUSES_INPUT_GETTER.response) {
         return this.REPORT_WAREHOUSES_INPUT_GETTER.response
       }
@@ -470,6 +472,12 @@ export default {
   watch: {
     getWarehousesInputs() {
       this.warehousesInputs = [...this.getWarehousesInputs]
+    },
+    getTotalInfo() {
+      this.totalInfo = { ...this.getTotalInfo }
+    },
+    getWarehousesInputPagination() {
+      this.warehousesInputPagination = { ...this.getWarehousesInputPagination }
     },
   },
 

@@ -28,7 +28,7 @@
             class="rounded bg-brand-1 text-white h8"
             variant="someThing"
             size="sm"
-            :disabled="getOutputGoods.length === 0"
+            :disabled="outputGoodslist.length === 0"
             @click="onClickPrintExportButton"
           >
             <b-icon-printer-fill />
@@ -38,7 +38,7 @@
             class="ml-1 rounded bg-brand-1 text-white h8"
             variant="someThing"
             size="sm"
-            :disabled="getOutputGoods.length === 0"
+            :disabled="outputGoodslist.length === 0"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill />
@@ -53,7 +53,7 @@
         <vue-good-table
           :columns="columns"
           mode="remote"
-          :rows="getOutputGoods"
+          :rows="outputGoodslist"
           style-class="vgt-table table-horizontal-scroll"
           :pagination-options="{
             enabled: true,
@@ -129,7 +129,7 @@
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ $formatNumberToLocale(getTotalValues.totalQuantity) }}
+              {{ $formatNumberToLocale(totalValues.totalQuantity) }}
             </b-row>
 
             <b-row
@@ -137,28 +137,28 @@
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ $formatNumberToLocale(getTotalValues.totalPacketQuantity) }}
+              {{ $formatNumberToLocale(totalValues.totalPacketQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'outpacketQuantity'"
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ $formatNumberToLocale(getTotalValues.totalUnitQuantity) }}
+              {{ $formatNumberToLocale(totalValues.totalUnitQuantity) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'intoPrice'"
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ $formatNumberToLocale(getTotalValues.totalAmountNotVat) }}
+              {{ $formatNumberToLocale(totalValues.totalAmountNotVat) }}
             </b-row>
             <b-row
               v-else-if="props.column.field === 'finalPrice'"
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ $formatNumberToLocale(getTotalValues.totalAmount) }}
+              {{ $formatNumberToLocale(totalValues.totalAmount) }}
             </b-row>
           </template>
           <!-- END - Column filter -->
@@ -353,6 +353,7 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           thClass: 'text-nowrap',
@@ -365,6 +366,7 @@ export default {
           field: 'packetQuantity',
           type: 'number',
           thClass: 'text-nowrap',
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -376,6 +378,7 @@ export default {
           field: 'outpacketQuantity',
           type: 'number',
           thClass: 'text-nowrap',
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -387,6 +390,7 @@ export default {
           field: 'preTaxPrice',
           type: 'number',
           thClass: 'text-nowrap',
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
@@ -395,6 +399,7 @@ export default {
           field: 'intoPrice',
           type: 'number',
           thClass: 'text-nowrap',
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -406,6 +411,7 @@ export default {
           field: 'afTaxPrice',
           type: 'number',
           thClass: 'text-nowrap',
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
@@ -414,6 +420,7 @@ export default {
           field: 'finalPrice',
           type: 'number',
           thClass: 'text-nowrap',
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -460,13 +467,16 @@ export default {
           thClass: 'text-nowrap',
         },
       ],
+      outputGoodslist: [],
+      totalValues: {},
+      warehousesExportpagination: {},
     }
   },
   computed: {
     ...mapGetters(REPORT_OUTPUT_GOODS, [
       OUTPUT_GOODS_GETTER,
     ]),
-    getOutputGoods() {
+    getOutputGoodslist() {
       if (this.OUTPUT_GOODS_GETTER.response) {
         return this.OUTPUT_GOODS_GETTER.response.content.map(data => ({
           id: data.id,
@@ -502,7 +512,7 @@ export default {
       }
       return {}
     },
-    warehousesExportpagination() {
+    getWarehousesExportpagination() {
       if (this.OUTPUT_GOODS_GETTER.response) {
         return this.OUTPUT_GOODS_GETTER.response
       }
@@ -514,6 +524,17 @@ export default {
         ? this.warehousesExportpagination.totalElements : (this.paginationData.size * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${this.warehousesExportpagination.totalElements} mục`
+    },
+  },
+  watch: {
+    getOutputGoodslist() {
+      this.outputGoodslist = [...this.getOutputGoodslist]
+    },
+    getTotalValues() {
+      this.totalValues = { ...this.getTotalValues }
+    },
+    getWarehousesExportpagination() {
+      this.warehousesExportpagination = { ...this.getWarehousesExportpagination }
     },
   },
   mounted() {

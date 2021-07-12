@@ -218,6 +218,7 @@ export default {
       searchData: {},
       columns: [],
       reportQuantityReceiptsList: [],
+      reportSalesSaleReceiptPagination: {},
       initalCol: [
         {
           label: 'Mã khách hàng',
@@ -259,7 +260,7 @@ export default {
       }
       return {}
     },
-    reportSalesSaleReceiptPagination() {
+    getReportSalesSaleReceiptPagination() {
       if (this.REPORT_SALES__QUANTITY_SALE_RECEIPT_GETTER && this.REPORT_SALES__QUANTITY_SALE_RECEIPT_GETTER.response) {
         return this.REPORT_SALES__QUANTITY_SALE_RECEIPT_GETTER.response
       }
@@ -346,6 +347,9 @@ export default {
         return
       }
       this.totalQuantity = []
+    },
+    getReportSalesSaleReceiptPagination() {
+      this.reportSalesSaleReceiptPagination = { ...this.getReportSalesSaleReceiptPagination }
     },
   },
   mounted() {

@@ -572,6 +572,8 @@ export default {
         },
       ],
       warehousesInputOutputInventory: [],
+      warehousesInputOutputInventoryPagination: {},
+      totalInfo: {},
     }
   },
 
@@ -611,13 +613,13 @@ export default {
       }
       return []
     },
-    totalInfo() {
+    getTotalInfo() {
       if (this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.info) {
         return this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.info
       }
       return {}
     },
-    warehousesInputOutputInventoryPagination() {
+    getWarehousesInputOutputInventoryPagination() {
       if (this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.response) {
         return this.REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_GETTER.response
       }
@@ -631,6 +633,12 @@ export default {
   watch: {
     getwarehousesInputOutputInventory() {
       this.warehousesInputOutputInventory = [...this.getwarehousesInputOutputInventory]
+    },
+    getTotalInfo() {
+      this.totalInfo = { ...this.getTotalInfo }
+    },
+    getWarehousesInputOutputInventoryPagination() {
+      this.warehousesInputOutputInventoryPagination = { ...this.getWarehousesInputOutputInventoryPagination }
     },
   },
 

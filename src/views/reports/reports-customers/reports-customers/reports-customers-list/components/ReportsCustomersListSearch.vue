@@ -494,8 +494,8 @@ import {
 } from '@/@core/utils/validations/validations'
 import {
   reverseVniDate,
-  earlyMonth,
-  nowDate,
+  // earlyMonth,
+  // nowDate,
 } from '@/@core/utils/filter'
 import customerData from '@/@db/customer'
 import {
@@ -533,8 +533,8 @@ export default {
       toCreateDate: null,
       // fromPurchaseDate: this.$earlyMonth,
       // toPurchaseDate: this.$nowDate,
-      fromSaleDate: earlyMonth(),
-      toSaleDate: nowDate(),
+      fromSaleDate: null,
+      toSaleDate: null,
       fromSaleAmount: null,
       toSaleAmount: null,
       customerType: null,
@@ -597,7 +597,7 @@ export default {
     },
     areaOptions() {
       return this.SHOP_LOCATIONS_SEARCH_GETTER.map(data => ({
-        id: data.id,
+        id: data.areaCode,
         label: data.provinceAndDistrictName,
         default: data.default,
       }))

@@ -30,7 +30,6 @@
               v-model="onlineCode"
               trim
               class="h7 text-brand-3"
-              placeholder="Nhập số hóa đơn"
               @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append

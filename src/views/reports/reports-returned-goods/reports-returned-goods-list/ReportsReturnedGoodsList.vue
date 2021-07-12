@@ -274,6 +274,8 @@ export default {
         ctrlId: 1,
       },
       reportReturnRows: [],
+      reportReturnedgoodsPagination: {},
+      totalInfo: {},
 
       columns: [
         {
@@ -417,14 +419,14 @@ export default {
       }
       return []
     },
-    totalInfo() {
+    getTotalInfo() {
       if (this.REPORT_RETURNED_GOODS_GETTER.info) {
         return this.REPORT_RETURNED_GOODS_GETTER.info
       }
       return {}
     },
 
-    reportReturnedgoodsPagination() {
+    getReportReturnedgoodsPagination() {
       if (this.REPORT_RETURNED_GOODS_GETTER.response) {
         return this.REPORT_RETURNED_GOODS_GETTER.response
       }
@@ -441,6 +443,12 @@ export default {
   watch: {
     getReportReturnedgoodLists() {
       this.reportReturnRows = [...this.getReportReturnedgoodLists]
+    },
+    getReportReturnedgoodsPagination() {
+      this.reportReturnedgoodsPagination = { ...this.getReportReturnedgoodsPagination }
+    },
+    getTotalInfo() {
+      this.totalInfo = { ...this.getTotalInfo }
     },
   },
 

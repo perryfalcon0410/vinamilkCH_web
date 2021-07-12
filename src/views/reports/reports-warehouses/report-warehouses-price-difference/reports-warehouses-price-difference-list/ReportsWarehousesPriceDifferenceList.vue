@@ -82,7 +82,7 @@
           >
             <b-row
               v-if="props.column.field === 'quantity'"
-              class="mx-0"
+              class="mx-50  h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
@@ -90,10 +90,18 @@
 
             <b-row
               v-else-if="props.column.field === 'totalInput'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.totalPriceInput) }}
+            </b-row>
+
+            <b-row
+              v-else-if="props.column.field === 'totalOutput'"
+              class="mx-50 h7 text-brand-3"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.totalPriceOutput) }}
             </b-row>
           </template>
           <!-- START - Column filter -->
@@ -203,6 +211,8 @@ export default {
         ctrlId: 1,
       },
       differencePriceRows: [],
+      differncePricePagination: {},
+      totalInfo: {},
       columns: [
         {
           label: 'Số hóa đơn',
@@ -249,6 +259,7 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -259,6 +270,7 @@ export default {
           label: 'Giá đầu vào (VAT)',
           field: 'inputPrice',
           type: 'number',
+          tdClass: 'pr-2',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
         },
@@ -266,6 +278,7 @@ export default {
           label: 'Thành tiền vào',
           field: 'totalInput',
           type: 'number',
+          tdClass: 'pr-2',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
           filterOptions: {
@@ -277,6 +290,7 @@ export default {
           field: 'outputPrice',
           sortable: false,
           type: 'number',
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
         },
         {
@@ -284,6 +298,7 @@ export default {
           field: 'totalOutput',
           type: 'number',
           sortable: false,
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
         },
         {
@@ -291,6 +306,7 @@ export default {
           field: 'priceChange',
           sortable: false,
           type: 'number',
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
         },
       ],
@@ -324,13 +340,13 @@ export default {
       }
       return []
     },
-    totalInfo() {
+    getTotalInfo() {
       if (this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER.info) {
         return this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER.info
       }
       return {}
     },
-    differncePricePagination() {
+    getDifferncePricePagination() {
       if (this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER.response) {
         return this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER.response
       }
@@ -348,6 +364,12 @@ export default {
   watch: {
     getDifferencePriceLists() {
       this.differencePriceRows = [...this.getDifferencePriceLists]
+    },
+    getTotalInfo() {
+      this.totalInfo = { ...this.getTotalInfo }
+    },
+    getDifferncePricePagination() {
+      this.differncePricePagination = { ...this.getDifferncePricePagination }
     },
   },
   mounted() {

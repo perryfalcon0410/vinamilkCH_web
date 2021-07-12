@@ -39,7 +39,7 @@
           <vue-good-table
             :columns="columns"
             :rows="saleOders"
-            style-class="vgt-table bordered"
+            style-class="vgt-table"
             max-height="600px"
             :pagination-options="{
               enabled: false,
@@ -108,10 +108,10 @@
             >
               <b-row
                 v-if="props.column.field === 'total'"
-                class="mx-0"
+                class="mx-0 h7 text-brand-3 text-right"
                 align-h="end"
               >
-                {{ totalAmount }}
+                {{ $formatNumberToLocale(totalAmount) }}
               </b-row>
             </template>
             <!-- START - Column filter -->
@@ -149,9 +149,6 @@ import {
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
-import {
-  formatISOtoVNI,
-} from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import SearchComponent from './SelectReceptSearch.vue'
 import { RETURNEDGOODS, RETURNED_GOOD_CHOOSE_GETTER, GET_RETURNED_GOOD_CHOOSE_ACTION } from '../../store-module/type'
@@ -197,6 +194,7 @@ export default {
         {
           label: 'Ngày bán',
           field: 'orderDate',
+          formatFn: value => this.$formatISOtoVNI(value),
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -205,22 +203,17 @@ export default {
           label: 'Nhân viên',
           field: 'salesManName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Khách hàng',
           field: 'customerName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
         },
         {
           label: 'Tổng tiền',
           field: 'total',
           type: 'number',
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -245,10 +238,10 @@ export default {
       if (this.RETURNED_GOOD_CHOOSE_GETTER.response) {
         return this.RETURNED_GOOD_CHOOSE_GETTER.response.map(data => ({
           id: data.id,
-          orderDate: formatISOtoVNI(data.orderDate),
+          orderDate: data.orderDate,
           orderNumber: data.orderNumber,
           customerName: data.customerName,
-          total: this.$formatNumberToLocale(data.total),
+          total: data.total,
           salesManName: data.salesManName,
           oderDate: data.orderDate,
         }))
@@ -257,7 +250,7 @@ export default {
     },
     totalAmount() {
       if (this.RETURNED_GOOD_CHOOSE_GETTER.info && this.RETURNED_GOOD_CHOOSE_GETTER.info.allTotal) {
-        return this.$formatNumberToLocale(this.RETURNED_GOOD_CHOOSE_GETTER.info.allTotal)
+        return this.RETURNED_GOOD_CHOOSE_GETTER.info.allTotal
       }
       return ''
     },

@@ -390,6 +390,8 @@ export default {
         },
       ],
       sales: [],
+      salesPagination: {},
+      totalInfo: {},
     }
   },
 
@@ -424,13 +426,13 @@ export default {
       }
       return []
     },
-    totalInfo() {
+    getTotalInfo() {
       if (this.REPORT_SALES_GETTER.info) {
         return this.REPORT_SALES_GETTER.info
       }
       return {}
     },
-    salesPagination() {
+    getSalesPagination() {
       if (this.REPORT_SALES_GETTER.response) {
         return this.REPORT_SALES_GETTER.response
       }
@@ -448,6 +450,12 @@ export default {
   watch: {
     getSales() {
       this.sales = [...this.getSales]
+    },
+    getTotalInfo() {
+      this.totalInfo = { ...this.getTotalInfo }
+    },
+    getSalesPagination() {
+      this.salesPagination = { ...this.getSalesPagination }
     },
   },
 

@@ -1,9 +1,11 @@
 <template>
   <div
     class="d-none d-print-block text-brand-3 mx-0"
+    style="min-height: 100%; positon: relative;"
   >
     <b-row
       align-h="around"
+      class="mb-5"
     >
       <div class="text-center">
         <p>MT1008</p>
@@ -29,7 +31,7 @@
     </b-row>
 
     <b-row
-      class="mx-0 mt-5"
+      class="mx-0 mt-5 mb-5"
       align-h="around"
       align-v="center"
     >
@@ -51,7 +53,9 @@
           :key="item.productCode"
         >
           <td>{{ index + 1 }}</td>
-          <td>{{ item.productName }}</td>
+          <td
+            style="max-width:200px;"
+          >{{ item.productName }}</td>
           <td>{{ item.productCode }}</td>
           <td>{{ item.uom1 }}</td>
           <td class="text-right">
@@ -63,67 +67,73 @@
           <td class="text-right">
             {{ $formatNumberToLocale(item.intoMoney) }}
           </td>
-          <td>{{ item.note }}</td>
+          <td class="text-center">
+            {{ item.note }}
+          </td>
         </tr>
       </tbody>
     </table>
+    <div
+      style="width: 100%; position: absolute; bottom: 10%; right: 0;"
+    >
 
-    <b-row
-      class="mx-0 mt-5 text-center"
-      align-v="end"
-    >
-      <div
-        class="width-60-per"
+      <b-row
+        class="mx-0 mt-5 text-center"
+        align-v="end"
       >
-        <div class="d-flex text-right">
-          <div class="width-80-per" />
-          <div class="width-20-per pr-5">
-            10
+        <div
+          class="width-60-per"
+        >
+          <div class="d-flex text-right">
+            <div class="width-80-per" />
+            <div class="width-20-per pr-5">
+              10
+            </div>
+          </div>
+          <div class="d-flex text-left">
+            <div class="width-70-per" />
+            <div class="width-30-per pl-4">
+              {{ count }}
+            </div>
           </div>
         </div>
-        <div class="d-flex text-left">
-          <div class="width-70-per" />
-          <div class="width-30-per pl-4">
-            {{ count }}
+        <div
+          class=" width-25-per"
+        >
+          <div class="text-right">
+            {{ $formatNumberToLocale(redBillInfoData.amount) }}
+          </div>
+          <div class="text-right">
+            {{ $formatNumberToLocale(redBillInfoData.valueAddedTax) }}
+          </div>
+          <div class="text-right">
+            {{ $formatNumberToLocale(redBillInfoData.totalAmountNumber) }}
           </div>
         </div>
-      </div>
-      <div
-        class=" width-25-per"
+      </b-row>
+      <b-row
+        class="mx-0 text-center"
+        align-v="end"
       >
-        <div class="text-right">
-          {{ $formatNumberToLocale(redBillInfoData.amount) }}
+        <div
+          class="text-right width-60-per"
+        >
+          {{ redBillInfoData.totalAmountString }}
         </div>
-        <div class="text-right">
-          {{ $formatNumberToLocale(redBillInfoData.valueAddedTax) }}
-        </div>
-        <div class="text-right">
-          {{ $formatNumberToLocale(redBillInfoData.totalAmountNumber) }}
-        </div>
-      </div>
-    </b-row>
-    <b-row
-      class="mx-0 text-center"
-      align-v="end"
-    >
-      <div
-        class="text-right width-60-per"
+      </b-row>
+      <b-row
+        class="mx-0 mt-5 text-center"
+        align-h="end"
+        align-v="end"
       >
-        {{ redBillInfoData.totalAmountString }}
-      </div>
-    </b-row>
-    <b-row
-      class="mx-0 mt-5 text-center"
-      align-h="end"
-      align-v="end"
-    >
-      <b-col
-        class="text-center width-60-per"
-        cols="4"
-      >
-        Nguyễn Thị Thu Vân
-      </b-col>
-    </b-row>
+        <b-col
+          class="text-center width-60-per"
+          cols="4"
+        >
+          Nguyễn Thị Thu Vân
+        </b-col>
+      </b-row>
+    </div>
   </div>
 </template>
 

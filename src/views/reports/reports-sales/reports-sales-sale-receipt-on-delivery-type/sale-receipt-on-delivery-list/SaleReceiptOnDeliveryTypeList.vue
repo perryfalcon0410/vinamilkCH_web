@@ -310,6 +310,9 @@ export default {
           tdClass: 'text-left',
         },
       ],
+      reportsSalesReceiptOnDeliveryType: [],
+      totalInfo: {},
+      reportSalesSaleReceiptPagination: {},
     }
   },
   computed: {
@@ -317,7 +320,7 @@ export default {
       REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER,
       REPORT_SALES_DELIVERY_TYPES_CONTENT_GETTER,
     ]),
-    reportsSalesReceiptOnDeliveryType() {
+    getReportsSalesReceiptOnDeliveryType() {
       return this.REPORT_SALES_DELIVERY_TYPES_CONTENT_GETTER.map(data => ({
         customerCode: data.customerCode,
         customerName: data.customerName,
@@ -333,13 +336,13 @@ export default {
         storeName: data.shopName,
       }))
     },
-    totalInfo() {
+    getTotalInfo() {
       if (this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER.info) {
         return this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER.info
       }
       return {}
     },
-    reportSalesSaleReceiptPagination() {
+    getReportSalesSaleReceiptPagination() {
       if (this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER.response) {
         return this.REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER.response
       }
@@ -353,6 +356,17 @@ export default {
       return `${minPageSize} - ${maxPageSize} của ${this.reportSalesSaleReceiptPagination.totalElements} mục`
     },
 
+  },
+  watch: {
+    getReportsSalesReceiptOnDeliveryType() {
+      this.reportsSalesReceiptOnDeliveryType = [...this.getReportsSalesReceiptOnDeliveryType]
+    },
+    getTotalInfo() {
+      this.totalInfo = { ...this.getTotalInfo }
+    },
+    getReportSalesSaleReceiptPagination() {
+      this.reportSalesSaleReceiptPagination = { ...this.getReportSalesSaleReceiptPagination }
+    },
   },
   mounted() {
     resizeAbleTable()

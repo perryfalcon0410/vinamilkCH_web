@@ -29,7 +29,7 @@
             :disabled="promotionRows.length === 0"
             @click="onClickPrintButton"
           >
-            <b-icon-file-earmark-x-fill class="mr-50" />
+            <b-icon-printer-fill class="mr-50" />
             In
           </b-button>
           <b-button
@@ -96,7 +96,7 @@
           >
             <b-row
               v-if="props.column.field === 'quantity'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ totalInfo.totalQuantity }}
@@ -215,6 +215,8 @@ export default {
       },
       required,
       promotionRows: [],
+      promotionPagination: {},
+      totalInfo: {},
 
       columns: [
         {
@@ -246,6 +248,7 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
+          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -310,13 +313,13 @@ export default {
       }
       return []
     },
-    totalInfo() {
+    getTotalInfo() {
       if (this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.info) {
         return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.info
       }
       return {}
     },
-    promotionPagination() {
+    getPromotionPagination() {
       if (this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.response) {
         return this.REPORT_WAREHOUSES_PROMOTIONS_GETTER.response
       }
@@ -334,6 +337,12 @@ export default {
   watch: {
     getPromotionLists() {
       this.promotionRows = [...this.getPromotionLists]
+    },
+    getTotalInfo() {
+      this.totalInfo = { ...this.getTotalInfo }
+    },
+    getPromotionPagination() {
+      this.promotionPagination = { ...this.getPromotionPagination }
     },
   },
   mounted() {

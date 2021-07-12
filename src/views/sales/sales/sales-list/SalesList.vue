@@ -300,6 +300,7 @@
         :bills="bills"
         :is-disabled-order="isDisabledOrder"
         :edit-online-permission="editOnlinePermission"
+        :is-disabled="isDisabled"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
@@ -363,6 +364,8 @@ export default {
       currentCustomer: {},
       defaultCustomer: {},
       selectedValue: null,
+      checkStock: false,
+      isDisabled: false, // check tồn kho disable button thanh toán
 
       columns: [
         {
@@ -590,6 +593,19 @@ export default {
     selectedProduct() {
       this.selectedValue = this.selectedProduct
     },
+    orderProducts() {
+      this.orderProducts.forEach(data => {
+        if (data.productInventory < 1 || data.productInventory < data.quantity) {
+          this.checkStock = true
+        }
+      })
+      if (this.checkStock === true) {
+        this.isDisabled = true
+        this.checkStock = false
+      } else {
+        this.isDisabled = false
+      }
+    },
   },
   mounted() {
     const index = this.productInfoTypeOptions.findIndex(i => i.name === 'Ngành hàng')
@@ -632,6 +648,12 @@ export default {
         this.orderProducts[index].quantity += 1
         this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
+
+        if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
+          this.isDisabled = true
+        } else {
+          this.isDisabled = false
+        }
       }
     },
 
@@ -645,6 +667,12 @@ export default {
 
         this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
+
+        if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
+          this.isDisabled = true
+        } else {
+          this.isDisabled = false
+        }
       }
     },
 
@@ -780,6 +808,11 @@ export default {
     onChangeQuantity(index) {
       if (this.orderProducts[index].quantity <= 0) {
         this.orderProducts[index].quantity = 1
+      }
+      if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
+        this.isDisabled = true
+      } else {
+        this.isDisabled = false
       }
       this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
