@@ -23,18 +23,20 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusPrintButton(), 0)"
+            :disabled="$componentPermission(statusPrintButton()) || reportReturnRows.length === 0"
             class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
-            :disabled="reportReturnRows.length === 0"
             @click="printReport"
           >
             <b-icon-printer-fill />
             In
           </b-button>
           <b-button
+            v-show="$componentPermission(statusExcelButton(), 0)"
+            :disabled="$componentPermission(statusExcelButton()) || reportReturnRows.length === 0"
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
-            :disabled="reportReturnRows.length === 0"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />
@@ -454,6 +456,8 @@ export default {
 
   mounted() {
     resizeAbleTable()
+    this.statusExcelButton()
+    this.statusPrintButton()
     // this.PRINT_RETURN_GOODS_ACTION({
     //   ...this.searchOptions,
     //   ...this.decentralization,
@@ -468,6 +472,16 @@ export default {
       EXPORT_REPORT_RETURNED_GOODS_ACTION,
       PRINT_RETURN_GOODS_ACTION,
     ]),
+
+    // START - permission
+    statusExcelButton() {
+      return this.$permission('ReportsReturnedGoods', 'ReportsReturnedGoodsExcel').showStatus
+    },
+    statusPrintButton() {
+      return this.$permission('ReportsReturnedGoods', 'ReportsReturnedGoodsPrint').showStatus
+    },
+
+    // END - permission
     // Start - xuat excel
     onClickExcelExportButton() {
       this.EXPORT_REPORT_RETURNED_GOODS_ACTION({ ...this.decentralization, ...this.searchOptions })

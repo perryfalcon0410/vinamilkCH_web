@@ -24,6 +24,8 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusExcelButton(), 0)"
+            :disabled="$componentPermission(statusExcelButton())"
             class="shadow-brand-1 ml-1 h8 rounded bg-brand-1 text-white font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="exportReport"
@@ -348,11 +350,21 @@ export default {
       this.rows = [...this.getReportVouchersUsed]
     },
   },
+  mounted() {
+    this.statusExcelButton()
+  },
   methods: {
     ...mapActions(REPORT_VOUCHERS, [
       GET_REPORT_VOUCHERS_USED_ACTION,
       EXPORT_REPORT_VOUCHERS_USED_ACTION,
     ]),
+
+    // START - permission
+    statusExcelButton() {
+      return this.$permission('ReportsVouchers', 'ReportsVouchersExcel').showStatus
+    },
+
+    // END - permission
     exportReport() {
       this.EXPORT_REPORT_VOUCHERS_USED_ACTION({ ...this.searchData })
     },

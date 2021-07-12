@@ -22,18 +22,20 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusPrintButton(), 0)"
+            :disabled="$componentPermission(statusPrintButton()) || rows.length === 0"
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
-            :disabled="rows.length === 0"
             @click="printReport"
           >
             <b-icon-printer-fill />
             In
           </b-button>
           <b-button
+            v-show="$componentPermission(statusExcelButton(), 0)"
+            :disabled="$componentPermission(statusExcelButton()) || rows.length === 0"
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
-            :disabled="rows.length === 0"
             @click="exportExcel"
           >
             <b-icon-file-earmark-x-fill />
@@ -444,6 +446,10 @@ export default {
       this.reportInventoryPagination = { ...this.getReportInventoryPagination }
     },
   },
+  mounted() {
+    this.statusExcelButton()
+    this.statusPrintButton()
+  },
   methods: {
     exportExcel() {
       this.EXPORT_REPORT_INVENTORIES_ACTION({
@@ -457,6 +463,16 @@ export default {
       EXPORT_REPORT_INVENTORIES_ACTION,
       PRINT_REPORT_INVENTORY_ACTION,
     ]),
+
+    // START - permission
+    statusExcelButton() {
+      return this.$permission('ReportsWarehousesInventory', 'ReportsWarehousesInventoryExcel').showStatus
+    },
+    statusPrintButton() {
+      return this.$permission('ReportsWarehousesInventory', 'ReportsWarehousesInventoryPrint').showStatus
+    },
+
+    // END - permission
     printReport() {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')

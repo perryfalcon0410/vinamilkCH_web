@@ -24,6 +24,8 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusExcelButton(), 0)"
+            :disabled="$componentPermission(statusExcelButton())"
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="onClickExcelExportButton"
@@ -366,12 +368,20 @@ export default {
 
   mounted() {
     resizeAbleTable()
+    this.statusExcelButton()
   },
   methods: {
     ...mapActions(REPORT_CUSTOMERS, [
       GET_REPORT_CUSTOMERS_ACTION,
       EXPORT_REPORT_CUSTOMERS_ACTION,
     ]),
+
+    // START - permission
+    statusExcelButton() {
+      return this.$permission('ReportsCustomersTrade', 'ReportsCustomersTradeExcel').showStatus
+    },
+
+    // END - permission
     // Start - xuat excel
     onClickExcelExportButton() {
       const searchData = {

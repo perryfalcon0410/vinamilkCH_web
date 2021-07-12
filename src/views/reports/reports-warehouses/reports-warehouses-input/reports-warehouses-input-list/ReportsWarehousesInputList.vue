@@ -25,18 +25,20 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusPrintButton(), 0)"
+            :disabled="$componentPermission(statusPrintButton()) || warehousesInputs.length === 0"
             class="rounded btn-brand-1 h7"
             variant="someThing"
-            :disabled="warehousesInputs.length === 0"
             @click="printReport"
           >
             <b-icon-printer-fill class="mr-50" />
             In
           </b-button>
           <b-button
+            v-show="$componentPermission(statusExcelButton(), 0)"
+            :disabled="$componentPermission(statusExcelButton()) || warehousesInputs.length === 0"
             class="ml-1 rounded btn-brand-1 h7"
             variant="someThing"
-            :disabled="warehousesInputs.length === 0"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />
@@ -482,6 +484,8 @@ export default {
   },
 
   mounted() {
+    this.statusExcelButton()
+    this.statusPrintButton()
   },
 
   methods: {
@@ -490,6 +494,16 @@ export default {
       EXPORT_REPORT_WAREHOUSES_INPUT_ACTION,
       PRINT_SHOP_IMPORT_REPORT_ACTION,
     ]),
+
+    // START - permission
+    statusExcelButton() {
+      return this.$permission('ReportsWarehousesInput', 'ReportsWarehousesInputExcel').showStatus
+    },
+    statusPrintButton() {
+      return this.$permission('ReportsWarehousesInput', 'ReportsWarehousesInputPrint').showStatus
+    },
+
+    // END - permission
 
     onPaginationChange() {
       this.GET_REPORT_WAREHOUSES_INPUT_ACTION(this.paginationData)

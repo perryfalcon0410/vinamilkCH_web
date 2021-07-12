@@ -25,6 +25,8 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusPrintButton(), 0)"
+            :disabled="$componentPermission(statusPrintButton())"
             class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="printReport"
@@ -33,6 +35,8 @@
             In
           </b-button>
           <b-button
+            v-show="$componentPermission(statusExcelButton(), 0)"
+            :disabled="$componentPermission(statusExcelButton())"
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="onClickExcelExportButton"
@@ -318,6 +322,8 @@ export default {
   },
   mounted() {
     resizeAbleTable()
+    this.statusExcelButton()
+    this.statusPrintButton()
   },
   methods: {
     ...mapActions(REPORT_SALES_CAT, [
@@ -325,6 +331,16 @@ export default {
       EXPORT_REPORT_SALES_CAT_ACTION,
       PRINT_REPORT_ACTION,
     ]),
+
+    // START - permission
+    statusExcelButton() {
+      return this.$permission('ReportsSalesCatSale', 'ReportsSalesAmountCATExcel').showStatus
+    },
+    statusPrintButton() {
+      return this.$permission('ReportsSalesCatSale', 'ReportsSalesAmountCATPrint').showStatus
+    },
+
+    // END - permission
     onClickExcelExportButton() {
       this.EXPORT_REPORT_SALES_CAT_ACTION({
         ...this.searchData,

@@ -1395,6 +1395,14 @@ export default {
                       description: null,
                       showStatus: 2,
                     },
+                    {
+                      id: 130,
+                      controlCode: 'ReportsSalesAmountCATPrint',
+                      controlName: 'In báo cáo doanh số CAT',
+                      formId: 93,
+                      description: null,
+                      showStatus: 2,
+                    },
                   ],
                 },
                 {

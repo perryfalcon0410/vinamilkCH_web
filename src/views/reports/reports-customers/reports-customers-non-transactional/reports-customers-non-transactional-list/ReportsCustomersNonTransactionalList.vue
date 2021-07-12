@@ -23,6 +23,8 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusPrintButton(), 0)"
+            :disabled="$componentPermission(statusPrintButton())"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickPrintButton"
@@ -31,6 +33,8 @@
             In
           </b-button>
           <b-button
+            v-show="$componentPermission(statusExcelButton(), 0)"
+            :disabled="$componentPermission(statusExcelButton())"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickExcelExportButton"
@@ -273,6 +277,8 @@ export default {
   },
   mounted() {
     resizeAbleTable()
+    this.statusExcelButton()
+    this.statusPrintButton()
   },
 
   methods: {
@@ -281,6 +287,16 @@ export default {
       GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
       PRINT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
     ]),
+
+    // START - permission
+    statusExcelButton() {
+      return this.$permission('ReportsCustomersNonTransactional', 'ReportsCustomersNonTransactionalExcel').showStatus
+    },
+    statusPrintButton() {
+      return this.$permission('ReportsCustomersNonTransactional', 'ReportsCustomersNonTransactionalPrint').showStatus
+    },
+
+    // END - permission
     // Start - pagination
     onPaginationChange() {
       this.GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION(this.paginationData)

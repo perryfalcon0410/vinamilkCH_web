@@ -24,18 +24,20 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusPrintButton(), 0)"
+            :disabled="$componentPermission(statusPrintButton()) || promotionRows.length === 0"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
-            :disabled="promotionRows.length === 0"
             @click="onClickPrintButton"
           >
             <b-icon-printer-fill class="mr-50" />
             In
           </b-button>
           <b-button
+            v-show="$componentPermission(statusExcelButton(), 0)"
+            :disabled="$componentPermission(statusExcelButton()) || promotionRows.length === 0"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
-            :disabled="promotionRows.length === 0"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />
@@ -347,6 +349,8 @@ export default {
   },
   mounted() {
     resizeAbleTable()
+    this.statusExcelButton()
+    this.statusPrintButton()
   },
 
   methods: {
@@ -355,6 +359,16 @@ export default {
       EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION,
       PRINT_REPORT_PROMOTION_ACTION,
     ]),
+
+    // START - permission
+    statusExcelButton() {
+      return this.$permission('ReportsWarehousesPromotions', 'ReportsWarehousesPromotionsExcel').showStatus
+    },
+    statusPrintButton() {
+      return this.$permission('ReportsWarehousesPromotions', 'ReportsWarehousesPromotionsPrint').showStatus
+    },
+
+    // END - permission
     onClickPrintButton() {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')

@@ -25,20 +25,22 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusPrintButton(), 0)"
+            :disabled="$componentPermission(statusPrintButton()) || outputGoodslist.length === 0"
             class="rounded bg-brand-1 text-white h8"
             variant="someThing"
             size="sm"
-            :disabled="outputGoodslist.length === 0"
             @click="onClickPrintExportButton"
           >
             <b-icon-printer-fill />
             In
           </b-button>
           <b-button
+            v-show="$componentPermission(statusExcelButton(), 0)"
+            :disabled="$componentPermission(statusExcelButton()) || outputGoodslist.length === 0"
             class="ml-1 rounded bg-brand-1 text-white h8"
             variant="someThing"
             size="sm"
-            :disabled="outputGoodslist.length === 0"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill />
@@ -538,6 +540,8 @@ export default {
     },
   },
   mounted() {
+    this.statusExcelButton()
+    this.statusPrintButton()
     // this.GET_OUTPUT_GOODS_ACTION({
     //   ...this.decentralization,
     // })
@@ -548,6 +552,16 @@ export default {
       EXPORT_OUTPUT_GOODS_ACTION,
       PRINT_OUTPUT_GOODS_ACTION,
     ]),
+
+    // START - permission
+    statusExcelButton() {
+      return this.$permission('ReportsWarehousesOutput', 'ReportsWarehousesOutputExcel').showStatus
+    },
+    statusPrintButton() {
+      return this.$permission('ReportsWarehousesOutput', 'ReportsWarehousesOutputPrint').showStatus
+    },
+
+    // END - permission
     // start pagination
     updateSearchData(event) {
       this.searchOptions = event
