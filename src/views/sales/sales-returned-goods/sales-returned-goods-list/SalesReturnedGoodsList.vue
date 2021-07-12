@@ -21,8 +21,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusCreateButton(), 0)"
-            :disabled="$componentPermission(statusCreateButton())"
+            v-show="statusCreateButton().show"
+            :disabled="statusCreateButton().disabled"
             class="btn-brand-1 h8 align-items-button-center"
             variant="someThing"
             @click="showSalesReturnedGoodsCreate"
@@ -395,8 +395,6 @@ export default {
   },
 
   mounted() {
-    this.statusCreateButton()
-
     resizeAbleTable()
   },
 
@@ -405,7 +403,7 @@ export default {
       GET_RETURNED_GOODS_ACTION,
     ]),
     statusCreateButton() {
-      return this.$permission('SalesReturnedGoods', 'SalesReturnedGoodsCreate').showStatus
+      return this.$permission('SalesReturnedGoods', 'SalesReturnedGoodsCreate')
     },
     showSalesReturnedGoodsCreate() {
       this.$router.push({ name: 'sales-returned-goods-create' })

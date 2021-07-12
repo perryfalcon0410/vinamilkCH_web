@@ -348,8 +348,8 @@
 
           <!-- START - Button pay -->
           <b-button
-            v-if="$componentPermission(statusPayButton(), 0)"
-            :disabled="$componentPermission(statusPayButton()) || totalQuantity === 0 || isDisabled"
+            v-if="statusPayButton().show"
+            :disabled="statusPayButton().disabled || totalQuantity === 0 || isDisabled"
             variant="someThing"
             class="btn-brand-1 d-flex w-100 mt-1 align-items-center justify-content-center"
             @click="onPayButtonClick"
@@ -764,8 +764,6 @@ export default {
   },
 
   mounted() {
-    this.statusPayButton()
-
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ ...this.decentralization })
     this.GET_SALEMT_DELIVERY_TYPE_ACTION({ ...this.decentralization, salemtDeliveryTypeSelected: this.salemtDeliveryTypeSelected })
     this.GET_CUSTOMER_DEFAULT_ACTION({ ...this.decentralization })
@@ -805,7 +803,7 @@ export default {
     ]),
 
     statusPayButton() {
-      return this.$permission('Sales', 'SalesPay').showStatus
+      return this.$permission('Sales', 'SalesPay')
     },
 
     showModalCreate() {

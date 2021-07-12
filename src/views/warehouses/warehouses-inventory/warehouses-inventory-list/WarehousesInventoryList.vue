@@ -24,8 +24,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusCreateButton(), 0)"
-            :disabled="$componentPermission(statusCreateButton())"
+            v-show="statusCreateButton().show"
+            :disabled="statusCreateButton().disabled"
             class="btn-brand-1 h8 align-items-button-center rounded"
             variant="someThing"
             @click="onClickCreateButton"
@@ -97,7 +97,7 @@
               v-if="props.column.field === 'feature'"
             >
               <v-icon-edit
-                :disabled="$componentPermission(statusUpdateButton())"
+                :disabled="statusUpdateButton().disabled"
                 class="ml-1"
                 popover-position="left"
                 @click="onClickUpdateButton(props.row.id)"
@@ -248,7 +248,7 @@ export default {
         {
           label: 'Thao tác',
           field: 'feature',
-          hidden: !this.$componentPermission(this.statusUpdateButton(), 0),
+          hidden: !this.statusUpdateButton().show,
           width: '30px',
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -298,9 +298,6 @@ export default {
   },
 
   mounted() {
-    this.statusCreateButton()
-    this.statusUpdateButton()
-
     resizeAbleTable()
   },
 
@@ -310,10 +307,10 @@ export default {
     ]),
 
     statusCreateButton() {
-      return this.$permission('WarehousesInventory', 'WarehousesInventoryCreate').showStatus
+      return this.$permission('WarehousesInventory', 'WarehousesInventoryCreate')
     },
     statusUpdateButton() {
-      return this.$permission('WarehousesInventory', 'WarehousesInventoryUpdate').showStatus
+      return this.$permission('WarehousesInventory', 'WarehousesInventoryUpdate')
     },
 
     onClickCreateButton() {

@@ -25,8 +25,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusCreateButton(), 0)"
-            :disabled="$componentPermission(statusCreateButton())"
+            v-show="statusCreateButton().show"
+            :disabled="statusCreateButton().disabled"
             class="btn-brand-1 rounded h8 align-items-button-center"
             variant="someThing"
             @click="navigateToCreate"
@@ -343,8 +343,6 @@ export default {
   },
 
   mounted() {
-    this.statusCreateButton()
-
     resizeAbleTable()
   },
 
@@ -354,7 +352,7 @@ export default {
     ]),
 
     statusCreateButton() {
-      return this.$permission('WarehousesCombo', 'WarehousesComboCreate').showStatus
+      return this.$permission('WarehousesCombo', 'WarehousesComboCreate')
     },
 
     navigateToCreate() {

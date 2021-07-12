@@ -1720,8 +1720,8 @@ export default {
             useJwt.setRefreshToken(token.replace('Bearer ', ''))
             localStorage.setItem('userData', JSON.stringify(userData))
 
-            // this.$ability.update(userData.ability)
-            this.$ability.update([{ action: 'manage', subject: 'all' }]) // => Temp
+            this.$ability.update(userData.ability)
+            // this.$ability.update([{ action: 'manage', subject: 'all' }]) // => Temp
 
             this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
               .then(() => {

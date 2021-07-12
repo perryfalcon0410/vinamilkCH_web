@@ -25,8 +25,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusCreateButton(), 0)"
-            :disabled="$componentPermission(statusCreateButton())"
+            v-show="statusCreateButton().show"
+            :disabled="statusCreateButton().disabled"
             class="btn-brand-1 align-items-button-center h8"
             variant="someThing"
             @click="onClickAddNewButton"
@@ -98,15 +98,15 @@
               class="mx-0"
             >
               <v-icon-edit
-                v-show="$componentPermission(statusUpdateButton(), 0)"
-                :disabled="$componentPermission(statusUpdateButton())"
+                v-show="statusUpdateButton().show"
+                :disabled="statusUpdateButton().disabled"
                 class="ml-1"
                 popover-position="top"
                 @click="onClickUpdateButton(props.row.id)"
               />
               <v-icon-remove
-                v-show="$formatISOtoVNI(props.row.date) === nowDate && $componentPermission(statusDeleteButton(), 0)"
-                :disabled="$componentPermission(statusDeleteButton())"
+                v-show="$formatISOtoVNI(props.row.date) === nowDate && statusDeleteButton().show"
+                :disabled="statusDeleteButton().disabled"
                 class="ml-1"
                 @click="onClickDeleteButton(props.row.id, props.row.originalIndex)"
               />
@@ -403,12 +403,6 @@ export default {
     },
   },
 
-  mounted() {
-    this.statusCreateButton()
-    this.statusUpdateButton()
-    this.statusDeleteButton()
-  },
-
   methods: {
     ...mapActions(WAREHOUSES_EXCHANGE_DAMAGED_GOODS, [
       GET_EXCHANGE_DAMAGED_GOODS_ACTION,
@@ -416,13 +410,13 @@ export default {
     ]),
 
     statusCreateButton() {
-      return this.$permission('WarehousesExchangeDamagedGoods', 'WarehousesExchangeDamagedGoodsCreate').showStatus
+      return this.$permission('WarehousesExchangeDamagedGoods', 'WarehousesExchangeDamagedGoodsCreate')
     },
     statusUpdateButton() {
-      return this.$permission('WarehousesExchangeDamagedGoods', 'WarehousesExchangeDamagedGoodsUpdate').showStatus
+      return this.$permission('WarehousesExchangeDamagedGoods', 'WarehousesExchangeDamagedGoodsUpdate')
     },
     statusDeleteButton() {
-      return this.$permission('WarehousesExchangeDamagedGoods', 'WarehousesExchangeDamagedGoodsDelete').showStatus
+      return this.$permission('WarehousesExchangeDamagedGoods', 'WarehousesExchangeDamagedGoodsDelete')
     },
 
     onClickAddNewButton() {

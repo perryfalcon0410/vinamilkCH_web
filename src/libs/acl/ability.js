@@ -18,13 +18,15 @@ export const permission = (formCode, controlCode) => {
 
     if (control) {
       return {
-        showStatus: control.showStatus,
+        show: control.showStatus !== commonData.showStatus.invisible,
+        disabled: control.showStatus === commonData.showStatus.disable,
       }
     }
   }
 
   return {
-    showStatus: commonData.showStatus.invisible,
+    show: false,
+    disabled: true,
   }
 }
 

@@ -23,8 +23,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusCreateButton(), 0)"
-            :disabled="$componentPermission(statusCreateButton())"
+            v-show="statusCreateButton().show"
+            :disabled="statusCreateButton().disabled"
             class="btn-brand-1 h8 align-items-button-center rounded"
             variant="someThing"
             @click="navigateToCreate"
@@ -36,8 +36,8 @@
             Thêm mới
           </b-button>
           <b-button
-            v-show="$componentPermission(statusExcelButton(), 0)"
-            :disabled="$componentPermission(statusExcelButton()) || !customersData.length"
+            v-show="statusExcelButton().show"
+            :disabled="statusExcelButton().disabled || !customersData.length"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickExcelExportButton"
@@ -101,7 +101,7 @@
           >
             <div v-if="props.column.field === 'manipulation'">
               <v-icon-edit
-                :disabled="$componentPermission(statusUpdateButton())"
+                :disabled="statusUpdateButton().disabled"
                 @click="navigateToUpdate(props.row.id)"
               />
             </div>
@@ -279,7 +279,7 @@ export default {
           label: 'Thao tác',
           field: 'manipulation',
           sortable: false,
-          hidden: !this.$componentPermission(this.statusUpdateButton(), 0),
+          hidden: !this.statusUpdateButton().show,
           width: '30px',
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -334,10 +334,6 @@ export default {
   },
 
   mounted() {
-    this.statusCreateButton()
-    this.statusExcelButton()
-    this.statusUpdateButton()
-
     resizeAbleTable()
   },
 
@@ -348,13 +344,13 @@ export default {
     ]),
 
     statusCreateButton() {
-      return this.$permission('SalesCustomers', 'CustomersCreate').showStatus
+      return this.$permission('SalesCustomers', 'CustomersCreate')
     },
     statusExcelButton() {
-      return this.$permission('SalesCustomers', 'CustomersExcel').showStatus
+      return this.$permission('SalesCustomers', 'CustomersExcel')
     },
     statusUpdateButton() {
-      return this.$permission('SalesCustomers', 'CustomersUpdate').showStatus
+      return this.$permission('SalesCustomers', 'CustomersUpdate')
     },
 
     navigateToCreate() {
@@ -398,7 +394,6 @@ export default {
       this.onPaginationChange({ sort: `${params[0].field},${params[0].type}` })
     },
     // END - Vue Good Table func
-
   },
 }
 </script>

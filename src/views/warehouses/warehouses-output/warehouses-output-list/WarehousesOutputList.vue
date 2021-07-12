@@ -202,8 +202,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusCreateButton(), 0)"
-            :disabled="$componentPermission(statusCreateButton())"
+            v-show="statusCreateButton().show"
+            :disabled="statusCreateButton().disabled"
             class="btn-brand-1 align-items-button-center h8"
             variant="someThing"
             @click="onClickCreateButton"
@@ -274,20 +274,20 @@
               class="mx-0"
             >
               <v-icon-printer
-                v-show="$componentPermission(statusPrintButton(), 0)"
-                :disabled="$componentPermission(statusPrintButton())"
+                v-show="statusPrintButton().show"
+                :disabled="statusPrintButton().disabled"
                 @click="onClickPrintButton(props.row)"
               />
               <v-icon-edit
-                v-show="$componentPermission(statusUpdateButton(), 0)"
-                :disabled="$componentPermission(statusUpdateButton())"
+                v-show="statusUpdateButton().show"
+                :disabled="statusUpdateButton().disabled"
                 class="ml-1"
                 popover-position="top"
                 @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
               />
               <v-icon-remove
-                v-show="$formatISOtoVNI(props.row.date) === nowDate && $componentPermission(statusDeleteButton(), 0)"
-                :disabled="$componentPermission(statusDeleteButton())"
+                v-show="$formatISOtoVNI(props.row.date) === nowDate && statusDeleteButton().show"
+                :disabled="statusDeleteButton().disabled"
                 class="ml-1"
                 @click="onClickDeleteWarehousesOutput(props.row.id,props.row.inputTypes,props.row.code, props.row.originalIndex, $formatISOtoVNI(props.row.date))"
               />
@@ -640,11 +640,6 @@ export default {
   },
 
   mounted() {
-    this.statusCreateButton()
-    this.statusUpdateButton()
-    this.statusDeleteButton()
-    this.statusPrintButton()
-
     resizeAbleTable()
     this.configToDate = {
       ...this.configToDate,
@@ -661,16 +656,16 @@ export default {
     ]),
 
     statusCreateButton() {
-      return this.$permission('WarehousesOutput', 'WarehousesOutputCreate').showStatus
+      return this.$permission('WarehousesOutput', 'WarehousesOutputCreate')
     },
     statusUpdateButton() {
-      return this.$permission('WarehousesOutput', 'WarehousesOutputUpdate').showStatus
+      return this.$permission('WarehousesOutput', 'WarehousesOutputUpdate')
     },
     statusDeleteButton() {
-      return this.$permission('WarehousesOutput', 'WarehousesOutputDelete').showStatus
+      return this.$permission('WarehousesOutput', 'WarehousesOutputDelete')
     },
     statusPrintButton() {
-      return this.$permission('WarehousesOutput', 'WarehousesOutputPrint').showStatus
+      return this.$permission('WarehousesOutput', 'WarehousesOutputPrint')
     },
 
     onClickCreateButton() {

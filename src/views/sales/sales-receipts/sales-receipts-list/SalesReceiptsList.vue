@@ -19,8 +19,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusPrintButton(), 0)"
-            :disabled="$componentPermission(statusPrintButton()) || !selectedRows.length"
+            v-show="statusPrintButton().show"
+            :disabled="statusPrintButton().disabled || !selectedRows.length"
             class="btn-brand-1 h8 align-items-button-center"
             variant="someThing"
             @click="onClickPrintButton"
@@ -400,7 +400,7 @@ export default {
           label: 'Thao tác',
           field: 'manipulation',
           sortable: false,
-          hidden: !this.$componentPermission(this.statusDetailButton(), 0),
+          hidden: !this.statusDetailButton().show,
           thClass: 'text-center move-header',
           tdClass: 'text-center move-column',
         },
@@ -514,9 +514,6 @@ export default {
   },
 
   mounted() {
-    this.statusPrintButton()
-    this.statusDetailButton()
-
     resizeAbleTable()
   },
 
@@ -528,10 +525,10 @@ export default {
     ]),
 
     statusPrintButton() {
-      return this.$permission('SalesReceipts', 'SalesReceiptsPrint').showStatus
+      return this.$permission('SalesReceipts', 'SalesReceiptsPrint')
     },
     statusDetailButton() {
-      return this.$permission('SalesReceipts', 'SalesReceiptsDetail').showStatus
+      return this.$permission('SalesReceipts', 'SalesReceiptsDetail')
     },
 
     showInvoiceDetailModal(id, numberBill) {

@@ -78,7 +78,7 @@ export default {
 
       // Redirect to login page
       this.$router.replace({ name: 'auth-login' })
-      window.location.reload(true)
+      this.$router.go()
     },
     navigateToChangePassword() {
       this.$router.push({ name: 'auth-reset-password' })

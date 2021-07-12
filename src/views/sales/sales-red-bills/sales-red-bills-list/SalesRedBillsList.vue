@@ -184,8 +184,8 @@
             text-field="name"
           />
           <b-button
-            v-show="$componentPermission(statusExcelButton(), 0)"
-            :disabled="$componentPermission(statusExcelButton())"
+            v-show="statusExcelButton().show"
+            :disabled="statusExcelButton().disabled"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
             @click="onClickExportRedBills"
@@ -194,8 +194,8 @@
             Xuất Excel
           </b-button>
           <b-button
-            v-show="$componentPermission(statusPrintButton(), 0)"
-            :disabled="$componentPermission(statusPrintButton())"
+            v-show="statusPrintButton().show"
+            :disabled="statusPrintButton().disabled"
             variant="someThing"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             @click="onClickPrintButton"
@@ -204,8 +204,8 @@
             In HĐ
           </b-button>
           <b-button
-            v-show="$componentPermission(statusUpdateButton(), 0)"
-            :disabled="$componentPermission(statusUpdateButton())"
+            v-show="statusUpdateButton().show"
+            :disabled="statusUpdateButton().disabled"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
             @click="onClickUpdateRedBills"
@@ -217,8 +217,8 @@
             Cập nhật HĐ
           </b-button>
           <b-button
-            v-show="$componentPermission(statusCreateButton(), 0)"
-            :disabled="$componentPermission(statusCreateButton())"
+            v-show="statusCreateButton().show"
+            :disabled="statusCreateButton().show"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
             @click="addSaleRedBillsCreate"
@@ -230,8 +230,8 @@
             Thêm mới
           </b-button>
           <b-button
-            v-show="$componentPermission(statusDeleteButton(), 0)"
-            :disabled="$componentPermission(statusDeleteButton())"
+            v-show="statusDeleteButton().show"
+            :disabled="statusDeleteButton().disabled"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
             @click="onClickDeleteButton"
@@ -650,12 +650,6 @@ export default {
   },
 
   mounted() {
-    this.statusExcelButton()
-    this.statusPrintButton()
-    this.statusUpdateButton()
-    this.statusCreateButton()
-    this.statusDeleteButton()
-
     this.onSearch()
     this.configToDate = {
       ...this.configToDate,
@@ -673,19 +667,19 @@ export default {
     ]),
 
     statusExcelButton() {
-      return this.$permission('SalesRedBills', 'RedBillsExcel').showStatus
+      return this.$permission('SalesRedBills', 'RedBillsExcel')
     },
     statusPrintButton() {
-      return this.$permission('SalesRedBills', 'RedBillsPrint').showStatus
+      return this.$permission('SalesRedBills', 'RedBillsPrint')
     },
     statusUpdateButton() {
-      return this.$permission('SalesRedBills', 'RedBillsUpdate').showStatus
+      return this.$permission('SalesRedBills', 'RedBillsUpdate')
     },
     statusCreateButton() {
-      return this.$permission('SalesRedBills', 'RedBillsCreate').showStatus
+      return this.$permission('SalesRedBills', 'RedBillsCreate')
     },
     statusDeleteButton() {
-      return this.$permission('SalesRedBills', 'RedBillsDelete').showStatus
+      return this.$permission('SalesRedBills', 'RedBillsDelete')
     },
 
     onSearch() {
