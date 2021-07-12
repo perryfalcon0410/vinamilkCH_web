@@ -73,12 +73,17 @@
                 <div
                   style="width: 30%"
                   class="pl-1"
-                ><i>Ngành hàng:</i> <strong class="pl-3">{{ item.productCatName }}</strong>
+                ><i>Ngành hàng:</i> <strong class="pl-2">{{ item.productCatName }}</strong>
                 </div>
                 <div
                   class="text-right"
-                  style="width: 69.5%"
-                ><i class="pr-5">Tổng Cộng:</i>
+                  style="width: 60.7%"
+                ><i>Tổng Cộng:</i>
+                </div>
+                <div
+                  class="text-right"
+                  style="width: 8.7%"
+                >
                   <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
                 </div>
               </b-row>
@@ -96,7 +101,7 @@
             </th>
             <th
               class="dotted px-50"
-              style="width: 24%"
+              style="width: 19.5%"
             >
               Ngày bán
             </th>
@@ -114,7 +119,7 @@
             </th>
             <th
               class="dotted px-50"
-              style="width: 36%"
+              style="width: 38.5%"
             >
               Tên SP
             </th>
@@ -125,7 +130,7 @@
               ĐVT
             </th>
             <th
-              class="dotted px-50 sl"
+              class="dotted px-50 sl text-right"
               style="width: 8%"
             >
               SL
