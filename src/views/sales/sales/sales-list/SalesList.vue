@@ -454,6 +454,7 @@ export default {
           customer: {
             fullName: null,
             phoneNumber: null,
+            totalBill: null,
             address: null,
           },
           active: true,
@@ -732,6 +733,7 @@ export default {
           customer: {
             fullName: this.defaultCustomer.fullName,
             phoneNumber: this.defaultCustomer.mobiPhone,
+            totalBill: this.defaultCustomer.totalBill,
             address: this.defaultCustomer.address,
           },
           active: false,
@@ -746,6 +748,7 @@ export default {
         customer: {
           fullName: this.currentCustomer.fullName,
           phoneNumber: this.currentCustomer.phoneNumber,
+          totalBill: this.currentCustomer.totalBill,
           address: this.currentCustomer.address,
         },
         active: false,
@@ -778,6 +781,7 @@ export default {
             customer: {
               fullName: this.currentCustomer.fullName,
               phoneNumber: this.currentCustomer.phoneNumber,
+              totalBill: this.currentCustomer.totalBill,
               address: this.currentCustomer.address,
             },
             active: false,
@@ -791,6 +795,7 @@ export default {
           this.orderProducts = bill.products
           this.currentCustomer.fullName = bill.customer.fullName
           this.currentCustomer.phoneNumber = bill.customer.phoneNumber
+          this.currentCustomer.totalBill = bill.customer.totalBill
           this.currentCustomer.address = bill.customer.address
           this.orderCurrentId = billSelectedId
           return {
