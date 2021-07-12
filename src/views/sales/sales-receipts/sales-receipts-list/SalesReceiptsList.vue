@@ -19,9 +19,10 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusPrintButton(), 0)"
+            :disabled="$componentPermission(statusPrintButton()) || !selectedRows.length"
             class="btn-brand-1 h8 align-items-button-center"
             variant="someThing"
-            :disabled="!selectedRows.length"
             @click="onClickPrintButton"
           >
             <b-icon-printer-fill class="mr-25" />
@@ -212,15 +213,17 @@
         </vue-good-table>
       </b-col>
       <!-- End table -->
-
-      <invoice-detail-modal
-        :information="info"
-        :details="detailGrid"
-        :details-total="detailTableTotal"
-        :promotion-details="promotionGrid"
-        :discount-details="discountGrid"
-      />
     </div>
+
+    <!-- START - Modal  -->
+    <invoice-detail-modal
+      :information="info"
+      :details="detailGrid"
+      :details-total="detailTableTotal"
+      :promotion-details="promotionGrid"
+      :discount-details="discountGrid"
+    />
+    <!-- END - Modal  -->
 
     <!-- START - Print form -->
     <print-form-sales-receipt />
@@ -390,13 +393,14 @@ export default {
           label: 'Ghi chú HĐĐ',
           field: 'noteHdd',
           sortable: false,
-          thClass: 'text-center ws-nowrap',
+          thClass: 'text-center text-nowrap',
           tdClass: 'text-center',
         },
         {
-          label: 'Chức năng',
+          label: 'Thao tác',
           field: 'manipulation',
           sortable: false,
+          hidden: !this.$componentPermission(this.statusDetailButton(), 0),
           thClass: 'text-center move-header',
           tdClass: 'text-center move-column',
         },
@@ -510,6 +514,9 @@ export default {
   },
 
   mounted() {
+    this.statusPrintButton()
+    this.statusDetailButton()
+
     resizeAbleTable()
   },
 
@@ -519,10 +526,19 @@ export default {
       GET_SALES_RECEIPTS_DETAIL_ACTION,
       PRINT_SALES_RECEIPT_ACTION,
     ]),
+
+    statusPrintButton() {
+      return this.$permission('SalesReceipts', 'SalesReceiptsPrint').showStatus
+    },
+    statusDetailButton() {
+      return this.$permission('SalesReceipts', 'SalesReceiptsDetail').showStatus
+    },
+
     showInvoiceDetailModal(id, numberBill) {
       this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber: numberBill })
       this.$bvModal.show('detail-modal')
     },
+
     onClickPrintButton() {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
@@ -540,6 +556,7 @@ export default {
         })
       }
     },
+
     // START - Vue Good Table func
     updateSearchData(newProps) {
       this.searchData = { ...this.searchData, ...newProps }
@@ -577,6 +594,7 @@ export default {
       this.selectedRows = [...params.selectedRows]
     },
   },
+
 }
 </script>
 <style lang="scss">

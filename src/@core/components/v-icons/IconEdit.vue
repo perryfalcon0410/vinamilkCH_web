@@ -1,9 +1,9 @@
 <template>
   <b-icon-pencil-fill
     v-b-popover.hover="{content: popoverContent, placement: popoverPosition}"
-    class="cursor-pointer"
+    :class="['cursor-pointer', {'icon-disabled': disabled}]"
     scale="1.2"
-    @click="$emit('click')"
+    @click="clickEvent"
   />
 </template>
 
@@ -17,6 +17,18 @@ export default {
     popoverContent: {
       type: String,
       default: 'Chình sửa',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  methods: {
+    clickEvent(e) {
+      if (this.disabled) {
+        return e.preventDefault()
+      }
+      return this.$emit('click')
     },
   },
 }

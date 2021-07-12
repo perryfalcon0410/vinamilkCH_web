@@ -184,6 +184,8 @@
             text-field="name"
           />
           <b-button
+            v-show="$componentPermission(statusExcelButton(), 0)"
+            :disabled="$componentPermission(statusExcelButton())"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
             @click="onClickExportRedBills"
@@ -192,6 +194,8 @@
             Xuất Excel
           </b-button>
           <b-button
+            v-show="$componentPermission(statusPrintButton(), 0)"
+            :disabled="$componentPermission(statusPrintButton())"
             variant="someThing"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             @click="onClickPrintButton"
@@ -200,6 +204,8 @@
             In HĐ
           </b-button>
           <b-button
+            v-show="$componentPermission(statusUpdateButton(), 0)"
+            :disabled="$componentPermission(statusUpdateButton())"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
             @click="onClickUpdateRedBills"
@@ -211,6 +217,8 @@
             Cập nhật HĐ
           </b-button>
           <b-button
+            v-show="$componentPermission(statusCreateButton(), 0)"
+            :disabled="$componentPermission(statusCreateButton())"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
             @click="addSaleRedBillsCreate"
@@ -222,6 +230,8 @@
             Thêm mới
           </b-button>
           <b-button
+            v-show="$componentPermission(statusDeleteButton(), 0)"
+            :disabled="$componentPermission(statusDeleteButton())"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
             @click="onClickDeleteButton"
@@ -640,6 +650,12 @@ export default {
   },
 
   mounted() {
+    this.statusExcelButton()
+    this.statusPrintButton()
+    this.statusUpdateButton()
+    this.statusCreateButton()
+    this.statusDeleteButton()
+
     this.onSearch()
     this.configToDate = {
       ...this.configToDate,
@@ -655,6 +671,23 @@ export default {
       UPDATE_RED_BILLS_ACTION,
       PRINT_RED_INVOICES_ACTION,
     ]),
+
+    statusExcelButton() {
+      return this.$permission('SalesRedBills', 'RedBillsExcel').showStatus
+    },
+    statusPrintButton() {
+      return this.$permission('SalesRedBills', 'RedBillsPrint').showStatus
+    },
+    statusUpdateButton() {
+      return this.$permission('SalesRedBills', 'RedBillsUpdate').showStatus
+    },
+    statusCreateButton() {
+      return this.$permission('SalesRedBills', 'RedBillsCreate').showStatus
+    },
+    statusDeleteButton() {
+      return this.$permission('SalesRedBills', 'RedBillsDelete').showStatus
+    },
+
     onSearch() {
       this.searchOption = {
         searchKeywords: this.customer,

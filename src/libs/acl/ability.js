@@ -11,7 +11,7 @@ const userData = JSON.parse(localStorage.getItem('userData'))
 const existingAbility = userData ? userData.ability : null
 
 export const permission = (formCode, controlCode) => {
-  const form = Vue.prototype.$ability.j.find(item => item.subject === formCode)
+  const form = Vue.prototype.$ability.j.reverse().find(item => item.subject === formCode)
 
   if (form) {
     const control = form.controls.find(item => item.controlCode === controlCode)

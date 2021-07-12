@@ -94,6 +94,7 @@
           v-model="customerTypesSelected"
           data-test="customerTypes"
           :options="customerTypeOptions"
+          :auto-load-root-options="false"
           :searchable="false"
           placeholder="Tất cả"
           no-options-text="Không có dữ liệu"
@@ -163,6 +164,7 @@
           id="areas"
           v-model="areasSelected"
           :options="areaOptions"
+          :auto-load-root-options="false"
           placeholder="Tất cả"
           no-options-text="Không có dữ liệu"
           no-results-text="Không tìm thấy kết quả"
@@ -186,7 +188,7 @@
         </div>
         <b-form-checkbox
           v-model="privateCustomer"
-          class="ws-nowrap"
+          class="text-nowrap"
         >
           Khách hàng của cửa hàng
         </b-form-checkbox>

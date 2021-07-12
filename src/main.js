@@ -8,9 +8,12 @@ import {
   isEmpty,
   onlyNumberInput,
   onlyDateInput,
+  // labels
   getInputTypeslabel,
   getWarehousesStatuslabel,
   getOutputTypeslabel,
+  // permission
+  componentPermission,
 } from '@core/utils/utils'
 import {
   formatNumberToLocale,
@@ -80,6 +83,7 @@ Vue.prototype.$onlyDateInput = onlyDateInput
 Vue.prototype.$getInputTypeslabel = getInputTypeslabel
 Vue.prototype.$getOutputTypeslabel = getOutputTypeslabel
 Vue.prototype.$getWarehousesStatuslabel = getWarehousesStatuslabel
+Vue.prototype.$componentPermission = componentPermission
 
 // filter
 Vue.prototype.$formatNumberToLocale = formatNumberToLocale

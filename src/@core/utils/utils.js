@@ -101,6 +101,15 @@ export const formatURLParams = obj => {
   return obj
 }
 
+export const componentPermission = (value, directiveType) => {
+  // directiveType === 0 is v-show
+  // directiveType === 1 is disabled
+  if (directiveType === 0) {
+    return value !== 1
+  }
+  return value === 3
+}
+
 export const capitalizeFirstLetter = string => {
   if (string) {
     const sentence = string.toLowerCase()

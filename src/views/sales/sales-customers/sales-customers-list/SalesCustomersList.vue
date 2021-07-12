@@ -23,6 +23,8 @@
         </strong>
         <b-button-group>
           <b-button
+            v-show="$componentPermission(statusCreateButton(), 0)"
+            :disabled="$componentPermission(statusCreateButton())"
             class="btn-brand-1 h8 align-items-button-center rounded"
             variant="someThing"
             @click="navigateToCreate"
@@ -34,9 +36,10 @@
             Thêm mới
           </b-button>
           <b-button
+            v-show="$componentPermission(statusExcelButton(), 0)"
+            :disabled="$componentPermission(statusExcelButton()) || !customersData.length"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
-            :disabled="customersData.length > 0 ? false : true"
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />
@@ -98,6 +101,7 @@
           >
             <div v-if="props.column.field === 'manipulation'">
               <v-icon-edit
+                :disabled="$componentPermission(statusUpdateButton())"
                 @click="navigateToUpdate(props.row.id)"
               />
             </div>
@@ -275,6 +279,7 @@ export default {
           label: 'Thao tác',
           field: 'manipulation',
           sortable: false,
+          hidden: !this.$componentPermission(this.statusUpdateButton(), 0),
           width: '30px',
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -329,6 +334,10 @@ export default {
   },
 
   mounted() {
+    this.statusCreateButton()
+    this.statusExcelButton()
+    this.statusUpdateButton()
+
     resizeAbleTable()
   },
 
@@ -337,6 +346,16 @@ export default {
       GET_CUSTOMERS_ACTION,
       EXPORT_CUSTOMERS_ACTION,
     ]),
+
+    statusCreateButton() {
+      return this.$permission('SalesCustomers', 'CustomersCreate').showStatus
+    },
+    statusExcelButton() {
+      return this.$permission('SalesCustomers', 'CustomersExcel').showStatus
+    },
+    statusUpdateButton() {
+      return this.$permission('SalesCustomers', 'CustomersUpdate').showStatus
+    },
 
     navigateToCreate() {
       this.$router.push({ name: 'sales-customers-create' })

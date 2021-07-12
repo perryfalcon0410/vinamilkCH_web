@@ -6,6 +6,7 @@
     size="xl"
     title="Thanh toán hóa đơn"
     title-class="font-weight-bolder text-brand-1 d-print-none"
+    hide-header-close
     content-class="bg-white"
     footer-border-variant="white"
   >

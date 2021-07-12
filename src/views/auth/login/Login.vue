@@ -226,18 +226,6 @@ export default {
       roles: [],
       formsTemp: [
         {
-          id: 0,
-          formCode: 'ResetPassword', // Đổi mật khẩu
-          orderNumber: 0,
-          controls: [],
-        },
-        {
-          id: 0,
-          formCode: 'NotAuthorized',
-          orderNumber: 0,
-          controls: [],
-        },
-        {
           id: 1,
           formCode: 'HomePage',
           formName: 'Trang chủ',
@@ -426,46 +414,46 @@ export default {
                 },
               ],
               controls: [
-                {
-                  id: 5,
-                  controlCode: 'PurchasesCreate',
-                  controlName: 'Thêm mới',
-                  formId: 10,
-                  description: null,
-                  showStatus: 2,
-                },
-                {
-                  id: 6,
-                  controlCode: 'WarehousesInputCreate',
-                  controlName: 'Thêm mới',
-                  formId: 10,
-                  description: null,
-                  showStatus: 2,
-                },
-                {
-                  id: 7,
-                  controlCode: 'WarehousesInputUpdate',
-                  controlName: 'Cập nhật',
-                  formId: 10,
-                  description: null,
-                  showStatus: 2,
-                },
-                {
-                  id: 8,
-                  controlCode: 'WarehousesOutputCreate',
-                  controlName: 'Thêm mới',
-                  formId: 10,
-                  description: null,
-                  showStatus: 2,
-                },
-                {
-                  id: 9,
-                  controlCode: 'WarehousesOutputUpdate',
-                  controlName: 'Cập nhật',
-                  formId: 10,
-                  description: null,
-                  showStatus: 2,
-                },
+                // {
+                //   id: 5,
+                //   controlCode: 'PurchasesCreate',
+                //   controlName: 'Thêm mới',
+                //   formId: 10,
+                //   description: null,
+                //   showStatus: 2,
+                // },
+                // {
+                //   id: 6,
+                //   controlCode: 'WarehousesInputCreate',
+                //   controlName: 'Thêm mới',
+                //   formId: 10,
+                //   description: null,
+                //   showStatus: 2,
+                // },
+                // {
+                //   id: 7,
+                //   controlCode: 'WarehousesInputUpdate',
+                //   controlName: 'Cập nhật',
+                //   formId: 10,
+                //   description: null,
+                //   showStatus: 2,
+                // },
+                // {
+                //   id: 8,
+                //   controlCode: 'WarehousesOutputCreate',
+                //   controlName: 'Thêm mới',
+                //   formId: 10,
+                //   description: null,
+                //   showStatus: 2,
+                // },
+                // {
+                //   id: 9,
+                //   controlCode: 'WarehousesOutputUpdate',
+                //   controlName: 'Cập nhật',
+                //   formId: 10,
+                //   description: null,
+                //   showStatus: 2,
+                // },
                 {
                   id: 109,
                   controlCode: 'RedBillsExcel',
@@ -519,18 +507,18 @@ export default {
               orderNumber: 4,
               subForms: [],
               controls: [
-                {
-                  id: 10,
-                  controlCode: 'WarehousesInventoryCreate',
-                  controlName: 'Thêm mới',
-                  formId: 11,
-                  description: null,
-                  showStatus: 2,
-                },
+                // {
+                //   id: 10,
+                //   controlCode: 'WarehousesInventoryCreate',
+                //   controlName: 'Thêm mới',
+                //   formId: 11,
+                //   description: null,
+                //   showStatus: 2,
+                // },
                 {
                   id: 11,
-                  controlCode: 'WarehousesInventoryUpdate',
-                  controlName: 'Cập nhật',
+                  controlCode: 'SalesReceiptsDetail',
+                  controlName: 'Xem chi tiết',
                   formId: 11,
                   description: null,
                   showStatus: 2,
@@ -1563,7 +1551,18 @@ export default {
           controls: [],
         },
       ],
-      forms: [],
+      forms: [
+        {
+          action: 'manage',
+          subject: 'ResetPassword',
+          controls: [],
+        },
+        {
+          action: 'manage',
+          subject: 'NotAuthorized',
+          controls: [],
+        },
+      ],
     }
   },
 
@@ -1696,7 +1695,8 @@ export default {
               localStorage.setItem('password', JSON.stringify(this.password))
             }
 
-            this.mapSubForms(this.formsTemp)
+            // this.mapSubForms(data.forms)
+            this.mapSubForms(this.formsTemp) // => Temp
 
             const userData = {
               id: data.userId,

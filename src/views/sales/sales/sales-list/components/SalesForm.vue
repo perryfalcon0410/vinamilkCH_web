@@ -1,7 +1,7 @@
 <template>
   <b-col
     lg="4"
-    class="d-print-none bg-white shadow rounded mt-sm-1 mt-lg-0"
+    class="d-print-none bg-white shadow rounded mt-sm-1 mt-lg-0 py-1"
   >
     <validation-observer
       ref="formContainer"
@@ -10,7 +10,7 @@
       <b-form>
         <!-- START - Date and name -->
         <b-row
-          class="my-1"
+          class="mb-1"
           align-h="between"
         >
           <!-- START - Date  -->
@@ -348,74 +348,77 @@
 
           <!-- START - Button pay -->
           <b-button
+            v-if="$componentPermission(statusPayButton(), 0)"
+            :disabled="$componentPermission(statusPayButton()) || totalQuantity === 0 || isDisabled"
             variant="someThing"
-            class="btn-brand-1 d-flex w-100 my-1 align-items-center justify-content-center"
-            :disabled="totalQuantity === 0 || isDisabled"
-            @click="showPayModal"
+            class="btn-brand-1 d-flex w-100 mt-1 align-items-center justify-content-center"
+            @click="onPayButtonClick"
           >
             <b-icon-cash-stack
               font-scale="1.7"
               class="mr-1"
             />
             Thanh toán (F8)
-            <pay-modal
-              ref="payModal"
-              :order-products="orderProducts"
-              :order-selected="salemtPromotionObjectSelected"
-              :delivery-selected="salemtDeliveryTypeSelected"
-              :customer="customer"
-              :order-online="orderOnline"
-              :edit-online-permission="editOnlinePermission"
-            />
           </b-button>
           <!-- END - Button pay -->
-
-          <!-- START - Notify Modal Close -->
-          <b-modal
-            ref="salesNotifyModal"
-            title="Thông báo"
-          >
-            Chọn đơn online sẽ xóa dữ liệu đơn hàng hiện tại
-            <template #modal-footer>
-              <b-button
-                variant="primary"
-                @click="onClickAgreeButton()"
-              >
-                Đồng ý
-              </b-button>
-              <b-button @click="closeNotifyModal">
-                Đóng
-              </b-button>
-            </template>
-          </b-modal>
-        <!-- END - Notify Modal Close -->
         </b-col>
         <!-- END - Section pay -->
-
-        <!-- START - Sales Create Modal -->
-        <sales-create-modal
-          ref="salesCreateModal"
-          @getCreateInfo="getCreateInfo"
-        />
-        <!-- END - Sales Create Modal -->
-
-        <!-- START - Sales Online Order Modal -->
-        <sales-online-orders-modal
-          ref="salesOnlineOrderModal"
-          @getOnlineOrderInfo="getOnlineOrderInfo"
-        />
-        <!-- END - Sales Online Order Modal -->
-
-        <!-- START - Sales Search Modal -->
-        <sales-search-modal
-          ref="salesSearchModal"
-          :online-order-customers="onlineOrderCustomers"
-          @getCustomerInfo="getCustomerInfo"
-        />
-      <!-- END - Sales Search Modal -->
-
       </b-form>
     </validation-observer>
+
+    <!-- START - Pay modal -->
+    <pay-modal
+      ref="payModal"
+      :order-products="orderProducts"
+      :order-selected="salemtPromotionObjectSelected"
+      :delivery-selected="salemtDeliveryTypeSelected"
+      :customer="customer"
+      :order-online="orderOnline"
+      :edit-online-permission="editOnlinePermission"
+    />
+    <!-- END - Pay modal -->
+
+    <!-- START - Notify Modal Close -->
+    <b-modal
+      ref="salesNotifyModal"
+      title="Thông báo"
+    >
+      Chọn đơn online sẽ xóa dữ liệu đơn hàng hiện tại
+      <template #modal-footer>
+        <b-button
+          variant="primary"
+          @click="onClickAgreeButton()"
+        >
+          Đồng ý
+        </b-button>
+        <b-button @click="closeNotifyModal">
+          Đóng
+        </b-button>
+      </template>
+    </b-modal>
+    <!-- END - Notify Modal Close -->
+
+    <!-- START - Sales Create Modal -->
+    <sales-create-modal
+      ref="salesCreateModal"
+      @getCreateInfo="getCreateInfo"
+    />
+    <!-- END - Sales Create Modal -->
+
+    <!-- START - Sales Online Order Modal -->
+    <sales-online-orders-modal
+      ref="salesOnlineOrderModal"
+      @getOnlineOrderInfo="getOnlineOrderInfo"
+    />
+    <!-- END - Sales Online Order Modal -->
+
+    <!-- START - Sales Search Modal -->
+    <sales-search-modal
+      ref="salesSearchModal"
+      :online-order-customers="onlineOrderCustomers"
+      @getCustomerInfo="getCustomerInfo"
+    />
+    <!-- END - Sales Search Modal -->
   </b-col>
 </template>
 
@@ -480,6 +483,7 @@ export default {
     ValidationObserver,
     ValidationProvider,
   },
+
   props: {
     orderProducts: {
       type: Array,
@@ -502,6 +506,7 @@ export default {
       default: false,
     },
   },
+
   data() {
     return {
       isCheckRotate: false,
@@ -576,6 +581,7 @@ export default {
       checkApParramCode: false, // check disabled so hoa don
     }
   },
+
   computed: {
     ...mapGetters(CUSTOMER, {
       CUSTOMER_BY_ID_GETTER,
@@ -711,6 +717,7 @@ export default {
       return login
     },
   },
+
   watch: {
     customerDefault() {
       this.customer = { ...this.customerDefault }
@@ -755,7 +762,10 @@ export default {
       }
     },
   },
+
   mounted() {
+    this.statusPayButton()
+
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ ...this.decentralization })
     this.GET_SALEMT_DELIVERY_TYPE_ACTION({ ...this.decentralization, salemtDeliveryTypeSelected: this.salemtDeliveryTypeSelected })
     this.GET_CUSTOMER_DEFAULT_ACTION({ ...this.decentralization })
@@ -774,8 +784,10 @@ export default {
       }
     })
   },
+
   created() {
   },
+
   methods: {
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_BY_ID_ACTION,
@@ -792,6 +804,10 @@ export default {
       GET_ONLINE_ORDERS_ACTION,
     ]),
 
+    statusPayButton() {
+      return this.$permission('Sales', 'SalesPay').showStatus
+    },
+
     showModalCreate() {
       this.$refs.salesCreateModal.$refs.salesCreateModal.show()
     },
@@ -806,7 +822,7 @@ export default {
       this.$refs.salesOnlineOrderModal.$refs.salesOnlineOrderModal.show()
     },
 
-    showPayModal() {
+    onPayButtonClick() {
       if (this.salemtPromotionObjectSelected === this.salemtPromotionObjectOptions[0].id) {
         this.$bvModal.show('pay-modal')
       } else if (this.salemtPromotionObjectSelected !== undefined) {
@@ -976,6 +992,7 @@ export default {
       this.isClickRotate = !this.isClickRotate
     },
   },
+
 }
 </script>
 <style lang="scss" scoped>

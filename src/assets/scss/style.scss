@@ -119,10 +119,15 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   justify-content: center;
 }
 
+.icon-disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 // style class visited
 .visited-action {
   color: #fff !important;
-  background-color:#315899 !important;
+  background-color: #315899 !important;
 }
 .bg-btn-order {
   color: #6e6b7b;
@@ -211,6 +216,7 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   }
   // style scroll row filter
 }
+
 // scroll ngang table giữ nguyên columns theo yêu cầu
 .name-width {
   width: max-content;
