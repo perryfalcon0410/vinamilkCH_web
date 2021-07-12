@@ -23,8 +23,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusExcelButton(), 0)"
-            :disabled="$componentPermission(statusExcelButton()) || reportInventory.length === 0"
+            v-show="statusExcelButton().show"
+            :disabled="statusExcelButton().disabled || reportInventory.length === 0"
             class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
             variant="someThing"
             size="sm"
@@ -352,9 +352,6 @@ export default {
       this.reportExchangePagnigation = { ...this.getReportExchangePagnigation }
     },
   },
-  mounted() {
-    this.statusExcelButton()
-  },
   methods: {
     exportExcel() {
       this.EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION(this.searchData)
@@ -366,7 +363,7 @@ export default {
 
     // START - permission
     statusExcelButton() {
-      return this.$permission('ReportsWarehousesExchangeDamagedGoods', 'ReportsWarehousesExchangeDamagedGoodsExcel').showStatus
+      return this.$permission('ReportsWarehousesExchangeDamagedGoods', 'ReportsWarehousesExchangeDamagedGoodsExcel')
     },
 
     // END - permission

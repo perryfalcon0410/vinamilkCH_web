@@ -24,8 +24,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusPrintButton(), 0)"
-            :disabled="$componentPermission(statusPrintButton()) || promotionRows.length === 0"
+            v-show="statusPrintButton().show"
+            :disabled="statusPrintButton().disabled || promotionRows.length === 0"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickPrintButton"
@@ -34,8 +34,8 @@
             In
           </b-button>
           <b-button
-            v-show="$componentPermission(statusExcelButton(), 0)"
-            :disabled="$componentPermission(statusExcelButton()) || promotionRows.length === 0"
+            v-show="statusExcelButton().show"
+            :disabled="statusExcelButton().disabled || promotionRows.length === 0"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickExcelExportButton"
@@ -349,8 +349,6 @@ export default {
   },
   mounted() {
     resizeAbleTable()
-    this.statusExcelButton()
-    this.statusPrintButton()
   },
 
   methods: {
@@ -362,10 +360,10 @@ export default {
 
     // START - permission
     statusExcelButton() {
-      return this.$permission('ReportsWarehousesPromotions', 'ReportsWarehousesPromotionsExcel').showStatus
+      return this.$permission('ReportsWarehousesPromotions', 'ReportsWarehousesPromotionsExcel')
     },
     statusPrintButton() {
-      return this.$permission('ReportsWarehousesPromotions', 'ReportsWarehousesPromotionsPrint').showStatus
+      return this.$permission('ReportsWarehousesPromotions', 'ReportsWarehousesPromotionsPrint')
     },
 
     // END - permission

@@ -25,8 +25,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusPrintButton(), 0)"
-            :disabled="$componentPermission(statusPrintButton()) || warehousesInputOutputInventory.length === 0"
+            v-show="statusPrintButton().show"
+            :disabled="statusPrintButton().disabled || warehousesInputOutputInventory.length === 0"
             class="rounded btn-brand-1 h8"
             variant="someThing"
             @click="printReport"
@@ -35,8 +35,8 @@
             In
           </b-button>
           <b-button
-            v-show="$componentPermission(statusExcelButton(), 0)"
-            :disabled="$componentPermission(statusExcelButton()) || warehousesInputOutputInventory.length === 0"
+            v-show="statusExcelButton().show"
+            :disabled="statusExcelButton().disabled || warehousesInputOutputInventory.length === 0"
             class="ml-1 rounded btn-brand-1 h8"
             variant="someThing"
             @click="onClickExcelExportButton"
@@ -644,11 +644,6 @@ export default {
     },
   },
 
-  mounted() {
-    this.statusExcelButton()
-    this.statusPrintButton()
-  },
-
   methods: {
     ...mapActions(REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY, [
       GET_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
@@ -658,10 +653,10 @@ export default {
 
     // START - permission
     statusExcelButton() {
-      return this.$permission('ReportsWarehousesInputOutputInventory', 'ReportsWarehousesInputOutputInventoryExcel').showStatus
+      return this.$permission('ReportsWarehousesInputOutputInventory', 'ReportsWarehousesInputOutputInventoryExcel')
     },
     statusPrintButton() {
-      return this.$permission('ReportsWarehousesInputOutputInventory', 'ReportsWarehousesInputOutputInventoryPrint').showStatus
+      return this.$permission('ReportsWarehousesInputOutputInventory', 'ReportsWarehousesInputOutputInventoryPrint')
     },
 
     // END - permission

@@ -25,8 +25,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusPrintButton(), 0)"
-            :disabled="$componentPermission(statusPrintButton())"
+            v-show="statusPrintButton().show"
+            :disabled="statusPrintButton().disabled"
             class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="printReport"
@@ -35,8 +35,8 @@
             In
           </b-button>
           <b-button
-            v-show="$componentPermission(statusExcelButton(), 0)"
-            :disabled="$componentPermission(statusExcelButton())"
+            v-show="statusExcelButton().show"
+            :disabled="statusExcelButton().disabled"
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="onClickExcelExportButton"
@@ -322,8 +322,6 @@ export default {
   },
   mounted() {
     resizeAbleTable()
-    this.statusExcelButton()
-    this.statusPrintButton()
   },
   methods: {
     ...mapActions(REPORT_SALES_CAT, [
@@ -334,10 +332,10 @@ export default {
 
     // START - permission
     statusExcelButton() {
-      return this.$permission('ReportsSalesCatSale', 'ReportsSalesAmountCATExcel').showStatus
+      return this.$permission('ReportsSalesCatSale', 'ReportsSalesAmountCATExcel')
     },
     statusPrintButton() {
-      return this.$permission('ReportsSalesCatSale', 'ReportsSalesAmountCATPrint').showStatus
+      return this.$permission('ReportsSalesCatSale', 'ReportsSalesAmountCATPrint')
     },
 
     // END - permission

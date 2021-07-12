@@ -23,8 +23,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusPrintButton(), 0)"
-            :disabled="$componentPermission(statusPrintButton()) || reportReturnRows.length === 0"
+            v-show="statusPrintButton().show"
+            :disabled="statusPrintButton().disabled || reportReturnRows.length === 0"
             class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="printReport"
@@ -33,8 +33,8 @@
             In
           </b-button>
           <b-button
-            v-show="$componentPermission(statusExcelButton(), 0)"
-            :disabled="$componentPermission(statusExcelButton()) || reportReturnRows.length === 0"
+            v-show="statusExcelButton().show"
+            :disabled="statusExcelButton().disabled || reportReturnRows.length === 0"
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="onClickExcelExportButton"
@@ -456,8 +456,6 @@ export default {
 
   mounted() {
     resizeAbleTable()
-    this.statusExcelButton()
-    this.statusPrintButton()
     // this.PRINT_RETURN_GOODS_ACTION({
     //   ...this.searchOptions,
     //   ...this.decentralization,
@@ -475,10 +473,10 @@ export default {
 
     // START - permission
     statusExcelButton() {
-      return this.$permission('ReportsReturnedGoods', 'ReportsReturnedGoodsExcel').showStatus
+      return this.$permission('ReportsReturnedGoods', 'ReportsReturnedGoodsExcel')
     },
     statusPrintButton() {
-      return this.$permission('ReportsReturnedGoods', 'ReportsReturnedGoodsPrint').showStatus
+      return this.$permission('ReportsReturnedGoods', 'ReportsReturnedGoodsPrint')
     },
 
     // END - permission

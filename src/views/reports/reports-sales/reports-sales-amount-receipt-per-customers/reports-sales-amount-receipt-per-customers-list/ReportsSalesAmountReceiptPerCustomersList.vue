@@ -23,8 +23,8 @@
           Số lượng hóa đơn theo khách hàng
         </strong>
         <b-button
-          v-show="$componentPermission(statusExcelButton(), 0)"
-          :disabled="$componentPermission(statusExcelButton()) || reportQuantityReceiptsList.length === 0"
+          v-show="statusExcelButton().show"
+          :disabled="statusExcelButton().disabled || reportQuantityReceiptsList.length === 0"
           class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
           variant="someThing"
           @click="onClickExcelExportButton"
@@ -357,7 +357,6 @@ export default {
     this.columns = [...this.initalCol]
     this.columns.push(this.lastCol)
     resizeAbleTable()
-    this.statusExcelButton()
   },
   methods: {
     ...mapActions(REPORT_SALES_QUANTITY_SALE_RECEIPT, [
@@ -367,7 +366,7 @@ export default {
 
     // START - permission
     statusExcelButton() {
-      return this.$permission('ReportsSalesAmountReceiptPerCustomer', 'ReportsSalesAmountReceiptPerCustomerExcel').showStatus
+      return this.$permission('ReportsSalesAmountReceiptPerCustomer', 'ReportsSalesAmountReceiptPerCustomerExcel')
     },
 
     // END - permission

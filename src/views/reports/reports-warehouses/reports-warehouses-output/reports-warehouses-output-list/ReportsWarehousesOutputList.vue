@@ -25,8 +25,8 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="$componentPermission(statusPrintButton(), 0)"
-            :disabled="$componentPermission(statusPrintButton()) || outputGoodslist.length === 0"
+            v-show="statusPrintButton().show"
+            :disabled="statusPrintButton().disabled || outputGoodslist.length === 0"
             class="rounded bg-brand-1 text-white h8"
             variant="someThing"
             size="sm"
@@ -36,8 +36,8 @@
             In
           </b-button>
           <b-button
-            v-show="$componentPermission(statusExcelButton(), 0)"
-            :disabled="$componentPermission(statusExcelButton()) || outputGoodslist.length === 0"
+            v-show="statusExcelButton().show"
+            :disabled="statusExcelButton().disabled || outputGoodslist.length === 0"
             class="ml-1 rounded bg-brand-1 text-white h8"
             variant="someThing"
             size="sm"
@@ -540,8 +540,6 @@ export default {
     },
   },
   mounted() {
-    this.statusExcelButton()
-    this.statusPrintButton()
     // this.GET_OUTPUT_GOODS_ACTION({
     //   ...this.decentralization,
     // })
@@ -555,10 +553,10 @@ export default {
 
     // START - permission
     statusExcelButton() {
-      return this.$permission('ReportsWarehousesOutput', 'ReportsWarehousesOutputExcel').showStatus
+      return this.$permission('ReportsWarehousesOutput', 'ReportsWarehousesOutputExcel')
     },
     statusPrintButton() {
-      return this.$permission('ReportsWarehousesOutput', 'ReportsWarehousesOutputPrint').showStatus
+      return this.$permission('ReportsWarehousesOutput', 'ReportsWarehousesOutputPrint')
     },
 
     // END - permission
