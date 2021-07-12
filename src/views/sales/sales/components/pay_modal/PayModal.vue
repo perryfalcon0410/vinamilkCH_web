@@ -37,7 +37,7 @@
               </strong>
             </div>
           </b-row>
-
+          <!-- START - Promotion Programs-->
           <div
             v-for="(value,index) in promotionPrograms"
             :key="index"
@@ -65,8 +65,16 @@
                   />
                 </div>
                 <b-icon-chevron-down
+                  v-if="openCollapseProgramPromotion === true"
                   class="ml-auto"
                   color="white"
+                  @click="onCollapseClick(false)"
+                />
+                <b-icon-chevron-up
+                  v-else
+                  color="white"
+                  class="ml-auto"
+                  @click="onCollapseClick(true)"
                 />
               </b-row>
               <!-- END - Title -->
@@ -288,10 +296,11 @@
                   </vue-good-table>
                 </div>
               </b-collapse>
-            <!-- END - Body -->
+              <!-- END - Body -->
             </b-col>
-          <!-- END - Table Promotion -->
+            <!-- END - Table Promotion -->
           </div>
+          <!-- END - Promotion Programs -->
         </b-col>
         <!-- START - Section table -->
 
@@ -892,6 +901,7 @@ export default {
       isPaid: false,
 
       isPrint: false,
+      openCollapseProgramPromotion: true,
     }
   },
   computed: {
@@ -1630,6 +1640,13 @@ export default {
           onSuccess: () => {
           },
         })
+      }
+    },
+    onCollapseClick(isOpened) {
+      if (isOpened) {
+        this.openCollapseProgramPromotion = true
+      } else {
+        this.openCollapseProgramPromotion = false
       }
     },
   },
