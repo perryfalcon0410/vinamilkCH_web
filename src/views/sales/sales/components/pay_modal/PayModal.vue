@@ -113,6 +113,7 @@
                           <b-form-input
                             v-model.number="promotionPrograms[index].products[props.row.originalIndex].quantity"
                             :disabled="!value.isEditable"
+                            maxlength="7"
                             @change="onChangeQuantity(value.programId, props)"
                             @keypress="$onlyNumberInput"
                           />

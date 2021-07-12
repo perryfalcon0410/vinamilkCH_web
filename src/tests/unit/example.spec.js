@@ -79,7 +79,7 @@ describe('SalesCustomersListSearch', () => {
     expect(onClickSearchButton).toHaveBeenCalledTimes(1)
   })
 
-  test('has class on search button', () => {
+  it('has class on search button', () => {
     const btnSearch = wrapper.find('#btnSearch')
     expect(btnSearch.contains('.btn-brand-1')).toBe(true)
     expect(btnSearch.contains('.h8')).toBe(true)
