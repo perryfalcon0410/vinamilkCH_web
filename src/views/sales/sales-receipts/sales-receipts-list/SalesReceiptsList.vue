@@ -579,7 +579,7 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss">
 .move-header {
   position: sticky !important;
   right: 0;

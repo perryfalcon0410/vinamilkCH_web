@@ -1326,7 +1326,7 @@ export default {
               formName: 'Bảng kê chi tiết đơn nhập hàng',
               parentFormId: 5,
               type: 2,
-              url: '/reports/purchases',
+              url: '/reports/input-details',
               description: null,
               orderNumber: 3,
               subForms: [],

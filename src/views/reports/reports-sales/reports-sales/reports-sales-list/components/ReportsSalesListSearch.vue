@@ -53,13 +53,26 @@
                   >
                     Số hóa đơn
                   </div>
-                  <b-form-input
-                    v-model="redInvoiceNo"
-                    class="h7"
-                    maxlength="40"
-                    placeholder="Nhập số hóa đơn"
-                    @keyup.enter="onClickSearchButton"
-                  />
+                  <b-input-group class="input-group-merge ">
+                    <b-form-input
+                      v-model="redInvoiceNo"
+                      class="h7"
+                      maxlength="40"
+                      placeholder="Nhập số hóa đơn"
+                      @keyup.enter="onClickSearchButton"
+                    />
+                    <b-input-group-append
+                      is-text
+                    >
+                      <!-- Icon-- Delete-text -->
+                      <b-icon-x
+                        v-show="redInvoiceNo"
+                        is-text
+                        class="cursor-pointer text-gray"
+                        @click="redInvoiceNo = null"
+                      />
+                    </b-input-group-append>
+                  </b-input-group>
                 </b-col>
                 <!-- END - Red invoice no -->
                 <!-- START - Product -->
@@ -304,33 +317,59 @@
                   >
                     Khách hàng
                   </div>
-                  <b-form-input
-                    v-model="customer"
-                    class="h7"
-                    maxlength="200"
-                    placeholder="Nhập họ tên/mã"
-                    @keyup.enter="onClickSearchButton"
-                  />
+                  <b-input-group class="input-group-merge ">
+                    <b-form-input
+                      v-model="customer"
+                      class="h7"
+                      maxlength="200"
+                      placeholder="Nhập họ tên/mã"
+                      @keyup.enter="onClickSearchButton"
+                    />
+                    <b-input-group-append
+                      is-text
+                    >
+                      <!-- Icon-- Delete-text -->
+                      <b-icon-x
+                        v-show="customer"
+                        is-text
+                        class="cursor-pointer text-gray"
+                        @click="customer = null"
+                      />
+                    </b-input-group-append>
+                  </b-input-group>
                 </b-col>
               </b-row>
               <!-- End - First row -->
 
               <!-- START - Second row -->
               <b-row>
-                <b-col>
+                <b-col class="pb-1">
                   <div
                     class="h7 mt-sm-1 mt-xl-0"
                   >
                     Số điện thoại
                   </div>
-                  <b-form-input
-                    v-model="phoneNumber"
-                    class="h7 mb-1"
-                    maxlength="10"
-                    placeholder="Nhập SĐT khách hàng"
-                    @keyup.enter="onClickSearchButton"
-                    @keypress="$onlyNumberInput"
-                  />
+                  <b-input-group class="input-group-merge ">
+                    <b-form-input
+                      v-model="phoneNumber"
+                      class="h7"
+                      maxlength="200"
+                      placeholder="Nhập chính xác 4 số cuối"
+                      @keyup.enter="onClickSearchButton"
+                      @keypress="$onlyNumberInput"
+                    />
+                    <b-input-group-append
+                      is-text
+                    >
+                      <!-- Icon-- Delete-text -->
+                      <b-icon-x
+                        v-show="phoneNumber"
+                        is-text
+                        class="cursor-pointer text-gray"
+                        @click="phoneNumber = null"
+                      />
+                    </b-input-group-append>
+                  </b-input-group>
                 </b-col>
               </b-row>
               <!-- End - Second row -->

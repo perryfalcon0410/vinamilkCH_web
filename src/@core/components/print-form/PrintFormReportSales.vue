@@ -49,70 +49,126 @@
 
     <!-- START - Total view -->
     <b-row
-      class="ml-0 background-lightgray"
-      align-h="around"
-      align-v="end"
+      class="mx-0 background-lightgray width-100-per"
+      style=""
     >
-      <div class="col-5">
-        Tổng số HĐ: <strong>{{ reportSalesInfoData.someBills }}</strong>
-      </div>
-      <div class="col-4">
-        Tổng cộng: <strong>{{ reportSalesInfoData.totalQuantity }}</strong>
-      </div>
-      <strong class="text-right">{{ reportSalesInfoData.totalTotal }}</strong>
-      <strong class="text-right">{{ reportSalesInfoData.totalPromotion }}</strong>
-      <strong class="text-right">{{ reportSalesInfoData.totalPay }}</strong>
+      <i
+        class="text-right"
+        style="width: 43%;"
+      >
+        Tổng Số HĐ:
+      </i>
+      <strong
+        class="text-right"
+        style="width: 8%;"
+      >{{ reportSalesInfoData.someBills }}</strong>
+      <span
+        class="text-right"
+        style="width: 15.5%;"
+      >
+        Tổng cộng:
+      </span>
+      <strong
+        class="text-right"
+        style="width: 4.9%;"
+      >{{ reportSalesInfoData.totalQuantity }}</strong>
+      <strong
+        class="text-right"
+        style="width: 11.5%;"
+      >{{ reportSalesInfoData.totalTotal }}</strong>
+      <strong
+        class="text-right"
+        style="width: 8.7%;"
+      >{{ reportSalesInfoData.totalPromotion }}</strong>
+      <strong
+        class="text-right"
+        style="width: 7.9%;"
+      >{{ reportSalesInfoData.totalPay }}</strong>
     </b-row>
     <!-- END - Total view -->
 
     <!-- START - Table 1 -->
 
-    <table
-      class="mt-1"
-    >
+    <table>
       <thead>
         <!-- START - Header -->
         <tr>
           <th
-            style="width: 1%"
-            class="px-1"
+            class="px-35"
+            style="width: 3.5%"
           >
             STT
           </th>
-          <th class="px-1">
+          <th
+            class="px-35"
+            style="width: 14%"
+          >
             Mã HĐ
           </th>
-          <th class="px-1">
+          <th
+            class="px-35"
+            style="width: 11%"
+          >
             Mã KH
           </th>
-          <th class="px-1">
+          <th
+            class="px-35"
+            style="width: 14%"
+          >
             Tên KH
           </th>
-          <th class="text-right px-1">
+          <th
+            class="text-right px-35"
+            style="width: 6%"
+          >
             Ngành
           </th>
-          <th class="text-right px-1">
+          <th
+            class="text-right px-35"
+            style="width: 6%"
+          >
             Mã SP
           </th>
-          <th class="text-right px-1">
+          <th
+            class="text-right px-35"
+            style="width: 12%"
+          >
             Tên SP
           </th>
-          <th class="text-right px-1">
+          <th
+            class="text-right px-35"
+            style="width: 4%"
+          >
             ĐVT
           </th>
-          <th class="text-right px-1">
+          <th
+            class="text-right px-35"
+            style="width: 3%"
+          >
             SL
           </th>
-          <th class="text-right px-1">
+          <th
+            class="text-right px-35"
+            style="width: 6%"
+          >
             Giá
           </th>
-          <th class="text-right px-1">
+          <th
+            class="text-right px-35"
+            style="width: 6%"
+          >
             T.Tiền
           </th>
-          <th class="text-right px-1">
+          <th
+            class="text-right px-35 ws-nowrap"
+            style="width: 9%"
+          >
             KM chưa VAT
           </th>
-          <th class="text-right px-1">
+          <th
+            class="text-right px-35 ws-nowrap"
+            style="width: 8%"
+          >
             Thanh toán
           </th>
         </tr>
@@ -123,43 +179,51 @@
           v-for="(products, index) in reportSalesData"
           :key="index"
         >
-          <td class="px-1">
+          <td
+            class="px-35"
+          >
             {{ index + 1 }}
           </td>
-          <td class="px-1">
+          <td class="px-35">
             {{ products.orderNumber }}
           </td>
-          <td class="px-1">
+          <td class="px-35">
             {{ products.customerCode }}
           </td>
-          <td class="px-1">
+          <td
+            class="px-35"
+          >
             {{ products.customerName }}
           </td>
-          <td class="px-1">
+          <td class="px-35">
             {{ products.industry }}
           </td>
-          <td class="px-1">
+          <td
+            class="px-35"
+          >
             {{ products.productCode }}
           </td>
-          <td class="px-1">
+          <td
+            class="px-35"
+          >
             {{ products.productName }}
           </td>
-          <td class="px-1">
+          <td class="px-35">
             {{ products.unit }}
           </td>
-          <td class="text-right px-1">
+          <td class="text-right px-35">
             {{ $formatNumberToLocale(products.quantity) }}
           </td>
-          <td class="text-right px-1">
+          <td class="text-right px-35">
             {{ $formatNumberToLocale(products.price) }}
           </td>
-          <td class="text-right px-1">
+          <td class="text-right px-35">
             {{ $formatNumberToLocale(products.total) }}
           </td>
-          <td class="text-right px-1">
+          <td class="text-right px-35">
             {{ $formatNumberToLocale(products.promotion) }}
           </td>
-          <td class="text-right px-1">
+          <td class="text-right px-35">
             {{ $formatNumberToLocale(products.pay) }}
           </td>
         </tr>
@@ -240,6 +304,9 @@ export default {
 <style lang="scss" scoped>
 table {
   width: 100%;
+  border-collapse: collapse;
+  border: 2px solid;
+  table-layout: fixed;
 }
 th {
   border-style: solid;
@@ -248,6 +315,8 @@ th {
 td, .td {
   border-style: dotted;
   border-width: 2px;
+  word-wrap: break-word;
+  font-size: 12px;
 }
 .background-lightgray {
   background-color: lightgray !important;

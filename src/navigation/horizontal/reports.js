@@ -57,8 +57,8 @@ export default [
       },
       {
         title: 'Bảng kê chi tiết đơn nhập hàng',
-        route: 'reports-purchases',
-        resource: 'ReportsPurchases',
+        route: 'reports-input-details',
+        resource: 'ReportsWarehouseInputDetails',
         icon: 'MapIcon',
       },
       {

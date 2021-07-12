@@ -202,8 +202,8 @@ export default [
   },
   // báo cáo bảng kê chi tiết đơn nhập hàng
   {
-    path: '/reports/purchases',
-    name: 'reports-purchases',
+    path: '/reports/input-details',
+    name: 'reports-input-details',
     component: () => import('@/views/reports/reports-purchases/reports-purchases-list/ReportsPuchasesList.vue'),
     meta: {
       pageTitle: 'Bảng kê chi tiết đơn nhập hàng',
@@ -213,7 +213,7 @@ export default [
           active: true,
         },
       ],
-      resource: 'ReportsPurchases',
+      resource: 'ReportsWarehouseInputDetails',
     },
   },
   // báo cáo bán hàng
