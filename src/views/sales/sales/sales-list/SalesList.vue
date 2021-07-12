@@ -453,7 +453,7 @@ export default {
           products: [],
           customer: {
             fullName: null,
-            mobiPhone: null,
+            phoneNumber: null,
             address: null,
           },
           active: true,
@@ -731,7 +731,7 @@ export default {
           products: [],
           customer: {
             fullName: this.defaultCustomer.fullName,
-            mobiPhone: this.defaultCustomer.mobiPhone,
+            phoneNumber: this.defaultCustomer.mobiPhone,
             address: this.defaultCustomer.address,
           },
           active: false,
@@ -745,7 +745,7 @@ export default {
         products: [],
         customer: {
           fullName: this.currentCustomer.fullName,
-          mobiPhone: this.currentCustomer.mobiPhone,
+          phoneNumber: this.currentCustomer.phoneNumber,
           address: this.currentCustomer.address,
         },
         active: false,
@@ -777,7 +777,7 @@ export default {
             products: this.orderProducts,
             customer: {
               fullName: this.currentCustomer.fullName,
-              mobiPhone: this.currentCustomer.mobiPhone,
+              phoneNumber: this.currentCustomer.phoneNumber,
               address: this.currentCustomer.address,
             },
             active: false,
@@ -789,8 +789,9 @@ export default {
       this.bills = this.bills.map(bill => {
         if (bill.id === billSelectedId) {
           this.orderProducts = bill.products
-          this.defaultCustomer.fullName = bill.customer.fullName
-          this.defaultCustomer.mobiPhone = bill.customer.mobiPhone
+          this.currentCustomer.fullName = bill.customer.fullName
+          this.currentCustomer.phoneNumber = bill.customer.phoneNumber
+          this.currentCustomer.address = bill.customer.address
           this.orderCurrentId = billSelectedId
           return {
             ...bill,

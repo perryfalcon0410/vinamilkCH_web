@@ -445,11 +445,13 @@ import {
   SALEMT_PROMOTION_OBJECT_GETTER,
   SALEMT_DELIVERY_TYPE_GETTER,
   CUSTOMER_DEFAULT_GETTER,
+  CUSTOMERS_GETTER,
   // ACTIONS
   GET_CUSTOMER_BY_ID_ACTION,
   GET_SALEMT_PROMOTION_OBJECT_ACTION,
   GET_SALEMT_DELIVERY_TYPE_ACTION,
   GET_CUSTOMER_DEFAULT_ACTION,
+  GET_CUSTOMERS_ACTION,
 } from '../../../sales-customers/store-module/type'
 import {
   SALES,
@@ -580,6 +582,7 @@ export default {
       SALEMT_PROMOTION_OBJECT_GETTER,
       SALEMT_DELIVERY_TYPE_GETTER,
       CUSTOMER_DEFAULT_GETTER,
+      CUSTOMERS_GETTER,
     }),
 
     ...mapGetters(SALES, {
@@ -611,6 +614,26 @@ export default {
             feature: '',
           })),
         }]
+      }
+      return []
+    },
+    getCustomerPopup() {
+      if (this.CUSTOMERS_GETTER.content) {
+        return this.CUSTOMERS_GETTER.content.map(data => ({
+          id: data.id,
+          shopId: data.shopId,
+          code: data.customerCode,
+          fullName: `${data.lastName} ${data.firstName}`,
+          phoneNumber: data.mobiPhone,
+          birthDay: formatDateToLocale(data.dob),
+          date: formatDateToLocale(data.createdAt),
+          address: data.address,
+          idNo: data.idNo,
+          feature: '',
+          totalBill: data.totalBill,
+          customerTypeId: data.customerTypeId,
+          scoreCumulated: data.scoreCumulated,
+        }))
       }
       return []
     },
@@ -759,6 +782,7 @@ export default {
       GET_SALEMT_PROMOTION_OBJECT_ACTION,
       GET_SALEMT_DELIVERY_TYPE_ACTION,
       GET_CUSTOMER_DEFAULT_ACTION,
+      GET_CUSTOMERS_ACTION,
     ]),
 
     ...mapActions(SALES, [
