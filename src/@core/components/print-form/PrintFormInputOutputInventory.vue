@@ -318,61 +318,61 @@
             <td class="pl-50">
               {{ products.uom }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.beginningQty) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.beginningPrice) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.beginningAmount) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.impTotalQty) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.impQty) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.impAmount) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.impAdjustmentQty) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.impAdjustmentAmount) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.expTotalQty) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.expSalesQty) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.expSalesAmount) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.expPromotionQty) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.expPromotionAmount) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.expAdjustmentQty) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.expAdjustmentAmount) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.expExchangeQty) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.endingQty) }}
             </td>
-            <td class="pl-50">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.endingPrice) }}
             </td>
-            <td class="pl-1">
+            <td class="pl-50 text-right">
               {{ $formatNumberToLocale(products.endingAmount) }}
             </td>
           </tr>

@@ -140,7 +140,7 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'convfact' || props.column.field === 'transCode' || props.column.field === 'shopName' || props.column.field === 'shopType' || props.column.field === 'productGroup'"
+              v-else-if="props.column.field === 'convfact' || props.column.field === 'transCode' || props.column.field === 'shopName' || props.column.field === 'shopType' || props.column.field === 'productGroup' || props.column.field === 'inputType'"
               style="width: max-content"
             >
               {{ props.formattedRow[props.column.field] }}

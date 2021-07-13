@@ -156,11 +156,12 @@ export default {
     },
     [IMPORT_FILLED_STOCKS_ACTION]({ state }, val) {
       WarehousesInventoryService
-        .importFilledStocks(val)
+        .importFilledStocks(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.warehouseInventoryImportData = res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

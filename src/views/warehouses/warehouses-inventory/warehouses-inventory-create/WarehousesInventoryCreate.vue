@@ -905,7 +905,12 @@ export default {
       data.append('name', this.importFile.name)
       data.append('file', this.importFile)
       if (this.importFile.type.search(/sheet/g) !== -1 || this.importFile.type.search(/excel/g !== -1)) {
-        this.IMPORT_FILLED_STOCKS_ACTION(data)
+        this.IMPORT_FILLED_STOCKS_ACTION({
+          data,
+          onSuccess: () => {
+            this.onClickSaveButton()
+          },
+        })
       } else {
         toasts.error('Dữ liệu nhập sai định dạng')
       }
@@ -932,3 +937,10 @@ export default {
   },
 }
 </script>
+<style>
+  thead tr:first-child {
+    position: sticky;
+    top: 0px;
+    z-index: 10;
+  }
+</style>
