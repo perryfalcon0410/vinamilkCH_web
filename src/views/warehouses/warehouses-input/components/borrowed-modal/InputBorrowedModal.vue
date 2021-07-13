@@ -150,8 +150,7 @@ import {
   WAREHOUSEINPUT,
   // GETTERS
   IMPORT_BORROWINGS_GETTER,
-  IMPORT_BORROWINGS_DETAIL_GETTER,
-  IMPORT_BORROWINGS_DETAIL_INFO_GETTER,
+  IMPORT_BORROWINGS_DETAILS_GETTER,
   // ACTIONS
   GET_IMPORT_BORROWINGS_ACTION,
   GET_IMPORT_BORROWINGS_DETAIL_ACTION,
@@ -227,8 +226,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      IMPORT_BORROWINGS_GETTER,
+      IMPORT_BORROWINGS_DETAILS_GETTER,
+    ]),
     importBorrowings() {
-      return this.IMPORT_BORROWINGS_GETTER().map(data => ({
+      return this.IMPORT_BORROWINGS_GETTER.map(data => ({
         id: data.id,
         poBorrowCode: data.poBorrowCode,
         borrowDate: formatISOtoVNI(data.borrowDate),
@@ -248,18 +251,24 @@ export default {
       return null
     },
     importBorrowingsDetail() {
-      return this.IMPORT_BORROWINGS_DETAIL_GETTER().map(data => ({
-        licenseNumber: data.licenseNumber,
-        productCode: data.productCode,
-        productName: data.productName,
-        price: this.$formatNumberToLocale(data.price),
-        unit: data.unit,
-        quantity: data.quantity,
-        totalPrice: this.$formatNumberToLocale(data.totalPrice),
-      }))
+      if (this.IMPORT_BORROWINGS_DETAILS_GETTER.response) {
+        return this.IMPORT_BORROWINGS_DETAILS_GETTER.response.map(data => ({
+          licenseNumber: data.licenseNumber,
+          productCode: data.productCode,
+          productName: data.productName,
+          price: this.$formatNumberToLocale(data.price),
+          unit: data.unit,
+          quantity: data.quantity,
+          totalPrice: this.$formatNumberToLocale(data.totalPrice),
+        }))
+      }
+      return []
     },
     importBorrowingInfo() {
-      return this.IMPORT_BORROWINGS_DETAIL_INFO_GETTER()
+      if (this.IMPORT_BORROWINGS_DETAILS_GETTER.info) {
+        return this.IMPORT_BORROWINGS_DETAILS_GETTER.info
+      }
+      return {}
     },
   },
   watch: {
@@ -278,11 +287,6 @@ export default {
     })
   },
   methods: {
-    ...mapGetters(WAREHOUSEINPUT, [
-      IMPORT_BORROWINGS_GETTER,
-      IMPORT_BORROWINGS_DETAIL_GETTER,
-      IMPORT_BORROWINGS_DETAIL_INFO_GETTER,
-    ]),
     ...mapActions(WAREHOUSEINPUT, [
       GET_IMPORT_BORROWINGS_ACTION,
       GET_IMPORT_BORROWINGS_DETAIL_ACTION,
@@ -291,6 +295,7 @@ export default {
       CLEAR_BORROW_GRID_VIEW_MUTATION,
     ]),
     inputBorrow() {
+      console.log(this.importBorrowings.length)
       if (this.importBorrowings.length > 0) {
         this.$emit('inputBorrowsChange', [this.sysDate, this.importBorrowingsDetail, this.importBorrowingInfo, this.current, this.note])
         this.close()

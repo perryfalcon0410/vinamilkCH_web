@@ -6,16 +6,12 @@ import moment from 'moment'
 import {
   // GETTERS
   POCONFIRM_GETTER,
-  PODETAIL_PRODUCTS_RES_GETTER,
-  PODETAIL_PRODUCTS_PROMO_RES_GETTER,
-  PODETAIL_PRODUCTS_INFO_GETTER,
-  PODETAIL_PRODUCTS_PROMO_INFO_GETTER,
+  POCONFIRM_DETAILS_GETTER,
+  POCONFIRM_PROMO_DETAILS_GETTER,
   IMPORT_ADJUSTMENTS_GETTER,
-  IMPORT_ADJUSTMENTS_DETAIL_GETTER,
-  IMPORT_ADJUSTMENTS_DETAIL_INFO_GETTER,
+  IMPORT_ADJUSTMENTS_DETAILS_GETTER,
   IMPORT_BORROWINGS_GETTER,
-  IMPORT_BORROWINGS_DETAIL_GETTER,
-  IMPORT_BORROWINGS_DETAIL_INFO_GETTER,
+  IMPORT_BORROWINGS_DETAILS_GETTER,
   RECEIPTS_GETTER,
   RECEIPT_BY_ID_GETTER,
   PRODUCTS_BY_ID_GETTER,
@@ -63,16 +59,12 @@ export default {
   // START - STATE
   state: {
     poConfirm: [],
-    podetail_products_res: [],
-    podetail_products_info: {},
-    podetail_products_promo_res: [],
-    podetail_product_promo_info: {},
+    poConfirmDetails: {},
+    poConfirmPromoDetails: {},
     importAdjustments: [],
-    importAdjustmentsDetail: [],
-    importAdjustmentsDetailInfo: {},
+    importAdjustmentsDetails: {},
     importBorrowings: [],
-    importBorrowingsDetail: [],
-    importBorrowingsDetailInfo: {},
+    importBorrowingsDetails: {},
     receipts: [],
     receiptById: {},
     products: [],
@@ -90,35 +82,23 @@ export default {
     [POCONFIRM_GETTER](state) {
       return state.poConfirm
     },
-    [PODETAIL_PRODUCTS_RES_GETTER](state) {
-      return state.podetail_products_res
+    [POCONFIRM_DETAILS_GETTER](state) {
+      return state.poConfirmDetails
     },
-    [PODETAIL_PRODUCTS_PROMO_RES_GETTER](state) {
-      return state.podetail_products_promo_res
-    },
-    [PODETAIL_PRODUCTS_INFO_GETTER](state) {
-      return state.podetail_products_info
-    },
-    [PODETAIL_PRODUCTS_PROMO_INFO_GETTER](state) {
-      return state.podetail_product_promo_info
+    [POCONFIRM_PROMO_DETAILS_GETTER](state) {
+      return state.poConfirmPromoDetails
     },
     [IMPORT_ADJUSTMENTS_GETTER](state) {
       return state.importAdjustments
     },
-    [IMPORT_ADJUSTMENTS_DETAIL_GETTER](state) {
-      return state.importAdjustmentsDetail
-    },
-    [IMPORT_ADJUSTMENTS_DETAIL_INFO_GETTER](state) {
-      return state.importAdjustmentsDetailInfo
+    [IMPORT_ADJUSTMENTS_DETAILS_GETTER](state) {
+      return state.importAdjustmentsDetails
     },
     [IMPORT_BORROWINGS_GETTER](state) {
       return state.importBorrowings
     },
-    [IMPORT_BORROWINGS_DETAIL_GETTER](state) {
-      return state.importBorrowingsDetail
-    },
-    [IMPORT_BORROWINGS_DETAIL_INFO_GETTER](state) {
-      return state.importBorrowingsDetailInfo
+    [IMPORT_BORROWINGS_DETAILS_GETTER](state) {
+      return state.importBorrowingsDetails
     },
     [RECEIPTS_GETTER](state) {
       return state.receipts
@@ -158,18 +138,14 @@ export default {
       state.statusNotImport = {}
     },
     [CLEAR_GRID_VIEW_MUTATION](state) {
-      state.podetail_products_res = []
-      state.podetail_products_promo_res = []
-      state.podetail_products_info = {}
-      state.podetail_product_promo_info = {}
+      state.poConfirmDetails = {}
+      state.poConfirmPromoDetails = {}
     },
     [CLEAR_ADJUST_GRID_VIEW_MUTATION](state) {
-      state.importAdjustmentsDetail = []
-      state.importAdjustmentsDetailInfo = {}
+      state.importAdjustmentsDetails = {}
     },
     [CLEAR_BORROW_GRID_VIEW_MUTATION](state) {
-      state.importBorrowingsDetail = []
-      state.importBorrowingsDetailInfo = {}
+      state.importBorrowingsDetails = {}
     },
     [CLEAR_IMPORT_PO_STATUS_MUTATION](state) {
       state.importedPoconfirmData = null
@@ -199,8 +175,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.podetail_products_res = res.data.response
-            state.podetail_products_info = res.data.info
+            state.poConfirmDetails = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -215,8 +190,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.podetail_products_promo_res = res.data.response
-            state.podetail_product_promo_info = res.data.info
+            state.poConfirmPromoDetails = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -233,7 +207,6 @@ export default {
           if (res.type === 'application/json') {
             throw new Error('Không có dữ liệu xuất')
           }
-
           const fileName = `Danh sach san pham_PO_nhap hang_${moment().format('YYYYMMDD')}_${moment().format('hhmmss')}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
@@ -263,7 +236,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.importAdjustmentsDetail = res.data.response || []
+            state.importAdjustmentsDetails = res.data
             state.importAdjustmentsDetailInfo = res.data.info || {}
           } else {
             throw new Error(res.statusValue)
@@ -294,8 +267,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.importBorrowingsDetail = res.data.response || []
-            state.importBorrowingsDetailInfo = res.data.info || {}
+            state.importBorrowingsDetails = res.data
           } else {
             throw new Error(res.statusValue)
           }

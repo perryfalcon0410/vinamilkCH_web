@@ -398,6 +398,7 @@ export default {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
       this.PRINT_REPORT_DIFFERENCE_ACTION({
+        ...this.decentralization,
         ...this.searchData,
         onSuccess: () => {
           this.$root.$emit('bv::enable::popover')

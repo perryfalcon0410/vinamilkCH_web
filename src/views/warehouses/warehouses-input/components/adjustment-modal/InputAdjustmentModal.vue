@@ -176,8 +176,7 @@ import {
   WAREHOUSEINPUT,
   // GETTERS
   IMPORT_ADJUSTMENTS_GETTER,
-  IMPORT_ADJUSTMENTS_DETAIL_GETTER,
-  IMPORT_ADJUSTMENTS_DETAIL_INFO_GETTER,
+  IMPORT_ADJUSTMENTS_DETAILS_GETTER,
   // ACTIONS
   GET_IMPORT_ADJUSTMENTS_ACTION,
   GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION,
@@ -252,8 +251,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      IMPORT_ADJUSTMENTS_GETTER,
+      IMPORT_ADJUSTMENTS_DETAILS_GETTER,
+    ]),
     importAdjustmentsList() {
-      return this.IMPORT_ADJUSTMENTS_GETTER().map(data => ({
+      return this.IMPORT_ADJUSTMENTS_GETTER.map(data => ({
         id: data.id,
         adjustmentCode: data.adjustmentCode,
         adjustmentDate: formatISOtoVNI(data.adjustmentDate),
@@ -273,18 +276,24 @@ export default {
     },
 
     importAdjustmentsDetails() {
-      return this.IMPORT_ADJUSTMENTS_DETAIL_GETTER().map(data => ({
-        licenseNumber: data.licenseNumber,
-        productCode: data.productCode,
-        productName: data.productName,
-        price: this.$formatNumberToLocale(data.price),
-        unit: data.unit,
-        quantity: this.$formatNumberToLocale(data.quantity),
-        totalPrice: this.$formatNumberToLocale(data.totalPrice),
-      }))
+      if (this.IMPORT_ADJUSTMENTS_DETAILS_GETTER.response) {
+        return this.IMPORT_ADJUSTMENTS_DETAILS_GETTER.response.map(data => ({
+          licenseNumber: data.licenseNumber,
+          productCode: data.productCode,
+          productName: data.productName,
+          price: this.$formatNumberToLocale(data.price),
+          unit: data.unit,
+          quantity: this.$formatNumberToLocale(data.quantity),
+          totalPrice: this.$formatNumberToLocale(data.totalPrice),
+        }))
+      }
+      return []
     },
     importAdjustmentInfo() {
-      return this.IMPORT_ADJUSTMENTS_DETAIL_INFO_GETTER()
+      if (this.IMPORT_ADJUSTMENTS_DETAILS_GETTER.info) {
+        return this.IMPORT_ADJUSTMENTS_DETAILS_GETTER.info
+      }
+      return {}
     },
   },
   watch: {
@@ -304,11 +313,6 @@ export default {
     })
   },
   methods: {
-    ...mapGetters(WAREHOUSEINPUT, [
-      IMPORT_ADJUSTMENTS_GETTER,
-      IMPORT_ADJUSTMENTS_DETAIL_GETTER,
-      IMPORT_ADJUSTMENTS_DETAIL_INFO_GETTER,
-    ]),
     ...mapActions(WAREHOUSEINPUT, [
       GET_IMPORT_ADJUSTMENTS_ACTION,
       GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION,

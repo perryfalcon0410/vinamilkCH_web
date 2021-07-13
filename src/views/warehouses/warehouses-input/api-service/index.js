@@ -73,9 +73,7 @@ export default {
     })
   },
   updateNotImport(args) {
-    return axios.put(`${updateNotImportEndpoint}/${args.id}`, {
-      params: formatURLParams(args),
-    })
+    return axios.put(`${updateNotImportEndpoint}/${args.id}`, args)
   },
   getReceiptImport(args) {
     return axios.get(getReceiptsEndpoint, {

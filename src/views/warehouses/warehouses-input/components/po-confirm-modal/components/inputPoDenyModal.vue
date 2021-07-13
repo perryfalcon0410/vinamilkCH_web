@@ -77,14 +77,18 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      NOT_IMPORT_REASONS_GETTER,
+      STATUS_NOT_IMPORT_GETTER,
+    ]),
     reasonOptions() {
-      return this.NOT_IMPORT_REASONS_GETTER().map((data, index) => ({
-        id: index + 1,
+      return this.NOT_IMPORT_REASONS_GETTER.map((data, index) => ({
+        id: Number(index + 1),
         label: data.apParamName,
       }))
     },
     status() {
-      return this.STATUS_NOT_IMPORT_GETTER()
+      return this.STATUS_NOT_IMPORT_GETTER
     },
   },
   watch: {
@@ -106,10 +110,6 @@ export default {
   },
 
   methods: {
-    ...mapGetters(WAREHOUSEINPUT, [
-      NOT_IMPORT_REASONS_GETTER,
-      STATUS_NOT_IMPORT_GETTER,
-    ]),
     ...mapActions(WAREHOUSEINPUT, [
       UPDATE_NOT_IMPORT_ACTION,
       GET_POCONFIRMS_ACTION,
@@ -123,8 +123,6 @@ export default {
         this.UPDATE_NOT_IMPORT_ACTION({
           id: this.id,
           reasonDeny: this.reasonSelected,
-          formId: this.formId, // hard code
-          ctrlId: this.ctrlId, // hard code
         })
       } else {
         toasts.error('Cần chọn tối thiểu 1 lý do')

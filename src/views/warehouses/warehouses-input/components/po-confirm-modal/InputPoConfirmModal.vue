@@ -13,7 +13,6 @@
       <b-row>
         <!-- START - Import/Export List -->
         <b-col
-          xl="4"
           class="bg-white pb-4 rounded shadow text-dark"
         >
           <!-- START - Title -->
@@ -46,9 +45,7 @@
             :class="{ 'text-brand-1': current == item.id }"
             @click="selectOrder(item.id, item.internalNumber, item.poCoNumber, item.date)"
           >
-            <b-col
-              cols="1"
-            >
+            <b-col cols="1">
               {{ index + 1 }}
             </b-col>
             <b-col>
@@ -124,6 +121,7 @@
             >
               <b-row
                 v-if="props.column.field === 'quantity'"
+                v-show="poProductInfo.totalQuantity"
                 class="mx-50 h7 text-brand-3"
                 align-h="end"
               >
@@ -131,6 +129,7 @@
               </b-row>
               <b-row
                 v-if="props.column.field === 'totalPriceVat'"
+                v-show="poProductInfo.totalPrice"
                 class="mx-50 h7 text-brand-3"
                 align-h="end"
               >
@@ -210,7 +209,7 @@
                 </b-row>
                 <b-row
                   v-if="props.column.field === 'totalPriceVat'"
-                  class="mx-0 h7 text-brand-3"
+                  class="mx-50 h7 text-brand-3"
                   align-h="end"
                 >
                   {{ poPromotionProductsInfo.totalPrice }}
@@ -302,10 +301,8 @@ import {
   WAREHOUSEINPUT,
   // GETTERS
   POCONFIRM_GETTER,
-  PODETAIL_PRODUCTS_RES_GETTER,
-  PODETAIL_PRODUCTS_PROMO_RES_GETTER,
-  PODETAIL_PRODUCTS_INFO_GETTER,
-  PODETAIL_PRODUCTS_PROMO_INFO_GETTER,
+  POCONFIRM_DETAILS_GETTER,
+  POCONFIRM_PROMO_DETAILS_GETTER,
   IMPORTED_POCONFIRM_GETTER,
   // ACTIONS
   GET_POCONFIRMS_ACTION,
@@ -404,9 +401,15 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(WAREHOUSEINPUT, [
+      POCONFIRM_GETTER,
+      POCONFIRM_DETAILS_GETTER,
+      POCONFIRM_PROMO_DETAILS_GETTER,
+      IMPORTED_POCONFIRM_GETTER,
+    ]),
     // get poConfirm list
     poConfirm() {
-      return this.POCONFIRM_GETTER().map(data => ({
+      return this.POCONFIRM_GETTER.map(data => ({
         id: data.id,
         poCoNumber: data.poCoNumber,
         internalNumber: data.internalNumber,
@@ -427,39 +430,54 @@ export default {
     },
     // get products from selected Po
     poProducts() {
-      return this.PODETAIL_PRODUCTS_RES_GETTER().map(data => ({
-        soNo: data.soNo,
-        productCode: data.productCode,
-        productName: data.productName,
-        price: this.$formatNumberToLocale(data.price),
-        priceNotVat: this.$formatNumberToLocale(data.priceNotVat),
-        vat: this.$formatNumberToLocale(data.vat),
-        unit: data.unit,
-        quantity: this.$formatNumberToLocale(data.quantity),
-        totalPriceNotVat: this.$formatNumberToLocale(data.amountNotVat),
-        totalPriceVat: this.$formatNumberToLocale(data.totalPrice),
-      }))
+      if (this.POCONFIRM_DETAILS_GETTER.response) {
+        return this.POCONFIRM_DETAILS_GETTER.response.map(data => ({
+          soNo: data.soNo,
+          productCode: data.productCode,
+          productName: data.productName,
+          price: this.$formatNumberToLocale(data.price),
+          priceNotVat: this.$formatNumberToLocale(data.priceNotVat),
+          vat: this.$formatNumberToLocale(data.vat),
+          unit: data.unit,
+          quantity: this.$formatNumberToLocale(data.quantity),
+          totalPriceNotVat: this.$formatNumberToLocale(data.amountNotVat),
+          totalPriceVat: this.$formatNumberToLocale(data.totalPrice),
+        }))
+      }
+      return []
     },
     poProductInfo() {
-      return this.PODETAIL_PRODUCTS_INFO_GETTER()
+      if (this.POCONFIRM_DETAILS_GETTER.info) {
+        return this.POCONFIRM_DETAILS_GETTER.info
+      }
+      return {}
     },
     // get promotion produtcs from selected Po
     poPromotionProducts() {
-      return this.PODETAIL_PRODUCTS_PROMO_RES_GETTER().map(data => ({
-        soNo: data.soNo,
-        productCode: data.productCode,
-        productName: data.productName,
-        price: this.$formatNumberToLocale(data.price) || 0,
-        unit: data.unit,
-        quantity: data.quantity,
-        totalPrice: this.$formatNumberToLocale(data.totalPrice) || 0,
-      }))
+      if (this.POCONFIRM_PROMO_DETAILS_GETTER.response) {
+        return this.POCONFIRM_PROMO_DETAILS_GETTER.response.map(data => ({
+          soNo: data.soNo,
+          productCode: data.productCode,
+          productName: data.productName,
+          price: this.$formatNumberToLocale(data.price) || 0,
+          unit: data.unit,
+          quantity: data.quantity,
+          totalPrice: this.$formatNumberToLocale(data.totalPrice) || 0,
+        }))
+      }
+      return []
     },
     poPromotionProductsInfo() {
-      return this.PODETAIL_PRODUCTS_PROMO_INFO_GETTER()
+      if (this.POCONFIRM_PROMO_DETAILS_GETTER.info) {
+        return this.POCONFIRM_PROMO_DETAILS_GETTER.info
+      }
+      return {}
     },
     getImportPoStatus() {
-      return this.IMPORTED_POCONFIRM_GETTER()
+      if (this.IMPORTED_POCONFIRM_GETTER) {
+        return this.IMPORTED_POCONFIRM_GETTER
+      }
+      return {}
     },
   },
   watch: {
@@ -496,14 +514,6 @@ export default {
   },
 
   methods: {
-    ...mapGetters(WAREHOUSEINPUT, [
-      POCONFIRM_GETTER,
-      PODETAIL_PRODUCTS_RES_GETTER,
-      PODETAIL_PRODUCTS_PROMO_RES_GETTER,
-      PODETAIL_PRODUCTS_INFO_GETTER,
-      PODETAIL_PRODUCTS_PROMO_INFO_GETTER,
-      IMPORTED_POCONFIRM_GETTER,
-    ]),
     ...mapActions(WAREHOUSEINPUT, [
       GET_POCONFIRMS_ACTION,
       GET_PODETAIL_PRODUCTS_ACTION,
