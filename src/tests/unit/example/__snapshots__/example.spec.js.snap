@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SalesCustomersListSearch test snapshoot of SalesCustomerListSearch.vue 1`] = `
+<b-form-stub>
+  <v-card-actions-stub title="Tìm kiếm" cancollapse="true" expanddefault="true" class="d-print-none">
+    <b-col-stub lg="3" sm="4" tag="div" xl="true" class="h7">
+      <div class="mt-sm-1 mt-xl-0">
+        Di động
+      </div>
+      <b-input-group-stub tag="div" class="input-group-merge">
+        <b-form-input-stub autocomplete="on" debounce="0" formatter="[Function]" placeholder="Nhập chính xác 4 số cuối" type="text" data-test="phoneNumber" maxlength="10"></b-form-input-stub>
+        <b-input-group-append-stub istext="true" tag="div">
+          <b-icon-x class="cursor-pointer text-gray" style="display: none;"></b-icon-x>
+        </b-input-group-append-stub>
+      </b-input-group-stub>
+    </b-col-stub>
+    <b-col-stub lg="3" sm="4" tag="div" xl="true" class="h7">
+      <div class="mt-sm-1 mt-xl-0">
+        Khách hàng
+      </div>
+      <b-input-group-stub tag="div" class="input-group-merge">
+        <b-form-input-stub debounce="0" formatter="[Function]" placeholder="Nhập họ tên/mã" type="text" data-test="customerName"></b-form-input-stub>
+        <b-input-group-append-stub istext="true" tag="div">
+          <b-icon-x class="cursor-pointer text-gray" style="display: none;"></b-icon-x>
+        </b-input-group-append-stub>
+      </b-input-group-stub>
+    </b-col-stub>
+    <b-col-stub lg="3" sm="4" tag="div" xl="true" class="h7">
+      <div class="mt-sm-1 mt-xl-0">
+        Nhóm khách hàng
+      </div>
+      <tree-select data-test="customerTypes" placeholder="Tất cả" no-options-text="Không có dữ liệu"></tree-select>
+    </b-col-stub>
+    <b-col-stub lg="3" sm="4" tag="div" xl="true" class="h7">
+      <div class="mt-sm-1 mt-xl-0">
+        Trạng thái
+      </div>
+      <tree-select id="status" options="[object Object],[object Object]" placeholder="Tất cả" no-options-text="Không có dữ liệu"></tree-select>
+    </b-col-stub>
+    <b-col-stub lg="3" sm="4" tag="div" xl="true" class="h7">
+      <div class="mt-sm-1 mt-xl-0">
+        Giới tính
+      </div>
+      <tree-select id="genders" options="[object Object],[object Object],[object Object]" placeholder="Tất cả" no-options-text="Không có dữ liệu"></tree-select>
+    </b-col-stub>
+    <b-col-stub lg="3" sm="4" tag="div" xl="true" class="h7">
+      <div class="mt-sm-1 mt-xl-0">
+        Khu vực
+      </div>
+      <tree-select id="areas" options="" placeholder="Tất cả" no-options-text="Không có dữ liệu" no-results-text="Không tìm thấy kết quả"></tree-select>
+    </b-col-stub>
+    <b-col-stub lg="3" sm="4" tag="div" xl="true" class="h7">
+      <div onmousedown="return false;" class="text-white mt-sm-1 mt-xl-0" style="cursor: context-menu; margin-bottom: 5px;">
+        Khách hàng riêng
+      </div>
+      <b-form-checkbox-stub checked="true" value="true" class="text-nowrap">
+        Khách hàng của cửa hàng
+      </b-form-checkbox-stub>
+    </b-col-stub>
+    <b-col-stub lg="3" sm="4" tag="div" xl="true">
+      <div onmousedown="return false;" class="text-white h7" style="cursor: context-menu;">
+        Tìm kiếm
+      </div>
+      <b-button-stub tag="button" target="_self" type="button" variant="someThing" id="btnSearch" class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0">
+        <b-icon-search class="mr-50"></b-icon-search>
+        Tìm kiếm
+      </b-button-stub>
+    </b-col-stub>
+  </v-card-actions-stub>
+</b-form-stub>
+`;
