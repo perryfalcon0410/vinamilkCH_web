@@ -20,6 +20,7 @@ import {
   formatPrintDate,
 } from '@/@core/utils/filter'
 import { permission } from '@/libs/acl/ability'
+import VueBarcodeScanner from 'vue-barcode-scanner'
 
 import i18n from '@/libs/i18n'
 import VueGoodTablePlugin from 'vue-good-table'
@@ -70,6 +71,18 @@ Vue.use(VueCompositionAPI)
 // vue-good-table
 Vue.use(VueGoodTablePlugin)
 
+// inject vue barcode scanner
+const optionsVueBarcodeScanner = {
+  sensitivity: 0, // default is 100
+  // *requiredAttr: set to "true" you need to specific some input field with "data-barcode" and then only this input response to scanner
+  requiredAttr: true, // default is false
+  // *controlSequenceKeys: when a control key in this list is encountered in a scan sequence, it will be replaced with tags for easy string replacement
+  controlSequenceKeys: ['NumLock', 'Clear'], // default is null
+  // *callbackAfterTimeout: this will fire the callback defined in the component once sensitivity ms has elapsed, following the last character in the barcode sequence.
+  // *This is useful for scanners that don't end their sequences with ENTER and is backwards compatible with scanners that do.
+  callbackAfterTimeout: true, // default is false
+}
+Vue.use(VueBarcodeScanner, optionsVueBarcodeScanner)
 // moment
 Vue.prototype.$moment = moment
 moment.locale('vi')

@@ -23,6 +23,7 @@ import {
   printSalesTempEndpoint,
   getSalesPaymentTypesEndpoint,
   getLimitAgeCustomerEndpoint,
+  getProductByBarcodeEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -141,6 +142,11 @@ export default {
   // get limit age
   getLimitAgeCustomer(args) {
     return axios.get(getLimitAgeCustomerEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getProductByBarcode(args) {
+    return axios.get(getProductByBarcodeEndpoint, {
       params: formatURLParams(args),
     })
   },

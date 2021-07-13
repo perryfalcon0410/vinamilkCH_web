@@ -27,6 +27,7 @@ import {
   PRINT_SALES_TEMP_GETTER,
   GET_SALE_PAYMENT_TYPES_GETTER,
   GET_LIMIT_AGE_CUSTOMERS_GETTER,
+  GET_PRODUCT_BY_BARCODE_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -52,6 +53,7 @@ import {
   PRINT_SALES_TEMP_ACTION,
   GET_SALE_PAYMENT_TYPES_ACTION,
   GET_LIMIT_AGE_CUSTOMERS_ACTION,
+  GET_PRODUCT_BY_BARCODE_ACTION,
 } from './type'
 
 export default {
@@ -83,6 +85,7 @@ export default {
     printSaleTempData: {},
     salePaymentTypes: [],
     limitAge: [],
+    productByBarcode: {},
   },
 
   getters: {
@@ -157,6 +160,9 @@ export default {
     },
     [GET_LIMIT_AGE_CUSTOMERS_GETTER](state) {
       return state.limitAge
+    },
+    [GET_PRODUCT_BY_BARCODE_GETTER](state) {
+      return state.productByBarcode || {}
     },
   },
 
@@ -538,6 +544,23 @@ export default {
           if (res.success) {
             state.limitAge = res.data
           } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_PRODUCT_BY_BARCODE_ACTION]({ state }, val) {
+      SalesServices
+        .getProductByBarcode(val.data)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.productByBarcode = res.data
+            val.onSuccess()
+          } else {
+            val.onFailure()
             throw new Error(res.statusValue)
           }
         })

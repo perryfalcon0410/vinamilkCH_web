@@ -10814,6 +10814,11 @@ vue-awesome-swiper@4.1.1:
   resolved "https://registry.yarnpkg.com/vue-awesome-swiper/-/vue-awesome-swiper-4.1.1.tgz#8f7ab221ad003021d756b86aa618f429924900fe"
   integrity sha512-50um10t6N+lJaORkpwSi1wWuMmBI1sgFc9Znsi5oUykw2cO5DzLaBHcO2JNX21R+Ue4TGoIJDhhxjBHtkFrTEQ==
 
+vue-barcode-scanner@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/vue-barcode-scanner/-/vue-barcode-scanner-0.8.1.tgz#8282d656c019dd57e465f49864b79ecba18906fb"
+  integrity sha512-5F+4P6QqvXeI4epAeB4FjKZP+PmotD0hRyfLkKNk9EJQGIqYIaeCreimPUkLeNX0UQ3r175NEwH645xX2+93jQ==
+
 vue-chartjs@3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/vue-chartjs/-/vue-chartjs-3.5.0.tgz#edd0c2be94c521bcbc5357c24afb9f3560855f84"

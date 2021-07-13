@@ -334,11 +334,13 @@ import {
   GET_PRODUCT_INFOS_GETTER,
   GET_TOP_SALE_PRODUCTS_GETTER,
   UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
+  GET_PRODUCT_BY_BARCODE_GETTER,
   // Action
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
   GET_TOP_SALE_PRODUCTS_ACTION,
   UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
+  GET_PRODUCT_BY_BARCODE_ACTION,
 } from '../store-module/type'
 import {
   CUSTOMER,
@@ -489,6 +491,7 @@ export default {
       },
 
       orderCurrentId: 1, // Id of order current
+      loading: false,
     }
   },
   computed: {
@@ -500,6 +503,7 @@ export default {
       GET_PRODUCT_INFOS_GETTER,
       GET_TOP_SALE_PRODUCTS_GETTER,
       UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
+      GET_PRODUCT_BY_BARCODE_GETTER,
     ]),
     getProducts() {
       return this.GET_PRODUCTS_GETTER.map(data => ({
@@ -572,6 +576,9 @@ export default {
     selectedProduct() {
       return this.salemtPromotionObjectSelected
     },
+    getProductByBarcode() {
+      return this.GET_PRODUCT_BY_BARCODE_GETTER
+    },
   },
   watch: {
     getProductInfos() {
@@ -616,6 +623,39 @@ export default {
         this.isDisabled = false
       }
     },
+    getProductByBarcode() {
+      console.log(this.getProductByBarcode)
+      const productByBarcode = {
+        productId: this.getProductByBarcode.id,
+        name: this.getProductByBarcode.productCode,
+        productName: this.getProductByBarcode.productName,
+        productCode: this.getProductByBarcode.productCode,
+        productUnit: this.getProductByBarcode.uom1,
+        productInventory: this.getProductByBarcode.stockTotal,
+        productUnitPrice: this.$formatNumberToLocale(this.getProductByBarcode.price),
+        sumProductUnitPrice: this.getProductByBarcode.price,
+        quantity: 1,
+        productTotalPrice: this.$formatNumberToLocale(this.totalPrice(1, Number(this.getProductByBarcode.price))),
+        sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
+        productImage: this.getProductByBarcode.image,
+        comboProductId: this.getProductByBarcode.comboProductId,
+      }
+
+      const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
+      if (indexProductExisted === -1) {
+        this.orderProducts.push(productByBarcode)
+      } else {
+        this.orderProducts = this.orderProducts.map(product => {
+          if (product.productId === productByBarcode.productId) {
+            return {
+              ...product,
+              quantity: product.quantity + 1,
+            }
+          }
+          return product
+        })
+      }
+    },
   },
   mounted() {
     const index = this.productInfoTypeOptions.findIndex(i => i.name === 'Ngành hàng')
@@ -636,6 +676,19 @@ export default {
         }
       }
     })
+
+    // Pass an options object with `eventBus: true` to receive an eventBus back
+    // which emits `start` and `finish` events\
+    // this.$barcodeScanner.init(this.onBarcodeScanned)
+    const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, { eventBus: true })
+    if (eventBus) {
+      eventBus.$on('start', () => { this.loading = true })
+      eventBus.$on('finish', () => { this.loading = false })
+    }
+  },
+  destroyed() {
+    // Remove listener when component is destroyed
+    this.$barcodeScanner.destroy()
   },
   methods: {
     ...mapActions(SALES, [
@@ -643,6 +696,7 @@ export default {
       GET_PRODUCT_INFOS_ACTION,
       GET_TOP_SALE_PRODUCTS_ACTION,
       UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
+      GET_PRODUCT_BY_BARCODE_ACTION,
     ]),
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_DEFAULT_ACTION,
@@ -972,6 +1026,28 @@ export default {
     closeNotifyModal() {
       this.$refs.salesNotifyModal.hide()
       this.isDisabledOrder = true
+    },
+
+    // Create callback function to receive barcode when the scanner is already done
+    onBarcodeScanned(barcode) {
+      if (barcode.length > 4) {
+        this.GET_PRODUCT_BY_BARCODE_ACTION({
+          data: {
+            customerId: this.searchOptions.customerId,
+            barcode: barcode.toString(),
+          },
+          onSuccess: () => {
+          },
+          onFailure: () => {
+          },
+        })
+      }
+    },
+    // Reset to the last barcode before hitting enter (whatever anything in the input box)
+    resetBarcode() {
+      const barcode = this.$barcodeScanner.getPreviousCode()
+      console.log(barcode)
+      // do something...
     },
   },
 }
