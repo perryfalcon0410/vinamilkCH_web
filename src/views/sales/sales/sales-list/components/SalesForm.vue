@@ -811,7 +811,22 @@ export default {
     },
 
     showSearchModal() {
-      if (this.search.length < this.minSearch) {
+      if (this.search.length < this.minSearch && this.customersSearch[0].data === null) {
+        this.$refs.salesSearchModal.$refs.salesSearchModal.show()
+      }
+      if (this.customersSearch[0].data !== null && this.customersSearch[0].data.length === 0) {
+        const searchData = Number(this.search)
+        if (Number.isNaN(searchData) === false) {
+          this.GET_CUSTOMERS_ACTION({
+            phoneNumber: Number(this.search),
+          })
+          this.search = ''
+        } else {
+          this.GET_CUSTOMERS_ACTION({
+            searchKeywords: this.search.trim(),
+          })
+          this.search = ''
+        }
         this.$refs.salesSearchModal.$refs.salesSearchModal.show()
       }
     },
@@ -934,9 +949,9 @@ export default {
         this.GET_CUSTOMERS_SALE_ACTION(searchKeywords)
       } else {
         this.customersSearch = [{ data: null }]
-        this.search = ''
+        // this.search = ''
       }
-      this.search = ''
+      // this.search = ''
     },
 
     resetOrderNumber(item) {
@@ -962,9 +977,22 @@ export default {
         this.customer.status = suggestion.item.status
         this.customer.typeId = suggestion.item.customerTypeId
         this.$emit('getIdCustomer', suggestion.item)
+        this.customersSearch = [{ data: null }]
+        this.search = ''
+      } else {
+        const searchData = Number(this.search)
+        if (Number.isNaN(searchData) === false) {
+          this.GET_CUSTOMERS_ACTION({
+            phoneNumber: Number(this.search),
+          })
+        } else {
+          this.GET_CUSTOMERS_ACTION({
+            searchKeywords: this.search.trim(),
+          })
+        }
+        this.$refs.salesSearchModal.$refs.salesSearchModal.show()
+        this.search = ''
       }
-      this.customersSearch = [{ data: null }]
-      this.search = ''
     },
     getDefaultPromotionObjectSelected() {
       if (this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE')) {

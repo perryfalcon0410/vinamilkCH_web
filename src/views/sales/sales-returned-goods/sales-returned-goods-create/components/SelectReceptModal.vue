@@ -108,7 +108,7 @@
             >
               <b-row
                 v-if="props.column.field === 'total'"
-                class="mx-0 h7 text-brand-3 text-right"
+                class="mx-50 h7 text-brand-3 text-right"
                 align-h="end"
               >
                 {{ $formatNumberToLocale(totalAmount) }}
@@ -212,6 +212,7 @@ export default {
         {
           label: 'Tổng tiền',
           field: 'total',
+          tdClass: 'pr-2',
           type: 'number',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
