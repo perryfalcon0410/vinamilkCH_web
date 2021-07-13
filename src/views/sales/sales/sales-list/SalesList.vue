@@ -309,6 +309,7 @@
         @getCustomerCreate="getCustomerCreate"
         @currentCustomer="getCurrentCustomer"
         @salemtPromotionObjectSelected="salemtPromotionObjectSelected"
+        @salemtDeliveryTypeSelected="salemtDeliveryTypeSelected"
         @getIdCustomer="getIdCustomer"
       />
       <!-- END - Section Form pay -->
@@ -456,7 +457,10 @@ export default {
             phoneNumber: null,
             totalBill: null,
             address: null,
+            noted: null,
           },
+          orderType: null,
+          deliveryType: null,
           active: true,
           class: 'visited-action',
         },
@@ -465,6 +469,7 @@ export default {
       // online order
       onlineOrderId: null,
       orderSelected: null,
+      deliverySelected: null,
       editOnlinePermission: true,
       editManualPermission: true,
       isOnline: false,
@@ -589,6 +594,10 @@ export default {
 
     getDefaultCustomer() {
       this.defaultCustomer = { ...this.getDefaultCustomer }
+    },
+
+    salemtPromotionObjectSelected() {
+      this.orderSelected = { ...this.salemtPromotionObjectSelected }
     },
 
     selectedProduct() {
@@ -725,6 +734,8 @@ export default {
     },
 
     onClickAddButton() {
+      console.log('bills', this.bills)
+      console.log('order selected', typeof this.orderSelected)
       const lastIteminBill = this.bills[this.bills.length - 1]
       if (lastIteminBill) {
         this.bills.push({
@@ -735,7 +746,11 @@ export default {
             phoneNumber: this.defaultCustomer.mobiPhone,
             totalBill: this.defaultCustomer.totalBill,
             address: this.defaultCustomer.address,
+            noted: this.defaultCustomer.noted,
           },
+          orderType: null,
+          deliveryType: null,
+          noted: null,
           active: false,
           class: '',
         })
@@ -750,7 +765,11 @@ export default {
           phoneNumber: this.currentCustomer.phoneNumber,
           totalBill: this.currentCustomer.totalBill,
           address: this.currentCustomer.address,
+          noted: this.currentCustomer.noted,
         },
+        orderType: this.orderSelected,
+        deliveryType: this.deliverySelected,
+        noted: null,
         active: false,
         class: 'visited-action',
       })
@@ -783,7 +802,10 @@ export default {
               phoneNumber: this.currentCustomer.phoneNumber,
               totalBill: this.currentCustomer.totalBill,
               address: this.currentCustomer.address,
+              noted: this.currentCustomer.noted,
             },
+            orderType: this.orderSelected,
+            deliveryType: this.deliverySelected,
             active: false,
             class: '',
           }
@@ -792,12 +814,15 @@ export default {
       })
       this.bills = this.bills.map(bill => {
         if (bill.id === billSelectedId) {
+          this.orderCurrentId = billSelectedId
           this.orderProducts = bill.products
           this.currentCustomer.fullName = bill.customer.fullName
           this.currentCustomer.phoneNumber = bill.customer.phoneNumber
           this.currentCustomer.totalBill = bill.customer.totalBill
           this.currentCustomer.address = bill.customer.address
-          this.orderCurrentId = billSelectedId
+          this.currentCustomer.noted = bill.customer.noted
+          this.orderSelected = bill.orderType
+          this.deliverySelected = bill.deliveryType
           return {
             ...bill,
             active: true,
@@ -842,6 +867,7 @@ export default {
     getOnlineCustomer(val) {
       this.onlineOrderId = val.id
       this.searchOptions.customerId = val.id
+      console.log('getOnlineCustomer', val)
     },
 
     getCustomerTypeInfo(val) {
@@ -854,18 +880,16 @@ export default {
       // check customers dafault
       this.customerType = val.customerTypeId
       this.searchOptions.customerId = val.id
-      if (this.customerTypeCurent !== this.customerType) {
-        this.productChangePrice = this.orderProducts.map(data => ({
-          productId: data.productId,
-          quantity: data.quantity,
-        }))
-        this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
-          customerTypeId: this.customerType,
-          products: this.productChangePrice,
-          params: this.decentralization,
-        })
-        this.customerTypeCurent = this.customerType
-      }
+
+      this.productChangePrice = this.orderProducts.map(data => ({
+        productId: data.productId,
+        quantity: data.quantity,
+      }))
+      this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
+        customerTypeId: this.customerType,
+        products: this.productChangePrice,
+        params: this.decentralization,
+      })
     },
 
     getCurrentCustomer(val) {
@@ -899,14 +923,6 @@ export default {
       }
     },
 
-    billHandle(bill, index) {
-      return {
-        id: bill.id,
-        index,
-        products: this.orderProducts,
-      }
-    },
-
     salemtPromotionObjectSelected(val) {
       this.orderSelected = val
       const { usedShop } = this.loginInfo
@@ -917,15 +933,15 @@ export default {
         this.editManualPermission = true
       }
 
-      if (val === '2' && this.orderProducts.length > 0) {
-        if (val === '2' && usedShop.id === this.currentCustomer.shopId) {
+      if (val !== '1' && this.orderProducts.length > 0) {
+        if (val !== '1' && usedShop.id === this.currentCustomer.shopId) {
           if (usedShop.manuallyCreatable === false) {
             this.$refs.salesNotifyModal.show()
           }
         }
       }
 
-      if (val === '2') {
+      if (val !== '1') {
         this.isOnline = true
         this.onlineOrderId = null
 
@@ -942,6 +958,10 @@ export default {
           }
         }
       }
+    },
+
+    salemtDeliveryTypeSelected(val) {
+      this.deliverySelected = val
     },
 
     onClickAgreeButton() {

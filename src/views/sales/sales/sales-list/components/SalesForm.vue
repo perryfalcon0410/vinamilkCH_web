@@ -245,6 +245,7 @@
                 <tree-select
                   v-model="salemtDeliveryTypeSelected"
                   :options="salemtDeliveryTypeOptions"
+                  @select="getDeliveryType"
                 />
               </b-col>
             </b-row>
@@ -337,7 +338,7 @@
                 <b-icon-pencil-fill />
               </b-input-group-prepend>
               <b-form-input
-                v-model="orderOnline.orderNote"
+                v-model="customer.noted"
                 placeholder="Ghi chú"
                 maxlength="4000"
               />
@@ -538,6 +539,7 @@ export default {
         phoneNumber: null,
         email: null,
         address: null,
+        noted: null,
         totalBill: null,
         scoreCumulated: null,
         amountCumulated: null,
@@ -557,7 +559,6 @@ export default {
       orderOnline: {
         onlineOrderId: null,
         orderNumber: '',
-        orderNote: '',
         discountCode: null,
         discountValue: null,
       },
@@ -613,6 +614,7 @@ export default {
             email: data.email,
             status: data.status,
             idNo: data.idNo,
+            noted: data.noted,
             totalBill: data.totalBill,
             customerTypeId: data.customerTypeId,
             scoreCumulated: data.scoreCumulated,
@@ -697,6 +699,7 @@ export default {
           phoneNumber: data.mobiPhone,
           address: data.address,
           isDefault: data.isDefault,
+          noted: data.noted,
           totalBill: data.totalBill,
           amountCumulated: data.amountCumulated,
           createdAt: data.createdAt,
@@ -704,6 +707,7 @@ export default {
       }
       return []
     },
+
     totalQuantity() {
       return this.$formatNumberToLocale(this.orderProducts.reduce((sum, item) => sum + Number(item.quantity), 0))
     },
@@ -910,6 +914,7 @@ export default {
       this.customer.fullName = `${this.customer.lastName} ${this.customer.firstName}`
       this.customer.phoneNumber = this.customerDefault.mobiPhone
       this.customer.address = this.customerDefault.address
+      this.customer.noted = this.customerDefault.noted
       this.customer.totalBill = this.customerDefault.totalBill ?? 0
       this.customer.scoreCumulated = this.customerDefault.scoreCumulated
       this.customer.amountCumulated = this.customerDefault.amountCumulated
@@ -962,6 +967,10 @@ export default {
       this.$emit('salemtPromotionObjectSelected', item.id)
     },
 
+    getDeliveryType(item) {
+      this.$emit('salemtDeliveryTypeSelected', item.id)
+    },
+
     onclickChooseCustomer(suggestion) {
       if (suggestion) {
         this.customer.id = suggestion.item.id
@@ -1007,9 +1016,6 @@ export default {
         return
       }
       this.salemtDeliveryTypeSelected = this.salemtDeliveryTypeOptions[0].id
-    },
-
-    disableOnlineOrder() {
     },
     onCollapseCustomersClick() {
       this.isCheckRotate = !this.isCheckRotate
