@@ -4,6 +4,7 @@ export default {
     { id: '2', label: 'Nữ' },
     { id: '3', label: 'Khác' },
   ],
+
   perPageSizes: [
     20,
     40,
@@ -15,8 +16,11 @@ export default {
     500,
   ],
   pageNumber: 1,
+
   minSearchLength: 4,
+
   minOnlineOrderLength: 1,
+
   showStatus: {
     invisible: 1,
     enable: 2,

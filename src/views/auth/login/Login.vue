@@ -302,6 +302,10 @@ export default {
             })
             .then(response => response.data)
             .then(res => {
+              if (!res) {
+                throw new Error('Server không hoạt động, vui lòng liên hệ Quản trị')
+              }
+
               if (res.success) {
                 // Check captcha exist
                 if (res.data) {
@@ -325,10 +329,6 @@ export default {
                 }
                 throw new Error(res.statusValue)
               }
-
-              if (!res) {
-                throw new Error('Server không hoạt động, vui lòng liên hệ Quản trị')
-              }
             })
             .catch(error => {
               toasts.error(error.message)
@@ -336,6 +336,7 @@ export default {
         }
       })
     },
+
     login(val) {
       // Save account
       if (this.saveStatus) {

@@ -287,7 +287,7 @@
           align-h="end"
         >
           <b-button
-            v-show="isDisableSave || statusSaveButton().show"
+            v-show="isDisableSave && statusSaveButton().show"
             :disabled="statusSaveButton().disabled || invalid"
             variant="someThing"
             class="align-items-button-center btn-brand-1 text-uppercase h8"

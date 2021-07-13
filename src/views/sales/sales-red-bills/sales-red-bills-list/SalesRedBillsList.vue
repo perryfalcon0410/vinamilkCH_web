@@ -218,7 +218,7 @@
           </b-button>
           <b-button
             v-show="statusCreateButton().show"
-            :disabled="statusCreateButton().show"
+            :disabled="statusCreateButton().disabled"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
             @click="addSaleRedBillsCreate"

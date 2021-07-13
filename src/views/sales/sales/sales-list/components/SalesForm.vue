@@ -348,10 +348,9 @@
 
           <!-- START - Button pay -->
           <b-button
-            v-if="statusPayButton().show"
-            :disabled="statusPayButton().disabled || totalQuantity === 0 || isDisabled"
+            :disabled="totalQuantity === 0 || isDisabled"
             variant="someThing"
-            class="btn-brand-1 d-flex w-100 mt-1 align-items-center justify-content-center"
+            class="w-100 btn-brand-1 mt-1 aligns-items-button-center"
             @click="onPayButtonClick"
           >
             <b-icon-cash-stack
