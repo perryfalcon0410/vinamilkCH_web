@@ -202,7 +202,7 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="statusCreateButton().show"
+            v-if="statusCreateButton().show"
             :disabled="statusCreateButton().disabled"
             class="btn-brand-1 align-items-button-center h8"
             variant="someThing"
@@ -274,12 +274,12 @@
               class="mx-0"
             >
               <v-icon-printer
-                v-show="statusPrintButton().show"
+                v-if="statusPrintButton().show"
                 :disabled="statusPrintButton().disabled"
                 @click="onClickPrintButton(props.row)"
               />
               <v-icon-edit
-                v-show="statusUpdateButton().show"
+                v-if="statusUpdateButton().show"
                 :disabled="statusUpdateButton().disabled"
                 class="ml-1"
                 popover-position="top"

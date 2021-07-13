@@ -1,28 +1,26 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column p-0"
+    class="px-0"
   >
-    <!-- START - Section earch -->
-    <b-form class="bg-white shadow rounded">
+    <!-- START - Section search -->
+    <b-form>
       <!-- START - Section form input -->
-      <b-row
-        class="v-search-form border-top mx-0 py-1"
-        align-v="center"
+      <v-card-actions
+        title="Tìm kiếm"
+        class="d-print-none"
       >
         <!-- START - Inventory code -->
         <b-col
-          lg="2"
-          md="4"
+          xl="2"
+          sm
+          class="h7"
         >
-          <div class="h7">
+          <div>
             Mã kiểm kê
           </div>
           <b-form-input
-            id="form-input-counting-code"
             v-model="countingCode"
-            class="h7"
-            size="sm"
             maxlength="40"
             trim
             disabled
@@ -32,30 +30,29 @@
 
         <!-- START - Date -->
         <b-col
-          lg="2"
-          md="4"
+          xl="2"
+          sm
+          class="h7"
         >
-          <div class="h7">
+          <div>
             Ngày
           </div>
           <b-form-input
-            id="form-input-counting-date"
             v-model="countingDate"
-            class="h7"
-            size="sm"
-            maxlength="20"
             trim
             disabled
           />
 
         </b-col>
         <!-- END - Date -->
+
         <!-- START - Warehouse -->
         <b-col
-          lg="2"
-          md="4"
+          xl="2"
+          sm
+          class="h7"
         >
-          <div class="h7">
+          <div>
             Kho
           </div>
           <tree-select
@@ -66,18 +63,21 @@
           />
         </b-col>
         <!-- END - Warehouse -->
+
         <!-- START - Button import -->
-        <b-form-group
-          class="ml-lg-1"
-          label="Import"
-          label-for="form-button-import"
-          label-class="text-white"
-        >
+        <div class="mx-50">
+          <div
+            class="text-white h7"
+            onmousedown="return false;"
+            style="cursor: context-menu;"
+          >
+            Lấy tồn kho
+          </div>
           <b-button
-            id="form-button-import"
-            class="shadow-brand-1 bg-brand-1 text-white h8 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
+            v-if="statusImportButton().show"
+            :disabled="statusImportButton().disabled"
+            class="btn-brand-1 h8 aligns-items-button-center"
             variant="someThing"
-            style="height: 30px;"
             @click="onClickImportButton()"
           >
             <b-icon-arrow-repeat
@@ -86,29 +86,29 @@
             />
             Import
           </b-button>
-        </b-form-group>
+        </div>
+
         <!-- END - Button import -->
-      </b-row>
+      </v-card-actions>
       <!-- END - Section form input -->
 
     </b-form>
     <!-- END - Section search -->
 
-    <!-- START - Section product Import list -->
+    <!-- START - List -->
     <div class="bg-white rounded shadow my-1">
       <!-- START - Title -->
-      <b-form class="border-bottom p-1">
+      <div class="border-bottom p-1">
         <strong
           class="text-brand-1"
         >
           Danh sách sản phẩm kiểm kê
         </strong>
-      </b-form>
+      </div>
       <!-- END - Title -->
 
       <!-- START - Body -->
       <b-col
-        id="listProduct"
         class="py-1"
       >
         <!-- START - Table -->
@@ -234,12 +234,15 @@
         <!-- END - Table -->
 
         <!-- START - Button group -->
-        <b-button-group class="float-right my-1">
+        <b-row
+          align-h="end"
+          class="mt-1 mx-10"
+        >
           <b-button
-            v-show="statusSaveButton().show"
+            v-if="statusSaveButton().show"
             :disabled="statusSaveButton().disabled"
             variant="someThing"
-            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
+            class="ml-1 btn-brand-1 h8"
             @click="onClickSaveButton()"
           >
             <b-icon-download />
@@ -247,9 +250,10 @@
           </b-button>
 
           <b-button
+            v-if="statusExcelButton().show"
+            :disabled="statusExcelButton().disabled || originalProducts.length === 0"
             variant="someThing"
-            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
-            :disabled="originalProducts.length === 0"
+            class="ml-1 btn-brand-1 h8"
             @click="onClickExportButton()"
           >
             <b-icon-file-earmark-excel-fill />
@@ -263,14 +267,14 @@
             <b-icon-x />
             Đóng
           </b-button>
-        </b-button-group>
+        </b-row>
         <!-- END - Button group -->
 
       </b-col>
       <!-- END - Body -->
 
     </div>
-    <!-- END - Section product Import list -->
+    <!-- END - List -->
 
     <!-- START - Warehouse Inventory Modal Close -->
     <b-modal
@@ -404,6 +408,7 @@
 import toasts from '@core/utils/toasts/toasts'
 import { mapActions, mapGetters } from 'vuex'
 import { formatISOtoVNI, reverseVniDate } from '@/@core/utils/filter'
+import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
   WAREHOUSEINVENTORY,
   WAREHOUSE_TYPES_GETTER,
@@ -422,6 +427,7 @@ import {
 
 export default {
   components: {
+    VCardActions,
   },
 
   data() {
@@ -701,6 +707,12 @@ export default {
 
     statusSaveButton() {
       return this.$permission('WarehousesInventoryUpdate', 'WarehousesInventoryUpdateSave')
+    },
+    statusImportButton() {
+      return this.$permission('WarehousesInventoryUpdate', 'WarehousesInventoryUpdateImport')
+    },
+    statusExcelButton() {
+      return this.$permission('WarehousesInventoryUpdate', 'WarehousesInventoryUpdateExcel')
     },
 
     onClickCloseButton() {

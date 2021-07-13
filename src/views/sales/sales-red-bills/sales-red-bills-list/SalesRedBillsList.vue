@@ -184,7 +184,7 @@
             text-field="name"
           />
           <b-button
-            v-show="statusExcelButton().show"
+            v-if="statusExcelButton().show"
             :disabled="statusExcelButton().disabled"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
@@ -194,7 +194,7 @@
             Xuất Excel
           </b-button>
           <b-button
-            v-show="statusPrintButton().show"
+            v-if="statusPrintButton().show"
             :disabled="statusPrintButton().disabled"
             variant="someThing"
             class="align-items-button-center h8 ml-1 btn-brand-1"
@@ -204,7 +204,7 @@
             In HĐ
           </b-button>
           <b-button
-            v-show="statusUpdateButton().show"
+            v-if="statusUpdateButton().show"
             :disabled="statusUpdateButton().disabled"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
@@ -217,7 +217,7 @@
             Cập nhật HĐ
           </b-button>
           <b-button
-            v-show="statusCreateButton().show"
+            v-if="statusCreateButton().show"
             :disabled="statusCreateButton().disabled"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"
@@ -230,7 +230,7 @@
             Thêm mới
           </b-button>
           <b-button
-            v-show="statusDeleteButton().show"
+            v-if="statusDeleteButton().show"
             :disabled="statusDeleteButton().disabled"
             class="align-items-button-center h8 ml-1 btn-brand-1"
             variant="someThing"

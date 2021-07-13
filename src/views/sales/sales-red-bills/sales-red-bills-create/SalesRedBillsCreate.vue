@@ -396,7 +396,7 @@
               align-h="end"
             >
               <b-button
-                v-show="statusSaveButton().show"
+                v-if="statusSaveButton().show"
                 :disabled="statusSaveButton().disabled || invalid"
                 variant="none"
                 class="btn-brand-1 aligns-items-button-center"
@@ -410,7 +410,7 @@
               </b-button>
 
               <b-button
-                v-show="statusSavePrintButton().show"
+                v-if="statusSavePrintButton().show"
                 :disabled="statusSavePrintButton().disabled || invalid"
                 variant="none"
                 class="ml-1 btn-brand-1 aligns-items-button-center"

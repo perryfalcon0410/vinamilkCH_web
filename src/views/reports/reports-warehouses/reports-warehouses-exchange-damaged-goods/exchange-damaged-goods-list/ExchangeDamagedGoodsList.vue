@@ -23,7 +23,7 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="statusExcelButton().show"
+            v-if="statusExcelButton().show"
             :disabled="statusExcelButton().disabled || reportInventory.length === 0"
             class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
             variant="someThing"

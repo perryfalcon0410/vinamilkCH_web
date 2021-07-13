@@ -23,7 +23,7 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="statusCreateButton().show"
+            v-if="statusCreateButton().show"
             :disabled="statusCreateButton().disabled"
             class="btn-brand-1 h8 align-items-button-center rounded"
             variant="someThing"
@@ -36,7 +36,7 @@
             Thêm mới
           </b-button>
           <b-button
-            v-show="statusExcelButton().show"
+            v-if="statusExcelButton().show"
             :disabled="statusExcelButton().disabled || !customersData.length"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"

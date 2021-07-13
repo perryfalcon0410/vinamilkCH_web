@@ -25,7 +25,7 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="statusPrintButton().show"
+            v-if="statusPrintButton().show"
             :disabled="statusPrintButton().disabled || warehousesInputOutputInventory.length === 0"
             class="rounded btn-brand-1 h8"
             variant="someThing"
@@ -35,7 +35,7 @@
             In
           </b-button>
           <b-button
-            v-show="statusExcelButton().show"
+            v-if="statusExcelButton().show"
             :disabled="statusExcelButton().disabled || warehousesInputOutputInventory.length === 0"
             class="ml-1 rounded btn-brand-1 h8"
             variant="someThing"

@@ -240,7 +240,7 @@
           <b-row class="mr-0 my-1 justify-content-end">
             <b-button-group>
               <b-button
-                v-show="statusSaveButton().show"
+                v-if="statusSaveButton().show"
                 :disabled="statusSaveButton().disabled"
                 class="btn-brand-1 rounded h8 align-items-button-center mr-1"
                 variant="someThing"

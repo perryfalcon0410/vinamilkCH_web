@@ -22,7 +22,6 @@
           class="input-group-merge"
         >
           <b-form-input
-            id="form-input-stock-counting-code"
             v-model="stockCountingCode"
             class="h7"
             maxlength="40"

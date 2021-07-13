@@ -201,11 +201,10 @@
         xl
         lg="3"
         sm="4"
-        class="h7"
       >
         <!--"onmousedown" is prevent hightlight text -->
         <div
-          class="text-white"
+          class="text-white h7"
           onmousedown="return false;"
           style="cursor: context-menu;"
         >

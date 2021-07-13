@@ -560,7 +560,7 @@
         align-h="end"
       >
         <b-button
-          v-show="statusSaveButton().show"
+          v-if="statusSaveButton().show"
           :disabled="statusSaveButton().disabled || invalid"
           variant="someThing"
           class="btn-brand-1 aligns-items-button-center"

@@ -265,7 +265,7 @@
             align-v="center"
           >
             <b-button
-              v-show="statusReturnButton().show"
+              v-if="statusReturnButton().show"
               :disabled="statusReturnButton().disabled || invalid"
               variant="someThing"
               class="btn-brand-1 align-items-button-center h8"

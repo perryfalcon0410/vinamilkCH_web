@@ -22,7 +22,7 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="statusPrintButton().show"
+            v-if="statusPrintButton().show"
             :disabled="statusPrintButton().disabled || rows.length === 0"
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
@@ -32,7 +32,7 @@
             In
           </b-button>
           <b-button
-            v-show="statusExcelButton().show"
+            v-if="statusExcelButton().show"
             :disabled="statusExcelButton().disabled || rows.length === 0"
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"

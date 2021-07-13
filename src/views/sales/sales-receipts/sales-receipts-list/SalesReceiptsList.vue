@@ -19,7 +19,7 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="statusPrintButton().show"
+            v-if="statusPrintButton().show"
             :disabled="statusPrintButton().disabled || !selectedRows.length"
             class="btn-brand-1 h8 align-items-button-center"
             variant="someThing"

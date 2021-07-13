@@ -25,7 +25,7 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="statusCreateButton().show"
+            v-if="statusCreateButton().show"
             :disabled="statusCreateButton().disabled"
             class="btn-brand-1 rounded h8 align-items-button-center"
             variant="someThing"

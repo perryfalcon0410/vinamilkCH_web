@@ -1,29 +1,27 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column p-0"
+    class="px-0"
   >
-    <!-- START - Section earch -->
-    <b-form class="bg-white shadow rounded">
+    <!-- START - Section search -->
+    <b-form>
       <!-- START - Section form input -->
-      <b-row
-        class="v-search-form border-top mx-0 py-1"
-        align-v="center"
+      <v-card-actions
+        title="Tìm kiếm"
+        class="d-print-none"
       >
         <!-- START - Inventory code -->
         <b-col
-          lg="2"
-          md="4"
+          xl="2"
+          sm
+          class="h7"
         >
 
-          <div class="h7">
+          <div>
             Mã kiểm kê
           </div>
           <b-form-input
-            id="form-input-stock-counting-code"
             v-model="stockCountingCode"
-            class="h7"
-            size="sm"
             maxlength="40"
             trim
             disabled
@@ -33,86 +31,91 @@
 
         <!-- START - Date -->
         <b-col
-          lg="2"
-          md="4"
+          xl="2"
+          sm
+          class="h7"
         >
-
-          <div class="h7">
+          <div>
             Ngày
           </div>
           <b-form-input
-            id="form-input-counting-date"
-            v-model="countingDate"
-            class="h7"
-            size="sm"
-            maxlength="20"
+            v-model="date"
             trim
             disabled
           />
 
         </b-col>
         <!-- END - Date -->
+
         <!-- START - Warehouse -->
         <b-col
-          lg="2"
-          md="4"
+          xl="2"
+          sm
+          class="h7"
         >
-          <div class="h7">
+          <div>
             Kho
           </div>
           <tree-select
             v-model="warehouseType"
             :options="warehouseTypes"
-            class="h7"
             placeholder="Tất cả"
             disabled
           />
         </b-col>
         <!-- END - Warehouse -->
 
-        <!-- START - Button take inventory -->
-        <b-form-group
-          class="ml-lg-1"
-          label="Lấy tồn kho"
-          label-for="form-button-get-inventory"
-          label-class="text-white"
-        >
-          <b-button
-            id="form-button-get-inventory"
-            class="shadow-brand-1 bg-brand-1 text-white h8 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
-            variant="someThing"
-            style="height: 30px;"
-            @click="onClickGetInventoryStocksButton()"
-          >
-            Lấy tồn kho
-          </b-button>
-        </b-form-group>
-        <!-- END - Button take inventory -->
+        <b-button-group>
+          <!-- START - Button take inventory -->
+          <div class="mx-50">
+            <div
+              class="text-white h7"
+              onmousedown="return false;"
+              style="cursor: context-menu;"
+            >
+              Lấy tồn kho
+            </div>
+            <b-button
+              v-if="statusTakeButton().show"
+              id="form-button-get-inventory"
+              :disabled="statusTakeButton().disabled"
+              class="btn-brand-1 h8 aligns-items-button-center"
+              variant="someThing"
+              @click="onClickGetInventoryStocksButton()"
+            >
+              Lấy tồn kho
+            </b-button>
+          </div>
+          <!-- END - Button take inventory -->
 
-        <!-- START - Button import -->
-        <b-form-group
-          class="ml-lg-1"
-          label="Import"
-          label-for="form-button-import"
-          label-class="text-white"
-        >
-          <b-button
-            id="form-button-import"
-            class="shadow-brand-1 bg-brand-1 text-white h8 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
-            variant="someThing"
-            style="height: 30px;"
-            @click="onClickImportButton()"
-          >
-            <b-icon-arrow-repeat
-              scale="1.5"
-              class="mr-1"
-            />
-            Import
-          </b-button>
-        </b-form-group>
+          <!-- START - Button import -->
+          <div>
+            <div
+              class="text-white h7"
+              onmousedown="return false;"
+              style="cursor: context-menu;"
+            >
+              Import
+            </div>
+            <b-button
+              v-if="statusImportButton().show"
+              id="form-button-import"
+              :disabled="statusImportButton().disabled"
+              class="btn-brand-1 h8 aligns-items-button-center"
+              variant="someThing"
+              @click="onClickImportButton()"
+            >
+              <b-icon-arrow-repeat
+                scale="1.5"
+                class="mr-1"
+              />
+              Import
+            </b-button>
+          </div>
         <!-- END - Button import -->
+        </b-button-group>
 
-      </b-row>
+      </v-card-actions>
       <!-- END - Section form input -->
 
     </b-form>
@@ -292,10 +295,10 @@
         <!-- START - Button group -->
         <b-button-group class="float-right my-1">
           <b-button
-            v-show="statusSaveButton().show"
+            v-if="statusSaveButton().show"
             :disabled="statusSaveButton().disabled || isCreated"
             variant="someThing"
-            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white font-weight-bolder h8"
+            class="ml-1 btn-brand-1 rounded h8"
             @click="onClickSaveButton()"
           >
             <b-icon-download />
@@ -303,9 +306,10 @@
           </b-button>
 
           <b-button
+            v-if="statusExcelButton().show"
+            :disabled="statusExcelButton().disabled || !isCreated"
             variant="someThing"
-            class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white font-weight-bolder h8"
-            :disabled="!isCreated"
+            class="ml-1 btn-brand-1 rounded h8"
             @click="onClickExportButton()"
           >
             <b-icon-file-earmark-excel-fill />
@@ -483,7 +487,8 @@
 <script>
 import toasts from '@core/utils/toasts/toasts'
 import { mapActions, mapGetters } from 'vuex'
-import { formatDateToLocale, reverseVniDate } from '@/@core/utils/filter'
+import { reverseVniDate, nowDate } from '@/@core/utils/filter'
+import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
   WAREHOUSEINVENTORY,
   WAREHOUSE_TYPES_GETTER,
@@ -503,12 +508,13 @@ import {
 
 export default {
   components: {
+    VCardActions,
   },
 
   data() {
     return {
       inventoryCode: '',
-      countingDate: formatDateToLocale(new Date()),
+      date: nowDate(),
       warehouseType: null,
       isImportModalShow: false,
       isModalCloseShow: false,
@@ -783,6 +789,15 @@ export default {
     statusSaveButton() {
       return this.$permission('WarehousesInventoryCreate', 'WarehousesInventoryCreateSave')
     },
+    statusImportButton() {
+      return this.$permission('WarehousesInventoryCreate', 'WarehousesInventoryImport')
+    },
+    statusExcelButton() {
+      return this.$permission('WarehousesInventoryCreate', 'WarehousesInventoryExcel')
+    },
+    statusTakeButton() {
+      return this.$permission('WarehousesInventoryCreate', 'WarehousesInventoryTake')
+    },
 
     onClickCloseButton() {
       if (!this.isCreated) {
@@ -815,9 +830,7 @@ export default {
     onClickExportButton() {
       this.EXPORT_FILLED_STOCKS_ACTION({
         id: this.warehousesInventoryData.id,
-        date: reverseVniDate(this.countingDate),
-        formId: 5,
-        ctrlId: 7,
+        date: reverseVniDate(this.date),
       })
     },
     onClickSearchButton() {
@@ -909,7 +922,7 @@ export default {
       data.append('file', this.importFile)
       this.GET_FAILED_IMPORT_FILE_ACTION({
         data,
-        date: reverseVniDate(this.countingDate),
+        date: reverseVniDate(this.date),
       })
     },
     hideImportMessage() {

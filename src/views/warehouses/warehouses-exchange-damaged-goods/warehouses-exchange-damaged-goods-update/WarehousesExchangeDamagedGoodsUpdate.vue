@@ -269,7 +269,7 @@
           <b-row class="m-1 justify-content-end">
             <b-button-group>
               <b-button
-                v-show="statusSaveButton().show"
+                v-if="statusSaveButton().show"
                 :disabled="statusSaveButton().disabled || invalid"
                 variant="someThing"
                 class="btn-brand-1 rounded text-uppercase aligns-items-button-center"

@@ -22,7 +22,7 @@
         </strong>
         <b-button-group>
           <b-button
-            v-show="statusExcelButton().show"
+            v-if="statusExcelButton().show"
             :disabled="statusExcelButton().disabled || promotionRows.length === 0"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
