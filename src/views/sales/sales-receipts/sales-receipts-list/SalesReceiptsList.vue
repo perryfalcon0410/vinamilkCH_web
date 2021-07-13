@@ -72,6 +72,7 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+
           <template
             slot="column-filter"
             slot-scope="props"
@@ -102,6 +103,7 @@
               {{ $formatNumberToLocale(salesReceiptsTotal.allTotal) }}
             </b-row>
           </template>
+
           <template
             slot="table-column"
             slot-scope="props"
@@ -125,6 +127,7 @@
             >
               <div>
                 <v-icon-detail
+                  :disabled="statusDetailButton().disabled"
                   popover-content="Chi tiết hóa đơn"
                   @click="showInvoiceDetailModal(props.row.id, props.row.numberBill)"
                 />

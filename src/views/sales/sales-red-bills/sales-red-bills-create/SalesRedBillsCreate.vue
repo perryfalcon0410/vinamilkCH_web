@@ -396,9 +396,10 @@
               align-h="end"
             >
               <b-button
+                v-show="statusSaveButton().show"
+                :disabled="statusSaveButton().disabled || invalid"
                 variant="none"
                 class="btn-brand-1 aligns-items-button-center"
-                :disabled="invalid"
                 @click="onClickCreateBill()"
               >
                 <b-icon
@@ -409,9 +410,10 @@
               </b-button>
 
               <b-button
+                v-show="statusSavePrintButton().show"
+                :disabled="statusSavePrintButton().disabled || invalid"
                 variant="none"
                 class="ml-1 btn-brand-1 aligns-items-button-center"
-                :disabled="invalid"
                 @click="onClickCreateAndPrintBill()"
               >
                 <b-icon
@@ -520,6 +522,7 @@ export default {
     ValidationObserver,
     PrintFormRedBills,
   },
+
   data() {
     return {
       idCreate: {},
@@ -654,6 +657,7 @@ export default {
       dateFormatVNI,
     }
   },
+
   computed: {
     ...mapGetters(RED_INVOICE, [
       CUSTOMERS_GETTER,
@@ -713,6 +717,7 @@ export default {
       return this.products.reduce((accum, item) => accum + Number(item.productExportedOriginal), 0)
     },
   },
+
   watch: {
     getIdCreateRedinvoice() {
       this.idCreate = { ...this.getIdCreateRedinvoice }
@@ -758,12 +763,14 @@ export default {
       next()
     }
   },
+
   mounted() {
     // this.GET_CUSTOMERS_ACTION({
     //   formId: this.formId,
     //   ctrlId: this.ctrlId,
     // })
   },
+
   methods: {
     ...mapActions(RED_INVOICE, [
       GET_CUSTOMERS_ACTION,
@@ -771,6 +778,14 @@ export default {
       CREATE_RED_BILL_ACTION,
       PRINT_RED_INVOICES_ACTION,
     ]),
+
+    statusSaveButton() {
+      return this.$permission('SalesRedBillsCreate', 'RedBillsCreateSave')
+    },
+    statusSavePrintButton() {
+      return this.$permission('SalesRedBillsCreate', 'RedBillsCreateSave&Print')
+    },
+
     routeBack() {
       this.$router.back()
     },

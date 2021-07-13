@@ -287,9 +287,10 @@
           align-h="end"
         >
           <b-button
+            v-show="isDisableSave || statusSaveButton().show"
+            :disabled="statusSaveButton().disabled || invalid"
             variant="someThing"
             class="align-items-button-center btn-brand-1 text-uppercase h8"
-            :hidden="isDisableSave"
             @click="onClickUpdateWarehousesOutput"
           >
             <b-icon-download
@@ -533,6 +534,7 @@ export default {
       isDisableSave: false,
     }
   },
+
   computed: {
     ...mapGetters(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_BY_ID_GETTER,
@@ -560,6 +562,7 @@ export default {
       } return []
     },
   },
+
   watch: {
     getWarehousesOutput() {
       const dataWarehousesOutput = { ...this.getWarehousesOutput }
@@ -621,6 +624,7 @@ export default {
       })
     },
   },
+
   mounted() {
     const paramGetDetailsWarehousesOutput = {
       id: this.warehousesOutput.id,
@@ -629,6 +633,7 @@ export default {
     this.GET_WAREHOUSES_OUTPUT_BY_ID_ACTION(paramGetDetailsWarehousesOutput)
     this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION(paramGetDetailsWarehousesOutput)
   },
+
   methods: {
     ...mapMutations(WAREHOUSES_OUTPUT, [
       CLEAR_EXPORT_PRODUCTS_MUTATION,
@@ -638,6 +643,11 @@ export default {
       GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION,
       UPDATE_WAREHOUSES_OUTPUT_ACTION,
     ]),
+
+    statusSaveButton() {
+      return this.$permission('WarehousesOutputUpdate', 'WarehousesOutputUpdateSave')
+    },
+
     navigateBack() {
       this.$router.back()
     },

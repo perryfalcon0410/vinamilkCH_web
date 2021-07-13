@@ -337,9 +337,10 @@
           <b-row class="m-1 justify-content-end">
             <b-button-group>
               <b-button
+                v-show="statusSaveButton().show"
+                :disabled="statusSaveButton().disabled || invalid"
                 variant="someThing"
                 class="btn-brand-1 rounded text-uppercase aligns-items-button-center"
-                :disabled="invalid"
                 @click="createExport"
               >
                 <b-icon-download
@@ -720,6 +721,10 @@ export default {
       GET_WAREHOUSE_TYPE_ACTION,
       CREATE_EXPORT_ACTION,
     ]),
+
+    statusSaveButton() {
+      return this.$permission('WarehousesOutputCreate', 'WarehousesOutputCreateSave')
+    },
 
     showModal() {
       this.CLEAR_EXPORT_PRODUCTS_MUTATION()

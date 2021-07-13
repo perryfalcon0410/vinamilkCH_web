@@ -509,8 +509,9 @@
         align-h="end"
       >
         <b-button
+          v-show="statusSaveButton().show"
+          :disabled="statusSaveButton().disabled || invalid"
           variant="someThing"
-          :disabled="invalid"
           class="btn-brand-1 aligns-items-button-center"
           @click="onClickSaveButton()"
         >
@@ -802,6 +803,10 @@ export default {
       GET_CLOSELY_TYPES_ACTION,
       GET_SHOP_LOCATIONS_ACTION,
     ]),
+
+    statusSaveButton() {
+      return this.$permission('SalesCustomersCreate', 'CustomersCreateSave')
+    },
 
     createCustomer() {
       this.$refs.formContainer.validate().then(success => {

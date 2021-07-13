@@ -292,9 +292,10 @@
         <!-- START - Button group -->
         <b-button-group class="float-right my-1">
           <b-button
+            v-show="statusSaveButton().show"
+            :disabled="statusSaveButton().disabled || isCreated"
             variant="someThing"
             class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white font-weight-bolder h8"
-            :disabled="isCreated"
             @click="onClickSaveButton()"
           >
             <b-icon-download />
@@ -778,6 +779,11 @@ export default {
       GET_SAMPLE_IMPORT_FILE_ACTION,
       GET_FAILED_IMPORT_FILE_ACTION,
     ]),
+
+    statusSaveButton() {
+      return this.$permission('WarehousesInventoryCreate', 'WarehousesInventoryCreateSave')
+    },
+
     onClickCloseButton() {
       if (!this.isCreated) {
         this.isModalCloseShow = !this.isModalCloseShow

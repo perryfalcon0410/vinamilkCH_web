@@ -88,7 +88,7 @@
           >
             <div v-if="props.column.field === 'feature'">
               <v-icon-detail
-                scale="1.5"
+                :disabled="statusCreateButton().disabled"
                 @click="navigateToDetail(props.row.idDetail)"
               />
             </div>
@@ -319,10 +319,11 @@ export default {
           formatFn: this.$formatNumberToLocale,
         },
         {
-          label: 'Chức năng',
+          label: 'Thao tác',
           field: 'feature',
           sortable: false,
           width: '40px',
+          hidden: !this.statusCreateButton().show,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -402,9 +403,14 @@ export default {
     ...mapActions(RETURNEDGOODS, [
       GET_RETURNED_GOODS_ACTION,
     ]),
+
     statusCreateButton() {
       return this.$permission('SalesReturnedGoods', 'SalesReturnedGoodsCreate')
     },
+    statusDetailButton() {
+      return this.$permission('SalesReturnedGoods', 'SalesReturnedGoodsDetail')
+    },
+
     showSalesReturnedGoodsCreate() {
       this.$router.push({ name: 'sales-returned-goods-create' })
     },

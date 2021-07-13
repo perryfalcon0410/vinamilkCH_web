@@ -265,8 +265,9 @@
             align-v="center"
           >
             <b-button
+              v-show="statusReturnButton().show"
+              :disabled="statusReturnButton().disabled || invalid"
               variant="someThing"
-              :disabled="invalid"
               class="btn-brand-1 align-items-button-center h8"
               @click="onSubmit"
             >
@@ -570,11 +571,24 @@ export default {
   destroyed() {
     this.CLEAR_RETURNED_GOODS_MUTATION()
   },
+
   mounted() {
     this.selectedReason = saleData.reasonReturnGoods.find(item => item.id === 'BREAKITEM').id
   },
 
   methods: {
+    ...mapMutations(RETURNEDGOODS, [
+      CLEAR_RETURNED_GOODS_MUTATION,
+    ]),
+    ...mapActions(RETURNEDGOODS, [
+      GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION,
+      CREATE_RETURNED_GOOD_ACTION,
+    ]),
+
+    statusReturnButton() {
+      return this.$permission('SalesReturnedGoodsCreate', 'ReturnedGoodsCreate')
+    },
+
     showSelectReceptModal() {
       this.isShowSelectReceptModal = true
     },
@@ -597,13 +611,6 @@ export default {
       this.billInfo.moneyPayback = total
       this.billInfo.orderNumber = orderNumber
     },
-    ...mapMutations(RETURNEDGOODS, [
-      CLEAR_RETURNED_GOODS_MUTATION,
-    ]),
-    ...mapActions(RETURNEDGOODS, [
-      GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION,
-      CREATE_RETURNED_GOOD_ACTION,
-    ]),
     onSubmit() {
       if (this.billInfo.orderNumber === null) {
         toasts.error('Xin vui lòng chọn đơn hàng muốn trả!')

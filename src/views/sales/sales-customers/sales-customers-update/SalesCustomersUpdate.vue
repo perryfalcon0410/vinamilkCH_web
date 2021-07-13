@@ -560,8 +560,9 @@
         align-h="end"
       >
         <b-button
+          v-show="statusSaveButton().show"
+          :disabled="statusSaveButton().disabled || invalid"
           variant="someThing"
-          :disabled="invalid"
           class="btn-brand-1 aligns-items-button-center"
           @click="onClickSaveButton()"
         >
@@ -873,6 +874,10 @@ export default {
       UPDATE_CUSTOMER_ACTION,
       GET_CUSTOMER_BY_ID_ACTION,
     ]),
+
+    statusSaveButton() {
+      return this.$permission('SalesCustomersUpdate', 'CustomersUpdateSave')
+    },
 
     canDisableInputField(valueInput) {
       switch (this.isEdit) {

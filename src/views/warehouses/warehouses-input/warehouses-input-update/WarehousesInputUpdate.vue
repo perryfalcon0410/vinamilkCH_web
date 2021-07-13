@@ -477,10 +477,10 @@
             <b-row class="m-1 justify-content-end">
               <b-button-group>
                 <b-button
-                  v-if="isTransDate || importType === inputType"
+                  v-if=" statusSaveButton().show || isTransDate || importType === inputType"
+                  :disabled="statusSaveButton().disabled || invalid"
                   class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0 text-uppercase rounded"
                   variant="someThing"
-                  :disabled="invalid"
                   @click="updateReceipt"
                 >
                   <b-icon
@@ -860,6 +860,10 @@ export default {
       GET_PRODUCTS_ACTION,
       UPDATE_RECEIPT_ACTION,
     ]),
+
+    statusSaveButton() {
+      return this.$permission('WarehousesInputUpdate', 'WarehousesInputUpdateSave')
+    },
 
     navigateBack() {
       this.$router.back()

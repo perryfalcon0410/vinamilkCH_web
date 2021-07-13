@@ -16,7 +16,7 @@ export default {
     },
     popoverContent: {
       type: String,
-      default: 'Chình sửa',
+      default: 'Chỉnh sửa',
     },
     disabled: {
       type: Boolean,

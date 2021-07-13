@@ -240,18 +240,21 @@
           <b-row class="mr-0 my-1 justify-content-end">
             <b-button-group>
               <b-button
-                class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center mr-1"
+                v-show="statusSaveButton().show"
+                :disabled="statusSaveButton().disabled"
+                class="btn-brand-1 rounded h8 align-items-button-center mr-1"
                 variant="someThing"
                 @click="save"
               >
                 <b-icon
+                  class="mr-50"
                   icon="download"
                 />
                 Lưu
               </b-button>
 
               <b-button
-                class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
+                class="btn-brand-1 rounded h8 align-items-button-center"
                 @click="navigateBack"
               >
                 <b-icon
@@ -493,6 +496,10 @@ export default {
       GET_COMBO_PRODUCTS_DETAILS_ACTION,
       CREATE_COMBO_PRODUCT_ACTION,
     ]),
+
+    statusSaveButton() {
+      return this.$permission('WarehousesComboCreate', 'WarehousesComboCreateSave')
+    },
 
     onComboSelected(combo) {
       if (combo) {

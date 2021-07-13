@@ -496,9 +496,10 @@
           <b-row class="m-1 justify-content-end">
             <b-button-group>
               <b-button
+                v-show="statusSaveButton().show"
+                :disabled="statusSaveButton().disabled || invalid"
                 class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder mr-1"
                 variant="someThing"
-                :disabled="invalid"
                 @click="create"
               >
                 <b-icon
@@ -942,6 +943,7 @@ export default {
       ...this.decentralization,
     })
   },
+
   // before page leave, this will check
   beforeRouteLeave(to, from, next) {
     if (this.isFieldCanCheck) {
@@ -955,12 +957,18 @@ export default {
       next()
     }
   },
+
   methods: {
     ...mapActions(WAREHOUSEINPUT, [
       CREATE_SALE_IMPORT_ACTION,
       GET_WAREHOUSES_TYPE_ACTION,
       GET_PRODUCTS_ACTION,
     ]),
+
+    statusSaveButton() {
+      return this.$permission('WarehousesInputCreate', 'WarehousesInputCreateSave')
+    },
+
     // clear text in input form in case changes import type
     clearFormText(item) {
       if (item.id !== 0) {

@@ -282,9 +282,10 @@
             <b-row class="m-1 justify-content-end">
               <b-button-group>
                 <b-button
+                  v-show="statusSaveButton().show"
+                  :disabled="statusSaveButton().disabled || invalid"
                   variant="someThing"
                   class="btn-brand-1 rounded text-uppercase aligns-items-button-center h8"
-                  :disabled="invalid"
                   @click="onClickSaveButton"
                 >
                   <b-icon-download
@@ -585,6 +586,7 @@ export default {
       next()
     }
   },
+
   methods: {
     ...mapActions(WAREHOUSES_EXCHANGE_DAMAGED_GOODS, [
       CREATE_EXCHANGE_DAMAGED_GOODS_ACTION,
@@ -592,6 +594,10 @@ export default {
       GET_PRODUCTS_ACTION,
       GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION,
     ]),
+
+    statusSaveButton() {
+      return this.$permission('WarehousesExchangeDamagedGoodsCreate', 'WarehousesExchangeDamagedGoodsCreateSave')
+    },
 
     createDamagedGoods() {
       this.$refs.formContainer.validate().then(success => {

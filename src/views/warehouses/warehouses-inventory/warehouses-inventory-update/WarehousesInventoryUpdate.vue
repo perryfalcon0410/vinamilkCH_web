@@ -236,6 +236,8 @@
         <!-- START - Button group -->
         <b-button-group class="float-right my-1">
           <b-button
+            v-show="statusSaveButton().show"
+            :disabled="statusSaveButton().disabled"
             variant="someThing"
             class="ml-1 shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
             @click="onClickSaveButton()"
@@ -696,6 +698,11 @@ export default {
       GET_WAREHOUSE_INVENTORY_DETAIL_ACTION,
       UPDATE_WAREHOUSE_INVENTORY_ACTION,
     ]),
+
+    statusSaveButton() {
+      return this.$permission('WarehousesInventoryUpdate', 'WarehousesInventoryUpdateSave')
+    },
+
     onClickCloseButton() {
       this.isModalCloseShow = !this.isModalCloseShow
     },
