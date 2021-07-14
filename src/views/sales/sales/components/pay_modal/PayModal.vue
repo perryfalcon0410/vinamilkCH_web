@@ -1517,6 +1517,7 @@ export default {
 
     createSaleOrder() {
       let isValid = true
+      let totalQuantity = 0
       const paramPromotionInfo = this.promotionPrograms.filter(p => p.isUse && p.isSelected)
       paramPromotionInfo.forEach(program => {
         program.products.forEach(product => {
@@ -1530,6 +1531,27 @@ export default {
             toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
           }
         })
+        if (program.promotionType === Number(saleData.promotionType[0].id) && program.contraintType === Number(saleData.constraintType[1])) {
+          totalQuantity = 0
+          const productsSameQuantityMax = program.products.filter(i => i.quantityMax === program.products[0].quantityMax)
+          if (productsSameQuantityMax.length === program.products.length) {
+            program.products.forEach(product => {
+              totalQuantity += product.quantity
+            })
+            const maxQuantity = program.products[0].quantityMax
+            if (totalQuantity !== maxQuantity) {
+              toasts.error(`Tổng số lượng khuyến mãi phải bằng số lượng cho phép của ${program.promotionProgramName}`)
+            }
+          }
+        } else if (program.promotionType === Number(saleData.promotionType[1].id) && program.isSelected) {
+          totalQuantity = 0
+          program.products.forEach(product => {
+            totalQuantity += product.quantity
+          })
+          if (totalQuantity <= 0) {
+            toasts.error(`Tổng số lượng khuyến mãi của ${program.promotionProgramName} phải lớn hơn 0`)
+          }
+        }
       })
 
       if (isValid) {
@@ -1588,6 +1610,7 @@ export default {
     },
     printSaleOrderTemp() {
       let isValid = true
+      let totalQuantity = 0
       const parampromotionInfo = this.promotionPrograms.filter(p => p.isUse && p.isSelected)
       parampromotionInfo.forEach(program => {
         program.products.forEach(product => {
@@ -1601,6 +1624,27 @@ export default {
             toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
           }
         })
+        if (program.promotionType === Number(saleData.promotionType[0].id) && program.contraintType === Number(saleData.constraintType[1])) {
+          totalQuantity = 0
+          const productsSameQuantityMax = program.products.filter(i => i.quantityMax === program.products[0].quantityMax)
+          if (productsSameQuantityMax.length === program.products.length) {
+            program.products.forEach(product => {
+              totalQuantity += product.quantity
+            })
+            const maxQuantity = program.products[0].quantityMax
+            if (totalQuantity !== maxQuantity) {
+              toasts.error(`Tổng số lượng khuyến mãi phải bằng số lượng cho phép của ${program.promotionProgramName}`)
+            }
+          }
+        } else if (program.promotionType === Number(saleData.promotionType[1].id) && program.isSelected) {
+          totalQuantity = 0
+          program.products.forEach(product => {
+            totalQuantity += product.quantity
+          })
+          if (totalQuantity <= 0) {
+            toasts.error(`Tổng số lượng khuyến mãi của ${program.promotionProgramName} phải lớn hơn 0`)
+          }
+        }
       })
 
       if (isValid) {

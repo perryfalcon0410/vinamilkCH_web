@@ -36,8 +36,8 @@ export default {
     { id: '1', label: 'Khuyến mãi bằng tay' },
   ],
   constraintType: [
-    { id: '0', label: 'Mỗi số sản phẩm sẽ có số lượng riêng' },
-    { id: '1', label: 'Tổng số lượng sản phẩm nhất định' },
+    { id: '0', label: 'All free item' },
+    { id: '1', label: 'One free item' },
   ],
   orderType: [
     { id: '0', label: 'Hoá đơn offline' },
