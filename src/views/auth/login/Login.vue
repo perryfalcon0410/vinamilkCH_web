@@ -291,43 +291,89 @@ export default {
       }
     },
 
+    loginAction(success, data, token, statusValue) {
+      if (success) {
+        // Save password
+        if (this.saveStatus) {
+          localStorage.setItem('password', JSON.stringify(this.password))
+        }
+
+        this.mapSubForms(data.forms || [])
+
+        const userData = {
+          id: data.userId,
+          fullName: `${data.firstName} ${data.lastName}`,
+          username: data.username,
+          email: data.email,
+          usedRole: data.usedRole,
+          usedShop: data.usedShop,
+          phoneNumber: data.phoneNumber,
+
+          // Other
+          ability: this.forms,
+          avatar: require('@/assets/images/avatars/13-small.png'),
+          role: 'admin',
+          extras: {
+            eCommerceCartItemsCount: 0,
+          },
+        }
+
+        useJwt.setToken(token.replace('Bearer ', ''))
+        useJwt.setRefreshToken(token.replace('Bearer ', ''))
+        localStorage.setItem('userData', JSON.stringify(userData))
+
+        this.$ability.update(userData.ability)
+        // this.$ability.update([{ action: 'manage', subject: 'all' }]) // => Temp
+
+        this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
+          .then(() => {
+            toasts.success(`Chào mừng bạn trở lại, ${userData.fullName}.`)
+          })
+          .catch(error => {
+            this.$refs.loginForm.setErrors(error.response)
+          })
+      } else {
+        throw new Error(statusValue)
+      }
+    },
+
     preLogin() {
-      this.$refs.loginForm.validate().then(success => {
-        if (success) {
+      this.$refs.loginForm.validate().then(valid => {
+        if (valid) {
           useJwt
             .preLogin({
               username: this.username.toLowerCase(),
               password: this.password,
               captchaCode: this.captchaCodePost,
             })
-            .then(response => response.data)
             .then(res => {
+              const {
+                success, data, token, statusValue,
+              } = res.data
+
               if (!res) {
                 throw new Error('Server không hoạt động, vui lòng liên hệ Quản trị')
               }
 
-              if (res.success) {
+              if (success) {
                 // Check captcha exist
-                if (res.data) {
-                  this.checkCaptchaExist(res.data.captcha)
+                if (data) {
+                  this.checkCaptchaExist(data.captcha)
                 }
 
-                if (res.data.roles.length === 1 && res.data.roles[0].shops.length === 1) {
-                  this.login({
-                    roleSelected: { value: res.data.roles[0].id },
-                    shopSelected: { value: res.data.roles[0].shops[0].id },
-                  })
+                if (data.roles.length === 1 && data.roles[0].shops.length === 1) {
+                  this.loginAction(success, data, token, statusValue)
                 } else {
-                  this.roles = res.data.roles
+                  this.roles = data.roles
                   // show modal
                   this.$bvModal.show('roleAndShopModal')
                 }
               } else {
                 // Check captcha exist
-                if (res.data) {
-                  this.checkCaptchaExist(res.data.captcha)
+                if (data) {
+                  this.checkCaptchaExist(data.captcha)
                 }
-                throw new Error(res.statusValue)
+                throw new Error(statusValue)
               }
             })
             .catch(error => {
@@ -363,52 +409,10 @@ export default {
             success, data, token, statusValue,
           } = response.data
 
-          if (success) {
-            // Save password
-            if (this.saveStatus) {
-              localStorage.setItem('password', JSON.stringify(this.password))
-            }
-
-            this.mapSubForms(data.forms || [])
-
-            const userData = {
-              id: data.userId,
-              fullName: `${data.firstName} ${data.lastName}`,
-              username: data.username,
-              email: data.email,
-              usedRole: data.usedRole,
-              usedShop: data.usedShop,
-              phoneNumber: data.phoneNumber,
-
-              // Other
-              ability: this.forms,
-              avatar: require('@/assets/images/avatars/13-small.png'),
-              role: 'admin',
-              extras: {
-                eCommerceCartItemsCount: 0,
-              },
-            }
-
-            useJwt.setToken(token.replace('Bearer ', ''))
-            useJwt.setRefreshToken(token.replace('Bearer ', ''))
-            localStorage.setItem('userData', JSON.stringify(userData))
-
-            this.$ability.update(userData.ability)
-            // this.$ability.update([{ action: 'manage', subject: 'all' }]) // => Temp
-
-            this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
-              .then(() => {
-                toasts.success(`Chào mừng bạn trở lại, ${userData.fullName}.`)
-              })
-              .catch(error => {
-                this.$refs.loginForm.setErrors(error.response)
-              })
-          } else {
-            throw new Error(statusValue)
-          }
+          this.loginAction(success, data, token, statusValue)
         })
-        .catch(() => {
-          toasts.error('Server không hoạt động, vui lòng liên hệ admin')
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },

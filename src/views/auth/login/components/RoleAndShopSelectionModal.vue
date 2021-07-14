@@ -63,6 +63,7 @@ export default {
     'b-modal': VBModal,
     Ripple,
   },
+
   props: {
     visible: {
       type: Boolean,
@@ -73,12 +74,14 @@ export default {
       default: () => [],
     },
   },
+
   data() {
     return {
       roleSelected: null,
       shopSelected: null,
     }
   },
+
   computed: {
     isOkButtonDisabled() {
       return !this.roleSelected || !this.shopSelected
