@@ -17,18 +17,6 @@
         <strong class="text-brand-1">
           Danh sách hóa đơn bán hàng
         </strong>
-        <b-button-group>
-          <b-button
-            v-if="statusPrintButton().show"
-            :disabled="statusPrintButton().disabled || !selectedRows.length"
-            class="btn-brand-1 h8 align-items-button-center"
-            variant="someThing"
-            @click="onClickPrintButton"
-          >
-            <b-icon-printer-fill class="mr-25" />
-            In
-          </b-button>
-        </b-button-group>
       </b-row>
 
       <!-- Start table -->
@@ -45,16 +33,6 @@
             setCurrentPage: pageNumber,
           }"
           line-numbers
-          :select-options="{
-            enabled: true,
-            selectOnCheckboxOnly: true,
-            selectionInfoClass: 'custom-class',
-            selectionText: 'rows selected',
-            clearSelectionText: 'clear',
-            disableSelectInfo: true,
-            selectAllByGroup: true,
-            multipleColumns: true,
-          }"
           :sort-options="{
             enabled: false,
           }"
@@ -62,7 +40,6 @@
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
-          @on-selected-rows-change="selectionChanged"
         >
           <!-- START - Empty rows -->
           <div
@@ -109,7 +86,7 @@
             slot-scope="props"
           >
             <div
-              v-if="props.column.field == 'manipulation'"
+              v-if="props.column.field == 'feature'"
             >
               <b-icon-bricks scale="1.25" />
             </div>
@@ -123,15 +100,24 @@
             slot-scope="props"
           >
             <div
-              v-if="props.column.field == 'manipulation'"
+              v-if="props.column.field == 'feature'"
             >
-              <div>
+              <span class="pr-1">
+                <v-icon-printer
+                  v-if="statusPrintButton().show"
+                  :disabled="statusPrintButton().disabled"
+                  popover-content="In hóa đơn"
+                  @click="onClickPrintButton(props.row.id)"
+                />
+              </span>
+              <span>
                 <v-icon-detail
+                  v-if="statusDetailButton().show"
                   :disabled="statusDetailButton().disabled"
                   popover-content="Chi tiết hóa đơn"
                   @click="showInvoiceDetailModal(props.row.id, props.row.numberBill)"
                 />
-              </div>
+              </span>
             </div>
             <div
               v-else-if="props.column.field === 'discountMoney' || props.column.field === 'moneyAccumulated'"
@@ -249,6 +235,7 @@ import {
 } from '@core/utils/utils'
 import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
 // Icons
+import VIconPrinter from '@core/components/v-icons/IconPrinter.vue'
 import VIconDetail from '@core/components/v-icons/IconDetail.vue'
 import {
   // GETTERS
@@ -269,6 +256,7 @@ export default {
     SalesReceiptListSearch,
     PrintFormSalesReceipt,
     VIconDetail,
+    VIconPrinter,
   },
 
   data() {
@@ -401,9 +389,9 @@ export default {
         },
         {
           label: 'Thao tác',
-          field: 'manipulation',
+          field: 'feature',
           sortable: false,
-          hidden: !this.statusDetailButton().show,
+          width: '60px',
           thClass: 'text-center move-header',
           tdClass: 'text-center move-column',
         },
@@ -539,22 +527,18 @@ export default {
       this.$bvModal.show('detail-modal')
     },
 
-    onClickPrintButton() {
+    onClickPrintButton(id) {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
-      if (this.selectedRows.length) {
-        this.selectedRows.forEach(data => {
-          this.PRINT_SALES_RECEIPT_ACTION({
-            data: {
-              salesReceiptId: data.id,
-              params: { ...this.decentralization },
-            },
-            onSuccess: () => {
-              this.$root.$emit('bv::enable::popover')
-            },
-          })
-        })
-      }
+      this.PRINT_SALES_RECEIPT_ACTION({
+        data: {
+          salesReceiptId: id,
+          params: { ...this.decentralization },
+        },
+        onSuccess: () => {
+          this.$root.$emit('bv::enable::popover')
+        },
+      })
     },
 
     // START - Vue Good Table func
@@ -590,9 +574,6 @@ export default {
       this.onPaginationChange()
     },
     // END - Vue Good Table func
-    selectionChanged(params) {
-      this.selectedRows = [...params.selectedRows]
-    },
   },
 
 }

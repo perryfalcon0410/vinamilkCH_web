@@ -94,80 +94,80 @@
         <!-- START - Header -->
         <tr>
           <th
-            class="px-35"
+            class="px-20"
             style="width: 3.5%"
           >
             STT
           </th>
           <th
-            class="px-35"
-            style="width: 14%"
+            class="px-20"
+            style="width: 12%"
           >
             Mã HĐ
           </th>
           <th
-            class="px-35"
+            class="px-20"
             style="width: 11%"
           >
             Mã KH
           </th>
           <th
-            class="px-35"
-            style="width: 14%"
+            class="px-20"
+            style="width: 11%"
           >
             Tên KH
           </th>
           <th
-            class="text-right px-35"
-            style="width: 6%"
+            class="text-right px-20"
+            style="width: 5%"
           >
             Ngành
           </th>
           <th
-            class="text-right px-35"
+            class="text-right px-20"
             style="width: 6%"
           >
             Mã SP
           </th>
           <th
-            class="text-right px-35"
-            style="width: 12%"
+            class="text-left px-20"
+            style="width: 10%"
           >
             Tên SP
           </th>
           <th
-            class="text-right px-35"
+            class="text-right px-20"
             style="width: 4%"
           >
             ĐVT
           </th>
           <th
-            class="text-right px-35"
-            style="width: 3%"
+            class="text-right px-20"
+            style="width: 4%"
           >
             SL
           </th>
           <th
-            class="text-right px-35"
+            class="text-right px-20"
             style="width: 6%"
           >
             Giá
           </th>
           <th
-            class="text-right px-35"
-            style="width: 6%"
+            class="text-right px-20"
+            style="width: 7%"
           >
             T.Tiền
           </th>
           <th
-            class="text-right px-35 ws-nowrap"
-            style="width: 9%"
+            class="text-right px-20 ws-nowrap"
+            style="width: 10.5%"
           >
             KM chưa VAT
           </th>
           <th
-            class="text-right px-35 ws-nowrap"
-            style="width: 8%"
+            class="text-right px-20 ws-nowrap"
+            style="width: 9%"
           >
             Thanh toán
           </th>
@@ -180,50 +180,50 @@
           :key="index"
         >
           <td
-            class="px-35"
+            class="px-20"
           >
             {{ index + 1 }}
           </td>
-          <td class="px-35">
+          <td class="px-20">
             {{ products.orderNumber }}
           </td>
-          <td class="px-35">
+          <td class="px-20">
             {{ products.customerCode }}
           </td>
           <td
-            class="px-35"
+            class="px-20"
           >
             {{ products.customerName }}
           </td>
-          <td class="px-35">
+          <td class="px-20">
             {{ products.industry }}
           </td>
           <td
-            class="px-35"
+            class="px-20"
           >
             {{ products.productCode }}
           </td>
           <td
-            class="px-35"
+            class="px-20"
           >
             {{ products.productName }}
           </td>
-          <td class="px-35">
+          <td class="px-20">
             {{ products.unit }}
           </td>
-          <td class="text-right px-35">
+          <td class="text-right px-20">
             {{ $formatNumberToLocale(products.quantity) }}
           </td>
-          <td class="text-right px-35">
+          <td class="text-right px-20">
             {{ $formatNumberToLocale(products.price) }}
           </td>
-          <td class="text-right px-35">
+          <td class="text-right px-20">
             {{ $formatNumberToLocale(products.total) }}
           </td>
-          <td class="text-right px-35">
+          <td class="text-right px-20">
             {{ $formatNumberToLocale(products.promotion) }}
           </td>
-          <td class="text-right px-35">
+          <td class="text-right px-20">
             {{ $formatNumberToLocale(products.pay) }}
           </td>
         </tr>

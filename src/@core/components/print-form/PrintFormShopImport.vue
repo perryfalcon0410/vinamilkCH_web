@@ -280,7 +280,7 @@
                   <i>Điều chỉnh:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.adjusted) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.adjusted) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -290,7 +290,7 @@
                   <i>VAT:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.vat) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.vat) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -300,7 +300,7 @@
                   <i>T.Cộng:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.totalAmount) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.totalAmount) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -314,7 +314,7 @@
     <!-- NHẬP HÀNG -->
     <!-- START - Total section 2 -->
     <div
-      v-if="lstPo.type === 'Nhập hàng'"
+      v-if="lstPo.orderImport.length > 0"
       class="pb-1"
     >
       <b-row
@@ -509,7 +509,7 @@
                   <i>Điều chỉnh:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.adjusted) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.adjusted) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -519,7 +519,7 @@
                   <i>VAT:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.vat) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.vat) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -529,7 +529,7 @@
                   <i>T.Cộng:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.totalAmount) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.totalAmount) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -738,7 +738,7 @@
                   <i>Điều chỉnh:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.adjusted) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.adjusted) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -748,7 +748,7 @@
                   <i>VAT:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.vat) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.vat) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -758,7 +758,7 @@
                   <i>T.Cộng:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.totalAmount) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.totalAmount) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -772,7 +772,7 @@
     <!-- XUẤT TRẢ PO -->
     <!-- START - Total section 2 -->
     <div
-      v-if="lstPo.type === 'Xuất trả PO'"
+      v-if="lstImport.orderImport.length > 0"
       class="pb-1"
     >
       <b-row
@@ -782,7 +782,7 @@
         <div
           style="width: 56.3%;"
           class="ml-1"
-        ><strong class="big-font"><i>Loại: {{ lstPo.type }}</i> </strong>
+        ><strong class="big-font"><i>Loại: {{ lstImport.type }}</i> </strong>
         </div>
         <div
           style="width: 7%;"
@@ -793,7 +793,7 @@
           style="width: 8.7%;"
           class="text-right"
         >
-          <strong> {{ $formatNumberToLocale(lstPo.totalQuantity) }} </strong>
+          <strong> {{ $formatNumberToLocale(lstImport.totalQuantity) }} </strong>
         </div>
         <div
           style="width: 12.6%"
@@ -805,14 +805,14 @@
           style="width: 13.7%;"
           class="text-right"
         >
-          <strong> {{ $formatNumberToLocale(lstPo.totalAmount) }} </strong>
+          <strong> {{ $formatNumberToLocale(lstImport.totalAmount) }} </strong>
         </div>
       </b-row>
       <!-- END - Total section 2 -->
 
       <!-- START - Table 1 -->
       <b-col
-        v-for="(item,index) in lstPo.orderImport"
+        v-for="(item,index) in lstImport.orderImport"
         :key="index"
         class="px-0 pb-1"
       >
@@ -967,7 +967,7 @@
                   <i>Điều chỉnh:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.adjusted) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.adjusted) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -977,7 +977,7 @@
                   <i>VAT:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.vat) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.vat) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -987,7 +987,7 @@
                   <i>T.Cộng:</i>
                 </b-col>
                 <b-col>
-                  <strong style="margin-right: -4.5px">{{ $formatNumberToLocale(item.totalAmount) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.totalAmount) }}</strong>
                 </b-col>
               </b-row>
             </div>
@@ -1013,6 +1013,7 @@ export default {
       lstPo: { orderImport: [] },
       lstAdjust: { orderImport: [] },
       lstBorrow: { orderImport: [] },
+      lstImport: { orderImport: [] },
     }
   },
   computed: {
@@ -1051,6 +1052,12 @@ export default {
       }
       return {}
     },
+    getLstImport() {
+      if (this.PRINT_SHOP_IMPORT_REPORT_GETTER.lstImport) {
+        return this.PRINT_SHOP_IMPORT_REPORT_GETTER.lstImport
+      }
+      return {}
+    },
   },
   watch: {
     getLstPo() {
@@ -1061,6 +1068,9 @@ export default {
     },
     getLstBorrow() {
       this.lstBorrow = { ...this.getLstBorrow }
+    },
+    getLstImport() {
+      this.lstImport = { ...this.getLstImport }
     },
   },
   updated() {
@@ -1098,9 +1108,9 @@ td {
     display: flex;
     position: absolute;
     right: 0;
-    border: 2px dotted;
+    border: 1.8px dotted;
     height: auto;
-    min-width: 330px;
+    width: 298px;
     flex-direction: column;
     align-items: center;
 }

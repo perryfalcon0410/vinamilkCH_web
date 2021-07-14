@@ -13,59 +13,72 @@
       <b-row>
         <!-- START - Import/Export List -->
         <b-col
-          class="bg-white pb-4 rounded shadow text-dark"
+          xl="4"
+          class="d-flex flex-column px-0"
         >
-          <!-- START - Title -->
-          <b-row class="py-1">
-            <b-col
-              cols="1"
-            />
-            <b-col>
-              <strong>
-                PO No
-              </strong>
-            </b-col>
-            <b-col>
-              <strong>
-                Số nội bộ
-              </strong>
-            </b-col>
-            <b-col>
-              <strong>
-                Ngày
-              </strong>
-            </b-col>
-          </b-row>
-          <!-- END - Title -->
-          <!-- START - Po Confirm List -->
-          <b-row
-            v-for="(item, index) in poConfirm"
-            :key="item.id"
-            class="border-bottom border-white py-1 cursor-pointer"
-            :class="{ 'text-brand-1': current == item.id }"
-            @click="selectOrder(item.id, item.internalNumber, item.poCoNumber, item.date)"
+          <b-col
+            class="bg-white shadow rounded text-dark table my-0"
           >
-            <b-col cols="1">
-              {{ index + 1 }}
-            </b-col>
-            <b-col>
-              {{ item.poCoNumber }}
-            </b-col>
-            <b-col>
-              {{ item.internalNumber }}
-            </b-col>
-            <b-col
+            <!-- START - Header -->
+            <b-row class="py-1 table-row">
+              <b-col
+                cols="1"
+              />
+              <b-col class="px-50 ws-nowrap">
+                <strong>
+                  PO No
+                </strong>
+              </b-col>
+              <b-col>
+                <strong>
+                  Số nội bộ
+                </strong>
+              </b-col>
+              <b-col class="mx-35">
+                <strong>
+                  Ngày
+                </strong>
+              </b-col>
+            </b-row>
+            <!-- END - Header -->
 
-              class="text-wrap"
+            <!-- START - List -->
+            <b-row
+              v-for="(item, index) in poConfirm"
+              :key="item.id"
+              class="border-bottom border-white rounded py-1 cursor-pointer table-row"
+              :class="{ 'text-brand-1': current == item.id }"
+              @click="selectOrder(item.id,item.internalNumber,item.poCoNumber, item.date)"
             >
-              {{ item.date }}
-            </b-col>
-          </b-row>
+              <b-col
+                cols="1"
+              >
+                {{ index + 1 }}
+              </b-col>
+              <b-col
+                class="px-50"
+              >
+                {{ item.poCoNumber }}
+              </b-col>
+              <b-col class="px-50">
+                {{ item.internalNumber }}
+              </b-col>
+              <b-col
+                class="text-wrap"
+              >
+                {{ item.date }}
+              </b-col>
+            </b-row>
+            <!-- END - List -->
+          </b-col>
         </b-col>
         <!-- END -  Po Confirm List -->
 
         <!-- START - List -->
-        <b-col class="ml-xl-1 mt-1 mt-xl-0 pt-1 bg-white shadow rounded">
+        <b-col
+          style="max-width: 52rem;"
+          class="ml-xl-1 mt-1 mt-xl-0 pt-1 bg-white shadow rounded"
+        >
 
           <!-- START - Table Product -->
           <!-- START - Title Product -->
@@ -351,7 +364,7 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-left ws-nowrap',
-          tdClass: 'text-left  ws-nowrap',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Mã sản phẩm',

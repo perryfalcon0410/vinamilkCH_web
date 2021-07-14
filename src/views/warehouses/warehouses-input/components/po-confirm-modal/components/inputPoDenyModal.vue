@@ -82,8 +82,8 @@ export default {
       STATUS_NOT_IMPORT_GETTER,
     ]),
     reasonOptions() {
-      return this.NOT_IMPORT_REASONS_GETTER.map((data, index) => ({
-        id: Number(index + 1),
+      return this.NOT_IMPORT_REASONS_GETTER.map(data => ({
+        id: data.id,
         label: data.apParamName,
       }))
     },

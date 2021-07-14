@@ -26,7 +26,10 @@
             Số hóa đơn:
           </b-col>
           <b-col cols="8">
-            <h5 class="text-left">
+            <h5
+              class="text-left"
+              style="word-wrap: break-word"
+            >
               <strong>{{ information.orderNumber }}</strong>
             </h5>
           </b-col>

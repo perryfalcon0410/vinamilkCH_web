@@ -23,26 +23,24 @@
           </strong>
 
           <b-col
-            class="bg-white shadow rounded text-dark table"
+            class="bg-white shadow rounded text-dark table my-0"
           >
             <!-- START - Header -->
             <b-row class="py-1 table-row">
               <b-col
                 cols="1"
               />
-              <b-col class="pl-11 table-cell-sm ws-nowrap">
+              <b-col class="px-50 ws-nowrap">
                 <strong>
                   Số chứng từ
                 </strong>
               </b-col>
-              <b-col
-                class="pl-11 table-cell-sm"
-              >
-                <strong>
+              <b-col>
+                <strong class="px-25">
                   Ngày
                 </strong>
               </b-col>
-              <b-col class="pl-11 table-cell-xl">
+              <b-col>
                 <strong>
                   Ghi chú
                 </strong>
@@ -54,26 +52,25 @@
             <b-row
               v-for="(item, index) in importAdjustmentsList"
               :key="item.id"
-              class="border-bottom border-white bg-light py-1 cursor-pointer table-row"
+              class="border-bottom border-white rounded py-1 cursor-pointer table-row"
               :class="{ 'text-brand-1': current == item.id }"
               @click="selectOrder(item.id,item.adjustmentDate,item.description)"
             >
               <b-col
                 cols="1"
-                class="table-cell-sm"
               >
                 {{ index + 1 }}
               </b-col>
               <b-col
-                class="table-cell-sm"
+                class="px-50"
               >
                 {{ item.adjustmentCode }}
               </b-col>
-              <b-col class="table-cell-sm">
+              <b-col class="px-50">
                 {{ item.adjustmentDate }}
               </b-col>
               <b-col
-                class="text-wrap table-cell-xl"
+                class="px-50"
               >
                 {{ item.description }}
               </b-col>

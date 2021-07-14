@@ -1176,15 +1176,3 @@ export default {
   },
 }
 </script>
-<style>
-.table {
-    display: table;
-}
-.table-cell-sm{
-    display: table-cell;
-    max-width: 7.8rem;
-}
-.table-cell-xl{
-    display: table-cell;
-}
-</style>
