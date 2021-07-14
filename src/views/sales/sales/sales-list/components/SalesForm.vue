@@ -376,6 +376,7 @@
       :customer="customer"
       :order-online="orderOnline"
       :edit-online-permission="editOnlinePermission"
+      :bills="bills"
     />
     <!-- END - Pay modal -->
 
@@ -549,6 +550,7 @@ export default {
         createdAt: null,
       },
       onlineOrderCustomers: [],
+      billButtons: [],
 
       // online order
       searchData: {
@@ -764,6 +766,9 @@ export default {
           this.checkApParramCode = true
         }
       }
+    },
+    bills() {
+      this.billButtons = [...this.bills]
     },
   },
 

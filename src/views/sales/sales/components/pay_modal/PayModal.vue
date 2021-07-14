@@ -808,6 +808,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    bills: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -904,6 +908,7 @@ export default {
 
       isPrint: false,
       openCollapseProgramPromotion: true,
+      isSaveSuccess: false,
     }
   },
   computed: {
@@ -1584,6 +1589,7 @@ export default {
             this.isDisabledPrintTempBtn = true
             this.isDisabledPaymentBtn = true
             this.isPaid = true
+            this.isSaveSuccess = true
           },
         })
       }
@@ -1593,9 +1599,18 @@ export default {
       this.isPrint = true
     },
     cancel() {
-      if (this.isPaid) {
-        this.$router.go(this.$router.currentRoute)
+      if (this.isSaveSuccess === true) {
+        if (this.bills.length > 0) {
+          const index = this.bills.findIndex(item => item.active)
+          this.bills.splice(index, 1)
+        }
+        if (this.bills.length < 1) {
+          if (this.isPaid) {
+            this.$router.go(this.$router.currentRoute)
+          }
+        }
       }
+
       this.$bvModal.hide('pay-modal')
     },
     onChangeAccumulateAmount() {
