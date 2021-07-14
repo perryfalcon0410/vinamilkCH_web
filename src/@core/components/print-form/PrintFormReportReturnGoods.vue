@@ -153,8 +153,7 @@
       >
         <table>
           <!-- START - Header -->
-          <thead>
-            <!-- START - Header 1 -->
+           <!-- START - Header 1 -->
             <tr>
               <th
                 colspan="10"
@@ -206,7 +205,6 @@
               </th>
             </tr>
             <!-- END - Header 1 -->
-
             <!-- START - Header 2 -->
             <tr class="second-tr">
               <th
@@ -260,7 +258,6 @@
             </tr>
           <!-- END - Header 2 -->
 
-          </thead>
           <!-- END - Header -->
 
           <!-- START - Body -->
