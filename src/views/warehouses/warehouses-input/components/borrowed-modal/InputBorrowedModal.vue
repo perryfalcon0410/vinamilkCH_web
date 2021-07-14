@@ -295,7 +295,6 @@ export default {
       CLEAR_BORROW_GRID_VIEW_MUTATION,
     ]),
     inputBorrow() {
-      console.log(this.importBorrowings.length)
       if (this.importBorrowings.length > 0) {
         this.$emit('inputBorrowsChange', [this.sysDate, this.importBorrowingsDetail, this.importBorrowingInfo, this.current, this.note])
         this.close()

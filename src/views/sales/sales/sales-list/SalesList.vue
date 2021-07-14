@@ -624,7 +624,6 @@ export default {
       }
     },
     getProductByBarcode() {
-      console.log(this.getProductByBarcode)
       const productByBarcode = {
         productId: this.getProductByBarcode.id,
         name: this.getProductByBarcode.productCode,
@@ -788,8 +787,6 @@ export default {
     },
 
     onClickAddButton() {
-      console.log('bills', this.bills)
-      console.log('order selected', typeof this.orderSelected)
       const lastIteminBill = this.bills[this.bills.length - 1]
       if (lastIteminBill) {
         this.bills.push({
@@ -921,7 +918,6 @@ export default {
     getOnlineCustomer(val) {
       this.onlineOrderId = val.id
       this.searchOptions.customerId = val.id
-      console.log('getOnlineCustomer', val)
     },
 
     getCustomerTypeInfo(val) {
@@ -1044,11 +1040,11 @@ export default {
       }
     },
     // Reset to the last barcode before hitting enter (whatever anything in the input box)
-    resetBarcode() {
-      const barcode = this.$barcodeScanner.getPreviousCode()
-      console.log(barcode)
-      // do something...
-    },
+    // resetBarcode() {
+    //   const barcode = this.$barcodeScanner.getPreviousCode()
+    //   console.log(barcode)
+    //   // do something...
+    // },
   },
 }
 </script>
