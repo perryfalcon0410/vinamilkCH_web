@@ -211,31 +211,31 @@
               </th>
               <!-- END - Header 2 -->
             </tr>
-            <tr>
-              <th
-                colspan="7"
-                class="bot-border-dotted"
-              >
-                <b-row>
-                  <b-col class="ml-1">
-                    Ngành hàng: {{ item.category }}
-                  </b-col>
-                  <b-col>
-                    <b-row class="width-100-per mx-0">
-                      <i
-                        style="width: 26.4%; text-align: right"
-                        class="normal-weight"
-                      >Tổng SL:</i> <i style="width: 18.1%; text-align: right"> {{ $formatNumberToLocale(item.orderQuantity) }}</i>
-                      <i
-                        style="width: 26.5%; text-align: right"
-                        class="normal-weight"
-                      >T.Tiền:</i> <span style="width: 28.5%; text-align: right;"> {{ $formatNumberToLocale(item.orderTotal) }}</span>
-                    </b-row>
-                  </b-col>
-                </b-row>
-              </th>
-            </tr>
           </thead>
+          <tr>
+            <th
+              colspan="7"
+              class="bot-border-dotted"
+            >
+              <b-row>
+                <b-col class="ml-1">
+                  Ngành hàng: {{ item.category }}
+                </b-col>
+                <b-col>
+                  <b-row class="width-100-per mx-0">
+                    <i
+                      style="width: 26.4%; text-align: right"
+                      class="normal-weight"
+                    >Tổng SL:</i> <i style="width: 18.1%; text-align: right"> {{ $formatNumberToLocale(item.orderQuantity) }}</i>
+                    <i
+                      style="width: 26.5%; text-align: right"
+                      class="normal-weight"
+                    >T.Tiền:</i> <span style="width: 28.5%; text-align: right;"> {{ $formatNumberToLocale(item.orderTotal) }}</span>
+                  </b-row>
+                </b-col>
+              </b-row>
+            </th>
+          </tr>
           <!-- END - Header -->
 
           <!-- START - Body -->
@@ -440,31 +440,31 @@
               </th>
               <!-- END - Header 2 -->
             </tr>
-            <tr>
-              <th
-                colspan="7"
-                class="bot-border-dotted"
-              >
-                <b-row>
-                  <b-col class="ml-1">
-                    Ngành hàng: {{ item.category }}
-                  </b-col>
-                  <b-col>
-                    <b-row class="width-100-per mx-0">
-                      <i
-                        style="width: 26.4%; text-align: right"
-                        class="normal-weight"
-                      >Tổng SL:</i> <i style="width: 18.1%; text-align: right"> {{ $formatNumberToLocale(item.orderQuantity) }}</i>
-                      <i
-                        style="width: 26.5%; text-align: right"
-                        class="normal-weight"
-                      >T.Tiền:</i> <span style="width: 28.5%; text-align: right;"> {{ $formatNumberToLocale(item.orderTotal) }}</span>
-                    </b-row>
-                  </b-col>
-                </b-row>
-              </th>
-            </tr>
           </thead>
+          <tr>
+            <th
+              colspan="7"
+              class="bot-border-dotted"
+            >
+              <b-row>
+                <b-col class="ml-1">
+                  Ngành hàng: {{ item.category }}
+                </b-col>
+                <b-col>
+                  <b-row class="width-100-per mx-0">
+                    <i
+                      style="width: 26.4%; text-align: right"
+                      class="normal-weight"
+                    >Tổng SL:</i> <i style="width: 18.1%; text-align: right"> {{ $formatNumberToLocale(item.orderQuantity) }}</i>
+                    <i
+                      style="width: 26.5%; text-align: right"
+                      class="normal-weight"
+                    >T.Tiền:</i> <span style="width: 28.5%; text-align: right;"> {{ $formatNumberToLocale(item.orderTotal) }}</span>
+                  </b-row>
+                </b-col>
+              </b-row>
+            </th>
+          </tr>
           <!-- END - Header -->
 
           <!-- START - Body -->
@@ -669,31 +669,31 @@
               </th>
               <!-- END - Header 2 -->
             </tr>
-            <tr>
-              <th
-                colspan="7"
-                class="bot-border-dotted"
-              >
-                <b-row>
-                  <b-col class="ml-1">
-                    Ngành hàng: {{ item.category }}
-                  </b-col>
-                  <b-col>
-                    <b-row class="width-100-per mx-0">
-                      <i
-                        style="width: 26.4%; text-align: right"
-                        class="normal-weight"
-                      >Tổng SL:</i> <i style="width: 18.1%; text-align: right"> {{ $formatNumberToLocale(item.orderQuantity) }}</i>
-                      <i
-                        style="width: 26.5%; text-align: right"
-                        class="normal-weight"
-                      >T.Tiền:</i> <span style="width: 28.5%; text-align: right;"> {{ $formatNumberToLocale(item.orderTotal) }}</span>
-                    </b-row>
-                  </b-col>
-                </b-row>
-              </th>
-            </tr>
           </thead>
+          <tr>
+            <th
+              colspan="7"
+              class="bot-border-dotted"
+            >
+              <b-row>
+                <b-col class="ml-1">
+                  Ngành hàng: {{ item.category }}
+                </b-col>
+                <b-col>
+                  <b-row class="width-100-per mx-0">
+                    <i
+                      style="width: 26.4%; text-align: right"
+                      class="normal-weight"
+                    >Tổng SL:</i> <i style="width: 18.1%; text-align: right"> {{ $formatNumberToLocale(item.orderQuantity) }}</i>
+                    <i
+                      style="width: 26.5%; text-align: right"
+                      class="normal-weight"
+                    >T.Tiền:</i> <span style="width: 28.5%; text-align: right;"> {{ $formatNumberToLocale(item.orderTotal) }}</span>
+                  </b-row>
+                </b-col>
+              </b-row>
+            </th>
+          </tr>
           <!-- END - Header -->
 
           <!-- START - Body -->

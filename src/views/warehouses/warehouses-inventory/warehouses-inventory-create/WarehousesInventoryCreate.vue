@@ -162,10 +162,10 @@
             slot="column-filter"
             slot-scope="props"
           >
-            <b-row
+            <div
+              v-show="products.length"
               v-if="props.column.field === 'productName'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3"
             >
               <b-form-input
                 id="form-input-search-keywords"
@@ -175,54 +175,54 @@
                 placeholder="Nhập mã hoặc tên sản phẩm"
                 @keydown.enter.prevent="onClickSearchButton()"
               />
-            </b-row>
-            <b-row
+            </div>
+            <div
+              v-show="products.length"
               v-if="props.column.field === 'instockAmount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(instockAmount) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
+              v-show="products.length"
               v-else-if="props.column.field === 'totalPrice'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(totalPrice) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
+              v-show="products.length"
               v-else-if="props.column.field === 'inventoryPacket'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryPacket) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
+              v-show="products.length"
               v-else-if="props.column.field === 'inventoryOdd'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryOdd) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
+              v-show="products.length"
               v-else-if="props.column.field === 'inventoryTotal'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryTotal) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
+              v-show="products.length"
               v-else-if="props.column.field === 'unequal'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(unequal) }}
-            </b-row>
+            </div>
           </template>
           <!-- START - Column filter -->
           <!-- START - Row -->
@@ -230,43 +230,19 @@
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'category'">
+            <div
+              v-if="props.column.field === 'productName'"
+              class="name-width"
+            >
               {{ props.formattedRow[props.column.field] }}
             </div>
-            <div v-if="props.column.field === 'productId'">
+            <div
+              v-else-if="props.column.field === 'instockAmount' || props.column.field === 'price' || props.column.field === 'totalPrice' || props.column.field === 'inventoryTotal' || props.column.field === 'unequal'"
+              style="padding-right: 4px"
+            >
               {{ props.formattedRow[props.column.field] }}
             </div>
-            <div v-if="props.column.field === 'productCode'">
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-            <div v-if="props.column.field === 'productName'">
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-            <div v-if="props.column.field === 'instockAmount' && isNaN(props.formattedRow[props.column.field]) === false">
-              {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
-            </div>
-            <div v-if="props.column.field === 'price'">
-              {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
-            </div>
-            <div v-if="props.column.field === 'totalPrice' && isNaN(props.formattedRow[props.column.field]) === false">
-              {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
-            </div>
-            <div v-if="props.column.field === 'inventoryTotal' && isNaN(props.formattedRow[props.column.field]) === false">
-              {{ $formatNumberToLocale(props.formattedRow[props.column.field]) }}
-            </div>
-            <div v-if="props.column.field === 'unequal' && isNaN(props.formattedRow[props.column.field]) === false">
-              {{ $formatNumberToLocale(props.formattedRow[props.column.field]) || 0 }}
-            </div>
-            <div v-if="props.column.field === 'packetUnit'">
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-            <div v-if="props.column.field === 'exchange'">
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-            <div v-if="props.column.field === 'oddUnit'">
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-            <div v-if="props.column.field === 'inventoryPacket'">
+            <div v-else-if="props.column.field === 'inventoryPacket'">
               <b-input
                 v-model="props.row.inventoryPacket"
                 maxlength="7"
@@ -286,6 +262,9 @@
                 @change="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
                 @keypress="$onlyNumberInput"
               />
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
             </div>
           </template>
           <!-- END - Row -->
@@ -525,113 +504,89 @@ export default {
         {
           label: 'Ngành hàng',
           field: 'category',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã SP',
           field: 'productCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên SP',
           field: 'productName',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
-          width: '280px',
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số lượng tồn kho',
           field: 'instockAmount',
           type: 'number',
-          width: '120px',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá',
           field: 'price',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'SL packet kiểm kê',
           field: 'inventoryPacket',
           type: 'number',
-          width: '120px',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'SL lẻ kiểm kê',
           field: 'inventoryOdd',
           type: 'number',
-          width: '120px',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tổng SL kiểm kê',
           field: 'inventoryTotal',
           type: 'number',
-          width: '120px',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Chênh lệch',
           field: 'unequal',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'ĐVT packet',
           field: 'packetUnit',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Quy đổi',
           field: 'exchange',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
         },
         {
           label: 'ĐVT lẻ',
           field: 'oddUnit',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
       ],
       products: [],

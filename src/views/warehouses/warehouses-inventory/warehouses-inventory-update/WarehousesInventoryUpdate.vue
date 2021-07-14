@@ -135,10 +135,10 @@
             slot="column-filter"
             slot-scope="props"
           >
-            <b-row
+            <div
+              v-show="products.length"
               v-if="props.column.field === 'productName'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3"
             >
               <b-form-input
                 id="form-input-search-keywords"
@@ -148,54 +148,54 @@
                 placeholder="Nhập mã hoặc tên sản phẩm"
                 @keydown.enter.prevent="onClickSearchButton()"
               />
-            </b-row>
-            <b-row
+            </div>
+            <div
+              v-show="products.length"
               v-if="props.column.field === 'instockAmount'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(instockAmount) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
+              v-show="products.length"
               v-else-if="props.column.field === 'totalPrice'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(totalPrice) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
+              v-show="products.length"
               v-else-if="props.column.field === 'inventoryPacket'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryPacket) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
+              v-show="products.length"
               v-else-if="props.column.field === 'inventoryOdd'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryOdd) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
+              v-show="products.length"
               v-else-if="props.column.field === 'inventoryTotal'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryTotal) }}
-            </b-row>
+            </div>
 
-            <b-row
+            <div
+              v-show="products.length"
               v-else-if="props.column.field === 'unequal'"
-              class="mx-0"
-              align-h="end"
+              class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(unequal) }}
-            </b-row>
+            </div>
           </template>
           <!-- START - Column filter -->
 
@@ -224,6 +224,18 @@
                 @change="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
                 @keypress="$onlyNumberInput"
               />
+            </div>
+            <div
+              v-else-if="props.column.field === 'productName'"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'instockAmount' || props.column.field === 'price' || props.column.field === 'totalPrice' || props.column.field === 'inventoryTotal' || props.column.field === 'unequal'"
+              style="padding-right: 4px"
+            >
+              {{ props.formattedRow[props.column.field] }}
             </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
@@ -442,113 +454,89 @@ export default {
         {
           label: 'Ngành hàng',
           field: 'category',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã SP',
           field: 'productCode',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên SP',
           field: 'productName',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
-          width: '280px',
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số lượng tồn kho',
           field: 'instockAmount',
           type: 'number',
-          width: '120px',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá',
           field: 'price',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'SL packet kiểm kê',
           field: 'inventoryPacket',
           type: 'number',
-          width: '120px',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'SL lẻ kiểm kê',
           field: 'inventoryOdd',
           type: 'number',
-          width: '120px',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tổng SL kiểm kê',
           field: 'inventoryTotal',
           type: 'number',
-          width: '120px',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Chênh lệch',
           field: 'unequal',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'ĐVT packet',
           field: 'packetUnit',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Quy đổi',
           field: 'exchange',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-right',
+          thClass: 'text-nowrap',
         },
         {
           label: 'ĐVT lẻ',
           field: 'oddUnit',
           type: 'number',
-          sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
       ],
       products: [],
@@ -589,10 +577,10 @@ export default {
       return this.products.length
     },
     getInstockAmount() {
-      return this.products.reduce((accum, item) => accum + Number(item.originalInstockAmount), 0)
+      return this.products.reduce((accum, item) => accum + Number(item.instockAmount), 0)
     },
     getTotalPrice() {
-      return this.products.reduce((accum, item) => accum + Number(item.originalTotalPrice), 0)
+      return this.products.reduce((accum, item) => accum + Number(item.totalPrice), 0)
     },
     getInventoryPacket() {
       return this.products.reduce((accum, item) => accum + Number(item.inventoryPacket), 0)
@@ -601,10 +589,10 @@ export default {
       return this.products.reduce((accum, item) => accum + Number(item.inventoryOdd), 0)
     },
     getInventoryTotal() {
-      return this.products.reduce((accum, item) => accum + Number(item.originalInventoryTotal), 0)
+      return this.products.reduce((accum, item) => accum + Number(item.inventoryTotal), 0)
     },
     getUnequal() {
-      return this.products.reduce((accum, item) => accum + Number(item.originalUnequal), 0)
+      return this.products.reduce((accum, item) => accum + Number(item.unequal), 0)
     },
     isExistedWarehouseInventory() {
       return this.IS_EXISTED_WAREHOUSE_INVENTORY_GETTER
@@ -655,17 +643,13 @@ export default {
         productId: data.productId,
         productCode: data.productCode,
         productName: data.productName,
-        originalInstockAmount: data.stockQuantity,
-        instockAmount: this.$formatNumberToLocale(data.stockQuantity),
-        price: this.$formatNumberToLocale(data.price),
-        originalTotalPrice: data.totalAmount,
-        totalPrice: this.$formatNumberToLocale(data.totalAmount),
+        instockAmount: data.stockQuantity,
+        price: data.price,
+        totalPrice: data.totalAmount,
         inventoryPacket: data.packetQuantity,
         inventoryOdd: data.unitQuantity,
-        inventoryTotal: this.$formatNumberToLocale(data.packetQuantity * data.convfact + data.unitQuantity),
-        originalInventoryTotal: data.packetQuantity * data.convfact + data.unitQuantity,
-        unequal: this.$formatNumberToLocale(data.packetQuantity * data.convfact + data.unitQuantity - data.stockQuantity),
-        originalUnequal: data.packetQuantity * data.convfact + data.unitQuantity - data.stockQuantity,
+        inventoryTotal: data.packetQuantity * data.convfact + data.unitQuantity,
+        unequal: data.packetQuantity * data.convfact + data.unitQuantity - data.stockQuantity,
         packetUnit: data.packetUnit,
         exchange: data.convfact,
         oddUnit: data.unit,
@@ -719,20 +703,17 @@ export default {
       this.isModalCloseShow = !this.isModalCloseShow
     },
     updateInventoryTotal(index) {
-      this.products[index].originalInventoryTotal = this.products[index].inventoryPacket * this.products[index].exchange + this.products[index].inventoryOdd
-      this.products[index].inventoryTotal = this.$formatNumberToLocale(this.products[index].originalInventoryTotal)
+      this.products[index].inventoryTotal = this.products[index].inventoryPacket * this.products[index].exchange + this.products[index].inventoryOdd
     },
     updateInventoryPacket(index, value) {
       this.products[index].inventoryPacket = value
       this.updateInventoryTotal(index)
-      this.products[index].originalUnequal = this.products[index].originalInventoryTotal - this.products[index].originalInstockAmount
-      this.products[index].unequal = this.$formatNumberToLocale(this.products[index].originalUnequal)
+      this.products[index].unequal = this.products[index].inventoryTotal - this.products[index].instockAmount
     },
     updateInventoryOdd(index, value) {
       this.products[index].inventoryOdd = value
       this.updateInventoryTotal(index)
-      this.products[index].originalUnequal = this.products[index].originalInventoryTotal - this.products[index].originalInstockAmount
-      this.products[index].unequal = this.$formatNumberToLocale(this.products[index].originalUnequal)
+      this.products[index].unequal = this.products[index].inventoryTotal - this.products[index].instockAmount
     },
     onClickExportButton() {
       this.EXPORT_FILLED_STOCKS_ACTION({
@@ -804,3 +785,10 @@ export default {
   },
 }
 </script>
+<style>
+  thead tr:first-child {
+    position: sticky;
+    top: 0px;
+    z-index: 10;
+  }
+</style>

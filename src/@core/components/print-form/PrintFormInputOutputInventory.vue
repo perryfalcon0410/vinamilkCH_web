@@ -48,27 +48,6 @@
     </b-row>
     <!-- END - Header -->
 
-    <!-- START - Total view -->
-    <b-row
-      class="mx-0"
-      align-h="end"
-      align-v="end"
-    >
-      <strong>
-        Tổng cộng: <strong>{{ reportTotalInfoData.beginningQty }}</strong>
-      </strong>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.beginningAmount }}</strong>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.impTotalQty }}</strong>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.impAdjustmentAmount }}</strong>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.expTotalQty }}</strong>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.expSalesAmount }}</strong>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.expExchangeAmount }}</strong>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.expExchangeQty }}</strong>
-      <strong class="text-right mx-4">{{ reportTotalInfoData.endingQty }}</strong>
-      <strong class="text-right">{{ reportTotalInfoData.endingAmount }}</strong>
-    </b-row>
-    <!-- END - Total view -->
-
     <!-- START - Table 1 -->
 
     <div
@@ -80,6 +59,125 @@
         style="width: 100%"
       >
         <thead>
+          <tr
+            v-if="cats.catId === reportInputOutputinventoryData[0].catId"
+            class="font-italic"
+          >
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="text-center border-0"
+            >
+              Tổng cộng:
+            </th>
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="text-right mx-2 border-0"
+            >
+              {{ $formatNumberToLocale(reportTotalInfoData.beginningQty) }}
+            </th>
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="text-right border-0"
+            >
+              {{ $formatNumberToLocale(reportTotalInfoData.beginningAmount) }}
+            </th>
+            <th
+              colspan="1"
+              class="text-right border-0"
+            >
+              {{ $formatNumberToLocale(reportTotalInfoData.impTotalQty) }}
+            </th>
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="text-right border-0"
+            >
+              {{ $formatNumberToLocale(reportTotalInfoData.impAdjustmentAmount) }}
+            </th>
+            <th
+              colspan="1"
+              class="text-right border-0"
+            >
+              {{ $formatNumberToLocale(reportTotalInfoData.expTotalQty) }}
+            </th>
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="text-right border-0"
+            >
+              {{ $formatNumberToLocale(reportTotalInfoData.expSalesAmount) }}
+            </th>
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="text-right border-0"
+            >
+              {{ $formatNumberToLocale(reportTotalInfoData.expExchangeAmount) }}
+            </th>
+            <th
+              colspan="1"
+              class="text-right border-0"
+            >
+              {{ $formatNumberToLocale(reportTotalInfoData.expExchangeQty) }}
+            </th>
+            <th
+              colspan="1"
+              class="text-right border-0"
+            >
+              {{ $formatNumberToLocale(reportTotalInfoData.endingQty) }}
+            </th>
+            <th
+              colspan="1"
+              class="border-0"
+            />
+            <th
+              colspan="1"
+              class="text-right border-0"
+            >
+              {{ $formatNumberToLocale(reportTotalInfoData.endingAmount) }}
+            </th>
+          </tr>
           <!-- START - Header -->
           <tr>
             <th colspan="4" />
@@ -471,5 +569,8 @@ td, .td, .border-dotted {
         margin-top: 0;
         margin-bottom: 0;
         size: A3 landscape;
+    }
+    thead {
+      display: table-row-group;
     }
 </style>
