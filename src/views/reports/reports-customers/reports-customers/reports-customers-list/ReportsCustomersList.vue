@@ -239,13 +239,7 @@ export default {
         page: this.pageNumber,
         sort: null,
       },
-      searchOptions: {
-        code: '',
-        fromDate: null,
-        toDate: null,
-        reasonSelected: null,
-        ids: '',
-      },
+      searchOptions: {},
       decentralization: {
         formId: 1,
         ctrlId: 1,
@@ -383,29 +377,13 @@ export default {
     // END - permission
     // Start - xuat excel
     onClickExcelExportButton() {
-      const searchData = {
-        keySearch: this.paginationData.keySearch,
-        areaCode: this.paginationData.areasSelected,
-        customerPhone: this.paginationData.customerPhone,
-        customerStatus: this.paginationData.statusSelected,
-        customerType: this.paginationData.customerType,
-        fromCreateDate: this.paginationData.fromCreateDate,
-        toCreateDate: this.paginationData.toCreateDate,
-        fromPurchaseDate: this.paginationData.fromPurchaseDate,
-        toPurchaseDate: this.paginationData.toPurchaseDate,
-        fromSaleAmount: this.paginationData.fromSaleAmount,
-        toSaleAmount: this.paginationData.toSaleAmount,
-        fromSaleDate: this.paginationData.fromSaleDate,
-        toSaleDate: this.paginationData.toSaleDate,
-        formId: 1,
-        ctrlId: 1,
-      }
-      this.EXPORT_REPORT_CUSTOMERS_ACTION(searchData)
+      this.EXPORT_REPORT_CUSTOMERS_ACTION({ ...this.searchOptions })
     },
     // End - xuat excel
 
     // Start - pagination
     updateSearchData(event) {
+      this.searchOptions = { ...event }
       this.paginationData = {
         ...this.paginationData,
         ...event,

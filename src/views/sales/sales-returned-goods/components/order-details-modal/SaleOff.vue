@@ -3,7 +3,7 @@
     <vue-good-table
       :columns="columns"
       :rows="saleOffTable"
-      style-class="vgt-table striped"
+      style-class="vgt-table table-custom"
       :pagination-options="{
         enabled: false
       }"
@@ -40,7 +40,7 @@
         </b-row>
         <b-row
           v-else-if="props.column.field === 'paymentReturn'"
-          class="mx-50 h7 text-brand-3 text-right"
+          class="padding-right h7 text-brand-3 text-right"
           align-h="end"
         >
           {{ $formatNumberToLocale(infoPromotionData.allTotal) }}
@@ -94,6 +94,7 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
+          thClass: 'text-nowrap',
           tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
@@ -105,6 +106,7 @@ export default {
           label: 'Giá bán',
           field: 'pricePerUnit',
           type: 'number',
+          thClass: 'text-nowrap',
           tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
@@ -113,6 +115,7 @@ export default {
           label: 'Giảm giá',
           field: 'discount',
           type: 'number',
+          thClass: 'text-nowrap',
           tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
@@ -121,7 +124,8 @@ export default {
           label: 'Tiền trả lại',
           field: 'paymentReturn',
           type: 'number',
-          tdClass: 'pr-2',
+          thClass: 'text-nowrap',
+          tdClass: 'padding-right',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
@@ -130,3 +134,14 @@ export default {
   },
 }
 </script>
+<style>
+.table-custom thead tr:first-child th:last-child {
+  padding: 0.75em 0.85em 0.75em 0.75em;
+}
+.table-custom thead tr:last-child th:last-child {
+  padding: 0.75em 0.85em 0.75em 0.75em;
+}
+.padding-right {
+  padding-right: 0.85em !important;
+}
+</style>

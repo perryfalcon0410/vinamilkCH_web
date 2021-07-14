@@ -74,39 +74,41 @@
 
       <!-- START - Container Right -->
       <b-col
-        class="bg-white shadow rounded ml-1"
+        xl="9"
       >
-        <!-- START - Tables -->
-        <b-tabs>
-          <!-- START - Product -->
-          <b-tab
-            title="Sản phẩm"
-            active
-          >
-            <!-- Start Table -->
-            <product
-              :producttable="detailReturnProducts"
-              :info-product-data="infoProduct"
-            />
-            <!-- End table -->
-          </b-tab>
-          <!-- END - Product -->
+        <div class="bg-white shadow rounded ml-1">
+          <!-- START - Tables -->
+          <b-tabs>
+            <!-- START - Product -->
+            <b-tab
+              title="Sản phẩm"
+              active
+            >
+              <!-- Start Table -->
+              <product
+                :producttable="detailReturnProducts"
+                :info-product-data="infoProduct"
+              />
+              <!-- End table -->
+            </b-tab>
+            <!-- END - Product -->
 
-          <!-- START - Promotion Product  -->
-          <b-tab
-            title="Hàng khuyến mãi"
-          >
-            <!-- Start Table -->
-            <sale-off
-              :sale-off-table="detailReturnPromotions"
-              :info-promotion-data="infoPromotion"
-            />
-            <!-- End table -->
-          </b-tab>
-          <!-- END - Promotion Product  -->
+            <!-- START - Promotion Product  -->
+            <b-tab
+              title="Hàng khuyến mãi"
+            >
+              <!-- Start Table -->
+              <sale-off
+                :sale-off-table="detailReturnPromotions"
+                :info-promotion-data="infoPromotion"
+              />
+              <!-- End table -->
+            </b-tab>
+            <!-- END - Promotion Product  -->
 
-        </b-tabs>
-        <!-- END - Tables -->
+          </b-tabs>
+          <!-- END - Tables -->
+        </div>
 
         <!-- START - Buttons -->
         <b-row

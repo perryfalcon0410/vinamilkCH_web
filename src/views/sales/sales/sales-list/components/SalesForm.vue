@@ -840,7 +840,8 @@ export default {
     },
 
     onPayButtonClick() {
-      if (this.salemtPromotionObjectSelected === this.salemtPromotionObjectOptions[0].id) {
+      // if (this.salemtPromotionObjectSelected === this.salemtPromotionObjectOptions[0].id) {
+      if (this.checkApParramCode) {
         this.$bvModal.show('pay-modal')
       } else if (this.salemtPromotionObjectSelected !== undefined) {
         this.$refs.formContainer.validate().then(success => {

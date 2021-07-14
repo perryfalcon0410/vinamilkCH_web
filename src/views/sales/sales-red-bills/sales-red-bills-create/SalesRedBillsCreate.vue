@@ -13,8 +13,8 @@
       <b-row class="d-print-none">
         <!-- START - Form -->
         <b-col
-          xl="3"
-          class="d-flex flex-column bg-white shadow rounded mr-xl-1"
+          cols="3"
+          class="d-flex flex-column bg-white shadow rounded"
         >
           <div class="w-100 text-center text-brand-1">
             <strong>Thông tin hóa đơn</strong>
@@ -221,221 +221,220 @@
         <!-- END - Form -->
 
         <!-- START - List -->
-        <b-col class="d-flex flex-column bg-white shadow rounded mt-1 mt-xl-0 px-0">
+        <b-col
+          cols="9"
+          class="d-flex flex-column mt-1 mt-xl-0 pl-1"
+        >
           <!-- START - Header table -->
-          <b-row
-            class="border-bottom mx-0 px-1"
-            style="padding: 5px 0"
-            align-v="center"
-            align-h="between"
-          >
-            <strong class="text-brand-1 ">
-              Danh sách sản phẩm
-            </strong>
-            <b-button
-              variant="someThing"
-              class="btn-brand-1 h7"
-              @click="showBillOfSaleList"
+          <div class=" bg-white shadow rounded">
+            <b-row
+              class="border-bottom mx-0 px-1"
+              style="padding: 5px 0"
+              align-v="center"
+              align-h="between"
             >
-              Chọn HĐBH
-            </b-button>
-          </b-row>
-          <!-- END - Header table -->
-
-          <b-col class="py-1">
-            <!-- START - Table Product -->
-            <vue-good-table
-              :columns="columns"
-              :rows="products"
-              style-class="vgt-table striped"
-              line-numbers
-            >
-              <!-- START - Empty rows -->
-              <div
-                slot="emptystate"
-                class="text-center"
+              <strong class="text-brand-1 ">
+                Danh sách sản phẩm
+              </strong>
+              <b-button
+                variant="someThing"
+                class="btn-brand-1 h7"
+                @click="showBillOfSaleList"
               >
-                Không có dữ liệu
-              </div>
-              <!-- END - Empty rows -->
+                Chọn HĐBH
+              </b-button>
+            </b-row>
 
-              <!-- START - Custome row -->
-              <template
-                slot="table-row"
-                slot-scope="props"
+            <b-col class="py-1">
+              <!-- START - Table Product -->
+              <vue-good-table
+                :columns="columns"
+                :rows="products"
+                style-class="vgt-table custom-table"
+                line-numbers
               >
-                <div v-if="props.column.field === 'quantity'">
-                  <b-form-input
-                    v-model.number="products[props.row.originalIndex].quantity"
-                    maxlength="7"
-                    type="text"
-                    @keypress="$onlyNumberInput"
-                    @input="onInputValueQuantity(props.row.originalIndex)"
-                    @change="onChangeQuantityAndPrice(props.row.originalIndex)"
-                  />
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
                 </div>
-                <div v-else-if="props.column.field === 'productPrice'">
-                  <b-form-input
-                    v-model.number="products[props.row.originalIndex].productPrice"
-                    maxlength="20"
-                    type="text"
-                    @keypress="$onlyNumberInput"
-                    @input="onInputValueProductPrice(props.row.originalIndex)"
-                    @change="onChangeQuantityAndPrice(props.row.originalIndex)"
-                  />
-                </div>
-                <div v-else-if="props.column.field === 'vat'">
-                  <b-col>
+                <!-- END - Empty rows -->
+
+                <!-- START - Custome row -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div v-if="props.column.field === 'quantity'">
                     <b-form-input
-                      v-model="products[props.row.originalIndex].vat"
-                      maxlength="3"
-                      @input="checkValue(props.row.originalIndex)"
+                      v-model.number="products[props.row.originalIndex].quantity"
+                      class="style-input"
+                      maxlength="7"
+                      type="text"
                       @keypress="$onlyNumberInput"
-                      @change="onChangeVAT(props.row.originalIndex)"
+                      @input="onInputValueQuantity(props.row.originalIndex)"
+                      @change="onChangeQuantityAndPrice(props.row.originalIndex)"
                     />
-                  </b-col>
-                </div>
-                <div v-else-if="props.column.field === 'note'">
-                  <b-col class="align-middle">
+                  </div>
+                  <div v-else-if="props.column.field === 'productPrice'">
                     <b-form-input
-                      v-model="products[props.row.originalIndex].note"
-                      maxlength="250"
+                      v-model.number="products[props.row.originalIndex].productPrice"
+                      class="style-input"
+                      maxlength="20"
+                      type="text"
+                      @keypress="$onlyNumberInput"
+                      @input="onInputValueProductPrice(props.row.originalIndex)"
+                      @change="onChangePrice(props.row.originalIndex)"
                     />
-                  </b-col>
-                </div>
-                <div v-else-if="props.column.field === 'button'">
-                  <div v-if="props.row.button === '1'">
-                    <!-- <b-icon-trash-fill
-                      v-b-popover.hover.top="'Xóa'"
-                      class="cursor-pointer"
-                      color="red"
-                      scale="1.2"
-                    /> -->
-                    <b-button
-                      variant="light"
-                      class="rounded-circle px-1"
-                      @click="onClickDeleteItem(props.row.originalIndex)"
-                    >
+                  </div>
+                  <div v-else-if="props.column.field === 'vat'">
+                    <b-col>
+                      <b-form-input
+                        v-model="products[props.row.originalIndex].vat"
+                        class="style-input"
+                        maxlength="3"
+                        @input="checkValue(props.row.originalIndex)"
+                        @keypress="$onlyNumberInput"
+                        @change="onChangeVAT(props.row.originalIndex)"
+                      />
+                    </b-col>
+                  </div>
+                  <div v-else-if="props.column.field === 'note'">
+                    <b-col class="align-middle">
+                      <b-form-input
+                        v-model="products[props.row.originalIndex].note"
+                        class="style-input"
+                        maxlength="250"
+                      />
+                    </b-col>
+                  </div>
+                  <div v-else-if="props.column.field === 'button'">
+                    <div v-if="props.row.button === '1'">
                       <b-icon-trash-fill
                         v-b-popover.hover.top="'Xóa'"
                         class="cursor-pointer"
                         color="red"
+                        scale="1.2"
+                        @click="onClickDeleteItem(props.row.originalIndex)"
                       />
-                    </b-button>
-                  </div>
-                </div>
-                <div v-else>
-                  {{ props.formattedRow[props.column.field] }}
-                </div>
-              </template>
-              <!-- END - Custome row -->
-
-              <!-- START - Custome filter -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
-              >
-                <b-row
-                  v-if="props.column.field === 'quantity'"
-                  class="h7 px-0 mx-1"
-                  align-h="end"
-                >
-                  {{ $formatNumberToLocale(totalQuantity) }}
-                </b-row>
-
-                <b-row
-                  v-else-if="props.column.field === 'productPriceTotal'"
-                  class="h7 px-0 mx-0"
-                  align-h="end"
-                >
-                  {{ $formatNumberToLocale(totalPriceTotal) }}
-                </b-row>
-                <b-row
-                  v-else-if="props.column.field === 'productExported'"
-                  class="h7 px-0 mx-0"
-                  align-h="end"
-                >
-                  {{ $formatNumberToLocale(totalProductExported) }}
-                </b-row>
-              </template>
-              <!-- END - Custome filter -->
-              <!-- START - Action bottom -->
-              <div
-                slot="table-actions-bottom"
-                class="m-2"
-              >
-                <vue-autosuggest
-                  v-model="productSearch"
-                  :suggestions="productRows"
-                  :input-props="{
-                    id:'autosuggest__input',
-                    class:'form-control w-25 h7',
-                    placeholder:'Nhập mã hoặc tên sản phẩm'
-                  }"
-                  @input="loadProducts"
-                  @selected="selectProduct"
-                >
-                  <template
-                    slot-scope="{ suggestion }"
-                  >
-                    <div class="cursor-pointer">
-                      <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
                     </div>
-                  </template>
-                </vue-autosuggest>
-              </div>
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
+                <!-- END - Custome row -->
+
+                <!-- START - Custome filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'quantity'"
+                    class="h7 px-0 mx-1"
+                    align-h="end"
+                  >
+                    {{ $formatNumberToLocale(totalQuantity) }}
+                  </b-row>
+
+                  <b-row
+                    v-else-if="props.column.field === 'productPriceTotal'"
+                    class="h7 px-0 mx-0"
+                    align-h="end"
+                  >
+                    {{ $formatNumberToLocale(totalPriceTotal) }}
+                  </b-row>
+                  <b-row
+                    v-else-if="props.column.field === 'productExported'"
+                    class="h7 px-0 mx-0"
+                    align-h="end"
+                  >
+                    {{ $formatNumberToLocale(totalProductExported) }}
+                  </b-row>
+                </template>
+                <!-- END - Custome filter -->
+                <!-- START - Action bottom -->
+                <div
+                  slot="table-actions-bottom"
+                  class="m-2"
+                >
+                  <vue-autosuggest
+                    v-model="productSearch"
+                    :suggestions="productRows"
+                    :input-props="{
+                      id:'autosuggest__input',
+                      class:'form-control w-25 h7',
+                      placeholder:'Nhập mã hoặc tên sản phẩm'
+                    }"
+                    @input="loadProducts"
+                    @selected="selectProduct"
+                  >
+                    <template
+                      slot-scope="{ suggestion }"
+                    >
+                      <div class="cursor-pointer">
+                        <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                      </div>
+                    </template>
+                  </vue-autosuggest>
+                </div>
               <!-- END - Action bottom -->
 
-            </vue-good-table>
-            <!-- END - Table Product -->
+              </vue-good-table>
+              <!-- END - Table Product -->
 
-            <!-- START - Button -->
-            <b-row
-              class="mx-0 mt-1"
-              align-v="center"
-              align-h="end"
-            >
-              <b-button
-                v-if="statusSaveButton().show"
-                :disabled="statusSaveButton().disabled || invalid"
-                variant="none"
-                class="btn-brand-1 aligns-items-button-center"
-                @click="onClickCreateBill()"
+              <!-- START - Button -->
+              <b-row
+                class="mx-0 mt-1"
+                align-v="center"
+                align-h="end"
               >
-                <b-icon
-                  icon="file-earmark-text-fill"
-                  class="mr-50"
-                />
-                Lưu
-              </b-button>
+                <b-button
+                  v-if="statusSaveButton().show"
+                  :disabled="statusSaveButton().disabled || invalid"
+                  variant="none"
+                  class="btn-brand-1 aligns-items-button-center"
+                  @click="onClickCreateBill()"
+                >
+                  <b-icon
+                    icon="file-earmark-text-fill"
+                    class="mr-50"
+                  />
+                  Lưu
+                </b-button>
 
-              <b-button
-                v-if="statusSavePrintButton().show"
-                :disabled="statusSavePrintButton().disabled || invalid"
-                variant="none"
-                class="ml-1 btn-brand-1 aligns-items-button-center"
-                @click="onClickCreateAndPrintBill()"
-              >
-                <b-icon
-                  icon="printer-fill"
-                  class="mr-50"
-                />
-                Lưu & In
-              </b-button>
+                <b-button
+                  v-if="statusSavePrintButton().show"
+                  :disabled="statusSavePrintButton().disabled || invalid"
+                  variant="none"
+                  class="ml-1 btn-brand-1 aligns-items-button-center"
+                  @click="onClickCreateAndPrintBill()"
+                >
+                  <b-icon
+                    icon="printer-fill"
+                    class="mr-50"
+                  />
+                  Lưu & In
+                </b-button>
 
-              <b-button
-                class="ml-1 btn-brand-1 aligns-items-button-center"
-                @click="routeBack"
-              >
-                <b-icon-x
-                  class="mr-50"
-                  scale="1.5"
-                />
-                Đóng
-              </b-button>
-            </b-row>
-          <!-- END - Button -->
-          </b-col>
+                <b-button
+                  class="ml-1 btn-brand-1 aligns-items-button-center"
+                  @click="routeBack"
+                >
+                  <b-icon-x
+                    class="mr-50"
+                    scale="1.5"
+                  />
+                  Đóng
+                </b-button>
+              </b-row>
+              <!-- END - Button -->
+            </b-col>
+          </div>
+          <!-- END - Header table -->
 
         </b-col>
         <!-- END - List -->
@@ -563,24 +562,28 @@ export default {
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: 'Ngành hàng',
           field: 'industry',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
         },
@@ -588,6 +591,8 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
+          width: '70px',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
           filterOptions: {
@@ -598,6 +603,8 @@ export default {
           label: 'Đơn giá',
           field: 'productPrice',
           type: 'number',
+          width: '195px',
+          thClass: 'text-nowrap',
           tdClass: ' align-middle',
           sortable: false,
         },
@@ -605,6 +612,7 @@ export default {
           label: 'Thành tiền',
           field: 'productPriceTotal',
           type: 'number',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
           filterOptions: {
@@ -615,6 +623,8 @@ export default {
           label: 'VAT %',
           field: 'vat',
           type: 'number',
+          width: '90px',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
         },
@@ -622,6 +632,7 @@ export default {
           label: 'Tiền thuế GTGT',
           field: 'productExported',
           type: 'number',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
           filterOptions: {
@@ -631,14 +642,16 @@ export default {
         {
           label: 'Ghi chú',
           field: 'note',
+          width: '150px',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: '',
           field: 'button',
-          thClass: 'text-center',
-          tdClass: 'align-middle',
+          thClass: 'move-header text-center',
+          tdClass: 'move-column align-middle',
           sortable: false,
         },
       ],
@@ -925,21 +938,31 @@ export default {
     },
     onInputValueProductPrice(index) {
       if (this.products[index].productPrice === 0) {
-        this.products[index].productPrice = '1'
+        this.products[index].productPrice = 1
       }
-      this.products[index].productPriceOriginal = Number(this.products[index].productPrice)
+      // this.products[index].productPrice = Number(this.products[index].productPriceOriginal)
     },
     onInputValueQuantity(index) {
       if (this.products[index].quantity === 0) {
-        this.products[index].quantity = '1'
+        this.products[index].quantity = 1
       }
+    },
+    onChangePrice(index) {
+      this.products[index].productPriceOriginal = Number(this.products[index].productPrice)
+      this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPrice))
+      this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPrice)
+      this.products[index].productExported = this.$formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
+      this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
+      this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
+      this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
     },
     onChangeQuantityAndPrice(index) {
       this.products[index].note = `${Math.floor(this.products[index].quantity / this.quantityPerBox)}T${this.products[index].quantity % this.quantityPerBox}`
       this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal))
       this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal)
       this.products[index].productExported = this.$formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
-      this.products[index].productPriceOriginal = this.products[index].productPrice
+      // this.products[index].productPriceOriginal = this.products[index].productPrice
+      // this.products[index].productPrice = Number(this.products[index].productPriceOriginal)
       this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
       this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
       this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
@@ -1059,5 +1082,27 @@ export default {
 <style>
   .item-active {
     padding-left: 5px;
+  }
+  .style-input {
+    padding: 0.438rem 0.5rem;
+  }
+  .custom-table thead tr:last-child th:last-child {
+    position: sticky;
+    right: 0;
+    z-index: 99;
+    background: #fff;
+  }
+  .move-header {
+    position: sticky !important;
+    right: 0;
+    top: auto;
+    z-index: 99;
+    background: #315899 !important;
+  }
+  .move-column {
+    position: sticky;
+    right: 0;
+    z-index: 99;
+    background: inherit;
   }
 </style>
