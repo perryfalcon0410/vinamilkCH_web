@@ -1,28 +1,35 @@
 <template>
   <!-- Error page-->
   <div class="misc-wrapper">
-    <b-link class="brand-logo">
-      <vuexy-logo />
-      <h2 class="brand-text text-primary ml-1">
-        Kênh Cửa Hàng
+    <b-row
+      class="brand-logo"
+      align-v="center"
+    >
+      <b-img
+        :src="appLogoImage"
+        alt="logo"
+        width="40px"
+      />
+      <h2 class="brand-text text-brand-1 ml-1 mt-1">
+        {{ appName }}
       </h2>
-    </b-link>
+    </b-row>
 
     <div class="misc-inner p-2 p-sm-3">
       <div class="w-100 text-center">
         <h2 class="mb-1">
-          Page Not Found 🕵🏻‍♀️
+          Không tìm thấy trang 🕵🏻‍♀️
         </h2>
         <p class="mb-2">
-          Oops! 😖 The requested URL was not found on this server.
+          Oops! 😖 Đường dẫn không tồn tại.
         </p>
 
         <b-button
-          variant="primary"
-          class="mb-2 btn-sm-block"
+          variant="someThing"
+          class="btn-brand-1 aligns-items-button-center"
           :to="{path:'/'}"
         >
-          Back to home
+          Trở về trang chủ
         </b-button>
 
         <!-- image -->
@@ -39,22 +46,25 @@
 
 <script>
 /* eslint-disable global-require */
-import { BLink, BButton, BImg } from 'bootstrap-vue'
-import VuexyLogo from '@core/layouts/components/Logo.vue'
 import store from '@/store/index'
+import { $themeConfig } from '@themeConfig'
 
 export default {
-  components: {
-    VuexyLogo,
-    BLink,
-    BButton,
-    BImg,
-  },
   data() {
     return {
       downImg: require('@/assets/images/pages/error.svg'),
     }
   },
+
+  setup() {
+    // App Name
+    const { appLogoImage, appName } = $themeConfig.app
+    return {
+      appName,
+      appLogoImage,
+    }
+  },
+
   computed: {
     imgUrl() {
       if (store.state.appConfig.layout.skin === 'dark') {

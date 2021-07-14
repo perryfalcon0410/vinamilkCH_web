@@ -1,11 +1,18 @@
 <template>
   <div class="misc-wrapper">
-    <b-link class="brand-logo">
-      <vuexy-logo />
-      <h2 class="brand-text text-primary ml-1">
-        Kênh Cửa Hàng
+    <b-row
+      class="brand-logo"
+      align-v="center"
+    >
+      <b-img
+        :src="appLogoImage"
+        alt="logo"
+        width="40px"
+      />
+      <h2 class="brand-text text-brand-1 ml-1 mt-1">
+        {{ appName }}
       </h2>
-    </b-link>
+    </b-row>
 
     <div class="misc-inner p-2 p-sm-3">
       <div class="w-100 text-center">
@@ -16,8 +23,8 @@
           Bạn không có quyền truy cập trang này. Trở về!!
         </p>
         <b-button
-          variant="primary"
-          class="mb-1 btn-sm-block"
+          variant="someThing"
+          class="btn-brand-1 aligns-items-button-center"
           :to="loginRoute()"
         >Trở về Trang chủ</b-button>
         <b-img
@@ -32,20 +39,26 @@
 
 <script>
 /* eslint-disable global-require */
-import { BLink, BImg, BButton } from 'bootstrap-vue'
-import VuexyLogo from '@core/layouts/components/Logo.vue'
 import store from '@/store/index'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
+import { $themeConfig } from '@themeConfig'
 
 export default {
-  components: {
-    BLink, BImg, BButton, VuexyLogo,
-  },
   data() {
     return {
       downImg: require('@/assets/images/pages/not-authorized.svg'),
     }
   },
+
+  setup() {
+    // App Name
+    const { appLogoImage, appName } = $themeConfig.app
+    return {
+      appName,
+      appLogoImage,
+    }
+  },
+
   computed: {
     imgUrl() {
       if (store.state.appConfig.layout.skin === 'dark') {
@@ -56,6 +69,7 @@ export default {
       return this.downImg
     },
   },
+
   methods: {
     loginRoute() {
       const user = JSON.parse(localStorage.getItem('userData'))

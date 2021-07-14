@@ -247,18 +247,9 @@
       <!-- END - Bill Date To -->
 
       <!-- START - Search button -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
+      <div
+        class="mt-auto mx-40"
       >
-        <div
-          class="h7 text-white"
-          onmousedown="return false;"
-          style="cursor: context-menu;"
-        >
-          Tìm kiếm
-        </div>
         <b-button
           class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
           variant="someThing"
@@ -268,7 +259,7 @@
           <b-icon-search class="mr-50" />
           Tìm kiếm
         </b-button>
-      </b-col>
+      </div>
       <!-- END - Search button -->
 
       <!-- START - Modal find product -->

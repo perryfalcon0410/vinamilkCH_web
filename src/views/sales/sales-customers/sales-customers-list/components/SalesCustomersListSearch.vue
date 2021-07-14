@@ -173,16 +173,13 @@
       <!-- END - Location -->
 
       <!-- START - Private customer -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
-        class="h7"
+      <div
+        class="h7 mx-50"
       >
         <div
-          class="text-white mt-sm-1 mt-xl-0"
+          class="text-white mt-sm-1 mt-xl-0 mb-45"
           onmousedown="return false;"
-          style="cursor: context-menu; margin-bottom: 5px;"
+          style="cursor: context-menu;"
         >
           Khách hàng riêng
         </div>
@@ -192,24 +189,13 @@
         >
           Khách hàng của cửa hàng
         </b-form-checkbox>
-
-      </b-col>
+      </div>
       <!-- END - Private customer -->
 
       <!-- START - Search button -->
-      <b-col
-        xl
-        lg="3"
-        sm="4"
+      <div
+        class="mt-auto mx-35"
       >
-        <!--"onmousedown" is prevent hightlight text -->
-        <div
-          class="text-white h7"
-          onmousedown="return false;"
-          style="cursor: context-menu;"
-        >
-          Tìm kiếm
-        </div>
         <b-button
           id="btnSearch"
           class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0"
@@ -219,7 +205,7 @@
           <b-icon-search class="mr-50" />
           Tìm kiếm
         </b-button>
-      </b-col>
+      </div>
       <!-- END - Search button -->
     </v-card-actions>
   </b-form>

@@ -43,12 +43,22 @@
       <div>
         Số HĐ: <strong>{{ printSalesReceiptData.orderNumber }}</strong>
       </div>
-      <div>
-        KH: {{ printSalesReceiptData.customerName }} - {{ printSalesReceiptData.customerPhone }}
-      </div>
-      <div>
-        DC: {{ printSalesReceiptData.customerAddress }}
-      </div>
+      <b-row class="mx-0">
+        <div class="mr-20">
+          KH:
+        </div>
+        <b-col class="px-0">
+          {{ printSalesReceiptData.customerName }} - {{ printSalesReceiptData.customerPhone }}
+        </b-col>
+      </b-row>
+      <b-row class="mx-0">
+        <div class="mr-20">
+          DC:
+        </div>
+        <b-col class="px-0">
+          {{ printSalesReceiptData.customerAddress }}
+        </b-col>
+      </b-row>
       <div>
         Loại giao hàng: {{ deliveryTypeLabel }}
       </div>
@@ -64,20 +74,20 @@
     </div>
     <!-- END - Order info -->
 
-    <!-- START - Table -->
+    <!-- START - Tables -->
     <table>
       <thead>
         <tr>
-          <th>
+          <th class="text-center width-25-per">
             SP
           </th>
-          <th class="text-right">
+          <th class="text-center width-25-per">
             SL
           </th>
-          <th class="text-right">
+          <th class="text-center width-25-per">
             Giá
           </th>
-          <th class="text-right">
+          <th class="text-center width-25-per">
             T.Tiền
           </th>
         </tr>
@@ -89,6 +99,14 @@
       v-for="(product,itemIndex) in printSalesReceiptData.products"
       :key="itemIndex"
     >
+      <thead class="border-0">
+        <tr>
+          <th class="text-center width-25-per" />
+          <th class="text-center width-25-per" />
+          <th class="text-center width-25-per" />
+          <th class="text-center width-25-per" />
+        </tr>
+      </thead>
       <tbody
         v-for="item in product.listOrderItems"
         :key="item.productId"
@@ -102,10 +120,10 @@
           <td>
             {{ item.productCode }}
           </td>
-          <td class="text-right">
-            {{ item.quantity }}
+          <td class="text-center">
+            {{ $formatNumberToLocale(item.quantity) }}
           </td>
-          <td class="text-right">
+          <td class="text-center">
             {{ $formatNumberToLocale(item.price) }}
           </td>
           <td class="text-right">
@@ -130,12 +148,16 @@
         v-for="item in product.listFreeItems"
         :key="item.productCode"
       >
-        <td colspan="3">
-          {{ item.productName }}
+        <td>
+          KM
         </td>
-        <td class="text-right">
+        <td class="text-center">
           {{ item.quantity }}
         </td>
+        <td colspan="2">
+          {{ item.productName }}
+        </td>
+
       </tbody>
     </table>
     <!-- END - Products -->
@@ -155,10 +177,7 @@
           <td colspan="3">
             {{ item.promotionCode }}
           </td>
-          <td
-            colspan="1"
-            class="text-right"
-          >
+          <td class="text-right">
             {{ $formatNumberToLocale( item.amount ) }}
           </td>
         </tr>
@@ -166,7 +185,7 @@
     </table>
     <!-- END - lstZM -->
 
-    <!-- END - Table -->
+    <!-- END - Tables -->
 
     <!-- STAT - Total section -->
     <div class="text-right th my-1">
@@ -279,18 +298,18 @@ export default {
   data() {
     return {
       printSalesReceiptData: {
-        shopName: 'CH CTSP Hải Dương',
-        shopPhone: '0887444226',
-        shopAddress: '9 Hoàng Hoa Thám - Hải Dương',
-        shopEmail: 'shop1@gamil.com',
-        customerName: 'KHÁCH HÀNG MẶC ĐINH',
-        customerPhone: '0341356686',
-        customerAddress: '123, Phường Cô Giang, Quận 1, TP Hồ Chí Minh',
-        deliveryType: 8,
+        shopName: 'shop name',
+        shopPhone: '0123456789',
+        shopAddress: '123 Đường - Tinh',
+        shopEmail: 'shop@gamil.com',
+        customerName: 'customer name',
+        customerPhone: '123456789',
+        customerAddress: '123, Phường, Quận, Tỉnh/Thành',
+        deliveryType: 8, // 8 = Giao tại cửa hàng, 9 = Giao tại nhà
         customerPurchase: 6.2162596E7,
         orderNumber: 'SAL.SHOP1.21070300001',
         orderDate: '2021-07-03T09:50:28.450',
-        userName: 'Tuấn Nguyễn',
+        userName: 'staff name',
         products: [
           {
             displayType: 1,
@@ -298,17 +317,39 @@ export default {
             listOrderItems: [
               {
                 productId: 1,
-                productName: 'Sữa dinh dưỡng không đường vị tự nhiên - Hộp 1L',
-                productCode: 'SP0001',
-                price: 55000.0,
+                productName: 'Product name',
+                productCode: 'SP0000',
+                price: 5500000.0,
                 quantity: 10,
-                totalPrice: 550000.0,
+                totalPrice: 55000000.0,
                 totalDiscountPrice: -10000,
               },
             ],
             listFreeItems: [
               {
-                productName: 'Sữa dinh dưỡng không đường vị tự nhiên - Hộp 1L',
+                productName: 'Product name',
+                productCode: 'SP0000',
+                quantity: 2,
+              },
+            ],
+          },
+          {
+            displayType: 1,
+            groupName: 'ZV19_001, ZV20_001',
+            listOrderItems: [
+              {
+                productId: 1,
+                productName: 'Product name',
+                productCode: 'SP0000',
+                price: 5500000.0,
+                quantity: 10,
+                totalPrice: 55000000.0,
+                totalDiscountPrice: -10000,
+              },
+            ],
+            listFreeItems: [
+              {
+                productName: 'Product name',
                 productCode: 'SP0001',
                 quantity: 2,
               },
@@ -322,17 +363,16 @@ export default {
             amount: -62333.16948699951,
           },
         ],
-        amount: 1727000.0,
+        amount: 1727000.0, // Tổng tiền sản phẩm (Có thuế)
         amountNotVAT: 1299001.0,
         promotionAmountNotVat: -140900.1,
         promotionAmount: -389483.0,
-        discountAmount: -0.0,
-        accumulatedAmount: -0.0,
+        accumulatedAmount: -0.0, // Tiền tích lũy
         voucherAmount: -0.0,
         totalNotVat: 1158100.9,
-        total: 2000000.0,
-        paymentAmount: 1337517.0,
-        extraAmount: 662483.0,
+        total: 1337517.0, // Tổng tiền sản phẩm (Có thuế)
+        paymentAmount: 2000000.0, // Tiền khách đưa
+        extraAmount: 662483.0, // Tiền trả lại khách
       },
     }
   },
@@ -381,7 +421,7 @@ export default {
 table {
   width: 100%;
 }
-th {
+thead {
  border-top: 1.5px dashed black;
  border-bottom: 1.5px dashed black;
 }
