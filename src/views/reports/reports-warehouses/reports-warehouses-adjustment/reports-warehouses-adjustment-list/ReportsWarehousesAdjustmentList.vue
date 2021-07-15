@@ -66,6 +66,23 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+          <!-- START - Rows -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+
+            <div
+              v-if="props.column.field === 'productName'"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Rows -->
 
           <!-- START - Columns -->
           <template
@@ -214,37 +231,44 @@ export default {
           label: 'Mã cửa hàng',
           field: 'shopCode',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngày hóa đơn',
           field: 'adjustmentDate',
           formatFn: value => this.$formatISOtoVNI(value),
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Loại hóa đơn',
           field: 'adjustmentType',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngành hàng',
           field: 'productInfoName',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'ĐVT',
@@ -260,6 +284,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-nowrap',
         },
         {
           label: 'Đơn giá',
@@ -267,6 +292,7 @@ export default {
           sortable: false,
           type: 'number',
           formatFn: this.$formatNumberToLocale,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Thanh toán',
@@ -274,6 +300,7 @@ export default {
           sortable: false,
           type: 'number',
           formatFn: this.$formatNumberToLocale,
+          thClass: 'text-nowrap',
         },
 
         {

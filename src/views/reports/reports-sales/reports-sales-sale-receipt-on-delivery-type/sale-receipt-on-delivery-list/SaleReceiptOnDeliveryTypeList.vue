@@ -78,6 +78,14 @@
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
+            <div
+              v-else-if="props.column.field === 'customerName' ||
+                props.column.field === 'address' ||
+                props.column.field === 'storeName'"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -252,7 +260,7 @@ export default {
           label: 'Ngày hóa đơn',
           field: 'receiptDate',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
@@ -279,28 +287,28 @@ export default {
           label: 'Loại giao hàng',
           field: 'deliveryType',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Số đơn online',
           field: 'onlineReceipt',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Kênh bán',
           field: 'channel',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Mã cửa hàng',
           field: 'storeCode',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {

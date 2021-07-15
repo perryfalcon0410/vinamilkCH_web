@@ -62,6 +62,7 @@
             class="input-group-merge"
           >
             <b-form-input
+              ref="focusInput"
               v-model="productCodes"
               class="h7 text-brand-3"
               placeholder="Mã sản phẩm"
@@ -167,6 +168,9 @@ export default {
         ctrlId: 1,
       },
     }
+  },
+  mounted() {
+    this.$refs.focusInput.focus()
   },
   methods: {
     ...mapGetters(REPORT_WAREHOUSES_INVENTORY, [

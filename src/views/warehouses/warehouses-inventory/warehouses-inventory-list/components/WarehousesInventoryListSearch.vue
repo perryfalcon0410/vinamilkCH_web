@@ -22,6 +22,7 @@
           class="input-group-merge"
         >
           <b-form-input
+            ref="focusInput"
             v-model="stockCountingCode"
             class="h7"
             maxlength="40"
@@ -238,6 +239,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    this.$refs.focusInput.focus()
   },
   methods: {
     ...mapActions(WAREHOUSEINVENTORY, [GET_WAREHOUSE_INVENTORIES_ACTION, GET_WAREHOUSE_TYPES_ACTION]),

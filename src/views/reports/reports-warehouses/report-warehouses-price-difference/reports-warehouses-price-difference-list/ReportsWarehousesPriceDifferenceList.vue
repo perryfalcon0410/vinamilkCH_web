@@ -77,6 +77,31 @@
             Không có dữ liệu
           </div>
           <!-- END - Empty rows -->
+          <!-- START - Rows -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+
+            <div
+              v-if="props.column.field === 'productName'"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'quantity' ||
+                props.column.field === 'totalInput' ||
+                props.column.field === 'totalOutput'"
+              class="pr-70"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Rows -->
           <!-- START - Column filter -->
           <template
             slot="column-filter"
@@ -84,7 +109,7 @@
           >
             <b-row
               v-if="props.column.field === 'quantity'"
-              class="mx-50  h7 text-brand-3"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
@@ -220,12 +245,14 @@ export default {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngày hóa đơn',
           field: 'orderDate',
           formatFn: value => this.$formatISOtoVNI(value),
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số PO',
@@ -246,6 +273,7 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên sản phẩm',
@@ -260,8 +288,8 @@ export default {
         {
           label: 'Số lượng',
           field: 'quantity',
-          type: 'number',
-          tdClass: 'pr-2',
+          thClass: 'text-nowrap text-right',
+          tdClass: 'text-right',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           filterOptions: {
@@ -271,16 +299,16 @@ export default {
         {
           label: 'Giá đầu vào (VAT)',
           field: 'inputPrice',
-          type: 'number',
-          tdClass: 'pr-2',
+          thClass: 'text-nowrap text-right',
+          tdClass: 'text-right',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền vào',
           field: 'totalInput',
-          type: 'number',
-          tdClass: 'pr-2',
+          thClass: 'text-nowrap text-right',
+          tdClass: 'text-right',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
           filterOptions: {
@@ -291,24 +319,24 @@ export default {
           label: 'Giá đầu ra (VAT)',
           field: 'outputPrice',
           sortable: false,
-          type: 'number',
-          tdClass: 'pr-2',
+          thClass: 'text-nowrap text-right',
+          tdClass: 'text-right',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền ra',
           field: 'totalOutput',
-          type: 'number',
           sortable: false,
-          tdClass: 'pr-2',
+          thClass: 'text-nowrap text-right',
+          tdClass: 'text-right',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Chênh lệch',
           field: 'priceChange',
           sortable: false,
-          type: 'number',
-          tdClass: 'pr-2',
+          thClass: 'text-nowrap text-right',
+          tdClass: 'text-right',
           formatFn: this.$formatNumberToLocale,
         },
       ],

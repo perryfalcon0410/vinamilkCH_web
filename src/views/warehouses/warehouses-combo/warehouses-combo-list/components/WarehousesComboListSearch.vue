@@ -23,6 +23,7 @@
           class="input-group-merge"
         >
           <b-form-input
+            ref="focusInput"
             v-model.trim="transCode"
             class="h7"
             placeholder="Nhập mã giao dịch"
@@ -225,6 +226,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    this.$refs.focusInput.focus()
   },
 
   methods: {

@@ -786,64 +786,54 @@ export default {
       this.warehousesOutput.internalNumber = ''
       this.warehousesOutput.poNumber = ''
     },
-    checkQuantity() {
-      this.products.forEach(item => {
-        if (item.quantityReturn == null || item.quantity - item.productReturnExportOriginal >= item.quantityReturn) {
-          this.quantityCheck = true
-        } else {
-          this.quantityCheck = false
-        }
-      })
-      this.rowsProductPromotion.forEach(item => {
-        if (item.quantityPromo == null || item.quantity - item.productReturnExportOriginal >= item.quantityPromo) {
-          this.quantityCheck = true
-        } else {
-          this.quantityCheck = false
-        }
-      })
-    },
     checkNull() {
+      let stop = true
       this.products.forEach(item => {
-        if (item.quantityReturn != null) {
-          this.nullCheck = true
-        } else {
-          this.nullCheck = false
-          this.rowsProductPromotion.forEach(i => {
-            if (i.quantityPromo != null) {
-              this.nullCheck = true
-            } else {
-              this.nullCheck = false
-            }
-          })
+        if (stop) {
+          if (item.quantityReturn != null) {
+            this.nullCheck = true
+            stop = false
+          } else {
+            this.nullCheck = false
+            this.rowsProductPromotion.forEach(i => {
+              if (i.quantityPromo != null) {
+                this.nullCheck = true
+                stop = false
+              } else {
+                this.nullCheck = false
+              }
+            })
+          }
         }
       })
     },
     createExport() {
       if (this.outputTypeSelected === warehousesData.outputTypes[0].id) {
-        this.checkQuantity()
         this.checkNull()
       }
       if (this.products.length > 0 || this.rowsProductPromotion.length > 0) {
         if (this.nullCheck) {
-          if (this.quantityCheck) {
-            this.CREATE_EXPORT_ACTION(
-              {
-                importType: Number(this.outputTypeSelected),
-                isRemainAll: this.exportAll,
-                receiptImportId: Number(this.warehousesOutput.id),
-                note: this.warehousesOutput.note,
-                litQuantityRemain: [...this.products.map(item => ({
-                  id: item.id,
-                  quantity: Number(item.quantityReturn) || 0,
-                })),
-                ...this.rowsProductPromotion.map(item => ({
-                  id: item.id,
-                  quantity: Number(item.quantityPromo) || 0,
-                })),
-                ],
-              },
-            )
-          } else toasts.error('Không đủ sản phẩm trả.')
+          this.CREATE_EXPORT_ACTION(
+            {
+              importType: Number(this.outputTypeSelected),
+              isRemainAll: this.exportAll,
+              receiptImportId: Number(this.warehousesOutput.id),
+              note: this.warehousesOutput.note,
+              litQuantityRemain: [...this.products.map(item => ({
+                id: item.id,
+                quantity: Number(item.quantityReturn) || 0,
+                productCode: item.productCode,
+                productName: item.productName,
+              })),
+              ...this.rowsProductPromotion.map(item => ({
+                id: item.id,
+                quantity: Number(item.quantityPromo) || 0,
+                productCode: item.productCode,
+                productName: item.productName,
+              })),
+              ],
+            },
+          )
         } else toasts.error('Không để trống tất cả sản phẩm.')
       } else toasts.error('Vui lòng chọn phiếu.')
     },

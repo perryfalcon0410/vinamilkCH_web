@@ -23,6 +23,7 @@
         >
           <b-form-input
             id="form-input-trans-code"
+            ref="focusInput"
             v-model="transCode"
             maxlength="40"
             class="h7"
@@ -256,6 +257,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    this.$refs.focusInput.focus()
   },
 
   methods: {

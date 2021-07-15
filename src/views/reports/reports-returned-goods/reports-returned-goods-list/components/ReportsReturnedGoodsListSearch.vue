@@ -29,6 +29,7 @@
             @keyup.enter="onClickSearchButton"
           >
             <b-form-input
+              ref="focusInput"
               v-model="reciept"
               trim
               class="h7 text-brand-3"
@@ -328,6 +329,7 @@ export default {
       ...this.configFromDate,
       maxDate: this.toDate,
     }
+    this.$refs.focusInput.focus()
   },
 
   methods: {

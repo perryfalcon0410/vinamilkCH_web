@@ -706,13 +706,19 @@ export default {
       }
       if (this.quantityCheck) {
         if (this.products) {
+          console.log(this.products)
+          console.log(this.rowsProductPromotion)
           const products = [...this.products.map(data => ({
             id: data.productID,
             quantity: data.productReturnAmount,
+            productCode: data.productCode,
+            productName: data.productName,
           })),
           ...this.rowsProductPromotion.map(data => ({
             id: data.productID,
             quantity: data.productReturnAmount,
+            productCode: data.productCode,
+            productName: data.productName,
           })),
           ]
 

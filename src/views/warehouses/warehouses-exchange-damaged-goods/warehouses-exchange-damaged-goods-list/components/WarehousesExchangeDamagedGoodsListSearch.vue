@@ -19,6 +19,7 @@
           class="input-group-merge"
         >
           <b-form-input
+            ref="focusInput"
             v-model.trim="transCode"
             :state="transCode ? passed : null"
             maxlength="40"
@@ -251,6 +252,7 @@ export default {
       minDate: this.fromDate,
     }
     this.onSearch()
+    this.$refs.focusInput.focus()
   },
 
   methods: {

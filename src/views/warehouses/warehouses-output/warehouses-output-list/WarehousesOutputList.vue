@@ -21,8 +21,11 @@
           <div class="mt-sm-1 mt-xl-0">
             Mã xuất hàng
           </div>
-          <b-input-group class="input-group-merge">
+          <b-input-group
+            class="input-group-merge"
+          >
             <b-form-input
+              ref="focusInput"
               v-model="searchOptions.exportNo"
               class="text-brand-3"
               maxlength="20"
@@ -646,6 +649,7 @@ export default {
       minDate: this.fromDate,
     }
     this.onPaginationChange()
+    this.$refs.focusInput.focus()
   },
 
   methods: {
