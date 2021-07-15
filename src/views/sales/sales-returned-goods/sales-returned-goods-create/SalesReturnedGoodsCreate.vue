@@ -178,34 +178,56 @@
                 >
                   <b-row
                     v-if="props.column.field === 'quantity'"
-                    class="mx-50 h7 text-brand-3 text-right"
+                    class="mx-0 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.totalQuantity) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'totalPrice'"
-                    class="mx-50 h7 text-brand-3 text-right"
+                    class="mx-0 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.totalAmount) }}
                   </b-row>
                   <b-row
                     v-if="props.column.field === 'discount'"
-                    class="mx-50 h7 text-brand-3 text-right"
+                    class="mx-0 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.totalDiscount) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'payment'"
-                    class="mx-50 h7 text-brand-3 text-right"
+                    class="mx-0 h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getProductInfo.allTotal) }}
                   </b-row>
                 </template>
-              <!-- START - Column filter -->
+                <!-- START - Column filter -->
+                <!-- START - Custom row -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div
+                    v-if="props.column.field === 'productName'"
+                    class="name-width"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div
+                    v-else-if="props.column.field === 'quantity' || props.column.field === 'totalPrice' || props.column.field === 'discount' || props.column.field === 'payment'"
+                    style="padding-right: 4px"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
+                <!-- END - Custom row -->
               </vue-good-table>
             <!-- End table -->
             </b-tab>
@@ -222,6 +244,7 @@
                 :pagination-options="{
                   enabled: false
                 }"
+                compact-mode
                 line-numbers
               >
                 <!-- START - Empty rows -->
@@ -239,19 +262,42 @@
                 >
                   <b-row
                     v-if="props.column.field === 'quantity'"
-                    class="mx-50  h7 text-brand-3 text-right"
+                    class="mx-0  h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getPromotionInfo.totalQuantity) }}
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'payment'"
-                    class="mx-50  h7 text-brand-3 text-right"
+                    class="mx-0  h7 text-brand-3 text-right"
                     align-h="end"
                   >
                     {{ (getPromotionInfo.allTotal) }}
                   </b-row>
-                </template></vue-good-table>
+                </template>
+                <!-- START - Custom row -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div
+                    v-if="props.column.field === 'productName'"
+                    class="name-width"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div
+                    v-else-if="props.column.field === 'quantity' || props.column.field === 'payment'"
+                    style="padding-right: 4px"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
+                <!-- END - Custom row -->
+              </vue-good-table>
             </b-tab>
           <!-- END - Promotion Product  -->
 
@@ -382,114 +428,122 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
           type: 'number',
-          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá bán',
           field: 'pricePerUnit',
           sortable: false,
+          thClass: 'text-nowrap',
           type: 'number',
-          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tổng tiền',
           field: 'totalPrice',
           sortable: false,
+          thClass: 'text-nowrap',
           type: 'number',
-          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giảm giá',
           field: 'discount',
           sortable: false,
+          thClass: 'text-nowrap',
           type: 'number',
-          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tiền trả lại',
           field: 'payment',
           sortable: false,
+          thClass: 'text-nowrap',
           type: 'number',
-          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
         },
-        {
-          label: 'Ghi chú',
-          field: 'note',
-          sortable: false,
-        },
+        // {
+        //   label: 'Ghi chú',
+        //   field: 'note',
+        //   sortable: false,
+        //   thClass: 'text-nowrap',
+        // },
       ],
       promotionTable: [
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
           type: 'number',
-          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Giá bán',
           field: 'pricePerUnit',
           sortable: false,
+          thClass: 'text-nowrap',
           type: 'number',
-          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Tiền trả lại',
           field: 'payment',
           sortable: false,
+          thClass: 'text-nowrap',
           type: 'number',
-          tdClass: 'pr-2',
           formatFn: this.$formatNumberToLocale,
         },
-        {
-          label: 'Ghi chú',
-          field: 'note',
-          sortable: false,
-        },
+        // {
+        //   label: 'Ghi chú',
+        //   field: 'note',
+        //   sortable: false,
+        //   thClass: 'text-nowrap',
+        // },
       ],
     }
   },
