@@ -879,6 +879,8 @@ export default {
           })
         } else {
           this.products[existedProductIndex].quantity += product.item.quantity
+          // Công thức: ghi chú sp = (SL / quantityPerBox(=24))'T'(SL % quantityPerBox(=24))
+          // Gải thích: Ghi chú sp theo quy tắc: thùng T lẻ (24sp là 1 thùng)
           this.products[existedProductIndex].note = `${Math.floor(this.products[existedProductIndex].quantity / this.quantityPerBox)}T${this.products[existedProductIndex].quantity % this.quantityPerBox}`
           this.onChangeQuantityAndPrice(existedProductIndex)
           this.onChangeVAT(existedProductIndex)
