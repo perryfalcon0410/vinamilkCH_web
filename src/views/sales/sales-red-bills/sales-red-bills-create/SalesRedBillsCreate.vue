@@ -874,11 +874,12 @@ export default {
             productExported: this.$formatNumberToLocale(product.item.vatAmount),
             productExportedOriginal: product.item.vatAmount,
             sumProductExportedOriginal: product.item.vatAmount,
-            note: product.item.note,
+            note: '0T1',
             button: '1',
           })
         } else {
           this.products[existedProductIndex].quantity += product.item.quantity
+          this.products[existedProductIndex].note = `${Math.floor(this.products[existedProductIndex].quantity / this.quantityPerBox)}T${this.products[existedProductIndex].quantity % this.quantityPerBox}`
           this.onChangeQuantityAndPrice(existedProductIndex)
           this.onChangeVAT(existedProductIndex)
           this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)

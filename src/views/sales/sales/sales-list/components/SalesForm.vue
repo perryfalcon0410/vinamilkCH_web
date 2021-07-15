@@ -86,6 +86,7 @@
                   ref="search"
                   v-model="search"
                   :suggestions="customersSearch"
+                  autofocus
                   class="w-100"
                   align-v="center"
                   :input-props="{
@@ -96,6 +97,7 @@
                   @input="onChangeKeyWord"
                   @selected="onclickChooseCustomer"
                   @keyup.enter="showSearchModal"
+                  @focus="focusInput"
                 >
                   <template
                     slot-scope="{ suggestion }"
@@ -231,24 +233,30 @@
             <!-- END - Order type -->
 
             <!-- START - Delivery type -->
-            <b-row
-              class="mt-1"
-              align-v="center"
+            <validation-provider
+              v-slot="{ errors, passed, touched }"
+              rules="required"
+              name="Loại giao hàng"
             >
-              <b-col
-                cols="4"
-                class="h7"
+              <b-row
+                class="mt-1 h7"
+                align-v="center"
               >
-                Loại giao hàng
-              </b-col>
-              <b-col>
-                <tree-select
-                  v-model="salemtDeliveryTypeSelected"
-                  :options="salemtDeliveryTypeOptions"
-                  @select="getDeliveryType"
-                />
-              </b-col>
-            </b-row>
+
+                <b-col cols="4">
+                  Loại giao hàng
+                </b-col>
+                <b-col>
+                  <tree-select
+                    v-model="salemtDeliveryTypeSelected"
+                    :state="touched ? passed : null"
+                    :options="salemtDeliveryTypeOptions"
+                    @select="getDeliveryType"
+                  />
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </b-col>
+              </b-row>
+            </validation-provider>
             <!-- END - Delivery type -->
 
             <!-- START - Online order number -->
@@ -523,6 +531,7 @@ export default {
       salemtPromotionId: '1',
       isCheckmanualCreate: true,
       currentCustomer: {},
+      isSelected: false,
       currentDate: getCurrentTime(),
       decentralization: {
         formId: 1,
@@ -846,14 +855,16 @@ export default {
 
     onPayButtonClick() {
       // if (this.salemtPromotionObjectSelected === this.salemtPromotionObjectOptions[0].id) {
-      if (this.checkApParramCode) {
-        this.$bvModal.show('pay-modal')
-      } else if (this.salemtPromotionObjectSelected !== undefined) {
-        this.$refs.formContainer.validate().then(success => {
-          if (success) {
-            this.$bvModal.show('pay-modal')
-          }
-        })
+      if (this.salemtDeliveryTypeSelected !== undefined) {
+        if (this.checkApParramCode) {
+          this.$bvModal.show('pay-modal')
+        } else if (this.salemtPromotionObjectSelected !== undefined) {
+          this.$refs.formContainer.validate().then(success => {
+            if (success) {
+              this.$bvModal.show('pay-modal')
+            }
+          })
+        }
       }
     },
 
@@ -976,6 +987,13 @@ export default {
     getDeliveryType(item) {
       this.$emit('salemtDeliveryTypeSelected', item.id)
     },
+    focusInput() {
+      if (this.isSelected) {
+        this.customersSearch = [{ data: null }]
+        this.search = ''
+        this.isSelected = false
+      }
+    },
 
     onclickChooseCustomer(suggestion) {
       if (suggestion) {
@@ -991,9 +1009,8 @@ export default {
         this.customer.amountCumulated = suggestion.item.amountCumulated
         this.customer.status = suggestion.item.status
         this.customer.typeId = suggestion.item.customerTypeId
+        this.isSelected = true
         this.$emit('getIdCustomer', suggestion.item)
-        this.customersSearch = [{ data: null }]
-        this.search = ''
       } else {
         const searchData = Number(this.search)
         if (Number.isNaN(searchData) === false) {

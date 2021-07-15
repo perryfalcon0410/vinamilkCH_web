@@ -105,7 +105,7 @@
             class="bg-btn-order d-flex align-items-center justify-content-center"
             @click="clickBillButton(bill.id)"
           >
-            Hóa đơn {{ bill.id }}
+            {{ bill.billName }}
             <!-- <b-icon-x
               class="cursor-pointer ml-1"
               font-scale="1.6"
@@ -450,9 +450,12 @@ export default {
       productsSearchLength: 0,
 
       isActive: false,
+      customerFullName: null, // get bills Name
+      billSelected: 1,
       bills: [
         {
           id: 1,
+          billName: null,
           products: [],
           customer: {
             fullName: null,
@@ -655,6 +658,9 @@ export default {
         })
       }
     },
+    customerFullName() {
+      this.bills.find(item => item.id === this.billSelected).billName = this.customerFullName
+    },
   },
   mounted() {
     const index = this.productInfoTypeOptions.findIndex(i => i.name === 'Ngành hàng')
@@ -791,6 +797,8 @@ export default {
       if (lastIteminBill) {
         this.bills.push({
           id: lastIteminBill.id + 1,
+          // billName: this.customerFullName,
+          billName: this.defaultCustomer.fullName,
           products: [],
           customer: {
             fullName: this.defaultCustomer.fullName,
@@ -843,6 +851,7 @@ export default {
     },
 
     clickBillButton(billSelectedId) {
+      this.billSelected = billSelectedId
       this.bills = this.bills.map(bill => {
         if (bill.id === this.orderCurrentId) {
           return {
@@ -906,6 +915,7 @@ export default {
       this.searchOptions.customerId = this.customerId
       this.currentCustomerId = this.customerId
       this.GET_PRODUCTS_ACTION(this.searchOptions)
+      this.customerFullName = val.fullName
 
       // check customers dafault
       if (val.isDefault === true && val.status === 1) {
@@ -918,6 +928,7 @@ export default {
     getOnlineCustomer(val) {
       this.onlineOrderId = val.id
       this.searchOptions.customerId = val.id
+      this.customerFullName = val.fullName
     },
 
     getCustomerTypeInfo(val) {
@@ -930,6 +941,7 @@ export default {
       // check customers dafault
       this.customerType = val.customerTypeId
       this.searchOptions.customerId = val.id
+      this.customerFullName = val.fullName
 
       this.productChangePrice = this.orderProducts.map(data => ({
         productId: data.productId,
@@ -956,6 +968,7 @@ export default {
         this.isCheckShopId = true
         this.searchOptions.customerId = data.id
         this.editOnlinePermission = true
+        this.customerFullName = data.fullName
         if (this.customerTypeCurent !== this.customerType) {
           this.productChangePrice = this.orderProducts.map(item => ({
             productId: item.productId,
