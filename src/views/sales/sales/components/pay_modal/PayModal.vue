@@ -57,25 +57,21 @@
                   @change="onChangeCheckProgramPromotion()"
                 />
                 <div class="text-white">
-                  {{ value.promotionProgramName }} <span v-if="value.products.length > 0">- Số suất: {{ $formatNumberToLocale(value.numberLimited) }}</span>
+                  {{ value.promotionProgramName }} <span>- Số suất: {{ $formatNumberToLocale(value.numberLimited) }}</span>
                   <b-icon-shield-exclamation
-                    v-if="value.products.length > 0 && !value.isUse"
+                    v-if="!value.isUse"
                     v-b-popover.hover="{variant: 'danger', content: 'Chương trình này không được áp dụng do số suất không đủ'}"
                     class="cursor-pointer ml-1 text-danger"
                     font-scale="1.5"
                   />
                 </div>
                 <b-icon-chevron-down
-                  v-if="openCollapseProgramPromotion === true"
-                  class="ml-auto"
+                  class="ml-auto when-opened"
                   color="white"
-                  @click="onCollapseClick(false)"
                 />
                 <b-icon-chevron-up
-                  v-else
                   color="white"
-                  class="ml-auto"
-                  @click="onCollapseClick(true)"
+                  class="ml-auto when-closed"
                 />
               </b-row>
               <!-- END - Title -->
@@ -87,7 +83,7 @@
               >
                 <div v-if="value.products.length > 0">
                   <vue-good-table
-                    :columns="columnsAdm"
+                    :columns="columnsCTKMAuto"
                     :rows="value.products"
                     style-class="vgt-table bordered"
                     compact-mode
@@ -237,7 +233,7 @@
                 </div>
                 <div v-else>
                   <vue-good-table
-                    :columns="columnsAdm"
+                    :columns="columnsCTKMHandle"
                     :rows="value.products"
                     style-class="vgt-table bordered"
                     compact-mode
@@ -251,6 +247,19 @@
                       Không có dữ liệu
                     </div>
                     <!-- END - Empty rows -->
+                    <template
+                      slot="table-column"
+                      slot-scope="props"
+                    >
+                      <div
+                        v-if="props.column.field === 'tableProductFeature'"
+                      >
+                        <b-icon-bricks />
+                      </div>
+                      <div v-else>
+                        {{ props.column.label }}
+                      </div>
+                    </template>
                     <!-- START - Action bottom -->
                     <div
                       slot="table-actions-bottom"
@@ -837,7 +846,7 @@ export default {
   data() {
     return {
       promotionTypeOption: saleData.promotionType,
-      columnsAdm: [
+      columnsCTKMAuto: [
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
@@ -870,6 +879,45 @@ export default {
         },
       ],
 
+      columnsCTKMHandle: [
+        {
+          label: 'Mã sản phẩm',
+          field: 'productCode',
+          sortable: false,
+          thClass: 'text-left col-2',
+          tdClass: 'text-left col-2',
+        },
+        {
+          label: 'Tên sản phẩm',
+          field: 'productName',
+          sortable: false,
+          thClass: 'text-left col-4',
+          tdClass: 'text-left col-4',
+        },
+        {
+          label: 'Tồn kho',
+          field: 'stockQuantity',
+          sortable: false,
+          thClass: 'text-center col-2',
+          tdClass: 'text-center col-2',
+          formatFn: value => this.$formatNumberToLocale(value),
+        },
+        {
+          label: 'Số lượng tặng',
+          field: 'quantity',
+          sortable: false,
+          type: 'number',
+          thClass: 'text-center col-3',
+          tdClass: 'text-center col-3',
+        },
+        {
+          label: 'Chức năng',
+          field: 'tableProductFeature',
+          sortable: false,
+          thClass: 'text-center col-1',
+          tdClass: 'text-center col-1',
+        },
+      ],
       promotionPrograms: [],
       test: [],
       cursor: -1,
@@ -928,7 +976,6 @@ export default {
       isPaid: false,
 
       isPrint: false,
-      openCollapseProgramPromotion: true,
       isSaveSuccess: false,
     }
   },
@@ -1389,6 +1436,7 @@ export default {
                       quantity: Number(program.numberLimited),
                     }
                   }
+                  console.log('ABC')
                   return {
                     ...product,
                     quantity: product.quantityMax,
@@ -1567,7 +1615,7 @@ export default {
           if (program.isEditable) {
             if (product.quantity > product.stockQuantity) {
               isValid = false
-              toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
+              toasts.error(`Tồn kho của ${product.productName} của ${program.promotionProgramName} không đủ. Bạn không thể thực hiện Thanh toán.`)
             }
           } else if (product.quantityMax > product.stockQuantity) {
             isValid = false
@@ -1741,13 +1789,6 @@ export default {
         })
       }
     },
-    onCollapseClick(isOpened) {
-      if (isOpened) {
-        this.openCollapseProgramPromotion = true
-      } else {
-        this.openCollapseProgramPromotion = false
-      }
-    },
   },
 }
 </script>
@@ -1758,4 +1799,10 @@ export default {
     height:500px;
     overflow-y:auto
   }
+
+  .collapsed > .when-opened,
+  :not(.collapsed) > .when-closed {
+      display: none;
+  }
+
 </style>
