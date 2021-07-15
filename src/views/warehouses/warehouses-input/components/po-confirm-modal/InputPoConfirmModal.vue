@@ -11,20 +11,18 @@
     <!-- START - Body -->
     <b-container fluid>
       <b-row>
-        <!-- START - Import/Export List -->
+        <!-- START - Po Confirm List -->
         <b-col
           xl="4"
-          class="d-flex flex-column px-0"
+          class="d-flex flex-row px-0"
         >
           <b-col
-            class="bg-white shadow rounded text-dark table my-0"
+            class="bg-white shadow rounded text-dark mr-xl-1"
           >
             <!-- START - Header -->
-            <b-row class="py-1 table-row">
-              <b-col
-                cols="1"
-              />
-              <b-col class="px-50 ws-nowrap">
+            <b-row class="py-1">
+              <b-col cols="1" />
+              <b-col>
                 <strong>
                   PO No
                 </strong>
@@ -34,7 +32,7 @@
                   Số nội bộ
                 </strong>
               </b-col>
-              <b-col class="mx-35">
+              <b-col>
                 <strong>
                   Ngày
                 </strong>
@@ -46,21 +44,17 @@
             <b-row
               v-for="(item, index) in poConfirm"
               :key="item.id"
-              class="border-bottom border-white rounded py-1 cursor-pointer table-row"
+              class="border-bottom border-white rounded py-1 cursor-pointer"
               :class="{ 'text-brand-1': current == item.id }"
-              @click="selectOrder(item.id,item.internalNumber,item.poCoNumber, item.date)"
+              @click="selectOrder(item.id, item.internalNumber, item.poCoNumber, item.date)"
             >
-              <b-col
-                cols="1"
-              >
+              <b-col cols="1">
                 {{ index + 1 }}
               </b-col>
-              <b-col
-                class="px-50"
-              >
+              <b-col class="pr-0">
                 {{ item.poCoNumber }}
               </b-col>
-              <b-col class="px-50">
+              <b-col class="pr-0">
                 {{ item.internalNumber }}
               </b-col>
               <b-col
@@ -76,122 +70,40 @@
 
         <!-- START - List -->
         <b-col
-          style="max-width: 52rem;"
-          class="ml-xl-1 mt-1 mt-xl-0 pt-1 bg-white shadow rounded"
+          xl="8"
+          class="pr-0 bg-white shadow rounded mt-1 mt-xl-0"
         >
-
           <!-- START - Table Product -->
           <!-- START - Title Product -->
-          <b-row
-            align-v="end"
-            class="justify-content-between mx-0"
-          >
+          <div class="pt-1 px-xl-1 pr-md-1">
+            <b-row
+              align-v="end"
+              class="justify-content-between mx-0"
+            >
 
-            <strong class="d-flex h-25 align-items-center rounded-top px-1">
-              Sản phẩm
-            </strong>
-            <b-button
-              class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-center"
-              variant="someThing"
-              @click="syncPo"
-            >
-              <b-icon
-                icon="arrow-repeat"
-              />
-              Tải PO
-            </b-button>
-          </b-row>
-          <!-- END - Title Product -->
-          <vue-good-table
-            :columns="columns"
-            :rows="poProducts"
-            style-class="vgt-table bordered"
-            compact-mode
-            line-numbers
-            class="py-1"
-          >
-            <!-- row filter -->
-            <template
-              slot="table-row"
-              slot-scope="props"
-            >
-              <div
-                v-if="props.column.field === 'totalPriceVat' || props.column.field === 'quantity'"
-                class="pr-70"
+              <strong class="d-flex h-25 align-items-center rounded-top px-1">
+                Sản phẩm
+              </strong>
+              <b-button
+                class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-center"
+                variant="someThing"
+                @click="syncPo"
               >
-                {{ props.formattedRow[props.column.field] }}
-              </div>
-              <div v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </div>
-            </template>
-            <!-- row filter -->
-
-            <!-- column filter -->
-            <template
-              slot="column-filter"
-              slot-scope="props"
-            >
-              <b-row
-                v-if="props.column.field === 'quantity'"
-                v-show="poProductInfo.totalQuantity"
-                class="mx-50 h7 text-brand-3"
-                align-h="end"
-              >
-                {{ $formatNumberToLocale(poProductInfo.totalQuantity) }}
-              </b-row>
-              <b-row
-                v-if="props.column.field === 'totalPriceVat'"
-                v-show="poProductInfo.totalPrice"
-                class="mx-50 h7 text-brand-3"
-                align-h="end"
-              >
-                {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
-              </b-row>
-            </template>
-            <!-- column filter -->
-            <!-- START - Empty rows -->
-            <div
-              slot="emptystate"
-              class="text-center"
-            >
-              Không có dữ liệu
-            </div>
-          <!-- END - Empty rows -->
-          </vue-good-table>
-          <!-- END - Table Product -->
-
-          <!-- START - Title Product promotion -->
-          <div
-            v-show="isShowPoPromoTable"
-          >
-            <strong class="d-inline-flex rounded-top px-1">
-              Hàng khuyến mãi
-            </strong>
-            <!-- END - Title Product promotion -->
-
+                <b-icon
+                  icon="arrow-repeat"
+                />
+                Tải PO
+              </b-button>
+            </b-row>
+            <!-- END - Title Product -->
             <vue-good-table
               :columns="columns"
-              :rows="poPromotionProducts"
+              :rows="poProducts"
               style-class="vgt-table bordered"
               compact-mode
               line-numbers
               class="py-1"
             >
-              <template
-                slot="table-column"
-                slot-scope="props"
-              >
-                <span v-if="props.column.label === 'Giá (VAT)'">
-                  Giá
-                </span>
-                <span v-else-if="props.column.label === 'Thành tiền (VAT)'">
-                  Thành tiền
-                </span>
-                <span v-else>
-                  {{ props.column.label }}
-                </span>
-              </template>
               <!-- row filter -->
               <template
                 slot="table-row"
@@ -208,6 +120,7 @@
                 </div>
               </template>
               <!-- row filter -->
+
               <!-- column filter -->
               <template
                 slot="column-filter"
@@ -215,17 +128,19 @@
               >
                 <b-row
                   v-if="props.column.field === 'quantity'"
+                  v-show="poProductInfo.totalQuantity"
                   class="mx-50 h7 text-brand-3"
                   align-h="end"
                 >
-                  {{ poPromotionProductsInfo.totalQuantity }}
+                  {{ $formatNumberToLocale(poProductInfo.totalQuantity) }}
                 </b-row>
                 <b-row
                   v-if="props.column.field === 'totalPriceVat'"
+                  v-show="poProductInfo.totalPrice"
                   class="mx-50 h7 text-brand-3"
                   align-h="end"
                 >
-                  {{ poPromotionProductsInfo.totalPrice }}
+                  {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
                 </b-row>
               </template>
               <!-- column filter -->
@@ -238,8 +153,88 @@
               </div>
               <!-- END - Empty rows -->
             </vue-good-table>
+            <!-- END - Table Product -->
+
+            <!-- START - Title Product promotion -->
+            <div
+              v-show="isShowPoPromoTable"
+            >
+              <strong class="d-inline-flex rounded-top px-1">
+                Hàng khuyến mãi
+              </strong>
+              <!-- END - Title Product promotion -->
+
+              <vue-good-table
+                :columns="columns"
+                :rows="poPromotionProducts"
+                style-class="vgt-table bordered"
+                compact-mode
+                line-numbers
+                class="py-1"
+              >
+                <template
+                  slot="table-column"
+                  slot-scope="props"
+                >
+                  <span v-if="props.column.label === 'Giá (VAT)'">
+                    Giá
+                  </span>
+                  <span v-else-if="props.column.label === 'Thành tiền (VAT)'">
+                    Thành tiền
+                  </span>
+                  <span v-else>
+                    {{ props.column.label }}
+                  </span>
+                </template>
+                <!-- row filter -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div
+                    v-if="props.column.field === 'totalPriceVat' || props.column.field === 'quantity'"
+                    class="pr-70"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
+                <!-- row filter -->
+                <!-- column filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'quantity'"
+                    class="mx-50 h7 text-brand-3"
+                    align-h="end"
+                  >
+                    {{ poPromotionProductsInfo.totalQuantity }}
+                  </b-row>
+                  <b-row
+                    v-if="props.column.field === 'totalPriceVat'"
+                    class="mx-50 h7 text-brand-3"
+                    align-h="end"
+                  >
+                    {{ poPromotionProductsInfo.totalPrice }}
+                  </b-row>
+                </template>
+                <!-- column filter -->
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
+              <!-- END - Empty rows -->
+              </vue-good-table>
+            </div>
+            <!-- END - Table Product promotion -->
           </div>
-          <!-- END - Table Product promotion -->
         </b-col>
         <!-- END - List -->
       </b-row>
@@ -325,7 +320,6 @@ import {
   GET_IMPORT_PO_CONFIRM_ACTION,
   // MUTATIONS
   CLEAR_GRID_VIEW_MUTATION,
-  CLEAR_IMPORT_PO_STATUS_MUTATION,
 } from '../../store-module/type'
 
 export default {
@@ -364,14 +358,14 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-left ws-nowrap',
-          tdClass: 'text-left ws-nowrap',
+          tdClass: 'text-left',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
           thClass: 'text-left  ws-nowrap',
-          tdClass: 'text-left  ws-nowrap',
+          tdClass: 'text-left ',
         },
         {
           label: 'Tên sản phẩm',
@@ -386,7 +380,7 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-right  ws-nowrap',
-          tdClass: 'text-right  ws-nowrap',
+          tdClass: 'text-right',
         },
         {
           label: 'Số lượng',
@@ -397,7 +391,7 @@ export default {
             enabled: true,
           },
           thClass: 'text-right  ws-nowrap',
-          tdClass: 'text-right  ws-nowrap',
+          tdClass: 'text-right',
         },
         {
           label: 'Thành tiền (VAT)',
@@ -408,7 +402,7 @@ export default {
             enabled: true,
           },
           thClass: 'text-right  ws-nowrap',
-          tdClass: 'text-right  ws-nowrap',
+          tdClass: 'text-right',
         },
       ],
     }
@@ -486,12 +480,6 @@ export default {
       }
       return {}
     },
-    getImportPoStatus() {
-      if (this.IMPORTED_POCONFIRM_GETTER) {
-        return this.IMPORTED_POCONFIRM_GETTER
-      }
-      return {}
-    },
   },
   watch: {
     poConfirm() {
@@ -506,16 +494,6 @@ export default {
         this.isShowPoPromoTable = true
       } else {
         this.isShowPoPromoTable = false
-      }
-    },
-    getImportPoStatus() {
-      if (this.getImportPoStatus === true) {
-        this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
-        this.CLEAR_IMPORT_PO_STATUS_MUTATION()
-      }
-      if (this.getImportPoStatus === false) {
-        toasts.error('Đồng bộ không thành công')
-        this.CLEAR_IMPORT_PO_STATUS_MUTATION()
       }
     },
   },
@@ -536,7 +514,6 @@ export default {
     ]),
     ...mapMutations(WAREHOUSEINPUT, [
       CLEAR_GRID_VIEW_MUTATION,
-      CLEAR_IMPORT_PO_STATUS_MUTATION,
     ]),
     // invidual selectOrder event for poconfrim list
     selectOrder(id, internalNumber, poNum, date) {
@@ -551,7 +528,18 @@ export default {
     },
     // Sync PoConfirms list
     syncPo() {
-      this.GET_IMPORT_PO_CONFIRM_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
+      this.GET_IMPORT_PO_CONFIRM_ACTION({
+        formId: this.formId,
+        ctrlId: this.ctrlId,
+        onSuccess: info => {
+          if (info === false) {
+            toasts.error('Đồng bộ không thành công')
+          } else {
+            this.GET_POCONFIRMS_ACTION({ formId: this.formId, ctrlId: this.ctrlId })
+            toasts.success('Đồng bộ thành công')
+          }
+        },
+      })
     },
     // Confirm import product from selected Po
     confirmImportButton() {
