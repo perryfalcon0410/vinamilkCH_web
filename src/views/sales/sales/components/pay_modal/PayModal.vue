@@ -654,11 +654,13 @@
       <b-row
         class="mx-auto d-print-none"
       >
+        <!-- START - Print temp  -->
         <b-button
+          v-if="statusPrintTmpButton().show"
           ref="btnPrintSaleOrderTemp"
+          :disabled="statusPrintTmpButton().disabled || isDisabledPrintTempBtn"
           variant="none"
-          class="d-flex align-items-center ml-1 btn-brand-1"
-          :disabled="isDisabledPrintTempBtn"
+          class="aligns-items-button-center ml-1 btn-brand-1"
           @click="printSaleOrderTemp()"
         >
           <b-icon-printer
@@ -667,10 +669,14 @@
           />
           In HĐ tạm (F7)
         </b-button>
+        <!-- END - Print temp  -->
+
+        <!-- START - Pay and print  -->
         <b-button
+          v-if="statusPayPrintButton().show"
+          :disabled="statusPayPrintButton().disabled || isDisabledPrintAndPaymentBtn"
           variant="none"
-          class="d-flex align-items-center mx-1 btn-brand-1"
-          :disabled="isDisabledPrintAndPaymentBtn"
+          class="aligns-items-button-center mx-1 btn-brand-1"
           @click="createSaleOrderAndPrint()"
         >
           <b-icon-printer
@@ -679,10 +685,14 @@
           />
           Thanh toán - In (F8)
         </b-button>
+        <!-- END - Pay and print  -->
+
+        <!-- START - Pay  -->
         <b-button
+          v-if="statusPayButton().show"
+          :disabled="statusPayButton().disabled || isDisabledPaymentBtn"
           variant="none"
-          class="d-flex align-items-center btn-brand-1"
-          :disabled="isDisabledPaymentBtn"
+          class="aligns-items-button-center btn-brand-1"
           @click="createSaleOrder()"
         >
           <b-icon-cash-stack
@@ -691,10 +701,14 @@
           />
           Thanh toán (F9)
         </b-button>
+        <!-- END - Pay  -->
+
+        <!-- START - Reprint  -->
         <b-button
+          v-if="statusRePrintButton().show"
+          :disabled="statusRePrintButton().disabled || isDisabledRePrintBtn"
           variant="none"
-          class="d-flex align-items-center mx-1 btn-brand-1"
-          :disabled="isDisabledRePrintBtn"
+          class="aligns-items-button-center mx-1 btn-brand-1"
           @click="rePrintSaleOrder()"
         >
           <b-icon-printer
@@ -703,6 +717,9 @@
           />
           In lại hóa đơn (F10)
         </b-button>
+        <!-- END - Reprint  -->
+
+        <!-- START - Close button  -->
         <b-button
           variant="none"
           class="d-flex align-items-center btn-brand-1"
@@ -714,6 +731,8 @@
           />
           Đóng (ESC)
         </b-button>
+        <!-- END - Close button  -->
+
       </b-row>
     </template>
     <!-- END - Footer -->
@@ -780,6 +799,7 @@ export default {
     Cleave,
     PrintFormSalesReceipt,
   },
+
   props: {
     visible: {
       type: Boolean,
@@ -813,6 +833,7 @@ export default {
       default: () => [],
     },
   },
+
   data() {
     return {
       promotionTypeOption: saleData.promotionType,
@@ -911,6 +932,7 @@ export default {
       isSaveSuccess: false,
     }
   },
+
   computed: {
     ...mapGetters(SALES, [
       GET_PRODUCTS_GETTER,
@@ -958,6 +980,7 @@ export default {
       return this.GET_SALE_PAYMENT_TYPES_GETTER
     },
   },
+
   watch: {
     getDiscount() {
       if (this.getDiscount !== null) {
@@ -1254,6 +1277,7 @@ export default {
       }
     })
   },
+
   methods: {
     ...mapActions(SALES, [
       CREATE_SALE_ORDER_ACTION,
@@ -1269,6 +1293,20 @@ export default {
     ...mapActions(SALESRECEIPTS, [
       PRINT_SALES_RECEIPT_ACTION,
     ]),
+
+    statusPrintTmpButton() {
+      return this.$permission('Sales', 'SalesPrinttmp')
+    },
+    statusPayPrintButton() {
+      return this.$permission('Sales', 'SalesPaymentAndPrinttmp')
+    },
+    statusPayButton() {
+      return this.$permission('Sales', 'SalesPayment')
+    },
+    statusRePrintButton() {
+      return this.$permission('Sales', 'SalesReloadPrint')
+    },
+
     onVoucherButtonClick() {
       this.$bvModal.show('VoucherModal')
     },

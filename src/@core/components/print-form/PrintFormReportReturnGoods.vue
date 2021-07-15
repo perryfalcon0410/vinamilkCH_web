@@ -153,109 +153,109 @@
       >
         <table>
           <!-- START - Header -->
-           <!-- START - Header 1 -->
-            <tr>
-              <th
-                colspan="10"
+          <!-- START - Header 1 -->
+          <tr>
+            <th
+              colspan="10"
+            >
+              <b-row class="mx-0 width-100-per">
+                <i class="mb-1 ml-50">
+                  Mã trả hàng:{{ order.returnNumber }} - Mã hóa đơn:{{ order.orderNumber }} - KH: {{ order.customerName }}
+                </i>
+              </b-row>
+              <b-row
+                class="mx-0 width-100-per"
               >
-                <b-row class="mx-0 width-100-per">
-                  <i class="mb-1 ml-50">
-                    Mã trả hàng:{{ order.returnNumber }} - Mã hóa đơn:{{ order.orderNumber }} - KH: {{ order.customerName }}
-                  </i>
-                </b-row>
-                <b-row
-                  class="mx-0 width-100-per"
+                <div
+                  style="width: 40%;"
+                />
+                <div
+                  style="width: 10.1%;"
+                  class="text-right text-nowrap italic"
+                >Tổng SL:
+                </div>
+                <div
+                  style="width: 6.8%;"
+                  class="text-right"
+                ><strong class="text-right">{{ $formatNumberToLocale(order.orderQuantity) }}</strong>
+                </div>
+                <div
+                  style="width: 9.8%;"
+                  class="text-right text-nowrap italic"
+                >Tổng T.Tiền:
+                </div>
+                <div
+                  style="width: 14%;"
+                  class="text-right"
+                ><strong>{{ $formatNumberToLocale(order.orderAmount) }}</strong>
+                </div>
+                <div
+                  style="width: 7.7%;"
+                  class="text-right text-nowrap italic"
                 >
-                  <div
-                    style="width: 40%;"
-                  />
-                  <div
-                    style="width: 10.1%;"
-                    class="text-right text-nowrap italic"
-                  >Tổng SL:
-                  </div>
-                  <div
-                    style="width: 6.8%;"
-                    class="text-right"
-                  ><strong class="text-right">{{ $formatNumberToLocale(order.orderQuantity) }}</strong>
-                  </div>
-                  <div
-                    style="width: 9.8%;"
-                    class="text-right text-nowrap italic"
-                  >Tổng T.Tiền:
-                  </div>
-                  <div
-                    style="width: 14%;"
-                    class="text-right"
-                  ><strong>{{ $formatNumberToLocale(order.orderAmount) }}</strong>
-                  </div>
-                  <div
-                    style="width: 7.7%;"
-                    class="text-right text-nowrap italic"
-                  >
-                    Tổng&nbsp;TTL:
-                  </div>
-                  <div
-                    style="width: 10.9%;"
-                    class="text-right"
-                  >
-                    <strong> {{ $formatNumberToLocale(order.orderRefund) }}</strong>
-                  </div>
-                </b-row>
-              </th>
-            </tr>
-            <!-- END - Header 1 -->
-            <!-- START - Header 2 -->
-            <tr class="second-tr">
-              <th
-                style="width: 1%"
-                class="px-50"
-              >
-                STT
-              </th>
-              <th
-                style="width: 10%"
-                class="px-50"
-              >
-                Mã SP
-              </th>
-              <th
-                style="width: 27%"
-                class="px-50"
-              >
-                Tên SP
-              </th>
-              <th
-                style="width: 6%"
-                class="px-50"
-              >
-                ĐVT
-              </th>
-              <th
-                style="width: 7%"
-                class="px-50 t"
-              >
-                SL
-              </th>
-              <th
-                style="width: 8.5%"
-                class="px-50 "
-              >
-                Giá
-              </th>
-              <th
-                style="width: 14%"
-                class="px-50"
-              >
-                T.Tiền
-              </th>
-              <th
-                style="width: 17%"
-                class="px-50 "
-              >
-                Tiền trả lại
-              </th>
-            </tr>
+                  Tổng&nbsp;TTL:
+                </div>
+                <div
+                  style="width: 10.9%;"
+                  class="text-right"
+                >
+                  <strong> {{ $formatNumberToLocale(order.orderRefund) }}</strong>
+                </div>
+              </b-row>
+            </th>
+          </tr>
+          <!-- END - Header 1 -->
+          <!-- START - Header 2 -->
+          <tr class="second-tr">
+            <th
+              style="width: 1%"
+              class="px-50"
+            >
+              STT
+            </th>
+            <th
+              style="width: 10%"
+              class="px-50"
+            >
+              Mã SP
+            </th>
+            <th
+              style="width: 27%"
+              class="px-50"
+            >
+              Tên SP
+            </th>
+            <th
+              style="width: 6%"
+              class="px-50"
+            >
+              ĐVT
+            </th>
+            <th
+              style="width: 7%"
+              class="px-50 t"
+            >
+              SL
+            </th>
+            <th
+              style="width: 8.5%"
+              class="px-50 "
+            >
+              Giá
+            </th>
+            <th
+              style="width: 14%"
+              class="px-50"
+            >
+              T.Tiền
+            </th>
+            <th
+              style="width: 17%"
+              class="px-50 "
+            >
+              Tiền trả lại
+            </th>
+          </tr>
           <!-- END - Header 2 -->
 
           <!-- END - Header -->

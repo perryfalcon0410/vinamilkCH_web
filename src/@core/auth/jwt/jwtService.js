@@ -119,6 +119,10 @@ export default class JwtService {
     return this.axiosIns.put(this.jwtConfig.changePasswordEndpoint, ...args)
   }
 
+  reloadCaptcha(args) {
+    return this.axiosIns.put(`${this.jwtConfig.reloadCaptchaEndpoint}/${args}`)
+  }
+
   refreshToken() {
     return this.axiosIns.post(this.jwtConfig.refreshEndpoint, {
       refreshToken: this.getRefreshToken(),

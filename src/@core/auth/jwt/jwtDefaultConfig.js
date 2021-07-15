@@ -6,6 +6,7 @@ export default {
   changePasswordEndpoint: '/users/change-password',
   refreshEndpoint: '/users/refresh-token',
   logoutEndpoint: '/users/logout',
+  reloadCaptchaEndpoint: '/users/reload-captcha',
 
   // This will be prefixed in authorization header with token
   // e.g. Authorization: Bearer <token>

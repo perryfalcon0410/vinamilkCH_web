@@ -119,11 +119,22 @@
                 class="mb-1"
               >
                 <b-col>
-                  <b-form-input
-                    v-model="captchaCodeResponse"
-                    disabled
-                    class="text-center"
-                  />
+                  <b-input-group
+                    class="input-group-merge"
+                  >
+                    <b-form-input
+                      v-model="captchaCodeResponse"
+                      disabled
+                      class="text-center cursor-not-allowed"
+                    />
+                    <b-input-group-append
+                      is-text
+                      class="cursor-pointer"
+                      @click="onReloadCaptchaButtonClick()"
+                    >
+                      <b-icon-arrow-repeat />
+                    </b-input-group-append>
+                  </b-input-group>
                 </b-col>
 
                 <b-col>
@@ -282,6 +293,18 @@ export default {
       })
     },
 
+    onReloadCaptchaButtonClick() {
+      useJwt.reloadCaptcha(this.username)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            this.captchaCodeResponse = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        }).catch(error => toasts.error(error.message))
+    },
+
     checkCaptchaExist(captcha) {
       if (captcha) {
         this.captchaCodeResponse = captcha
@@ -337,6 +360,19 @@ export default {
       }
     },
 
+    saveAccountToLocal() {
+      // Save account
+      if (this.saveStatus) {
+        localStorage.setItem('username', JSON.stringify(this.username))
+        localStorage.setItem('saveStatus', JSON.stringify(this.saveStatus))
+      } else {
+        // Clean account
+        localStorage.removeItem('username')
+        localStorage.removeItem('password')
+        localStorage.removeItem('saveStatus')
+      }
+    },
+
     preLogin() {
       this.$refs.loginForm.validate().then(valid => {
         if (valid) {
@@ -362,6 +398,8 @@ export default {
                 }
 
                 if (data.roles.length === 1 && data.roles[0].shops.length === 1) {
+                  this.saveAccountToLocal()
+
                   this.loginAction(success, data, token, statusValue)
                 } else {
                   this.roles = data.roles
@@ -384,16 +422,7 @@ export default {
     },
 
     login(val) {
-      // Save account
-      if (this.saveStatus) {
-        localStorage.setItem('username', JSON.stringify(this.username))
-        localStorage.setItem('saveStatus', JSON.stringify(this.saveStatus))
-      } else {
-        // Clean account
-        localStorage.removeItem('username')
-        localStorage.removeItem('password')
-        localStorage.removeItem('saveStatus')
-      }
+      this.saveAccountToLocal()
 
       const { roleSelected, shopSelected } = val
 
