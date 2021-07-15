@@ -81,3 +81,11 @@ export const validatorIdentifyCard = val => {
   const regex = /^(\d{9,12})$/
   return regex.test(val)
 }
+
+export const validatorOnlineOrder = val => {
+  if (val === undefined || val === null || val.length === 0) {
+    return true
+  }
+  const regex = /^[1-9a-zA-Z]+$/
+  return regex.test(val)
+}

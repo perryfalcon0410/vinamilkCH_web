@@ -262,7 +262,7 @@
             <!-- START - Online order number -->
             <validation-provider
               v-slot="{ errors, passed, touched }"
-              rules="required"
+              rules="required|min:6|orderNumber"
               name="Số đơn online"
             >
               <b-row
@@ -449,6 +449,9 @@ import {
   earlyMonth,
   nowDate,
 } from '@core/utils/filter'
+import {
+  orderNumber,
+} from '@/@core/utils/validations/validations'
 import { getCurrentTime } from '@core/utils/utils'
 import { VueAutosuggest } from 'vue-autosuggest'
 import {
@@ -519,6 +522,9 @@ export default {
 
   data() {
     return {
+      // validation rules
+      orderNumber,
+
       isCheckRotate: false,
       isShowSalesSearchModal: false,
       item: {},

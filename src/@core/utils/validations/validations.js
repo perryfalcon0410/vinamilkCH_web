@@ -29,6 +29,7 @@ import {
   validatorAge,
   validatorEqual,
   validatorIdentifyCard,
+  validatorOnlineOrder,
 } from './validators'
 
 // ////////////////////////////////////////////////////////
@@ -124,6 +125,11 @@ export const age = extend('age', {
 export const identifyCard = extend('identifyCard', {
   validate: validatorIdentifyCard,
   message: 'CMND phải là số và có từ 9 đến 12 ký tự',
+})
+
+export const orderNumber = extend('orderNumber', {
+  validate: validatorOnlineOrder,
+  message: 'Chỉ nhập các ký tự [1-9][a-Z] và không chứa khoảng trắng .',
 })
 
 localize('vi', vi)
