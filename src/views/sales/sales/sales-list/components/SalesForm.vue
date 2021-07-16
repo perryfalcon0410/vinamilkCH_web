@@ -15,14 +15,14 @@
         >
           <!-- START - Date  -->
           <b-col
-            class="mx-0 "
-            cols="6"
+            class="mx-0"
+            cols="5"
             align-h="between"
             align-v="center"
           >
             <b-icon-alarm-fill
+              class="margin-block"
               font-scale="1.7"
-              class="mr-1"
             />
             {{ currentDate }}
           </b-col>
@@ -30,8 +30,8 @@
 
           <!-- START - Name  -->
           <b-col
-            class="mx-0 mt-md-1 mt-xl-0 px-1 word-wrap text-right"
-            cols="6"
+            class="mx-0 mt-md-1 mt-xl-0 pr-1 pl-0 word-wrap text-right"
+            cols="7"
             align-v="center"
           >
             <b-icon-person-fill
@@ -138,7 +138,7 @@
 
             <!-- START - Phone Number -->
             <b-row
-              class="mt-1"
+              class="mt-1 text-brand-3"
               align-v="center"
             >
               <b-col cols="4">
@@ -152,7 +152,7 @@
 
             <!-- START - Cumulative points -->
             <b-row
-              class="mt-1"
+              class="mt-1 text-brand-3"
               align-v="center"
             >
               <b-col cols="4">
@@ -166,7 +166,7 @@
 
             <!-- START - Address -->
             <b-row
-              class="mt-1 word-wrap"
+              class="mt-1 word-wrap text-brand-3"
               align-v="center"
             >
               <b-col cols="4">
@@ -223,6 +223,7 @@
                   <tree-select
                     v-model="salemtPromotionObjectSelected"
                     :options="salemtPromotionObjectOptions"
+                    placeholder="Chọn loại đơn hàng"
                     @select="resetOrderNumber"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -251,6 +252,7 @@
                     v-model="salemtDeliveryTypeSelected"
                     :state="touched ? passed : null"
                     :options="salemtDeliveryTypeOptions"
+                    placeholder="Chọn loại giao hàng"
                     @select="getDeliveryType"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -278,16 +280,20 @@
                     <b-form-input
                       v-model="orderOnline.orderNumber"
                       maxlength="50"
-                      :state="touched ? passed : null"
+                      :state="(!checkApParramCode && touched) ? passed : null"
                       :disabled="checkApParramCode || salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0) || isDisabledOrder === true"
                     />
                     <b-input-group-append is-text>
                       <b-icon-three-dots-vertical
+                        v-b-popover.hover.top="'Chọn đơn online'"
                         @click="showNotifyModal"
                       />
                     </b-input-group-append>
                   </b-input-group>
-                  <small class="text-danger">{{ errors[0] }}</small>
+                  <small
+                    v-if="!checkApParramCode"
+                    class="text-danger"
+                  >{{ errors[0] }}</small>
                 </b-col>
               </b-row>
             </validation-provider>
@@ -315,11 +321,16 @@
             class="mt-1 text-brand-3"
             align-v="center"
           >
-            <b-col>
+            <b-col cols="4">
               Số lượng sản phẩm
             </b-col>
-            <b-col class="text-center text-dark font-weight-bold bg-light rounded py-1">
-              {{ totalQuantity }}
+            <b-col
+              cols="8"
+              class="pr-0"
+            >
+              <div class="text-center text-dark font-weight-bold bg-light rounded py-1">
+                {{ totalQuantity }}
+              </div>
             </b-col>
           </b-row>
           <!-- END - Product amount -->
@@ -329,11 +340,16 @@
             class="mt-1 text-brand-3"
             align-v="center"
           >
-            <b-col>
+            <b-col cols="4">
               Tạm tính
             </b-col>
-            <b-col class="text-center text-dark font-weight-bold bg-light rounded py-1">
-              {{ totalOrderPrice }}
+            <b-col
+              cols="8"
+              class="pr-0"
+            >
+              <div class="text-center text-dark font-weight-bold bg-light rounded py-1">
+                {{ totalOrderPrice }}
+              </div>
             </b-col>
           </b-row>
           <!-- END - Temporary calculation -->
@@ -396,7 +412,8 @@
       Chọn đơn online sẽ xóa dữ liệu đơn hàng hiện tại
       <template #modal-footer>
         <b-button
-          variant="primary"
+          variant="something"
+          class="btn-brand-1"
           @click="onClickAgreeButton()"
         >
           Đồng ý
@@ -798,7 +815,12 @@ export default {
       }
 
       if (e.key === 'F8') {
-        if (this.totalQuantity === 0 || this.editOnlinePermission === false || this.salemtPromotionObjectSelected === undefined || (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')) {
+        if (
+          this.totalQuantity === 0 || this.editOnlinePermission === false
+          || this.salemtDeliveryTypeSelected === undefined
+          || this.salemtPromotionObjectSelected === undefined
+          || (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')
+        ) {
           this.$bvModal.hide('pay-modal')
         } else {
           this.$bvModal.show('pay-modal')
@@ -862,7 +884,7 @@ export default {
     onPayButtonClick() {
       // if (this.salemtPromotionObjectSelected === this.salemtPromotionObjectOptions[0].id) {
       if (this.salemtDeliveryTypeSelected !== undefined) {
-        if (this.checkApParramCode) {
+        if (this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
           this.$bvModal.show('pay-modal')
         } else if (this.salemtPromotionObjectSelected !== undefined) {
           this.$refs.formContainer.validate().then(success => {
@@ -1060,6 +1082,9 @@ export default {
   .margin-icon {
     margin-top: 0.5rem !important;
     margin-bottom: 0.5rem !important;
+  }
+  .margin-block {
+    margin-right: 0.5rem !important;
   }
   .rotate {
     transition: all 0.5s;

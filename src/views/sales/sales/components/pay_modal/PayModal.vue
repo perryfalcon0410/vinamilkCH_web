@@ -27,7 +27,7 @@
               align-h="center"
             >
               <b-icon-gift
-                scale="1.5"
+                scale="1.4"
                 color="red"
               />
               <strong
@@ -322,7 +322,7 @@
             align-v="center"
           >
             <b-icon-cash-stack
-              scale="2"
+              scale="1.7"
               class="text-brand-1"
             />
             <strong class="ml-1 h7">Thanh toán</strong>

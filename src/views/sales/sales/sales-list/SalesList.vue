@@ -223,7 +223,8 @@
                 @click="decreaseAmount(props.row.productId)"
               />
               <b-input
-                ref="abc"
+                :id="orderProducts[props.row.originalIndex].productCode"
+                ref="focusInputProduct"
                 v-model="orderProducts[props.row.originalIndex].quantity"
                 :value="orderProducts[props.row.originalIndex].quantity"
                 :number="true"
@@ -231,6 +232,7 @@
                 maxlength="7"
                 class="text-center h7 p-input"
                 @change="onChangeQuantity(props.row.originalIndex)"
+                @keyup.enter="focusInputSearch"
                 @keypress="$onlyNumberInput"
               />
               <b-icon-plus
@@ -245,9 +247,8 @@
             <div
               v-else-if="props.column.field === 'tableProductFeature'"
             >
-              <b-icon-trash-fill
+              <v-icon-remove
                 v-b-popover.hover="'Xóa sản phẩm'"
-                color="red"
                 class="cursor-pointer"
                 @click="onClickDeleteProduct(props.row.originalIndex)"
               />
@@ -279,7 +280,8 @@
           Chọn đơn online sẽ xóa dữ liệu đơn hàng hiện tại
           <template #modal-footer>
             <b-button
-              variant="primary"
+              variant="someThing"
+              class="btn-brand-1"
               @click="onClickAgreeButton()"
             >
               Đồng ý
@@ -324,6 +326,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import toasts from '@/@core/utils/toasts/toasts'
 import { VueAutosuggest } from 'vue-autosuggest'
+import VIconRemove from '@/@core/components/v-icons/IconRemove.vue'
 import saleData from '@/@db/sale'
 import SalesForm from './components/SalesForm.vue'
 // import SalesProducts from './components/SalesProducts.vue'
@@ -354,6 +357,7 @@ export default {
   components: {
     VueAutosuggest,
     SalesForm,
+    VIconRemove,
     // SalesProducts,
   },
   data() {
@@ -369,6 +373,8 @@ export default {
       selectedValue: null,
       checkStock: false,
       isDisabled: false, // check tồn kho disable button thanh toán
+      isSelectedProduct: false, // check selected product
+      productIdSelected: null,
 
       columns: [
         {
@@ -430,6 +436,7 @@ export default {
           label: 'Chức năng',
           field: 'tableProductFeature',
           sortable: false,
+          tdClass: 'align-middle',
         },
       ],
       searchOptions: {
@@ -535,7 +542,7 @@ export default {
         return [{
           data: this.GET_TOP_SALE_PRODUCTS_GETTER.map(data => ({
             productId: data.id,
-            name: data.productCode,
+            name: '',
             checkStockTotal: data.checkStockTotal,
             productName: data.productName,
             productCode: data.productCode,
@@ -662,6 +669,15 @@ export default {
       this.bills.find(item => item.id === this.billSelected).billName = this.customerFullName
     },
   },
+
+  updated() {
+    // console.log(document.getElementById(this.productIdSelected))
+    if (this.isSelectedProduct) {
+      // this.$refs.focusInputProduct.focus()
+      document.getElementById(this.productIdSelected).focus()
+      this.isSelectedProduct = false
+    }
+  },
   mounted() {
     const index = this.productInfoTypeOptions.findIndex(i => i.name === 'Ngành hàng')
     const paramGetProductInfo = {
@@ -780,7 +796,9 @@ export default {
             this.orderProducts[productIndex].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice)))
             this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
           }
+          this.productIdSelected = index.item.productCode
         }
+        this.isSelectedProduct = true
       }
 
       if (this.editManualPermission === false && this.onlineOrderId === null && this.isOnline === true) {
@@ -895,6 +913,10 @@ export default {
 
     getOnlineOrderInfoForm(val) {
       this.orderProducts = val
+    },
+    focusInputSearch() {
+      this.$refs.search.$el.querySelector('input').focus()
+      this.$refs.search.$el.querySelector('input').click()
     },
     onChangeQuantity(index) {
       if (this.orderProducts[index].quantity <= 0) {

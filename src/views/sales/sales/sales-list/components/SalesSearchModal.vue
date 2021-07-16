@@ -171,6 +171,12 @@
                   CHỌN
                 </b-button>
               </div>
+              <div
+                v-else-if="props.column.field ==='address'"
+                class="name-width word-wrap"
+              >
+                {{ props.formattedRow[props.column.field] }}
+              </div>
               <div v-else>
                 {{ props.formattedRow[props.column.field] }}
               </div>
@@ -335,29 +341,21 @@ export default {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Số điện thoại',
           field: 'phoneNumber',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Ngày sinh',
           field: 'birthDay',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: 'Số CMND',
           field: 'idNo',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
         {
           label: '',
