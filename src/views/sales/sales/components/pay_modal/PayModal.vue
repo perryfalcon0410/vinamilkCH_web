@@ -83,7 +83,7 @@
               >
                 <div v-if="value.products.length > 0">
                   <vue-good-table
-                    :columns="columnsCTKMAuto"
+                    :columns="columnsAdm"
                     :rows="value.products"
                     style-class="vgt-table bordered"
                     compact-mode
@@ -122,6 +122,18 @@
                         >
                           {{ props.row.quantityMax }}
                         </div>
+                      </div>
+                      <div
+                        v-else-if="props.column.field === 'tableProductFeature'"
+                        class="mx-0"
+                      >
+                        <b-icon-x
+                          v-b-popover.hover="'Xóa'"
+                          scale="2.0"
+                          class="cursor-pointer mt-1"
+                          color="red"
+                          @click="removeProductPromotionProgramHandle(value.programId,props.row.productId)"
+                        />
                       </div>
                       <div v-else>
                         {{ props.formattedRow[props.column.field] }}
@@ -233,7 +245,7 @@
                 </div>
                 <div v-else>
                   <vue-good-table
-                    :columns="columnsCTKMHandle"
+                    :columns="columnsAdm"
                     :rows="value.products"
                     style-class="vgt-table bordered"
                     compact-mode
@@ -247,19 +259,6 @@
                       Không có dữ liệu
                     </div>
                     <!-- END - Empty rows -->
-                    <template
-                      slot="table-column"
-                      slot-scope="props"
-                    >
-                      <div
-                        v-if="props.column.field === 'tableProductFeature'"
-                      >
-                        <b-icon-bricks />
-                      </div>
-                      <div v-else>
-                        {{ props.column.label }}
-                      </div>
-                    </template>
                     <!-- START - Action bottom -->
                     <div
                       slot="table-actions-bottom"
@@ -846,7 +845,7 @@ export default {
   data() {
     return {
       promotionTypeOption: saleData.promotionType,
-      columnsCTKMAuto: [
+      columnsAdm: [
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
@@ -877,47 +876,15 @@ export default {
           thClass: 'text-center col-3',
           tdClass: 'text-center col-3',
         },
-      ],
-
-      columnsCTKMHandle: [
         {
-          label: 'Mã sản phẩm',
-          field: 'productCode',
-          sortable: false,
-          thClass: 'text-left col-2',
-          tdClass: 'text-left col-2',
-        },
-        {
-          label: 'Tên sản phẩm',
-          field: 'productName',
-          sortable: false,
-          thClass: 'text-left col-4',
-          tdClass: 'text-left col-4',
-        },
-        {
-          label: 'Tồn kho',
-          field: 'stockQuantity',
-          sortable: false,
-          thClass: 'text-center col-2',
-          tdClass: 'text-center col-2',
-          formatFn: value => this.$formatNumberToLocale(value),
-        },
-        {
-          label: 'Số lượng tặng',
-          field: 'quantity',
-          sortable: false,
-          type: 'number',
-          thClass: 'text-center col-3',
-          tdClass: 'text-center col-3',
-        },
-        {
-          label: 'Chức năng',
+          label: '',
           field: 'tableProductFeature',
           sortable: false,
           thClass: 'text-center col-1',
           tdClass: 'text-center col-1',
         },
       ],
+
       promotionPrograms: [],
       test: [],
       cursor: -1,
@@ -1080,8 +1047,10 @@ export default {
     },
     needPayment() {
       this.pay.needPaymentAmount = Number(this.needPayment)
+      this.pay.salePayment.salePaymentAmount = Number(this.needPayment)
       if (this.pay.needPaymentAmount < 0) {
         this.pay.needPaymentAmount = 0
+        this.pay.salePayment.salePaymentAmount = 0
       }
       this.extraAmountCalculation()
     },
@@ -1299,25 +1268,25 @@ export default {
     this.isDisabledRePrintBtn = true
     window.addEventListener('keydown', e => {
       if (e.key === 'F7') {
-        if (!this.isPaid) {
+        if (!this.isPaid && this.statusPrintTmpButton()) {
           this.printSaleOrderTemp()
         }
       }
       if (e.key === 'F8') {
-        if (!this.isPaid && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
+        if (!this.isPaid && this.statusPayPrintButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
             this.createSaleOrderAndPrint()
           }
         }
       }
       if (e.key === 'F9') {
-        if (!this.isPaid && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
+        if (!this.isPaid && this.statusPayButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
             this.createSaleOrder()
           }
         }
       }
-      if (e.key === 'F10') {
+      if (e.key === 'F10' && this.statusRePrintButton()) {
         if (this.isPaid) {
           this.rePrintSaleOrder()
         }
@@ -1436,7 +1405,7 @@ export default {
                       quantity: Number(program.numberLimited),
                     }
                   }
-                  console.log('ABC')
+
                   return {
                     ...product,
                     quantity: product.quantityMax,
@@ -1788,6 +1757,17 @@ export default {
           },
         })
       }
+    },
+    removeProductPromotionProgramHandle(programId, productId) {
+      this.promotionPrograms = this.promotionPrograms.map(program => {
+        if (program.programId === programId) {
+          return {
+            ...program,
+            products: [...program.products.filter(p => p.productId !== productId)],
+          }
+        }
+        return program
+      })
     },
   },
 }
