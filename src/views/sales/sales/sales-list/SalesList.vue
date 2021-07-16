@@ -97,12 +97,12 @@
         <b-button-group
           variant="someThing"
           :class="`${bill.class}`"
-          class=" shadow-brand-1 bg-btn-order d-flex align-items-center justify-content-center rounded shadow mr-1 px-1 ml-2"
+          class="b-icon-x btn-brand-1 rounded aligns-items-button-center bg-btn-order mr-1 px-1 ml-2"
         >
           <b-button
             variant="someThing"
             :class="`${bill.class}`"
-            class="bg-btn-order d-flex align-items-center justify-content-center"
+            class="bg-btn-order"
             @click="clickBillButton(bill.id)"
           >
             {{ bill.billName }}
@@ -1064,5 +1064,8 @@ export default {
 <style>
 .p-input {
   padding: 0.438rem 0.7rem;
+}
+.b-icon-x:hover {
+  color: black;
 }
 </style>
