@@ -18,51 +18,48 @@
         >
           <b-col
             class="bg-white shadow rounded text-dark mr-xl-1"
+            style="overflow-x: scroll"
           >
-            <!-- START - Header -->
-            <b-row class="py-1">
-              <b-col cols="1" />
-              <b-col>
-                <strong>
-                  PO No
-                </strong>
-              </b-col>
-              <b-col>
-                <strong>
-                  Số nội bộ
-                </strong>
-              </b-col>
-              <b-col>
-                <strong>
-                  Ngày
-                </strong>
-              </b-col>
-            </b-row>
-            <!-- END - Header -->
-
-            <!-- START - List -->
-            <b-row
-              v-for="(item, index) in poConfirm"
-              :key="item.id"
-              class="border-bottom border-white rounded py-1 cursor-pointer"
-              :class="{ 'text-brand-1': current == item.id }"
-              @click="selectOrder(item.id, item.internalNumber, item.poCoNumber, item.date)"
-            >
-              <b-col cols="1">
-                {{ index + 1 }}
-              </b-col>
-              <b-col class="pr-0">
-                {{ item.poCoNumber }}
-              </b-col>
-              <b-col class="pr-0">
-                {{ item.internalNumber }}
-              </b-col>
-              <b-col
-                class="text-wrap"
-              >
-                {{ item.date }}
-              </b-col>
-            </b-row>
+            <table>
+              <thead>
+                <tr>
+                  <th style="visibility: hidden">
+                    stt
+                  </th>
+                  <th class="pl-1 pt-1">
+                    PO No
+                  </th>
+                  <th class="pl-1 pt-1">
+                    Số nội bộ
+                  </th>
+                  <th class="px-1 pt-1">
+                    Ngày
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item, index) in poConfirm"
+                  :key="item.id"
+                  class="border-bottom border-white rounded py-1 cursor-pointer"
+                  :class="{ 'text-brand-1': current == item.id }"
+                  @click="selectOrder(item.id, item.internalNumber, item.poCoNumber, item.date)"
+                >
+                  <td class="py-1">
+                    {{ index + 1 }}
+                  </td>
+                  <td class="pl-1">
+                    {{ item.poCoNumber }}
+                  </td>
+                  <td class="pl-1">
+                    {{ item.internalNumber }}
+                  </td>
+                  <td class="px-1">
+                    {{ item.date }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
             <!-- END - List -->
           </b-col>
         </b-col>
@@ -71,11 +68,11 @@
         <!-- START - List -->
         <b-col
           xl="8"
-          class="pr-0 bg-white shadow rounded mt-1 mt-xl-0"
+          class="px-0 mt-1 mt-xl-0 bg-white shadow rounded"
         >
           <!-- START - Table Product -->
           <!-- START - Title Product -->
-          <div class="pt-1 px-xl-1 pr-md-1">
+          <div class="pt-1 px-xl-1 pr-md-1 bg-white shadow rounded ">
             <b-row
               align-v="end"
               class="justify-content-between mx-0"

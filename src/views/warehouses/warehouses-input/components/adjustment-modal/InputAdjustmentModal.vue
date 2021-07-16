@@ -14,67 +14,65 @@
         <!-- START - Import/Export List -->
         <b-col
           xl="4"
-          class="d-flex flex-column px-0"
+          class="px-0"
         >
-          <strong
-            class="text-dark mx-1 mb-1 "
-          >
-            Danh sách nhập/xuất hàng
-          </strong>
-
-          <b-col
-            class="bg-white shadow rounded text-dark table my-0"
-          >
-            <!-- START - Header -->
-            <b-row class="py-1 table-row">
-              <b-col
-                cols="1"
-              />
-              <b-col class="px-50 ws-nowrap">
-                <strong>
-                  Số chứng từ
-                </strong>
-              </b-col>
-              <b-col>
-                <strong class="px-25">
-                  Ngày
-                </strong>
-              </b-col>
-              <b-col>
-                <strong>
-                  Ghi chú
-                </strong>
-              </b-col>
-            </b-row>
-            <!-- END - Header -->
-
-            <!-- START - List -->
-            <b-row
-              v-for="(item, index) in importAdjustmentsList"
-              :key="item.id"
-              class="border-bottom border-white rounded py-1 cursor-pointer table-row"
-              :class="{ 'text-brand-1': current == item.id }"
-              @click="selectOrder(item.id,item.adjustmentDate,item.description)"
+          <b-row>
+            <strong
+              class="text-dark mx-1 mb-1 "
             >
-              <b-col
-                cols="1"
-              >
-                {{ index + 1 }}
-              </b-col>
-              <b-col
-                class="px-50"
-              >
-                {{ item.adjustmentCode }}
-              </b-col>
-              <b-col class="px-50">
-                {{ item.adjustmentDate }}
-              </b-col>
-              <b-col
-                class="px-50"
-              >
-                {{ item.description }}
-              </b-col>
-            </b-row>
+              Danh sách nhập/xuất hàng
+            </strong>
+          </b-row>
+          <b-col
+            class="bg-white shadow rounded text-dark mr-xl-1"
+            style="overflow-x: scroll"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th style="visibility: hidden">
+                    stt
+                  </th>
+                  <th class="pl-1 pt-1">
+                    <strong class="ws-nowrap">
+                      Số chứng từ
+                    </strong>
+                  </th>
+                  <th class="px-1 pt-1">
+                    <strong>
+                      Ngày
+                    </strong>
+                  </th>
+                  <th class="pl-1 pt-1">
+                    <strong>
+                      Ghi chú
+                    </strong>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item, index) in importAdjustmentsList"
+                  :key="item.id"
+                  class="border-bottom border-white rounded py-1 cursor-pointer"
+                  :class="{ 'text-brand-1': current == item.id }"
+                  @click="selectOrder(item.id, item.adjustmentDate, item.description)"
+                >
+                  <td class="py-1">
+                    {{ index + 1 }}
+                  </td>
+                  <td class="pl-1">
+                    {{ item.adjustmentCode }}
+                  </td>
+                  <td class="pl-1">
+                    {{ item.adjustmentDate }}
+                  </td>
+                  <td class="px-1">
+                    {{ item.description }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
             <!-- END - List -->
           </b-col>
         </b-col>

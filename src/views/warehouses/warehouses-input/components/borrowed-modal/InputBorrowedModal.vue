@@ -14,62 +14,65 @@
         <!-- START - Import/Export List -->
         <b-col
           xl="4"
-          class="d-flex flex-column px-0"
+          class="px-0"
         >
-          <strong
-            class="text-dark mx-1 mb-1 "
-          >Danh sách nhập/xuất hàng
-          </strong>
-
-          <b-col
-            class="bg-white shadow rounded text-dark table my-0"
-          >
-            <!-- START - Header -->
-            <b-row class="py-1 table-row">
-              <b-col cols="1" />
-              <b-col class="px-50 ws-nowrap">
-                <strong>
-                  Số chứng từ
-                </strong>
-              </b-col>
-              <b-col class="px-25">
-                <strong>
-                  Ngày
-                </strong>
-              </b-col>
-              <b-col>
-                <strong>
-                  Ghi chú
-                </strong>
-              </b-col>
-            </b-row>
-            <!-- END - Header -->
-
-            <!-- START - List -->
-            <b-row
-              v-for="(item, index) in importBorrowings"
-              :key="item.id"
-              :class="{ 'text-brand-1': current === item.id }"
-              class="border-bottom border-white py-1 cursor-pointer"
-              @click="selectOrder(item.id,item.borrowDate,item.note)"
+          <b-row>
+            <strong
+              class="text-dark mx-1 mb-1 "
             >
-              <b-col
-                cols="1"
-              >
-                {{ index + 1 }}
-              </b-col>
-              <b-col class="px-50">
-                {{ item.poBorrowCode }}
-              </b-col>
-              <b-col class="px-50">
-                {{ item.borrowDate }}
-              </b-col>
-              <b-col
-                class="px-50"
-              >
-                {{ item.note }}
-              </b-col>
-            </b-row>
+              Danh sách nhập/xuất hàng
+            </strong>
+          </b-row>
+          <b-col
+            class="bg-white shadow rounded text-dark mr-xl-1"
+            style="overflow-x: scroll"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th style="visibility: hidden">
+                    stt
+                  </th>
+                  <th class="pl-1 pt-1">
+                    <strong class="ws-nowrap">
+                      Số chứng từ
+                    </strong>
+                  </th>
+                  <th class="px-1 pt-1">
+                    <strong>
+                      Ngày
+                    </strong>
+                  </th>
+                  <th class="pl-1 pt-1">
+                    <strong>
+                      Ghi chú
+                    </strong>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item, index) in importBorrowings"
+                  :key="item.id"
+                  class="border-bottom border-white rounded py-1 cursor-pointer"
+                  :class="{ 'text-brand-1': current == item.id }"
+                  @click="selectOrder(item.id, item.borrowDate, item.note)"
+                >
+                  <td class="py-1">
+                    {{ index + 1 }}
+                  </td>
+                  <td class="pl-1">
+                    {{ item.poBorrowCode }}
+                  </td>
+                  <td class="pl-1">
+                    {{ item.borrowDate }}
+                  </td>
+                  <td class="px-1">
+                    {{ item.note }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
             <!-- END - List -->
           </b-col>
         </b-col>
