@@ -80,6 +80,7 @@
             </div>
             <div
               v-else-if="props.column.field === 'customerName' || props.column.field === 'address'"
+              class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -229,13 +230,11 @@ export default {
           label: 'Họ tên',
           field: 'customerName',
           sortable: false,
-          width: '10rem',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
-          width: '12rem',
         },
       ],
       lastCol: {
@@ -281,8 +280,8 @@ export default {
       if (this.REPORT_SALES_SALE_RECEIPT_GETTER.response) {
         return this.REPORT_SALES_SALE_RECEIPT_GETTER.response.content.map(data => ({
           customerCode: data[0],
-          customerName: data[1],
-          address: data[2],
+          customerName: data[2],
+          address: data[1],
         }))
       }
       return []

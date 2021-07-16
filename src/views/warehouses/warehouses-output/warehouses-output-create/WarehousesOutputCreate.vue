@@ -792,13 +792,13 @@ export default {
       let stop = true
       this.products.forEach(item => {
         if (stop) {
-          if (item.quantityReturn != null) {
+          if (item.quantityReturn != null && item.quantityReturn > 0) {
             this.nullCheck = true
             stop = false
           } else {
             this.nullCheck = false
             this.rowsProductPromotion.forEach(i => {
-              if (i.quantityPromo != null) {
+              if (i.quantityPromo != null && i.quantityPromo !== 0) {
                 this.nullCheck = true
                 stop = false
               } else {
@@ -836,7 +836,7 @@ export default {
               ],
             },
           )
-        } else toasts.error('Không để trống tất cả sản phẩm.')
+        } else toasts.error('Tổng số lượng trả phải lớn hơn 0.')
       } else toasts.error('Vui lòng chọn phiếu.')
     },
     navigateBack() {

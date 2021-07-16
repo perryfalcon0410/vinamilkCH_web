@@ -258,16 +258,19 @@ export default {
           label: 'Số PO',
           field: 'poNumber',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã nhập hàng',
           field: 'receptCode',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã sản phẩm',
@@ -279,6 +282,7 @@ export default {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'ĐVT',

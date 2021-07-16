@@ -247,6 +247,7 @@ export default {
         filterOptions: {
           enabled: true,
         },
+        thClass: 'text-nowrap',
         type: 'number',
       },
     }

@@ -95,6 +95,15 @@
               />
             </div>
             <div
+              v-else-if="props.column.field === 'customerName' ||
+                props.column.field === 'address' ||
+                props.column.field === 'productName' ||
+                props.column.field === 'reason'"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
               v-else-if="props.column.field === 'amount' || props.column.field === 'quantity'"
               class="pr-70"
             >
@@ -232,11 +241,13 @@ export default {
           label: 'Ngày biên bản',
           field: 'transDate',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số biên bản',
           field: 'transNumber',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã khách hàng',
@@ -257,6 +268,8 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
+          thClass: 'text-nowrap',
+
         },
         {
           label: 'Tên sản phẩm',
@@ -270,7 +283,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
@@ -292,6 +305,7 @@ export default {
           label: 'Điện thoại',
           field: 'phoneNumber',
           sortable: false,
+          thClass: 'text-nowrap',
         },
       ],
       rows: [],

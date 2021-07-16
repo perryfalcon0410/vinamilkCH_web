@@ -54,7 +54,7 @@
         >
           <td>{{ index + 1 }}</td>
           <td
-            style="max-width:200px;"
+            style="max-width:150px;"
           >{{ item.productName }}</td>
           <td>{{ item.productCode }}</td>
           <td>{{ item.uom1 }}</td>
@@ -98,7 +98,7 @@
           </div>
         </div>
         <div
-          class=" width-25-per"
+          class="width-95-per"
         >
           <div class="text-right">
             {{ $formatNumberToLocale(redBillInfoData.amount) }}

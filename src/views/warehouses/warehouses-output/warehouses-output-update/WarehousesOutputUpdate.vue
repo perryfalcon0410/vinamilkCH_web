@@ -353,8 +353,8 @@ export default {
       warehousesOptions: warehousesData.outputTypes,
       poOutputType: warehousesData.outputTypes[0].id,
       exportAll: false,
-      quantityCheck: true,
       products: [],
+      nullCheck: true,
       rowsProductPromotion: [],
       columns: [
         {
@@ -686,30 +686,33 @@ export default {
         })
       }
     },
-    checkQuantity() {
+    checkNull() {
+      let stop = true
       this.products.forEach(item => {
-        if (item.productReturnAmount == null || item.productImportQuantity - item.productExport + item.productQuantity >= item.productReturnAmount) {
-          this.quantityCheck = true
-          this.rowsProductPromotion.forEach(i => {
-            if (i.productReturnAmount == null || i.productImportQuantity - i.productExport + i.productQuantity >= i.productReturnAmount) {
-              this.quantityCheck = true
-            } else {
-              this.quantityCheck = false
-            }
-          })
-        } else {
-          this.quantityCheck = false
+        if (stop) {
+          if (item.productReturnAmount != null && item.productReturnAmount > 0) {
+            this.nullCheck = true
+            stop = false
+          } else {
+            this.nullCheck = false
+            this.rowsProductPromotion.forEach(i => {
+              if (i.productReturnAmount != null && i.productReturnAmount !== 0) {
+                this.nullCheck = true
+                stop = false
+              } else {
+                this.nullCheck = false
+              }
+            })
+          }
         }
       })
     },
     onClickUpdateWarehousesOutput() {
       if (this.warehousesOutput.receiptType === warehousesData.outputTypes[0].id) {
-        this.checkQuantity()
+        this.checkNull()
       }
-      if (this.quantityCheck) {
+      if (this.nullCheck) {
         if (this.products) {
-          console.log(this.products)
-          console.log(this.rowsProductPromotion)
           const products = [...this.products.map(data => ({
             id: data.productID,
             quantity: data.productReturnAmount,
@@ -736,7 +739,7 @@ export default {
             },
           })
         }
-      } else toasts.error('Số lượng trả phải nhỏ hơn số lượng sản phẩm!')
+      } else toasts.error('Tổng số lượng trả phải lớn hơn 0.')
     },
     changeQuantity() {
       this.products.forEach(item => {
