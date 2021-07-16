@@ -369,8 +369,8 @@ export default {
         const searchData = {
           fromDate: reverseVniDate(this.fromDate),
           toDate: reverseVniDate(this.toDate),
-          fromAmount: this.min,
-          toAmount: this.max,
+          fromQuantity: this.min,
+          toQuantity: this.max,
           customerTypeId: this.customerTypesSelected,
           keySearch: this.customerCode,
           phoneNumber: this.phoneNumber,
