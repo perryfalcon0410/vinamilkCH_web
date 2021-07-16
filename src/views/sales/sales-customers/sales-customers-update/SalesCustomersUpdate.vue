@@ -165,7 +165,7 @@
               <tree-select
                 v-model="customerTypesSelected"
                 :options="customerTypeOptions"
-                :disabled="canDisableInputField(customer.customerTypeId)"
+                :disabled="canDisableInputField(customer.customerTypeId) || customer.isEditCusType !== 1"
                 placeholder="Chọn nhóm khách hàng"
                 no-options-text="Không có dữ liệu"
                 no-results-text="Không tìm thấy kết quả"
@@ -704,8 +704,8 @@ export default {
       customerPrivate: false,
       note: null,
       createdAt: null,
-      customerID: '',
-      customerIDDate: '',
+      customerID: null,
+      customerIDDate: null,
       customerIDLocation: null,
       totalBill: null,
       monthOrderAmount: null,
@@ -895,7 +895,7 @@ export default {
     getCustomerById() {
       if (this.customer) {
         // START - Common
-        this.isEdit = Number(this.customer.isEdit)
+        this.isEdit = this.customer.isEdit
         // START - Personal
         this.customerCode = this.customer.customerCode
         this.firstName = this.customer.firstName
@@ -978,7 +978,7 @@ export default {
       // console.log(`customerPrivate:           ${this.customerPrivate === (this.customer.isPrivate || false)} | (${typeof this.customerPrivate})->|  ${this.customerPrivate} === ${(this.customer.isPrivate || false)} (${typeof (this.customer.isPrivate || false)})`)
       // console.log(`note:                      ${(this.note || null) === this.customer.noted} | (${typeof (this.note || null)}) ->|  ${(this.note || null)} === ${this.customer.noted} (${typeof this.customer.noted})`)
       // console.log(`customerID:                ${(this.customerID || null) === this.customer.idNo} | (${typeof (this.customerID || null)}) ->|  ${(this.customerID || null)} === ${this.customer.idNo} (${typeof this.customer.idNo})`)
-      // console.log(`customerIDDate:            ${this.customerIDDate === (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')} | (${typeof this.customerIDDate}) ->|  ${this.customerIDDate} === ${(this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')} (${typeof (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')})`)
+      // console.log(`customerIDDate:            ${this.customerIDDate === (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : null)} | (${typeof this.customerIDDate}) ->|  ${this.customerIDDate} === ${(this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : null)} (${typeof (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : null)})`)
       // console.log(`customerIDLocation:        ${(this.customerIDLocation || null) === this.customer.idNoIssuedPlace} | (${typeof (this.customerIDLocation || null)}) ->|  ${(this.customerIDLocation || null)} === ${this.customer.idNoIssuedPlace} (${typeof this.customer.idNoIssuedPlace})`)
       // console.log(`phoneNumber:               ${(this.phoneNumber || null) === this.customer.mobiPhone} | (${typeof (this.phoneNumber || null)}) ->|  ${(this.phoneNumber || null)} === ${this.customer.mobiPhone} (${typeof this.customer.mobiPhone})`)
       // console.log(`customerEmail:             ${(this.customerEmail || null) === this.customer.email} | (${typeof (this.customerEmail || null)}) ->|  ${(this.customerEmail || null)} === ${this.customer.email} (${typeof this.customer.email})`)
