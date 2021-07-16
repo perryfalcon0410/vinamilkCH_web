@@ -38,20 +38,6 @@
               slot-scope="{ suggestion }"
             >
               <b-row class="mx-0">
-                <!-- START - Section Image -->
-                <!-- <b-col
-                  cols="2"
-                  class="px-0"
-                >
-                  <b-img-lazy
-                    src="https://pngimg.com/uploads/nuclear_bomb/nuclear_bomb_PNG18.png"
-                    fluid
-                    width="60px"
-                  />
-                </b-col> -->
-                <!-- END - Section Image -->
-
-                <!-- START - Section Label -->
                 <b-col>
                   <b-form-row>
                     <b-col
@@ -76,7 +62,6 @@
                 </b-col>
               <!-- END - Section Label -->
               </b-row>
-            <!-- <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }} -->
             </template>
           </vue-autosuggest>
           <b-form-checkbox
@@ -106,11 +91,6 @@
             @click="clickBillButton(bill.id)"
           >
             {{ bill.billName }}
-            <!-- <b-icon-x
-              class="cursor-pointer ml-1"
-              font-scale="1.6"
-              @click="onClickDeleteButton(bill.id)"
-            /> -->
           </b-button>
           <b-icon-x
             v-b-popover.hover="'Xóa'"
@@ -119,14 +99,6 @@
             @click="onClickDeleteButton(bill.id)"
           />
         </b-button-group>
-
-        <!-- <div>
-          <b-icon-plus
-            font-scale="2.5"
-            class="cursor-pointer"
-            @click="onClickAddButton()"
-          />
-        </div> -->
 
       </b-row>
       <b-row class="ml-1">
@@ -313,6 +285,8 @@
         @salemtPromotionObjectSelected="salemtPromotionObjectSelected"
         @salemtDeliveryTypeSelected="salemtDeliveryTypeSelected"
         @getIdCustomer="getIdCustomer"
+        @deleteSaveBill="deleteSaveBill"
+        @getOrderNumber="getOrderNumber"
       />
       <!-- END - Section Form pay -->
 
@@ -370,6 +344,7 @@ export default {
       isCheckShopId: false, // check shop default
       currentCustomer: {},
       defaultCustomer: {},
+      currentOrderNumber: null,
       selectedValue: null,
       checkStock: false,
       isDisabled: false, // check tồn kho disable button thanh toán
@@ -473,6 +448,7 @@ export default {
           },
           orderType: null,
           deliveryType: null,
+          orderNumber: null,
           active: true,
           class: 'visited-action',
         },
@@ -480,6 +456,7 @@ export default {
 
       // online order
       onlineOrderId: null,
+      onlineOrderNumber: null,
       orderSelected: null,
       deliverySelected: null,
       editOnlinePermission: true,
@@ -611,6 +588,14 @@ export default {
 
     getDefaultCustomer() {
       this.defaultCustomer = { ...this.getDefaultCustomer }
+    },
+
+    getOrderNumber() {
+      this.currentOrderNumber = this.getOrderNumber
+    },
+
+    deleteSaveBill() {
+      this.bills = [...this.deleteSaveBill]
     },
 
     salemtPromotionObjectSelected() {
@@ -811,11 +796,11 @@ export default {
     },
 
     onClickAddButton() {
+      console.log('bills', this.bills)
       const lastIteminBill = this.bills[this.bills.length - 1]
       if (lastIteminBill) {
         this.bills.push({
           id: lastIteminBill.id + 1,
-          // billName: this.customerFullName,
           billName: this.defaultCustomer.fullName,
           products: [],
           customer: {
@@ -827,6 +812,7 @@ export default {
           },
           orderType: null,
           deliveryType: null,
+          orderNumber: null,
           noted: null,
           active: false,
           class: '',
@@ -846,6 +832,7 @@ export default {
         },
         orderType: this.orderSelected,
         deliveryType: this.deliverySelected,
+        orderNumber: this.currentOrderNumber,
         noted: null,
         active: false,
         class: 'visited-action',
@@ -855,6 +842,7 @@ export default {
     onClickDeleteButton(id) {
       if (this.bills.length > 1) {
         const index = this.bills.findIndex(item => item.id === id)
+        console.log('index of bill', index)
         if (index > 0) {
           if (this.bills[index].class === 'visited-action') {
             this.bills[index - 1].class = 'visited-action'
@@ -884,6 +872,7 @@ export default {
             },
             orderType: this.orderSelected,
             deliveryType: this.deliverySelected,
+            orderNumber: this.currentOrderNumber,
             active: false,
             class: '',
           }
@@ -901,6 +890,7 @@ export default {
           this.currentCustomer.noted = bill.customer.noted
           this.orderSelected = bill.orderType
           this.deliverySelected = bill.deliveryType
+          this.currentOrderNumber = bill.orderNumber
           return {
             ...bill,
             active: true,
@@ -909,6 +899,24 @@ export default {
         }
         return bill
       })
+    },
+
+    deleteSaveBill(val) {
+      this.bills = val
+      console.log('val bills of saleList', val.bills)
+      if (this.bills.length > 1) {
+        const index = this.bills.findIndex(item => item.active)
+        if (index > 0) {
+          if (this.bills[index].class === 'visited-action') {
+            this.bills[index - 1].class = 'visited-action'
+            this.clickBillButton(this.bills[index - 1].id)
+          }
+        } else {
+          this.bills[index + 1].class = 'visited-action'
+          this.clickBillButton(this.bills[index + 1].id)
+        }
+        this.bills.splice(index, 1)
+      }
     },
 
     getOnlineOrderInfoForm(val) {
@@ -978,6 +986,11 @@ export default {
 
     getCurrentCustomer(val) {
       this.currentCustomer = val
+    },
+
+    getOrderNumber(val) {
+      this.currentOrderNumber = val
+      console.log('getOrderNumber', val)
     },
 
     getCustomerIdInfo(id) {

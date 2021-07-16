@@ -282,6 +282,7 @@
                       maxlength="50"
                       :state="(!checkApParramCode && touched) ? passed : null"
                       :disabled="checkApParramCode || salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0) || isDisabledOrder === true"
+                      @input="getOrderNumber"
                     />
                     <b-input-group-append is-text>
                       <b-icon-three-dots-vertical
@@ -401,6 +402,7 @@
       :order-online="orderOnline"
       :edit-online-permission="editOnlinePermission"
       :bills="bills"
+      @deleteSaveBill="deleteSaveBill"
     />
     <!-- END - Pay modal -->
 
@@ -469,6 +471,9 @@ import {
 import {
   orderNumber,
 } from '@/@core/utils/validations/validations'
+import {
+  validatorOnlineOrder,
+} from '@/@core/utils/validations/validators'
 import { getCurrentTime } from '@core/utils/utils'
 import { VueAutosuggest } from 'vue-autosuggest'
 import {
@@ -541,6 +546,7 @@ export default {
     return {
       // validation rules
       orderNumber,
+      validatorOnlineOrder,
 
       isCheckRotate: false,
       isShowSalesSearchModal: false,
@@ -592,7 +598,7 @@ export default {
       },
       orderOnline: {
         onlineOrderId: null,
-        orderNumber: '',
+        orderNumber: null,
         discountCode: null,
         discountValue: null,
       },
@@ -816,7 +822,10 @@ export default {
 
       if (e.key === 'F8') {
         if (
-          this.totalQuantity === 0 || this.editOnlinePermission === false
+          this.totalQuantity === 0
+          || this.editOnlinePermission === false
+          || validatorOnlineOrder(this.orderOnline.orderNumber) === false
+          || this.orderOnline.orderNumber.length < 6
           || this.salemtDeliveryTypeSelected === undefined
           || this.salemtPromotionObjectSelected === undefined
           || (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')
@@ -882,7 +891,6 @@ export default {
     },
 
     onPayButtonClick() {
-      // if (this.salemtPromotionObjectSelected === this.salemtPromotionObjectOptions[0].id) {
       if (this.salemtDeliveryTypeSelected !== undefined) {
         if (this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
           this.$bvModal.show('pay-modal')
@@ -969,6 +977,7 @@ export default {
       this.customer.createdAt = `${formatDateToLocale(this.customerDefault.createdAt)} ${getTimeOfDate(this.customerDefault.createdAt)}`
       this.$emit('getCustomerDefault', this.customerDefault)
       this.$emit('currentCustomer', this.customer)
+      this.$emit('getOrderNumber', this.orderOnline.orderNumber)
 
       // Check manualcreate
       const { usedShop } = this.loginInfo
@@ -1073,6 +1082,13 @@ export default {
     },
     onCollapseClick() {
       this.isClickRotate = !this.isClickRotate
+    },
+    deleteSaveBill(val) {
+      const deleteBill = val
+      this.$emit('deleteSaveBill', deleteBill)
+    },
+    getOrderNumber() {
+      this.$emit('getOrderNumber', this.orderOnline.orderNumber)
     },
   },
 

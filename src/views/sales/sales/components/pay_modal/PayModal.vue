@@ -1655,11 +1655,10 @@ export default {
     },
     cancel() {
       if (this.isSaveSuccess === true) {
-        if (this.bills.length > 0) {
-          const index = this.bills.findIndex(item => item.active)
-          this.bills.splice(index, 1)
+        if (this.bills.length > 1) {
+          this.$emit('deleteSaveBill', this.bills)
         }
-        if (this.bills.length < 1) {
+        if (this.bills.length <= 1) {
           if (this.isPaid) {
             this.$router.go(this.$router.currentRoute)
           }
