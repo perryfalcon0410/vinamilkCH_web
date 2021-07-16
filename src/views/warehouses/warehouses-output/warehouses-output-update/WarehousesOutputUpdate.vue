@@ -127,6 +127,7 @@
           Ghi chú
         </div>
         <b-form-textarea
+          ref="focusInput"
           v-model="warehousesOutput.note"
           maxlength="250"
           class="mb-1"
@@ -632,6 +633,7 @@ export default {
     }
     this.GET_WAREHOUSES_OUTPUT_BY_ID_ACTION(paramGetDetailsWarehousesOutput)
     this.GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION(paramGetDetailsWarehousesOutput)
+    this.$refs.focusInput.focus()
   },
 
   methods: {

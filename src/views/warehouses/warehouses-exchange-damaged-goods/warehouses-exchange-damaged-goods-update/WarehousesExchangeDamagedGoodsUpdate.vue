@@ -51,6 +51,7 @@
               Khách hàng <sup class="text-danger">*</sup>
             </div>
             <vue-autosuggest
+              ref="focusInput"
               v-model="customerInfo.customerName"
               maxlength="40"
               :state="touched ? passed : null"
@@ -58,7 +59,7 @@
               :input-props="{
                 id:'autosuggest__input',
                 class:'form-control',
-                placeholder:'Nhập mã hoặc tên khách hàng'
+                placeholder:'Nhập mã hoặc tên khách hàng',
               }"
               @input="customerOptions"
               @selected="selectCustomer"
@@ -581,6 +582,7 @@ export default {
   mounted() {
     this.GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION({ ...this.decentralization })
     this.GET_EXCHANGE_DAMAGED_GOODS_BY_ID_ACTION(`${this.exchangeDamagedGoodsId}`)
+    this.$refs.focusInput.$el.querySelector('input').focus()
   },
 
   // before page leave this will check input

@@ -40,6 +40,7 @@
                 Số biên bản <sup class="text-danger">*</sup>
               </div>
               <b-form-input
+                ref="focusInput"
                 v-model.trim="exchangeGoodsInfo.transCode"
                 :state="touched ? passed : null"
                 maxlength="40"
@@ -571,6 +572,7 @@ export default {
 
   mounted() {
     this.GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION({ ...this.decentralization })
+    this.$refs.focusInput.focus()
   },
 
   // before page leave this will check input

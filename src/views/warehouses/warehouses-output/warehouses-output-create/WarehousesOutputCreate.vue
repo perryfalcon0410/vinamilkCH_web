@@ -185,6 +185,7 @@
               Ghi chú
             </div>
             <b-form-textarea
+              ref="focusInput"
               v-model="warehousesOutput.note"
               maxlength="250"
             />
@@ -711,6 +712,7 @@ export default {
   mounted() {
     this.GET_WAREHOUSE_TYPE_ACTION({ ...this.decentralization })
     this.columns = this.columnsPO
+    this.$refs.focusInput.focus()
   },
 
   methods: {

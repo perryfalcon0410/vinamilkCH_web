@@ -78,6 +78,7 @@
               id="note"
               v-model="note"
               maxlength="250"
+              autofocus
             />
           </b-form-group>
           <!-- END -   Note -->
