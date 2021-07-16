@@ -11,7 +11,7 @@
     >
       <!-- START - promotionPrograms -->
       <b-col
-        class="col-7 pb-1 cursor-pointer mx-0"
+        class="pb-1 cursor-pointer mx-0"
       >
         <b-container
           class="box"
@@ -35,6 +35,7 @@
           <!-- START - collapse -->
           <b-collapse
             id="collapse-1"
+            visible
           >
             <b-col>
               <!-- START - first row -->
@@ -55,6 +56,7 @@
                   </div>
                   <b-input-group class="input-group-merge ">
                     <b-form-input
+                      ref="focusInput"
                       v-model="redInvoiceNo"
                       class="h7"
                       maxlength="40"
@@ -259,6 +261,22 @@
                         @keypress="$onlyNumberInput"
                       />
                     </b-col>
+                  </b-row>
+                </b-col>
+                <!-- START -Income-->
+                <b-col
+                  xl
+                  lg="3"
+                  sm="4"
+                >
+                  <div
+                    class="h7 mt-sm-1 mt-xl-0 invisible"
+                  >
+                    Doanh số hóa đơn
+                  </div>
+                  <b-row
+                    no-gutters
+                  >
                     <b-col>
                       <b-form-input
                         v-model="maxIncome"
@@ -272,6 +290,7 @@
                   </b-row>
                 </b-col>
                 <!-- END - Income -->
+                <!-- END - Income -->
               </b-row>
               <!-- END - second row -->
             </b-col>
@@ -283,7 +302,7 @@
       <!-- END - promotionPrograms -->
 
       <!-- START - used -->
-      <b-col class="col-2 pb-1 cursor-pointer mx-1">
+      <b-col class="col-3 pb-1 cursor-pointer mx-1">
         <b-container
           class="box"
         >
@@ -304,7 +323,10 @@
           <!-- END - title & icon -->
 
           <!-- START - collapse -->
-          <b-collapse id="collapse-2">
+          <b-collapse
+            id="collapse-2"
+            visible
+          >
             <b-col>
               <!-- START - First row -->
               <b-row
@@ -381,7 +403,7 @@
       <!-- END - used -->
 
       <!-- START - Search button -->
-      <div class="col-2 d-flex justify-content-center align-items-center">
+      <div class="d-flex justify-content-center align-items-center">
         <div>
           <b-button
             class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
@@ -510,8 +532,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
-    this.$root.$emit('bv::toggle::collapse', 'collapse-1')
-    this.$root.$emit('bv::toggle::collapse', 'collapse-2')
+    this.$refs.focusInput.focus()
   },
 
   methods: {

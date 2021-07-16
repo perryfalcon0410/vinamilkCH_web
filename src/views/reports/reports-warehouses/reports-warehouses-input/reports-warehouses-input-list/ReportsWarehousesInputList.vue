@@ -1,7 +1,7 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column"
+    class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
     <reports-warehouses-input-list-search

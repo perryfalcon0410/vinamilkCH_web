@@ -27,6 +27,7 @@
             class="input-group-merge"
           >
             <b-form-input
+              ref="focusInput"
               v-model="onlineCode"
               trim
               class="h7 text-brand-3"
@@ -283,6 +284,7 @@ export default {
       ...this.configFromDate,
       maxDate: this.toDate,
     }
+    this.$refs.focusInput.focus()
   },
 
   methods: {

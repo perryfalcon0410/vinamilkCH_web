@@ -24,6 +24,7 @@
           class="input-group-merge"
         >
           <b-form-input
+            ref="focusInput"
             v-model="licenseNumber"
             trim
             class="h7 text-brand-3"
@@ -366,6 +367,7 @@ export default {
       ...this.configToOrderDate,
       minDate: this.fromOrderDate,
     }
+    this.$refs.focusInput.focus()
   },
 
   methods: {

@@ -25,6 +25,7 @@
             class="input-group-merge"
           >
             <b-form-input
+              ref="focusInput"
               v-model="transCode"
               class="h7 text-brand-3"
               @keyup.enter="onClickSearchButton"
@@ -310,6 +311,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    this.$refs.focusInput.focus()
   },
   methods: {
     ...mapActions(REPORT_EXCHANGE_DAMAGED_GOODS, [

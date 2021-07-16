@@ -105,6 +105,7 @@
             class="input-group-merge"
           >
             <b-form-input
+              ref="focusInput"
               v-model="ids"
               class="h7 text-brand-3"
               placeholder="Mã sản phẩm"
@@ -251,6 +252,7 @@ export default {
       ...this.configFromDate,
       maxDate: this.toDate,
     }
+    this.$refs.focusInput.focus()
   },
 
   methods: {

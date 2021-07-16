@@ -36,6 +36,7 @@
             <!-- START - collapse -->
             <b-collapse
               id="collapse-1"
+              visible
             >
               <b-col>
                 <!-- START - first row -->
@@ -48,6 +49,7 @@
                   </b-col>
                   <b-col>
                     <b-input
+                      ref="focusInput"
                       v-model.trim="voucherProgram"
                       placeholder="Nhập tên chương trình khuyến mãi"
                       @keyup.enter="onClickSearchButton"
@@ -169,7 +171,10 @@
             <!-- END - title & icon -->
 
             <!-- START - collapse -->
-            <b-collapse id="collapse-2">
+            <b-collapse
+              id="collapse-2"
+              visible
+            >
               <b-col>
                 <!-- START - First row -->
                 <b-row
@@ -447,8 +452,7 @@ export default {
       ...this.configUsedFromDate,
       maxDate: this.usedToDate,
     }
-    this.$root.$emit('bv::toggle::collapse', 'collapse-1')
-    this.$root.$emit('bv::toggle::collapse', 'collapse-2')
+    this.$refs.focusInput.focus()
   },
   methods: {
     ...mapActions(REPORT_VOUCHERS, [

@@ -130,6 +130,7 @@
             class="input-group-merge"
           >
             <b-form-input
+              ref="focusInput"
               v-model="customerCode"
               trim
               class="h7 text-brand-3"
@@ -338,6 +339,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    this.$refs.focusInput.focus()
   },
   methods: {
     ...mapActions(REPORT_SALES_SALE_RECEIPT, [

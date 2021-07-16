@@ -28,6 +28,7 @@
             class="input-group-merge"
           >
             <b-form-input
+              ref="focusInput"
               v-model="receiptCode"
               placeholder="Nhập số hóa đơn"
               class="h7 text-brand-3"
@@ -368,6 +369,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    this.$refs.focusInput.focus()
   },
   methods: {
     ...mapActions(REPORT_SALES_SALE_ON_DELIVERY_TYPE, [
