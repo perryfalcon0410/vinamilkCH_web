@@ -656,7 +656,6 @@ export default {
   },
 
   updated() {
-    // console.log(document.getElementById(this.productIdSelected))
     if (this.isSelectedProduct) {
       // this.$refs.focusInputProduct.focus()
       document.getElementById(this.productIdSelected).focus()
@@ -796,7 +795,6 @@ export default {
     },
 
     onClickAddButton() {
-      console.log('bills', this.bills)
       const lastIteminBill = this.bills[this.bills.length - 1]
       if (lastIteminBill) {
         this.bills.push({
@@ -842,7 +840,7 @@ export default {
     onClickDeleteButton(id) {
       if (this.bills.length > 1) {
         const index = this.bills.findIndex(item => item.id === id)
-        console.log('index of bill', index)
+
         if (index > 0) {
           if (this.bills[index].class === 'visited-action') {
             this.bills[index - 1].class = 'visited-action'
@@ -903,7 +901,7 @@ export default {
 
     deleteSaveBill(val) {
       this.bills = val
-      console.log('val bills of saleList', val.bills)
+
       if (this.bills.length > 1) {
         const index = this.bills.findIndex(item => item.active)
         if (index > 0) {
@@ -990,7 +988,6 @@ export default {
 
     getOrderNumber(val) {
       this.currentOrderNumber = val
-      console.log('getOrderNumber', val)
     },
 
     getCustomerIdInfo(id) {
