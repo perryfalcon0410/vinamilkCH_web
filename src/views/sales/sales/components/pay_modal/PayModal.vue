@@ -124,7 +124,7 @@
                         </div>
                       </div>
                       <div
-                        v-else-if="props.column.field === 'tableProductFeature'"
+                        v-else-if="props.column.field === 'tableProductFeature' && value.programType === Number(promotionTypeOption[1].id)"
                         class="mx-0"
                       >
                         <b-icon-x
