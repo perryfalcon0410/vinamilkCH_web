@@ -13,7 +13,6 @@ import {
   GET_EXPORT_BORROWINGS_DETAIL_GETTER,
   GET_EXPORT_PO_TRANS_DETAIL_GETTER,
   GET_WAREHOUSE_TYPE_GETTER,
-  GET_WAREHOUSES_OUTPUT_DATA_GETTER,
   PRINT_OUT_IN_PUT_ORDER_GETTER,
   // ACTIONS
   GET_WAREHOUSES_OUTPUT_LIST_ACTION,
@@ -39,7 +38,7 @@ export default {
   namespaced: true,
   // STATE
   state: {
-    warehousesOutputs: [],
+    warehousesOutputs: {},
     warehousesOutput: {},
     products: [], // list product of warehouses output
     poTrans: [],
@@ -47,7 +46,6 @@ export default {
     borrowing: [],
     poProducts: [],
     wareHouseType: [],
-    dataWarehousesOutput: {},
     adjustmentProducts: [],
     borrowedProducts: [],
     printOutInputOrderData: [],
@@ -85,9 +83,6 @@ export default {
     [GET_WAREHOUSE_TYPE_GETTER](state) {
       return state.wareHouseType
     },
-    [GET_WAREHOUSES_OUTPUT_DATA_GETTER](state) {
-      return state.dataWarehousesOutput
-    },
     [PRINT_OUT_IN_PUT_ORDER_GETTER](state) {
       return state.printOutInputOrderData
     },
@@ -108,8 +103,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.warehousesOutputs = res.data.response.content || []
-            state.dataWarehousesOutput = res.data.response || {}
+            state.warehousesOutputs = res.data
           } else {
             throw new Error(res.statusValue)
           }

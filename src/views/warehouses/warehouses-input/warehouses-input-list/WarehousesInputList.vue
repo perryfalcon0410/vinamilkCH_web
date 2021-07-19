@@ -139,7 +139,7 @@
               v-if="props.column.field === 'quantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
             </div>
 
             <div
@@ -147,7 +147,7 @@
               v-else-if="props.column.field === 'price'"
               class="mx-0 h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalPrice) }}
+              {{ $formatNumberToLocale(totalInfo.totalPrice) }}
             </div>
           </template>
           <!-- START - Custom filter -->
@@ -373,8 +373,8 @@ export default {
       RECEIPTS_GETTER,
     ]),
     getReceipts() {
-      if (this.RECEIPTS_GETTER.content) {
-        return this.RECEIPTS_GETTER.content.map(data => ({
+      if (this.RECEIPTS_GETTER.response) {
+        return this.RECEIPTS_GETTER.response.content.map(data => ({
           id: data.id,
           transDate: data.transDate,
           transCode: data.transCode,
@@ -389,16 +389,15 @@ export default {
       }
       return []
     },
-
-    totalQuantity() {
-      return this.receipts.reduce((accum, item) => accum + Number(item.quantity), 0)
-    },
-    totalPrice() {
-      return this.receipts.reduce((accum, item) => accum + Number(item.price), 0)
+    totalInfo() {
+      if (this.RECEIPTS_GETTER.info) {
+        return this.RECEIPTS_GETTER.info
+      }
+      return {}
     },
     receiptPagination() {
-      if (this.RECEIPTS_GETTER) {
-        return this.RECEIPTS_GETTER
+      if (this.RECEIPTS_GETTER.response) {
+        return this.RECEIPTS_GETTER.response
       }
       return {}
     },

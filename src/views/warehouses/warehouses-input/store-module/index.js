@@ -305,7 +305,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.receipts = res.data.response
+            state.receipts = res.data
           } else {
             throw new Error(res.statusValue)
           }

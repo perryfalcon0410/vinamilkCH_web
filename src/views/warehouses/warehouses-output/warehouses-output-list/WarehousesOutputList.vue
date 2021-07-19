@@ -317,7 +317,7 @@
               v-show="warehousesOutputPagination.totalElements"
               class="h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalQuantity) }}
+              {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
             </div>
 
             <div
@@ -325,7 +325,7 @@
               v-show="warehousesOutputPagination.totalElements"
               class="h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalPrice) }}
+              {{ $formatNumberToLocale(totalInfo.totalPrice) }}
             </div>
           </template>
           <!-- END - Customer filter -->
@@ -448,7 +448,6 @@ import {
   WAREHOUSES_OUTPUT,
   // GETTERS
   GET_WAREHOUSES_OUTPUT_LIST_GETTER,
-  GET_WAREHOUSES_OUTPUT_DATA_GETTER,
   // ACTIONS
   GET_WAREHOUSES_OUTPUT_LIST_ACTION,
   DELETE_WAREHOUSES_ACTION,
@@ -593,33 +592,37 @@ export default {
   computed: {
     ...mapGetters(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_LIST_GETTER,
-      GET_WAREHOUSES_OUTPUT_DATA_GETTER,
     ]),
     getWarehousesOutputList() {
-      return this.GET_WAREHOUSES_OUTPUT_LIST_GETTER.map(data => ({
-        id: data.id,
-        date: data.transDate,
-        code: data.transCode,
-        billNumber: data.redInvoiceNo,
-        internalNumber: data.internalNumber,
-        quantity: data.totalQuantity,
-        price: data.totalAmount,
-        inputTypes: data.receiptType,
-        note: data.note,
-        poId: data.poId || 0,
-      }))
+      if (this.GET_WAREHOUSES_OUTPUT_LIST_GETTER.response) {
+        return this.GET_WAREHOUSES_OUTPUT_LIST_GETTER.response.content.map(data => ({
+          id: data.id,
+          date: data.transDate,
+          code: data.transCode,
+          billNumber: data.redInvoiceNo,
+          internalNumber: data.internalNumber,
+          quantity: data.totalQuantity,
+          price: data.totalAmount,
+          inputTypes: data.receiptType,
+          note: data.note,
+          poId: data.poId || 0,
+        }))
+      }
+      return {}
     },
     // Get data totalElement
     warehousesOutputPagination() {
-      return this.GET_WAREHOUSES_OUTPUT_DATA_GETTER
+      if (this.GET_WAREHOUSES_OUTPUT_LIST_GETTER.response) {
+        return this.GET_WAREHOUSES_OUTPUT_LIST_GETTER.response
+      }
+      return {}
     },
     // FilterOptions of column quantity
-    totalQuantity() {
-      return this.warehousesOutputList.reduce((accum, item) => accum + Number(item.quantity), 0)
-    },
-    // FilterOptions of column price
-    totalPrice() {
-      return this.warehousesOutputList.reduce((accum, item) => accum + Number(item.price), 0)
+    totalInfo() {
+      if (this.GET_WAREHOUSES_OUTPUT_LIST_GETTER.info) {
+        return this.GET_WAREHOUSES_OUTPUT_LIST_GETTER.info
+      }
+      return {}
     },
     paginationDetailContent() {
       const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
