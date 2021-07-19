@@ -133,6 +133,7 @@
                 v-model.trim="feedbackInfomation"
                 :state="touched ? passed : null"
                 maxlength="4000"
+                autofocus
               />
               <small class="text-danger">{{ errors[0] }}</small>
             </validation-provider>

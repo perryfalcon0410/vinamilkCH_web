@@ -823,6 +823,7 @@ export default {
     this.GET_SALEMT_PROMOTION_OBJECT_ACTION({ ...this.decentralization })
     this.GET_SALEMT_DELIVERY_TYPE_ACTION({ ...this.decentralization, salemtDeliveryTypeSelected: this.salemtDeliveryTypeSelected })
     this.GET_CUSTOMER_DEFAULT_ACTION({ ...this.decentralization })
+    this.$refs.search.$el.querySelector('input').focus()
 
     window.addEventListener('keydown', e => {
       if (e.key === 'F4') {

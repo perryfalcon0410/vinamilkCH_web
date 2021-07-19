@@ -186,7 +186,6 @@
                   v-model="fromCreateDate"
                   :config="configFromDate"
                   class="form-control h7"
-                  placeholder="Chọn ngày"
                 />
               </b-row>
             </b-col>
@@ -223,7 +222,6 @@
                   v-model="toCreateDate"
                   :config="configToDate"
                   class="form-control h7"
-                  placeholder="Chọn ngày"
                 />
               </b-row>
 
@@ -263,7 +261,6 @@
                   v-model="fromPurchaseDate"
                   :config="configFromPurchaseDate"
                   class="form-control h7"
-                  placeholder="Chọn ngày"
                 />
               </b-row>
             </b-col>
@@ -300,7 +297,6 @@
                   v-model="toPurchaseDate"
                   :config="configToPurchaseDate"
                   class="form-control h7"
-                  placeholder="Chọn ngày"
                 />
               </b-row>
 
@@ -331,7 +327,6 @@
                 <b-form-input
                   v-model="fromSaleAmount"
                   class="h7 text-brand-3"
-                  placeholder="Từ doanh số"
                   :number="true"
                   maxlength="12"
                   @keyup.enter="onClickSearchButton"
@@ -367,7 +362,6 @@
                 <b-form-input
                   v-model="toSaleAmount"
                   class="h7 text-brand-3"
-                  placeholder="Đến doanh số"
                   :number="true"
                   maxlength="12"
                   @keyup.enter="onClickSearchButton"
@@ -417,7 +411,6 @@
                   v-model="fromSaleDate"
                   :config="configFromSaleDate"
                   class="form-control h7"
-                  placeholder="Chọn ngày"
                 />
               </b-row>
             </b-col>
@@ -450,7 +443,6 @@
                   v-model="toSaleDate"
                   :config="configToSaleDate"
                   class="form-control h7"
-                  placeholder="Chọn ngày"
                 />
               </b-row>
 
@@ -459,25 +451,19 @@
           </b-row>
         </b-col>
         <!-- START - Search button -->
-        <b-col
-          sm="2"
-          class="p-1"
-        >
-          <div
-            class="h7 text-white"
-          >
-            Tìm kiếm
+        <div class="col d-flex justify-content-center align-items-center">
+          <div>
+            <b-button
+              class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
+              variant="someThing"
+              @click="onClickSearchButton()"
+            >
+              <b-icon-search class="mr-50" />
+              Tìm kiếm
+            </b-button>
           </div>
-          <b-button
-            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
-            variant="someThing"
-            @click="onClickSearchButton()"
-          >
-            <b-icon-search class="mr-50" />
-            Tìm kiếm
-          </b-button>
-        </b-col>
         <!-- END - Search button -->
+        </div>
       </b-row>
     </v-card-actions>
   </b-form>

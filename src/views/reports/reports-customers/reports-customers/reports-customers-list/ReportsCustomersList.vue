@@ -43,7 +43,7 @@
           :columns="columns"
           mode="remote"
           :rows="reportReturnRows"
-          style-class="vgt-table striped"
+          style-class="vgt-table report-customers table-horizontal-scroll"
           :pagination-options="{
             enabled: true,
             perPage: paginationData.size,
@@ -106,7 +106,10 @@
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
-            <div v-else>
+            <div
+              v-else
+              style="width: max-content"
+            >
               {{ props.formattedRow[props.column.field] }}
             </div>
           </template>
@@ -251,54 +254,67 @@ export default {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Họ tên',
           field: 'fullName',
           sortable: false,
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
         },
         {
           label: 'Điện thoại',
           field: 'mobiPhone',
           sortable: false,
+          thClass: 'text-nowrap scroll-column-header column-third',
+          tdClass: 'scroll-column column-third',
         },
         {
           label: 'Ngày sinh',
           field: 'birthDay',
           sortable: false,
+          thClass: 'text-nowrap',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Giới tính',
           field: 'gender',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Trạng thái',
           field: 'status',
           sortable: false,
+          thClass: 'text-nowrap',
         },
 
         {
           label: 'Nhóm',
           field: 'cusTypeName',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngày tạo',
           field: 'createdAt',
           sortable: false,
+          thClass: 'text-nowrap',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Ngày mua hàng cuối',
           field: 'lastOrderDate',
           sortable: false,
+          thClass: 'text-nowrap',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
@@ -307,6 +323,7 @@ export default {
           type: 'number',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
+          thClass: 'text-nowrap',
         },
       ],
     }
@@ -414,4 +431,20 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+</style>
+<style>
+  /* tùy chỉnh left khi scroll*/
+  .report-customers.table-horizontal-scroll .column-first {
+    left: 30px;
+  }
+  .report-customers.table-horizontal-scroll .column-second {
+    left: 155px;
+  }
+  .report-customers.table-horizontal-scroll .column-third {
+    left: 310px;
+  }
+  .report-customers.table-horizontal-scroll thead tr:last-child th {
+    background: #315899 !important;
+  }
+  /* tùy chỉnh left khi scroll*/
 </style>

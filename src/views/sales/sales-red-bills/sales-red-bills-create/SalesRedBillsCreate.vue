@@ -27,6 +27,7 @@
                 Mã khách hàng
               </div>
               <vue-autosuggest
+                ref="focusInput"
                 v-model="redBill.customerCode"
                 maxlength="200"
                 :suggestions="customers"
@@ -782,6 +783,7 @@ export default {
     //   formId: this.formId,
     //   ctrlId: this.ctrlId,
     // })
+    this.$refs.focusInput.$el.querySelector('input').focus()
   },
 
   methods: {

@@ -29,6 +29,7 @@
               v-model.trim="searchOptions.customerKeywords"
               class="h7 text-brand-3"
               placeholder="Nhập Mã/SĐT/Tên khách hàng"
+              autofocus
               @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append

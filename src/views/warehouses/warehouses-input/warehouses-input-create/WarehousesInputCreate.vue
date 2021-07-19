@@ -94,6 +94,7 @@
                   >*</sup>
                 </div>
                 <b-form-input
+                  ref="focusInput"
                   v-model.trim="billNumber"
                   class="text-uppercase"
                   maxlength="40"
@@ -942,6 +943,7 @@ export default {
     this.GET_WAREHOUSES_TYPE_ACTION({
       ...this.decentralization,
     })
+    this.$nextTick(() => this.$refs.focusInput.focus())
   },
 
   // before page leave, this will check

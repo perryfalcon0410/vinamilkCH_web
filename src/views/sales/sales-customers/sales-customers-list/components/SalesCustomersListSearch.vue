@@ -25,6 +25,7 @@
           class="input-group-merge"
         >
           <b-form-input
+            ref="focusInput"
             v-model.trim="phoneNumber"
             data-test="phoneNumber"
             autocomplete="on"
@@ -311,6 +312,7 @@ export default {
         // this.apiStatus.shopLocationsSearch = true
       },
     })
+    this.$refs.focusInput.focus()
   },
 
   methods: {

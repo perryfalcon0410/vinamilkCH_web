@@ -21,6 +21,7 @@
            class="input-group-merge"
          >
            <b-form-input
+             ref="focusInput"
              v-model.trim="customer"
              class="h7"
              placeholder="Nhập Mã/SĐT/Tên khách hàng"
@@ -655,6 +656,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    this.$refs.focusInput.focus()
   },
 
   methods: {

@@ -20,6 +20,7 @@
           class="input-group-merge"
         >
           <b-form-input
+            ref="focusInput"
             v-model="searchKeywords"
             trim
             class="h7"
@@ -264,6 +265,7 @@ export default {
       ...this.configToDate,
       minDate: this.fromDate,
     }
+    this.$refs.focusInput.focus()
   },
 
   methods: {

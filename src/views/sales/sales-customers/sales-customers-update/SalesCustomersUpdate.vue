@@ -37,6 +37,7 @@
                   Họ và tên đệm <sup class="text-danger">*</sup>
                 </div>
                 <b-form-input
+                  ref="focusInput"
                   v-model="lastName"
                   :state="touched ? passed : null"
                   autocomplete="on"
@@ -846,6 +847,7 @@ export default {
     this.GET_CARD_TYPES_ACTION({ ...this.decentralization })
     this.GET_CLOSELY_TYPES_ACTION({ ...this.decentralization })
     this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
+    this.$refs.focusInput.focus()
   },
 
   // before page leave, this will check
