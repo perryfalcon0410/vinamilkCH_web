@@ -94,6 +94,7 @@
           v-model="customerTypesSelected"
           data-test="customerTypes"
           :options="customerTypeOptions"
+          :load-options="loadOptions"
           :auto-load-root-options="false"
           :searchable="false"
           placeholder="Tất cả"
@@ -322,6 +323,14 @@ export default {
         this.onSearch()
       }
     },
+
+    loadOptions({ action, callback }) {
+      if (action === 'LOAD_ROOT_OPTIONS') {
+        this.customerTypeOptions = [...this.getCustomerTypeOptions]
+      }
+      callback()
+    },
+
     onSearch() {
       const searchData = {
         searchKeywords: this.customerName?.trim(),
