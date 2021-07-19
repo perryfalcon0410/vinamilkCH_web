@@ -18,7 +18,7 @@
       </div>
 
       <div class="d-flex flex-column align-items-center">
-        <strong style="font-size: 30px">Báo cáo KH không có giao dịch</strong>
+        <strong style="font-size: 30px">Báo cáo Khách hàng không có giao dịch</strong>
         <p class="my-1">
           Từ ngày {{ $formatISOtoVNI(commonInfo.fromDate) }} đến {{ $formatISOtoVNI(commonInfo.toDate) }}
         </p>
@@ -51,16 +51,19 @@
             </th>
             <th
               class="text-center"
+              style="width:17%"
             >
               Mã KH
             </th>
             <th
               class="text-center"
+              style="width: 30%;"
             >
               Tên KH
             </th>
             <th
               class="text-center"
+              style="width: 48%;"
             >
               Địa chỉ
             </th>
@@ -78,13 +81,22 @@
             <td class="text-right pr-50">
               {{ index + 1 }}
             </td>
-            <td class="pl-40">
+            <td
+              class="pl-40"
+              style="width: 17%;"
+            >
               {{ customer.customerCode }}
             </td>
-            <td class="pl-40">
+            <td
+              class="pl-40"
+              style="width: 30%;"
+            >
               {{ customer.customerName }}
             </td>
-            <td class="pl-40">
+            <td
+              class="pl-40"
+              style="width: 48%;"
+            >
               {{ customer.address }}
             </td>
           </tr>
@@ -145,4 +157,10 @@ table {
   width:100%;
   table-layout:fixed;
 }
+</style>
+<style type="text/scss" media="print">
+    @page {
+      margin-top: 2%;
+      margin-bottom: 2%;
+    }
 </style>

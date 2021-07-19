@@ -236,7 +236,7 @@ export default {
       RETURNED_GOOD_CHOOSE_GETTER,
     ]),
     getSaleOders() {
-      if (this.RETURNED_GOOD_CHOOSE_GETTER.response) {
+      if (this.RETURNED_GOOD_CHOOSE_GETTER && this.RETURNED_GOOD_CHOOSE_GETTER.response) {
         return this.RETURNED_GOOD_CHOOSE_GETTER.response.map(data => ({
           id: data.id,
           orderDate: data.orderDate,
