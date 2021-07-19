@@ -52,14 +52,14 @@
                 class="mx-0 p-1 bg-brand-1"
               >
                 <b-check
-                  v-model="value.isSelected"
-                  :disabled="!value.isUse || (value.promotionType === Number(promotionTypeOption[0].id) && value.isUse)"
+                  v-model="value.isUse"
+                  :disabled="!value.isEditable || (value.promotionType === Number(promotionTypeOption[0].id) && value.isUse)"
                   @change="onChangeCheckProgramPromotion()"
                 />
                 <div class="text-white">
                   {{ value.promotionProgramName }} <span>- Số suất: {{ $formatNumberToLocale(value.numberLimited) }}</span>
                   <b-icon-shield-exclamation
-                    v-if="!value.isUse"
+                    v-if="!value.isEditable && !value.isUse"
                     v-b-popover.hover="{variant: 'danger', content: 'Chương trình này không được áp dụng do số suất không đủ'}"
                     class="cursor-pointer ml-1 text-danger"
                     font-scale="1.5"
@@ -103,7 +103,7 @@
                       slot-scope="props"
                     >
                       <div v-if="props.column.field === 'quantity'">
-                        <b-input-group v-if="value.isEditable || value.promotionType === Number(promotionTypeOption[1].id)">
+                        <b-input-group v-if="value.isEditable">
                           <template #append>
                             <b-input-group-text>{{ props.row.quantityMax }}</b-input-group-text>
                           </template>
@@ -124,7 +124,7 @@
                         </div>
                       </div>
                       <div
-                        v-else-if="props.column.field === 'tableProductFeature' && value.programType === Number(promotionTypeOption[1].id)"
+                        v-else-if="props.column.field === 'tableProductFeature' && value.promotionType === Number(promotionTypeOption[1].id)"
                         class="mx-0"
                       >
                         <b-icon-x
@@ -153,7 +153,7 @@
                         placeholder="Nhập mã hoặc tên sản phẩm"
                         type="text"
                         autocomplete="off"
-                        :disabled="!value.isUse"
+                        :disabled="!value.isEditable"
                         @focus="searchProductFocus"
                         @blur="inputSearchFocusedSP = false"
                         @input="loadProducts(value.programId)"
@@ -1024,7 +1024,6 @@ export default {
           amount: data.amount,
           isEditable: data.isEditable,
           numberLimited: data.numberLimited,
-          isSelected: data.promotionType === Number(this.promotionTypeOption[0].id) && data.isUse,
           isInsertItemProducts: (data.products === null && data.amount === null),
           levelNumber: data.levelNumber,
           totalQty: data.totalQty,
@@ -1065,7 +1064,7 @@ export default {
             if (indexPromotionCalculationZV19 !== -1) {
               const promotionCalculationZV19 = this.getPromotionCalculation.lstSalePromotions.find(p => p.programType === saleData.programPromotionType[0].label)
               promotionCalculationZV19.products = promotionCalculationZV19.products || []
-              return { ...promotionCalculationZV19, isSelected: true }
+              return { ...promotionCalculationZV19, isUse: true }
             }
           }
 
@@ -1074,7 +1073,7 @@ export default {
             if (indexPromotionCalculationZV20 !== -1) {
               const promotionCalculationZV20 = this.getPromotionCalculation.lstSalePromotions.find(p => p.programType === saleData.programPromotionType[1].label)
               promotionCalculationZV20.products = promotionCalculationZV20.products || []
-              return { ...promotionCalculationZV20, isSelected: true }
+              return { ...promotionCalculationZV20, isUse: true }
             }
           }
 
@@ -1528,7 +1527,7 @@ export default {
       })]
     },
     onChangeCheckProgramPromotion() {
-      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => (p.amount !== null || p.programType === saleData.programPromotionType[2].label) && p.isSelected && p.isUse)
+      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => (p.amount !== null || p.programType === saleData.programPromotionType[2].label) && p.isUse)
       const paramOrderRequest = {
         customerId: this.customer.id,
         orderType: Number(this.orderSelected),
@@ -1578,38 +1577,40 @@ export default {
     createSaleOrder() {
       let isValid = true
       let totalQuantity = 0
-      const paramPromotionInfo = this.promotionPrograms.filter(p => p.isUse && p.isSelected)
+      const paramPromotionInfo = this.promotionPrograms.filter(p => p.isUse)
       paramPromotionInfo.forEach(program => {
-        program.products.forEach(product => {
-          if (program.isEditable) {
-            if (product.quantity > product.stockQuantity) {
+        if (program.products.length > 0) {
+          program.products.forEach(product => {
+            if (program.isEditable) {
+              if (product.quantity > product.stockQuantity) {
+                isValid = false
+                toasts.error(`Tồn kho của ${product.productName} của ${program.promotionProgramName} không đủ. Bạn không thể thực hiện Thanh toán.`)
+              }
+            } else if (product.quantityMax > product.stockQuantity) {
               isValid = false
-              toasts.error(`Tồn kho của ${product.productName} của ${program.promotionProgramName} không đủ. Bạn không thể thực hiện Thanh toán.`)
+              toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
             }
-          } else if (product.quantityMax > product.stockQuantity) {
-            isValid = false
-            toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
-          }
-        })
-        if (program.promotionType === Number(saleData.promotionType[0].id) && program.contraintType === Number(saleData.constraintType[1])) {
-          totalQuantity = 0
-          const productsSameQuantityMax = program.products.filter(i => i.quantityMax === program.products[0].quantityMax)
-          if (productsSameQuantityMax.length === program.products.length) {
+          })
+          if (program.promotionType === Number(saleData.promotionType[0].id) && program.contraintType === Number(saleData.constraintType[1])) {
+            totalQuantity = 0
+            const productsSameQuantityMax = program.products.filter(i => i.quantityMax === program.products[0].quantityMax)
+            if (productsSameQuantityMax.length === program.products.length) {
+              program.products.forEach(product => {
+                totalQuantity += product.quantity
+              })
+              const maxQuantity = program.products[0].quantityMax
+              if (totalQuantity !== maxQuantity) {
+                toasts.error(`Tổng số lượng khuyến mãi phải bằng số lượng cho phép của ${program.promotionProgramName}`)
+              }
+            }
+          } else if (program.promotionType === Number(saleData.promotionType[1].id) && program.isUse) {
+            totalQuantity = 0
             program.products.forEach(product => {
               totalQuantity += product.quantity
             })
-            const maxQuantity = program.products[0].quantityMax
-            if (totalQuantity !== maxQuantity) {
-              toasts.error(`Tổng số lượng khuyến mãi phải bằng số lượng cho phép của ${program.promotionProgramName}`)
+            if (totalQuantity <= 0) {
+              toasts.error(`Tổng số lượng khuyến mãi của ${program.promotionProgramName} phải lớn hơn 0`)
             }
-          }
-        } else if (program.promotionType === Number(saleData.promotionType[1].id) && program.isSelected) {
-          totalQuantity = 0
-          program.products.forEach(product => {
-            totalQuantity += product.quantity
-          })
-          if (totalQuantity <= 0) {
-            toasts.error(`Tổng số lượng khuyến mãi của ${program.promotionProgramName} phải lớn hơn 0`)
           }
         }
       })
@@ -1680,7 +1681,7 @@ export default {
     printSaleOrderTemp() {
       let isValid = true
       let totalQuantity = 0
-      const parampromotionInfo = this.promotionPrograms.filter(p => p.isUse && p.isSelected)
+      const parampromotionInfo = this.promotionPrograms.filter(p => p.isUse)
       parampromotionInfo.forEach(program => {
         program.products.forEach(product => {
           if (program.isEditable) {
@@ -1705,7 +1706,7 @@ export default {
               toasts.error(`Tổng số lượng khuyến mãi phải bằng số lượng cho phép của ${program.promotionProgramName}`)
             }
           }
-        } else if (program.promotionType === Number(saleData.promotionType[1].id) && program.isSelected) {
+        } else if (program.promotionType === Number(saleData.promotionType[1].id) && program.isUse) {
           totalQuantity = 0
           program.products.forEach(product => {
             totalQuantity += product.quantity

@@ -1,5 +1,8 @@
 <template>
-  <section id="dashboard-ecommerce">
+  <section
+    v-if="checkPermissionDashboardEcommerce().show"
+    id="dashboard-ecommerce"
+  >
     <b-row class="match-height">
       <b-col
         xl="4"
@@ -145,6 +148,11 @@ export default {
         const userData = getUserData()
         this.data.congratulations.name = userData.fullName.split(' ')[0] || userData.username
       })
+  },
+  methods: {
+    checkPermissionDashboardEcommerce() {
+      return this.$permission('HomePage', 'DashboardEcommerce')
+    },
   },
 }
 </script>

@@ -1,5 +1,8 @@
 <template>
-  <section id="dashboard-analytics">
+  <section
+    v-if="checkPermissionDashboardAnalytics().show"
+    id="dashboard-analytics"
+  >
     <b-row class="match-height">
       <b-col
         lg="6"
@@ -94,6 +97,9 @@ export default {
   },
   methods: {
     kFormatter,
+    checkPermissionDashboardAnalytics() {
+      return this.$permission('HomePage', 'DashboardAnalytics')
+    },
   },
 }
 </script>
