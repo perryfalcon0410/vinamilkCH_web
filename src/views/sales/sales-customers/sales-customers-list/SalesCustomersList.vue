@@ -19,11 +19,7 @@
         align-h="between"
       >
         <strong class="text-brand-1">
-<<<<<<< Updated upstream
-          Danh sách khách hàng
-=======
           {{ $t('customer.customerList') }}
->>>>>>> Stashed changes
         </strong>
         <b-button-group>
           <b-button
