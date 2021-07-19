@@ -25,6 +25,7 @@
               :active="item.active"
               :to="item.to"
             >
+              <!-- {{ $t(`breadcrumbs.${item.text}`) }} -->
               {{ item.text }}
             </b-breadcrumb-item>
           </b-breadcrumb>

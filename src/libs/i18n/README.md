@@ -10,6 +10,6 @@ TODO: Real usage example.
 
 ```text
   <span>
-    {{ $t('example') }}
+    {{ $t('common.find') }}
   </span>
 ```
