@@ -1,6 +1,6 @@
 export default [
   {
-    title: 'Mua hàng',
+    title: 'Purchases',
     route: 'purchases',
     icon: 'ShoppingCartIcon',
     resource: 'Purchases',

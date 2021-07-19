@@ -1,0 +1,18 @@
+{
+  "customer": "Khách hàng",
+  "customerList": "Danh sách khách hàng",
+  "customerCode": "Mã khách hàng",
+  "fullName": "Họ tên",
+  "phoneNumber": "Điện thoại",
+  "mobileNumber": "Di động",
+  "dob": "Ngài sinh",
+  "gender": "Giới tính",
+  "male": "Nam",
+  "female": "Nữ",
+  "group": "Nhóm",
+  "customerGroup": "Nhóm khách hàng",
+  "customerNormal": "Khách hàng thường",
+  "customerVIP": "Khách hàng VIP",
+  "customerLoyal": "Khách hàng thân thiết",
+  "shopCustomers": "Khách hàng của cửa hàng"
+}

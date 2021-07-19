@@ -1,28 +1,28 @@
 export default [
   {
-    header: 'Kho',
+    header: 'Warehouse',
     icon: 'ArchiveIcon',
     children: [
       {
-        title: 'Nhập hàng',
+        title: 'Input',
         route: 'warehouses-input',
         icon: 'SkipBackIcon',
         resource: 'WarehousesInput',
       },
       {
-        title: 'Xuất hàng',
+        title: 'Output',
         route: 'warehouses-output',
         icon: 'SkipForwardIcon',
         resource: 'WarehousesOutput',
       },
       {
-        title: 'Kiểm kê',
+        title: 'Inventory',
         route: 'warehouses-inventory',
         icon: 'FileTextIcon',
         resource: 'WarehousesInventory',
       },
       {
-        title: 'Đổi hàng hỏng',
+        title: 'ExchangeGoods',
         route: 'warehouses-exchange-damaged-goods',
         icon: 'RepeatIcon',
         resource: 'WarehousesExchangeDamagedGoods',

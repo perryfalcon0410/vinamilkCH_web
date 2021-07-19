@@ -5,7 +5,7 @@
     @keydown.enter="onClickSearchButton"
   >
     <v-card-actions
-      title="Tìm kiếm"
+      :title="$t('common.find')"
       class="d-print-none"
     >
 
@@ -19,7 +19,7 @@
         <div
           class="mt-sm-1 mt-xl-0"
         >
-          Di động
+          {{ $t('customer.mobileNumber') }}
         </div>
         <b-input-group
           class="input-group-merge"
@@ -29,7 +29,7 @@
             v-model.trim="phoneNumber"
             data-test="phoneNumber"
             autocomplete="on"
-            placeholder="Nhập chính xác 4 số cuối"
+            :placeholder="$t('common.enter4Digits')"
             maxlength="10"
             @keypress="$onlyNumberInput"
           />
@@ -56,7 +56,7 @@
         <div
           class="mt-sm-1 mt-xl-0"
         >
-          Khách hàng
+          {{ $t('customer.customer') }}
         </div>
         <b-input-group
           class="input-group-merge"
@@ -64,7 +64,7 @@
           <b-form-input
             v-model="customerName"
             data-test="customerName"
-            placeholder="Nhập họ tên/mã"
+            :placeholder="$t('common.enterYourNameCode')"
           />
           <b-input-group-append
             is-text
@@ -89,7 +89,8 @@
         <div
           class="mt-sm-1 mt-xl-0"
         >
-          Nhóm khách hàng
+          {{ $t('customer.customerGroup') }}
+
         </div>
         <tree-select
           v-model="customerTypesSelected"
@@ -98,8 +99,8 @@
           :load-options="loadOptions"
           :auto-load-root-options="false"
           :searchable="false"
-          placeholder="Tất cả"
-          no-options-text="Không có dữ liệu"
+          :placeholder="$t('common.all')"
+          :no-options-text="$t('common.noData')"
         />
       </b-col>
       <!-- END - Group -->
@@ -114,15 +115,16 @@
         <div
           class="mt-sm-1 mt-xl-0"
         >
-          Trạng thái
+          {{ $t('common.status') }}
+
         </div>
         <tree-select
           id="status"
           v-model="statusSelected"
           :options="statuOptions"
           :searchable="false"
-          placeholder="Tất cả"
-          no-options-text="Không có dữ liệu"
+          :placeholder="$t('common.all')"
+          :no-options-text="$t('common.noData')"
         />
       </b-col>
       <!-- END - Status -->
@@ -137,15 +139,15 @@
         <div
           class="mt-sm-1 mt-xl-0"
         >
-          Giới tính
+          {{ $t('customer.gender') }}
         </div>
         <tree-select
           id="genders"
           v-model="gendersSelected"
           :options="genderOptions"
           :searchable="false"
-          placeholder="Tất cả"
-          no-options-text="Không có dữ liệu"
+          :placeholder="$t('common.all')"
+          :no-options-text="$t('common.noData')"
         />
       </b-col>
       <!-- END - Gender -->
@@ -160,16 +162,16 @@
         <div
           class="mt-sm-1 mt-xl-0"
         >
-          Khu vực
+          {{ $t('common.area') }}
         </div>
         <tree-select
           id="areas"
           v-model="areasSelected"
           :options="areaOptions"
           :auto-load-root-options="false"
-          placeholder="Tất cả"
-          no-options-text="Không có dữ liệu"
-          no-results-text="Không tìm thấy kết quả"
+          :placeholder="$t('common.all')"
+          :no-options-text="$t('common.noData')"
+          :no-results-text="$t('common.noResultFound')"
         />
       </b-col>
       <!-- END - Location -->
@@ -189,7 +191,8 @@
           v-model="privateCustomer"
           class="text-nowrap"
         >
-          Khách hàng của cửa hàng
+          {{ $t('customer.shopCustomers') }}
+
         </b-form-checkbox>
       </div>
       <!-- END - Private customer -->
@@ -205,7 +208,7 @@
           @click="onClickSearchButton()"
         >
           <b-icon-search class="mr-50" />
-          Tìm kiếm
+          {{ $t('common.find') }}
         </b-button>
       </div>
       <!-- END - Search button -->

@@ -1,0 +1,19 @@
+{
+  "area": "Khu vực",
+  "find": "Tìm kiếm",
+  "create": "Thêm mới",
+  "print": "In",
+  "ExcelExport": "Xuất excel",
+  "paginationSize": "Số hàng hiển thị",
+  "paginationTotal": "của {total} mục",
+  "status": "Trạng thái",
+  "active": "Hoạt động",
+  "inactive": "Không hoạt động",
+  "other": "Khác",
+  "all": "Tất cả",
+  "enter4Digits": "Nhập chính xác 4 số cuối",
+  "enterYourNameCode": "Nhập họ tên/mã",
+  "noData": "Không có dữ liệu",
+  "noResultFound": "Không tìm thấy kết quả",
+  "dateCreated": "Ngày tạo"
+}

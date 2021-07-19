@@ -46,7 +46,7 @@ export default {
     title: {
       type: String,
       requried: true,
-      default: 'Tiêu dề',
+      default: 'Tìm kiếm',
     },
     // can or can't collapse component
     canCollapse: {

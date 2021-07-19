@@ -1,0 +1,19 @@
+{
+  "area": "Area",
+  "find": "Search",
+  "create": "Create",
+  "print": "Print",
+  "ExcelExport": "Excel export",
+  "paginationSize": "Number of rows displayed",
+  "paginationTotal": "of {total} items",
+  "status": "Status",
+  "active": "Active",
+  "inactive": "Inactive",
+  "other": "Other",
+  "all": "All",
+  "enter4Digits": "Enter the last 4 digits exactly",
+  "enterYourNameCode": "Enter your name/code",
+  "noData": "No data",
+  "noResultFound": "No results were found",
+  "dateCreated": "Date created"
+}

@@ -19,7 +19,11 @@
         align-h="between"
       >
         <strong class="text-brand-1">
+<<<<<<< Updated upstream
           Danh sách khách hàng
+=======
+          {{ $t('customer.customerList') }}
+>>>>>>> Stashed changes
         </strong>
         <b-button-group>
           <b-button
@@ -33,7 +37,7 @@
               scale="2"
               class="mr-50"
             />
-            Thêm mới
+            {{ $t('common.create') }}
           </b-button>
           <b-button
             v-if="statusExcelButton().show"
@@ -43,7 +47,7 @@
             @click="onClickExcelExportButton"
           >
             <b-icon-file-earmark-x-fill class="mr-50" />
-            Xuất excel
+            {{ $t('common.ExcelExport') }}
           </b-button>
         </b-button-group>
       </b-row>
@@ -75,7 +79,7 @@
             slot="emptystate"
             class="text-center"
           >
-            Không có dữ liệu
+            {{ $t('common.noData') }}
           </div>
           <!-- END - Empty rows -->
 
@@ -128,7 +132,7 @@
                 <span
                   class="text-nowrap"
                 >
-                  Số hàng hiển thị
+                  {{ $t('common.paginationSize') }}
                 </span>
                 <b-form-select
                   v-model="searchData.size"
@@ -234,44 +238,52 @@ export default {
           createdAt: '2021-06-17T10:11:29.533',
         },
       ],
+    }
+  },
 
-      columns: [
+  computed: {
+    ...mapGetters(CUSTOMER, [
+      CUSTOMERS_GETTER,
+    ]),
+
+    columns() {
+      return [
         {
-          label: 'Mã khách hàng',
+          label: this.$t('customer.customerCode'),
           field: 'customerCode',
           width: '130px',
         },
         {
-          label: 'Họ tên',
+          label: this.$t('customer.fullName'),
           field: 'nameText',
           width: '200px',
         },
         {
-          label: 'Điện thoại',
+          label: this.$t('customer.phoneNumber'),
           field: 'mobiPhone',
         },
         {
-          label: 'Ngày sinh',
+          label: this.$t('customer.dob'),
           field: 'dob',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
-          label: 'Giới tính',
+          label: this.$t('customer.gender'),
           field: 'genderId',
           formatFn: getGenderLabel,
         },
         {
-          label: 'Trạng thái',
+          label: this.$t('common.status'),
           field: 'status',
           formatFn: getCustomerStatusLabel,
         },
         {
-          label: 'Nhóm',
+          label: this.$t('customer.group'),
           field: 'customerTypeId',
           formatFn: this.$store.getters[`${CUSTOMER}/${CUSTOMER_TYPES_LABEL_GETTER}`],
         },
         {
-          label: 'Ngày tạo',
+          label: this.$t('common.dateCreated'),
           field: 'createdAt',
           formatFn: value => this.$formatISOtoVNI(value),
         },
@@ -284,14 +296,9 @@ export default {
           thClass: 'text-center',
           tdClass: 'text-center',
         },
-      ],
-    }
-  },
+      ]
+    },
 
-  computed: {
-    ...mapGetters(CUSTOMER, [
-      CUSTOMERS_GETTER,
-    ]),
     getCustomers() {
       if (this.CUSTOMERS_GETTER.content) {
         return this.CUSTOMERS_GETTER.content.map(data => ({
@@ -323,7 +330,7 @@ export default {
       const minPageSize = page === 0 ? 1 : (page * size) - size + 1
       const maxPageSize = (size * page) > totalElements
         ? totalElements : (size * page)
-      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
+      return `${minPageSize} - ${maxPageSize} ${this.$t('common.paginationTotal', { total: totalElements })}`
     },
   },
 

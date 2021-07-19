@@ -1,0 +1,18 @@
+{
+  "customer": "Customer",
+  "customerList": "Customer list",
+  "customerCode": "Customer code",
+  "fullName": "Full name",
+  "phoneNumber": "Phone number",
+  "mobileNumber": "Phone Number",
+  "dob": "Birth",
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female",
+  "group": "Group",
+  "customerGroup": "Customer group",
+  "customerNormal": "Normal customer",
+  "customerVIP": "VIP customer",
+  "customerLoyal": "Loyal customer",
+  "shopCustomers": "Shop customers"
+}

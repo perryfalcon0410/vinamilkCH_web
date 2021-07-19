@@ -1,34 +1,34 @@
 export default [
   {
-    header: 'Bán hàng',
+    header: 'Sales',
     icon: 'ShoppingCartIcon',
     children: [
       {
-        title: 'Bán hàng',
+        title: 'Sales',
         route: 'sales-sales',
         icon: 'ShoppingCartIcon',
         resource: 'Sales',
       },
       {
-        title: 'Khách hàng',
+        title: 'Customer',
         route: 'sales-customers',
         icon: 'UsersIcon',
         resource: 'SalesCustomers',
       },
       {
-        title: 'Hoá đơn đỏ',
+        title: 'RedBills',
         route: 'sales-red-bills',
         icon: 'ShoppingCartIcon',
         resource: 'SalesRedBills',
       },
       {
-        title: 'Hoá đơn bán hàng',
+        title: 'Receipts',
         route: 'sales-receipts',
         icon: 'ShoppingCartIcon',
         resource: 'SalesReceipts',
       },
       {
-        title: 'Hàng trả lại',
+        title: 'ReturnGood',
         route: 'sales-returned-goods',
         icon: 'ArrowLeftCircleIcon',
         resource: 'SalesReturnedGoods',
