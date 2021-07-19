@@ -275,6 +275,7 @@
         :is-disabled-order="isDisabledOrder"
         :edit-online-permission="editOnlinePermission"
         :is-disabled="isDisabled"
+        :order-number-bill="orderNumber"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
@@ -282,6 +283,7 @@
         @getOnlineCustomer="getOnlineCustomer"
         @getCustomerCreate="getCustomerCreate"
         @currentCustomer="getCurrentCustomer"
+        @getDefaultSalemtPOSelected="getDefaultSalemtPOSelected"
         @salemtPromotionObjectSelected="salemtPromotionObjectSelected"
         @salemtDeliveryTypeSelected="salemtDeliveryTypeSelected"
         @getIdCustomer="getIdCustomer"
@@ -344,7 +346,8 @@ export default {
       isCheckShopId: false, // check shop default
       currentCustomer: {},
       defaultCustomer: {},
-      currentOrderNumber: null,
+      defaultSalemtPOSelected: [],
+      currentOrderNumber: '',
       selectedValue: null,
       checkStock: false,
       isDisabled: false, // check tồn kho disable button thanh toán
@@ -448,7 +451,7 @@ export default {
           },
           orderType: null,
           deliveryType: null,
-          orderNumber: null,
+          orderNumber: '',
           active: true,
           class: 'visited-action',
         },
@@ -456,7 +459,6 @@ export default {
 
       // online order
       onlineOrderId: null,
-      onlineOrderNumber: null,
       orderSelected: null,
       deliverySelected: null,
       editOnlinePermission: true,
@@ -588,6 +590,10 @@ export default {
 
     getDefaultCustomer() {
       this.defaultCustomer = { ...this.getDefaultCustomer }
+    },
+
+    getDefaultSalemtPOSelected() {
+      this.defaultSalemtPOSelected = [...this.getDefaultSalemtPOSelected]
     },
 
     getOrderNumber() {
@@ -794,6 +800,11 @@ export default {
       this.searchOptions.keyWord = null
     },
 
+    getOrderNumber(val) {
+      this.currentOrderNumber = val
+      console.log('vallll', val)
+    },
+
     onClickAddButton() {
       const lastIteminBill = this.bills[this.bills.length - 1]
       if (lastIteminBill) {
@@ -808,7 +819,7 @@ export default {
             address: this.defaultCustomer.address,
             noted: this.defaultCustomer.noted,
           },
-          orderType: null,
+          orderType: '1',
           deliveryType: null,
           orderNumber: null,
           noted: null,
@@ -828,7 +839,7 @@ export default {
           address: this.currentCustomer.address,
           noted: this.currentCustomer.noted,
         },
-        orderType: this.orderSelected,
+        orderType: this.defaultSalemtPOSelected,
         deliveryType: this.deliverySelected,
         orderNumber: this.currentOrderNumber,
         noted: null,
@@ -986,10 +997,6 @@ export default {
       this.currentCustomer = val
     },
 
-    getOrderNumber(val) {
-      this.currentOrderNumber = val
-    },
-
     getCustomerIdInfo(id) {
       this.$emit('getCustomerIdInfo', id)
     },
@@ -1016,6 +1023,9 @@ export default {
       } else {
         this.isCheckShopId = false
       }
+    },
+
+    getDefaultSalemtPOSelected() {
     },
 
     salemtPromotionObjectSelected(val) {

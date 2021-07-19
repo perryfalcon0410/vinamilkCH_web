@@ -281,7 +281,11 @@
                       v-model="orderOnline.orderNumber"
                       maxlength="50"
                       :state="(!checkApParramCode && touched) ? passed : null"
-                      :disabled="checkApParramCode || salemtPromotionObjectSelected === salemtPromotionId || salemtPromotionObjectSelected === undefined || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0) || isDisabledOrder === true"
+                      :disabled="checkApParramCode
+                        || salemtPromotionObjectSelected === salemtPromotionId
+                        || salemtPromotionObjectSelected === undefined
+                        || isDisabledOrder === true
+                        || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0)"
                       @input="getOrderNumber"
                     />
                     <b-input-group-append is-text>
@@ -540,6 +544,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    orderNumberBill: {
+      type: String,
+      default: String,
+    },
   },
 
   data() {
@@ -598,7 +606,7 @@ export default {
       },
       orderOnline: {
         onlineOrderId: null,
-        orderNumber: null,
+        orderNumber: '',
         discountCode: null,
         discountValue: null,
       },
@@ -791,6 +799,7 @@ export default {
     getSalemtPromotionObjectOptions() {
       this.salemtPromotionObjectOptions = [...this.getSalemtPromotionObjectOptions]
       this.getDefaultPromotionObjectSelected()
+      this.$emit('getDefaultSalemtPOSelected', this.salemtPromotionObjectOptions)
     },
     salemtDeliveryTypeOptions() {
       this.GetSalemtDeliveryTypeDefault()
@@ -977,7 +986,6 @@ export default {
       this.customer.createdAt = `${formatDateToLocale(this.customerDefault.createdAt)} ${getTimeOfDate(this.customerDefault.createdAt)}`
       this.$emit('getCustomerDefault', this.customerDefault)
       this.$emit('currentCustomer', this.customer)
-      this.$emit('getOrderNumber', this.orderOnline.orderNumber)
 
       // Check manualcreate
       const { usedShop } = this.loginInfo

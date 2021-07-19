@@ -129,7 +129,7 @@ export const identifyCard = extend('identifyCard', {
 
 export const orderNumber = extend('orderNumber', {
   validate: validatorOnlineOrder,
-  message: 'Chỉ nhập các ký tự [1-9][a-Z] và không chứa khoảng trắng .',
+  message: 'Chỉ nhập các ký tự [0-9] và [a-Z] .',
 })
 
 localize('vi', vi)
