@@ -39,13 +39,31 @@
     <!-- START - Total section 1 -->
     <b-row
       class="mx-0 font-italic"
-      align-h="around"
       align-v="end"
       style="background-color: gray"
     >
-      <div>Tổng cộng: <strong>{{ $formatNumberToLocale(printInfo.total) }}</strong></div>
-      <div>Tổng SL: <strong>{{ $formatNumberToLocale(printInfo.totalQuantity) }}</strong></div>
-      <div>T.Tiền: <strong>{{ $formatNumberToLocale(printInfo.totalAmount) }}</strong></div>
+      <div
+        class="text-right"
+        style="width: 58%;"
+      >
+        Tổng SL:
+      </div>
+      <div
+        class="text-right"
+        style="width: 10%;"
+      >
+        <strong>{{ $formatNumberToLocale(printInfo.totalQuantity) }}</strong>
+      </div>
+      <div
+        class="text-right"
+        style="width: 17%;"
+      >T.Tiền: </div>
+      <div
+        class="text-right"
+        style="width: 14%;"
+      >
+        <strong>{{ $formatNumberToLocale(printInfo.totalPriceVat) }}</strong>
+      </div>
     </b-row>
     <!-- END - Total section 1 -->
 
@@ -53,136 +71,220 @@
     <!-- START - Total section 2 -->
     <b-row
       class="mx-0 font-italic"
-      align-h="around"
       align-v="end"
       style="border-top: 2px solid; margin-top: 1px"
     >
-      <strong style="font-size: 16px;">Loại: Xuất điều chỉnh</strong>
-      <div>Tổng SL: <strong>{{ $formatNumberToLocale(lstAdjustInfo.quantity) }}</strong></div>
-      <div>T.Tiền: <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalAmount) }}</strong></div>
+      <strong
+        style="font-size: 16px; width: 20%;"
+        class="text-right"
+      >Loại: Xuất điều chỉnh</strong>
+      <div
+        class="text-right"
+        style="width: 38%;"
+      >Tổng SL: </div>
+      <div
+        class="text-right"
+        style="width: 10%;"
+      >
+        <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalQuantity) }}</strong>
+      </div>
+      <div
+        class="text-right"
+        style="width: 17%;"
+      >T.Tiền: </div>
+      <div
+        class="text-right"
+        style="width: 14%;"
+      >
+        <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalPriceVat) }}</strong>
+      </div>
     </b-row>
     <!-- END - Total section 2 -->
 
     <!-- START - Table 1 -->
-    <template v-for="(order, orderNumber) in lstAdjust">
+    <template>
       <b-col
-        v-if="orderNumber != 'null'"
-        :key="orderNumber"
+        v-for="order in lstAdjustInfo.orderImports"
+        :key="order.redInvoiceNo"
         class="px-0"
       >
         <table>
           <!-- START - Header -->
-          <thead>
-            <!-- START - Header 1 -->
-            <tr>
-              <th
-                colspan="7"
-                class="font-italic"
-              >
-                <b-row
-                  align-h="around"
-                >
-                  <div>Số HĐ: {{ orderNumber }}</div>
-                  <div>- Ngày HĐ: {{ $formatISOtoVNI(order['summary'].orderDate) }}</div>
-                  <div>- Số PO: {{ order['summary'].poNumber }}</div>
-                  <div>- Số nội bộ: {{ order['summary'].internalNumber }}</div>
-                  <div>- Mã xuất hàng: {{ order['summary'].tranCode }}</div>
-                </b-row>
-                <b-row
-                  class="mt-1"
-                  align-h="around"
-                >
-                  <div>Tổng SL: {{ $formatNumberToLocale(order['summary'].totalQuantity) }}</div>
-                  <div>T.Tiền: {{ $formatNumberToLocale(order['summary'].totalAmount) }}</div>
-                </b-row>
-              </th>
-            </tr>
-            <!-- END - Header 1 -->
 
-            <!-- START - Header 2 -->
-            <tr>
-              <th
-                class="text-center"
+          <!-- START - Header 1 -->
+          <tr>
+            <th
+              colspan="7"
+              class="font-italic"
+            >
+              <b-row
+                align-h="around"
               >
-                STT
-              </th>
-              <th
-                class="text-center"
+                <div>Số HĐ: {{ order.redInvoiceNo }}</div>
+                <div>- Ngày HĐ: {{ $formatISOtoVNI(order.orderDate) }}</div>
+                <div>- Số PO: {{ order.poNumber }}</div>
+                <div>- Số nội bộ: {{ order.internalNumber }}</div>
+                <div>- Mã xuất hàng: {{ order.transCode }}</div>
+              </b-row>
+              <b-row
+                class="mt-1"
               >
-                Mã SP
-              </th>
-              <th
-                class="text-center"
-              >
-                Tên SP
-              </th>
-              <th
-                class="text-center"
-              >
-                ĐVT
-              </th>
-              <th
-                class="text-center"
-              >
-                SL
-              </th>
-              <th class="text-center">
-                Giá
-              </th>
-              <th class="text-center">
-                T.Tiền
-              </th>
-            </tr>
-            <!-- END - Header 2 -->
-          </thead>
+                <div
+                  class="text-right"
+                  style="width: 58%;"
+                >Tổng SL: </div>
+                <div
+                  class="text-right"
+                  style="width: 10%;"
+                >
+                  {{ $formatNumberToLocale(order.totalQuantity) }}
+                </div>
+                <div
+                  class="text-right"
+                  style="width: 17%;"
+                >T.Tiền: </div>
+                <div
+                  class="text-right"
+                  style="width: 13%;"
+                >
+                  {{ $formatNumberToLocale(order.totalPriceVat) }}
+                </div>
+              </b-row>
+            </th>
+          </tr>
+          <!-- END - Header 1 -->
+
+          <!-- START - Header 2 -->
+          <tr>
+            <th
+              class="text-center"
+            >
+              STT
+            </th>
+            <th
+              class="text-left pl-50"
+            >
+              Mã SP
+            </th>
+            <th
+              class="text-left pl-50"
+            >
+              Tên SP
+            </th>
+            <th
+              class="text-center"
+            >
+              ĐVT
+            </th>
+            <th
+              class="text-right pr-50"
+            >
+              SL
+            </th>
+            <th class="text-right pr-50">
+              Giá
+            </th>
+            <th class="text-right pr-50">
+              T.Tiền
+            </th>
+          </tr>
+          <!-- END - Header 2 -->
           <!-- END - Header -->
 
           <!-- START - Body -->
           <tbody>
-            <template v-for="(cat, name) in order">
+            <template
+              v-for="(cat, name) in order.cats"
+            >
               <tr
-                v-if="Array.isArray(cat)"
+                v-if="Array.isArray(order.cats)"
                 :key="name"
               >
                 <td
                   colspan="7"
                 >
-                  <b-row
-                    align-h="around"
-                  >
-                    <div>
-                      Ngành hàng: {{ name }}
+                  <b-row>
+                    <div
+                      style="width: 12%;"
+                      class="text-right italic"
+                    >
+                      Ngành hàng:
                     </div>
-                    <div>
-                      Tổng SL: {{ $formatNumberToLocale(cat.slice(-1)[0].quantity) }}
+                    <div
+                      style="width: 9%;"
+                      class="text-right bold italic"
+                    >
+                      {{ cat.catName }}
                     </div>
-                    <div>
-                      T.Tiền: {{ $formatNumberToLocale(cat.slice(-1)[0].totalAmount) }}
+                    <div
+                      class="text-right italic"
+                      style="width: 37%;"
+                    >
+                      Tổng SL:
+                    </div>
+                    <div
+                      class="text-right bold italic"
+                      style="width: 10%;"
+                    >
+                      {{ $formatNumberToLocale(cat.totalQuantity) }}
+                    </div>
+                    <div
+                      class="text-right italic"
+                      style="width: 17%;"
+                    >
+                      T.Tiền:
+                    </div>
+                    <div
+                      class="text-right bold italic"
+                      style="width: 13%;"
+                    >
+                      {{ $formatNumberToLocale(cat.totalPriceVat) }}
                     </div>
                   </b-row>
                 </td>
               </tr>
 
               <template
-                v-if="Array.isArray(cat)"
+                v-if="Array.isArray(order.cats)"
               >
                 <tr
-                  v-for="(item, index) in cat.slice(0, -1)"
+                  v-for="(item, index) in cat.products"
                   :key="index"
                 >
-                  <td>{{ index + 1 }}</td>
-                  <td>{{ item.productCode }}</td>
-                  <td>{{ item.productName }}</td>
-                  <td class="text-center">
-                    {{ item.unit }}</td>
-                  <td class="text-right">
+                  <td
+                    class="text-center"
+                    style="width: 1%;"
+                  >{{ index + 1 }}</td>
+                  <td
+                    class="text-left pl-50"
+                    style="width: 10%;"
+                  >{{ item.productCode }}</td>
+                  <td
+                    class="text-left pl-50"
+                    style="width: 40%;"
+                  >{{ item.productName }}</td>
+                  <td
+                    class="text-center"
+                    style="width: 5%;"
+                  >
+                    {{ item.uom1 }}</td>
+                  <td
+                    class="text-right pr-50"
+                    style="width: 10%;"
+                  >
                     {{ $formatNumberToLocale(item.quantity) }}
                   </td>
-                  <td class="text-right">
+                  <td
+                    class="text-right pr-50"
+                    style="width: 10%;"
+                  >
                     {{ $formatNumberToLocale(item.price) }}
                   </td>
-                  <td class="text-right">
-                    {{ $formatNumberToLocale(item.totalAmount) }}
+                  <td
+                    class="text-right pr-50"
+                    style="width: 20%;"
+                  >
+                    {{ $formatNumberToLocale(item.totalPriceVat) }}
                   </td>
                 </tr>
               </template>
@@ -193,8 +295,8 @@
       </b-col>
 
       <b-row
-        v-if="orderNumber != 'null'"
-        :key="orderNumber"
+        v-if="redInvoiceNo != 'null'"
+        :key="redInvoiceNo"
         class="mx-0 mb-3"
         align-h="end"
       >
@@ -202,8 +304,254 @@
           class="rounded"
           style="border: 2px dotted; margin-top: 4px; padding: 0 150px 0 20px;"
         >
-          <p>Điều chỉnh:</p>
-          <p>Tổng cộng: {{ $formatNumberToLocale(order['summary'].totalAmount) }}</p>
+          <p class="italic">
+            Điều chỉnh:
+          </p>
+          <p class="italic">
+            Tổng cộng: <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalPriceVat) }}</strong>
+          </p>
+        </div>
+      </b-row>
+    </template>
+
+    <b-row
+      class="mx-0 font-italic"
+      align-v="end"
+      style="border-top: 2px solid; margin-top: 1px"
+    >
+      <strong
+        style="font-size: 16px; width: 20%;"
+        class="text-right"
+      >Loại: Xuất trả PO</strong>
+      <div
+        class="text-right"
+        style="width: 38%;"
+      >Tổng SL: </div>
+      <div
+        class="text-right"
+        style="width: 10%;"
+      >
+        <strong>{{ $formatNumberToLocale(lstPoInfo.totalQuantity) }}</strong>
+      </div>
+      <div
+        class="text-right"
+        style="width: 17%;"
+      >T.Tiền: </div>
+      <div
+        class="text-right"
+        style="width: 14%;"
+      >
+        <strong>{{ $formatNumberToLocale(lstPoInfo.totalPriceVat) }}</strong>
+      </div>
+    </b-row>
+    <template>
+      <b-col
+        v-for="order in lstPoInfo.orderImports"
+        :key="order.redInvoiceNo"
+        class="px-0"
+      >
+        <table>
+          <!-- START - Header -->
+
+          <!-- START - Header 1 -->
+          <tr>
+            <th
+              colspan="7"
+              class="font-italic"
+            >
+              <b-row
+                align-h="around"
+              >
+                <div>Số HĐ: {{ order.redInvoiceNo }}</div>
+                <div>- Ngày HĐ: {{ $formatISOtoVNI(order.orderDate) }}</div>
+                <div>- Số PO: {{ order.poNumber }}</div>
+                <div>- Số nội bộ: {{ order.internalNumber }}</div>
+                <div>- Mã xuất hàng: {{ order.transCode }}</div>
+              </b-row>
+              <b-row
+                class="mt-1"
+              >
+                <div
+                  class="text-right"
+                  style="width: 58%;"
+                >Tổng SL: </div>
+                <div
+                  class="text-right"
+                  style="width: 10%;"
+                >
+                  {{ $formatNumberToLocale(order.totalQuantity) }}
+                </div>
+                <div
+                  class="text-right"
+                  style="width: 17%;"
+                >T.Tiền: </div>
+                <div
+                  class="text-right"
+                  style="width: 13%;"
+                >
+                  {{ $formatNumberToLocale(order.totalPriceVat) }}
+                </div>
+              </b-row>
+            </th>
+          </tr>
+          <!-- END - Header 1 -->
+
+          <!-- START - Header 2 -->
+          <tr>
+            <th
+              class="text-center"
+            >
+              STT
+            </th>
+            <th
+              class="text-left pl-50"
+            >
+              Mã SP
+            </th>
+            <th
+              class="text-left pl-50"
+            >
+              Tên SP
+            </th>
+            <th
+              class="text-center"
+            >
+              ĐVT
+            </th>
+            <th
+              class="text-right pr-50"
+            >
+              SL
+            </th>
+            <th class="text-right pr-50">
+              Giá
+            </th>
+            <th class="text-right pr-50">
+              T.Tiền
+            </th>
+          </tr>
+          <!-- END - Header 2 -->
+          <!-- END - Header -->
+
+          <!-- START - Body -->
+          <tbody>
+            <template
+              v-for="(cat, name) in order.cats"
+            >
+              <tr
+                v-if="Array.isArray(order.cats)"
+                :key="name"
+              >
+                <td
+                  colspan="7"
+                >
+                  <b-row>
+                    <div
+                      style="width: 12%;"
+                      class="text-right italic"
+                    >
+                      Ngành hàng:
+                    </div>
+                    <div
+                      style="width: 9%;"
+                      class="text-right bold italic"
+                    >
+                      {{ cat.catName }}
+                    </div>
+                    <div
+                      class="text-right italic"
+                      style="width: 37%;"
+                    >
+                      Tổng SL:
+                    </div>
+                    <div
+                      class="text-right bold italic"
+                      style="width: 10%;"
+                    >
+                      {{ $formatNumberToLocale(cat.totalQuantity) }}
+                    </div>
+                    <div
+                      class="text-right italic"
+                      style="width: 17%;"
+                    >
+                      T.Tiền:
+                    </div>
+                    <div
+                      class="text-right bold italic"
+                      style="width: 13%;"
+                    >
+                      {{ $formatNumberToLocale(cat.totalPriceVat) }}
+                    </div>
+                  </b-row>
+                </td>
+              </tr>
+
+              <template
+                v-if="Array.isArray(order.cats)"
+              >
+                <tr
+                  v-for="(item, index) in cat.products"
+                  :key="index"
+                >
+                  <td
+                    class="text-center"
+                    style="width: 1%;"
+                  >{{ index + 1 }}</td>
+                  <td
+                    class="text-left pl-50"
+                    style="width: 10%;"
+                  >{{ item.productCode }}</td>
+                  <td
+                    class="text-left pl-50"
+                    style="width: 40%;"
+                  >{{ item.productName }}</td>
+                  <td
+                    class="text-center"
+                    style="width: 5%;"
+                  >
+                    {{ item.uom1 }}</td>
+                  <td
+                    class="text-right pr-50"
+                    style="width: 10%;"
+                  >
+                    {{ $formatNumberToLocale(item.quantity) }}
+                  </td>
+                  <td
+                    class="text-right pr-50"
+                    style="width: 10%;"
+                  >
+                    {{ $formatNumberToLocale(item.price) }}
+                  </td>
+                  <td
+                    class="text-right pr-50"
+                    style="width: 20%;"
+                  >
+                    {{ $formatNumberToLocale(item.totalPriceVat) }}
+                  </td>
+                </tr>
+              </template>
+            </template>
+          </tbody>
+          <!-- END - Body -->
+        </table>
+      </b-col>
+
+      <b-row
+        v-if="redInvoiceNo != 'null'"
+        :key="redInvoiceNo"
+        class="mx-0 mb-3"
+        align-h="end"
+      >
+        <div
+          class="rounded"
+          style="border: 2px dotted; margin-top: 4px; padding: 0 150px 0 20px;"
+        >
+          <p class="italic">
+            Điều chỉnh:
+          </p>
+          <p class="italic">
+            Tổng cộng: <strong>{{ $formatNumberToLocale(lstPoInfo.totalPriceVat) }}</strong>
+          </p>
         </div>
       </b-row>
     </template>
@@ -214,129 +562,213 @@
       align-v="end"
       style="border-top: 2px solid; margin-top: 1px"
     >
-      <strong style="font-size: 16px;">Loại: Xuất trả PO</strong>
-      <div>Tổng SL: <strong>{{ $formatNumberToLocale(lstPoInfo.quantity) }}</strong></div>
-      <div>T.Tiền: <strong>{{ $formatNumberToLocale(lstPoInfo.totalAmount) }}</strong></div>
+      <strong
+        style="font-size: 16px; width: 20%;"
+        class="text-right"
+      >Loại: Xuất điều chỉnh</strong>
+      <div
+        class="text-right"
+        style="width: 38%;"
+      >Tổng SL: </div>
+      <div
+        class="text-right"
+        style="width: 10%;"
+      >
+        <strong>{{ $formatNumberToLocale(lstStockInfo.totalQuantity) }}</strong>
+      </div>
+      <div
+        class="text-right"
+        style="width: 17%;"
+      >T.Tiền: </div>
+      <div
+        class="text-right"
+        style="width: 14%;"
+      >
+        <strong>{{ $formatNumberToLocale(lstStockInfo.totalPriceVat) }}</strong>
+      </div>
     </b-row>
-    <template v-for="(order, orderNumber) in lstPo">
+    <template>
       <b-col
-        v-if="orderNumber != 'null'"
-        :key="orderNumber"
+        v-for="order in lstStockInfo.orderImports"
+        :key="order.redInvoiceNo"
         class="px-0"
       >
         <table>
           <!-- START - Header -->
-          <thead>
-            <!-- START - Header 1 -->
-            <tr>
-              <th
-                colspan="7"
-                class="font-italic"
+          <!-- START - Header 1 -->
+          <tr>
+            <th
+              colspan="7"
+              class="font-italic"
+            >
+              <b-row
+                align-h="around"
               >
-                <b-row
-                  align-h="around"
+                <div>Số HĐ: {{ order.redInvoiceNo }}</div>
+                <div>- Ngày HĐ: {{ $formatISOtoVNI(order.orderDate) }}</div>
+                <div>- Số PO: {{ order.poNumber }}</div>
+                <div>- Số nội bộ: {{ order.internalNumber }}</div>
+                <div>- Mã xuất hàng: {{ order.transCode }}</div>
+              </b-row>
+              <b-row
+                class="mt-1"
+              >
+                <div
+                  class="text-right"
+                  style="width: 58%;"
+                >Tổng SL: </div>
+                <div
+                  class="text-right"
+                  style="width: 10%;"
                 >
-                  <div>Số HĐ: {{ orderNumber }}</div>
-                  <div>- Ngày HĐ: {{ $formatISOtoVNI(order['summary'].orderDate) }}</div>
-                  <div>- Số PO: {{ order['summary'].poNumber }}</div>
-                  <div>- Số nội bộ: {{ order['summary'].internalNumber }}</div>
-                  <div>- Mã xuất hàng: {{ order['summary'].tranCode }}</div>
-                </b-row>
-                <b-row
-                  class="mt-1"
-                  align-h="around"
+                  {{ $formatNumberToLocale(order.totalQuantity) }}
+                </div>
+                <div
+                  class="text-right"
+                  style="width: 17%;"
+                >T.Tiền: </div>
+                <div
+                  class="text-right"
+                  style="width: 13%;"
                 >
-                  <div>Tổng SL: {{ $formatNumberToLocale(order['summary'].totalQuantity) }}</div>
-                  <div>T.Tiền: {{ $formatNumberToLocale(order['summary'].totalAmount) }}</div>
-                </b-row>
-              </th>
-            </tr>
-            <!-- END - Header 1 -->
+                  {{ $formatNumberToLocale(order.totalPriceVat) }}
+                </div>
+              </b-row>
+            </th>
+          </tr>
+          <!-- END - Header 1 -->
 
-            <!-- START - Header 2 -->
-            <tr>
-              <th
-                class="text-center"
-              >
-                STT
-              </th>
-              <th
-                class="text-center"
-              >
-                Mã SP
-              </th>
-              <th
-                class="text-center"
-              >
-                Tên SP
-              </th>
-              <th
-                class="text-center"
-              >
-                ĐVT
-              </th>
-              <th
-                class="text-center"
-              >
-                SL
-              </th>
-              <th class="text-center">
-                Giá
-              </th>
-              <th class="text-center">
-                T.Tiền
-              </th>
-            </tr>
-            <!-- END - Header 2 -->
-          </thead>
+          <!-- START - Header 2 -->
+          <tr>
+            <th
+              class="text-center"
+            >
+              STT
+            </th>
+            <th
+              class="text-left pl-50"
+            >
+              Mã SP
+            </th>
+            <th
+              class="text-left pl-50"
+            >
+              Tên SP
+            </th>
+            <th
+              class="text-center"
+            >
+              ĐVT
+            </th>
+            <th
+              class="text-right pr-50"
+            >
+              SL
+            </th>
+            <th class="text-right pr-50">
+              Giá
+            </th>
+            <th class="text-right pr-50">
+              T.Tiền
+            </th>
+          </tr>
+          <!-- END - Header 2 -->
           <!-- END - Header -->
 
           <!-- START - Body -->
           <tbody>
-            <template v-for="(cat, name) in order">
+            <template
+              v-for="(cat, name) in order.cats"
+            >
               <tr
-                v-if="Array.isArray(cat)"
+                v-if="Array.isArray(order.cats)"
                 :key="name"
               >
                 <td
                   colspan="7"
                 >
-                  <b-row
-                    align-h="around"
-                  >
-                    <div>
-                      Ngành hàng: {{ name }}
+                  <b-row>
+                    <div
+                      style="width: 12%;"
+                      class="text-right italic"
+                    >
+                      Ngành hàng:
                     </div>
-                    <div>
-                      Tổng SL: {{ $formatNumberToLocale(cat.slice(-1)[0].quantity) }}
+                    <div
+                      style="width: 9%;"
+                      class="text-right bold italic"
+                    >
+                      {{ cat.catName }}
                     </div>
-                    <div>
-                      T.Tiền: {{ $formatNumberToLocale(cat.slice(-1)[0].totalAmount) }}
+                    <div
+                      class="text-right italic"
+                      style="width: 37%;"
+                    >
+                      Tổng SL:
+                    </div>
+                    <div
+                      class="text-right bold italic"
+                      style="width: 10%;"
+                    >
+                      {{ $formatNumberToLocale(cat.totalQuantity) }}
+                    </div>
+                    <div
+                      class="text-right italic"
+                      style="width: 17%;"
+                    >
+                      T.Tiền:
+                    </div>
+                    <div
+                      class="text-right bold italic"
+                      style="width: 13%;"
+                    >
+                      {{ $formatNumberToLocale(cat.totalPriceVat) }}
                     </div>
                   </b-row>
                 </td>
               </tr>
 
               <template
-                v-if="Array.isArray(cat)"
+                v-if="Array.isArray(order.cats)"
               >
                 <tr
-                  v-for="(item, index) in cat.slice(0, -1)"
+                  v-for="(item, index) in cat.products"
                   :key="index"
                 >
-                  <td>{{ index + 1 }}</td>
-                  <td>{{ item.productCode }}</td>
-                  <td>{{ item.productName }}</td>
-                  <td class="text-center">
-                    {{ item.unit }}</td>
-                  <td class="text-right">
+                  <td
+                    class="text-center"
+                    style="width: 1%;"
+                  >{{ index + 1 }}</td>
+                  <td
+                    class="text-left pl-50"
+                    style="width: 10%;"
+                  >{{ item.productCode }}</td>
+                  <td
+                    class="text-left pl-50"
+                    style="width: 40%;"
+                  >{{ item.productName }}</td>
+                  <td
+                    class="text-center"
+                    style="width: 5%;"
+                  >
+                    {{ item.uom1 }}</td>
+                  <td
+                    class="text-right pr-50"
+                    style="width: 10%;"
+                  >
                     {{ $formatNumberToLocale(item.quantity) }}
                   </td>
-                  <td class="text-right">
+                  <td
+                    class="text-right pr-50"
+                    style="width: 10%;"
+                  >
                     {{ $formatNumberToLocale(item.price) }}
                   </td>
-                  <td class="text-right">
-                    {{ $formatNumberToLocale(item.totalAmount) }}
+                  <td
+                    class="text-right pr-50"
+                    style="width: 20%;"
+                  >
+                    {{ $formatNumberToLocale(item.totalPriceVat) }}
                   </td>
                 </tr>
               </template>
@@ -347,8 +779,8 @@
       </b-col>
 
       <b-row
-        v-if="orderNumber != 'null'"
-        :key="orderNumber"
+        v-if="redInvoiceNo != 'null'"
+        :key="redInvoiceNo"
         class="mx-0 mb-3"
         align-h="end"
       >
@@ -356,162 +788,12 @@
           class="rounded"
           style="border: 2px dotted; margin-top: 4px; padding: 0 150px 0 20px;"
         >
-          <p>Điều chỉnh:</p>
-          <p>Tổng cộng: {{ $formatNumberToLocale(order['summary'].totalAmount) }}</p>
-        </div>
-      </b-row>
-    </template>
-
-    <b-row
-      class="mx-0 font-italic"
-      align-h="around"
-      align-v="end"
-      style="border-top: 2px solid; margin-top: 1px"
-    >
-      <strong style="font-size: 16px;">Loại: Xuất vay mượn</strong>
-      <div>Tổng SL: <strong>{{ $formatNumberToLocale(lstStockInfo.quantity) }}</strong></div>
-      <div>T.Tiền: <strong>{{ $formatNumberToLocale(lstStockInfo.totalAmount) }}</strong></div>
-    </b-row>
-    <template v-for="(order, orderNumber) in lstStock">
-      <b-col
-        v-if="orderNumber != 'null'"
-        :key="orderNumber"
-        class="px-0"
-      >
-        <table>
-          <!-- START - Header -->
-          <thead>
-            <!-- START - Header 1 -->
-            <tr>
-              <th
-                colspan="7"
-                class="font-italic"
-              >
-                <b-row
-                  align-h="around"
-                >
-                  <div>Số HĐ: {{ orderNumber }}</div>
-                  <div>- Ngày HĐ: {{ $formatISOtoVNI(order['summary'].orderDate) }}</div>
-                  <div>- Số PO: {{ order['summary'].poNumber }}</div>
-                  <div>- Số nội bộ: {{ order['summary'].internalNumber }}</div>
-                  <div>- Mã xuất hàng: {{ order['summary'].tranCode }}</div>
-                </b-row>
-                <b-row
-                  class="mt-1"
-                  align-h="around"
-                >
-                  <div>Tổng SL: {{ $formatNumberToLocale(order['summary'].totalQuantity) }}</div>
-                  <div>T.Tiền: {{ $formatNumberToLocale(order['summary'].totalAmount) }}</div>
-                </b-row>
-              </th>
-            </tr>
-            <!-- END - Header 1 -->
-
-            <!-- START - Header 2 -->
-            <tr>
-              <th
-                class="text-center"
-              >
-                STT
-              </th>
-              <th
-                class="text-center"
-              >
-                Mã SP
-              </th>
-              <th
-                class="text-center"
-              >
-                Tên SP
-              </th>
-              <th
-                class="text-center"
-              >
-                ĐVT
-              </th>
-              <th
-                class="text-center"
-              >
-                SL
-              </th>
-              <th class="text-center">
-                Giá
-              </th>
-              <th class="text-center">
-                T.Tiền
-              </th>
-            </tr>
-            <!-- END - Header 2 -->
-          </thead>
-          <!-- END - Header -->
-
-          <!-- START - Body -->
-          <tbody>
-            <template v-for="(cat, name) in order">
-              <tr
-                v-if="Array.isArray(cat)"
-                :key="name"
-              >
-                <td
-                  colspan="7"
-                >
-                  <b-row
-                    align-h="around"
-                  >
-                    <div>
-                      Ngành hàng: {{ name }}
-                    </div>
-                    <div>
-                      Tổng SL: {{ $formatNumberToLocale(cat.slice(-1)[0].quantity) }}
-                    </div>
-                    <div>
-                      T.Tiền: {{ $formatNumberToLocale(cat.slice(-1)[0].totalAmount) }}
-                    </div>
-                  </b-row>
-                </td>
-              </tr>
-
-              <template
-                v-if="Array.isArray(cat)"
-              >
-                <tr
-                  v-for="(item, index) in cat.slice(0, -1)"
-                  :key="index"
-                >
-                  <td>{{ index + 1 }}</td>
-                  <td>{{ item.productCode }}</td>
-                  <td>{{ item.productName }}</td>
-                  <td class="text-center">
-                    {{ item.unit }}</td>
-                  <td class="text-right">
-                    {{ $formatNumberToLocale(item.quantity) }}
-                  </td>
-                  <td class="text-right">
-                    {{ $formatNumberToLocale(item.price) }}
-                  </td>
-                  <td class="text-right">
-                    {{ $formatNumberToLocale(item.totalAmount) }}
-                  </td>
-                </tr>
-              </template>
-            </template>
-          </tbody>
-          <!-- END - Body -->
-        </table>
-      </b-col>
-
-      <b-row
-        v-if="orderNumber != 'null'"
-        :key="orderNumber"
-        class="mx-0 mb-3"
-        align-h="end"
-      >
-        <div
-          class="rounded"
-          style="border: 2px dotted; margin-top: 4px; padding: 0 150px 0 20px;"
-        >
-          <p>Điều chỉnh:</p>
-          <p>Tổng cộng: {{ $formatNumberToLocale(order['summary'].totalAmount) }}</p>
+          <p class="italic">
+            Điều chỉnh:
+          </p>
+          <p class="italic">
+            Tổng cộng: <strong>{{ $formatNumberToLocale(lstStockInfo.totalPriceVat) }}</strong>
+          </p>
         </div>
       </b-row>
     </template>
@@ -533,135 +815,55 @@ export default {
     ]),
 
     printInfo() {
-      let totalItems = 0
-      if (this.PRINT_OUTPUT_GOODS_GETTER.response) {
-        const tmp = [
-          ...this.PRINT_OUTPUT_GOODS_GETTER.response.lstAdjust,
-          ...this.PRINT_OUTPUT_GOODS_GETTER.response.lstPo,
-          ...this.PRINT_OUTPUT_GOODS_GETTER.response.lstStock,
-        ]
-        totalItems = tmp.filter(el => el.exportType).length
-      }
-      if (this.PRINT_OUTPUT_GOODS_GETTER.info) {
+      if (this.PRINT_OUTPUT_GOODS_GETTER) {
         return {
-          shopName: this.PRINT_OUTPUT_GOODS_GETTER.info.shopName,
-          shopAddress: this.PRINT_OUTPUT_GOODS_GETTER.info.shopAddress,
-          shopPhone: this.PRINT_OUTPUT_GOODS_GETTER.info.shopPhone,
-          fromDate: this.PRINT_OUTPUT_GOODS_GETTER.info.fromDate,
-          toDate: this.PRINT_OUTPUT_GOODS_GETTER.info.toDate,
+          shopName: this.PRINT_OUTPUT_GOODS_GETTER.shopName,
+          shopAddress: this.PRINT_OUTPUT_GOODS_GETTER.address,
+          shopPhone: this.PRINT_OUTPUT_GOODS_GETTER.shopTel,
+          fromDate: this.PRINT_OUTPUT_GOODS_GETTER.fromDate,
+          toDate: this.PRINT_OUTPUT_GOODS_GETTER.toDate,
           printDate: new Date(),
-          total: totalItems,
-          totalQuantity: this.PRINT_OUTPUT_GOODS_GETTER.info.totalQuantity,
-          totalAmount: this.PRINT_OUTPUT_GOODS_GETTER.info.totalAmount,
+          totalQuantity: this.PRINT_OUTPUT_GOODS_GETTER.totalQuantity,
+          totalPriceVat: this.PRINT_OUTPUT_GOODS_GETTER.totalAmount,
         }
       }
       return {}
     },
 
     lstAdjustInfo() {
-      if (this.PRINT_OUTPUT_GOODS_GETTER.response && this.PRINT_OUTPUT_GOODS_GETTER.response.lstAdjust) {
-        const details = this.PRINT_OUTPUT_GOODS_GETTER.response.lstAdjust.slice(-1)[0]
-        return {
-          ...this.PRINT_OUTPUT_GOODS_GETTER.response.lstAdjust[0],
-          quantity: details.quantity,
-          totalAmount: details.totalAmount,
-        }
+      if (this.PRINT_OUTPUT_GOODS_GETTER.expAdjust) {
+        return this.PRINT_OUTPUT_GOODS_GETTER.expAdjust
       }
       return {}
-    },
-
-    lstAdjust() {
-      if (this.PRINT_OUTPUT_GOODS_GETTER.response && this.PRINT_OUTPUT_GOODS_GETTER.response.lstAdjust) {
-        const items = this.PRINT_OUTPUT_GOODS_GETTER.response.lstAdjust
-        const results = this.getDetails(items)
-        return results
-      }
-      return []
     },
 
     lstPoInfo() {
-      if (this.PRINT_OUTPUT_GOODS_GETTER.response && this.PRINT_OUTPUT_GOODS_GETTER.response.lstPo) {
-        const details = this.PRINT_OUTPUT_GOODS_GETTER.response.lstPo.slice(-1)[0]
-        return {
-          ...this.PRINT_OUTPUT_GOODS_GETTER.response.lstPo[0],
-          quantity: details.quantity,
-          totalAmount: details.totalAmount,
-        }
+      if (this.PRINT_OUTPUT_GOODS_GETTER.expPO) {
+        return this.PRINT_OUTPUT_GOODS_GETTER.expPO
       }
       return {}
-    },
-
-    lstPo() {
-      if (this.PRINT_OUTPUT_GOODS_GETTER.response && this.PRINT_OUTPUT_GOODS_GETTER.response.lstPo) {
-        const items = this.PRINT_OUTPUT_GOODS_GETTER.response.lstPo
-        const results = this.getDetails(items)
-        return results
-      }
-      return []
     },
 
     lstStockInfo() {
-      if (this.PRINT_OUTPUT_GOODS_GETTER.response && this.PRINT_OUTPUT_GOODS_GETTER.response.lstStock) {
-        const details = this.PRINT_OUTPUT_GOODS_GETTER.response.lstStock.slice(-1)[0]
-        return {
-          ...this.PRINT_OUTPUT_GOODS_GETTER.response.lstStock[0],
-          quantity: details.quantity,
-          totalAmount: details.totalAmount,
-        }
+      if (this.PRINT_OUTPUT_GOODS_GETTER.expBorrow) {
+        return this.PRINT_OUTPUT_GOODS_GETTER.expBorrow
       }
       return {}
     },
 
-    lstStock() {
-      if (this.PRINT_OUTPUT_GOODS_GETTER.response && this.PRINT_OUTPUT_GOODS_GETTER.response.lstStock) {
-        const items = this.PRINT_OUTPUT_GOODS_GETTER.response.lstStock
-        const results = this.getDetails(items)
-        return results
-      }
-      return []
-    },
   },
   updated() {
     window.print()
   },
-  methods: {
-    getDetails(items) {
-      const results = items.reduce((r, a) => {
-        // eslint-disable-next-line no-param-reassign
-        r[a.orderNumber] = r[a.orderNumber] || []
-        r[a.orderNumber].push(a)
-        return r
-      }, Object.create(null))
-
-      Object.keys(results).forEach(key => {
-        results[key] = results[key].reduce((r, a) => {
-          // eslint-disable-next-line no-param-reassign
-          r[a.productCategory] = r[a.productCategory] || []
-          r[a.productCategory].push(a)
-          return r
-        }, Object.create(null))
-
-        const order = results[key]
-        let orderQuantity = 0
-        let orderAmount = 0
-        let firstKey = ''
-        Object.keys(order).forEach(k => {
-          firstKey = k
-          orderQuantity += order[k].slice(-1)[0].quantity || 0
-          orderAmount += order[k].slice(-1)[0].totalAmount || 0
-        })
-        results[key].summary = {
-          ...order[firstKey][0],
-          totalQuantity: orderQuantity,
-          totalAmount: orderAmount,
-        }
-      })
-      return results
-    },
-  },
 }
 </script>
 <style lang="scss" scoped>
+.italic{
+  font-style: italic;
+}
+.bold{
+  font-weight: bold;
+}
 table {
   width: 100%;
 }
@@ -678,6 +880,9 @@ td {
     @page {
         margin-top: 0;
         margin-bottom: 0;
-        size: landscape;
+         size: portrait;
+    }
+    body {
+      -webkit-print-color-adjust: exact !important;
     }
 </style>
