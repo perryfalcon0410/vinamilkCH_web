@@ -802,7 +802,6 @@ export default {
 
     getOrderNumber(val) {
       this.currentOrderNumber = val
-      console.log('vallll', val)
     },
 
     onClickAddButton() {

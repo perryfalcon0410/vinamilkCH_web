@@ -52,7 +52,7 @@
       <vertical-nav-menu
         :is-vertical-menu-active="isVerticalMenuActive"
         :toggle-vertical-menu-active="toggleVerticalMenuActive"
-        class="d-block d-xl-none "
+        class="d-block d-xl-none"
       >
         <template #header="slotProps">
           <slot
@@ -242,4 +242,11 @@ export default {
 
 <style lang="scss">
 @import "~@core/scss/base/themes/bordered-layout.scss";
+
+@media print {
+  .content.app-content {
+    margin-left: 0 !important;
+    padding-top: 0 !important;
+  }
+}
 </style>
