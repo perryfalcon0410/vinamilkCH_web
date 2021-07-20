@@ -22,12 +22,12 @@
         >
           <b-row>
             <div
-              class="mx-1 bg-light p-1 mb-1 pl-2 pr-2 rounded"
+              class="mx-1 bg-light spacing m-bottom pl-2 pr-2 rounded"
               align-v="center"
               align-h="center"
             >
               <b-icon-gift
-                scale="1.4"
+                scale="1.2"
                 color="red"
               />
               <strong
@@ -44,12 +44,12 @@
             :key="index"
           >
             <!-- START - Table Promotion -->
-            <b-col class="p-0 mt-1">
+            <b-col class="p-0">
               <!-- START - Title -->
               <b-row
                 v-b-toggle="'collapse-'+value.programId"
                 align-v="center"
-                class="mx-0 p-1 bg-brand-1"
+                class="mx-0 style-padding bg-brand-1"
               >
                 <b-check
                   v-model="value.isUse"
@@ -192,18 +192,18 @@
                 <div v-else-if="value.amount">
                   <div v-if="value.amount.percentage !== 0">
                     <b-row
-                      class="mx-0 p-1 h7"
+                      class="mx-0 spacing h7"
                       align-v="center"
                     >
                       <div>Giảm giá</div>
 
-                      <b-col cols="5">
+                      <b-col class="max-width">
                         <b-input-group>
                           <b-input-group-prepend
                             v-if="value.amount.percentage > 0"
                             is-text
                           >
-                            {{ value.amount.percentage }}%
+                            <span class="word-wrap">{{ value.amount.percentage }}%</span>
                           </b-input-group-prepend>
                           <cleave
                             v-model="value.amount.amount"
@@ -218,7 +218,7 @@
                   </div>
                   <div v-else>
                     <b-row
-                      class="mx-0 p-1 h7"
+                      class="mx-0 spacing h7"
                       align-v="center"
                     >
                       <div>Số tiền</div>
@@ -316,20 +316,23 @@
 
         <!-- START - Section Pay -->
         <b-col class="ml-1 shadow py-1">
-          <b-row
-            class="mx-0 bg-light p-1 mb-1 w-25 rounded"
-            align-v="center"
-          >
-            <b-icon-cash-stack
-              scale="1.7"
-              class="text-brand-1"
-            />
-            <strong class="ml-1 h7">Thanh toán</strong>
+          <b-row>
+            <div
+              class="mx-1 bg-light spacing m-bottom pl-2 pr-2 rounded"
+              align-v="center"
+              align-h="center"
+            >
+              <b-icon-cash-stack
+                scale="1.5"
+                class="text-brand-1"
+              />
+              <strong class="ml-1 h7">Thanh toán</strong>
+            </div>
           </b-row>
 
           <b-form class="">
             <!-- START - Total price -->
-            <b-form-group>
+            <b-form-group class="style-margin">
               <b-row
                 class="mx-0"
                 align-v="center"
@@ -353,7 +356,7 @@
                   /> -->
                   <cleave
                     v-model="pay.totalAmount"
-                    class="form-control h6"
+                    class="form-control h6 mb-0 text-right"
                     :raw="true"
                     :options="options.number"
                     disabled
@@ -364,7 +367,7 @@
             <!-- END - Total price -->
 
             <!-- START - Discount -->
-            <b-form-group>
+            <b-form-group class="style-margin">
               <b-row
                 class="mx-0"
                 align-v="center"
@@ -379,7 +382,7 @@
                 <b-col>
                   <cleave
                     v-model="pay.promotionAmount"
-                    class="form-control h6"
+                    class="form-control h6 mb-0 text-right"
                     :raw="true"
                     :options="options.number"
                     disabled
@@ -390,7 +393,7 @@
             <!-- END - Discount -->
 
             <!-- START - Money accumulated -->
-            <b-form-group>
+            <b-form-group class="style-margin">
               <b-row
                 class="mx-0"
                 align-v="center"
@@ -406,10 +409,17 @@
                   <b-row no-gutters>
                     <b-col
                       cols="6"
-                      class="h6"
+                      class="h6 mb-0"
                     >
-                      <b-form-input
+                      <!-- <b-form-input
                         v-model="pay.accumulate.accumulatePoint"
+                        disabled
+                      /> -->
+                      <cleave
+                        v-model.number="pay.accumulate.accumulatePoint"
+                        class="form-control pl-1 h6 mb-0 text-right"
+                        :raw="true"
+                        :options="options.number"
                         disabled
                       />
                     </b-col>
@@ -419,7 +429,7 @@
                     >
                       <cleave
                         v-model.number="pay.accumulate.accumulateAmount"
-                        class="form-control pl-1 h6"
+                        class="form-control pl-1 h6 mb-0 text-right"
                         :raw="true"
                         :options="options.number"
                         maxlenght="20"
@@ -434,7 +444,7 @@
             <!-- END - Money accumulated -->
 
             <!-- START - Voucher -->
-            <b-form-group>
+            <b-form-group class="style-margin">
               <b-row
                 class="mx-0"
                 align-v="center"
@@ -452,13 +462,13 @@
                   >
                     <b-col
                       cols="6"
-                      class="h6"
+                      class="h6 mb-0"
                     >
                       <b-input-group class="input-group-merge">
                         <b-input-group-prepend
                           v-if="pay.isVoucherLocked === true"
                           is-text
-                          class="cursor-pointer"
+                          class="cursor-pointer text-right"
                         >
                           <b-icon-three-dots-vertical
                             scale="1.5"
@@ -468,7 +478,7 @@
                         <b-input-group-prepend
                           v-if="pay.isVoucherLocked === false"
                           is-text
-                          class="cursor-pointer"
+                          class="cursor-pointer text-right"
                           @click="onVoucherButtonClick()"
                         >
                           <b-icon-three-dots-vertical
@@ -477,7 +487,7 @@
                         </b-input-group-prepend>
                         <b-form-input
                           v-model="pay.voucher.voucherSerials"
-                          class="pl-1 h6"
+                          class="pl-1 h6 mb-0 text-right"
                           readonly
                         />
                       </b-input-group>
@@ -488,7 +498,7 @@
                     >
                       <cleave
                         v-model="pay.voucher.totalVoucherAmount"
-                        class="form-control pl-1 h6"
+                        class="form-control pl-1 h6 mb-0 text-right"
                         :raw="true"
                         :options="options.number"
                         disabled
@@ -501,7 +511,7 @@
             <!-- END - Voucher -->
 
             <!-- START - Discount code -->
-            <b-form-group>
+            <b-form-group class="style-margin">
               <b-row
                 class="mx-0"
                 align-v="center"
@@ -519,7 +529,7 @@
                       <b-input-group class="input-group-merge">
                         <b-form-input
                           v-model="pay.discount.discountCode"
-                          class="form-control-merge"
+                          class="form-control-merge text-right"
                           maxlenght="4000"
                           @keyup.enter="searchDiscount"
                         />
@@ -537,7 +547,7 @@
                     <b-col>
                       <cleave
                         v-model="pay.discount.discountAmount"
-                        class="form-control pl-1 h6"
+                        class="form-control pl-1 h6 mb-0 text-right"
                         :raw="true"
                         :options="options.number"
                         disabled
@@ -550,7 +560,7 @@
             <!-- END - Discount code -->
 
             <!-- START - Customer need to pay -->
-            <b-form-group>
+            <b-form-group class="style-margin">
               <b-row
                 class="mx-0"
                 align-v="center"
@@ -565,7 +575,7 @@
                 <b-col>
                   <cleave
                     v-model="pay.needPaymentAmount"
-                    class="form-control h6"
+                    class="form-control h5 mb-0 font-weight-bold text-right"
                     :raw="true"
                     :options="options.number"
                     disabled
@@ -576,7 +586,7 @@
             <!-- END - Customer need to pay -->
 
             <!-- START - Payment customers -->
-            <b-form-group>
+            <b-form-group class="style-margin">
               <b-row
                 class="mx-0"
                 align-v="center"
@@ -607,7 +617,7 @@
                     >
                       <cleave
                         v-model.number="pay.salePayment.salePaymentAmount"
-                        class="form-control"
+                        class="form-control text-right"
                         :raw="true"
                         :options="options.number"
                         maxlenght="20"
@@ -623,7 +633,7 @@
             <!-- END - Payment customers -->
 
             <!-- START - Excess cash -->
-            <b-form-group>
+            <b-form-group class="style-margin">
               <b-row
 
                 class="mx-0"
@@ -639,7 +649,7 @@
                 <b-col>
                   <cleave
                     v-model="pay.extraAmount"
-                    class="form-control h6"
+                    class="form-control h6 mb-0 text-right"
                     :raw="true"
                     :options="options.number"
                     disabled
@@ -1783,6 +1793,21 @@ export default {
   .collapsed > .when-opened,
   :not(.collapsed) > .when-closed {
       display: none;
+  }
+  .style-padding {
+    padding: 0.438rem 1rem 0.438rem 1rem;
+  }
+  .spacing {
+    padding: 0.5rem 1rem 0.5rem 1rem;
+  }
+  .style-margin {
+    margin-bottom: 0.7rem !important;
+  }
+  .m-bottom {
+    margin-bottom: 0.5rem !important;
+  }
+  .max-width {
+    max-width: max-content;
   }
 
 </style>

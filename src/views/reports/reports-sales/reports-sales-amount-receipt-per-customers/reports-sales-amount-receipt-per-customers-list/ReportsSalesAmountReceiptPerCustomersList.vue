@@ -286,8 +286,8 @@ export default {
       if (this.REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER && this.REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER.response) {
         return this.REPORT_SALES_QUANTITY_SALE_RECEIPT_CONTENT_GETTER.response.content.map(data => ({
           customerCode: data[0],
-          customerName: data[2],
-          address: data[1],
+          customerName: data[1],
+          address: data[2],
         }))
       }
       return []

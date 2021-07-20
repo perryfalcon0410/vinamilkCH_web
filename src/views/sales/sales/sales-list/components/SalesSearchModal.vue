@@ -4,7 +4,7 @@
     size="xl"
     class="d-print-none"
     title="Tìm kiếm khách hàng"
-    title-class="font-weight-bold text-primary"
+    title-class="font-weight-bold text-brand-1"
     content-class="bg-light"
     hide-footer
   >
@@ -31,7 +31,9 @@
             >
               <b-form-input
                 id="form-input-customer"
+                ref="focusInput"
                 v-model="searchKeywords"
+                autofocus
                 class="h9"
                 size="sm"
                 placeholder="Nhập mã/ họ tên"
@@ -366,6 +368,7 @@ export default {
           tdClass: 'text-center',
         },
       ],
+      autofocus: true, // check auto focus input
     }
   },
   computed: {
@@ -413,6 +416,10 @@ export default {
   watch: {
     getCustomers() {
       this.customers = [...this.getCustomers]
+      if (this.$refs.focusInput && this.autofocus) {
+        this.$refs.focusInput.focus()
+        this.autofocus = false
+      }
     },
     onlineOrderCustomers() {
       this.customers = [...this.onlineOrderCustomers]
@@ -476,6 +483,7 @@ export default {
 
     onClickCloseButton() {
       this.$refs.salesSearchModal.hide()
+      this.autofocus = true
     },
 
     getCustomerInfo(obj) {

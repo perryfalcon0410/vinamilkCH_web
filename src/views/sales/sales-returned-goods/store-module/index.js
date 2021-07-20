@@ -82,8 +82,9 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.salesOrderData = res.data || {}
+            state.salesOrderData = res.data
           } else {
+            state.salesOrderData = {}
             throw new Error(res.statusValue)
           }
         })

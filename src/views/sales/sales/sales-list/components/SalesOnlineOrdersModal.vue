@@ -31,7 +31,9 @@
             </div>
             <b-form-input
               id="form-input-sales"
+              ref="focusInput"
               v-model="orderNumber"
+              autofocus
               class="h9"
               size="sm"
               trim

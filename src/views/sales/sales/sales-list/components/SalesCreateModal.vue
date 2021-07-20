@@ -24,6 +24,7 @@
             </div>
             <b-form-input
               v-model="lastName"
+              autofocus
               :state="touched ? passed : null"
               maxlength="200"
             />

@@ -15,15 +15,15 @@
         <!-- START - List Item -->
         <b-list-group>
           <b-list-group-item>
-            Ngày mua hàng
+            Mã trả hàng
             <strong>:
-              {{ this.$formatISOtoVNI(detailReturnInfo.orderDate) }}
+              {{ (detailReturnInfo.orderNumber) }}
             </strong>
           </b-list-group-item>
           <b-list-group-item>
-            ngày trả hàng
+            Ngày mua hàng
             <strong>:
-              {{ this.$formatISOtoVNI(detailReturnInfo.returnDate) }}
+              {{ this.$formatISOtoVNI(detailReturnInfo.orderDate) }}
             </strong>
           </b-list-group-item>
           <b-list-group-item>

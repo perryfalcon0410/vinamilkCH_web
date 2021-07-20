@@ -280,8 +280,8 @@ export default {
       if (this.REPORT_SALES_SALE_RECEIPT_GETTER.response) {
         return this.REPORT_SALES_SALE_RECEIPT_GETTER.response.content.map(data => ({
           customerCode: data[0],
-          customerName: data[2],
-          address: data[1],
+          customerName: data[1],
+          address: data[2],
         }))
       }
       return []

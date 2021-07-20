@@ -281,7 +281,7 @@ export default {
       this.GET_RETURNED_GOOD_CHOOSE_ACTION(search)
     },
     onPaginationChange() {
-      this.GET_CUSTOMERS_ACTION(this.paginationData)
+      this.GET_RETURNED_GOOD_CHOOSE_ACTION(this.paginationData)
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
