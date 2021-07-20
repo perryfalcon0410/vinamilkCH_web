@@ -12,7 +12,7 @@
         <!-- START - Form -->
         <b-col
           xl="4"
-          class="bg-white shadow rounded mr-xl-1 h7"
+          class="bg-white shadow rounded h7"
         >
           <!-- START - Date -->
           <b-row class="mt-1">
@@ -205,134 +205,82 @@
 
         <!-- START - List -->
         <b-col
-          class="bg-white shadow rounded mt-1 mt-xl-0"
+          xl="8"
+          class="mt-1 mt-xl-0 px-sm-0 px-md-0"
         >
           <!-- START - Table Product -->
-          <div class="d-inline-flex rounded-top px-1 my-1">
-            <strong class="text-brand-1">
-              Sản phẩm
-            </strong>
-          </div>
-
-          <vue-good-table
-            :columns="columns"
-            :rows="rowsProduct"
-            style-class="vgt-table striped"
-            compact-mode
-            line-numbers
-          >
-            <!-- START - Column filter -->
-            <template
-              slot="column-filter"
-              slot-scope="props"
-            >
-              <b-row
-                v-if="props.column.field === 'productCode' && totalProduct !== 0"
-                class="mx-0 h7 text-brand-3"
-                align-h="start"
-              >
-                {{ $formatNumberToLocale(totalProduct) }}
-              </b-row>
-              <!--START - Choose import po product-->
-              <b-row
-                v-if="props.column.field === 'quantity'"
-                class="mx-50 h7 text-brand-3"
-                align-h="end"
-              >
-                {{
-                  $formatNumberToLocale(poProductInfo.totalQuantity || poAdjustInfo.totalQuantity || poBorrowingInfo.totalQuantity)
-                }}
-              </b-row>
-              <b-row
-                v-if="props.column.field === 'totalPriceNotVat'"
-                class="mx-50 h7 text-brand-3"
-                align-h="end"
-              >
-                {{ $formatNumberToLocale(poProductInfo.totalPriceNotVat) }}
-              </b-row>
-              <b-row
-                v-else-if="props.column.field === 'totalPriceVat'"
-                class="mx-50 h7 text-brand-3"
-                align-h="end"
-              >
-                {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
-              </b-row>
-              <b-row
-                v-else-if="props.column.field === 'totalPrice'"
-                class="mx-50 h7 text-brand-3"
-                align-h="end"
-              >
-                {{
-                  $formatNumberToLocale(poAdjustInfo.totalPrice || poBorrowingInfo.totalPrice)
-                }}
-              </b-row>
-            </template>
-            <!-- START - Empty rows -->
-
-            <!-- START - Rows -->
-            <template
-              slot="table-row"
-              slot-scope="props"
-            >
-              <div
-                v-if="props.column.field === 'totalPriceNotVat' ||
-                  'totalPriceVat' ||
-                  'totalPrice' ||
-                  'quantity'"
-                class="pr-70"
-              >
-                {{ props.formattedRow[props.column.field] }}
-              </div>
-              <div v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </div>
-            </template>
-            <!-- END - Rows -->
-
-            <div
-              slot="emptystate"
-              class="text-center"
-            >
-              Không có dữ liệu
-            </div>
-            <!-- END - Empty rows -->
-          </vue-good-table>
-          <!-- END - Table Product -->
-
-          <br>
-
-          <!-- START - Table Product promotion 1 -->
-          <div v-if="isShowPoPromoTable">
-
-            <div class="d-inline-flex rounded-top px-1 my-1">
+          <div class="bg-white shadow rounded ml-xl-1 mt-xl-0 p-1 h-100">
+            <div class="d-inline-flex rounded-top my-1">
               <strong class="text-brand-1">
-                Hàng khuyến mãi
+                Sản phẩm
               </strong>
             </div>
 
             <vue-good-table
-              :columns="poPromotionColumns"
-              :rows="rowsProductPromotionLoad"
-              style-class="vgt-table"
+              :columns="columns"
+              :rows="rowsProduct"
+              style-class="vgt-table striped"
               compact-mode
               line-numbers
             >
-              <!-- START - Empty rows -->
-              <div
-                slot="emptystate"
-                class="text-center"
+              <!-- START - Column filter -->
+              <template
+                slot="column-filter"
+                slot-scope="props"
               >
-                Không có dữ liệu
-              </div>
-              <!-- END - Empty rows -->
+                <b-row
+                  v-if="props.column.field === 'productCode' && totalProduct !== 0"
+                  class="mx-0 h7 text-brand-3"
+                  align-h="start"
+                >
+                  {{ $formatNumberToLocale(totalProduct) }}
+                </b-row>
+                <!--START - Choose import po product-->
+                <b-row
+                  v-if="props.column.field === 'quantity'"
+                  class="mx-50 h7 text-brand-3"
+                  align-h="end"
+                >
+                  {{
+                    $formatNumberToLocale(poProductInfo.totalQuantity || poAdjustInfo.totalQuantity || poBorrowingInfo.totalQuantity)
+                  }}
+                </b-row>
+                <b-row
+                  v-if="props.column.field === 'totalPriceNotVat'"
+                  class="mx-50 h7 text-brand-3"
+                  align-h="end"
+                >
+                  {{ $formatNumberToLocale(poProductInfo.totalPriceNotVat) }}
+                </b-row>
+                <b-row
+                  v-else-if="props.column.field === 'totalPriceVat'"
+                  class="mx-50 h7 text-brand-3"
+                  align-h="end"
+                >
+                  {{ $formatNumberToLocale(poProductInfo.totalPrice) }}
+                </b-row>
+                <b-row
+                  v-else-if="props.column.field === 'totalPrice'"
+                  class="mx-50 h7 text-brand-3"
+                  align-h="end"
+                >
+                  {{
+                    $formatNumberToLocale(poAdjustInfo.totalPrice || poBorrowingInfo.totalPrice)
+                  }}
+                </b-row>
+              </template>
+              <!-- START - Empty rows -->
 
-              <!-- START - Custom row -->
+              <!-- START - Rows -->
               <template
                 slot="table-row"
                 slot-scope="props"
               >
                 <div
-                  v-if="props.column.field === 'quantity'"
+                  v-if="props.column.field === 'totalPriceNotVat' ||
+                    props.column.field ==='totalPriceVat' ||
+                    props.column.field ==='totalPrice' ||
+                    props.column.field ==='quantity'"
                   class="pr-70"
                 >
                   {{ props.formattedRow[props.column.field] }}
@@ -341,188 +289,242 @@
                   {{ props.formattedRow[props.column.field] }}
                 </div>
               </template>
-              <!-- END - Custom row -->
+              <!-- END - Rows -->
 
-              <!-- START - Custom filter -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
-              >
-                <b-row
-                  v-if="props.column.field === 'productCode'"
-                  class="mx-0 h7 text-brand-3"
-                  align-h="start"
-                >
-                  {{ $formatNumberToLocale(totalPoPromoProduct) }}
-                </b-row>
-                <b-row
-                  v-if="props.column.field === 'quantity'"
-                  class="mx-50 h7 text-brand-3"
-                  align-h="end"
-                >
-                  {{ $formatNumberToLocale(poPromotionProductsInfo.totalQuantity) }}
-                </b-row>
-
-              </template>
-              <!-- END - Custom filter -->
-            </vue-good-table>
-          </div>
-          <!-- END - Table Product promotion 1 -->
-
-          <!-- START - Table Product promotion 2 -->
-          <div v-if="isShowPoPromoManualTable">
-
-            <div
-              class="d-inline-flex rounded-top px-1 my-1"
-            >
-              <strong class="text-brand-1">
-                Hàng khuyến mãi
-              </strong>
-            </div>
-
-            <vue-good-table
-              :columns="poPromotionColumns"
-              :rows="rowsProductPromotion"
-              style-class="vgt-table striped"
-              compact-mode
-              line-numbers
-            >
-              <!-- START - Empty rows -->
               <div
                 slot="emptystate"
                 class="text-center"
               >
                 Không có dữ liệu
               </div>
-              <!-- END - Empty rows -->
+            <!-- END - Empty rows -->
+            </vue-good-table>
+            <!-- END - Table Product -->
 
-              <!-- START - Custom filter -->
-              <template
-                slot="column-filter"
-                slot-scope="props"
-              >
-                <b-row
-                  v-if="props.column.field === 'quantity'"
-                  v-show="totalPromoProductQuantity"
-                  class="mx-50 h7 text-brand-3"
-                  align-h="end"
-                >
-                  {{ $formatNumberToLocale(totalPromoProductQuantity) }}
-                </b-row>
+            <br>
 
-                <b-row
-                  v-else-if="props.column.field === 'productCode'"
-                  v-show="totalPromoProduct"
-                  class="mx-0 h7 text-brand-3"
-                  align-h="start"
-                >
-                  {{ $formatNumberToLocale(totalPromoProduct) }}
-                </b-row>
+            <!-- START - Table Product promotion 1 -->
+            <div v-if="isShowPoPromoTable">
 
-              </template>
-              <!-- END - Custom filter -->
-
-              <!-- START - Custom row-->
-              <template
-                slot="table-row"
-                slot-scope="props"
-              >
-                <span v-if="props.column.field === 'productCode'">
-                  {{ rowsProductPromotion[props.index].productCode }}
-                </span>
-                <span v-if="props.column.field === 'quantity'">
-                  <b-form-input
-                    v-model.number="rowsProductPromotion[props.index].quantity"
-                    :state="isPositive(rowsProductPromotion[props.index].quantity)"
-                    maxlength="7"
-                    @keypress="$onlyNumberInput"
-                  />
-                </span>
-                <span v-if="props.column.field === 'price'">
-                  {{ rowsProductPromotion[props.index].price }}
-                </span>
-                <span v-if="props.column.field === 'productName'">
-                  {{ rowsProductPromotion[props.index].productName }}
-                </span>
-                <span v-if="props.column.field === 'unit'">
-                  {{ rowsProductPromotion[props.index].unit }}
-                </span>
-                <span v-if="props.column.field === 'totalPrice'">
-                  {{ rowsProductPromotion[props.index].totalPrice }}
-                </span>
-                <span v-if="props.column.field === 'function'">
-                  <b-icon-trash-fill
-                    v-b-popover.hover.top="'Xóa'"
-                    class="cursor-pointer"
-                    scale="1.2"
-                    color="red"
-                    @click="onClickDeleteButton(props.index)"
-                  />
-                  {{ count }}
-                </span>
-              </template>
-              <!-- END - Custom row-->
-
-              <!-- START - Table action bottom -->
-              <div
-                slot="table-actions-bottom"
-                class="m-2"
-              >
-                <vue-autosuggest
-                  v-model="productSearch"
-                  :suggestions="products"
-                  :input-props="{
-                    id:'autosuggest__input',
-                    class:'form-control w-25',
-                    placeholder:'Nhập mã hoặc tên sản phẩm'
-                  }"
-                  @input="loadProducts"
-                  @selected="productSelected"
-                >
-                  <template slot-scope="{ suggestion }">
-                    <div class="cursor-pointer">
-                      {{ suggestions }}
-                      <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.name }}
-                    </div>
-                  </template>
-                </vue-autosuggest>
+              <div class="d-inline-flex rounded-top px-1 my-1">
+                <strong class="text-brand-1">
+                  Hàng khuyến mãi
+                </strong>
               </div>
+
+              <vue-good-table
+                :columns="poPromotionColumns"
+                :rows="rowsProductPromotionLoad"
+                style-class="vgt-table"
+                compact-mode
+                line-numbers
+              >
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
+                <!-- END - Empty rows -->
+
+                <!-- START - Custom row -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div
+                    v-if="props.column.field === 'quantity'"
+                    class="pr-70"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
+                <!-- END - Custom row -->
+
+                <!-- START - Custom filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'productCode'"
+                    class="mx-0 h7 text-brand-3"
+                    align-h="start"
+                  >
+                    {{ $formatNumberToLocale(totalPoPromoProduct) }}
+                  </b-row>
+                  <b-row
+                    v-if="props.column.field === 'quantity'"
+                    class="mx-50 h7 text-brand-3"
+                    align-h="end"
+                  >
+                    {{ $formatNumberToLocale(poPromotionProductsInfo.totalQuantity) }}
+                  </b-row>
+
+                </template>
+              <!-- END - Custom filter -->
+              </vue-good-table>
+            </div>
+            <!-- END - Table Product promotion 1 -->
+
+            <!-- START - Table Product promotion 2 -->
+            <div v-if="isShowPoPromoManualTable">
+
+              <div
+                class="d-inline-flex rounded-top px-1 my-1"
+              >
+                <strong class="text-brand-1">
+                  Hàng khuyến mãi
+                </strong>
+              </div>
+
+              <vue-good-table
+                :columns="poPromotionColumns"
+                :rows="rowsProductPromotion"
+                style-class="vgt-table striped"
+                compact-mode
+                line-numbers
+              >
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
+                <!-- END - Empty rows -->
+
+                <!-- START - Custom filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'quantity'"
+                    v-show="totalPromoProductQuantity"
+                    class="mx-50 h7 text-brand-3"
+                    align-h="end"
+                  >
+                    {{ $formatNumberToLocale(totalPromoProductQuantity) }}
+                  </b-row>
+
+                  <b-row
+                    v-else-if="props.column.field === 'productCode'"
+                    v-show="totalPromoProduct"
+                    class="mx-0 h7 text-brand-3"
+                    align-h="start"
+                  >
+                    {{ $formatNumberToLocale(totalPromoProduct) }}
+                  </b-row>
+
+                </template>
+                <!-- END - Custom filter -->
+
+                <!-- START - Custom row-->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <span v-if="props.column.field === 'productCode'">
+                    {{ rowsProductPromotion[props.index].productCode }}
+                  </span>
+                  <span v-if="props.column.field === 'quantity'">
+                    <b-form-input
+                      v-model.number="rowsProductPromotion[props.index].quantity"
+                      :state="isPositive(rowsProductPromotion[props.index].quantity)"
+                      maxlength="7"
+                      @keypress="$onlyNumberInput"
+                    />
+                  </span>
+                  <span v-if="props.column.field === 'price'">
+                    {{ rowsProductPromotion[props.index].price }}
+                  </span>
+                  <span v-if="props.column.field === 'productName'">
+                    {{ rowsProductPromotion[props.index].productName }}
+                  </span>
+                  <span v-if="props.column.field === 'unit'">
+                    {{ rowsProductPromotion[props.index].unit }}
+                  </span>
+                  <span v-if="props.column.field === 'totalPrice'">
+                    {{ rowsProductPromotion[props.index].totalPrice }}
+                  </span>
+                  <span v-if="props.column.field === 'function'">
+                    <b-icon-trash-fill
+                      v-b-popover.hover.top="'Xóa'"
+                      class="cursor-pointer"
+                      scale="1.2"
+                      color="red"
+                      @click="onClickDeleteButton(props.index)"
+                    />
+                    {{ count }}
+                  </span>
+                </template>
+                <!-- END - Custom row-->
+
+                <!-- START - Table action bottom -->
+                <div
+                  slot="table-actions-bottom"
+                  class="m-2"
+                >
+                  <vue-autosuggest
+                    v-model="productSearch"
+                    :suggestions="products"
+                    :input-props="{
+                      id:'autosuggest__input',
+                      class:'form-control w-25',
+                      placeholder:'Nhập mã hoặc tên sản phẩm'
+                    }"
+                    @input="loadProducts"
+                    @selected="productSelected"
+                  >
+                    <template slot-scope="{ suggestion }">
+                      <div class="cursor-pointer">
+                        {{ suggestions }}
+                        <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.name }}
+                      </div>
+                    </template>
+                  </vue-autosuggest>
+                </div>
               <!-- END - Table action bottom -->
 
-            </vue-good-table>
-          </div>
-          <!-- START - Table Product promotion 2 -->
+              </vue-good-table>
+            </div>
+            <!-- START - Table Product promotion 2 -->
 
-          <!-- START - Button -->
-          <b-row class="m-1 justify-content-end">
-            <b-button-group>
-              <b-button
-                v-if="statusSaveButton().show"
-                :disabled="statusSaveButton().disabled || invalid"
-                class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder mr-1"
-                variant="someThing"
-                @click="create"
-              >
-                <b-icon
-                  icon="download"
-                />
-                Nhập hàng
-              </b-button>
+            <!-- START - Button -->
+            <b-row class="m-1 justify-content-end">
+              <b-button-group>
+                <b-button
+                  v-if="statusSaveButton().show"
+                  :disabled="statusSaveButton().disabled || invalid"
+                  class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder mr-1"
+                  variant="someThing"
+                  @click="create"
+                >
+                  <b-icon
+                    icon="download"
+                  />
+                  Nhập hàng
+                </b-button>
 
-              <b-button
-                class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
-                @click="navigateBack"
-              >
-                <b-icon
-                  icon="x"
-                  scale="1.5"
-                />
-                Đóng
-              </b-button>
-            </b-button-group>
-          </b-row>
+                <b-button
+                  class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder"
+                  @click="navigateBack"
+                >
+                  <b-icon
+                    icon="x"
+                    scale="1.5"
+                  />
+                  Đóng
+                </b-button>
+              </b-button-group>
+            </b-row>
           <!-- END - Button -->
-
+          </div>
         </b-col>
         <!-- END - List -->
 
@@ -662,8 +664,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
         {
           label: 'Số lượng',
@@ -671,46 +673,47 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          width: '18%',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
         {
           label: 'Giá',
           field: 'price',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
         {
           label: 'Tên hàng',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left text-nowrap',
+          tdClass: 'text-left text-nowrap',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           type: 'number',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-center text-nowrap',
+          tdClass: 'text-center text-nowrap',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
         {
           label: 'SO No',
           field: 'SoNo',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-center text-nowrap',
+          tdClass: 'text-center text-nowrap',
         },
         {
           label: '',
@@ -726,53 +729,53 @@ export default {
           label: 'Mã hàng',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left text-nowrap',
+          tdClass: 'text-left text-nowrap',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
         {
           label: 'Giá',
           field: 'priceNotVat',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
         {
           label: 'Tên hàng',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left text-nowrap',
+          tdClass: 'text-left text-nowrap',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           type: 'number',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-center text-nowrap',
+          tdClass: 'text-center text-nowrap',
         },
         {
           label: 'Thành tiền (chưa VAT)',
           field: 'totalPriceNotVat',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
         {
           label: 'VAT',
           field: 'vat',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
         {
           label: 'Thành tiền (VAT)',
@@ -781,16 +784,16 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
 
         {
           label: 'SO No',
           field: 'soNo',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
       ],
       rowsProductPromotion: [],
@@ -802,8 +805,8 @@ export default {
           label: 'Mã hàng',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
         {
           label: 'Số lượng',
@@ -812,46 +815,46 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
         {
           label: 'Giá',
           field: 'price',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
         {
           label: 'Tên hàng',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           type: 'number',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           type: 'number',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
         {
           label: 'SO No',
           field: 'SoNo',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
       ],
       // END - Adjust Borrow col

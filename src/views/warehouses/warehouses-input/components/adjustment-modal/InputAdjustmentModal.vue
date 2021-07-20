@@ -10,7 +10,7 @@
   >
     <!-- START - Body -->
     <b-container fluid>
-      <b-row class="mx-0 ">
+      <b-row class="mx-0">
         <!-- START - Import/Export List -->
         <b-col
           xl="4"
@@ -18,7 +18,7 @@
         >
           <b-row>
             <strong
-              class="text-dark mx-1 mb-1 "
+              class="text-dark mx-1 mb-1"
             >
               Danh sách nhập/xuất hàng
             </strong>
@@ -79,51 +79,57 @@
         <!-- END -  Import/Export List -->
 
         <!-- START -  Import/Export Detail -->
-        <b-col class="d-flex flex-column  px-0 ml-xl-1 mt-1 mt-xl-0">
-          <strong
-            class="text-dark mb-1 mx-1"
-          >Chi tiết nhập/xuất hàng
-          </strong>
-
-          <b-col
-            class="bg-white rounded shadow py-1"
-          >
-            <vue-good-table
-              :columns="columns"
-              :rows="importAdjustmentsDetails"
-              style-class="vgt-table bordered"
-              compact-mode
-              line-numbers
+        <b-col
+          xl="8"
+          class="px-0 mt-1 mt-xl-0"
+        >
+          <div class="d-flex flex-column pl-xl-1 h-100">
+            <strong
+              class="text-dark mb-1 mx-1"
             >
-              <!-- START - Empty rows -->
-              <div
-                slot="emptystate"
-                class="text-center"
-              >
-                Không có dữ liệu
-              </div>
-              <!-- END - Empty rows -->
+              Chi tiết nhập/xuất hàng
+            </strong>
 
-              <!-- START - Row filter -->
-              <template
-                slot="table-row"
-                slot-scope="props"
+            <b-col
+              class="bg-white rounded shadow py-1"
+            >
+              <vue-good-table
+                :columns="columns"
+                :rows="importAdjustmentsDetails"
+                style-class="vgt-table bordered"
+                compact-mode
+                line-numbers
               >
+                <!-- START - Empty rows -->
                 <div
-                  v-if="props.column.field === 'totalPrice' ||
-                    props.column.field ==='price' ||
-                    props.column.field ==='quantity'"
-                  class="pr-70"
+                  slot="emptystate"
+                  class="text-center"
                 >
-                  {{ props.formattedRow[props.column.field] }}
+                  Không có dữ liệu
                 </div>
-                <div v-else>
-                  {{ props.formattedRow[props.column.field] }}
-                </div>
-              </template>
+                <!-- END - Empty rows -->
+
+                <!-- START - Row filter -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div
+                    v-if="props.column.field === 'totalPrice' ||
+                      props.column.field ==='price' ||
+                      props.column.field ==='quantity'"
+                    class="pr-70"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
               <!-- END - Row filter -->
-            </vue-good-table>
-          </b-col>
+              </vue-good-table>
+            </b-col>
+          </div>
         </b-col>
         <!-- END -  Import/Export Detail -->
 
@@ -202,21 +208,21 @@ export default {
           field: 'licenseNumber',
           sortable: false,
           thClass: 'text-left ws-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
           thClass: 'text-left ws-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left ws-nowrap',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Giá (VAT)',
@@ -224,7 +230,7 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-right ws-nowrap',
-          tdClass: 'text-right',
+          tdClass: 'text-right ws-nowrap',
         },
         {
           label: 'Số lượng',
@@ -232,7 +238,7 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-right ws-nowrap',
-          tdClass: 'text-right',
+          tdClass: 'text-right ws-nowrap',
         },
         {
           label: 'Thành tiền (VAT)',
@@ -240,7 +246,7 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-right ws-nowrap',
-          tdClass: 'text-right',
+          tdClass: 'text-right ws-nowrap',
         },
       ],
     }

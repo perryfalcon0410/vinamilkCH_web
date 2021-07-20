@@ -68,11 +68,11 @@
         <!-- START - List -->
         <b-col
           xl="8"
-          class="px-0 mt-1 mt-xl-0 bg-white shadow rounded"
+          class="px-0 mt-1 mt-xl-0"
         >
           <!-- START - Table Product -->
           <!-- START - Title Product -->
-          <div class="pt-1 px-xl-1 pr-md-1 bg-white shadow rounded ">
+          <div class="pt-1 px-xl-1 pr-md-1 bg-white shadow rounded h-100">
             <b-row
               align-v="end"
               class="justify-content-between mx-0"
@@ -355,21 +355,21 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-left ws-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left  ws-nowrap',
-          tdClass: 'text-left ',
+          thClass: 'text-left ws-nowrap',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left  ws-nowrap',
-          tdClass: 'text-left',
+          thClass: 'text-left ws-nowrap',
+          tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Giá (VAT)',
@@ -377,7 +377,7 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-right  ws-nowrap',
-          tdClass: 'text-right',
+          tdClass: 'text-right ws-nowrap',
         },
         {
           label: 'Số lượng',
@@ -387,8 +387,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right  ws-nowrap',
-          tdClass: 'text-right',
+          thClass: 'text-right ws-nowrap',
+          tdClass: 'text-right ws-nowrap',
         },
         {
           label: 'Thành tiền (VAT)',
@@ -398,8 +398,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right  ws-nowrap',
-          tdClass: 'text-right',
+          thClass: 'text-right ws-nowrap',
+          tdClass: 'text-right ws-nowrap',
         },
       ],
     }

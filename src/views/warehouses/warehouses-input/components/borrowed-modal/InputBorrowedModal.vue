@@ -79,32 +79,37 @@
         <!-- END -  Import/Export List -->
 
         <!-- START -  Import/Export Detail -->
-        <b-col class="d-flex flex-column  px-0 ml-xl-1 mt-1 mt-xl-0">
-          <strong
-            class="text-dark mb-1 mx-1"
-          >Chi tiết nhập/xuất hàng
-          </strong>
+        <b-col
+          xl="8"
+          class="px-0 mt-1 mt-xl-0"
+        >
+          <div class="d-flex flex-column pl-xl-1 h-100">
+            <strong
+              class="text-dark mb-1 mx-1"
+            >Chi tiết nhập/xuất hàng
+            </strong>
 
-          <b-col
-            class="bg-white rounded shadow py-1"
-          >
-            <vue-good-table
-              :columns="columns"
-              :rows="importBorrowingsDetail"
-              style-class="vgt-table bordered"
-              compact-mode
-              line-numbers
+            <b-col
+              class="bg-white rounded shadow py-1"
             >
-              <!-- START - Empty rows -->
-              <div
-                slot="emptystate"
-                class="text-center"
+              <vue-good-table
+                :columns="columns"
+                :rows="importBorrowingsDetail"
+                style-class="vgt-table bordered"
+                compact-mode
+                line-numbers
               >
-                Không có dữ liệu
-              </div>
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
               <!-- END - Empty rows -->
-            </vue-good-table>
-          </b-col>
+              </vue-good-table>
+            </b-col>
+          </div>
         </b-col>
         <!-- END -  Import/Export Detail -->
 
@@ -183,46 +188,45 @@ export default {
           field: 'licenseNumber',
           sortable: false,
           type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-center text-nowrap',
+          tdClass: 'text-center text-nowrap',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left text-nowrap',
+          tdClass: 'text-left text-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-left text-nowrap',
+          tdClass: 'text-left text-nowrap',
         },
         {
           label: 'Giá (VAT)',
           field: 'price',
           sortable: false,
           type: 'number',
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           sortable: false,
           type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-center text-nowrap',
+          tdClass: 'text-center text-nowrap',
         },
         {
           label: 'Thành tiền (VAT)',
           field: 'totalPrice',
           sortable: false,
-          type: 'number',
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap',
         },
       ],
     }
