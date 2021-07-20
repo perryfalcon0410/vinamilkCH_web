@@ -16,8 +16,8 @@ export default {
   ],
 
   outputTypes: [
-    { id: '2', label: 'Xuất trả PO' },
+    { id: '0', label: 'Xuất trả PO' },
     { id: '1', label: 'Xuất điều chỉnh' },
-    { id: '3', label: 'Xuất vay mượn' },
+    { id: '2', label: 'Xuất vay mượn' },
   ],
 }

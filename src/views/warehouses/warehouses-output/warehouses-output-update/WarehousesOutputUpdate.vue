@@ -139,95 +139,24 @@
 
       <!-- START - List -->
       <b-col
-        class="bg-white shadow rounded mt-1 mt-xl-0"
+        xl="8"
+        class="px-sm-0 px-md-0"
       >
-        <div style="padding: 5px 0;">
-          <strong class="text-brand-1">
-            Danh sách sản phẩm
-          </strong>
-        </div>
-
-        <!-- START - Table Product promotion -->
-        <vue-good-table
-          :columns="columns"
-          :rows="products"
-          style-class="vgt-table striped"
-          :sort-options="{
-            enabled: false,
-          }"
-          compact-mode
-          line-numbers
-        >
-          <!-- START - Empty rows -->
-          <div
-            slot="emptystate"
-            class="text-center"
-          >
-            Không có dữ liệu
-          </div>
-          <!-- END - Empty rows -->
-
-          <!-- START - Header slot -->
-          <div slot="table-actions">
-            <b-form-checkbox
-              v-model="exportAll"
-              class="m-1"
-              :disabled="isDisableSave || warehousesOutput.receiptType !== warehousesOptions[0].id"
-              @change="clickExportAll()"
-            >
-              Trả nguyên đơn
-            </b-form-checkbox>
-          </div>
-          <!-- END - Header slot -->
-
-          <!-- START - Rows -->
-          <template
-            slot="table-row"
-            slot-scope="props"
-          >
-            <div
-              v-if="props.column.field === 'productReturnAmount'"
-            >
-              <div v-if="warehousesOutput.receiptType == warehousesOptions[0].id">
-                <b-form-input
-                  v-model="products[props.row.originalIndex].productReturnAmount"
-                  size="sm"
-                  :disabled="isDisableSave"
-                  @keypress="$onlyNumberInput"
-                  @change="changeQuantity"
-                />
-              </div>
-              <div v-else>
-                <b-form-input
-                  v-model="products[props.row.originalIndex].productReturnAmount"
-                  size="sm"
-                  disabled
-                  @keypress="$onlyNumberInput"
-                  @change="changeQuantity"
-                />
-              </div>
-            </div>
-            <div v-else>
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-          </template>
-          <!-- END - Rows -->
-
-        </vue-good-table>
-        <!-- END - Table Product -->
-
-        <!-- START - Table Product promotion 2 -->
-        <div v-if="warehousesOutput.receiptType === poOutputType">
+        <div class="bg-white shadow rounded ml-xl-1 mt-1 mt-xl-0 p-1 h-100">
           <div style="padding: 5px 0;">
             <strong class="text-brand-1">
-              Danh sách sản phẩm khuyến mãi
+              Danh sách sản phẩm
             </strong>
           </div>
 
+          <!-- START - Table Product promotion -->
           <vue-good-table
-            :columns="poPromotionColumns"
-            :rows="rowsProductPromotion"
+            :columns="columns"
+            :rows="products"
             style-class="vgt-table striped"
+            :sort-options="{
+              enabled: false,
+            }"
             compact-mode
             line-numbers
           >
@@ -240,79 +169,164 @@
             </div>
             <!-- END - Empty rows -->
 
+            <!-- START - Header slot -->
+            <div slot="table-actions">
+              <b-form-checkbox
+                v-model="exportAll"
+                class="m-1"
+                :disabled="isDisableSave || warehousesOutput.receiptType !== warehousesOptions[0].id"
+                @change="clickExportAll()"
+              >
+                Trả nguyên đơn
+              </b-form-checkbox>
+            </div>
+            <!-- END - Header slot -->
+
             <!-- START - Rows -->
             <template
               slot="table-row"
               slot-scope="props"
             >
-              <div v-if="props.column.field === 'productReturnAmount'">
-                <b-form-input
-                  v-model="rowsProductPromotion[props.row.originalIndex].productReturnAmount"
-                  maxlength="19"
-                  :disabled="isDisableSave"
-                  @keypress="$onlyNumberInput"
-                  @change="changeQuantity()"
-                />
+              <div
+                v-if="props.column.field === 'productReturnAmount'"
+              >
+                <div v-if="warehousesOutput.receiptType == warehousesOptions[0].id">
+                  <b-form-input
+                    v-model="products[props.row.originalIndex].productReturnAmount"
+                    size="sm"
+                    :disabled="isDisableSave"
+                    @keypress="$onlyNumberInput"
+                    @change="changeQuantity"
+                  />
+                </div>
+                <div v-else>
+                  <b-form-input
+                    v-model="products[props.row.originalIndex].productReturnAmount"
+                    size="sm"
+                    disabled
+                    @keypress="$onlyNumberInput"
+                    @change="changeQuantity"
+                  />
+                </div>
+              </div>
+              <div
+                v-else-if="props.column.field === 'productName'"
+                class="name-width"
+              >
+                {{ props.formattedRow[props.column.field] }}
               </div>
               <div v-else>
                 {{ props.formattedRow[props.column.field] }}
               </div>
             </template>
-            <!-- END - Rows -->
-
-            <!-- START - Custom filter -->
-            <template
-              slot="column-filter"
-              slot-scope="props"
-            >
-              <b-row
-                v-if="props.column.field === 'productCode'"
-                v-show="totalPromoProduct"
-                class="mx-0"
-                align-h="center"
-              >
-                {{ $formatNumberToLocale(totalPromoProduct) }}
-              </b-row>
-
-            </template>
-            <!-- END - Custom filter -->
+          <!-- END - Rows -->
 
           </vue-good-table>
-        </div>
-        <!-- START - Table Product promotion 2 -->
+          <!-- END - Table Product -->
 
-        <!-- START - Button -->
-        <b-row
-          class="my-1 mx-0"
-          align-v="center"
-          align-h="end"
-        >
-          <b-button
-            v-if="statusSaveButton().show && !isDisableSave"
-            :disabled="statusSaveButton().disabled || invalid"
-            variant="someThing"
-            class="align-items-button-center btn-brand-1 text-uppercase h8"
-            @click="onClickUpdateWarehousesOutput"
-          >
-            <b-icon-download
-              class="mr-50"
-            />
-            Lưu
-          </b-button>
+          <!-- START - Table Product promotion 2 -->
+          <div v-if="warehousesOutput.receiptType === poOutputType">
+            <div style="padding: 5px 0;">
+              <strong class="text-brand-1">
+                Danh sách sản phẩm khuyến mãi
+              </strong>
+            </div>
 
-          <b-button
-            class="align-items-button-center text-uppercase ml-1 h8"
-            @click="navigateBack"
+            <vue-good-table
+              :columns="poPromotionColumns"
+              :rows="rowsProductPromotion"
+              style-class="vgt-table striped"
+              compact-mode
+              line-numbers
+            >
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
+              >
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
+
+              <!-- START - Rows -->
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <div v-if="props.column.field === 'productReturnAmount'">
+                  <b-form-input
+                    v-model="rowsProductPromotion[props.row.originalIndex].productReturnAmount"
+                    maxlength="19"
+                    :disabled="isDisableSave"
+                    @keypress="$onlyNumberInput"
+                    @change="changeQuantity()"
+                  />
+                </div>
+                <div
+                  v-else-if="props.column.field === 'productName'"
+                  class="name-width"
+                >
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+                <div v-else>
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+              </template>
+              <!-- END - Rows -->
+
+              <!-- START - Custom filter -->
+              <template
+                slot="column-filter"
+                slot-scope="props"
+              >
+                <b-row
+                  v-if="props.column.field === 'productCode'"
+                  v-show="totalPromoProduct"
+                  class="mx-0"
+                  align-h="center"
+                >
+                  {{ $formatNumberToLocale(totalPromoProduct) }}
+                </b-row>
+
+              </template>
+            <!-- END - Custom filter -->
+
+            </vue-good-table>
+          </div>
+          <!-- START - Table Product promotion 2 -->
+
+          <!-- START - Button -->
+          <b-row
+            class="my-1 mx-0"
+            align-v="center"
+            align-h="end"
           >
-            <b-icon-x
-              scale="1.5"
-              class="mr-50"
-            />
-            Đóng
-          </b-button>
-        </b-row>
+            <b-button
+              v-if="statusSaveButton().show && !isDisableSave"
+              :disabled="statusSaveButton().disabled || invalid"
+              variant="someThing"
+              class="align-items-button-center btn-brand-1 text-uppercase h8"
+              @click="onClickUpdateWarehousesOutput"
+            >
+              <b-icon-download
+                class="mr-50"
+              />
+              Lưu
+            </b-button>
+
+            <b-button
+              class="align-items-button-center text-uppercase ml-1 h8"
+              @click="navigateBack"
+            >
+              <b-icon-x
+                scale="1.5"
+                class="mr-50"
+              />
+              Đóng
+            </b-button>
+          </b-row>
         <!-- END - Button -->
-
+        </div>
       </b-col>
       <!-- END - List -->
 

@@ -14,7 +14,7 @@
         <!-- START - Form -->
         <b-col
           xl="4"
-          class="bg-white shadow rounded mr-xl-1 h7"
+          class="bg-white shadow rounded h7"
         >
           <!-- START - Date -->
           <b-row class="my-1">
@@ -196,91 +196,20 @@
 
         <!-- START - List -->
         <b-col
-          class="bg-white shadow rounded mt-1 mt-xl-0"
+          xl="8"
+          class="px-sm-0 px-md-0"
         >
-          <!-- START - Table Product promotion -->
-          <div class="d-inline-flex rounded-top px-1 my-1">
-            <strong class="text-brand-1">
-              Danh sách sản phẩm
-            </strong>
-          </div>
-
-          <vue-good-table
-            :columns="columns"
-            :rows="products"
-            style-class="vgt-table striped"
-            compact-mode
-            line-numbers
-          >
-            <!-- START - Empty rows -->
-            <div
-              slot="emptystate"
-              class="text-center"
-            >
-              Không có dữ liệu
-            </div>
-            <!-- END - Empty rows -->
-            <!-- START - Header slot -->
-            <div slot="table-actions">
-              <b-form-checkbox
-                v-model="exportAll"
-                class="m-1"
-                :disabled="outputTypeSelected !== poOutputType"
-              >
-                Trả nguyên đơn
-              </b-form-checkbox>
-            </div>
-            <!-- END - Header slot -->
-
-            <!-- START - Rows -->
-            <template
-              slot="table-row"
-              slot-scope="props"
-            >
-              <div v-if="props.column.field === 'quantityReturn'">
-                <b-form-input
-                  v-model="products[props.row.originalIndex].quantityReturn"
-                  maxlength="19"
-                  :readonly="exportAll && outputTypeSelected !== poOutputType"
-                  @keypress="$onlyNumberInput"
-                  @change="changeQuantity()"
-                />
-              </div>
-              <div v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </div>
-            </template>
-            <!-- END - Rows -->
-
-            <!-- START - Customer filter -->
-            <template
-              slot="column-filter"
-              slot-scope="props"
-              class="h7"
-            >
-              <b-row
-                v-if="props.column.field === 'productCode'"
-                class="h7 ml-1"
-                align-h="start"
-                :hidden="hideFilter"
-              >
-                {{ $formatNumberToLocale(totalProduct) }}
-              </b-row>
-            </template>
-            <!-- END - Customer filter -->
-          </vue-good-table>
-          <!-- END - Table Product -->
-          <!-- START - Table Product promotion 2 -->
-          <div v-if="outputTypeSelected === poOutputType">
-            <div style="padding: 5px 0;">
+          <div class="bg-white shadow rounded ml-xl-1 mt-1 mt-xl-0 p-1 h-100">
+            <!-- START - Table Product promotion -->
+            <div class="d-inline-flex rounded-top px-1 my-1">
               <strong class="text-brand-1">
-                Danh sách sản phẩm khuyến mãi
+                Danh sách sản phẩm
               </strong>
             </div>
 
             <vue-good-table
-              :columns="poPromotionColumns"
-              :rows="rowsProductPromotion"
+              :columns="columns"
+              :rows="products"
               style-class="vgt-table striped"
               compact-mode
               line-numbers
@@ -293,19 +222,37 @@
                 Không có dữ liệu
               </div>
               <!-- END - Empty rows -->
+              <!-- START - Header slot -->
+              <div slot="table-actions">
+                <b-form-checkbox
+                  v-model="exportAll"
+                  class="m-1"
+                  :disabled="outputTypeSelected !== poOutputType"
+                >
+                  Trả nguyên đơn
+                </b-form-checkbox>
+              </div>
+              <!-- END - Header slot -->
 
               <!-- START - Rows -->
               <template
                 slot="table-row"
                 slot-scope="props"
               >
-                <div v-if="props.column.field === 'quantityPromo'">
+                <div v-if="props.column.field === 'quantityReturn'">
                   <b-form-input
-                    v-model="rowsProductPromotion[props.row.originalIndex].quantityPromo"
+                    v-model="products[props.row.originalIndex].quantityReturn"
                     maxlength="19"
+                    :readonly="exportAll && outputTypeSelected !== poOutputType"
                     @keypress="$onlyNumberInput"
                     @change="changeQuantity()"
                   />
+                </div>
+                <div
+                  v-else-if="props.column.field === 'productName'"
+                  class="name-width"
+                >
+                  {{ props.formattedRow[props.column.field] }}
                 </div>
                 <div v-else>
                   {{ props.formattedRow[props.column.field] }}
@@ -313,57 +260,124 @@
               </template>
               <!-- END - Rows -->
 
-              <!-- START - Custom filter -->
+              <!-- START - Customer filter -->
               <template
                 slot="column-filter"
                 slot-scope="props"
+                class="h7"
               >
                 <b-row
                   v-if="props.column.field === 'productCode'"
-                  v-show="totalPromoProduct"
-                  class="mx-0"
-                  align-h="center"
+                  class="h7 ml-1"
+                  align-h="start"
+                  :hidden="hideFilter"
                 >
-                  {{ $formatNumberToLocale(totalPromoProduct) }}
+                  {{ $formatNumberToLocale(totalProduct) }}
                 </b-row>
-
               </template>
+            <!-- END - Customer filter -->
+            </vue-good-table>
+            <!-- END - Table Product -->
+            <!-- START - Table Product promotion 2 -->
+            <div v-if="outputTypeSelected === poOutputType">
+              <div style="padding: 5px 0;">
+                <strong class="text-brand-1">
+                  Danh sách sản phẩm khuyến mãi
+                </strong>
+              </div>
+
+              <vue-good-table
+                :columns="poPromotionColumns"
+                :rows="rowsProductPromotion"
+                style-class="vgt-table striped"
+                compact-mode
+                line-numbers
+              >
+                <!-- START - Empty rows -->
+                <div
+                  slot="emptystate"
+                  class="text-center"
+                >
+                  Không có dữ liệu
+                </div>
+                <!-- END - Empty rows -->
+
+                <!-- START - Rows -->
+                <template
+                  slot="table-row"
+                  slot-scope="props"
+                >
+                  <div v-if="props.column.field === 'quantityPromo'">
+                    <b-form-input
+                      v-model="rowsProductPromotion[props.row.originalIndex].quantityPromo"
+                      maxlength="19"
+                      @keypress="$onlyNumberInput"
+                      @change="changeQuantity()"
+                    />
+                  </div>
+                  <div
+                    v-else-if="props.column.field === 'productName'"
+                    class="name-width"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div v-else>
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                </template>
+                <!-- END - Rows -->
+
+                <!-- START - Custom filter -->
+                <template
+                  slot="column-filter"
+                  slot-scope="props"
+                >
+                  <b-row
+                    v-if="props.column.field === 'productCode'"
+                    v-show="totalPromoProduct"
+                    class="mx-0"
+                    align-h="center"
+                  >
+                    {{ $formatNumberToLocale(totalPromoProduct) }}
+                  </b-row>
+
+                </template>
               <!-- END - Custom filter -->
 
-            </vue-good-table>
-          </div>
-          <!-- START - Table Product promotion 2 -->
+              </vue-good-table>
+            </div>
+            <!-- START - Table Product promotion 2 -->
 
-          <!-- START - Button -->
-          <b-row class="m-1 justify-content-end">
-            <b-button-group>
-              <b-button
-                v-if="statusSaveButton().show"
-                :disabled="statusSaveButton().disabled || invalid"
-                variant="someThing"
-                class="btn-brand-1 rounded text-uppercase aligns-items-button-center"
-                @click="createExport"
-              >
-                <b-icon-download
-                  class="mr-50"
-                />
-                Trả hàng
-              </b-button>
+            <!-- START - Button -->
+            <b-row class="m-1 justify-content-end">
+              <b-button-group>
+                <b-button
+                  v-if="statusSaveButton().show"
+                  :disabled="statusSaveButton().disabled || invalid"
+                  variant="someThing"
+                  class="btn-brand-1 rounded text-uppercase aligns-items-button-center"
+                  @click="createExport"
+                >
+                  <b-icon-download
+                    class="mr-50"
+                  />
+                  Trả hàng
+                </b-button>
 
-              <b-button
-                class="btn-brand-1 ml-1 rounded text-uppercase aligns-items-button-center"
-                @click="navigateBack"
-              >
-                <b-icon-x
-                  class="mr-50"
-                  scale="1.5"
-                />
-                Đóng
-              </b-button>
-            </b-button-group>
-          </b-row>
+                <b-button
+                  class="btn-brand-1 ml-1 rounded text-uppercase aligns-items-button-center"
+                  @click="navigateBack"
+                >
+                  <b-icon-x
+                    class="mr-50"
+                    scale="1.5"
+                  />
+                  Đóng
+                </b-button>
+              </b-button-group>
+            </b-row>
           <!-- END - Button -->
-
+          </div>
         </b-col>
         <!-- END - List -->
 
@@ -502,16 +516,15 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
-          width: '300px',
         },
         {
           label: 'Giá',
@@ -533,14 +546,14 @@ export default {
           field: 'totalPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Đã xuất trả/ tổng nhập',
           field: 'export',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
@@ -548,7 +561,7 @@ export default {
           field: 'quantityReturn',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
       ],
@@ -560,14 +573,14 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
@@ -590,7 +603,7 @@ export default {
           field: 'totalPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
@@ -598,7 +611,7 @@ export default {
           field: 'quantity',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
       ],
@@ -607,16 +620,15 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
-          width: '300px',
         },
         {
           label: 'Giá',
@@ -638,14 +650,14 @@ export default {
           field: 'totalPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Đã xuất trả/ tổng nhập',
           field: 'export',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
@@ -653,7 +665,7 @@ export default {
           field: 'quantityPromo',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
       ],

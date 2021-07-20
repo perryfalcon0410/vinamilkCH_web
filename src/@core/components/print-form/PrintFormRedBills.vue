@@ -67,7 +67,7 @@
           <td class="text-right">
             {{ $formatNumberToLocale(item.intoMoney) }}
           </td>
-          <td class="text-center">
+          <td class="text-left pl-1">
             {{ item.note }}
           </td>
         </tr>
