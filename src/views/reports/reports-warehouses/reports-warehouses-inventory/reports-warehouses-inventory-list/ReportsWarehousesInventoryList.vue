@@ -100,7 +100,8 @@
             <div
               v-else-if="props.column.field ==='productName' ||
                 props.column.field ==='specification' ||
-                props.column.field ==='shop'"
+                props.column.field ==='shop' ||
+                props.column.field === 'productCategory'"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}

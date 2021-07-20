@@ -84,7 +84,7 @@
             slot-scope="props"
           >
             <div
-              v-if="props.column.field ==='productName'"
+              v-if="props.column.field ==='productName' || props.column.field === 'industry'"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}

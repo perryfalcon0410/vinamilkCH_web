@@ -122,7 +122,8 @@
               v-else-if="props.column.field === 'productName' ||
                 props.column.field ==='reasonForPayment' ||
                 props.column.field ==='feedback' ||
-                props.column.field ==='fullName'"
+                props.column.field ==='fullName' ||
+                props.column.field === 'industry'"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}

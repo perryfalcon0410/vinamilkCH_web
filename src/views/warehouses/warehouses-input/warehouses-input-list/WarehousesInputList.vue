@@ -314,23 +314,28 @@ export default {
           label: 'Ngày',
           field: 'transDate',
           formatFn: value => this.$formatISOtoVNI(value),
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã nhập hàng',
           field: 'transCode',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -340,6 +345,7 @@ export default {
           label: 'Số tiền',
           field: 'price',
           type: 'number',
+          thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,
           },
@@ -348,11 +354,13 @@ export default {
         {
           label: 'Loại nhập',
           field: 'inputTypes',
+          thClass: 'text-nowrap',
           formatFn: this.$getInputTypeslabel,
         },
         {
           label: 'Ghi chú',
           field: 'note',
+          thClass: 'text-nowrap',
           width: '300px',
           sortable: false,
         },
