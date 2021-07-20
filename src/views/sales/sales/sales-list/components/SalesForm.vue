@@ -607,7 +607,7 @@ export default {
       },
       orderOnline: {
         onlineOrderId: null,
-        orderNumber: '',
+        orderNumber: null,
         discountCode: null,
         discountValue: null,
       },
@@ -802,7 +802,6 @@ export default {
     getSalemtPromotionObjectOptions() {
       this.salemtPromotionObjectOptions = [...this.getSalemtPromotionObjectOptions]
       this.getDefaultPromotionObjectSelected()
-      this.$emit('getDefaultSalemtPOSelected', this.salemtPromotionObjectOptions)
     },
     salemtDeliveryTypeOptions() {
       this.GetSalemtDeliveryTypeDefault()
@@ -837,17 +836,24 @@ export default {
         if (
           this.totalQuantity === 0
           || this.editOnlinePermission === false
-          || validatorOnlineOrder(this.orderOnline.orderNumber) === false
-          || this.orderOnline.orderNumber.length < 6
           || this.salemtDeliveryTypeSelected === undefined
           || this.salemtPromotionObjectSelected === undefined
           || (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')
         ) {
           this.isOpenPayModal = false
           this.$bvModal.hide('pay-modal')
-        } else {
-          this.isOpenPayModal = true
-          this.$bvModal.show('pay-modal')
+        } else if (this.salemtDeliveryTypeSelected !== undefined) {
+          if (this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
+            this.isOpenPayModal = true
+            this.$bvModal.show('pay-modal')
+          } else if (this.salemtPromotionObjectSelected !== undefined) {
+            this.$refs.formContainer.validate().then(success => {
+              if (success) {
+                this.isOpenPayModal = true
+                this.$bvModal.show('pay-modal')
+              }
+            })
+          }
         }
       }
     })
@@ -1104,7 +1110,7 @@ export default {
       this.$emit('deleteSaveBill', deleteBill)
     },
     getOrderNumber() {
-      this.$emit('getOrderNumber', this.orderOnline.orderNumber)
+      this.$emit('getOrderNumber', this.orderOnline)
     },
   },
 

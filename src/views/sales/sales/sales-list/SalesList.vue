@@ -283,7 +283,6 @@
         @getOnlineCustomer="getOnlineCustomer"
         @getCustomerCreate="getCustomerCreate"
         @currentCustomer="getCurrentCustomer"
-        @getDefaultSalemtPOSelected="getDefaultSalemtPOSelected"
         @salemtPromotionObjectSelected="salemtPromotionObjectSelected"
         @salemtDeliveryTypeSelected="salemtDeliveryTypeSelected"
         @getIdCustomer="getIdCustomer"
@@ -346,8 +345,7 @@ export default {
       isCheckShopId: false, // check shop default
       currentCustomer: {},
       defaultCustomer: {},
-      defaultSalemtPOSelected: [],
-      currentOrderNumber: '',
+      currentOrderNumber: {},
       selectedValue: null,
       checkStock: false,
       isDisabled: false, // check tồn kho disable button thanh toán
@@ -592,12 +590,8 @@ export default {
       this.defaultCustomer = { ...this.getDefaultCustomer }
     },
 
-    getDefaultSalemtPOSelected() {
-      this.defaultSalemtPOSelected = [...this.getDefaultSalemtPOSelected]
-    },
-
     getOrderNumber() {
-      this.currentOrderNumber = this.getOrderNumber
+      this.currentOrderNumber = { ...this.getOrderNumber }
     },
 
     deleteSaveBill() {
@@ -605,7 +599,7 @@ export default {
     },
 
     salemtPromotionObjectSelected() {
-      this.orderSelected = { ...this.salemtPromotionObjectSelected }
+      this.orderSelected = this.salemtPromotionObjectSelected
     },
 
     selectedProduct() {
@@ -818,7 +812,7 @@ export default {
             address: this.defaultCustomer.address,
             noted: this.defaultCustomer.noted,
           },
-          orderType: '1',
+          orderType: null,
           deliveryType: null,
           orderNumber: null,
           noted: null,
@@ -838,9 +832,9 @@ export default {
           address: this.currentCustomer.address,
           noted: this.currentCustomer.noted,
         },
-        orderType: this.defaultSalemtPOSelected,
+        orderType: this.orderSelected,
         deliveryType: this.deliverySelected,
-        orderNumber: this.currentOrderNumber,
+        orderNumber: this.currentOrderNumber.orderNumber,
         noted: null,
         active: false,
         class: 'visited-action',
@@ -880,7 +874,7 @@ export default {
             },
             orderType: this.orderSelected,
             deliveryType: this.deliverySelected,
-            orderNumber: this.currentOrderNumber,
+            orderNumber: this.currentOrderNumber.orderNumber,
             active: false,
             class: '',
           }
@@ -898,7 +892,7 @@ export default {
           this.currentCustomer.noted = bill.customer.noted
           this.orderSelected = bill.orderType
           this.deliverySelected = bill.deliveryType
-          this.currentOrderNumber = bill.orderNumber
+          this.currentOrderNumber.orderNumber = bill.orderNumber
           return {
             ...bill,
             active: true,
@@ -1022,9 +1016,6 @@ export default {
       } else {
         this.isCheckShopId = false
       }
-    },
-
-    getDefaultSalemtPOSelected() {
     },
 
     salemtPromotionObjectSelected(val) {

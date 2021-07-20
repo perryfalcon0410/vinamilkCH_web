@@ -86,6 +86,6 @@ export const validatorOnlineOrder = val => {
   if (val === undefined || val === null || val.length === 0) {
     return true
   }
-  const regex = /^[\w0-9a-zA-Z]+$/
+  const regex = /^[\w-0-9a-zA-Z]+$/
   return regex.test(val)
 }
