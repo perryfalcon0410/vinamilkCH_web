@@ -850,6 +850,9 @@ export default {
       type: Array,
       default: () => [],
     },
+    isOpenPayModal: {
+      type: Boolean,
+    },
   },
 
   data() {
@@ -925,6 +928,7 @@ export default {
         },
         extraAmount: null,
         isVoucherLocked: false,
+        promotionAmountExTax: null,
       },
       inputSearchFocusedSP: false,
       allProducts: [],
@@ -1044,6 +1048,7 @@ export default {
           lstProductId: data.lstProductId,
         }))
         this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
+        this.pay.promotionAmountExTax = this.getPromotionPrograms.promotionAmountExTax || null
         this.pay.isVoucherLocked = this.getPromotionPrograms.lockVoucher
       }
 
@@ -1065,6 +1070,7 @@ export default {
     },
     getPromotionCalculation() {
       this.pay.promotionAmount = this.getPromotionCalculation.promotionAmount
+      this.pay.promotionAmount = this.getPromotionCalculation.promotionAmountExTax || null
       this.pay.needPaymentAmount = this.getPromotionCalculation.paymentAmount
       this.extraAmountCalculation()
       if (this.getPromotionCalculation.lstSalePromotions) {
@@ -1267,7 +1273,9 @@ export default {
       deep: true,
     },
   },
-
+  created() {
+    window.addEventListener('keydown', this.keyDown)
+  },
   mounted() {
     this.GET_SALE_PAYMENT_TYPES_ACTION({
       ...this.decentralization,
@@ -1275,34 +1283,10 @@ export default {
     this.isDisabledPaymentBtn = true
     this.isDisabledPrintAndPaymentBtn = true
     this.isDisabledRePrintBtn = true
-    window.addEventListener('keydown', e => {
-      if (e.key === 'F7') {
-        if (!this.isPaid && this.statusPrintTmpButton()) {
-          this.printSaleOrderTemp()
-        }
-      }
-      if (e.key === 'F8') {
-        if (!this.isPaid && this.statusPayPrintButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
-          if (this.pay.salePayment.salePaymentType !== undefined) {
-            this.createSaleOrderAndPrint()
-          }
-        }
-      }
-      if (e.key === 'F9') {
-        if (!this.isPaid && this.statusPayButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
-          if (this.pay.salePayment.salePaymentType !== undefined) {
-            this.createSaleOrder()
-          }
-        }
-      }
-      if (e.key === 'F10' && this.statusRePrintButton()) {
-        if (this.isPaid) {
-          this.rePrintSaleOrder()
-        }
-      }
-    })
   },
-
+  destroyed() {
+    window.removeEventListener('keydown', this.keyDown, false)
+  },
   methods: {
     ...mapActions(SALES, [
       CREATE_SALE_ORDER_ACTION,
@@ -1361,6 +1345,8 @@ export default {
             customerId: this.customer.id,
             orderType: Number(this.orderSelected),
             products,
+            promotionAmount: this.pay.promotionAmount,
+            promotionAmountExTax: this.pay.promotionAmountExTax,
           },
         },
         onSuccess: () => {
@@ -1381,7 +1367,7 @@ export default {
     onChangeQuantity(id, params) {
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.programId === id) {
-          if (program.contraintType === Number(saleData.constraintType[1].id)) {
+          if (program.contraintType === Number(saleData.constraintType[1].id) && program.promotionType === Number(this.promotionTypeOption[0].id)) {
             let maxQuantity = 0
             let totalQuantity = 0
             const productsSameQuantityMax = program.products.filter(i => i.quantityMax === program.products[0].quantityMax)
@@ -1553,6 +1539,7 @@ export default {
         saleOffAmount: Number(this.pay.discount.discountAmount),
         promotionInfo: paramPromotionAmountInfos,
         orderRequest: paramOrderRequest,
+        discountCode: this.pay.discount.discountCode,
       }
 
       this.GET_PROMOTION_CALCULATION_ACTION(paramGetPromotionCalculationData)
@@ -1665,6 +1652,7 @@ export default {
       this.isPrint = true
     },
     cancel() {
+      this.isOpenPayModal = false
       if (this.isSaveSuccess === true) {
         if (this.bills.length > 1) {
           this.$emit('deleteSaveBill', this.bills)
@@ -1675,7 +1663,6 @@ export default {
           }
         }
       }
-
       this.$bvModal.hide('pay-modal')
     },
     onChangeAccumulateAmount() {
@@ -1693,36 +1680,38 @@ export default {
       let totalQuantity = 0
       const parampromotionInfo = this.promotionPrograms.filter(p => p.isUse)
       parampromotionInfo.forEach(program => {
-        program.products.forEach(product => {
-          if (program.isEditable) {
-            if (product.quantity > product.stockQuantity) {
+        if (program.products.length > 0) {
+          program.products.forEach(product => {
+            if (program.isEditable) {
+              if (product.quantity > product.stockQuantity) {
+                isValid = false
+                toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
+              }
+            } else if (product.quantityMax > product.stockQuantity) {
               isValid = false
               toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
             }
-          } else if (product.quantityMax > product.stockQuantity) {
-            isValid = false
-            toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
-          }
-        })
-        if (program.promotionType === Number(saleData.promotionType[0].id) && program.contraintType === Number(saleData.constraintType[1])) {
-          totalQuantity = 0
-          const productsSameQuantityMax = program.products.filter(i => i.quantityMax === program.products[0].quantityMax)
-          if (productsSameQuantityMax.length === program.products.length) {
+          })
+          if (program.promotionType === Number(saleData.promotionType[0].id) && program.contraintType === Number(saleData.constraintType[1])) {
+            totalQuantity = 0
+            const productsSameQuantityMax = program.products.filter(i => i.quantityMax === program.products[0].quantityMax)
+            if (productsSameQuantityMax.length === program.products.length) {
+              program.products.forEach(product => {
+                totalQuantity += product.quantity
+              })
+              const maxQuantity = program.products[0].quantityMax
+              if (totalQuantity !== maxQuantity) {
+                toasts.error(`Tổng số lượng khuyến mãi phải bằng số lượng cho phép của ${program.promotionProgramName}`)
+              }
+            }
+          } else if (program.promotionType === Number(saleData.promotionType[1].id) && program.isUse) {
+            totalQuantity = 0
             program.products.forEach(product => {
               totalQuantity += product.quantity
             })
-            const maxQuantity = program.products[0].quantityMax
-            if (totalQuantity !== maxQuantity) {
-              toasts.error(`Tổng số lượng khuyến mãi phải bằng số lượng cho phép của ${program.promotionProgramName}`)
+            if (totalQuantity <= 0) {
+              toasts.error(`Tổng số lượng khuyến mãi của ${program.promotionProgramName} phải lớn hơn 0`)
             }
-          }
-        } else if (program.promotionType === Number(saleData.promotionType[1].id) && program.isUse) {
-          totalQuantity = 0
-          program.products.forEach(product => {
-            totalQuantity += product.quantity
-          })
-          if (totalQuantity <= 0) {
-            toasts.error(`Tổng số lượng khuyến mãi của ${program.promotionProgramName} phải lớn hơn 0`)
           }
         }
       })
@@ -1778,6 +1767,32 @@ export default {
         }
         return program
       })
+    },
+    keyDown(e) {
+      if (e.key === 'F7' && this.isOpenPayModal) {
+        if (!this.isPaid && this.statusPrintTmpButton()) {
+          this.printSaleOrderTemp()
+        }
+      }
+      if (e.key === 'F8' && this.isOpenPayModal) {
+        if (!this.isPaid && this.statusPayPrintButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
+          if (this.pay.salePayment.salePaymentType !== undefined) {
+            this.createSaleOrderAndPrint()
+          }
+        }
+      }
+      if (e.key === 'F9' && this.isOpenPayModal) {
+        if (!this.isPaid && this.statusPayButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
+          if (this.pay.salePayment.salePaymentType !== undefined) {
+            this.createSaleOrder()
+          }
+        }
+      }
+      if (e.key === 'F10' && this.isOpenPayModal) {
+        if (this.isPaid && this.statusRePrintButton()) {
+          this.rePrintSaleOrder()
+        }
+      }
     },
   },
 }

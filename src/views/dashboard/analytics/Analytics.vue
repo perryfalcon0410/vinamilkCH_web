@@ -98,7 +98,7 @@ export default {
   methods: {
     kFormatter,
     checkPermissionDashboardAnalytics() {
-      return this.$permission('HomePage', 'DashboardAnalytics')
+      return this.$permission('DashboardAnalytics', 'Analytics')
     },
   },
 }

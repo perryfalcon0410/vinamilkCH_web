@@ -151,7 +151,7 @@ export default {
   },
   methods: {
     checkPermissionDashboardEcommerce() {
-      return this.$permission('HomePage', 'DashboardEcommerce')
+      return this.$permission('DashboardEcommerce', 'Ecommerce')
     },
   },
 }

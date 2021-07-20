@@ -406,6 +406,7 @@
       :order-online="orderOnline"
       :edit-online-permission="editOnlinePermission"
       :bills="bills"
+      :is-open-pay-modal="isOpenPayModal"
       @deleteSaveBill="deleteSaveBill"
     />
     <!-- END - Pay modal -->
@@ -628,6 +629,8 @@ export default {
 
       salemtPromotionObjectOptions: [],
       checkApParramCode: false, // check disabled so hoa don
+
+      isOpenPayModal: false,
     }
   },
 
@@ -830,7 +833,7 @@ export default {
         this.$refs.search.$el.querySelector('input').focus()
       }
 
-      if (e.key === 'F8') {
+      if (e.key === 'F8' && !this.isOpenPayModal) {
         if (
           this.totalQuantity === 0
           || this.editOnlinePermission === false
@@ -840,8 +843,10 @@ export default {
           || this.salemtPromotionObjectSelected === undefined
           || (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')
         ) {
+          this.isOpenPayModal = false
           this.$bvModal.hide('pay-modal')
         } else {
+          this.isOpenPayModal = true
           this.$bvModal.show('pay-modal')
         }
       }
@@ -903,10 +908,12 @@ export default {
     onPayButtonClick() {
       if (this.salemtDeliveryTypeSelected !== undefined) {
         if (this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
+          this.isOpenPayModal = true
           this.$bvModal.show('pay-modal')
         } else if (this.salemtPromotionObjectSelected !== undefined) {
           this.$refs.formContainer.validate().then(success => {
             if (success) {
+              this.isOpenPayModal = true
               this.$bvModal.show('pay-modal')
             }
           })
