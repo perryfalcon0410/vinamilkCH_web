@@ -10,6 +10,8 @@
     >
       <b-row>
         <b-col
+          xl
+          lg="3"
           sm="4"
           class="p-1"
         >
@@ -39,66 +41,9 @@
                   is-text
                 >
                   <b-icon-x
-                    v-show="reciept"
+                    v-show="keySearch"
                     class="cursor-pointer text-gray"
-                    @click="reciept = null"
-                  />
-                </b-input-group-append>
-              </b-input-group>
-            </b-col>
-            <!-- END - Full Name -->
-
-            <!-- START - Location -->
-            <b-col
-              xl
-              lg="3"
-              sm="4"
-              class="h7"
-            >
-              <div
-                class="mt-sm-1 mt-xl-0"
-              >
-                Khu vực
-              </div>
-              <tree-select
-                v-model="areasSelected"
-                :options="areaOptions"
-                placeholder="Tất cả"
-                no-options-text="Không có dữ liệu"
-                no-results-text="Không tìm thấy kết quả"
-              />
-            </b-col>
-            <!-- END - Location -->
-
-            <!-- START - MobiPhone -->
-            <b-col
-              xl
-              lg="3"
-              sm="4"
-            >
-              <div
-                class="h7 mt-sm-1 mt-xl-0"
-              >
-                Số điện thoại
-              </div>
-              <b-input-group
-                class="input-group-merge"
-              >
-                <b-form-input
-                  v-model="customerPhone"
-                  class="h7 text-brand-3"
-                  placeholder="Nhập chính xác 4 số cuối"
-                  maxlength="10"
-                  @keyup.enter="onClickSearchButton"
-                  @keypress="$onlyNumberInput"
-                />
-                <b-input-group-append
-                  is-text
-                >
-                  <b-icon-x
-                    v-show="reciept"
-                    class="cursor-pointer text-gray"
-                    @click="reciept = null"
+                    @click="keySearch = null"
                   />
                 </b-input-group-append>
               </b-input-group>
@@ -130,6 +75,41 @@
               />
             </b-col>
             <!-- END - Group -->
+          </b-row>
+        </b-col>
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+          class="p-1"
+        >
+          <b-row>
+
+            <!-- START - Location -->
+            <b-col
+              xl
+              lg="3"
+              sm="4"
+              class="h7"
+            >
+              <div
+                class="mt-sm-1 mt-xl-0"
+              >
+                Khu vực
+              </div>
+              <tree-select
+                v-model="areasSelected"
+                :options="areaOptions"
+                placeholder="Tất cả"
+                no-options-text="Không có dữ liệu"
+                no-results-text="Không tìm thấy kết quả"
+              />
+            </b-col>
+            <!-- END - Location -->
+          </b-row>
+          <b-row
+            class="mt-1"
+          >
 
             <!-- START - Status -->
             <b-col
@@ -155,11 +135,14 @@
           </b-row>
         </b-col>
         <b-col
-          class="border p-1 mr-1"
+          xl
+          lg="3"
+          sm="4"
+          class="p-1"
         >
           <b-row>
 
-            <!-- START - Date From -->
+            <!-- START - MobiPhone -->
             <b-col
               xl
               lg="3"
@@ -168,167 +151,16 @@
               <div
                 class="h7 mt-sm-1 mt-xl-0"
               >
-                Từ ngày tạo
-              </div>
-              <b-row
-                class="v-flat-pickr-group mx-0"
-                align-v="center"
-                @keypress="$onlyDateInput"
-              >
-                <b-icon-x
-                  v-show="fromCreateDate"
-                  style="position: absolute; right: 15px"
-                  class="cursor-pointer text-gray"
-                  scale="1.3"
-                  data-clear
-                />
-                <vue-flat-pickr
-                  v-model="fromCreateDate"
-                  :config="configFromDate"
-                  class="form-control h7"
-                />
-              </b-row>
-            </b-col>
-            <!-- END - Date From -->
-          </b-row>
-          <b-row
-            class="mt-1"
-          >
-
-            <!-- START - Date To -->
-            <b-col
-              xl
-              lg="3"
-              sm="4"
-            >
-              <div
-                class="h7 mt-sm-1 mt-xl-0"
-              >
-                Đến ngày tạo
-              </div>
-              <b-row
-                class="v-flat-pickr-group mx-0"
-                align-v="center"
-                @keypress="$onlyDateInput"
-              >
-                <b-icon-x
-                  v-show="toCreateDate"
-                  style="position: absolute; right: 15px"
-                  class="cursor-pointer text-gray"
-                  scale="1.3"
-                  data-clear
-                />
-                <vue-flat-pickr
-                  v-model="toCreateDate"
-                  :config="configToDate"
-                  class="form-control h7"
-                />
-              </b-row>
-
-            </b-col>
-            <!-- END - Date To -->
-          </b-row>
-        </b-col>
-        <b-col
-          class="border p-1 mr-1"
-        >
-          <b-row>
-
-            <!-- START - Date From -->
-            <b-col
-              xl
-              lg="3"
-              sm="4"
-            >
-              <div
-                class="h7 mt-sm-1 mt-xl-0"
-              >
-                Từ ngày MHC
-              </div>
-              <b-row
-                class="v-flat-pickr-group mx-0"
-                align-v="center"
-                @keypress="$onlyDateInput"
-              >
-                <b-icon-x
-                  v-show="fromPurchaseDate"
-                  style="position: absolute; right: 15px"
-                  class="cursor-pointer text-gray"
-                  scale="1.3"
-                  data-clear
-                />
-                <vue-flat-pickr
-                  v-model="fromPurchaseDate"
-                  :config="configFromPurchaseDate"
-                  class="form-control h7"
-                />
-              </b-row>
-            </b-col>
-            <!-- END - Date From -->
-          </b-row>
-          <b-row
-            class="mt-1"
-          >
-
-            <!-- START - Date To -->
-            <b-col
-              xl
-              lg="3"
-              sm="4"
-            >
-              <div
-                class="h7 mt-sm-1 mt-xl-0"
-              >
-                Đến ngày MHC
-              </div>
-              <b-row
-                class="v-flat-pickr-group mx-0"
-                align-v="center"
-                @keypress="$onlyDateInput"
-              >
-                <b-icon-x
-                  v-show="toPurchaseDate"
-                  style="position: absolute; right: 15px"
-                  class="cursor-pointer text-gray"
-                  scale="1.3"
-                  data-clear
-                />
-                <vue-flat-pickr
-                  v-model="toPurchaseDate"
-                  :config="configToPurchaseDate"
-                  class="form-control h7"
-                />
-              </b-row>
-
-            </b-col>
-            <!-- END - Date To -->
-          </b-row>
-        </b-col>
-        <b-col
-          sm="3"
-          class="border p-1"
-        >
-          <b-row>
-
-            <!-- START - Sale Amount -->
-            <b-col
-              xl
-              lg="3"
-              sm="4"
-            >
-              <div
-                class="h7 mt-sm-1 mt-xl-0"
-              >
-                Từ doanh số
+                Số điện thoại
               </div>
               <b-input-group
                 class="input-group-merge"
               >
                 <b-form-input
-                  v-model="fromSaleAmount"
+                  v-model="customerPhone"
                   class="h7 text-brand-3"
-                  :number="true"
-                  maxlength="12"
+                  placeholder="Nhập chính xác 4 số cuối"
+                  maxlength="10"
                   @keyup.enter="onClickSearchButton"
                   @keypress="$onlyNumberInput"
                 />
@@ -336,134 +168,220 @@
                   is-text
                 >
                   <b-icon-x
-                    v-show="reciept"
+                    v-show="customerPhone"
                     class="cursor-pointer text-gray"
-                    @click="reciept = null"
+                    @click="customerPhone = null"
                   />
                 </b-input-group-append>
               </b-input-group>
             </b-col>
-            <!-- END - Sale Amount -->
-
-            <!-- START - Sale Amount -->
-            <b-col
-              xl
-              lg="3"
-              sm="4"
-            >
-              <div
-                class="h7 mt-sm-1 mt-xl-0"
-              >
-                Đến doanh số
-              </div>
-              <b-input-group
-                class="input-group-merge"
-              >
-                <b-form-input
-                  v-model="toSaleAmount"
-                  class="h7 text-brand-3"
-                  :number="true"
-                  maxlength="12"
-                  @keyup.enter="onClickSearchButton"
-                  @keypress="$onlyNumberInput"
-                />
-                <b-input-group-append
-                  is-text
-                >
-                  <b-icon-x
-                    v-show="reciept"
-                    class="cursor-pointer text-gray"
-                    @click="reciept = null"
-                  />
-                </b-input-group-append>
-              </b-input-group>
-            </b-col>
-            <!-- END - Sale Amount -->
-          </b-row>
-          <b-row
-            class="mt-1"
-          >
-
-            <!-- START - Date From -->
-            <b-col
-              xl
-              lg="3"
-              sm="4"
-            >
-              <div
-                class="h7 mt-sm-1 mt-xl-0"
-              >
-                Từ ngày doanh số
-              </div>
-              <b-row
-                class="v-flat-pickr-group mx-0"
-                align-v="center"
-                @keypress="$onlyDateInput"
-              >
-                <b-icon-x
-                  v-show="fromSaleDate"
-                  style="position: absolute; right: 15px"
-                  class="cursor-pointer text-gray"
-                  scale="1.3"
-                  data-clear
-                />
-                <vue-flat-pickr
-                  v-model="fromSaleDate"
-                  :config="configFromSaleDate"
-                  class="form-control h7"
-                />
-              </b-row>
-            </b-col>
-            <!-- END - Date From -->
-
-            <!-- START - Date To -->
-            <b-col
-              xl
-              lg="3"
-              sm="4"
-            >
-              <div
-                class="h7 mt-sm-1 mt-xl-0"
-              >
-                Đến ngày doanh số
-              </div>
-              <b-row
-                class="v-flat-pickr-group mx-0"
-                align-v="center"
-                @keypress="$onlyDateInput"
-              >
-                <b-icon-x
-                  v-show="toSaleDate"
-                  style="position: absolute; right: 15px"
-                  class="cursor-pointer text-gray"
-                  scale="1.3"
-                  data-clear
-                />
-                <vue-flat-pickr
-                  v-model="toSaleDate"
-                  :config="configToSaleDate"
-                  class="form-control h7"
-                />
-              </b-row>
-
-            </b-col>
-            <!-- END - Date To -->
+            <!-- END - Full Name -->
           </b-row>
         </b-col>
+        <b-col>
+          <b-container class="box pb-1">
+            <!-- START - title & icon -->
+            <div
+              v-b-toggle.collapse-1
+            >
+              <b-row>
+                <div class="content">
+                  <b-icon-caret-down
+                    scale="1.5"
+                  />
+                  Thời gian tạo
+                </div>
+              </b-row>
+            </div>
+            <!-- END - title & icon -->
+
+            <!-- START - collapse -->
+            <b-collapse
+              id="collapse-1"
+              visible
+            >
+              <b-row>
+
+                <!-- START - Date From -->
+                <b-col
+                  xl
+                  lg="3"
+                  sm="4"
+                >
+                  <div
+                    class="h7 mt-sm-1 mt-xl-0"
+                  >
+                    Từ ngày
+                  </div>
+                  <b-row
+                    class="v-flat-pickr-group mx-0"
+                    align-v="center"
+                    @keypress="$onlyDateInput"
+                  >
+                    <b-icon-x
+                      v-show="fromCreateDate"
+                      class="cursor-pointer text-gray style-icon-x"
+                      scale="1.3"
+                      data-clear
+                    />
+                    <vue-flat-pickr
+                      v-model="fromCreateDate"
+                      :config="configFromDate"
+                      class="form-control h7"
+                    />
+                  </b-row>
+                </b-col>
+                <!-- END - Date From -->
+              </b-row>
+              <b-row
+                class="mt-1"
+              >
+
+                <!-- START - Date To -->
+                <b-col
+                  xl
+                  lg="3"
+                  sm="4"
+                >
+                  <div
+                    class="h7 mt-sm-1 mt-xl-0"
+                  >
+                    Đến ngày
+                  </div>
+                  <b-row
+                    class="v-flat-pickr-group mx-0"
+                    align-v="center"
+                    @keypress="$onlyDateInput"
+                  >
+                    <b-icon-x
+                      v-show="toCreateDate"
+                      class="cursor-pointer text-gray style-icon-x"
+                      scale="1.3"
+                      data-clear
+                    />
+                    <vue-flat-pickr
+                      v-model="toCreateDate"
+                      :config="configToDate"
+                      class="form-control h7"
+                    />
+                  </b-row>
+
+                </b-col>
+                <!-- END - Date To -->
+              </b-row>
+            </b-collapse>
+          </b-container>
+        </b-col>
+        <b-col>
+          <b-container class="box pb-1">
+            <!-- START - title & icon -->
+            <div
+              v-b-toggle.collapse-2
+            >
+              <b-row>
+                <div class="content">
+                  <b-icon-caret-down
+                    scale="1.5"
+                  />
+                  Ngày mua hàng cuối
+                </div>
+              </b-row>
+            </div>
+            <!-- END - title & icon -->
+
+            <!-- START - collapse -->
+            <b-collapse
+              id="collapse-2"
+              visible
+            >
+              <b-row>
+
+                <!-- START - Date From -->
+                <b-col
+                  xl
+                  lg="3"
+                  sm="4"
+                >
+                  <div
+                    class="h7 mt-sm-1 mt-xl-0"
+                  >
+                    Từ ngày
+                  </div>
+                  <b-row
+                    class="v-flat-pickr-group mx-0"
+                    align-v="center"
+                    @keypress="$onlyDateInput"
+                  >
+                    <b-icon-x
+                      v-show="fromPurchaseDate"
+                      class="cursor-pointer text-gray style-icon-x"
+                      scale="1.3"
+                      data-clear
+                    />
+                    <vue-flat-pickr
+                      v-model="fromPurchaseDate"
+                      :config="configFromPurchaseDate"
+                      class="form-control h7"
+                    />
+                  </b-row>
+                </b-col>
+                <!-- END - Date From -->
+              </b-row>
+              <b-row
+                class="mt-1"
+              >
+
+                <!-- START - Date To -->
+                <b-col
+                  xl
+                  lg="3"
+                  sm="4"
+                >
+                  <div
+                    class="h7 mt-sm-1 mt-xl-0"
+                  >
+                    Đến ngày
+                  </div>
+                  <b-row
+                    class="v-flat-pickr-group mx-0"
+                    align-v="center"
+                    @keypress="$onlyDateInput"
+                  >
+                    <b-icon-x
+                      v-show="toPurchaseDate"
+                      class="cursor-pointer text-gray style-icon-x"
+                      scale="1.3"
+                      data-clear
+                    />
+                    <vue-flat-pickr
+                      v-model="toPurchaseDate"
+                      :config="configToPurchaseDate"
+                      class="form-control h7"
+                    />
+                  </b-row>
+
+                </b-col>
+                <!-- END - Date To -->
+              </b-row>
+            </b-collapse>
+          </b-container>
+        </b-col>
+
         <!-- START - Search button -->
-        <div class="col d-flex justify-content-center align-items-center">
-          <div>
-            <b-button
-              class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
-              variant="someThing"
-              @click="onClickSearchButton()"
-            >
-              <b-icon-search class="mr-50" />
-              Tìm kiếm
-            </b-button>
-          </div>
-        <!-- END - Search button -->
+        <div
+          class="mx-1 d-flex align-items-center"
+        >
+          <b-button
+            id="btnSearch"
+            class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0"
+            variant="someThing"
+            @click="onClickSearchButton()"
+          >
+            <b-icon-search class="mr-50" />
+            Tìm kiếm
+          </b-button>
         </div>
+        <!-- END - Search button -->
       </b-row>
     </v-card-actions>
   </b-form>
@@ -518,8 +436,8 @@ export default {
       statusSelected: null,
       fromCreateDate: null,
       toCreateDate: null,
-      // fromPurchaseDate: this.$earlyMonth,
-      // toPurchaseDate: this.$nowDate,
+      fromPurchaseDate: null,
+      toPurchaseDate: null,
       fromSaleDate: null,
       toSaleDate: null,
       fromSaleAmount: null,
@@ -668,3 +586,19 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.box {
+    border: 1px solid rgb(190, 186, 186);
+    border-radius: 10px;
+}
+.content {
+    margin-top: -10px;
+    margin-left: -5px;
+    background: white;
+}
+.style-icon-x {
+  position: absolute;
+  right: 25px;
+}
+</style>

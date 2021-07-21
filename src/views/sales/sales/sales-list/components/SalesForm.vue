@@ -141,7 +141,7 @@
               class="mt-1 text-brand-3"
               align-v="center"
             >
-              <b-col cols="4">
+              <b-col cols="5">
                 Điện thoại
               </b-col>
               <b-col>
@@ -155,7 +155,7 @@
               class="mt-1 text-brand-3"
               align-v="center"
             >
-              <b-col cols="4">
+              <b-col cols="5">
                 Doanh số tích lũy
               </b-col>
               <b-col>
@@ -169,7 +169,7 @@
               class="mt-1 word-wrap text-brand-3"
               align-v="center"
             >
-              <b-col cols="4">
+              <b-col cols="5">
                 Địa chỉ
               </b-col>
               <b-col>
@@ -216,7 +216,10 @@
                 class="mt-1"
                 align-v="center"
               >
-                <b-col cols="4">
+                <b-col
+                  cols="5"
+                  class="text-brand-3"
+                >
                   Loại đơn hàng
                 </b-col>
                 <b-col>
@@ -244,7 +247,10 @@
                 align-v="center"
               >
 
-                <b-col cols="4">
+                <b-col
+                  cols="5"
+                  class="text-brand-3"
+                >
                   Loại giao hàng
                 </b-col>
                 <b-col>
@@ -272,7 +278,10 @@
                 align-v="center"
               >
 
-                <b-col cols="4">
+                <b-col
+                  cols="5"
+                  class="text-brand-3"
+                >
                   Số đơn online
                 </b-col>
                 <b-col>
@@ -326,14 +335,14 @@
             class="mt-1 text-brand-3"
             align-v="center"
           >
-            <b-col cols="4">
+            <b-col cols="5">
               Số lượng sản phẩm
             </b-col>
             <b-col
-              cols="8"
+              cols="7"
               class="pr-0"
             >
-              <div class="text-center text-dark font-weight-bold bg-light rounded py-1">
+              <div class="text-center h6 text-brand-3 font-weight-bold bg-light rounded py-1">
                 {{ totalQuantity }}
               </div>
             </b-col>
@@ -345,14 +354,14 @@
             class="mt-1 text-brand-3"
             align-v="center"
           >
-            <b-col cols="4">
+            <b-col cols="5">
               Tạm tính
             </b-col>
             <b-col
-              cols="8"
+              cols="7"
               class="pr-0"
             >
-              <div class="text-center text-dark font-weight-bold bg-light rounded py-1">
+              <div class="h6 text-center text-brand-3 font-weight-bold bg-light rounded py-1">
                 {{ totalOrderPrice }}
               </div>
             </b-col>
@@ -571,6 +580,9 @@ export default {
       currentCustomer: {},
       isSelected: false,
       currentDate: getCurrentTime(),
+      pagination: {
+        size: 100, // hard code
+      },
       decentralization: {
         formId: 1,
         ctrlId: 4,
@@ -894,7 +906,7 @@ export default {
         const searchData = Number(this.search)
         if (Number.isNaN(searchData) === false) {
           this.GET_CUSTOMERS_ACTION({
-            phoneNumber: Number(this.search),
+            phoneNumber: (searchData === 0) ? '' : searchData,
           })
           this.search = ''
         } else {
@@ -1023,11 +1035,14 @@ export default {
     },
 
     onChangeKeyWord() {
-      const searchKeywords = {
-        searchKeywords: this.search.trim(),
-      }
+      // const searchKeywords = {
+      //   searchKeywords: this.search.trim(),
+      // }
       if (this.search.length >= this.minSearch) {
-        this.GET_CUSTOMERS_SALE_ACTION(searchKeywords)
+        this.GET_CUSTOMERS_SALE_ACTION({
+          ...this.pagination,
+          searchKeywords: this.search.trim(),
+        })
       } else {
         this.customersSearch = [{ data: null }]
         // this.search = ''
@@ -1073,6 +1088,7 @@ export default {
       } else {
         const searchData = Number(this.search)
         if (Number.isNaN(searchData) === false) {
+          console.log(this.search)
           this.GET_CUSTOMERS_ACTION({
             phoneNumber: Number(this.search),
           })

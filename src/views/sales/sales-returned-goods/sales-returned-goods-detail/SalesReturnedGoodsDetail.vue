@@ -17,7 +17,7 @@
           <b-list-group-item>
             Mã trả hàng
             <strong>:
-              {{ (detailReturnInfo.orderNumber) }}
+              {{ (detailReturnInfo.returnNumber) }}
             </strong>
           </b-list-group-item>
           <b-list-group-item>

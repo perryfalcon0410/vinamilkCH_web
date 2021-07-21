@@ -24,87 +24,114 @@
             class="h7"
           >
             <!-- START - Full Name -->
-            <b-form-group
-              label="Khách hàng"
-              label-for="form-input-customer"
-              label-class="h8"
+            <b-col
+              xl
+              lg="3"
+              sm="4"
+              class="h7"
             >
-              <b-form-input
-                id="form-input-customer"
-                ref="focusInput"
-                v-model="searchKeywords"
-                autofocus
-                class="h9"
-                size="sm"
-                placeholder="Nhập mã/ họ tên"
-                trim
-              />
-            </b-form-group>
+              <div
+                class="mt-sm-1 mt-xl-0"
+              >
+                Khách hàng
+              </div>
+              <b-input-group
+                class="input-group-merge"
+              >
+                <b-form-input
+                  ref="focusInput"
+                  v-model.trim="searchKeywords"
+                  placeholder="Nhập mã/ họ tên"
+                />
+                <b-input-group-append
+                  is-text
+                >
+                  <b-icon-x
+                    v-show="searchKeywords"
+                    class="cursor-pointer text-gray"
+                    @click="searchKeywords = null"
+                  />
+                </b-input-group-append>
+              </b-input-group>
+            </b-col>
             <!-- END - Full Name -->
           </b-col>
-
           <b-col
             xl
-            sm="6"
+            lg="3"
+            sm="4"
             class="h7"
           >
-            <b-form-group
-              label="Số điện thoại"
-              label-for="form-input-phoneNumber"
-              label-class="h8"
+            <div
+              class="mt-sm-1 mt-xl-0"
+            >
+              Số điện thoại
+            </div>
+            <b-input-group
+              class="input-group-merge"
             >
               <b-form-input
-                id="form-input-phoneNumber"
                 v-model.trim="phoneNumber"
-                class="h9"
-                size="sm"
-                trim
+                autocomplete="on"
+                maxlength="10"
+                @keypress="$onlyNumberInput"
               />
-            </b-form-group>
+              <b-input-group-append
+                is-text
+              >
+                <b-icon-x
+                  v-show="phoneNumber"
+                  class="cursor-pointer text-gray"
+                  @click="phoneNumber = null"
+                />
+              </b-input-group-append>
+            </b-input-group>
           </b-col>
 
           <b-col
             xl
-            sm="6"
+            lg="3"
+            sm="4"
             class="h7"
           >
-            <b-form-group
-              label="CMND"
-              label-for="form-input-idNo"
-              label-class="h8"
+            <div
+              class="mt-sm-1 mt-xl-0"
+            >
+              CMND
+            </div>
+            <b-input-group
+              class="input-group-merge"
             >
               <b-form-input
-                id="form-input-idNo"
-                v-model="idNo"
-                class="h9"
-                size="sm"
-                trim
+                v-model.trim="idNo"
               />
-            </b-form-group>
+              <b-input-group-append
+                is-text
+              >
+                <b-icon-x
+                  v-show="idNo"
+                  class="cursor-pointer text-gray"
+                  @click="idNo = null"
+                />
+              </b-input-group-append>
+            </b-input-group>
           </b-col>
 
-          <b-col
-            xl
-            sm="6"
-            md="12"
+          <!-- START - Search button -->
+          <div
+            class="mt-auto mx-35"
           >
-            <b-form-group
-              label="Tìm kiếm"
-              label-for="form-button-search"
-              label-class="text-white"
+            <b-button
+              id="btnSearch"
+              class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0"
+              variant="someThing"
+              @click="onClickSearchButton()"
             >
-              <b-button
-                id="form-button-search"
-                class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
-                variant="someThing"
-                style="height: 30px;"
-                @click="onClickSearchButton()"
-              >
-                <b-icon-search />
-                Tìm kiếm
-              </b-button>
-            </b-form-group>
-          </b-col>
+              <b-icon-search class="mr-50" />
+              Tìm kiếm
+            </b-button>
+          </div>
+          <!-- END - Search button -->
 
         </b-form-row>
       </b-form>

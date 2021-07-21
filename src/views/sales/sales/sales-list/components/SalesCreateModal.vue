@@ -5,8 +5,8 @@
   >
     <b-modal
       ref="salesCreateModal"
-      modal-class="modal-primary"
       hide-footer
+      title-class="font-weight-bold text-brand-1"
       title="Thêm khách hàng"
     >
       <b-form-row>
@@ -275,6 +275,7 @@
             label="Ghi chú"
             label-for="Note"
             class="mt-1"
+            label-class="h7"
           >
             <b-form-textarea
               id="Note"
@@ -287,8 +288,8 @@
 
         <b-col class="text-center">
           <b-button
-            variant="primary"
-            class="mr-2"
+            variant="someThing"
+            class="mr-2 shadow-brand-1 bg-brand-1 text-white h8"
             @click="onClickSaveButton()"
           >
             <b-icon
