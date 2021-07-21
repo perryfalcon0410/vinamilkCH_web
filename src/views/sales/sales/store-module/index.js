@@ -28,6 +28,8 @@ import {
   GET_SALE_PAYMENT_TYPES_GETTER,
   GET_LIMIT_AGE_CUSTOMERS_GETTER,
   GET_PRODUCT_BY_BARCODE_GETTER,
+  SALEMT_PROMOTION_OBJECT_GETTER,
+  SALEMT_DELIVERY_TYPE_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -54,6 +56,8 @@ import {
   GET_SALE_PAYMENT_TYPES_ACTION,
   GET_LIMIT_AGE_CUSTOMERS_ACTION,
   GET_PRODUCT_BY_BARCODE_ACTION,
+  GET_SALEMT_PROMOTION_OBJECT_ACTION,
+  GET_SALEMT_DELIVERY_TYPE_ACTION,
 } from './type'
 
 export default {
@@ -86,6 +90,8 @@ export default {
     salePaymentTypes: [],
     limitAge: [],
     productByBarcode: {},
+    salemtPromotions: [],
+    salemtDeliveries: [],
   },
 
   getters: {
@@ -163,6 +169,12 @@ export default {
     },
     [GET_PRODUCT_BY_BARCODE_GETTER](state) {
       return state.productByBarcode || {}
+    },
+    [SALEMT_PROMOTION_OBJECT_GETTER](state) {
+      return state.salemtPromotions
+    },
+    [SALEMT_DELIVERY_TYPE_GETTER](state) {
+      return state.salemtDeliveries
     },
   },
 
@@ -561,6 +573,36 @@ export default {
             val.onSuccess()
           } else {
             val.onFailure()
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_SALEMT_PROMOTION_OBJECT_ACTION]({ state }, val) {
+      SalesServices
+        .getSalemtPromotionObjects(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.salemtPromotions = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_SALEMT_DELIVERY_TYPE_ACTION]({ state }, val) {
+      SalesServices
+        .getSalemtDeliveryTypes(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.salemtDeliveries = res.data
+          } else {
             throw new Error(res.statusValue)
           }
         })

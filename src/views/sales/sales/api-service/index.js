@@ -24,6 +24,8 @@ import {
   getSalesPaymentTypesEndpoint,
   getLimitAgeCustomerEndpoint,
   getProductByBarcodeEndpoint,
+  getSalemtPromotionObjectTypeEndpoint,
+  getSalemtDeliveryTypeEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -147,6 +149,16 @@ export default {
   },
   getProductByBarcode(args) {
     return axios.get(getProductByBarcodeEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getSalemtPromotionObjects(args) {
+    return axios.get(getSalemtPromotionObjectTypeEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getSalemtDeliveryTypes(args) {
+    return axios.get(getSalemtDeliveryTypeEndpoint, {
       params: formatURLParams(args),
     })
   },

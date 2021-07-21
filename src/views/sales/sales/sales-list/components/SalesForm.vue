@@ -494,14 +494,10 @@ import {
   CUSTOMER,
   // GETTERS
   CUSTOMER_BY_ID_GETTER,
-  SALEMT_PROMOTION_OBJECT_GETTER,
-  SALEMT_DELIVERY_TYPE_GETTER,
   CUSTOMER_DEFAULT_GETTER,
   CUSTOMERS_GETTER,
   // ACTIONS
   GET_CUSTOMER_BY_ID_ACTION,
-  GET_SALEMT_PROMOTION_OBJECT_ACTION,
-  GET_SALEMT_DELIVERY_TYPE_ACTION,
   GET_CUSTOMER_DEFAULT_ACTION,
   GET_CUSTOMERS_ACTION,
 } from '../../../sales-customers/store-module/type'
@@ -511,11 +507,15 @@ import {
   ONLINE_ORDER_BY_ID_GETTER,
   CUSTOMERS_SALE_GETTER,
   GET_PROMOTION_PROGRAMS_GETTER,
+  SALEMT_PROMOTION_OBJECT_GETTER,
+  SALEMT_DELIVERY_TYPE_GETTER,
   // Action
   GET_ONLINE_ORDER_BY_ID_ACTION,
   GET_ONLINE_ORDERS_ACTION,
   GET_PROMOTION_PROGRAMS_ACTION,
   GET_CUSTOMERS_SALE_ACTION,
+  GET_SALEMT_PROMOTION_OBJECT_ACTION,
+  GET_SALEMT_DELIVERY_TYPE_ACTION,
 } from '../../store-module/type'
 import SalesCreateModal from './SalesCreateModal.vue'
 import SalesSearchModal from './SalesSearchModal.vue'
@@ -649,8 +649,6 @@ export default {
   computed: {
     ...mapGetters(CUSTOMER, {
       CUSTOMER_BY_ID_GETTER,
-      SALEMT_PROMOTION_OBJECT_GETTER,
-      SALEMT_DELIVERY_TYPE_GETTER,
       CUSTOMER_DEFAULT_GETTER,
       CUSTOMERS_GETTER,
     }),
@@ -659,6 +657,8 @@ export default {
       ONLINE_ORDER_BY_ID_GETTER,
       GET_PROMOTION_PROGRAMS_GETTER,
       CUSTOMERS_SALE_GETTER,
+      SALEMT_PROMOTION_OBJECT_GETTER,
+      SALEMT_DELIVERY_TYPE_GETTER,
     }),
 
     getCustomerSearch() {
@@ -814,6 +814,7 @@ export default {
     getSalemtPromotionObjectOptions() {
       this.salemtPromotionObjectOptions = [...this.getSalemtPromotionObjectOptions]
       this.getDefaultPromotionObjectSelected()
+      this.$emit('getSalemtPOOptions', this.salemtPromotionObjectOptions)
     },
     salemtDeliveryTypeOptions() {
       this.GetSalemtDeliveryTypeDefault()
@@ -877,8 +878,6 @@ export default {
   methods: {
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_BY_ID_ACTION,
-      GET_SALEMT_PROMOTION_OBJECT_ACTION,
-      GET_SALEMT_DELIVERY_TYPE_ACTION,
       GET_CUSTOMER_DEFAULT_ACTION,
       GET_CUSTOMERS_ACTION,
     ]),
@@ -888,6 +887,8 @@ export default {
       GET_PROMOTION_PROGRAMS_ACTION,
       GET_CUSTOMERS_SALE_ACTION,
       GET_ONLINE_ORDERS_ACTION,
+      GET_SALEMT_PROMOTION_OBJECT_ACTION,
+      GET_SALEMT_DELIVERY_TYPE_ACTION,
     ]),
 
     statusPayButton() {
@@ -1037,6 +1038,8 @@ export default {
     onChangeKeyWord() {
       // const searchKeywords = {
       //   searchKeywords: this.search.trim(),
+      //   page: 0,
+      //   size: 2000,
       // }
       if (this.search.length >= this.minSearch) {
         this.GET_CUSTOMERS_SALE_ACTION({
@@ -1045,17 +1048,14 @@ export default {
         })
       } else {
         this.customersSearch = [{ data: null }]
-        // this.search = ''
       }
-      // this.search = ''
     },
 
     resetOrderNumber(item) {
+      this.$emit('getSalemtPOSelected', item)
       if (item.id === saleData.salemtPromotionObject[0].id) {
         this.orderOnline.orderNumber = ''
       }
-
-      this.$emit('salemtPromotionObjectSelected', item.id)
     },
 
     getDeliveryType(item) {

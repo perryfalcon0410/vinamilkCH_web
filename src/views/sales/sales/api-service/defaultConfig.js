@@ -52,3 +52,7 @@ export const getSalesPaymentTypesEndpoint = `${COMMON}${APPARAM}/type/SALEMT_PAY
 export const getLimitAgeCustomerEndpoint = `${COMMON}${APPARAM}/type/SALEMT_LIMIT_AGE_CUS`
 
 export const getProductByBarcodeEndpoint = `${SALES}${PRODUCT}/barcode`
+
+export const getSalemtPromotionObjectTypeEndpoint = `${COMMON}${APPARAM}/type/SALEMT_PROMOTION_OBJECT`
+
+export const getSalemtDeliveryTypeEndpoint = `${COMMON}${APPARAM}/type/SALEMT_DELIVERY_TYPE`

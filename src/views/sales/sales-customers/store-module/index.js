@@ -19,9 +19,6 @@ import {
   PRECINCTS_GETTER,
   CARD_TYPES_GETTER,
   CLOSELY_TYPES_GETTER,
-  SALEMT_PROMOTION_OBJECT_GETTER,
-  SALEMT_DELIVERY_TYPE_GETTER,
-  SALEMT_PAYMENT_TYPE_GETTER,
   GENDERS_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
@@ -41,10 +38,6 @@ import {
 
   GET_CARD_TYPES_ACTION,
   GET_CLOSELY_TYPES_ACTION,
-
-  GET_SALEMT_PROMOTION_OBJECT_ACTION,
-  GET_SALEMT_DELIVERY_TYPE_ACTION,
-  GET_SALEMT_PAYMENT_TYPE_ACTION,
   GET_GENDERS_ACTION,
 
 } from './type'
@@ -66,9 +59,6 @@ export default {
     precincts: [],
     cardTypes: [],
     closelyTypes: [],
-    salemtPromotions: [],
-    salemtDeliveries: [],
-    salemtPayments: [],
     genders: [],
   },
 
@@ -119,15 +109,6 @@ export default {
     },
     [CLOSELY_TYPES_GETTER](state) {
       return state.closelyTypes
-    },
-    [SALEMT_PROMOTION_OBJECT_GETTER](state) {
-      return state.salemtPromotions
-    },
-    [SALEMT_DELIVERY_TYPE_GETTER](state) {
-      return state.salemtDeliveries
-    },
-    [SALEMT_PAYMENT_TYPE_GETTER](state) {
-      return state.salemtPayments
     },
     [GENDERS_GETTER](state) {
       return state.genders
@@ -371,51 +352,6 @@ export default {
         .then(res => {
           if (res.success) {
             state.closelyTypes = res.data
-          } else {
-            throw new Error(res.statusValue)
-          }
-        })
-        .catch(error => {
-          toasts.error(error.message)
-        })
-    },
-    [GET_SALEMT_PROMOTION_OBJECT_ACTION]({ state }, val) {
-      CustomerService
-        .getSalemtPromotionObjects(val)
-        .then(response => response.data)
-        .then(res => {
-          if (res.success) {
-            state.salemtPromotions = res.data
-          } else {
-            throw new Error(res.statusValue)
-          }
-        })
-        .catch(error => {
-          toasts.error(error.message)
-        })
-    },
-    [GET_SALEMT_DELIVERY_TYPE_ACTION]({ state }, val) {
-      CustomerService
-        .getSalemtDeliveryTypes(val)
-        .then(response => response.data)
-        .then(res => {
-          if (res.success) {
-            state.salemtDeliveries = res.data
-          } else {
-            throw new Error(res.statusValue)
-          }
-        })
-        .catch(error => {
-          toasts.error(error.message)
-        })
-    },
-    [GET_SALEMT_PAYMENT_TYPE_ACTION]({ state }, val) {
-      CustomerService
-        .getSalemtPaymentTypes(val)
-        .then(response => response.data)
-        .then(res => {
-          if (res.success) {
-            state.salemtPayments = res.data
           } else {
             throw new Error(res.statusValue)
           }

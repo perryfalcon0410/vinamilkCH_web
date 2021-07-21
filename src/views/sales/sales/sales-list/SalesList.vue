@@ -283,7 +283,8 @@
         @getOnlineCustomer="getOnlineCustomer"
         @getCustomerCreate="getCustomerCreate"
         @currentCustomer="getCurrentCustomer"
-        @salemtPromotionObjectSelected="salemtPromotionObjectSelected"
+        @getSalemtPOSelected="getSalemtPOSelected"
+        @getSalemtPOOptions="getSalemtPOOptions"
         @salemtDeliveryTypeSelected="salemtDeliveryTypeSelected"
         @getIdCustomer="getIdCustomer"
         @deleteSaveBill="deleteSaveBill"
@@ -346,6 +347,7 @@ export default {
       currentCustomer: {},
       defaultCustomer: {},
       currentOrderNumber: {},
+      salemtPOOptions: [],
       selectedValue: null,
       checkStock: false,
       isDisabled: false, // check tồn kho disable button thanh toán
@@ -447,7 +449,11 @@ export default {
             address: null,
             noted: null,
           },
-          orderType: null,
+          orderType: {
+            id: null,
+            label: null,
+            apParamCode: null,
+          },
           deliveryType: null,
           orderNumber: '',
           active: true,
@@ -457,7 +463,7 @@ export default {
 
       // online order
       onlineOrderId: null,
-      orderSelected: null,
+      orderSelected: {},
       deliverySelected: null,
       editOnlinePermission: true,
       editManualPermission: true,
@@ -594,12 +600,16 @@ export default {
       this.currentOrderNumber = { ...this.getOrderNumber }
     },
 
-    deleteSaveBill() {
-      this.bills = [...this.deleteSaveBill]
+    getSalemtPOSelected() {
+      this.orderSelected = { ...this.getSalemtPOSelected }
     },
 
-    salemtPromotionObjectSelected() {
-      this.orderSelected = this.salemtPromotionObjectSelected
+    getSalemtPOOptions() {
+      this.salemtPOOptions = [...this.getSalemtPOOptions]
+    },
+
+    deleteSaveBill() {
+      this.bills = [...this.deleteSaveBill]
     },
 
     selectedProduct() {
@@ -812,7 +822,9 @@ export default {
             address: this.defaultCustomer.address,
             noted: this.defaultCustomer.noted,
           },
-          orderType: null,
+          orderType: {
+            id: null,
+          },
           deliveryType: null,
           orderNumber: null,
           noted: null,
@@ -832,7 +844,9 @@ export default {
           address: this.currentCustomer.address,
           noted: this.currentCustomer.noted,
         },
-        orderType: this.orderSelected,
+        orderType: {
+          id: this.orderSelected.id,
+        },
         deliveryType: this.deliverySelected,
         orderNumber: this.currentOrderNumber.orderNumber,
         noted: null,
@@ -872,7 +886,9 @@ export default {
               address: this.currentCustomer.address,
               noted: this.currentCustomer.noted,
             },
-            orderType: this.orderSelected,
+            orderType: {
+              id: this.orderSelected.id,
+            },
             deliveryType: this.deliverySelected,
             orderNumber: this.currentOrderNumber.orderNumber,
             active: false,
@@ -890,7 +906,7 @@ export default {
           this.currentCustomer.totalBill = bill.customer.totalBill
           this.currentCustomer.address = bill.customer.address
           this.currentCustomer.noted = bill.customer.noted
-          this.orderSelected = bill.orderType
+          this.orderSelected.id = bill.orderType.id
           this.deliverySelected = bill.deliveryType
           this.currentOrderNumber.orderNumber = bill.orderNumber
           return {
@@ -1018,25 +1034,25 @@ export default {
       }
     },
 
-    salemtPromotionObjectSelected(val) {
+    getSalemtPOSelected(val) {
       this.orderSelected = val
       const { usedShop } = this.loginInfo
-      if (val === '1') {
+      if (val.id === '1') {
         this.isOnline = false
         this.onlineOrderId = null
         this.editOnlinePermission = true
         this.editManualPermission = true
       }
 
-      if (val !== '1' && this.orderProducts.length > 0) {
-        if (val !== '1' && usedShop.id === this.currentCustomer.shopId) {
+      if (val.id !== '1' && this.orderProducts.length > 0) {
+        if (val.id !== '1' && usedShop.id === this.currentCustomer.shopId) {
           if (usedShop.manuallyCreatable === false) {
             this.$refs.salesNotifyModal.show()
           }
         }
       }
 
-      if (val !== '1') {
+      if (val.id !== '1') {
         this.isOnline = true
         this.onlineOrderId = null
 
@@ -1059,6 +1075,10 @@ export default {
       this.deliverySelected = val
     },
 
+    getSalemtPOOptions(val) {
+      this.salemtPOOptions = val
+    },
+
     onClickAgreeButton() {
       this.orderProducts = []
       this.$refs.salesNotifyModal.hide()
@@ -1072,16 +1092,16 @@ export default {
     // Create callback function to receive barcode when the scanner is already done
     onBarcodeScanned(barcode) {
       if (barcode.length > 4) {
-        this.GET_PRODUCT_BY_BARCODE_ACTION({
-          data: {
-            customerId: this.searchOptions.customerId,
-            barcode: barcode.toString(),
-          },
-          onSuccess: () => {
-          },
-          onFailure: () => {
-          },
-        })
+        // this.GET_PRODUCT_BY_BARCODE_ACTION({
+        //   data: {
+        //     customerId: this.searchOptions.customerId,
+        //     barcode: barcode.toString(),
+        //   },
+        //   onSuccess: () => {
+        //   },
+        //   onFailure: () => {
+        //   },
+        // })
       }
     },
     // Reset to the last barcode before hitting enter (whatever anything in the input box)
