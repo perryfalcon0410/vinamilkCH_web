@@ -223,7 +223,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
 
 import {
@@ -231,8 +230,10 @@ import {
   // GETTERS
   SHOP_LOCATIONS_SEARCH_GETTER,
   CUSTOMER_TYPES_GETTER,
+  GENDERS_GETTER,
   // ACTIONS
   GET_SHOP_LOCATIONS_SEARCH_ACTION,
+  GET_GENDERS_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -247,7 +248,7 @@ export default {
       customerTypesSelected: null,
       statuOptions: customerData.status,
       statusSelected: customerData.status[0].id,
-      genderOptions: commonData.genders,
+      genderOptions: [], // 1 = Nam, 2 = Nữ, 3 = Khác
       gendersSelected: null,
       areasSelected: null,
       privateCustomer: true,
@@ -269,12 +270,22 @@ export default {
     ...mapGetters(CUSTOMER, [
       SHOP_LOCATIONS_SEARCH_GETTER,
       CUSTOMER_TYPES_GETTER,
+      GENDERS_GETTER,
     ]),
-    getCustomerTypeOptions() {
+    getCustomerTypes() {
       if (this.CUSTOMER_TYPES_GETTER) {
         return this.CUSTOMER_TYPES_GETTER.map(data => ({
           id: data.id,
           label: data.name,
+        }))
+      }
+      return []
+    },
+    getGenders() {
+      if (this.GENDERS_GETTER) {
+        return this.GENDERS_GETTER.map(data => ({
+          id: data.id,
+          label: data.categoryName,
         }))
       }
       return []
@@ -303,8 +314,11 @@ export default {
     //      this.onSearch()
     //   }
     // },
-    getCustomerTypeOptions() {
-      this.customerTypeOptions = [...this.getCustomerTypeOptions]
+    getCustomerTypes() {
+      this.customerTypeOptions = [...this.getCustomerTypes]
+    },
+    getGenders() {
+      this.genderOptions = [...this.getGenders]
     },
   },
 
@@ -315,12 +329,15 @@ export default {
         // this.apiStatus.shopLocationsSearch = true
       },
     })
+    this.GET_GENDERS_ACTION({ ...this.decentralization })
+
     this.$refs.focusInput.focus()
   },
 
   methods: {
     ...mapActions(CUSTOMER, [
       GET_SHOP_LOCATIONS_SEARCH_ACTION,
+      GET_GENDERS_ACTION,
     ]),
     areaSelectedDefault() {
       if (this.SHOP_LOCATIONS_SEARCH_GETTER) {
@@ -331,7 +348,7 @@ export default {
 
     loadOptions({ action, callback }) {
       if (action === 'LOAD_ROOT_OPTIONS') {
-        this.customerTypeOptions = [...this.getCustomerTypeOptions]
+        this.customerTypeOptions = [...this.getCustomerTypes]
       }
       callback()
     },
