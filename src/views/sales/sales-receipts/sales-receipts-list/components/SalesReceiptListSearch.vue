@@ -43,7 +43,7 @@
 
       <!-- START - Phone -->
       <b-col
-        xl
+        xl="2"
         md="3"
         sm="4"
       >
@@ -196,26 +196,19 @@
       <!-- END - Status -->
 
       <!-- START - Search button -->
-      <b-col
-        xl
-        sm="4"
-        md="3"
+      <div
+        class="mt-auto mx-40"
       >
-        <div
-          class="h8 text-white"
-        >
-          Tìm kiếm
-        </div>
         <b-button
-          id="form-button-search"
-          class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+          class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
           variant="someThing"
-          @click="onClickSearchButton"
+          :disabled="invalid"
+          @click="onClickSearchButton()"
         >
           <b-icon-search class="mr-50" />
           Tìm kiếm
         </b-button>
-      </b-col>
+      </div>
       <!-- END - Search button -->
     </v-card-actions>
   </b-form>

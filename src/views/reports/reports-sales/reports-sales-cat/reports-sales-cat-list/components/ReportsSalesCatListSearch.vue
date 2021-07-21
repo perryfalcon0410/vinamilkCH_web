@@ -53,7 +53,7 @@
           sm="4"
         >
           <div
-            class="h8 mt-sm-1 mt-xl-0"
+            class="h7 mt-sm-1 mt-xl-0"
           >
             Số điện thoại
           </div>
@@ -62,8 +62,8 @@
           >
             <b-form-input
               v-model="customerPhone"
-              class="h8 text-brand-3"
-              placeholder="Nhập SĐT"
+              class="h7 text-brand-3"
+              placeholder="Nhập chính xác 4 số cuối"
               maxlength="10"
               @keyup.enter="onClickSearchButton"
               @keypress="$onlyNumberInput"

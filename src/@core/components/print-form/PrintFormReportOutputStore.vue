@@ -301,15 +301,28 @@
         align-h="end"
       >
         <div
-          class="rounded"
-          style="border: 2px dotted; margin-top: 4px; padding: 0 150px 0 20px;"
+          class="rounded width-30-per d-flex align-items-center mt-2 p-1"
+          style="border: 2px dotted"
         >
-          <p class="italic">
-            Điều chỉnh:
-          </p>
-          <p class="italic">
-            Tổng cộng: <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalPriceVat) }}</strong>
-          </p>
+          <div class="width-40-per">
+            <p class="italic">
+              Điều chỉnh:
+            </p>
+            <p class="italic">
+              Tổng cộng:
+            </p>
+          </div>
+          <div class="width-60-per text-right">
+            <p
+              class="italic"
+              style="opacity: 0;"
+            >
+              Điều chỉnh:
+            </p>
+            <p class="italic">
+              <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalPriceVat) }}</strong>
+            </p>
+          </div>
         </div>
       </b-row>
     </template>
@@ -520,7 +533,7 @@
                     class="text-right pr-50"
                     style="width: 10%;"
                   >
-                    {{ $formatNumberToLocale(item.price) }}
+                    {{ $formatNumberToLocale(item.priceNotVat) }}
                   </td>
                   <td
                     class="text-right pr-50"
@@ -543,15 +556,28 @@
         align-h="end"
       >
         <div
-          class="rounded"
-          style="border: 2px dotted; margin-top: 4px; padding: 0 150px 0 20px;"
+          class="rounded width-30-per d-flex align-items-center mt-2 p-1"
+          style="border: 2px dotted"
         >
-          <p class="italic">
-            Điều chỉnh:
-          </p>
-          <p class="italic">
-            Tổng cộng: <strong>{{ $formatNumberToLocale(lstPoInfo.totalPriceVat) }}</strong>
-          </p>
+          <div class="width-40-per">
+            <p class="italic">
+              Điều chỉnh:
+            </p>
+            <p class="italic">
+              Tổng cộng:
+            </p>
+          </div>
+          <div class="width-60-per text-right">
+            <p
+              class="italic"
+              style="opacity: 0;"
+            >
+              Điều chỉnh:
+            </p>
+            <p class="italic">
+              <strong>{{ $formatNumberToLocale(lstPoInfo.totalPriceVat) }}</strong>
+            </p>
+          </div>
         </div>
       </b-row>
     </template>
@@ -565,7 +591,7 @@
       <strong
         style="font-size: 16px; width: 20%;"
         class="text-right"
-      >Loại: Xuất điều chỉnh</strong>
+      >Loại: Xuất vay mượn</strong>
       <div
         class="text-right"
         style="width: 38%;"
@@ -785,15 +811,28 @@
         align-h="end"
       >
         <div
-          class="rounded"
-          style="border: 2px dotted; margin-top: 4px; padding: 0 150px 0 20px;"
+          class="rounded width-30-per d-flex align-items-center mt-2 p-1"
+          style="border: 2px dotted"
         >
-          <p class="italic">
-            Điều chỉnh:
-          </p>
-          <p class="italic">
-            Tổng cộng: <strong>{{ $formatNumberToLocale(lstStockInfo.totalPriceVat) }}</strong>
-          </p>
+          <div class="width-40-per">
+            <p class="italic">
+              Điều chỉnh:
+            </p>
+            <p class="italic">
+              Tổng cộng:
+            </p>
+          </div>
+          <div class="width-60-per text-right">
+            <p
+              class="italic"
+              style="opacity: 0;"
+            >
+              Điều chỉnh:
+            </p>
+            <p class="italic">
+              <strong>{{ $formatNumberToLocale(lstStockInfo.totalPriceVat) }}</strong>
+            </p>
+          </div>
         </div>
       </b-row>
     </template>

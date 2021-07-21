@@ -134,7 +134,7 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'productName' || props.column.field === 'note'"
+              v-else-if="props.column.field === 'productName' || props.column.field === 'note' || props.column.field === 'industry'"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}

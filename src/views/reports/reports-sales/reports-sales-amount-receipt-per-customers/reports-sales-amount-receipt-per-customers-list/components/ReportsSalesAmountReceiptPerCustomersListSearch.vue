@@ -151,7 +151,7 @@
 
         <!-- START - Phone number-->
         <b-col
-          xl
+          xl="2"
           lg="3"
           sm="4"
         >
@@ -167,7 +167,7 @@
               v-model="phoneNumber"
               trim
               class="h7 text-brand-3"
-              placeholder="Nhập SĐT khách hàng"
+              placeholder="Nhập chính xác 4 số cuối"
               @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append
@@ -217,18 +217,11 @@
         </b-col>
         <!-- END - Income -->
         <!-- START - Search button -->
-        <b-col
-          xl
-          sm="4"
-          md="3"
+        <div
+          class="mt-2 mx-40"
         >
-          <div
-            class="h7 text-white"
-          >
-            Tìm kiếm
-          </div>
           <b-button
-            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+            class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
             variant="someThing"
             :disabled="invalid"
             @click="onClickSearchButton()"
@@ -236,7 +229,7 @@
             <b-icon-search class="mr-50" />
             Tìm kiếm
           </b-button>
-        </b-col>
+        </div>
         <!-- END - Search button -->
       </v-card-actions>
     </b-form>

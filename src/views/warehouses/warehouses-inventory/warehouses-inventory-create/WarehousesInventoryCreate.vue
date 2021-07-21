@@ -895,7 +895,7 @@ export default {
 <style>
   thead tr:first-child {
     position: sticky;
-    top: 0px;
+    top: -2px;
     z-index: 10;
   }
 </style>
