@@ -11,9 +11,7 @@
         title="Điều kiện"
       >
         <!-- START - promotionPrograms -->
-        <b-col
-          class="pb-1 cursor-pointer mx-1"
-        >
+        <b-col>
           <b-container
             class="box"
           >
@@ -150,9 +148,9 @@
         <!-- END - promotionPrograms -->
 
         <!-- START - used -->
-        <b-col class="pb-1 cursor-pointer mx-1">
+        <b-col class="ml-xl-80">
           <b-container
-            class="box"
+            class="box h-100"
           >
             <!-- START - title & icon -->
             <div
@@ -309,10 +307,10 @@
         <!-- END - used -->
 
         <!-- START - Search button -->
-        <div class="col-2 d-flex justify-content-center align-items-center">
+        <div class="d-flex justify-content-center align-items-center">
           <div>
             <b-button
-              class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+              class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
               variant="someThing"
               :disabled="invalid"
               @click="onClickSearchButton()"
@@ -321,8 +319,8 @@
               Tìm kiếm
             </b-button>
           </div>
-          <!-- END - Search button -->
         </div>
+      <!-- END - Search button -->
       </v-card-actions>
     </b-form>
   </validation-observer>
