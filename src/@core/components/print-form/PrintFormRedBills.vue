@@ -82,7 +82,7 @@
         align-v="end"
       >
         <div
-          class="width-60-per"
+          class="width-50-per"
         >
           <div class="d-flex text-right">
             <div class="width-80-per" />
@@ -98,7 +98,7 @@
           </div>
         </div>
         <div
-          class="width-95-per"
+          class="width-45-per"
         >
           <div class="text-right">
             {{ $formatNumberToLocale(redBillInfoData.amount) }}

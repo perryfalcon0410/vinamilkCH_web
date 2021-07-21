@@ -118,7 +118,7 @@
         </div>
       </b-row>
       <table>
-        <thead class="oblique">
+        <thead>
           <!-- START - Header  -->
           <tr>
             <th
@@ -321,7 +321,7 @@ table {
 }
 th {
   border-style: solid;
-  border-width: 2px;
+  border-width: 2px 1px;
 }
 td {
   border-style: dashed;
@@ -333,9 +333,11 @@ td {
 }
 .stt {
   border-right-style: dashed;
+  border-left-width: 2px;
 }
 .total {
   border-left-style: dashed;
+  border-right-width: 2px;
 }
 .total-header{
   background: rgb(192, 186, 186);

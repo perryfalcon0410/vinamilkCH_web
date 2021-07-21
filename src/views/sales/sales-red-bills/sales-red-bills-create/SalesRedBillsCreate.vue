@@ -353,7 +353,7 @@
                     class="h7 px-0 mx-0"
                     align-h="end"
                   >
-                    {{ $formatNumberToLocale(totalProductExported) }}
+                    {{ $formatNumberToLocale(totalProductExported.toFixed(0)) }}
                   </b-row>
                 </template>
                 <!-- END - Custome filter -->

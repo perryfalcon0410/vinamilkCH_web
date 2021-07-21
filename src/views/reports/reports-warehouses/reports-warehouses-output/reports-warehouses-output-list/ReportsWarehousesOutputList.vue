@@ -160,7 +160,7 @@
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ $formatNumberToLocale(totalValues.totalAmount) }}
+              {{ $formatNumberToLocale(totalValues.totalAmountVat) }}
             </b-row>
           </template>
           <!-- END - Column filter -->

@@ -4,11 +4,11 @@
     class="p-0"
   >
     <!-- START - Form and list -->
-    <b-row class="mx-0">
+    <b-row>
       <!-- START - Form -->
       <b-col
         xl="4"
-        class="bg-white shadow rounded mr-xl-1"
+        class="bg-white shadow rounded h7"
       >
         <!-- START - Date -->
         <b-row class="my-1">
@@ -143,7 +143,7 @@
         class="px-sm-0 px-md-0"
       >
         <div class="bg-white shadow rounded ml-xl-1 mt-1 mt-xl-0 p-1 h-100">
-          <div style="padding: 5px 0;">
+          <div style="d-inline-flex rounded-top px-1 my-1">
             <strong class="text-brand-1">
               Danh sách sản phẩm
             </strong>
@@ -375,14 +375,14 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
           width: '300px',
         },
@@ -407,21 +407,21 @@ export default {
           field: 'productPriceTotal',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Đã xuất trả/ tổng nhập',
           field: 'export',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
       ],
@@ -429,13 +429,13 @@ export default {
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
@@ -455,7 +455,7 @@ export default {
           label: 'Thành tiền',
           field: 'productPriceTotal',
           formatFn: this.$formatNumberToLocale,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
@@ -465,7 +465,7 @@ export default {
           // filterOptions: {
           //   enabled: true,
           // },
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
       ],
@@ -474,14 +474,14 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
+          thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
           width: '300px',
         },
@@ -504,21 +504,21 @@ export default {
           label: 'Thành tiền',
           field: 'productPriceTotal',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Đã xuất trả/ tổng nhập',
           field: 'export',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
           sortable: false,
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
       ],

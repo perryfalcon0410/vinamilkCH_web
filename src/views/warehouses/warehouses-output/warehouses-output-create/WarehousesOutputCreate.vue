@@ -1,6 +1,7 @@
 <template>
   <b-container
     fluid
+    class="p-0"
   >
     <!-- START - Form Container -->
     <validation-observer
@@ -17,7 +18,7 @@
           class="bg-white shadow rounded h7"
         >
           <!-- START - Date -->
-          <b-row class="my-1">
+          <b-row class="mt-1">
             <b-col cols="4">
               Ngày xuất:
             </b-col>
@@ -201,7 +202,7 @@
         >
           <div class="bg-white shadow rounded ml-xl-1 mt-1 mt-xl-0 p-1 h-100">
             <!-- START - Table Product promotion -->
-            <div class="d-inline-flex rounded-top px-1 my-1">
+            <div class="d-inline-flex rounded-top pr-1">
               <strong class="text-brand-1">
                 Danh sách sản phẩm
               </strong>
