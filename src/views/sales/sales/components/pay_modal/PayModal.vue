@@ -1332,31 +1332,34 @@ export default {
     },
 
     searchDiscount() {
-      const products = this.orderProducts.map(data => ({
-        productId: data.productId,
-        quantity: data.quantity,
-      }))
-
-      this.GET_DISCOUNT_BY_CODE_ACTION({
-        data: {
-          ...this.decentralization,
-          code: this.pay.discount.discountCode,
-          dataGetCode: {
-            customerId: this.customer.id,
-            orderType: Number(this.orderSelected),
-            products,
-            promotionAmount: this.pay.promotionAmount,
-            promotionAmountExTax: this.pay.promotionAmountExTax,
+      if (this.pay.discount.discountCode === '') {
+        const products = this.orderProducts.map(data => ({
+          productId: data.productId,
+          quantity: data.quantity,
+        }))
+        this.GET_DISCOUNT_BY_CODE_ACTION({
+          data: {
+            ...this.decentralization,
+            code: this.pay.discount.discountCode,
+            dataGetCode: {
+              customerId: this.customer.id,
+              orderType: Number(this.orderSelected),
+              products,
+              promotionAmount: this.pay.promotionAmount,
+              promotionAmountExTax: this.pay.promotionAmountExTax,
+            },
           },
-        },
-        onSuccess: () => {
-        },
-        onFailure: () => {
-          if (Number(this.pay.discount.discountAmount) === 0) {
-            this.pay.discount.discountCode = ''
-          }
-        },
-      })
+          onSuccess: () => {
+          },
+          onFailure: () => {
+            if (Number(this.pay.discount.discountAmount) === 0) {
+              this.pay.discount.discountCode = ''
+            }
+          },
+        })
+      } else {
+        toasts.error('Bạn chưa nhập mã giảm giá')
+      }
     },
 
     resetDiscount() {
