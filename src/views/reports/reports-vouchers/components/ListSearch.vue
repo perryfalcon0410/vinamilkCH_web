@@ -11,7 +11,10 @@
         title="Điều kiện"
       >
         <!-- START - promotionPrograms -->
-        <b-col>
+        <b-col
+          xl="3"
+          class="cursor-pointer mb-md-1"
+        >
           <b-container
             class="box"
           >
@@ -42,103 +45,123 @@
                   align-v="center"
                   class="my-1"
                 >
-                  <b-col cols="3">
-                    Tên chương trình
-                  </b-col>
-                  <b-col>
-                    <b-input
-                      ref="focusInput"
-                      v-model.trim="voucherProgram"
-                      placeholder="Nhập tên chương trình khuyến mãi"
-                      @keyup.enter="onClickSearchButton"
-                    />
+                  <b-col
+                    xl
+                    lg="3"
+                    sm="4"
+                  >
+                    <div
+                      class="h7 mt-sm-1 mt-xl-0"
+                    >
+                      Tên chương trình
+                    </div>
+                    <b-input-group class="input-group-merge ">
+                      <b-form-input
+                        ref="focusInput"
+                        v-model.trim="voucherProgram"
+                        class="h7"
+                        maxlength="40"
+                        placeholder="Nhập tên CTKM"
+                        @keyup.enter="onClickSearchButton"
+                      />
+                      <b-input-group-append
+                        is-text
+                      >
+                        <!-- Icon-- Delete-text -->
+                        <b-icon-x
+                          v-show="voucherProgram"
+                          is-text
+                          class="cursor-pointer text-gray"
+                          @click="voucherProgram = null"
+                        />
+                      </b-input-group-append>
+                    </b-input-group>
                   </b-col>
                 </b-row>
                 <!-- END - first row -->
 
                 <!-- START - second row -->
-                <b-row>
-                  <b-col>
-                    <!-- START - FromDate -->
+                <b-row class="pb-1">
+                  <!-- START - Date From -->
+                  <b-col
+                    xl
+                    lg="3"
+                    sm="4"
+                  >
                     <validation-provider
                       v-slot="{ errors, passed, touched }"
                       rules="required"
                       name="Từ ngày"
                     >
-                      <b-row align-v="center">
-                        <b-col>
-                          Từ ngày <span class="text-danger">*</span>
-                        </b-col>
-                        <b-col cols="8">
-                          <b-row
-                            class="v-flat-pickr-group mx-0"
-                            align-v="center"
-                            @keypress="$onlyDateInput"
-                          >
-                            <vue-flat-pickr
-                              v-model="promoFromDate"
-                              :state="touched ? passed : null"
-                              :config="configPromotionFromDate"
-                              class="form-control h7"
-                              placeholder="Chọn ngày"
-                            />
-                            <b-icon-x
-                              v-show="promoFromDate"
-                              style="position: absolute; right: 15px"
-                              class="cursor-pointer text-gray"
-                              scale="1.3"
-                              data-clear
-                            />
-                            <small class="text-danger">{{ errors[0] }}</small>
-                          </b-row>
-                        </b-col>
-                      </b-row>
-                      <!-- END - FromDate -->
-                    </validation-provider>
-                  </b-col>
-                  <b-col>
-                    <!-- START - ToDate -->
-                    <validation-provider
-                      v-slot="{ errors, passed, touched }"
-                      rules="required"
-                      name="Từ ngày"
-                    >
-                      <b-row
-                        align-v="center"
-                        class="mb-1"
+                      <div
+                        class="h7 mt-sm-1 mt-xl-0"
                       >
-                        <b-col>
-                          Đến ngày <span class="text-danger">*</span>
-                        </b-col>
-                        <b-col cols="8">
-                          <b-row
-                            class="v-flat-pickr-group mx-0"
-                            align-v="center"
-                            @keypress="$onlyDateInput"
-                          >
-                            <vue-flat-pickr
-                              v-model="promoToDate"
-                              :state="touched ? passed : null"
-                              :config="configPromotionToDate"
-                              class="form-control h7"
-                              placeholder="Chọn ngày"
-                            />
-                            <b-icon-x
-                              v-show="promoToDate"
-                              style="position: absolute; right: 15px"
-                              class="cursor-pointer text-gray"
-                              scale="1.3"
-                              data-clear
-                            />
-                            <small class="text-danger">{{ errors[0] }}</small>
-                          </b-row>
-                        </b-col>
+                        Từ ngày <span class="text-danger">*</span>
+                      </div>
+                      <b-row
+                        class="v-flat-pickr-group mx-0"
+                        align-v="center"
+                      >
+                        <b-icon-x
+                          v-show="promoFromDate"
+                          style="position: absolute; right: 15px"
+                          class="cursor-pointer text-gray"
+                          scale="1.3"
+                          data-clear
+                        />
+                        <vue-flat-pickr
+                          v-model="promoFromDate"
+                          :state="touched ? passed : null"
+                          :config="configPromotionFromDate"
+                          class="form-control h7 text-brand-3"
+                          placeholder="Chọn ngày"
+                        />
                       </b-row>
-                      <!-- END - ToDate -->
+                      <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-col>
+                  <!-- END - Date From -->
+
+                  <!-- START - Date To -->
+                  <b-col
+                    xl
+                    lg="3"
+                    sm="4"
+                  >
+                    <validation-provider
+                      v-slot="{ errors, passed, touched }"
+                      rules="required"
+                      name="Đến ngày"
+                    >
+                      <div
+                        class="h7 mt-sm-1 mt-xl-0"
+                      >
+                        Đến ngày <span class="text-danger">*</span>
+                      </div>
+                      <b-row
+                        class="v-flat-pickr-group mx-0"
+                        align-v="center"
+                      >
+                        <b-icon-x
+                          v-show="promoToDate"
+                          style="position: absolute; right: 15px"
+                          class="cursor-pointer text-gray"
+                          scale="1.3"
+                          data-clear
+                        />
+                        <vue-flat-pickr
+                          v-model="promoToDate"
+                          :state="touched ? passed : null"
+                          :config="configPromotionToDate"
+                          class="form-control h7 text-brand-3"
+                          placeholder="Chọn ngày"
+                        />
+                      </b-row>
+                      <small class="text-danger">{{ errors[0] }}</small>
+                    </validation-provider>
+                  </b-col>
+                  <!-- END - Date To -->
                 </b-row>
-                <!-- END - second row -->
               </b-col>
             </b-collapse>
             <!-- END - collapse -->
@@ -148,9 +171,9 @@
         <!-- END - promotionPrograms -->
 
         <!-- START - used -->
-        <b-col class="ml-xl-80">
+        <b-col class="ml-xl-80 mr-xl-50">
           <b-container
-            class="box h-100"
+            class="box"
           >
             <!-- START - title & icon -->
             <div
@@ -179,124 +202,184 @@
                   align-v="center"
                   class="my-1"
                 >
-                  <b-col>
-                    Voucher
+                  <b-col
+                    xl
+                    lg="3"
+                    sm="4"
+                  >
+                    <div
+                      class="h7 mt-sm-1 mt-xl-0"
+                    >
+                      Voucher
+                    </div>
+                    <b-input-group class="input-group-merge ">
+                      <b-form-input
+                        v-model.trim="voucher"
+                        class="h7"
+                        maxlength="40"
+                        placeholder="Nhập mã/tên/serial"
+                        @keyup.enter="onClickSearchButton"
+                      />
+                      <b-input-group-append
+                        is-text
+                      >
+                        <!-- Icon-- Delete-text -->
+                        <b-icon-x
+                          v-show="voucher"
+                          is-text
+                          class="cursor-pointer text-gray"
+                          @click="voucher = null"
+                        />
+                      </b-input-group-append>
+                    </b-input-group>
                   </b-col>
-                  <b-col>
-                    <b-input
-                      v-model.trim="voucher"
-                      placeholder="Nhập mã/tên/serial voucher"
-                      @keyup.enter="onClickSearchButton"
-                    />
+                  <b-col
+                    xl
+                    lg="3"
+                    sm="4"
+                  >
+                    <div
+                      class="h7 mt-sm-1 mt-xl-0"
+                    >
+                      Khách hàng
+                    </div>
+                    <b-input-group class="input-group-merge ">
+                      <b-form-input
+                        v-model.trim="customer"
+                        class="h7"
+                        maxlength="40"
+                        placeholder="Nhập mã/họ tên"
+                        @keyup.enter="onClickSearchButton"
+                      />
+                      <b-input-group-append
+                        is-text
+                      >
+                        <!-- Icon-- Delete-text -->
+                        <b-icon-x
+                          v-show="customer"
+                          is-text
+                          class="cursor-pointer text-gray"
+                          @click="customer = null"
+                        />
+                      </b-input-group-append>
+                    </b-input-group>
                   </b-col>
-                  <b-col>
-                    Khách hàng
-                  </b-col>
-                  <b-col>
-                    <b-input
-                      v-model.trim="customer"
-                      placeholder="Nhập mã/họ tênkhách hàng"
-                      @keyup.enter="onClickSearchButton"
-                    />
-                  </b-col>
-                  <b-col>
-                    Số điện thoại
-                  </b-col>
-                  <b-col>
-                    <b-input
-                      v-model.trim="phoneNumber"
-                      placeholder="Nhập SĐT khách hàng"
-                      @keyup.enter="onClickSearchButton"
-                      @keypress="$onlyNumberInput"
-                    />
+                  <b-col
+                    xl
+                    lg="3"
+                    sm="4"
+                  >
+                    <div
+                      class="h7 mt-sm-1 mt-xl-0"
+                    >
+                      Số điện thoại
+                    </div>
+                    <b-input-group class="input-group-merge ">
+                      <b-form-input
+                        v-model.trim="phoneNumber"
+                        class="h7"
+                        maxlength="40"
+                        placeholder="Nhập chính xác 4 số cuối"
+                        @keyup.enter="onClickSearchButton"
+                        @keypress="$onlyNumberInput"
+                      />
+                      <b-input-group-append
+                        is-text
+                      >
+                        <!-- Icon-- Delete-text -->
+                        <b-icon-x
+                          v-show="phoneNumber"
+                          is-text
+                          class="cursor-pointer text-gray"
+                          @click="phoneNumber = null"
+                        />
+                      </b-input-group-append>
+                    </b-input-group>
                   </b-col>
                 </b-row>
                 <!-- End - First row -->
 
                 <!-- START - Second row -->
-                <b-row>
-                  <!-- START - From Date -->
-                  <b-col>
+                <b-row class="pb-1">
+                  <!-- START - Date From -->
+                  <b-col
+                    xl
+                    lg="3"
+                    sm="4"
+                  >
                     <validation-provider
                       v-slot="{ errors, passed, touched }"
                       rules="required"
                       name="Từ ngày"
                     >
+                      <div
+                        class="h7 mt-sm-1 mt-xl-0"
+                      >
+                        Từ ngày <span class="text-danger">*</span>
+                      </div>
                       <b-row
+                        class="v-flat-pickr-group mx-0"
                         align-v="center"
                       >
-                        <b-col>
-                          Từ ngày <span class="text-danger">*</span>
-                        </b-col>
-                        <b-col cols="8">
-                          <b-row
-                            class="v-flat-pickr-group mx-0"
-                            align-v="center"
-                            @keypress="$onlyDateInput"
-                          >
-                            <vue-flat-pickr
-                              v-model="usedFromDate"
-                              :state="touched ? passed : null"
-                              :config="configUsedFromDate"
-                              class="form-control h7"
-                              placeholder="Chọn ngày"
-                            />
-                            <b-icon-x
-                              v-show="usedFromDate"
-                              style="position: absolute; right: 15px"
-                              class="cursor-pointer text-gray"
-                              scale="1.3"
-                              data-clear
-                            />
-                            <small class="text-danger">{{ errors[0] }}</small>
-                          </b-row>
-                        </b-col>
+                        <b-icon-x
+                          v-show="usedFromDate"
+                          style="position: absolute; right: 15px"
+                          class="cursor-pointer text-gray"
+                          scale="1.3"
+                          data-clear
+                        />
+                        <vue-flat-pickr
+                          v-model="usedFromDate"
+                          :state="touched ? passed : null"
+                          :config="configUsedFromDate"
+                          class="form-control h7 text-brand-3"
+                          placeholder="Chọn ngày"
+                        />
                       </b-row>
+                      <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-col>
-                  <!-- END - From Date -->
+                  <!-- END - Date From -->
 
-                  <!-- START - To Date -->
-                  <b-col>
+                  <!-- START - Date To -->
+                  <b-col
+                    xl
+                    lg="3"
+                    sm="4"
+                  >
                     <validation-provider
                       v-slot="{ errors, passed, touched }"
                       rules="required"
                       name="Đến ngày"
                     >
-                      <b-row
-                        align-v="center"
-                        class="mb-1"
+                      <div
+                        class="h7 mt-sm-1 mt-xl-0"
                       >
-                        <b-col>
-                          Đến ngày <span class="text-danger">*</span>
-                        </b-col>
-                        <b-col cols="8">
-                          <b-row
-                            class="v-flat-pickr-group mx-0"
-                            align-v="center"
-                            @keypress="$onlyDateInput"
-                          >
-                            <vue-flat-pickr
-                              v-model="usedToDate"
-                              :state="touched ? passed : null"
-                              :config="configUsedToDate"
-                              class="form-control h7"
-                              placeholder="Chọn ngày"
-                            />
-                            <b-icon-x
-                              v-show="usedToDate"
-                              style="position: absolute; right: 15px"
-                              class="cursor-pointer text-gray"
-                              scale="1.3"
-                              data-clear
-                            />
-                            <small class="text-danger">{{ errors[0] }}</small>
-                          </b-row>
-                        </b-col>
+                        Đến ngày <span class="text-danger">*</span>
+                      </div>
+                      <b-row
+                        class="v-flat-pickr-group mx-0"
+                        align-v="center"
+                      >
+                        <b-icon-x
+                          v-show="usedToDate"
+                          style="position: absolute; right: 15px"
+                          class="cursor-pointer text-gray"
+                          scale="1.3"
+                          data-clear
+                        />
+                        <vue-flat-pickr
+                          v-model="usedToDate"
+                          :state="touched ? passed : null"
+                          :config="configUsedToDate"
+                          class="form-control h7 text-brand-3"
+                          placeholder="Chọn ngày"
+                        />
                       </b-row>
+                      <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-col>
-                  <!-- END - To Date -->
+                <!-- END - Date To -->
                 </b-row>
                 <!-- End - Second row -->
               </b-col>
