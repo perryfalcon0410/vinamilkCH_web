@@ -73,10 +73,13 @@
               >
 
                 <template slot-scope="{ suggestion }">
-                  <div>
-                    <b>{{ suggestion.item.customerName }}</b>
+                  <div class="cursor-pointer">
+                    {{ suggestions }}
+                    <div>
+                      <b>{{ suggestion.item.name }}</b>
+                    </div>
+                    <div>{{ suggestion.item.customerCode }} - {{ suggestion.item.mobilePhone }}</div>
                   </div>
-                  <div>{{ suggestion.item.customerCode }} - {{ suggestion.item.mobilePhone }}</div>
                 </template>
               </vue-autosuggest>
               <small class="text-danger">{{ errors[0] }}</small>
@@ -255,7 +258,7 @@
               >
                 <!-- START - Prodduct input -->
                 <vue-autosuggest
-                  v-model.trim="productInfos.productName"
+                  v-model="productInfos.productName"
                   :suggestions="products"
                   :input-props="{
                     id:'autosuggest_product__input',
@@ -269,7 +272,10 @@
                     slot-scope="{ suggestion }"
                     class="mw-25"
                   >
-                    <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                    <div class="cursor-pointer">
+                      {{ suggestions }}
+                      <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.name }}
+                    </div>
                   </template>
                 </vue-autosuggest>
               <!-- END - Prodduct input -->
@@ -518,7 +524,7 @@ export default {
         data: this.CUSTOMERS_GETTER.map(data => ({
           customerId: data.id,
           customerCode: data.customerCode,
-          customerName: data.fullName,
+          name: data.fullName,
           address: data.address,
           mobilePhone: data.mobiPhone,
         })),
@@ -537,7 +543,7 @@ export default {
         data: this.PRODUCTS_GETTER.map(data => ({
           id: data.id,
           productCode: data.productCode,
-          productName: data.productName,
+          name: data.productName,
           productDVT: data.uom1,
           productPrice: data.price,
           productQuantity: data.totalAmount,
@@ -658,7 +664,7 @@ export default {
       if (text) {
         if (text.length >= commonData.minSearchLength) {
           const searchData = {
-            keyWord: this.productInfos.productName,
+            keyWord: text,
             ...this.decentralization,
           }
           this.GET_PRODUCTS_ACTION(searchData)
@@ -667,41 +673,35 @@ export default {
     },
 
     selectProduct(product) {
-      const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.item.productCode)
-      if (this.damagedProduct) {
-        const obj = {
-          count: this.damagedProduct.length,
-          id: product.item.id,
-          productCode: product.item.productCode,
-          productName: product.item.productName,
-          productDVT: product.item.productDVT,
-          productPrice: product.item.productPrice,
-          productQuantity: 1,
-          productPriceTotal: null,
+      if (product.item) {
+        const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.item.productCode)
+        if (this.damagedProduct) {
+          const obj = {
+            count: this.damagedProduct.length,
+            id: product.item.id,
+            productCode: product.item.productCode,
+            productName: product.item.productName,
+            productDVT: product.item.productDVT,
+            productPrice: product.item.productPrice,
+            productQuantity: 1,
+            productPriceTotal: null,
+          }
+          if (existedProductIndex === -1) {
+            obj.productPriceTotal = obj.productPrice * obj.productQuantity
+            this.damagedProduct.push(obj)
+          } else {
+            this.damagedProduct[existedProductIndex].productQuantity = Number(this.damagedProduct[existedProductIndex].productQuantity) + obj.productQuantity
+            this.damagedProduct[existedProductIndex].productPriceTotal = Number(obj.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
+          }
+          this.productInfos.productName = null
+          this.products = [{ data: null }]
         }
-        if (existedProductIndex === -1) {
-          obj.productPriceTotal = obj.productPrice * obj.productQuantity
-          this.damagedProduct.push(obj)
-        } else {
-          this.damagedProduct[existedProductIndex].productQuantity = Number(this.damagedProduct[existedProductIndex].productQuantity) + obj.productQuantity
-          this.damagedProduct[existedProductIndex].productPriceTotal = Number(obj.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
-        }
-        this.productInfos.productName = null
-        this.products = [{ data: null }]
       }
     },
 
     onChangeQuantity(props) {
       const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === props.productCode)
       this.damagedProduct[existedProductIndex].productPriceTotal = Number(props.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
-    },
-
-    clearCustomer() {
-      this.customerInfo.customerName = ''
-    },
-
-    clearProduct() {
-      this.productInfos.productName = ''
     },
 
     onClickDeleteButton(index) {

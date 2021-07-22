@@ -369,6 +369,7 @@ export default {
     },
     onSearchClick() {
       this.onSearch()
+      this.$emit('onClickSearchButton')
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)

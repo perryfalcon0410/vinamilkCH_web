@@ -118,55 +118,52 @@
         </div>
       </b-row>
       <table>
-        <thead>
-          <!-- START - Header  -->
-          <tr>
-            <th
-              class="stt px-50"
-              style="width: 1%"
-            >
-              STT
-            </th>
-            <th
-              class="px-50 dashed"
-              style="width: 10%"
-            >
-              Mã SP
-            </th>
-            <th
-              class="px-50 dashed"
-              style="width: 34%"
-            >
-              Tên SP
-            </th>
-            <th
-              class="px-50 dashed"
-              style="width: 5%"
-            >
-              ĐVT
-            </th>
-            <th
-              style="width: 7%"
-              class="px-50 dashed text-right"
-            >
-              SL
-            </th>
-            <th
-              class="text-right dashed px-50"
-              style="width: 10%"
-            >
-              Giá
-            </th>
-            <th
-              style="width: 15%"
-              class="text-right total px-50"
-            >
-              T.Tiền
-            </th>
-          </tr>
-          <!-- END - Header 2 -->
-
-        </thead>
+        <!-- START - Header  -->
+        <tr>
+          <th
+            class="stt px-50"
+            style="width: 1%"
+          >
+            STT
+          </th>
+          <th
+            class="px-50 dashed"
+            style="width: 10%"
+          >
+            Mã SP
+          </th>
+          <th
+            class="px-50 dashed"
+            style="width: 34%"
+          >
+            Tên SP
+          </th>
+          <th
+            class="px-50 dashed"
+            style="width: 5%"
+          >
+            ĐVT
+          </th>
+          <th
+            style="width: 7%"
+            class="px-50 dashed text-right"
+          >
+            SL
+          </th>
+          <th
+            class="text-right dashed px-50"
+            style="width: 10%"
+          >
+            Giá
+          </th>
+          <th
+            style="width: 15%"
+            class="text-right total px-50"
+          >
+            T.Tiền
+          </th>
+        </tr>
+        <!-- END - Header 2 -->
         <!-- END - Header -->
 
         <!-- START - Body -->

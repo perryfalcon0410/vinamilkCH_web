@@ -476,7 +476,7 @@ export default {
       outputTypesOptions: warehousesData.outputTypes,
       exportAll: false,
       quantityCheck: true,
-      nullCheck: true,
+      nullCheck: false,
       hideFilter: true,
       columnType: null,
 
@@ -811,7 +811,7 @@ export default {
           } else {
             this.nullCheck = false
             this.rowsProductPromotion.forEach(i => {
-              if (i.quantityPromo != null && i.quantityPromo !== 0) {
+              if (i.quantityPromo != null && i.quantityPromo > 0) {
                 this.nullCheck = true
                 stop = false
               } else {

@@ -7,6 +7,7 @@
     footer-border-variant="light"
     hide-footer
     scrollable
+    @hide="onClickSearchButton"
   >
     <b-container
       fluid
@@ -14,9 +15,8 @@
     >
       <!-- START - Search -->
       <search-component
-        @updateSearchData="paginationData = {
-          ...paginationData,
-          ...$event }"
+        @updateSearchData="updateSearchData"
+        @onClickSearchButton="onClickSearchButton"
       />
       <!-- END - Search -->
 
@@ -39,6 +39,7 @@
         <!-- START - Table -->
         <b-col class="py-1">
           <vue-good-table
+            mode="remote"
             :columns="columns"
             :rows="poTrans"
             style-class="vgt-table striped"
@@ -278,7 +279,6 @@ export default {
       paginationData: {
         size: commonData.perPageSizes[0],
         page: this.pageNumber,
-        sort: null,
       },
 
       isModalShow: false,
@@ -523,6 +523,16 @@ export default {
         },
       })
     },
+    updateSearchData(event) {
+      this.searchOptions = event
+      this.paginationData = {
+        ...this.paginationData,
+        ...event,
+      }
+    },
+    onClickSearchButton() {
+      this.pageNumber = 1 // hard code
+    },
     onPaginationChange() {
       this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)
     },
@@ -531,11 +541,11 @@ export default {
     },
     onPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1 })
-      // this.onPaginationChange()
+      this.onPaginationChange()
     },
     onPerPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      // this.onPaginationChange()
+      this.onPaginationChange()
     },
   },
 }
