@@ -694,12 +694,9 @@ export default {
 
     // Pass an options object with `eventBus: true` to receive an eventBus back
     // which emits `start` and `finish` events\
-    // this.$barcodeScanner.init(this.onBarcodeScanned)
-    const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, { eventBus: true })
-    if (eventBus) {
-      eventBus.$on('start', () => { this.loading = true })
-      eventBus.$on('finish', () => { this.loading = false })
-    }
+    this.$barcodeScanner.setSensitivity()
+    // Add barcode scan listener and pass the callback function
+    this.$barcodeScanner.init(this.onBarcodeScanned)
   },
   destroyed() {
     // Remove listener when component is destroyed
@@ -1089,20 +1086,19 @@ export default {
       this.$refs.salesNotifyModal.hide()
       this.isDisabledOrder = true
     },
-
     // Create callback function to receive barcode when the scanner is already done
     onBarcodeScanned(barcode) {
       if (barcode.length > 4) {
-        // this.GET_PRODUCT_BY_BARCODE_ACTION({
-        //   data: {
-        //     customerId: this.searchOptions.customerId,
-        //     barcode: barcode.toString(),
-        //   },
-        //   onSuccess: () => {
-        //   },
-        //   onFailure: () => {
-        //   },
-        // })
+        this.GET_PRODUCT_BY_BARCODE_ACTION({
+          data: {
+            customerId: this.searchOptions.customerId,
+            barcode: barcode.toString(),
+          },
+          onSuccess: () => {
+          },
+          onFailure: () => {
+          },
+        })
       }
     },
     // Reset to the last barcode before hitting enter (whatever anything in the input box)

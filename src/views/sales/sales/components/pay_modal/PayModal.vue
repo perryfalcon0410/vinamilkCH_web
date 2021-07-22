@@ -617,11 +617,11 @@
                       class="h7"
                     >
                       <cleave
-                        v-model.number="pay.salePayment.salePaymentAmount"
+                        v-model="pay.salePayment.salePaymentAmount"
                         class="form-control text-right"
                         :raw="true"
                         :options="options.number"
-                        maxlenght="20"
+                        maxlength="20"
                         @keyup.native="extraAmountCalculation"
                       />
                     </b-col>
@@ -1274,6 +1274,15 @@ export default {
       },
       deep: true,
     },
+    orderOnline: {
+      handler() {
+        if (this.onlineOrder.discountCode !== '') {
+          this.pay.discount.discountCode = this.onlineOrder.discountCode
+          this.pay.discount.discountAmount = this.onlineOrder.discountValue
+        }
+      },
+      deep: true,
+    },
   },
   created() {
     window.addEventListener('keydown', this.keyDown)
@@ -1633,7 +1642,7 @@ export default {
             paymentType: this.pay.salePayment.salePaymentType,
             deliveryType: Number(this.deliverySelected),
             orderType: Number(this.orderSelected),
-            note: this.orderOnline.orderNote,
+            note: this.customer.noted,
             orderOnlineId: this.orderOnline.onlineOrderId,
             onlineNumber: this.orderOnline.orderNumber,
             products: this.orderProducts,
@@ -1717,6 +1726,15 @@ export default {
                 isValid = false
                 toasts.error(`Tổng số lượng khuyến mãi phải bằng số lượng cho phép của ${program.promotionProgramName}`)
               }
+            } else {
+              program.products.forEach(product => {
+                if (product.quantity !== null || product.quantity > 0) {
+                  if (product.quantity !== product.quantityMax) {
+                    isValid = false
+                    toasts.error(`Số lượng khuyến mãi phải bằng số lượng cho phép trong ${program.promotionProgramName}`)
+                  }
+                }
+              })
             }
           } else if (program.promotionType === Number(saleData.promotionType[1].id) && program.isUse) {
             totalQuantity = 0
@@ -1738,7 +1756,7 @@ export default {
             paymentType: this.pay.salePayment.salePaymentType,
             deliveryType: Number(this.deliverySelected),
             orderType: Number(this.orderSelected),
-            note: this.orderOnline.orderNote,
+            note: this.customer.noted,
             orderOnlineId: this.orderOnline.onlineOrderId,
             onlineNumber: this.orderOnline.orderNumber,
             products: this.orderProducts,

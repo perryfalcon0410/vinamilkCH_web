@@ -620,7 +620,7 @@ export default {
       orderOnline: {
         onlineOrderId: null,
         orderNumber: null,
-        discountCode: null,
+        discountCode: '',
         discountValue: null,
       },
 

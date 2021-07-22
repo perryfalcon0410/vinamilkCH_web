@@ -73,7 +73,7 @@ Vue.use(VueGoodTablePlugin)
 
 // inject vue barcode scanner
 const optionsVueBarcodeScanner = {
-  sensitivity: 0, // default is 100
+  sensitivity: 200, // default is 100
   // *requiredAttr: set to "true" you need to specific some input field with "data-barcode" and then only this input response to scanner
   requiredAttr: true, // default is false
   // *controlSequenceKeys: when a control key in this list is encountered in a scan sequence, it will be replaced with tags for easy string replacement
