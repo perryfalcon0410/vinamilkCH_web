@@ -85,20 +85,51 @@
             slot="column-filter"
             slot-scope="props"
           >
+            <b-row
+              v-if="props.column.field === 'frequency'"
+              class="h7 text-brand-3 mx-50"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(getTotalInfo[3]) }}
+            </b-row>
             <b-col
               v-for="(item,index) in labelName"
               :key="index"
             >
               <b-row
                 v-if="props.column.field === `${item.field}`"
-                class="h7"
+                class="h7 text-brand-3 pr-50"
                 align-h="end"
               >
                 {{ $formatNumberToLocale(totalQuantity[index]) }}
               </b-row>
             </b-col>
+            <b-row
+              v-if="props.column.field === 'sumTotal'"
+              class="h7 text-brand-3 mx-50"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalQuantity[totalQuantity.length-1]) }}
+            </b-row>
           </template>
           <!-- END - Column filter -->
+
+          <!-- START - Row filter -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'sumTotal' || props.column.field === 'frequency'"
+              class="pr-70"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Row filter -->
 
           <!-- START - Pagination -->
           <template
@@ -233,6 +264,14 @@ export default {
           tdClass: 'text-right',
         },
       ],
+      lastCol: {
+        label: 'Tổng cộng',
+        field: 'sumTotal',
+        sortable: false,
+        thClass: 'text-right',
+        tdClass: 'text-right',
+        formatFn: this.$formatNumberToLocale,
+      },
     }
   },
   computed: {
@@ -259,23 +298,21 @@ export default {
       return {}
     },
     getReportSalesCat() {
-      if (!this.REPORT_SALES_CAT_GETTER || !this.REPORT_SALES_CAT_GETTER.response) return []
-      const self = this
-      const temp = this.REPORT_SALES_CAT_GETTER.response.content
-      return temp.map(data => {
-        const obj = {
+      if (this.REPORT_SALES_CAT_GETTER.response) {
+        return this.REPORT_SALES_CAT_GETTER.response.content.map(data => ({
           customerCode: data[0],
           customerName: data[1],
           address: data[2],
           frequency: data[3],
-        }
-        data.forEach((value, index) => {
-          if (index > 3) {
-            obj[index] = self.$formatNumberToLocale(value)
-          }
-        })
-        return obj
-      })
+        }))
+      }
+      return []
+    },
+    getReportSalesCatPrices() {
+      if (this.REPORT_SALES_CAT_GETTER.response) {
+        return this.REPORT_SALES_CAT_GETTER.response.content
+      }
+      return []
     },
     getTotalInfo() {
       if (this.REPORT_SALES_CAT_GETTER.totals) {
@@ -289,35 +326,46 @@ export default {
     getReportSalesCatCatories() {
       this.labelName = []
       this.columns = [...this.initalCol]
-      const catLength = this.getReportSalesCatCatories.length
-      this.getReportSalesCatCatories.forEach((item, index) => {
-        const obj = {
-          index,
-          label: item,
-          field: `${index + 4}`,
-          sortable: false,
-          filterOptions: {
-            enabled: true,
-          },
-          thClass: 'text-right',
-          tdClass: 'text-right',
-        }
-        if (index === catLength - 1) obj.label = 'Tổng cộng'
-        this.labelName.push(obj)
-        this.columns.push(obj)
-      })
+      if (this.getReportSalesCatCatories) {
+        this.getReportSalesCatCatories.forEach((item, index) => {
+          const obj = {
+            index,
+            label: item,
+            field: `${index + 4}`,
+            sortable: false,
+            filterOptions: {
+              enabled: true,
+            },
+            thClass: 'text-right',
+            tdClass: 'text-right px-2',
+          }
+          this.labelName.push(obj)
+          this.columns.push(obj)
+        })
+        this.columns.push(this.lastCol)
+      }
     },
     getReportSalesCat() {
       this.reportSalesCatList = [...this.getReportSalesCat]
     },
     getTotalInfo() {
       this.totalQuantity = []
-      // const self = this
       this.getTotalInfo.forEach((item, index) => {
         if (index > 3) {
           this.totalQuantity.push(item)
         }
       })
+    },
+    getReportSalesCatPrices() {
+      for (let i = 0; i <= this.reportSalesCatList.length - 1; i += 1) {
+        for (let j = 3; j <= this.getReportSalesCatPrices[i].length - 1; j += 1) {
+          if (j < this.getReportSalesCatPrices[i].length - 1) {
+            this.reportSalesCatList[i][j] = this.$formatNumberToLocale(this.getReportSalesCatPrices[i][j])
+          } else {
+            this.reportSalesCatList[i].sumTotal = this.getReportSalesCatPrices[i][j]
+          }
+        }
+      }
     },
   },
   mounted() {
@@ -351,7 +399,7 @@ export default {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')
       this.PRINT_REPORT_ACTION({
-        ...this.searchOptions,
+        ...this.searchData,
         ...this.decentralization,
         onSuccess: () => {
           this.$root.$emit('bv::enable::popover')

@@ -23,6 +23,7 @@ import {
   getNotImportReasonsEndpoint,
   printOutInputOrderEndpoint,
   getImportPoConfirmEndpoint,
+  getWarehousesListEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -127,6 +128,11 @@ export default {
   },
   getImportPoConfirm(args) {
     return axios.get(getImportPoConfirmEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getWarehousesList(args) {
+    return axios.get(getWarehousesListEndpoint, {
       params: formatURLParams(args),
     })
   },

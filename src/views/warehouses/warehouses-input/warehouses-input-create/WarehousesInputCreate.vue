@@ -54,7 +54,6 @@
                   no-options-text="Không có dữ liệu"
                   no-results-text="Không tìm thấy kết quả"
                   placeholder="Chọn loại nhập hàng"
-                  @select="clearFormText"
                 />
                 <b-input-group-append>
                   <b-icon-three-dots-vertical
@@ -74,9 +73,18 @@
             Kho hàng
           </div>
           <b-form-input
+            v-if="inputTypeSelected === '1' || (inputTypeSelected === '0' && status !== -1)"
             id="warehouse"
             v-model="warehousesType.wareHouseTypeName"
             disabled
+          />
+          <tree-select
+            v-if="inputTypeSelected === '2' || (inputTypeSelected === '0' && status === -1)"
+            v-model="warehouseSelected"
+            :options="warehousesListOptions"
+            no-options-text="Không có dữ liệu"
+            no-results-text="Không tìm thấy kết quả"
+            placeholder="Chọn kho nhập hàng"
           />
           <!-- END -  Stock  -->
 
@@ -572,11 +580,15 @@ import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
 import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.vue'
 import {
   WAREHOUSEINPUT,
+
   WAREHOUSES_TYPE_GETTER,
   PRODUCTS_GETTER,
+  WAREHOUSES_LIST_GETTER,
+
   GET_WAREHOUSES_TYPE_ACTION,
   CREATE_SALE_IMPORT_ACTION,
   GET_PRODUCTS_ACTION,
+  GET_WAREHOUSES_LIST_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -598,6 +610,7 @@ export default {
       totalPoPromoProduct: 0,
       totalProduct: 0,
       products: [{ data: '' }],
+      warehouseSelected: null,
       // START - Table promotions
       isShowPoPromoTable: false,
       isShowPoPromoManualTable: true,
@@ -866,9 +879,17 @@ export default {
     ...mapGetters(WAREHOUSEINPUT, [
       WAREHOUSES_TYPE_GETTER,
       PRODUCTS_GETTER,
+      WAREHOUSES_LIST_GETTER,
     ]),
     warehousesType() {
       return this.WAREHOUSES_TYPE_GETTER
+    },
+    warehousesListOptions() {
+      return this.WAREHOUSES_LIST_GETTER.map(data => ({
+        id: data.id,
+        label: data.wareHouseTypeName,
+        default: data.isDefault,
+      }))
     },
     getProducts() {
       if (this.PRODUCTS_GETTER) {
@@ -946,7 +967,17 @@ export default {
     this.GET_WAREHOUSES_TYPE_ACTION({
       ...this.decentralization,
     })
-    this.$refs.focusInput.$el.querySelector('input').focus()
+    this.GET_WAREHOUSES_LIST_ACTION({
+      ...this.decentralization,
+      onSuccess: () => {
+        this.warehousesListOptions.forEach(warehouse => {
+          if (warehouse.default === 1) {
+            this.warehouseSelected = warehouse.id
+          }
+        })
+      },
+    })
+    this.$nextTick(() => this.$refs.focusInput.$el.querySelector('input').focus())
   },
 
   // before page leave, this will check
@@ -968,6 +999,7 @@ export default {
       CREATE_SALE_IMPORT_ACTION,
       GET_WAREHOUSES_TYPE_ACTION,
       GET_PRODUCTS_ACTION,
+      GET_WAREHOUSES_LIST_ACTION,
     ]),
 
     statusSaveButton() {
@@ -1060,9 +1092,10 @@ export default {
       this.poBorrowingInfo = { ...importBorrowInfo }
     },
     // ------------------------------Nhap vay muon----------------------------
+    // nhập hàng km tay + nhập vay mượn dùng warehouseType - còn lại dùng warehouseSelected
     create() {
       this.isFieldCanCheck = false
-      // this mean status = 0 || 1 || 2
+      // this mean status != -1
       if (this.promotionRow.length === 0) {
         const obj = {
           importType: this.status,
@@ -1076,16 +1109,29 @@ export default {
         if (obj.importType === -1) {
           toasts.error('Cần chọn ít nhất 1 sản phẩm khuyến mãi')
         }
-        // status = 1 || 2
-        if (obj.poId !== null && this.status !== 0) {
-          this.CREATE_SALE_IMPORT_ACTION(obj)
-        }
         // if import type = choose poConfirm -> check redInvoice
         if (this.status === 0) {
           this.$refs.formContainer.validate().then(success => {
             if (success) {
-              this.CREATE_SALE_IMPORT_ACTION(obj)
+              this.CREATE_SALE_IMPORT_ACTION({
+                ...obj,
+                wareHouseTypeId: this.warehousesType.id,
+              })
             }
+          })
+        }
+        // nhap dieu chinh
+        if (this.status === 1) {
+          this.CREATE_SALE_IMPORT_ACTION({
+            ...obj,
+            wareHouseTypeId: this.warehousesType.id,
+          })
+        }
+        // nhap vay muon
+        if (this.status === 2) {
+          this.CREATE_SALE_IMPORT_ACTION({
+            ...obj,
+            wareHouseTypeId: this.warehouseSelected,
           })
         }
       } else {
@@ -1099,6 +1145,7 @@ export default {
               orderDate: formatVniDateToISO(this.billDate),
               note: this.note?.trim(),
               lst: this.promotionRow,
+              wareHouseTypeId: this.warehouseSelected,
             })
           }
         })

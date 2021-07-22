@@ -44,7 +44,7 @@
         <thead>
           <!-- START - Header 2 -->
           <tr
-            style="background-color: gray"
+            style="background: rgb(192, 186, 186)"
           >
             <th
               class="text-right font-italic border-0"
@@ -138,7 +138,7 @@ export default {
 
     columnList() {
       const titles = this.titles.concat(this.PRINT_REPORT_GETTER.category)
-      titles[titles.length - 1] = 'Tổng cộng'
+      titles[titles.length] = 'Tổng cộng'
       return titles
     },
 
@@ -174,6 +174,7 @@ td {
   border-style: dotted;
   border-width: 2px;
 }
+
 </style>
 <style type="text/css" media="print">
     @page {
@@ -181,4 +182,7 @@ td {
         margin-bottom: 0;
         size: landscape;
     }
+body {
+  -webkit-print-color-adjust: exact !important;
+}
 </style>

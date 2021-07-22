@@ -21,6 +21,7 @@ import {
   NOT_IMPORT_REASONS_GETTER,
   PRINT_OUT_IN_PUT_ORDER_GETTER,
   STATUS_NOT_IMPORT_GETTER,
+  WAREHOUSES_LIST_GETTER,
   // ACTIONS
   GET_RECEIPTS_ACTION,
   EXPORT_RECEIPTS_ACTION,
@@ -44,6 +45,7 @@ import {
   GET_NOT_IMPORT_REASONS_ACTION,
   PRINT_OUT_IN_PUT_ORDER_ACTION,
   GET_IMPORT_PO_CONFIRM_ACTION,
+  GET_WAREHOUSES_LIST_ACTION,
   // mutations
   CLEAR_STATUS_NOT_IMPORT_MUTATION,
   CLEAR_GRID_VIEW_MUTATION,
@@ -68,10 +70,11 @@ export default {
     products: [],
     promotions: [],
     suggestProducts: [],
-    warehousestype: {},
+    warehousesType: {},
     notImportReasons: [],
     printOutInputOrderData: [],
     statusNotImport: {},
+    warehousesList: [],
   },
 
   // START - GETTERS
@@ -113,7 +116,7 @@ export default {
       return state.suggestProducts
     },
     [WAREHOUSES_TYPE_GETTER](state) {
-      return state.warehousestype
+      return state.warehousesType
     },
     [NOT_IMPORT_REASONS_GETTER](state) {
       return state.notImportReasons
@@ -123,6 +126,9 @@ export default {
     },
     [STATUS_NOT_IMPORT_GETTER](state) {
       return state.statusNotImport
+    },
+    [WAREHOUSES_LIST_GETTER](state) {
+      return state.warehousesList
     },
   },
 
@@ -433,7 +439,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.warehousestype = res.data
+            state.warehousesType = res.data
           } else {
             throw new Error(res.statusValue)
           }
@@ -480,6 +486,22 @@ export default {
         .then(res => {
           if (res.success) {
             val.onSuccess(res.data)
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_WAREHOUSES_LIST_ACTION]({ state }, val) {
+      ReceiptImportService
+        .getWarehousesList(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.warehousesList = res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }
