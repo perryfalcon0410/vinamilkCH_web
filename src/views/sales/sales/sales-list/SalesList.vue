@@ -617,7 +617,7 @@ export default {
     },
     orderProducts() {
       this.orderProducts.forEach(data => {
-        if (data.productInventory < 1 || data.productInventory < data.quantity) {
+        if (data.productInventory < 1 || data.productInventory < data.quantity || data.productUnitPrice === null) {
           this.checkStock = true
         }
       })
@@ -781,7 +781,7 @@ export default {
     },
     onclickAddProduct(index) {
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null) || (this.editManualPermission === true && this.onlineOrderId === null) || this.isOnline === false) {
-        if (index.item) {
+        if (index && index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
           if (productIndex === -1) {
             this.orderProducts.push(index.item)
@@ -791,8 +791,8 @@ export default {
             this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
           }
           this.productIdSelected = index.item.productCode
+          this.isSelectedProduct = true
         }
-        this.isSelectedProduct = true
       }
 
       if (this.editManualPermission === false && this.onlineOrderId === null && this.isOnline === true) {
@@ -802,6 +802,7 @@ export default {
 
       this.productsSearch = [{ data: null }]
       this.searchOptions.keyWord = null
+      // this.isSelectedProduct = true
     },
 
     getOrderNumber(val) {

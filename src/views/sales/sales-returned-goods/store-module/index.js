@@ -8,6 +8,7 @@ import {
   RETURNED_GOOD_CHOOSE_GETTER,
   RETURNED_GOOD_CHOOSEN_DETAIL_GETTER,
   RETURN_GOODS_DETAIL_GETTER,
+  REASON_RETURN_GOODS_GETTER,
 
   // ACTIONS
   GET_RETURNED_GOODS_ACTION,
@@ -15,6 +16,7 @@ import {
   GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION,
   CREATE_RETURNED_GOOD_ACTION,
   GET_RETURN_GOODS_DETAIL_ACTION,
+  GET_REASON_RETURN_GOODS_ACTION,
   // MUTATION
   CLEAR_RETURNED_GOODS_MUTATION,
 } from './type'
@@ -27,6 +29,7 @@ export default {
     salesOrderData: {},
     chooseProductData: {},
     productDetailData: {},
+    reasonType: [],
   },
   getters: {
     [RETURNED_GOODS_GETTER](state) {
@@ -41,6 +44,9 @@ export default {
     // reutrn goods detail
     [RETURN_GOODS_DETAIL_GETTER](state) {
       return state.productDetailData
+    },
+    [REASON_RETURN_GOODS_GETTER](state) {
+      return state.reasonType
     },
   },
   // MUTATIONS
@@ -137,6 +143,23 @@ export default {
         .then(res => {
           if (res.success) {
             state.productDetailData = res.data || {}
+            val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+
+    [GET_REASON_RETURN_GOODS_ACTION]({ state }, val) {
+      OderReturnService
+        .getReasonReturnGoods(val.data)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.reasonType = res.data
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)

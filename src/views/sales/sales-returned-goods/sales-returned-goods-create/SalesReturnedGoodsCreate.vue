@@ -86,7 +86,7 @@
             >
               Tiền trả lại
               <strong>:
-                {{ billInfo.moneyPayback }}
+                {{ $formatNumberToLocale(billInfo.moneyPayback) }}
               </strong>
             </b-list-group-item>
           </b-list-group>
@@ -381,8 +381,10 @@ import {
   RETURNEDGOODS,
   // GETTERS
   RETURNED_GOOD_CHOOSEN_DETAIL_GETTER,
+  REASON_RETURN_GOODS_GETTER,
   // ACTIONS
   GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION,
+  GET_REASON_RETURN_GOODS_ACTION,
   CREATE_RETURNED_GOOD_ACTION,
   CLEAR_RETURNED_GOODS_MUTATION,
 } from '../store-module/type'
@@ -398,7 +400,7 @@ export default {
     return {
       isShowSelectReceptModal: false,
       selectedReason: null,
-      reasonReturnOptions: saleData.reasonReturnGoods,
+      reasonReturnOptions: [],
       billInfo: {
         id: null,
         oderDate: null,
@@ -552,6 +554,7 @@ export default {
   computed: {
     ...mapGetters(RETURNEDGOODS, [
       RETURNED_GOOD_CHOOSEN_DETAIL_GETTER,
+      REASON_RETURN_GOODS_GETTER,
     ]),
     getProducts() {
       if (this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn && this.RETURNED_GOOD_CHOOSEN_DETAIL_GETTER.productReturn.response) {
@@ -606,6 +609,15 @@ export default {
       }
       return {}
     },
+    getReasonType() {
+      if (this.REASON_RETURN_GOODS_GETTER) {
+        return this.REASON_RETURN_GOODS_GETTER.map(data => ({
+          id: data.apParamCode,
+          label: data.apParamName,
+        }))
+      }
+      return []
+    },
   },
 
   watch: {
@@ -614,6 +626,9 @@ export default {
     },
     getProductPromotions() {
       this.productPromotions = [...this.getProductPromotions]
+    },
+    getReasonType() {
+      this.reasonReturnOptions = [...this.getReasonType]
     },
     getReasonReturn() {
       this.reasonReturn = [...this.getReasonReturn]
@@ -628,6 +643,10 @@ export default {
   },
 
   mounted() {
+    this.GET_REASON_RETURN_GOODS_ACTION({
+      data: {},
+      onSuccess: () => {},
+    })
     this.selectedReason = saleData.reasonReturnGoods.find(item => item.id === 'BREAKITEM').id
   },
 
@@ -638,6 +657,7 @@ export default {
     ...mapActions(RETURNEDGOODS, [
       GET_RETURNED_GOOD_CHOOSEN_DETAIL_ACTION,
       CREATE_RETURNED_GOOD_ACTION,
+      GET_REASON_RETURN_GOODS_ACTION,
     ]),
 
     statusReturnButton() {

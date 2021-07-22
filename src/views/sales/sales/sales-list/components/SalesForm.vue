@@ -852,6 +852,7 @@ export default {
           || this.salemtDeliveryTypeSelected === undefined
           || this.salemtPromotionObjectSelected === undefined
           || (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')
+          || this.isDisabled
         ) {
           this.isOpenPayModal = false
           this.$bvModal.hide('pay-modal')
@@ -911,9 +912,9 @@ export default {
           })
           this.search = ''
         } else {
-          this.GET_CUSTOMERS_ACTION({
-            searchKeywords: this.search.trim(),
-          })
+          // this.GET_CUSTOMERS_ACTION({
+          //   searchKeywords: this.search.trim(),
+          // })
           this.search = ''
         }
         this.$refs.salesSearchModal.$refs.salesSearchModal.show()
@@ -1085,12 +1086,13 @@ export default {
         this.customer.typeId = suggestion.item.customerTypeId
         this.isSelected = true
         this.$emit('getIdCustomer', suggestion.item)
+        this.$refs.search.$el.querySelector('input').blur()
       } else {
         const searchData = Number(this.search)
         if (Number.isNaN(searchData) === false) {
           console.log(this.search)
           this.GET_CUSTOMERS_ACTION({
-            phoneNumber: Number(this.search),
+            phoneNumber: (searchData === 0) ? '' : searchData,
           })
         } else {
           this.GET_CUSTOMERS_ACTION({

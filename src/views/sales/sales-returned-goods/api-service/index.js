@@ -6,6 +6,7 @@ import {
   getSaleOrderDetailEndPoint,
   createReturnOrderEndPoint,
   getReturnGoodDetailEnpoint,
+  getReasonReturnGoodsEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -33,6 +34,11 @@ export default {
 
   getReturnGoodDetail(args) {
     return axios.get(`${getReturnGoodDetailEnpoint}/${args.id}`, {
+      params: formatURLParams(args),
+    })
+  },
+  getReasonReturnGoods(args) {
+    return axios.get(getReasonReturnGoodsEndpoint, {
       params: formatURLParams(args),
     })
   },
