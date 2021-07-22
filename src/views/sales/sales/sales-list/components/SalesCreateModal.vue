@@ -23,7 +23,7 @@
               Họ và tên đệm <sup class="text-danger">*</sup>
             </div>
             <b-form-input
-              v-model="lastName"
+              v-model.trim="lastName"
               autofocus
               :state="touched ? passed : null"
               maxlength="200"
@@ -44,7 +44,7 @@
               Tên <sup class="text-danger">*</sup>
             </div>
             <b-form-input
-              v-model="firstName"
+              v-model.trim="firstName"
               :state="touched ? passed : null"
               maxlength="200"
             />
@@ -364,6 +364,12 @@ export default {
     'b-modal': VBModal,
     Ripple,
   },
+  props: {
+    customerDefault: {
+      type: Object,
+      default: () => {},
+    },
+  },
   data() {
     return {
       configBitrhDay: {
@@ -544,6 +550,7 @@ export default {
               street: this.street,
               noted: this.note,
               areaId: this.precinctsSelected,
+              customerTypeId: this.customerDefault.customerTypeId,
             },
             onSuccess: () => {
               this.getCreateInfo()

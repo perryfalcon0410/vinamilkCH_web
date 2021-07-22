@@ -444,6 +444,7 @@
     <!-- START - Sales Create Modal -->
     <sales-create-modal
       ref="salesCreateModal"
+      :customer-default="customerDefault"
       @getCreateInfo="getCreateInfo"
     />
     <!-- END - Sales Create Modal -->
@@ -742,8 +743,8 @@ export default {
           quantity: data.quantity,
           productUnitPrice: this.$formatNumberToLocale(data.price),
           sumProductUnitPrice: data.price,
-          productTotalPrice: this.$formatNumberToLocale(this.totalPriceProducts(1, Number(data.price))),
-          sumProductTotalPrice: this.totalPriceProducts(1, Number(data.price)),
+          productTotalPrice: this.$formatNumberToLocale(Number(data.totalPrice)),
+          sumProductTotalPrice: this.totalPriceProducts(1, Number(data.totalPrice)),
         }))
       }
       return []
@@ -987,8 +988,7 @@ export default {
       this.customer.scoreCumulated = val.scoreCumulated
       this.customer.amountCumulated = val.amountCumulated
       this.customer.typeId = val.customerTypeId
-      this.customer.createdAt = `${formatDateToLocale(val.createdAt)} ${getTimeOfDate(val.createdAt)}`
-      this.$emit('getCustomerCreate', val)
+      this.$emit('getCustomerCreate', this.customer)
     },
 
     onClickAgreeButton() {
@@ -1037,11 +1037,6 @@ export default {
     },
 
     onChangeKeyWord() {
-      // const searchKeywords = {
-      //   searchKeywords: this.search.trim(),
-      //   page: 0,
-      //   size: 2000,
-      // }
       if (this.search.length >= this.minSearch) {
         this.GET_CUSTOMERS_SALE_ACTION({
           ...this.pagination,

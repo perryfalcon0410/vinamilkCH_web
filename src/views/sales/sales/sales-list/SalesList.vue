@@ -592,6 +592,10 @@ export default {
       this.currentCustomer = { ...this.getCurrentCustomer }
     },
 
+    getCustomerCreate() {
+      this.currentCustomer = { ...this.getCustomerCreate }
+    },
+
     getDefaultCustomer() {
       this.defaultCustomer = { ...this.getDefaultCustomer }
     },
@@ -1002,6 +1006,11 @@ export default {
 
     getCurrentCustomer(val) {
       this.currentCustomer = val
+    },
+
+    getCustomerCreate(val) {
+      this.currentCustomer = val
+      this.customerFullName = val.fullName
     },
 
     getCustomerIdInfo(id) {
