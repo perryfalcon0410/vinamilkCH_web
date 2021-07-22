@@ -59,6 +59,7 @@
                 </div>
                 <div class="d-flex align-items-center">
                   <tree-select
+                    ref="focusInput"
                     v-model="outputTypeSelected"
                     :options="outputTypesOptions"
                     placeholder="Chọn loại xuất hàng"
@@ -186,7 +187,6 @@
               Ghi chú
             </div>
             <b-form-textarea
-              ref="focusInput"
               v-model="warehousesOutput.note"
               maxlength="250"
             />
@@ -725,7 +725,7 @@ export default {
   mounted() {
     this.GET_WAREHOUSE_TYPE_ACTION({ ...this.decentralization })
     this.columns = this.columnsPO
-    this.$refs.focusInput.focus()
+    this.$refs.focusInput.$el.querySelector('input').focus()
   },
 
   methods: {

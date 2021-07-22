@@ -31,6 +31,7 @@
               class="input-group-merge"
             >
               <b-form-input
+                ref="focusInput"
                 v-model.trim="transCode"
                 placeholder="Nhập mã nhập hàng"
                 maxlength="40"
@@ -359,7 +360,12 @@ export default {
         toDate: reverseVniDate(this.toDate),
       }
       this.updateSearchData(searchData)
-      this.GET_EXPORT_PO_TRANS_ACTION(searchData)
+      this.GET_EXPORT_PO_TRANS_ACTION({
+        data: searchData,
+        onSuccess: () => {
+          this.$refs.focusInput.focus()
+        },
+      })
     },
     onSearchClick() {
       this.onSearch()

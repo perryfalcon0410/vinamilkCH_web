@@ -483,10 +483,18 @@ export default {
       this.isDeleteModalShow = !this.isDeleteModalShow
     },
     confirmDelete() {
-      this.REMOVE_RECEIPT_ACTION(`${this.selectedReceiptId}?type=${this.selectedReceiptType}&formId=5&ctrlId=7`)
+      const paramsDelete = {
+        id: this.selectedReceiptId,
+        type: this.selectedReceiptType,
+      }
+      this.REMOVE_RECEIPT_ACTION({
+        paramsDelete,
+        onSuccess: () => {
+          this.receipts.splice(this.selectedReceiptIndex, 1)
+          this.receiptPagination.totalElements -= 1
+        },
+      })
       this.isDeleteModalShow = !this.isDeleteModalShow
-      this.receipts.splice(this.selectedReceiptIndex, 1)
-      this.receiptPagination.totalElements -= 1
     },
     onPaginationChange() {
       this.GET_RECEIPTS_ACTION(this.paginationData)

@@ -207,11 +207,12 @@ export default {
     },
     [GET_EXPORT_PO_TRANS_ACTION]({ state }, val) {
       WarehousesService
-        .getExportPoTrans(val)
+        .getExportPoTrans(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.poTrans = res.data || []
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

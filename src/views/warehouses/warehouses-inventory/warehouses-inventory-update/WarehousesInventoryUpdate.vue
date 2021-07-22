@@ -136,7 +136,6 @@
             slot-scope="props"
           >
             <div
-              v-show="products.length"
               v-if="props.column.field === 'productName'"
               class="mx-0 h7 text-brand-3"
             >
@@ -449,7 +448,7 @@ export default {
       warehouseType: null,
       isImportModalShow: false,
       isModalCloseShow: false,
-      warehousesInventoryData: {},
+      warehousesInventoryData: null,
       columns: [
         {
           label: 'Ngành hàng',
@@ -468,6 +467,7 @@ export default {
             enabled: true,
           },
           thClass: 'text-nowrap',
+          width: '250px',
         },
         {
           label: 'Số lượng tồn kho',
@@ -631,7 +631,7 @@ export default {
       this.unequal = this.getUnequal
     },
     getWarehouseInventoryData() {
-      this.warehousesInventoryData = { ...this.getWarehouseInventoryData }
+      this.warehousesInventoryData = this.getWarehouseInventoryData
     },
     getWarehouseInventoryDetail() {
       this.countingCode = this.WAREHOUSE_INVENTORY_DETAIL_GETTER.info.countingCode

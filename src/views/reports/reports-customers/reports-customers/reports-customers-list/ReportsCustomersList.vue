@@ -433,6 +433,20 @@ export default {
 }
 </style>
 <style>
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .report-customers.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 30px;
+    z-index: 1;
+  }
+  .report-customers.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 155px;
+    z-index: 1;
+  }
+  .report-customers.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
+    left: 310px;
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
   /* tùy chỉnh left khi scroll*/
   .report-customers.table-horizontal-scroll .column-first {
     left: 30px;

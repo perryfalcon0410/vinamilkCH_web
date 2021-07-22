@@ -43,6 +43,7 @@ export default {
         formId: args.formId,
         ctrlId: args.ctrlId,
         override: args.override,
+        wareHouseTypeId: args.wareHouseTypeId,
       },
     })
   },

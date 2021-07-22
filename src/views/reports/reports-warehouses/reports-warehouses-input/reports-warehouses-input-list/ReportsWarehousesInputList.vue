@@ -557,11 +557,11 @@ export default {
     z-index: 1;
   }
   .table-horizontal-scroll thead tr:last-child th:nth-child(3) {
-    left: 140px;
+    left: 120px;
     z-index: 1;
   }
   .table-horizontal-scroll thead tr:last-child th:nth-child(4) {
-    left: 252px;
+    left: 220px;
     z-index: 1;
   }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
@@ -571,7 +571,7 @@ export default {
     left: 35px;
   }
   .table-horizontal-scroll .column-second {
-    left: 130px;
+    left: 120px;
   }
   .table-horizontal-scroll .column-third {
     left: 220px;

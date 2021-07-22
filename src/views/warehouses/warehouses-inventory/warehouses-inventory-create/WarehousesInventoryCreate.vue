@@ -60,7 +60,6 @@
             v-model="warehouseType"
             :options="warehouseTypes"
             placeholder="Tất cả"
-            disabled
           />
         </b-col>
         <!-- END - Warehouse -->
@@ -163,7 +162,6 @@
             slot-scope="props"
           >
             <div
-              v-show="products.length"
               v-if="props.column.field === 'productName'"
               class="mx-0 h7 text-brand-3"
             >
@@ -499,7 +497,7 @@ export default {
       isModalCloseShow: false,
       isCreateModalShow: false,
       isCreated: false,
-      warehousesInventoryData: {},
+      warehousesInventoryData: null,
       columns: [
         {
           label: 'Ngành hàng',
@@ -518,6 +516,7 @@ export default {
             enabled: true,
           },
           thClass: 'text-nowrap',
+          width: '250px',
         },
         {
           label: 'Số lượng tồn kho',
@@ -695,9 +694,10 @@ export default {
       this.unequal = this.getUnequal
     },
     getWarehouseInventoryData() {
-      this.warehousesInventoryData = { ...this.getWarehouseInventoryData }
-      if (this.warehousesInventoryData.id != null) {
+      this.warehousesInventoryData = this.getWarehouseInventoryData
+      if (this.warehousesInventoryData != null) {
         this.isCreated = true
+        this.$router.push({ path: `/warehouses/inventory/${this.warehousesInventoryData}/update` })
       }
     },
     getWarehouseInventoryImportData() {
@@ -814,6 +814,7 @@ export default {
       } else {
         this.CREATE_WAREHOUSE_INVENTORY_ACTION({
           lstCreate,
+          wareHouseTypeId: this.warehouseType,
           formId: 5,
           ctrlId: 7,
         })
@@ -838,6 +839,7 @@ export default {
       }))
       this.CREATE_WAREHOUSE_INVENTORY_ACTION({
         lstCreate,
+        wareHouseTypeId: this.warehouseType,
         override: true,
         formId: 5,
         ctrlId: 7,
@@ -853,7 +855,7 @@ export default {
     },
     onClickAgreeImportButton() {
       if (this.importFile === null) {
-        toasts.error('Bạn chưa nhập file import')
+        toasts.error('Vui lòng mở tập tin để import')
         return
       }
       const data = new FormData()

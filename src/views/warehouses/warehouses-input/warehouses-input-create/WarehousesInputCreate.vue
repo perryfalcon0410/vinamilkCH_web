@@ -48,6 +48,7 @@
               </div>
               <div class="d-flex align-items-center">
                 <tree-select
+                  ref="focusInput"
                   v-model="inputTypeSelected"
                   :options="inputTypeOptions"
                   no-options-text="Không có dữ liệu"
@@ -94,7 +95,6 @@
                   >*</sup>
                 </div>
                 <b-form-input
-                  ref="focusInput"
                   v-model.trim="billNumber"
                   class="text-uppercase"
                   maxlength="40"
@@ -946,7 +946,7 @@ export default {
     this.GET_WAREHOUSES_TYPE_ACTION({
       ...this.decentralization,
     })
-    this.$nextTick(() => this.$refs.focusInput.focus())
+    this.$refs.focusInput.$el.querySelector('input').focus()
   },
 
   // before page leave, this will check

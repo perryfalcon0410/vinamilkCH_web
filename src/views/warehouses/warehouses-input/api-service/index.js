@@ -87,7 +87,7 @@ export default {
     return axios.post(createSaleImportEndpoint, args)
   },
   removeReceipt(args) {
-    return axios.patch(`${removeReceiptEndpoint}/${args}`)
+    return axios.patch(`${removeReceiptEndpoint}/${args.id}?type=${args.type}`)
   },
   printWarehouseInput(args) {
     const queryString = new URLSearchParams(args).toString()

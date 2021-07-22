@@ -20,6 +20,7 @@
           class="input-group-merge"
         >
           <b-form-input
+            ref="focusInput"
             v-model.trim="orderNumber"
             class="h7"
             placeholder="Nhập số hóa đơn"
@@ -276,7 +277,12 @@ export default {
         ...this.decentralization,
       }
       this.updateSearchData(searchData)
-      this.GET_RETURNED_GOOD_CHOOSE_ACTION(searchData)
+      this.GET_RETURNED_GOOD_CHOOSE_ACTION({
+        data: searchData,
+        onSuccess: () => {
+          this.$refs.focusInput.focus()
+        },
+      })
     },
     onSearchClick() {
       this.onSearch()

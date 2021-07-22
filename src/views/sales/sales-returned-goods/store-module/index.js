@@ -78,11 +78,12 @@ export default {
     // START - GET SALE ODERS
     [GET_RETURNED_GOOD_CHOOSE_ACTION]({ state }, val) {
       OderReturnService
-        .getSaleOrders(val)
+        .getSaleOrders(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.salesOrderData = res.data
+            val.onSuccess()
           } else {
             state.salesOrderData = {}
             throw new Error(res.statusValue)
