@@ -698,7 +698,7 @@ export default {
 
     // Pass an options object with `eventBus: true` to receive an eventBus back
     // which emits `start` and `finish` events\
-    this.$barcodeScanner.setSensitivity()
+    this.$barcodeScanner.setSensitivity(10)
     // Add barcode scan listener and pass the callback function
     this.$barcodeScanner.init(this.onBarcodeScanned)
   },

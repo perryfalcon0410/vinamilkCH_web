@@ -466,20 +466,9 @@
                     >
                       <b-input-group class="input-group-merge">
                         <b-input-group-prepend
-                          v-if="pay.isVoucherLocked === true"
                           is-text
                           class="cursor-pointer text-right"
-                        >
-                          <b-icon-three-dots-vertical
-                            scale="1.5"
-                          />
-                        </b-input-group-prepend>
-
-                        <b-input-group-prepend
-                          v-if="pay.isVoucherLocked === false"
-                          is-text
-                          class="cursor-pointer text-right"
-                          @click="onVoucherButtonClick()"
+                          @click="onVoucherButtonClick(pay.isVoucherLocked)"
                         >
                           <b-icon-three-dots-vertical
                             scale="1.5"
@@ -1211,7 +1200,6 @@ export default {
           }
         }
         // clean data
-        this.pay.salePayment.salePaymentAmount = null
         this.pay.extraAmount = null
         this.pay.voucher.voucherSerials = ''
         this.pay.voucher.vouchers = []
@@ -1262,7 +1250,6 @@ export default {
           }
         }
         // clean data
-        this.pay.salePayment.salePaymentAmount = null
         this.pay.extraAmount = null
         this.pay.voucher.voucherSerials = ''
         this.pay.voucher.vouchers = []
@@ -1276,9 +1263,9 @@ export default {
     },
     orderOnline: {
       handler() {
-        if (this.onlineOrder.discountCode !== '') {
-          this.pay.discount.discountCode = this.onlineOrder.discountCode
-          this.pay.discount.discountAmount = this.onlineOrder.discountValue
+        if (this.orderOnline.discountCode !== '') {
+          this.pay.discount.discountCode = this.orderOnline.discountCode
+          this.pay.discount.discountAmount = this.orderOnline.discountValue
         }
       },
       deep: true,
@@ -1327,8 +1314,12 @@ export default {
       return this.$permission('Sales', 'SalesReloadPrint')
     },
 
-    onVoucherButtonClick() {
-      this.$bvModal.show('VoucherModal')
+    onVoucherButtonClick(isLocked) {
+      if (isLocked) {
+        toasts.error('Bạn đã nhập sai quá số lần quy định và bị khóa chức năng trong ngày. Vui lòng liên hệ với bộ phận hỗ trợ để được tư vấn.')
+      } else {
+        this.$bvModal.show('VoucherModal')
+      }
     },
 
     getVoucherInfo(vouchers) {
@@ -1677,6 +1668,7 @@ export default {
       this.isOpenPayModal = false
       if (this.isSaveSuccess === true) {
         if (this.bills.length > 1) {
+          this.resetPayModal()
           this.$emit('deleteSaveBill', this.bills)
         }
         if (this.bills.length <= 1) {
@@ -1826,6 +1818,17 @@ export default {
           this.rePrintSaleOrder()
         }
       }
+    },
+    resetPayModal() {
+      this.pay.accumulate.accumulatePoint = null
+      this.pay.accumulate.accumulateAmount = 0
+
+      this.pay.voucher.voucherSerials = ''
+      this.pay.voucher.vouchers = []
+      this.pay.voucher.totalVoucherAmount = null
+
+      this.pay.discount.discountCode = ''
+      this.pay.discount.discountAmount = 0
     },
   },
 }
