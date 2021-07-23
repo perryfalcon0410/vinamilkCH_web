@@ -6,9 +6,9 @@
     size="xl"
     title="Thanh toán hóa đơn"
     title-class="font-weight-bolder text-brand-1 d-print-none"
-    hide-header-close
     content-class="bg-white"
     footer-border-variant="white"
+    @hidden="cancel()"
   >
     <!-- START - Body -->
     <b-container
@@ -230,7 +230,7 @@
                           class="form-control"
                           :raw="true"
                           :options="options.number"
-                          :disabled="value.promotionType === Number(promotionTypeOption[0].id) || !value.isEditable"
+                          :disabled="!value.isEditable"
                           @change.native="onChangePromotionAmout(value.amount.amount, value.amount.maxAmount)"
                         />
                       </b-col>
@@ -466,6 +466,7 @@
                     >
                       <b-input-group class="input-group-merge">
                         <b-input-group-prepend
+                          v-b-popover.hover="'Chọn voucher'"
                           is-text
                           class="cursor-pointer text-right"
                           @click="onVoucherButtonClick(pay.isVoucherLocked)"
@@ -479,6 +480,13 @@
                           class="pl-1 h6 mb-0 text-right"
                           readonly
                         />
+                        <b-input-group-text>
+                          <b-icon-x
+                            scale="1.0"
+                            class="cursor-pointer"
+                            @click="resetVoucher()"
+                          />
+                        </b-input-group-text>
                       </b-input-group>
                     </b-col>
                     <b-col
@@ -1317,6 +1325,8 @@ export default {
     onVoucherButtonClick(isLocked) {
       if (isLocked) {
         toasts.error('Bạn đã nhập sai quá số lần quy định và bị khóa chức năng trong ngày. Vui lòng liên hệ với bộ phận hỗ trợ để được tư vấn.')
+      } else if (!isLocked && this.isPaid) {
+        toasts.error('Bạn đã thanh toán hoá đơn này, nên sẽ không sử dụng được chức năng này nữa.')
       } else {
         this.$bvModal.show('VoucherModal')
       }
@@ -1367,6 +1377,12 @@ export default {
     resetDiscount() {
       this.pay.discount.discountCode = ''
       this.pay.discount.discountAmount = 0
+    },
+
+    resetVoucher() {
+      this.pay.voucher.voucherSerials = ''
+      this.pay.voucher.vouchers = []
+      this.pay.voucher.totalVoucherAmount = null
     },
 
     onChangeQuantity(id, params) {
@@ -1677,6 +1693,7 @@ export default {
           }
         }
       }
+      this.$emit('changeStateOpenPayModal', false)
       this.$bvModal.hide('pay-modal')
     },
     onChangeAccumulateAmount() {
@@ -1823,12 +1840,9 @@ export default {
       this.pay.accumulate.accumulatePoint = null
       this.pay.accumulate.accumulateAmount = 0
 
-      this.pay.voucher.voucherSerials = ''
-      this.pay.voucher.vouchers = []
-      this.pay.voucher.totalVoucherAmount = null
-
-      this.pay.discount.discountCode = ''
-      this.pay.discount.discountAmount = 0
+      this.resetVoucher()
+      this.resetDiscount()
+      this.isPaid = false
     },
   },
 }

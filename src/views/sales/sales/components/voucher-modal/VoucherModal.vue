@@ -27,7 +27,7 @@
           >
             <b-input
               v-model="keyword"
-              placeholder="Nhập serial"
+              placeholder="Nhập serial voucher"
               :disabled="isLocked"
               @keyup="checkKeywordSearch()"
             />

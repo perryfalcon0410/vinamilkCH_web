@@ -417,6 +417,7 @@
       :bills="bills"
       :is-open-pay-modal="isOpenPayModal"
       @deleteSaveBill="deleteSaveBill"
+      @changeStateOpenPayModal="changeStateOpenPayModal"
     />
     <!-- END - Pay modal -->
 
@@ -1119,10 +1120,14 @@ export default {
     },
     deleteSaveBill(val) {
       const deleteBill = val
+      this.isOpenPayModal = false
       this.$emit('deleteSaveBill', deleteBill)
     },
     getOrderNumber() {
       this.$emit('getOrderNumber', this.orderOnline)
+    },
+    changeStateOpenPayModal(isOpened) {
+      this.isOpenPayModal = isOpened
     },
   },
 
