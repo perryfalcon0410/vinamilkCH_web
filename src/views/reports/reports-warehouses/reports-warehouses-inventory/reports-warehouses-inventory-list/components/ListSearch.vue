@@ -84,6 +84,28 @@
             </b-input-group-append>
           </b-input-group>
         </b-col>
+
+        <!-- START - Warehouses Type -->
+        <b-col
+          xl
+          lg="3"
+          sm="4"
+        >
+          <div
+            class="h7 mt-sm-1 mt-xl-0"
+          >
+            Kho
+          </div>
+          <tree-select
+            v-model="warehouseTypeSelected"
+            :options="warehouseTypes"
+            :searchable="false"
+            placeholder="Tất cả"
+            class="h7"
+            no-options-text="Không có dữ liệu"
+          />
+        </b-col>
+        <!-- END - Warehouses Type -->
         <!-- START - Search button -->
         <b-col
           xl
@@ -133,9 +155,9 @@ import { reverseVniDate, nowDate } from '@/@core/utils/filter'
 import FindProductModal from './FindProductModal.vue'
 import {
   REPORT_WAREHOUSES_INVENTORY,
-  REPORT_WAREHOUSES_INVENTORY_GETTER,
-  REPORT_WAREHOUSES_INVENTORY_INFO_GETTER,
+  WAREHOUSE_TYPES_GETTER,
   GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
+  GET_WAREHOUSE_TYPES_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -167,18 +189,34 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
+      warehouseTypeSelected: null,
     }
+  },
+  computed: {
+    ...mapGetters(REPORT_WAREHOUSES_INVENTORY, [
+      WAREHOUSE_TYPES_GETTER,
+    ]),
+    warehouseTypes() {
+      return this.WAREHOUSE_TYPES_GETTER.map(data => ({
+        id: data.id,
+        label: data.wareHouseTypeName,
+        isDefault: data.isDefault,
+      }))
+    },
+  },
+  watch: {
+    warehouseTypes() {
+      this.warehouseTypeSelected = this.warehouseTypes.find(types => types.isDefault === 1).id // number 1 is default warehouse type
+    },
   },
   mounted() {
     this.$refs.focusInput.focus()
+    this.GET_WAREHOUSE_TYPES_ACTION({ ...this.decentralization })
   },
   methods: {
-    ...mapGetters(REPORT_WAREHOUSES_INVENTORY, [
-      REPORT_WAREHOUSES_INVENTORY_GETTER,
-      REPORT_WAREHOUSES_INVENTORY_INFO_GETTER,
-    ]),
     ...mapActions(REPORT_WAREHOUSES_INVENTORY, [
       GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
+      GET_WAREHOUSE_TYPES_ACTION,
     ]),
     onSaveClick(param) {
       this.isShowFindProductModal = false
@@ -192,6 +230,7 @@ export default {
       const searchData = {
         stockDate: reverseVniDate(this.date),
         productCodes: this.productCodes?.trim(),
+        warehouseTypeId: this.warehouseTypeSelected,
         ...this.decentralization,
       }
       this.updateSearchData(searchData)

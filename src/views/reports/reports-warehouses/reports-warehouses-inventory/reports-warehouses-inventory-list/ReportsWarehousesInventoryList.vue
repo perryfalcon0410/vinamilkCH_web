@@ -452,6 +452,7 @@ export default {
       this.EXPORT_REPORT_INVENTORIES_ACTION({
         productCodes: this.paginationData.productCodes,
         stockDate: this.paginationData.stockDate,
+        warehouseTypeId: this.paginationData.warehouseTypeId,
         ...this.decentralization,
       })
     },
@@ -476,6 +477,7 @@ export default {
       this.PRINT_REPORT_INVENTORY_ACTION({
         productCodes: this.paginationData.productCodes,
         stockDate: this.paginationData.stockDate,
+        warehouseTypeId: this.paginationData.warehouseTypeId,
         onSuccess: () => {
           this.$root.$emit('bv::enable::popover')
         },

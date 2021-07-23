@@ -6,6 +6,7 @@ import {
   getProductCatListsEndpoint,
   getProductListsEndpoint,
   printReportInventoryEndpoint,
+  getWarehouseTypesEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -32,6 +33,11 @@ export default {
   },
   printReportInventory(args) {
     return axios.get(printReportInventoryEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getWarehouseTypes(args) {
+    return axios.get(getWarehouseTypesEndpoint, {
       params: formatURLParams(args),
     })
   },

@@ -352,14 +352,14 @@ export default {
           label: 'Ghi chú',
           field: 'note',
           sortable: false,
-          thClass: 'text-center ws-nowrap',
-          tdClass: 'text-center',
+          thClass: 'text-left ws-nowrap',
+          tdClass: 'text-left',
         },
         {
           label: 'In HĐ đỏ',
           field: 'print',
-          thClass: 'text-center ws-nowrap',
-          tdClass: 'text-center',
+          thClass: 'text-left ws-nowrap',
+          tdClass: 'text-left',
           formatFn: value => (value === true ? 'Đã in ' : 'Chưa in'),
         },
         {
@@ -384,8 +384,8 @@ export default {
           label: 'Ghi chú HĐĐ',
           field: 'noteHdd',
           sortable: false,
-          thClass: 'text-center text-nowrap',
-          tdClass: 'text-center',
+          thClass: 'text-left text-nowrap',
+          tdClass: 'text-left',
         },
         {
           label: 'Thao tác',
@@ -582,8 +582,8 @@ export default {
 .move-header {
   position: sticky !important;
   right: 0;
-  top: auto;
-  z-index: 99;
+  top: 0.9px;
+  z-index: 1;
   background: #315899 !important;
 }
 .move-column {

@@ -11,12 +11,14 @@ import {
   PRODUCT_LIST_PAGINATION_GETTER,
   PRODUCT_CAT_LIST_GETTER,
   PRINT_REPORT_INVENTORY_GETTER,
+  WAREHOUSE_TYPES_GETTER,
   // ACTIONS
   GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
   EXPORT_REPORT_INVENTORIES_ACTION,
   GET_PRODUCT_LIST_ACTION,
   GET_PRODUCT_CAT_LIST_ACTION,
   PRINT_REPORT_INVENTORY_ACTION,
+  GET_WAREHOUSE_TYPES_ACTION,
 } from './type'
 
 export default {
@@ -31,6 +33,7 @@ export default {
     productListPagination: {},
     productCatList: [],
     printData: {},
+    warehouseTypes: [],
   },
 
   // START - GETTERS
@@ -55,6 +58,9 @@ export default {
     },
     [PRINT_REPORT_INVENTORY_GETTER](state) {
       return state.printData
+    },
+    [WAREHOUSE_TYPES_GETTER](state) {
+      return state.warehouseTypes
     },
   },
 
@@ -135,6 +141,21 @@ export default {
         .then(res => {
           if (res.success) {
             state.printData = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_WAREHOUSE_TYPES_ACTION]({ state }, val) {
+      reportWarehousesInventoryService
+        .getWarehouseTypes(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.warehouseTypes = res.data
           } else {
             throw new Error(res.statusValue)
           }
