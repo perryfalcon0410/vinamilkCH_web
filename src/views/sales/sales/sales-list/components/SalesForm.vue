@@ -1085,7 +1085,6 @@ export default {
       } else {
         const searchData = Number(this.search)
         if (Number.isNaN(searchData) === false) {
-          console.log(this.search)
           this.GET_CUSTOMERS_ACTION({
             phoneNumber: (searchData === 0) ? '' : searchData,
           })
