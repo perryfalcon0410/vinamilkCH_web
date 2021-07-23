@@ -447,15 +447,11 @@ export default {
             phoneNumber: null,
             totalBill: null,
             address: null,
-            noted: null,
           },
-          orderType: {
-            id: null,
-            label: null,
-            apParamCode: null,
-          },
+          orderType: null,
           deliveryType: null,
-          orderNumber: '',
+          orderNumber: null,
+          note: null,
           active: true,
           class: 'visited-action',
         },
@@ -464,7 +460,7 @@ export default {
       // online order
       onlineOrderId: null,
       orderSelected: {},
-      deliverySelected: null,
+      deliverySelected: {},
       editOnlinePermission: true,
       editManualPermission: true,
       isOnline: false,
@@ -606,6 +602,10 @@ export default {
 
     getSalemtPOSelected() {
       this.orderSelected = { ...this.getSalemtPOSelected }
+    },
+
+    salemtDeliveryTypeSelected() {
+      this.deliverySelected = { ...this.salemtDeliveryTypeSelected }
     },
 
     getSalemtPOOptions() {
@@ -822,14 +822,11 @@ export default {
             phoneNumber: this.defaultCustomer.mobiPhone,
             totalBill: this.defaultCustomer.totalBill,
             address: this.defaultCustomer.address,
-            noted: this.defaultCustomer.noted,
           },
-          orderType: {
-            id: null,
-          },
+          orderType: null,
           deliveryType: null,
           orderNumber: null,
-          noted: null,
+          note: null,
           active: false,
           class: '',
         })
@@ -844,14 +841,11 @@ export default {
           phoneNumber: this.currentCustomer.phoneNumber,
           totalBill: this.currentCustomer.totalBill,
           address: this.currentCustomer.address,
-          noted: this.currentCustomer.noted,
         },
-        orderType: {
-          id: this.orderSelected.id,
-        },
-        deliveryType: this.deliverySelected,
+        orderType: this.orderSelected.id,
+        deliveryType: this.deliverySelected.id,
         orderNumber: this.currentOrderNumber.orderNumber,
-        noted: null,
+        note: this.currentOrderNumber.note,
         active: false,
         class: 'visited-action',
       })
@@ -886,13 +880,11 @@ export default {
               phoneNumber: this.currentCustomer.phoneNumber,
               totalBill: this.currentCustomer.totalBill,
               address: this.currentCustomer.address,
-              noted: this.currentCustomer.noted,
             },
-            orderType: {
-              id: this.orderSelected.id,
-            },
-            deliveryType: this.deliverySelected,
+            orderType: this.orderSelected.id,
+            deliveryType: this.deliverySelected.id,
             orderNumber: this.currentOrderNumber.orderNumber,
+            note: this.currentOrderNumber.note,
             active: false,
             class: '',
           }
@@ -907,10 +899,10 @@ export default {
           this.currentCustomer.phoneNumber = bill.customer.phoneNumber
           this.currentCustomer.totalBill = bill.customer.totalBill
           this.currentCustomer.address = bill.customer.address
-          this.currentCustomer.noted = bill.customer.noted
-          this.orderSelected.id = bill.orderType.id
-          this.deliverySelected = bill.deliveryType
+          this.orderSelected.id = bill.orderType
+          this.deliverySelected.id = bill.deliveryType
           this.currentOrderNumber.orderNumber = bill.orderNumber
+          this.currentOrderNumber.note = bill.note
           return {
             ...bill,
             active: true,

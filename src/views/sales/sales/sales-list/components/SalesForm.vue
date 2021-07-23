@@ -376,9 +376,10 @@
                 <b-icon-pencil-fill />
               </b-input-group-prepend>
               <b-form-input
-                v-model="customer.noted"
+                v-model="orderOnline.note"
                 placeholder="Ghi chú"
                 maxlength="4000"
+                @input="getOrderNumber"
               />
 
             </b-input-group>
@@ -622,8 +623,9 @@ export default {
       orderOnline: {
         onlineOrderId: null,
         orderNumber: null,
-        discountCode: '',
+        discountCode: null,
         discountValue: null,
+        note: null,
       },
 
       quantity: null,
@@ -792,6 +794,12 @@ export default {
       this.customer = { ...this.customerDefault }
       this.getCustomerDefault()
     },
+    getCustomerInfo() {
+      this.customer = { ...this.getCustomerInfo }
+    },
+    getCreateInfo() {
+      this.customer = { ...this.getCreateInfo }
+    },
     getCustomerSearch() {
       this.customersSearch = [...this.getCustomerSearch]
     },
@@ -809,7 +817,8 @@ export default {
         this.$refs.salesSearchModal.$refs.salesSearchModal.show()
       } else {
         const arrayToString = JSON.stringify(...this.onlineOrderCustomers)
-        this.customer = JSON.parse(arrayToString)
+        const customerOnline = JSON.parse(arrayToString)
+        this.customer = { ...customerOnline }
         this.$emit('getOnlineCustomer', this.customer)
       }
     },
@@ -1032,9 +1041,9 @@ export default {
       this.orderOnline.orderNumber = this.onlineOrder.orderNumber
       this.orderOnline.discountCode = this.onlineOrder.discountCode
       this.orderOnline.discountValue = this.onlineOrder.discountValue
+      this.orderOnline.note = this.onlineOrder.note
       this.quantity = this.onlineOrder.quantity
       this.totalPrice = this.onlineOrder.totalPrice
-      this.$emit('getOnlineCustomer', this.customer)
     },
 
     onChangeKeyWord() {
@@ -1056,7 +1065,7 @@ export default {
     },
 
     getDeliveryType(item) {
-      this.$emit('salemtDeliveryTypeSelected', item.id)
+      this.$emit('salemtDeliveryTypeSelected', item)
     },
     focusInput() {
       if (this.isSelected) {
