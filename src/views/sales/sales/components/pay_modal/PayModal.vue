@@ -1860,10 +1860,6 @@ export default {
   .max-width {
     max-width: max-content;
   }
-
-  .vgt-wrap #vgt-table.style-paymodal thead tr:first-child th {
-    font-weight: 400 !important;
-  }
   .font-weight-600 {
     font-weight: 600 !important;
   }
