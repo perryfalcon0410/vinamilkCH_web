@@ -476,7 +476,7 @@ export default {
       outputTypesOptions: warehousesData.outputTypes,
       exportAll: false,
       quantityCheck: true,
-      nullCheck: false,
+      nullCheck: true,
       hideFilter: true,
       columnType: null,
 
@@ -803,27 +803,38 @@ export default {
     },
     checkNull() {
       let stop = true
-      this.products.forEach(item => {
-        if (stop) {
-          if (item.quantityReturn != null && item.quantityReturn > 0) {
+      if (this.products.length > 0) {
+        this.products.forEach(item => {
+          if (stop) {
+            if (item.quantityReturn != null && item.quantityReturn > 0) {
+              this.nullCheck = true
+              stop = false
+            } else {
+              this.nullCheck = false
+              this.rowsProductPromotion.forEach(i => {
+                if (i.quantityPromo != null && i.quantityPromo > 0) {
+                  this.nullCheck = true
+                  stop = false
+                } else {
+                  this.nullCheck = false
+                }
+              })
+            }
+          }
+        })
+      } else {
+        this.rowsProductPromotion.forEach(i => {
+          if (i.quantityPromo != null && i.quantityPromo > 0) {
             this.nullCheck = true
             stop = false
           } else {
             this.nullCheck = false
-            this.rowsProductPromotion.forEach(i => {
-              if (i.quantityPromo != null && i.quantityPromo > 0) {
-                this.nullCheck = true
-                stop = false
-              } else {
-                this.nullCheck = false
-              }
-            })
           }
-        }
-      })
+        })
+      }
     },
     createExport() {
-      if (this.outputTypeSelected === warehousesData.outputTypes[0].id) {
+      if (this.outputTypeSelected === this.poOutputType) {
         this.checkNull()
       }
       if (this.products.length > 0 || this.rowsProductPromotion.length > 0) {
@@ -867,7 +878,7 @@ export default {
       this.warehousesOutput.poNumber = ''
       this.warehousesOutput.code = ''
       this.warehousesOutput.note = ''
-      this.outputTypeSelected = warehousesData.outputTypes[0].id
+      this.outputTypeSelected = this.poOutputType
       this.warehousesOutput.billDate = nowDate()
     },
     changeQuantity() {

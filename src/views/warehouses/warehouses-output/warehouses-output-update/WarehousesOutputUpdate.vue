@@ -594,14 +594,14 @@ export default {
       this.warehousesOutput.transDate = formatISOtoVNI(dataWarehousesOutput.transDate)
       this.warehousesOutput.transTime = getTimeOfDate(dataWarehousesOutput.transDate)
 
-      if (this.warehousesOutput.receiptType === warehousesData.outputTypes[0].id) {
+      if (this.warehousesOutput.receiptType === this.poOutputType) {
         this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.orderDate)
       } if (this.warehousesOutput.receiptType === warehousesData.outputTypes[1].id) {
         this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.adjustmentDate)
       } if (this.warehousesOutput.receiptType === warehousesData.outputTypes[2].id) {
         this.warehousesOutput.orderDate = formatISOtoVNI(dataWarehousesOutput.borrowDate)
       }
-      if (this.warehousesOutput.receiptType !== warehousesData.outputTypes[0].id) {
+      if (this.warehousesOutput.receiptType !== this.poOutputType) {
         this.columns = this.columnsCustom
       }
 
@@ -702,27 +702,38 @@ export default {
     },
     checkNull() {
       let stop = true
-      this.products.forEach(item => {
-        if (stop) {
-          if (item.productReturnAmount != null && item.productReturnAmount > 0) {
+      if (this.products.length > 0) {
+        this.products.forEach(item => {
+          if (stop) {
+            if (item.productReturnAmount != null && item.productReturnAmount > 0) {
+              this.nullCheck = true
+              stop = false
+            } else {
+              this.nullCheck = false
+              this.rowsProductPromotion.forEach(i => {
+                if (i.productReturnAmount != null && i.productReturnAmount !== 0) {
+                  this.nullCheck = true
+                  stop = false
+                } else {
+                  this.nullCheck = false
+                }
+              })
+            }
+          }
+        })
+      } else {
+        this.rowsProductPromotion.forEach(i => {
+          if (i.productReturnAmount != null && i.productReturnAmount > 0) {
             this.nullCheck = true
             stop = false
           } else {
             this.nullCheck = false
-            this.rowsProductPromotion.forEach(i => {
-              if (i.productReturnAmount != null && i.productReturnAmount !== 0) {
-                this.nullCheck = true
-                stop = false
-              } else {
-                this.nullCheck = false
-              }
-            })
           }
-        }
-      })
+        })
+      }
     },
     onClickUpdateWarehousesOutput() {
-      if (this.warehousesOutput.receiptType === warehousesData.outputTypes[0].id) {
+      if (this.warehousesOutput.receiptType === this.poOutputType) {
         this.checkNull()
       }
       if (this.nullCheck) {

@@ -534,7 +534,11 @@ export default {
       this.pageNumber = 1 // hard code
     },
     onPaginationChange() {
-      this.GET_EXPORT_PO_TRANS_ACTION(this.paginationData)
+      this.GET_EXPORT_PO_TRANS_ACTION({
+        data: { ...this.paginationData },
+        onSuccess: () => {
+        },
+      })
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }

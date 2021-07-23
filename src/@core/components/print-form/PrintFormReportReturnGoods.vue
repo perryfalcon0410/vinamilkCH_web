@@ -396,7 +396,7 @@ td {
 </style>
 <style type="text/css" media="print">
     @page {
-        margin-top: 0;
+        margin-top: 10px;
         margin-bottom: 0;
         size: portrait;
     }
