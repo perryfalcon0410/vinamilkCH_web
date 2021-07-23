@@ -85,7 +85,7 @@
                   <vue-good-table
                     :columns="columnsAdm"
                     :rows="value.products"
-                    style-class="vgt-table bordered"
+                    style-class="vgt-table bordered style-paymodal"
                     compact-mode
                     line-numbers
                   >
@@ -565,7 +565,7 @@
                 <b-col>
                   <cleave
                     v-model="pay.needPaymentAmount"
-                    class="form-control h5 mb-0 font-weight-bold text-right"
+                    class="form-control h4 mb-0 font-weight-600 text-right"
                     :raw="true"
                     :options="options.number"
                     disabled
@@ -603,11 +603,11 @@
 
                     <b-col
                       cols="6"
-                      class="h7"
+                      class="h6"
                     >
                       <cleave
                         v-model="pay.salePayment.salePaymentAmount"
-                        class="form-control text-right"
+                        class="form-control h6 text-right"
                         :raw="true"
                         :options="options.number"
                         maxlength="20"
@@ -853,21 +853,21 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left col-2',
+          thClass: 'text-left text-nowrap font-weight-normal col-2',
           tdClass: 'text-left col-2',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left col-5',
+          thClass: 'text-left font-weight-normal col-5',
           tdClass: 'text-left col-5',
         },
         {
           label: 'Tồn kho',
           field: 'stockQuantity',
           sortable: false,
-          thClass: 'text-center col-2',
+          thClass: 'text-center font-weight-normal col-2',
           tdClass: 'text-center col-2',
           formatFn: value => this.$formatNumberToLocale(value),
         },
@@ -876,7 +876,7 @@ export default {
           field: 'quantity',
           sortable: false,
           type: 'number',
-          thClass: 'text-center col-3',
+          thClass: 'text-center font-weight-normal col-3',
           tdClass: 'text-center col-3',
         },
         {
@@ -1861,4 +1861,10 @@ export default {
     max-width: max-content;
   }
 
+  .vgt-wrap #vgt-table.style-paymodal thead tr:first-child th {
+    font-weight: 400 !important;
+  }
+  .font-weight-600 {
+    font-weight: 600 !important;
+  }
 </style>

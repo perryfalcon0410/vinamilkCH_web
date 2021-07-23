@@ -125,6 +125,18 @@
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
+            <div
+              v-else-if="props.column.field === 'customerName'"
+              class="name-width word-wrap"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'address'"
+              class="name-width word-wrap"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -260,16 +272,17 @@ export default {
           label: 'Tần suất',
           field: 'frequency',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          formatFn: this.$formatNumberToLocale,
         },
       ],
       lastCol: {
         label: 'Tổng cộng',
         field: 'sumTotal',
         sortable: false,
-        thClass: 'text-right',
-        tdClass: 'text-right',
+        type: 'number',
+        thClass: 'text-nowrap',
         formatFn: this.$formatNumberToLocale,
       },
     }
@@ -333,11 +346,13 @@ export default {
             label: item,
             field: `${index + 4}`,
             sortable: false,
+            type: 'number',
             filterOptions: {
               enabled: true,
             },
-            thClass: 'text-right',
-            tdClass: 'text-right px-2',
+            thClass: 'text-nowrap',
+            tdClass: 'px-2',
+            formatFn: this.$formatNumberToLocale,
           }
           this.labelName.push(obj)
           this.columns.push(obj)
@@ -360,7 +375,7 @@ export default {
       for (let i = 0; i <= this.reportSalesCatList.length - 1; i += 1) {
         for (let j = 3; j <= this.getReportSalesCatPrices[i].length - 1; j += 1) {
           if (j < this.getReportSalesCatPrices[i].length - 1) {
-            this.reportSalesCatList[i][j] = this.$formatNumberToLocale(this.getReportSalesCatPrices[i][j])
+            this.reportSalesCatList[i][j] = this.getReportSalesCatPrices[i][j]
           } else {
             this.reportSalesCatList[i].sumTotal = this.getReportSalesCatPrices[i][j]
           }

@@ -320,8 +320,8 @@ export default {
       REPORT_WAREHOUSES_ADJUSTMENTS_GETTER,
     ]),
     getAdjustmentLists() {
-      if (this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.content) {
-        return this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.content.map(data => ({
+      if (this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.response && this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.response.content) {
+        return this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.response.content.map(data => ({
           shopCode: data.shopCode,
           redInvoiceNo: data.redInvoiceNo,
           adjustmentType: data.typess,
@@ -344,8 +344,8 @@ export default {
       return {}
     },
     getAdjustmentPagination() {
-      if (this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER) {
-        return this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER
+      if (this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.response) {
+        return this.REPORT_WAREHOUSES_ADJUSTMENTS_GETTER.response
       }
       return {}
     },

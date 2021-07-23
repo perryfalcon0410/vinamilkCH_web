@@ -138,7 +138,7 @@
 
             <!-- START - Phone Number -->
             <b-row
-              class="mt-1 text-brand-3"
+              class="m-top text-brand-3"
               align-v="center"
             >
               <b-col cols="5">
@@ -152,7 +152,7 @@
 
             <!-- START - Cumulative points -->
             <b-row
-              class="mt-1 text-brand-3"
+              class="m-top text-brand-3"
               align-v="center"
             >
               <b-col cols="5">
@@ -166,7 +166,7 @@
 
             <!-- START - Address -->
             <b-row
-              class="mt-1 word-wrap text-brand-3"
+              class="m-top word-wrap text-brand-3"
               align-v="center"
             >
               <b-col cols="5">
@@ -187,7 +187,7 @@
         <b-row
           v-b-toggle.collapseDelivery
           align-v="center"
-          class="bg-light mt-1"
+          class="bg-light m-top"
           @click="onCollapseClick()"
         >
           <b-icon-truck
@@ -213,7 +213,7 @@
               name="Loại đơn hàng"
             >
               <b-row
-                class="mt-1"
+                class="m-top"
                 align-v="center"
               >
                 <b-col
@@ -236,37 +236,6 @@
 
             <!-- END - Order type -->
 
-            <!-- START - Delivery type -->
-            <validation-provider
-              v-slot="{ errors, passed, touched }"
-              rules="required"
-              name="Loại giao hàng"
-            >
-              <b-row
-                class="mt-1 h7"
-                align-v="center"
-              >
-
-                <b-col
-                  cols="5"
-                  class="text-brand-3"
-                >
-                  Loại giao hàng
-                </b-col>
-                <b-col>
-                  <tree-select
-                    v-model="salemtDeliveryTypeSelected"
-                    :state="touched ? passed : null"
-                    :options="salemtDeliveryTypeOptions"
-                    placeholder="Chọn loại giao hàng"
-                    @select="getDeliveryType"
-                  />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </b-col>
-              </b-row>
-            </validation-provider>
-            <!-- END - Delivery type -->
-
             <!-- START - Online order number -->
             <validation-provider
               v-slot="{ errors, passed, touched }"
@@ -274,7 +243,7 @@
               name="Số đơn online"
             >
               <b-row
-                class="mt-1 h7"
+                class="m-top h7"
                 align-v="center"
               >
 
@@ -312,7 +281,38 @@
               </b-row>
             </validation-provider>
 
-          <!-- END - Online order number -->
+            <!-- END - Online order number -->
+
+            <!-- START - Delivery type -->
+            <validation-provider
+              v-slot="{ errors, passed, touched }"
+              rules="required"
+              name="Loại giao hàng"
+            >
+              <b-row
+                class="m-top h7"
+                align-v="center"
+              >
+
+                <b-col
+                  cols="5"
+                  class="text-brand-3"
+                >
+                  Loại giao hàng
+                </b-col>
+                <b-col>
+                  <tree-select
+                    v-model="salemtDeliveryTypeSelected"
+                    :state="touched ? passed : null"
+                    :options="salemtDeliveryTypeOptions"
+                    placeholder="Chọn loại giao hàng"
+                    @select="getDeliveryType"
+                  />
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </b-col>
+              </b-row>
+            </validation-provider>
+            <!-- END - Delivery type -->
           </b-col>
         </b-collapse>
         <!-- END - Section delivery -->
@@ -320,7 +320,7 @@
         <!-- START - Section pay -->
         <b-row
           align-v="center"
-          class="bg-light mt-1"
+          class="bg-light m-top"
         >
           <b-icon-cash-stack
             font-scale="1.7"
@@ -332,7 +332,7 @@
         <b-col class="px-0">
           <!-- START - Product amount -->
           <b-row
-            class="mt-1 text-brand-3"
+            class="m-top text-brand-3"
             align-v="center"
           >
             <b-col cols="5">
@@ -342,7 +342,7 @@
               cols="7"
               class="pr-0"
             >
-              <div class="text-center h6 text-brand-3 font-weight-bold bg-light rounded py-1">
+              <div class="text-center h5 text-brand-3 font-weight-bold bg-light rounded padding-input">
                 {{ totalQuantity }}
               </div>
             </b-col>
@@ -351,7 +351,7 @@
 
           <!-- START - Temporary calculation -->
           <b-row
-            class="mt-1 text-brand-3"
+            class="m-top text-brand-3"
             align-v="center"
           >
             <b-col cols="5">
@@ -361,7 +361,7 @@
               cols="7"
               class="pr-0"
             >
-              <div class="h6 text-center text-brand-3 font-weight-bold bg-light rounded py-1">
+              <div class="h5 text-center text-brand-3 font-weight-bold bg-light rounded padding-input">
                 {{ totalOrderPrice }}
               </div>
             </b-col>
@@ -369,7 +369,7 @@
           <!-- END - Temporary calculation -->
 
           <!-- START - Note -->
-          <b-col class="px-0 mt-1 h7">
+          <b-col class="px-0 m-top h7">
             <b-input-group class="input-group-merge">
 
               <b-input-group-prepend is-text>
@@ -1142,5 +1142,12 @@ export default {
   }
   .rotate-down {
     transition: all 0.5s;
+  }
+  .m-top {
+    margin-top: 0.5rem !important;
+  }
+  .padding-input {
+    padding-bottom: 0.5rem !important;
+    padding-top: 0.5rem !important;
   }
 </style>
