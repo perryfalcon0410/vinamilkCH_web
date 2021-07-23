@@ -488,7 +488,7 @@ export default {
         type: this.selectedReceiptType,
       }
       this.REMOVE_RECEIPT_ACTION({
-        paramsDelete,
+        data: { ...paramsDelete },
         onSuccess: () => {
           this.receipts.splice(this.selectedReceiptIndex, 1)
           this.receiptPagination.totalElements -= 1

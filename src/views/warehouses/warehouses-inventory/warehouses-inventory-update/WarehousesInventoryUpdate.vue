@@ -743,7 +743,7 @@ export default {
       })
     },
     onClickConfirmCloseButton() {
-      this.$router.back()
+      this.$router.replace({ name: 'warehouses-inventory' })
     },
     onClickImportButton() {
       this.isImportModalShow = !this.isImportModalShow

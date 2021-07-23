@@ -683,6 +683,7 @@ export default {
         productCodes: this.paginationData.productCodes,
         fromDate: this.paginationData.fromDate,
         toDate: this.paginationData.toDate,
+        warehouseTypeId: this.paginationData.warehouseTypeId,
       })
     },
     updatePageNumber() {
@@ -695,6 +696,7 @@ export default {
         fromDate: this.paginationData.fromDate,
         toDate: this.paginationData.toDate,
         productCodes: this.paginationData.productCodes,
+        warehouseTypeId: this.paginationData.warehouseTypeId,
         ...this.decentralization,
         onSuccess: () => {
           this.$root.$emit('bv::enable::popover')

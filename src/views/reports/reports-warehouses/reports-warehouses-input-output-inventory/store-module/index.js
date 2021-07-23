@@ -7,6 +7,7 @@ import {
   PRODUCT_LISTS_GETTER,
   PRODUCT_CAT_LISTS_GETTER,
   PRINT_INPUT_OUTPUT_INVENTORY_GETTER,
+  WAREHOUSE_TYPES_GETTER,
   // MUTATIONS
   CLEAR_ALL_PRODUCT_LISTS_CHECKED,
   // ACTIONS
@@ -15,6 +16,7 @@ import {
   GET_PRODUCT_LISTS_ACTIONS,
   GET_PRODUCT_CAT_LISTS_ACTIONS,
   PRINT_INPUT_OUTPUT_INVENTORY_ACTION,
+  GET_WAREHOUSE_TYPES_ACTION,
 } from './type'
 
 export default {
@@ -26,6 +28,7 @@ export default {
     productCatData: [],
     selectedProductRow: [],
     printInputOutputData: [],
+    warehouseTypes: [],
   },
 
   getters: {
@@ -40,6 +43,9 @@ export default {
     },
     [PRINT_INPUT_OUTPUT_INVENTORY_GETTER](state) {
       return state.printInputOutputData
+    },
+    [WAREHOUSE_TYPES_GETTER](state) {
+      return state.warehouseTypes
     },
   },
 
@@ -125,6 +131,22 @@ export default {
         .then(res => {
           if (res.success) {
             state.printInputOutputData = res.data
+            val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_WAREHOUSE_TYPES_ACTION]({ state }, val) {
+      ReportsWarehousesInputOutputInventoryServices
+        .getWarehouseTypes(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.warehouseTypes = res.data
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)

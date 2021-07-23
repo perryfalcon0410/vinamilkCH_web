@@ -57,6 +57,7 @@
             Kho
           </div>
           <tree-select
+            ref="focusInput"
             v-model="warehouseType"
             :options="warehouseTypes"
             placeholder="Tất cả"
@@ -672,8 +673,14 @@ export default {
   },
 
   watch: {
+    warehouseType() {
+      if (this.warehouseType) {
+        this.onClickGetInventoryStocksButton()
+      }
+    },
     warehouseTypes() {
       this.warehouseType = this.warehouseTypes.find(types => types.isDefault === 1).id // number 1 is default warehouse type
+      this.onClickGetInventoryStocksButton()
     },
     getInstockAmount() {
       this.instockAmount = this.getInstockAmount
@@ -722,11 +729,7 @@ export default {
 
   mounted() {
     this.GET_WAREHOUSE_TYPES_ACTION({ formId: 5, ctrlId: 7 })
-    this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION({
-      formId: 5,
-      ctrlId: 7,
-    })
-    this.CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION({ formId: 5, ctrlId: 7 })
+    this.$refs.focusInput.$el.querySelector('input').focus()
   },
 
   methods: {
@@ -763,6 +766,7 @@ export default {
     },
     onClickGetInventoryStocksButton() {
       this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION({
+        wareHouseTypeId: this.warehouseType,
         formId: 5,
         ctrlId: 7,
       })
@@ -809,16 +813,23 @@ export default {
         packetQuantity: data.inventoryPacket || 0,
         unitQuantity: data.inventoryOdd || 0,
       }))
-      if (this.isExistedWarehouseInventory) {
-        this.isCreateModalShow = !this.isCreateModalShow
-      } else {
-        this.CREATE_WAREHOUSE_INVENTORY_ACTION({
-          lstCreate,
+      this.CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION({
+        data: {
           wareHouseTypeId: this.warehouseType,
-          formId: 5,
-          ctrlId: 7,
-        })
-      }
+        },
+        onSuccess: () => {
+          if (this.isExistedWarehouseInventory) {
+            this.isCreateModalShow = !this.isCreateModalShow
+          } else {
+            this.CREATE_WAREHOUSE_INVENTORY_ACTION({
+              lstCreate,
+              wareHouseTypeId: this.warehouseType,
+              formId: 5,
+              ctrlId: 7,
+            })
+          }
+        },
+      })
     },
     onClickAgreeButton() {
       const lstCreate = this.originalProducts.map(data => ({

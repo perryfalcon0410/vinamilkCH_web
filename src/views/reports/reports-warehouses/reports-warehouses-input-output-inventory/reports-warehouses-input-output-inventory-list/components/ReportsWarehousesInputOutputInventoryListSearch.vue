@@ -128,6 +128,35 @@
       </b-col>
       <!-- END - Product -->
 
+      <!-- START - Warehouse Type -->
+      <b-col
+        xl
+        lg="3"
+        sm="4"
+      >
+        <validation-provider
+          v-slot="{ errors, passed, touched }"
+          rules="required"
+          name="Kho hàng"
+        >
+          <div
+            class="h7 mt-sm-1 mt-xl-0"
+          >
+            Kho hàng <span class="text-danger">*</span>
+          </div>
+          <tree-select
+            v-model="warehouseType"
+            :options="warehouseTypes"
+            placeholder="Nhập kho hàng"
+            :state="touched ? passed : null"
+            class="h7"
+            no-options-text="Không có dữ liệu"
+          />
+          <small class="text-danger">{{ errors[0] }}</small>
+        </validation-provider>
+      </b-col>
+      <!-- END - Warehouse Type -->
+
       <!-- START - Search button -->
       <b-col
         xl
@@ -167,7 +196,7 @@
 
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import {
   ValidationProvider,
   ValidationObserver,
@@ -182,7 +211,9 @@ import {
 } from '@/@core/utils/filter'
 import {
   REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY,
+  WAREHOUSE_TYPES_GETTER,
   GET_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
+  GET_WAREHOUSE_TYPES_ACTION,
 } from '../../store-module/type'
 import FindProductModal from './FindProductModal.vue'
 
@@ -213,10 +244,27 @@ export default {
         dateFormat: 'd/m/Y',
         minDate: this.fromDate,
       },
+      warehouseType: null,
     }
   },
 
+  computed: {
+    ...mapGetters(REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY, [
+      WAREHOUSE_TYPES_GETTER,
+    ]),
+    warehouseTypes() {
+      return this.WAREHOUSE_TYPES_GETTER.map(data => ({
+        id: data.id,
+        label: data.wareHouseTypeName,
+        isDefault: data.isDefault,
+      }))
+    },
+  },
+
   watch: {
+    warehouseTypes() {
+      this.warehouseType = this.warehouseTypes.find(types => types.isDefault === 1).id // number 1 is default warehouse type
+    },
     fromDate() {
       this.configToDate = {
         ...this.configToDate,
@@ -226,6 +274,7 @@ export default {
   },
 
   mounted() {
+    this.GET_WAREHOUSE_TYPES_ACTION({ onSuccess: () => {} })
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
@@ -236,6 +285,7 @@ export default {
   methods: {
     ...mapActions(REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY, [
       GET_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
+      GET_WAREHOUSE_TYPES_ACTION,
     ]),
     onSelectProductModalClick() {
       this.selectProductModalVisible = !this.selectProductModalVisible
@@ -259,6 +309,7 @@ export default {
             productCodes: this.productCodes?.replace(/\s+/g, ''),
             fromDate: reverseVniDate(this.fromDate),
             toDate: reverseVniDate(this.toDate),
+            warehouseTypeId: this.warehouseType,
             formId: 1,
             ctrlId: 1,
           }

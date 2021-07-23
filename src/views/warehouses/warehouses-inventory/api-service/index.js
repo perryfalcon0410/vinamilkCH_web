@@ -53,7 +53,7 @@ export default {
     })
   },
   checkExistedWarehouseInventory(args) {
-    return axios.get(checkExistedWarehouseInventoryEndpoint, {
+    return axios.get(`${checkExistedWarehouseInventoryEndpoint}/${args.wareHouseTypeId}`, {
       params: formatURLParams(args),
     })
   },

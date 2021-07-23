@@ -130,10 +130,10 @@
                 Thông tin phản hồi <sup class="text-danger">*</sup>
               </div>
               <b-form-textarea
+                ref="focusInput"
                 v-model.trim="feedbackInfomation"
                 :state="touched ? passed : null"
                 maxlength="4000"
-                autofocus
               />
               <small class="text-danger">{{ errors[0] }}</small>
             </validation-provider>
@@ -648,6 +648,7 @@ export default {
       onSuccess: () => {},
     })
     this.selectedReason = saleData.reasonReturnGoods.find(item => item.id === 'BREAKITEM').id
+    this.$refs.focusInput.focus()
   },
 
   methods: {

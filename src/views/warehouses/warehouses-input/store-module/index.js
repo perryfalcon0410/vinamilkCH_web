@@ -387,7 +387,7 @@ export default {
     },
     [REMOVE_RECEIPT_ACTION]({ }, val) {
       ReceiptImportService
-        .removeReceipt(val)
+        .removeReceipt(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {

@@ -172,11 +172,12 @@ export default {
     },
     [CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION]({ state }, val) {
       WarehousesInventoryService
-        .checkExistedWarehouseInventory(val)
+        .checkExistedWarehouseInventory(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.isExistedWarehouseInventory = !res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }
