@@ -184,12 +184,16 @@
             ref="bill-of-sales-table"
             :columns="columnsInvoice"
             :rows="billSales"
-            style-class="vgt-table striped"
+            mode="remote"
+            style-class="vgt-table"
             :pagination-options="{
               enabled: true,
-              perPage: elementSize
+              perPage: searchData.size,
+              setCurrentPage: searchData.page + 1,
             }"
             compact-mode
+            line-numbers
+            :total-rows="paging.totalElements"
             :select-options="{
               enabled: true,
               selectOnCheckboxOnly: true,
@@ -200,6 +204,9 @@
               multipleColumns: true,
             }"
             @on-selected-rows-change="selectionChanged"
+            @on-sort-change="onSortChange"
+            @on-page-change="onPageChange"
+            @on-per-page-change="onPerPageChange"
           >
             <template
               slot="table-row"
@@ -222,12 +229,14 @@
               Không có dữ liệu
             </div>
             <!-- END - Empty rows -->
+
             <!-- START - Pagination -->
             <template
               slot="pagination-bottom"
               slot-scope="props"
             >
               <b-row
+                v-show="paging.totalElements"
                 class="v-pagination px-1 mx-0"
                 align-h="between"
                 align-v="center"
@@ -238,23 +247,21 @@
                   <span
                     class="text-nowrap"
                   >
-                    Hiển thị 1 đến
+                    Số hàng hiển thị
                   </span>
                   <b-form-select
-                    v-model="elementSize"
+                    v-model="searchData.size"
                     size="sm"
-                    :options="paginationOptions"
-                    class="mx-1 mt-1 mb-1"
+                    :options="perPageSizeOptions"
+                    class="mx-1"
                     @input="(value)=>props.perPageChanged({currentPerPage: value})"
                   />
-                  <span
-                    class="text-nowrap"
-                  > trong {{ totalElementBill }} mục </span>
+                  <span class="text-nowrap">{{ paginationDetailContent }}</span>
                 </div>
                 <b-pagination
                   v-model="pageNumber"
-                  :total-rows="totalElementBill"
-                  :per-page="elementSize"
+                  :total-rows="paging.totalElements"
+                  :per-page="searchData.size"
                   first-number
                   last-number
                   align="right"
@@ -278,7 +285,7 @@
                 </b-pagination>
               </b-row>
             </template>
-          <!-- END - Pagination -->
+            <!-- END - Pagination -->
           </vue-good-table>
         </b-col>
         <!-- END - Table -->
@@ -440,9 +447,13 @@ export default {
     return {
       isCheckValue: true,
       isHidden: false,
-      elementSize: commonData.perPageSizes[0],
+      perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
-      paginationOptions: commonData.perPageSizes,
+      searchData: {
+        size: commonData.perPageSizes[0],
+        page: commonData.pageNumber - 1,
+        sort: null,
+      },
       searchOptions: {
         customerKeywords: '',
         invoiceNumberKeywords: '',
@@ -614,6 +625,16 @@ export default {
     getInvoiceDetail() {
       return this.GET_INVOICE_DETAIL_GETTER().response
     },
+    paginationDetailContent() {
+      const { page, size } = this.searchData
+      const { totalElements } = this.paging
+
+      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
+      const maxPageSize = (size * (page + 1)) > totalElements
+        ? totalElements : (size * (page + 1))
+
+      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
+    },
   },
   watch: {
     fromDate() {
@@ -625,12 +646,6 @@ export default {
     getBillOfSales() {
       this.billSales = [...this.getBillOfSales]
       this.totalElementBill = this.GET_BILL_OF_SALES_GETTER().billOfSalesPaging.totalElements
-    },
-    pageNumber() {
-      this.onPaginationChange()
-    },
-    elementSize() {
-      this.onPaginationChange()
     },
     getProductsOfBillSale() {
       this.getProductsOfBillSale.forEach(item => {
@@ -665,11 +680,12 @@ export default {
     },
   },
   mounted() {
+    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
     }
-    this.GET_BILL_OF_SALES_ACTION({ ...this.decentralization })
+    // this.GET_BILL_OF_SALES_ACTION({ ...this.decentralization })
   },
   methods: {
     ...mapGetters(RED_INVOICE, [
@@ -687,48 +703,48 @@ export default {
       CLEAR_ALL_BILL_OF_SALES_PRODUCTS,
       CLEAR_BILL_OF_SALE_PRODUCTS_UNCHECKED,
     ]),
-    onPaginationChange() {
-      const searchBillOfSales = {
-        fromDate: reverseVniDate(this.fromDate),
-        toDate: reverseVniDate(this.toDate),
-        searchKeywords: this.searchOptions.customerKeywords,
-        invoiceNumber: this.searchOptions.invoiceNumberKeywords,
-      }
-
-      this.GET_BILL_OF_SALES_ACTION({
-        ...searchBillOfSales,
-        size: this.elementSize,
-        page: this.pageNumber,
-        ...this.decentralization,
-      })
-    },
     onSearch() {
-      const searchData = {
+      this.searchOption = {
         searchKeywords: this.searchOptions.customerKeywords,
         invoiceNumber: this.searchOptions.invoiceNumberKeywords,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        ...this.decentralization,
       }
-      this.GET_BILL_OF_SALES_ACTION(searchData)
+      this.searchData = { ...this.searchData, ...this.searchOption }
+      this.GET_BILL_OF_SALES_ACTION(this.searchData)
+    },
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
     },
     onClickSearchButton() {
-      this.onSearch()
-      // const searchBillOfSales = {
-      //   fromDate: reverseVniDate(this.searchOptions.fromDate),
-      //   toDate: reverseVniDate(this.searchOptions.toDate),
-      //   searchKeywords: this.searchOptions.customerKeywords,
-      //   invoiceNumber: this.searchOptions.invoiceNumberKeywords,
-      // }
-
-      // this.GET_BILL_OF_SALES_ACTION({
-      //   ...searchBillOfSales,
-      //   size: this.elementSize,
-      //   page: this.pageNumber,
-      //   formId: this.formId,
-      //   ctrlId: this.ctrlId,
-      // })
+      this.searchOption = {
+        searchKeywords: this.searchOptions.customerKeywords,
+        invoiceNumber: this.searchOptions.invoiceNumberKeywords,
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
+      }
+      this.updateSearchData({
+        // page: commonData.pageNumber - 1,
+        ...this.searchOption,
+      })
+      this.onPaginationChange()
     },
+    // func pagination
+    onPaginationChange() {
+      this.GET_BILL_OF_SALES_ACTION({ ...this.searchData })
+    },
+    onPageChange(params) {
+      this.updateSearchData({ page: params.currentPage - 1 })
+      this.onPaginationChange()
+    },
+    onPerPageChange(params) {
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
+      })
+      this.onPaginationChange()
+    },
+    // func pagination
     selectionChanged(params) {
       if (params.selectedRows.length === 0) {
         this.isHidden = false
