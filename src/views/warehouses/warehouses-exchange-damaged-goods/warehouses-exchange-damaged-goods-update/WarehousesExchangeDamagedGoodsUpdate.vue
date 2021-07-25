@@ -66,10 +66,13 @@
             >
 
               <template slot-scope="{ suggestion }">
-                <div>
-                  <b>{{ suggestion.item.customerName }}</b>
+                <div class="cursor-pointer">
+                  {{ suggestions }}
+                  <div>
+                    <b>{{ suggestion.item.name }}</b>
+                  </div>
+                  <div>{{ suggestion.item.customerCode }} - {{ suggestion.item.mobilePhone }}</div>
                 </div>
-                <div>{{ suggestion.item.customerCode }} - {{ suggestion.item.mobilePhone }}</div>
               </template>
             </vue-autosuggest>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -256,7 +259,10 @@
                   slot-scope="{ suggestion }"
                   class="mw-25"
                 >
-                  <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                  <div class="cursor-pointer">
+                    {{ suggestions }}
+                    <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.name }}
+                  </div>
                 </template>
               </vue-autosuggest>
               <!-- END - Prodduct input -->
@@ -521,7 +527,7 @@ export default {
         data: this.CUSTOMERS_GETTER.map(data => ({
           customerId: data.id,
           customerCode: data.customerCode,
-          customerName: data.fullName,
+          name: data.fullName,
           address: data.address,
           mobilePhone: data.mobiPhone,
         })),
@@ -543,7 +549,7 @@ export default {
         data: this.PRODUCTS_GETTER.map(data => ({
           id: data.id,
           productCode: data.productCode,
-          productName: data.productName,
+          name: data.productName,
           productDVT: data.uom1,
           price: data.price,
           quantity: data.totalAmount,
@@ -698,7 +704,7 @@ export default {
       if (customer.item) {
         this.customerInfo.customerId = customer.item.customerId
         this.customerInfo.customerCode = customer.item.customerCode
-        this.customerInfo.customerName = customer.item.customerName
+        this.customerInfo.customerName = customer.item.name
         this.customerInfo.customerAddress = customer.item.address
         this.customerInfo.customerPhone = customer.item.mobilePhone
         this.customers = [{ data: null }]
@@ -726,7 +732,7 @@ export default {
           id: null,
           productId: product.item.id,
           productCode: product.item.productCode,
-          productName: product.item.productName,
+          productName: product.item.name,
           productDVT: product.item.productDVT,
           price: product.item.price,
           quantity: 1,

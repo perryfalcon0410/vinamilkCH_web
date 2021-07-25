@@ -653,7 +653,7 @@ export default {
       if (customer.item) {
         this.customerInfo.customerId = customer.item.customerId
         this.customerInfo.customerCode = customer.item.customerCode
-        this.customerInfo.customerName = customer.item.customerName
+        this.customerInfo.customerName = customer.item.name
         this.customerInfo.customerAddress = customer.item.address
         this.customerInfo.customerPhone = customer.item.mobilePhone
         this.customers = [{ data: null }]
@@ -680,7 +680,7 @@ export default {
             count: this.damagedProduct.length,
             id: product.item.id,
             productCode: product.item.productCode,
-            productName: product.item.productName,
+            productName: product.item.name,
             productDVT: product.item.productDVT,
             productPrice: product.item.productPrice,
             productQuantity: 1,
