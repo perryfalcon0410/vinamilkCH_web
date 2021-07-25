@@ -7,6 +7,7 @@
     footer-class="justify-content-center"
     content-class="bg-light"
     footer-border-variant="light"
+    hide-header-close
     centered
     @hidden="onModalClose"
   >
@@ -31,16 +32,13 @@
             class="input-group-merge"
           >
             <b-form-input
-              id="form-input-customer"
               v-model="searchOptions.productCode"
               trim
               autofocus
-              class="h7 text-brand-3 height-button-brand-1"
+              class="h7 text-brand-3"
               @keyup.enter="onSearchClick"
             />
-            <b-input-group-append
-              is-text
-            >
+            <b-input-group-append is-text>
               <b-icon-x
                 v-show="searchOptions.productCode"
                 class="cursor-pointer text-gray"
@@ -71,9 +69,7 @@
               class="h7 text-brand-3 height-button-brand-1"
               @keyup.enter="onSearchClick"
             />
-            <b-input-group-append
-              is-text
-            >
+            <b-input-group-append is-text>
               <b-icon-x
                 v-show="searchOptions.productName"
                 class="cursor-pointer text-gray"
@@ -136,13 +132,13 @@
           mode="remote"
           :rows="products"
           class="pb-1 m-1"
-          style-class="vgt-table striped"
+          style-class="vgt-table"
           compact-mode
           line-numbers
           :pagination-options="{
             enabled: true,
-            perPage: paginationData.size,
-            setCurrentPage: pageNumber,
+            perPage: searchData.size,
+            setCurrentPage: searchData.page + 1,
           }"
           :total-rows="productsPagination.totalElements"
           :sort-options="{
@@ -211,7 +207,7 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="paginationData.size"
+                  v-model="searchData.size"
                   size="sm"
                   :options="perPageSizeOptions"
                   class="mx-1"
@@ -222,7 +218,7 @@
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="productsPagination.totalElements"
-                :per-page="paginationData.size"
+                :per-page="searchData.size"
                 first-number
                 last-number
                 align="right"
@@ -256,26 +252,27 @@
     <template #modal-footer="{ cancel }">
       <b-button
         variant="none"
-        class="d-flex align-items-center text-uppercase btn-brand-1 h7"
+        class="d-flex align-items-center text-uppercase btn-brand-1 h8"
         @click="onSaveClick"
       >
         <b-icon
           icon="check2"
           width="20"
           height="20"
-          class="mr-1"
+          class="mr-50"
         />
         Lưu
       </b-button>
       <b-button
         variant="secondary"
-        class="d-flex align-items-center text-uppercase h7"
+        class="d-flex align-items-center text-uppercase h8"
         @click="cancel()"
       >
         <b-icon
           icon="x"
           width="20"
           height="20"
+          class="mr-50"
         />
         Đóng
       </b-button>
@@ -320,9 +317,9 @@ export default {
     return {
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
-      paginationData: {
+      searchData: {
         size: commonData.perPageSizes[0],
-        page: this.pageNumber,
+        page: commonData.pageNumber - 1,
         sort: null,
       },
       width: window.innerWidth,
@@ -341,6 +338,13 @@ export default {
         ctrlId: 1,
       },
       columns: [
+        // {
+        //   label: 'STT',
+        //   field: 'stt',
+        //   sortable: false,
+        //   thClass: 'text-center',
+        //   tdClass: 'text-center',
+        // },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
@@ -390,11 +394,14 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
-      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.productsPagination.totalElements
-        ? this.productsPagination.totalElements : (this.paginationData.size * this.pageNumber)
+      const { page, size } = this.searchData
+      const { totalElements } = this.productsPagination
 
-      return `${minPageSize} - ${maxPageSize} của ${this.productsPagination.totalElements} mục`
+      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
+      const maxPageSize = (size * (page + 1)) > totalElements
+        ? totalElements : (size * (page + 1))
+
+      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },
   },
   watch: {
@@ -437,10 +444,11 @@ export default {
     this.GET_PRODUCT_CAT_ACTION({
       ...this.decentralization,
     })
-    this.GET_PRODUCT_ACTION({
-      ...this.decentralization,
-      ...this.paginationData,
-    })
+    // this.GET_PRODUCT_ACTION({
+    //   ...this.decentralization,
+    //   ...this.paginationData,
+    // })
+    this.onSearch()
   },
 
   methods: {
@@ -454,33 +462,38 @@ export default {
     onSaveClick() {
       this.$emit('onSaveClick', this.selectedProductRow)
     },
-    onPaginationChange() {
-      this.GET_PRODUCT_ACTION({
-        ...this.paginationData,
-        ...this.decentralization,
+    // func paginantion
+
+    onSearch() {
+      this.searchData = { ...this.searchData, ...this.searchOptions }
+      this.GET_PRODUCT_ACTION(this.searchOptions)
+    },
+
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
+    },
+
+    onSearchClick() {
+      this.updateSearchData({
+        // page: commonData.pageNumber - 1,
         ...this.searchOptions,
         catId: this.prodcutCatSelected,
       })
-      this.selectedCurrentPage = []
+      this.onPaginationChange()
     },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
+    onPaginationChange() {
+      this.GET_PRODUCT_ACTION({ ...this.searchData })
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updateSearchData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange()
-    },
-    onSearchClick() {
-      this.GET_PRODUCT_ACTION({
-        ...this.decentralization,
-        ...this.searchOptions,
-        catId: this.prodcutCatSelected,
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
       })
-      this.pageNumber = 1
+      this.onPaginationChange()
     },
     selectAllRows(params) {
       if (params.selected) {

@@ -361,7 +361,7 @@ export default {
         ...this.decentralization,
       }
       this.updateSearchData(searchData)
-      this.GET_REPORT_RETURNED_GOODS_ACTION(searchData)
+      // this.GET_REPORT_RETURNED_GOODS_ACTION(searchData)
     },
 
     onClickSearchButton() {

@@ -13,7 +13,6 @@
         <!-- START - Container Left -->
         <b-col
           xl="3"
-          lg="6"
           md
           class="bg-white shadow rounded py-1"
         >
@@ -145,199 +144,201 @@
 
         <!-- START - Container Right -->
         <b-col
-          class="bg-white shadow rounded ml-1"
+          xl="9"
+          class="px-xl-1 px-lg-0 pt-lg-1 pt-xl-0"
         >
-          <!-- START - Tables -->
-          <b-tabs>
-            <!-- START - Product -->
-            <b-tab
-              title="Sản phẩm"
-              active
-            >
-              <!-- Start Table -->
-              <vue-good-table
-                :columns="columns"
-                :rows="products"
-                style-class="vgt-table striped"
-                :pagination-options="{
-                  enabled: false
-                }"
-                line-numbers
+          <div class="bg-white shadow rounded p-1 h-100">
+            <!-- START - Tables -->
+            <b-tabs>
+              <!-- START - Product -->
+              <b-tab
+                title="Sản phẩm"
+                active
               >
-                <!-- START - Empty rows -->
-                <div
-                  slot="emptystate"
-                  class="text-center"
+                <!-- Start Table -->
+                <vue-good-table
+                  :columns="columns"
+                  :rows="products"
+                  style-class="vgt-table striped"
+                  :pagination-options="{
+                    enabled: false
+                  }"
+                  line-numbers
                 >
-                  Không có dữ liệu
-                </div>
-
-                <!-- START - Column filter -->
-                <template
-                  slot="column-filter"
-                  slot-scope="props"
-                >
-                  <b-row
-                    v-if="props.column.field === 'quantity'"
-                    class="mx-0 h7 text-brand-3 text-right"
-                    align-h="end"
-                  >
-                    {{ (getProductInfo.totalQuantity) }}
-                  </b-row>
-                  <b-row
-                    v-else-if="props.column.field === 'totalPrice'"
-                    class="mx-0 h7 text-brand-3 text-right"
-                    align-h="end"
-                  >
-                    {{ (getProductInfo.totalAmount) }}
-                  </b-row>
-                  <b-row
-                    v-if="props.column.field === 'discount'"
-                    class="mx-0 h7 text-brand-3 text-right"
-                    align-h="end"
-                  >
-                    {{ (getProductInfo.totalDiscount) }}
-                  </b-row>
-                  <b-row
-                    v-else-if="props.column.field === 'payment'"
-                    class="mx-0 h7 text-brand-3 text-right"
-                    align-h="end"
-                  >
-                    {{ (getProductInfo.allTotal) }}
-                  </b-row>
-                </template>
-                <!-- START - Column filter -->
-                <!-- START - Custom row -->
-                <template
-                  slot="table-row"
-                  slot-scope="props"
-                >
+                  <!-- START - Empty rows -->
                   <div
-                    v-if="props.column.field === 'productName'"
-                    class="name-width"
+                    slot="emptystate"
+                    class="text-center"
                   >
-                    {{ props.formattedRow[props.column.field] }}
+                    Không có dữ liệu
                   </div>
-                  <div
-                    v-else-if="props.column.field === 'quantity' || props.column.field === 'totalPrice' || props.column.field === 'discount' || props.column.field === 'payment'"
-                    style="padding-right: 4px"
-                  >
-                    {{ props.formattedRow[props.column.field] }}
-                  </div>
-                  <div v-else>
-                    {{ props.formattedRow[props.column.field] }}
-                  </div>
-                </template>
-                <!-- END - Custom row -->
-              </vue-good-table>
-            <!-- End table -->
-            </b-tab>
-            <!-- END - Product -->
 
-            <!-- START - Promotion Product  -->
-            <b-tab
-              title="Hàng khuyến mãi"
-            >
-              <vue-good-table
-                :columns="promotionTable"
-                :rows="productPromotions"
-                style-class="vgt-table striped"
-                :pagination-options="{
-                  enabled: false
-                }"
-                compact-mode
-                line-numbers
+                  <!-- START - Column filter -->
+                  <template
+                    slot="column-filter"
+                    slot-scope="props"
+                  >
+                    <b-row
+                      v-if="props.column.field === 'quantity'"
+                      class="mx-0 h7 text-brand-3 text-right"
+                      align-h="end"
+                    >
+                      {{ (getProductInfo.totalQuantity) }}
+                    </b-row>
+                    <b-row
+                      v-else-if="props.column.field === 'totalPrice'"
+                      class="mx-0 h7 text-brand-3 text-right"
+                      align-h="end"
+                    >
+                      {{ (getProductInfo.totalAmount) }}
+                    </b-row>
+                    <b-row
+                      v-if="props.column.field === 'discount'"
+                      class="mx-0 h7 text-brand-3 text-right"
+                      align-h="end"
+                    >
+                      {{ (getProductInfo.totalDiscount) }}
+                    </b-row>
+                    <b-row
+                      v-else-if="props.column.field === 'payment'"
+                      class="mx-0 h7 text-brand-3 text-right"
+                      align-h="end"
+                    >
+                      {{ (getProductInfo.allTotal) }}
+                    </b-row>
+                  </template>
+                  <!-- START - Column filter -->
+                  <!-- START - Custom row -->
+                  <template
+                    slot="table-row"
+                    slot-scope="props"
+                  >
+                    <div
+                      v-if="props.column.field === 'productName'"
+                      class="name-width"
+                    >
+                      {{ props.formattedRow[props.column.field] }}
+                    </div>
+                    <div
+                      v-else-if="props.column.field === 'quantity' || props.column.field === 'totalPrice' || props.column.field === 'discount' || props.column.field === 'payment'"
+                      style="padding-right: 4px"
+                    >
+                      {{ props.formattedRow[props.column.field] }}
+                    </div>
+                    <div v-else>
+                      {{ props.formattedRow[props.column.field] }}
+                    </div>
+                  </template>
+                  <!-- END - Custom row -->
+                </vue-good-table>
+              <!-- End table -->
+              </b-tab>
+              <!-- END - Product -->
+
+              <!-- START - Promotion Product  -->
+              <b-tab
+                title="Hàng khuyến mãi"
               >
-                <!-- START - Empty rows -->
-                <div
-                  slot="emptystate"
-                  class="text-center"
+                <vue-good-table
+                  :columns="promotionTable"
+                  :rows="productPromotions"
+                  style-class="vgt-table striped"
+                  :pagination-options="{
+                    enabled: false
+                  }"
+                  compact-mode
+                  line-numbers
                 >
-                  Không có dữ liệu
-                </div>
-
-                <!-- START - Column filter -->
-                <template
-                  slot="column-filter"
-                  slot-scope="props"
-                >
-                  <b-row
-                    v-if="props.column.field === 'quantity'"
-                    class="mx-0  h7 text-brand-3 text-right"
-                    align-h="end"
-                  >
-                    {{ (getPromotionInfo.totalQuantity) }}
-                  </b-row>
-                  <b-row
-                    v-else-if="props.column.field === 'payment'"
-                    class="mx-0  h7 text-brand-3 text-right"
-                    align-h="end"
-                  >
-                    {{ (getPromotionInfo.allTotal) }}
-                  </b-row>
-                </template>
-                <!-- START - Custom row -->
-                <template
-                  slot="table-row"
-                  slot-scope="props"
-                >
+                  <!-- START - Empty rows -->
                   <div
-                    v-if="props.column.field === 'productName'"
-                    class="name-width"
+                    slot="emptystate"
+                    class="text-center"
                   >
-                    {{ props.formattedRow[props.column.field] }}
+                    Không có dữ liệu
                   </div>
-                  <div
-                    v-else-if="props.column.field === 'quantity' || props.column.field === 'payment'"
-                    style="padding-right: 4px"
+
+                  <!-- START - Column filter -->
+                  <template
+                    slot="column-filter"
+                    slot-scope="props"
                   >
-                    {{ props.formattedRow[props.column.field] }}
-                  </div>
-                  <div v-else>
-                    {{ props.formattedRow[props.column.field] }}
-                  </div>
-                </template>
-                <!-- END - Custom row -->
-              </vue-good-table>
-            </b-tab>
-          <!-- END - Promotion Product  -->
+                    <b-row
+                      v-if="props.column.field === 'quantity'"
+                      class="mx-0  h7 text-brand-3 text-right"
+                      align-h="end"
+                    >
+                      {{ (getPromotionInfo.totalQuantity) }}
+                    </b-row>
+                    <b-row
+                      v-else-if="props.column.field === 'payment'"
+                      class="mx-0  h7 text-brand-3 text-right"
+                      align-h="end"
+                    >
+                      {{ (getPromotionInfo.allTotal) }}
+                    </b-row>
+                  </template>
+                  <!-- START - Custom row -->
+                  <template
+                    slot="table-row"
+                    slot-scope="props"
+                  >
+                    <div
+                      v-if="props.column.field === 'productName'"
+                      class="name-width"
+                    >
+                      {{ props.formattedRow[props.column.field] }}
+                    </div>
+                    <div
+                      v-else-if="props.column.field === 'quantity' || props.column.field === 'payment'"
+                      style="padding-right: 4px"
+                    >
+                      {{ props.formattedRow[props.column.field] }}
+                    </div>
+                    <div v-else>
+                      {{ props.formattedRow[props.column.field] }}
+                    </div>
+                  </template>
+                  <!-- END - Custom row -->
+                </vue-good-table>
+              </b-tab>
+            <!-- END - Promotion Product  -->
 
-          </b-tabs>
-          <!-- END - Tables -->
+            </b-tabs>
+            <!-- END - Tables -->
 
-          <!-- START - Buttons -->
-          <b-row
-            class="my-1 mx-0"
-            align-h="end"
-            align-v="center"
-          >
-            <b-button
-              v-if="statusReturnButton().show"
-              :disabled="statusReturnButton().disabled || invalid"
-              variant="someThing"
-              class="btn-brand-1 align-items-button-center h8"
-              @click="onSubmit"
+            <!-- START - Buttons -->
+            <b-row
+              class="my-1 mx-0"
+              align-h="end"
+              align-v="center"
             >
-              <b-icon-arrow90deg-left
-                class="mr-50"
-                scale="1"
-              />
-              TRẢ HÀNG
-            </b-button>
+              <b-button
+                v-if="statusReturnButton().show"
+                :disabled="statusReturnButton().disabled || invalid"
+                variant="someThing"
+                class="btn-brand-1 align-items-button-center h8"
+                @click="onSubmit"
+              >
+                <b-icon-arrow90deg-left
+                  class="mr-50"
+                  scale="1"
+                />
+                TRẢ HÀNG
+              </b-button>
 
-            <b-button
-              class="align-items-button-center ml-1 h8"
-              @click="onCloseButtonClick"
-            >
-              <b-icon-x
-                scale="1.5"
-                class="mr-50"
-              />
-              ĐÓNG
-            </b-button>
-          </b-row>
-        <!-- END - Buttons -->
-
+              <b-button
+                class="align-items-button-center ml-1 h8"
+                @click="onCloseButtonClick"
+              >
+                <b-icon-x
+                  scale="1.5"
+                  class="mr-50"
+                />
+                ĐÓNG
+              </b-button>
+            </b-row>
+          <!-- END - Buttons -->
+          </div>
         </b-col>
       <!-- END - Container Right -->
 

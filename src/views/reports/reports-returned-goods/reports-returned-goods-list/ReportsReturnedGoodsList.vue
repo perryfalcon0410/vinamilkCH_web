@@ -55,7 +55,7 @@
           style-class="vgt-table striped"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize,
+            perPage: paginationData.size,
             setCurrentPage: pageNumber,
           }"
           compact-mode
@@ -183,7 +183,7 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="paginationData.size"
                   size="sm"
                   :options="perPageSizeOptions"
                   class="mx-1"
@@ -194,7 +194,7 @@
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="reportReturnedgoodsPagination.totalElements"
-                :per-page="elementSize"
+                :per-page="paginationData.size"
                 first-number
                 last-number
                 align="right"
@@ -510,11 +510,11 @@ export default {
     },
 
     onPerPageChange(params) {
-      this.updatePaginationData({ page: 0, size: params.currentPerPage })
+      this.updatePaginationData({ size: params.currentPerPage })
       this.onPaginationChange()
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },
     updateSearchData(event) {
@@ -522,7 +522,9 @@ export default {
       this.searchOptions = event
       this.updatePaginationData({
         ...event,
+        page: 0,
       })
+      this.onPaginationChange()
     },
   },
 }
