@@ -110,7 +110,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ totalInfo.totalQuantity }}
+              {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
             </b-row>
 
             <b-row
@@ -118,7 +118,7 @@
               class="mx-0"
               align-h="end"
             >
-              {{ totalInfo.totalPrice }}
+              {{ $formatNumberToLocale(totalInfo.totalPrice) }}
             </b-row>
           </template>
           <!-- START - Column filter -->

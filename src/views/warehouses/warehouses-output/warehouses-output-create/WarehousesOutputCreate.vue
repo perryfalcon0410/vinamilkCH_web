@@ -426,7 +426,6 @@ import warehousesData from '@/@db/warehouses'
 import {
   mapGetters,
   mapActions,
-  mapMutations,
 } from 'vuex'
 import {
   ValidationProvider,
@@ -451,8 +450,6 @@ import {
   // GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
   // GET_EXPORT_BORROWINGS_DETAIL_GETTER,
   GET_WAREHOUSE_TYPE_GETTER,
-  // MUTATIONS
-  CLEAR_EXPORT_PRODUCTS_MUTATION,
   // ACTIONS
   GET_WAREHOUSE_TYPE_ACTION,
   CREATE_EXPORT_ACTION,
@@ -684,7 +681,6 @@ export default {
 
   watch: {
     outputTypeSelected() {
-      this.CLEAR_EXPORT_PRODUCTS_MUTATION()
       this.internalNumber = ''
       this.internalNumber = ''
       this.output.transCode = ''
@@ -729,9 +725,6 @@ export default {
   },
 
   methods: {
-    ...mapMutations(WAREHOUSES_OUTPUT, [
-      CLEAR_EXPORT_PRODUCTS_MUTATION,
-    ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSE_TYPE_ACTION,
       CREATE_EXPORT_ACTION,
@@ -742,7 +735,6 @@ export default {
     },
 
     showModal() {
-      this.CLEAR_EXPORT_PRODUCTS_MUTATION()
       switch (this.outputTypeSelected) {
         case warehousesData.outputTypes[0].id:
           this.$bvModal.show('output-modal')
@@ -763,17 +755,17 @@ export default {
       this.warehousesOutput.billDate = data.tranInfo.billDate
       this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
       this.warehousesOutput.poNumber = data.tranInfo.pocoNumber
-      this.products = data.products
-      this.rowsProductPromotion = data.productsPromo
+      this.products = data.products || []
+      this.rowsProductPromotion = data.productsPromo || []
     },
     dataFromBorrow(data) {
       this.warehousesOutput.id = data.tranInfo.id
       this.warehousesOutput.billDate = data.tranInfo.borrowDate
       this.warehousesOutput.note = data.tranInfo.note
-      this.products = data.products
+      this.products = data.products || []
       this.exportAll = true
       this.totalQuantity = data.totalQuantity
-      this.totalProduct = data.products.length
+      this.totalProduct = data.products.length || 0
       this.hideFilter = false
 
       // clear data
@@ -788,9 +780,9 @@ export default {
       this.warehousesOutput.note = data.tranInfo.description
       this.warehousesOutput.code = data.tranInfo.adjustmentCode
       this.exportAll = true
-      this.products = data.products
+      this.products = data.products || []
       this.totalQuantity = data.totalQuantity
-      this.totalProduct = data.products.length
+      this.totalProduct = data.products.length || 0
       this.hideFilter = false
       this.products.forEach((item, index) => {
         this.products[index].quantityReturn = item.quantity

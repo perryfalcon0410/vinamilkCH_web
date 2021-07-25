@@ -26,7 +26,6 @@ import {
   GET_EXPORT_BORROWINGS_DETAIL_ACTION,
   GET_EXPORT_ADJUSTMENT_DETAIL_ACTION,
   GET_EXPORT_PO_TRANS_DETAIL_ACTION,
-  CLEAR_EXPORT_PRODUCTS_MUTATION,
   GET_WAREHOUSE_TYPE_ACTION,
   CREATE_EXPORT_ACTION,
   DELETE_WAREHOUSES_ACTION,
@@ -44,7 +43,7 @@ export default {
     poTrans: [],
     adjustmentTrans: [],
     borrowing: [],
-    poProducts: [],
+    poProducts: {},
     wareHouseType: [],
     adjustmentProducts: [],
     borrowedProducts: [],
@@ -66,7 +65,7 @@ export default {
       return state.adjustmentTrans
     },
     [GET_EXPORT_PO_TRANS_GETTER](state) {
-      return state.poTrans
+      return state.poTrans || []
     },
     [GET_EXPORT_BORROWINGS_GETTER](state) {
       return state.borrowing
@@ -78,20 +77,13 @@ export default {
       return state.borrowedProducts
     },
     [GET_EXPORT_PO_TRANS_DETAIL_GETTER](state) {
-      return state.poProducts
+      return state.poProducts || {}
     },
     [GET_WAREHOUSE_TYPE_GETTER](state) {
       return state.wareHouseType
     },
     [PRINT_OUT_IN_PUT_ORDER_GETTER](state) {
       return state.printOutInputOrderData
-    },
-  },
-
-  // MUTATIONS
-  mutations: {
-    [CLEAR_EXPORT_PRODUCTS_MUTATION](state) {
-      state.poProducts = []
     },
   },
 
@@ -211,7 +203,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poTrans = res.data || []
+            state.poTrans = res.data
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)
@@ -227,7 +219,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.poProducts = res.data || []
+            state.poProducts = res.data
             val.onSuccess(state.poProducts)
           } else {
             throw new Error(res.statusValue)

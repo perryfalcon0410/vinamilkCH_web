@@ -26,8 +26,8 @@
       <locale />
       <!-- <dark-Toggler class="d-none d-lg-block" />
       <search-bar /> -->
-      <cart-dropdown />
-      <notification-dropdown />
+      <!-- <cart-dropdown />
+      <notification-dropdown /> -->
       <user-dropdown />
     </b-navbar-nav>
   </div>
@@ -35,15 +35,15 @@
 
 <script>
 import Locale from './components/Locale.vue'
-import CartDropdown from './components/CartDropdown.vue'
-import NotificationDropdown from './components/NotificationDropdown.vue'
+// import CartDropdown from './components/CartDropdown.vue'
+// import NotificationDropdown from './components/NotificationDropdown.vue'
 import UserDropdown from './components/UserDropdown.vue'
 
 export default {
   components: {
     Locale,
-    CartDropdown,
-    NotificationDropdown,
+    // CartDropdown,
+    // NotificationDropdown,
     UserDropdown,
   },
   props: {

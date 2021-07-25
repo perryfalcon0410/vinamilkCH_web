@@ -441,7 +441,7 @@ export default {
     },
     getExportPoTransDetail() {
       if (this.getExportPoTransDetail) {
-        this.productDetail = [...this.getExportPoTransDetail.response.map(data => ({
+        this.productDetail = [...this.getExportPoTransDetail.info.map(data => ({
           id: data.id,
           productCode: data.productCode,
           productName: data.productName,
@@ -452,7 +452,7 @@ export default {
           productReturnAmount: 0,
           quantity: `${data.quantity - data.export}/${data.quantity}`,
         })),
-        ...this.getExportPoTransDetail.info.map(data => ({
+        ...this.getExportPoTransDetail.response.map(data => ({
           id: data.id,
           productCode: data.productCode,
           productName: data.productName,
@@ -518,8 +518,6 @@ export default {
           }
           this.$emit('choonsenTrans', poTranData)
           this.$bvModal.hide('output-modal')
-
-          this.GET_EXPORT_PO_TRANS_ACTION()
         },
       })
     },

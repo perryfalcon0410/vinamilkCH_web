@@ -341,7 +341,6 @@
 import {
   mapActions,
   mapGetters,
-  mapMutations,
 } from 'vuex'
 import warehousesData from '@/@db/warehouses'
 import {
@@ -353,8 +352,6 @@ import {
   // Getter
   GET_WAREHOUSES_OUTPUT_BY_ID_GETTER,
   GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_GETTER,
-  // MUTATIONS
-  CLEAR_EXPORT_PRODUCTS_MUTATION,
   // Action
   GET_WAREHOUSES_OUTPUT_BY_ID_ACTION,
   GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION,
@@ -651,9 +648,6 @@ export default {
   },
 
   methods: {
-    ...mapMutations(WAREHOUSES_OUTPUT, [
-      CLEAR_EXPORT_PRODUCTS_MUTATION,
-    ]),
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_BY_ID_ACTION,
       GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION,
@@ -668,7 +662,6 @@ export default {
       this.$router.back()
     },
     showModal() {
-      this.CLEAR_EXPORT_PRODUCTS_MUTATION()
       switch (this.warehousesOutput.receiptType) {
         case this.warehousesOptions[0].id:
           this.$bvModal.show('output-modal')
