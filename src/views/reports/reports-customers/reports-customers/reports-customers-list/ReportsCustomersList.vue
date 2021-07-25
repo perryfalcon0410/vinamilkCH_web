@@ -44,6 +44,7 @@
           mode="remote"
           :rows="reportReturnRows"
           style-class="vgt-table report-customers table-horizontal-scroll"
+          :style="cssProps"
           :pagination-options="{
             enabled: true,
             perPage: paginationData.size,
@@ -81,7 +82,18 @@
                 scale="1.3"
               />
             </div>
-
+            <div
+              v-else-if="props.column.label === 'Họ tên'"
+              ref="fullName"
+            >
+              {{ props.column.label }}
+            </div>
+            <div
+              v-else-if="props.column.label === 'Điện thoại'"
+              ref="mobiPhone"
+            >
+              {{ props.column.label }}
+            </div>
             <div v-else>
               {{ props.column.label }}
             </div>
@@ -119,28 +131,13 @@
             slot="column-filter"
             slot-scope="props"
           >
-            <b-row
-              v-if="props.column.field === 'quantity'"
-              class="mx-0"
+            <span
+              v-if="props.column.field === 'saleAmount'"
+              class="mx-0 text-brand-3 h7"
               align-h="end"
             >
-              {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
-            </b-row>
-
-            <b-row
-              v-else-if="props.column.field === 'amount'"
-              class="mx-0"
-              align-h="end"
-            >
-              {{ $formatNumberToLocale(totalInfo.totalAmount) }}
-            </b-row>
-            <b-row
-              v-else-if="props.column.field === 'refunds'"
-              class="mx-0"
-              align-h="end"
-            >
-              {{ $formatNumberToLocale(totalInfo.totalRefunds) }}
-            </b-row>
+              {{ $formatNumberToLocale(totalInfo.totalSaleAmount) }}
+            </span>
           </template>
           <!-- END - Column filter -->
 
@@ -235,6 +232,7 @@ export default {
   },
   data() {
     return {
+      thirdColLeftAttr: 310,
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
       paginationData: {
@@ -321,6 +319,9 @@ export default {
           label: 'Doanh số',
           field: 'saleAmount',
           type: 'number',
+          filterOptions: {
+            enabled: true,
+          },
           formatFn: this.$formatNumberToLocale,
           sortable: false,
           thClass: 'text-nowrap',
@@ -333,8 +334,8 @@ export default {
       REPORT_CUSTOMERS_GETTER,
     ]),
     getReportCustomerLists() {
-      if (this.REPORT_CUSTOMERS_GETTER.content && this.REPORT_CUSTOMERS_GETTER.content.length) {
-        return this.REPORT_CUSTOMERS_GETTER.content.map(data => ({
+      if (this.REPORT_CUSTOMERS_GETTER.response) {
+        return this.REPORT_CUSTOMERS_GETTER.response.content.map(data => ({
           customerCode: data.customerCode,
           fullName: data.fullName,
           mobiPhone: data.mobiPhone,
@@ -370,10 +371,18 @@ export default {
 
       return `${minPageSize} - ${maxPageSize} của ${this.reportCustomersPagination.totalElements} mục`
     },
+    cssProps() {
+      return {
+        '--left': this.thirdColLeftAttr,
+      }
+    },
   },
   watch: {
     getReportCustomerLists() {
       this.reportReturnRows = [...this.getReportCustomerLists]
+      this.$nextTick(() => {
+        this.thirdColLeftAttr = `${this.$refs.fullName.offsetParent.offsetWidth + this.$refs.mobiPhone.offsetParent.offsetWidth + 55}px`
+      })
     },
   },
 
@@ -443,7 +452,7 @@ export default {
     z-index: 1;
   }
   .report-customers.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
-    left: 310px;
+    left: var(--left);
     z-index: 1;
   }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
@@ -455,10 +464,7 @@ export default {
     left: 155px;
   }
   .report-customers.table-horizontal-scroll .column-third {
-    left: 310px;
-  }
-  .report-customers.table-horizontal-scroll thead tr:last-child th {
-    background: #315899 !important;
+    left: var(--left);
   }
   /* tùy chỉnh left khi scroll*/
 </style>
