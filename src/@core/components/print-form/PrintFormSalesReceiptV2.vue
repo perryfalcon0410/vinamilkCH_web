@@ -148,13 +148,19 @@
         v-for="item in product.listFreeItems"
         :key="item.productCode"
       >
-        <td>
+        <td valign="top">
           KM
         </td>
-        <td class="text-center">
+        <td
+          class="text-center"
+          valign="top"
+        >
           {{ item.quantity }}
         </td>
-        <td colspan="2">
+        <td
+          colspan="2"
+          valign="top"
+        >
           {{ item.productName }}
         </td>
 
@@ -429,4 +435,9 @@ thead {
  border-top: 2.2px dashed black;
  border-bottom: 2.2px dashed black;
 }
+</style>
+<style type="text/scss" media="print">
+  tbody {
+    line-height: 1.2 !important;
+  }
 </style>

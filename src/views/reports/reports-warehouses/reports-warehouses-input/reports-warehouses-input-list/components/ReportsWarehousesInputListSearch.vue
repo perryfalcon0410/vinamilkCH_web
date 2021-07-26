@@ -249,7 +249,7 @@
 
       <!-- START - Search button -->
       <div
-        class="mt-auto mx-40"
+        class="mt-2 mx-40"
       >
         <b-button
           class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"

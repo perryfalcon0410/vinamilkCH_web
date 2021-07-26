@@ -50,7 +50,7 @@
         <div
           class="mt-sm-1 mt-xl-0"
         >
-          Di động
+          Số điện thoại
         </div>
         <b-input-group
           class="input-group-merge"

@@ -296,10 +296,10 @@
           <validation-provider
             v-slot="{ errors, passed, touched}"
             rules="phoneNumber|required"
-            name="di động"
+            name="số điện thoại"
           >
             <div class="mt-1">
-              Di động <sup class="text-danger">*</sup>
+              Số điện thoại <sup class="text-danger">*</sup>
             </div>
             <b-form-input
               v-model.trim="phoneNumber"

@@ -11,7 +11,7 @@
 
       <!-- START - Phone -->
       <b-col
-        xl
+        xl="2"
         lg="3"
         sm="4"
         class="h7"

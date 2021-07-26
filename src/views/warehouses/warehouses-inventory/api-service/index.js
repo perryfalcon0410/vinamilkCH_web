@@ -48,8 +48,11 @@ export default {
     })
   },
   importFilledStocks(args) {
-    return axios.post(importFilledStocksEndpoint, args, {
+    return axios.post(importFilledStocksEndpoint, args.data, {
       'Content-Type': 'multipart/form-data',
+      params: {
+        wareHouseTypeId: args.wareHouseTypeId,
+      },
     })
   },
   checkExistedWarehouseInventory(args) {
@@ -63,9 +66,12 @@ export default {
     })
   },
   getFailedImportFile(args) {
-    return axios.post(getFailedImportFileEndpoint, args, {
+    return axios.post(getFailedImportFileEndpoint, args.data, {
       'Content-Type': 'multipart/form-data',
       responseType: 'blob',
+      params: {
+        wareHouseTypeId: args.wareHouseTypeId,
+      },
     })
   },
   getWarehouseInventoryDetail(args) {

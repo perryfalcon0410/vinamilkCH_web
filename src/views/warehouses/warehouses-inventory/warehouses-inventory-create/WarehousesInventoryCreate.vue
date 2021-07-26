@@ -287,7 +287,7 @@
             v-if="statusExcelButton().show"
             :disabled="statusExcelButton().disabled || !isCreated"
             variant="someThing"
-            class="ml-1 btn-brand-1 rounded h8"
+            class="ml-1 btn-brand-1 rounded h8 d-none"
             @click="onClickExportButton()"
           >
             <b-icon-file-earmark-excel-fill />
@@ -874,9 +874,16 @@ export default {
       data.append('file', this.importFile)
       if (this.importFile.type.search(/sheet/g) !== -1 || this.importFile.type.search(/excel/g !== -1)) {
         this.IMPORT_FILLED_STOCKS_ACTION({
-          data,
+          data: {
+            data,
+            wareHouseTypeId: this.warehouseType,
+          },
           onSuccess: () => {
-            this.onClickSaveButton()
+            this.$nextTick(() => {
+              if (!this.showErrorMessage) {
+                this.onClickSaveButton()
+              }
+            })
           },
         })
       } else {
@@ -894,7 +901,10 @@ export default {
       data.append('name', this.importFile.name)
       data.append('file', this.importFile)
       this.GET_FAILED_IMPORT_FILE_ACTION({
-        data,
+        data: {
+          data,
+          wareHouseTypeId: this.warehouseType,
+        },
         date: reverseVniDate(this.date),
       })
     },
