@@ -8,7 +8,7 @@
       @keyup.enter="onClickSearchButton"
     >
       <v-card-actions
-        title="Điều kiện"
+        title="Tìm kiếm"
       >
         <!-- START - Bill Number -->
         <b-col

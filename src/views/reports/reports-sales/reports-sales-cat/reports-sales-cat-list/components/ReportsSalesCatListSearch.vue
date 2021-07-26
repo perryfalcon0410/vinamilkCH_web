@@ -10,7 +10,7 @@
       @keyup.enter="onClickSearchButton"
     >
       <v-card-actions
-        title="Điều kiện"
+        title="Tìm kiếm"
       >
         <!-- START - Full Name -->
         <b-col

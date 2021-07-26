@@ -33,6 +33,7 @@
             @selected="onclickAddProduct"
             @focus="focusInputProduct"
             @click="checkShopId"
+            @keyup.enter="focusInputQuantity"
           >
             <template
               slot-scope="{ suggestion }"
@@ -631,6 +632,9 @@ export default {
       } else {
         this.isDisabled = false
       }
+      // this.$nextTick(() => {
+      //   this.focusInputQuantity()
+      // })
     },
     getProductByBarcode() {
       const productByBarcode = {
@@ -669,13 +673,6 @@ export default {
     },
   },
 
-  updated() {
-    if (this.isSelectedProduct) {
-      // this.$refs.focusInputProduct.focus()
-      document.getElementById(this.productIdSelected).focus()
-      this.isSelectedProduct = false
-    }
-  },
   mounted() {
     const index = this.productInfoTypeOptions.findIndex(i => i.name === 'Ngành hàng')
     const paramGetProductInfo = {
@@ -779,6 +776,14 @@ export default {
       if (this.isCheckShopId === true) {
         this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
       }
+    },
+    focusInputQuantity() {
+      if (this.isSelectedProduct) {
+        document.getElementById(this.productIdSelected).focus()
+        this.isSelectedProduct = false
+        return
+      }
+      this.$refs.search.$el.querySelector('input').click()
     },
     onclickAddProduct(index) {
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null) || (this.editManualPermission === true && this.onlineOrderId === null) || this.isOnline === false) {

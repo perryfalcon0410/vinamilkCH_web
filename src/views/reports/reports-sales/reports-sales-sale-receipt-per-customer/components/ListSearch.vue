@@ -9,7 +9,7 @@
       class="d-print-none"
     >
       <v-card-actions
-        title="Điều kiện"
+        title="Tìm kiếm"
       >
         <!-- START from date -->
         <b-col

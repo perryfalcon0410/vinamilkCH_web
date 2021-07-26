@@ -8,7 +8,7 @@
       class="d-print-none"
     >
       <v-card-actions
-        title="Điều kiện"
+        title="Tìm kiếm"
       >
         <!-- START - promotionPrograms -->
         <b-col

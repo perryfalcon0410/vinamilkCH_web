@@ -41,9 +41,10 @@
           :columns="columns"
           :rows="rows"
           mode="remote"
-          style-class="vgt-table striped"
+          style-class="vgt-table table-horizontal-scroll report-per-customer"
           compact-mode
           line-numbers
+          :style="cssProps"
           :sort-options="{
             enabled: false,
             multipleColumns: true,
@@ -79,7 +80,22 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'customerName' || props.column.field === 'address'"
+              v-else-if="props.column.field === 'customerCode'"
+              ref="customerCode"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'customerName'"
+              ref="customerName"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'address'"
+              ref="address"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -214,6 +230,8 @@ export default {
         page: this.pageNumber,
         sort: null,
       },
+      secondColLeftAttr: 163, // hard code
+      thirdColLeftAttr: 310, // hard code
       // pagination
       totalQuantity: [],
       labelName: [],
@@ -225,16 +243,22 @@ export default {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
           sortable: false,
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
+          thClass: 'text-nowrap scroll-column-header column-third',
+          tdClass: 'scroll-column column-third',
         },
       ],
       lastCol: {
@@ -292,6 +316,12 @@ export default {
       }
       return []
     },
+    cssProps() {
+      return {
+        '--left-second': this.secondColLeftAttr,
+        '--left-third': this.thirdColLeftAttr,
+      }
+    },
   },
   watch: {
     // add columns dynamically
@@ -318,6 +348,10 @@ export default {
     },
     getReportSalesReceiptAmount() {
       this.rows = [...this.getReportSalesReceiptAmount]
+      this.$nextTick(() => {
+        this.secondColLeftAttr = `${this.$refs.customerCode.offsetParent.offsetWidth + 36}px`
+        this.thirdColLeftAttr = `${this.$refs.customerCode.offsetParent.offsetWidth + this.$refs.customerName.offsetParent.offsetWidth + 35}px`
+      })
     },
     getReportSalesReceiptAmountPrice() {
       for (let i = 0; i <= this.rows.length - 1; i += 1) {
@@ -394,3 +428,34 @@ export default {
   },
 }
 </script>
+<style>
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .report-per-customer.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 36px;
+    z-index: 1;
+  }
+  .report-per-customer.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    /* left: 163px; */
+    left: var(--left-second);
+    z-index: 1;
+  }
+  .report-per-customer.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
+    left: var(--left-third);
+    /* left: 310px; */
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  /* tùy chỉnh left khi scroll*/
+  .report-per-customer.table-horizontal-scroll .column-first {
+    left: 36px;
+  }
+  .report-per-customer.table-horizontal-scroll .column-second {
+    /* left: 163px; */
+    left: var(--left-second);
+  }
+  .report-per-customer.table-horizontal-scroll .column-third {
+    /* left: 310px; */
+    left: var(--left-third);
+  }
+  /* tùy chỉnh left khi scroll*/
+</style>
