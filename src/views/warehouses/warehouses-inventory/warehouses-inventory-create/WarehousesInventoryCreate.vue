@@ -54,7 +54,7 @@
           class="h7"
         >
           <div>
-            Kho
+            Kho hàng
           </div>
           <tree-select
             ref="focusInput"

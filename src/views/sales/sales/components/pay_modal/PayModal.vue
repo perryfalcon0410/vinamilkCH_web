@@ -1065,6 +1065,11 @@ export default {
         this.pay.needPaymentAmount = 0
         this.pay.salePayment.salePaymentAmount = 0
       }
+
+      const totalPromotion = Number(this.pay.accumulate.accumulateAmount) - Number(this.pay.voucher.voucherAmount) - Number(this.pay.discount.discountAmount)
+      if (totalPromotion > this.pay.totalAmount) {
+        toasts.error('Tổng tiền khuyến mãi đã vượt quá Tổng tiền hàng. Vui lòng kiểm tra lại')
+      }
       this.extraAmountCalculation()
     },
     getPromotionCalculation() {
@@ -1410,7 +1415,7 @@ export default {
                 if (product.productId !== params.row.productId || Number(product.quantity) < 0) {
                   return {
                     ...product,
-                    quantity: null,
+                    quantity: 0,
                   }
                 }
 
@@ -1447,7 +1452,7 @@ export default {
                 if (Number(product.quantity) < 0) {
                   return {
                     ...product,
-                    quantity: null,
+                    quantity: 0,
                   }
                 }
 
@@ -1649,7 +1654,7 @@ export default {
             paymentType: this.pay.salePayment.salePaymentType,
             deliveryType: Number(this.deliverySelected),
             orderType: Number(this.orderSelected),
-            note: this.customer.noted,
+            note: this.orderOnline.note,
             orderOnlineId: this.orderOnline.onlineOrderId,
             onlineNumber: this.orderOnline.orderNumber,
             products: this.orderProducts,
@@ -1765,7 +1770,7 @@ export default {
             paymentType: this.pay.salePayment.salePaymentType,
             deliveryType: Number(this.deliverySelected),
             orderType: Number(this.orderSelected),
-            note: this.customer.noted,
+            note: this.orderOnline.note,
             orderOnlineId: this.orderOnline.onlineOrderId,
             onlineNumber: this.orderOnline.orderNumber,
             products: this.orderProducts,

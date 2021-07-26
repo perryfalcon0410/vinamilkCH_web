@@ -123,7 +123,7 @@
         <div
           class="mt-sm-1 mt-xl-0"
         >
-          Kho
+          Kho hàng
         </div>
         <tree-select
           v-model="warehouseType"

@@ -53,7 +53,7 @@
           class="h7"
         >
           <div>
-            Kho
+            Kho hàng
           </div>
           <tree-select
             v-model="warehouseType"
