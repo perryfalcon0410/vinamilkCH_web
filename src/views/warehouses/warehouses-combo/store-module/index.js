@@ -8,6 +8,7 @@ import {
   COMBO_PRODUCTS_GETTER,
   COMBO_PRODUCTS_DETAILS_GETTER,
   COMBO_PRODUCTS_INFO_GETTER,
+  WAREHOUSES_TYPE_GETTER,
 
   // Action
   GET_WAREHOUSES_COMBO_ACTIONS,
@@ -15,6 +16,7 @@ import {
   GET_COMBO_PRODUCTS_ACTION,
   GET_COMBO_PRODUCTS_DETAILS_ACTION,
   CREATE_COMBO_PRODUCT_ACTION,
+  GET_WAREHOUSES_TYPE_ACTION,
 } from './type'
 
 export default {
@@ -27,6 +29,7 @@ export default {
     comboProducts: [],
     comboProductsInfo: {},
     comboProductsDetails: [],
+    warehouseTypes: [],
   },
 
   // getter
@@ -45,6 +48,9 @@ export default {
     },
     [COMBO_PRODUCTS_INFO_GETTER](state) {
       return state.comboProductsInfo
+    },
+    [WAREHOUSES_TYPE_GETTER](state) {
+      return state.warehouseTypes
     },
   },
 
@@ -122,6 +128,22 @@ export default {
           if (res.success) {
             toasts.success(res.statusValue)
             router.push({ name: 'warehouses-combo' })
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_WAREHOUSES_TYPE_ACTION]({ state }, val) {
+      WareHouseComboService
+        .getWarehouseTypes(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.warehouseTypes = res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

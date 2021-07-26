@@ -85,27 +85,35 @@
           </b-input-group>
         </b-col>
 
-        <!-- START - Warehouses Type -->
+        <!-- START - Warehouse Type -->
         <b-col
           xl
           lg="3"
           sm="4"
         >
-          <div
-            class="h7 mt-sm-1 mt-xl-0"
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="required"
+            name="Kho hàng"
           >
-            Kho
-          </div>
-          <tree-select
-            v-model="warehouseTypeSelected"
-            :options="warehouseTypes"
-            :searchable="false"
-            placeholder="Tất cả"
-            class="h7"
-            no-options-text="Không có dữ liệu"
-          />
+            <div
+              class="h7 mt-sm-1 mt-xl-0"
+            >
+              Kho hàng <span class="text-danger">*</span>
+            </div>
+            <tree-select
+              v-model="warehouseTypeSelected"
+              :options="warehouseTypes"
+              placeholder="Nhập kho hàng"
+              :state="touched ? passed : null"
+              class="h7"
+              no-options-text="Không có dữ liệu"
+            />
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
         </b-col>
-        <!-- END - Warehouses Type -->
+        <!-- END - Warehouse Type -->
+
         <!-- START - Search button -->
         <b-col
           xl

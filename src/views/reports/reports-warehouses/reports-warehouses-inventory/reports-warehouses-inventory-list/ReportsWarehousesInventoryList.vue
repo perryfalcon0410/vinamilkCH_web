@@ -47,7 +47,8 @@
         <vue-good-table
           :columns="columns"
           :rows="rows"
-          style-class="vgt-table"
+          style-class="vgt-table report-customers table-horizontal-scroll"
+          :style="cssProps"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -79,6 +80,18 @@
           >
             <div v-if="props.column.label === 'Chức năng'">
               <b-icon-bricks />
+            </div>
+            <div
+              v-else-if="props.column.label === 'Ngành hàng'"
+              ref="first"
+            >
+              {{ props.column.label }}
+            </div>
+            <div
+              v-else-if="props.column.label === 'Mã sản phẩm'"
+              ref="second"
+            >
+              {{ props.column.label }}
             </div>
             <div v-else>
               {{ props.column.label }}
@@ -250,6 +263,11 @@ export default {
   },
   data() {
     return {
+      colWidth: {
+        firstCol: 0,
+        secondCol: 0,
+      },
+
       pageNumber: 1,
       elementSize: commonData.perPageSizes[0],
       paginationOptions: commonData.perPageSizes,
@@ -268,22 +286,22 @@ export default {
           label: 'Ngành hàng',
           field: 'productCategory',
           sortable: false,
-          thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap scroll-column-header column-third',
+          tdClass: 'scroll-column column-third',
         },
         {
           label: 'Số lượng',
@@ -340,29 +358,25 @@ export default {
           label: 'Quy cách',
           field: 'specification',
           sortable: false,
-          thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Cửa hàng',
           field: 'shop',
           sortable: false,
-          thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Chuỗi cửa hàng',
           field: 'shopType',
           sortable: false,
-          thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Nhóm sản phẩm',
           field: 'productGroup',
           sortable: false,
-          thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tồn kho min',
@@ -382,8 +396,7 @@ export default {
           label: 'Báo cáo',
           field: 'warning',
           sortable: false,
-          thClass: 'text-center text-nowrap',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
       ],
       rows: [],
@@ -435,10 +448,19 @@ export default {
 
       return `${minPageSize} - ${maxPageSize} của ${this.reportInventoryPagination.totalElements} mục`
     },
+
+    cssProps() {
+      return {
+        '--second-col': `${this.colWidth.firstCol + 30}px`,
+        '--third-col': `${this.colWidth.firstCol + this.colWidth.secondCol + 30}px`,
+      }
+    },
   },
   watch: {
     reportInventory() {
       this.rows = [...this.reportInventory]
+      this.colWidth.firstCol = this.$refs.first.offsetParent.offsetWidth
+      this.colWidth.secondCol = this.$refs.second.offsetParent.offsetWidth
     },
     getReportInventoryInfo() {
       this.reportInventoryInfo = { ...this.getReportInventoryInfo }
@@ -449,6 +471,9 @@ export default {
   },
   methods: {
     exportExcel() {
+      console.log(this.$refs)
+      console.log(this.cssProps)
+      console.log(this.colWidth)
       this.EXPORT_REPORT_INVENTORIES_ACTION({
         productCodes: this.paginationData.productCodes,
         stockDate: this.paginationData.stockDate,
@@ -506,3 +531,31 @@ export default {
   },
 }
 </script>
+<style>
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .report-customers.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 30px;
+    z-index: 1;
+    position: sticky;
+  }
+  .report-customers.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: var(--second-col);
+    z-index: 1;
+  }
+  .report-customers.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
+    left: var(--third-col);
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  /* tùy chỉnh left khi scroll*/
+  .report-customers.table-horizontal-scroll .column-first {
+    left: 30px;
+  }
+  .report-customers.table-horizontal-scroll .column-second {
+    left: var(--second-col);
+  }
+  .report-customers.table-horizontal-scroll .column-third {
+    left: var(--third-col);
+  }
+  /* tùy chỉnh left khi scroll*/
+</style>

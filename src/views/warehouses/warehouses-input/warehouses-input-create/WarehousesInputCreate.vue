@@ -54,6 +54,7 @@
                   no-options-text="Không có dữ liệu"
                   no-results-text="Không tìm thấy kết quả"
                   placeholder="Chọn loại nhập hàng"
+                  @select="setDefaultWarehouse"
                 />
                 <b-input-group-append>
                   <b-icon-three-dots-vertical
@@ -70,22 +71,30 @@
 
           <!-- START -  Stock  -->
           <div class="mt-1">
-            Kho hàng
+            Kho hàng <span class="text-danger">*</span>
           </div>
           <b-form-input
-            v-if="inputTypeSelected === '1' || (inputTypeSelected === '0' && status !== -1)"
+            v-show="inputTypeSelected === '1' || (inputTypeSelected === '0' && status !== -1)"
             id="warehouse"
             v-model="warehousesType.wareHouseTypeName"
             disabled
           />
-          <tree-select
-            v-if="inputTypeSelected === '2' || (inputTypeSelected === '0' && status === -1)"
-            v-model="warehouseSelected"
-            :options="warehousesListOptions"
-            no-options-text="Không có dữ liệu"
-            no-results-text="Không tìm thấy kết quả"
-            placeholder="Chọn kho nhập hàng"
-          />
+          <validation-provider
+            v-slot="{ errors, passed, touched }"
+            rules="required"
+            name="Kho hàng"
+          >
+            <tree-select
+              v-show="inputTypeSelected === '2' || (inputTypeSelected === '0' && status === -1)"
+              v-model="warehouseSelected"
+              :options="warehousesListOptions"
+              placeholder="Nhập kho hàng"
+              :state="touched ? passed : null"
+              class="h7"
+              no-options-text="Không có dữ liệu"
+            />
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
           <!-- END -  Stock  -->
 
           <!-- START - Bill Number and Date -->
@@ -1224,6 +1233,9 @@ export default {
         return true
       }
       return false
+    },
+    setDefaultWarehouse() {
+      this.warehouseSelected = this.warehousesListOptions.find(warehouse => warehouse.default === 1).id
     },
   },
 }

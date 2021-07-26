@@ -5,6 +5,8 @@
     <!-- START - Form and list -->
     <validation-observer
       ref="formContainer"
+      v-slot="{invalid}"
+      slim
     >
       <b-row>
         <!-- START - Form -->
@@ -58,12 +60,38 @@
                 <tree-select
                   v-model="tradingTypeSelected"
                   :options="tradingTypeOptions"
+                  placeholder="Chọn loại giao dịch"
                   no-options-text="Không có dữ liệu"
                 />
               </b-form-group>
             </b-col>
           </b-form-row>
           <!-- END - ID and Type -->
+
+          <!-- START - Warehouse Type -->
+          <b-row class="pb-1 px-1">
+            <validation-provider
+              v-slot="{ errors, passed, touched }"
+              rules="required"
+              name="Kho hàng"
+            >
+              <div
+                class="mt-sm-1 mt-xl-0"
+              >
+                Kho hàng <span class="text-danger">*</span>
+              </div>
+              <tree-select
+                v-model="warehouseTypeSelected"
+                :options="warehousesListOptions"
+                placeholder="Nhập kho hàng"
+                :state="touched ? passed : null"
+                class="h7"
+                no-options-text="Không có dữ liệu"
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-row>
+          <!-- END - Warehouse Type -->
 
           <!-- START -   Note -->
           <b-form-group
@@ -242,7 +270,7 @@
             <b-button-group>
               <b-button
                 v-if="statusSaveButton().show"
-                :disabled="statusSaveButton().disabled"
+                :disabled="statusSaveButton().disabled && invalid"
                 class="btn-brand-1 rounded h8 align-items-button-center mr-1"
                 variant="someThing"
                 @click="save"
@@ -283,6 +311,13 @@ import { getNow } from '@/@core/utils/utils'
 import commonData from '@/@db/common'
 import { VueAutosuggest } from 'vue-autosuggest'
 import {
+  ValidationProvider,
+  ValidationObserver,
+} from 'vee-validate'
+import {
+  required,
+} from '@/@core/utils/validations/validations'
+import {
   mapActions,
   mapGetters,
 } from 'vuex'
@@ -291,18 +326,25 @@ import {
   COMBO_PRODUCTS_GETTER,
   COMBO_PRODUCTS_INFO_GETTER,
   COMBO_PRODUCTS_DETAILS_GETTER,
+  WAREHOUSES_TYPE_GETTER,
+
   GET_COMBO_PRODUCTS_ACTION,
   GET_COMBO_PRODUCTS_DETAILS_ACTION,
   CREATE_COMBO_PRODUCT_ACTION,
+  GET_WAREHOUSES_TYPE_ACTION,
 } from '../store-module/type'
 
 export default {
   components: {
     VueAutosuggest,
+    ValidationProvider,
+    ValidationObserver,
   },
 
   data() {
     return {
+      required,
+      warehouseTypeSelected: null,
       componentKey: 0,
       totalExchangeQuantity: 0,
       // Search combo
@@ -422,6 +464,7 @@ export default {
       COMBO_PRODUCTS_GETTER,
       COMBO_PRODUCTS_INFO_GETTER,
       COMBO_PRODUCTS_DETAILS_GETTER,
+      WAREHOUSES_TYPE_GETTER,
     ]),
 
     getProducts() {
@@ -468,6 +511,14 @@ export default {
     getTotalExchangeQuantity() {
       return this.comboExchangeRows.reduce((accum, item) => accum + Number(item.quantity), 0)
     },
+
+    warehousesListOptions() {
+      return this.WAREHOUSES_TYPE_GETTER.map(data => ({
+        id: data.id,
+        label: data.wareHouseTypeName,
+        default: data.isDefault,
+      }))
+    },
   },
 
   watch: {
@@ -489,6 +540,13 @@ export default {
 
   mounted() {
     this.tradingTypeSelected = this.tradingTypeOptions[0].id
+    this.GET_WAREHOUSES_TYPE_ACTION({
+      formId: this.formId,
+      ctrlId: this.ctrlId,
+      onSuccess: () => {
+        this.warehouseTypeSelected = this.warehousesListOptions.find(warehouse => warehouse.default === 1).id
+      },
+    })
   },
 
   methods: {
@@ -496,6 +554,7 @@ export default {
       GET_COMBO_PRODUCTS_ACTION,
       GET_COMBO_PRODUCTS_DETAILS_ACTION,
       CREATE_COMBO_PRODUCT_ACTION,
+      GET_WAREHOUSES_TYPE_ACTION,
     ]),
 
     statusSaveButton() {
@@ -543,6 +602,7 @@ export default {
         note: this.note,
         transDate: formatVniDateToISO(this.transDate),
         transType: Number(this.tradingTypeSelected),
+        warehouseTypeId: this.warehouseTypeSelected,
         formId: this.formId,
         ctrlId: this.ctrlId,
       }
