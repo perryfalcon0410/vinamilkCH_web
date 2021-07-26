@@ -303,13 +303,7 @@ export default {
       const products = []
       if (this.getExportBorrowingDetail.response) {
         this.getExportBorrowingDetail.response.forEach(item => {
-          const index = products.findIndex(product => product.productCode === item.productCode)
-          if (index === -1) {
-            products.push(item)
-          } else {
-            products[index].quantity += item.quantity
-            products[index].totalPrice += item.totalPrice
-          }
+          products.push(item)
         })
         this.productOfBorrowed = products
       }

@@ -434,6 +434,7 @@ export default {
           redInvoiceNo: data.redInvoiceNo,
           internalNumber: data.internalNumber,
           pocoNumber: data.pocoNumber,
+          wareHouseTypeName: data.wareHouseTypeName,
           billDate: formatISOtoVNI(data.orderDate),
         }))
       }

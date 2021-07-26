@@ -283,13 +283,7 @@ export default {
         const products = []
         if (this.getExportAdjustmentDetail.response) {
           this.getExportAdjustmentDetail.response.forEach(item => {
-            const index = products.findIndex(i => i.productCode === item.productCode)
-            if (index === -1) {
-              products.push(item)
-            } else {
-              products[index].quantity += item.quantity
-              products[index].totalPrice += item.totalPrice
-            }
+            products.push(item)
           })
           this.productsOfAjustment = products
         }

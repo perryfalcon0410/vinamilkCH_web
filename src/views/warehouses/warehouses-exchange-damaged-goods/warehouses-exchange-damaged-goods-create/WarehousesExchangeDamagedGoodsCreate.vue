@@ -665,6 +665,7 @@ export default {
         if (text.length >= commonData.minSearchLength) {
           const searchData = {
             keyWord: text,
+            customerId: this.customerInfo.customerId || null,
             ...this.decentralization,
           }
           this.GET_PRODUCTS_ACTION(searchData)

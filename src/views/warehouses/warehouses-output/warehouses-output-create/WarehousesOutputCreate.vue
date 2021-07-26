@@ -87,7 +87,7 @@
             Kho hàng
           </div>
           <b-form-input
-            v-model="getWareHouseType.wareHouseTypeName"
+            v-model="warehousesOutput.wareHouseTypeName"
             disabled
           />
           <!-- END -  Stock  -->
@@ -755,6 +755,7 @@ export default {
       this.warehousesOutput.billDate = data.tranInfo.billDate
       this.warehousesOutput.internalNumber = data.tranInfo.internalNumber
       this.warehousesOutput.poNumber = data.tranInfo.pocoNumber
+      this.warehousesOutput.wareHouseTypeName = data.tranInfo.wareHouseTypeName
       this.products = data.products || []
       this.rowsProductPromotion = data.productsPromo || []
     },
@@ -762,6 +763,7 @@ export default {
       this.warehousesOutput.id = data.tranInfo.id
       this.warehousesOutput.billDate = data.tranInfo.borrowDate
       this.warehousesOutput.note = data.tranInfo.note
+      this.warehousesOutput.wareHouseTypeName = data.tranInfo.wareHouseTypeName
       this.products = data.products || []
       this.exportAll = true
       this.totalQuantity = data.totalQuantity
@@ -779,6 +781,7 @@ export default {
       this.warehousesOutput.billDate = data.tranInfo.adjustmentDate
       this.warehousesOutput.note = data.tranInfo.description
       this.warehousesOutput.code = data.tranInfo.adjustmentCode
+      this.warehousesOutput.wareHouseTypeName = data.tranInfo.wareHouseTypeName
       this.exportAll = true
       this.products = data.products || []
       this.totalQuantity = data.totalQuantity
