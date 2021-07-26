@@ -466,7 +466,7 @@ export default {
     // func pagination
     onSearch() {
       this.searchOption = {
-        searchKeywords: this.searchKeywords.trim(),
+        searchKeywords: this.searchKeywords,
         phoneNumber: this.phoneNumber,
         idNo: this.idNo.trim(),
         status: customerData.status[0].id,

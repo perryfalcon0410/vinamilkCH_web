@@ -953,7 +953,7 @@ export default {
     },
 
     showNotifyModal() {
-      if (this.isDisabledOrder !== true) {
+      if (this.isDisabledOrder === false) {
         this.$refs.salesNotifyModal.show()
         this.GET_ONLINE_ORDERS_ACTION({ ...this.searchData })
       }
@@ -1060,7 +1060,8 @@ export default {
     resetOrderNumber(item) {
       this.$emit('getSalemtPOSelected', item)
       if (item.id === saleData.salemtPromotionObject[0].id) {
-        this.orderOnline.orderNumber = ''
+        this.orderOnline.orderNumber = null
+        this.orderOnline.onlineOrderId = null
       }
     },
 

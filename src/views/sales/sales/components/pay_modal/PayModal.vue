@@ -1024,7 +1024,7 @@ export default {
       this.pay.totalQuantity = this.totalQuantity
     },
     getPromotionPrograms() {
-      if (this.getPromotionPrograms) {
+      if (this.getPromotionPrograms.lstSalePromotions) {
         this.promotionPrograms = this.getPromotionPrograms.lstSalePromotions.map(data => ({
           promotionType: data.promotionType,
           isUse: data.isUse,
