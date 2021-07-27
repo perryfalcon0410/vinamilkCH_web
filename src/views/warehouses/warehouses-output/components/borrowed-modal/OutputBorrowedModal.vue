@@ -53,7 +53,7 @@
               :key="item.id"
               class="border-bottom border-white bg-light py-1 cursor-pointer"
               :class="{ 'text-brand-1': current == item.id }"
-              @click="onBorrowedItemSelected(item.id, item.borrowDate, item.note)"
+              @click="onBorrowedItemSelected(item.id, item.borrowDate, item.note, item.wareHouseTypeName)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
@@ -296,6 +296,7 @@ export default {
           borrowDate: formatISOtoVNI(data.borrowDate),
           billDate: data.borrowDate,
           note: data.note,
+          wareHouseTypeName: data.wareHouseTypeName,
         }))
       }
     },
@@ -320,11 +321,12 @@ export default {
       GET_EXPORT_BORROWINGS_ACTION,
       GET_EXPORT_BORROWINGS_DETAIL_ACTION,
     ]),
-    onBorrowedItemSelected(id, date, note) {
+    onBorrowedItemSelected(id, date, note, wareHouseTypeName) {
       this.current = id
       this.trans.id = id
       this.trans.borrowDate = date
       this.trans.note = note
+      this.trans.wareHouseTypeName = wareHouseTypeName
       this.GET_EXPORT_BORROWINGS_DETAIL_ACTION({
         id,
         onSuccess: () => {

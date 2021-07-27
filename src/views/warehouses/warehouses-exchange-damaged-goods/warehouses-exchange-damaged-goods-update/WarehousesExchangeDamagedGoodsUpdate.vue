@@ -366,6 +366,7 @@ import {
   EXCHANGE_DAMAGED_GOODS_REASONS_GETTER,
   EXCHANGE_DAMAGED_GOODS_BY_ID_GETTER,
   DAMAGED_GOODS_GETTER,
+  UPDATE_PRICE_PRODUCT_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
   GET_PRODUCTS_ACTION,
@@ -373,6 +374,7 @@ import {
   GET_EXCHANGE_DAMAGED_GOODS_BY_ID_ACTION,
   UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION,
   GET_DAMAGED_GOODS_ACTION,
+  UPDATE_PRICE_PRODUCT_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -406,12 +408,13 @@ export default {
         ctrlId: 7,
       },
       listDamagedProducts: [],
+      customerId: '',
       customerInfo: {
-        customerId: '',
         customerCode: '',
         customerName: '',
         customerAddress: '',
         customerPhone: '',
+        customerTypeId: '',
         status: 1, // Kiểm tra khách hàng có hoạt động không
       },
       exchangeGoodsInfo: {
@@ -509,6 +512,7 @@ export default {
       PRODUCTS_GETTER,
       EXCHANGE_DAMAGED_GOODS_BY_ID_GETTER,
       DAMAGED_GOODS_GETTER,
+      UPDATE_PRICE_PRODUCT_GETTER,
     ]),
 
     exchangeDamagedGoods() {
@@ -530,6 +534,7 @@ export default {
           name: data.fullName,
           address: data.address,
           mobilePhone: data.mobiPhone,
+          customerTypeId: data.customerTypeId,
         })),
       }]
     },
@@ -559,14 +564,26 @@ export default {
       }]
     },
 
+    getChangePriceProduct() {
+      return this.UPDATE_PRICE_PRODUCT_GETTER.map(data => ({
+        productId: data.productId,
+        productCode: data.productCode,
+        productName: data.productName,
+        productDVT: data.uom1,
+        price: data.price,
+        quantity: data.quantity,
+        totalPrice: data.totalPrice,
+      }))
+    },
+
     totalProducts() {
       return this.damagedProduct.reduce(accum => accum + 1, 0)
     },
     totalQuantity() {
-      return this.damagedProduct.reduce((accum, item) => accum + Number(item.quantity), 0)
+      return this.damagedProduct.reduce((accum, item) => accum + Number(item.quantity), 0) || 0
     },
     totalMoney() {
-      return this.damagedProduct.reduce((accum, item) => accum + Number(item.totalPrice), 0)
+      return this.damagedProduct.reduce((accum, item) => accum + Number(item.totalPrice), 0) || 0
     },
   },
 
@@ -582,6 +599,9 @@ export default {
     },
     getProducts() {
       this.products = [...this.getProducts]
+    },
+    getChangePriceProduct() {
+      this.damagedProduct = [...this.getChangePriceProduct]
     },
   },
 
@@ -613,6 +633,7 @@ export default {
       GET_EXCHANGE_DAMAGED_GOODS_BY_ID_ACTION,
       UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION,
       GET_DAMAGED_GOODS_ACTION,
+      UPDATE_PRICE_PRODUCT_ACTION,
     ]),
 
     statusSaveButton() {
@@ -626,7 +647,7 @@ export default {
         this.exchangeGoodsInfo.transDate = formatISOtoVNI(this.exchangeDamagedGoods.transDate)
         this.exchangeGoodsInfo.transTime = getTimeOfDate(this.exchangeDamagedGoods.transDate)
         this.exchangeGoodsInfo.shopId = this.exchangeDamagedGoods.shopId
-        this.customerInfo.customerId = this.exchangeDamagedGoods.customerId
+        this.customerId = this.exchangeDamagedGoods.customerId
         this.customerInfo.customerName = this.exchangeDamagedGoods.customerName
         this.customerInfo.customerAddress = this.exchangeDamagedGoods.customerAddress
         this.customerInfo.customerPhone = this.exchangeDamagedGoods.customerPhone
@@ -664,7 +685,7 @@ export default {
           if (this.damagedProduct.length > 0) {
             this.UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION({
               exchangeDamagedGoods: {
-                customerId: this.customerInfo.customerId,
+                customerId: this.customerId,
                 id: this.exchangeDamagedGoodsId,
                 lstExchangeDetail: this.listDamagedProducts.map(data => ({
                   id: data.id,
@@ -702,11 +723,20 @@ export default {
 
     selectCustomer(customer) {
       if (customer.item) {
-        this.customerInfo.customerId = customer.item.customerId
+        this.customerId = customer.item.customerId
         this.customerInfo.customerCode = customer.item.customerCode
         this.customerInfo.customerName = customer.item.name
         this.customerInfo.customerAddress = customer.item.address
         this.customerInfo.customerPhone = customer.item.mobilePhone
+        this.customerInfo.customerTypeId = customer.item.customerTypeId
+        this.UPDATE_PRICE_PRODUCT_ACTION({
+          customerTypeId: this.customerInfo.customerTypeId,
+          products: this.damagedProduct.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity,
+          })) || [],
+          params: this.decentralization,
+        })
         this.customers = [{ data: null }]
       }
     },
@@ -716,6 +746,7 @@ export default {
         if (text.length >= commonData.minSearchLength) {
           const searchData = {
             keyWord: this.productInfos.productName,
+            customerId: this.customerId || null,
             ...this.decentralization,
           }
           this.GET_PRODUCTS_ACTION(searchData)
@@ -725,7 +756,6 @@ export default {
 
     selectProduct(product) {
       const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.item.productCode)
-      const existedProduct = this.listDamagedProducts.findIndex(listDamagedProducts => listDamagedProducts.productCode === product.item.productCode)
       if (this.damagedProduct) {
         const obj = {
           count: this.damagedProduct.length,
@@ -744,11 +774,8 @@ export default {
           this.damagedProduct.push(obj)
           this.listDamagedProducts.push(obj)
         } else {
-          this.damagedProduct[existedProductIndex].quantity = Number(this.damagedProduct[existedProductIndex].quantity) + obj.quantity
+          this.damagedProduct[existedProductIndex].quantity = Number(this.damagedProduct[existedProductIndex].quantity) + 1
           this.damagedProduct[existedProductIndex].totalPrice = Number(obj.price) * this.damagedProduct[existedProductIndex].quantity
-          if (existedProduct !== -1) {
-            this.listDamagedProducts[existedProduct].quantity = Number(this.listDamagedProducts[existedProduct].quantity) + obj.quantity
-          }
         }
         this.productInfos.productName = null
         this.products = [{ data: null }]

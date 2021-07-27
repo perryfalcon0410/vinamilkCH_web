@@ -53,7 +53,7 @@
               :key="item.id"
               class="border-bottom border-white bg-light py-1 cursor-pointer"
               :class="{ 'text-brand-1': current == item.id }"
-              @click="onAdjustmentItemSelected(item.id, item.adjustmentDate, item.description, item.adjustmentCode)"
+              @click="onAdjustmentItemSelected(item.id, item.adjustmentDate, item.description, item.adjustmentCode, item.wareHouseTypeName)"
             >
               <b-col cols="1">
                 {{ index + 1 }}
@@ -275,6 +275,7 @@ export default {
           adjustmentCode: data.adjustmentCode,
           description: data.description,
           billDate: data.adjustmentDate,
+          wareHouseTypeName: data.wareHouseTypeName,
         }))
       }
     },
@@ -301,12 +302,13 @@ export default {
       GET_EXPORT_ADJUSTMENT_ACTION,
       GET_EXPORT_ADJUSTMENT_DETAIL_ACTION,
     ]),
-    onAdjustmentItemSelected(id, date, description, code) {
+    onAdjustmentItemSelected(id, date, description, code, wareHouseTypeName) {
       this.current = id
       this.trans.id = id
       this.trans.adjustmentDate = date
       this.trans.description = description
       this.trans.adjustmentCode = code
+      this.trans.wareHouseTypeName = wareHouseTypeName
       this.GET_EXPORT_ADJUSTMENT_DETAIL_ACTION({
         id,
         onSuccess: () => {

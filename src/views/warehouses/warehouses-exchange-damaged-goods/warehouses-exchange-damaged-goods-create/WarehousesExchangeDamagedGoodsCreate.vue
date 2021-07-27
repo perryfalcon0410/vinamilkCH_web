@@ -88,7 +88,7 @@
 
             <!-- START -  Address-->
             <validation-provider
-              v-slot="{ errors, passed, touched }"
+              v-slot="{ errors }"
               rules="required"
               name="địa chỉ"
             >
@@ -97,7 +97,6 @@
               </div>
               <b-input
                 v-model.trim="customerInfo.customerAddress"
-                :state="touched ? passed : null"
                 maxlength="200"
                 readonly
               />
@@ -107,7 +106,7 @@
 
             <!-- START -  Phone number -->
             <validation-provider
-              v-slot="{ errors, passed,touched }"
+              v-slot="{ errors}"
               rules="phoneNumber|required"
               name="số điện thoại"
             >
@@ -116,7 +115,6 @@
               </div>
               <b-form-input
                 v-model.trim="customerInfo.customerPhone"
-                :state="touched ? passed : null"
                 maxlength="10"
                 readonly
                 @keypress="$onlyNumberInput"
@@ -374,11 +372,13 @@ import {
   CUSTOMERS_GETTER,
   PRODUCTS_GETTER,
   EXCHANGE_DAMAGED_GOODS_REASONS_GETTER,
+  UPDATE_PRICE_PRODUCT_GETTER,
   // ACTIONS
   CREATE_EXCHANGE_DAMAGED_GOODS_ACTION,
   GET_CUSTOMERS_ACTION,
   GET_PRODUCTS_ACTION,
   GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION,
+  UPDATE_PRICE_PRODUCT_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -410,18 +410,18 @@ export default {
         formId: 5,
         ctrlId: 7,
       },
+      customerId: '',
       customerInfo: {
-        customerId: '',
         customerCode: '',
         customerName: '',
         customerAddress: '',
         customerPhone: '',
+        customerTypeId: '',
         status: 1, // để kiểm tra khách hàng còn hoạt động không
       },
       exchangeGoodsInfo: {
         transCode: '',
         shopId: '',
-        customerId: '',
         reasonId: '',
         quantity: 0,
         totalAmount: 0,
@@ -510,12 +510,24 @@ export default {
       CUSTOMERS_GETTER,
       EXCHANGE_DAMAGED_GOODS_REASONS_GETTER,
       PRODUCTS_GETTER,
+      UPDATE_PRICE_PRODUCT_GETTER,
     ]),
 
     getReasonOptions() {
       return this.EXCHANGE_DAMAGED_GOODS_REASONS_GETTER.map(data => ({
         id: data.id,
         label: data.categoryName,
+      }))
+    },
+    getChangePriceProduct() {
+      return this.UPDATE_PRICE_PRODUCT_GETTER.map(data => ({
+        id: data.productId,
+        productCode: data.productCode,
+        productName: data.productName,
+        productDVT: data.uom1,
+        productPrice: data.price,
+        productQuantity: data.quantity,
+        productPriceTotal: data.totalPrice,
       }))
     },
 
@@ -527,6 +539,7 @@ export default {
           name: data.fullName,
           address: data.address,
           mobilePhone: data.mobiPhone,
+          customerTypeId: data.customerTypeId,
         })),
       }]
     },
@@ -574,6 +587,19 @@ export default {
     getProducts() {
       this.products = [...this.getProducts]
     },
+    customerId() {
+      this.UPDATE_PRICE_PRODUCT_ACTION({
+        customerTypeId: this.customerInfo.customerTypeId,
+        products: this.damagedProduct.map(item => ({
+          productId: item.id,
+          quantity: item.productQuantity,
+        })) || [],
+        params: this.decentralization,
+      })
+    },
+    getChangePriceProduct() {
+      this.damagedProduct = [...this.getChangePriceProduct]
+    },
   },
 
   mounted() {
@@ -601,6 +627,7 @@ export default {
       GET_CUSTOMERS_ACTION,
       GET_PRODUCTS_ACTION,
       GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION,
+      UPDATE_PRICE_PRODUCT_ACTION,
     ]),
 
     statusSaveButton() {
@@ -614,7 +641,7 @@ export default {
             this.CREATE_EXCHANGE_DAMAGED_GOODS_ACTION({
               damagedGoodsData: {
                 transCode: this.exchangeGoodsInfo.transCode,
-                customerId: this.customerInfo.customerId,
+                customerId: this.customerId,
                 reasonId: this.reasonObj.reasonSelected,
                 lstExchangeDetail: this.damagedProduct.map(item => ({
                   productId: item.id,
@@ -651,11 +678,12 @@ export default {
 
     selectCustomer(customer) {
       if (customer.item) {
-        this.customerInfo.customerId = customer.item.customerId
+        this.customerId = customer.item.customerId
         this.customerInfo.customerCode = customer.item.customerCode
         this.customerInfo.customerName = customer.item.name
         this.customerInfo.customerAddress = customer.item.address
         this.customerInfo.customerPhone = customer.item.mobilePhone
+        this.customerInfo.customerTypeId = customer.item.customerTypeId
         this.customers = [{ data: null }]
       }
     },
@@ -665,7 +693,7 @@ export default {
         if (text.length >= commonData.minSearchLength) {
           const searchData = {
             keyWord: text,
-            customerId: this.customerInfo.customerId || null,
+            customerId: this.customerId || null,
             ...this.decentralization,
           }
           this.GET_PRODUCTS_ACTION(searchData)

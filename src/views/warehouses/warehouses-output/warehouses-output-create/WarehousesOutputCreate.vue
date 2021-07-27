@@ -682,7 +682,7 @@ export default {
   watch: {
     outputTypeSelected() {
       this.internalNumber = ''
-      this.internalNumber = ''
+      this.warehousesOutput.wareHouseTypeName = ''
       this.output.transCode = ''
       this.poNumber = ''
       this.transDate = ''
@@ -859,7 +859,9 @@ export default {
       } else toasts.error('Vui lòng chọn phiếu.')
     },
     navigateBack() {
-      this.$refs.salesNotifyModal.show()
+      // this.$refs.salesNotifyModal.show()
+      console.log(this.warehousesOutput.id)
+      console.log(this.rowsProductPromotion)
     },
     onClickAgreeButton() {
       this.$router.back()

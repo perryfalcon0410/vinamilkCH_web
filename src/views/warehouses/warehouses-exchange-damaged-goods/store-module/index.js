@@ -9,6 +9,7 @@ import {
   CUSTOMERS_GETTER,
   PRODUCTS_GETTER,
   DAMAGED_GOODS_GETTER,
+  UPDATE_PRICE_PRODUCT_GETTER,
   // ACTIONS
   GET_EXCHANGE_DAMAGED_GOODS_ACTION,
   GET_EXCHANGE_DAMAGED_GOODS_REASONS_ACTION,
@@ -19,6 +20,7 @@ import {
   UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION,
   GET_DAMAGED_GOODS_ACTION,
   REMOVE_EXCHANGE_DAMAGED_GOODS_ACTION,
+  UPDATE_PRICE_PRODUCT_ACTION,
 } from './type'
 
 export default {
@@ -32,6 +34,7 @@ export default {
     damagedGoodsById: {},
     customers: [],
     products: [],
+    customerTypeProducts: [],
   },
   // GETTERS
   getters: {
@@ -52,6 +55,9 @@ export default {
     },
     [DAMAGED_GOODS_GETTER](state) {
       return state.damagedGoodsById
+    },
+    [UPDATE_PRICE_PRODUCT_GETTER](state) {
+      return state.customerTypeProducts
     },
   },
 
@@ -219,6 +225,21 @@ export default {
         })
     },
     // END - GET DAMAGED GOODS BY ID
+    [UPDATE_PRICE_PRODUCT_ACTION]({ state }, val) {
+      exchangeDamagedGoodsService
+        .updatePriceProduct(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.customerTypeProducts = res.data.products
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
 
   },
 }

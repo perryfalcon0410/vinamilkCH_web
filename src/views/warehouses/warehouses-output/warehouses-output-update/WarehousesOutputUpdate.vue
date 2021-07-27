@@ -620,9 +620,11 @@ export default {
           productExport: item.productExport,
           export: item.export,
         }
-        if (item.productPrice !== 0) {
-          this.products.push(obj)
-        } else this.rowsProductPromotion.push(obj)
+        if (this.warehousesOutput.receiptType === this.poOutputType) {
+          if (item.productPrice !== 0) {
+            this.products.push(obj)
+          } else this.rowsProductPromotion.push(obj)
+        } else this.products.push(obj)
       })
       this.products.forEach(item => {
         if (item.productImportQuantity === item.productExport) {

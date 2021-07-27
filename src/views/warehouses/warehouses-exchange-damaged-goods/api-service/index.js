@@ -10,6 +10,7 @@ import {
   updateExchangeDamagedGoodsEndpoint,
   getDamagedGoodsByIdEndpoint,
   removeExchangeDamagedGoodsEndpoint,
+  updatePriceProductEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -45,5 +46,10 @@ export default {
   },
   removeExchangeDamagedGoods(args) {
     return axios.put(`${removeExchangeDamagedGoodsEndpoint}/${args}`)
+  },
+  updatePriceProduct(args) {
+    return axios.post(`${updatePriceProductEndpoint}/${args.customerTypeId}`, args.products, {
+      params: formatURLParams(args.params),
+    })
   },
 }

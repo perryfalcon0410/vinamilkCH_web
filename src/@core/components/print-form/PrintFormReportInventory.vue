@@ -346,6 +346,9 @@ td {
         margin: 2% 0;
         size: portrait;
     }
+    @page:bottom {
+      content: counter(page) ' of ' counter(pages);
+    }
     body {
       -webkit-print-color-adjust: exact !important;
     }

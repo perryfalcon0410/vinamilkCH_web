@@ -11,3 +11,4 @@ export const getProductsEndPoint = `${PRODUCT}/find`
 export const updateExchangeDamagedGoodsEndpoint = `${EXCHANGE_DAMAGED_GOODS}/update`
 export const getDamagedGoodsByIdEndpoint = `${EXCHANGE_DAMAGED_GOODS}/products`
 export const removeExchangeDamagedGoodsEndpoint = `${EXCHANGE_DAMAGED_GOODS}/remove`
+export const updatePriceProductEndpoint = `${PRODUCT}/change/customer-type`
