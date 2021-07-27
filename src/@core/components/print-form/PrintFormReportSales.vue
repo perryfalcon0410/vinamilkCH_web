@@ -54,14 +54,14 @@
     >
       <i
         class="text-right"
-        style="width: 43%;"
+        style="width: 40%;"
       >
         Tổng Số HĐ:
       </i>
       <strong
         class="text-right"
-        style="width: 8%;"
-      >{{ reportSalesInfoData.someBills }}</strong>
+        style="width: 6%;"
+      >{{ $formatNumberToLocale(reportSalesInfoData.someBills) }}</strong>
       <span
         class="text-right"
         style="width: 15.5%;"
@@ -70,20 +70,20 @@
       </span>
       <strong
         class="text-right"
-        style="width: 4.9%;"
-      >{{ reportSalesInfoData.totalQuantity }}</strong>
+        style="width: 5.5%;"
+      >{{ $formatNumberToLocale(reportSalesInfoData.totalQuantity) }}</strong>
       <strong
         class="text-right"
-        style="width: 11.5%;"
-      >{{ reportSalesInfoData.totalTotal }}</strong>
+        style="width: 13%;"
+      >{{ $formatNumberToLocale(reportSalesInfoData.totalTotal) }}</strong>
       <strong
         class="text-right"
-        style="width: 8.7%;"
-      >{{ reportSalesInfoData.totalPromotion }}</strong>
+        style="width: 10.5%;"
+      >{{ $formatNumberToLocale(reportSalesInfoData.totalPromotion) }}</strong>
       <strong
         class="text-right"
-        style="width: 7.9%;"
-      >{{ reportSalesInfoData.totalPay }}</strong>
+        style="width: 9.5%; padding-right: 0.1rem;"
+      >{{ $formatNumberToLocale(reportSalesInfoData.totalPay) }}</strong>
     </b-row>
     <!-- END - Total view -->
 
@@ -118,13 +118,13 @@
             Tên KH
           </th>
           <th
-            class="text-right px-20"
+            class="px-20"
             style="width: 5%"
           >
             Ngành
           </th>
           <th
-            class="text-right px-20"
+            class=" px-20"
             style="width: 6%"
           >
             Mã SP
@@ -136,7 +136,7 @@
             Tên SP
           </th>
           <th
-            class="text-right px-20"
+            class="px-20"
             style="width: 4%"
           >
             ĐVT
@@ -305,16 +305,16 @@ export default {
 table {
   width: 100%;
   border-collapse: collapse;
-  border: 2px solid;
+  border: 1px solid;
   table-layout: fixed;
 }
 th {
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
 }
 td, .td {
   border-style: dotted;
-  border-width: 2px;
+  border-width: 1px;
   word-wrap: break-word;
   font-size: 12px;
 }
@@ -324,7 +324,7 @@ td, .td {
 </style>
 <style type="text/css" media="print">
     @page {
-        margin-top: 0;
+        margin-top: 2%;
         margin-bottom: 0;
         size: landscape;
     }

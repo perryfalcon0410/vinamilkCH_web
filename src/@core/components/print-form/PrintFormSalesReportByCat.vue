@@ -64,7 +64,7 @@
             <th
               v-for="(item) in columnList"
               :key="item[0]"
-              class="text-center"
+              class="text-center text-nowrap"
             >
               {{ item }}
             </th>
@@ -78,14 +78,14 @@
         <tbody>
           <tr
             v-for="(rowData, index) in reportData"
-            :key="rowData[index][0]"
+            :key="index"
           >
             <td class="px-1">
               {{ index + 1 }}
             </td>
             <td
               v-for="(data, idx) in rowData"
-              :key="index + ' ' + idx"
+              :key="idx"
               :class="{'text-right': (idx > 3)}"
               class="px-1"
             >
@@ -147,7 +147,20 @@ export default {
       if (this.PRINT_REPORT_GETTER.reportData) {
         return this.PRINT_REPORT_GETTER.reportData
       }
-      return []
+      return [
+        'string',
+        'string',
+        'string',
+        0,
+        // 0,
+        // 0,
+        // 0,
+        // 0,
+        // 0,
+        // 0,
+        // 0,
+        // 0,
+      ]
     },
     // get total info price
     totalDetails() {

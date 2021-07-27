@@ -301,8 +301,8 @@
         align-h="end"
       >
         <div
-          class="rounded width-30-per d-flex align-items-center mt-2 p-1"
-          style="border: 2px dotted"
+          class="rounded d-flex align-items-center mt-2 p-1"
+          style="border: 2px dotted; width: 28%;"
         >
           <div class="width-40-per">
             <p class="italic">
@@ -556,8 +556,8 @@
         align-h="end"
       >
         <div
-          class="rounded width-30-per d-flex align-items-center mt-2 p-1"
-          style="border: 2px dotted"
+          class="rounded d-flex align-items-center mt-2 p-1"
+          style="border: 2px dotted; width: 28%;"
         >
           <div class="width-40-per">
             <p class="italic">
@@ -811,8 +811,8 @@
         align-h="end"
       >
         <div
-          class="rounded width-30-per d-flex align-items-center mt-2 p-1"
-          style="border: 2px dotted"
+          class="rounded d-flex align-items-center mt-2 p-1"
+          style="border: 2px dotted; width: 28%;"
         >
           <div class="width-40-per">
             <p class="italic">

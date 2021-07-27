@@ -107,7 +107,7 @@
           >
             <b-row
               v-if="props.column.field === 'quantity'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
@@ -115,7 +115,7 @@
 
             <b-row
               v-else-if="props.column.field === 'payment'"
-              class="mx-0"
+              class="mx-50 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.totalPrice) }}
@@ -285,6 +285,7 @@ export default {
             enabled: true,
           },
           thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'Đơn giá',
@@ -293,6 +294,7 @@ export default {
           type: 'number',
           formatFn: this.$formatNumberToLocale,
           thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'Thanh toán',
@@ -301,6 +303,7 @@ export default {
           type: 'number',
           formatFn: this.$formatNumberToLocale,
           thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
 
         {

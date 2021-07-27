@@ -33,7 +33,6 @@
             @selected="onclickAddProduct"
             @focus="focusInputProduct"
             @click="checkShopId"
-            @keyup.enter="focusInputQuantity"
           >
             <template
               slot-scope="{ suggestion }"
@@ -632,9 +631,6 @@ export default {
       } else {
         this.isDisabled = false
       }
-      // this.$nextTick(() => {
-      //   this.focusInputQuantity()
-      // })
     },
     getProductByBarcode() {
       const productByBarcode = {
@@ -777,14 +773,14 @@ export default {
         this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
       }
     },
-    focusInputQuantity() {
-      if (this.isSelectedProduct) {
-        document.getElementById(this.productIdSelected).focus()
-        this.isSelectedProduct = false
-        return
-      }
-      this.$refs.search.$el.querySelector('input').click()
-    },
+    // focusInputQuantity() {
+    //   if (this.isSelectedProduct) {
+    //     document.getElementById(this.productIdSelected).focus()
+    //     this.isSelectedProduct = false
+    //     return
+    //   }
+    //   this.$refs.search.$el.querySelector('input').click()
+    // },
     onclickAddProduct(index) {
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null) || (this.editManualPermission === true && this.onlineOrderId === null) || this.isOnline === false) {
         if (index && index.item) {
@@ -798,6 +794,9 @@ export default {
           }
           this.productIdSelected = index.item.productCode
           this.isSelectedProduct = true
+          setTimeout(() => {
+            document.getElementById(this.productIdSelected).focus()
+          }, 200)
         }
       }
 

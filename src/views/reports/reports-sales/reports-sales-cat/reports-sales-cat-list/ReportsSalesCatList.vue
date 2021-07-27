@@ -257,16 +257,19 @@ export default {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tần suất',

@@ -59,12 +59,12 @@
         <strong><ins> {{ $formatNumberToLocale(totalInfo.stockQuantity) }} </ins></strong>
       </div>
       <div
-        style="width: 12.1%;"
+        style="width: 13%;"
         class="text-right font-italic"
       >Tổng T.Tiền:
       </div>
       <div
-        style="width: 17%;"
+        style="width: 16.5%;"
         class="text-right"
       >
         <strong><ins> {{ $formatNumberToLocale(totalInfo.totalAmount) }} </ins></strong>
@@ -106,12 +106,12 @@
           <strong>{{ $formatNumberToLocale(item.totalQuantity) }}</strong>
         </div>
         <div
-          style="width: 12.1%;"
+          style="width: 13%;"
           class="text-right font-italic"
         >Tổng T.Tiền:
         </div>
         <div
-          style="width: 17%;"
+          style="width: 16.5%;"
           class="text-right"
         >
           <strong> {{ $formatNumberToLocale(item.totalAmount) }} </strong>

@@ -27,6 +27,12 @@
             </strong>
           </b-list-group-item>
           <b-list-group-item>
+            Ngày trả hàng
+            <strong>:
+              {{ this.$formatISOtoVNI(detailReturnInfo.returnDate) }}
+            </strong>
+          </b-list-group-item>
+          <b-list-group-item>
             Khách hàng
             <strong>:
               {{ (detailReturnInfo.customerName) }}

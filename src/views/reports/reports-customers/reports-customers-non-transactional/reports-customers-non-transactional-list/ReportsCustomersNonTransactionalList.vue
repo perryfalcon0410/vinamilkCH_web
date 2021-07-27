@@ -24,7 +24,7 @@
         <b-button-group>
           <b-button
             v-if="statusPrintButton().show"
-            :disabled="statusPrintButton().disabled"
+            :disabled="statusPrintButton().disabled || customerNonTransRows.length === 0"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickPrintButton"
@@ -34,7 +34,7 @@
           </b-button>
           <b-button
             v-if="statusExcelButton().show"
-            :disabled="statusExcelButton().disabled"
+            :disabled="statusExcelButton().disabled || customerNonTransRows.length === 0"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickExcelExportButton"

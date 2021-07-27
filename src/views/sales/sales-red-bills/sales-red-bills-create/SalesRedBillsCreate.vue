@@ -1091,22 +1091,26 @@ export default {
   .style-input {
     padding: 0.438rem 0.5rem;
   }
+
+.custom-table.vgt-table thead tr:first-child th {
+  border-bottom: 0px;
+}
   .custom-table thead tr:last-child th:last-child {
     position: sticky;
-    right: 0;
+    right: -1px;
     z-index: 99;
     background: #fff;
   }
   .move-header {
     position: sticky !important;
-    right: 0;
+    right: -1px;
     top: auto;
     z-index: 99;
     background: #315899 !important;
   }
   .move-column {
     position: sticky;
-    right: 0;
+    right: -1px;
     z-index: 99;
     background: inherit;
   }

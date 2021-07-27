@@ -532,7 +532,6 @@ export default {
     this.GET_SHOP_LOCATIONS_SEARCH_ACTION({ ...this.decentralization })
   },
   mounted() {
-    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromCreateDate,

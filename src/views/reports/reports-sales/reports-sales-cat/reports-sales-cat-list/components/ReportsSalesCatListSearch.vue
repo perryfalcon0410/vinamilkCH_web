@@ -306,7 +306,6 @@ export default {
     this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
   },
   mounted() {
-    this.onSearch()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,

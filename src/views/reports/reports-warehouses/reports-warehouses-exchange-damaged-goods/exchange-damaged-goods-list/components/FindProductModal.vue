@@ -138,7 +138,7 @@
           :columns="columns"
           mode="remote"
           :rows="products"
-          class="pb-1 m-1"
+          class="pb-1"
           style-class="vgt-table striped"
           compact-mode
           line-numbers
