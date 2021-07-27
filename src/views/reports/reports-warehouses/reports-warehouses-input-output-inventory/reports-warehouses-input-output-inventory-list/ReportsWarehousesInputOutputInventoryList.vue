@@ -56,7 +56,8 @@
           mode="remote"
           :columns="columns"
           :rows="warehousesInputOutputInventory"
-          style-class="vgt-table table-horizontal-scroll"
+          style-class="vgt-table report table-horizontal-scroll"
+          :style="cssProps"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -239,6 +240,26 @@
             </div>
           </template>
           <!-- END - Custom row -->
+          <template
+            slot="table-column"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'industry'"
+              ref="first"
+            >
+              {{ props.column.label }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'productCode'"
+              ref="second"
+            >
+              {{ props.column.label }}
+            </div>
+            <div v-else>
+              {{ props.column.label }}
+            </div>
+          </template>
           <!-- START - Pagination -->
           <template
             slot="pagination-bottom"
@@ -576,6 +597,8 @@ export default {
       warehousesInputOutputInventory: [],
       warehousesInputOutputInventoryPagination: {},
       totalInfo: {},
+      firstCol: 0,
+      secondCol: 0,
     }
   },
 
@@ -630,11 +653,21 @@ export default {
     getPrintData() {
       return this.PRINT_INPUT_OUTPUT_INVENTORY_GETTER
     },
+    cssProps() {
+      return {
+        '--second-col': `${this.firstCol + 30}px`,
+        '--third-col': `${this.firstCol + this.secondCol + 30}px`,
+      }
+    },
   },
 
   watch: {
     getwarehousesInputOutputInventory() {
       this.warehousesInputOutputInventory = [...this.getwarehousesInputOutputInventory]
+      this.$nextTick(() => {
+        this.firstCol = this.$refs.first.offsetParent.offsetWidth
+        this.secondCol = this.$refs.second.offsetParent.offsetWidth
+      })
     },
     getTotalInfo() {
       this.totalInfo = { ...this.getTotalInfo }
@@ -708,29 +741,29 @@ export default {
 </script>
 <style>
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
-  .table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+  .report.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
     left: 35px;
     z-index: 1;
   }
-  .table-horizontal-scroll thead tr:last-child th:nth-child(3) {
-    left: 260px;
+  .report.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: var(--second-col);
     z-index: 1;
   }
-  .table-horizontal-scroll thead tr:last-child th:nth-child(4) {
-    left: 360px;
+  .report.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
+    left: var(--third-col);
     z-index: 1;
   }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
 
   /* tùy chỉnh left khi scroll*/
-  .table-horizontal-scroll .column-first {
+  .report.table-horizontal-scroll .column-first {
     left: 35px;
   }
-  .table-horizontal-scroll .column-second {
-    left: 260px;
+  .report.table-horizontal-scroll .column-second {
+    left: var(--second-col);
   }
-  .table-horizontal-scroll .column-third {
-    left: 360px;
+  .report.table-horizontal-scroll .column-third {
+    left: var(--third-col);
   }
   /* tùy chỉnh left khi scroll*/
 </style>

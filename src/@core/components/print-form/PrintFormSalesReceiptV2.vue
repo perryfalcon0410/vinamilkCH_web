@@ -78,16 +78,16 @@
     <table>
       <thead>
         <tr>
-          <th class="text-center width-25-per">
+          <th class="width-15-per">
             SP
           </th>
-          <th class="text-center width-25-per">
+          <th class="text-center width-15-per">
             SL
           </th>
-          <th class="text-center width-25-per">
+          <th class="text-center width-30-per">
             Giá
           </th>
-          <th class="text-center width-25-per">
+          <th class="text-right width-40-per">
             T.Tiền
           </th>
         </tr>
@@ -101,10 +101,10 @@
     >
       <thead class="border-0">
         <tr>
-          <th class="text-center width-25-per" />
-          <th class="text-center width-25-per" />
-          <th class="text-center width-25-per" />
-          <th class="text-center width-25-per" />
+          <th class="width-15-per" />
+          <th class="text-center width-15-per" />
+          <th class="text-center width-30-per" />
+          <th class="width-40-per" />
         </tr>
       </thead>
       <tbody

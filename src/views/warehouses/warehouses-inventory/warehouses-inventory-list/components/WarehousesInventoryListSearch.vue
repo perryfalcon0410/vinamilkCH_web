@@ -251,7 +251,7 @@ export default {
         stockCountingCode: this.stockCountingCode,
         fromDate: reverseVniDate(this.fromDate),
         toDate: reverseVniDate(this.toDate),
-        warehouseTypeId: this.warehouseType,
+        wareHouseTypeId: this.warehouseType,
         formId: 5,
         ctrlId: 7,
       }

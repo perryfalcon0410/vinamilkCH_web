@@ -239,8 +239,8 @@
                 <!-- END - Date To -->
                 <!-- START -Income-->
                 <b-col
-                  xl
-                  lg="3"
+                  xl="6"
+                  lg="6"
                   sm="4"
                 >
                   <div
@@ -254,42 +254,27 @@
                     <b-col>
                       <b-form-input
                         v-model="minIncome"
-                        class="h7"
+                        class="h7 text-center"
                         :number="true"
                         maxlength="12"
+                        placeholder="0"
                         @keyup.enter="onClickSearchButton"
                         @keypress="$onlyNumberInput"
                       />
                     </b-col>
-                  </b-row>
-                </b-col>
-                <!-- START -Income-->
-                <b-col
-                  xl
-                  lg="3"
-                  sm="4"
-                >
-                  <div
-                    class="h7 mt-sm-1 mt-xl-0 invisible"
-                  >
-                    Doanh số hóa đơn
-                  </div>
-                  <b-row
-                    no-gutters
-                  >
                     <b-col>
                       <b-form-input
                         v-model="maxIncome"
-                        class="h7"
+                        class="h7 text-center"
                         :number="true"
                         maxlength="12"
+                        placeholder="5.000.000"
                         @keyup.enter="onClickSearchButton"
                         @keypress="$onlyNumberInput"
                       />
                     </b-col>
                   </b-row>
                 </b-col>
-                <!-- END - Income -->
                 <!-- END - Income -->
               </b-row>
               <!-- END - second row -->
