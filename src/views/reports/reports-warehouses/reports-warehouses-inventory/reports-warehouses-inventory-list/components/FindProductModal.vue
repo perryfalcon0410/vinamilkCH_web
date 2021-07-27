@@ -448,7 +448,6 @@ export default {
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      console.log(params)
       this.updateSearchData({
         size: params.currentPerPage,
         page: commonData.pageNumber - 1,

@@ -860,8 +860,8 @@ export default {
     },
     navigateBack() {
       // this.$refs.salesNotifyModal.show()
-      console.log(this.warehousesOutput.id)
-      console.log(this.rowsProductPromotion)
+      // console.log(this.warehousesOutput.id)
+      // console.log(this.rowsProductPromotion)
     },
     onClickAgreeButton() {
       this.$router.back()

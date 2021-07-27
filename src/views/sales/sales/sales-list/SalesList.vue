@@ -1091,7 +1091,6 @@ export default {
     },
 
     getSalemtPOSelectedTest(val) {
-      console.log('getSalemtPOSelectedTest', val)
       this.orderSelected = val
     },
 
