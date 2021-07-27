@@ -459,8 +459,10 @@ export default {
   watch: {
     reportInventory() {
       this.rows = [...this.reportInventory]
-      this.colWidth.firstCol = this.$refs.first.offsetParent.offsetWidth
-      this.colWidth.secondCol = this.$refs.second.offsetParent.offsetWidth
+      this.$nextTick(() => {
+        this.colWidth.firstCol = this.$refs.first.offsetParent.offsetWidth
+        this.colWidth.secondCol = this.$refs.second.offsetParent.offsetWidth
+      })
     },
     getReportInventoryInfo() {
       this.reportInventoryInfo = { ...this.getReportInventoryInfo }

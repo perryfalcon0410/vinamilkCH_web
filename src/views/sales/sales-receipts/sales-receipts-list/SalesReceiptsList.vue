@@ -20,7 +20,7 @@
       </b-row>
 
       <!-- Start table -->
-      <b-col class="py-1">
+      <b-col class="py-1 sales-receipt">
         <vue-good-table
           :columns="columns"
           mode="remote"
@@ -579,6 +579,11 @@ export default {
 }
 </script>
 <style lang="scss">
+.sales-receipt {
+  .vgt-table thead th {
+    border-bottom-style: none;
+  }
+}
 .move-header {
   position: sticky !important;
   right: 0;

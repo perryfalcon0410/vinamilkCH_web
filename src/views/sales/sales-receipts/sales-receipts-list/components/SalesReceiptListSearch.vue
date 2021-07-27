@@ -123,7 +123,7 @@
           class="v-flat-pickr-group mx-0"
           align-v="center"
           @keypress="$onlyDateInput"
-          @change="validateFromDate"
+          @change="isFromDateValid"
         >
           <b-icon-x
             v-show="fromDate"
@@ -157,7 +157,7 @@
           class="v-flat-pickr-group mx-0"
           align-v="center"
           @keypress="$onlyDateInput"
-          @change="validateToDate"
+          @change="isToDateValid"
         >
           <b-icon-x
             v-show="toDate"
@@ -217,7 +217,6 @@
 
 <script>
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
-import toasts from '@/@core/utils/toasts/toasts'
 import {
   mapActions,
   mapGetters,
@@ -227,6 +226,7 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  checkingDateInput,
 } from '@/@core/utils/filter'
 
 import receiptData from '@/@db/sale'
@@ -323,18 +323,14 @@ export default {
       this.$emit('onSearchClick', data)
     },
 
-    validateFromDate() {
-      const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
-      if (!pattern.test(this.fromDate)) {
-        toasts.error('Ngày tháng không tồn tại')
+    isFromDateValid() {
+      if (!checkingDateInput(this.fromDate)) {
         this.fromDate = earlyMonth()
       }
     },
-    validateToDate() {
-      const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
-      if (!pattern.test(this.toDate)) {
-        toasts.error('Ngày tháng không tồn tại')
-        this.toDate = this.$nowDate
+    isToDateValid() {
+      if (!checkingDateInput(this.toDate)) {
+        this.toDate = nowDate()
       }
     },
   },

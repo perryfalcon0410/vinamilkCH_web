@@ -30,6 +30,7 @@
               class="v-flat-pickr-group mx-0"
               align-v="center"
               @keypress="$onlyDateInput"
+              @change="isDateValid"
             >
               <b-icon-x
                 v-show="date"
@@ -159,7 +160,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { reverseVniDate, nowDate } from '@/@core/utils/filter'
+import { reverseVniDate, nowDate, checkingDateInput } from '@/@core/utils/filter'
 import FindProductModal from './FindProductModal.vue'
 import {
   REPORT_WAREHOUSES_INVENTORY,
@@ -253,6 +254,11 @@ export default {
     },
     showFindProductModal() {
       this.$bvModal.show('find-product-modal')
+    },
+    isDateValid() {
+      if (!checkingDateInput(this.date)) {
+        this.date = nowDate()
+      }
     },
   },
 }

@@ -355,21 +355,22 @@ export default {
           label: 'Loại nhập',
           field: 'inputTypes',
           thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
           formatFn: this.$getInputTypeslabel,
         },
         {
           label: 'Ghi chú',
           field: 'note',
           thClass: 'text-nowrap',
-          width: '300px',
+          tdClass: 'text-nowrap',
           sortable: false,
         },
         {
           label: 'Thao tác',
           field: 'feature',
-          thClass: 'text-center',
-          tdClass: 'text-center',
-          width: '90px',
+          thClass: 'text-center move-header',
+          tdClass: 'text-center move-column',
+          width: '65px',
           sortable: false,
         },
       ],
@@ -519,3 +520,18 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.move-header {
+  position: sticky !important;
+  right: 0;
+  top: 0.9px;
+  z-index: 1;
+  background: #315899 !important;
+}
+.move-column {
+  position: sticky;
+  right: 0;
+  z-index: 99;
+  background: inherit;
+}
+</style>

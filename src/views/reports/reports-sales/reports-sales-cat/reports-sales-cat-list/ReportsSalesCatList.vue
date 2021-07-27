@@ -26,7 +26,7 @@
         <b-button-group>
           <b-button
             v-if="statusPrintButton().show"
-            :disabled="statusPrintButton().disabled"
+            :disabled="statusPrintButton().disabled || reportSalesCatList.length === 0"
             class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="printReport"
@@ -36,7 +36,7 @@
           </b-button>
           <b-button
             v-if="statusExcelButton().show"
-            :disabled="statusExcelButton().disabled"
+            :disabled="statusExcelButton().disabled || reportSalesCatList.length === 0"
             class="shadow-brand-1 ml-1 rounded bg-brand-1 text-white h8 font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="onClickExcelExportButton"
@@ -339,7 +339,7 @@ export default {
     getReportSalesCatCatories() {
       this.labelName = []
       this.columns = [...this.initalCol]
-      if (this.getReportSalesCatCatories) {
+      if (this.getReportSalesCatCatories.length > 0) {
         this.getReportSalesCatCatories.forEach((item, index) => {
           const obj = {
             index,
@@ -365,11 +365,13 @@ export default {
     },
     getTotalInfo() {
       this.totalQuantity = []
-      this.getTotalInfo.forEach((item, index) => {
-        if (index > 3) {
-          this.totalQuantity.push(item)
-        }
-      })
+      if (this.getTotalInfo.length > 0) {
+        this.getTotalInfo.forEach((item, index) => {
+          if (index > 3) {
+            this.totalQuantity.push(item)
+          }
+        })
+      }
     },
     getReportSalesCatPrices() {
       for (let i = 0; i <= this.reportSalesCatList.length - 1; i += 1) {

@@ -1,4 +1,5 @@
 import moment from 'moment'
+import toasts from './toasts/toasts'
 
 export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)
 
@@ -210,4 +211,13 @@ export const countDays = isoDate => {
   else ageString = ''
 
   return ageString
+}
+
+export const checkingDateInput = date => {
+  const isValid = moment(date, 'DD/MM/YYYY', true).isValid()
+  if (!isValid) {
+    toasts.error('Ngày tháng không tồn tại')
+    return false
+  }
+  return true
 }

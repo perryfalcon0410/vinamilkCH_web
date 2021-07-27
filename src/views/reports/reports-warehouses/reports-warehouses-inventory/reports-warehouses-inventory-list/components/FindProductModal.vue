@@ -310,7 +310,7 @@ export default {
       pageNumber: commonData.pageNumber,
       paginationData: {
         size: commonData.perPageSizes[0],
-        page: this.pageNumber,
+        page: commonData.pageNumber - 1,
         sort: null,
       },
       // searchOptions
@@ -353,11 +353,14 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
-      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.productsPagination.totalElements
-        ? this.productsPagination.totalElements : (this.paginationData.size * this.pageNumber)
+      const { page, size } = this.paginationData
+      const { totalElements } = this.productsPagination
 
-      return `${minPageSize} - ${maxPageSize} của ${this.productsPagination.totalElements} mục`
+      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
+      const maxPageSize = (size * (page + 1)) > totalElements
+        ? totalElements : (size * (page + 1))
+
+      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },
     // pagination vars
     getProducts() {
@@ -434,25 +437,22 @@ export default {
     cancel() {
       this.$bvModal.hide('find-product-modal')
     },
-    // pagination funcs
-    onPaginationChange() {
-      this.GET_PRODUCT_LIST_ACTION({
-        ...this.paginationData,
-        ...this.decentralization,
-        ...this.searchOptions,
-        catId: this.prodcutCatSelected,
-      })
-      this.selectedCurrentPage = []
-    },
-    updatePaginationData(newProps) {
+    updateSearchData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
+    onPaginationChange() {
+      this.GET_PRODUCT_LIST_ACTION({ ...this.paginationData })
+    },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updateSearchData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      console.log(params)
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
+      })
       this.onPaginationChange()
     },
     onSearchClick() {
@@ -461,7 +461,7 @@ export default {
         ...this.searchOptions,
         catId: this.productCategorySelected,
       })
-      this.pageNumber = 1
+      this.onPaginationChange()
     },
     selectAllRows(params) {
       if (params.selected) {

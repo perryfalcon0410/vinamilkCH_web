@@ -76,14 +76,8 @@
             slot="table-column"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'feature'">
-              <b-icon-bricks
-                v-b-popover.hover="'Thao tác'"
-                scale="1.3"
-              />
-            </div>
             <div
-              v-else-if="props.column.label === 'Họ tên'"
+              v-if="props.column.label === 'Họ tên'"
               ref="fullName"
             >
               {{ props.column.label }}
@@ -105,16 +99,16 @@
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'feature'">
-              <b-icon-pencil-fill
-                v-b-popover.hover="'Chỉnh sửa'"
-                class="cursor-pointer"
-                @click="navigateToUpdate(props.row.id)"
-              />
+            <div
+              v-if="props.column.field === 'fullName' || props.column.field === 'address'"
+              class="line-overflow name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'fullName' || props.column.field === 'address'"
-              class="line-overflow name-width"
+              v-else-if="props.column.field === 'saleAmount'"
+              class="text-right pr-70"
+              style="width: max-content"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -133,7 +127,7 @@
           >
             <span
               v-if="props.column.field === 'saleAmount'"
-              class="mx-0 text-brand-3 h7"
+              class="mx-50 text-brand-3 h7"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalInfo.totalSaleAmount) }}
@@ -318,13 +312,13 @@ export default {
         {
           label: 'Doanh số',
           field: 'saleAmount',
-          type: 'number',
           filterOptions: {
             enabled: true,
           },
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-right text-nowrap',
+          tdClass: 'text-nowrap',
         },
       ],
     }
@@ -359,8 +353,8 @@ export default {
     },
 
     reportCustomersPagination() {
-      if (this.REPORT_CUSTOMERS_GETTER) {
-        return this.REPORT_CUSTOMERS_GETTER
+      if (this.REPORT_CUSTOMERS_GETTER.response) {
+        return this.REPORT_CUSTOMERS_GETTER.response
       }
       return {}
     },
