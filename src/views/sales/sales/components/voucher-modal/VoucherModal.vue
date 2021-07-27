@@ -107,6 +107,7 @@
 </template>
 
 <script>
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   mapActions,
   mapGetters,
@@ -262,10 +263,14 @@ export default {
       })
     },
     onClickChooeseVouchers() {
-      this.keyword = ''
-      this.vouchers = []
-      this.$emit('getVoucherInfo', this.$refs['table-voucher'].selectedRows)
-      this.$bvModal.hide('VoucherModal')
+      if (this.$refs['table-voucher'].selectedRows.length === 0) {
+        toasts.error('Bạn chưa chọn Voucher')
+      } else {
+        this.keyword = ''
+        this.vouchers = []
+        this.$emit('getVoucherInfo', this.$refs['table-voucher'].selectedRows)
+        this.$bvModal.hide('VoucherModal')
+      }
     },
     cancel() {
       this.keyword = ''

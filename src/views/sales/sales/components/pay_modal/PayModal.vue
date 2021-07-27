@@ -1394,62 +1394,63 @@ export default {
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.programId === id) {
           if (program.contraintType === Number(saleData.constraintType[1].id) && program.promotionType === Number(this.promotionTypeOption[0].id)) {
-            let maxQuantity = 0
-            let totalQuantity = 0
-            const productsSameQuantityMax = program.products.filter(i => i.quantityMax === program.products[0].quantityMax)
-
-            if (productsSameQuantityMax.length === program.products.length) {
-              program.products.forEach(product => {
-                totalQuantity += product.quantity
+            let totalQuantityOtherProductSelected = 0
+            const productsGroup = program.products.filter(i => i.groupOneFreeItem === params.row.groupOneFreeItem)
+            const productsSameQuantityMax = productsGroup.filter(i => i.quantityMax === productsGroup[0].quantityMax)
+            if (productsSameQuantityMax.length === productsGroup.length) {
+              productsGroup.forEach(product => {
+                if (product.productId !== params.row.productId) {
+                  totalQuantityOtherProductSelected += product.quantity
+                }
               })
-              maxQuantity = program.products[0].quantityMax
-              if (totalQuantity > maxQuantity) {
-                toasts.error(`${program.promotionProgramName} tổng tất cả sản phẩm trong chương trình không được lớn hơn ${maxQuantity}`)
+              const remainQuantity = productsGroup[0].quantityMax - totalQuantityOtherProductSelected
+              return {
+                ...program,
+                products: [...program.products.map(product => {
+                  if (product.productId === params.row.productId) {
+                    if (Number(product.quantity) < 0) {
+                      return {
+                        ...product,
+                        quantity: 0,
+                      }
+                    }
+
+                    if (Number(product.quantity) > remainQuantity) {
+                      return {
+                        ...product,
+                        quantity: remainQuantity,
+                      }
+                    }
+                  }
+                  return product
+                })],
               }
-              return program
             }
             return {
               ...program,
-              isUse: true,
               products: [...program.products.map(product => {
-                if (product.productId !== params.row.productId || Number(product.quantity) < 0) {
-                  return {
-                    ...product,
-                    quantity: 0,
-                  }
-                }
-
-                if (Number(product.quantity) > product.quantityMax) {
-                  if (program.numberLimited < product.quantityMax) {
+                if (product.groupOneFreeItem === params.row.groupOneFreeItem) {
+                  if (product.productId !== params.row.productId) {
                     return {
                       ...product,
-                      quantity: Number(program.numberLimited),
+                      quantity: 0,
                     }
                   }
-
                   return {
                     ...product,
-                    quantity: product.quantityMax,
-                  }
-                }
-
-                if (program.numberLimited > 0 && Number(product.quantity) > program.numberLimited) {
-                  return {
-                    ...product,
-                    quantity: program.numberLimited,
+                    quantity: params.row.quantityMax,
                   }
                 }
                 return product
               })],
             }
           }
-
+          // CTKM auto (All free Item) && CTKM handle
           return {
             ...program,
-            isUse: true,
             products: [...program.products.map(product => {
-              if (product.productId === params.row.productId) {
-                if (Number(product.quantity) < 0) {
+              if (product.groupOneFreeItem === params.row.groupOneFreeItem) {
+                if (product.productId !== params.row.productId) {
                   return {
                     ...product,
                     quantity: 0,
@@ -1466,13 +1467,6 @@ export default {
                   return {
                     ...product,
                     quantity: product.quantityMax,
-                  }
-                }
-
-                if (program.numberLimited > 0 && Number(product.quantity) > program.numberLimited) {
-                  return {
-                    ...product,
-                    quantity: program.numberLimited,
                   }
                 }
               }
@@ -1483,6 +1477,7 @@ export default {
         return program
       })]
     },
+
     isPositive(num) {
       if (num >= 0) {
         return true
@@ -1607,7 +1602,6 @@ export default {
 
     createSaleOrder() {
       let isValid = true
-      let totalQuantity = 0
       const paramPromotionInfo = this.promotionPrograms.filter(p => p.isUse)
       paramPromotionInfo.forEach(program => {
         if (program.products.length > 0) {
@@ -1622,27 +1616,6 @@ export default {
               toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
             }
           })
-          if (program.promotionType === Number(saleData.promotionType[0].id) && program.contraintType === Number(saleData.constraintType[1])) {
-            totalQuantity = 0
-            const productsSameQuantityMax = program.products.filter(i => i.quantityMax === program.products[0].quantityMax)
-            if (productsSameQuantityMax.length === program.products.length) {
-              program.products.forEach(product => {
-                totalQuantity += product.quantity
-              })
-              const maxQuantity = program.products[0].quantityMax
-              if (totalQuantity !== maxQuantity) {
-                toasts.error(`Tổng số lượng khuyến mãi phải bằng số lượng cho phép của ${program.promotionProgramName}`)
-              }
-            }
-          } else if (program.promotionType === Number(saleData.promotionType[1].id) && program.isUse) {
-            totalQuantity = 0
-            program.products.forEach(product => {
-              totalQuantity += product.quantity
-            })
-            if (totalQuantity <= 0) {
-              toasts.error(`Tổng số lượng khuyến mãi của ${program.promotionProgramName} phải lớn hơn 0`)
-            }
-          }
         }
       })
 
@@ -1713,9 +1686,8 @@ export default {
     },
     printSaleOrderTemp() {
       let isValid = true
-      let totalQuantity = 0
-      const parampromotionInfo = this.promotionPrograms.filter(p => p.isUse)
-      parampromotionInfo.forEach(program => {
+      const paramPromotionInfo = this.promotionPrograms.filter(p => p.isUse)
+      paramPromotionInfo.forEach(program => {
         if (program.products.length > 0) {
           program.products.forEach(product => {
             if (program.isEditable) {
@@ -1728,42 +1700,31 @@ export default {
               toasts.error(`${program.promotionProgramName} số lượng của ${product.productName} không được lớn hơn số lượng tồn kho`)
             }
           })
-          if (program.promotionType === Number(this.promotionTypeOption[0].id) && program.contraintType === Number(saleData.constraintType[1].id)) {
-            totalQuantity = 0
-            const productsSameQuantityMax = program.products.filter(i => i.quantityMax === program.products[0].quantityMax)
-            if (productsSameQuantityMax.length === program.products.length) {
-              program.products.forEach(product => {
-                totalQuantity += product.quantity
-              })
-              const maxQuantity = program.products[0].quantityMax
-              if (totalQuantity !== maxQuantity) {
-                isValid = false
-                toasts.error(`Tổng số lượng khuyến mãi phải bằng số lượng cho phép của ${program.promotionProgramName}`)
-              }
-            } else {
-              program.products.forEach(product => {
-                if (product.quantity !== null || product.quantity > 0) {
-                  if (product.quantity !== product.quantityMax) {
-                    isValid = false
-                    toasts.error(`Số lượng khuyến mãi phải bằng số lượng cho phép trong ${program.promotionProgramName}`)
-                  }
-                }
-              })
-            }
-          } else if (program.promotionType === Number(saleData.promotionType[1].id) && program.isUse) {
-            totalQuantity = 0
-            program.products.forEach(product => {
-              totalQuantity += product.quantity
-            })
-            if (totalQuantity <= 0) {
-              isValid = false
-              toasts.error(`Tổng số lượng khuyến mãi của ${program.promotionProgramName} phải lớn hơn 0`)
-            }
-          }
         }
       })
 
       if (isValid) {
+        console.log({
+          customerId: this.customer.id,
+          paymentType: this.pay.salePayment.salePaymentType,
+          deliveryType: Number(this.deliverySelected),
+          orderType: Number(this.orderSelected),
+          note: this.orderOnline.note,
+          orderOnlineId: this.orderOnline.onlineOrderId,
+          onlineNumber: this.orderOnline.orderNumber,
+          products: this.orderProducts,
+          promotionInfo: paramPromotionInfo,
+          totalOrderAmount: Number(this.pay.totalAmount) || 0,
+          promotionAmount: Number(this.pay.promotionAmount) || 0,
+          accumulatedAmount: Number(this.pay.accumulate.accumulateAmount) || 0,
+          discountAmount: Number(this.pay.discount.discountAmount) || 0,
+          discountCode: this.pay.discount.discountCode,
+          voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
+          vouchers: this.pay.voucher.vouchers,
+          paymentAmount: Number(this.pay.needPaymentAmount) || 0,
+          remainAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
+          extraAmount: Number(this.pay.extraAmount) || 0,
+        })
         this.PRINT_SALES_TEMP_ACTION({
           orderSale: {
             customerId: this.customer.id,
@@ -1774,7 +1735,7 @@ export default {
             orderOnlineId: this.orderOnline.onlineOrderId,
             onlineNumber: this.orderOnline.orderNumber,
             products: this.orderProducts,
-            promotionInfo: parampromotionInfo,
+            promotionInfo: paramPromotionInfo,
             totalOrderAmount: Number(this.pay.totalAmount) || 0,
             promotionAmount: Number(this.pay.promotionAmount) || 0,
             accumulatedAmount: Number(this.pay.accumulate.accumulateAmount) || 0,
