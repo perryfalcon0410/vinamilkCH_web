@@ -127,7 +127,7 @@
                   style="position: absolute; right: 0px; height: 100%"
                 >
                   <b-icon-plus
-                    v-b-popover.hover="'Thêm mới'"
+                    v-b-popover.hover.top="'Thêm mới khách hàng'"
                     @click="showModalCreate"
                   />
                 </b-input-group-append>
@@ -263,6 +263,7 @@
                         || salemtPromotionObjectSelected === salemtPromotionId
                         || salemtPromotionObjectSelected === undefined
                         || isDisabledOrder === true
+                        || editManualPermission === false
                         || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0)"
                       @input="getOrderNumber"
                     />
@@ -545,6 +546,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    editManualPermission: {
+      type: Boolean,
+      default: true,
+    },
     bills: {
       type: Array,
       default: () => [],
@@ -626,6 +631,11 @@ export default {
         discountCode: null,
         discountValue: null,
         note: null,
+        type: {
+          value: null,
+          apParamCode: null,
+          apParamName: null,
+        },
       },
 
       quantity: null,
@@ -1042,6 +1052,10 @@ export default {
       this.orderOnline.discountCode = this.onlineOrder.discountCode
       this.orderOnline.discountValue = this.onlineOrder.discountValue
       this.orderOnline.note = this.onlineOrder.note
+      this.orderOnline.type.value = this.onlineOrder.type.value
+      this.orderOnline.type.apParamCode = this.onlineOrder.type.apParamCode
+      this.orderOnline.type.apParamName = this.onlineOrder.type.apParamName
+      this.salemtPromotionObjectSelected = this.onlineOrder.type.value
       this.quantity = this.onlineOrder.quantity
       this.totalPrice = this.onlineOrder.totalPrice
     },
@@ -1114,6 +1128,7 @@ export default {
         return
       }
       this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions[0].id
+      this.$emit('getDefaultPromotionObjectSelected', this.salemtPromotionObjectSelected)
     },
     GetSalemtDeliveryTypeDefault() {
       if (this.salemtDeliveryTypeOptions.find(data => data.apParamCode === 'DELIVERY_001')) {

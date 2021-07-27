@@ -289,21 +289,22 @@
         <b-col class="text-center">
           <b-button
             variant="someThing"
-            class="mr-2 shadow-brand-1 bg-brand-1 text-white h8"
+            class="btn-brand-1 aligns-items-button-center"
             @click="onClickSaveButton()"
           >
             <b-icon
               icon="file-earmark-text-fill"
-              width="20"
-              height="20"
-              class="mr-1"
+              class="mr-50"
             />
             Lưu
           </b-button>
-          <b-button @click="onClickCloseButton()">
+          <b-button
+            class="aligns-items-button-center ml-1"
+            @click="onClickCloseButton()"
+          >
             <b-icon-x
-              width="20"
-              height="20"
+              class="mr-50"
+              scale="1.5"
             />
             Đóng
           </b-button>
@@ -463,7 +464,6 @@ export default {
   // END - Computed
 
   watch: {
-
     shopLocations() {
       this.provincesSelected = this.shopLocations.provinceId
     },

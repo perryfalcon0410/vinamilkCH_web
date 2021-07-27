@@ -287,10 +287,13 @@
         </b-col>
         <!-- END - Table -->
         <b-col class="text-center mb-2">
-          <b-button @click="onClickCloseButton()">
+          <b-button
+            class="aligns-items-button-center ml-1"
+            @click="onClickCloseButton()"
+          >
             <b-icon-x
-              width="20"
-              height="20"
+              class="mr-50"
+              scale="1.5"
             />
             Đóng
           </b-button>

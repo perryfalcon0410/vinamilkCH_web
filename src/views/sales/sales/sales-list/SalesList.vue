@@ -93,7 +93,7 @@
             {{ bill.billName }}
           </b-button>
           <b-icon-x
-            v-b-popover.hover="'Xóa'"
+            v-b-popover.hover.top="'Xóa'"
             class="cursor-pointer"
             font-scale="1.6"
             @click="onClickDeleteButton(bill.id)"
@@ -104,7 +104,7 @@
       <b-row class="ml-1">
         <div>
           <b-icon-plus
-            v-b-popover.hover.right="'Thêm mới hóa đơn'"
+            v-b-popover.hover.top="'Thêm mới hóa đơn'"
             font-scale="2.5"
             class="cursor-pointer"
             @click="onClickAddButton()"
@@ -274,6 +274,7 @@
         :bills="bills"
         :is-disabled-order="isDisabledOrder"
         :edit-online-permission="editOnlinePermission"
+        :edit-manual-permission="editManualPermission"
         :is-disabled="isDisabled"
         :order-number-bill="orderNumber"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
@@ -283,12 +284,14 @@
         @getOnlineCustomer="getOnlineCustomer"
         @getCustomerCreate="getCustomerCreate"
         @currentCustomer="getCurrentCustomer"
+        @getDefaultPromotionObjectSelected="getDefaultPromotionObjectSelected"
         @getSalemtPOSelected="getSalemtPOSelected"
         @getSalemtPOOptions="getSalemtPOOptions"
         @salemtDeliveryTypeSelected="salemtDeliveryTypeSelected"
         @getIdCustomer="getIdCustomer"
         @deleteSaveBill="deleteSaveBill"
         @getOrderNumber="getOrderNumber"
+        @getSalemtPOSelectedTest="getSalemtPOSelectedTest"
       />
       <!-- END - Section Form pay -->
 
@@ -448,7 +451,9 @@ export default {
             totalBill: null,
             address: null,
           },
-          orderType: null,
+          orderType: {
+            value: null,
+          },
           deliveryType: null,
           orderNumber: null,
           note: null,
@@ -465,6 +470,7 @@ export default {
       editManualPermission: true,
       isOnline: false,
       isDisabledOrder: false,
+      defaultPOSelected: null,
 
       // price customer change customerTypeId
       customerType: null,
@@ -827,7 +833,9 @@ export default {
             totalBill: this.defaultCustomer.totalBill,
             address: this.defaultCustomer.address,
           },
-          orderType: null,
+          orderType: {
+            value: this.defaultPOSelected.toString(),
+          },
           deliveryType: null,
           orderNumber: null,
           note: null,
@@ -846,7 +854,9 @@ export default {
           totalBill: this.currentCustomer.totalBill,
           address: this.currentCustomer.address,
         },
-        orderType: this.orderSelected.id,
+        orderType: {
+          value: this.orderSelected.id,
+        },
         deliveryType: this.deliverySelected.id,
         orderNumber: this.currentOrderNumber.orderNumber,
         note: this.currentOrderNumber.note,
@@ -885,7 +895,9 @@ export default {
               totalBill: this.currentCustomer.totalBill,
               address: this.currentCustomer.address,
             },
-            orderType: this.orderSelected.id,
+            orderType: {
+              value: this.orderSelected.id,
+            },
             deliveryType: this.deliverySelected.id,
             orderNumber: this.currentOrderNumber.orderNumber,
             note: this.currentOrderNumber.note,
@@ -903,7 +915,7 @@ export default {
           this.currentCustomer.phoneNumber = bill.customer.phoneNumber
           this.currentCustomer.totalBill = bill.customer.totalBill
           this.currentCustomer.address = bill.customer.address
-          this.orderSelected.id = bill.orderType
+          this.orderSelected.id = bill.orderType.value
           this.deliverySelected.id = bill.deliveryType
           this.currentOrderNumber.orderNumber = bill.orderNumber
           this.currentOrderNumber.note = bill.note
@@ -1038,7 +1050,7 @@ export default {
     },
 
     getSalemtPOSelected(val) {
-      this.orderSelected = val
+      // this.orderSelected = val
       const { usedShop } = this.loginInfo
       if (val.id === '1') {
         this.isOnline = false
@@ -1078,8 +1090,17 @@ export default {
       this.deliverySelected = val
     },
 
+    getSalemtPOSelectedTest(val) {
+      console.log('getSalemtPOSelectedTest', val)
+      this.orderSelected = val
+    },
+
     getSalemtPOOptions(val) {
       this.salemtPOOptions = val
+    },
+
+    getDefaultPromotionObjectSelected(val) {
+      this.defaultPOSelected = val
     },
 
     onClickAgreeButton() {
