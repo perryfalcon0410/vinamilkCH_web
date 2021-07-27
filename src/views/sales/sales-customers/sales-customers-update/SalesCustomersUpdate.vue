@@ -622,7 +622,6 @@ import {
   formatISOtoVNI,
   countDays,
 } from '@/@core/utils/filter'
-import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
 import {
   CUSTOMER,
@@ -634,6 +633,7 @@ import {
   CARD_TYPES_GETTER,
   CLOSELY_TYPES_GETTER,
   CUSTOMER_BY_ID_GETTER,
+  GENDERS_GETTER,
   // ACTIONS
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
@@ -697,7 +697,6 @@ export default {
       firstName: null,
       barCode: null,
       birthDay: null,
-      genderOptions: commonData.genders,
       gendersSelected: null,
       customerTypesSelected: null,
       customerStatusOptions: customerData.status,
@@ -742,9 +741,16 @@ export default {
       CARD_TYPES_GETTER,
       CLOSELY_TYPES_GETTER,
       CUSTOMER_BY_ID_GETTER,
+      GENDERS_GETTER,
     }),
     customer() {
       return this.CUSTOMER_BY_ID_GETTER
+    },
+    genderOptions() {
+      return this.GENDERS_GETTER.map(data => ({
+        id: data.id,
+        label: data.categoryName,
+      }))
     },
     customerTypeOptions() {
       return this.CUSTOMER_TYPES_UPDATE_GETTER.map(data => ({
@@ -1006,7 +1012,7 @@ export default {
         && this.customerPrivate === (this.customer.isPrivate || false)
         && (this.note || null) === this.customer.noted
         && (this.customerID || null) === this.customer.idNo
-        && this.customerIDDate === (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : '')
+        && this.customerIDDate === (this.customerID ? formatISOtoVNI(this.customer.idNoIssuedDate) : null)
         && (this.customerIDLocation || null) === this.customer.idNoIssuedPlace
         // START - Contact
         && this.phoneNumber === this.customer.mobiPhone

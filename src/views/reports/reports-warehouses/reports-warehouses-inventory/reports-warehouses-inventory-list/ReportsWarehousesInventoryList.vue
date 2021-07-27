@@ -471,9 +471,6 @@ export default {
   },
   methods: {
     exportExcel() {
-      console.log(this.$refs)
-      console.log(this.cssProps)
-      console.log(this.colWidth)
       this.EXPORT_REPORT_INVENTORIES_ACTION({
         productCodes: this.paginationData.productCodes,
         stockDate: this.paginationData.stockDate,

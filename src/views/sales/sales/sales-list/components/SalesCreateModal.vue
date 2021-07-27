@@ -350,7 +350,6 @@ import {
   GET_PRECINCTS_ACTION,
   GET_SHOP_LOCATIONS_ACTION,
   GET_CUSTOMER_TYPES_ACTION,
-  GET_GENDERS_ACTION,
 } from '../../../sales-customers/store-module/type'
 
 export default {
@@ -510,14 +509,10 @@ export default {
       this.customerCreate = { ...this.getCustomerCreate }
       this.getCreateInfo()
     },
-    gendersSelected() {
-      this.GET_GENDERS_ACTION({ ...this.decentralization })
-    },
   },
 
   mounted() {
     this.GET_PROVINCES_ACTION({ ...this.decentralization })
-    this.GET_GENDERS_ACTION({ ...this.decentralization })
     this.GET_SHOP_LOCATIONS_ACTION({ ...this.decentralization })
     this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
   },
@@ -531,7 +526,6 @@ export default {
       GET_PRECINCTS_ACTION,
       GET_SHOP_LOCATIONS_ACTION,
       GET_CUSTOMER_TYPES_ACTION,
-      GET_GENDERS_ACTION,
     ]),
 
     create() {

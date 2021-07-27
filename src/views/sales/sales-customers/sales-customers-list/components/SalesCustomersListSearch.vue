@@ -233,7 +233,6 @@ import {
   GENDERS_GETTER,
   // ACTIONS
   GET_SHOP_LOCATIONS_SEARCH_ACTION,
-  GET_GENDERS_ACTION,
 } from '../../store-module/type'
 
 export default {
@@ -248,7 +247,6 @@ export default {
       customerTypesSelected: null,
       statuOptions: customerData.status,
       statusSelected: customerData.status[0].id,
-      genderOptions: [], // 1 = Nam, 2 = Nữ, 3 = Khác
       gendersSelected: null,
       areasSelected: null,
       privateCustomer: true,
@@ -281,14 +279,12 @@ export default {
       }
       return []
     },
-    getGenders() {
-      if (this.GENDERS_GETTER) {
-        return this.GENDERS_GETTER.map(data => ({
-          id: data.id,
-          label: data.categoryName,
-        }))
-      }
-      return []
+    genderOptions() {
+      // 1 = Nam, 2 = Nữ, 3 = Khác
+      return this.GENDERS_GETTER.map(data => ({
+        id: data.id,
+        label: data.categoryName,
+      }))
     },
     areaOptions() {
       if (this.SHOP_LOCATIONS_SEARCH_GETTER) {
@@ -317,9 +313,6 @@ export default {
     getCustomerTypes() {
       this.customerTypeOptions = [...this.getCustomerTypes]
     },
-    getGenders() {
-      this.genderOptions = [...this.getGenders]
-    },
   },
 
   mounted() {
@@ -329,7 +322,6 @@ export default {
         // this.apiStatus.shopLocationsSearch = true
       },
     })
-    this.GET_GENDERS_ACTION({ ...this.decentralization })
 
     this.$refs.focusInput.focus()
   },
@@ -337,7 +329,6 @@ export default {
   methods: {
     ...mapActions(CUSTOMER, [
       GET_SHOP_LOCATIONS_SEARCH_ACTION,
-      GET_GENDERS_ACTION,
     ]),
     areaSelectedDefault() {
       if (this.SHOP_LOCATIONS_SEARCH_GETTER) {

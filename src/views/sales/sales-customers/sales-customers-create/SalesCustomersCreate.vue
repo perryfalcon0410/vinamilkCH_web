@@ -2,23 +2,23 @@
   <b-container
     fluid
   >
-    <!-- START - Form Container-->
+    <!-- Form Container-->
     <validation-observer
       ref="formContainer"
       v-slot="{invalid}"
       slim
     >
       <b-row>
-        <!-- START - Form Personal information -->
+        <!-- Form Personal information -->
         <b-col
           xl="3"
           md="6"
           class="shadow bg-white rounded pb-1"
         >
-          <!-- START - Section 1 -->
+          <!-- Section 1 -->
           <label class="w-100 text-center h5"><strong>Thông tin cá nhân</strong></label>
 
-          <!-- START - Customer Code -->
+          <!-- Customer Code -->
           <b-col class="px-0">
             <div class="mt-1">
               Mã khách hàng
@@ -27,10 +27,9 @@
               disabled
             />
           </b-col>
+          <!--/ Customer Code -->
 
-          <!-- END - Customer Code -->
-
-          <!-- START - Customer Name -->
+          <!-- Customer Name -->
           <b-form-row>
             <b-col>
               <validation-provider
@@ -71,9 +70,9 @@
               </validation-provider>
             </b-col>
           </b-form-row>
-          <!-- END - Customer Name -->
+          <!--/ Customer Name -->
 
-          <!-- START - Customer Barcode -->
+          <!-- Customer Barcode -->
           <validation-provider
             v-slot="{ errors, passed }"
             rules="code"
@@ -89,9 +88,9 @@
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
-          <!-- END - Customer Barcode -->
+          <!--/ Customer Barcode -->
 
-          <!-- START - Customer BirthDay and Gender -->
+          <!-- Customer BirthDay and Gender -->
           <b-form-row>
             <!-- BirthDay -->
             <b-col
@@ -131,7 +130,9 @@
                 </b-form-group>
               </validation-provider>
             </b-col>
-            <!-- gender -->
+            <!--/ BirthDay -->
+
+            <!-- Genders -->
             <b-col>
               <div
                 class="mt-1"
@@ -145,10 +146,11 @@
                 no-options-text="Không có dữ liệu"
               />
             </b-col>
+            <!--/ Genders -->
           </b-form-row>
-          <!-- END - Customer BirthDay and Gender -->
+          <!--/ Customer BirthDay and Gender -->
 
-          <!-- START - Customer Group -->
+          <!-- Customer Group -->
           <b-col
             class="px-0"
           >
@@ -172,9 +174,9 @@
               <small class="text-danger">{{ errors[0] }}</small>
             </validation-provider>
           </b-col>
-          <!-- END - Customer Group -->
+          <!--/ Customer Group -->
 
-          <!-- START - Customer status -->
+          <!-- Customer status -->
           <b-col
             class="px-0"
           >
@@ -190,18 +192,18 @@
               disabled
             />
           </b-col>
-          <!-- END - Customer status -->
+          <!--/ Customer status -->
 
-          <!-- START - Customer loyal -->
+          <!-- Customer loyal -->
           <b-form-checkbox
             v-model="customerPrivate"
             class="mt-1"
           >
             Khách hàng riêng của cửa hàng
           </b-form-checkbox>
-          <!-- END - Customer loyal -->
+          <!--/ Customer loyal -->
 
-          <!-- START - Customer Note -->
+          <!-- Customer Note -->
           <div class="mt-1">
             Ghi chú
           </div>
@@ -209,12 +211,12 @@
             v-model="note"
             maxlength="250"
           />
-          <!-- END - Customer Note -->
-          <!-- END - Section 1 -->
+          <!--/ Customer Note -->
+          <!--/ Section 1 -->
         </b-col>
-        <!-- END - Form Personal information -->
+        <!--/ Form Personal information -->
 
-        <!-- START - Form Personal ID -->
+        <!-- Form Personal ID -->
         <b-col
           xl
           md="6"
@@ -223,7 +225,7 @@
         >
           <label class="h5 text-light"><strong>Label</strong></label>
 
-          <!-- START - Customer IdentityCard -->
+          <!-- Customer IdentityCard -->
           <validation-provider
             v-slot="{ errors, passed }"
             rules="identifyCard"
@@ -242,9 +244,9 @@
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
-          <!-- END - Customer IdentityCard -->
+          <!--/ Customer IdentityCard -->
 
-          <!-- START - Customer ID Date -->
+          <!-- Customer ID Date -->
           <div
             class="mt-1"
           >
@@ -270,9 +272,9 @@
               :disabled="customerID ? false : true"
             />
           </b-row>
-          <!-- END - Customer ID Date -->
+          <!--/ Customer ID Date -->
 
-          <!-- START - Customer ID Location -->
+          <!-- Customer ID Location -->
           <div class="mt-1">
             Nơi cấp
           </div>
@@ -281,18 +283,18 @@
             :disabled="customerID ? false : true"
             maxlength="200"
           />
-          <!-- END - Customer ID Location -->
+          <!--/ Customer ID Location -->
         </b-col>
-        <!-- END - Form Personal ID -->
+        <!--/ Form Personal ID -->
 
-        <!-- START - Form Contact information -->
+        <!-- Form Contact information -->
         <b-col
           xl="3"
           md
           class="bg-white shadow rounded pb-1 mt-1 ml-xl-1 mt-xl-0"
         >
           <label class="w-100 text-center h5"><strong>Thông tin liên hệ</strong></label>
-          <!-- START - Customer Phone Number -->
+          <!-- Customer Phone Number -->
           <validation-provider
             v-slot="{ errors, passed, touched}"
             rules="phoneNumber|required"
@@ -311,9 +313,9 @@
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
-          <!-- END - Customer Phone Number -->
+          <!--/ Customer Phone Number -->
 
-          <!-- START - Customer Email -->
+          <!-- Customer Email -->
           <validation-provider
             v-slot="{ errors, passed }"
             rules="email"
@@ -332,9 +334,9 @@
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
-          <!-- END - Customer Email -->
+          <!--/ Customer Email -->
 
-          <!-- START - Customer Home number -->
+          <!-- Customer Home number -->
           <validation-provider
             v-slot="{ errors, passed, touched }"
             rules="required"
@@ -350,9 +352,9 @@
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
-          <!-- END - Customer Home number -->
+          <!--/ Customer Home number -->
 
-          <!-- START - Customer Province -->
+          <!-- Customer Province -->
           <validation-provider
             v-slot="{ errors }"
             rules="required"
@@ -372,9 +374,9 @@
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
-          <!-- END - Customer Province -->
+          <!--/ Customer Province -->
 
-          <!-- START - Customer District and Wards -->
+          <!-- Customer District and Wards -->
           <b-form-row>
             <b-col>
               <validation-provider
@@ -420,9 +422,9 @@
               </validation-provider>
             </b-col>
           </b-form-row>
-          <!-- END - Customer District and Wards -->
+          <!--/ Customer District and Wards -->
 
-          <!-- START - Office-->
+          <!-- Office-->
           <div class="mt-1">
             Cơ quan
           </div>
@@ -430,9 +432,9 @@
             v-model="workingOffice"
             maxlength="200"
           />
-          <!-- END - Office-->
+          <!--/ Office-->
 
-          <!-- START - Office Address-->
+          <!-- Office Address-->
           <div class="mt-1">
             Địa chỉ cơ quan
           </div>
@@ -440,9 +442,9 @@
             v-model="officeAddress"
             maxlength="200"
           />
-          <!-- END - Office Address-->
+          <!--/ Office Address-->
 
-          <!-- START - Customer Tax code-->
+          <!-- Customer Tax code-->
           <validation-provider
             v-slot="{ errors, passed }"
             rules="code"
@@ -458,11 +460,11 @@
             />
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
-        <!-- END - Customer Tax code-->
+        <!--/ Customer Tax code-->
         </b-col>
-        <!-- END - Form Contact information -->
+        <!--/ Form Contact information -->
 
-        <!-- START - Form Membership card -->
+        <!-- Form Membership card -->
         <b-col
           xl="3"
           md
@@ -470,7 +472,7 @@
         >
           <label class="w-100 text-center h5"><strong>Thẻ thành viên</strong></label>
 
-          <!-- START - Customer Card type -->
+          <!-- Customer Card type -->
           <div
             class="mt-1"
           >
@@ -483,9 +485,9 @@
             no-options-text="Không có dữ liệu"
             no-results-text="Không tìm thấy kết quả"
           />
-          <!-- END - Customer Card type -->
+          <!--/ Customer Card type -->
 
-          <!-- START - Customer Type -->
+          <!-- Customer Type -->
           <div
             class="mt-1"
           >
@@ -498,12 +500,12 @@
             no-options-text="Không có dữ liệu"
             no-results-text="Không tìm thấy kết quả"
           />
-        <!-- END - Customer Type -->
+        <!--/ Customer Type -->
         </b-col>
-        <!-- END - Form Membership card -->
+        <!--/ Form Membership card -->
       </b-row>
 
-      <!-- START - Group Button -->
+      <!-- Group Button -->
       <b-row
         class="mx-0 my-1"
         align-v="center"
@@ -533,17 +535,17 @@
           Đóng
         </b-button>
       </b-row>
-      <!-- END - Group Button -->
+      <!--/ Group Button -->
 
     </validation-observer>
-    <!-- END - Form Container-->
+    <!--/ Form Container-->
 
-    <!-- START - Confirm Modal -->
+    <!-- Confirm Modal -->
     <confirm-modal
       content="Thông tin khách hàng sẽ không được cập nhật khi rời trang"
       @ok="onClickAgreeButton"
     />
-    <!-- END - Confirm Modal -->
+    <!--/ Confirm Modal -->
   </b-container>
 </template>
 
@@ -567,7 +569,6 @@ import {
 } from '@/@core/utils/validations/validations'
 import ConfirmModal from '@/@core/components/confirm-close-modal/ConfirmModal.vue'
 import { formatVniDateToISO } from '@/@core/utils/filter'
-import commonData from '@/@db/common'
 import customerData from '@/@db/customer'
 import {
   CUSTOMER,
@@ -579,6 +580,7 @@ import {
   CARD_TYPES_GETTER,
   CLOSELY_TYPES_GETTER,
   SHOP_LOCATIONS_GETTER,
+  GENDERS_GETTER,
   // ACTIONS
   CREATE_CUSTOMER_ACTION,
   GET_CUSTOMER_TYPES_UPDATE_ACTION,
@@ -597,7 +599,7 @@ export default {
     ConfirmModal,
   },
 
-  // START - Data
+  // Data
   data() {
     return {
       isFieldCanCheck: true,
@@ -632,12 +634,11 @@ export default {
         ctrlId: 1,
       },
 
-      // START - Personal
+      // Personal
       lastName: null,
       firstName: null,
       barCode: null,
       birthDay: null,
-      genderOptions: commonData.genders,
       gendersSelected: null,
       customerTypesSelected: null,
       customerStatusOptions: customerData.status,
@@ -647,9 +648,9 @@ export default {
       customerID: null,
       customerIDDate: null,
       customerIDLocation: null,
-      // END - Personal
+      /// Personal
 
-      // START - Contact
+      // Contact
       phoneNumber: null,
       customerEmail: null,
       homeNumber: null,
@@ -659,17 +660,17 @@ export default {
       workingOffice: null,
       officeAddress: null,
       taxCode: null,
-      // END - Contact
+      /// Contact
 
-      // START - MembershipCard
+      // MembershipCard
       cardTypesSelected: null,
       closelyTypesSelected: null,
-      // END - MembershipCard
+      /// MembershipCard
     }
   },
-  // END - Data
+  /// Data
 
-  // START - Computed
+  // Computed
   computed: {
     ...mapGetters(CUSTOMER, {
       CUSTOMER_TYPES_UPDATE_GETTER,
@@ -679,7 +680,14 @@ export default {
       CARD_TYPES_GETTER,
       CLOSELY_TYPES_GETTER,
       SHOP_LOCATIONS_GETTER,
+      GENDERS_GETTER,
     }),
+    genderOptions() {
+      return this.GENDERS_GETTER.map(data => ({
+        id: data.id,
+        label: data.categoryName,
+      }))
+    },
     customerTypeOptions() {
       return this.CUSTOMER_TYPES_UPDATE_GETTER.map(data => ({
         id: data.id,
@@ -726,7 +734,7 @@ export default {
       return this.SHOP_LOCATIONS_GETTER
     },
   },
-  // END - Computed
+  /// Computed
 
   watch: {
     shopLocations() {
@@ -793,7 +801,7 @@ export default {
     }
   },
 
-  // START - Methods
+  // Methods
   methods: {
     ...mapActions(CUSTOMER, [
       CREATE_CUSTOMER_ACTION,
@@ -853,7 +861,7 @@ export default {
       // console.log(`precincts: ${this.precinctsSelected !== this.shopLocations.precinctId} | (${typeof this.precinctsSelected}) ->|  ${this.precinctsSelected} === ${this.shopLocations.precinctId} (${typeof this.shopLocations.precinctId})`)
 
       if (
-      // START - Personal
+      // Personal
         this.lastName
         || this.firstName
         || this.barCode
@@ -865,7 +873,7 @@ export default {
         || this.customerID
         || this.customerIDDate
         || this.customerIDLocation
-        // START - Contact
+        // Contact
         || this.phoneNumber
         || this.customerEmail
         || this.homeNumber
@@ -875,7 +883,7 @@ export default {
         || this.workingOffice
         || this.officeAddress
         || this.taxCode
-        // START - MembershipCard
+        // MembershipCard
         || this.cardTypesSelected
         || this.closelyTypesSelected
       ) {
@@ -897,7 +905,7 @@ export default {
       this.$router.replace({ name: 'sales-customers' })
     },
   },
-  // END - Methods
+  /// Methods
 
 }
 </script>

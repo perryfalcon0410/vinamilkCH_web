@@ -60,7 +60,7 @@
         </b-col>
       </b-row>
       <div>
-        Loại giao hàng: {{ deliveryTypeLabel }}
+        Loại giao hàng: {{ printSalesReceiptData.deliveryType }}
       </div>
       <div>
         Doanh số tích lũy: {{ $formatNumberToLocale(printSalesReceiptData.customerPurchase) }}
@@ -286,7 +286,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getSaleDeliveryTypeslabel } from '@core/utils/utils'
 
 import {
   SALESRECEIPTS,
@@ -397,13 +396,6 @@ export default {
     getPrintSalesReceiptTempData() {
       if (this.PRINT_SALES_TEMP_GETTER) {
         return this.PRINT_SALES_TEMP_GETTER
-      }
-      return null
-    },
-
-    deliveryTypeLabel() {
-      if (this.printSalesReceiptData.deliveryType) {
-        return getSaleDeliveryTypeslabel(this.printSalesReceiptData.deliveryType)
       }
       return null
     },

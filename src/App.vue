@@ -43,6 +43,7 @@ import {
   CUSTOMER,
   // ACTIONS
   GET_CUSTOMER_TYPES_ACTION,
+  GET_GENDERS_ACTION,
 } from '@/views/sales/sales-customers/store-module/type'
 import {
   APP,
@@ -99,12 +100,12 @@ export default {
 
   watch: {
     isLoggedIn() {
-      this.getCustomerTypes()
+      this.getCustomerApiData()
     },
   },
 
   mounted() {
-    this.getCustomerTypes()
+    this.getCustomerApiData()
   },
 
   beforeCreate() {
@@ -132,13 +133,19 @@ export default {
   methods: {
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_TYPES_ACTION,
+      GET_GENDERS_ACTION,
     ]),
 
-    getCustomerTypes() {
+    getCustomerApiData() {
       if (this.isLoggedIn) {
         this.GET_CUSTOMER_TYPES_ACTION({
           data: { ...this.decentralization },
-          onSuccess: () => { },
+          onSuccess: () => {},
+        })
+
+        this.GET_GENDERS_ACTION({
+          data: { ...this.decentralization },
+          onSuccess: () => {},
         })
       }
     },

@@ -362,11 +362,12 @@ export default {
     },
     [GET_GENDERS_ACTION]({ state }, val) {
       CustomerService
-        .getGenders(val)
+        .getGenders(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.genders = res.data
+            val.onSuccess(res.data)
           } else {
             throw new Error(res.statusValue)
           }
