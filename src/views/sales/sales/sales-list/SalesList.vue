@@ -25,7 +25,7 @@
             :input-props="{
               id:'autosuggest__input_product',
               class:'form-control pr-3 h7',
-              placeholder:'Tìm sản phẩm (F3) (Barcode) - Vui lòng nhập ít nhất 4 kí tự',
+              placeholder:'Tìm sản phẩm (F3) - Vui lòng nhập ít nhất 4 kí tự',
             }"
             :component-attr-class-autosuggest-results="(productsSearchLength < 11) ? 'autosuggest__results check-auto-suggesst' : 'autosuggest__results'"
             :salemt-promotion-object-selected="salemtPromotionObjectSelected"
