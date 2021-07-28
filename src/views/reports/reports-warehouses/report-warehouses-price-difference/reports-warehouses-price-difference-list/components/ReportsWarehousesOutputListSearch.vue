@@ -62,6 +62,7 @@
             class="v-flat-pickr-group mx-0"
             align-v="center"
             @keypress="$onlyDateInput"
+            @change="isFromDateValid"
           >
             <b-icon-x
               v-show="fromDate"
@@ -101,6 +102,7 @@
             class="v-flat-pickr-group mx-0"
             align-v="center"
             @keypress="$onlyDateInput"
+            @change="isToDateValid"
           >
             <b-icon-x
               v-show="toDate"
@@ -177,6 +179,7 @@
           class="v-flat-pickr-group mx-0"
           align-v="center"
           @keypress="$onlyDateInput"
+          @change="isFromOrderDateValid"
         >
           <b-icon-x
             v-show="fromOrderDate"
@@ -210,6 +213,7 @@
           class="v-flat-pickr-group mx-0"
           align-v="center"
           @keypress="$onlyDateInput"
+          @change="isToOrderDateValid"
         >
           <b-icon-x
             v-show="toOrderDate"
@@ -257,6 +261,7 @@
       <!-- START - Modal -->
       <product-select-modal
         :visible="selectProductModalVisible"
+        :row-selected="productSeleceted"
         @onModalClose="onModalCloseClick"
         @onSaveClick="onSaveClick"
       />
@@ -281,6 +286,7 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  checkingDateInput,
 } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import ProductSelectModal from '../../components/ProductSelectModal.vue'
@@ -310,6 +316,7 @@ export default {
       isSearchFocus: false,
       ids: null,
       isPaging: true,
+      productSeleceted: [],
 
       // decentralization
       decentralization: {
@@ -355,6 +362,14 @@ export default {
         ...this.configToOrderDate,
         minDate: this.fromOrderDate,
       }
+    },
+    ids() {
+      if (this.ids) {
+        this.ids = this.ids?.replace(/\s+/g, '')
+        this.productSeleceted = this.ids.split(',')
+        return
+      }
+      this.productSeleceted = []
     },
   },
   mounted() {
@@ -411,6 +426,26 @@ export default {
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)
+    },
+    isFromDateValid() {
+      if (!checkingDateInput(this.fromDate)) {
+        this.fromDate = earlyMonth()
+      }
+    },
+    isToDateValid() {
+      if (!checkingDateInput(this.toDate)) {
+        this.toDate = nowDate()
+      }
+    },
+    isFromOrderDateValid() {
+      if (!checkingDateInput(this.fromOrderDate)) {
+        this.fromOrderDate = earlyMonth()
+      }
+    },
+    isToOrderDateValid() {
+      if (!checkingDateInput(this.toOrderDate)) {
+        this.toOrderDate = nowDate()
+      }
     },
   },
 }

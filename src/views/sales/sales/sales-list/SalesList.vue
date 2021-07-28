@@ -25,14 +25,13 @@
             :input-props="{
               id:'autosuggest__input_product',
               class:'form-control pr-3 h7',
-              placeholder:'Tìm sản phẩm (F3)',
+              placeholder:'Tìm sản phẩm (F3) (Barcode) - Vui lòng nhập ít nhất 4 kí tự',
             }"
             :component-attr-class-autosuggest-results="(productsSearchLength < 11) ? 'autosuggest__results check-auto-suggesst' : 'autosuggest__results'"
             :salemt-promotion-object-selected="salemtPromotionObjectSelected"
             @input="onChangeKeyWord"
             @selected="onclickAddProduct"
             @focus="focusInputProduct"
-            @click="checkShopId"
           >
             <template
               slot-scope="{ suggestion }"
@@ -307,6 +306,7 @@ import toasts from '@/@core/utils/toasts/toasts'
 import { VueAutosuggest } from 'vue-autosuggest'
 import VIconRemove from '@/@core/components/v-icons/IconRemove.vue'
 import saleData from '@/@db/sale'
+import commonData from '@/@db/common'
 import SalesForm from './components/SalesForm.vue'
 // import SalesProducts from './components/SalesProducts.vue'
 import {
@@ -356,6 +356,7 @@ export default {
       isDisabled: false, // check tồn kho disable button thanh toán
       isSelectedProduct: false, // check selected product
       productIdSelected: null,
+      minSearch: commonData.minSearchLength,
 
       columns: [
         {
@@ -766,27 +767,22 @@ export default {
         toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
       }
     },
-    checkShopId() {
-      this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-      this.searchOptions.size = 10
-      if (this.isCheckShopId === true) {
-        this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
-      }
-    },
+    // checkShopId() {
+    //   this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+    //   this.searchOptions.size = 10
+    //   if (this.isCheckShopId === true) {
+    //     this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
+    //   }
+    // },
 
     onChangeKeyWord() {
-      if (this.isCheckShopId === true) {
+      this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+      // this.searchOptions.size = null
+      // this.searchOptions.keyWord = this.searchOptions.keyWord?.trim()
+      if (this.isCheckShopId === true && this.searchOptions.keyWord.length >= this.minSearch) {
         this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
       }
     },
-    // focusInputQuantity() {
-    //   if (this.isSelectedProduct) {
-    //     document.getElementById(this.productIdSelected).focus()
-    //     this.isSelectedProduct = false
-    //     return
-    //   }
-    //   this.$refs.search.$el.querySelector('input').click()
-    // },
     onclickAddProduct(index) {
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null) || (this.editManualPermission === true && this.onlineOrderId === null) || this.isOnline === false) {
         if (index && index.item) {
@@ -802,7 +798,7 @@ export default {
           this.isSelectedProduct = true
           setTimeout(() => {
             document.getElementById(this.productIdSelected).focus()
-          }, 200)
+          }, 100)
         }
       }
 

@@ -389,8 +389,10 @@ export default {
       this.paginationData = {
         ...this.paginationData,
         ...event,
+        page: 0,
       }
       this.searchOptions = event
+      this.onPaginationChange()
     },
     onPaginationChange() {
       this.GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS({ ...this.paginationData, ...this.decentralization })
@@ -399,11 +401,11 @@ export default {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.updatePaginationData({ size: params.currentPerPage })
       this.onPaginationChange()
     },
     onClickSearchButton() {

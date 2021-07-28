@@ -353,6 +353,18 @@
                 :value="listRedBill[props.row.originalIndex].numberBill"
               />
             </div>
+            <div
+              v-else-if="props.column.field === 'company'"
+              class="style-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'address'"
+              class="style-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -521,28 +533,35 @@ export default {
           label: 'Số hóa đơn đỏ',
           field: 'numberBill',
           sortable: false,
+          width: '200px',
+          thClass: 'text-nowrap',
+          tdClass: 'align-middle',
         },
         {
           label: 'Tên công ty',
           field: 'company',
           sortable: false,
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
         },
         {
           label: 'Mã số thuế',
           field: 'VATCode',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: 'Số lượng',
           field: 'quantity',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle pr-1',
           sortable: false,
           filterOptions: {
@@ -554,6 +573,7 @@ export default {
         {
           label: 'Tiền hàng',
           field: 'goodsMoney',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle pr-1',
           sortable: false,
           type: 'number',
@@ -562,6 +582,7 @@ export default {
         {
           label: 'Tiền thuế GTGT',
           field: 'GTGT',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle pr-1',
           sortable: false,
           type: 'number',
@@ -570,6 +591,7 @@ export default {
         {
           label: 'Tổng cộng tiền',
           field: 'totalMoney',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle pr-1',
           sortable: false,
           type: 'number',
@@ -578,6 +600,7 @@ export default {
         {
           label: 'Ngày in',
           field: 'printDate',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
           formatFn: value => this.$formatISOtoVNI(value),
@@ -585,6 +608,7 @@ export default {
         {
           label: 'Ghi chú HĐĐ đỏ',
           field: 'note',
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
         },
@@ -848,3 +872,10 @@ export default {
   },
 }
 </script>
+<style>
+.style-width {
+  width: max-content;
+  max-width: 300px;
+  word-wrap: break-word;
+}
+</style>

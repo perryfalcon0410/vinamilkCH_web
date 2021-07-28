@@ -731,7 +731,7 @@
             class="mr-1"
             scale="1.5"
           />
-          In lại hóa đơn (F10)
+          In hóa đơn (F10)
         </b-button>
         <!-- END - Reprint  -->
 

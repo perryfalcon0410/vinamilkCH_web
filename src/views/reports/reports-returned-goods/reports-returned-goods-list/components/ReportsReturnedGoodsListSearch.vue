@@ -65,6 +65,7 @@
               class="v-flat-pickr-group mx-0"
               align-v="center"
               @keypress="$onlyDateInput"
+              @change="isFromDateValid"
             >
               <b-icon-x
                 v-show="fromDate"
@@ -104,6 +105,7 @@
               class="v-flat-pickr-group mx-0"
               align-v="center"
               @keypress="$onlyDateInput"
+              @change="isToDateValid"
             >
               <b-icon-x
                 v-show="toDate"
@@ -209,6 +211,7 @@
         <!-- START - Modal find product -->
         <find-product-modal
           :visible="selectProductModalVisible"
+          :row-selected="productSeleceted"
           @onModalClose="onModalCloseClick"
           @onSaveClick="onSaveClick"
         />
@@ -236,6 +239,7 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  checkingDateInput,
 } from '@/@core/utils/filter'
 import {
   REPORT_RETURNED_GOODS,
@@ -266,6 +270,7 @@ export default {
       ids: null,
       reasonTypeOptions: [],
       reasonSelected: null,
+      productSeleceted: [],
 
       // decentralization
       decentralization: {
@@ -316,6 +321,14 @@ export default {
         ...this.configFromDate,
         maxDate: this.toDate,
       }
+    },
+    ids() {
+      if (this.ids) {
+        this.ids = this.ids?.replace(/\s+/g, '')
+        this.productSeleceted = this.ids.split(',')
+        return
+      }
+      this.productSeleceted = []
     },
   },
   mounted() {
@@ -374,6 +387,16 @@ export default {
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)
+    },
+    isFromDateValid() {
+      if (!checkingDateInput(this.fromDate)) {
+        this.fromDate = earlyMonth()
+      }
+    },
+    isToDateValid() {
+      if (!checkingDateInput(this.toDate)) {
+        this.toDate = nowDate()
+      }
     },
   },
 }
