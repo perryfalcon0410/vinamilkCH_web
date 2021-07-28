@@ -6,10 +6,7 @@
     <!-- START - Search -->
     <reports-sales-list-search
       class="d-print-none"
-      @updatePageElement="updatePageNumber"
-      @updateSearchData="paginationData = {
-        ...paginationData,
-        ...$event }"
+      @updateSearchData="updateSearchData"
     />
     <!-- END - Search -->
 
@@ -480,17 +477,29 @@ export default {
     onPaginationChange() {
       this.GET_REPORT_SALES_ACTION(this.paginationData)
     },
+
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
-    onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
-    },
+
     onPerPageChange(params) {
       this.updatePaginationData({ size: params.currentPerPage })
       this.onPaginationChange()
     },
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    updateSearchData(event) {
+      this.pageNumber = 1
+      this.searchOptions = event
+      this.updatePaginationData({
+        ...event,
+        page: 0,
+      })
+      this.onPaginationChange()
+    },
+
     onClickExcelExportButton() {
       this.EXPORT_REPORT_SALES_ACTION({
         collecter: this.paginationData.collecter,
@@ -506,9 +515,6 @@ export default {
         formId: 1,
         ctrlId: 1,
       })
-    },
-    updatePageNumber() {
-      this.pageNumber = 1
     },
     onClickPrintButton() {
       this.$root.$emit('bv::hide::popover')

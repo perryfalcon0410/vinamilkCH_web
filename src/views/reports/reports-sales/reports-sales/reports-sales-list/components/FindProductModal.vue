@@ -137,7 +137,7 @@
           :columns="columns"
           mode="remote"
           :rows="products"
-          class="pb-1 m-1"
+          class="pb-1"
           style-class="vgt-table striped"
           compact-mode
           line-numbers
@@ -465,33 +465,35 @@ export default {
     onSaveClick() {
       this.$emit('onSaveClick', this.selectedProductRow)
     },
-    onPaginationChange() {
-      this.GET_PRODUCTS_ACTION({
-        ...this.paginationData,
-        ...this.decentralization,
+    onSearch() {
+      this.searchData = { ...this.searchData, ...this.searchOptions }
+      this.GET_PRODUCTS_ACTION(this.searchOptions)
+    },
+
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
+    },
+
+    onSearchClick() {
+      this.updateSearchData({
         ...this.searchOptions,
         catId: this.prodcutCatSelected,
       })
-      this.selectedCurrentPage = []
+      this.onPaginationChange()
     },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
+    onPaginationChange() {
+      this.GET_PRODUCTS_ACTION({ ...this.searchData })
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updateSearchData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange()
-    },
-    onSearchClick() {
-      this.GET_PRODUCTS_ACTION({
-        ...this.decentralization,
-        ...this.searchOptions,
-        catId: this.prodcutCatSelected,
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
       })
-      this.pageNumber = 1
+      this.onPaginationChange()
     },
     selectAllRows(params) {
       if (params.selected) {

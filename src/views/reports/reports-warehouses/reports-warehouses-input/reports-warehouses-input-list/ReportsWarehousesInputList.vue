@@ -6,10 +6,7 @@
     <!-- START - Search -->
     <reports-warehouses-input-list-search
       class="d-print-none"
-      @updatePageElement="updatePageNumber"
-      @updateSearchData="paginationData = {
-        ...paginationData,
-        ...$event }"
+      @updateSearchData="updateSearchData"
     />
     <!-- END - Search -->
 
@@ -506,17 +503,25 @@ export default {
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
-    onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+
+    onPerPageChange(params) {
+      this.updatePaginationData({ size: params.currentPerPage })
       this.onPaginationChange()
     },
-    onPerPageChange(params) {
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    updateSearchData(event) {
+      this.pageNumber = 1
+      this.searchOptions = event
       this.updatePaginationData({
-        size: params.currentPerPage,
-        page: commonData.pageNumber - 1,
+        ...event,
+        page: 0,
       })
       this.onPaginationChange()
     },
+
     onClickExcelExportButton() {
       this.EXPORT_REPORT_WAREHOUSES_INPUT_ACTION({
         productCodes: this.paginationData.productCodes,
@@ -527,9 +532,6 @@ export default {
         toOrderDate: this.paginationData.toOrderDate,
         toDate: this.paginationData.toDate,
       })
-    },
-    updatePageNumber() {
-      this.pageNumber = 1
     },
     printReport() {
       this.$root.$emit('bv::hide::popover')

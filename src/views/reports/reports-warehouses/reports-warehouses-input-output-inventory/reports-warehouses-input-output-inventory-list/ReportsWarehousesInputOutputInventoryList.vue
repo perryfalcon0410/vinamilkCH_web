@@ -6,10 +6,7 @@
     <!-- START - Search -->
     <reports-warehouses-input-output-inventory-list-search
       class="d-print-none"
-      @updatePageElement="updatePageNumber"
-      @updateSearchData="paginationData = {
-        ...paginationData,
-        ...$event }"
+      @updateSearchData="updateSearchData"
     />
     <!-- END - Search -->
 
@@ -655,8 +652,8 @@ export default {
     },
     cssProps() {
       return {
-        '--second-col': `${this.firstCol + 30}px`,
-        '--third-col': `${this.firstCol + this.secondCol + 30}px`,
+        '--second-col': `${this.firstCol + 20}px`,
+        '--third-col': `${this.firstCol + this.secondCol + 10}px`,
       }
     },
   },
@@ -697,20 +694,29 @@ export default {
     onPaginationChange() {
       this.GET_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION(this.paginationData)
     },
+
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
-    onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+
+    onPerPageChange(params) {
+      this.updatePaginationData({ size: params.currentPerPage })
       this.onPaginationChange()
     },
-    onPerPageChange(params) {
+    onPageChange(params) {
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.onPaginationChange()
+    },
+    updateSearchData(event) {
+      this.pageNumber = 1
+      this.searchOptions = event
       this.updatePaginationData({
-        size: params.currentPerPage,
-        page: commonData.pageNumber - 1,
+        ...event,
+        page: 0,
       })
       this.onPaginationChange()
     },
+
     onClickExcelExportButton() {
       this.EXPORT_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION({
         productCodes: this.paginationData.productCodes,
@@ -718,9 +724,6 @@ export default {
         toDate: this.paginationData.toDate,
         warehouseTypeId: this.paginationData.warehouseTypeId,
       })
-    },
-    updatePageNumber() {
-      this.pageNumber = 1
     },
     printReport() {
       this.$root.$emit('bv::hide::popover')
@@ -739,7 +742,7 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss">
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
   .report.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
     left: 35px;
@@ -766,4 +769,7 @@ export default {
     left: var(--third-col);
   }
   /* tùy chỉnh left khi scroll*/
+  .vgt-table thead th {
+    border-bottom-style: none;
+  }
 </style>

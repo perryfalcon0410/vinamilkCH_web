@@ -177,6 +177,8 @@
                     <b-row
                       class="v-flat-pickr-group mx-0"
                       align-v="center"
+                      @keypress="$onlyDateInput"
+                      @change="isFromDateValid"
                     >
                       <b-icon-x
                         v-show="fromDate"
@@ -217,6 +219,8 @@
                     <b-row
                       class="v-flat-pickr-group mx-0"
                       align-v="center"
+                      @keypress="$onlyDateInput"
+                      @change="isToDateValid"
                     >
                       <b-icon-x
                         v-show="toDate"
@@ -428,6 +432,7 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  checkingDateInput,
 } from '@/@core/utils/filter'
 import {
   REPORT_SALES,
@@ -570,6 +575,16 @@ export default {
     },
     saleChannelSelectedDefault() {
       this.saleChannelSelected = this.SALES_CHANNEL_GETTER.find(e => e.value === '1').value // Mặc định kênh bán Offline
+    },
+    isFromDateValid() {
+      if (!checkingDateInput(this.fromDate)) {
+        this.fromDate = earlyMonth()
+      }
+    },
+    isToDateValid() {
+      if (!checkingDateInput(this.toDate)) {
+        this.toDate = nowDate()
+      }
     },
   },
 }

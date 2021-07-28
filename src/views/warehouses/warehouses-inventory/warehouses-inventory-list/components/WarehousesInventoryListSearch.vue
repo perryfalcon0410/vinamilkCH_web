@@ -58,7 +58,7 @@
           class="v-flat-pickr-group mx-0"
           align-v="center"
           @keypress="$onlyDateInput"
-          @change="validateFromDate"
+          @change="isFromDateValid"
         >
           <b-icon-x
             v-show="fromDate"
@@ -93,7 +93,7 @@
           class="v-flat-pickr-group mx-0"
           align-v="center"
           @keypress="$onlyDateInput"
-          @change="validateToDate"
+          @change="isToDateValid"
         >
           <b-icon-x
             v-show="toDate"
@@ -173,9 +173,9 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  checkingDateInput,
 } from '@/@core/utils/filter'
 import { dateFormatVNI } from '@/@core/utils/validations/validations'
-import toasts from '@/@core/utils/toasts/toasts'
 import {
   WAREHOUSEINVENTORY,
   GET_WAREHOUSE_INVENTORIES_ACTION,
@@ -262,20 +262,14 @@ export default {
     getInventories(data) {
       this.$emit('onSearchClick', data)
     },
-    validateFromDate() {
-      const validate = this.$moment(this.fromDate, 'DD/MM/YYYY').isValid()
-      const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
-      if (pattern.test(this.fromDate) === false || validate === false) {
-        toasts.error('Ngày tháng không tồn tại')
+    isFromDateValid() {
+      if (!checkingDateInput(this.fromDate)) {
         this.fromDate = earlyMonth()
       }
     },
-    validateToDate() {
-      const validate = this.$moment(this.toDate, 'DD/MM/YYYY').isValid()
-      const pattern = /^\d{2}[./-]\d{2}[./-]\d{4}$/
-      if (pattern.test(this.toDate) === false || validate === false) {
-        toasts.error('Ngày tháng không tồn tại')
-        this.toDate = this.$nowDate
+    isToDateValid() {
+      if (!checkingDateInput(this.toDate)) {
+        this.toDate = nowDate()
       }
     },
   },

@@ -465,33 +465,35 @@ export default {
     onSaveClick() {
       this.$emit('onSaveClick', this.selectedProductRow)
     },
-    onPaginationChange() {
-      this.GET_PRODUCT_LISTS_ACTIONS({
-        ...this.paginationData,
-        ...this.decentralization,
+    onSearch() {
+      this.searchData = { ...this.searchData, ...this.searchOptions }
+      this.GET_PRODUCT_LISTS_ACTIONS(this.searchOptions)
+    },
+
+    updateSearchData(newProps) {
+      this.searchData = { ...this.searchData, ...newProps }
+    },
+
+    onSearchClick() {
+      this.updateSearchData({
         ...this.searchOptions,
         catId: this.prodcutCatSelected,
       })
-      this.selectedCurrentPage = []
+      this.onPaginationChange()
     },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
+    onPaginationChange() {
+      this.GET_PRODUCT_LISTS_ACTIONS({ ...this.searchData })
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updateSearchData({ page: params.currentPage - 1 })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange()
-    },
-    onSearchClick() {
-      this.GET_PRODUCT_LISTS_ACTIONS({
-        ...this.decentralization,
-        ...this.searchOptions,
-        catId: this.prodcutCatSelected,
+      this.updateSearchData({
+        size: params.currentPerPage,
+        page: commonData.pageNumber - 1,
       })
-      this.pageNumber = 1
+      this.onPaginationChange()
     },
     selectAllRows(params) {
       if (params.selected) {
