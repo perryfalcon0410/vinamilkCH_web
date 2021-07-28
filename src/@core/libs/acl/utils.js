@@ -10,7 +10,7 @@ import { getCurrentInstance } from '@vue/composition-api'
  */
 export const can = (action, subject) => {
   const vm = getCurrentInstance().proxy
-  return vm.$can ? vm.$can(action, subject.toUpperCase()) : true
+  return vm.$can ? vm.$can(action, subject ? subject.toUpperCase() : subject) : true
 }
 
 /**
