@@ -235,15 +235,16 @@ export default {
       required,
 
       roles: [],
+      // Note: Role
       forms: [
         {
           action: 'manage',
-          subject: 'ResetPassword',
+          subject: 'RESETPASSWORD',
           controls: [],
         },
         {
           action: 'manage',
-          subject: 'NotAuthorized',
+          subject: 'NOTAUTHORIZED',
           controls: [],
         },
       ],
@@ -274,11 +275,12 @@ export default {
   },
 
   methods: {
+    // Note: Role
     mapSubForms(subForms) {
       subForms.forEach(subForm => {
         this.forms.push({
           action: 'manage',
-          subject: subForm.formCode,
+          subject: subForm.formCode.toUpperCase(),
           controls: subForm.controls
             ? [...subForm.controls.map(control => ({
               controlCode: control.controlCode,

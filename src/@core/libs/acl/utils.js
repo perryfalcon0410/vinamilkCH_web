@@ -1,3 +1,4 @@
+// Note: Role
 import { getCurrentInstance } from '@vue/composition-api'
 
 /**
@@ -9,7 +10,7 @@ import { getCurrentInstance } from '@vue/composition-api'
  */
 export const can = (action, subject) => {
   const vm = getCurrentInstance().proxy
-  return vm.$can ? vm.$can(action, subject) : true
+  return vm.$can ? vm.$can(action, subject.toUpperCase()) : true
 }
 
 /**
