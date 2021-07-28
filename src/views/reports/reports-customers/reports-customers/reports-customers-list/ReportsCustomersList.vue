@@ -107,8 +107,7 @@
             </div>
             <div
               v-else-if="props.column.field === 'saleAmount'"
-              class="text-right pr-70"
-              style="width: max-content"
+              class="text-right pr-70 text-nowrap"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>

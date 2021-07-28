@@ -370,7 +370,7 @@ export default {
           field: 'feature',
           thClass: 'text-center move-header',
           tdClass: 'text-center move-column',
-          width: '65px',
+          width: '90px',
           sortable: false,
         },
       ],
