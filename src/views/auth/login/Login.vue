@@ -210,6 +210,7 @@ import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
 import { $themeConfig } from '@themeConfig'
+import CryptoJS from 'crypto-js'
 import RoleAndShopSelectionModal from './components/RoleAndShopSelectionModal.vue'
 
 export default {
@@ -342,10 +343,9 @@ export default {
             eCommerceCartItemsCount: 0,
           },
         }
-
         useJwt.setToken(token.replace('Bearer ', ''))
         useJwt.setRefreshToken(token.replace('Bearer ', ''))
-        localStorage.setItem('userData', JSON.stringify(userData))
+        localStorage.setItem('userData', CryptoJS.AES.encrypt(JSON.stringify(userData), process.env.VUE_APP_AES_SECRET_KEY).toString())
 
         this.$ability.update(userData.ability)
         // this.$ability.update([{ action: 'manage', subject: 'all' }]) // => Temp

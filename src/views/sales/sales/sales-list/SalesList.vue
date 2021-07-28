@@ -307,6 +307,7 @@ import { VueAutosuggest } from 'vue-autosuggest'
 import VIconRemove from '@/@core/components/v-icons/IconRemove.vue'
 import saleData from '@/@db/sale'
 import commonData from '@/@db/common'
+import { getUserData } from '@/auth/utils'
 import SalesForm from './components/SalesForm.vue'
 // import SalesProducts from './components/SalesProducts.vue'
 import {
@@ -565,7 +566,7 @@ export default {
     },
 
     loginInfo() {
-      const login = JSON.parse(localStorage.getItem('userData'))
+      const login = getUserData()
       return login
     },
 

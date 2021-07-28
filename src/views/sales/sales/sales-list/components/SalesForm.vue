@@ -494,6 +494,7 @@ import {
   validatorOnlineOrder,
 } from '@/@core/utils/validations/validators'
 import { getCurrentTime } from '@core/utils/utils'
+import { getUserData } from '@/auth/utils'
 import { VueAutosuggest } from 'vue-autosuggest'
 import {
   CUSTOMER,
@@ -795,7 +796,7 @@ export default {
     },
 
     loginInfo() {
-      const login = JSON.parse(localStorage.getItem('userData'))
+      const login = getUserData()
       return login
     },
   },

@@ -1,5 +1,6 @@
 import useJwt from '@/auth/jwt/useJwt'
 import store from '@/store'
+import CryptoJS from 'crypto-js'
 import {
   APP,
   // ACTIONS
@@ -19,7 +20,12 @@ export const isUserLoggedIn = () => {
   return false
 }
 
-export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
+export const getUserData = () => {
+  if (localStorage.getItem('userData')) {
+    return JSON.parse(CryptoJS.AES.decrypt(localStorage.getItem('userData'), process.env.VUE_APP_AES_SECRET_KEY).toString(CryptoJS.enc.Utf8))
+  }
+  return null
+}
 
 /**
  * This function is used for demo purpose route navigation

@@ -55,11 +55,12 @@
 import { initialAbility } from '@/libs/acl/config'
 import useJwt from '@/auth/jwt/useJwt'
 import { avatarText } from '@core/utils/filter'
+import { getUserData } from '@/auth/utils'
 
 export default {
   data() {
     return {
-      userData: localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')) : null,
+      userData: getUserData(),
       avatarText,
     }
   },

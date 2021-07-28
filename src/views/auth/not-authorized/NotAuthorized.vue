@@ -40,7 +40,7 @@
 <script>
 /* eslint-disable global-require */
 import store from '@/store/index'
-import { getHomeRouteForLoggedInUser } from '@/auth/utils'
+import { getHomeRouteForLoggedInUser, getUserData } from '@/auth/utils'
 import { $themeConfig } from '@themeConfig'
 
 export default {
@@ -72,7 +72,7 @@ export default {
 
   methods: {
     loginRoute() {
-      const user = JSON.parse(localStorage.getItem('userData'))
+      const user = getUserData()
       return getHomeRouteForLoggedInUser(user ? user.role : null)
     },
   },
