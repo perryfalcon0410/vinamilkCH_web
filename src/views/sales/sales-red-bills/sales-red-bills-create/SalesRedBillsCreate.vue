@@ -686,7 +686,7 @@ export default {
             id: data.id,
             customerCode: data.customerCode,
             customerName: `${data.lastName} ${data.firstName}`,
-            officeWorking: data.officeAddress,
+            officeWorking: data.workingOffice,
             officeAddress: data.officeAddress,
             taxCode: data.taxCode,
             mobiPhone: data.mobiPhone,

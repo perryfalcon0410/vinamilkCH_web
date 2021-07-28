@@ -79,7 +79,7 @@
       <strong
         class="text-right"
         style="width: 10.5%;"
-      >{{ $formatNumberToLocale(reportSalesInfoData.totalPromotion) }}</strong>
+      >{{ $formatNumberToLocale(reportSalesInfoData.totalPromotionNotVat) }}</strong>
       <strong
         class="text-right"
         style="width: 9.5%; padding-right: 0.1rem;"
@@ -221,7 +221,7 @@
             {{ $formatNumberToLocale(products.total) }}
           </td>
           <td class="text-right px-20">
-            {{ $formatNumberToLocale(products.promotion) }}
+            {{ $formatNumberToLocale(products.promotionNotVAT) }}
           </td>
           <td class="text-right px-20">
             {{ $formatNumberToLocale(products.pay) }}

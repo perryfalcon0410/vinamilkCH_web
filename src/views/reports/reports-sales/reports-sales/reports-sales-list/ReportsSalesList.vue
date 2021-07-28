@@ -53,7 +53,7 @@
           mode="remote"
           :columns="columns"
           :rows="sales"
-          style-class="vgt-table"
+          style-class="vgt-table table-horizontal-scroll"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -263,22 +263,26 @@ export default {
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Ngày bán',
           field: 'sellDate',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-third',
+          tdClass: 'scroll-column column-third',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-fourth',
+          tdClass: 'scroll-column column-fourth',
         },
         {
           label: 'Điện thoại',
@@ -538,3 +542,38 @@ export default {
   },
 }
 </script>
+<style>
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 35px;
+    z-index: 1;
+  }
+  .table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 180px;
+    z-index: 1;
+  }
+  .table-horizontal-scroll thead tr:last-child th:nth-child(4) {
+    left: 220px;
+    z-index: 1;
+  }
+  .table-horizontal-scroll thead tr:last-child th:nth-child(5) {
+    left: 300px;
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+
+  /* tùy chỉnh left khi scroll*/
+  .table-horizontal-scroll .column-first {
+    left: 35px;
+  }
+  .table-horizontal-scroll .column-second {
+    left: 190px;
+  }
+  .table-horizontal-scroll .column-third {
+    left: 265px;
+  }
+  .table-horizontal-scroll .column-fourth {
+    left: 390px;
+  }
+  /* tùy chỉnh left khi scroll*/
+</style>

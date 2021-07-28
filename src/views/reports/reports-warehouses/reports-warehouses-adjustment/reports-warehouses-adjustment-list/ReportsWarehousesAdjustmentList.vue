@@ -41,7 +41,7 @@
           mode="remote"
           :columns="columns"
           :rows="promotionRows"
-          style-class="vgt-table"
+          style-class="vgt-table table-horizontal-scroll"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -231,13 +231,15 @@ export default {
           label: 'Mã cửa hàng',
           field: 'shopCode',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
         },
         {
           label: 'Ngày hóa đơn',
@@ -420,3 +422,24 @@ export default {
   },
 }
 </script>
+<style>
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 35px;
+    z-index: 1;
+  }
+  .table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 140px;
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+
+  /* tùy chỉnh left khi scroll*/
+  .table-horizontal-scroll .column-first {
+    left: 35px;
+  }
+  .table-horizontal-scroll .column-second {
+    left: 140px;
+  }
+  /* tùy chỉnh left khi scroll*/
+</style>

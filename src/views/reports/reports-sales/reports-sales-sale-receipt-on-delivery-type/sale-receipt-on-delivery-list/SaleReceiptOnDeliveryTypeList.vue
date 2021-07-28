@@ -41,7 +41,7 @@
           :columns="columns"
           :rows="reportsSalesReceiptOnDeliveryType"
           mode="remote"
-          style-class="vgt-table striped"
+          style-class="vgt-table table-horizontal-scroll"
           compact-mode
           line-numbers
           :sort-options="{
@@ -123,6 +123,25 @@
             </b-row>
           </template>
           <!-- START - Column filter -->
+          <!-- START - Custom row -->
+          <template
+            slot="table-row"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'customerName' || props.column.field === 'address'"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else
+              style="width: max-content"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </template>
+          <!-- END - Custom row -->
 
           <!-- START - Pagination -->
           <template
@@ -229,15 +248,15 @@ export default {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
         },
         {
           label: 'Địa chỉ',
@@ -429,3 +448,24 @@ export default {
   },
 }
 </script>
+<style>
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 35px;
+    z-index: 1;
+  }
+  .table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 160px;
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+
+  /* tùy chỉnh left khi scroll*/
+  .table-horizontal-scroll .column-first {
+    left: 35px;
+  }
+  .table-horizontal-scroll .column-second {
+    left: 160px;
+  }
+  /* tùy chỉnh left khi scroll*/
+</style>
