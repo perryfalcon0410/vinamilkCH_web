@@ -227,6 +227,7 @@
                     v-model="salemtPromotionObjectSelected"
                     :options="salemtPromotionObjectOptions"
                     placeholder="Chọn loại đơn hàng"
+                    :disabled="orderOnline.onlineOrderId != null && editManualPermission === false"
                     @select="resetOrderNumber"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -963,10 +964,8 @@ export default {
     },
 
     showNotifyModal() {
-      if (this.isDisabledOrder === false) {
-        this.$refs.salesNotifyModal.show()
-        this.GET_ONLINE_ORDERS_ACTION({ ...this.searchData })
-      }
+      this.$refs.salesNotifyModal.show()
+      this.GET_ONLINE_ORDERS_ACTION({ ...this.searchData })
     },
 
     closeNotifyModal() {

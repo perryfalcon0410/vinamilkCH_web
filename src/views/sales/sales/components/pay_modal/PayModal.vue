@@ -1276,7 +1276,7 @@ export default {
     },
     orderOnline: {
       handler() {
-        if (this.orderOnline.discountCode !== '') {
+        if (this.orderOnline.onlineOrderId !== null) {
           this.pay.discount.discountCode = this.orderOnline.discountCode
           this.pay.discount.discountAmount = this.orderOnline.discountValue
         }
