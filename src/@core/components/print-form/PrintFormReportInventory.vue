@@ -343,7 +343,7 @@ td {
 </style>
 <style type="text/css" media="print">
     @page {
-        margin: 2% 0;
+        margin-top: 2%;
         size: portrait;
     }
     @page:bottom {

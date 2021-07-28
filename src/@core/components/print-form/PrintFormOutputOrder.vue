@@ -331,13 +331,22 @@ table {
 }
 th {
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
 }
 td, .td {
   border-style: dotted;
-  border-width: 2px;
+  border-width: 1px;
 }
 .oblique {
   font-style: oblique;
 }
+</style>
+<style type="text/css" media="print">
+    @page {
+        margin: 2% 0;
+        size: portrait;
+    }
+    body {
+      -webkit-print-color-adjust: exact !important;
+    }
 </style>

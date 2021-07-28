@@ -124,8 +124,7 @@
                   v-model="warehousesOutput.billDate"
                   :config="configDate"
                   class="form-control h7"
-                  :disabled="outputTypeSelected !== poOutputType"
-                  readonly
+                  disabled
                 />
               </b-row>
             </b-col>
@@ -819,11 +818,13 @@ export default {
         })
       } else {
         this.rowsProductPromotion.forEach(i => {
-          if (i.quantityPromo != null && i.quantityPromo > 0) {
-            this.nullCheck = true
-            stop = false
-          } else {
-            this.nullCheck = false
+          if (stop) {
+            if (i.quantityPromo != null && i.quantityPromo > 0) {
+              this.nullCheck = true
+              stop = false
+            } else {
+              this.nullCheck = false
+            }
           }
         })
       }
@@ -859,9 +860,7 @@ export default {
       } else toasts.error('Vui lòng chọn phiếu.')
     },
     navigateBack() {
-      // this.$refs.salesNotifyModal.show()
-      // console.log(this.warehousesOutput.id)
-      // console.log(this.rowsProductPromotion)
+      this.$refs.salesNotifyModal.show()
     },
     onClickAgreeButton() {
       this.$router.back()

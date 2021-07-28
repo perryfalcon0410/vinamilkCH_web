@@ -363,7 +363,7 @@ export default {
     return {
       warehousesOptions: warehousesData.outputTypes,
       poOutputType: warehousesData.outputTypes[0].id,
-      exportAll: false,
+      exportAll: true,
       products: [],
       nullCheck: true,
       rowsProductPromotion: [],
@@ -626,16 +626,42 @@ export default {
           } else this.rowsProductPromotion.push(obj)
         } else this.products.push(obj)
       })
-      this.products.forEach(item => {
-        if (item.productImportQuantity === item.productExport) {
-          this.exportAll = true
-          this.rowsProductPromotion.forEach(i => {
-            if (i.productImportQuantity === i.productExport) {
-              this.exportAll = true
-            } else this.exportAll = false
+      if (this.warehousesOutput.receiptType === this.poOutputType) {
+        let stop = true
+        if (this.products.length > 0) {
+          this.products.forEach(data => {
+            if (stop) {
+              if (data.productImportQuantity - data.productExport === 0) {
+                this.exportAll = true
+                this.rowsProductPromotion.forEach(i => {
+                  if (stop) {
+                    if (i.productImportQuantity - i.productExport === 0) {
+                      this.exportAll = true
+                    } else {
+                      this.exportAll = false
+                      stop = false
+                    }
+                  }
+                })
+              } else {
+                this.exportAll = false
+                stop = false
+              }
+            }
           })
-        } else this.exportAll = false
-      })
+        } else {
+          this.rowsProductPromotion.forEach(i => {
+            if (stop) {
+              if (i.productImportQuantity - i.productExport === 0) {
+                this.exportAll = true
+              } else {
+                this.exportAll = false
+                stop = false
+              }
+            }
+          })
+        }
+      }
     },
   },
 
@@ -718,11 +744,13 @@ export default {
         })
       } else {
         this.rowsProductPromotion.forEach(i => {
-          if (i.productReturnAmount != null && i.productReturnAmount > 0) {
-            this.nullCheck = true
-            stop = false
-          } else {
-            this.nullCheck = false
+          if (stop) {
+            if (i.productReturnAmount != null && i.productReturnAmount > 0) {
+              this.nullCheck = true
+              stop = false
+            } else {
+              this.nullCheck = false
+            }
           }
         })
       }
