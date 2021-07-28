@@ -429,6 +429,10 @@ thead {
 }
 </style>
 <style type="text/scss" media="print">
+   @page {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
   tbody {
     line-height: 1.2 !important;
   }
