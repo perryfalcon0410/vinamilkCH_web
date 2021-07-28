@@ -423,7 +423,7 @@ export default {
           noteHdd: data.redInvoiceRemark,
           company: data.redInvoiceCompanyName,
           taxCode: data.redInvoiceTaxCode,
-          address: data.radInvoiceAddress,
+          address: data.redInvoiceAddress,
         }))
       }
       return []
