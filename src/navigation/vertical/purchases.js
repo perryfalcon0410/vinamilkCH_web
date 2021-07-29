@@ -1,9 +1,9 @@
 export default [
   {
-    header: 'Mua hàng',
+    header: 'Purchases',
   },
   {
-    title: 'Mua hàng',
+    title: 'Purchases',
     route: 'purchases',
     icon: 'ShoppingCartIcon',
     resource: 'Purchases',

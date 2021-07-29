@@ -1,35 +1,40 @@
 export default [
   {
-    header: 'Bán hàng',
-  },
-  {
-    title: 'Bán hàng',
-    route: 'sales-sales',
+    title: 'Sales',
     icon: 'ShoppingCartIcon',
-    resource: 'Sales',
-  },
-  {
-    title: 'Khách hàng',
-    route: 'sales-customers',
-    icon: 'UsersIcon',
-    resource: 'SalesCustomers',
-  },
-  {
-    title: 'Hoá đơn đỏ',
-    route: 'sales-red-bills',
-    icon: 'ShoppingCartIcon',
-    resource: 'SalesRedBills',
-  },
-  {
-    title: 'Hoá đơn bán hàng',
-    route: 'sales-receipts',
-    icon: 'ShoppingCartIcon',
-    resource: 'SalesReceipts',
-  },
-  {
-    title: 'Hàng trả lại',
-    route: 'sales-returned-goods',
-    icon: 'ArrowLeftCircleIcon',
-    resource: 'SalesReturnedGoods',
+    tag: '5',
+    tagVariant: 'light-warning',
+    children: [
+      {
+        title: 'Sales',
+        route: 'sales-sales',
+        icon: 'ShoppingCartIcon',
+        resource: 'Sales',
+      },
+      {
+        title: 'Customer',
+        route: 'sales-customers',
+        icon: 'UsersIcon',
+        resource: 'SalesCustomers',
+      },
+      {
+        title: 'RedBills',
+        route: 'sales-red-bills',
+        icon: 'ShoppingCartIcon',
+        resource: 'SalesRedBills',
+      },
+      {
+        title: 'Receipts',
+        route: 'sales-receipts',
+        icon: 'ShoppingCartIcon',
+        resource: 'SalesReceipts',
+      },
+      {
+        title: 'ReturnGood',
+        route: 'sales-returned-goods',
+        icon: 'ArrowLeftCircleIcon',
+        resource: 'SalesReturnedGoods',
+      },
+    ],
   },
 ]

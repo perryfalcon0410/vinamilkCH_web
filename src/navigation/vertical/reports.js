@@ -1,117 +1,130 @@
 export default [
   {
-    header: 'Báo cáo',
-  },
-  {
-    title: 'Hàng trả lại',
-    route: 'reports-returned-goods',
-    icon: 'ArrowLeftCircleIcon',
-    resource: 'ReportsReturnedGoods',
-  },
-  {
-    title: 'Kho',
-    route: '',
-    icon: 'ArchiveIcon',
+    title: 'Report',
+    icon: 'BarChartIcon',
+    tag: '5',
+    tagVariant: 'light-warning',
     children: [
       {
-        title: 'Nhập hàng',
-        route: 'reports-warehouses-input',
-        resource: 'ReportsWarehousesInput',
+        title: 'ReturnGood',
+        route: 'reports-returned-goods',
+        icon: 'ArrowLeftCircleIcon',
+        resource: 'ReportsReturnedGoods',
       },
       {
-        title: 'Xuất hàng',
-        route: 'reports-warehouses-output',
-        resource: 'ReportsWarehousesOutput',
+        title: 'Warehouse',
+        route: '',
+        tag: '8',
+        tagVariant: 'light-warning',
+        icon: 'ArchiveIcon',
+        children: [
+          {
+            title: 'Input',
+            route: 'reports-warehouses-input',
+            resource: 'ReportsWarehousesInput',
+          },
+          {
+            title: 'Output',
+            route: 'reports-warehouses-output',
+            resource: 'ReportsWarehousesOutput',
+          },
+          {
+            title: 'Stock',
+            route: 'reports-warehouses-inventory',
+            resource: 'ReportsWarehousesInventory',
+          },
+          {
+            title: 'InputOutputInventory',
+            route: 'reports-warehouses-input-output-inventory',
+            resource: 'ReportsWarehousesInputOutputInventory',
+          },
+          {
+            title: 'Promotion',
+            route: 'reports-warehouses-promotion',
+            resource: 'ReportsWarehousesPromotions',
+          },
+          {
+            title: 'DifferencePrice',
+            route: 'reports-warehouses-difference-price',
+            resource: 'ReportsWarehousesPriceDifference',
+          },
+          {
+            title: 'ExchangeGoods',
+            route: 'reports-warehouses-exchange-damaged-goods',
+            resource: 'ReportsWarehousesExchangeDamagedGoods',
+          },
+          {
+            title: 'Adjustment',
+            route: 'reports-warehouses-adjustment',
+            resource: 'ReportsWarehousesAdjustment',
+          },
+        ],
       },
       {
-        title: 'Tồn kho',
-        route: 'reports-warehouses-inventory',
-        resource: 'ReportsWarehousesInventory',
+        title: 'InputDetails',
+        route: 'reports-purchases',
+        resource: 'ReportsPurchases',
+        icon: 'MapIcon',
       },
       {
-        title: 'Xuất nhập tồn',
-        route: 'reports-warehouses-input-output-inventory',
-        resource: 'ReportsWarehousesInputOutputInventory',
+        title: 'Sales',
+        icon: 'ShoppingCartIcon',
+        tag: '5',
+        tagVariant: 'light-warning',
+        children: [
+          {
+            title: 'Sales',
+            route: 'reports-sales',
+            resource: 'ReportsSales',
+          },
+          {
+            title: 'CatSale',
+            route: 'reports-sales-cat-sale',
+            resource: 'ReportsSalesCatSale',
+          },
+          {
+            title: 'SalePerCustomer',
+            route: 'reports-sales-sale-per-customer',
+            resource: 'ReportsSalesSaleReceiptPerCustomer',
+          },
+          {
+            title: 'BillPerCustomer',
+            route: 'reports-sales-amount-per-customer',
+            resource: 'ReportsSalesAmountReceiptPerCustomer',
+          },
+          {
+            title: 'ReceiptOnDeliveryType',
+            route: 'reports-sales-receipt-on-delivery-type',
+            resource: 'ReportsSalesReceiptOnDeliveryType',
+          },
+        ],
       },
       {
-        title: 'Hàng khuyến mãi',
-        route: 'reports-warehouses-promotion',
-        resource: 'ReportsWarehousesPromotions',
+        title: 'Customer',
+        icon: 'UsersIcon',
+        tag: '2',
+        tagVariant: 'light-warning',
+        children: [
+          {
+            title: 'Customer',
+            route: 'reports-customers',
+            resource: 'ReportsCustomers',
+          },
+          {
+            title: 'CustomerNonTransactional',
+            route: 'reports-customers-non-transactional',
+            resource: 'ReportsCustomersNonTransactional',
+          },
+        ],
       },
       {
-        title: 'Chênh lệch giá',
-        route: 'reports-warehouses-difference-price',
-        resource: 'ReportsWarehousesPriceDifference',
-      },
-      {
-        title: 'Đổi hàng hỏng',
-        route: 'reports-warehouses-exchange-damaged-goods',
-        resource: 'ReportsWarehousesExchangeDamagedGoods',
-      },
-      {
-        title: 'Nhập xuất điều chỉnh',
-        route: 'reports-warehouses-adjustment',
-        resource: 'ReportsWarehousesAdjustment',
+        title: 'Vouchers',
+        route: 'reports-vouchers',
+        resource: 'ReportsVouchers',
+        icon: 'GiftIcon',
       },
     ],
+
   },
-  {
-    title: 'Bảng kê chi tiết đơn nhập hàng',
-    route: 'reports-purchases',
-    resource: 'ReportsPurchases',
-    icon: 'MapIcon',
-  },
-  {
-    title: 'Bán hàng',
-    icon: 'ShoppingCartIcon',
-    children: [
-      {
-        title: 'Bán hàng',
-        route: 'reports-sales',
-        resource: 'ReportsSales',
-      },
-      {
-        title: 'Doanh số CAT',
-        route: 'reports-sales-cat-sale',
-        resource: 'ReportsSalesCatSale',
-      },
-      {
-        title: 'Doanh số hóa đơn theo KH',
-        route: 'reports-sales-sale-per-customer',
-        resource: 'ReportsSalesSaleReceiptPerCustomer',
-      },
-      {
-        title: 'Số lượng hóa đơn theo KH',
-        route: 'reports-sales-amount-per-customer',
-        resource: 'ReportsSalesAmountReceiptPerCustomer',
-      },
-      {
-        title: 'Hóa đơn theo loại giao hàng',
-        route: 'reports-sales-receipt-on-delivery-type',
-        resource: 'ReportsSalesReceiptOnDeliveryType',
-      },
-    ],
-  },
-  {
-    title: 'Khách hàng',
-    icon: 'UsersIcon',
-    children: [
-      {
-        title: 'Khách hàng',
-        route: 'reports-customers',
-        resource: 'ReportsCustomers',
-      },
-      {
-        title: 'Khách hàng không giao dịch',
-        route: 'reports-customers-non-transactional',
-        resource: 'ReportsCustomersNonTransactional',
-      },
-    ],
-  },
-  {
-    title: 'Danh sách voucher',
-    route: 'reports-vouchers',
-    resource: 'ReportsVouchers',
-    icon: 'GiftIcon',
-  },
+
 ]

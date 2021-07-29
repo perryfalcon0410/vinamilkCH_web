@@ -12,7 +12,7 @@
         size="14"
         :icon="item.icon"
       />
-      <span>{{ t(`menuNav.${item.title}`) }}</span>
+      <span>{{ t(`layout.${item.title}`) }}</span>
     </b-link>
   </li>
 </template>

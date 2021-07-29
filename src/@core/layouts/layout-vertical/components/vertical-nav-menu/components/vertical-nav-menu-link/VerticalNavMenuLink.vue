@@ -12,7 +12,7 @@
       class="d-flex align-items-center"
     >
       <feather-icon :icon="item.icon || 'CircleIcon'" />
-      <span class="menu-title text-truncate">{{ t(`menuNav.${item.title}`) }}</span>
+      <span class="menu-title text-truncate">{{ t(`layout.${item.title}`) }}</span>
       <b-badge
         v-if="item.tag"
         pill

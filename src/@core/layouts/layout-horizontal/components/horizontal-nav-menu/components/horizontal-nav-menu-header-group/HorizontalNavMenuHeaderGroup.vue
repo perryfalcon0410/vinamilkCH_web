@@ -14,7 +14,7 @@
         size="14"
         :icon="item.icon"
       />
-      <span>{{ t(`menuNav.${item.header}`) }}</span>
+      <span>{{ t(`layout.${item.header}`) }}</span>
     </b-link>
     <ul class="dropdown-menu">
       <component

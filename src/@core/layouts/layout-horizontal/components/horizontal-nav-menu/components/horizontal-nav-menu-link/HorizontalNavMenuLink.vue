@@ -14,7 +14,7 @@
         :icon="item.icon || 'CircleIcon'"
         size="24"
       />
-      <span class="menu-title">{{ t(`menuNav.${item.title}`) }}</span>
+      <span class="menu-title">{{ t(`layout.${item.title}`) }}</span>
     </b-link>
   </li>
 </template>

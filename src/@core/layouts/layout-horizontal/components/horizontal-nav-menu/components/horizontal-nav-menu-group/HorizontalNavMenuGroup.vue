@@ -18,7 +18,7 @@
       @click="() => updateGroupOpen(!isOpen)"
     >
       <feather-icon :icon="item.icon || 'CircleIcon'" />
-      <span class="menu-title">{{ t(`menuNav.${item.title}`) }}</span>
+      <span class="menu-title">{{ t(`layout.${item.title}`) }}</span>
     </b-link>
     <ul
       ref="refChildDropdown"
