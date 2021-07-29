@@ -5,6 +5,7 @@ import {
   getVoucherByIdEndpoint,
   getOnlineOrdersEndpoint,
   getOnlineOrderByIdEndpoint,
+  checkOnlineOrderCoincideIdEndpoint,
   getProductsEndpoint,
   getProductInfosEndpoint,
   getProductsTopSaleEndpoint,
@@ -54,6 +55,10 @@ export default {
 
   getOnlineOrderById(args) {
     return axios.get((`${getOnlineOrderByIdEndpoint}/${args}`))
+  },
+
+  checkOnlineOrderCoincideId(args) {
+    return axios.get((`${checkOnlineOrderCoincideIdEndpoint}/${args}`))
   },
 
   getProducts(args) {

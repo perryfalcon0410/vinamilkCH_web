@@ -8,6 +8,7 @@ import {
   ONLINE_ORDERS_GETTER,
   ONLINE_ORDERS_PAGINATION_GETTER,
   ONLINE_ORDER_BY_ID_GETTER,
+  ONLINE_ORDER_COINCIDE_ID_GETTER,
   GET_PRODUCTS_GETTER,
   GET_PRODUCT_INFOS_GETTER,
   GET_TOP_SALE_PRODUCTS_GETTER,
@@ -36,6 +37,7 @@ import {
   GET_VOUCHER_BY_ID_ACTION,
   GET_ONLINE_ORDERS_ACTION,
   GET_ONLINE_ORDER_BY_ID_ACTION,
+  GET_ONLINE_ORDER_COINCIDE_ID_ACTION,
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
   GET_TOP_SALE_PRODUCTS_ACTION,
@@ -69,6 +71,7 @@ export default {
     onlineOrders: [],
     onlineOrderProducts: [],
     onlineOrder: {},
+    messageCoincide: {},
     onlineOrderPagination: {},
     products: [],
     productInfos: [],
@@ -109,6 +112,9 @@ export default {
     },
     [ONLINE_ORDER_BY_ID_GETTER](state) {
       return state.onlineOrder
+    },
+    [ONLINE_ORDER_COINCIDE_ID_GETTER](state) {
+      return state.messageCoincide
     },
     [GET_PRODUCTS_GETTER](state) {
       return state.products
@@ -258,6 +264,17 @@ export default {
           } else {
             throw new Error(res.statusValue)
           }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_ONLINE_ORDER_COINCIDE_ID_ACTION]({ state }, val) {
+      SalesServices
+        .checkOnlineOrderCoincideId(val)
+        .then(response => response.data)
+        .then(res => {
+          state.messageCoincide = res
         })
         .catch(error => {
           toasts.error(error.message)

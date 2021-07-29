@@ -511,12 +511,14 @@ import {
   SALES,
   // Getter
   ONLINE_ORDER_BY_ID_GETTER,
+  ONLINE_ORDER_COINCIDE_ID_GETTER,
   CUSTOMERS_SALE_GETTER,
   GET_PROMOTION_PROGRAMS_GETTER,
   SALEMT_PROMOTION_OBJECT_GETTER,
   SALEMT_DELIVERY_TYPE_GETTER,
   // Action
   GET_ONLINE_ORDER_BY_ID_ACTION,
+  GET_ONLINE_ORDER_COINCIDE_ID_ACTION,
   GET_ONLINE_ORDERS_ACTION,
   GET_PROMOTION_PROGRAMS_ACTION,
   GET_CUSTOMERS_SALE_ACTION,
@@ -638,6 +640,8 @@ export default {
           apParamCode: null,
           apParamName: null,
         },
+        success: true,
+        message: null,
       },
 
       quantity: null,
@@ -671,6 +675,7 @@ export default {
 
     ...mapGetters(SALES, {
       ONLINE_ORDER_BY_ID_GETTER,
+      ONLINE_ORDER_COINCIDE_ID_GETTER,
       GET_PROMOTION_PROGRAMS_GETTER,
       CUSTOMERS_SALE_GETTER,
       SALEMT_PROMOTION_OBJECT_GETTER,
@@ -747,6 +752,9 @@ export default {
       }
       return {}
     },
+    onlineOrderCoincideId() {
+      return this.ONLINE_ORDER_COINCIDE_ID_GETTER
+    },
     getOnlineOrderProducts() {
       if (this.ONLINE_ORDER_BY_ID_GETTER.products) {
         return this.ONLINE_ORDER_BY_ID_GETTER.products.map(data => ({
@@ -817,6 +825,9 @@ export default {
     },
     onlineOrder() {
       this.getOnlineOrderById()
+    },
+    onlineOrderCoincideId() {
+      this.checkOnlineOrderId()
     },
     getOnlineOrderProducts() {
       this.orderProducts = [...this.getOnlineOrderProducts]
@@ -908,6 +919,7 @@ export default {
 
     ...mapActions(SALES, [
       GET_ONLINE_ORDER_BY_ID_ACTION,
+      GET_ONLINE_ORDER_COINCIDE_ID_ACTION,
       GET_PROMOTION_PROGRAMS_ACTION,
       GET_CUSTOMERS_SALE_ACTION,
       GET_ONLINE_ORDERS_ACTION,
@@ -1058,6 +1070,11 @@ export default {
       this.salemtPromotionObjectSelected = this.onlineOrder.type.value
       this.quantity = this.onlineOrder.quantity
       this.totalPrice = this.onlineOrder.totalPrice
+    },
+
+    checkOnlineOrderId() {
+      this.orderOnline.success = this.onlineOrderCoincideId.success
+      this.orderOnline.statusValue = this.onlineOrderCoincideId.statusValue
     },
 
     onChangeKeyWord() {

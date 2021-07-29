@@ -15,6 +15,8 @@ export const getOnlineOrdersEndpoint = `${SALES}/${ONLINE_ORDERS}`
 
 export const getOnlineOrderByIdEndpoint = `${SALES}/${ONLINE_ORDERS}`
 
+export const checkOnlineOrderCoincideIdEndpoint = `${SALES}/${ONLINE_ORDERS}/order-number`
+
 export const getProductsEndpoint = `${SALES}${PRODUCT}`
 
 export const getProductInfosEndpoint = `${SALES}${PRODUCT}/product-infos`
