@@ -126,6 +126,7 @@
           >
             <span
               v-if="props.column.field === 'saleAmount'"
+              v-show="reportReturnRows.length > 0"
               class="mx-50 text-brand-3 h7"
               align-h="end"
             >
@@ -320,6 +321,8 @@ export default {
           tdClass: 'text-nowrap',
         },
       ],
+      totalInfo: {},
+      reportCustomersPagination: {},
     }
   },
   computed: {
@@ -344,14 +347,14 @@ export default {
       }
       return []
     },
-    totalInfo() {
+    getTotalInfo() {
       if (this.REPORT_CUSTOMERS_GETTER.info) {
         return this.REPORT_CUSTOMERS_GETTER.info
       }
       return {}
     },
 
-    reportCustomersPagination() {
+    getReportCustomersPagination() {
       if (this.REPORT_CUSTOMERS_GETTER.response) {
         return this.REPORT_CUSTOMERS_GETTER.response
       }
@@ -376,6 +379,12 @@ export default {
       this.$nextTick(() => {
         this.thirdColLeftAttr = `${this.$refs.fullName.offsetParent.offsetWidth + this.$refs.mobiPhone.offsetParent.offsetWidth + 55}px`
       })
+    },
+    getTotalInfo() {
+      this.totalInfo = { ...this.getTotalInfo }
+    },
+    getReportCustomersPagination() {
+      this.reportCustomersPagination = { ...this.getReportCustomersPagination }
     },
   },
 
@@ -406,7 +415,9 @@ export default {
       this.paginationData = {
         ...this.paginationData,
         ...event,
+        page: 0,
       }
+      this.onPaginationChange()
     },
     onPaginationChange() {
       this.GET_REPORT_CUSTOMERS_ACTION({ ...this.paginationData, ...this.decentralization })
@@ -415,11 +426,11 @@ export default {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.updatePaginationData({ page: params.currentPage })
       this.onPaginationChange()
     },
     onClickSearchButton() {

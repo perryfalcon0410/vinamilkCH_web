@@ -32,6 +32,7 @@
               class="v-flat-pickr-group mx-0"
               align-v="center"
               @keypress="$onlyDateInput"
+              @change="isFromDateValid"
             >
               <b-icon-x
                 v-show="fromDate"
@@ -71,6 +72,7 @@
               class="v-flat-pickr-group mx-0"
               align-v="center"
               @keypress="$onlyDateInput"
+              @change="isToDateValid"
             >
               <b-icon-x
                 v-show="toDate"
@@ -168,6 +170,8 @@
               trim
               class="h7 text-brand-3"
               placeholder="Nhập chính xác 4 số cuối"
+              maxlength="10"
+              @keypress="$onlyNumberInput"
               @keyup.enter="onClickSearchButton"
             />
             <b-input-group-append
@@ -252,6 +256,7 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  checkingDateInput,
 } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import toasts from '@/@core/utils/toasts/toasts'
@@ -385,6 +390,16 @@ export default {
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)
+    },
+    isFromDateValid() {
+      if (!checkingDateInput(this.fromDate)) {
+        this.fromDate = earlyMonth()
+      }
+    },
+    isToDateValid() {
+      if (!checkingDateInput(this.toDate)) {
+        this.toDate = nowDate()
+      }
     },
   },
 }

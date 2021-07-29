@@ -251,7 +251,7 @@
               <vue-good-table
                 :columns="columns"
                 :rows="products"
-                style-class="vgt-table custom-table"
+                style-class="vgt-table table-horizontal-scroll custom-table"
                 line-numbers
               >
                 <!-- START - Empty rows -->
@@ -268,8 +268,15 @@
                   slot="table-row"
                   slot-scope="props"
                 >
-                  <div v-if="props.column.field === 'quantity'">
+                  <div
+                    v-if="props.column.field === 'productName'"
+                    class="name-width"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div v-else-if="props.column.field === 'quantity'">
                     <b-form-input
+                      :id="products[props.row.originalIndex].productCode"
                       v-model.number="products[props.row.originalIndex].quantity"
                       class="style-input"
                       maxlength="7"
@@ -277,6 +284,7 @@
                       @keypress="$onlyNumberInput"
                       @input="onInputValueQuantity(props.row.originalIndex)"
                       @change="onChangeQuantityAndPrice(props.row.originalIndex)"
+                      @keyup.enter="focusInputSearch"
                     />
                   </div>
                   <div v-else-if="props.column.field === 'productPrice'">
@@ -335,6 +343,7 @@
                 >
                   <b-row
                     v-if="props.column.field === 'quantity'"
+                    v-show="products.length > 0"
                     class="h7 px-0 mx-1"
                     align-h="end"
                   >
@@ -343,6 +352,7 @@
 
                   <b-row
                     v-else-if="props.column.field === 'productPriceTotal'"
+                    v-show="products.length > 0"
                     class="h7 px-0 mx-0"
                     align-h="end"
                   >
@@ -350,6 +360,7 @@
                   </b-row>
                   <b-row
                     v-else-if="props.column.field === 'productExported'"
+                    v-show="products.length > 0"
                     class="h7 px-0 mx-0"
                     align-h="end"
                   >
@@ -363,6 +374,7 @@
                   class="m-2"
                 >
                   <vue-autosuggest
+                    ref="searchProduct"
                     v-model="productSearch"
                     :suggestions="productRows"
                     :input-props="{
@@ -563,8 +575,9 @@ export default {
         {
           label: 'Mã sản phẩm',
           field: 'productCode',
-          thClass: 'text-nowrap',
-          tdClass: 'align-middle',
+          width: '120px',
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'align-middle scroll-column column-first',
           sortable: false,
         },
         {
@@ -669,6 +682,7 @@ export default {
       number,
       required,
       dateFormatVNI,
+      productIdSelected: null,
     }
   },
 
@@ -888,6 +902,11 @@ export default {
           this.onChangeVAT(existedProductIndex)
           this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
         }
+        // auto focus when choose products
+        this.productIdSelected = product.item.productCode
+        setTimeout(() => {
+          document.getElementById(this.productIdSelected).focus()
+        }, 100)
       }
       this.productSearch = null
       this.productRows = [{ data: null }]
@@ -1081,6 +1100,10 @@ export default {
     onClickDeleteItem(index) {
       this.products.splice(index, 1)
     },
+    focusInputSearch() {
+      this.$refs.searchProduct.$el.querySelector('input').focus()
+      // this.$refs.search.$el.querySelector('input').click()
+    },
   },
 }
 </script>
@@ -1113,5 +1136,14 @@ export default {
     right: -1px;
     z-index: 99;
     background: inherit;
+  }
+
+  .custom-table.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 34px;
+    z-index: 1;
+  }
+
+  .custom-table.table-horizontal-scroll .column-first {
+    left: 34px;
   }
 </style>

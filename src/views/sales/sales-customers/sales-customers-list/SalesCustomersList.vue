@@ -105,6 +105,12 @@
                 @click="navigateToUpdate(props.row.id)"
               />
             </div>
+            <div
+              v-else-if="props.column.field === 'nameText'"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -248,39 +254,47 @@ export default {
           label: this.$t('customer.customerCode'),
           field: 'customerCode',
           width: '130px',
+          tdClass: 'align-middle',
         },
         {
           label: this.$t('customer.fullName'),
           field: 'nameText',
           width: '200px',
+          tdClass: 'align-middle',
         },
         {
           label: this.$t('customer.phoneNumber'),
           field: 'mobiPhone',
+          tdClass: 'align-middle',
         },
         {
           label: this.$t('customer.dob'),
           field: 'dob',
+          tdClass: 'align-middle',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: this.$t('customer.gender'),
           field: 'genderId',
+          tdClass: 'align-middle',
           formatFn: getGenderLabel,
         },
         {
           label: this.$t('common.status'),
           field: 'status',
+          tdClass: 'align-middle',
           formatFn: getCustomerStatusLabel,
         },
         {
           label: this.$t('customer.group'),
           field: 'customerTypeId',
+          tdClass: 'align-middle',
           formatFn: this.$store.getters[`${CUSTOMER}/${CUSTOMER_TYPES_LABEL_GETTER}`],
         },
         {
           label: this.$t('common.dateCreated'),
           field: 'createdAt',
+          tdClass: 'align-middle',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
@@ -290,7 +304,7 @@ export default {
           hidden: !this.statusUpdateButton().show,
           width: '30px',
           thClass: 'text-center',
-          tdClass: 'text-center',
+          tdClass: 'text-center align-middle',
         },
       ]
     },

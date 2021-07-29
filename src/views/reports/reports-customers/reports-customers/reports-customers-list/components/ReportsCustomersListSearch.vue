@@ -216,6 +216,7 @@
                   class="v-flat-pickr-group mx-0"
                   align-v="center"
                   @keypress="$onlyDateInput"
+                  @change="isFromCreateDateValid"
                 >
                   <b-icon-x
                     v-show="fromCreateDate"
@@ -251,6 +252,7 @@
                   class="v-flat-pickr-group mx-0"
                   align-v="center"
                   @keypress="$onlyDateInput"
+                  @change="isToCreateDateValid"
                 >
                   <b-icon-x
                     v-show="toCreateDate"
@@ -310,6 +312,7 @@
                   class="v-flat-pickr-group mx-0"
                   align-v="center"
                   @keypress="$onlyDateInput"
+                  @change="isFromPurchaseDateValid"
                 >
                   <b-icon-x
                     v-show="fromPurchaseDate"
@@ -345,6 +348,7 @@
                   class="v-flat-pickr-group mx-0"
                   align-v="center"
                   @keypress="$onlyDateInput"
+                  @change="isToPurchaseDateValid"
                 >
                   <b-icon-x
                     v-show="toPurchaseDate"
@@ -397,8 +401,9 @@ import {
 } from '@/@core/utils/validations/validations'
 import {
   reverseVniDate,
-  // earlyMonth,
-  // nowDate,
+  earlyMonth,
+  nowDate,
+  checkingDateInput,
 } from '@/@core/utils/filter'
 import customerData from '@/@db/customer'
 import {
@@ -570,7 +575,6 @@ export default {
         toSaleDate: reverseVniDate(this.toSaleDate),
       }
       this.updateSearchData(searchData)
-      this.GET_REPORT_CUSTOMERS_ACTION(searchData)
     },
 
     onClickSearchButton() {
@@ -579,6 +583,26 @@ export default {
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)
+    },
+    isFromPurchaseDateValid() {
+      if (!checkingDateInput(this.fromDate)) {
+        this.fromPurchaseDate = earlyMonth()
+      }
+    },
+    isToPurchaseDateValid() {
+      if (!checkingDateInput(this.toDate)) {
+        this.toPurchaseDate = nowDate()
+      }
+    },
+    isFromCreateDateValid() {
+      if (!checkingDateInput(this.fromDate)) {
+        this.fromCreateDate = earlyMonth()
+      }
+    },
+    isToCreateDateValid() {
+      if (!checkingDateInput(this.toDate)) {
+        this.toCreateDate = nowDate()
+      }
     },
   },
 }

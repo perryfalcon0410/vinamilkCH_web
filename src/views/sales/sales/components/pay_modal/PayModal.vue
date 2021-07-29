@@ -606,6 +606,7 @@
                       <tree-select
                         v-model="pay.salePayment.salePaymentType"
                         :options="salePaymentTypeOptions"
+                        placeholder="Chọn"
                       />
                     </b-col>
 

@@ -52,7 +52,7 @@
           :columns="columns"
           mode="remote"
           :rows="reportReturnRows"
-          style-class="vgt-table striped"
+          style-class="vgt-table table-horizontal-scroll report-returngood"
           :pagination-options="{
             enabled: true,
             perPage: paginationData.size,
@@ -285,22 +285,25 @@ export default {
           label: 'Mã trả hàng',
           field: 'returnCode',
           sortable: false,
-          thClass: 'text-nowrap',
-          tdClass: 'ws-nowrap',
+          width: '160px',
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'ws-nowrap scroll-column column-first',
         },
         {
           label: 'Hóa đơn mua hàng',
           field: 'reciept',
           sortable: false,
-          thClass: 'text-nowrap',
-          tdClass: 'ws-nowrap',
+          width: '160px',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'ws-nowrap scroll-column column-second',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
-          thClass: 'text-nowrap',
-          tdClass: 'ws-nowrap',
+          width: '130px',
+          thClass: 'text-nowrap scroll-column-header column-third',
+          tdClass: 'ws-nowrap scroll-column column-third',
         },
         {
           label: 'Họ tên',
@@ -529,3 +532,34 @@ export default {
   },
 }
 </script>
+<style>
+.min-w {
+  min-width: 8rem;
+}
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .report-returngood.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 35px;
+    z-index: 1;
+  }
+  .report-returngood.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 196px;
+    z-index: 1;
+  }
+  .report-returngood.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
+    left: 357px;
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+
+  /* tùy chỉnh left khi scroll*/
+   .report-returngood.table-horizontal-scroll .column-first {
+    left: 35px;
+  }
+  .report-returngood.table-horizontal-scroll .column-second {
+    left: 196px;
+  }
+  .report-returngood.table-horizontal-scroll .column-third {
+    left: 357px;
+  }
+  /* tùy chỉnh left khi scroll*/
+</style>
