@@ -418,7 +418,7 @@
 <script>
 import toasts from '@core/utils/toasts/toasts'
 import { mapActions, mapGetters } from 'vuex'
-import { formatISOtoVNI, reverseVniDate } from '@/@core/utils/filter'
+import { formatISOtoVNI, reverseVniDate, nowDate } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
   WAREHOUSEINVENTORY,
@@ -700,7 +700,11 @@ export default {
     },
 
     onClickCloseButton() {
-      this.isModalCloseShow = !this.isModalCloseShow
+      if (this.countingDate === nowDate()) {
+        this.isModalCloseShow = !this.isModalCloseShow
+      } else {
+        this.$router.replace({ name: 'warehouses-inventory' })
+      }
     },
     updateInventoryTotal(index) {
       this.products[index].inventoryTotal = this.products[index].inventoryPacket * this.products[index].exchange + this.products[index].inventoryOdd

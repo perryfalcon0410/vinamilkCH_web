@@ -42,7 +42,8 @@
         <vue-good-table
           :columns="columns"
           :rows="rows"
-          style-class="vgt-table"
+          style-class="vgt-table report table-horizontal-scroll"
+          :style="cssProps"
           :pagination-options="{
             enabled: true,
             perPage: elementSize,
@@ -133,6 +134,20 @@
             >
               {{ $formatNumberToLocale(total[8]) }}
             </b-row>
+          </template>
+          <template
+            slot="table-column"
+            slot-scope="props"
+          >
+            <div
+              v-if="props.column.field === 'transNumber'"
+              ref="transNumber"
+            >
+              {{ props.column.label }}
+            </div>
+            <div v-else>
+              {{ props.column.label }}
+            </div>
           </template>
           <template
             slot="pagination-bottom"
@@ -241,28 +256,35 @@ export default {
           label: 'Ngày biên bản',
           field: 'transDate',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Số biên bản',
           field: 'transNumber',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
+          thClass: 'text-nowrap scroll-column-header column-third',
+          tdClass: 'scroll-column column-third',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
           sortable: false,
+          thClass: 'text-nowrap scroll-column-header column-fourth',
+          tdClass: 'scroll-column column-fourth',
         },
         {
           label: 'Địa chỉ',
           field: 'address',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mã sản phẩm',
@@ -275,6 +297,7 @@ export default {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Số lượng',
@@ -293,13 +316,14 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Lý do',
           field: 'reason',
           sortable: false,
+          thClass: 'text-nowrap',
         },
         {
           label: 'Điện thoại',
@@ -311,6 +335,7 @@ export default {
       rows: [],
       total: [],
       reportExchangePagnigation: {},
+      transNumberCol: 0,
     }
   },
   computed: {
@@ -354,10 +379,19 @@ export default {
 
       return `${minPageSize} - ${maxPageSize} của ${this.reportExchangePagnigation.totalElements} mục`
     },
+    cssProps() {
+      return {
+        '--third-col': `${this.transNumberCol + 135}px`,
+        '--fourth-col': `${this.transNumberCol + 260}px`,
+      }
+    },
   },
   watch: {
     reportInventory() {
       this.rows = [...this.reportInventory]
+      this.$nextTick(() => {
+        this.transNumberCol = this.$refs.transNumber.offsetParent.offsetWidth
+      })
     },
     getTotal() {
       this.total = [...this.getTotal]
@@ -411,3 +445,38 @@ export default {
   },
 }
 </script>
+<style>
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .report.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 35px;
+    z-index: 1;
+  }
+  .report.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 140px;
+    z-index: 1;
+  }
+  .report.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
+    left: var(--third-col);
+    z-index: 1;
+  }
+  .report.table-horizontal-scroll thead tr:last-child th:nth-child(5) {
+    left: var(--fourth-col);
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+
+  /* tùy chỉnh left khi scroll*/
+  .report.table-horizontal-scroll .column-first {
+    left: 35px;
+  }
+  .report.table-horizontal-scroll .column-second {
+    left: 140px;
+  }
+  .report.table-horizontal-scroll .column-third {
+    left: var(--third-col);
+  }
+  .report.table-horizontal-scroll .column-fourth {
+    left: var(--fourth-col);
+  }
+  /* tùy chỉnh left khi scroll*/
+</style>

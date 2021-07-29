@@ -317,9 +317,8 @@ export default {
             ctrlId: 1,
           }
 
-          this.$emit('updatePageElement')
           this.updateSearchData(searchData)
-          this.GET_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION(searchData)
+          this.$emit('onClickSearchButton')
         }
       })
     },

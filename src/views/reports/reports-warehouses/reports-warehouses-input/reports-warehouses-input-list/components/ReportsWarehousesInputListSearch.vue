@@ -412,8 +412,7 @@ export default {
           }
 
           this.updateSearchData(searchData)
-          this.$emit('updatePageElement')
-          this.GET_REPORT_WAREHOUSES_INPUT_ACTION(searchData)
+          this.$emit('onClickSearchButton')
         }
       })
     },

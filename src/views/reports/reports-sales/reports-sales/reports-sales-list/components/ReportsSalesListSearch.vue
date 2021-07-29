@@ -565,8 +565,7 @@ export default {
       this.$refs.formContainer.validate().then(success => {
         if (success) {
           this.updateSearchData(searchData)
-          this.$emit('updatePageElement')
-          this.GET_REPORT_SALES_ACTION(searchData)
+          this.$emit('onClickSearchButton')
         }
       })
     },

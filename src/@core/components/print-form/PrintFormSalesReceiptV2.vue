@@ -120,7 +120,7 @@
           <td>
             {{ item.productCode }}
           </td>
-          <td class="text-center">
+          <td class="text-right">
             {{ $formatNumberToLocale(item.quantity) }}
           </td>
           <td class="text-center">
@@ -152,7 +152,7 @@
           KM
         </td>
         <td
-          class="text-center"
+          class="text-right"
           valign="top"
         >
           {{ item.quantity }}
@@ -160,6 +160,7 @@
         <td
           colspan="2"
           valign="top"
+          class="pl-1"
         >
           {{ item.productName }}
         </td>
