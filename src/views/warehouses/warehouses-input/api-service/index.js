@@ -19,7 +19,6 @@ import {
   getProductsByIdEndpoint,
   getProductsEndPoint,
   updateReceiptEndpoint,
-  getWarehousesTypeEndpoint,
   getNotImportReasonsEndpoint,
   printOutInputOrderEndpoint,
   getImportPoConfirmEndpoint,
@@ -110,11 +109,6 @@ export default {
   },
   updateReceipt(args) {
     return axios.patch(`${updateReceiptEndpoint}/${args.id}?formId=${args.formId}&ctrlId=${args.ctrlId}`, args)
-  },
-  getWarehousesType(args) {
-    return axios.get(getWarehousesTypeEndpoint, {
-      params: formatURLParams(args),
-    })
   },
   getNotImportReasons(args) {
     return axios.get(getNotImportReasonsEndpoint, {

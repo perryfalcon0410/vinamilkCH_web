@@ -43,7 +43,7 @@
                   :key="item.id"
                   class="border-bottom border-white rounded py-1 cursor-pointer"
                   :class="{ 'text-brand-1': current == item.id }"
-                  @click="selectOrder(item.id, item.internalNumber, item.poCoNumber, item.date)"
+                  @click="selectOrder(item.id, item.internalNumber, item.poCoNumber, item.date, item.warehouseTypeId, item.wareHouseTypeName)"
                 >
                   <td class="py-1">
                     {{ index + 1 }}
@@ -347,6 +347,8 @@ export default {
       Snb: null,
       poNumber: null,
       sysDate: null,
+      warehouseTypeId: null,
+      warehouseName: null,
 
       columns: [
         {
@@ -418,6 +420,8 @@ export default {
         poCoNumber: data.poCoNumber,
         internalNumber: data.internalNumber,
         date: formatISOtoVNI(data.orderDate),
+        warehouseTypeId: data.wareHouseTypeId,
+        wareHouseTypeName: data.wareHouseTypeName,
       }))
     },
     theFirstPo() {
@@ -427,6 +431,8 @@ export default {
           internalNumber: this.poConfirm[0].internalNumber,
           poNumber: this.poConfirm[0].poCoNumber,
           sysDate: this.poConfirm[0].date,
+          warehouseTypeId: this.poConfirm[0].warehouseTypeId,
+          warehouseName: this.poConfirm[0].wareHouseTypeName,
         }
         return obj
       }
@@ -481,7 +487,7 @@ export default {
   watch: {
     poConfirm() {
       if (this.poConfirm.length > 0) {
-        this.selectOrder(this.theFirstPo.id, this.theFirstPo.internalNumber, this.theFirstPo.poNumber, this.theFirstPo.sysDate)
+        this.selectOrder(this.theFirstPo.id, this.theFirstPo.internalNumber, this.theFirstPo.poNumber, this.theFirstPo.sysDate, this.theFirstPo.warehouseTypeId, this.theFirstPo.warehouseName)
       } else {
         this.CLEAR_GRID_VIEW_MUTATION()
       }
@@ -513,11 +519,13 @@ export default {
       CLEAR_GRID_VIEW_MUTATION,
     ]),
     // invidual selectOrder event for poconfrim list
-    selectOrder(id, internalNumber, poNum, date) {
+    selectOrder(id, internalNumber, poNum, date, warehouseTypeId, warehouseTypeName) {
       this.current = id
       this.poNumber = poNum
       this.Snb = internalNumber
       this.sysDate = date
+      this.warehouseTypeId = warehouseTypeId
+      this.warehouseName = warehouseTypeName
       if (this.poConfirm.length > 0) {
         this.GET_PODETAIL_PRODUCTS_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId }) // hard code
         this.GET_PODETAIL_PRODUCTS_PROMO_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId }) // hard code
@@ -540,7 +548,7 @@ export default {
     },
     // Confirm import product from selected Po
     confirmImportButton() {
-      this.$emit('inputChange', [this.sysDate, this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, this.Snb, this.poNumber, this.current])
+      this.$emit('inputChange', [this.sysDate, this.poProducts, this.poProductInfo, this.poPromotionProducts, this.poPromotionProductsInfo, this.Snb, this.poNumber, this.current, this.warehouseTypeId, this.warehouseName])
       this.closePoModal()
     },
     exportExcel() {

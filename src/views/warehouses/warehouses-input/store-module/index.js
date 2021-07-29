@@ -17,7 +17,6 @@ import {
   PRODUCTS_BY_ID_GETTER,
   PROMOTIONS_BY_ID_GETTER,
   PRODUCTS_GETTER,
-  WAREHOUSES_TYPE_GETTER,
   NOT_IMPORT_REASONS_GETTER,
   PRINT_OUT_IN_PUT_ORDER_GETTER,
   STATUS_NOT_IMPORT_GETTER,
@@ -41,7 +40,6 @@ import {
   GET_PRODUCTS_ACTION,
   UPDATE_RECEIPT_ACTION,
   PRINT_WAREHOUSES_INPUT_ACTION,
-  GET_WAREHOUSES_TYPE_ACTION,
   GET_NOT_IMPORT_REASONS_ACTION,
   PRINT_OUT_IN_PUT_ORDER_ACTION,
   GET_IMPORT_PO_CONFIRM_ACTION,
@@ -114,9 +112,6 @@ export default {
     },
     [PRODUCTS_GETTER](state) {
       return state.suggestProducts
-    },
-    [WAREHOUSES_TYPE_GETTER](state) {
-      return state.warehousesType
     },
     [NOT_IMPORT_REASONS_GETTER](state) {
       return state.notImportReasons
@@ -428,21 +423,6 @@ export default {
           const fileName = `${val.transCode}.pdf`
           const blob = new Blob([res], { type: 'application/pdf' })
           FileSaver.saveAs(blob, fileName)
-        })
-        .catch(error => {
-          toasts.error(error.message)
-        })
-    },
-    [GET_WAREHOUSES_TYPE_ACTION]({ state }, val) {
-      ReceiptImportService
-        .getWarehousesType(val)
-        .then(response => response.data)
-        .then(res => {
-          if (res.success) {
-            state.warehousesType = res.data
-          } else {
-            throw new Error(res.statusValue)
-          }
         })
         .catch(error => {
           toasts.error(error.message)

@@ -20,7 +20,6 @@ export const getReceiptByIdEndpoint = `${SALES}/import/trans`
 export const getProductsByIdEndpoint = `${SALES}/import/trans-detail`
 export const getProductsEndPoint = `${SALES}/products/find`
 export const updateReceiptEndpoint = `${SALES}/import/update`
-export const getWarehousesTypeEndpoint = `${SALES}/import/warehouse-type`
 export const getNotImportReasonsEndpoint = `${COMMON}/apparams/sale-mt-deny`
 export const printOutInputOrderEndpoint = `${SALES}/invoices/product-trans`
 export const getWarehousesListEndpoint = `${SALES}/warehouse`

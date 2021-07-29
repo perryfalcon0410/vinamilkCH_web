@@ -56,7 +56,7 @@
                   :key="item.id"
                   class="border-bottom border-white rounded py-1 cursor-pointer"
                   :class="{ 'text-brand-1': current == item.id }"
-                  @click="selectOrder(item.id, item.adjustmentDate, item.description)"
+                  @click="selectOrder(item.id, item.adjustmentDate, item.description, item.warehouseId, item.warehouseName)"
                 >
                   <td class="py-1">
                     {{ index + 1 }}
@@ -202,6 +202,9 @@ export default {
       sysDate: null,
       current: null,
       note: '',
+      warehouseId: null,
+      warehouseName: null,
+
       columns: [
         {
           label: 'Số chứng từ',
@@ -262,6 +265,8 @@ export default {
         adjustmentCode: data.adjustmentCode,
         adjustmentDate: formatISOtoVNI(data.adjustmentDate),
         description: data.description,
+        warehouseId: data.wareHouseTypeId,
+        warehouseName: data.wareHouseTypeName,
       }))
     },
     firstPo() {
@@ -270,6 +275,8 @@ export default {
           id: this.importAdjustmentsList[0].id,
           sysDate: this.importAdjustmentsList[0].adjustmentDate,
           description: this.importAdjustmentsList[0].description,
+          warehouseId: this.importAdjustmentsList[0].warehouseId,
+          warehouseName: this.importAdjustmentsList[0].warehouseName,
         }
         return obj
       }
@@ -300,7 +307,7 @@ export default {
   watch: {
     importAdjustmentsList() {
       if (this.importAdjustmentsList.length > 0) {
-        this.selectOrder(this.firstPo.id, this.firstPo.sysDate, this.firstPo.description)
+        this.selectOrder(this.firstPo.id, this.firstPo.sysDate, this.firstPo.description, this.firstPo.warehouseId, this.firstPo.warehouseName)
       } else {
         // will clear grid view if the last po been imported
         this.CLEAR_ADJUST_GRID_VIEW_MUTATION()
@@ -321,15 +328,17 @@ export default {
     ...mapMutations(WAREHOUSEINPUT, [
       CLEAR_ADJUST_GRID_VIEW_MUTATION,
     ]),
-    selectOrder(id, date, description) {
+    selectOrder(id, date, description, warehouseTypeId, warehouseTypeName) {
       this.current = id
       this.sysDate = date
       this.note = description
+      this.warehouseId = warehouseTypeId
+      this.warehouseName = warehouseTypeName
       this.GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION({ id: this.current, formId: this.formId, ctrlId: this.ctrlId }) // hard code
     },
     inputAdjustmentConfirm() {
       if (this.importAdjustmentsList.length > 0) {
-        this.$emit('inputAdjustChange', [this.sysDate, this.importAdjustmentsDetails, this.importAdjustmentInfo, this.current, this.note])
+        this.$emit('inputAdjustChange', [this.sysDate, this.importAdjustmentsDetails, this.importAdjustmentInfo, this.current, this.note, this.warehouseId, this.warehouseName])
         this.close()
       } else {
         toasts.warning('Bạn cần chọn tối thiểu 1 bản ghi')

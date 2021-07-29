@@ -38,12 +38,13 @@
       <!-- END - Header -->
 
       <!-- START - Table -->
-      <b-col class="py-1">
+      <b-col class="py-1 rp-voucher">
         <vue-good-table
           :columns="columns"
           mode="remote"
           :rows="rows"
-          style-class="vgt-table striped"
+          style-class="vgt-table report-voucher table-horizontal-scroll"
+          :style="cssProps"
           :pagination-options="{
             enabled: true,
             perPage: paginationData.size,
@@ -90,15 +91,23 @@
             slot="table-column"
             slot-scope="props"
           >
-            <span v-if="props.column.label =='function'">
-              <b-icon-bricks
-                v-b-popover.hover="'Thao tác'"
-                scale="1.3"
-              />
-            </span>
-            <span v-else>
+            <div
+              v-if="props.column.field === 'storeCode'"
+              ref="first"
+            >
               {{ props.column.label }}
-            </span>
+            </div>
+            <div
+              v-else-if="props.column.field === 'voucherProgramCode'"
+              ref="second"
+            >
+              {{ props.column.label }}
+            </div>
+            <div
+              v-else
+            >
+              {{ props.column.label }}
+            </div>
           </template>
           <!-- END - Header filter -->
 
@@ -188,6 +197,10 @@ export default {
   },
   data() {
     return {
+      colWidth: {
+        firstCol: 0,
+        secondCol: 0,
+      },
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
       paginationData: {
@@ -202,106 +215,93 @@ export default {
           label: 'Mã cửa hàng',
           field: 'storeCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Mã chương trình voucher',
           field: 'voucherProgramCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
         },
         {
           label: 'Tên chương trình voucher',
           field: 'voucherProgramName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap scroll-column-header column-third',
+          tdClass: 'scroll-column column-third',
         },
         {
           label: 'Mã voucher',
           field: 'voucherCode',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Tên voucher',
           field: 'voucherName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Serial',
           field: 'serial',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Mệnh giá',
           field: 'price',
           sortable: false,
-          thClass: 'text-right',
+          formatFn: this.$formatNumberToLocale,
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
         },
         {
           label: 'Người chuyển cửa hàng',
           field: 'author',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngày chuyển cửa hàng',
           field: 'changeDate',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          formatFn: value => this.$formatISOtoVNI(value),
+          thClass: 'text-nowrap',
         },
         {
           label: 'Khách hàng sử dụng',
           field: 'customerUsed',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Đơn hàng sử dụng',
           field: 'orderUsed',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Cửa hàng sử dụng',
           field: 'storeOrdered',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Ngày sử dụng',
           field: 'dateUsed',
           sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Doanh số',
           field: 'sales',
           sortable: false,
-          thClass: 'text-right',
+          formatFn: this.$formatNumberToLocale,
+          thClass: 'text-right text-nowrap',
           tdClass: 'text-right',
-        },
-        {
-          label: 'function',
-          field: 'function',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
         },
       ],
     }
@@ -317,14 +317,14 @@ export default {
           voucherCode: data.voucherCode,
           voucherName: data.voucherName,
           serial: data.serial,
-          price: this.$formatNumberToLocale(data.price),
+          price: data.price,
           author: data.changeUser,
           changeDate: data.changeDate,
           customerUsed: data.customerCode,
           orderUsed: data.orderNumber,
           storeOrdered: data.orderShopCode,
           dateUsed: data.orderDate,
-          sales: this.$formatNumberToLocale(data.orderAmount),
+          sales: data.orderAmount,
           voucherProgramCode: data.voucherProgramCode,
           voucherProgramName: data.voucherProgramName,
         }))
@@ -344,10 +344,20 @@ export default {
 
       return `${minPageSize} - ${maxPageSize} của ${this.reportPurchasesDetailsPagination.totalElements} mục`
     },
+    cssProps() {
+      return {
+        '--second-col': `${this.colWidth.firstCol + 19}px`,
+        '--third-col': `${this.colWidth.firstCol + this.colWidth.secondCol + 18}px`,
+      }
+    },
   },
   watch: {
     getReportVouchersUsed() {
       this.rows = [...this.getReportVouchersUsed]
+      this.$nextTick(() => {
+        this.colWidth.firstCol = this.$refs.first.offsetParent.offsetWidth
+        this.colWidth.secondCol = this.$refs.second.offsetParent.offsetWidth
+      })
     },
   },
   methods: {
@@ -394,3 +404,36 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+  .rp-voucher {
+    .table-horizontal-scroll thead tr:last-child th {
+      background: inherit;
+    }
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .report-voucher.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 22px;
+    z-index: 1;
+    position: sticky;
+  }
+  .report-voucher.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: var(--second-col);
+    z-index: 1;
+  }
+  .report-voucher.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
+    left: var(--third-col);
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  /* tùy chỉnh left khi scroll*/
+  .report-voucher.table-horizontal-scroll .column-first {
+    left: 22px;
+  }
+  .report-voucher.table-horizontal-scroll .column-second {
+    left: var(--second-col);
+  }
+  .report-voucher.table-horizontal-scroll .column-third {
+    left: var(--third-col);
+  }
+  /* tùy chỉnh left khi scroll*/
+</style>

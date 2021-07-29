@@ -76,7 +76,7 @@
           <b-form-input
             v-show="inputTypeSelected === '1' || (inputTypeSelected === '0' && status !== -1)"
             id="warehouse"
-            v-model="warehousesType.wareHouseTypeName"
+            v-model="defaultWarehouse.warehouseName"
             disabled
           />
           <validation-provider
@@ -590,11 +590,9 @@ import PoConfirmModal from '../components/po-confirm-modal/InputPoConfirmModal.v
 import {
   WAREHOUSEINPUT,
 
-  WAREHOUSES_TYPE_GETTER,
   PRODUCTS_GETTER,
   WAREHOUSES_LIST_GETTER,
 
-  GET_WAREHOUSES_TYPE_ACTION,
   CREATE_SALE_IMPORT_ACTION,
   GET_PRODUCTS_ACTION,
   GET_WAREHOUSES_LIST_ACTION,
@@ -620,6 +618,11 @@ export default {
       totalProduct: 0,
       products: [{ data: '' }],
       warehouseSelected: null,
+
+      defaultWarehouse: {
+        warehouseTypeId: null,
+        warehouseName: null,
+      },
       // START - Table promotions
       isShowPoPromoTable: false,
       isShowPoPromoManualTable: true,
@@ -886,13 +889,9 @@ export default {
 
   computed: {
     ...mapGetters(WAREHOUSEINPUT, [
-      WAREHOUSES_TYPE_GETTER,
       PRODUCTS_GETTER,
       WAREHOUSES_LIST_GETTER,
     ]),
-    warehousesType() {
-      return this.WAREHOUSES_TYPE_GETTER
-    },
     warehousesListOptions() {
       return this.WAREHOUSES_LIST_GETTER.map(data => ({
         id: data.id,
@@ -973,9 +972,6 @@ export default {
 
   mounted() {
     this.inputTypeSelected = this.inputTypeOptions[0].id
-    this.GET_WAREHOUSES_TYPE_ACTION({
-      ...this.decentralization,
-    })
     this.GET_WAREHOUSES_LIST_ACTION({
       ...this.decentralization,
       onSuccess: () => {
@@ -1006,7 +1002,6 @@ export default {
   methods: {
     ...mapActions(WAREHOUSEINPUT, [
       CREATE_SALE_IMPORT_ACTION,
-      GET_WAREHOUSES_TYPE_ACTION,
       GET_PRODUCTS_ACTION,
       GET_WAREHOUSES_LIST_ACTION,
     ]),
@@ -1054,7 +1049,7 @@ export default {
     },
     // ---------------------------Nhap hang-----------------------
     dataFromPoConfirm(data) {
-      const [sysDate, poProducts, ProductInfo, poPromotionProducts, promotionProductsInfo, Snb, poNum, id] = data
+      const [sysDate, poProducts, ProductInfo, poPromotionProducts, promotionProductsInfo, Snb, poNum, id, warehouseId, warehouseName] = data
       this.billDate = sysDate
       this.rowsProduct = [...poProducts]
       this.rowsProductPromotionLoad = [...poPromotionProducts]
@@ -1071,12 +1066,13 @@ export default {
       } else {
         this.isShowPoPromoTable = false
       }
+      this.defaultWarehouse = { warehouseTypeId: warehouseId, warehouseName }
     },
     // ----------------------------Nhap hang-----------------------
 
     // -----------------------------Nhap dieu chinh------------------------
     dataFromInputAdjust(data) {
-      const [sysDate, importAdjustsDetail, importAdjustInfo, id, description] = data
+      const [sysDate, importAdjustsDetail, importAdjustInfo, id, description, warehouseId, warehouseName] = data
       this.rowsProduct = [...importAdjustsDetail]
       this.note = description
       this.status = 1 // inputTypeSelected
@@ -1085,6 +1081,7 @@ export default {
       this.internalNumber = null
       this.billDate = sysDate
       this.poAdjustInfo = { ...importAdjustInfo }
+      this.defaultWarehouse = { warehouseTypeId: warehouseId, warehouseName }
     },
     // -----------------------------Nhap dieu chinh------------------------
 
@@ -1124,7 +1121,7 @@ export default {
             if (success) {
               this.CREATE_SALE_IMPORT_ACTION({
                 ...obj,
-                wareHouseTypeId: this.warehousesType.id,
+                wareHouseTypeId: this.defaultWarehouse.warehouseTypeId,
               })
             }
           })
@@ -1133,7 +1130,7 @@ export default {
         if (this.status === 1) {
           this.CREATE_SALE_IMPORT_ACTION({
             ...obj,
-            wareHouseTypeId: this.warehousesType.id,
+            wareHouseTypeId: this.defaultWarehouse.warehouseTypeId,
           })
         }
         // nhap vay muon
