@@ -695,7 +695,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          width: '18%',
+          width: '120px',
           sortable: false,
           thClass: 'text-right text-nowrap',
           tdClass: 'text-right text-nowrap',

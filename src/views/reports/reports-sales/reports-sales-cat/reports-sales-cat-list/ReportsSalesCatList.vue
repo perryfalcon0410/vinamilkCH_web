@@ -389,6 +389,7 @@ export default {
     },
   },
   mounted() {
+    this.columns = [...this.initalCol]
     resizeAbleTable()
   },
   methods: {
