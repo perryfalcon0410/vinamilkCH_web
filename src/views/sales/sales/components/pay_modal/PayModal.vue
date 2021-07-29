@@ -1408,18 +1408,20 @@ export default {
               return {
                 ...program,
                 products: [...program.products.map(product => {
-                  if (product.productId === params.row.productId) {
-                    if (Number(product.quantity) < 0) {
-                      return {
-                        ...product,
-                        quantity: 0,
+                  if (product.groupOneFreeItem === params.row.groupOneFreeItem) {
+                    if (product.productId === params.row.productId) {
+                      if (Number(product.quantity) < 0 || product.quantity === '') {
+                        return {
+                          ...product,
+                          quantity: 0,
+                        }
                       }
-                    }
 
-                    if (Number(product.quantity) > remainQuantity) {
-                      return {
-                        ...product,
-                        quantity: remainQuantity,
+                      if (Number(product.quantity) > remainQuantity) {
+                        return {
+                          ...product,
+                          quantity: remainQuantity,
+                        }
                       }
                     }
                   }
@@ -1431,7 +1433,7 @@ export default {
               ...program,
               products: [...program.products.map(product => {
                 if (product.groupOneFreeItem === params.row.groupOneFreeItem) {
-                  if (product.productId !== params.row.productId) {
+                  if (product.productId !== params.row.productId || product.quantity === '') {
                     return {
                       ...product,
                       quantity: 0,
@@ -1451,7 +1453,7 @@ export default {
             ...program,
             products: [...program.products.map(product => {
               if (product.groupOneFreeItem === params.row.groupOneFreeItem) {
-                if (product.productId !== params.row.productId) {
+                if (product.productId !== params.row.productId || product.quantity === '') {
                   return {
                     ...product,
                     quantity: 0,
@@ -1705,27 +1707,6 @@ export default {
       })
 
       if (isValid) {
-        // console.log({
-        //   customerId: this.customer.id,
-        //   paymentType: this.pay.salePayment.salePaymentType,
-        //   deliveryType: Number(this.deliverySelected),
-        //   orderType: Number(this.orderSelected),
-        //   note: this.orderOnline.note,
-        //   orderOnlineId: this.orderOnline.onlineOrderId,
-        //   onlineNumber: this.orderOnline.orderNumber,
-        //   products: this.orderProducts,
-        //   promotionInfo: paramPromotionInfo,
-        //   totalOrderAmount: Number(this.pay.totalAmount) || 0,
-        //   promotionAmount: Number(this.pay.promotionAmount) || 0,
-        //   accumulatedAmount: Number(this.pay.accumulate.accumulateAmount) || 0,
-        //   discountAmount: Number(this.pay.discount.discountAmount) || 0,
-        //   discountCode: this.pay.discount.discountCode,
-        //   voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
-        //   vouchers: this.pay.voucher.vouchers,
-        //   paymentAmount: Number(this.pay.needPaymentAmount) || 0,
-        //   remainAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
-        //   extraAmount: Number(this.pay.extraAmount) || 0,
-        // })
         this.PRINT_SALES_TEMP_ACTION({
           orderSale: {
             customerId: this.customer.id,
