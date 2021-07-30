@@ -285,7 +285,7 @@ export default {
           label: 'Mã trả hàng',
           field: 'returnCode',
           sortable: false,
-          width: '160px',
+          width: '170px',
           thClass: 'text-nowrap scroll-column-header column-first',
           tdClass: 'ws-nowrap scroll-column column-first',
         },
@@ -293,7 +293,7 @@ export default {
           label: 'Hóa đơn mua hàng',
           field: 'reciept',
           sortable: false,
-          width: '160px',
+          width: '170px',
           thClass: 'text-nowrap scroll-column-header column-second',
           tdClass: 'ws-nowrap scroll-column column-second',
         },
@@ -301,7 +301,7 @@ export default {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
-          width: '130px',
+          width: '135px',
           thClass: 'text-nowrap scroll-column-header column-third',
           tdClass: 'ws-nowrap scroll-column column-third',
         },
@@ -309,7 +309,8 @@ export default {
           label: 'Họ tên',
           field: 'fullName',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-4',
+          tdClass: 'scroll-column column-4',
         },
         {
           label: 'Ngành hàng',
@@ -536,30 +537,40 @@ export default {
 .min-w {
   min-width: 8rem;
 }
+.report-returngood.table-horizontal-scroll thead tr:first-child th {
+  border-bottom: 0px;
+}
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
   .report-returngood.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
-    left: 35px;
+    left: 34px;
     z-index: 1;
   }
   .report-returngood.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
-    left: 196px;
+    left: 204px;
     z-index: 1;
   }
   .report-returngood.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
-    left: 357px;
+    left: 373px;
+    z-index: 1;
+  }
+  .report-returngood.table-horizontal-scroll thead tr:last-child th:nth-child(5) {
+    left: 508px;
     z-index: 1;
   }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
 
   /* tùy chỉnh left khi scroll*/
    .report-returngood.table-horizontal-scroll .column-first {
-    left: 35px;
+    left: 34px;
   }
   .report-returngood.table-horizontal-scroll .column-second {
-    left: 196px;
+    left: 204px;
   }
   .report-returngood.table-horizontal-scroll .column-third {
-    left: 357px;
+    left: 373px;
+  }
+  .report-returngood.table-horizontal-scroll .column-4 {
+    left: 508px;
   }
   /* tùy chỉnh left khi scroll*/
 </style>

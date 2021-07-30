@@ -52,7 +52,7 @@
         <vue-good-table
           :columns="columns"
           :rows="differencePriceRows"
-          style-class="vgt-table striped"
+          style-class="vgt-table table-horizontal-scroll report-difference"
           :pagination-options="{
             enabled: true,
             perPage: paginationData.size,
@@ -245,14 +245,19 @@ export default {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
           sortable: false,
-          thClass: 'text-nowrap',
+          width: '160px',
+          thClass: 'text-nowrap  scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Ngày hóa đơn',
           field: 'orderDate',
           formatFn: value => this.$formatISOtoVNI(value),
           sortable: false,
-          thClass: 'text-nowrap',
+          width: '120px',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
+
         },
         {
           label: 'Số PO',
@@ -468,3 +473,27 @@ export default {
   },
 }
 </script>
+<style>
+.report-difference.table-horizontal-scroll thead tr:first-child th {
+  border-bottom: 0px;
+}
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .report-difference.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 34px;
+    z-index: 1;
+  }
+  .report-difference.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 193px;
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+
+  /* tùy chỉnh left khi scroll*/
+   .report-difference.table-horizontal-scroll .column-first {
+    left: 34px;
+  }
+  .report-difference.table-horizontal-scroll .column-second {
+    left: 193px;
+  }
+  /* tùy chỉnh left khi scroll*/
+</style>

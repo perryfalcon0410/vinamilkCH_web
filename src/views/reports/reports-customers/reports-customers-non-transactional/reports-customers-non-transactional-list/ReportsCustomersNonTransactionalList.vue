@@ -60,7 +60,7 @@
           }"
           compact-mode
           line-numbers
-          :total-rows="CustomerNonTransPagination.totalElements"
+          :total-rows="customerNonTransPagination.totalElements"
           :sort-options="{
             enabled: false,
           }"
@@ -96,7 +96,7 @@
             slot-scope="props"
           >
             <b-row
-              v-show="CustomerNonTransPagination.totalElements"
+              v-show="customerNonTransPagination.totalElements"
               class="v-pagination px-1 mx-0"
               align-h="between"
               align-v="center"
@@ -120,7 +120,7 @@
               </div>
               <b-pagination
                 v-model="pageNumber"
-                :total-rows="CustomerNonTransPagination.totalElements"
+                :total-rows="customerNonTransPagination.totalElements"
                 :per-page="elementSize"
                 first-number
                 last-number
@@ -236,6 +236,7 @@ export default {
           sortable: false,
         },
       ],
+      customerNonTransPagination: {},
     }
   },
 
@@ -256,7 +257,7 @@ export default {
       }
       return []
     },
-    CustomerNonTransPagination() {
+    getCustomerNonTransPagination() {
       if (this.REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER) {
         return this.REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER
       }
@@ -264,15 +265,18 @@ export default {
     },
     paginationDetailContent() {
       const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.CustomerNonTransPagination.totalElements
-        ? this.CustomerNonTransPagination.totalElements : (this.elementSize * this.pageNumber)
+      const maxPageSize = (this.elementSize * this.pageNumber) > this.customerNonTransPagination.totalElements
+        ? this.customerNonTransPagination.totalElements : (this.elementSize * this.pageNumber)
 
-      return `${minPageSize} - ${maxPageSize} của ${this.CustomerNonTransPagination.totalElements} mục`
+      return `${minPageSize} - ${maxPageSize} của ${this.customerNonTransPagination.totalElements} mục`
     },
   },
   watch: {
     getCustomerNonTrans() {
       this.customerNonTransRows = [...this.getCustomerNonTrans]
+    },
+    getCustomerNonTransPagination() {
+      this.customerNonTransPagination = { ...this.getCustomerNonTransPagination }
     },
   },
   mounted() {

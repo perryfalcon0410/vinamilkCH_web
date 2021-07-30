@@ -26,13 +26,14 @@
           mode="remote"
           :rows="salesReceiptList"
           class="pb-1"
-          style-class="vgt-table"
+          style-class="vgt-table table-horizontal-scroll sales-class"
           :pagination-options="{
             enabled: true,
             perPage: paginationData.size,
             setCurrentPage: pageNumber,
           }"
           line-numbers
+          :style="cssProps"
           :sort-options="{
             enabled: false,
           }"
@@ -132,7 +133,21 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'name' || props.column.field === 'note' || props.column.field === 'noteHdd'"
+              v-else-if="props.column.field === 'customerCode'"
+              ref="customerCode"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'name'"
+              ref="customerName"
+              class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'note' || props.column.field === 'noteHdd'"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -288,26 +303,27 @@ export default {
         {
           label: 'Số hóa đơn',
           field: 'numberBill',
-          thClass: 'text-left ws-nowrap',
-          tdClass: 'text-left',
+          width: '180px',
+          thClass: 'ws-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
-          thClass: 'text-left ws-nowrap',
-          tdClass: 'text-left',
+          thClass: 'ws-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
         },
         {
           label: 'Họ tên',
           field: 'name',
-          thClass: 'text-left ws-nowrap',
-          tdClass: 'text-left',
+          thClass: 'scroll-column-header column-third ws-nowrap',
+          tdClass: 'scroll-column column-third',
         },
         {
           label: 'Ngày bán',
           field: 'dayTime',
-          thClass: 'text-center ws-nowrap',
-          tdClass: 'text-center',
+          thClass: 'text-center ws-nowrap scroll-column-header column-4',
+          tdClass: 'text-center scroll-column column-4',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
@@ -398,6 +414,8 @@ export default {
       ],
 
       salesReceiptList: [],
+      secondColLeftAttr: 163, // hard code
+      thirdColLeftAttr: 310, // hard code
     }
   },
 
@@ -496,11 +514,21 @@ export default {
 
       return `${minPageSize} - ${maxPageSize} của ${this.salesReceiptsPagination.totalElements} mục`
     },
+    cssProps() {
+      return {
+        '--left-second': this.secondColLeftAttr,
+        '--left-third': this.thirdColLeftAttr,
+      }
+    },
   },
 
   watch: {
     getSalesReceiptList() {
       this.salesReceiptList = [...this.getSalesReceiptList]
+      this.$nextTick(() => {
+        this.secondColLeftAttr = `${this.$refs.customerCode.offsetParent.offsetWidth + 212}px`
+        this.thirdColLeftAttr = `${this.$refs.customerCode.offsetParent.offsetWidth + this.$refs.customerName.offsetParent.offsetWidth + 211}px`
+      })
     },
   },
 
@@ -579,22 +607,56 @@ export default {
 }
 </script>
 <style lang="scss">
-.sales-receipt {
-  .vgt-table thead th {
-    border-bottom-style: none;
+  // .sales-receipt {
+  //   .vgt-table thead th {
+  //     border-bottom-style: none;
+  //   }
+  // }
+  .move-header {
+    position: sticky !important;
+    right: 0;
+    top: 0.9px;
+    z-index: 1;
+    background: #315899 !important;
   }
-}
-.move-header {
-  position: sticky !important;
-  right: 0;
-  top: 0.9px;
-  z-index: 1;
-  background: #315899 !important;
-}
-.move-column {
-  position: sticky;
-  right: 0;
-  z-index: 99;
-  background: inherit;
-}
+  .move-column {
+    position: sticky;
+    right: 0;
+    z-index: 99;
+    background: inherit;
+  }
+
+  .custom-table.vgt-table thead tr:first-child th {
+    border-bottom: 0px;
+  }
+  .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 34px;
+    z-index: 1;
+  }
+  .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 213px;
+    z-index: 1;
+  }
+  .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
+    /* left: 163px; */
+    left: var(--left-second);
+    z-index: 1;
+  }
+  .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(5) {
+    left: var(--left-third);
+    /* left: 310px; */
+    z-index: 1;
+  }
+  .sales-class.table-horizontal-scroll .column-first {
+    left: 34px;
+  }
+  .sales-class.table-horizontal-scroll .column-second {
+    left: 213px;
+  }
+  .sales-class.table-horizontal-scroll .column-third {
+    left: var(--left-second);
+  }
+  .sales-class.table-horizontal-scroll .column-4 {
+    left: var(--left-third);
+  }
 </style>

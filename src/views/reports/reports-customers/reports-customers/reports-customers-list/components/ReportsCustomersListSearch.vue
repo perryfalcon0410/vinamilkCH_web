@@ -32,6 +32,7 @@
               <b-form-input
                 ref="focusInput"
                 v-model="keySearch"
+                trim
                 class="h7 text-brand-3"
                 placeholder="Nhập họ tên/mã"
                 @keyup.enter="onClickSearchButton"

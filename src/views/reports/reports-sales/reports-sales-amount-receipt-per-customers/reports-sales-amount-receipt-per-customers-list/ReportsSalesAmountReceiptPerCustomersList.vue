@@ -358,8 +358,8 @@ export default {
     getReportSalesReceiptQuantity() {
       this.reportQuantityReceiptsList = [...this.getReportSalesReceiptQuantity]
       this.$nextTick(() => {
-        this.secondColLeftAttr = `${this.$refs.customerCode.offsetParent.offsetWidth + 36}px`
-        this.thirdColLeftAttr = `${this.$refs.customerCode.offsetParent.offsetWidth + this.$refs.customerName.offsetParent.offsetWidth + 35}px`
+        this.secondColLeftAttr = `${this.$refs.customerCode.offsetParent.offsetWidth + 34}px`
+        this.thirdColLeftAttr = `${this.$refs.customerCode.offsetParent.offsetWidth + this.$refs.customerName.offsetParent.offsetWidth + 33}px`
       })
     },
     getReportSalesReceiptQuantityPrice() {
@@ -444,7 +444,7 @@ export default {
 <style>
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
   .report-amount.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
-    left: 36px;
+    left: 34px;
     z-index: 1;
   }
   .report-amount.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
@@ -460,7 +460,7 @@ export default {
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
   /* tùy chỉnh left khi scroll*/
   .report-amount.table-horizontal-scroll .column-first {
-    left: 36px;
+    left: 34px;
   }
   .report-amount.table-horizontal-scroll .column-second {
     /* left: 163px; */

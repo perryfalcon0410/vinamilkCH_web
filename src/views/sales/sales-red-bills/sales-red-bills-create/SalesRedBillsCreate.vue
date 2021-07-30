@@ -586,8 +586,8 @@ export default {
         {
           label: 'Tên sản phẩm',
           field: 'productName',
-          thClass: 'text-nowrap',
-          tdClass: 'align-middle',
+          thClass: 'text-nowrap  scroll-column-header column-second',
+          tdClass: 'align-middle scroll-column column-second',
           sortable: false,
         },
         {
@@ -1144,9 +1144,20 @@ export default {
   .custom-table.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
     left: 34px;
     z-index: 1;
+    background: #fff;
+  }
+  .custom-table.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 153px;
+    z-index: 1;
+    background: #fff;
   }
 
   .custom-table.table-horizontal-scroll .column-first {
     left: 34px;
+    z-index: 1;
+  }
+  .custom-table.table-horizontal-scroll .column-second {
+    left: 153px;
+    z-index: 1;
   }
 </style>
