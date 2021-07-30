@@ -231,7 +231,6 @@
           >
             <div
               v-if="props.column.field === 'productName'"
-              class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -517,10 +516,10 @@ export default {
             enabled: true,
           },
           thClass: 'text-nowrap',
-          width: '250px',
+          width: '220px',
         },
         {
-          label: 'Số lượng tồn kho',
+          label: 'SL tồn kho',
           field: 'instockAmount',
           type: 'number',
           filterOptions: {
@@ -920,5 +919,11 @@ export default {
     position: sticky;
     top: -2px;
     z-index: 10;
+  }
+  table.vgt-table td {
+    vertical-align: middle;
+  }
+  thead tr:last-child th {
+    vertical-align: middle;
   }
 </style>

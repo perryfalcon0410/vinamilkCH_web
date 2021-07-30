@@ -106,12 +106,13 @@ export default {
     },
     [GET_COMBO_PRODUCTS_DETAILS_ACTION]({ state }, val) {
       WareHouseComboService
-        .getComboProductsDetails(val)
+        .getComboProductsDetails(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.comboProductsInfo = res.data
             state.comboProductsDetails = res.data.details
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

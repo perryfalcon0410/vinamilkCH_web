@@ -296,6 +296,7 @@
                       @keypress="$onlyNumberInput"
                       @input="onInputValueProductPrice(props.row.originalIndex)"
                       @change="onChangePrice(props.row.originalIndex)"
+                      @keyup.enter="focusInputSearch"
                     />
                   </div>
                   <div v-else-if="props.column.field === 'vat'">
@@ -307,6 +308,7 @@
                         @input="checkValue(props.row.originalIndex)"
                         @keypress="$onlyNumberInput"
                         @change="onChangeVAT(props.row.originalIndex)"
+                        @keyup.enter="focusInputSearch"
                       />
                     </b-col>
                   </div>
@@ -316,6 +318,7 @@
                         v-model="products[props.row.originalIndex].note"
                         class="style-input"
                         maxlength="250"
+                        @keyup.enter="focusInputSearch"
                       />
                     </b-col>
                   </div>
@@ -1102,7 +1105,7 @@ export default {
     },
     focusInputSearch() {
       this.$refs.searchProduct.$el.querySelector('input').focus()
-      // this.$refs.search.$el.querySelector('input').click()
+      this.$refs.searchProduct.$el.querySelector('input').click()
     },
   },
 }

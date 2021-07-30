@@ -225,10 +225,12 @@
                 <span v-if="props.column.field == 'productAmount'">
                   <div v-if="props.row.productAmount != ''">
                     <b-form-input
+                      :id="damagedProduct[props.row.originalIndex].productCode"
                       v-model.trim="damagedProduct[props.index].productQuantity"
                       maxlength="7"
                       @keypress="$onlyNumberInput"
                       @change="onChangeQuantity(damagedProduct[props.index])"
+                      @keyup.enter="focusInputSearch"
                     />
                   </div>
                 </span>
@@ -256,6 +258,7 @@
               >
                 <!-- START - Prodduct input -->
                 <vue-autosuggest
+                  ref="searchProduct"
                   v-model="productInfos.productName"
                   :suggestions="products"
                   :input-props="{
@@ -502,6 +505,7 @@ export default {
         productName: null,
       },
       damagedProduct: [],
+      productIdSelected: null,
     }
   },
 
@@ -724,6 +728,11 @@ export default {
           }
           this.productInfos.productName = null
           this.products = [{ data: null }]
+          // auto focus when choose products
+          this.productIdSelected = product.item.productCode
+          setTimeout(() => {
+            document.getElementById(this.productIdSelected).focus()
+          }, 100)
         }
       }
     },
@@ -763,6 +772,11 @@ export default {
 
     navigateBack() {
       this.$router.replace({ name: 'warehouses-exchange-damaged-goods' })
+    },
+
+    focusInputSearch() {
+      this.$refs.searchProduct.$el.querySelector('input').focus()
+      this.$refs.searchProduct.$el.querySelector('input').click()
     },
   },
 }

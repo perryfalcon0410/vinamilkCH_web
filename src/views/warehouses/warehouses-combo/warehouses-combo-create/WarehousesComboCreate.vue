@@ -160,6 +160,7 @@
               </span>
               <span v-if="props.column.field === 'numProduct'">
                 <b-form-input
+                  :id="comboListRows[props.row.originalIndex].comboCode"
                   v-model.number="comboListRows[props.index].numProduct"
                   maxlength="7"
                   :state="isPricePositive(comboListRows[props.index].numProduct,props.index)"
@@ -174,6 +175,7 @@
                   :state="isPositive(comboListRows[props.index].price,props.index)"
                   maxlength="12"
                   @keypress="$onlyNumberInput"
+                  @keyup.enter="focusInputSearch"
                 />
               </span>
               <span v-if="props.column.field === 'comboName'">
@@ -195,6 +197,7 @@
               class="m-2"
             >
               <vue-autosuggest
+                ref="searchCombo"
                 v-model.trim="comboSearchQuery"
                 :suggestions="products"
                 :input-props="{
@@ -456,6 +459,7 @@ export default {
         },
       ],
       // -----------------Combo Exchange-----------------
+      comboIdSelected: null,
     }
   },
 
@@ -537,7 +541,6 @@ export default {
       this.products = [...this.getProducts]
     },
   },
-
   mounted() {
     this.tradingTypeSelected = this.tradingTypeOptions[0].id
     this.GET_WAREHOUSES_TYPE_ACTION({
@@ -578,18 +581,29 @@ export default {
           const newIndex = this.comboListRows.findIndex(e => e.selectedComboId === combo.item.id)
           this.globalIndex = newIndex
           this.GET_COMBO_PRODUCTS_DETAILS_ACTION({
-            id: combo.item.id,
-            status: 1,
-            formId: this.formId,
-            ctrlId: this.ctrlId,
+            data: {
+              id: combo.item.id,
+              status: 1,
+              formId: this.formId,
+              ctrlId: this.ctrlId,
+            },
+            onSuccess: () => {
+              document.getElementById(this.comboIdSelected).focus()
+            },
           })
         } else {
           this.comboListRows[index].numProduct += obj.numProduct
           this.updateComboExchangeQuantity(index)
           this.totalExchangeQuantity = this.comboExchangeRows.reduce((accum, i) => accum + Number(i.quantity), 0)
+
+          setTimeout(() => {
+            document.getElementById(this.comboIdSelected).focus()
+          }, 100)
         }
         this.comboSearchQuery = null
         this.products = [{ data: null }]
+        // auto focus when choose combo
+        this.comboIdSelected = combo.item.productCode
       }
     },
     deleteProduct(index) {
@@ -620,9 +634,9 @@ export default {
     onChangeQuantity(index) {
       this.updateComboExchangeQuantity(index)
       this.totalExchangeQuantity = this.comboExchangeRows.reduce((accum, item) => accum + Number(item.quantity), 0)
+      this.focusInputSearch()
     },
     // Change quantity--------------------------
-
     isPositive(num) {
       if (num <= 0) {
         return false
@@ -636,6 +650,7 @@ export default {
       }
       return true
     },
+
     navigateBack() {
       this.$router.push({ name: 'warehouses-combo' })
     },
@@ -648,6 +663,10 @@ export default {
         }
         this.GET_COMBO_PRODUCTS_ACTION(searchData)
       }
+    },
+    focusInputSearch() {
+      this.$refs.searchCombo.$el.querySelector('input').focus()
+      this.$refs.searchCombo.$el.querySelector('input').click()
     },
   },
 }
