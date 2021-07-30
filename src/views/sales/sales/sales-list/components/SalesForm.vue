@@ -464,6 +464,7 @@
     <sales-search-modal
       ref="salesSearchModal"
       :online-order-customers="onlineOrderCustomers"
+      :order-online="orderOnline"
       @getCustomerInfo="getCustomerInfo"
     />
     <!-- END - Sales Search Modal -->
@@ -496,6 +497,7 @@ import {
 import { getCurrentTime } from '@core/utils/utils'
 import { getUserData } from '@/auth/utils'
 import { VueAutosuggest } from 'vue-autosuggest'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   CUSTOMER,
   // GETTERS
@@ -961,18 +963,23 @@ export default {
     },
 
     onPayButtonClick() {
-      if (this.salemtDeliveryTypeSelected !== undefined) {
-        if (this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
-          this.isOpenPayModal = true
-          this.$bvModal.show('pay-modal')
-        } else if (this.salemtPromotionObjectSelected !== undefined) {
-          this.$refs.formContainer.validate().then(success => {
-            if (success) {
-              this.isOpenPayModal = true
-              this.$bvModal.show('pay-modal')
-            }
-          })
+      if (this.orderOnline.success === true) {
+        if (this.salemtDeliveryTypeSelected !== undefined) {
+          if (this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
+            this.isOpenPayModal = true
+            this.$bvModal.show('pay-modal')
+          } else if (this.salemtPromotionObjectSelected !== undefined) {
+            this.$refs.formContainer.validate().then(success => {
+              if (success) {
+                this.isOpenPayModal = true
+                this.$bvModal.show('pay-modal')
+              }
+            })
+          }
         }
+      } else {
+        toasts.error(this.orderOnline.statusValue)
+        this.$bvModal.hide('pay-modal')
       }
     },
 
@@ -1075,6 +1082,7 @@ export default {
     checkOnlineOrderId() {
       this.orderOnline.success = this.onlineOrderCoincideId.success
       this.orderOnline.statusValue = this.onlineOrderCoincideId.statusValue
+      console.log('this.orderOnline.success', this.orderOnline.success)
     },
 
     onChangeKeyWord() {
@@ -1166,6 +1174,7 @@ export default {
       this.$emit('deleteSaveBill', deleteBill)
     },
     getOrderNumber() {
+      this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)
       this.$emit('getOrderNumber', this.orderOnline)
     },
     changeStateOpenPayModal(isOpened) {

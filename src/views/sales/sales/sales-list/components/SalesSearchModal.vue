@@ -242,7 +242,7 @@
                 </div>
                 <b-pagination
                   v-model="pageNumber"
-                  :total-rows="customerPagination.totalElements"
+                  :total-rows="orderOnline.onlineOrderId !== null ? totalOnlineElements : customerPagination.totalElements"
                   :per-page="searchData.size"
                   first-number
                   last-number
@@ -320,6 +320,10 @@ export default {
     onlineOrderCustomers: {
       type: Array,
       default: () => [],
+    },
+    orderOnline: {
+      type: Object,
+      default: () => {},
     },
   },
   data() {
@@ -429,18 +433,27 @@ export default {
     customerInfo() {
       return this.CUSTOMER_BY_ID_GETTER()
     },
+    customerOnlinePagination() {
+      return this.customers.length
+    },
     customerPagination() {
       return this.CUSTOMERS_GETTER
     },
     paginationDetailContent() {
       const { page, size } = this.searchData
       const { totalElements } = this.customerPagination
+      const totalOnlineElements = this.customerOnlinePagination
 
       const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
       const maxPageSize = (size * (page + 1)) > totalElements
         ? totalElements : (size * (page + 1))
 
-      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
+      const maxOnlinePageSize = (size * (page + 1)) > totalOnlineElements
+        ? totalOnlineElements : (size * (page + 1))
+      const maxPages = this.customers ? maxOnlinePageSize : maxPageSize
+      const totals = this.customers ? totalOnlineElements : totalElements
+
+      return `${minPageSize} - ${maxPages} của ${totals} mục`
     },
   },
   watch: {
