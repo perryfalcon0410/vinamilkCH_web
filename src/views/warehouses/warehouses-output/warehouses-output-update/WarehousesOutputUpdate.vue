@@ -763,13 +763,13 @@ export default {
         if (this.products) {
           const products = [...this.products.map(data => ({
             id: data.productID,
-            quantity: data.productReturnAmount,
+            quantity: Number(data.productReturnAmount) || 0,
             productCode: data.productCode,
             productName: data.productName,
           })),
           ...this.rowsProductPromotion.map(data => ({
             id: data.productID,
-            quantity: data.productReturnAmount,
+            quantity: Number(data.productReturnAmount) || 0,
             productCode: data.productCode,
             productName: data.productName,
           })),

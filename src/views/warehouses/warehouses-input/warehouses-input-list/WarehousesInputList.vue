@@ -57,7 +57,8 @@
           line-numbers
           :total-rows="receiptPagination.totalElements"
           :sort-options="{
-            enabled: true,
+            enabled: false,
+            multipleColumns: true,
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"

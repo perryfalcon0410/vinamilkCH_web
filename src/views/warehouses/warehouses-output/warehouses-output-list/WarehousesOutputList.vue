@@ -237,6 +237,10 @@
           compact-mode
           line-numbers
           :total-rows="warehousesOutputPagination.totalElements"
+          :sort-options="{
+            enabled: false,
+            multipleColumns: true,
+          }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
           @on-per-page-change="onPerPageChange"
