@@ -81,6 +81,7 @@ export default {
       this.$router.replace({ name: 'auth-login' })
       this.$router.go()
     },
+
     navigateToChangePassword() {
       this.$router.push({ name: 'auth-reset-password' })
     },

@@ -228,17 +228,18 @@ export default {
       },
 
       customersData: [
-        {
-          id: 0,
-          customerCode: 'CUS.SHOP1.00001',
-          nameText: 'last name + first name',
-          mobiPhone: '0334642543',
-          dob: '2006-06-15T00:00:00.000',
-          genderId: 0,
-          status: 0,
-          customerTypeId: 0,
-          createdAt: '2021-06-17T10:11:29.533',
-        },
+        // Example Data
+        // {
+        //   id: 0,
+        //   customerCode: 'CUS.SHOP1.00001',
+        //   nameText: 'last name + first name',
+        //   mobiPhone: '0334642543',
+        //   dob: '2006-06-15T00:00:00.000',
+        //   genderId: 0,
+        //   status: 0,
+        //   customerTypeId: 0,
+        //   createdAt: '2021-06-17T10:11:29.533',
+        // },
       ],
     }
   },
