@@ -293,6 +293,7 @@ export default {
           label: 'Ngày sử dụng',
           field: 'dateUsed',
           sortable: false,
+          formatFn: value => this.$formatISOtoVNI(value),
           thClass: 'text-nowrap',
         },
         {

@@ -30,6 +30,7 @@
               class="v-flat-pickr-group mx-0"
               align-v="center"
               @keypress="$onlyDateInput"
+              @change="isFromDateValid"
             >
               <vue-flat-pickr
                 v-model="fromDate"
@@ -69,6 +70,7 @@
               class="v-flat-pickr-group mx-0"
               align-v="center"
               @keypress="$onlyDateInput"
+              @change="isToDateValid"
             >
               <b-icon-x
                 v-show="toDate"
@@ -133,6 +135,7 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  checkingDateInput,
 } from '@/@core/utils/filter'
 import {
   mapActions,
@@ -223,6 +226,16 @@ export default {
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)
+    },
+    isFromDateValid() {
+      if (!checkingDateInput(this.fromDate)) {
+        this.fromDate = earlyMonth()
+      }
+    },
+    isToDateValid() {
+      if (!checkingDateInput(this.toDate)) {
+        this.toDate = nowDate()
+      }
     },
   },
 }
