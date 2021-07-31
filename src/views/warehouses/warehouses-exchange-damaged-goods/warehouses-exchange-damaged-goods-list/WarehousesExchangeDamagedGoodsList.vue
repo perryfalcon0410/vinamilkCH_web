@@ -55,6 +55,9 @@
             perPage: searchData.size,
             setCurrentPage: searchData.page + 1,
           }"
+          :sort-options="{
+            enabled: false,
+          }"
           compact-mode
           line-numbers
           :total-rows="exchangeDamagedGoodsPagination.totalElements"

@@ -188,7 +188,6 @@ import {
   mapGetters,
 } from 'vuex'
 import {
-  getGenderLabel,
   getCustomerStatusLabel,
   resizeAbleTable,
 } from '@core/utils/utils'
@@ -201,6 +200,7 @@ import {
   // GETTERS
   CUSTOMERS_GETTER,
   CUSTOMER_TYPES_LABEL_GETTER,
+  GENDERS_LABEL_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
   EXPORT_CUSTOMERS_ACTION,
@@ -278,7 +278,7 @@ export default {
           label: this.$t('customer.gender'),
           field: 'genderId',
           tdClass: 'align-middle',
-          formatFn: getGenderLabel,
+          formatFn: this.$store.getters[`${CUSTOMER}/${GENDERS_LABEL_GETTER}`],
         },
         {
           label: this.$t('common.status'),
