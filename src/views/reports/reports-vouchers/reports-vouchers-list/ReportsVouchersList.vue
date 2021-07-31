@@ -25,7 +25,7 @@
         <b-button-group>
           <b-button
             v-if="statusExcelButton().show"
-            :disabled="statusExcelButton().disabled"
+            :disabled="statusExcelButton().disabled || rows.length === 0"
             class="shadow-brand-1 ml-1 h8 rounded bg-brand-1 text-white font-weight-bolder height-button-brand-1 align-items-button-center"
             variant="someThing"
             @click="exportReport"

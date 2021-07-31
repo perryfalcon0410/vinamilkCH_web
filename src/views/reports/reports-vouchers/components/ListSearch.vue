@@ -101,6 +101,8 @@
                       <b-row
                         class="v-flat-pickr-group mx-0"
                         align-v="center"
+                        @keypress="$onlyDateInput"
+                        @change="isPromoFromDateValid"
                       >
                         <b-icon-x
                           v-show="promoFromDate"
@@ -141,6 +143,8 @@
                       <b-row
                         class="v-flat-pickr-group mx-0"
                         align-v="center"
+                        @keypress="$onlyDateInput"
+                        @change="isPromoToDateValid"
                       >
                         <b-icon-x
                           v-show="promoToDate"
@@ -307,37 +311,32 @@
                     lg="3"
                     sm="4"
                   >
-                    <validation-provider
-                      v-slot="{ errors, passed, touched }"
-                      rules="required"
-                      name="Từ ngày"
+                    <div
+                      class="h7 mt-sm-1 mt-xl-0"
                     >
-                      <div
-                        class="h7 mt-sm-1 mt-xl-0"
-                      >
-                        Từ ngày <span class="text-danger">*</span>
-                      </div>
-                      <b-row
-                        class="v-flat-pickr-group mx-0"
-                        align-v="center"
-                      >
-                        <b-icon-x
-                          v-show="usedFromDate"
-                          style="position: absolute; right: 15px"
-                          class="cursor-pointer text-gray"
-                          scale="1.3"
-                          data-clear
-                        />
-                        <vue-flat-pickr
-                          v-model="usedFromDate"
-                          :state="touched ? passed : null"
-                          :config="configUsedFromDate"
-                          class="form-control h7 text-brand-3"
-                          placeholder="Chọn ngày"
-                        />
-                      </b-row>
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
+                      Từ ngày
+                    </div>
+                    <b-row
+                      class="v-flat-pickr-group mx-0"
+                      align-v="center"
+                      @keypress="$onlyDateInput"
+                      @change="isUsedFromDateValid"
+                    >
+                      <b-icon-x
+                        v-show="usedFromDate"
+                        style="position: absolute; right: 15px"
+                        class="cursor-pointer text-gray"
+                        scale="1.3"
+                        data-clear
+                      />
+                      <vue-flat-pickr
+                        v-model="usedFromDate"
+                        :state="touched ? passed : null"
+                        :config="configUsedFromDate"
+                        class="form-control h7 text-brand-3"
+                        placeholder="Chọn ngày"
+                      />
+                    </b-row>
                   </b-col>
                   <!-- END - Date From -->
 
@@ -347,37 +346,33 @@
                     lg="3"
                     sm="4"
                   >
-                    <validation-provider
-                      v-slot="{ errors, passed, touched }"
-                      rules="required"
-                      name="Đến ngày"
+
+                    <div
+                      class="h7 mt-sm-1 mt-xl-0"
                     >
-                      <div
-                        class="h7 mt-sm-1 mt-xl-0"
-                      >
-                        Đến ngày <span class="text-danger">*</span>
-                      </div>
-                      <b-row
-                        class="v-flat-pickr-group mx-0"
-                        align-v="center"
-                      >
-                        <b-icon-x
-                          v-show="usedToDate"
-                          style="position: absolute; right: 15px"
-                          class="cursor-pointer text-gray"
-                          scale="1.3"
-                          data-clear
-                        />
-                        <vue-flat-pickr
-                          v-model="usedToDate"
-                          :state="touched ? passed : null"
-                          :config="configUsedToDate"
-                          class="form-control h7 text-brand-3"
-                          placeholder="Chọn ngày"
-                        />
-                      </b-row>
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
+                      Đến ngày
+                    </div>
+                    <b-row
+                      class="v-flat-pickr-group mx-0"
+                      align-v="center"
+                      @keypress="$onlyDateInput"
+                      @change="isUsedToDateValid"
+                    >
+                      <b-icon-x
+                        v-show="usedToDate"
+                        style="position: absolute; right: 15px"
+                        class="cursor-pointer text-gray"
+                        scale="1.3"
+                        data-clear
+                      />
+                      <vue-flat-pickr
+                        v-model="usedToDate"
+                        :state="touched ? passed : null"
+                        :config="configUsedToDate"
+                        class="form-control h7 text-brand-3"
+                        placeholder="Chọn ngày"
+                      />
+                    </b-row>
                   </b-col>
                 <!-- END - Date To -->
                 </b-row>
@@ -421,6 +416,7 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  checkingDateInput,
 } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import {
@@ -512,9 +508,6 @@ export default {
       }
     },
   },
-  created() {
-    this.onSearch()
-  },
   mounted() {
     this.configPromotionToDate = {
       ...this.configPromotionToDate,
@@ -562,6 +555,26 @@ export default {
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)
+    },
+    isPromoFromDateValid() {
+      if (!checkingDateInput(this.promoFromDate)) {
+        this.promoFromDate = earlyMonth()
+      }
+    },
+    isPromoToDateValid() {
+      if (!checkingDateInput(this.promoToDate)) {
+        this.promoToDate = nowDate()
+      }
+    },
+    isUsedFromDateValid() {
+      if (!checkingDateInput(this.usedFromDate)) {
+        this.usedFromDate = earlyMonth()
+      }
+    },
+    isUsedToDateValid() {
+      if (!checkingDateInput(this.usedToDate)) {
+        this.usedToDate = nowDate()
+      }
     },
   },
 }
