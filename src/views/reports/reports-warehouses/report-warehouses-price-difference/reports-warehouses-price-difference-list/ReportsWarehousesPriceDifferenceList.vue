@@ -52,6 +52,7 @@
         <vue-good-table
           :columns="columns"
           :rows="differencePriceRows"
+          mode="remote"
           style-class="vgt-table table-horizontal-scroll report-difference"
           :pagination-options="{
             enabled: true,
@@ -443,30 +444,31 @@ export default {
       })
     },
     onClickExcelExportButton() {
-      this.EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION({ ...this.decentralization, ...this.searchData })
+      this.EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION({ ...this.searchData })
     },
 
     // Start - pagination
     updateSearchData(event) {
-      this.paginationData = {
-        ...this.paginationData,
+      this.updatePaginationData({
         ...event,
-      }
+        page: 0,
+      })
       this.searchData = event
       this.pageNumber = 1
+      this.onPaginationChange()
     },
     onPaginationChange() {
-      this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION({ ...this.paginationData, ...this.decentralization })
+      this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION({ ...this.paginationData })
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.updatePaginationData({ size: params.currentPerPage })
       this.onPaginationChange()
     },
     // End - pagination

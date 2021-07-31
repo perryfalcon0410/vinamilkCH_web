@@ -294,7 +294,6 @@ export default {
       }
       this.$emit('onClickSearchButton', searchData)
       this.updateSearchData(searchData)
-      this.GET_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION(searchData)
     },
 
     onClickSearchButton() {

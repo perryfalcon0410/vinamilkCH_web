@@ -428,7 +428,6 @@ export default {
         ...this.decentralization,
       }
       this.updateSearchData(searchData)
-      this.GET_OUTPUT_GOODS_ACTION(searchData)
     },
     onClickSearchButton() {
       this.$refs.formContainer.validate().then(success => {

@@ -44,7 +44,7 @@
           style-class="vgt-table table-horizontal-scroll"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize,
+            perPage: paginationData.size,
             setCurrentPage: pageNumber,
           }"
           compact-mode
@@ -143,7 +143,7 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="paginationData.size"
                   size="sm"
                   :options="perPageSizeOptions"
                   class="mx-1"
@@ -154,7 +154,7 @@
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="adjustmentPagination.totalElements"
-                :per-page="elementSize"
+                :per-page="paginationData.size"
                 first-number
                 last-number
                 align="right"
@@ -210,7 +210,6 @@ export default {
     return {
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
-      elementSize: commonData.perPageSizes[0],
       paginationData: {
         size: commonData.perPageSizes[0],
         page: this.pageNumber,
@@ -355,9 +354,9 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.adjustmentPagination.totalElements
-        ? this.adjustmentPagination.totalElements : (this.elementSize * this.pageNumber)
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.adjustmentPagination.totalElements
+        ? this.adjustmentPagination.totalElements : (this.paginationData.size * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${this.adjustmentPagination.totalElements} mục`
     },
@@ -404,11 +403,11 @@ export default {
     },
 
     onPerPageChange(params) {
-      this.updatePaginationData({ page: 0, size: params.currentPerPage })
+      this.updatePaginationData({ size: params.currentPerPage })
       this.onPaginationChange()
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },
     updateSearchData(event) {
@@ -416,7 +415,9 @@ export default {
       this.searchData = event
       this.updatePaginationData({
         ...event,
+        page: 0,
       })
+      this.onPaginationChange()
     },
     // End - pagination
   },

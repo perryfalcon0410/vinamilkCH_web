@@ -264,7 +264,6 @@ export default {
     return {
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
-      elementSize: commonData.perPageSizes[0],
       paginationData: {
         size: commonData.perPageSizes[0],
         page: this.pageNumber,
@@ -440,9 +439,9 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.reportReturnedgoodsPagination.totalElements
-        ? this.reportReturnedgoodsPagination.totalElements : (this.elementSize * this.pageNumber)
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.reportReturnedgoodsPagination.totalElements
+        ? this.reportReturnedgoodsPagination.totalElements : (this.paginationData.size * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${this.reportReturnedgoodsPagination.totalElements} mục`
     },

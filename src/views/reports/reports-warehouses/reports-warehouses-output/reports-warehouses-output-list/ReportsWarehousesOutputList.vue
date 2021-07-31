@@ -59,7 +59,7 @@
           style-class="vgt-table table-horizontal-scroll"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize,
+            perPage: paginationData.size,
             setCurrentPage: pageNumber,
           }"
           compact-mode
@@ -563,23 +563,24 @@ export default {
     // start pagination
     updateSearchData(event) {
       this.searchOptions = event
-      this.paginationData = {
-        ...this.paginationData,
+      this.updatePaginationData({
         ...event,
-      }
+        page: 0,
+      })
+      this.onPaginationChange()
     },
     onPaginationChange() {
-      this.GET_OUTPUT_GOODS_ACTION({ ...this.paginationData, ...this.decentralization })
+      this.GET_OUTPUT_GOODS_ACTION({ ...this.paginationData })
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.updatePaginationData({ size: params.currentPerPage })
       this.onPaginationChange()
     },
     onClickSearchButton() {

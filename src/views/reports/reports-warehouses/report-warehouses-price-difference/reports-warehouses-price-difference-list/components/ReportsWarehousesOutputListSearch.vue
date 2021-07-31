@@ -406,7 +406,6 @@ export default {
         isPaging: this.isPaging,
       }
       this.updateSearchData(searchData)
-      this.GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION(searchData)
     },
     onClickSearchButton() {
       this.$refs.formContainer.validate().then(success => {

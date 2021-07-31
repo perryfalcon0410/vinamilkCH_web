@@ -792,6 +792,9 @@ export default {
             this.orderProducts.push(index.item)
           } else {
             this.orderProducts[productIndex].quantity += 1
+            this.orderProducts[productIndex].productInventory = index.item.productInventory
+            this.orderProducts[productIndex].productUnitPrice = index.item.productUnitPrice
+            this.orderProducts[productIndex].sumProductUnitPrice = index.item.sumProductUnitPrice
             this.orderProducts[productIndex].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice)))
             this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
           }
