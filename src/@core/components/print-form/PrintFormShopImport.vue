@@ -126,7 +126,7 @@
       <b-col
         v-for="(item,index) in lstAdjust.orderImports"
         :key="index"
-        class="px-0 pb-1"
+        class="px-0 pb-50"
       >
         <table
           class="mb-50"
@@ -272,7 +272,7 @@
         <!-- END - Body -->
 
         </table>
-        <div class="d-flex flex-row justify-content-end pb-5">
+        <div class="d-flex flex-row justify-content-end pb-1 avoid-break">
           <div
             class="flex-container"
           >
@@ -356,7 +356,7 @@
       <b-col
         v-for="(item,index) in lstPo.orderImports"
         :key="index"
-        class="px-0 pb-1"
+        class="px-0 pb-50"
       >
         <table
           class="mb-50"
@@ -502,7 +502,7 @@
         <!-- END - Body -->
 
         </table>
-        <div class="d-flex flex-row justify-content-end pb-5">
+        <div class="d-flex flex-row justify-content-end pb-1 avoid-break">
           <div
             class="flex-container"
           >
@@ -586,7 +586,7 @@
       <b-col
         v-for="(item,index) in lstBorrow.orderImports"
         :key="index"
-        class="px-0 pb-1"
+        class="px-0 pb-50"
       >
         <table
           class="mb-50"
@@ -732,7 +732,7 @@
         <!-- END - Body -->
 
         </table>
-        <div class="d-flex flex-row justify-content-end pb-5">
+        <div class="d-flex flex-row justify-content-end pb-1 avoid-break">
           <div
             class="flex-container"
           >
@@ -816,7 +816,7 @@
       <b-col
         v-for="(item,index) in lstExpPo.orderImports"
         :key="index"
-        class="px-0 pb-1"
+        class="px-0 pb-50"
       >
         <table
           class="mb-50"
@@ -962,7 +962,7 @@
         <!-- END - Body -->
 
         </table>
-        <div class="d-flex flex-row justify-content-end pb-5">
+        <div class="d-flex flex-row justify-content-end pb-1 avoid-break">
           <div
             class="flex-container"
           >
@@ -1083,18 +1083,25 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-table {
-  position: relative;
+@media print {
+  @page {
+    margin-top: 10mm;
+    margin-bottom: 10mm;
+  }
+  body { color-adjust: exact; }
+  table {
   border: 1.8px solid rgb(78, 77, 77);
   width: 100%;
   border-collapse: collapse;
+  page-break-before: avoid;
+  page-break-inside: avoid;
 }
 th {
   border-style: solid;
   border-width: 1.8px;
 }
 td {
-  border-style: dotted;
+  border-style: dashed;
   border-width: 1.8px;
 }
 
@@ -1102,7 +1109,7 @@ td {
   border-top: 2.5px solid rgb(100, 99, 99);
 }
 .bot-border-dotted {
-  border-bottom: 2px dotted;
+  border-bottom: 2px dashed;
   border-collapse: collapse;
 }
 .total {
@@ -1110,21 +1117,26 @@ td {
 }
 .flex-container {
     display: flex;
-    position: absolute;
     right: 0;
-    border: 1.8px dotted;
+    border: 1.8px dashed;
     height: auto;
     width: 298px;
     flex-direction: column;
     align-items: center;
+    page-break-before: avoid;
+    page-break-inside: avoid;
 }
-.flex-item > .row {
-    min-width: 338px;
-}
-.big-font {
-  font-size: 17px;
-}
-.normal-weight {
-  font-weight: normal;
+  .flex-item > .row {
+      min-width: 338px;
+  }
+  .big-font {
+    font-size: 17px;
+  }
+  .normal-weight {
+    font-weight: normal;
+  }
+  .avoid-break {
+    page-break-inside: avoid;
+  }
 }
 </style>

@@ -376,7 +376,6 @@ import {
   required,
 } from '@/@core/utils/validations/validations'
 import toasts from '@core/utils/toasts/toasts'
-import saleData from '@/@db/sale'
 import SelectReceptModal from './components/SelectReceptModal.vue'
 import {
   RETURNEDGOODS,
@@ -630,6 +629,7 @@ export default {
     },
     getReasonType() {
       this.reasonReturnOptions = [...this.getReasonType]
+      this.selectedReason = this.reasonReturnOptions[0].id // temp
     },
     getReasonReturn() {
       this.reasonReturn = [...this.getReasonReturn]
@@ -648,7 +648,6 @@ export default {
       data: {},
       onSuccess: () => {},
     })
-    this.selectedReason = saleData.reasonReturnGoods.find(item => item.id === 'BREAKITEM').id
     this.$refs.focusInput.focus()
   },
 
