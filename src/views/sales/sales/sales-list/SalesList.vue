@@ -284,13 +284,13 @@
         @getCustomerCreate="getCustomerCreate"
         @currentCustomer="getCurrentCustomer"
         @getDefaultPromotionObjectSelected="getDefaultPromotionObjectSelected"
+        @getDefaultDeliveryTypeSelected="getDefaultDeliveryTypeSelected"
         @getSalemtPOSelected="getSalemtPOSelected"
         @getSalemtPOOptions="getSalemtPOOptions"
         @salemtDeliveryTypeSelected="salemtDeliveryTypeSelected"
         @getIdCustomer="getIdCustomer"
         @deleteSaveBill="deleteSaveBill"
         @getOrderNumber="getOrderNumber"
-        @getSalemtPOSelectedTest="getSalemtPOSelectedTest"
       />
       <!-- END - Section Form pay -->
 
@@ -456,7 +456,9 @@ export default {
           orderType: {
             value: null,
           },
-          deliveryType: null,
+          deliveryType: {
+            value: null,
+          },
           orderNumber: null,
           note: null,
           active: true,
@@ -473,6 +475,7 @@ export default {
       isOnline: false,
       isDisabledOrder: false,
       defaultPOSelected: null,
+      defaultDTSelected: null,
 
       // price customer change customerTypeId
       customerType: null,
@@ -606,18 +609,6 @@ export default {
 
     getOrderNumber() {
       this.currentOrderNumber = { ...this.getOrderNumber }
-    },
-
-    getSalemtPOSelected() {
-      this.orderSelected = { ...this.getSalemtPOSelected }
-    },
-
-    salemtDeliveryTypeSelected() {
-      this.deliverySelected = { ...this.salemtDeliveryTypeSelected }
-    },
-
-    getSalemtPOOptions() {
-      this.salemtPOOptions = [...this.getSalemtPOOptions]
     },
 
     deleteSaveBill() {
@@ -834,9 +825,11 @@ export default {
             address: this.defaultCustomer.address,
           },
           orderType: {
-            value: this.defaultPOSelected.toString(),
+            value: this.defaultPOSelected,
           },
-          deliveryType: null,
+          deliveryType: {
+            value: this.defaultDTSelected,
+          },
           orderNumber: null,
           note: null,
           active: false,
@@ -857,7 +850,9 @@ export default {
         orderType: {
           value: this.orderSelected.id,
         },
-        deliveryType: this.deliverySelected.id,
+        deliveryType: {
+          value: this.deliverySelected.id,
+        },
         orderNumber: this.currentOrderNumber.orderNumber,
         note: this.currentOrderNumber.note,
         active: false,
@@ -898,7 +893,9 @@ export default {
             orderType: {
               value: this.orderSelected.id,
             },
-            deliveryType: this.deliverySelected.id,
+            deliveryType: {
+              value: this.deliverySelected.id,
+            },
             orderNumber: this.currentOrderNumber.orderNumber,
             note: this.currentOrderNumber.note,
             active: false,
@@ -916,7 +913,7 @@ export default {
           this.currentCustomer.totalBill = bill.customer.totalBill
           this.currentCustomer.address = bill.customer.address
           this.orderSelected.id = bill.orderType.value
-          this.deliverySelected.id = bill.deliveryType
+          this.deliverySelected.id = bill.deliveryType.value
           this.currentOrderNumber.orderNumber = bill.orderNumber
           this.currentOrderNumber.note = bill.note
           return {
@@ -1050,7 +1047,7 @@ export default {
     },
 
     getSalemtPOSelected(val) {
-      // this.orderSelected = val
+      this.orderSelected = val
       const { usedShop } = this.loginInfo
       if (val.id === '1') {
         this.isOnline = false
@@ -1090,16 +1087,16 @@ export default {
       this.deliverySelected = val
     },
 
-    getSalemtPOSelectedTest(val) {
-      this.orderSelected = val
-    },
-
     getSalemtPOOptions(val) {
       this.salemtPOOptions = val
     },
 
     getDefaultPromotionObjectSelected(val) {
       this.defaultPOSelected = val
+    },
+
+    getDefaultDeliveryTypeSelected(val) {
+      this.defaultDTSelected = val
     },
 
     onClickAgreeButton() {

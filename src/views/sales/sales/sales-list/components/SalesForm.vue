@@ -851,9 +851,11 @@ export default {
       this.salemtPromotionObjectOptions = [...this.getSalemtPromotionObjectOptions]
       this.getDefaultPromotionObjectSelected()
       this.$emit('getSalemtPOOptions', this.salemtPromotionObjectOptions)
+      this.$emit('getDefaultPromotionObjectSelected', this.salemtPromotionObjectSelected)
     },
     salemtDeliveryTypeOptions() {
-      this.GetSalemtDeliveryTypeDefault()
+      this.getSalemtDeliveryTypeDefault()
+      this.$emit('getDefaultDeliveryTypeSelected', this.salemtDeliveryTypeSelected)
     },
     salemtPromotionObjectSelected() {
       if (this.salemtPromotionObjectSelected) {
@@ -882,34 +884,25 @@ export default {
       }
 
       if (e.key === 'F8' && !this.isOpenPayModal) {
+        // check valid type selected online and permission online
         if (
           this.totalQuantity === 0
           || this.editOnlinePermission === false
           || this.salemtDeliveryTypeSelected === undefined
           || this.salemtPromotionObjectSelected === undefined
-          || (this.salemtPromotionObjectSelected === saleData.salemtPromotionObject[1].id && this.orderOnline.orderNumber === '')
+          || (this.checkApParramCode === true && this.orderOnline.orderNumber === '')
           || this.isDisabled
         ) {
           this.isOpenPayModal = false
-          this.$bvModal.hide('pay-modal')
-        } else if (this.salemtDeliveryTypeSelected !== undefined) {
-          if (this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
-            this.isOpenPayModal = true
-            this.$bvModal.show('pay-modal')
-          } else if (this.salemtPromotionObjectSelected !== undefined) {
-            this.$refs.formContainer.validate().then(success => {
-              if (success) {
-                this.isOpenPayModal = true
-                this.$bvModal.show('pay-modal')
-              }
-            })
-          }
+          this.hidePayModal()
+        } else if (this.orderOnline.success === true) {
+          this.checkPayModal()
+        } else {
+          toasts.error(this.orderOnline.statusValue)
+          this.hidePayModal()
         }
       }
     })
-  },
-
-  created() {
   },
 
   methods: {
@@ -949,9 +942,6 @@ export default {
           })
           this.search = ''
         } else {
-          // this.GET_CUSTOMERS_ACTION({
-          //   searchKeywords: this.search.trim(),
-          // })
           this.search = ''
         }
         this.$refs.salesSearchModal.$refs.salesSearchModal.show()
@@ -963,23 +953,47 @@ export default {
     },
 
     onPayButtonClick() {
+      // check online number coincide
       if (this.orderOnline.success === true) {
-        if (this.salemtDeliveryTypeSelected !== undefined) {
-          if (this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
-            this.isOpenPayModal = true
-            this.$bvModal.show('pay-modal')
-          } else if (this.salemtPromotionObjectSelected !== undefined) {
-            this.$refs.formContainer.validate().then(success => {
-              if (success) {
-                this.isOpenPayModal = true
-                this.$bvModal.show('pay-modal')
-              }
-            })
-          }
-        }
+        this.checkPayModal()
       } else {
         toasts.error(this.orderOnline.statusValue)
-        this.$bvModal.hide('pay-modal')
+        this.hidePayModal()
+      }
+    },
+
+    showPayModal() {
+      this.$bvModal.show('pay-modal')
+    },
+
+    hidePayModal() {
+      this.$bvModal.hide('pay-modal')
+    },
+
+    checkPayModal() {
+      // check valid type selected online
+      if (this.salemtDeliveryTypeSelected !== undefined) {
+        if (this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
+          // check permission online manual
+          if (this.orderOnline.onlineOrderId != null && this.orderOnline.orderNumber.length > 0) {
+            if (this.editManualPermission) {
+              this.isOpenPayModal = true
+              this.showPayModal()
+            } else {
+              toasts.error('Bạn không có quyền tạo đơn Online tay. Vui lòng chọn đơn Online đang có trên hệ thống. ')
+            }
+          }
+          this.isOpenPayModal = true
+          this.showPayModal()
+        } else if (this.salemtPromotionObjectSelected !== undefined) {
+          // check valid condition online number
+          this.$refs.formContainer.validate().then(success => {
+            if (success) {
+              this.isOpenPayModal = true
+              this.showPayModal()
+            }
+          })
+        }
       }
     },
 
@@ -1152,9 +1166,8 @@ export default {
         return
       }
       this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions[0].id
-      this.$emit('getDefaultPromotionObjectSelected', this.salemtPromotionObjectSelected)
     },
-    GetSalemtDeliveryTypeDefault() {
+    getSalemtDeliveryTypeDefault() {
       if (this.salemtDeliveryTypeOptions.find(data => data.apParamCode === 'DELIVERY_001')) {
         this.salemtDeliveryTypeSelected = this.salemtDeliveryTypeOptions.find(data => data.apParamCode === 'DELIVERY_001').id
         return
