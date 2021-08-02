@@ -29,7 +29,7 @@ export const createSaleOrderEndpoint = `${SALES}`
 
 export const getDiscountByCodeEndpoint = `${SALES}/discount-code`
 
-export const updatePriceTypeCustomerEndpoint = `${SALES}/${PRODUCT}/change/customer-type`
+export const updatePriceTypeCustomerEndpoint = `${SALES}${PRODUCT}/change/customer-type`
 
 export const getProductsTopSaleMonthEndpoint = `${SALES}${PRODUCT}/top-sale/month`
 

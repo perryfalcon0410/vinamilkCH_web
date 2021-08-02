@@ -1030,16 +1030,18 @@ export default {
         this.editOnlinePermission = true
         this.customerFullName = data.fullName
         if (this.customerTypeCurent !== this.customerType) {
-          this.productChangePrice = this.orderProducts.map(item => ({
-            productId: item.productId,
-            quantity: item.quantity,
-          }))
-          this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
-            customerTypeId: this.customerType,
-            products: this.productChangePrice,
-            params: this.decentralization,
-          })
-          this.customerTypeCurent = this.customerType
+          if (this.orderProducts.length > 0) {
+            this.productChangePrice = this.orderProducts.map(item => ({
+              productId: item.productId,
+              quantity: item.quantity,
+            }))
+            this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
+              customerTypeId: this.customerType,
+              products: this.productChangePrice,
+              params: this.decentralization,
+            })
+            this.customerTypeCurent = this.customerType
+          }
         }
       } else {
         this.isCheckShopId = false
