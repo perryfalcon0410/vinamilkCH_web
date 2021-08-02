@@ -67,31 +67,6 @@
           </div>
           <!-- END - Empty rows -->
 
-          <!-- START - Rows -->
-          <template
-            slot="table-row"
-            slot-scope="props"
-          >
-            <div
-              v-if="props.column.field === 'pay' || props.column.field === 'sales'"
-              class="pr-70"
-            >
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-            <div
-              v-else-if="props.column.field === 'customerName' ||
-                props.column.field === 'address' ||
-                props.column.field === 'storeName'"
-              class="name-width"
-            >
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-            <div v-else>
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-          </template>
-          <!-- END - Rows -->
-
           <!-- START - Column filter -->
           <template
             slot="column-filter"
@@ -129,8 +104,16 @@
             slot-scope="props"
           >
             <div
-              v-if="props.column.field === 'customerName' || props.column.field === 'address'"
+              v-if="props.column.field === 'customerName' ||
+                props.column.field === 'address' ||
+                props.column.field === 'storeName'"
               class="name-width"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'pay' || props.column.field === 'sales'"
+              class="text-right pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -215,7 +198,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import { formatISOtoVNI } from '@/@core/utils/filter'
 import ListSearch from '../components/ListSearch.vue'
 import {
   REPORT_SALES_SALE_ON_DELIVERY_TYPE,
@@ -281,6 +263,7 @@ export default {
           sortable: false,
           thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
+          formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Doanh số',
@@ -289,6 +272,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
           thClass: 'text-right',
           tdClass: 'text-right',
         },
@@ -299,6 +283,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
           thClass: 'text-right',
           tdClass: 'text-right',
         },
@@ -354,9 +339,9 @@ export default {
         customerName: data.customerName,
         address: data.customerAddress,
         receiptCode: data.orderNumber,
-        receiptDate: formatISOtoVNI(data.orderDate),
-        sales: this.$formatNumberToLocale(data.amount),
-        pay: this.$formatNumberToLocale(data.total),
+        receiptDate: data.orderDate,
+        sales: data.amount,
+        pay: data.total,
         deliveryType: data.deliveryType,
         onlineReceipt: data.onlineNumber,
         channel: data.type,
