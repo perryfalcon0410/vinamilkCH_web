@@ -1169,6 +1169,14 @@ export default {
             this.pay.discount.discountAmount = 0
           }
         }
+        // clean data
+        this.pay.extraAmount = null
+        this.resetVoucher()
+        this.resetDiscount()
+        // get accumulate
+        this.pay.accumulate.accumulateAmount = 0
+        this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
+        this.extraAmountCalculation()
       },
       deep: true,
     },
@@ -1208,9 +1216,8 @@ export default {
         }
         // clean data
         this.pay.extraAmount = null
-        this.pay.voucher.voucherSerials = ''
-        this.pay.voucher.vouchers = []
-        this.pay.voucher.totalVoucherAmount = null
+        this.resetVoucher()
+        this.resetDiscount()
         // get accumulate
         this.pay.accumulate.accumulateAmount = 0
         this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
@@ -1258,9 +1265,8 @@ export default {
         }
         // clean data
         this.pay.extraAmount = null
-        this.pay.voucher.voucherSerials = ''
-        this.pay.voucher.vouchers = []
-        this.pay.voucher.totalVoucherAmount = null
+        this.resetVoucher()
+        this.resetDiscount()
         // get accumulate
         this.pay.accumulate.accumulateAmount = 0
         this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
