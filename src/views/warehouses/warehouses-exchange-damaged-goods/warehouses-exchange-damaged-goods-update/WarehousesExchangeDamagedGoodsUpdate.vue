@@ -217,6 +217,7 @@
                   :id="damagedProduct[props.row.originalIndex].productCode"
                   v-model.trim="damagedProduct[props.index].quantity"
                   maxlength="10"
+                  class="text-right"
                   @keypress="$onlyNumberInput"
                   @change="onChangeQuantity(damagedProduct[props.index])"
                   @keyup.enter="focusInputSearch"
@@ -449,21 +450,21 @@ export default {
             enabled: true,
           },
           thClass: 'text-left',
-          tdClass: 'text-left',
+          tdClass: 'text-left align-middle',
         },
         {
           label: 'Tên hàng',
           field: 'productName',
           sortable: false,
           thClass: 'text-left',
-          tdClass: 'text-left',
+          tdClass: 'text-left align-middle',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
           sortable: false,
           thClass: 'text-right',
-          tdClass: 'text-right',
+          tdClass: 'text-right align-middle',
         },
         {
           label: 'Giá',
@@ -471,7 +472,7 @@ export default {
           sortable: false,
           formatFn: this.$formatNumberToLocale,
           thClass: 'text-right',
-          tdClass: 'text-right',
+          tdClass: 'text-right align-middle',
         },
         {
           label: 'Số lượng ',
@@ -492,8 +493,8 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-center',
-          tdClass: 'text-right',
+          thClass: 'text-right',
+          tdClass: 'text-right align-middle',
         },
         {
           label: 'Thao tác',

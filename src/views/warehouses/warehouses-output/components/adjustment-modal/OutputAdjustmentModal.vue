@@ -11,7 +11,7 @@
       fluid
     >
       <!-- START - Delivery Bill list -->
-      <b-row class="mx-0">
+      <b-row>
         <!-- START - Header -->
         <b-col
           xl="4"
@@ -29,17 +29,20 @@
             <!-- START - Header -->
             <b-row class="py-1">
               <b-col cols="1" />
-              <b-col>
+              <b-col
+                cols="3"
+                class="text-nowrap"
+              >
                 <strong>
                   Số chứng từ
                 </strong>
               </b-col>
-              <b-col>
+              <b-col cols="3">
                 <strong>
                   Ngày
                 </strong>
               </b-col>
-              <b-col>
+              <b-col cols="5">
                 <strong>
                   Ghi chú
                 </strong>
@@ -58,14 +61,19 @@
               <b-col cols="1">
                 {{ index + 1 }}
               </b-col>
-              <b-col>
+              <b-col
+                v-b-popover.hover.bottom="item.adjustmentCode"
+                cols="3"
+                class="text-truncate"
+              >
                 {{ item.adjustmentCode }}
               </b-col>
-              <b-col>
+              <b-col cols="3">
                 {{ item.adjustmentDate }}
               </b-col>
               <b-col
                 class="text-wrap"
+                cols="5"
               >
                 {{ item.description }}
               </b-col>
