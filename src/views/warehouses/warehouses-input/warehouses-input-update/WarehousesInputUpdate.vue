@@ -378,7 +378,7 @@
               </div>
 
               <vue-good-table
-                :columns="columns"
+                :columns="promotionColumns"
                 :rows="promotions"
                 style-class="vgt-table"
                 compact-mode
@@ -423,6 +423,7 @@
                 >
                   <div v-if="props.column.field === 'quantity' && canEdit">
                     <b-input
+                      :id="promotions[props.row.originalIndex].productCode"
                       v-model="props.row.quantity"
                       class="text-right"
                       maxlength="7"
@@ -430,6 +431,7 @@
                       :value="props.row.quantity"
                       @change="updateQuantity(props.row.originalIndex, props.row.quantity)"
                       @keypress="$onlyNumberInput"
+                      @keyup.enter="focusInputSearch"
                     />
                   </div>
                   <div
@@ -466,6 +468,7 @@
                 class="mx-1 my-2 px-2"
               >
                 <vue-autosuggest
+                  ref="searchProduct"
                   v-model="productSearch"
                   :suggestions="suggestProducts"
                   :input-props="{
@@ -743,6 +746,48 @@ export default {
           tdClass: 'text-center',
         },
       ],
+
+      promotionColumns: [
+        {
+          label: 'Mã hàng',
+          field: 'productCode',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-nowrap',
+        },
+        {
+          label: 'Số lượng',
+          field: 'quantity',
+          type: 'number',
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-nowrap',
+        },
+        {
+          label: 'Tên hàng',
+          field: 'name',
+          sortable: false,
+          thClass: 'text-nowrap',
+        },
+        {
+          label: 'ĐVT',
+          field: 'unit',
+          sortable: false,
+          thClass: 'text-nowrap',
+        },
+        {
+          label: '',
+          field: 'feature',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+      ],
+      productIdSelected: null,
     }
   },
 
@@ -921,11 +966,8 @@ export default {
             productId: product.item.productId,
             productCode: product.item.productCode,
             quantity: 1, // default quantity
-            price: 0,
             name: product.item.name,
-            totalPrice: 0,
             unit: product.item.unit,
-            soNo: '',
           }
           if (index === -1) {
             this.promotions.push(obj)
@@ -934,6 +976,11 @@ export default {
           }
           this.productSearch = null
           this.suggestProducts = [{ data: null }]
+          // auto focus when choose products
+          this.productIdSelected = product.item.productCode
+          setTimeout(() => {
+            document.getElementById(this.productIdSelected).focus()
+          }, 100)
         }
       }
     },
@@ -984,6 +1031,10 @@ export default {
     },
     onClickDeleteButton(index) {
       this.promotions.splice(index, 1)
+    },
+    focusInputSearch() {
+      this.$refs.searchProduct.$el.querySelector('input').focus()
+      this.$refs.searchProduct.$el.querySelector('input').click()
     },
   },
 }

@@ -654,7 +654,7 @@ export default {
           this.productSales.push(item)
         } else {
           this.productSales[index].quantity += item.quantity
-          this.productSales[index].totalMoney = this.$formatNumberToLocale(this.productSales[index].totalMoneyOriginal + item.totalMoneyOriginal)
+          this.productSales[index].totalMoney = this.productSales[index].totalMoneyOriginal + item.totalMoneyOriginal
         }
       })
       this.totalElementProduct = this.productSales.length

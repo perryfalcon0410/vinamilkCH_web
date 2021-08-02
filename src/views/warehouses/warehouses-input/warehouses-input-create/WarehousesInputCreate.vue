@@ -451,10 +451,12 @@
                   </span>
                   <span v-if="props.column.field === 'quantity'">
                     <b-form-input
+                      :id="rowsProductPromotion[props.row.originalIndex].productCode"
                       v-model.number="rowsProductPromotion[props.index].quantity"
                       :state="isPositive(rowsProductPromotion[props.index].quantity)"
                       maxlength="7"
                       @keypress="$onlyNumberInput"
+                      @keyup.enter="focusInputSearch"
                     />
                   </span>
                   <span v-if="props.column.field === 'price'">
@@ -488,6 +490,7 @@
                   class="m-2"
                 >
                   <vue-autosuggest
+                    ref="searchProduct"
                     v-model="productSearch"
                     :suggestions="products"
                     :input-props="{
@@ -883,7 +886,7 @@ export default {
         },
       ],
       // END - Adjust Borrow col
-
+      productIdSelected: null,
     }
   },
 
@@ -1195,6 +1198,11 @@ export default {
           }
           this.productSearch = null
           this.products = [{ data: null }]
+          // auto focus when choose products
+          this.productIdSelected = product.item.productCode
+          setTimeout(() => {
+            document.getElementById(this.productIdSelected).focus()
+          }, 100)
         }
       }
     },
@@ -1233,6 +1241,10 @@ export default {
     },
     setDefaultWarehouse() {
       this.warehouseSelected = this.warehousesListOptions.find(warehouse => warehouse.default === 1).id
+    },
+    focusInputSearch() {
+      this.$refs.searchProduct.$el.querySelector('input').focus()
+      this.$refs.searchProduct.$el.querySelector('input').click()
     },
   },
 }
