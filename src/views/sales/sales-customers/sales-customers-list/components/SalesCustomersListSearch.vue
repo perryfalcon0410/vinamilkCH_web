@@ -282,7 +282,7 @@ export default {
     genderOptions() {
       // 1 = Nam, 2 = Nữ, 3 = Khác
       return this.GENDERS_GETTER.map(data => ({
-        id: data.id,
+        id: Number(data.categoryCode),
         label: data.categoryName,
       }))
     },
