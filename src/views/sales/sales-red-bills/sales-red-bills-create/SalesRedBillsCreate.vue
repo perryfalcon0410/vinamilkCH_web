@@ -278,7 +278,7 @@
                     <b-form-input
                       :id="products[props.row.originalIndex].productCode"
                       v-model.number="products[props.row.originalIndex].quantity"
-                      class="style-input"
+                      class="style-input text-right"
                       maxlength="7"
                       type="text"
                       @keypress="$onlyNumberInput"
@@ -290,7 +290,7 @@
                   <div v-else-if="props.column.field === 'productPrice'">
                     <b-form-input
                       v-model.number="products[props.row.originalIndex].productPrice"
-                      class="style-input"
+                      class="style-input text-right"
                       maxlength="20"
                       type="text"
                       @keypress="$onlyNumberInput"
@@ -303,7 +303,7 @@
                     <b-col>
                       <b-form-input
                         v-model="products[props.row.originalIndex].vat"
-                        class="style-input"
+                        class="style-input text-right"
                         maxlength="3"
                         @input="checkValue(props.row.originalIndex)"
                         @keypress="$onlyNumberInput"
@@ -347,7 +347,7 @@
                   <b-row
                     v-if="props.column.field === 'quantity'"
                     v-show="products.length > 0"
-                    class="h7 px-0 mx-1"
+                    class="h7 px-0 mx-10"
                     align-h="end"
                   >
                     {{ $formatNumberToLocale(totalQuantity) }}
@@ -356,7 +356,7 @@
                   <b-row
                     v-else-if="props.column.field === 'productPriceTotal'"
                     v-show="products.length > 0"
-                    class="h7 px-0 mx-0"
+                    class="h7 mx-50"
                     align-h="end"
                   >
                     {{ $formatNumberToLocale(totalPriceTotal) }}
@@ -364,7 +364,7 @@
                   <b-row
                     v-else-if="props.column.field === 'productExported'"
                     v-show="products.length > 0"
-                    class="h7 px-0 mx-0"
+                    class="h7 px-0 mx-50"
                     align-h="end"
                   >
                     {{ (totalProductExported ? $formatNumberToLocale(totalProductExported.toFixed(0)) : $formatNumberToLocale(totalProductExported)) }}
@@ -608,7 +608,7 @@ export default {
           label: 'Số lượng',
           field: 'quantity',
           type: 'number',
-          width: '70px',
+          width: '80px',
           thClass: 'text-nowrap',
           tdClass: 'align-middle',
           sortable: false,
@@ -620,9 +620,9 @@ export default {
           label: 'Đơn giá',
           field: 'productPrice',
           type: 'number',
-          width: '195px',
+          width: '120px',
           thClass: 'text-nowrap',
-          tdClass: ' align-middle',
+          tdClass: ' align-middle px-1',
           sortable: false,
         },
         {
@@ -630,7 +630,7 @@ export default {
           field: 'productPriceTotal',
           type: 'number',
           thClass: 'text-nowrap',
-          tdClass: 'align-middle',
+          tdClass: 'align-middle pr-2',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -650,7 +650,7 @@ export default {
           field: 'productExported',
           type: 'number',
           thClass: 'text-nowrap',
-          tdClass: 'align-middle',
+          tdClass: 'align-middle pr-2',
           sortable: false,
           filterOptions: {
             enabled: true,
@@ -661,7 +661,7 @@ export default {
           field: 'note',
           width: '150px',
           thClass: 'text-nowrap',
-          tdClass: 'align-middle',
+          tdClass: 'align-middle px-1',
           sortable: false,
         },
         {
@@ -982,14 +982,13 @@ export default {
       this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
       this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
       this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
+      this.products[index].productPrice = this.$formatNumberToLocale(this.products[index].productPrice)
     },
     onChangeQuantityAndPrice(index) {
       this.products[index].note = `${Math.floor(this.products[index].quantity / this.quantityPerBox)}T${this.products[index].quantity % this.quantityPerBox}`
       this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal))
       this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal)
       this.products[index].productExported = this.$formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
-      // this.products[index].productPriceOriginal = this.products[index].productPrice
-      // this.products[index].productPrice = Number(this.products[index].productPriceOriginal)
       this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
       this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
       this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)

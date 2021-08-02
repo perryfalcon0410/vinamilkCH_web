@@ -139,7 +139,7 @@ export default {
     },
     [GET_WAREHOUSES_TYPE_ACTION]({ state }, val) {
       WareHouseComboService
-        .getWarehouseTypes(val)
+        .getWarehouseTypes(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {

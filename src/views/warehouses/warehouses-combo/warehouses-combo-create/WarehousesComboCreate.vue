@@ -544,8 +544,7 @@ export default {
   mounted() {
     this.tradingTypeSelected = this.tradingTypeOptions[0].id
     this.GET_WAREHOUSES_TYPE_ACTION({
-      formId: this.formId,
-      ctrlId: this.ctrlId,
+      data: {},
       onSuccess: () => {
         this.warehouseTypeSelected = this.warehousesListOptions.find(warehouse => warehouse.default === 1).id
       },

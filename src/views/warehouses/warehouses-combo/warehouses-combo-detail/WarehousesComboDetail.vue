@@ -44,17 +44,40 @@
               </b-col>
 
               <b-col>
-                <b-form-group>
-                  <v-input-select
-                    :suggestions="traddingTypeOptions"
-                    :data-input="traddingTypeSelected.label"
-                    disabled
-                    title="Loại giao dịch"
-                  />
-                </b-form-group>
+                <div
+                  class="mt-sm-1 mt-xl-0"
+                >
+                  Loại giao dịch
+                </div>
+                <tree-select
+                  v-model="traddingTypeSelected"
+                  :options="traddingTypeOptions"
+                  disabled
+                  class="h7"
+                  dis
+                  no-options-text="Không có dữ liệu"
+                />
               </b-col>
             </b-form-row>
             <!-- END - ID and Type -->
+
+            <!-- START - Warehouse Type -->
+            <b-row class="pb-1 px-1">
+              <div
+                class="mt-sm-1 mt-xl-0"
+              >
+                Kho hàng
+              </div>
+              <tree-select
+                v-model="warehouseTypeSelected"
+                :options="warehousesListOptions"
+                disabled
+                class="h7"
+                dis
+                no-options-text="Không có dữ liệu"
+              />
+            </b-row>
+            <!-- END - Warehouse Type -->
 
             <!-- START -   Note -->
             <div class="h7">
@@ -169,7 +192,6 @@
 
 <script>
 import router from '@/router'
-import VInputSelect from '@/@core/components/v-input-select/VInputSelect.vue'
 import warehousesData from '@/@db/warehouses'
 import {
   // eslint-disable-next-line no-unused-vars
@@ -184,19 +206,18 @@ import {
   WAREHOUSES_COMBO,
   // GETTERS
   GET_WAREHOUSE_COMBO_DETAIL_GETTER,
+  WAREHOUSES_TYPE_GETTER,
   // ACTIONS
   GET_WAREHOUSE_COMBO_DETAIL_ACTION,
+  GET_WAREHOUSES_TYPE_ACTION,
 } from '../store-module/type'
 
 export default {
-  components: {
-    VInputSelect,
-  },
   data() {
     return {
       now: getNow(),
       traddingTypeOptions: warehousesData.tradingTypes,
-      traddingTypeSelected: { id: null, label: null },
+      traddingTypeSelected: null,
       // -----------------Combo List-----------------
       comboListColumns: [
         {
@@ -270,12 +291,17 @@ export default {
       // -----------------Combo Exchange-----------------
       transDate: '',
       transTime: '',
+      warehouseTypeSelected: null,
     }
   },
   computed: {
+    ...mapGetters(WAREHOUSES_COMBO, [
+      GET_WAREHOUSE_COMBO_DETAIL_GETTER,
+      WAREHOUSES_TYPE_GETTER,
+    ]),
     combos() {
-      if (this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().combos) {
-        return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().combos.map(data => ({
+      if (this.GET_WAREHOUSE_COMBO_DETAIL_GETTER.combos) {
+        return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER.combos.map(data => ({
           productCode: data.productCode,
           productName: data.productName,
           quantity: data.quantity,
@@ -285,8 +311,8 @@ export default {
       return []
     },
     products() {
-      if (this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().products) {
-        return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().products.map(data => ({
+      if (this.GET_WAREHOUSE_COMBO_DETAIL_GETTER.products) {
+        return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER.products.map(data => ({
           comboProductCode: data.comboProductCode,
           productCode: data.productCode,
           productName: data.productName,
@@ -298,13 +324,20 @@ export default {
       return []
     },
     detail() {
-      return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER()
+      return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER
     },
     totalQuantity() {
-      if (this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().productTotals) {
-        return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER().productTotals
+      if (this.GET_WAREHOUSE_COMBO_DETAIL_GETTER.productTotals) {
+        return this.GET_WAREHOUSE_COMBO_DETAIL_GETTER.productTotals
       }
       return 0
+    },
+
+    warehousesListOptions() {
+      return this.WAREHOUSES_TYPE_GETTER.map(data => ({
+        id: data.id,
+        label: data.wareHouseTypeName,
+      }))
     },
   },
   watch: {
@@ -312,22 +345,23 @@ export default {
       this.id = this.detail.transCode
       this.transDate = formatISOtoVNI(this.detail.transDate, false, true)
       this.note = this.detail.note
-      this.traddingTypeSelected = warehousesData.tradingTypes.find(item => item.id === this.detail.transType.toString()) || null
+      this.traddingTypeSelected = this.detail.transType || null
+      this.warehouseTypeSelected = this.detail.wareHouseTypeId || null
     },
   },
   mounted() {
     this.GET_WAREHOUSE_COMBO_DETAIL_ACTION({
       id: this.$route.params.id,
-      formId: 5,
-      ctrlId: 1,
+    })
+    this.GET_WAREHOUSES_TYPE_ACTION({
+      data: {},
+      onSuccess: () => {},
     })
   },
   methods: {
-    ...mapGetters(WAREHOUSES_COMBO, [
-      GET_WAREHOUSE_COMBO_DETAIL_GETTER,
-    ]),
     ...mapActions(WAREHOUSES_COMBO, [
       GET_WAREHOUSE_COMBO_DETAIL_ACTION,
+      GET_WAREHOUSES_TYPE_ACTION,
     ]),
     navigateBack() {
       router.push({ name: 'warehouses-combo' })
