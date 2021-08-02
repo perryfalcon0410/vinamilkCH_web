@@ -20,7 +20,7 @@
 
         <b-form-row
           class="mt-1"
-          @keyup.enter="onClickSearchButton"
+          @keyup.enter="onClickSearchButton()"
         >
           <b-col
             cols="4"
@@ -243,24 +243,25 @@ export default {
 
     onClickSearchButton() {
       const productIds = this.orderProducts.map(item => item.productId)
+      if (this.keyword !== '') {
+        this.GET_VOUCHER_BY_SERIAL_ACTION({
+          data: {
+            serial: this.keyword,
+            customerId: this.customer.id,
+            productIds: productIds.toString(),
+            ctrlId: this.ctrlId,
+            formId: this.formId,
+          },
+          onSuccess: () => {
 
-      this.GET_VOUCHER_BY_SERIAL_ACTION({
-        data: {
-          serial: this.keyword,
-          customerId: this.customer.id,
-          productIds: productIds.toString(),
-          ctrlId: this.ctrlId,
-          formId: this.formId,
-        },
-        onSuccess: () => {
-
-        },
-        onFailure: () => {
-          this.keyword = ''
-          this.isLocked = true
-          this.isDisableSearch = true
-        },
-      })
+          },
+          onFailure: () => {
+            this.keyword = ''
+            this.isLocked = true
+            this.isDisableSearch = true
+          },
+        })
+      }
     },
     onClickChooeseVouchers() {
       if (this.$refs['table-voucher'].selectedRows.length === 0) {

@@ -103,7 +103,7 @@
                       slot-scope="props"
                     >
                       <div v-if="props.column.field === 'quantity'">
-                        <b-input-group v-if="value.isEditable">
+                        <b-input-group>
                           <template #append>
                             <b-input-group-text>{{ props.row.quantityMax }}</b-input-group-text>
                           </template>
@@ -115,13 +115,6 @@
                             @keypress="$onlyNumberInput"
                           />
                         </b-input-group>
-
-                        <div
-                          v-else
-                          class="text-center"
-                        >
-                          {{ props.row.quantityMax }}
-                        </div>
                       </div>
                       <div
                         v-else-if="props.column.field === 'tableProductFeature' && value.promotionType === Number(promotionTypeOption[1].id)"
@@ -1350,7 +1343,7 @@ export default {
     },
 
     searchDiscount() {
-      if (this.pay.discount.discountCode === '') {
+      if (this.pay.discount.discountCode !== '') {
         const products = this.orderProducts.map(data => ({
           productId: data.productId,
           quantity: data.quantity,
@@ -1376,7 +1369,7 @@ export default {
           },
         })
       } else {
-        toasts.error('Bạn chưa nhập mã giảm giá')
+        toasts.error('Hãy nhập mã giảm giá')
       }
     },
 
@@ -1394,11 +1387,12 @@ export default {
     onChangeQuantity(id, params) {
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.programId === id) {
+          // CTKM auto (One Free Item)
           if (program.contraintType === Number(saleData.constraintType[1].id) && program.promotionType === Number(this.promotionTypeOption[0].id)) {
             let totalQuantityOtherProductSelected = 0
             const productsGroup = program.products.filter(i => i.groupOneFreeItem === params.row.groupOneFreeItem)
             const productsSameQuantityMax = productsGroup.filter(i => i.quantityMax === productsGroup[0].quantityMax)
-            if (productsSameQuantityMax.length === productsGroup.length) {
+            if (productsSameQuantityMax.length === productsGroup.length) { // Trường hợp cùng cơ số
               productsGroup.forEach(product => {
                 if (product.productId !== params.row.productId) {
                   totalQuantityOtherProductSelected += product.quantity
@@ -1429,11 +1423,17 @@ export default {
                 })],
               }
             }
-            return {
+            return { // khác cơ số
               ...program,
               products: [...program.products.map(product => {
                 if (product.groupOneFreeItem === params.row.groupOneFreeItem) {
                   if (product.productId !== params.row.productId || product.quantity === '') {
+                    return {
+                      ...product,
+                      quantity: 0,
+                    }
+                  }
+                  if (product.productId === params.row.productId && product.quantity === 0) {
                     return {
                       ...product,
                       quantity: 0,
@@ -1453,7 +1453,7 @@ export default {
             ...program,
             products: [...program.products.map(product => {
               if (product.groupOneFreeItem === params.row.groupOneFreeItem) {
-                if (product.productId !== params.row.productId || product.quantity === '') {
+                if (product.quantity === 0 || product.quantity === '') {
                   return {
                     ...product,
                     quantity: 0,
