@@ -99,7 +99,7 @@
       class="pb-1"
     >
       <b-row
-        class="mx-0 width-100-per"
+        class="mx-0 width-100-per avoid-break"
         align-v="end"
         style="border-style: dashed; border-width: 1px 1px 0 1px"
       >
@@ -402,5 +402,13 @@ td {
     }
     body {
       -webkit-print-color-adjust: exact !important;
+    }
+    table {
+      page-break-inside: avoid;
+      page-break-before: avoid;
+    }
+    .avoid-break {
+      page-break-inside: avoid;
+      page-break-after: avoid;
     }
 </style>

@@ -44,7 +44,7 @@
                     </strong>
                   </th>
                   <th class="pl-1 pt-1">
-                    <strong>
+                    <strong class="text-nowrap">
                       Ghi chú
                     </strong>
                   </th>
@@ -67,7 +67,9 @@
                   <td class="pl-1">
                     {{ item.borrowDate }}
                   </td>
-                  <td class="px-1">
+                  <td
+                    class="px-1 text-nowrap"
+                  >
                     {{ item.note }}
                   </td>
                 </tr>

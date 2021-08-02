@@ -1085,8 +1085,8 @@ export default {
 <style lang="scss" scoped>
 @media print {
   @page {
-    margin-top: 10mm;
-    margin-bottom: 10mm;
+    margin-top: 1mm;
+    margin-bottom: 1mm;
   }
   body { color-adjust: exact; }
   table {
