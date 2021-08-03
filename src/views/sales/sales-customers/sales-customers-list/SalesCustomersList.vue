@@ -407,7 +407,11 @@ export default {
       this.onPaginationChange({ size: params.currentPerPage })
     },
     onSortChange(params) {
-      this.onPaginationChange({ sort: `${params[0].field},${params[0].type}` })
+      if (params[0].type !== 'none') {
+        this.onPaginationChange({ sort: `${params[0].field},${params[0].type}`, page: commonData.pageNumber - 1 })
+      } else {
+        this.onPaginationChange({ sort: null, page: commonData.pageNumber - 1 })
+      }
     },
     // END - Vue Good Table func
   },

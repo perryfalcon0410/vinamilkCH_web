@@ -70,6 +70,7 @@
     <!-- START - Table section 1 -->
     <!-- START - Total section 2 -->
     <b-row
+      v-if="lstAdjustInfo != null"
       class="mx-0 font-italic"
       align-v="end"
       style="border-top: 2px solid; margin-top: 1px"
@@ -86,7 +87,7 @@
         class="text-right"
         style="width: 10%;"
       >
-        <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalQuantity) }}</strong>
+        <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalQuantity || 0) }}</strong>
       </div>
       <div
         class="text-right"
@@ -96,7 +97,7 @@
         class="text-right"
         style="width: 14%;"
       >
-        <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalPriceVat) }}</strong>
+        <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalPriceVat || 0) }}</strong>
       </div>
     </b-row>
     <!-- END - Total section 2 -->
@@ -343,7 +344,7 @@
         class="text-right"
         style="width: 10%;"
       >
-        <strong>{{ $formatNumberToLocale(lstPoInfo.totalQuantity) }}</strong>
+        <strong>{{ $formatNumberToLocale(lstPoInfo.totalQuantity || 0) }}</strong>
       </div>
       <div
         class="text-right"
@@ -353,7 +354,7 @@
         class="text-right"
         style="width: 14%;"
       >
-        <strong>{{ $formatNumberToLocale(lstPoInfo.totalPriceVat) }}</strong>
+        <strong>{{ $formatNumberToLocale(lstPoInfo.totalPriceVat || 0) }}</strong>
       </div>
     </b-row>
     <template>
@@ -546,39 +547,38 @@
           </tbody>
           <!-- END - Body -->
         </table>
-      </b-col>
-
-      <b-row
-        v-if="redInvoiceNo != 'null'"
-        :key="redInvoiceNo"
-        class="mx-0 mb-3"
-        align-h="end"
-      >
-        <div
-          class="rounded d-flex align-items-center mt-2 p-1"
-          style="border: 2px dotted; width: 28%;"
+        <b-row
+          v-if="redInvoiceNo != 'null'"
+          :key="redInvoiceNo"
+          class="mx-0 mb-3"
+          align-h="end"
         >
-          <div class="width-40-per">
-            <p class="italic">
-              Điều chỉnh:
-            </p>
-            <p class="italic">
-              Tổng cộng:
-            </p>
+          <div
+            class="rounded d-flex align-items-center mt-2 p-1"
+            style="border: 2px dotted; width: 28%;"
+          >
+            <div class="width-40-per">
+              <p class="italic">
+                Điều chỉnh:
+              </p>
+              <p class="italic">
+                Tổng cộng:
+              </p>
+            </div>
+            <div class="width-60-per text-right">
+              <p
+                class="italic"
+                style="opacity: 0;"
+              >
+                Điều chỉnh:
+              </p>
+              <p class="italic">
+                <strong>{{ $formatNumberToLocale(order.totalPriceVat) }}</strong>
+              </p>
+            </div>
           </div>
-          <div class="width-60-per text-right">
-            <p
-              class="italic"
-              style="opacity: 0;"
-            >
-              Điều chỉnh:
-            </p>
-            <p class="italic">
-              <strong>{{ $formatNumberToLocale(lstPoInfo.totalPriceVat) }}</strong>
-            </p>
-          </div>
-        </div>
-      </b-row>
+        </b-row>
+      </b-col>
     </template>
 
     <b-row
@@ -599,7 +599,7 @@
         class="text-right"
         style="width: 10%;"
       >
-        <strong>{{ $formatNumberToLocale(lstStockInfo.totalQuantity) }}</strong>
+        <strong>{{ $formatNumberToLocale(lstStockInfo.totalQuantity || 0) }}</strong>
       </div>
       <div
         class="text-right"
@@ -609,7 +609,7 @@
         class="text-right"
         style="width: 14%;"
       >
-        <strong>{{ $formatNumberToLocale(lstStockInfo.totalPriceVat) }}</strong>
+        <strong>{{ $formatNumberToLocale(lstStockInfo.totalPriceVat || 0) }}</strong>
       </div>
     </b-row>
     <template>
@@ -801,39 +801,38 @@
           </tbody>
           <!-- END - Body -->
         </table>
-      </b-col>
-
-      <b-row
-        v-if="redInvoiceNo != 'null'"
-        :key="redInvoiceNo"
-        class="mx-0 mb-3"
-        align-h="end"
-      >
-        <div
-          class="rounded d-flex align-items-center mt-2 p-1"
-          style="border: 2px dotted; width: 28%;"
+        <b-row
+          v-if="redInvoiceNo != 'null'"
+          :key="redInvoiceNo"
+          class="mx-0 mb-3"
+          align-h="end"
         >
-          <div class="width-40-per">
-            <p class="italic">
-              Điều chỉnh:
-            </p>
-            <p class="italic">
-              Tổng cộng:
-            </p>
+          <div
+            class="rounded d-flex align-items-center mt-2 p-1"
+            style="border: 2px dotted; width: 28%;"
+          >
+            <div class="width-40-per">
+              <p class="italic">
+                Điều chỉnh:
+              </p>
+              <p class="italic">
+                Tổng cộng:
+              </p>
+            </div>
+            <div class="width-60-per text-right">
+              <p
+                class="italic"
+                style="opacity: 0;"
+              >
+                Điều chỉnh:
+              </p>
+              <p class="italic">
+                <strong>{{ $formatNumberToLocale(order.totalPriceVat) }}</strong>
+              </p>
+            </div>
           </div>
-          <div class="width-60-per text-right">
-            <p
-              class="italic"
-              style="opacity: 0;"
-            >
-              Điều chỉnh:
-            </p>
-            <p class="italic">
-              <strong>{{ $formatNumberToLocale(lstStockInfo.totalPriceVat) }}</strong>
-            </p>
-          </div>
-        </div>
-      </b-row>
+        </b-row>
+      </b-col>
     </template>
   </b-container>
 </template>

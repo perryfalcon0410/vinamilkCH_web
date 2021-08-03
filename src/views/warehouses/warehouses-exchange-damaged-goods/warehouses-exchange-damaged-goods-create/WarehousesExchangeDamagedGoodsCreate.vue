@@ -236,7 +236,9 @@
                   </div>
                 </span>
 
-                <div v-if="props.column.field === 'feature'">
+                <div
+                  v-if="props.column.field === 'feature'"
+                >
                   <b-icon-trash-fill
                     v-b-popover.hover.top="'Xóa'"
                     class="cursor-pointer"
@@ -500,6 +502,7 @@ export default {
           label: 'Thao tác',
           field: 'feature',
           sortable: false,
+          tdClass: 'align-middle',
         },
       ],
       productInfos: {

@@ -500,6 +500,7 @@ export default {
           label: 'Thao tác',
           field: 'feature',
           sortable: false,
+          tdClass: 'align-middle',
         },
       ],
       productInfos: {
