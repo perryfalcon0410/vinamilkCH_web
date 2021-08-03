@@ -54,7 +54,7 @@
                 <b-check
                   v-model="value.isUse"
                   :disabled="!value.isEditable || value.promotionType === Number(promotionTypeOption[0].id)"
-                  @change="onChangeCheckProgramPromotion()"
+                  @change="onChangeCheckProgramPromotion(value.programId)"
                 />
                 <div class="text-white">
                   {{ value.promotionProgramName }} <span>- Số suất: {{ $formatNumberToLocale(value.numberLimited) }}</span>
@@ -921,6 +921,7 @@ export default {
         extraAmount: null,
         isVoucherLocked: false,
         promotionAmountExTax: null,
+        productSearch: '',
       },
       inputSearchFocusedSP: false,
       allProducts: [],
@@ -1091,28 +1092,54 @@ export default {
             }
           }
 
+          if (program.programType === saleData.programPromotionType[2].label) {
+            const indexPromotionCalculationZV21 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[2].label)
+            if (indexPromotionCalculationZV21 !== -1) {
+              const promotionCalculationZV21 = this.getPromotionCalculation.lstSalePromotions.find(p => p.programType === saleData.programPromotionType[2].label)
+              promotionCalculationZV21.products = promotionCalculationZV21.products || []
+              return { ...promotionCalculationZV21, isUse: true }
+            }
+          }
+
+          if (program.programType === saleData.programPromotionType[3].label) {
+            const indexPromotionCalculationZV23 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[3].label)
+            if (indexPromotionCalculationZV23 !== -1) {
+              const promotionCalculationZV23 = this.getPromotionCalculation.lstSalePromotions.find(p => p.programType === saleData.programPromotionType[3].label)
+              promotionCalculationZV23.products = promotionCalculationZV23.products || []
+              return { ...promotionCalculationZV23, isUse: true }
+            }
+          }
+
           return program
         })]
 
         const indexZV19lstSalePromotions = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[0].label)
         const indexZV20lstSalePromotions = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[1].label)
         const indexZV21lstSalePromotions = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[2].label)
+        const indexZV23lstSalePromotions = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[3].label)
+
         if (indexZV19lstSalePromotions === -1) {
           const indexPromotionProgramZV19 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[0].label)
-          if (indexPromotionProgramZV19) this.promotionPrograms.splice(indexPromotionProgramZV19, 1)
+          if (indexPromotionProgramZV19 !== -1) this.promotionPrograms.splice(indexPromotionProgramZV19, 1)
         }
         if (indexZV20lstSalePromotions === -1) {
           const indexPromotionProgramZV20 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[1].label)
-          if (indexPromotionProgramZV20) this.promotionPrograms.splice(indexPromotionProgramZV20, 1)
+          if (indexPromotionProgramZV20 !== -1) this.promotionPrograms.splice(indexPromotionProgramZV20, 1)
         }
         if (indexZV21lstSalePromotions === -1) {
           const indexPromotionProgramZV21 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[2].label)
-          if (indexPromotionProgramZV21) this.promotionPrograms.splice(indexPromotionProgramZV21, 1)
+          if (indexPromotionProgramZV21 !== -1) this.promotionPrograms.splice(indexPromotionProgramZV21, 1)
+        }
+        if (indexZV23lstSalePromotions === -1) {
+          const indexPromotionProgramZV23 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[3].label)
+          if (indexPromotionProgramZV23 !== -1) this.promotionPrograms.splice(indexPromotionProgramZV23, 1)
         }
       } else {
         const indexPromotionProgramZV19 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[0].label)
         const indexPromotionProgramZV20 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[1].label)
         const indexPromotionProgramZV21 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[2].label)
+        const indexPromotionProgramZV23 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[3].label)
+
         if (indexPromotionProgramZV19 !== -1) {
           this.promotionPrograms.splice(indexPromotionProgramZV19, 1)
         }
@@ -1121,6 +1148,9 @@ export default {
         }
         if (indexPromotionProgramZV21 !== -1) {
           this.promotionPrograms.splice(indexPromotionProgramZV21, 1)
+        }
+        if (indexPromotionProgramZV23 !== -1) {
+          this.promotionPrograms.splice(indexPromotionProgramZV23, 1)
         }
       }
     },
@@ -1497,6 +1527,7 @@ export default {
           // CTKM auto (All free Item) && CTKM handle
           return {
             ...program,
+            isUse: true,
             products: [...program.products.map(product => {
               if (product.groupOneFreeItem === params.row.groupOneFreeItem) {
                 if (product.quantity === 0 || product.quantity === '') {
@@ -1535,7 +1566,9 @@ export default {
     },
     searchProductFocus() {
       this.cursorProduct = -1
-      this.inputSearchFocusedSP = this.pay.productSearch !== null && this.pay.productSearch.length >= commonData.minSearchLength
+      if (this.pay.productSearch !== '') {
+        this.inputSearchFocusedSP = this.pay.productSearch !== null && this.pay.productSearch.length >= commonData.minSearchLength
+      }
     },
     searchProductKeyUp() {
       if (this.cursorProduct > 0) {
@@ -1555,30 +1588,32 @@ export default {
     },
     loadProducts(programId) {
       this.cursorProduct = -1
-      if (this.pay.productSearch === null) return
-      if (this.pay.productSearch.length >= commonData.minSearchLength) {
-        this.inputSearchFocusedSP = true
+      if (this.pay.productSearch !== null) {
+        if (this.pay.productSearch.length >= commonData.minSearchLength) {
+          this.inputSearchFocusedSP = true
 
-        this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
-          keyWord: this.pay.productSearch,
-          promotionId: programId,
-          ...this.decentralization,
-        })
-      } else {
-        this.inputSearchFocusedSP = false
+          this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
+            keyWord: this.pay.productSearch,
+            promotionId: programId,
+            ...this.decentralization,
+          })
+        } else {
+          this.inputSearchFocusedSP = false
+        }
       }
     },
     clickProduct(programId) {
-      if (this.pay.productSearch === null) return
-      if (this.pay.productSearch.length >= commonData.minSearchLength) {
-        this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
-          promotionId: programId,
-          ...this.decentralization,
-        })
+      if (this.pay.productSearch !== null) {
+        if (this.pay.productSearch.length >= commonData.minSearchLength) {
+          this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
+            promotionId: programId,
+            ...this.decentralization,
+          })
+        }
       }
     },
     selectProduct(programId, product) {
-      this.pay.productSearch = null
+      this.pay.productSearch = ''
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.programId === programId) {
           const existedProductIndex = program.products.findIndex(p => p.productCode === product.productCode)
@@ -1593,33 +1628,38 @@ export default {
       })]
     },
     onChangeCheckProgramPromotion(programId) {
-      const paramPromotionAmountInfos = this.promotionPrograms.filter(p => (p.amount !== null || p.programType === saleData.programPromotionType[2].label) && p.isUse)
-      const paramOrderRequest = {
-        customerId: this.customer.id,
-        orderType: Number(this.orderSelected),
-        products: this.orderProducts,
-      }
+      const programChecked = this.promotionPrograms.find(program => program.programId === programId)
+      if (programChecked.products.amount !== null && programChecked.promotionType === Number(this.promotionTypeOption[1].id)) {
+        const paramPromotionAmountInfos = this.promotionPrograms.filter(p => (p.amount !== null || p.programType === saleData.programPromotionType[2].label) && p.isUse)
+        const paramOrderRequest = {
+          customerId: this.customer.id,
+          orderType: Number(this.orderSelected),
+          products: this.orderProducts,
+        }
 
-      const paramGetPromotionCalculationData = {
-        customerId: this.customer.id,
-        orderType: Number(this.orderSelected),
-        totalOrderAmount: Number(this.pay.totalAmount),
-        saveAmount: Number(this.pay.accumulate.accumulateAmount),
-        voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
-        saleOffAmount: Number(this.pay.discount.discountAmount),
-        promotionInfo: paramPromotionAmountInfos,
-        orderRequest: paramOrderRequest,
-        discountCode: this.pay.discount.discountCode,
-      }
+        const paramGetPromotionCalculationData = {
+          customerId: this.customer.id,
+          orderType: Number(this.orderSelected),
+          totalOrderAmount: Number(this.pay.totalAmount),
+          saveAmount: Number(this.pay.accumulate.accumulateAmount),
+          voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
+          saleOffAmount: Number(this.pay.discount.discountAmount),
+          promotionInfo: paramPromotionAmountInfos,
+          orderRequest: paramOrderRequest,
+          discountCode: this.pay.discount.discountCode,
+        }
 
-      this.GET_PROMOTION_CALCULATION_ACTION(paramGetPromotionCalculationData)
+        this.GET_PROMOTION_CALCULATION_ACTION(paramGetPromotionCalculationData)
 
-      // xử lý phần mã giảm giá
-      const programSelected = this.promotionPrograms.find(p => p.programId === programId)
-      if (programSelected.products.length === 0 && programSelected.amount !== null) {
-        this.resetDiscount()
-        this.isDisabledDiscount = false
-        toasts.error('Vui lòng nhập lại Mã giảm giá vì có sự thay đổi tiền khuyến mãi')
+        // xử lý phần mã giảm giá
+        const programSelected = this.promotionPrograms.find(p => p.programId === programId)
+        if (programSelected.products.length === 0 && programSelected.amount !== null) {
+          if (this.pay.discount.discountCode !== '') {
+            this.resetDiscount()
+            this.isDisabledDiscount = false
+            toasts.error('Vui lòng nhập lại Mã giảm giá vì có sự thay đổi tiền khuyến mãi')
+          }
+        }
       }
     },
     onChangePromotionAmout(amount, maxAmout) {

@@ -47,6 +47,7 @@ export default {
     { id: '19', label: 'ZV19' },
     { id: '20', label: 'ZV20' },
     { id: '21', label: 'ZV21' },
+    { id: '23', label: 'ZV23' },
   ],
   printState: [
     { id: '', label: 'Tất cả' },
