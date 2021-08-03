@@ -453,7 +453,7 @@ export default {
     },
     genderOptions() {
       return this.GENDERS_GETTER.map(data => ({
-        id: Number(data.categoryCode),
+        id: data.id,
         label: data.categoryName,
       }))
     },

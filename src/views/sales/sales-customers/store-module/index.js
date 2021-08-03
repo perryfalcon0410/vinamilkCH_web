@@ -113,7 +113,7 @@ export default {
     },
     [GENDERS_LABEL_GETTER]: state => id => {
       if (state.genders) {
-        const customerDataFound = state.genders.find(item => `${item.categoryCode}` === `${id}`)
+        const customerDataFound = state.genders.find(item => `${item.id}` === `${id}`)
         return customerDataFound ? customerDataFound.categoryName : ''
       }
       return id
