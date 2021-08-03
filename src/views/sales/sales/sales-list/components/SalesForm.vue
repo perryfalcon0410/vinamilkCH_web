@@ -860,7 +860,7 @@ export default {
     salemtPromotionObjectSelected() {
       if (this.salemtPromotionObjectSelected) {
         const apParramCode = this.salemtPromotionObjectOptions.find(data => data.id === this.salemtPromotionObjectSelected).apParamCode
-        if (apParramCode.match(/ONLINE.*/)) {
+        if (apParramCode.includes('ONLINE')) {
           this.checkApParramCode = false
         } else {
           this.checkApParramCode = true
@@ -973,18 +973,19 @@ export default {
     checkPayModal() {
       // check valid type selected online
       if (this.salemtDeliveryTypeSelected !== undefined) {
-        if (this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
+        if (!this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
           // check permission online manual
-          if (this.orderOnline.onlineOrderId != null && this.orderOnline.orderNumber.length > 0) {
+          if (this.orderOnline.onlineOrderId === null && this.orderOnline.orderNumber.length > 0) {
             if (this.editManualPermission) {
               this.isOpenPayModal = true
               this.showPayModal()
             } else {
               toasts.error('Bạn không có quyền tạo đơn Online tay. Vui lòng chọn đơn Online đang có trên hệ thống. ')
             }
+          } else {
+            this.isOpenPayModal = true
+            this.showPayModal()
           }
-          this.isOpenPayModal = true
-          this.showPayModal()
         } else if (this.salemtPromotionObjectSelected !== undefined) {
           // check valid condition online number
           this.$refs.formContainer.validate().then(success => {
