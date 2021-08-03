@@ -6,6 +6,7 @@
     title-class="text-uppercase font-weight-bold text-brand-1"
     content-class="bg-light"
     footer-border-variant="light"
+    @hidden="cancel()"
   >
     <b-container
       fluid
@@ -795,6 +796,11 @@ export default {
       } else {
         toasts.error('Hóa đơn được chọn không cùng một khách hàng')
       }
+    },
+    cancel() {
+      this.productSales = []
+      this.billSalesSelected = []
+      this.isHidden = false
     },
   },
 }

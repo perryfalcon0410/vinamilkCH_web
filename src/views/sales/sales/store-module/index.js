@@ -312,7 +312,7 @@ export default {
     },
     [GET_TOP_SALE_PRODUCTS_ACTION]({ state }, val) {
       SalesServices
-        .getProductsTopSale(val)
+        .getProductsTopSale(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -321,6 +321,7 @@ export default {
             } else {
               state.topSaleProducts = []
             }
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }

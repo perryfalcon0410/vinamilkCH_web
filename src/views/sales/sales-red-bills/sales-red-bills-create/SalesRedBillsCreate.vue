@@ -288,15 +288,15 @@
                     />
                   </div>
                   <div v-else-if="props.column.field === 'productPrice'">
-                    <b-form-input
-                      v-model.number="products[props.row.originalIndex].productPrice"
-                      class="style-input text-right"
+                    <cleave
+                      v-model="products[props.row.originalIndex].productPrice"
+                      class="form-control"
                       maxlength="20"
-                      type="text"
-                      @keypress="$onlyNumberInput"
-                      @input="onInputValueProductPrice(props.row.originalIndex)"
-                      @change="onChangePrice(props.row.originalIndex)"
-                      @keyup.enter="focusInputSearch"
+                      :raw="true"
+                      :options="options.number"
+                      @keypress.native="$onlyNumberInput"
+                      @keyup.native="onChangePrice(props.row.originalIndex)"
+                      @keyup.enter.native="focusInputSearch"
                     />
                   </div>
                   <div v-else-if="props.column.field === 'vat'">
@@ -498,6 +498,7 @@ import {
   nowDate,
   formatVniDateToISO,
 } from '@/@core/utils/filter'
+import Cleave from 'vue-cleave-component'
 import PrintFormRedBills from '@core/components/print-form/PrintFormRedBills.vue'
 import { VueAutosuggest } from 'vue-autosuggest'
 import {
@@ -536,6 +537,7 @@ export default {
     ValidationProvider,
     ValidationObserver,
     PrintFormRedBills,
+    Cleave,
   },
 
   data() {
@@ -574,6 +576,13 @@ export default {
       productRows: [{ data: '' }],
       customers: [{ data: '' }],
       saleOrderIds: [],
+
+      options: {
+        number: {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand',
+        },
+      },
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -975,6 +984,10 @@ export default {
       }
     },
     onChangePrice(index) {
+      if (this.products[index].productPrice === '0') {
+        this.products[index].productPrice = 1
+        this.products[index].productPriceOriginal = 1
+      }
       this.products[index].productPriceOriginal = Number(this.products[index].productPrice)
       this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPrice))
       this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPrice)
@@ -982,7 +995,6 @@ export default {
       this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
       this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
       this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
-      this.products[index].productPrice = this.$formatNumberToLocale(this.products[index].productPrice)
     },
     onChangeQuantityAndPrice(index) {
       this.products[index].note = `${Math.floor(this.products[index].quantity / this.quantityPerBox)}T${this.products[index].quantity % this.quantityPerBox}`

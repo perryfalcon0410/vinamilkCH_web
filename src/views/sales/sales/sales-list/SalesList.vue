@@ -175,7 +175,7 @@
               <b-icon-shield-exclamation
                 v-if="props.row.productInventory < props.row.quantity"
                 color="red"
-                class="cursor-pointer ml-1"
+                class="cursor-pointer ml-icon"
                 font-scale="1.5"
               />
             </b-row>
@@ -389,7 +389,9 @@ export default {
           field: 'productInventory',
           formatFn: this.$formatNumberToLocale,
           type: 'number',
+          width: '105px',
           sortable: false,
+          thClass: 'text-nowrap',
           tdClass: 'align-middle',
         },
         {
@@ -587,6 +589,9 @@ export default {
     getProductSearch() {
       this.productsSearch = [...this.getProductSearch]
       this.productsSearchLength = this.productsSearch[0].data.length
+      if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
+        this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+      }
     },
     getProducts() {
       this.orderProducts = []
@@ -721,10 +726,9 @@ export default {
         this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
 
-        if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-          this.isDisabled = true
-        } else {
-          this.isDisabled = false
+        if (this.orderProducts[index].productInventory <= this.orderProducts[index].quantity) {
+          // this.isDisabled = true
+          this.orderProducts[index].quantity = this.orderProducts[index].productInventory
         }
       }
     },
@@ -772,7 +776,10 @@ export default {
       // this.searchOptions.size = null
       // this.searchOptions.keyWord = this.searchOptions.keyWord?.trim()
       if (this.isCheckShopId === true && this.searchOptions.keyWord.length >= this.minSearch) {
-        this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
+        this.GET_TOP_SALE_PRODUCTS_ACTION({
+          data: { ...this.searchOptions },
+          onSuccess: () => {},
+        })
       }
     },
     onclickAddProduct(index) {
@@ -782,8 +789,12 @@ export default {
           if (productIndex === -1) {
             this.orderProducts.push(index.item)
           } else {
-            this.orderProducts[productIndex].quantity += 1
             this.orderProducts[productIndex].productInventory = index.item.productInventory
+            if (this.orderProducts[productIndex].productInventory <= this.orderProducts[productIndex].quantity) {
+              this.orderProducts[productIndex].quantity = this.orderProducts[productIndex].productInventory
+            } else {
+              this.orderProducts[productIndex].quantity += 1
+            }
             this.orderProducts[productIndex].productUnitPrice = index.item.productUnitPrice
             this.orderProducts[productIndex].sumProductUnitPrice = index.item.sumProductUnitPrice
             this.orderProducts[productIndex].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice)))
@@ -956,9 +967,8 @@ export default {
         this.orderProducts[index].quantity = 1
       }
       if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-        this.isDisabled = true
-      } else {
-        this.isDisabled = false
+        // this.isDisabled = true
+        this.orderProducts[index].quantity = this.orderProducts[index].productInventory
       }
       this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
@@ -1140,5 +1150,8 @@ export default {
 }
 .b-icon-x:hover {
   color: black;
+}
+.ml-icon {
+  margin-left: 0.2rem;
 }
 </style>
