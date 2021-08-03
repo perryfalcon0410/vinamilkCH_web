@@ -573,7 +573,7 @@ import customerData from '@/@db/customer'
 import {
   CUSTOMER,
   // GETTERS
-  CUSTOMER_TYPES_UPDATE_GETTER,
+  CUSTOMER_TYPES_GETTER,
   PROVINCES_GETTER,
   DISTRICTS_GETTER,
   PRECINCTS_GETTER,
@@ -583,7 +583,6 @@ import {
   GENDERS_GETTER,
   // ACTIONS
   CREATE_CUSTOMER_ACTION,
-  GET_CUSTOMER_TYPES_UPDATE_ACTION,
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
   GET_PRECINCTS_ACTION,
@@ -673,7 +672,7 @@ export default {
   // Computed
   computed: {
     ...mapGetters(CUSTOMER, {
-      CUSTOMER_TYPES_UPDATE_GETTER,
+      CUSTOMER_TYPES_GETTER,
       PROVINCES_GETTER,
       DISTRICTS_GETTER,
       PRECINCTS_GETTER,
@@ -689,7 +688,7 @@ export default {
       }))
     },
     customerTypeOptions() {
-      return this.CUSTOMER_TYPES_UPDATE_GETTER.map(data => ({
+      return this.CUSTOMER_TYPES_GETTER.map(data => ({
         id: data.id,
         label: data.name,
       }))
@@ -779,7 +778,6 @@ export default {
   },
 
   mounted() {
-    this.GET_CUSTOMER_TYPES_UPDATE_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
     this.GET_PROVINCES_ACTION({ ...this.decentralization })
     this.GET_CARD_TYPES_ACTION({ ...this.decentralization })
     this.GET_CLOSELY_TYPES_ACTION({ ...this.decentralization })
@@ -805,7 +803,6 @@ export default {
   methods: {
     ...mapActions(CUSTOMER, [
       CREATE_CUSTOMER_ACTION,
-      GET_CUSTOMER_TYPES_UPDATE_ACTION,
       GET_PROVINCES_ACTION,
       GET_DISTRICTS_ACTION,
       GET_PRECINCTS_ACTION,

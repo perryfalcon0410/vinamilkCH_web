@@ -266,7 +266,7 @@ export default {
         .then(res => {
           if (res.success) {
             state.customerTypes = res.data
-            val.onSuccess()
+            val.onSuccess(res.data)
           } else {
             throw new Error(res.statusValue)
           }

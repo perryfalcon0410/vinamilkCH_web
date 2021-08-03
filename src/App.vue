@@ -102,6 +102,17 @@ export default {
     isLoggedIn() {
       this.getCustomerApiData()
     },
+    $route(to, from) {
+      // Khi điểm đến là create customer thì gọi api có tham số isCreate = true
+      if (to.name === 'sales-customers-create') {
+        this.getCustomerApiData(true)
+      }
+
+      // Khi điểm đi là TỪ create customer thì gọi api có tham số isCreate = false hoặc ko cần truyền
+      if (from.name === 'sales-customers-create') {
+        this.getCustomerApiData()
+      }
+    },
   },
 
   mounted() {
@@ -136,13 +147,15 @@ export default {
       GET_GENDERS_ACTION,
     ]),
 
-    getCustomerApiData() {
+    getCustomerApiData(isCreate) {
       if (this.isLoggedIn) {
+        // Customer type (Nhóm khách hàng)
         this.GET_CUSTOMER_TYPES_ACTION({
-          data: { ...this.decentralization },
+          data: { ...this.decentralization, isCreate },
           onSuccess: () => {},
         })
 
+        // Gender (Giới tính)
         this.GET_GENDERS_ACTION({
           data: { ...this.decentralization },
           onSuccess: () => {},
