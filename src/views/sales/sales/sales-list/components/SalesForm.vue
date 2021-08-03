@@ -890,7 +890,7 @@ export default {
           || this.editOnlinePermission === false
           || this.salemtDeliveryTypeSelected === undefined
           || this.salemtPromotionObjectSelected === undefined
-          || (this.checkApParramCode === true && this.orderOnline.orderNumber === '')
+          || (!this.checkApParramCode && this.orderOnline.orderNumber === '')
           || this.isDisabled
         ) {
           this.isOpenPayModal = false
