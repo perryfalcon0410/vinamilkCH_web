@@ -19,7 +19,6 @@ import {
   PRECINCTS_GETTER,
   CARD_TYPES_GETTER,
   CLOSELY_TYPES_GETTER,
-  GENDERS_LABEL_GETTER,
   GENDERS_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
@@ -111,13 +110,7 @@ export default {
     [CLOSELY_TYPES_GETTER](state) {
       return state.closelyTypes
     },
-    [GENDERS_LABEL_GETTER]: state => id => {
-      if (state.genders) {
-        const customerDataFound = state.genders.find(item => `${item.id}` === `${id}`)
-        return customerDataFound ? customerDataFound.categoryName : ''
-      }
-      return id
-    },
+
     [GENDERS_GETTER](state) {
       return state.genders
     },

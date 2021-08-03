@@ -200,7 +200,6 @@ import {
   // GETTERS
   CUSTOMERS_GETTER,
   CUSTOMER_TYPES_LABEL_GETTER,
-  GENDERS_LABEL_GETTER,
   // ACTIONS
   GET_CUSTOMERS_ACTION,
   EXPORT_CUSTOMERS_ACTION,
@@ -235,7 +234,7 @@ export default {
         //   nameText: 'last name + first name',
         //   mobiPhone: '0334642543',
         //   dob: '2006-06-15T00:00:00.000',
-        //   genderId: 0,
+        //   genderName: Nam,
         //   status: 0,
         //   customerTypeId: 0,
         //   createdAt: '2021-06-17T10:11:29.533',
@@ -276,9 +275,8 @@ export default {
         },
         {
           label: this.$t('customer.gender'),
-          field: 'genderId',
+          field: 'genderName',
           tdClass: 'align-middle',
-          formatFn: this.$store.getters[`${CUSTOMER}/${GENDERS_LABEL_GETTER}`],
         },
         {
           label: this.$t('common.status'),
@@ -318,7 +316,7 @@ export default {
           nameText: `${data.lastName} ${data.firstName}`,
           mobiPhone: data.mobiPhone,
           dob: data.dob,
-          genderId: data.genderId,
+          genderName: data.genderName,
           status: data.status,
           customerTypeId: data.customerTypeId,
           createdAt: data.createdAt,
