@@ -276,6 +276,7 @@
         :edit-manual-permission="editManualPermission"
         :is-disabled="isDisabled"
         :order-number-bill="orderNumber"
+        :order-current-id="orderCurrentId"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
@@ -283,8 +284,8 @@
         @getOnlineCustomer="getOnlineCustomer"
         @getCustomerCreate="getCustomerCreate"
         @currentCustomer="getCurrentCustomer"
-        @getDefaultPromotionObjectSelected="getDefaultPromotionObjectSelected"
-        @getDefaultDeliveryTypeSelected="getDefaultDeliveryTypeSelected"
+        @defaultPromotionObjectSelected="getDefaultPromotionObjectSelected"
+        @defaultDeliveryTypeSelected="getDefaultDeliveryTypeSelected"
         @getSalemtPOSelected="getSalemtPOSelected"
         @getSalemtPOOptions="getSalemtPOOptions"
         @salemtDeliveryTypeSelected="salemtDeliveryTypeSelected"
@@ -847,28 +848,28 @@ export default {
           class: '',
         })
         this.clickBillButton(lastIteminBill.id + 1)
-        return
+      } else {
+        this.bills.push({
+          id: 1,
+          products: [],
+          customer: {
+            fullName: this.currentCustomer.fullName,
+            phoneNumber: this.currentCustomer.phoneNumber,
+            totalBill: this.currentCustomer.totalBill,
+            address: this.currentCustomer.address,
+          },
+          orderType: {
+            value: this.defaultPOSelected,
+          },
+          deliveryType: {
+            value: this.defaultDTSelected,
+          },
+          orderNumber: this.currentOrderNumber.orderNumber,
+          note: this.currentOrderNumber.note,
+          active: false,
+          class: 'visited-action',
+        })
       }
-      this.bills.push({
-        id: 1,
-        products: [],
-        customer: {
-          fullName: this.currentCustomer.fullName,
-          phoneNumber: this.currentCustomer.phoneNumber,
-          totalBill: this.currentCustomer.totalBill,
-          address: this.currentCustomer.address,
-        },
-        orderType: {
-          value: this.orderSelected.id,
-        },
-        deliveryType: {
-          value: this.deliverySelected.id,
-        },
-        orderNumber: this.currentOrderNumber.orderNumber,
-        note: this.currentOrderNumber.note,
-        active: false,
-        class: 'visited-action',
-      })
     },
 
     onClickDeleteButton(id) {
@@ -901,12 +902,6 @@ export default {
               totalBill: this.currentCustomer.totalBill,
               address: this.currentCustomer.address,
             },
-            orderType: {
-              value: this.orderSelected.id,
-            },
-            deliveryType: {
-              value: this.deliverySelected.id,
-            },
             orderNumber: this.currentOrderNumber.orderNumber,
             note: this.currentOrderNumber.note,
             active: false,
@@ -923,8 +918,6 @@ export default {
           this.currentCustomer.phoneNumber = bill.customer.phoneNumber
           this.currentCustomer.totalBill = bill.customer.totalBill
           this.currentCustomer.address = bill.customer.address
-          this.orderSelected.id = bill.orderType.value
-          this.deliverySelected.id = bill.deliveryType.value
           this.currentOrderNumber.orderNumber = bill.orderNumber
           this.currentOrderNumber.note = bill.note
           return {
@@ -1060,6 +1053,19 @@ export default {
 
     getSalemtPOSelected(val) {
       this.orderSelected = val
+      // gán giá trị loại đơn hàng vào hoá đơn hiện tại đang selected
+      this.bills = this.bills.map(bill => {
+        if (bill.id === this.orderCurrentId) {
+          return {
+            ...bill,
+            orderType: {
+              value: val.id,
+            },
+          }
+        }
+        return bill
+      })
+
       const { usedShop } = this.loginInfo
       if (val.id === '1') {
         this.isOnline = false
@@ -1097,6 +1103,18 @@ export default {
 
     salemtDeliveryTypeSelected(val) {
       this.deliverySelected = val
+      // gán giá trị loại giao hàng vào hoá đơn hiện tại đang selected
+      this.bills = this.bills.map(bill => {
+        if (bill.id === this.orderCurrentId) {
+          return {
+            ...bill,
+            deliveryType: {
+              value: val.id,
+            },
+          }
+        }
+        return bill
+      })
     },
 
     getSalemtPOOptions(val) {
@@ -1105,10 +1123,32 @@ export default {
 
     getDefaultPromotionObjectSelected(val) {
       this.defaultPOSelected = val
+      this.bills = this.bills.map(bill => {
+        if (bill.id === this.orderCurrentId) {
+          return {
+            ...bill,
+            orderType: {
+              value: val,
+            },
+          }
+        }
+        return bill
+      })
     },
 
     getDefaultDeliveryTypeSelected(val) {
       this.defaultDTSelected = val
+      this.bills = this.bills.map(bill => {
+        if (bill.id === this.orderCurrentId) {
+          return {
+            ...bill,
+            deliveryType: {
+              value: val,
+            },
+          }
+        }
+        return bill
+      })
     },
 
     onClickAgreeButton() {
@@ -1135,12 +1175,6 @@ export default {
         })
       }
     },
-    // Reset to the last barcode before hitting enter (whatever anything in the input box)
-    // resetBarcode() {
-    //   const barcode = this.$barcodeScanner.getPreviousCode()
-    //   console.log(barcode)
-    //   // do something...
-    // },
   },
 }
 </script>

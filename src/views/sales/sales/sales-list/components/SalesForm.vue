@@ -225,7 +225,7 @@
                 <b-col>
                   <tree-select
                     v-model="salemtPromotionObjectSelected"
-                    :options="salemtPromotionObjectOptions"
+                    :options="getSalemtPromotionObjectOptions"
                     placeholder="Chọn loại đơn hàng"
                     :disabled="orderOnline.onlineOrderId != null && editManualPermission === false"
                     @select="resetOrderNumber"
@@ -572,6 +572,10 @@ export default {
       type: String,
       default: String,
     },
+    orderCurrentId: {
+      type: Number,
+      default: Number,
+    },
   },
 
   data() {
@@ -851,11 +855,11 @@ export default {
       this.salemtPromotionObjectOptions = [...this.getSalemtPromotionObjectOptions]
       this.getDefaultPromotionObjectSelected()
       this.$emit('getSalemtPOOptions', this.salemtPromotionObjectOptions)
-      this.$emit('getDefaultPromotionObjectSelected', this.salemtPromotionObjectSelected)
+      this.$emit('defaultPromotionObjectSelected', this.salemtPromotionObjectSelected)
     },
     salemtDeliveryTypeOptions() {
       this.getSalemtDeliveryTypeDefault()
-      this.$emit('getDefaultDeliveryTypeSelected', this.salemtDeliveryTypeSelected)
+      this.$emit('defaultDeliveryTypeSelected', this.salemtDeliveryTypeSelected)
     },
     salemtPromotionObjectSelected() {
       if (this.salemtPromotionObjectSelected) {
@@ -869,6 +873,14 @@ export default {
     },
     bills() {
       this.billButtons = [...this.bills]
+    },
+    orderCurrentId: {
+      handler() {
+        const bill = this.bills.find(b => b.id === this.orderCurrentId)
+        this.salemtPromotionObjectSelected = bill.orderType.value
+        this.salemtDeliveryTypeSelected = bill.deliveryType.value
+      },
+      deep: true,
     },
   },
 
@@ -1164,14 +1176,12 @@ export default {
     getDefaultPromotionObjectSelected() {
       if (this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE')) {
         this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE').id
-        return
       }
       this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions[0].id
     },
     getSalemtDeliveryTypeDefault() {
       if (this.salemtDeliveryTypeOptions.find(data => data.apParamCode === 'DELIVERY_001')) {
         this.salemtDeliveryTypeSelected = this.salemtDeliveryTypeOptions.find(data => data.apParamCode === 'DELIVERY_001').id
-        return
       }
       this.salemtDeliveryTypeSelected = this.salemtDeliveryTypeOptions[0].id
     },
