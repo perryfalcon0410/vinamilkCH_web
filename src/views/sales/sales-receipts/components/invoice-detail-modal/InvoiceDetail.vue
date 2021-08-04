@@ -142,6 +142,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          formatFn: value => this.$formatNumberToLocale(value),
           thClass: 'text-right',
           tdClass: 'text-right',
         },

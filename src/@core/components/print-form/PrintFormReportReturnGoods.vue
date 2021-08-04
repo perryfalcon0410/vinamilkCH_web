@@ -239,19 +239,19 @@
             </th>
             <th
               style="width: 8.5%"
-              class="px-50 "
+              class="text-right px-50 "
             >
               Giá
             </th>
             <th
               style="width: 14%"
-              class="px-50"
+              class="text-right px-50"
             >
               T.Tiền
             </th>
             <th
               style="width: 17%"
-              class="px-50 "
+              class="text-right px-50 "
             >
               Tiền trả lại
             </th>
