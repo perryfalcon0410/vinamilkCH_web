@@ -87,9 +87,27 @@
             slot-scope="props"
           >
             <div
-              v-if="props.column.field == 'feature'"
+              v-if="props.column.field === 'feature'"
             >
               <b-icon-bricks scale="1.25" />
+            </div>
+            <div
+              v-else-if="props.column.label === 'Số hóa đơn'"
+              ref="numberBill"
+            >
+              {{ props.column.label }}
+            </div>
+            <div
+              v-else-if="props.column.label === 'Mã khách hàng'"
+              ref="customerCode"
+            >
+              {{ props.column.label }}
+            </div>
+            <div
+              v-else-if="props.column.label === 'Họ tên'"
+              ref="customerName"
+            >
+              {{ props.column.label }}
             </div>
             <div v-else>
               {{ props.column.label }}
@@ -134,14 +152,12 @@
             </div>
             <div
               v-else-if="props.column.field === 'customerCode'"
-              ref="customerCode"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
               v-else-if="props.column.field === 'name'"
-              ref="customerName"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -303,7 +319,6 @@ export default {
         {
           label: 'Số hóa đơn',
           field: 'numberBill',
-          width: '180px',
           thClass: 'ws-nowrap scroll-column-header column-first',
           tdClass: 'scroll-column column-first',
         },
@@ -414,8 +429,9 @@ export default {
       ],
 
       salesReceiptList: [],
-      secondColLeftAttr: 163, // hard code
-      thirdColLeftAttr: 310, // hard code
+      numberBillWidth: 0,
+      customerCodeWidth: 0,
+      customerNameWidth: 0,
     }
   },
 
@@ -516,8 +532,9 @@ export default {
     },
     cssProps() {
       return {
-        '--left-second': this.secondColLeftAttr,
-        '--left-third': this.thirdColLeftAttr,
+        '--customer-code': `${this.numberBillWidth + 33}px`,
+        '--customer-name': `${this.numberBillWidth + this.customerCodeWidth + 33}px`,
+        '--date': `${this.numberBillWidth + this.customerCodeWidth + this.customerNameWidth + 33}px`,
       }
     },
   },
@@ -526,8 +543,9 @@ export default {
     getSalesReceiptList() {
       this.salesReceiptList = [...this.getSalesReceiptList]
       this.$nextTick(() => {
-        this.secondColLeftAttr = `${this.$refs.customerCode.offsetParent.offsetWidth + 212}px`
-        this.thirdColLeftAttr = `${this.$refs.customerCode.offsetParent.offsetWidth + this.$refs.customerName.offsetParent.offsetWidth + 211}px`
+        this.numberBillWidth = this.$refs.numberBill.offsetParent.offsetWidth
+        this.customerCodeWidth = this.$refs.customerCode.offsetParent.offsetWidth
+        this.customerNameWidth = this.$refs.customerName.offsetParent.offsetWidth
       })
     },
   },
@@ -634,16 +652,16 @@ export default {
     z-index: 1;
   }
   .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
-    left: 213px;
+    left: var(--customer-code);
     z-index: 1;
   }
   .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
     /* left: 163px; */
-    left: var(--left-second);
+    left: var(--customer-name);
     z-index: 1;
   }
   .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(5) {
-    left: var(--left-third);
+    left: var(--date);
     /* left: 310px; */
     z-index: 1;
   }
@@ -651,12 +669,12 @@ export default {
     left: 34px;
   }
   .sales-class.table-horizontal-scroll .column-second {
-    left: 213px;
+    left: var(--customer-code);
   }
   .sales-class.table-horizontal-scroll .column-third {
-    left: var(--left-second);
+    left: var(--customer-name);
   }
   .sales-class.table-horizontal-scroll .column-4 {
-    left: var(--left-third);
+    left: var(--date);
   }
 </style>
