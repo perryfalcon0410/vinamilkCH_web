@@ -159,23 +159,29 @@
                 {{ comboListRows[props.index].comboCode }}
               </span>
               <span v-if="props.column.field === 'numProduct'">
-                <b-form-input
+                <cleave
                   :id="comboListRows[props.row.originalIndex].comboCode"
                   v-model.number="comboListRows[props.index].numProduct"
+                  class="form-control text-right"
+                  :raw="true"
+                  :options="options.number"
                   maxlength="7"
                   :state="isPricePositive(comboListRows[props.index].numProduct,props.index)"
-                  @change="onChangeQuantity(props.row.originalIndex)"
-                  @keyup.enter="onChangeQuantity(props.row.originalIndex)"
+                  @change.native="onChangeQuantity(props.row.originalIndex)"
+                  @keyup.enter.native="onChangeQuantity(props.row.originalIndex)"
                   @keypress="$onlyNumberInput"
                 />
               </span>
               <span v-if="props.column.field === 'price'">
-                <b-form-input
+                <cleave
                   v-model.number="comboListRows[props.index].price"
                   :state="isPositive(comboListRows[props.index].price,props.index)"
+                  class="form-control text-right"
+                  :raw="true"
+                  :options="options.number"
                   maxlength="12"
                   @keypress="$onlyNumberInput"
-                  @keyup.enter="focusInputSearch"
+                  @keyup.enter.native="focusInputSearch"
                 />
               </span>
               <span v-if="props.column.field === 'comboName'">
@@ -260,7 +266,7 @@
               slot-scope="props"
             >
               <div
-                v-if="props.column.field === 'quantity' || props.column.field === 'exchangeRate'"
+                v-if="props.column.field === 'quantity' || props.column.field === 'exchangeRate' || props.column.field === 'price'"
                 class="pr-70"
               >
                 {{ props.formattedRow[props.column.field] }}
@@ -313,6 +319,7 @@ import { formatVniDateToISO, nowDate } from '@/@core/utils/filter'
 import { getNow } from '@/@core/utils/utils'
 import commonData from '@/@db/common'
 import { VueAutosuggest } from 'vue-autosuggest'
+import Cleave from 'vue-cleave-component'
 import {
   ValidationProvider,
   ValidationObserver,
@@ -342,6 +349,7 @@ export default {
     VueAutosuggest,
     ValidationProvider,
     ValidationObserver,
+    Cleave,
   },
 
   data() {
@@ -460,6 +468,12 @@ export default {
       ],
       // -----------------Combo Exchange-----------------
       comboIdSelected: null,
+      options: {
+        number: {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand',
+        },
+      },
     }
   },
 

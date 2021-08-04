@@ -272,6 +272,7 @@
       <!-- START - Modal find product -->
       <find-product-modal
         :visible="selectProductModalVisible"
+        :row-selected="productSelected"
         @onModalClose="onModalCloseClick"
         @onSaveClick="onSaveClick"
       />
@@ -347,6 +348,7 @@ export default {
         dateFormat: 'd/m/Y',
         minDate: this.fromDate,
       },
+      productSelected: [],
     }
   },
 
@@ -362,6 +364,14 @@ export default {
         ...this.configToOrderDate,
         minDate: this.fromOrderDate,
       }
+    },
+    productCodes() {
+      if (this.productCodes) {
+        this.productCodes = this.productCodes?.replace(/\s+/g, '')
+        this.productSelected = this.productCodes.split(',')
+        return
+      }
+      this.productSelected = []
     },
   },
 

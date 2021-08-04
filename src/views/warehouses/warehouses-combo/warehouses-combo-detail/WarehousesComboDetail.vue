@@ -118,7 +118,22 @@
               >
                 Không có dữ liệu
               </div>
-            <!-- END - Empty rows -->
+              <!-- END - Empty rows -->
+              <!-- START - Custom row -->
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <div
+                  v-if="props.column.field === 'quantity' || props.column.field === 'productPrice'"
+                  class="pr-70"
+                >
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+                <div v-else>
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+              </template>
             </vue-good-table>
 
             <!-- END - Table combo list -->
@@ -150,15 +165,29 @@
                 slot="column-filter"
                 slot-scope="props"
               >
-                <b-row
+                <div
                   v-if="props.column.field === 'quantity'"
-                  class="mx-0 h7 text-brand-3"
-                  align-h="end"
+                  class="mx-50 h7 text-brand-3 text-right"
                 >
                   {{ $formatNumberToLocale(totalQuantity) }}
-                </b-row>
+                </div>
               </template>
               <!-- START - Column filter -->
+              <!-- START - Custom row -->
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <div
+                  v-if="props.column.field === 'factor' || props.column.field === 'price' || props.column.field === 'quantity'"
+                  class="pr-70"
+                >
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+                <div v-else>
+                  {{ props.formattedRow[props.column.field] }}
+                </div>
+              </template>
             </vue-good-table>
             <!-- END - Table combo exchange -->
 

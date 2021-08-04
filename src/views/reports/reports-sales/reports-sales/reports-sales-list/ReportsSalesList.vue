@@ -549,15 +549,15 @@ export default {
     z-index: 1;
   }
   .table-horizontal-scroll thead tr:last-child th:nth-child(3) {
-    left: 180px;
+    left: 190px;
     z-index: 1;
   }
   .table-horizontal-scroll thead tr:last-child th:nth-child(4) {
-    left: 220px;
+    left: 265px;
     z-index: 1;
   }
   .table-horizontal-scroll thead tr:last-child th:nth-child(5) {
-    left: 300px;
+    left: 390px;
     z-index: 1;
   }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/

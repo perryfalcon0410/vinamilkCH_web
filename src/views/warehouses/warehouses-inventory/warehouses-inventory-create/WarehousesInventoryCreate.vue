@@ -178,7 +178,7 @@
             <div
               v-show="products.length"
               v-if="props.column.field === 'instockAmount'"
-              class="mx-0 h7 text-brand-3 text-right"
+              class="mx-50 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(instockAmount) }}
             </div>
@@ -186,7 +186,7 @@
             <div
               v-show="products.length"
               v-else-if="props.column.field === 'totalPrice'"
-              class="mx-0 h7 text-brand-3 text-right"
+              class="mx-50 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(totalPrice) }}
             </div>
@@ -194,7 +194,7 @@
             <div
               v-show="products.length"
               v-else-if="props.column.field === 'inventoryPacket'"
-              class="mx-0 h7 text-brand-3 text-right"
+              class="mx-50 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryPacket) }}
             </div>
@@ -202,7 +202,7 @@
             <div
               v-show="products.length"
               v-else-if="props.column.field === 'inventoryOdd'"
-              class="mx-0 h7 text-brand-3 text-right"
+              class="mx-50 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryOdd) }}
             </div>
@@ -210,7 +210,7 @@
             <div
               v-show="products.length"
               v-else-if="props.column.field === 'inventoryTotal'"
-              class="mx-0 h7 text-brand-3 text-right"
+              class="mx-50 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryTotal) }}
             </div>
@@ -218,7 +218,7 @@
             <div
               v-show="products.length"
               v-else-if="props.column.field === 'unequal'"
-              class="mx-0 h7 text-brand-3 text-right"
+              class="mx-50 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(unequal) }}
             </div>
@@ -235,29 +235,38 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'instockAmount' || props.column.field === 'price' || props.column.field === 'totalPrice' || props.column.field === 'inventoryTotal' || props.column.field === 'unequal'"
-              style="padding-right: 4px"
+              v-else-if="props.column.field === 'instockAmount' ||
+                props.column.field === 'price' ||
+                props.column.field === 'totalPrice' ||
+                props.column.field === 'inventoryTotal' ||
+                props.column.field === 'unequal' ||
+                props.column.field === 'exchange'"
+              class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div v-else-if="props.column.field === 'inventoryPacket'">
-              <b-input
+              <cleave
                 v-model="props.row.inventoryPacket"
+                class="form-control text-right"
+                :raw="true"
+                :options="options.number"
                 maxlength="7"
-                :number="true"
                 :value="props.row.inventoryPacket"
-                @change="updateInventoryPacket(props.row.originalIndex, props.row.inventoryPacket)"
+                @change.native="updateInventoryPacket(props.row.originalIndex, props.row.inventoryPacket)"
                 @keypress="$onlyNumberInput"
               />
             </div>
 
             <div v-else-if="props.column.field === 'inventoryOdd'">
-              <b-input
+              <cleave
                 v-model="props.row.inventoryOdd"
+                class="form-control text-right"
+                :raw="true"
+                :options="options.number"
                 maxlength="7"
-                :number="true"
                 :value="props.row.inventoryOdd"
-                @change="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
+                @change.native="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
                 @keypress="$onlyNumberInput"
               />
             </div>
@@ -466,6 +475,7 @@ import toasts from '@core/utils/toasts/toasts'
 import { mapActions, mapGetters } from 'vuex'
 import { reverseVniDate, nowDate } from '@/@core/utils/filter'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
+import Cleave from 'vue-cleave-component'
 import {
   WAREHOUSEINVENTORY,
   WAREHOUSE_TYPES_GETTER,
@@ -486,6 +496,7 @@ import {
 export default {
   components: {
     VCardActions,
+    Cleave,
   },
 
   data() {
@@ -584,7 +595,6 @@ export default {
         {
           label: 'ĐVT lẻ',
           field: 'oddUnit',
-          type: 'number',
           thClass: 'text-nowrap',
         },
       ],
@@ -603,6 +613,12 @@ export default {
       rowsSuccess: 0,
       rowsFail: 0,
       showSuccessMessage: false,
+      options: {
+        number: {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand',
+        },
+      },
     }
   },
 

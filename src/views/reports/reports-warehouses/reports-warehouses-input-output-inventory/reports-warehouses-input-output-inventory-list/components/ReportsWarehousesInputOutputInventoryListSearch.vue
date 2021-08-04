@@ -187,6 +187,7 @@
       <!-- START - Modal find product -->
       <find-product-modal
         :visible="selectProductModalVisible"
+        :row-selected="productSelected"
         @onModalClose="onModalCloseClick"
         @onSaveClick="onSaveClick"
       />
@@ -248,6 +249,7 @@ export default {
         minDate: this.fromDate,
       },
       warehouseType: null,
+      productSelected: [],
     }
   },
 
@@ -273,6 +275,14 @@ export default {
         ...this.configToDate,
         minDate: this.fromDate,
       }
+    },
+    productCodes() {
+      if (this.productCodes) {
+        this.productCodes = this.productCodes?.replace(/\s+/g, '')
+        this.productSelected = this.productCodes.split(',')
+        return
+      }
+      this.productSelected = []
     },
   },
 

@@ -1,5 +1,7 @@
 import ReportsWarehousesInputServices from '@/views/reports/reports-warehouses/reports-warehouses-input/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
+import FileSaver from 'file-saver'
+import moment from 'moment'
 
 import {
   // GETTERS
@@ -68,20 +70,15 @@ export default {
     [EXPORT_REPORT_WAREHOUSES_INPUT_ACTION]({}, val) {
       ReportsWarehousesInputServices
         .exportWarehouseInputs(val)
+        .then(response => response.data)
         .then(res => {
-          if (res.status === 200 && res.data != null) {
-            const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' })
-            if (window.navigator.msSaveOrOpenBlob) {
-              window.navigator.msSaveOrOpenBlob(blob, 'Cửa hàng nhập hàng_Filled')
-            } else {
-              const elem = window.document.createElement('a')
-              elem.href = window.URL.createObjectURL(blob)
-              elem.download = 'Cửa hàng nhập hàng_Filled'
-              document.body.appendChild(elem)
-              elem.click()
-              document.body.removeChild(elem)
-            }
+          if (res.type === 'application/json') {
+            throw new Error('Không có dữ liệu xuất')
           }
+
+          const fileName = `Cửa hàng nhập hàng_Filled_${moment().format('DDMMYYYY')}_${moment().format('hhmmss')}_${Math.floor(Math.random() * 900 + 100)}.xlsx`
+          const blob = new Blob([res], { type: 'data:application/xlsx' })
+          FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
           toasts.error(error.message)

@@ -185,25 +185,24 @@
             >
               <div
                 v-if="props.column.field === 'productCode'"
+                class="mx-0 h7 text-brand-3"
               >
                 {{ $formatNumberToLocale(totalProducts) }}
               </div>
 
-              <b-row
+              <div
                 v-else-if="props.column.field === 'productAmount'"
-                class="mx-0"
-                align-h="end"
+                class="mx-50 h7 text-brand-3 text-right"
               >
                 {{ $formatNumberToLocale(totalQuantity) }}
-              </b-row>
+              </div>
 
-              <b-row
+              <div
                 v-else-if="props.column.field === 'totalPrice'"
-                class="mx-0"
-                align-h="end"
+                class="mx-50 h7 text-brand-3 text-right"
               >
                 {{ $formatNumberToLocale(totalMoney) }}
-              </b-row>
+              </div>
             </template>
             <!-- END - Custom filter -->
 
@@ -232,6 +231,13 @@
                   color="red"
                   @click="onClickDeleteButton(props.row.originalIndex)"
                 />
+              </div>
+
+              <div
+                v-else-if="props.column.field === 'price' || props.column.field === 'totalPrice'"
+                class="pr-70"
+              >
+                {{ props.formattedRow[props.column.field] }}
               </div>
 
               <div v-else>
@@ -449,52 +455,43 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-left',
-          tdClass: 'text-left align-middle',
         },
         {
           label: 'Tên hàng',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-left align-middle',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right align-middle',
         },
         {
           label: 'Giá',
           field: 'price',
+          type: 'number',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
-          thClass: 'text-right',
-          tdClass: 'text-right align-middle',
         },
         {
           label: 'Số lượng ',
           field: 'productAmount',
+          type: 'number',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
+          type: 'number',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right',
-          tdClass: 'text-right align-middle',
         },
         {
           label: 'Thao tác',

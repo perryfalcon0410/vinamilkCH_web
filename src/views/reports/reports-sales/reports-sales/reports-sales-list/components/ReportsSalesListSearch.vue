@@ -409,6 +409,7 @@
       <!-- START - Modal find product -->
       <find-product-modal
         :visible="selectProductModalVisible"
+        :row-selected="productSelected"
         @onModalClose="onModalCloseClick"
         @onSaveClick="onSaveClick"
       />
@@ -478,6 +479,7 @@ export default {
         minDate: this.fromDate,
       },
       required,
+      productSelected: [],
     }
   },
 
@@ -509,6 +511,14 @@ export default {
     },
     saleChannelOptions() {
       this.saleChannelSelectedDefault()
+    },
+    productCodes() {
+      if (this.productCodes) {
+        this.productCodes = this.productCodes?.replace(/\s+/g, '')
+        this.productSelected = this.productCodes.split(',')
+        return
+      }
+      this.productSelected = []
     },
   },
 

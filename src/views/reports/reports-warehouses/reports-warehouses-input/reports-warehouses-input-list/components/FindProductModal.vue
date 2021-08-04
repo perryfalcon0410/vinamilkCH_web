@@ -318,6 +318,10 @@ export default {
       required: true,
       default: false,
     },
+    rowSelected: {
+      type: Array,
+      default: null,
+    },
   },
 
   data() {
@@ -338,6 +342,7 @@ export default {
       selectedProductRow: [],
       selectedCurrentPage: [],
       products: [],
+      allProducts: [],
       isCheckAllRows: false, //  check click all rows textbox
 
       decentralization: {
@@ -431,6 +436,19 @@ export default {
     },
     visible() {
       if (this.visible) {
+        // func delete products name
+        this.allProducts = []
+        this.rowSelected.forEach(data => {
+          const index = this.selectedProductRow.findIndex((item => item.productCode.toUpperCase() === data.toUpperCase()))
+          if (index > -1) {
+            if (!this.allProducts.find(dta => dta.id === this.selectedProductRow[index].id)) {
+              this.allProducts.push(this.selectedProductRow[index])
+            }
+          }
+        })
+        this.selectedProductRow = this.allProducts
+        // func delete products name
+
         this.products.forEach((item, index) => {
           const productSelectedFoundIndex = this.selectedProductRow.findIndex(data => item.id === data.id)
           if (productSelectedFoundIndex > -1) {
