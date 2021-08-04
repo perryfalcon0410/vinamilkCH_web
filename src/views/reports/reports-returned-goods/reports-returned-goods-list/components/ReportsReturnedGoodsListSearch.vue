@@ -204,7 +204,7 @@
         <!-- START - Modal find product -->
         <find-product-modal
           :visible="selectProductModalVisible"
-          :row-selected="productSeleceted"
+          :row-selected="productSelected"
           @onModalClose="onModalCloseClick"
           @onSaveClick="onSaveClick"
         />
@@ -263,7 +263,7 @@ export default {
       ids: null,
       reasonTypeOptions: [],
       reasonSelected: null,
-      productSeleceted: [],
+      productSelected: [],
 
       // decentralization
       decentralization: {
@@ -318,10 +318,10 @@ export default {
     ids() {
       if (this.ids) {
         this.ids = this.ids?.replace(/\s+/g, '')
-        this.productSeleceted = this.ids.split(',')
+        this.productSelected = this.ids.split(',')
         return
       }
-      this.productSeleceted = []
+      this.productSelected = []
     },
   },
   mounted() {

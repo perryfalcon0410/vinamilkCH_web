@@ -79,7 +79,6 @@
             <!-- END - Column -->
             <!-- START - Row -->
             <template
-              v-if="totalAmount"
               slot="table-row"
               slot-scope="props"
             >

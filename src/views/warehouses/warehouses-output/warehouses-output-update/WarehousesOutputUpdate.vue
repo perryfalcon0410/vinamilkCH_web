@@ -190,22 +190,34 @@
               <div
                 v-if="props.column.field === 'productReturnAmount'"
               >
-                <div v-if="warehousesOutput.receiptType == warehousesOptions[0].id">
-                  <b-form-input
+                <div
+                  v-if="warehousesOutput.receiptType == warehousesOptions[0].id"
+                  class="pr-50"
+                >
+                  <cleave
                     v-model="products[props.row.originalIndex].productReturnAmount"
                     size="sm"
+                    class="form-control h7 text-right mr-1"
+                    :raw="true"
+                    :options="options.number"
                     :disabled="isDisableSave"
                     @keypress="$onlyNumberInput"
-                    @change="changeQuantity"
+                    @keyup.native="changeQuantity"
                   />
                 </div>
-                <div v-else>
-                  <b-form-input
+                <div
+                  v-else
+                  class="pr-50"
+                >
+                  <cleave
                     v-model="products[props.row.originalIndex].productReturnAmount"
+                    class="form-control h7 text-right"
+                    :raw="true"
                     size="sm"
                     disabled
+                    :options="options.number"
                     @keypress="$onlyNumberInput"
-                    @change="changeQuantity"
+                    @keyup.native="changeQuantity"
                   />
                 </div>
               </div>
@@ -253,13 +265,20 @@
                 slot="table-row"
                 slot-scope="props"
               >
-                <div v-if="props.column.field === 'productReturnAmount'">
-                  <b-form-input
+                <div
+                  v-if="props.column.field === 'productReturnAmount'"
+                  class="pr-50"
+                >
+                  <cleave
                     v-model="rowsProductPromotion[props.row.originalIndex].productReturnAmount"
-                    maxlength="19"
+                    class="form-control h7 text-right"
+                    :raw="true"
+                    :options="options.number"
                     :disabled="isDisableSave"
+                    maxlength="19"
                     @keypress="$onlyNumberInput"
-                    @change="changeQuantity()"
+                    @keyup.native="changeQuantity()"
+                    @keyup.enter.native="focusInputSearch"
                   />
                 </div>
                 <div
@@ -347,6 +366,7 @@ import {
   getTimeOfDate, formatISOtoVNI, nowDate,
 } from '@/@core/utils/filter'
 import toasts from '@core/utils/toasts/toasts'
+import Cleave from 'vue-cleave-component'
 import {
   WAREHOUSES_OUTPUT,
   // Getter
@@ -359,6 +379,9 @@ import {
 } from '../store-module/type'
 
 export default {
+  components: {
+    Cleave,
+  },
   data() {
     return {
       warehousesOptions: warehousesData.outputTypes,
@@ -367,6 +390,13 @@ export default {
       products: [],
       nullCheck: true,
       rowsProductPromotion: [],
+
+      options: {
+        number: {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand',
+        },
+      },
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -388,31 +418,32 @@ export default {
           field: 'productPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
 
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'Đã xuất trả/ tổng nhập',
           field: 'export',
           sortable: false,
           thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          tdClass: 'text-right pr-2',
         },
         {
           label: 'Số lượng trả',
@@ -439,21 +470,22 @@ export default {
           label: 'Giá',
           field: 'productPrice',
           formatFn: this.$formatNumberToLocale,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
-          thClass: 'text-left',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
           formatFn: this.$formatNumberToLocale,
-          thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'Số lượng trả',
@@ -462,8 +494,8 @@ export default {
           // filterOptions: {
           //   enabled: true,
           // },
-          thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
         },
       ],
       poPromotionColumns: [
@@ -487,36 +519,37 @@ export default {
           field: 'productPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Thành tiền',
           field: 'productPriceTotal',
           sortable: false,
-          thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'Đã xuất trả/ tổng nhập',
           field: 'export',
           sortable: false,
           thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          tdClass: 'text-right pr-2',
         },
         {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
           sortable: false,
-          thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
         },
       ],
 

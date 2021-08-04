@@ -307,12 +307,18 @@
                   slot="table-row"
                   slot-scope="props"
                 >
-                  <div v-if="props.column.field === 'quantityPromo'">
-                    <b-form-input
+                  <div
+                    v-if="props.column.field === 'quantityPromo'"
+                    class="pr-50"
+                  >
+                    <cleave
                       v-model="rowsProductPromotion[props.row.originalIndex].quantityPromo"
+                      class="form-control h7 text-right"
+                      :raw="true"
+                      :options="options.number"
                       maxlength="19"
                       @keypress="$onlyNumberInput"
-                      @change="changeQuantity()"
+                      @keyup.native="changeQuantity()"
                     />
                   </div>
                   <div
@@ -439,6 +445,7 @@ import {
   nowDate,
 } from '@/@core/utils/filter'
 import toasts from '@/@core/utils/toasts/toasts'
+import Cleave from 'vue-cleave-component'
 import OutputModal from '../components/output-modal/OutputModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/OutputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/OutputBorrowedModal.vue'
@@ -461,6 +468,7 @@ export default {
     OutputModal,
     ValidationProvider,
     ValidationObserver,
+    Cleave,
   },
 
   data() {
@@ -475,6 +483,13 @@ export default {
       nullCheck: true,
       hideFilter: true,
       columnType: null,
+
+      options: {
+        number: {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand',
+        },
+      },
 
       output: {
         id: '',
@@ -528,38 +543,40 @@ export default {
           field: 'price',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'Đã xuất trả/ tổng nhập',
           field: 'export',
           sortable: false,
           thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          tdClass: 'text-right pr-2',
         },
         {
           label: 'Số lượng trả',
           field: 'quantityReturn',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
       ],
       columnsCustom: [
@@ -585,31 +602,33 @@ export default {
           field: 'price',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'Số lượng trả',
           field: 'quantity',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
       ],
       poPromotionColumns: [
@@ -632,38 +651,39 @@ export default {
           field: 'price',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
-          thClass: 'text-right',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
-          thClass: 'text-left',
-          tdClass: 'text-center',
+          thClass: 'text-nowrap',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'pr-2',
         },
         {
           label: 'Đã xuất trả/ tổng nhập',
           field: 'export',
           sortable: false,
           thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          tdClass: 'text-right pr-2',
         },
         {
           label: 'Số lượng trả',
           field: 'quantityPromo',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
-          thClass: 'text-right text-nowrap',
-          tdClass: 'text-right',
+          type: 'number',
+          thClass: 'text-nowrap',
         },
       ],
     }

@@ -121,7 +121,7 @@
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ totalAmount }}
+              {{ $formatNumberToLocale(totalAmount) }}
             </b-row>
 
             <b-row
@@ -130,7 +130,7 @@
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ totalPromo }}
+              {{ $formatNumberToLocale(totalPromo) }}
             </b-row>
 
             <b-row
@@ -139,7 +139,7 @@
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ totalQuantity }}
+              {{ $formatNumberToLocale(totalQuantity) }}
             </b-row>
           </template>
           <!-- START - Column filter -->
@@ -230,9 +230,6 @@ import {
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
-import {
-  replaceDotWithComma,
-} from '@/@core/utils/filter'
 import VIconDetail from '@core/components/v-icons/IconDetail.vue'
 import commonData from '@/@db/common'
 // import OrderDetailsModal from '../components/OrderDetailsModal.vue'
@@ -375,19 +372,19 @@ export default {
     },
     totalQuantity() {
       if (this.RETURNED_GOODS_GETTER.info) {
-        return replaceDotWithComma(this.$formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.allTotal)))
+        return Number(this.RETURNED_GOODS_GETTER.info.allTotal)
       }
       return 0
     },
     totalPromo() {
       if (this.RETURNED_GOODS_GETTER.info) {
-        return replaceDotWithComma(this.$formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.allPromotion)))
+        return Number(this.RETURNED_GOODS_GETTER.info.allPromotion)
       }
       return 0
     },
     totalAmount() {
       if (this.RETURNED_GOODS_GETTER.info) {
-        return replaceDotWithComma(this.$formatNumberToLocale(Number(this.RETURNED_GOODS_GETTER.info.totalAmount)))
+        return Number(this.RETURNED_GOODS_GETTER.info.totalAmount)
       }
       return 0
     },

@@ -405,7 +405,7 @@
                 >
                   <div
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-0 pr-50 h7 text-brand-3 text-right"
                   >
                     {{ $formatNumberToLocale(totalPromotionQuantity) }}
                   </div>
@@ -422,16 +422,17 @@
                   slot-scope="props"
                 >
                   <div v-if="props.column.field === 'quantity' && canEdit">
-                    <b-input
+                    <cleave
                       :id="promotions[props.row.originalIndex].productCode"
                       v-model="props.row.quantity"
-                      class="text-right"
-                      maxlength="7"
-                      :number="true"
+                      class="form-control h7 text-right pr-50"
+                      :raw="true"
+                      :options="options.number"
                       :value="props.row.quantity"
-                      @change="updateQuantity(props.row.originalIndex, props.row.quantity)"
+                      maxlength="7"
                       @keypress="$onlyNumberInput"
-                      @keyup.enter="focusInputSearch"
+                      @keyup.native="updateQuantity(props.row.originalIndex, props.row.quantity)"
+                      @keyup.enter.native="focusInputSearch"
                     />
                   </div>
                   <div
@@ -473,7 +474,7 @@
                   :suggestions="suggestProducts"
                   :input-props="{
                     id:'autosuggest__input',
-                    class:'form-control w-25',
+                    class:'form-control w-30',
                     placeholder:'Nhập mã hoặc tên sản phẩm'
                   }"
                   style="cursor: pointer"
@@ -531,6 +532,7 @@
 <script>
 import commonData from '@/@db/common'
 import toasts from '@core/utils/toasts/toasts'
+import Cleave from 'vue-cleave-component'
 import {
   mapActions,
   mapGetters,
@@ -567,6 +569,7 @@ export default {
     ValidationProvider,
     ValidationObserver,
     VueAutosuggest,
+    Cleave,
   },
   data() {
     return {
@@ -590,6 +593,13 @@ export default {
         dateFormat: 'd/m/Y',
         allowInvalidPreload: false,
         altInput: false,
+      },
+
+      options: {
+        number: {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand',
+        },
       },
 
       // validation rules
@@ -691,6 +701,7 @@ export default {
             enabled: true,
           },
           thClass: 'text-nowrap',
+          tdClass: 'pr-50',
         },
         {
           label: 'Giá',
@@ -772,12 +783,14 @@ export default {
           field: 'name',
           sortable: false,
           thClass: 'text-nowrap',
+          tdClass: 'pl-70',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
           thClass: 'text-nowrap',
+          tdClass: 'pl-70',
         },
         {
           label: '',
@@ -972,7 +985,7 @@ export default {
           if (index === -1) {
             this.promotions.push(obj)
           } else {
-            this.promotions[index].quantity += 1
+            this.promotions[index].quantity = Number(this.promotions[index].quantity) + 1
           }
           this.productSearch = null
           this.suggestProducts = [{ data: null }]
@@ -986,7 +999,7 @@ export default {
     },
     // END - Search product func
     updateQuantity(index, value) {
-      this.promotions[index].quantity = value + 0
+      this.promotions[index].quantity = Number(value) + 0
     },
     updateReceipt() {
       const updatedPromotions = this.promotions.map(data => ({

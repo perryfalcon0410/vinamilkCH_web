@@ -450,17 +450,20 @@
                     {{ rowsProductPromotion[props.index].productCode }}
                   </span>
                   <span v-if="props.column.field === 'quantity'">
-                    <b-form-input
+                    <cleave
                       :id="rowsProductPromotion[props.row.originalIndex].productCode"
-                      v-model.number="rowsProductPromotion[props.index].quantity"
+                      v-model="rowsProductPromotion[props.index].quantity"
+                      class="form-control h7 text-right"
+                      :raw="true"
+                      :options="options.number"
                       :state="isPositive(rowsProductPromotion[props.index].quantity)"
                       maxlength="7"
                       @keypress="$onlyNumberInput"
-                      @keyup.enter="focusInputSearch"
+                      @keyup.enter.native="focusInputSearch"
                     />
                   </span>
                   <span v-if="props.column.field === 'price'">
-                    {{ rowsProductPromotion[props.index].price }}
+                    {{ $formatNumberToLocale(rowsProductPromotion[props.index].price) }}
                   </span>
                   <span v-if="props.column.field === 'productName'">
                     {{ rowsProductPromotion[props.index].productName }}
@@ -469,7 +472,7 @@
                     {{ rowsProductPromotion[props.index].unit }}
                   </span>
                   <span v-if="props.column.field === 'totalPrice'">
-                    {{ rowsProductPromotion[props.index].totalPrice }}
+                    {{ $formatNumberToLocale(rowsProductPromotion[props.index].totalPrice) }}
                   </span>
                   <span v-if="props.column.field === 'function'">
                     <b-icon-trash-fill
@@ -495,7 +498,7 @@
                     :suggestions="products"
                     :input-props="{
                       id:'autosuggest__input',
-                      class:'form-control w-25',
+                      class:'form-control w-30',
                       placeholder:'Nhập mã hoặc tên sản phẩm'
                     }"
                     @input="loadProducts"
@@ -586,6 +589,7 @@ import { getNow } from '@core/utils/utils'
 import commonData from '@/@db/common'
 import toasts from '@core/utils/toasts/toasts'
 import warehousesData from '@/@db/warehouses'
+import Cleave from 'vue-cleave-component'
 import ConfirmModal from '@/@core/components/confirm-close-modal/ConfirmModal.vue'
 import AdjustmentModal from '../components/adjustment-modal/InputAdjustmentModal.vue'
 import BorrowedModal from '../components/borrowed-modal/InputBorrowedModal.vue'
@@ -611,6 +615,7 @@ export default {
     ConfirmModal,
     ValidationProvider,
     ValidationObserver,
+    Cleave,
   },
 
   data() {
@@ -621,6 +626,13 @@ export default {
       totalProduct: 0,
       products: [{ data: '' }],
       warehouseSelected: null,
+
+      options: {
+        number: {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand',
+        },
+      },
 
       defaultWarehouse: {
         warehouseTypeId: null,
@@ -711,7 +723,7 @@ export default {
           field: 'price',
           sortable: false,
           thClass: 'text-right text-nowrap',
-          tdClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap pr-2',
         },
         {
           label: 'Tên hàng',
@@ -734,7 +746,7 @@ export default {
           type: 'number',
           sortable: false,
           thClass: 'text-right text-nowrap',
-          tdClass: 'text-right text-nowrap',
+          tdClass: 'text-right text-nowrap pr-2',
         },
         {
           label: 'SO No',

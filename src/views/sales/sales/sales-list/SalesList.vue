@@ -203,6 +203,7 @@
                 maxlength="7"
                 class="text-center h7 p-input"
                 @change="onChangeQuantity(props.row.originalIndex)"
+                @input="onInputChangeQuantity(props.row.originalIndex)"
                 @keyup.enter="focusInputSearch"
                 @keypress="$onlyNumberInput"
               />
@@ -955,12 +956,19 @@ export default {
       this.$refs.search.$el.querySelector('input').focus()
       this.$refs.search.$el.querySelector('input').click()
     },
+    onInputChangeQuantity(index) {
+      if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
+        this.isDisabled = true
+        return
+      }
+      this.isDisabled = false
+    },
     onChangeQuantity(index) {
       if (this.orderProducts[index].quantity <= 0) {
         this.orderProducts[index].quantity = 1
       }
       if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-        // this.isDisabled = true
+        this.isDisabled = false
         this.orderProducts[index].quantity = this.orderProducts[index].productInventory
       }
       this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
