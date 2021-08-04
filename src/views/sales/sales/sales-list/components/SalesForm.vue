@@ -1176,14 +1176,16 @@ export default {
     getDefaultPromotionObjectSelected() {
       if (this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE')) {
         this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE').id
+      } else {
+        this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions[0].id
       }
-      this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions[0].id
     },
     getSalemtDeliveryTypeDefault() {
       if (this.salemtDeliveryTypeOptions.find(data => data.apParamCode === 'DELIVERY_001')) {
         this.salemtDeliveryTypeSelected = this.salemtDeliveryTypeOptions.find(data => data.apParamCode === 'DELIVERY_001').id
+      } else {
+        this.salemtDeliveryTypeSelected = this.salemtDeliveryTypeOptions[0].id
       }
-      this.salemtDeliveryTypeSelected = this.salemtDeliveryTypeOptions[0].id
     },
     onCollapseCustomersClick() {
       this.isCheckRotate = !this.isCheckRotate

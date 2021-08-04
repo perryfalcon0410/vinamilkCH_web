@@ -1069,7 +1069,7 @@ export default {
     },
     getPromotionCalculation() {
       this.pay.promotionAmount = this.getPromotionCalculation.promotionAmount
-      this.pay.promotionAmount = this.getPromotionCalculation.promotionAmountExTax || null
+      this.pay.promotionAmountExTax = this.getPromotionCalculation.promotionAmountExTax || null
       this.pay.needPaymentAmount = this.getPromotionCalculation.paymentAmount
       this.extraAmountCalculation()
       if (this.getPromotionCalculation.lstSalePromotions) {
@@ -1629,7 +1629,7 @@ export default {
     },
     onChangeCheckProgramPromotion(programId) {
       const programChecked = this.promotionPrograms.find(program => program.programId === programId)
-      if (programChecked.products.amount !== null && programChecked.promotionType === Number(this.promotionTypeOption[1].id)) {
+      if (programChecked.amount !== null && programChecked.promotionType === Number(this.promotionTypeOption[1].id)) {
         const paramPromotionAmountInfos = this.promotionPrograms.filter(p => (p.amount !== null || p.programType === saleData.programPromotionType[2].label) && p.isUse)
         const paramOrderRequest = {
           customerId: this.customer.id,
