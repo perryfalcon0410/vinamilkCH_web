@@ -140,44 +140,25 @@
                       slot="table-actions-bottom"
                       class="mx-1 my-2 px-2"
                     >
-                      <b-form-input
+                      <vue-autosuggest
+                        ref="searchProduct"
                         v-model="pay.productSearch"
-                        class="w-25"
-                        placeholder="Nhập mã hoặc tên sản phẩm"
-                        type="text"
-                        autocomplete="off"
-                        :disabled="!value.isEditable"
-                        @focus="searchProductFocus"
-                        @blur="inputSearchFocusedSP = false"
+                        :suggestions="allProducts"
+                        :input-props="{
+                          id:'autosuggest__input',
+                          class:'form-control w-50',
+                          placeholder:'Nhập mã hoặc tên sản phẩm'
+                        }"
                         @input="loadProducts(value.programId)"
-                        @keyup.enter="searchProductKeyEnter"
-                        @keydown.up="searchProductKeyUp"
-                        @keydown.down="searchProductKeyDown"
-                        @click="clickProduct(value.programId)"
-                      />
-                      <b-collapse
-                        v-model="inputSearchFocusedSP"
-                        class="position-absolute mr-lg-0 mb-3"
-                        style="zIndex:1"
+                        @selected="selectProduct(value.programId, $event)"
                       >
-                        <b-container
-                          class="my-1 bg-white rounded border border-primary shadow-lg"
-                        >
-                          <b-col>
-                            <b-row
-                              v-for="(product,indexProduct) in allProducts"
-                              :key="indexProduct"
-                              class="my-1 cursor-pointer"
-                              :class="{'item-active': indexProduct === cursorProduct}"
-                              @click="selectProduct(value.programId,product)"
-                              @mouseover="$event.target.classList.add('item-active')"
-                              @mouseout="$event.target.classList.remove('item-active')"
-                            >
-                              <b>{{ product.productCode }}</b> - {{ product.productName }}
-                            </b-row>
-                          </b-col>
-                        </b-container>
-                      </b-collapse>
+                        <template slot-scope="{ suggestion }">
+                          <div class="cursor-pointer">
+                            {{ suggestions }}
+                            <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                          </div>
+                        </template>
+                      </vue-autosuggest>
                     </div>
                     <!-- END - Action bottom -->
                   </vue-good-table>
@@ -257,7 +238,7 @@
                       slot="table-actions-bottom"
                       class="mx-1 my-2 px-2"
                     >
-                      <b-form-input
+                      <!-- <b-form-input
                         v-model="pay.productSearch"
                         class="w-25"
                         placeholder="Nhập mã hoặc tên sản phẩm"
@@ -293,7 +274,26 @@
                             </b-row>
                           </b-col>
                         </b-container>
-                      </b-collapse>
+                      </b-collapse> -->
+                      <vue-autosuggest
+                        ref="searchProduct"
+                        v-model="pay.productSearch"
+                        :suggestions="allProducts"
+                        :input-props="{
+                          id:'autosuggest__input',
+                          class:'form-control w-50',
+                          placeholder:'Nhập mã hoặc tên sản phẩm'
+                        }"
+                        @input="loadProducts(value.programId)"
+                        @selected="selectProduct(value.programId, $event)"
+                      >
+                        <template slot-scope="{ suggestion }">
+                          <div class="cursor-pointer">
+                            {{ suggestions }}
+                            <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
+                          </div>
+                        </template>
+                      </vue-autosuggest>
                     </div>
                     <!-- END - Action bottom -->
                   </vue-good-table>
@@ -763,6 +763,7 @@
 <script>
 import commonData from '@/@db/common'
 import toasts from '@core/utils/toasts/toasts'
+import { VueAutosuggest } from 'vue-autosuggest'
 import {
   number,
 } from '@/@core/utils/validations/validations'
@@ -808,6 +809,7 @@ export default {
     VoucherModal,
     Cleave,
     PrintFormSalesReceipt,
+    VueAutosuggest,
   },
 
   props: {
@@ -923,8 +925,7 @@ export default {
         promotionAmountExTax: null,
         productSearch: '',
       },
-      inputSearchFocusedSP: false,
-      allProducts: [],
+      allProducts: [{ data: '' }],
       decentralization: { // hard code permission
         formId: 5,
         ctrlId: 7,
@@ -987,7 +988,20 @@ export default {
       return this.GET_PROMOTION_PROGRAMS_GETTER
     },
     getItemsProduct() {
-      return this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER
+      // return this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER
+      return [{
+        data: this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER.map(data => ({
+          groupOneFreeItem: data.groupOneFreeItem,
+          levelNumber: data.levelNumber,
+          productCode: data.productCode,
+          productId: data.productId,
+          productName: data.productName,
+          quantity: data.quantity,
+          quantityMax: data.quantityMax,
+          stockQuantity: data.stockQuantity,
+          name: data.productName,
+        })),
+      }]
     },
     getPromotionCalculation() {
       return this.GET_PROMOTION_CALCULATION_GETTER
@@ -1051,6 +1065,7 @@ export default {
       this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
     },
     getItemsProduct() {
+      // để show lên vue-autosuggest thì phải để [{data: value}]
       this.allProducts = [...this.getItemsProduct]
     },
     needPayment() {
@@ -1068,6 +1083,7 @@ export default {
       this.extraAmountCalculation()
     },
     getPromotionCalculation() {
+      // get promotion amount from API
       this.pay.promotionAmount = this.getPromotionCalculation.promotionAmount
       this.pay.promotionAmountExTax = this.getPromotionCalculation.promotionAmountExTax || null
       this.pay.needPaymentAmount = this.getPromotionCalculation.paymentAmount
@@ -1075,6 +1091,8 @@ export default {
       if (this.getPromotionCalculation.lstSalePromotions) {
         this.promotionPrograms = [...this.promotionPrograms.map(program => {
           if (program.programType === saleData.programPromotionType[0].label) {
+            // Update lại data của ZV19, ZV20, ZV21, ZV23
+            // Update ZV19
             const indexPromotionCalculationZV19 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[0].label)
             if (indexPromotionCalculationZV19 !== -1) {
               const promotionCalculationZV19 = this.getPromotionCalculation.lstSalePromotions.find(p => p.programType === saleData.programPromotionType[0].label)
@@ -1082,7 +1100,7 @@ export default {
               return { ...promotionCalculationZV19, isUse: true }
             }
           }
-
+          // Update ZV20
           if (program.programType === saleData.programPromotionType[1].label) {
             const indexPromotionCalculationZV20 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[1].label)
             if (indexPromotionCalculationZV20 !== -1) {
@@ -1091,7 +1109,7 @@ export default {
               return { ...promotionCalculationZV20, isUse: true }
             }
           }
-
+          // Update ZV21
           if (program.programType === saleData.programPromotionType[2].label) {
             const indexPromotionCalculationZV21 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[2].label)
             if (indexPromotionCalculationZV21 !== -1) {
@@ -1100,7 +1118,7 @@ export default {
               return { ...promotionCalculationZV21, isUse: true }
             }
           }
-
+          // Update ZV23
           if (program.programType === saleData.programPromotionType[3].label) {
             const indexPromotionCalculationZV23 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[3].label)
             if (indexPromotionCalculationZV23 !== -1) {
@@ -1558,54 +1576,11 @@ export default {
       })]
     },
 
-    isPositive(num) {
-      if (num >= 0) {
-        return true
-      }
-      return false
-    },
-    searchProductFocus() {
-      this.cursorProduct = -1
-      if (this.pay.productSearch !== '') {
-        this.inputSearchFocusedSP = this.pay.productSearch !== null && this.pay.productSearch.length >= commonData.minSearchLength
-      }
-    },
-    searchProductKeyUp() {
-      if (this.cursorProduct > 0) {
-        this.cursorProduct -= 1
-      }
-    },
-    searchProductKeyDown() {
-      if (this.cursorProduct < this.allProducts.length) {
-        this.cursorProduct += 1
-      }
-    },
-    searchProductKeyEnter() {
-      if (this.inputSearchFocusedSP && this.allProducts[this.cursorProduct]) {
-        this.selectProduct(this.allProducts[this.cursorProduct])
-        this.inputSearchFocusedSP = false
-      }
-    },
     loadProducts(programId) {
-      this.cursorProduct = -1
       if (this.pay.productSearch !== null) {
         if (this.pay.productSearch.length >= commonData.minSearchLength) {
-          this.inputSearchFocusedSP = true
-
           this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
             keyWord: this.pay.productSearch,
-            promotionId: programId,
-            ...this.decentralization,
-          })
-        } else {
-          this.inputSearchFocusedSP = false
-        }
-      }
-    },
-    clickProduct(programId) {
-      if (this.pay.productSearch !== null) {
-        if (this.pay.productSearch.length >= commonData.minSearchLength) {
-          this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
             promotionId: programId,
             ...this.decentralization,
           })
@@ -1613,14 +1588,26 @@ export default {
       }
     },
     selectProduct(programId, product) {
-      this.pay.productSearch = ''
+      this.pay.productSearch = null
+      this.allProducts = [{ data: null }]
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.programId === programId) {
-          const existedProductIndex = program.products.findIndex(p => p.productCode === product.productCode)
+          const existedProductIndex = program.products.findIndex(p => p.productCode === product.item.productCode)
           if (existedProductIndex === -1 || program.products.length === 0) {
+            const arrProduct = program.products
+            arrProduct.push({
+              groupOneFreeItem: product.item.groupOneFreeItem,
+              levelNumber: product.item.levelNumber,
+              productCode: product.item.productCode,
+              productId: product.item.productId,
+              productName: product.item.productName,
+              quantity: product.item.quantity,
+              quantityMax: program.numberLimited ? this.$formatNumberToLocale(program.numberLimited) : this.$formatNumberToLocale(product.item.stockQuantity),
+              stockQuantity: product.item.stockQuantity,
+            })
             return {
               ...program,
-              products: [...program.products.push(product)],
+              products: arrProduct,
             }
           }
         }
