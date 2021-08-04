@@ -755,7 +755,10 @@ export default {
     },
 
     onClickDeleteProduct(index) {
-      if (this.editOnlinePermission === true) {
+      if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
+        || (this.editManualPermission === true && this.onlineOrderId === null)
+        || this.isOnline === false
+      ) {
         this.orderProducts.splice(index, 1)
       }
     },
@@ -765,18 +768,9 @@ export default {
         toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
       }
     },
-    // checkShopId() {
-    //   this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-    //   this.searchOptions.size = 10
-    //   if (this.isCheckShopId === true) {
-    //     this.GET_TOP_SALE_PRODUCTS_ACTION(this.searchOptions)
-    //   }
-    // },
 
     onChangeKeyWord() {
       this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-      // this.searchOptions.size = null
-      // this.searchOptions.keyWord = this.searchOptions.keyWord?.trim()
       if (this.isCheckShopId === true && this.searchOptions.keyWord.length >= this.minSearch) {
         this.GET_TOP_SALE_PRODUCTS_ACTION({
           data: { ...this.searchOptions },
@@ -785,6 +779,7 @@ export default {
       }
     },
     onclickAddProduct(index) {
+      // check quyền chỉnh sửa đơn online tay hoặc đơn online từ hệ thống để thêm sản phẩm
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null) || (this.editManualPermission === true && this.onlineOrderId === null) || this.isOnline === false) {
         if (index && index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
@@ -810,6 +805,7 @@ export default {
         }
       }
 
+      // không có quyền chỉnh sửa đơn online tay
       if (this.editManualPermission === false && this.onlineOrderId === null && this.isOnline === true) {
         toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
         return
@@ -1075,35 +1071,37 @@ export default {
       })
 
       const { usedShop } = this.loginInfo
-      if (val.id === '1') {
+      // có quyền chỉnh sửa đơn online tay và đơn online từ hệ thống
+      if (val.id === this.defaultPOSelected) {
         this.isOnline = false
         this.onlineOrderId = null
         this.editOnlinePermission = true
         this.editManualPermission = true
-      }
-
-      if (val.id !== '1' && this.orderProducts.length > 0) {
-        if (val.id !== '1' && usedShop.id === this.currentCustomer.shopId) {
-          if (usedShop.manuallyCreatable === false) {
-            this.$refs.salesNotifyModal.show()
-          }
-        }
-      }
-
-      if (val.id !== '1') {
+      } else {
         this.isOnline = true
         this.onlineOrderId = null
 
         if (usedShop.id === this.currentCustomer.shopId) {
+          // có quyền chỉnh sửa đơn online tay
           if (usedShop.manuallyCreatable === false) {
             this.editManualPermission = false
           } else {
             this.editManualPermission = true
           }
+
+          // có quyền chỉnh sửa đơn online từ hệ thống
           if (usedShop.editable === false) {
             this.editOnlinePermission = false
           } else {
             this.editOnlinePermission = true
+          }
+        }
+
+        if (this.orderProducts.length > 0) {
+          if (val.id !== this.defaultPOSelected && usedShop.id === this.currentCustomer.shopId) {
+            if (usedShop.manuallyCreatable === false) {
+              this.$refs.salesNotifyModal.show()
+            }
           }
         }
       }

@@ -1124,7 +1124,10 @@ export default {
 
     resetOrderNumber(item) {
       this.$emit('getSalemtPOSelected', item)
-      if (item.id === saleData.salemtPromotionObject[0].id) {
+      if (this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE')) {
+        this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE').id
+      }
+      if (item.id === this.salemtPromotionObjectSelected) {
         this.orderOnline.orderNumber = null
         this.orderOnline.onlineOrderId = null
       }
