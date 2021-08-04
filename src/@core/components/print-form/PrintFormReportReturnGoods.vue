@@ -233,7 +233,7 @@
             </th>
             <th
               style="width: 7%"
-              class="px-50 t"
+              class="text-right px-50"
             >
               SL
             </th>
