@@ -369,6 +369,7 @@ export default {
             state.createSaleData = res.data
             val.onSuccess()
           } else {
+            val.onFailure()
             throw new Error(res.statusValue)
           }
         })
