@@ -1196,10 +1196,9 @@ export default {
     onCollapseClick() {
       this.isClickRotate = !this.isClickRotate
     },
-    deleteSaveBill(val) {
-      const deleteBill = val
+    deleteSaveBill() {
       this.isOpenPayModal = false
-      this.$emit('deleteSaveBill', deleteBill)
+      this.$emit('deleteSaveBill')
     },
     getOrderNumber() {
       this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)

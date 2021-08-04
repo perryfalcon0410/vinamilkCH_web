@@ -558,18 +558,21 @@ export default {
     },
 
     getCustomerTypeProducts() {
-      return this.UPDATE_PRICE_TYPE_CUSTOMER_GETTER.map(data => ({
-        productId: data.productId,
-        productCode: data.productCode,
-        productName: data.productName,
-        productUnit: data.uom1,
-        productInventory: data.stockTotal,
-        quantity: data.quantity,
-        productUnitPrice: this.$formatNumberToLocale(data.price),
-        sumProductUnitPrice: data.price,
-        productTotalPrice: this.$formatNumberToLocale(data.totalPrice),
-        sumProductTotalPrice: data.totalPrice,
-      }))
+      if (this.UPDATE_PRICE_TYPE_CUSTOMER_GETTER) {
+        return this.UPDATE_PRICE_TYPE_CUSTOMER_GETTER.map(data => ({
+          productId: data.productId,
+          productCode: data.productCode,
+          productName: data.productName,
+          productUnit: data.uom1,
+          productInventory: data.stockTotal,
+          quantity: data.quantity,
+          productUnitPrice: this.$formatNumberToLocale(data.price),
+          sumProductUnitPrice: data.price,
+          productTotalPrice: this.$formatNumberToLocale(data.totalPrice),
+          sumProductTotalPrice: data.totalPrice,
+        }))
+      }
+      return []
     },
 
     loginInfo() {
@@ -616,10 +619,6 @@ export default {
 
     getOrderNumber() {
       this.currentOrderNumber = { ...this.getOrderNumber }
-    },
-
-    deleteSaveBill() {
-      this.bills = [...this.deleteSaveBill]
     },
 
     selectedProduct() {
@@ -927,22 +926,8 @@ export default {
       })
     },
 
-    deleteSaveBill(val) {
-      this.bills = val
-
-      if (this.bills.length > 1) {
-        const index = this.bills.findIndex(item => item.active)
-        if (index > 0) {
-          if (this.bills[index].class === 'visited-action') {
-            this.bills[index - 1].class = 'visited-action'
-            this.clickBillButton(this.bills[index - 1].id)
-          }
-        } else {
-          this.bills[index + 1].class = 'visited-action'
-          this.clickBillButton(this.bills[index + 1].id)
-        }
-        this.bills.splice(index, 1)
-      }
+    deleteSaveBill() {
+      this.onClickDeleteButton(this.orderCurrentId)
     },
 
     getOnlineOrderInfoForm(val) {
@@ -1009,11 +994,13 @@ export default {
         productId: data.productId,
         quantity: data.quantity,
       }))
-      this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
-        customerTypeId: this.customerType,
-        products: this.productChangePrice,
-        params: this.decentralization,
-      })
+      if (this.productChangePrice.length > 0) {
+        this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
+          customerTypeId: this.customerType,
+          products: this.productChangePrice,
+          params: this.decentralization,
+        })
+      }
     },
 
     getCurrentCustomer(val) {

@@ -1750,13 +1750,12 @@ export default {
     },
     cancel() {
       this.isOpenPayModal = false
-      if (this.isSaveSuccess === true) {
-        if (this.bills.length > 1) {
-          this.resetPayModal()
-          this.$emit('deleteSaveBill', this.bills)
-        }
-        if (this.bills.length <= 1) {
-          if (this.isPaid) {
+      if (this.isSaveSuccess) {
+        if (this.isPaid) {
+          if (this.bills.length > 1) {
+            this.resetPayModal()
+            this.$emit('deleteSaveBill')
+          } else {
             this.$router.go(this.$router.currentRoute)
           }
         }
