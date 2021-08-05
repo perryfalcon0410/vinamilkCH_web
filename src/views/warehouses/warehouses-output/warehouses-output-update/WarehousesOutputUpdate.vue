@@ -403,14 +403,14 @@ export default {
           field: 'productCode',
           sortable: false,
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left align-middle',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left align-middle',
           width: '300px',
         },
         {
@@ -420,7 +420,7 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-nowrap',
-          tdClass: 'pr-2',
+          tdClass: 'pr-2 align-middle',
 
         },
         {
@@ -428,6 +428,7 @@ export default {
           field: 'productDVT',
           sortable: false,
           thClass: 'text-nowrap',
+          tdClass: 'align-middle',
         },
         {
           label: 'Thành tiền',
@@ -436,14 +437,14 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-nowrap',
-          tdClass: 'pr-2',
+          tdClass: 'pr-2 align-middle',
         },
         {
           label: 'Đã xuất trả/ tổng nhập',
           field: 'export',
           sortable: false,
           thClass: 'text-right text-nowrap',
-          tdClass: 'text-right pr-2',
+          tdClass: 'text-right pr-2 align-middle',
         },
         {
           label: 'Số lượng trả',
@@ -458,13 +459,13 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left align-middle',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left align-middle',
         },
         {
           label: 'Giá',
@@ -472,12 +473,13 @@ export default {
           formatFn: this.$formatNumberToLocale,
           type: 'number',
           thClass: 'text-nowrap',
-          tdClass: 'pr-2',
+          tdClass: 'pr-2 align-middle',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
           thClass: 'text-nowrap',
+          tdClass: 'align-middle',
         },
         {
           label: 'Thành tiền',
@@ -485,15 +487,12 @@ export default {
           formatFn: this.$formatNumberToLocale,
           type: 'number',
           thClass: 'text-nowrap',
-          tdClass: 'pr-2',
+          tdClass: 'pr-2 align-middle',
         },
         {
           label: 'Số lượng trả',
           field: 'productReturnAmount',
           formatFn: this.$formatNumberToLocale,
-          // filterOptions: {
-          //   enabled: true,
-          // },
           type: 'number',
           thClass: 'text-nowrap',
         },
@@ -504,14 +503,14 @@ export default {
           field: 'productCode',
           sortable: false,
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left align-middle',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left',
+          tdClass: 'text-left align-middle',
           width: '300px',
         },
         {
@@ -521,13 +520,14 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-nowrap',
-          tdClass: 'pr-2',
+          tdClass: 'pr-2 align-middle',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
           sortable: false,
           thClass: 'text-nowrap',
+          tdClass: 'align-middle',
         },
         {
           label: 'Thành tiền',
@@ -535,14 +535,14 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-nowrap',
-          tdClass: 'pr-2',
+          tdClass: 'pr-2 align-middle',
         },
         {
           label: 'Đã xuất trả/ tổng nhập',
           field: 'export',
           sortable: false,
           thClass: 'text-right text-nowrap',
-          tdClass: 'text-right pr-2',
+          tdClass: 'text-right pr-2 align-middle',
         },
         {
           label: 'Số lượng trả',

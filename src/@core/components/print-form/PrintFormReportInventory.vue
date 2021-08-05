@@ -172,7 +172,9 @@
             v-for="(product,stt) in reportData[index].data"
             :key="stt"
           >
-            <td class="px-1">
+            <td
+              class="px-1"
+            >
               {{ stt + 1 }}
             </td>
             <td class="pl-50">
@@ -228,6 +230,7 @@ import {
 export default {
   data() {
     return {
+      count: 0,
       columns: [
         {
           label: 'Mã khách hàng',
@@ -309,6 +312,8 @@ export default {
   },
   updated() {
     window.print()
+  },
+  methods: {
   },
 }
 </script>
