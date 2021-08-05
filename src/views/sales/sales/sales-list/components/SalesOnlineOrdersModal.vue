@@ -503,8 +503,8 @@ export default {
       this.searchOptions = {
         orderNumber: this.orderNumber?.trim(),
         synStatus: this.synStatusSelected,
-        fromDate: this.fromDate ? reverseVniDate(this.fromDate) : reverseVniDate(this.toDate),
-        toDate: this.toDate ? reverseVniDate(this.toDate) : reverseVniDate(this.fromDate),
+        fromDate: reverseVniDate(this.fromDate),
+        toDate: reverseVniDate(this.toDate),
         ...this.decentralization,
       }
       this.updateSearchData({

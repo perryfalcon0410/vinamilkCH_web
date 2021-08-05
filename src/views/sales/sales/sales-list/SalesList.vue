@@ -742,7 +742,6 @@ export default {
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
 
         if (this.orderProducts[index].productInventory <= this.orderProducts[index].quantity) {
-          // this.isDisabled = true
           this.orderProducts[index].quantity = this.orderProducts[index].productInventory
         }
       }
@@ -799,7 +798,7 @@ export default {
     },
 
     onclickAddProduct(index) {
-      // check quyền chỉnh sửa đơn online tay hoặc đơn online từ hệ thống để thêm sản phẩm
+      // check permission online order manual or online order from system to add product
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null) || this.isOnline === false) {
         if (index && index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
@@ -825,7 +824,7 @@ export default {
         }
       }
 
-      // không có quyền chỉnh sửa đơn online tay
+      // not have permission edit online order manual
       if (this.editManualPermission === false && this.onlineOrderId === null && this.isOnline === true) {
         toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
         return
@@ -833,7 +832,6 @@ export default {
 
       this.productsSearch = [{ data: null }]
       this.searchOptions.keyWord = null
-      // this.isSelectedProduct = true
     },
 
     getOrderNumber(val) {
@@ -881,8 +879,8 @@ export default {
           deliveryType: {
             value: this.defaultDTSelected,
           },
-          orderNumber: this.currentOrderNumber.orderNumber,
-          note: this.currentOrderNumber.note,
+          orderNumber: null,
+          note: null,
           active: false,
           class: 'visited-action',
         })
@@ -1044,6 +1042,7 @@ export default {
         this.searchOptions.customerId = data.id
         this.editOnlinePermission = true
         this.customerFullName = data.fullName
+        // update price product when different type id customer
         if (this.customerTypeCurent !== this.customerType) {
           if (this.orderProducts.length > 0) {
             this.productChangePrice = this.orderProducts.map(item => ({
@@ -1065,7 +1064,7 @@ export default {
 
     getSalemtPOSelected(val) {
       this.orderSelected = val
-      // gán giá trị loại đơn hàng vào hoá đơn hiện tại đang selected
+      // assgin value of order type to current bill being selected
       this.bills = this.bills.map(bill => {
         if (bill.id === this.orderCurrentId) {
           return {
@@ -1079,7 +1078,7 @@ export default {
       })
 
       const { usedShop } = this.loginInfo
-      // có quyền chỉnh sửa đơn online tay và đơn online từ hệ thống
+      // have permission edit online order manual and online order from system
       if (val.id === this.defaultPOSelected) {
         this.isOnline = false
         this.onlineOrderId = null
@@ -1098,7 +1097,7 @@ export default {
 
     salemtDeliveryTypeSelected(val) {
       this.deliverySelected = val
-      // gán giá trị loại giao hàng vào hoá đơn hiện tại đang selected
+      // assgin value of delivery type to current bill being selected
       this.bills = this.bills.map(bill => {
         if (bill.id === this.orderCurrentId) {
           return {
@@ -1148,6 +1147,7 @@ export default {
 
     onClickAgreeButton() {
       this.orderProducts = []
+      this.currentOrderNumber.orderNumber = null
       this.$refs.salesNotifyModal.hide()
       this.isDisabledOrder = true
     },

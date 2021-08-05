@@ -1107,6 +1107,7 @@ export default {
       this.salemtPromotionObjectSelected = this.onlineOrder.type.value
       this.quantity = this.onlineOrder.quantity
       this.totalPrice = this.onlineOrder.totalPrice
+      this.$emit('getOrderNumber', this.orderOnline)
     },
 
     checkOnlineOrderId() {
