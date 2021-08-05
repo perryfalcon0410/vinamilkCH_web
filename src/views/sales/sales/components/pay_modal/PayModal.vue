@@ -205,7 +205,7 @@
                           :raw="true"
                           :options="options.number"
                           :disabled="!value.isEditable"
-                          @change.native="onChangePromotionAmout(value.amount.amount, value.amount.maxAmount)"
+                          @change.native="onChangePromotionAmout(value.programId, value.amount.amount, value.amount.maxAmount)"
                         />
                       </b-col>
                     </b-row>
@@ -1617,41 +1617,65 @@ export default {
     onChangeCheckProgramPromotion(programId) {
       const programChecked = this.promotionPrograms.find(program => program.programId === programId)
       if (programChecked.amount !== null && programChecked.promotionType === Number(this.promotionTypeOption[1].id)) {
-        const paramPromotionAmountInfos = this.promotionPrograms.filter(p => (p.amount !== null || p.programType === saleData.programPromotionType[2].label) && p.isUse)
-        const paramOrderRequest = {
-          customerId: this.customer.id,
-          orderType: Number(this.orderSelected),
-          products: this.orderProducts,
-        }
+        console.log(programChecked)
+        if (Number(programChecked.amount.amount) > Number(programChecked.amount.maxAmount) && programChecked.amount.maxAmount > 0) {
+          toasts.error('Số tiền không được vượt quá số tiền tối đa')
+          this.promotionPrograms = [...this.promotionPrograms.map(program => {
+            if (program.programId === programId) {
+              return {
+                ...program,
+                isUse: false,
+              }
+            }
+            return program
+          })]
+        } else {
+          const paramPromotionAmountInfos = this.promotionPrograms.filter(p => (p.amount !== null || p.programType === saleData.programPromotionType[2].label) && p.isUse)
+          const paramOrderRequest = {
+            customerId: this.customer.id,
+            orderType: Number(this.orderSelected),
+            products: this.orderProducts,
+          }
+          const paramGetPromotionCalculationData = {
+            customerId: this.customer.id,
+            orderType: Number(this.orderSelected),
+            totalOrderAmount: Number(this.pay.totalAmount),
+            saveAmount: Number(this.pay.accumulate.accumulateAmount),
+            voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
+            saleOffAmount: Number(this.pay.discount.discountAmount),
+            promotionInfo: paramPromotionAmountInfos,
+            orderRequest: paramOrderRequest,
+            discountCode: this.pay.discount.discountCode,
+          }
 
-        const paramGetPromotionCalculationData = {
-          customerId: this.customer.id,
-          orderType: Number(this.orderSelected),
-          totalOrderAmount: Number(this.pay.totalAmount),
-          saveAmount: Number(this.pay.accumulate.accumulateAmount),
-          voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
-          saleOffAmount: Number(this.pay.discount.discountAmount),
-          promotionInfo: paramPromotionAmountInfos,
-          orderRequest: paramOrderRequest,
-          discountCode: this.pay.discount.discountCode,
-        }
+          this.GET_PROMOTION_CALCULATION_ACTION(paramGetPromotionCalculationData)
 
-        this.GET_PROMOTION_CALCULATION_ACTION(paramGetPromotionCalculationData)
-
-        // xử lý phần mã giảm giá
-        const programSelected = this.promotionPrograms.find(p => p.programId === programId)
-        if (programSelected.products.length === 0 && programSelected.amount !== null) {
-          if (this.pay.discount.discountCode !== '') {
-            this.resetDiscount()
-            this.isDisabledDiscount = false
-            toasts.error('Vui lòng nhập lại Mã giảm giá vì có sự thay đổi tiền khuyến mãi')
+          // xử lý phần mã giảm giá
+          const programSelected = this.promotionPrograms.find(p => p.programId === programId)
+          if (programSelected.products.length === 0 && programSelected.amount !== null) {
+            if (this.pay.discount.discountCode !== '') {
+              this.resetDiscount()
+              this.isDisabledDiscount = false
+              toasts.error('Vui lòng nhập lại Mã giảm giá vì có sự thay đổi tiền khuyến mãi')
+            }
           }
         }
       }
     },
-    onChangePromotionAmout(amount, maxAmout) {
-      if (amount > maxAmout) {
+    onChangePromotionAmout(programId, amount, maxAmount) {
+      if (amount > maxAmount) {
         toasts.error('Số tiền không được vượt quá số tiền tối đa')
+      } else {
+        this.promotionPrograms = [...this.promotionPrograms.map(program => {
+          if (program.programId === programId) {
+            return {
+              ...program,
+              isUse: true,
+            }
+          }
+          return program
+        })]
+        this.onChangeCheckProgramPromotion(programId)
       }
     },
     extraAmountCalculation() {
