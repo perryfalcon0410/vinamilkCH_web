@@ -910,6 +910,7 @@ export default {
             ...bill,
             products: this.orderProducts,
             customer: {
+              id: this.currentCustomer.id,
               fullName: this.currentCustomer.fullName,
               phoneNumber: this.currentCustomer.phoneNumber,
               totalBill: this.currentCustomer.totalBill,
@@ -927,6 +928,7 @@ export default {
         if (bill.id === billSelectedId) {
           this.orderCurrentId = billSelectedId
           this.orderProducts = bill.products
+          this.currentCustomer.id = bill.customer.id
           this.currentCustomer.fullName = bill.customer.fullName
           this.currentCustomer.phoneNumber = bill.customer.phoneNumber
           this.currentCustomer.totalBill = bill.customer.totalBill

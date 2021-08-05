@@ -1188,44 +1188,44 @@ export default {
         }
       }
     },
-    orderProducts: {
-      handler() {
-        let isValidProduct = true
-        this.orderProducts.forEach(product => {
-          if (product.quantity <= 0) {
-            isValidProduct = false
-          }
-        })
-        if (isValidProduct) {
-          const paramProducts = this.orderProducts.map(data => ({
-            productId: data.productId,
-            productCode: data.productCode,
-            quantity: data.quantity,
-          }))
-          if (paramProducts.length > 0) {
-            this.GET_PROMOTION_PROGRAMS_ACTION({
-              customerId: this.customer.id,
-              orderType: Number(this.orderSelected),
-              products: paramProducts,
-              invisibleLoading: true,
-            })
-          }
-          if (this.pay.discount.discountCode !== '') {
-            this.pay.discount.discountCode = ''
-            this.pay.discount.discountAmount = 0
-          }
-        }
-        // clean data
-        this.pay.extraAmount = null
-        this.resetVoucher()
-        this.resetDiscount()
-        // get accumulate
-        this.pay.accumulate.accumulateAmount = 0
-        this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
-        this.extraAmountCalculation()
-      },
-      deep: true,
-    },
+    // orderProducts: {
+    //   handler() {
+    //     let isValidProduct = true
+    //     this.orderProducts.forEach(product => {
+    //       if (product.quantity <= 0) {
+    //         isValidProduct = false
+    //       }
+    //     })
+    //     if (isValidProduct) {
+    //       const paramProducts = this.orderProducts.map(data => ({
+    //         productId: data.productId,
+    //         productCode: data.productCode,
+    //         quantity: data.quantity,
+    //       }))
+    //       if (paramProducts.length > 0) {
+    //         this.GET_PROMOTION_PROGRAMS_ACTION({
+    //           customerId: this.customer.id,
+    //           orderType: Number(this.orderSelected),
+    //           products: paramProducts,
+    //           invisibleLoading: true,
+    //         })
+    //       }
+    //       if (this.pay.discount.discountCode !== '') {
+    //         this.pay.discount.discountCode = ''
+    //         this.pay.discount.discountAmount = 0
+    //       }
+    //     }
+    //     // clean data
+    //     this.pay.extraAmount = null
+    //     this.resetVoucher()
+    //     this.resetDiscount()
+    //     // get accumulate
+    //     this.pay.accumulate.accumulateAmount = 0
+    //     this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
+    //     this.extraAmountCalculation()
+    //   },
+    //   deep: true,
+    // },
     getSalePaymentTypes() {
       this.salePaymentTypeOptions = [...this.getSalePaymentTypes.map(data => ({
         id: data.value,
@@ -1233,51 +1233,51 @@ export default {
       }))]
       this.pay.salePayment.salePaymentType = this.salePaymentTypeOptions[0].id
     },
-    customer: {
-      handler() {
-        if (this.isOpenPayModal) {
-          let isValidProduct = true
-          this.orderProducts.forEach(product => {
-            if (product.quantity <= 0) {
-              isValidProduct = false
-            }
-          })
-          if (isValidProduct) {
-            const paramProducts = this.orderProducts.map(data => ({
-              productId: data.productId,
-              productCode: data.productCode,
-              quantity: data.quantity,
-            }))
-            if (paramProducts.length > 0) {
-              this.GET_PROMOTION_PROGRAMS_ACTION({
-                customerId: this.customer.id,
-                orderType: Number(this.orderSelected),
-                products: paramProducts,
-                invisibleLoading: true,
-              })
-            }
-            if (this.pay.discount.discountCode !== '') {
-              this.pay.discount.discountCode = ''
-              this.pay.discount.discountAmount = 0
-            }
-          }
-          // clean data
-          this.pay.extraAmount = null
-          this.resetVoucher()
-          this.resetDiscount()
-          // get accumulate
-          this.pay.accumulate.accumulateAmount = 0
-          this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
-          this.extraAmountCalculation()
+    // customer: {
+    //   handler() {
+    //     if (this.isOpenPayModal) {
+    //       let isValidProduct = true
+    //       this.orderProducts.forEach(product => {
+    //         if (product.quantity <= 0) {
+    //           isValidProduct = false
+    //         }
+    //       })
+    //       if (isValidProduct) {
+    //         const paramProducts = this.orderProducts.map(data => ({
+    //           productId: data.productId,
+    //           productCode: data.productCode,
+    //           quantity: data.quantity,
+    //         }))
+    //         if (paramProducts.length > 0) {
+    //           this.GET_PROMOTION_PROGRAMS_ACTION({
+    //             customerId: this.customer.id,
+    //             orderType: Number(this.orderSelected),
+    //             products: paramProducts,
+    //             invisibleLoading: true,
+    //           })
+    //         }
+    //         if (this.pay.discount.discountCode !== '') {
+    //           this.pay.discount.discountCode = ''
+    //           this.pay.discount.discountAmount = 0
+    //         }
+    //       }
+    //       // clean data
+    //       this.pay.extraAmount = null
+    //       this.resetVoucher()
+    //       this.resetDiscount()
+    //       // get accumulate
+    //       this.pay.accumulate.accumulateAmount = 0
+    //       this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
+    //       this.extraAmountCalculation()
 
-          if (this.orderOnline !== null && this.orderOnline.discountCode !== '') {
-            this.pay.discount.discountCode = this.orderOnline.discountCode
-            this.pay.discount.discountAmount = this.orderOnline.discountValue
-          }
-        }
-      },
-      deep: true,
-    },
+    //       if (this.orderOnline !== null && this.orderOnline.discountCode !== '') {
+    //         this.pay.discount.discountCode = this.orderOnline.discountCode
+    //         this.pay.discount.discountAmount = this.orderOnline.discountValue
+    //       }
+    //     }
+    //   },
+    //   deep: true,
+    // },
     'pay.salePayment.salePaymentType': {
       handler() {
         if (this.pay.salePayment.salePaymentType === undefined || this.pay.salePayment.salePaymentType === '') {
@@ -1289,51 +1289,51 @@ export default {
       },
       deep: true,
     },
-    orderSelected: {
-      handler() {
-        if (this.isOpenPayModal) {
-          let isValidProduct = true
-          this.orderProducts.forEach(product => {
-            if (product.quantity <= 0) {
-              isValidProduct = false
-            }
-          })
-          if (isValidProduct) {
-            const paramProducts = this.orderProducts.map(data => ({
-              productId: data.productId,
-              productCode: data.productCode,
-              quantity: data.quantity,
-            }))
-            if (paramProducts.length > 0) {
-              this.GET_PROMOTION_PROGRAMS_ACTION({
-                customerId: this.customer.id,
-                orderType: Number(this.orderSelected),
-                products: paramProducts,
-                invisibleLoading: true,
-              })
-            }
-            if (this.pay.discount.discountCode !== '') {
-              this.pay.discount.discountCode = ''
-              this.pay.discount.discountAmount = 0
-            }
-          }
-          // clean data
-          this.pay.extraAmount = null
-          this.resetVoucher()
-          this.resetDiscount()
-          // get accumulate
-          this.pay.accumulate.accumulateAmount = 0
-          this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
-          this.extraAmountCalculation()
+    // orderSelected: {
+    //   handler() {
+    //     if (this.isOpenPayModal) {
+    //       let isValidProduct = true
+    //       this.orderProducts.forEach(product => {
+    //         if (product.quantity <= 0) {
+    //           isValidProduct = false
+    //         }
+    //       })
+    //       if (isValidProduct) {
+    //         const paramProducts = this.orderProducts.map(data => ({
+    //           productId: data.productId,
+    //           productCode: data.productCode,
+    //           quantity: data.quantity,
+    //         }))
+    //         if (paramProducts.length > 0) {
+    //           this.GET_PROMOTION_PROGRAMS_ACTION({
+    //             customerId: this.customer.id,
+    //             orderType: Number(this.orderSelected),
+    //             products: paramProducts,
+    //             invisibleLoading: true,
+    //           })
+    //         }
+    //         if (this.pay.discount.discountCode !== '') {
+    //           this.pay.discount.discountCode = ''
+    //           this.pay.discount.discountAmount = 0
+    //         }
+    //       }
+    //       // clean data
+    //       this.pay.extraAmount = null
+    //       this.resetVoucher()
+    //       this.resetDiscount()
+    //       // get accumulate
+    //       this.pay.accumulate.accumulateAmount = 0
+    //       this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
+    //       this.extraAmountCalculation()
 
-          if (this.orderOnline !== null && this.orderOnline.discountCode !== '') {
-            this.pay.discount.discountCode = this.orderOnline.discountCode
-            this.pay.discount.discountAmount = this.orderOnline.discountValue
-          }
-        }
-      },
-      deep: true,
-    },
+    //       if (this.orderOnline !== null && this.orderOnline.discountCode !== '') {
+    //         this.pay.discount.discountCode = this.orderOnline.discountCode
+    //         this.pay.discount.discountAmount = this.orderOnline.discountValue
+    //       }
+    //     }
+    //   },
+    //   deep: true,
+    // },
     orderOnline: {
       handler() {
         if (this.orderOnline.onlineOrderId !== null) {
@@ -1346,6 +1346,7 @@ export default {
     isOpenPayModal: {
       handler() {
         if (this.isOpenPayModal) {
+          console.log(this.customer.id)
           let isValidProduct = true
           this.orderProducts.forEach(product => {
             if (product.quantity <= 0) {
@@ -1363,7 +1364,7 @@ export default {
                 customerId: this.customer.id,
                 orderType: Number(this.orderSelected),
                 products: paramProducts,
-                invisibleLoading: true,
+                invisibleLoading: false,
               })
             }
             if (this.pay.discount.discountCode !== '') {
