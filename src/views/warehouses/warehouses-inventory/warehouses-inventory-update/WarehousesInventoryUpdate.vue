@@ -664,7 +664,7 @@ export default {
         inventoryPacket: data.packetQuantity,
         inventoryOdd: data.unitQuantity,
         inventoryTotal: data.packetQuantity * data.convfact + data.unitQuantity,
-        unequal: data.packetQuantity * data.convfact + data.unitQuantity - data.stockQuantity,
+        unequal: data.changeQuantity,
         packetUnit: data.packetUnit,
         exchange: data.convfact,
         oddUnit: data.unit,

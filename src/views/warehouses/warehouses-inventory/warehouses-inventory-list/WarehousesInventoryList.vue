@@ -42,7 +42,7 @@
 
       <!-- START - Table -->
       <b-col
-        class="py-1"
+        class="py-1 style-table"
       >
         <vue-good-table
           mode="remote"
@@ -351,3 +351,8 @@ export default {
 
 }
 </script>
+<style>
+  .style-table .vgt-responsive {
+    overflow-x: hidden !important;
+  }
+</style>

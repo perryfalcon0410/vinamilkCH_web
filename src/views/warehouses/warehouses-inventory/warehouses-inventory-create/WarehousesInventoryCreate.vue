@@ -787,7 +787,7 @@ export default {
       })
     },
     updateInventoryTotal(index) {
-      this.products[index].inventoryTotal = this.products[index].inventoryPacket * this.products[index].exchange + this.products[index].inventoryOdd
+      this.products[index].inventoryTotal = Number(this.products[index].inventoryPacket) * this.products[index].exchange + Number(this.products[index].inventoryOdd)
     },
     updateInventoryPacket(index, value) {
       this.products[index].inventoryPacket = value
