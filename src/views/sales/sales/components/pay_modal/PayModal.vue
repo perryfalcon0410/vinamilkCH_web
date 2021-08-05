@@ -1680,6 +1680,15 @@ export default {
     onChangePromotionAmout(programId, amount, maxAmount) {
       if (amount > maxAmount) {
         toasts.error('Số tiền không được vượt quá số tiền tối đa')
+        this.promotionPrograms = [...this.promotionPrograms.map(program => {
+          if (program.programId === programId) {
+            return {
+              ...program,
+              isUse: false,
+            }
+          }
+          return program
+        })]
       } else {
         this.promotionPrograms = [...this.promotionPrograms.map(program => {
           if (program.programId === programId) {
