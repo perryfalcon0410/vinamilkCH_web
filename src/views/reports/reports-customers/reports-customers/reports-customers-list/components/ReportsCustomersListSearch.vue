@@ -586,22 +586,22 @@ export default {
       this.$emit('updateSearchData', data)
     },
     isFromPurchaseDateValid() {
-      if (!checkingDateInput(this.fromDate)) {
+      if (!checkingDateInput(this.fromPurchaseDate)) {
         this.fromPurchaseDate = earlyMonth()
       }
     },
     isToPurchaseDateValid() {
-      if (!checkingDateInput(this.toDate)) {
+      if (!checkingDateInput(this.toPurchaseDate)) {
         this.toPurchaseDate = nowDate()
       }
     },
     isFromCreateDateValid() {
-      if (!checkingDateInput(this.fromDate)) {
+      if (!checkingDateInput(this.fromCreateDate)) {
         this.fromCreateDate = earlyMonth()
       }
     },
     isToCreateDateValid() {
-      if (!checkingDateInput(this.toDate)) {
+      if (!checkingDateInput(this.toCreateDate)) {
         this.toCreateDate = nowDate()
       }
     },

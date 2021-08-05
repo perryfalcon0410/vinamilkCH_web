@@ -32,6 +32,7 @@
             @input="onChangeKeyWord"
             @selected="onclickAddProduct"
             @focus="focusInputProduct"
+            @keyup.enter="focusInputQuantity"
           >
             <template
               slot-scope="{ suggestion }"
@@ -777,6 +778,14 @@ export default {
         })
       }
     },
+
+    focusInputQuantity() {
+      if (this.isSelectedProduct) {
+        document.getElementById(this.productIdSelected).focus()
+        this.isSelectedProduct = false
+      }
+    },
+
     onclickAddProduct(index) {
       // check quyền chỉnh sửa đơn online tay hoặc đơn online từ hệ thống để thêm sản phẩm
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null) || (this.editManualPermission === true && this.onlineOrderId === null) || this.isOnline === false) {

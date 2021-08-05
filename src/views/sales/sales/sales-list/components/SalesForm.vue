@@ -498,6 +498,7 @@ import { getCurrentTime } from '@core/utils/utils'
 import { getUserData } from '@/auth/utils'
 import { VueAutosuggest } from 'vue-autosuggest'
 import toasts from '@/@core/utils/toasts/toasts'
+import customerData from '@/@db/customer'
 import {
   CUSTOMER,
   // GETTERS
@@ -669,6 +670,7 @@ export default {
       checkApParramCode: false, // check disabled so hoa don
 
       isOpenPayModal: false,
+      status: customerData.status[0].id,
     }
   },
 
@@ -951,6 +953,7 @@ export default {
         if (Number.isNaN(searchData) === false) {
           this.GET_CUSTOMERS_ACTION({
             phoneNumber: (searchData === 0) ? '' : searchData,
+            status: this.status,
           })
           this.search = ''
         } else {
@@ -1166,10 +1169,12 @@ export default {
         if (Number.isNaN(searchData) === false) {
           this.GET_CUSTOMERS_ACTION({
             phoneNumber: (searchData === 0) ? '' : searchData,
+            status: this.status,
           })
         } else {
           this.GET_CUSTOMERS_ACTION({
             searchKeywords: this.search.trim(),
+            status: this.status,
           })
         }
         this.$refs.salesSearchModal.$refs.salesSearchModal.show()
