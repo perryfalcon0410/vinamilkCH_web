@@ -1929,6 +1929,12 @@ export default {
       this.isPrint = false
       this.isSaveSuccess = false
       this.isDisabledDiscount = false
+
+      // Enable/disable buttons
+      this.isDisabledPrintTempBtn = false
+      this.isDisabledRePrintBtn = true
+      this.isDisabledPaymentBtn = true
+      this.isDisabledPrintAndPaymentBtn = true
     },
   },
 }
