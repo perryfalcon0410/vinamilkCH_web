@@ -1346,7 +1346,6 @@ export default {
     isOpenPayModal: {
       handler() {
         if (this.isOpenPayModal) {
-          console.log(this.customer.id)
           let isValidProduct = true
           this.orderProducts.forEach(product => {
             if (product.quantity <= 0) {
