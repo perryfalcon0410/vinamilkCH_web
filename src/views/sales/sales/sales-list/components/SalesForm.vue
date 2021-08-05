@@ -1001,7 +1001,7 @@ export default {
                   this.isOpenPayModal = true
                   this.showPayModal()
                 } else {
-                  toasts.error('Bạn không có quyền tạo đơn Online tay. Vui lòng chọn đơn Online đang có trên hệ thống. ')
+                  toasts.error('Bạn không có quyền tạo đơn Online tay. Vui lòng chọn đơn Online đang có trên hệ thống.')
                 }
               } else {
                 this.isOpenPayModal = true

@@ -321,12 +321,15 @@ import {
   GET_TOP_SALE_PRODUCTS_GETTER,
   UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
   GET_PRODUCT_BY_BARCODE_GETTER,
+  GET_EDIT_ONLINE_PERMISSION_GETTER,
+
   // Action
   GET_PRODUCTS_ACTION,
   GET_PRODUCT_INFOS_ACTION,
   GET_TOP_SALE_PRODUCTS_ACTION,
   UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
   GET_PRODUCT_BY_BARCODE_ACTION,
+  GET_EDIT_ONLINE_PERMISSION_ACTION,
 } from '../store-module/type'
 import {
   CUSTOMER,
@@ -509,6 +512,7 @@ export default {
       GET_TOP_SALE_PRODUCTS_GETTER,
       UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
       GET_PRODUCT_BY_BARCODE_GETTER,
+      GET_EDIT_ONLINE_PERMISSION_GETTER,
     ]),
     getProducts() {
       return this.GET_PRODUCTS_GETTER.map(data => ({
@@ -586,6 +590,9 @@ export default {
     },
     getProductByBarcode() {
       return this.GET_PRODUCT_BY_BARCODE_GETTER
+    },
+    getEditOnlinePermission() {
+      return this.GET_EDIT_ONLINE_PERMISSION_GETTER
     },
   },
   watch: {
@@ -673,6 +680,10 @@ export default {
     customerFullName() {
       this.bills.find(item => item.id === this.billSelected).billName = this.customerFullName
     },
+    getEditOnlinePermission() {
+      this.editManualPermission = this.getEditOnlinePermission.manuallyCreatable
+      this.editOnlinePermission = this.getEditOnlinePermission.editable
+    },
   },
 
   mounted() {
@@ -681,6 +692,7 @@ export default {
       type: Number(this.productInfoTypeOptions[index].id),
     }
     this.GET_PRODUCT_INFOS_ACTION(paramGetProductInfo)
+    this.GET_EDIT_ONLINE_PERMISSION_ACTION()
   },
   created() {
     window.addEventListener('keydown', e => {
@@ -712,6 +724,7 @@ export default {
       GET_TOP_SALE_PRODUCTS_ACTION,
       UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
       GET_PRODUCT_BY_BARCODE_ACTION,
+      GET_EDIT_ONLINE_PERMISSION_ACTION,
     ]),
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_DEFAULT_ACTION,
@@ -723,7 +736,7 @@ export default {
 
     increaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission === true || this.editManualPermission === true) {
+      if (this.editOnlinePermission === true) {
         this.orderProducts[index].quantity += 1
         this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
@@ -737,7 +750,7 @@ export default {
 
     decreaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission === true || this.editManualPermission === true) {
+      if (this.editOnlinePermission === true) {
         this.orderProducts[index].quantity -= 1
         if (this.orderProducts[index].quantity <= 0) {
           this.orderProducts[index].quantity = 1
@@ -756,7 +769,6 @@ export default {
 
     onClickDeleteProduct(index) {
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
-        || (this.editManualPermission === true && this.onlineOrderId === null)
         || this.isOnline === false
       ) {
         this.orderProducts.splice(index, 1)
@@ -788,7 +800,7 @@ export default {
 
     onclickAddProduct(index) {
       // check quyền chỉnh sửa đơn online tay hoặc đơn online từ hệ thống để thêm sản phẩm
-      if ((this.editOnlinePermission === true && this.onlineOrderId !== null) || (this.editManualPermission === true && this.onlineOrderId === null) || this.isOnline === false) {
+      if ((this.editOnlinePermission === true && this.onlineOrderId !== null) || this.isOnline === false) {
         if (index && index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
           if (productIndex === -1) {
@@ -1071,31 +1083,12 @@ export default {
       if (val.id === this.defaultPOSelected) {
         this.isOnline = false
         this.onlineOrderId = null
-        this.editOnlinePermission = true
-        this.editManualPermission = true
       } else {
         this.isOnline = true
         this.onlineOrderId = null
-
-        if (usedShop.id === this.currentCustomer.shopId) {
-          // có quyền chỉnh sửa đơn online tay
-          if (usedShop.manuallyCreatable === false) {
-            this.editManualPermission = false
-          } else {
-            this.editManualPermission = true
-          }
-
-          // có quyền chỉnh sửa đơn online từ hệ thống
-          if (usedShop.editable === false) {
-            this.editOnlinePermission = false
-          } else {
-            this.editOnlinePermission = true
-          }
-        }
-
         if (this.orderProducts.length > 0) {
           if (val.id !== this.defaultPOSelected && usedShop.id === this.currentCustomer.shopId) {
-            if (usedShop.manuallyCreatable === false) {
+            if (!this.editOnlinePermission) {
               this.$refs.salesNotifyModal.show()
             }
           }

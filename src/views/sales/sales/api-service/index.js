@@ -27,6 +27,7 @@ import {
   getProductByBarcodeEndpoint,
   getSalemtPromotionObjectTypeEndpoint,
   getSalemtDeliveryTypeEndpoint,
+  getEditOnlinePermissionEndPoint,
 } from './defaultConfig'
 
 export default {
@@ -166,5 +167,8 @@ export default {
     return axios.get(getSalemtDeliveryTypeEndpoint, {
       params: formatURLParams(args),
     })
+  },
+  getEditOnlinePermission(args) {
+    return axios.post(getEditOnlinePermissionEndPoint, args)
   },
 }

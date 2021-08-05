@@ -58,3 +58,5 @@ export const getProductByBarcodeEndpoint = `${SALES}${PRODUCT}/barcode`
 export const getSalemtPromotionObjectTypeEndpoint = `${COMMON}${APPARAM}/type/SALEMT_PROMOTION_OBJECT`
 
 export const getSalemtDeliveryTypeEndpoint = `${COMMON}${APPARAM}/type/SALEMT_DELIVERY_TYPE`
+
+export const getEditOnlinePermissionEndPoint = `${SALES}/valid/online-order`

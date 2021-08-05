@@ -31,6 +31,7 @@ import {
   GET_PRODUCT_BY_BARCODE_GETTER,
   SALEMT_PROMOTION_OBJECT_GETTER,
   SALEMT_DELIVERY_TYPE_GETTER,
+  GET_EDIT_ONLINE_PERMISSION_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -60,6 +61,7 @@ import {
   GET_PRODUCT_BY_BARCODE_ACTION,
   GET_SALEMT_PROMOTION_OBJECT_ACTION,
   GET_SALEMT_DELIVERY_TYPE_ACTION,
+  GET_EDIT_ONLINE_PERMISSION_ACTION,
 } from './type'
 
 export default {
@@ -95,6 +97,7 @@ export default {
     productByBarcode: {},
     salemtPromotions: [],
     salemtDeliveries: [],
+    editOnlinePermission: {},
   },
 
   getters: {
@@ -181,6 +184,9 @@ export default {
     },
     [SALEMT_DELIVERY_TYPE_GETTER](state) {
       return state.salemtDeliveries
+    },
+    [GET_EDIT_ONLINE_PERMISSION_GETTER](state) {
+      return state.editOnlinePermission || {}
     },
   },
 
@@ -621,6 +627,21 @@ export default {
         .then(res => {
           if (res.success) {
             state.salemtDeliveries = res.data
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_EDIT_ONLINE_PERMISSION_ACTION]({ state }, val) {
+      SalesServices
+        .getEditOnlinePermission(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.editOnlinePermission = res.data
           } else {
             throw new Error(res.statusValue)
           }

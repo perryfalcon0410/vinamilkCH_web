@@ -1617,7 +1617,6 @@ export default {
     onChangeCheckProgramPromotion(programId) {
       const programChecked = this.promotionPrograms.find(program => program.programId === programId)
       if (programChecked.amount !== null && programChecked.promotionType === Number(this.promotionTypeOption[1].id)) {
-        console.log(programChecked)
         if (Number(programChecked.amount.amount) > Number(programChecked.amount.maxAmount) && programChecked.amount.maxAmount > 0) {
           toasts.error('Số tiền không được vượt quá số tiền tối đa')
           this.promotionPrograms = [...this.promotionPrograms.map(program => {
