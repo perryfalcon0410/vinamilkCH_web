@@ -767,9 +767,7 @@ export default {
     },
 
     onClickDeleteProduct(index) {
-      if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
-        || this.isOnline === false
-      ) {
+      if (this.editOnlinePermission === true) {
         this.orderProducts.splice(index, 1)
       }
     },
@@ -799,7 +797,7 @@ export default {
 
     onclickAddProduct(index) {
       // check permission online order manual or online order from system to add product
-      if ((this.editOnlinePermission === true && this.onlineOrderId !== null) || this.isOnline === false) {
+      if (this.editOnlinePermission === true) {
         if (index && index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
           if (productIndex === -1) {
