@@ -94,7 +94,7 @@
 
     <!-- START - Total section 2 -->
     <div
-      v-for="(item,index) in reportData"
+      v-for="(item,index) in reportProductData"
       :key="index"
       class="pb-1"
     >
@@ -328,6 +328,7 @@ import {
 export default {
   data() {
     return {
+      reportProductData: [],
     }
   },
   computed: {
@@ -356,6 +357,11 @@ export default {
         return this.PRINT_RETURN_GOODS_GETTER.data
       }
       return []
+    },
+  },
+  watch: {
+    reportData() {
+      this.reportProductData = [...this.reportData]
     },
   },
   updated() {

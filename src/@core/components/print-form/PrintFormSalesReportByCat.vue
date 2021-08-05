@@ -20,9 +20,9 @@
       <div class="d-flex flex-column align-items-center">
         <strong style="font-size: 30px"> Báo cáo doanh số theo CAT </strong>
         <p class="my-1">
-          Từ ngày: {{ printInfo.fromDate }} đến ngày: {{ printInfo.toDate }}
+          Từ ngày: {{ $formatISOtoVNI(printInfo.fromDate) }} đến ngày: {{ $formatISOtoVNI(printInfo.toDate) }}
         </p>
-        <p>Ngày in: {{ printInfo.printDate }}</p>
+        <p>Ngày in: {{ $formatPrintDate(printInfo.printDate) }}</p>
       </div>
       <!-- START - Invisible element to align title -->
       <div

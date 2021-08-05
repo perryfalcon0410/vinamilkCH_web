@@ -497,7 +497,7 @@
                     v-model="productSearch"
                     :suggestions="products"
                     :input-props="{
-                      id:'autosuggest__input',
+                      id:'autosuggest__input_product',
                       class:'form-control w-30',
                       placeholder:'Nhập mã hoặc tên sản phẩm'
                     }"
@@ -975,6 +975,9 @@ export default {
     },
     getProducts() {
       this.products = [...this.getProducts]
+      if (this.products[0].data && this.products[0].data.length === 1) {
+        this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+      }
     },
     status() {
       if (this.inputTypeSelected === '0' && this.status === -1) {
