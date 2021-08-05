@@ -893,9 +893,6 @@ export default {
       ],
 
       promotionPrograms: [],
-      test: [],
-      cursor: -1,
-      cursorProduct: -1,
       salePaymentTypeOptions: [],
       pay: {
         saleOrderId: null,
@@ -1900,6 +1897,10 @@ export default {
       this.resetVoucher()
       this.resetDiscount()
       this.isPaid = false
+      this.pay.saleOrderId = null
+      this.isPrint = false
+      this.isSaveSuccess = false
+      this.isDisabledDiscount = false
     },
   },
 }
