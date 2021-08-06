@@ -1352,6 +1352,10 @@ export default {
             this.pay.discount.discountCode = this.orderOnline.discountCode
             this.pay.discount.discountAmount = this.orderOnline.discountValue
           }
+
+          this.GET_SALE_PAYMENT_TYPES_ACTION({
+            ...this.decentralization,
+          })
         }
       },
       deep: true,
@@ -1361,9 +1365,6 @@ export default {
     window.addEventListener('keydown', this.keyDown)
   },
   mounted() {
-    this.GET_SALE_PAYMENT_TYPES_ACTION({
-      ...this.decentralization,
-    })
     this.isDisabledPaymentBtn = true
     this.isDisabledPrintAndPaymentBtn = true
     this.isDisabledRePrintBtn = true
