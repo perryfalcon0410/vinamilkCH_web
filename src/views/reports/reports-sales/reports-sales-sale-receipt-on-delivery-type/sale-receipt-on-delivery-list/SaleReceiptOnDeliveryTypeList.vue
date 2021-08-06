@@ -41,7 +41,7 @@
           :columns="columns"
           :rows="reportsSalesReceiptOnDeliveryType"
           mode="remote"
-          style-class="vgt-table table-horizontal-scroll"
+          style-class="vgt-table table-horizontal-scroll report-deliverytype"
           compact-mode
           line-numbers
           :sort-options="{
@@ -230,6 +230,7 @@ export default {
           label: 'Mã khách hàng',
           field: 'customerCode',
           sortable: false,
+          width: '135px',
           thClass: 'text-nowrap scroll-column-header column-first',
           tdClass: 'scroll-column column-first',
         },
@@ -435,22 +436,22 @@ export default {
 </script>
 <style>
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
-  .table-horizontal-scroll thead tr:last-child th:nth-child(2) {
-    left: 35px;
+  .report-deliverytype.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 34px;
     z-index: 1;
   }
-  .table-horizontal-scroll thead tr:last-child th:nth-child(3) {
-    left: 160px;
+  .report-deliverytype.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 163px;
     z-index: 1;
   }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
 
   /* tùy chỉnh left khi scroll*/
-  .table-horizontal-scroll .column-first {
-    left: 35px;
+  .report-deliverytype.table-horizontal-scroll .column-first {
+    left: 34px;
   }
-  .table-horizontal-scroll .column-second {
-    left: 160px;
+  .report-deliverytype.table-horizontal-scroll .column-second {
+    left: 163px;
   }
   /* tùy chỉnh left khi scroll*/
 </style>

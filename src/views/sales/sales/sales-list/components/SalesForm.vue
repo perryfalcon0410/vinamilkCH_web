@@ -487,6 +487,7 @@ import {
   getTimeOfDate,
   earlyMonth,
   nowDate,
+  reverseVniDate,
 } from '@core/utils/filter'
 import {
   orderNumber,
@@ -632,8 +633,8 @@ export default {
 
       // online order
       searchData: {
-        fromDate: earlyMonth(),
-        toDate: nowDate(),
+        fromDate: reverseVniDate(earlyMonth()),
+        toDate: reverseVniDate(nowDate()),
         synStatus: saleData.synStatus[0].id,
       },
       orderOnline: {

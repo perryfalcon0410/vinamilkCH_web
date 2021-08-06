@@ -429,12 +429,19 @@ export default {
   /* tùy chỉnh left khi scroll*/
   .report-voucher.table-horizontal-scroll .column-first {
     left: 22px;
+    z-index: 1;
   }
   .report-voucher.table-horizontal-scroll .column-second {
     left: var(--second-col);
+    z-index: 1;
   }
   .report-voucher.table-horizontal-scroll .column-third {
     left: var(--third-col);
+    z-index: 1;
   }
+
+.report-voucher.vgt-table thead tr:first-child th {
+  border-bottom: 0px;
+}
   /* tùy chỉnh left khi scroll*/
 </style>

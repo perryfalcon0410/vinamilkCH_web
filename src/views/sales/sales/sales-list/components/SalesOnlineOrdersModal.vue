@@ -7,6 +7,7 @@
     title-class="font-weight-bold text-brand-1"
     content-class="bg-light"
     hide-footer
+    @hidden="cancel()"
   >
     <b-container
       fluid
@@ -537,6 +538,12 @@ export default {
     getOnlineOrderInfo(id) {
       this.onClickCloseButton()
       this.$emit('getOnlineOrderInfo', id)
+    },
+    cancel() {
+      this.fromDate = earlyMonth()
+      this.toDate = nowDate()
+      this.synStatusSelected = saleData.synStatus[0].id
+      this.orderNumber = null
     },
   },
 }

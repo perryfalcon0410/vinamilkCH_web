@@ -255,6 +255,7 @@ export default {
         {
           label: 'Ngày biên bản',
           field: 'transDate',
+          width: '120px',
           sortable: false,
           thClass: 'text-nowrap scroll-column-header column-first',
           tdClass: 'scroll-column column-first',
@@ -269,6 +270,7 @@ export default {
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
+          width: '135px',
           sortable: false,
           thClass: 'text-nowrap scroll-column-header column-third',
           tdClass: 'scroll-column column-third',
@@ -381,8 +383,8 @@ export default {
     },
     cssProps() {
       return {
-        '--third-col': `${this.transNumberCol + 135}px`,
-        '--fourth-col': `${this.transNumberCol + 260}px`,
+        '--third-col': `${this.transNumberCol + 145}px`,
+        '--fourth-col': `${this.transNumberCol + 270}px`,
       }
     },
   },
@@ -467,10 +469,10 @@ export default {
 
   /* tùy chỉnh left khi scroll*/
   .report.table-horizontal-scroll .column-first {
-    left: 35px;
+    left: 33px;
   }
   .report.table-horizontal-scroll .column-second {
-    left: 140px;
+    left: 150px;
   }
   .report.table-horizontal-scroll .column-third {
     left: var(--third-col);

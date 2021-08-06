@@ -32,7 +32,6 @@
             @input="onChangeKeyWord"
             @selected="onclickAddProduct"
             @focus="focusInputProduct"
-            @keyup.enter="focusInputQuantity"
           >
             <template
               slot-scope="{ suggestion }"
@@ -205,7 +204,7 @@
                 class="text-center h7 p-input"
                 @change="onChangeQuantity(props.row.originalIndex)"
                 @input="onInputChangeQuantity(props.row.originalIndex)"
-                @keyup.enter="focusInputSearch"
+                @keydown.enter="focusInputSearch"
                 @keypress="$onlyNumberInput"
               />
               <b-icon-plus
@@ -787,13 +786,6 @@ export default {
           data: { ...this.searchOptions },
           onSuccess: () => {},
         })
-      }
-    },
-
-    focusInputQuantity() {
-      if (this.isSelectedProduct) {
-        document.getElementById(this.productIdSelected).focus()
-        this.isSelectedProduct = false
       }
     },
 

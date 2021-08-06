@@ -263,18 +263,21 @@ export default {
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
+          width: '170px',
           thClass: 'text-nowrap scroll-column-header column-first',
           tdClass: 'scroll-column column-first',
         },
         {
           label: 'Ngày bán',
           field: 'sellDate',
+          width: '100px',
           thClass: 'text-nowrap scroll-column-header column-second',
           tdClass: 'scroll-column column-second',
         },
         {
           label: 'Mã khách hàng',
           field: 'customerCode',
+          width: '135px',
           thClass: 'text-nowrap scroll-column-header column-third',
           tdClass: 'scroll-column column-third',
         },
@@ -549,31 +552,31 @@ export default {
     z-index: 1;
   }
   .table-horizontal-scroll thead tr:last-child th:nth-child(3) {
-    left: 190px;
+    left: 204px;
     z-index: 1;
   }
   .table-horizontal-scroll thead tr:last-child th:nth-child(4) {
-    left: 265px;
+    left: 300px;
     z-index: 1;
   }
   .table-horizontal-scroll thead tr:last-child th:nth-child(5) {
-    left: 390px;
+    left: 432px;
     z-index: 1;
   }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
 
   /* tùy chỉnh left khi scroll*/
   .table-horizontal-scroll .column-first {
-    left: 35px;
+    left: 34px;
   }
   .table-horizontal-scroll .column-second {
-    left: 190px;
+    left: 204px;
   }
   .table-horizontal-scroll .column-third {
-    left: 265px;
+    left: 300px;
   }
   .table-horizontal-scroll .column-fourth {
-    left: 390px;
+    left: 432px;
   }
   /* tùy chỉnh left khi scroll*/
 </style>
