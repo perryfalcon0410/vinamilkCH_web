@@ -775,8 +775,8 @@ export default {
           quantity: data.quantity,
           productUnitPrice: data.price,
           sumProductUnitPrice: data.price,
-          productTotalPrice: Number(data.totalPrice),
-          sumProductTotalPrice: this.totalPriceProducts(1, Number(data.totalPrice)),
+          productTotalPrice: data.totalPrice,
+          sumProductTotalPrice: data.totalPrice,
         }))
       }
       return []
