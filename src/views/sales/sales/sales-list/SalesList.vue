@@ -199,7 +199,7 @@
                 v-model="orderProducts[props.row.originalIndex].quantity"
                 :value="orderProducts[props.row.originalIndex].quantity"
                 :number="true"
-                :disabled="editOnlinePermission === false && isOnline === true"
+                :disabled="editOnlinePermission === false && onlineOrderId !== null"
                 maxlength="7"
                 class="text-center h7 p-input"
                 @change="onChangeQuantity(props.row.originalIndex)"
@@ -624,10 +624,6 @@ export default {
       this.defaultCustomer = { ...this.getDefaultCustomer }
     },
 
-    getOrderNumber() {
-      this.currentOrderNumber = { ...this.getOrderNumber }
-    },
-
     selectedProduct() {
       this.selectedValue = this.selectedProduct
     },
@@ -681,7 +677,7 @@ export default {
     },
     getEditOnlinePermission() {
       this.editManualPermission = this.getEditOnlinePermission.manuallyCreatable
-      this.editOnlinePermission = this.getEditOnlinePermission.editable
+      this.editOnlinePermission = false
     },
   },
 
@@ -735,7 +731,7 @@ export default {
 
     increaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || !this.isOnline) {
+      if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
         this.orderProducts[index].quantity += 1
         this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
@@ -748,7 +744,7 @@ export default {
 
     decreaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || !this.isOnline) {
+      if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
         this.orderProducts[index].quantity -= 1
         if (this.orderProducts[index].quantity <= 0) {
           this.orderProducts[index].quantity = 1
@@ -766,7 +762,7 @@ export default {
     },
 
     onClickDeleteProduct(index) {
-      if (this.editOnlinePermission || !this.isOnline) {
+      if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
         this.orderProducts.splice(index, 1)
       }
     },
@@ -789,7 +785,7 @@ export default {
 
     onclickAddProduct(index) {
       // check permission online order manual or online order from system to add product
-      if (this.editOnlinePermission || !this.isOnline) {
+      if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
         if (index && index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
           if (productIndex === -1) {
