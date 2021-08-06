@@ -48,7 +48,6 @@
             <b-col class="p-0">
               <!-- START - Title -->
               <b-row
-                v-b-toggle="'collapse-'+value.programId"
                 align-v="center"
                 class="mx-0 style-padding bg-brand-1"
               >
@@ -66,14 +65,20 @@
                     font-scale="1.5"
                   />
                 </div>
-                <b-icon-chevron-down
-                  class="ml-auto when-opened"
-                  color="white"
-                />
-                <b-icon-chevron-up
-                  color="white"
-                  class="ml-auto when-closed"
-                />
+                <div
+                  v-b-toggle="'collapse-'+value.programId"
+                  class="ml-auto"
+                >
+                  <b-icon-chevron-down
+                    class="when-opened"
+                    color="white"
+                  />
+                  <b-icon-chevron-up
+                    color="white"
+                    class="when-closed"
+                  />
+                </div>
+
               </b-row>
               <!-- END - Title -->
 
@@ -106,7 +111,7 @@
                       <div v-if="props.column.field === 'quantity'">
                         <b-input-group>
                           <template #append>
-                            <b-input-group-text>{{ props.row.quantityMax }}</b-input-group-text>
+                            <b-input-group-text>{{ $formatNumberToLocale(props.row.quantityMax) }}</b-input-group-text>
                           </template>
                           <b-form-input
                             v-model.number="promotionPrograms[index].products[props.row.originalIndex].quantity"
@@ -239,43 +244,6 @@
                       slot="table-actions-bottom"
                       class="mx-1 my-2 px-2"
                     >
-                      <!-- <b-form-input
-                        v-model="pay.productSearch"
-                        class="w-25"
-                        placeholder="Nhập mã hoặc tên sản phẩm"
-                        type="text"
-                        autocomplete="off"
-                        @focus="searchProductFocus"
-                        @blur="inputSearchFocusedSP = false"
-                        @input="loadProducts(value.programId)"
-                        @keyup.enter="searchProductKeyEnter"
-                        @keydown.up="searchProductKeyUp"
-                        @keydown.down="searchProductKeyDown"
-                        @click="clickProduct(value.programId)"
-                      />
-                      <b-collapse
-                        v-model="inputSearchFocusedSP"
-                        class="position-absolute mr-lg-0 mb-3"
-                        style="zIndex:1"
-                      >
-                        <b-container
-                          class="my-1 bg-white rounded border border-primary shadow-lg"
-                        >
-                          <b-col>
-                            <b-row
-                              v-for="(product,indexProduct) in allProducts"
-                              :key="indexProduct"
-                              class="my-1 cursor-pointer"
-                              :class="{'item-active': indexProduct === cursorProduct}"
-                              @click="selectProduct(value.programId,product)"
-                              @mouseover="$event.target.classList.add('item-active')"
-                              @mouseout="$event.target.classList.remove('item-active')"
-                            >
-                              <b>{{ product.productCode }}</b> - {{ product.productName }}
-                            </b-row>
-                          </b-col>
-                        </b-container>
-                      </b-collapse> -->
                       <vue-autosuggest
                         ref="searchProduct"
                         v-model="pay.productSearch"
@@ -1358,6 +1326,7 @@ export default {
               productCode: data.productCode,
               quantity: data.quantity,
             }))
+            console.log(this.customer.id)
             if (paramProducts.length > 0) {
               this.GET_PROMOTION_PROGRAMS_ACTION({
                 customerId: this.customer.id,
@@ -1604,28 +1573,40 @@ export default {
         }
       }
     },
-    selectProduct(programId, product) {
+    selectProduct(programId, suggestion) {
       this.pay.productSearch = null
       this.allProducts = [{ data: null }]
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.programId === programId) {
-          const existedProductIndex = program.products.findIndex(p => p.productCode === product.item.productCode)
+          const existedProductIndex = program.products.findIndex(p => p.productCode === suggestion.item.productCode)
           if (existedProductIndex === -1 || program.products.length === 0) {
             const arrProduct = program.products
             arrProduct.push({
-              groupOneFreeItem: product.item.groupOneFreeItem,
-              levelNumber: product.item.levelNumber,
-              productCode: product.item.productCode,
-              productId: product.item.productId,
-              productName: product.item.productName,
-              quantity: product.item.quantity,
-              quantityMax: program.numberLimited ? this.$formatNumberToLocale(program.numberLimited) : this.$formatNumberToLocale(product.item.stockQuantity),
-              stockQuantity: product.item.stockQuantity,
+              groupOneFreeItem: suggestion.item.groupOneFreeItem,
+              levelNumber: suggestion.item.levelNumber,
+              productCode: suggestion.item.productCode,
+              productId: suggestion.item.productId,
+              productName: suggestion.item.productName,
+              quantity: suggestion.item.quantity,
+              quantityMax: program.numberLimited ? program.numberLimited : suggestion.item.stockQuantity,
+              stockQuantity: suggestion.item.stockQuantity,
             })
             return {
               ...program,
               products: arrProduct,
             }
+          }
+          return {
+            ...program,
+            products: [...program.products.map(product => {
+              if (product.productCode === suggestion.item.productCode) {
+                return {
+                  ...product,
+                  quantity: Number(product.quantity) + 1,
+                }
+              }
+              return product
+            })],
           }
         }
         return program
@@ -1669,7 +1650,7 @@ export default {
           // xử lý phần mã giảm giá
           const programSelected = this.promotionPrograms.find(p => p.programId === programId)
           if (programSelected.products.length === 0 && programSelected.amount !== null) {
-            if (this.pay.discount.discountCode !== '') {
+            if (this.pay.discount.discountCode !== '' && this.pay.discount.discountCode !== null) {
               this.resetDiscount()
               this.isDisabledDiscount = false
               toasts.error('Vui lòng nhập lại Mã giảm giá vì có sự thay đổi tiền khuyến mãi')
@@ -1760,7 +1741,7 @@ export default {
             orderType: Number(this.orderSelected),
             note: this.orderOnline.note,
             orderOnlineId: this.orderOnline.onlineOrderId,
-            onlineNumber: this.orderOnline.orderNumber,
+            onlineNumber: Number(this.orderOnline.orderNumber),
             products: this.orderProducts,
             promotionInfo: paramPromotionInfo,
             totalOrderAmount: Number(this.pay.totalAmount) || 0,

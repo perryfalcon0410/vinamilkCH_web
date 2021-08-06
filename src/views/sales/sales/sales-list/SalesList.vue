@@ -50,7 +50,7 @@
                       class="text-dark font-weight-bold text-right"
                       md="1"
                     >
-                      {{ suggestion.item.productUnitPrice }}
+                      {{ $formatNumberToLocale(suggestion.item.productUnitPrice) }}
                     </b-col>
                   </b-form-row>
 
@@ -415,6 +415,7 @@ export default {
           sortable: false,
           type: 'number',
           tdClass: 'pr-2 align-middle',
+          formatFn: value => this.$formatNumberToLocale(value),
         },
         {
           label: 'Thành tiền',
@@ -422,6 +423,7 @@ export default {
           sortable: false,
           type: 'number',
           tdClass: 'pr-2 align-middle',
+          formatFn: value => this.$formatNumberToLocale(value),
         },
         {
           label: 'Chức năng',
@@ -522,9 +524,9 @@ export default {
         productUnit: data.uom1,
         productInventory: data.stockTotal,
         quantity: 1,
-        productUnitPrice: this.$formatNumberToLocale(data.price),
+        productUnitPrice: data.price,
         sumProductUnitPrice: data.price,
-        productTotalPrice: this.$formatNumberToLocale(this.totalPrice(1, Number(data.price))),
+        productTotalPrice: this.totalPrice(1, Number(data.price)),
         sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
       }))
     },
@@ -547,10 +549,10 @@ export default {
             productCode: data.productCode,
             productUnit: data.uom1,
             productInventory: data.stockTotal,
-            productUnitPrice: this.$formatNumberToLocale(data.price),
+            productUnitPrice: data.price,
             sumProductUnitPrice: data.price,
             quantity: 1,
-            productTotalPrice: this.$formatNumberToLocale(this.totalPrice(1, Number(data.price))),
+            productTotalPrice: this.totalPrice(1, Number(data.price)),
             sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
             productImage: data.image,
           })),
@@ -571,9 +573,9 @@ export default {
           productUnit: data.uom1,
           productInventory: data.stockTotal,
           quantity: data.quantity,
-          productUnitPrice: this.$formatNumberToLocale(data.price),
+          productUnitPrice: data.price,
           sumProductUnitPrice: data.price,
-          productTotalPrice: this.$formatNumberToLocale(data.totalPrice),
+          productTotalPrice: data.totalPrice,
           sumProductTotalPrice: data.totalPrice,
         }))
       }
@@ -653,10 +655,10 @@ export default {
         productCode: this.getProductByBarcode.productCode,
         productUnit: this.getProductByBarcode.uom1,
         productInventory: this.getProductByBarcode.stockTotal,
-        productUnitPrice: this.$formatNumberToLocale(this.getProductByBarcode.price),
+        productUnitPrice: this.getProductByBarcode.price,
         sumProductUnitPrice: this.getProductByBarcode.price,
         quantity: 1,
-        productTotalPrice: this.$formatNumberToLocale(this.totalPrice(1, Number(this.getProductByBarcode.price))),
+        productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
         sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
         productImage: this.getProductByBarcode.image,
         comboProductId: this.getProductByBarcode.comboProductId,
@@ -738,7 +740,7 @@ export default {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
       if (this.editOnlinePermission === true) {
         this.orderProducts[index].quantity += 1
-        this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
+        this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
 
         if (this.orderProducts[index].productInventory <= this.orderProducts[index].quantity) {
@@ -755,7 +757,7 @@ export default {
           this.orderProducts[index].quantity = 1
         }
 
-        this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
+        this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
 
         if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
@@ -811,7 +813,7 @@ export default {
             }
             this.orderProducts[productIndex].productUnitPrice = index.item.productUnitPrice
             this.orderProducts[productIndex].sumProductUnitPrice = index.item.sumProductUnitPrice
-            this.orderProducts[productIndex].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice)))
+            this.orderProducts[productIndex].productTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
             this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
           }
           this.productIdSelected = index.item.productCode
@@ -844,6 +846,7 @@ export default {
           billName: this.defaultCustomer.fullName,
           products: [],
           customer: {
+            id: this.defaultCustomer.id,
             fullName: this.defaultCustomer.fullName,
             phoneNumber: this.defaultCustomer.mobiPhone,
             totalBill: this.defaultCustomer.totalBill,
@@ -866,6 +869,7 @@ export default {
           id: 1,
           products: [],
           customer: {
+            id: this.defaultCustomer.id,
             fullName: this.currentCustomer.fullName,
             phoneNumber: this.currentCustomer.phoneNumber,
             totalBill: this.currentCustomer.totalBill,
@@ -971,7 +975,7 @@ export default {
         this.isDisabled = false
         this.orderProducts[index].quantity = this.orderProducts[index].productInventory
       }
-      this.orderProducts[index].productTotalPrice = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
+      this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
     },
     getCustomerDefault(val) {
