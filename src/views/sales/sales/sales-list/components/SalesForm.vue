@@ -773,9 +773,9 @@ export default {
           productUnit: data.uom1,
           productInventory: data.stockTotal,
           quantity: data.quantity,
-          productUnitPrice: this.$formatNumberToLocale(data.price),
+          productUnitPrice: data.price,
           sumProductUnitPrice: data.price,
-          productTotalPrice: this.$formatNumberToLocale(Number(data.totalPrice)),
+          productTotalPrice: Number(data.totalPrice),
           sumProductTotalPrice: this.totalPriceProducts(1, Number(data.totalPrice)),
         }))
       }
@@ -1003,6 +1003,8 @@ export default {
                 } else {
                   toasts.error('Bạn không có quyền tạo đơn Online tay. Vui lòng chọn đơn Online đang có trên hệ thống.')
                 }
+              } else if (this.orderOnline.onlineOrderId !== null && !this.editOnlinePermission) {
+                toasts.error('Bạn không có quyền sửa đơn Online.')
               } else {
                 this.isOpenPayModal = true
                 this.showPayModal()
