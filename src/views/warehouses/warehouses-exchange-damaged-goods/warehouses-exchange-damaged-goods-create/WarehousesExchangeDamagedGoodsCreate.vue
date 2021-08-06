@@ -223,14 +223,16 @@
               >
                 <span v-if="props.column.field == 'productAmount'">
                   <div v-if="props.row.productAmount != ''">
-                    <b-form-input
+                    <cleave
                       :id="damagedProduct[props.row.originalIndex].productCode"
                       v-model.trim="damagedProduct[props.index].productQuantity"
+                      class="form-control text-right"
+                      :raw="true"
+                      :options="options.number"
                       maxlength="7"
-                      class="text-right"
                       @keypress="$onlyNumberInput"
-                      @change="onChangeQuantity(damagedProduct[props.index])"
-                      @keyup.enter="focusInputSearch"
+                      @keyup.native="onChangeQuantity(damagedProduct[props.index])"
+                      @keydown.enter.native="focusInputSearch"
                     />
                   </div>
                 </span>
@@ -272,7 +274,7 @@
                   :suggestions="products"
                   :input-props="{
                     id:'autosuggest_product__input',
-                    class:'form-control w-25',
+                    class:'form-control w-30',
                     placeholder:'Nhập mã hoặc tên sản phẩm'
                   }"
                   @input="loadProducts"
@@ -376,6 +378,7 @@ import {
   required,
 } from '@/@core/utils/validations/validations'
 import { VueAutosuggest } from 'vue-autosuggest'
+import Cleave from 'vue-cleave-component'
 import toasts from '@core/utils/toasts/toasts'
 import { getNow } from '@/@core/utils/utils'
 import {
@@ -398,6 +401,7 @@ export default {
     ValidationProvider,
     ValidationObserver,
     VueAutosuggest,
+    Cleave,
   },
 
   data() {
@@ -507,6 +511,12 @@ export default {
       },
       damagedProduct: [],
       productIdSelected: null,
+      options: {
+        number: {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand',
+        },
+      },
     }
   },
 
@@ -717,14 +727,14 @@ export default {
             productName: product.item.name,
             productDVT: product.item.productDVT,
             productPrice: product.item.productPrice,
-            productQuantity: 1,
+            productQuantity: '01',
             productPriceTotal: null,
           }
           if (existedProductIndex === -1) {
-            obj.productPriceTotal = obj.productPrice * obj.productQuantity
+            obj.productPriceTotal = obj.productPrice * Number(obj.productQuantity)
             this.damagedProduct.push(obj)
           } else {
-            this.damagedProduct[existedProductIndex].productQuantity = Number(this.damagedProduct[existedProductIndex].productQuantity) + obj.productQuantity
+            this.damagedProduct[existedProductIndex].productQuantity = Number(this.damagedProduct[existedProductIndex].productQuantity) + Number(obj.productQuantity)
             this.damagedProduct[existedProductIndex].productPriceTotal = Number(obj.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
           }
           this.productInfos.productName = null

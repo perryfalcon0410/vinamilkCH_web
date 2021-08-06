@@ -212,14 +212,16 @@
               slot-scope="props"
             >
               <div v-if="props.column.field == 'productAmount'">
-                <b-form-input
+                <cleave
                   :id="damagedProduct[props.row.originalIndex].productCode"
-                  v-model.trim="damagedProduct[props.index].quantity"
-                  maxlength="10"
-                  class="text-right"
+                  v-model="damagedProduct[props.index].quantity"
+                  class="form-control text-right"
+                  :raw="true"
+                  :options="options.number"
+                  maxlength="7"
                   @keypress="$onlyNumberInput"
-                  @change="onChangeQuantity(damagedProduct[props.index])"
-                  @keyup.enter="focusInputSearch"
+                  @keyup.native="onChangeQuantity(damagedProduct[props.index])"
+                  @keydown.enter.native="focusInputSearch"
                 />
               </div>
 
@@ -362,6 +364,7 @@ import {
   required,
 } from '@/@core/utils/validations/validations'
 import { VueAutosuggest } from 'vue-autosuggest'
+import Cleave from 'vue-cleave-component'
 import toasts from '@core/utils/toasts/toasts'
 // import { getNow } from '@/@core/utils/utils'
 import {
@@ -392,6 +395,7 @@ export default {
     ValidationProvider,
     ValidationObserver,
     VueAutosuggest,
+    Cleave,
   },
 
   data() {
@@ -505,6 +509,12 @@ export default {
       },
       damagedProduct: [],
       productIdSelected: null,
+      options: {
+        number: {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand',
+        },
+      },
     }
   },
 
@@ -768,16 +778,17 @@ export default {
           productName: product.item.name,
           productDVT: product.item.productDVT,
           price: product.item.price,
-          quantity: 1,
+          quantity: '01',
           totalPrice: null,
           type: 0,
         }
         if (existedProductIndex === -1) {
-          obj.totalPrice = obj.price * obj.quantity
+          obj.totalPrice = obj.price * Number(obj.quantity)
           this.damagedProduct.push(obj)
           this.listDamagedProducts.push(obj)
         } else {
           this.damagedProduct[existedProductIndex].quantity = Number(this.damagedProduct[existedProductIndex].quantity) + 1
+          this.listDamagedProducts[existedProductIndex].quantity = Number(this.listDamagedProducts[existedProductIndex].quantity) + 1
           this.damagedProduct[existedProductIndex].totalPrice = Number(obj.price) * this.damagedProduct[existedProductIndex].quantity
         }
         this.productInfos.productName = null

@@ -168,7 +168,7 @@
                   maxlength="7"
                   :state="isPricePositive(comboListRows[props.index].numProduct,props.index)"
                   @change.native="onChangeQuantity(props.row.originalIndex)"
-                  @keyup.enter.native="onChangeQuantity(props.row.originalIndex)"
+                  @keydown.enter.native="onChangeQuantity(props.row.originalIndex)"
                   @keypress="$onlyNumberInput"
                 />
               </span>
@@ -583,7 +583,7 @@ export default {
         const obj = {
           id: combo.item.id,
           comboCode: combo.item.productCode,
-          numProduct: 1,
+          numProduct: '01',
           price: combo.item.productPrice || 0,
           comboName: combo.item.productName,
           selectedComboId: combo.item.id,
@@ -605,7 +605,7 @@ export default {
             },
           })
         } else {
-          this.comboListRows[index].numProduct += obj.numProduct
+          this.comboListRows[index].numProduct += Number(obj.numProduct)
           this.updateComboExchangeQuantity(index)
           this.totalExchangeQuantity = this.comboExchangeRows.reduce((accum, i) => accum + Number(i.quantity), 0)
 

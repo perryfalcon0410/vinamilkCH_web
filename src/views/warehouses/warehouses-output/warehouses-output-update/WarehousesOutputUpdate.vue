@@ -278,7 +278,7 @@
                     maxlength="19"
                     @keypress="$onlyNumberInput"
                     @keyup.native="changeQuantity()"
-                    @keyup.enter.native="focusInputSearch"
+                    @keydown.enter.native="focusInputSearch"
                   />
                 </div>
                 <div
