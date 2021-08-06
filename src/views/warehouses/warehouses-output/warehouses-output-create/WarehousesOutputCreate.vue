@@ -239,13 +239,20 @@
                 slot="table-row"
                 slot-scope="props"
               >
-                <div v-if="props.column.field === 'quantityReturn'">
-                  <b-form-input
+                <div
+                  v-if="props.column.field === 'quantityReturn'"
+                  class="pr-50"
+                  style="width: 150px;"
+                >
+                  <cleave
                     v-model="products[props.row.originalIndex].quantityReturn"
+                    class="form-control h7 text-right"
+                    :raw="true"
+                    :options="options.number"
                     maxlength="19"
                     :readonly="exportAll && outputTypeSelected !== poOutputType"
                     @keypress="$onlyNumberInput"
-                    @change="changeQuantity()"
+                    @keyup.native="changeQuantity()"
                   />
                 </div>
                 <div
@@ -310,6 +317,7 @@
                   <div
                     v-if="props.column.field === 'quantityPromo'"
                     class="pr-50"
+                    style="width: 150px;"
                   >
                     <cleave
                       v-model="rowsProductPromotion[props.row.originalIndex].quantityPromo"
@@ -577,7 +585,6 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-nowrap',
-          tdClass: 'pr-2',
         },
       ],
       columnsCustom: [

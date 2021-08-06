@@ -601,7 +601,7 @@ export default {
           productImportQuantity: data.importQuantity,
           productReturnAmount: data.quantity,
           productExport: data.export,
-          export: `${data.export}/${data.importQuantity}`,
+          export: `${this.$formatNumberToLocale(data.export)}/${this.$formatNumberToLocale(data.importQuantity)}`,
         })),
         ]
       } return []

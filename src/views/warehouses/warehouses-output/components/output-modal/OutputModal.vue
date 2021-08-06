@@ -451,7 +451,7 @@ export default {
           totalPrice: data.totalPrice,
           export: `${data.export}/${data.quantity}`,
           productReturnAmount: 0,
-          quantity: `${data.quantity - data.export}/${data.quantity}`,
+          quantity: `${this.$formatNumberToLocale(data.quantity - data.export)}/${this.$formatNumberToLocale(data.quantity)}`,
         })),
         ...this.getExportPoTransDetail.response.map(data => ({
           id: data.id,
@@ -460,9 +460,9 @@ export default {
           price: data.price,
           unit: data.unit,
           totalPrice: data.totalPrice,
-          export: `${data.export}/${data.quantity}`,
+          export: `${this.$formatNumberToLocale(data.export)}/${this.$formatNumberToLocale(data.quantity)}`,
           productReturnAmount: 0,
-          quantity: `${data.quantity - data.export}/${data.quantity}`,
+          quantity: `${this.$formatNumberToLocale(data.quantity - data.export)}/${this.$formatNumberToLocale(data.quantity)}`,
         })),
         ]
       }
@@ -496,7 +496,7 @@ export default {
             unit: data.unit,
             shopId: data.shopId,
             totalPrice: data.totalPrice,
-            export: `${data.export}/${data.quantity}`,
+            export: `${this.$formatNumberToLocale(data.export)}/${this.$formatNumberToLocale(data.quantity)}`,
             productReturnAmount: null,
             productReturnExportOriginal: data.export,
             quantity: data.quantity,
@@ -508,7 +508,7 @@ export default {
             price: data.price || 0,
             unit: data.unit,
             totalPrice: data.totalPrice || 0,
-            export: `${data.export}/${data.quantity}`,
+            export: `${this.$formatNumberToLocale(data.export)}/${this.$formatNumberToLocale(data.quantity)}`,
             productReturnExportOriginal: data.export,
             quantity: data.quantity,
           }))
