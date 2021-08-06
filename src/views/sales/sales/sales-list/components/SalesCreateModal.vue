@@ -480,6 +480,7 @@ export default {
               this.districtsSelected = this.districtOptions[0].id
             }
             // Load quận huyện mặc định từ api về lần đầu
+            // Load default district from api first
             if (this.shopLocations && this.isFirstTimeGetLocations) {
               this.districtsSelected = this.shopLocations.districtId
             }
@@ -496,7 +497,7 @@ export default {
             if (this.isFirstTimeGetLocations === false) {
               this.precinctsSelected = this.precinctOptions[0].id
             }
-            // Load phường xã mặc định từ api về lần đầu
+            // Load default ward,commune from api first
             if (this.shopLocations && this.isFirstTimeGetLocations) {
               this.precinctsSelected = this.shopLocations.precinctId
               this.isFirstTimeGetLocations = false

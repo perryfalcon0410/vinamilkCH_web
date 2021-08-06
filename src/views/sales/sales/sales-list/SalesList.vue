@@ -439,8 +439,6 @@ export default {
         status: null,
         size: 10,
         page: 0,
-        formId: 5, // Hard code
-        ctrlId: 7, // Hard code
       },
       orderProducts: [],
       productInfos: [],

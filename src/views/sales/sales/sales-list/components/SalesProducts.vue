@@ -200,23 +200,17 @@ export default {
       status: 1,
       size: saleData.pageSizeRecommendProducts,
       page: saleData.pageNumberRecommendProducts,
-      // formId: this.formId, // Hard code
-      // ctrlId: this.ctrlId, // Hard code
     }
     this.GET_ALL_PRODUCT_ACTION(paramGetAllProduct)
     const paramGetHotProduct = {
       customerId: 507, // Hard code customerId
       size: saleData.pageSizeRecommendProducts,
       page: saleData.pageNumberRecommendProducts,
-      // formId: this.formId, // Hard code
-      // ctrlId: this.ctrlId, // Hard code
     }
     this.GET_HOT_PRODUCTS_ACTION(paramGetHotProduct)
 
     const paramGetTopSaleProductInMonth = {
       customerId: 507, // Hard code customer type
-      // formId: this.formId, // Hard code
-      // ctrlId: this.ctrlId, // Hard code
     }
     this.GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION(paramGetTopSaleProductInMonth)
   },
@@ -252,8 +246,6 @@ export default {
         status: 1,
         size: 8,
         page: 0,
-      // formId: 5, // Hard code
-      // ctrlId: 7, // Hard code
       }
       this.GET_PRODUCTS_ACTION(paramGetProductsWithCatId)
       this.recommendProducts = this.GET_PRODUCTS_GETTER().map(data => ({
