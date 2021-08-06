@@ -8,6 +8,7 @@ import {
   isEmpty,
   onlyNumberInput,
   onlyDateInput,
+  preventPasteSpecialChars,
   // labels
   getInputTypeslabel,
   getWarehousesStatuslabel,
@@ -94,6 +95,7 @@ Vue.prototype.$onlyDateInput = onlyDateInput
 Vue.prototype.$getInputTypeslabel = getInputTypeslabel
 Vue.prototype.$getOutputTypeslabel = getOutputTypeslabel
 Vue.prototype.$getWarehousesStatuslabel = getWarehousesStatuslabel
+Vue.prototype.$preventPasteSpecialChars = preventPasteSpecialChars
 
 // filter
 Vue.prototype.$formatNumberToLocale = formatNumberToLocale

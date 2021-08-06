@@ -283,6 +283,7 @@
                         v-model.trim="phoneNumber"
                         class="h7"
                         maxlength="40"
+                        :formatter="$preventPasteSpecialChars"
                         placeholder="Nhập chính xác 4 số cuối"
                         @keyup.enter="onClickSearchButton"
                         @keypress="$onlyNumberInput"

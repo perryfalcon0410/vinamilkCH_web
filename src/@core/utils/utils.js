@@ -133,6 +133,7 @@ export const onlyNumberInput = e => {
   }
   return e.preventDefault()
 }
+export const preventPasteSpecialChars = value => value.replace(/[^0-9]/gi, '')
 
 export const onlyDateInput = e => {
   const char = String.fromCharCode(e.keyCode)

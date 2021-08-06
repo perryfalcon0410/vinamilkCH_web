@@ -201,8 +201,9 @@
             class="input-group-merge"
           >
             <b-form-input
-              v-model="phoneNumber"
+              v-model.trim="phoneNumber"
               class="h7 text-brand-3"
+              :formatter="$preventPasteSpecialChars"
               placeholder="Nhập chính xác 4 số cuối"
               @keyup.enter="onClickSearchButton"
               @keypress="$onlyNumberInput"
@@ -237,14 +238,17 @@
             <b-form-group>
               <b-input-group>
                 <b-form-input
-                  v-model="min"
+                  v-model.trim="min"
                   class="h7 text-brand-3"
+                  :type="number"
+                  :formatter="$preventPasteSpecialChars"
                   @keyup.enter="onClickSearchButton"
                   @keypress="$onlyNumberInput"
                 />
                 <b-form-input
-                  v-model="max"
+                  v-model.trim="max"
                   class="h7 text-brand-3"
+                  :formatter="$preventPasteSpecialChars"
                   @keyup.enter="onClickSearchButton"
                   @keypress="$onlyNumberInput"
                 />
@@ -410,6 +414,9 @@ export default {
       if (!checkingDateInput(this.toDate)) {
         this.toDate = nowDate()
       }
+    },
+    formatter(value) {
+      return value.replace(/[^\w\s]/gi, '')
     },
   },
 }

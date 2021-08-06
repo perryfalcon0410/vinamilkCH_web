@@ -63,6 +63,7 @@
             <b-form-input
               v-model="customerPhone"
               class="h7 text-brand-3"
+              :formatter="$preventPasteSpecialChars"
               placeholder="Nhập chính xác 4 số cuối"
               maxlength="10"
               @keyup.enter="onClickSearchButton"
