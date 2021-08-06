@@ -901,7 +901,6 @@ export default {
         // check valid type selected online and permission online
         if (
           this.totalQuantity === 0
-          || this.editOnlinePermission === false
           || this.salemtDeliveryTypeSelected === undefined
           || this.salemtPromotionObjectSelected === undefined
           || (!this.checkApParramCode && this.orderOnline.orderNumber === '')
