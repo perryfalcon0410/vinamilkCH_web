@@ -449,7 +449,9 @@
                   <span v-if="props.column.field === 'productCode'">
                     {{ rowsProductPromotion[props.index].productCode }}
                   </span>
-                  <span v-if="props.column.field === 'quantity'">
+                  <span
+                    v-if="props.column.field === 'quantity'"
+                  >
                     <cleave
                       :id="rowsProductPromotion[props.row.originalIndex].productCode"
                       v-model="rowsProductPromotion[props.index].quantity"
@@ -459,7 +461,7 @@
                       :state="isPositive(rowsProductPromotion[props.index].quantity)"
                       maxlength="7"
                       @keypress="$onlyNumberInput"
-                      @keyup.enter.native="focusInputSearch"
+                      @keydown.enter.native="focusInputSearch"
                     />
                   </span>
                   <span v-if="props.column.field === 'price'">
@@ -1201,7 +1203,7 @@ export default {
             productId: product.item.productId,
             productCode: product.item.productCode,
             productName: product.item.name,
-            quantity: 1, // default quantity
+            quantity: '01', // default quantity
             price: product.item.price || 0,
             totalPrice: product.item.stockTotal || 0,
             unit: product.item.unit,
@@ -1209,7 +1211,7 @@ export default {
           if (index === -1) {
             this.rowsProductPromotion.push(obj)
           } else {
-            this.rowsProductPromotion[index].quantity += 1
+            this.rowsProductPromotion[index].quantity = Number(this.rowsProductPromotion[index].quantity) + 1
           }
           this.productSearch = null
           this.products = [{ data: null }]

@@ -534,7 +534,7 @@ export default {
       return {
         '--customer-code': `${this.numberBillWidth + 33}px`,
         '--customer-name': `${this.numberBillWidth + this.customerCodeWidth + 33}px`,
-        '--date': `${this.numberBillWidth + this.customerCodeWidth + this.customerNameWidth + 33}px`,
+        '--date': `${this.numberBillWidth + this.customerCodeWidth + this.customerNameWidth + 32}px`,
       }
     },
   },
