@@ -1326,7 +1326,6 @@ export default {
               productCode: data.productCode,
               quantity: data.quantity,
             }))
-            console.log(this.customer.id)
             if (paramProducts.length > 0) {
               this.GET_PROMOTION_PROGRAMS_ACTION({
                 customerId: this.customer.id,
