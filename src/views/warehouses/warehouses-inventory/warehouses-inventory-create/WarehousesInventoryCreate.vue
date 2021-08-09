@@ -247,26 +247,26 @@
             </div>
             <div v-else-if="props.column.field === 'inventoryPacket'">
               <cleave
-                v-model="props.row.inventoryPacket"
+                v-model="products[props.row.originalIndex].inventoryPacket"
                 class="form-control text-right"
                 :raw="true"
                 :options="options.number"
                 maxlength="7"
-                :value="props.row.inventoryPacket"
-                @change.native="updateInventoryPacket(props.row.originalIndex, props.row.inventoryPacket)"
+                :value="products[props.row.originalIndex].inventoryPacket"
+                @change.native="updateInventoryTotal(props.row.originalIndex)"
                 @keypress="$onlyNumberInput"
               />
             </div>
 
             <div v-else-if="props.column.field === 'inventoryOdd'">
               <cleave
-                v-model="props.row.inventoryOdd"
+                v-model="products[props.row.originalIndex].inventoryOdd"
                 class="form-control text-right"
                 :raw="true"
                 :options="options.number"
                 maxlength="7"
-                :value="props.row.inventoryOdd"
-                @change.native="updateInventoryOdd(props.row.originalIndex, props.row.inventoryOdd)"
+                :value="products[props.row.originalIndex].inventoryOdd"
+                @change.native="updateInventoryTotal(props.row.originalIndex)"
                 @keypress="$onlyNumberInput"
               />
             </div>
@@ -730,10 +730,9 @@ export default {
       this.rowsFail = this.warehouseInventoryImportData.info.importFailed
       this.warehouseInventoryImportData.response.importSuccess.forEach(productData => {
         const index = this.products.findIndex(product => product.productCode === productData.productCode)
-        this.products[index].inventoryPacket = productData.packetQuantity
-        this.products[index].inventoryOdd = productData.unitQuantity
-        this.updateInventoryPacket(index, productData.packetQuantity)
-        this.updateInventoryOdd(index, productData.unitQuantity)
+        this.products[index].inventoryPacket = productData.packetQuantity.toString()
+        this.products[index].inventoryOdd = productData.unitQuantity.toString()
+        this.updateInventoryTotal(index)
       })
     },
     getWarehouseInventoryStocks() {
@@ -788,18 +787,7 @@ export default {
     },
     updateInventoryTotal(index) {
       this.products[index].inventoryTotal = Number(this.products[index].inventoryPacket) * this.products[index].exchange + Number(this.products[index].inventoryOdd)
-    },
-    updateInventoryPacket(index, value) {
-      this.products[index].inventoryPacket = value
-      this.updateInventoryTotal(index)
       this.products[index].unequal = this.products[index].inventoryTotal - this.products[index].instockAmount
-      this.isCreated = false
-    },
-    updateInventoryOdd(index, value) {
-      this.products[index].inventoryOdd = value
-      this.updateInventoryTotal(index)
-      this.products[index].unequal = this.products[index].inventoryTotal - this.products[index].instockAmount
-      this.isCreated = false
     },
     onClickExportButton() {
       this.EXPORT_FILLED_STOCKS_ACTION({
