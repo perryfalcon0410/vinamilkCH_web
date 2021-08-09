@@ -641,35 +641,37 @@ export default {
       }
     },
     getProductByBarcode() {
-      const productByBarcode = {
-        productId: this.getProductByBarcode.id,
-        name: this.getProductByBarcode.productCode,
-        productName: this.getProductByBarcode.productName,
-        productCode: this.getProductByBarcode.productCode,
-        productUnit: this.getProductByBarcode.uom1,
-        productInventory: this.getProductByBarcode.stockTotal,
-        productUnitPrice: this.getProductByBarcode.price,
-        sumProductUnitPrice: this.getProductByBarcode.price,
-        quantity: 1,
-        productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
-        sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
-        productImage: this.getProductByBarcode.image,
-        comboProductId: this.getProductByBarcode.comboProductId,
-      }
+      if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+        const productByBarcode = {
+          productId: this.getProductByBarcode.id,
+          name: this.getProductByBarcode.productCode,
+          productName: this.getProductByBarcode.productName,
+          productCode: this.getProductByBarcode.productCode,
+          productUnit: this.getProductByBarcode.uom1,
+          productInventory: this.getProductByBarcode.stockTotal,
+          productUnitPrice: this.getProductByBarcode.price,
+          sumProductUnitPrice: this.getProductByBarcode.price,
+          quantity: 1,
+          productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
+          sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
+          productImage: this.getProductByBarcode.image,
+          comboProductId: this.getProductByBarcode.comboProductId,
+        }
 
-      const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
-      if (indexProductExisted === -1) {
-        this.orderProducts.push(productByBarcode)
-      } else {
-        this.orderProducts = this.orderProducts.map(product => {
-          if (product.productId === productByBarcode.productId) {
-            return {
-              ...product,
-              quantity: product.quantity + 1,
+        const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
+        if (indexProductExisted === -1) {
+          this.orderProducts.push(productByBarcode)
+        } else {
+          this.orderProducts = this.orderProducts.map(product => {
+            if (product.productId === productByBarcode.productId) {
+              return {
+                ...product,
+                quantity: product.quantity + 1,
+              }
             }
-          }
-          return product
-        })
+            return product
+          })
+        }
       }
     },
     customerFullName() {
@@ -856,10 +858,10 @@ export default {
           products: [],
           customer: {
             id: this.defaultCustomer.id,
-            fullName: this.currentCustomer.fullName,
-            phoneNumber: this.currentCustomer.phoneNumber,
-            totalBill: this.currentCustomer.totalBill,
-            address: this.currentCustomer.address,
+            fullName: this.defaultCustomer.fullName,
+            phoneNumber: this.defaultCustomer.phoneNumber,
+            totalBill: this.defaultCustomer.totalBill,
+            address: this.defaultCustomer.address,
           },
           orderType: {
             value: this.defaultPOSelected,
@@ -1148,16 +1150,18 @@ export default {
     // Create callback function to receive barcode when the scanner is already done
     onBarcodeScanned(barcode) {
       if (barcode.length > 4) {
-        this.GET_PRODUCT_BY_BARCODE_ACTION({
-          data: {
-            customerId: this.searchOptions.customerId,
-            barcode: barcode.toString(),
-          },
-          onSuccess: () => {
-          },
-          onFailure: () => {
-          },
-        })
+        if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+          this.GET_PRODUCT_BY_BARCODE_ACTION({
+            data: {
+              customerId: this.searchOptions.customerId,
+              barcode: barcode.toString(),
+            },
+            onSuccess: () => {
+            },
+            onFailure: () => {
+            },
+          })
+        }
       }
     },
   },
