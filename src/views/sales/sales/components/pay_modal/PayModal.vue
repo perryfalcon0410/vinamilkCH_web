@@ -1681,7 +1681,7 @@ export default {
             orderType: Number(this.orderSelected),
             note: this.orderOnline.note,
             orderOnlineId: this.orderOnline.onlineOrderId,
-            onlineNumber: Number(this.orderOnline.orderNumber),
+            onlineNumber: this.orderOnline.orderNumber,
             products: this.orderProducts,
             promotionInfo: paramPromotionInfo,
             totalOrderAmount: Number(this.pay.totalAmount) || 0,

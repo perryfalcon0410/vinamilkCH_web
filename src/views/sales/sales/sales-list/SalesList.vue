@@ -780,6 +780,7 @@ export default {
     onChangeKeyWord() {
       this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
       if (this.isCheckShopId === true && this.searchOptions.keyWord.length >= this.minSearch) {
+        this.searchOptions.customerId = this.currentCustomer.id
         this.GET_TOP_SALE_PRODUCTS_ACTION({
           data: { ...this.searchOptions },
           onSuccess: () => {},
@@ -1060,6 +1061,11 @@ export default {
 
     getSalemtPOSelected(val) {
       this.orderSelected = val
+      if (this.orderSelected.apParamCode.includes('ONLINE')) {
+        this.isOnline = true
+      } else {
+        this.isOnline = false
+      }
       // assgin value of order type to current bill being selected
       this.bills = this.bills.map(bill => {
         if (bill.id === this.orderCurrentId) {
@@ -1157,7 +1163,7 @@ export default {
         if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
           this.GET_PRODUCT_BY_BARCODE_ACTION({
             data: {
-              customerId: this.searchOptions.customerId,
+              customerId: this.currentCustomer.id,
               barcode: barcode.toString(),
             },
             onSuccess: () => {
