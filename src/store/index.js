@@ -38,6 +38,7 @@ import reportSalesSaleOnDeliveryType from '@/views/reports/reports-sales/reports
 import reportPurchases from '@/views/reports/reports-purchases/store-module'
 import reportVouchers from '@/views/reports/reports-vouchers/store-module'
 // Systems
+import printerConfig from '@/views/auth/printer-configuration-modal/store-module'
 import app from './app'
 import appConfig from './app-config'
 import verticalMenu from './vertical-menu'
@@ -50,6 +51,7 @@ export default new Vuex.Store({
     app,
     appConfig,
     verticalMenu,
+    printerConfig,
     // Home
     dashboard,
     // Purchases

@@ -148,6 +148,11 @@ export const earlyMonth = () => moment().startOf('month').format('DD/MM/YYYY')
 
 export const nowDate = () => moment().format('DD/MM/YYYY')
 
+export const hostName = async () => {
+  const response = await fetch('https://api.ipify.org/?format=json')
+  const data = await response.json()
+  return data
+}
 // count from isoDate to now
 export const countDays = isoDate => {
   const now = new Date()

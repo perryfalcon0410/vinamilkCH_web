@@ -36,7 +36,19 @@
       />
       <span>Đổi mật khẩu</span>
     </b-dropdown-item>
+    <!-- system print -->
+    <b-dropdown-item
+      link-class="d-flex align-items-center"
+      @click="onClickPrintConfiguration"
+    >
+      <b-icon-printer
+        class="mr-50"
+        scale="1.2"
+      />
+      <span>Cấu hình máy in</span>
+    </b-dropdown-item>
 
+    <!-- system print -->
     <b-dropdown-item
       link-class="d-flex align-items-center"
       @click="logout"
@@ -48,6 +60,10 @@
       />
       <span>Đăng xuất</span>
     </b-dropdown-item>
+    <printer-configuration-modal
+      :visible="isVisible"
+      @cancel="cancel"
+    />
   </b-nav-item-dropdown>
 </template>
 
@@ -56,12 +72,19 @@ import { initialAbility } from '@/libs/acl/config'
 import useJwt from '@/auth/jwt/useJwt'
 import { avatarText } from '@core/utils/filter'
 import { getUserData } from '@/auth/utils'
+// import PrinterConfigurationModal from '@/@core/components/printer-configuration-modal/PrinterConfigurationModal.vue'
+import PrinterConfigurationModal from '@/views/auth/printer-configuration-modal/PrinterConfigurationModal.vue'
 
 export default {
+  components: {
+    PrinterConfigurationModal,
+  },
+
   data() {
     return {
       userData: getUserData(),
       avatarText,
+      isVisible: false,
     }
   },
   methods: {
@@ -84,6 +107,12 @@ export default {
 
     navigateToChangePassword() {
       this.$router.push({ name: 'auth-reset-password' })
+    },
+    onClickPrintConfiguration() {
+      this.isVisible = true
+    },
+    cancel() {
+      this.isVisible = false
     },
   },
 }

@@ -1,0 +1,178 @@
+<template>
+  <b-modal
+    title="Cấu hình máy in"
+    :visible="visible"
+    title-class="font-weight-bolder text-brand-1"
+    centered
+    @hidden="cancel()"
+  >
+    <b-container>
+      <b-row
+        align-v="center"
+        align-h="center"
+        class="my-2"
+      >
+        <b-col
+          cols="4"
+          class="text-right"
+        >
+          Máy in mặc định:
+        </b-col>
+        <b-col cols="6">
+          <tree-select
+            v-model="printerReceiptSelected"
+            :options="printerConfigOptions"
+            :searchable="false"
+            placeholder="Chọn máy in"
+            no-options-text="Không có dữ liệu"
+          />
+        </b-col>
+      </b-row>
+      <b-row
+        align-v="center"
+        align-h="center"
+      >
+        <b-col
+          cols="4"
+          class="text-right"
+        >
+          Máy in hóa đơn:
+        </b-col>
+        <b-col cols="6">
+          <tree-select
+            v-model="printerDefaultSelected"
+            :options="printerConfigOptions"
+            :searchable="false"
+            placeholder="Chọn máy in"
+            no-options-text="Không có dữ liệu"
+          />
+        </b-col>
+      </b-row>
+      <b-row
+        align-v="center"
+        align-h="center"
+        class="my-2"
+      >
+        <b-col
+          cols="4"
+          class="text-right"
+        >
+          Máy in báo cáo:
+        </b-col>
+        <b-col cols="6">
+          <tree-select
+            v-model="printerReportSelected"
+            :options="printerConfigOptions"
+            :searchable="false"
+            placeholder="Chọn máy in"
+            no-options-text="Không có dữ liệu"
+          />
+        </b-col>
+      </b-row>
+    </b-container>
+    <template #modal-footer="{}">
+      <b-button
+        size="sm"
+        class="btn-brand-1"
+        variant="something"
+        @click="onSaveClick"
+      >
+        Lưu
+      </b-button>
+    </template>
+  </b-modal>
+</template>
+
+<script>
+
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import {
+  hostName,
+} from '@/@core/utils/filter'
+import JSPM from 'jsprintmanager'
+import {
+  PRINTERCONFIG,
+  // GETTERS
+  PRINTER_CLIENT_GETTER,
+  // ACTIONS
+  GET_PRINTER_CLIENT_ACTIONS,
+  CREATE_PRINTER_CLIENT_ACTIONS,
+} from './store-module/type'
+
+export default {
+  props: {
+    visible: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      ipAddress: null,
+      printerDataDefault: {},
+      printerConfigOptions: [],
+      printerDefaultSelected: null,
+      printerReportSelected: null,
+      printerReceiptSelected: null,
+    }
+  },
+  computed: {
+    ...mapGetters(PRINTERCONFIG, [
+      PRINTER_CLIENT_GETTER,
+    ]),
+    getPrinterData() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
+  },
+  watch: {
+    ipAddress() {
+      this.GET_PRINTER_CLIENT_ACTIONS({
+        data: {
+          clientId: this.ipAddress,
+        },
+        onSuccess: () => {},
+      })
+    },
+
+    getPrinterData() {
+      this.printerDataDefault = { ...this.getPrinterData }
+      console.log(this.printerDataDefault)
+    },
+  },
+  mounted() {
+    hostName().then(dta => { this.ipAddress = dta.ip })
+    this.getPrinterConfigOptions()
+  },
+  methods: {
+    ...mapActions(PRINTERCONFIG, [
+      GET_PRINTER_CLIENT_ACTIONS,
+      CREATE_PRINTER_CLIENT_ACTIONS,
+    ]),
+    cancel() {
+      this.$emit('cancel')
+    },
+    getPrinterConfigOptions() {
+      this.printerConfigOptions = []
+      JSPM.JSPrintManager.auto_reconnect = true
+      JSPM.JSPrintManager.start()
+      JSPM.JSPrintManager.WS.onStatusChanged = () => {
+        JSPM.JSPrintManager.getPrinters().then(data => {
+          data.forEach(e => {
+            this.printerConfigOptions.push({ id: e, label: e })
+          })
+        })
+      }
+    },
+    getSelectedDefault() {
+      // const selected = this.printerConfigOptions.find(data => data.id === )
+    },
+  },
+}
+</script>

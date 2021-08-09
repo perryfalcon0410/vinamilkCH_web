@@ -34,6 +34,7 @@
     "flatpickr": "^4.6.9",
     "intl": "^1.2.5",
     "jsonwebtoken": "8.5.1",
+    "jsprintmanager": "^4.0.0",
     "leaflet": "1.6.0",
     "lodash": "4.17.21",
     "moment": "2.29.1",
