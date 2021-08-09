@@ -432,7 +432,7 @@
                       maxlength="7"
                       @keypress="$onlyNumberInput"
                       @keyup.native="updateQuantity(props.row.originalIndex, props.row.quantity)"
-                      @keyup.enter.native="focusInputSearch"
+                      @keydown.enter.native="focusInputSearch"
                     />
                   </div>
                   <div
@@ -932,6 +932,9 @@ export default {
     },
     getSuggestProducts() {
       this.suggestProducts = [...this.getSuggestProducts]
+      if (this.suggestProducts[0].data && this.suggestProducts[0].data.length === 1) {
+        this.$nextTick(() => document.getElementById('autosuggest__input').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+      }
     },
   },
 
@@ -978,7 +981,7 @@ export default {
             id: -1,
             productId: product.item.productId,
             productCode: product.item.productCode,
-            quantity: 1, // default quantity
+            quantity: '01', // default quantity
             name: product.item.name,
             unit: product.item.unit,
           }
