@@ -237,34 +237,34 @@
           class="ml-50"
         >
           <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.amount ) }}
+            {{ $formatNumberToLocale( printSalesReceiptData.amount ) || 0 }}
           </div>
           <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.amountNotVAT ) }}
+            {{ $formatNumberToLocale( printSalesReceiptData.amountNotVAT ) || 0 }}
           </div>
           <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.promotionAmountNotVat ) }}
+            {{ $formatNumberToLocale( printSalesReceiptData.promotionAmountNotVat ) || 0 }}
           </div>
           <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.promotionAmount ) }}
+            {{ $formatNumberToLocale( printSalesReceiptData.promotionAmount ) || 0 }}
           </div>
           <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.accumulatedAmount ) }}
+            {{ $formatNumberToLocale( printSalesReceiptData.accumulatedAmount ) || 0 }}
           </div>
           <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.voucherAmount ) }}
+            {{ $formatNumberToLocale( printSalesReceiptData.voucherAmount ) || 0 }}
           </div>
           <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.totalNotVat ) }}
+            {{ $formatNumberToLocale( printSalesReceiptData.totalNotVat ) || 0 }}
           </div>
           <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.total ) }}
+            {{ $formatNumberToLocale( printSalesReceiptData.total ) || 0 }}
           </div>
           <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.paymentAmount ) }}
+            {{ $formatNumberToLocale( printSalesReceiptData.paymentAmount ) || 0 }}
           </div>
           <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.extraAmount ) }}
+            {{ $formatNumberToLocale( printSalesReceiptData.extraAmount ) || 0 }}
           </div>
         </div>
       </b-row>
