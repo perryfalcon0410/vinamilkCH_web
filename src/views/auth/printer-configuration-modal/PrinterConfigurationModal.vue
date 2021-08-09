@@ -8,6 +8,22 @@
   >
     <b-container>
       <b-row
+        v-if="!isTrue"
+        align-v="center"
+        align-h="center"
+        class="my-2"
+      >
+        <div>
+          <p>
+            Bạn chưa cài JSPrinterManager vui lòng nhấn
+            <a
+              href="https://www.neodynamic.com/downloads/jspm/"
+              target="_blank"
+            >Tải về</a> và cài đặt
+          </p>
+        </div>
+      </b-row>
+      <b-row
         align-v="center"
         align-h="center"
         class="my-2"
@@ -93,6 +109,7 @@ import {
   hostName,
 } from '@/@core/utils/filter'
 import JSPM from 'jsprintmanager'
+import toasts from '@core/utils/toasts/toasts'
 import {
   PRINTERCONFIG,
   // GETTERS
@@ -100,6 +117,7 @@ import {
   // ACTIONS
   GET_PRINTER_CLIENT_ACTIONS,
   CREATE_PRINTER_CLIENT_ACTIONS,
+  UPDATE_PRINTER_CLIENT_ACTIONS,
 } from './store-module/type'
 
 export default {
@@ -113,6 +131,7 @@ export default {
   data() {
     return {
       ipAddress: null,
+      isTrue: false,
       printerDataDefault: {},
       printerConfigOptions: [],
       printerDefaultSelected: null,
@@ -132,6 +151,11 @@ export default {
     },
   },
   watch: {
+    visible() {
+      if (this.visible) {
+        this.jspmWSStatus()
+      }
+    },
     ipAddress() {
       this.GET_PRINTER_CLIENT_ACTIONS({
         data: {
@@ -143,7 +167,9 @@ export default {
 
     getPrinterData() {
       this.printerDataDefault = { ...this.getPrinterData }
-      console.log(this.printerDataDefault)
+      this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
+      this.printerReportSelected = this.printerDataDefault.reportPrinterName
+      this.printerReceiptSelected = this.printerDataDefault.billPrinterName
     },
   },
   mounted() {
@@ -154,6 +180,7 @@ export default {
     ...mapActions(PRINTERCONFIG, [
       GET_PRINTER_CLIENT_ACTIONS,
       CREATE_PRINTER_CLIENT_ACTIONS,
+      UPDATE_PRINTER_CLIENT_ACTIONS,
     ]),
     cancel() {
       this.$emit('cancel')
@@ -170,8 +197,48 @@ export default {
         })
       }
     },
-    getSelectedDefault() {
-      // const selected = this.printerConfigOptions.find(data => data.id === )
+    jspmWSStatus() {
+      if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
+        this.isTrue = true
+      } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
+        this.isTrue = false
+        toasts.error('JSPrintManager (JSPM) chưa được cài đặt hoặc chưa được mở')
+      } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Blocked) {
+        toasts.error('JSPrintManager (JSPM) đã chặn trang web này!')
+        this.isTrue = false
+      }
+    },
+    onSaveClick() {
+      if (this.printerDefaultSelected && this.printerReportSelected && this.printerReceiptSelected) {
+        if (this.printerDataDefault.id) {
+          this.UPDATE_PRINTER_CLIENT_ACTIONS({
+            data: {
+              id: this.printerDataDefault.id,
+              clientIp: this.ipAddress,
+              billPrinterName: this.printerReceiptSelected,
+              defaultPrinterName: this.printerDefaultSelected,
+              reportPrinterName: this.printerReportSelected,
+            },
+            onSuccess: () => {
+              this.visible = false
+            },
+          })
+        } else {
+          this.CREATE_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientIp: this.ipAddress,
+              billPrinterName: this.printerReceiptSelected,
+              defaultPrinterName: this.printerDefaultSelected,
+              reportPrinterName: this.printerReportSelected,
+            },
+            onSuccess: () => {
+              this.visible = false
+            },
+          })
+        }
+      } else {
+        toasts.error('cấu hình máy in không được để trống!')
+      }
     },
   },
 }

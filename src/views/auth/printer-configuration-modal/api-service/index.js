@@ -16,6 +16,6 @@ export default {
   },
 
   updatePrinterClient(args) {
-    return axios.patch(`${updatePrinterClientEndpoint}/${args.id}`, args)
+    return axios.put(`${updatePrinterClientEndpoint}/${args.id}`, args)
   },
 }

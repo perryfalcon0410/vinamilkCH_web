@@ -4,6 +4,7 @@ import {
   PRINTER_CLIENT_GETTER,
   GET_PRINTER_CLIENT_ACTIONS,
   CREATE_PRINTER_CLIENT_ACTIONS,
+  UPDATE_PRINTER_CLIENT_ACTIONS,
 } from './type'
 
 export default {
@@ -39,6 +40,23 @@ export default {
     [CREATE_PRINTER_CLIENT_ACTIONS]({}, val) {
       PrintService
         .createPrinterClient(val.data)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            toasts.success(res.statusValue)
+            val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+
+    [UPDATE_PRINTER_CLIENT_ACTIONS]({}, val) {
+      PrintService
+        .updatePrinterClient(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {

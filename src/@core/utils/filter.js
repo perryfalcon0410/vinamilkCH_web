@@ -149,7 +149,7 @@ export const earlyMonth = () => moment().startOf('month').format('DD/MM/YYYY')
 export const nowDate = () => moment().format('DD/MM/YYYY')
 
 export const hostName = async () => {
-  const response = await fetch('https://api.ipify.org/?format=json')
+  const response = await fetch('https://jsonip.com', { mode: 'cors' })
   const data = await response.json()
   return data
 }
