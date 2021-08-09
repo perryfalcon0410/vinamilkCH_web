@@ -201,7 +201,6 @@ import {
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
 import { $themeConfig } from '@themeConfig'
-import commonData from '@/@db/common'
 
 export default {
   components: {
@@ -258,8 +257,8 @@ export default {
                 throw new Error(res.statusValue)
               }
             })
-            .catch(() => {
-              toasts.error(commonData.errorAPIMessage)
+            .catch(error => {
+              toasts.error(error.message)
             })
         }
       })

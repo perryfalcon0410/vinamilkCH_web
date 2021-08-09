@@ -3,7 +3,6 @@ import ReportService from '@/views/reports/reports-warehouses/reports-warehouses
 
 import FileSaver from 'file-saver'
 import moment from 'moment'
-import commonData from '@/@db/common'
 import {
   // Getters
   REPORT_WAREHOUSES_ADJUSTMENTS_GETTER,
@@ -54,8 +53,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error)
         })
     },
 
@@ -70,8 +69,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
 
@@ -86,8 +85,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [EXPORT_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION]({ }, val) {
@@ -103,8 +102,8 @@ export default {
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [PRINT_REPORT_WAREHOUSES_ADJUSTMENTS_ACTION]({ state }, val) {
@@ -118,8 +117,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },

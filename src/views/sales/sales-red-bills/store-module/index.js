@@ -1,7 +1,6 @@
 import RedInvoiceService from '@/views/sales/sales-red-bills/api-service'
 import FileSaver from 'file-saver'
 import moment from 'moment'
-import commonData from '@/@db/common'
 import {
   // GETTERS
   RED_INVOICES_GETTER,
@@ -108,8 +107,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_BILL_OF_SALES_ACTION]({ state }, val) {
@@ -129,8 +128,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_PRODUCTS_IN_SELECTED_BILL_ACTION]({ state }, val) {
@@ -144,8 +143,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_CUSTOMERS_ACTION]({ state }, val) {
@@ -159,8 +158,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_PRODUCTS_ACTION]({ state }, val) {
@@ -174,8 +173,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [CREATE_RED_BILL_ACTION]({ state }, val) {
@@ -191,8 +190,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_INVOICE_DETAIL_ACTION]({ state }, val) {
@@ -207,8 +206,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [DELETE_RED_INVOICE_ACTION]({}, val) {
@@ -223,8 +222,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [EXPORT_RED_BILLS_ACTION]({}, val) {
@@ -240,8 +239,8 @@ export default {
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [UPDATE_RED_BILLS_ACTION]({}, val) {
@@ -256,8 +255,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [PRINT_RED_INVOICES_ACTION]({ state }, val) {
@@ -272,8 +271,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },

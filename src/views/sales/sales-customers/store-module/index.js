@@ -2,7 +2,7 @@ import CustomerService from '@/views/sales/sales-customers/api-service'
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
-import commonData from '@/@db/common'
+
 import {
   // GETTERS
   CUSTOMERS_GETTER,
@@ -132,8 +132,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_CUSTOMER_BY_ID_ACTION]({ state }, val) {
@@ -147,8 +147,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [CREATE_CUSTOMER_ACTION]({ state }, val) {
@@ -164,8 +164,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [UPDATE_CUSTOMER_ACTION]({}, val) {
@@ -180,8 +180,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_CUSTOMER_DEFAULT_ACTION]({ state }, val) {
@@ -195,8 +195,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     // Dùng để load vị trí các shop cho thanh tìm kiếm
@@ -212,8 +212,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
 
@@ -229,8 +229,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
 
@@ -247,8 +247,8 @@ export default {
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
 
@@ -264,8 +264,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_CUSTOMER_TYPES_UPDATE_ACTION]({ state }, val) {
@@ -280,8 +280,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_PROVINCES_ACTION]({ state }, val) {
@@ -295,8 +295,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_DISTRICTS_ACTION]({ state }, val) {
@@ -311,8 +311,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_PRECINCTS_ACTION]({ state }, val) {
@@ -327,8 +327,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_CARD_TYPES_ACTION]({ state }, val) {
@@ -342,8 +342,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_CLOSELY_TYPES_ACTION]({ state }, val) {
@@ -357,8 +357,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_GENDERS_ACTION]({ state }, val) {
@@ -373,8 +373,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },

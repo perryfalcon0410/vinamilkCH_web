@@ -1,7 +1,7 @@
 import OderReturnService from '@/views/sales/sales-returned-goods/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
 import router from '@/router/index'
-import commonData from '@/@db/common'
+
 import {
   // GETTERS
   RETURNED_GOODS_GETTER,
@@ -75,8 +75,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     // END - GET RETURN GOODS
@@ -95,8 +95,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     // END - GET SALE ODERS
@@ -111,8 +111,8 @@ export default {
             state.chooseProductData = res.data || {}
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     // END - GET SALE ODERS DETAIL
@@ -129,8 +129,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     // END - CREATE_SALE_ODER
@@ -148,8 +148,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
 
@@ -165,8 +165,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },

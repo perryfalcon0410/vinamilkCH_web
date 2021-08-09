@@ -1,6 +1,6 @@
 import WarehousesInventoryService from '@/views/warehouses/warehouses-inventory/api-service'
 import toasts from '@core/utils/toasts/toasts'
-import commonData from '@/@db/common'
+
 import {
   // GETTERS
   WAREHOUSE_INVENTORIES_GETTER,
@@ -80,8 +80,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_WAREHOUSE_TYPES_ACTION]({ state }, val) {
@@ -95,8 +95,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_WAREHOUSE_INVENTORY_STOCKS_ACTION]({ state }, val) {
@@ -111,8 +111,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [EXPORT_FILLED_STOCKS_ACTION]({}, val) {
@@ -133,8 +133,8 @@ export default {
             }
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [CREATE_WAREHOUSE_INVENTORY_ACTION]({ state }, val) {
@@ -150,8 +150,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [IMPORT_FILLED_STOCKS_ACTION]({ state }, val) {
@@ -166,8 +166,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION]({ state }, val) {
@@ -182,8 +182,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_SAMPLE_IMPORT_FILE_ACTION]({}) {
@@ -204,8 +204,8 @@ export default {
             }
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_FAILED_IMPORT_FILE_ACTION]({}, val) {
@@ -226,8 +226,8 @@ export default {
             }
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_WAREHOUSE_INVENTORY_DETAIL_ACTION]({ state }, val) {
@@ -241,8 +241,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [UPDATE_WAREHOUSE_INVENTORY_ACTION]({ state }, val) {
@@ -257,8 +257,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },

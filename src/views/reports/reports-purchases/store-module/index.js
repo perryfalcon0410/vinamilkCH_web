@@ -2,7 +2,6 @@ import ReportsPurchasesSerivce from '@/views/reports/reports-purchases/api-servi
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
-import commonData from '@/@db/common'
 import {
   // GETTERS
   REPORT_INPUT_RECEIPT_DETAILS_GETTER,
@@ -43,8 +42,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [EXPORT_REPORT_INPUT_RECEIPT_DETAILS_ACTION]({ }, val) {
@@ -60,8 +59,8 @@ export default {
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
 
@@ -76,8 +75,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },

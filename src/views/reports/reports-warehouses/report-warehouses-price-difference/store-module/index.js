@@ -2,7 +2,7 @@ import DifferencePriceServices from '@/views/reports/reports-warehouses/report-w
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
-import commonData from '@/@db/common'
+
 import {
   // GETTERS
   GET_REPORT_WAREHOUSES_DIFFERENCE_PRICE_GETTER,
@@ -56,8 +56,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
 
@@ -72,8 +72,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
 
@@ -88,8 +88,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION]({ }, val) {
@@ -105,8 +105,8 @@ export default {
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [PRINT_REPORT_DIFFERENCE_ACTION]({ state }, val) {
@@ -120,8 +120,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },

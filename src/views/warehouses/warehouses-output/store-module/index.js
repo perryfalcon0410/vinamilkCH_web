@@ -1,7 +1,6 @@
 import WarehousesService from '@/views/warehouses/warehouses-output/api-service'
 import FileSaver from 'file-saver'
 import router from '@/router/index'
-import commonData from '@/@db/common'
 import {
   // GETTERS
   GET_WAREHOUSES_OUTPUT_LIST_GETTER,
@@ -101,8 +100,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [PRINT_WAREHOUSES_OUTPUT_ACTION]({ }, val) {
@@ -118,8 +117,8 @@ export default {
           const blob = new Blob([res], { type: 'application/pdf' })
           FileSaver.saveAs(blob, fileName)
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_WAREHOUSES_OUTPUT_BY_ID_ACTION]({ state }, val) {
@@ -133,8 +132,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION]({ state }, val) {
@@ -148,8 +147,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [UPDATE_WAREHOUSES_OUTPUT_ACTION]({ }, val) {
@@ -164,8 +163,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_EXPORT_BORROWINGS_ACTION]({ state }, val) {
@@ -179,8 +178,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_EXPORT_ADJUSTMENT_ACTION]({ state }, val) {
@@ -194,8 +193,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_EXPORT_PO_TRANS_ACTION]({ state }, val) {
@@ -210,8 +209,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_EXPORT_PO_TRANS_DETAIL_ACTION]({ state }, val) {
@@ -226,8 +225,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_EXPORT_BORROWINGS_DETAIL_ACTION]({ state }, val) {
@@ -242,8 +241,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_EXPORT_ADJUSTMENT_DETAIL_ACTION]({ state }, val) {
@@ -258,8 +257,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_WAREHOUSE_TYPE_ACTION]({ state }) {
@@ -273,8 +272,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [CREATE_EXPORT_ACTION]({ }, val) {
@@ -289,8 +288,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [DELETE_WAREHOUSES_ACTION]({}, val) {
@@ -304,8 +303,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [PRINT_OUT_IN_PUT_ORDER_ACTION]({ state }, val) {
@@ -320,8 +319,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },

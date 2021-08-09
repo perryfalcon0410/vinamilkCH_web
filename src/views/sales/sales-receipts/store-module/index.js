@@ -1,6 +1,5 @@
 import SaleReceiptService from '@/views/sales/sales-receipts/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
-import commonData from '@/@db/common'
 import {
   // GETTERS
   SALES_RECEIPTS_GETTER,
@@ -44,8 +43,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_SALES_RECEIPTS_DETAIL_ACTION]({ state }, val) {
@@ -59,8 +58,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [PRINT_SALES_RECEIPT_ACTION]({ state }, val) {
@@ -75,8 +74,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },

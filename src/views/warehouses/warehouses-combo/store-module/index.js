@@ -1,7 +1,6 @@
 import WareHouseComboService from '@/views/warehouses/warehouses-combo/api-service'
 import toasts from '@core/utils/toasts/toasts'
 import router from '@/router/index'
-import commonData from '@/@db/common'
 import {
   // getter
   GET_WAREHOUSE_COMBO_DETAIL_GETTER,
@@ -71,8 +70,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_WAREHOUSES_COMBO_ACTIONS]({ state }, val) {
@@ -86,8 +85,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_COMBO_PRODUCTS_ACTION]({ state }, val) {
@@ -101,8 +100,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_COMBO_PRODUCTS_DETAILS_ACTION]({ state }, val) {
@@ -118,8 +117,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [CREATE_COMBO_PRODUCT_ACTION]({}, val) {
@@ -134,8 +133,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_WAREHOUSES_TYPE_ACTION]({ state }, val) {
@@ -150,8 +149,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
   },
