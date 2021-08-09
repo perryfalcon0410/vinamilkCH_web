@@ -675,7 +675,9 @@ export default {
       }
     },
     customerFullName() {
-      this.bills.find(item => item.id === this.billSelected).billName = this.customerFullName
+      if (this.customerFullName !== '') {
+        this.bills.find(item => item.id === this.billSelected).billName = this.customerFullName
+      }
     },
     getEditOnlinePermission() {
       this.editManualPermission = this.getEditOnlinePermission.manuallyCreatable
@@ -851,6 +853,7 @@ export default {
           active: false,
           class: '',
         })
+        this.customerFullName = ''
         this.clickBillButton(lastIteminBill.id + 1)
       } else {
         this.bills.push({
@@ -927,6 +930,7 @@ export default {
           this.currentCustomer.address = bill.customer.address
           this.currentOrderNumber.orderNumber = bill.orderNumber
           this.currentOrderNumber.note = bill.note
+          this.onlineOrderId = bill.orderNumber
           return {
             ...bill,
             active: true,

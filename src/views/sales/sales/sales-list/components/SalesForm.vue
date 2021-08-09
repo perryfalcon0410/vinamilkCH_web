@@ -851,6 +851,7 @@ export default {
         const customerOnline = JSON.parse(arrayToString)
         this.customer = { ...customerOnline }
         this.$emit('getOnlineCustomer', this.customer)
+        this.$emit('currentCustomer', this.customer)
       }
     },
     getSalemtPromotionObjectOptions() {

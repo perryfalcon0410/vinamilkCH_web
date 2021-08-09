@@ -170,6 +170,24 @@ export default {
       this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
       this.printerReportSelected = this.printerDataDefault.reportPrinterName
       this.printerReceiptSelected = this.printerDataDefault.billPrinterName
+      // selected printer default
+      if (this.printerConfigOptions.find(data => data.id === this.printerDataDefault.defaultPrinterName)) {
+        this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
+      } else {
+        this.printerDefaultSelected = null
+      }
+      // selected printer report
+      if (this.printerConfigOptions.find(data => data.id === this.printerDataDefault.reportPrinterName)) {
+        this.printerReportSelected = this.printerDataDefault.reportPrinterName
+      } else {
+        this.printerReportSelected = null
+      }
+      // selected printer bills
+      if (this.printerConfigOptions.find(data => data.id === this.printerDataDefault.billPrinterName)) {
+        this.printerReceiptSelected = this.printerDataDefault.billPrinterName
+      } else {
+        this.printerReceiptSelected = null
+      }
     },
   },
   mounted() {
