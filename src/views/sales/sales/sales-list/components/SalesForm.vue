@@ -263,7 +263,6 @@
                       :disabled="checkApParramCode
                         || salemtPromotionObjectSelected === salemtPromotionId
                         || salemtPromotionObjectSelected === undefined
-                        || isDisabledOrder === true
                         || editManualPermission === false
                         || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0)"
                       @input="getOrderNumber"
