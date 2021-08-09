@@ -652,8 +652,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(() => {
-          toasts.error(commonData.errorAPIMessage)
+        .catch(error => {
+          toasts.error(error.message)
         })
     },
     [GET_DEFAULT_CUSTOMER_TYPE_ACTION]({ state }, val) {
