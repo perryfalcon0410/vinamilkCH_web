@@ -352,6 +352,13 @@ import {
   GET_SHOP_LOCATIONS_ACTION,
   GET_CUSTOMER_TYPES_ACTION,
 } from '../../../sales-customers/store-module/type'
+import {
+  SALES,
+  // GETTERS
+  GET_DEFAULT_CUSTOMER_TYPE_GETTER,
+  // ACTIONS
+  GET_DEFAULT_CUSTOMER_TYPE_ACTION,
+} from '../../store-module/type'
 
 export default {
   name: 'SalesCreateModal',
@@ -424,6 +431,12 @@ export default {
       CUSTOMER_TYPES_GETTER,
       GENDERS_GETTER,
     }),
+    ...mapGetters(SALES, [
+      GET_DEFAULT_CUSTOMER_TYPE_GETTER,
+    ]),
+    defaultCustomerType() {
+      return this.GET_DEFAULT_CUSTOMER_TYPE_GETTER
+    },
     provinceOptions() {
       return this.PROVINCES_GETTER.map(data => ({
         id: data.id,
@@ -516,6 +529,7 @@ export default {
     this.GET_PROVINCES_ACTION({ ...this.decentralization })
     this.GET_SHOP_LOCATIONS_ACTION({ ...this.decentralization })
     this.GET_CUSTOMER_TYPES_ACTION({ data: { ...this.decentralization }, onSuccess: () => {} })
+    this.GET_DEFAULT_CUSTOMER_TYPE_ACTION({ ...this.decentralization })
   },
 
   // START - Methods
@@ -527,6 +541,9 @@ export default {
       GET_PRECINCTS_ACTION,
       GET_SHOP_LOCATIONS_ACTION,
       GET_CUSTOMER_TYPES_ACTION,
+    ]),
+    ...mapActions(SALES, [
+      GET_DEFAULT_CUSTOMER_TYPE_ACTION,
     ]),
 
     create() {
@@ -545,7 +562,7 @@ export default {
               street: this.street,
               noted: this.note,
               areaId: this.precinctsSelected,
-              customerTypeId: this.customerDefault.customerTypeId,
+              customerTypeId: this.defaultCustomerType.posModifyCustomer,
             },
             onSuccess: () => {
               this.getCreateInfo()

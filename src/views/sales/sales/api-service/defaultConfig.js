@@ -60,3 +60,5 @@ export const getSalemtPromotionObjectTypeEndpoint = `${COMMON}${APPARAM}/type/SA
 export const getSalemtDeliveryTypeEndpoint = `${COMMON}${APPARAM}/type/SALEMT_DELIVERY_TYPE`
 
 export const getEditOnlinePermissionEndPoint = `${SALES}/valid/online-order`
+
+export const getDefaultCustomerTypeEndPoint = `${CUSTOMER}/customer-types/default`
