@@ -2,6 +2,7 @@ import ReportsService from '@/views/reports/reports-customers/reports-customers/
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import commonData from '@/@db/common'
 import {
   // GETTERS
   REPORT_CUSTOMERS_GETTER,
@@ -48,8 +49,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [EXPORT_REPORT_CUSTOMERS_ACTION]({}, val) {
@@ -65,8 +66,8 @@ export default {
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_CUSTOMER_TYPES_ACTION]({ state }, val) {
@@ -80,8 +81,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
 
@@ -96,8 +97,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
   },

@@ -1020,6 +1020,8 @@ export default {
           zv23Amount: data.zv23Amount,
           isReturn: data.isReturn,
           lstProductId: data.lstProductId,
+          affected: data.affected,
+          reCalculated: data.reCalculated,
         }))
         this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
         this.pay.promotionAmountExTax = this.getPromotionPrograms.promotionAmountExTax || null
@@ -1055,87 +1057,26 @@ export default {
       this.pay.needPaymentAmount = this.getPromotionCalculation.paymentAmount
       this.extraAmountCalculation()
       if (this.getPromotionCalculation.lstSalePromotions) {
-        this.promotionPrograms = [...this.promotionPrograms.map(program => {
-          if (program.programType === saleData.programPromotionType[0].label) {
-            // Update lại data của ZV19, ZV20, ZV21, ZV23
-            // Update ZV19
-            const indexPromotionCalculationZV19 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[0].label)
-            if (indexPromotionCalculationZV19 !== -1) {
-              const promotionCalculationZV19 = this.getPromotionCalculation.lstSalePromotions.find(p => p.programType === saleData.programPromotionType[0].label)
-              promotionCalculationZV19.products = promotionCalculationZV19.products || []
-              return { ...promotionCalculationZV19, isUse: true }
+        const promotionAfterReCalculate = this.getPromotionCalculation.lstSalePromotions
+        const promotionPrgramsReCalculated = [...this.promotionPrograms.map(program => {
+          // Update promotion program
+          // Khi API tính KM trả data về thì những CTKM có affected = true
+          // có nằm trong list trả về thì update.
+          // không có sẽ remove nó đi.
+          if (program.affected) {
+            const programInPromotionCalculation = promotionAfterReCalculate.find(p => p.programId === program.programId)
+            if (programInPromotionCalculation !== undefined) {
+              programInPromotionCalculation.products = programInPromotionCalculation.products || [] // Phải để products là mảng rỗng không thôi vẽ layout lại sẽ lỗi
+              return {
+                ...programInPromotionCalculation,
+                isUse: true,
+              }
             }
+            return null
           }
-          // Update ZV20
-          if (program.programType === saleData.programPromotionType[1].label) {
-            const indexPromotionCalculationZV20 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[1].label)
-            if (indexPromotionCalculationZV20 !== -1) {
-              const promotionCalculationZV20 = this.getPromotionCalculation.lstSalePromotions.find(p => p.programType === saleData.programPromotionType[1].label)
-              promotionCalculationZV20.products = promotionCalculationZV20.products || []
-              return { ...promotionCalculationZV20, isUse: true }
-            }
-          }
-          // Update ZV21
-          if (program.programType === saleData.programPromotionType[2].label) {
-            const indexPromotionCalculationZV21 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[2].label)
-            if (indexPromotionCalculationZV21 !== -1) {
-              const promotionCalculationZV21 = this.getPromotionCalculation.lstSalePromotions.find(p => p.programType === saleData.programPromotionType[2].label)
-              promotionCalculationZV21.products = promotionCalculationZV21.products || []
-              return { ...promotionCalculationZV21, isUse: true }
-            }
-          }
-          // Update ZV23
-          if (program.programType === saleData.programPromotionType[3].label) {
-            const indexPromotionCalculationZV23 = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[3].label)
-            if (indexPromotionCalculationZV23 !== -1) {
-              const promotionCalculationZV23 = this.getPromotionCalculation.lstSalePromotions.find(p => p.programType === saleData.programPromotionType[3].label)
-              promotionCalculationZV23.products = promotionCalculationZV23.products || []
-              return { ...promotionCalculationZV23, isUse: true }
-            }
-          }
-
           return program
         })]
-
-        const indexZV19lstSalePromotions = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[0].label)
-        const indexZV20lstSalePromotions = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[1].label)
-        const indexZV21lstSalePromotions = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[2].label)
-        const indexZV23lstSalePromotions = this.getPromotionCalculation.lstSalePromotions.findIndex(p => p.programType === saleData.programPromotionType[3].label)
-
-        if (indexZV19lstSalePromotions === -1) {
-          const indexPromotionProgramZV19 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[0].label)
-          if (indexPromotionProgramZV19 !== -1) this.promotionPrograms.splice(indexPromotionProgramZV19, 1)
-        }
-        if (indexZV20lstSalePromotions === -1) {
-          const indexPromotionProgramZV20 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[1].label)
-          if (indexPromotionProgramZV20 !== -1) this.promotionPrograms.splice(indexPromotionProgramZV20, 1)
-        }
-        if (indexZV21lstSalePromotions === -1) {
-          const indexPromotionProgramZV21 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[2].label)
-          if (indexPromotionProgramZV21 !== -1) this.promotionPrograms.splice(indexPromotionProgramZV21, 1)
-        }
-        if (indexZV23lstSalePromotions === -1) {
-          const indexPromotionProgramZV23 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[3].label)
-          if (indexPromotionProgramZV23 !== -1) this.promotionPrograms.splice(indexPromotionProgramZV23, 1)
-        }
-      } else {
-        const indexPromotionProgramZV19 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[0].label)
-        const indexPromotionProgramZV20 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[1].label)
-        const indexPromotionProgramZV21 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[2].label)
-        const indexPromotionProgramZV23 = this.promotionPrograms.findIndex(p => p.programType === saleData.programPromotionType[3].label)
-
-        if (indexPromotionProgramZV19 !== -1) {
-          this.promotionPrograms.splice(indexPromotionProgramZV19, 1)
-        }
-        if (indexPromotionProgramZV20 !== -1) {
-          this.promotionPrograms.splice(indexPromotionProgramZV20, 1)
-        }
-        if (indexPromotionProgramZV21 !== -1) {
-          this.promotionPrograms.splice(indexPromotionProgramZV21, 1)
-        }
-        if (indexPromotionProgramZV23 !== -1) {
-          this.promotionPrograms.splice(indexPromotionProgramZV23, 1)
-        }
+        this.promotionPrograms = [...promotionPrgramsReCalculated.filter(i => i !== null)]
       }
     },
     getPrintSaleData() {
@@ -1627,7 +1568,7 @@ export default {
             return program
           })]
         } else {
-          const paramPromotionAmountInfos = this.promotionPrograms.filter(p => (p.amount !== null || p.programType === saleData.programPromotionType[2].label) && p.isUse)
+          const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.reCalculated && p.isUse)
           const paramOrderRequest = {
             customerId: this.customer.id,
             orderType: Number(this.orderSelected),
@@ -1644,7 +1585,6 @@ export default {
             orderRequest: paramOrderRequest,
             discountCode: this.pay.discount.discountCode,
           }
-
           this.GET_PROMOTION_CALCULATION_ACTION(paramGetPromotionCalculationData)
 
           // xử lý phần mã giảm giá

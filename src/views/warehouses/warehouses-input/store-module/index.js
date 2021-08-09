@@ -3,6 +3,7 @@ import toasts from '@core/utils/toasts/toasts'
 import router from '@/router/index'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import commonData from '@/@db/common'
 import {
   // GETTERS
   POCONFIRM_GETTER,
@@ -157,8 +158,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_PODETAIL_PRODUCTS_ACTION]({ state }, val) {
@@ -172,8 +173,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_PODETAIL_PRODUCTS_PROMO_ACTION]({ state }, val) {
@@ -187,8 +188,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_IMPORTEXCEL_ACTION]({}, val) {
@@ -203,8 +204,8 @@ export default {
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_IMPORT_ADJUSTMENTS_ACTION]({ state }, val) {
@@ -218,8 +219,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION]({ state }, val) {
@@ -234,8 +235,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_IMPORT_BORROWINGS_ACTION]({ state }, val) {
@@ -249,8 +250,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_IMPORT_BORROWINGS_DETAIL_ACTION]({ state }, val) {
@@ -264,8 +265,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [UPDATE_NOT_IMPORT_ACTION]({ state }, val) {
@@ -279,8 +280,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [CREATE_SALE_IMPORT_ACTION]({}, val) {
@@ -295,8 +296,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     // START - GET RECEIPTS
@@ -311,8 +312,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     // END - GET RECEIPTS
@@ -329,8 +330,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     // END - EXPORT RECEIPTS
@@ -345,8 +346,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_PRODUCTS_BY_ID_ACTION]({ state }, val) {
@@ -361,8 +362,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_PRODUCTS_ACTION]({ state }, val) {
@@ -376,8 +377,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [REMOVE_RECEIPT_ACTION]({ }, val) {
@@ -392,8 +393,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [UPDATE_RECEIPT_ACTION]({}, val) {
@@ -407,8 +408,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [PRINT_WAREHOUSES_INPUT_ACTION]({}, val) {
@@ -424,8 +425,8 @@ export default {
           const blob = new Blob([res], { type: 'application/pdf' })
           FileSaver.saveAs(blob, fileName)
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_NOT_IMPORT_REASONS_ACTION]({ state }, val) {
@@ -439,8 +440,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [PRINT_OUT_IN_PUT_ORDER_ACTION]({ state }, val) {
@@ -455,8 +456,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_IMPORT_PO_CONFIRM_ACTION]({ }, val) {
@@ -470,8 +471,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_WAREHOUSES_LIST_ACTION]({ state }, val) {
@@ -486,8 +487,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
   },

@@ -679,7 +679,7 @@ export default {
     },
     getEditOnlinePermission() {
       this.editManualPermission = this.getEditOnlinePermission.manuallyCreatable
-      this.editOnlinePermission = false
+      this.editOnlinePermission = this.getEditOnlinePermission.editable
     },
   },
 

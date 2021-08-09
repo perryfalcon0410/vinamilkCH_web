@@ -2,7 +2,7 @@ import reportSalesSaleOnDeliveryTypeService from '@/views/reports/reports-sales/
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
-
+import commonData from '@/@db/common'
 import {
   // GETTERS
   REPORT_SALES_SALE_ON_DELIVERY_TYPE_GETTER,
@@ -51,8 +51,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_SALES_DELIVERY_TYPES_ACTION]({ state }, val) {
@@ -66,8 +66,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [EXPORT_REPORT_SALE_ON_DELIVERY_TYPE_ACTION]({ }, val) {
@@ -83,8 +83,8 @@ export default {
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
           FileSaver.saveAs(blob, fileName)
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
   },

@@ -2,6 +2,7 @@ import reportExchangeDamagedGoodsService from '@/views/reports/reports-warehouse
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import commonData from '@/@db/common'
 import {
   // GETTERS
   REPORT_EXCHANGE_DAMAGED_GOODS_GETTER,
@@ -64,8 +65,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_REASON_EXCHANGE_DAMAGED_GOODS_ACTION]({ state }, val) {
@@ -79,8 +80,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [EXPORT_REPORT_EXCHANGE_DAMAGED_GOODS_ACTION]({ }, val) {
@@ -96,8 +97,8 @@ export default {
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_PRODUCT_LIST_ACTION]({ state }, val) {
@@ -112,8 +113,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
     [GET_PRODUCT_CAT_LIST_ACTION]({ state }, val) {
@@ -127,8 +128,8 @@ export default {
             throw new Error(res.statusValue)
           }
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
   },

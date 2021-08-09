@@ -211,6 +211,7 @@ import useJwt from '@/auth/jwt/useJwt'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
 import { $themeConfig } from '@themeConfig'
 import CryptoJS from 'crypto-js'
+import commonData from '@/@db/common'
 import RoleAndShopSelectionModal from './components/RoleAndShopSelectionModal.vue'
 
 export default {
@@ -305,7 +306,7 @@ export default {
           } else {
             throw new Error(res.statusValue)
           }
-        }).catch(error => toasts.error(error.message))
+        }).catch(() => toasts.error(commonData.errorAPIMessage))
     },
 
     checkCaptchaExist(captcha) {
@@ -389,10 +390,6 @@ export default {
                 success, data, token, statusValue,
               } = res.data
 
-              if (!res) {
-                throw new Error('Server không hoạt động, vui lòng liên hệ Quản trị')
-              }
-
               if (success) {
                 // Check captcha exist
                 if (data) {
@@ -416,8 +413,8 @@ export default {
                 throw new Error(statusValue)
               }
             })
-            .catch(error => {
-              toasts.error(error.message)
+            .catch(() => {
+              toasts.error(commonData.errorAPIMessage)
             })
         }
       })
@@ -442,8 +439,8 @@ export default {
 
           this.loginAction(success, data, token, statusValue)
         })
-        .catch(error => {
-          toasts.error(error.message)
+        .catch(() => {
+          toasts.error(commonData.errorAPIMessage)
         })
     },
   },

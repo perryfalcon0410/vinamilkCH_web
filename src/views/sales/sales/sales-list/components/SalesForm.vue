@@ -1003,8 +1003,6 @@ export default {
                 } else {
                   toasts.error('Bạn không có quyền tạo đơn Online tay. Vui lòng chọn đơn Online đang có trên hệ thống.')
                 }
-              } else if (this.orderOnline.onlineOrderId !== null && !this.editOnlinePermission) {
-                toasts.error('Bạn không có quyền sửa đơn Online.')
               } else {
                 this.isOpenPayModal = true
                 this.showPayModal()

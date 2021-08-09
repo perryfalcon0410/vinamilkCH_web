@@ -26,4 +26,6 @@ export default {
     enable: 2,
     disable: 3,
   },
+
+  errorAPIMessage: 'Server không hoạt động, vui lòng liên hệ Quản trị.',
 }
