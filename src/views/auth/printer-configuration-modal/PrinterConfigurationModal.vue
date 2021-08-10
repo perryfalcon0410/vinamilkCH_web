@@ -216,6 +216,7 @@ export default {
       }
     },
     jspmWSStatus() {
+      JSPM.JSPrintManager.license_url = `${window.location.origin}/jspm/`
       JSPM.JSPrintManager.start()
       JSPM.JSPrintManager.auto_reconnect = true
       if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {

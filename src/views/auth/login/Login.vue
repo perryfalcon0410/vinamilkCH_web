@@ -248,6 +248,11 @@ export default {
           subject: 'NOTAUTHORIZED',
           controls: [],
         },
+        {
+          action: 'manage',
+          subject: 'PRINTERLICENSEREGISTRATION',
+          controls: [],
+        },
       ],
     }
   },
