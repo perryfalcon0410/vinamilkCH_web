@@ -129,6 +129,7 @@
               type="tel"
               :state="phoneNumber ? passed : null"
               maxlength="10"
+              :formatter="$preventPasteSpecialChars"
               @keypress="$onlyNumberInput"
             />
             <small class="text-danger">{{ errors[0] }}</small>
@@ -562,7 +563,7 @@ export default {
               street: this.street,
               noted: this.note,
               areaId: this.precinctsSelected,
-              customerTypeId: this.defaultCustomerType.posModifyCustomer,
+              customerTypeId: this.defaultCustomerType.id,
             },
             onSuccess: () => {
               this.getCreateInfo()

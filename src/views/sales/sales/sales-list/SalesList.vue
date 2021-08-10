@@ -736,7 +736,7 @@ export default {
 
     increaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null)) {
         this.orderProducts[index].quantity += 1
         this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
@@ -749,7 +749,7 @@ export default {
 
     decreaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null)) {
         this.orderProducts[index].quantity -= 1
         if (this.orderProducts[index].quantity <= 0) {
           this.orderProducts[index].quantity = 1
@@ -767,7 +767,7 @@ export default {
     },
 
     onClickDeleteProduct(index) {
-      if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null)) {
         this.orderProducts.splice(index, 1)
       }
     },

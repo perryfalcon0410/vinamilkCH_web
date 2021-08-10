@@ -851,7 +851,6 @@ export default {
     this.GET_CARD_TYPES_ACTION({ ...this.decentralization })
     this.GET_CLOSELY_TYPES_ACTION({ ...this.decentralization })
     this.GET_CUSTOMER_BY_ID_ACTION(`${this.customerId}`)
-    this.$refs.focusInput.focus()
   },
 
   // before page leave, this will check
@@ -931,6 +930,10 @@ export default {
         // START - MembershipCard
         this.cardTypesSelected = this.customer.cardTypeId
         this.closelyTypesSelected = this.customer.closelyTypeId
+
+        if (this.canDisableInputField(this.customer.lastName) === false) {
+          this.$refs.focusInput.focus()
+        }
       }
     },
 
