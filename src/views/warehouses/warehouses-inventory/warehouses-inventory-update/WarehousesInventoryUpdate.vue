@@ -773,7 +773,11 @@ export default {
             wareHouseTypeId: this.warehouseType,
           },
           onSuccess: () => {
-            this.onClickSaveButton()
+            this.$nextTick(() => {
+              if (!this.showErrorMessage) {
+                this.onClickSaveButton()
+              }
+            })
           },
         })
       } else {
