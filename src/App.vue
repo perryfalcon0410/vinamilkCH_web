@@ -40,11 +40,18 @@ import {
   mapGetters,
 } from 'vuex'
 import {
+  hostName,
+} from '@/@core/utils/filter'
+import {
   CUSTOMER,
   // ACTIONS
   GET_CUSTOMER_TYPES_ACTION,
   GET_GENDERS_ACTION,
 } from '@/views/sales/sales-customers/store-module/type'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '@/views/auth/printer-configuration-modal/store-module/type'
 import {
   APP,
   // GETTERS
@@ -70,6 +77,7 @@ export default {
 
   data() {
     return {
+      ipAddress: null,
       decentralization: {
         formId: 1,
         ctrlId: 1,
@@ -113,10 +121,19 @@ export default {
         this.getCustomerApiData()
       }
     },
+    ipAddress() {
+      this.GET_PRINTER_CLIENT_ACTIONS({
+        data: {
+          clientId: this.ipAddress,
+        },
+        onSuccess: () => {},
+      })
+    },
   },
 
   mounted() {
     this.getCustomerApiData()
+    hostName().then(dta => { this.ipAddress = dta.ip })
   },
 
   beforeCreate() {
@@ -145,6 +162,9 @@ export default {
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_TYPES_ACTION,
       GET_GENDERS_ACTION,
+    ]),
+    ...mapActions(PRINTERCONFIG, [
+      GET_PRINTER_CLIENT_ACTIONS,
     ]),
 
     getCustomerApiData(isCreate) {

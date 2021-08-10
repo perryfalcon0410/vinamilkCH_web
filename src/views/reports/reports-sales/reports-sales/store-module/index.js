@@ -88,7 +88,7 @@ export default {
             throw new Error('Không có dữ liệu xuất')
           }
 
-          const fileName = `Báo cáo bán hàng_Filled_${moment().format('DDMMYYYY')}_${moment().format('hhmm')}.xlsx`
+          const fileName = `Báo cáo bán hàng_Filled_${moment().format('DDMMYYYY')}_${moment().format('hhmmss')}_${Math.floor(Math.random() * 900 + 100)}.xlsx`
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)
         })

@@ -169,6 +169,8 @@
               v-model="phoneNumber"
               trim
               class="h7 text-brand-3"
+              :type="number"
+              :formatter="$preventPasteSpecialChars"
               placeholder="Nhập chính xác 4 số cuối"
               maxlength="10"
               @keypress="$onlyNumberInput"
@@ -206,12 +208,18 @@
                 <b-form-input
                   v-model="min"
                   class="h7 text-brand-3"
+                  :type="number"
+                  :formatter="$preventPasteSpecialChars"
+                  maxlength="13"
                   @keypress="$onlyNumberInput"
                   @keyup.enter="onClickSearchButton"
                 />
                 <b-form-input
                   v-model="max"
+                  maxlength="13"
                   class="h7 text-brand-3"
+                  :type="number"
+                  :formatter="$preventPasteSpecialChars"
                   @keypress="$onlyNumberInput"
                   @keyup.enter="onClickSearchButton"
                 />

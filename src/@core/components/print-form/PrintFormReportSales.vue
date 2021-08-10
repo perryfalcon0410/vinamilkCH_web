@@ -5,6 +5,7 @@
   >
     <!-- START - Header -->
     <b-row
+      id="abc"
       class="mx-0 my-1"
       align-h="between"
       align-v="center"
@@ -251,16 +252,26 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import JSPM from 'jsprintmanager'
 import {
   REPORT_SALES,
   // Getters
   PRINT_REPORT_SALES_GETTER,
 } from '@/views/reports/reports-sales/reports-sales/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
+  data() {
+    return {
+      printerOptions: {},
+    }
+  },
   computed: {
     ...mapGetters(REPORT_SALES, [PRINT_REPORT_SALES_GETTER]),
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
 
     reportSalesShopData() {
       if (this.PRINT_REPORT_SALES_GETTER.info) {
@@ -271,6 +282,12 @@ export default {
         address: 'addres',
         phone: 'phone',
       }
+    },
+    getPrinterOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
     },
     reportSalesInfoData() {
       if (this.PRINT_REPORT_SALES_GETTER.info) {
@@ -294,9 +311,32 @@ export default {
       return null
     },
   },
+  watch: {
+    getPrinterOptions() {
+      this.printerOptions = { ...this.getPrinterOptions }
+    },
+  },
 
   updated() {
-    window.print()
+    // window.print()
+    console.log(this.printerOptions)
+    JSPM.JSPrintManager.auto_reconnect = true
+    const text = document.getElementById('abc')
+    console.log(text)
+    // JSPM.JSPrintManager.start()
+    //   .then(() => {
+    //     const cpj = new JSPM.ClientPrintJob()
+    //     cpj.clientPrinter = new JSPM.InstalledPrinter('Microsoft Print to PDF')
+    //     cpj.printerCommands = text
+    //     cpj.sendToClient()
+    //   })
+    JSPM.JSPrintManager.start()
+      .then(() => {
+        const cpj = new JSPM.ClientPrintJob()
+        cpj.clientPrinter = new JSPM.InstalledPrinter('Microsoft Print to PDF')
+        cpj.printerCommands = 'aaa'
+        cpj.sendToClient()
+      })
   },
 
 }

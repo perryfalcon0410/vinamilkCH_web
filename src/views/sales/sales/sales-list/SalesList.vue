@@ -677,6 +677,7 @@ export default {
     customerFullName() {
       if (this.customerFullName !== '') {
         this.bills.find(item => item.id === this.billSelected).billName = this.customerFullName
+        this.customerFullName = ''
       }
     },
     getEditOnlinePermission() {

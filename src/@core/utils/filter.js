@@ -1,4 +1,5 @@
 import moment from 'moment'
+import JSPM from 'jsprintmanager'
 import toasts from './toasts/toasts'
 
 export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)
@@ -148,11 +149,31 @@ export const earlyMonth = () => moment().startOf('month').format('DD/MM/YYYY')
 
 export const nowDate = () => moment().format('DD/MM/YYYY')
 
+// call api get ip client
 export const hostName = async () => {
   const response = await fetch('https://jsonip.com', { mode: 'cors' })
   const data = await response.json()
   return data
 }
+// call api get ip client
+
+// check JSPM is running
+export const jspmCheckStatus = () => {
+  if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
+    return true
+  }
+  if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
+    toasts.error('JSPrintManager (JSPM) chưa được cài đặt hoặc chưa được mở')
+    return false
+  }
+  if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Blocked) {
+    toasts.error('JSPrintManager (JSPM) đã chặn trang web này!')
+    return false
+  }
+  return false
+}
+// check JSPM is running
+
 // count from isoDate to now
 export const countDays = isoDate => {
   const now = new Date()

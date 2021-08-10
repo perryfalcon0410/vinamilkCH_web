@@ -3,7 +3,6 @@
     title="Cấu hình máy in"
     :visible="visible"
     title-class="font-weight-bolder text-brand-1"
-    centered
     @hidden="cancel()"
   >
     <b-container>
@@ -153,24 +152,20 @@ export default {
   watch: {
     visible() {
       if (this.visible) {
-        this.jspmWSStatus()
+        if (!this.isTrue) {
+          this.jspmWSStatus()
+        }
       }
     },
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
-    },
-
-    getPrinterData() {
-      this.printerDataDefault = { ...this.getPrinterData }
-      this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
-      this.printerReportSelected = this.printerDataDefault.reportPrinterName
-      this.printerReceiptSelected = this.printerDataDefault.billPrinterName
-      // selected printer default
+    // ipAddress() {
+    //   this.GET_PRINTER_CLIENT_ACTIONS({
+    //     data: {
+    //       clientId: this.ipAddress,
+    //     },
+    //     onSuccess: () => {},
+    //   })
+    // },
+    printerConfigOptions() {
       if (this.printerConfigOptions.find(data => data.id === this.printerDataDefault.defaultPrinterName)) {
         this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
       } else {
@@ -189,10 +184,15 @@ export default {
         this.printerReceiptSelected = null
       }
     },
+
+    getPrinterData() {
+      this.printerDataDefault = { ...this.getPrinterData }
+    },
   },
   mounted() {
     hostName().then(dta => { this.ipAddress = dta.ip })
-    this.getPrinterConfigOptions()
+    // this.getPrinterConfigOptions()
+    this.jspmWSStatus()
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [
@@ -205,8 +205,8 @@ export default {
     },
     getPrinterConfigOptions() {
       this.printerConfigOptions = []
-      JSPM.JSPrintManager.auto_reconnect = true
-      JSPM.JSPrintManager.start()
+      // JSPM.JSPrintManager.start()
+      // this.jspmWSStatus()
       JSPM.JSPrintManager.WS.onStatusChanged = () => {
         JSPM.JSPrintManager.getPrinters().then(data => {
           data.forEach(e => {
@@ -216,14 +216,20 @@ export default {
       }
     },
     jspmWSStatus() {
+      JSPM.JSPrintManager.start()
+      JSPM.JSPrintManager.auto_reconnect = true
       if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
         this.isTrue = true
+        this.getPrinterConfigOptions()
+        JSPM.JSPrintManager.auto_reconnect = true
       } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
         this.isTrue = false
+        JSPM.JSPrintManager.auto_reconnect = false
         toasts.error('JSPrintManager (JSPM) chưa được cài đặt hoặc chưa được mở')
       } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Blocked) {
         toasts.error('JSPrintManager (JSPM) đã chặn trang web này!')
         this.isTrue = false
+        JSPM.JSPrintManager.auto_reconnect = false
       }
     },
     onSaveClick() {
