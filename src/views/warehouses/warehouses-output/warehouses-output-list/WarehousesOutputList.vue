@@ -547,6 +547,7 @@ export default {
           label: 'Loại xuất',
           field: 'inputTypes',
           formatFn: this.$getOutputTypeslabel,
+          tdClass: 'text-nowrap',
         },
         {
           label: 'Ghi chú',

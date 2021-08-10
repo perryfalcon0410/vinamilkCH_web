@@ -175,7 +175,7 @@
             <td
               class="px-1"
             >
-              {{ stt + 1 }}
+              {{ product.len + 1 }}
             </td>
             <td class="pl-50">
               {{ product.productCode }}
@@ -305,15 +305,27 @@ export default {
     },
     reportData() {
       if (this.PRINT_REPORT_INVENTORY_GETTER.dataByCat) {
+        console.log(this.PRINT_REPORT_INVENTORY_GETTER.dataByCat)
         return this.PRINT_REPORT_INVENTORY_GETTER.dataByCat
       }
       return []
     },
   },
+  watch: {
+    reportData() {
+      this.reportProductData = [...this.reportData]
+      let i = 0
+      this.reportProductData.forEach(item => {
+        item.data.forEach(j => {
+          // eslint-disable-next-line no-param-reassign
+          j.len = i
+          i += 1
+        })
+      })
+    },
+  },
   updated() {
     window.print()
-  },
-  methods: {
   },
 }
 </script>
