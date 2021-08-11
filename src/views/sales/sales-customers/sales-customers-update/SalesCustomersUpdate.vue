@@ -149,7 +149,7 @@
           </b-form-row>
           <!-- END - Customer BirthDay and Gender -->
 
-          <!-- START - Customer Group -->
+          <!-- START - Customer Types -->
           <b-col
             class="px-0"
           >
@@ -167,6 +167,7 @@
                 v-model="customerTypesSelected"
                 :options="customerTypeOptions"
                 :disabled="canDisableInputField(customer.customerTypeId) || customer.isEditCusType !== 1"
+                :load-options="customerTypeLoadOptions"
                 placeholder="Chọn nhóm khách hàng"
                 no-options-text="Không có dữ liệu"
                 no-results-text="Không tìm thấy kết quả"
@@ -175,7 +176,7 @@
               <small class="text-danger">{{ errors[0] }}</small>
             </validation-provider>
           </b-col>
-          <!-- END - Customer Group -->
+          <!-- END - Customer Types -->
 
           <!-- START - Customer status -->
           <b-col
@@ -635,6 +636,7 @@ import {
   CUSTOMER_BY_ID_GETTER,
   GENDERS_GETTER,
   // ACTIONS
+  GET_CUSTOMER_TYPES_ACTION,
   GET_PROVINCES_ACTION,
   GET_DISTRICTS_ACTION,
   GET_PRECINCTS_ACTION,
@@ -698,6 +700,7 @@ export default {
       birthDay: null,
       gendersSelected: null,
       customerTypesSelected: null,
+      customerTypeOptions: [],
       customerStatusOptions: customerData.status,
       customerStatusSelected: null,
       customerPrivate: false,
@@ -751,7 +754,7 @@ export default {
         label: data.categoryName,
       }))
     },
-    customerTypeOptions() {
+    getCustomerTypes() {
       return this.CUSTOMER_TYPES_GETTER.map(data => ({
         id: data.id,
         label: data.name,
@@ -841,12 +844,21 @@ export default {
       }
     },
 
+    // getCustomerTypes() {
+    //   this.customerTypeOptions = [...this.getCustomerTypes]
+    //   console.log(this.customerTypeOptions)
+    // },
+
     customer() {
       this.getCustomerById()
     },
   },
 
   mounted() {
+    this.GET_CUSTOMER_TYPES_ACTION({
+      data: { ...this.decentralization, isCreate: true },
+      onSuccess: () => {},
+    })
     this.GET_PROVINCES_ACTION({ ...this.decentralization })
     this.GET_CARD_TYPES_ACTION({ ...this.decentralization })
     this.GET_CLOSELY_TYPES_ACTION({ ...this.decentralization })
@@ -870,6 +882,7 @@ export default {
   // START - Methods
   methods: {
     ...mapActions(CUSTOMER, [
+      GET_CUSTOMER_TYPES_ACTION,
       GET_PROVINCES_ACTION,
       GET_DISTRICTS_ACTION,
       GET_PRECINCTS_ACTION,
@@ -896,6 +909,14 @@ export default {
       }
     },
 
+    uniqueArray(arr) {
+      return arr
+        .map(v => v.id)
+        .map((v, i, array) => array.indexOf(v) === i && i)
+        .filter(v => arr[v])
+        .map(v => arr[v])
+    },
+
     getCustomerById() {
       if (this.customer) {
         // START - Common
@@ -907,6 +928,10 @@ export default {
         this.barCode = this.customer.barCode
         this.birthDay = formatISOtoVNI(this.customer.dob)
         this.gendersSelected = this.customer.genderId
+        this.customerTypeOptions = this.uniqueArray([...this.getCustomerTypes, {
+          id: this.customer.customerType.id,
+          label: this.customer.customerType.name,
+        }])
         this.customerTypesSelected = this.customer.customerTypeId
         this.customerStatusSelected = this.customer.status
         this.customerPrivate = this.customer.isPrivate || false

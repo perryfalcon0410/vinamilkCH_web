@@ -111,17 +111,17 @@ export default {
       this.getCustomerApiData()
       this.getPrinterClient()
     },
-    $route(to, from) {
-      // Khi điểm đến là create customer thì gọi api có tham số isCreate = true
-      if (to.name === 'sales-customers-create') {
-        this.getCustomerApiData(true)
-      }
+    // Hàm này chỉ đề cho customer types vì 1 số tình hướng đặc biệt
+    $route(to) {
+      switch (to.name) {
+        case 'sales-customers-create':
+          return this.getCustomerApiData(true)
+        case 'sales-customers':
+          return this.getCustomerApiData()
 
-      // Khi điểm đi là TỪ create customer thì gọi api có tham số isCreate = false hoặc ko cần truyền
-      if (from.name === 'sales-customers-create') {
-        this.getCustomerApiData()
+        default:
+          return null
       }
-      this.getPrinterClient()
     },
     ipAddress() {
       this.GET_PRINTER_CLIENT_ACTIONS({
