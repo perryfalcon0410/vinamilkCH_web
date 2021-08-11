@@ -26,6 +26,7 @@ import VueBarcodeScanner from 'vue-barcode-scanner'
 import i18n from '@/libs/i18n'
 import VueGoodTablePlugin from 'vue-good-table'
 import moment from 'moment'
+import html2canvas from 'html2canvas'
 import VueFlatPickr from 'vue-flatpickr-component'
 import flatPickr from 'flatpickr'
 import { Vietnamese } from 'flatpickr/dist/l10n/vn'
@@ -87,6 +88,7 @@ Vue.use(VueBarcodeScanner, optionsVueBarcodeScanner)
 // moment
 Vue.prototype.$moment = moment
 moment.locale('vi')
+Vue.prototype.$html2canvas = html2canvas
 
 // Ultils
 Vue.prototype.$isEmpty = isEmpty

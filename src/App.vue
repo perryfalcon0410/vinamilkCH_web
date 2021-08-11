@@ -109,6 +109,7 @@ export default {
   watch: {
     isLoggedIn() {
       this.getCustomerApiData()
+      this.getPrinterClient()
     },
     $route(to, from) {
       // Khi điểm đến là create customer thì gọi api có tham số isCreate = true
@@ -120,6 +121,7 @@ export default {
       if (from.name === 'sales-customers-create') {
         this.getCustomerApiData()
       }
+      this.getPrinterClient()
     },
     ipAddress() {
       this.GET_PRINTER_CLIENT_ACTIONS({
@@ -133,7 +135,12 @@ export default {
 
   mounted() {
     this.getCustomerApiData()
-    hostName().then(dta => { this.ipAddress = dta.ip })
+
+    // get ip client
+    hostName().then(dta => {
+      this.ipAddress = dta.ip
+      // this.getPrinterClient()
+    })
   },
 
   beforeCreate() {
@@ -166,6 +173,17 @@ export default {
     ...mapActions(PRINTERCONFIG, [
       GET_PRINTER_CLIENT_ACTIONS,
     ]),
+    getPrinterClient() {
+      if (this.isLoggedIn) {
+        this.GET_PRINTER_CLIENT_ACTIONS({
+          data: {
+            clientId: this.ipAddress,
+            ...this.decentralization,
+          },
+          onSuccess: () => {},
+        })
+      }
+    },
 
     getCustomerApiData(isCreate) {
       if (this.isLoggedIn) {

@@ -5,6 +5,8 @@
   >
     <!-- START - Header -->
     <b-row
+      id="abc"
+      ref="aaaa"
       class="mx-0 my-1"
       align-h="between"
       align-v="center"
@@ -251,16 +253,30 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import JSPM from 'jsprintmanager'
+import '@core/libs/JSPrintManager/zip-full.min'
+import { printActions } from '@core/utils/filter'
 import {
   REPORT_SALES,
   // Getters
   PRINT_REPORT_SALES_GETTER,
 } from '@/views/reports/reports-sales/reports-sales/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
+  components: {
+  },
+  data() {
+    return {
+      dataPrintOptions: {},
+    }
+  },
   computed: {
     ...mapGetters(REPORT_SALES, [PRINT_REPORT_SALES_GETTER]),
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
 
     reportSalesShopData() {
       if (this.PRINT_REPORT_SALES_GETTER.info) {
@@ -271,6 +287,12 @@ export default {
         address: 'addres',
         phone: 'phone',
       }
+    },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
     },
     reportSalesInfoData() {
       if (this.PRINT_REPORT_SALES_GETTER.info) {
@@ -294,9 +316,23 @@ export default {
       return null
     },
   },
+  // watch: {
+  //   printerOptions() {
+  //     this.dataPrintOptions = { ...this.printerOptions }
+  //   },
+  // },
 
   updated() {
-    window.print()
+    // window.print()
+    JSPM.JSPrintManager.auto_reconnect = true
+    const printerName = this.printerOptions.reportPrinterName
+    const text = this.$refs.aaaa
+    printActions(text, printerName)
+  },
+  mounted() {
+    console.log('+++START+++')
+    console.log(this.printerOptions)
+    console.log('+++END+++++')
   },
 
 }
