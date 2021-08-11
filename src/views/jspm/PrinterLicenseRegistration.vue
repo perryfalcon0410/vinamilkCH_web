@@ -20,7 +20,6 @@ export default {
 
     // DO NOT MODIFY THE FOLLOWING CODE
     const timestamp = new Date()
-    console.log(timestamp)
     const licenceHash = sha256(licenceKey + timestamp)
     const output = `${licenceOwner}|${licenceHash}`
     this.keyHash = output

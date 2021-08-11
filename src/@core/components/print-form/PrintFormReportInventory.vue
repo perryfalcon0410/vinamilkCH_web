@@ -305,7 +305,6 @@ export default {
     },
     reportData() {
       if (this.PRINT_REPORT_INVENTORY_GETTER.dataByCat) {
-        console.log(this.PRINT_REPORT_INVENTORY_GETTER.dataByCat)
         return this.PRINT_REPORT_INVENTORY_GETTER.dataByCat
       }
       return []
