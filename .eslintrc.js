@@ -10,7 +10,7 @@ module.exports = {
   parserOptions: {
     parser: 'babel-eslint',
   },
-
+  "ignorePatterns": ["src/@core/libs/*","public/*"],
   rules: {
     'import/no-cycle': 'off',
     'import/prefer-default-export': 'off',
