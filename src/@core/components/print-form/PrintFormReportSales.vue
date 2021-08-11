@@ -254,7 +254,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import JSPM from 'jsprintmanager'
-import '@core/libs/JSPrintManager/zip-full.min'
 import { printActions } from '@core/utils/filter'
 import {
   REPORT_SALES,
@@ -330,9 +329,6 @@ export default {
     printActions(text, printerName)
   },
   mounted() {
-    console.log('+++START+++')
-    console.log(this.printerOptions)
-    console.log('+++END+++++')
   },
 
 }

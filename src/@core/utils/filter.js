@@ -1,7 +1,6 @@
 import moment from 'moment'
 import JSPM from 'jsprintmanager'
 import html2canvas from 'html2canvas'
-import '@core/libs/JSPrintManager/zip-full.min'
 import toasts from './toasts/toasts'
 
 export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)

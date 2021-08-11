@@ -5,6 +5,7 @@
   >
     <!-- START - Header -->
     <b-row
+      ref="PrintFormSaleReceiptV2"
       class="mx-0 my-1 text-center"
       align-h="center"
       align-v="center"
@@ -287,7 +288,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import JSPM from 'jsprintmanager'
+import { printActions } from '@core/utils/filter'
 import {
   SALESRECEIPTS,
   // Getters
@@ -400,6 +402,12 @@ export default {
       }
       return null
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
 
   watch: {
@@ -412,7 +420,11 @@ export default {
   },
 
   updated() {
-    window.print()
+    // window.print()
+    JSPM.JSPrintManager.auto_reconnect = true
+    const printerName = this.printerOptions.reportPrinterName
+    const text = this.$refs.PrintFormSaleReceiptV2
+    printActions(text, printerName)
   },
 }
 </script>
