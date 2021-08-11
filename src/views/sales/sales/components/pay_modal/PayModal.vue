@@ -1665,18 +1665,14 @@ export default {
       }
     },
     rePrintSaleOrder() {
-      if (this.isPrint) {
-        window.print()
-      } else {
-        this.PRINT_SALES_RECEIPT_ACTION({
-          data: {
-            salesReceiptId: this.pay.saleOrderId,
-            params: { ...this.decentralization },
-          },
-          onSuccess: () => {
-          },
-        })
-      }
+      this.PRINT_SALES_RECEIPT_ACTION({
+        data: {
+          salesReceiptId: this.pay.saleOrderId,
+          params: { ...this.decentralization },
+        },
+        onSuccess: () => {
+        },
+      })
     },
     removeProductPromotionProgramHandle(programId, productId) {
       this.promotionPrograms = this.promotionPrograms.map(program => {

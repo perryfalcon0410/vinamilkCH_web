@@ -10,7 +10,6 @@ import purchases from './routes/purchases'
 import warehouses from './routes/warehouses'
 import reports from './routes/reports'
 import auth from './routes/auth'
-import jspm from './routes/jspm'
 
 Vue.use(VueRouter)
 
@@ -29,7 +28,6 @@ const router = new VueRouter({
     ...purchases, // Mua hàng
     ...warehouses, // Kho
     ...reports, // Báo cáo
-    ...jspm,
     {
       path: '*',
       redirect: 'error-404',
