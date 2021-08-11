@@ -302,6 +302,11 @@ import {
   PRINT_SALES_TEMP_GETTER,
 } from '@/views/sales/sales/store-module/type'
 
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
+
 export default {
   data() {
     return {
@@ -388,7 +393,7 @@ export default {
   computed: {
     ...mapGetters(SALESRECEIPTS, [PRINT_SALES_RECEIPT_GETTER]),
     ...mapGetters(SALES, [PRINT_SALES_TEMP_GETTER]),
-
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
     getPrintSalesReceiptData() {
       if (this.PRINT_SALES_RECEIPT_GETTER) {
         return this.PRINT_SALES_RECEIPT_GETTER
@@ -423,6 +428,7 @@ export default {
     // window.print()
     JSPM.JSPrintManager.auto_reconnect = true
     const printerName = this.printerOptions.reportPrinterName
+    console.log(printerName)
     const text = this.$refs.PrintFormSaleReceiptV2
     printActions(text, printerName)
   },
