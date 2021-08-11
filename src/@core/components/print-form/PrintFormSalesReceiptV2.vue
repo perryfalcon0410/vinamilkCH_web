@@ -1,11 +1,11 @@
 <template>
   <div
+    id="print-form-sale-receipt-v2"
     class="d-none d-print-block text-brand-3"
     style="width: 340px"
   >
     <!-- START - Header -->
     <b-row
-      ref="PrintFormSaleReceiptV2"
       class="mx-0 my-1 text-center"
       align-h="center"
       align-v="center"
@@ -425,12 +425,15 @@ export default {
   },
 
   updated() {
-    // window.print()
     JSPM.JSPrintManager.auto_reconnect = true
     const printerName = this.printerOptions.reportPrinterName
-    console.log(printerName)
-    const text = this.$refs.PrintFormSaleReceiptV2
-    printActions(text, printerName)
+    JSPM.JSPrintManager.start()
+      .then(() => {
+        const text = document.getElementById('print-form-sale-receipt-v2')
+        text.classList.remove('d-none')
+        printActions(text, printerName)
+        text.classList.add('d-none')
+      })
   },
 }
 </script>
