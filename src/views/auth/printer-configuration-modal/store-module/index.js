@@ -43,7 +43,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success('Lưu cấu hình in thành công')
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)
@@ -60,7 +60,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success('Cập nhật cấu hình in thành công')
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)

@@ -1,21 +1,19 @@
 import axios from '@axios'
 import {
-  getPrinterClientEndpoint,
-  createPrinterClientEndpoint,
-  updatePrinterClientEndpoint,
+  crudPrinterClientEndpoint,
 } from './defaultConfig'
 
 export default {
 
   getPrinterClient(args) {
-    return axios.get(`${getPrinterClientEndpoint}/${args.clientId}`, args)
+    return axios.get(`${crudPrinterClientEndpoint}/${args.clientId}`, args)
   },
 
   createPrinterClient(args) {
-    return axios.post(createPrinterClientEndpoint, args)
+    return axios.post(crudPrinterClientEndpoint, args)
   },
 
   updatePrinterClient(args) {
-    return axios.put(`${updatePrinterClientEndpoint}/${args.id}`, args)
+    return axios.put(`${crudPrinterClientEndpoint}/${args.id}`, args)
   },
 }

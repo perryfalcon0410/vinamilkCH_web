@@ -40,18 +40,12 @@ import {
   mapGetters,
 } from 'vuex'
 import {
-  hostName,
-} from '@/@core/utils/filter'
-import {
   CUSTOMER,
   // ACTIONS
   GET_CUSTOMER_TYPES_ACTION,
   GET_GENDERS_ACTION,
 } from '@/views/sales/sales-customers/store-module/type'
-import {
-  PRINTERCONFIG,
-  GET_PRINTER_CLIENT_ACTIONS,
-} from '@/views/auth/printer-configuration-modal/store-module/type'
+
 import {
   APP,
   // GETTERS
@@ -77,7 +71,6 @@ export default {
 
   data() {
     return {
-      ipAddress: null,
       decentralization: {
         formId: 1,
         ctrlId: 1,
@@ -109,7 +102,6 @@ export default {
   watch: {
     isLoggedIn() {
       this.getCustomerApiData()
-      this.getPrinterClient()
     },
     // Hàm này chỉ đề cho customer types vì 1 số tình hướng đặc biệt
     $route(to) {
@@ -123,24 +115,10 @@ export default {
           return null
       }
     },
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
-    },
   },
 
   mounted() {
     this.getCustomerApiData()
-
-    // get ip client
-    hostName().then(dta => {
-      this.ipAddress = dta.ip
-      // this.getPrinterClient()
-    })
   },
 
   beforeCreate() {
@@ -170,20 +148,6 @@ export default {
       GET_CUSTOMER_TYPES_ACTION,
       GET_GENDERS_ACTION,
     ]),
-    ...mapActions(PRINTERCONFIG, [
-      GET_PRINTER_CLIENT_ACTIONS,
-    ]),
-    getPrinterClient() {
-      if (this.isLoggedIn) {
-        this.GET_PRINTER_CLIENT_ACTIONS({
-          data: {
-            clientId: this.ipAddress,
-            ...this.decentralization,
-          },
-          onSuccess: () => {},
-        })
-      }
-    },
 
     getCustomerApiData(isCreate) {
       if (this.isLoggedIn) {

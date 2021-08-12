@@ -302,6 +302,7 @@ import {
   PRINT_SALES_TEMP_GETTER,
 } from '@/views/sales/sales/store-module/type'
 
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   PRINTERCONFIG,
   PRINTER_CLIENT_GETTER,
@@ -426,14 +427,21 @@ export default {
 
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.reportPrinterName
-    JSPM.JSPrintManager.start()
-      .then(() => {
-        const text = document.getElementById('print-form-sale-receipt-v2')
-        text.classList.remove('d-none')
-        printActions(text, printerName)
-        text.classList.add('d-none')
-      })
+    const printerName = this.printerOptions.billPrinterName
+    if (printerName === '' || printerName === null) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+        .then(() => {
+          const text = document.getElementById('print-form-sale-receipt-v2')
+          text.classList.remove('d-none')
+          printActions(text, printerName)
+          text.classList.add('d-none')
+        })
+        .catch(() => {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        })
+    }
   },
 }
 </script>
