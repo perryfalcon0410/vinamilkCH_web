@@ -678,10 +678,11 @@ export default {
       this.rowsSuccess = this.warehouseInventoryImportData.info.importSucceed
       this.rowsFail = this.warehouseInventoryImportData.info.importFailed
       this.warehouseInventoryImportData.response.importSuccess.forEach(productData => {
-        const index = this.products.findIndex(product => product.productCode === productData.productCode)
-        this.products[index].inventoryPacket = productData.packetQuantity.toString()
-        this.products[index].inventoryOdd = productData.unitQuantity.toString()
-        this.updateInventoryTotal(index)
+        const index = this.originalProducts.findIndex(product => product.productCode === productData.productCode)
+        this.originalProducts[index].inventoryPacket = productData.packetQuantity.toString()
+        this.originalProducts[index].inventoryOdd = productData.unitQuantity.toString()
+        this.originalProducts[index].inventoryTotal = Number(this.originalProducts[index].inventoryPacket) * this.originalProducts[index].exchange + Number(this.originalProducts[index].inventoryOdd)
+        this.originalProducts[index].unequal = this.originalProducts[index].inventoryTotal - this.originalProducts[index].instockAmount
       })
     },
   },
