@@ -1119,10 +1119,12 @@ export default {
     },
 
     onChangeKeyWord() {
-      this.GET_CUSTOMERS_SALE_ACTION({
-        ...this.pagination,
-        searchKeywords: this.search.trim(),
-      })
+      if (this.search) {
+        this.GET_CUSTOMERS_SALE_ACTION({
+          ...this.pagination,
+          searchKeywords: this.search.trim(),
+        })
+      }
     },
 
     resetOrderNumber(item) {
@@ -1164,21 +1166,6 @@ export default {
         this.isSelected = true
         this.$emit('getIdCustomer', suggestion.item)
         this.$refs.search.$el.querySelector('input').blur()
-      } else {
-        const searchData = Number(this.search)
-        if (Number.isNaN(searchData) === false) {
-          this.GET_CUSTOMERS_ACTION({
-            phoneNumber: (searchData === 0) ? '' : searchData,
-            status: this.status,
-          })
-        } else {
-          this.GET_CUSTOMERS_ACTION({
-            searchKeywords: this.search.trim(),
-            status: this.status,
-          })
-        }
-        this.$refs.salesSearchModal.$refs.salesSearchModal.show()
-        this.search = ''
       }
     },
     getDefaultPromotionObjectSelected() {
