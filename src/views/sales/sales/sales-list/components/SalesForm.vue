@@ -72,15 +72,28 @@
             md="12"
           >
             <!-- START - Search -->
+            <!-- <b-row class="px-0 mx-0">
+              <b-form-checkbox-group
+                v-model="selected"
+                :options="searchOptions"
+                class="mt-2"
+                value-field="item"
+                text-field="name"
+                disabled-field="notEnabled"
+              />
+            </b-row> -->
             <b-row
-              class="px-0 mx-0 "
+              class="px-0 mx-0"
             >
               <b-input-group class="input-group-merge mt-1">
                 <b-input-group-prepend
                   is-text
                   style="position: absolute; height: 100%"
                 >
-                  <b-icon-search />
+                  <b-icon-search
+                    v-b-popover.hover.top="'Tìm kiếm khách hàng'"
+                    @click="showSearchModal"
+                  />
                 </b-input-group-prepend>
                 <vue-autosuggest
                   ref="search"
@@ -94,9 +107,8 @@
                     class:'form-control pl-4',
                     placeholder:'Tìm khách hàng (F4)',
                   }"
-                  @input="onChangeKeyWord"
                   @selected="onclickChooseCustomer"
-                  @keyup.enter="showSearchModal"
+                  @keyup.enter="onChangeKeyWord"
                   @focus="focusInput"
                 >
                   <template
@@ -124,7 +136,7 @@
                 </vue-autosuggest>
                 <b-input-group-append
                   is-text
-                  style="position: absolute; right: 0px; height: 100%"
+                  style="position: absolute; right: 0px; height: 100%;"
                 >
                   <b-icon-plus
                     v-b-popover.hover.top="'Thêm mới khách hàng'"
@@ -671,6 +683,12 @@ export default {
 
       isOpenPayModal: false,
       status: customerData.status[0].id,
+
+      selected: [],
+      searchOptions: [
+        { item: 'A', name: 'Khách hàng của cửa hàng' },
+        { item: 'B', name: 'Chỉ tìm theo SĐT' },
+      ],
     }
   },
 
@@ -945,22 +963,7 @@ export default {
     },
 
     showSearchModal() {
-      if (this.search.length < this.minSearch && this.customersSearch[0].data === null) {
-        this.$refs.salesSearchModal.$refs.salesSearchModal.show()
-      }
-      if (this.customersSearch[0].data !== null && this.customersSearch[0].data.length === 0) {
-        const searchData = Number(this.search)
-        if (Number.isNaN(searchData) === false) {
-          this.GET_CUSTOMERS_ACTION({
-            phoneNumber: (searchData === 0) ? '' : searchData,
-            status: this.status,
-          })
-          this.search = ''
-        } else {
-          this.search = ''
-        }
-        this.$refs.salesSearchModal.$refs.salesSearchModal.show()
-      }
+      this.$refs.salesSearchModal.$refs.salesSearchModal.show()
     },
 
     showSearchOnlineModal() {
@@ -1116,14 +1119,10 @@ export default {
     },
 
     onChangeKeyWord() {
-      if (this.search.length >= this.minSearch) {
-        this.GET_CUSTOMERS_SALE_ACTION({
-          ...this.pagination,
-          searchKeywords: this.search.trim(),
-        })
-      } else {
-        this.customersSearch = [{ data: null }]
-      }
+      this.GET_CUSTOMERS_SALE_ACTION({
+        ...this.pagination,
+        searchKeywords: this.search.trim(),
+      })
     },
 
     resetOrderNumber(item) {
