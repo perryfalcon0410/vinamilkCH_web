@@ -4,9 +4,7 @@
     class="d-none d-print-block px-0 text-brand-3"
   >
     <!-- START - Header -->
-    <b-row
-      id="abc"
-      ref="aaaa"
+    <b-row  
       class="mx-0 my-1"
       align-h="between"
       align-v="center"
