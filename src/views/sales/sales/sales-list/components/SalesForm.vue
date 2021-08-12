@@ -612,7 +612,7 @@ export default {
       isSelected: false,
       currentDate: getCurrentTime(),
       pagination: {
-        size: 100, // hard code
+        size: 50,
       },
       decentralization: {
         formId: 1,
@@ -1124,6 +1124,7 @@ export default {
           ...this.pagination,
           searchKeywords: this.search.trim(),
         })
+        this.$refs.search.$el.querySelector('input').click()
       }
     },
 
