@@ -183,7 +183,7 @@ export default {
       return state.limitAge
     },
     [GET_PRODUCT_BY_BARCODE_GETTER](state) {
-      return state.productByBarcode || {}
+      return state.productByBarcode
     },
     [SALEMT_PROMOTION_OBJECT_GETTER](state) {
       return state.salemtPromotions

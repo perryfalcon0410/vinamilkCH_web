@@ -642,35 +642,37 @@ export default {
     },
     getProductByBarcode() {
       if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
-        const productByBarcode = {
-          productId: this.getProductByBarcode.id,
-          name: this.getProductByBarcode.productCode,
-          productName: this.getProductByBarcode.productName,
-          productCode: this.getProductByBarcode.productCode,
-          productUnit: this.getProductByBarcode.uom1,
-          productInventory: this.getProductByBarcode.stockTotal,
-          productUnitPrice: this.getProductByBarcode.price,
-          sumProductUnitPrice: this.getProductByBarcode.price,
-          quantity: 1,
-          productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
-          sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
-          productImage: this.getProductByBarcode.image,
-          comboProductId: this.getProductByBarcode.comboProductId,
-        }
+        if (this.getProductByBarcode !== null) {
+          const productByBarcode = {
+            productId: this.getProductByBarcode.id,
+            name: this.getProductByBarcode.productCode,
+            productName: this.getProductByBarcode.productName,
+            productCode: this.getProductByBarcode.productCode,
+            productUnit: this.getProductByBarcode.uom1,
+            productInventory: this.getProductByBarcode.stockTotal,
+            productUnitPrice: this.getProductByBarcode.price,
+            sumProductUnitPrice: this.getProductByBarcode.price,
+            quantity: 1,
+            productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
+            sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
+            productImage: this.getProductByBarcode.image,
+            comboProductId: this.getProductByBarcode.comboProductId,
+          }
 
-        const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
-        if (indexProductExisted === -1) {
-          this.orderProducts.push(productByBarcode)
-        } else {
-          this.orderProducts = this.orderProducts.map(product => {
-            if (product.productId === productByBarcode.productId) {
-              return {
-                ...product,
-                quantity: product.quantity + 1,
+          const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
+          if (indexProductExisted === -1) {
+            this.orderProducts.push(productByBarcode)
+          } else {
+            this.orderProducts = this.orderProducts.map(product => {
+              if (product.productId === productByBarcode.productId) {
+                return {
+                  ...product,
+                  quantity: product.quantity + 1,
+                }
               }
-            }
-            return product
-          })
+              return product
+            })
+          }
         }
       }
     },
