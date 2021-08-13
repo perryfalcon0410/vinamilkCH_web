@@ -1,5 +1,6 @@
 <template>
   <b-container
+    id="rp-output-store"
     fluid
     class="d-none d-print-block px-0 text-brand-3"
   >
@@ -77,7 +78,6 @@
     >
       <strong
         style="font-size: 16px; width: 20%;"
-        class="text-right"
       >Loại: Xuất điều chỉnh</strong>
       <div
         class="text-right"
@@ -335,7 +335,6 @@
     >
       <strong
         style="font-size: 16px; width: 20%;"
-        class="text-right"
       >Loại: Xuất trả PO</strong>
       <div
         class="text-right"
@@ -585,13 +584,11 @@
     <b-row
       v-if="expBorrow.orderImports.length > 0"
       class="mx-0 font-italic"
-      align-h="around"
       align-v="end"
       style="border-top: 2px solid; margin-top: 1px"
     >
       <strong
         style="font-size: 16px; width: 20%;"
-        class="text-right"
       >Loại: Xuất vay mượn</strong>
       <div
         class="text-right"
@@ -842,10 +839,18 @@
 <script>
 import { mapGetters } from 'vuex'
 import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
+import {
   REPORT_OUTPUT_GOODS,
   // Getters
   PRINT_OUTPUT_GOODS_GETTER,
 } from '@/views/reports/reports-warehouses/reports-warehouses-output/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   data() {
@@ -859,7 +864,7 @@ export default {
     ...mapGetters(REPORT_OUTPUT_GOODS, [
       PRINT_OUTPUT_GOODS_GETTER,
     ]),
-
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
     printInfo() {
       if (this.PRINT_OUTPUT_GOODS_GETTER) {
         return {
@@ -902,7 +907,12 @@ export default {
       }
       return {}
     },
-
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
   watch: {
     lstAdjustInfo() {
@@ -916,7 +926,18 @@ export default {
     },
   },
   updated() {
-    window.print()
+    const printerName = this.printerOptions.reportPrinterName
+    const element = document.getElementById('rp-output-store')
+    const options = {
+      fileName: 'bao_cao_xuat_hang',
+      // orientation: 'landscape',
+      // rotate: 'Rot90',
+      pageSizing: 'Fit',
+      format: 'a3',
+    }
+    if (jspmCheckStatus()) {
+      printActions(element, printerName, options)
+    }
   },
 }
 </script>

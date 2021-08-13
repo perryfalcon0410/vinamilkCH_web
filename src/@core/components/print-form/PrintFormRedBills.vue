@@ -1,82 +1,81 @@
 <template>
   <div
-    class="d-none d-print-block text-brand-3 mx-0"
-    style="min-height: 100%; positon: relative;"
+    id="report-sales-redbill"
+    class="d-print-block text-brand-3 mx-0 mt-5"
   >
-    <b-row
-      align-h="around"
-      class="mb-5"
-    >
-      <div class="text-center">
-        <p>MT1008</p>
-        <div>CÔNG TY CỔ PHẦN SỮA VIỆT NAM</div>
-        <div>Số 10 Tân Trào, Phường Tân Phú, Quận 7, TP.HCM</div>
-        <div class="text-left">
-          0300588569
+    <div style="min-height: 800px;">
+      <b-row
+        align-h="around"
+        class="mb-5"
+      >
+        <div class="text-center">
+          <p>MT1008</p>
+          <div>CÔNG TY CỔ PHẦN SỮA VIỆT NAM</div>
+          <div>Số 10 Tân Trào, Phường Tân Phú, Quận 7, TP.HCM</div>
+          <div class="text-left">
+            0300588569
+          </div>
         </div>
-      </div>
 
-      <div>
-        {{ $moment().format('DD') }}
-      </div>
-      <div>
-        {{ $moment().format('MM') }}
-      </div>
-      <div>
-        {{ $moment().format('YYYY') }}
-      </div>
-      <!-- <div>tháng {{ $moment().format('MM') }}</div>
-      <div>năm {{ $moment().format('YYYY') }}</div> -->
-      <div>Số HĐ: {{ redBillInfoData.redInvoiceNumber }}</div>
-    </b-row>
+        <div>
+          {{ $moment().format('DD') }}
+        </div>
+        <div>
+          {{ $moment().format('MM') }}
+        </div>
+        <div>
+          {{ $moment().format('YYYY') }}
+        </div>
+        <!-- <div>tháng {{ $moment().format('MM') }}</div>
+        <div>năm {{ $moment().format('YYYY') }}</div> -->
+        <div>Số HĐ: {{ redBillInfoData.redInvoiceNumber }}</div>
+      </b-row>
 
-    <b-row
-      class="mx-0 mt-5 mb-5"
-      align-h="around"
-      align-v="center"
-    >
-      <div>
-        <div>{{ redBillInfoData.shopName }}</div>
-        <div>{{ redBillInfoData.shopAddress }}</div>
-        <div>{{ redBillInfoData.shopTel }}</div>
-      </div>
-      <div>Tiền mặt</div>
-      <div style="width: 6%;">
-        <!-- {{ $formatNumberToLocale(redBillInfoData.amount) }} -->
-      </div>
-    </b-row>
+      <b-row
+        class="mx-0 mt-5 mb-5"
+        align-h="around"
+        align-v="center"
+      >
+        <div>
+          <div>{{ redBillInfoData.shopName }}</div>
+          <div>{{ redBillInfoData.shopAddress }}</div>
+          <div>{{ redBillInfoData.shopTel }}</div>
+        </div>
+        <div>Tiền mặt</div>
+        <div style="width: 6%;">
+          <!-- {{ $formatNumberToLocale(redBillInfoData.amount) }} -->
+        </div>
+      </b-row>
 
-    <table class="mt-5 align-text-bottom">
-      <tbody>
-        <tr
-          v-for="(item,index) in redBillData"
-          :key="item.productCode"
-        >
-          <td>{{ index + 1 }}</td>
-          <td
-            style="max-width:150px;"
-          >{{ item.productName }}</td>
-          <td>{{ item.productCode }}</td>
-          <td>{{ item.uom1 }}</td>
-          <td class="text-right">
-            {{ item.quantity }}
-          </td>
-          <td class="text-right">
-            {{ $formatNumberToLocale(item.price) }}
-          </td>
-          <td class="text-right">
-            {{ $formatNumberToLocale(item.intoMoney) }}
-          </td>
-          <td class="text-left pl-1">
-            {{ item.note }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div
-      style="width: 100%; position: absolute; bottom: 10%; right: 0;"
-    >
-
+      <table class="mt-5 align-text-bottom">
+        <tbody>
+          <tr
+            v-for="(item,index) in redBillData"
+            :key="item.productCode"
+          >
+            <td>{{ index + 1 }}</td>
+            <td
+              style="max-width:150px;"
+            >{{ item.productName }}</td>
+            <td>{{ item.productCode }}</td>
+            <td>{{ item.uom1 }}</td>
+            <td class="text-right">
+              {{ item.quantity }}
+            </td>
+            <td class="text-right">
+              {{ $formatNumberToLocale(item.price) }}
+            </td>
+            <td class="text-right">
+              {{ $formatNumberToLocale(item.intoMoney) }}
+            </td>
+            <td class="text-left pl-1">
+              {{ item.note }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
       <b-row
         class="mx-0 mt-5 text-center"
         align-v="end"
@@ -140,12 +139,20 @@
 <script>
 
 import { mapGetters } from 'vuex'
+import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
 
 import {
   RED_INVOICE,
   // Getters
   PRINT_RED_INVOICES_GETTER,
 } from '@/views/sales/sales-red-bills/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   data() {
@@ -155,6 +162,7 @@ export default {
   },
   computed: {
     ...mapGetters(RED_INVOICE, [PRINT_RED_INVOICES_GETTER]),
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
 
     redBillInfoData() {
       if (this.PRINT_RED_INVOICES_GETTER.info) {
@@ -168,6 +176,12 @@ export default {
       }
       return null
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
   watch: {
     redBillData() {
@@ -175,7 +189,17 @@ export default {
     },
   },
   updated() {
-    window.print()
+    const printerName = this.printerOptions.reportPrinterName
+    const element = document.getElementById('report-sales-redbill')
+    const options = {
+      fileName: 'bao_cao_ban_hang',
+      // orientation: 'landscape',
+      // rotate: 'Rot90',
+      pageSizing: 'Fit',
+    }
+    if (jspmCheckStatus()) {
+      printActions(element, printerName, options)
+    }
   },
 
 }

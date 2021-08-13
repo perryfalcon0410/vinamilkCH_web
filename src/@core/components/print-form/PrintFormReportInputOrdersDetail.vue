@@ -79,28 +79,46 @@
           v-for="(products, index) in reportData"
           :key="index"
         >
-          <td class="text-right px-40">
-            {{ index +1 }}
+          <td
+            class="text-right px-40"
+            style="width: 4%"
+          >
+            {{ index + 1 }}
           </td>
-          <td class="px-1">
+          <td
+            class="px-1"
+            style="width: 15% ;word-break: break-all"
+          >
             {{ products.poNumber }}
           </td>
           <td class="px-1">
             {{ products.internalNumber }}
           </td>
-          <td class="px-1">
+          <td
+            class="px-1"
+            style="width: 15% ;word-break: break-all"
+          >
             {{ products.redInvoiceNo }}
           </td>
-          <td class="px-1">
+          <td
+            class="px-1"
+            style="width: 10%"
+          >
             {{ products.billDate }}
           </td>
-          <td class="px-1">
+          <td
+            class="px-1"
+            style="width: 10%"
+          >
             {{ products.dateOfPayment }}
           </td>
           <td class="text-right px-1">
             {{ $formatNumberToLocale(products.totalAmount) || '' }}
           </td>
-          <td class="px-1">
+          <td
+            class="px-1"
+            style="width: 15% ;word-break: break-all"
+          >
             {{ products.promotionalOrders }}
           </td>
         </tr>
@@ -201,7 +219,7 @@ export default {
       // orientation: 'landscape',
       // rotate: 'Rot90',
       pageSizing: 'Fit',
-      format: 'a2',
+      format: 'a3',
     }
     if (jspmCheckStatus()) {
       printActions(element, printerName, options)

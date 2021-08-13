@@ -193,7 +193,7 @@ export const printBillInvoiceActions = (data, printerName) => {
 export const printActions = (data, printerName, optionsPrinter) => {
   const opt = {
     margin: 1,
-    image: { type: 'png', quality: 1 }, // type and quality image export
+    image: { type: 'jpeg', quality: 1 }, // type and quality image export
     pagebreak: { mode: 'avoid-all' }, // break new page
     jsPDF: {
       format: optionsPrinter.format ? optionsPrinter.format : '', // format paper
