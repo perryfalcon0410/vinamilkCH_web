@@ -695,7 +695,6 @@ export default {
     },
     warehouseTypes() {
       this.warehouseType = this.warehouseTypes.find(types => types.isDefault === 1).id // number 1 is default warehouse type
-      this.onClickGetInventoryStocksButton()
     },
     getInstockAmount() {
       this.instockAmount = this.getInstockAmount
