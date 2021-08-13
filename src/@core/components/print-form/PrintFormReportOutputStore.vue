@@ -908,18 +908,6 @@ export default {
       return {}
     },
   },
-
-  watch: {
-    lstAdjustInfo() {
-      this.expAdjust = { ...this.lstAdjustInfo }
-    },
-    lstPoInfo() {
-      this.expPO = { ...this.lstPoInfo }
-    },
-    lstStockInfo() {
-      this.expBorrow = { ...this.lstStockInfo }
-    },
-  },
   watch: {
     lstAdjustInfo() {
       this.expAdjust = { ...this.lstAdjustInfo }
