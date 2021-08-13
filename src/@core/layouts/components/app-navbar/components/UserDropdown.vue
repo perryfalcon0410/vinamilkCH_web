@@ -85,11 +85,11 @@ import {
   PRINTERCONFIG,
   GET_PRINTER_CLIENT_ACTIONS,
 } from '@/views/auth/printer-configuration-modal/store-module/type'
-import PrinterConfigurationModal from '@/views/auth/printer-configuration-modal/PrinterConfigurationModal.vue'
+// import PrinterConfigurationModal from '@/views/auth/printer-configuration-modal/PrinterConfigurationModal.vue'
 
 export default {
   components: {
-    PrinterConfigurationModal,
+    // PrinterConfigurationModal,
   },
 
   data() {
