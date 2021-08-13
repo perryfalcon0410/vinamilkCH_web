@@ -72,7 +72,7 @@
             md="12"
           >
             <!-- START - Search -->
-            <b-row class="px-0 mx-0">
+            <!-- <b-row class="px-0 mx-0">
               <b-form-checkbox
                 v-model="customerOfShop"
                 class="mt-2 mr-2"
@@ -85,7 +85,7 @@
               >
                 Chỉ tìm theo SĐT
               </b-form-checkbox>
-            </b-row>
+            </b-row> -->
             <b-row
               class="px-0 mx-0"
             >
@@ -689,14 +689,9 @@ export default {
       isOpenPayModal: false,
       status: customerData.status[0].id,
 
-      selected: [],
-      // searchOptions: [
-      //   { item: true, name: 'Khách hàng của cửa hàng' },
-      //   { item: true, name: 'Chỉ tìm theo SĐT' },
-      // ],
       search: '',
-      customerOfShop: true,
-      searchPhoneOnly: true,
+      customerOfShop: false,
+      searchPhoneOnly: false,
     }
   },
 
@@ -734,7 +729,7 @@ export default {
             status: data.status,
             idNo: data.idNo,
             noted: data.noted,
-            totalBill: this.scoreCumulatedCustomer.data,
+            totalBill: data.totalBill,
             customerTypeId: data.customerTypeId,
             scoreCumulated: data.scoreCumulated,
             amountCumulated: data.amountCumulated,
@@ -1095,7 +1090,7 @@ export default {
       this.customer.address = this.customerDefault.address
       this.customer.noted = this.customerDefault.noted
       this.customer.totalBill = this.customerDefault.totalBill ?? 0
-      this.customer.scoreCumulated = this.customerDefault.scoreCumulated
+      this.customer.scoreCumulated = this.customerDefault.amountCumulated
       this.customer.amountCumulated = this.customerDefault.amountCumulated
       this.customer.isDefault = this.customerDefault.isDefault
       this.customer.status = this.customerDefault.status
@@ -1130,9 +1125,9 @@ export default {
       this.$emit('getOrderNumber', this.orderOnline)
     },
 
-    // getscoreCumulatedById() {
-    //   this.customer.totalBill = this.scoreCumulatedCustomer.data
-    // },
+    getscoreCumulatedById() {
+      this.customer.scoreCumulated = this.scoreCumulatedCustomer.data
+    },
 
     checkOnlineOrderId() {
       this.orderOnline.success = this.onlineOrderCoincideId.success
@@ -1183,7 +1178,7 @@ export default {
         this.customer.fullName = suggestion.item.fullName
         this.customer.phoneNumber = suggestion.item.phoneNumber
         this.customer.address = suggestion.item.address
-        this.customer.totalBill = this.scoreCumulatedCustomer.data ? this.scoreCumulatedCustomer.data : 0
+        this.customer.totalBill = suggestion.item.totalBill ?? 0
         this.customer.scoreCumulated = suggestion.item.scoreCumulated
         this.customer.amountCumulated = suggestion.item.amountCumulated
         this.customer.status = suggestion.item.status

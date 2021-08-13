@@ -1030,7 +1030,7 @@ export default {
 
       // get accumulate
       this.pay.accumulate.accumulateAmount = 0
-      this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
+      this.pay.accumulate.accumulatePoint = this.customer.scoreCumulated || null
     },
     getItemsProduct() {
       // để show lên vue-autosuggest thì phải để [{data: value}]
@@ -1161,7 +1161,7 @@ export default {
           this.resetDiscount()
           // get accumulate
           this.pay.accumulate.accumulateAmount = 0
-          this.pay.accumulate.accumulatePoint = this.customer.amountCumulated || null
+          this.pay.accumulate.accumulatePoint = this.customer.scoreCumulated || null
           this.extraAmountCalculation()
 
           if (this.orderOnline !== null && this.orderOnline.discountCode !== '') {
@@ -1614,8 +1614,8 @@ export default {
         this.pay.accumulate.accumulateAmount = 0
       }
 
-      if (Number(this.pay.accumulate.accumulateAmount) > this.customer.amountCumulated) {
-        this.pay.accumulate.accumulateAmount = this.customer.amountCumulated
+      if (Number(this.pay.accumulate.accumulateAmount) > this.customer.scoreCumulated) {
+        this.pay.accumulate.accumulateAmount = this.customer.scoreCumulated
       }
     },
     printSaleOrderTemp() {
