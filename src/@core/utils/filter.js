@@ -1,6 +1,6 @@
 import moment from 'moment'
 import JSPM from 'jsprintmanager'
-import html2canvas from 'html2canvas'
+// import html2canvas from 'html2canvas'
 import toasts from './toasts/toasts'
 
 export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)
@@ -173,18 +173,18 @@ export const jspmCheckStatus = () => {
   }
   return false
 }
-export const printActions = (data, printerName) => {
-  html2canvas(data).then(canvas => {
-    const cpj = new JSPM.ClientPrintJob()
-    cpj.clientPrinter = new JSPM.InstalledPrinter(printerName)
-    const b64Prefix = 'data:image/png;base64,'
-    const imgBase64DataUri = canvas.toDataURL('image/png')
-    const imgBase64Content = imgBase64DataUri.substring(b64Prefix.length, imgBase64DataUri.length)
-    const printContent = new JSPM.PrintFile(imgBase64Content, JSPM.FileSourceType.Base64, 'printNow.png', 1)
-    cpj.files.push(printContent)
-    cpj.sendToClient()
-  })
-}
+// export const printActions = (data, printerName) => {
+//   html2canvas(data).then(canvas => {
+//     const cpj = new JSPM.ClientPrintJob()
+//     cpj.clientPrinter = new JSPM.InstalledPrinter(printerName)
+//     const b64Prefix = 'data:image/png;base64,'
+//     const imgBase64DataUri = canvas.toDataURL('image/png')
+//     const imgBase64Content = imgBase64DataUri.substring(b64Prefix.length, imgBase64DataUri.length)
+//     const printContent = new JSPM.PrintFile(imgBase64Content, JSPM.FileSourceType.Base64, 'printNow.png', 1)
+//     cpj.files.push(printContent)
+//     cpj.sendToClient()
+//   })
+// }
 // check JSPM is running
 
 // count from isoDate to now

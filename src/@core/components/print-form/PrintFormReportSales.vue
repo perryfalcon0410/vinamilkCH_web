@@ -5,8 +5,6 @@
   >
     <!-- START - Header -->
     <b-row
-      id="abc"
-      ref="aaa"
       class="mx-0 my-1"
       align-h="between"
       align-v="center"
@@ -253,8 +251,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import JSPM from 'jsprintmanager'
-import { printActions } from '@core/utils/filter'
+// import JSPM from 'jsprintmanager'
+// import { printActions } from '@core/utils/filter'
 import {
   REPORT_SALES,
   // Getters
@@ -322,11 +320,11 @@ export default {
   // },
 
   updated() {
-    // window.print()
-    JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.reportPrinterName
-    const text = this.$refs.aaaa
-    printActions(text, printerName)
+    window.print()
+    // JSPM.JSPrintManager.auto_reconnect = true
+    // const printerName = this.printerOptions.reportPrinterName
+    // const text = this.$refs.aaaa
+    // printActions(text, printerName)
   },
   mounted() {
   },
