@@ -1,10 +1,13 @@
 <template>
   <b-container
+    id="report-sales"
     fluid
-    class="d-none d-print-block px-0 text-brand-3"
+    class="d-none d-print-block px-3 py-2 text-brand-3"
   >
     <!-- START - Header -->
     <b-row
+      id="abc"
+      ref="aaaa"
       class="mx-0 my-1"
       align-h="between"
       align-v="center"
@@ -22,7 +25,7 @@
       </div>
 
       <div class="d-flex flex-column align-items-center">
-        <strong style="font-size: 30px;">
+        <strong style="font-size: 28px;">
           Báo cáo bán hàng
         </strong>
         <p class="my-1">
@@ -38,7 +41,7 @@
         class="d-flex flex-column"
         style="opacity: 0"
       >
-        <strong style="font-size: 17px;">
+        <strong style="font-size: 15px;">
           CH GTSP Hải Dương
         </strong>
       </div>
@@ -70,11 +73,11 @@
       </span>
       <strong
         class="text-right"
-        style="width: 5.5%;"
+        style="width: 6.5%;"
       >{{ $formatNumberToLocale(reportSalesInfoData.totalQuantity) }}</strong>
       <strong
         class="text-right"
-        style="width: 13%;"
+        style="width: 12%;"
       >{{ $formatNumberToLocale(reportSalesInfoData.totalTotal) }}</strong>
       <strong
         class="text-right"
@@ -95,13 +98,13 @@
         <tr>
           <th
             class="px-20"
-            style="width: 3.5%"
+            style="width: 3%"
           >
             STT
           </th>
           <th
             class="px-20"
-            style="width: 12%"
+            style="width: 13%"
           >
             Mã HĐ
           </th>
@@ -113,7 +116,7 @@
           </th>
           <th
             class="px-20"
-            style="width: 11%"
+            style="width: 10%"
           >
             Tên KH
           </th>
@@ -125,13 +128,13 @@
           </th>
           <th
             class=" px-20"
-            style="width: 6%"
+            style="width: 4%"
           >
             Mã SP
           </th>
           <th
             class="text-left px-20"
-            style="width: 10%"
+            style="width: 13.5%"
           >
             Tên SP
           </th>
@@ -149,7 +152,7 @@
           </th>
           <th
             class="text-right px-20"
-            style="width: 6%"
+            style="width: 5%"
           >
             Giá
           </th>
@@ -251,8 +254,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import JSPM from 'jsprintmanager'
-// import { printActions } from '@core/utils/filter'
+import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
 import {
   REPORT_SALES,
   // Getters
@@ -313,18 +318,19 @@ export default {
       return null
     },
   },
-  // watch: {
-  //   printerOptions() {
-  //     this.dataPrintOptions = { ...this.printerOptions }
-  //   },
-  // },
-
   updated() {
-    window.print()
-    // JSPM.JSPrintManager.auto_reconnect = true
-    // const printerName = this.printerOptions.reportPrinterName
-    // const text = this.$refs.aaaa
-    // printActions(text, printerName)
+    const printerName = this.printerOptions.reportPrinterName
+    console.log(printerName)
+    const element = document.getElementById('report-sales')
+    const options = {
+      fileName: 'bao_cao_ban_hang',
+      orientation: 'landscape',
+      rotate: 'Rot90',
+      pageSizing: 'Fit',
+    }
+    if (jspmCheckStatus()) {
+      printActions(element, printerName, options)
+    }
   },
   mounted() {
   },
@@ -335,7 +341,7 @@ export default {
 table {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid;
+  // border: 1px solid;
   table-layout: fixed;
 }
 th {
@@ -346,7 +352,7 @@ td, .td {
   border-style: dotted;
   border-width: 1px;
   word-wrap: break-word;
-  font-size: 12px;
+  font-size: 10px;
 }
 .background-lightgray {
   background-color: lightgray !important;

@@ -1,6 +1,7 @@
 import moment from 'moment'
 import JSPM from 'jsprintmanager'
 // import html2canvas from 'html2canvas'
+import html2pdf from 'html2pdf.js'
 import toasts from './toasts/toasts'
 
 export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)
@@ -186,6 +187,38 @@ export const jspmCheckStatus = () => {
 //   })
 // }
 // check JSPM is running
+
+// START - func print type A4
+export const printActions = (data, printerName, optionsPrinter) => {
+  const opt = {
+    margin: 1,
+    image: { type: 'png', quality: 1 }, // type and quality image export
+    pagebreak: { mode: 'avoid-all' }, // break new page
+    jsPDF: {
+      format: optionsPrinter.format ? optionsPrinter.format : '', // format paper
+      orientation: optionsPrinter.orientation ? optionsPrinter.orientation : 'portrait', // format orientation paper
+      hotfixes: 'px_scaling',
+    },
+  }
+  data.classList.remove('d-none')
+  html2pdf().set(opt).from(data).output('datauristring')
+    .then(pdf => {
+      const cpj = new JSPM.ClientPrintJob()
+      cpj.clientPrinter = new JSPM.InstalledPrinter(printerName) // get printer
+      const b64Prefix = 'data:application/pdf;base64,'
+      const imgBase64Content = pdf.substring(b64Prefix.length, pdf.length)
+      // convert data
+      const printContent = new JSPM.PrintFilePDF(imgBase64Content, JSPM.FileSourceType.Base64, `${optionsPrinter.fileName}.pdf`, 1)
+      // rotate pager áp dụng in ngang [RT90]
+      printContent.printRotation = JSPM.PrintRotation[optionsPrinter.rotate ? optionsPrinter.rotate : 'None']
+      // auto fit data print
+      printContent.pageSizing = JSPM.Sizing[optionsPrinter.pageSizing ? optionsPrinter.pageSizing : 'None']
+      cpj.files.push(printContent)
+      cpj.sendToClient()
+      data.classList.add('d-none')
+    })
+}
+// END - func print type A4
 
 // count from isoDate to now
 export const countDays = isoDate => {

@@ -37,7 +37,7 @@
       <span>Đổi mật khẩu</span>
     </b-dropdown-item>
     <!-- system print -->
-    <!-- <b-dropdown-item
+    <b-dropdown-item
       link-class="d-flex align-items-center"
       @click="onClickPrintConfiguration"
     >
@@ -46,7 +46,7 @@
         scale="1.2"
       />
       <span>Cấu hình máy in</span>
-    </b-dropdown-item> -->
+    </b-dropdown-item>
 
     <!-- system print -->
     <b-dropdown-item
@@ -73,7 +73,7 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  // hostName,
+  hostName,
   avatarText,
 } from '@/@core/utils/filter'
 import { initialAbility } from '@/libs/acl/config'
@@ -100,22 +100,22 @@ export default {
       ipAddress: null,
     }
   },
-  // watch: {
-  //   ipAddress() {
-  //     this.GET_PRINTER_CLIENT_ACTIONS({
-  //       data: {
-  //         clientId: this.ipAddress,
-  //       },
-  //       onSuccess: () => {},
-  //     })
-  //   },
-  // },
-  // mounted() {
-  //   // get ip client
-  //   hostName().then(dta => {
-  //     this.ipAddress = dta.ip
-  //   })
-  // },
+  watch: {
+    ipAddress() {
+      this.GET_PRINTER_CLIENT_ACTIONS({
+        data: {
+          clientId: this.ipAddress,
+        },
+        onSuccess: () => {},
+      })
+    },
+  },
+  mounted() {
+    // get ip client
+    hostName().then(dta => {
+      this.ipAddress = dta.ip
+    })
+  },
   methods: {
     ...mapActions(PRINTERCONFIG, [
       GET_PRINTER_CLIENT_ACTIONS,

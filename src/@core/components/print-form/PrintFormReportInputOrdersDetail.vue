@@ -133,21 +133,31 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
 
 import {
   REPORT_PURCHASES,
   // Getters
   PRINT_REPORT_INPUT_RECEIPT_DETAILS_GETTER,
 } from '@/views/reports/reports-purchases/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   data() {
     return {
+      dataPrintOptions: {},
     }
   },
 
   computed: {
     ...mapGetters(REPORT_PURCHASES, [PRINT_REPORT_INPUT_RECEIPT_DETAILS_GETTER]),
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
     reportInfos() {
       if (this.PRINT_REPORT_INPUT_RECEIPT_DETAILS_GETTER.info) {
         return this.PRINT_REPORT_INPUT_RECEIPT_DETAILS_GETTER.info
@@ -176,9 +186,26 @@ export default {
         promotionalOrders: 'promotionalOrders',
       }
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
   updated() {
-    window.print()
+    const printerName = this.printerOptions.reportPrinterName
+    const element = document.getElementById('popover')
+    const options = {
+      fileName: 'bao_cao_ban_hang',
+      // orientation: 'landscape',
+      // rotate: 'Rot90',
+      pageSizing: 'Fit',
+      format: 'a2',
+    }
+    if (jspmCheckStatus()) {
+      printActions(element, printerName, options)
+    }
   },
 }
 </script>
@@ -189,6 +216,9 @@ table {
 th, td{
   border-style: solid;
   border-width: 2px;
+}
+td {
+  font-size: 14px;
 }
 
 </style>
