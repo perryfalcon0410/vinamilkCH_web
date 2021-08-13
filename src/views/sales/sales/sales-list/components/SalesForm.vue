@@ -524,7 +524,6 @@ import {
   // ACTIONS
   GET_CUSTOMER_BY_ID_ACTION,
   GET_CUSTOMER_DEFAULT_ACTION,
-  GET_CUSTOMERS_ACTION,
 } from '../../../sales-customers/store-module/type'
 import {
   SALES,
@@ -951,7 +950,6 @@ export default {
     ...mapActions(CUSTOMER, [
       GET_CUSTOMER_BY_ID_ACTION,
       GET_CUSTOMER_DEFAULT_ACTION,
-      GET_CUSTOMERS_ACTION,
     ]),
 
     ...mapActions(SALES, [
@@ -1220,7 +1218,6 @@ export default {
       this.isOpenPayModal = isOpened
     },
   },
-
 }
 </script>
 <style lang="scss" scoped>

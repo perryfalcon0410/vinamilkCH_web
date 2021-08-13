@@ -980,7 +980,7 @@ export default {
       this.customerId = val.id
       this.searchOptions.customerId = this.customerId
       this.currentCustomerId = this.customerId
-      this.GET_PRODUCTS_ACTION(this.searchOptions)
+      // this.GET_PRODUCTS_ACTION(this.searchOptions)
       this.customerFullName = val.fullName
 
       // check customers dafault

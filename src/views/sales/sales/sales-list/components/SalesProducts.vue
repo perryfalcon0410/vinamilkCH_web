@@ -96,182 +96,182 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import saleData from '@/@db/sale'
-import {
-  SALES,
-  // Getter
-  GET_PRODUCTS_GETTER,
-  GET_PRODUCT_INFOS_GETTER,
-  GET_HOT_PRODUCTS_GETTER,
-  GET_ALL_PRODUCT_GETTER,
-  GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER,
-  // Action
-  GET_PRODUCTS_ACTION,
-  GET_PRODUCT_INFOS_ACTION,
-  GET_HOT_PRODUCTS_ACTION,
-  GET_ALL_PRODUCT_ACTION,
-  GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION,
-} from '../../store-module/type'
+// import { mapGetters, mapActions } from 'vuex'
+// // import saleData from '@/@db/sale'
+// import {
+//   SALES,
+//   // Getter
+//   GET_PRODUCTS_GETTER,
+//   GET_PRODUCT_INFOS_GETTER,
+//   GET_HOT_PRODUCTS_GETTER,
+//   GET_ALL_PRODUCT_GETTER,
+//   GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER,
+//   // Action
+//   GET_PRODUCTS_ACTION,
+//   GET_PRODUCT_INFOS_ACTION,
+//   GET_HOT_PRODUCTS_ACTION,
+//   GET_ALL_PRODUCT_ACTION,
+//   GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION,
+// } from '../../store-module/type'
 
-export default {
-  props: {
-    productInfos: {
-      type: Array,
-      required: true,
-    },
-    orderProducts: {
-      type: Array,
-      default: () => [],
-    },
-    editPermission: {
-      type: Boolean,
-      default: Boolean,
-    },
-  },
-  data() {
-    return {
-      recommendProducts: [],
-      allProducts: [],
-      hotProducts: [],
-      topSaleProductsInMonth: [],
-      formId: 5,
-      ctrlId: 7,
-    }
-  },
-  computed: {
-    getAllProduct() {
-      return this.GET_ALL_PRODUCT_GETTER().map(data => ({
-        productId: data.id,
-        productName: data.productName,
-        productCode: data.productCode,
-        productUnit: data.uom1,
-        productInventory: data.stockTotal,
-        productUnitPrice: data.price,
-        quantity: 1,
-        productTotalPrice: this.totalPrice(1, Number(data.price)),
-      }))
-    },
-    getHotProducts() {
-      return this.GET_HOT_PRODUCTS_GETTER().map(data => ({
-        productId: data.id,
-        productName: data.productName,
-        productCode: data.productCode,
-        productUnit: data.uom1,
-        productInventory: data.stockTotal,
-        productUnitPrice: data.price,
-        quantity: 1,
-        productTotalPrice: this.totalPrice(1, Number(data.price)),
-      }))
-    },
-    getTopSaleProductsInMonth() {
-      return this.GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER().map(data => ({
-        productId: data.id,
-        productName: data.productName,
-        productCode: data.productCode,
-        productUnit: data.uom1,
-        productInventory: data.stockTotal,
-        productUnitPrice: data.price,
-        quantity: 1,
-        productTotalPrice: this.totalPrice(1, Number(data.price)),
-      }))
-    },
-  },
-  watch: {
-    getAllProduct() {
-      this.allProducts = [...this.getAllProduct]
-      this.recommendProducts = this.allProducts
-    },
-    getTopSaleProducts() {
-      this.topSaleProducts = [...this.getTopSaleProducts]
-    },
-    getHotProducts() {
-      this.hotProducts = [...this.getHotProducts]
-    },
-    getTopSaleProductsInMonth() {
-      this.topSaleProductsInMonth = [...this.getTopSaleProductsInMonth]
-    },
-  },
-  mounted() {
-    const paramGetAllProduct = {
-      keyWord: '',
-      catId: null,
-      customerId: 507, // Hard code
-      status: 1,
-      size: saleData.pageSizeRecommendProducts,
-      page: saleData.pageNumberRecommendProducts,
-    }
-    this.GET_ALL_PRODUCT_ACTION(paramGetAllProduct)
-    const paramGetHotProduct = {
-      customerId: 507, // Hard code customerId
-      size: saleData.pageSizeRecommendProducts,
-      page: saleData.pageNumberRecommendProducts,
-    }
-    this.GET_HOT_PRODUCTS_ACTION(paramGetHotProduct)
+// export default {
+//   props: {
+//     productInfos: {
+//       type: Array,
+//       required: true,
+//     },
+//     orderProducts: {
+//       type: Array,
+//       default: () => [],
+//     },
+//     editPermission: {
+//       type: Boolean,
+//       default: Boolean,
+//     },
+//   },
+//   data() {
+//     return {
+//       recommendProducts: [],
+//       allProducts: [],
+//       hotProducts: [],
+//       topSaleProductsInMonth: [],
+//       formId: 5,
+//       ctrlId: 7,
+//     }
+//   },
+//   computed: {
+//     getAllProduct() {
+//       return this.GET_ALL_PRODUCT_GETTER().map(data => ({
+//         productId: data.id,
+//         productName: data.productName,
+//         productCode: data.productCode,
+//         productUnit: data.uom1,
+//         productInventory: data.stockTotal,
+//         productUnitPrice: data.price,
+//         quantity: 1,
+//         productTotalPrice: this.totalPrice(1, Number(data.price)),
+//       }))
+//     },
+//     getHotProducts() {
+//       return this.GET_HOT_PRODUCTS_GETTER().map(data => ({
+//         productId: data.id,
+//         productName: data.productName,
+//         productCode: data.productCode,
+//         productUnit: data.uom1,
+//         productInventory: data.stockTotal,
+//         productUnitPrice: data.price,
+//         quantity: 1,
+//         productTotalPrice: this.totalPrice(1, Number(data.price)),
+//       }))
+//     },
+//     getTopSaleProductsInMonth() {
+//       return this.GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER().map(data => ({
+//         productId: data.id,
+//         productName: data.productName,
+//         productCode: data.productCode,
+//         productUnit: data.uom1,
+//         productInventory: data.stockTotal,
+//         productUnitPrice: data.price,
+//         quantity: 1,
+//         productTotalPrice: this.totalPrice(1, Number(data.price)),
+//       }))
+//     },
+//   },
+//   watch: {
+//     getAllProduct() {
+//       this.allProducts = [...this.getAllProduct]
+//       this.recommendProducts = this.allProducts
+//     },
+//     getTopSaleProducts() {
+//       this.topSaleProducts = [...this.getTopSaleProducts]
+//     },
+//     getHotProducts() {
+//       this.hotProducts = [...this.getHotProducts]
+//     },
+//     getTopSaleProductsInMonth() {
+//       this.topSaleProductsInMonth = [...this.getTopSaleProductsInMonth]
+//     },
+//   },
+//   mounted() {
+//     // const paramGetAllProduct = {
+//     //   keyWord: '',
+//     //   catId: null,
+//     //   customerId: 507, // Hard code
+//     //   status: 1,
+//     //   size: saleData.pageSizeRecommendProducts,
+//     //   page: saleData.pageNumberRecommendProducts,
+//     // }
+//     // this.GET_ALL_PRODUCT_ACTION(paramGetAllProduct)
+//     // const paramGetHotProduct = {
+//     //   customerId: 507, // Hard code customerId
+//     //   size: saleData.pageSizeRecommendProducts,
+//     //   page: saleData.pageNumberRecommendProducts,
+//     // }
+//     // this.GET_HOT_PRODUCTS_ACTION(paramGetHotProduct)
 
-    const paramGetTopSaleProductInMonth = {
-      customerId: 507, // Hard code customer type
-    }
-    this.GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION(paramGetTopSaleProductInMonth)
-  },
-  methods: {
-    ...mapGetters(SALES, [
-      GET_PRODUCTS_GETTER,
-      GET_PRODUCT_INFOS_GETTER,
-      GET_HOT_PRODUCTS_GETTER,
-      GET_ALL_PRODUCT_GETTER,
-      GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER,
-    ]),
-    ...mapActions(SALES, [
-      GET_PRODUCTS_ACTION,
-      GET_PRODUCT_INFOS_ACTION,
-      GET_HOT_PRODUCTS_ACTION,
-      GET_ALL_PRODUCT_ACTION,
-      GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION,
-    ]),
-    onClickAllProduct() {
-      this.recommendProducts = this.allProducts
-    },
-    onClickTopSaleProductInMonth() {
-      this.recommendProducts = this.topSaleProductsInMonth
-    },
-    onClickHotProduct() {
-      this.recommendProducts = this.hotProducts
-    },
-    onClickProductWithCatId(catId) {
-      const paramGetProductsWithCatId = {
-        keyWord: '',
-        catId: Number(catId),
-        customerId: 507, // Hard code
-        status: 1,
-        size: 8,
-        page: 0,
-      }
-      this.GET_PRODUCTS_ACTION(paramGetProductsWithCatId)
-      this.recommendProducts = this.GET_PRODUCTS_GETTER().map(data => ({
-        productId: data.idd,
-        productName: data.productName,
-        productCode: data.productCode,
-        productUnit: data.uom1,
-        productInventory: data.stockTotal,
-        productUnitPrice: data.price,
-        quantity: 1,
-        productTotalPrice: this.totalPrice(1, Number(data.price)),
-      }))
-    },
+//     // const paramGetTopSaleProductInMonth = {
+//     //   customerId: 507, // Hard code customer type
+//     // }
+//     // this.GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION(paramGetTopSaleProductInMonth)
+//   },
+//   methods: {
+//     ...mapGetters(SALES, [
+//       GET_PRODUCTS_GETTER,
+//       GET_PRODUCT_INFOS_GETTER,
+//       GET_HOT_PRODUCTS_GETTER,
+//       GET_ALL_PRODUCT_GETTER,
+//       GET_TOP_SALE_PRODUCTS_IN_MONTH_GETTER,
+//     ]),
+//     ...mapActions(SALES, [
+//       GET_PRODUCTS_ACTION,
+//       GET_PRODUCT_INFOS_ACTION,
+//       GET_HOT_PRODUCTS_ACTION,
+//       GET_ALL_PRODUCT_ACTION,
+//       GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION,
+//     ]),
+//     onClickAllProduct() {
+//       this.recommendProducts = this.allProducts
+//     },
+//     onClickTopSaleProductInMonth() {
+//       this.recommendProducts = this.topSaleProductsInMonth
+//     },
+//     onClickHotProduct() {
+//       this.recommendProducts = this.hotProducts
+//     },
+//     onClickProductWithCatId(catId) {
+//       const paramGetProductsWithCatId = {
+//         keyWord: '',
+//         catId: Number(catId),
+//         customerId: 507, // Hard code
+//         status: 1,
+//         size: 8,
+//         page: 0,
+//       }
+//       this.GET_PRODUCTS_ACTION(paramGetProductsWithCatId)
+//       this.recommendProducts = this.GET_PRODUCTS_GETTER().map(data => ({
+//         productId: data.idd,
+//         productName: data.productName,
+//         productCode: data.productCode,
+//         productUnit: data.uom1,
+//         productInventory: data.stockTotal,
+//         productUnitPrice: data.price,
+//         quantity: 1,
+//         productTotalPrice: this.totalPrice(1, Number(data.price)),
+//       }))
+//     },
 
-    onclickAddProduct(params) {
-      const findIndex = this.orderProducts.findIndex(item => item.productId === params.productId)
-      if (findIndex === -1) {
-        this.orderProducts.push(params)
-      } else {
-        this.orderProducts[findIndex].quantity += 1
-      }
-    },
+//     onclickAddProduct(params) {
+//       const findIndex = this.orderProducts.findIndex(item => item.productId === params.productId)
+//       if (findIndex === -1) {
+//         this.orderProducts.push(params)
+//       } else {
+//         this.orderProducts[findIndex].quantity += 1
+//       }
+//     },
 
-    totalPrice(amount, price) {
-      return amount * (price || 0)
-    },
-  },
-}
+//     totalPrice(amount, price) {
+//       return amount * (price || 0)
+//     },
+//   },
+// }
 </script>
