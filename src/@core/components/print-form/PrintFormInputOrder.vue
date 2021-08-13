@@ -1,5 +1,6 @@
 <template>
   <b-container
+    id="print-form-input-order"
     fluid
     class="d-none d-print-block px-0 text-brand-3"
   >
@@ -389,16 +390,30 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
 
 import {
   WAREHOUSEINPUT,
   // Getters
   PRINT_OUT_IN_PUT_ORDER_GETTER,
 } from '@/views/warehouses/warehouses-input/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
+  data() {
+    return {
+      dataPrintOptions: {},
+    }
+  },
   computed: {
     ...mapGetters(WAREHOUSEINPUT, [PRINT_OUT_IN_PUT_ORDER_GETTER]),
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
 
     inputOrderShopData() {
       if (this.PRINT_OUT_IN_PUT_ORDER_GETTER.shop) {
@@ -442,12 +457,26 @@ export default {
       }
       return null
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
 
   updated() {
-    window.print()
+    const printerName = this.printerOptions.reportPrinterName
+    const element = document.getElementById('print-form-input-order')
+    const options = {
+      fileName: 'nhap_hang',
+      pageSizing: 'Fit',
+      format: 'a4',
+    }
+    if (jspmCheckStatus()) {
+      printActions(element, printerName, options)
+    }
   },
-
 }
 </script>
 <style lang="scss" scoped>

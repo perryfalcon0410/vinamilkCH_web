@@ -1,7 +1,8 @@
 <template>
   <b-container
+    id="print-form-shop-import"
     fluid
-    class="d-none d-print-block px-0 text-brand-3"
+    class="d-none d-print-block px-1 text-brand-3"
   >
     <!-- START - Header -->
     <b-row
@@ -1007,9 +1008,17 @@
 <script>
 import { mapGetters } from 'vuex'
 import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
+import {
   REPORT_WAREHOUSES_INPUT,
   PRINT_SHOP_IMPORT_REPORT_GETTER,
 } from '@/views/reports/reports-warehouses/reports-warehouses-input/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   data() {
@@ -1018,12 +1027,14 @@ export default {
       lstAdjust: { orderImports: [] },
       lstBorrow: { orderImports: [] },
       lstExpPo: { orderImports: [] },
+      dataPrintOptions: {},
     }
   },
   computed: {
     ...mapGetters(REPORT_WAREHOUSES_INPUT, [
       PRINT_SHOP_IMPORT_REPORT_GETTER,
     ]),
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
     commonData() {
       if (this.PRINT_SHOP_IMPORT_REPORT_GETTER) {
         return this.PRINT_SHOP_IMPORT_REPORT_GETTER
@@ -1062,6 +1073,12 @@ export default {
         orderImports: [],
       }
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
   watch: {
     getLstPo() {
@@ -1078,7 +1095,18 @@ export default {
     },
   },
   updated() {
-    window.print()
+    const printerName = this.printerOptions.reportPrinterName
+    const element = document.getElementById('print-form-shop-import')
+    const options = {
+      fileName: 'bao_cao_nhap_hang',
+      orientation: 'landscape',
+      rotate: 'Rot90',
+      pageSizing: 'Fit',
+      format: 'a4',
+    }
+    if (jspmCheckStatus()) {
+      printActions(element, printerName, options)
+    }
   },
 }
 </script>
@@ -1088,6 +1116,7 @@ export default {
     margin-top: 1mm;
     margin-bottom: 1mm;
   }
+}
   body { color-adjust: exact; }
   table {
   border: 1.8px solid rgb(78, 77, 77);
@@ -1138,5 +1167,4 @@ td {
   .avoid-break {
     page-break-inside: avoid;
   }
-}
 </style>

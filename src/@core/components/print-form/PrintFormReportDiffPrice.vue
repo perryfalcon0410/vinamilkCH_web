@@ -1,5 +1,6 @@
 <template>
   <b-container
+    id="print-form-diff-price"
     fluid
     class="d-none d-print-block px-0 text-brand-3"
   >
@@ -243,10 +244,18 @@
 <script>
 import { mapGetters } from 'vuex'
 import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
+import {
   REPORT_WAREHOUSES_DIFFERENCE_PRICE,
 
   PRINT_REPORT_DIFFERENCE_GETTER,
 } from '@/views/reports/reports-warehouses/report-warehouses-price-difference/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   props: {
@@ -258,6 +267,7 @@ export default {
 
   data() {
     return {
+      dataPrintOptions: {},
       columns: [
         {
           label: 'Mã khách hàng',
@@ -318,6 +328,7 @@ export default {
   },
   computed: {
     ...mapGetters(REPORT_WAREHOUSES_DIFFERENCE_PRICE, [PRINT_REPORT_DIFFERENCE_GETTER]),
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
 
     reportData() {
       if (this.PRINT_REPORT_DIFFERENCE_GETTER) {
@@ -337,10 +348,25 @@ export default {
       }
       return {}
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
 
   updated() {
-    window.print()
+    const printerName = this.printerOptions.reportPrinterName
+    const element = document.getElementById('print-form-diff-price')
+    const options = {
+      fileName: 'bao_cao_chenh_lech_gia',
+      pageSizing: 'Fit',
+      format: 'a3',
+    }
+    if (jspmCheckStatus()) {
+      printActions(element, printerName, options)
+    }
   },
 }
 </script>
