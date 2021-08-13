@@ -14,11 +14,19 @@
       >
         <div>
           <p>
-            Bạn chưa cài JSPrinterManager vui lòng nhấn
+            Nhấn tải
             <a
-              href="https://www.neodynamic.com/downloads/jspm/"
+              :href="linkDownloadSoftWare"
               target="_blank"
-            >Tải về</a> và cài đặt
+            >JSPrintManager</a> và cài đặt cho {{ nameOS }}.
+          </p>
+          <p>
+            File hướng dẫn sử dùng JSPrintManager:
+            <a
+              href="/documents/Hướng dẫn sử dùng JSPrintManager.docx"
+              download
+              target="_blank"
+            > Tải về</a>
           </p>
         </div>
       </b-row>
@@ -104,11 +112,11 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-// import {
-//   hostName,
-// } from '@/@core/utils/filter'
-// import JSPM from 'jsprintmanager'
-// import toasts from '@core/utils/toasts/toasts'
+import {
+  hostName,
+} from '@/@core/utils/filter'
+import JSPM from 'jsprintmanager'
+import toasts from '@core/utils/toasts/toasts'
 import {
   PRINTERCONFIG,
   // GETTERS
@@ -136,6 +144,8 @@ export default {
       printerDefaultSelected: null,
       printerReportSelected: null,
       printerReceiptSelected: null,
+      nameOS: '',
+      linkDownloadSoftWare: '',
     }
   },
   computed: {
@@ -157,14 +167,14 @@ export default {
         }
       }
     },
-    // ipAddress() {
-    //   this.GET_PRINTER_CLIENT_ACTIONS({
-    //     data: {
-    //       clientId: this.ipAddress,
-    //     },
-    //     onSuccess: () => {},
-    //   })
-    // },
+    ipAddress() {
+      this.GET_PRINTER_CLIENT_ACTIONS({
+        data: {
+          clientId: this.ipAddress,
+        },
+        onSuccess: () => {},
+      })
+    },
     printerConfigOptions() {
       if (this.printerConfigOptions.find(data => data.id === this.printerDataDefault.defaultPrinterName)) {
         this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
@@ -190,9 +200,9 @@ export default {
     },
   },
   mounted() {
-    // hostName().then(dta => { this.ipAddress = dta.ip })
+    hostName().then(dta => { this.ipAddress = dta.ip })
     // this.getPrinterConfigOptions()
-    // this.jspmWSStatus()
+    this.jspmWSStatus()
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [
@@ -207,64 +217,76 @@ export default {
       this.printerConfigOptions = []
       // JSPM.JSPrintManager.start()
       // this.jspmWSStatus()
-      // JSPM.JSPrintManager.WS.onStatusChanged = () => {
-      //   JSPM.JSPrintManager.getPrinters().then(data => {
-      //     data.forEach(e => {
-      //       this.printerConfigOptions.push({ id: e, label: e })
-      //     })
-      //   })
-      // }
+      JSPM.JSPrintManager.WS.onStatusChanged = () => {
+        JSPM.JSPrintManager.getPrinters().then(data => {
+          data.forEach(e => {
+            this.printerConfigOptions.push({ id: e, label: e })
+          })
+        })
+      }
     },
-    // jspmWSStatus() {
-    //   JSPM.JSPrintManager.license_url = process.env.VUE_APP_JSPM_LICENSE_PRINT
-    //   JSPM.JSPrintManager.start()
-    //   JSPM.JSPrintManager.auto_reconnect = true
-    //   if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
-    //     this.isTrue = true
-    //     this.getPrinterConfigOptions()
-    //     JSPM.JSPrintManager.auto_reconnect = true
-    //   } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
-    //     this.isTrue = false
-    //     JSPM.JSPrintManager.auto_reconnect = false
-    //     toasts.error('JSPrintManager (JSPM) chưa được cài đặt hoặc chưa được mở')
-    //   } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Blocked) {
-    //     toasts.error('JSPrintManager (JSPM) đã chặn trang web này!')
-    //     this.isTrue = false
-    //     JSPM.JSPrintManager.auto_reconnect = false
-    //   }
-    // },
-    // onSaveClick() {
-    //   if (this.printerDefaultSelected && this.printerReportSelected && this.printerReceiptSelected) {
-    //     if (this.printerDataDefault.id) {
-    //       this.UPDATE_PRINTER_CLIENT_ACTIONS({
-    //         data: {
-    //           id: this.printerDataDefault.id,
-    //           clientIp: this.ipAddress,
-    //           billPrinterName: this.printerReceiptSelected,
-    //           defaultPrinterName: this.printerDefaultSelected,
-    //           reportPrinterName: this.printerReportSelected,
-    //         },
-    //         onSuccess: () => {
-    //           this.visible = false
-    //         },
-    //       })
-    //     } else {
-    //       this.CREATE_PRINTER_CLIENT_ACTIONS({
-    //         data: {
-    //           clientIp: this.ipAddress,
-    //           billPrinterName: this.printerReceiptSelected,
-    //           defaultPrinterName: this.printerDefaultSelected,
-    //           reportPrinterName: this.printerReportSelected,
-    //         },
-    //         onSuccess: () => {
-    //           this.visible = false
-    //         },
-    //       })
-    //     }
-    //   } else {
-    //     toasts.error('cấu hình máy in không được để trống!')
-    //   }
-    // },
+    jspmWSStatus() {
+      JSPM.JSPrintManager.license_url = process.env.VUE_APP_JSPM_LICENSE_PRINT
+      JSPM.JSPrintManager.start()
+      JSPM.JSPrintManager.auto_reconnect = true
+      if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
+        this.isTrue = true
+        this.getPrinterConfigOptions()
+        JSPM.JSPrintManager.auto_reconnect = true
+      } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
+        this.isTrue = false
+        JSPM.JSPrintManager.auto_reconnect = false
+        toasts.error('JSPrintManager (JSPM) chưa được cài đặt hoặc chưa được mở')
+        if (navigator.appVersion.indexOf('Win64') !== -1) {
+          this.nameOS = 'Windows 64-bit'
+          this.linkDownloadSoftWare = 'https://www.neodynamic.com/downloads/jspm/jspm-4.0.0-win64.msi'
+        }
+        if (navigator.appVersion.indexOf('Win32') !== -1) {
+          this.nameOS = 'Windows 32-bit'
+          this.linkDownloadSoftWare = 'https://www.neodynamic.com/downloads/jspm/jspm-4.0.0-win32.msi'
+        }
+        if (navigator.appVersion.indexOf('Mac') !== -1) {
+          this.nameOS = 'MacOS'
+          this.linkDownloadSoftWare = 'https://www.neodynamic.com/downloads/jspm/jspm-4.0.0.0-macOS.pkg'
+        }
+      } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Blocked) {
+        toasts.error('JSPrintManager (JSPM) đã chặn trang web này!')
+        this.isTrue = false
+        JSPM.JSPrintManager.auto_reconnect = false
+      }
+    },
+    onSaveClick() {
+      if (this.printerDefaultSelected && this.printerReportSelected && this.printerReceiptSelected) {
+        if (this.printerDataDefault.id) {
+          this.UPDATE_PRINTER_CLIENT_ACTIONS({
+            data: {
+              id: this.printerDataDefault.id,
+              clientIp: this.ipAddress,
+              billPrinterName: this.printerReceiptSelected,
+              defaultPrinterName: this.printerDefaultSelected,
+              reportPrinterName: this.printerReportSelected,
+            },
+            onSuccess: () => {
+              this.visible = false
+            },
+          })
+        } else {
+          this.CREATE_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientIp: this.ipAddress,
+              billPrinterName: this.printerReceiptSelected,
+              defaultPrinterName: this.printerDefaultSelected,
+              reportPrinterName: this.printerReportSelected,
+            },
+            onSuccess: () => {
+              this.visible = false
+            },
+          })
+        }
+      } else {
+        toasts.error('cấu hình máy in không được để trống!')
+      }
+    },
   },
 }
 </script>
