@@ -320,7 +320,6 @@ export default {
   },
   updated() {
     const printerName = this.printerOptions.reportPrinterName
-    console.log(printerName)
     const element = document.getElementById('report-sales')
     const options = {
       fileName: 'bao_cao_ban_hang',
