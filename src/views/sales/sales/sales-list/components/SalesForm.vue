@@ -72,16 +72,20 @@
             md="12"
           >
             <!-- START - Search -->
-            <!-- <b-row class="px-0 mx-0">
-              <b-form-checkbox-group
-                v-model="selected"
-                :options="searchOptions"
+            <b-row class="px-0 mx-0">
+              <b-form-checkbox
+                v-model="customerOfShop"
+                class="mt-2 mr-2"
+              >
+                Khách hàng của cửa hàng
+              </b-form-checkbox>
+              <b-form-checkbox
+                v-model="searchPhoneOnly"
                 class="mt-2"
-                value-field="item"
-                text-field="name"
-                disabled-field="notEnabled"
-              />
-            </b-row> -->
+              >
+                Chỉ tìm theo SĐT
+              </b-form-checkbox>
+            </b-row>
             <b-row
               class="px-0 mx-0"
             >
@@ -105,7 +109,7 @@
                   :input-props="{
                     id:'autosuggest__input',
                     class:'form-control pl-4',
-                    placeholder:'Tìm khách hàng (F4)',
+                    placeholder:'Tìm khách hàng (F4) - Vui lòng nhập ít nhất 4 kí tự',
                   }"
                   @selected="onclickChooseCustomer"
                   @keyup.enter="onChangeKeyWord"
@@ -531,6 +535,7 @@ import {
   GET_PROMOTION_PROGRAMS_GETTER,
   SALEMT_PROMOTION_OBJECT_GETTER,
   SALEMT_DELIVERY_TYPE_GETTER,
+  GET_SCORECUMULATED_CUSTOMER_BY_ID_GETTER,
   // Action
   GET_ONLINE_ORDER_BY_ID_ACTION,
   GET_ONLINE_ORDER_COINCIDE_ID_ACTION,
@@ -539,6 +544,7 @@ import {
   GET_CUSTOMERS_SALE_ACTION,
   GET_SALEMT_PROMOTION_OBJECT_ACTION,
   GET_SALEMT_DELIVERY_TYPE_ACTION,
+  GET_SCORECUMULATED_CUSTOMER_BY_ID_ACTION,
 } from '../../store-module/type'
 import SalesCreateModal from './SalesCreateModal.vue'
 import SalesSearchModal from './SalesSearchModal.vue'
@@ -603,7 +609,6 @@ export default {
       customersSearch: [
         { data: '' },
       ],
-      search: '',
       minSearch: commonData.minSearchLength,
       minOnlineOrder: commonData.minOnlineOrderLength,
       salemtPromotionId: '1',
@@ -685,10 +690,13 @@ export default {
       status: customerData.status[0].id,
 
       selected: [],
-      searchOptions: [
-        { item: 'A', name: 'Khách hàng của cửa hàng' },
-        { item: 'B', name: 'Chỉ tìm theo SĐT' },
-      ],
+      // searchOptions: [
+      //   { item: true, name: 'Khách hàng của cửa hàng' },
+      //   { item: true, name: 'Chỉ tìm theo SĐT' },
+      // ],
+      search: '',
+      customerOfShop: true,
+      searchPhoneOnly: true,
     }
   },
 
@@ -706,6 +714,7 @@ export default {
       CUSTOMERS_SALE_GETTER,
       SALEMT_PROMOTION_OBJECT_GETTER,
       SALEMT_DELIVERY_TYPE_GETTER,
+      GET_SCORECUMULATED_CUSTOMER_BY_ID_GETTER,
     }),
 
     getCustomerSearch() {
@@ -716,7 +725,7 @@ export default {
             id: data.id,
             shopId: data.shopId,
             code: data.customerCode,
-            fullName: `${data.lastName} ${data.firstName}`,
+            fullName: data.fullName,
             phoneNumber: data.mobiPhone,
             birthDay: formatDateToLocale(data.dob),
             date: formatDateToLocale(data.createdAt),
@@ -725,7 +734,7 @@ export default {
             status: data.status,
             idNo: data.idNo,
             noted: data.noted,
-            totalBill: data.totalBill,
+            totalBill: this.scoreCumulatedCustomer.data,
             customerTypeId: data.customerTypeId,
             scoreCumulated: data.scoreCumulated,
             amountCumulated: data.amountCumulated,
@@ -777,6 +786,9 @@ export default {
         return this.ONLINE_ORDER_BY_ID_GETTER
       }
       return {}
+    },
+    scoreCumulatedCustomer() {
+      return this.GET_SCORECUMULATED_CUSTOMER_BY_ID_GETTER
     },
     onlineOrderCoincideId() {
       return this.ONLINE_ORDER_COINCIDE_ID_GETTER
@@ -854,6 +866,9 @@ export default {
     },
     onlineOrderCoincideId() {
       this.checkOnlineOrderId()
+    },
+    scoreCumulatedCustomer() {
+      this.getscoreCumulatedById()
     },
     getOnlineOrderProducts() {
       this.orderProducts = [...this.getOnlineOrderProducts]
@@ -952,6 +967,7 @@ export default {
       GET_ONLINE_ORDERS_ACTION,
       GET_SALEMT_PROMOTION_OBJECT_ACTION,
       GET_SALEMT_DELIVERY_TYPE_ACTION,
+      GET_SCORECUMULATED_CUSTOMER_BY_ID_ACTION,
     ]),
 
     statusPayButton() {
@@ -1044,6 +1060,7 @@ export default {
       this.$emit('getCustomerTypeInfo', val.data)
       this.$emit('getCustomerIdInfo', val.data.id)
       this.$emit('currentCustomer', this.customer)
+      this.GET_SCORECUMULATED_CUSTOMER_BY_ID_ACTION(`${this.customer.id}`)
     },
 
     getOnlineOrderInfo(id) {
@@ -1113,6 +1130,10 @@ export default {
       this.$emit('getOrderNumber', this.orderOnline)
     },
 
+    // getscoreCumulatedById() {
+    //   this.customer.totalBill = this.scoreCumulatedCustomer.data
+    // },
+
     checkOnlineOrderId() {
       this.orderOnline.success = this.onlineOrderCoincideId.success
       this.orderOnline.statusValue = this.onlineOrderCoincideId.statusValue
@@ -1122,6 +1143,8 @@ export default {
       if (this.search) {
         this.GET_CUSTOMERS_SALE_ACTION({
           ...this.pagination,
+          customerOfShop: this.customerOfShop ? 1 : 0,
+          searchPhoneOnly: this.searchPhoneOnly ? 1 : 0,
           searchKeywords: this.search.trim(),
         })
         this.$refs.search.$el.querySelector('input').click()
@@ -1152,6 +1175,7 @@ export default {
 
     onclickChooseCustomer(suggestion) {
       if (suggestion) {
+        this.GET_SCORECUMULATED_CUSTOMER_BY_ID_ACTION(`${suggestion.item.id}`)
         this.customer.id = suggestion.item.id
         this.customer.code = suggestion.item.code
         this.customer.email = suggestion.item.email
@@ -1159,7 +1183,7 @@ export default {
         this.customer.fullName = suggestion.item.fullName
         this.customer.phoneNumber = suggestion.item.phoneNumber
         this.customer.address = suggestion.item.address
-        this.customer.totalBill = suggestion.item.totalBill ?? 0
+        this.customer.totalBill = this.scoreCumulatedCustomer.data ? this.scoreCumulatedCustomer.data : 0
         this.customer.scoreCumulated = suggestion.item.scoreCumulated
         this.customer.amountCumulated = suggestion.item.amountCumulated
         this.customer.status = suggestion.item.status

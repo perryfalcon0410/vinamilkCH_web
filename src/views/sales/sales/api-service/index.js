@@ -20,6 +20,7 @@ import {
   getItemsProductsProgramEndpoint,
   getVoucherBySerialEndpoint,
   getCustomerToSaleEndpoint,
+  getScorecumulatedByIdEndpoint,
   printSalesEndpoint,
   printSalesTempEndpoint,
   getSalesPaymentTypesEndpoint,
@@ -135,6 +136,11 @@ export default {
       params: formatURLParams(args),
     })
   },
+
+  getScorecumulatedById(args) {
+    return axios.get((`${getScorecumulatedByIdEndpoint}/${args}`))
+  },
+
   printSales(args) {
     return axios.get(`${printSalesEndpoint}/${args.salesReceiptId}`, {
       params: formatURLParams(args),

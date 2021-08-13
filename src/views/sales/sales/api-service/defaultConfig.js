@@ -43,7 +43,9 @@ export const getItemsProductsProgramEndpoint = `${SALES}/promotion-products`
 
 export const getVoucherBySerialEndpoint = `${PROMOTION}/${VOUCHERS}/code`
 
-export const getCustomerToSaleEndpoint = `${CUSTOMER}/customers-to-sale`
+export const getCustomerToSaleEndpoint = `${CUSTOMER}/autocomplete`
+
+export const getScorecumulatedByIdEndpoint = `${CUSTOMER}/scorecumulated`
 
 export const printSalesEndpoint = `${SALES}/sale-orders/print-sale-order`
 

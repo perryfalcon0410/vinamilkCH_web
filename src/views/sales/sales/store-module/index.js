@@ -33,6 +33,7 @@ import {
   SALEMT_DELIVERY_TYPE_GETTER,
   GET_EDIT_ONLINE_PERMISSION_GETTER,
   GET_DEFAULT_CUSTOMER_TYPE_GETTER,
+  GET_SCORECUMULATED_CUSTOMER_BY_ID_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -64,6 +65,7 @@ import {
   GET_SALEMT_DELIVERY_TYPE_ACTION,
   GET_EDIT_ONLINE_PERMISSION_ACTION,
   GET_DEFAULT_CUSTOMER_TYPE_ACTION,
+  GET_SCORECUMULATED_CUSTOMER_BY_ID_ACTION,
 } from './type'
 
 export default {
@@ -101,6 +103,7 @@ export default {
     salemtDeliveries: [],
     editOnlinePermission: {},
     defaultCustomerType: {},
+    scorecumulated: {},
   },
 
   getters: {
@@ -193,6 +196,9 @@ export default {
     },
     [GET_DEFAULT_CUSTOMER_TYPE_GETTER](state) {
       return state.defaultCustomerType
+    },
+    [GET_SCORECUMULATED_CUSTOMER_BY_ID_GETTER](state) {
+      return state.scorecumulated
     },
   },
 
@@ -666,6 +672,17 @@ export default {
           } else {
             throw new Error(res.statusValue)
           }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_SCORECUMULATED_CUSTOMER_BY_ID_ACTION]({ state }, val) {
+      SalesServices
+        .getScorecumulatedById(val)
+        .then(response => response.data)
+        .then(res => {
+          state.scorecumulated = res
         })
         .catch(error => {
           toasts.error(error.message)
