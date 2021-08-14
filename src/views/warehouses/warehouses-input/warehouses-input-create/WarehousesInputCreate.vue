@@ -139,7 +139,7 @@
                 >
                   <vue-flat-pickr
                     v-model="billDate"
-                    :disabled="disableInput"
+                    :disabled="inputTypeSelected !== '0' ? true : false"
                     :config="configDate"
                     :state="touched ? passed : null"
                     class="form-control h7 text-brand-3"

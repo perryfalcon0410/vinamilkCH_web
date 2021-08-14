@@ -347,7 +347,7 @@
           style="width: 13.7%;"
           class="text-right"
         >
-          <strong> {{ $formatNumberToLocale(lstPo.totalPriceNotVat) }} </strong>
+          <strong> {{ $formatNumberToLocale(lstPo.totalPriceVat) }} </strong>
         </div>
       </b-row>
       <!-- END - Total section 2 -->
@@ -396,7 +396,7 @@
                   <div
                     style="width: 13.8%;"
                     class="text-right"
-                  ><strong>{{ $formatNumberToLocale(item.totalPriceNotVat) }}</strong>
+                  ><strong>{{ $formatNumberToLocale(item.totalPriceVat) }}</strong>
                   </div>
                 </b-row>
               </th>
@@ -532,7 +532,7 @@
                   <i>T.Cộng:</i>
                 </b-col>
                 <b-col>
-                  <strong class="mr-80">{{ $formatNumberToLocale(item.totalPriceNotVat) }}</strong>
+                  <strong class="mr-80">{{ $formatNumberToLocale(item.totalPriceVat) }}</strong>
                 </b-col>
               </b-row>
             </div>
