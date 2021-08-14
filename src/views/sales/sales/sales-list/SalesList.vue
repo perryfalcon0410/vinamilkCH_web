@@ -777,9 +777,6 @@ export default {
     },
     // check shop default
     focusInputProduct() {
-      if (this.isCheckShopId === false) {
-        toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
-      }
       if (this.isSelectedProduct) {
         this.productsSearch = [{ data: null }]
         this.isSelectedProduct = false
@@ -788,12 +785,16 @@ export default {
 
     onChangeKeyWord() {
       this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-      if (this.isCheckShopId === true && this.searchOptions.keyWord.length >= this.minSearch) {
-        this.searchOptions.customerId = this.currentCustomer.id
-        this.GET_TOP_SALE_PRODUCTS_ACTION({
-          data: { ...this.searchOptions },
-          onSuccess: () => {},
-        })
+      if (this.searchOptions.keyWord.length >= this.minSearch) {
+        if (this.isCheckShopId) {
+          this.searchOptions.customerId = this.currentCustomer.id
+          this.GET_TOP_SALE_PRODUCTS_ACTION({
+            data: { ...this.searchOptions },
+            onSuccess: () => {},
+          })
+        } else {
+          toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
+        }
       }
     },
     blurInputSearch() {
