@@ -920,6 +920,17 @@ export default {
       this.expBorrow = { ...this.lstStockInfo }
     },
   },
+  watch: {
+    lstAdjustInfo() {
+      this.expAdjust = { ...this.lstAdjustInfo }
+    },
+    lstPoInfo() {
+      this.expPO = { ...this.lstPoInfo }
+    },
+    lstStockInfo() {
+      this.expBorrow = { ...this.lstStockInfo }
+    },
+  },
   updated() {
     const printerName = this.printerOptions.reportPrinterName
     const element = document.getElementById('rp-output-store')
