@@ -2,7 +2,7 @@
   <div
     id="print-form-sale-receipt-v2"
     class="d-none d-print-block text-brand-3"
-    style="width: 340px"
+    style="width: 400px"
   >
     <!-- START - Header -->
     <b-row
