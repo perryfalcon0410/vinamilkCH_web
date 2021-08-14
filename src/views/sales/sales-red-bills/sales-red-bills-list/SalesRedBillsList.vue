@@ -759,9 +759,11 @@ export default {
         ...this.searchOption,
       })
       this.onPaginationChange()
+      this.selectedRedBillRows = []
     },
     onPaginationChange() {
       this.GET_RED_INVOICES_ACTION({ ...this.searchData })
+      this.selectedRedBillRows = []
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
@@ -849,6 +851,7 @@ export default {
           type: this.templateOptionSelected,
           ...this.decentralization,
         })
+        this.selectedRedBillRows = []
       } else {
         toasts.error('Xin vui lòng chọn hóa đơn muốn xuất')
       }
