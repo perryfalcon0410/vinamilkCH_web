@@ -908,6 +908,7 @@ export default {
       return {}
     },
   },
+
   watch: {
     lstAdjustInfo() {
       this.expAdjust = { ...this.lstAdjustInfo }
