@@ -199,7 +199,7 @@
                 v-model="orderProducts[props.row.originalIndex].quantity"
                 :value="orderProducts[props.row.originalIndex].quantity"
                 :number="true"
-                :disabled="editOnlinePermission === false && onlineOrderId !== null"
+                :disabled="editOnlinePermission === false && onlineOrderId !== null || disableOnline"
                 maxlength="7"
                 class="text-center h7 p-input"
                 @change="onChangeQuantity(props.row.originalIndex)"
@@ -499,6 +499,7 @@ export default {
 
       orderCurrentId: 1, // Id of order current
       loading: false,
+      disableOnline: false,
     }
   },
   computed: {
@@ -1064,8 +1065,16 @@ export default {
 
     getSalemtPOSelected(val) {
       this.orderSelected = val
+      const { usedShop } = this.loginInfo
       if (this.orderSelected.apParamCode.includes('ONLINE')) {
         this.isOnline = true
+        if (this.orderProducts.length > 0) {
+          if (val.id !== this.defaultPOSelected && usedShop.id === this.currentCustomer.shopId) {
+            if (!this.editOnlinePermission && this.onlineOrderId !== null) {
+              this.disableOnline = true
+            }
+          }
+        }
       } else {
         this.isOnline = false
       }
@@ -1082,7 +1091,6 @@ export default {
         return bill
       })
 
-      const { usedShop } = this.loginInfo
       // have permission edit online order manual and online order from system
       if (val.id === this.defaultPOSelected) {
         this.isOnline = false
@@ -1090,13 +1098,6 @@ export default {
       } else {
         this.isOnline = true
         this.onlineOrderId = null
-        if (this.orderProducts.length > 0) {
-          if (val.id !== this.defaultPOSelected && usedShop.id === this.currentCustomer.shopId) {
-            if (!this.editOnlinePermission) {
-              this.$refs.salesNotifyModal.show()
-            }
-          }
-        }
       }
     },
 

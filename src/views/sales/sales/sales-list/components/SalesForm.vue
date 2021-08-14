@@ -1136,8 +1136,8 @@ export default {
       if (this.search) {
         this.GET_CUSTOMERS_SALE_ACTION({
           ...this.pagination,
-          customerOfShop: this.customerOfShop ? 1 : 0,
-          searchPhoneOnly: this.searchPhoneOnly ? 1 : 0,
+          customerOfShop: 0,
+          searchPhoneOnly: 0,
           searchKeywords: this.search.trim(),
         })
         this.$refs.search.$el.querySelector('input').click()
