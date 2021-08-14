@@ -30,7 +30,7 @@
             :component-attr-class-autosuggest-results="(productsSearchLength < 11) ? 'autosuggest__results check-auto-suggesst' : 'autosuggest__results'"
             :salemt-promotion-object-selected="salemtPromotionObjectSelected"
             @input="onChangeKeyWord"
-            @selected="onclickAddProduct"
+            @selected="onClickAddProduct"
             @focus="focusInputProduct"
           >
             <template
@@ -602,7 +602,7 @@ export default {
       this.productsSearch = [...this.getProductSearch]
       this.productsSearchLength = this.productsSearch[0].data.length
       if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
-        this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+        // this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
       }
     },
     getProducts() {
@@ -791,7 +791,7 @@ export default {
       }
     },
 
-    onclickAddProduct(index) {
+    onClickAddProduct(index) {
       // check permission online order manual or online order from system to add product
       if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
         if (index && index.item) {
