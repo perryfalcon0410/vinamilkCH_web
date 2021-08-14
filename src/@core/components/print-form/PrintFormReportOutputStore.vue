@@ -70,7 +70,7 @@
     <!-- START - Table section 1 -->
     <!-- START - Total section 2 -->
     <b-row
-      v-if="lstAdjustInfo != null"
+      v-if="expAdjust.orderImports.length > 0"
       class="mx-0 font-italic"
       align-v="end"
       style="border-top: 2px solid; margin-top: 1px"
@@ -87,7 +87,7 @@
         class="text-right"
         style="width: 10%;"
       >
-        <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalQuantity || 0) }}</strong>
+        <strong>{{ $formatNumberToLocale(expAdjust.totalQuantity || 0) }}</strong>
       </div>
       <div
         class="text-right"
@@ -97,7 +97,7 @@
         class="text-right"
         style="width: 14%;"
       >
-        <strong>{{ $formatNumberToLocale(lstAdjustInfo.totalPriceVat || 0) }}</strong>
+        <strong>{{ $formatNumberToLocale(expAdjust.totalPriceVat || 0) }}</strong>
       </div>
     </b-row>
     <!-- END - Total section 2 -->
@@ -105,7 +105,7 @@
     <!-- START - Table 1 -->
     <template>
       <b-col
-        v-for="order in lstAdjustInfo.orderImports"
+        v-for="order in expAdjust.orderImports"
         :key="order.redInvoiceNo"
         class="px-0"
       >
@@ -328,6 +328,7 @@
     </template>
 
     <b-row
+      v-if="expPO.orderImports.length > 0"
       class="mx-0 font-italic"
       align-v="end"
       style="border-top: 2px solid; margin-top: 1px"
@@ -344,7 +345,7 @@
         class="text-right"
         style="width: 10%;"
       >
-        <strong>{{ $formatNumberToLocale(lstPoInfo.totalQuantity || 0) }}</strong>
+        <strong>{{ $formatNumberToLocale(expPO.totalQuantity || 0) }}</strong>
       </div>
       <div
         class="text-right"
@@ -354,12 +355,12 @@
         class="text-right"
         style="width: 14%;"
       >
-        <strong>{{ $formatNumberToLocale(lstPoInfo.totalPriceVat || 0) }}</strong>
+        <strong>{{ $formatNumberToLocale(expPO.totalPriceNotVat || 0) }}</strong>
       </div>
     </b-row>
     <template>
       <b-col
-        v-for="order in lstPoInfo.orderImports"
+        v-for="order in expPO.orderImports"
         :key="order.redInvoiceNo"
         class="px-0"
       >
@@ -402,7 +403,7 @@
                   class="text-right"
                   style="width: 13%;"
                 >
-                  {{ $formatNumberToLocale(order.totalPriceVat) }}
+                  {{ $formatNumberToLocale(order.totalPriceNotVat) }}
                 </div>
               </b-row>
             </th>
@@ -493,7 +494,7 @@
                       class="text-right bold italic"
                       style="width: 13%;"
                     >
-                      {{ $formatNumberToLocale(cat.totalPriceVat) }}
+                      {{ $formatNumberToLocale(cat.totalPriceNotVat) }}
                     </div>
                   </b-row>
                 </td>
@@ -539,7 +540,7 @@
                     class="text-right pr-50"
                     style="width: 20%;"
                   >
-                    {{ $formatNumberToLocale(item.totalPriceVat) }}
+                    {{ $formatNumberToLocale(item.totalPriceNotVat) }}
                   </td>
                 </tr>
               </template>
@@ -573,7 +574,7 @@
                 Điều chỉnh:
               </p>
               <p class="italic">
-                <strong>{{ $formatNumberToLocale(order.totalPriceVat) }}</strong>
+                <strong>{{ $formatNumberToLocale(order.totalPriceNotVat) }}</strong>
               </p>
             </div>
           </div>
@@ -582,6 +583,7 @@
     </template>
 
     <b-row
+      v-if="expBorrow.orderImports.length > 0"
       class="mx-0 font-italic"
       align-h="around"
       align-v="end"
@@ -599,7 +601,7 @@
         class="text-right"
         style="width: 10%;"
       >
-        <strong>{{ $formatNumberToLocale(lstStockInfo.totalQuantity || 0) }}</strong>
+        <strong>{{ $formatNumberToLocale(expBorrow.totalQuantity || 0) }}</strong>
       </div>
       <div
         class="text-right"
@@ -609,12 +611,12 @@
         class="text-right"
         style="width: 14%;"
       >
-        <strong>{{ $formatNumberToLocale(lstStockInfo.totalPriceVat || 0) }}</strong>
+        <strong>{{ $formatNumberToLocale(expBorrow.totalPriceVat || 0) }}</strong>
       </div>
     </b-row>
     <template>
       <b-col
-        v-for="order in lstStockInfo.orderImports"
+        v-for="order in expBorrow.orderImports"
         :key="order.redInvoiceNo"
         class="px-0"
       >
@@ -846,6 +848,13 @@ import {
 } from '@/views/reports/reports-warehouses/reports-warehouses-output/store-module/type'
 
 export default {
+  data() {
+    return {
+      expAdjust: { orderImports: [] },
+      expBorrow: { orderImports: [] },
+      expPO: { orderImports: [] },
+    }
+  },
   computed: {
     ...mapGetters(REPORT_OUTPUT_GOODS, [
       PRINT_OUTPUT_GOODS_GETTER,
@@ -871,23 +880,34 @@ export default {
       if (this.PRINT_OUTPUT_GOODS_GETTER.expAdjust) {
         return this.PRINT_OUTPUT_GOODS_GETTER.expAdjust
       }
-      return {}
+      return { orderImports: [] }
     },
 
     lstPoInfo() {
       if (this.PRINT_OUTPUT_GOODS_GETTER.expPO) {
         return this.PRINT_OUTPUT_GOODS_GETTER.expPO
       }
-      return {}
+      return { orderImports: [] }
     },
 
     lstStockInfo() {
       if (this.PRINT_OUTPUT_GOODS_GETTER.expBorrow) {
         return this.PRINT_OUTPUT_GOODS_GETTER.expBorrow
       }
-      return {}
+      return { orderImports: [] }
     },
 
+  },
+  watch: {
+    lstAdjustInfo() {
+      this.expAdjust = { ...this.lstAdjustInfo }
+    },
+    lstPoInfo() {
+      this.expPO = { ...this.lstPoInfo }
+    },
+    lstStockInfo() {
+      this.expBorrow = { ...this.lstStockInfo }
+    },
   },
   updated() {
     window.print()

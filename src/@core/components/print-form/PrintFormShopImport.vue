@@ -292,7 +292,7 @@
                   <i>VAT:</i>
                 </b-col>
                 <b-col>
-                  <strong class="mr-80">{{ $formatNumberToLocale(item.vat) || 0 }}</strong>
+                  <strong class="mr-80"> 0 </strong>
                 </b-col>
               </b-row>
             </div>
@@ -752,7 +752,7 @@
                   <i>VAT:</i>
                 </b-col>
                 <b-col>
-                  <strong class="mr-80">{{ $formatNumberToLocale(item.vat) || 0 }}</strong>
+                  <strong class="mr-80"> 0 </strong>
                 </b-col>
               </b-row>
             </div>
@@ -982,7 +982,7 @@
                   <i>VAT:</i>
                 </b-col>
                 <b-col>
-                  <strong class="mr-80">{{ $formatNumberToLocale(item.vat) || 0 }}</strong>
+                  <strong class="mr-80"> 0 </strong>
                 </b-col>
               </b-row>
             </div>
