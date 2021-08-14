@@ -43,7 +43,7 @@
         </b-col>
         <b-col cols="6">
           <tree-select
-            v-model="printerReceiptSelected"
+            v-model="printerDefaultSelected"
             :options="printerConfigOptions"
             :searchable="false"
             placeholder="Chọn máy in"
@@ -63,7 +63,7 @@
         </b-col>
         <b-col cols="6">
           <tree-select
-            v-model="printerDefaultSelected"
+            v-model="printerReceiptSelected"
             :options="printerConfigOptions"
             :searchable="false"
             placeholder="Chọn máy in"
