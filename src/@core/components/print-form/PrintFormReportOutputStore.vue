@@ -941,6 +941,17 @@ export default {
       }
     })
   },
+  watch: {
+    lstAdjustInfo() {
+      this.expAdjust = { ...this.lstAdjustInfo }
+    },
+    lstPoInfo() {
+      this.expPO = { ...this.lstPoInfo }
+    },
+    lstStockInfo() {
+      this.expBorrow = { ...this.lstStockInfo }
+    },
+  },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
     const printerName = this.printerOptions.reportPrinterName
