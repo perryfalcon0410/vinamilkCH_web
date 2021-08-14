@@ -907,12 +907,6 @@ export default {
       }
       return {}
     },
-    printerOptions() {
-      if (this.PRINTER_CLIENT_GETTER) {
-        return this.PRINTER_CLIENT_GETTER
-      }
-      return {}
-    },
   },
   watch: {
     lstAdjustInfo() {
