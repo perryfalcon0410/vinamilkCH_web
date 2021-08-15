@@ -1,7 +1,7 @@
 <template>
   <div
     id="report-sales-redbill"
-    class="d-print-block text-brand-3 mx-0 mt-5"
+    class="d-none d-print-block text-brand-3 mx-0 mt-5"
   >
     <div style="min-height: 800px;">
       <b-row

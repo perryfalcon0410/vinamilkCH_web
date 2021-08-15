@@ -1,7 +1,8 @@
 <template>
   <b-container
+    id="report-customers-no-order"
     fluid
-    class="d-none d-print-block px-0 text-brand-3"
+    class="d-none d-print-block px-2 py-2 text-brand-3 report-customers py-2"
   >
     <!-- START - Header -->
     <b-row
@@ -10,7 +11,7 @@
       align-v="center"
     >
       <div class="d-flex flex-column">
-        <strong style="font-size: 17px"> {{ commonInfo.shopName }} </strong>
+        <strong style="font-size: 19px"> {{ commonInfo.shopName }} </strong>
         <p class="mt-1">
           Add: {{ commonInfo.address }}
         </p>
@@ -30,7 +31,7 @@
         class="d-flex flex-column"
         style="opacity: 0"
       >
-        <strong style="font-size: 17px"> {{ commonInfo.shopName }} </strong>
+        <strong style="font-size: 15px"> {{ commonInfo.shopName }} </strong>
       </div>
       <!-- END - Invisible element to align title -->
     </b-row>
@@ -112,9 +113,17 @@
 <script>
 import { mapGetters } from 'vuex'
 import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
+import {
   REPORT_CUSTOMERS_NON_TRANSACTIONAL,
   PRINT_REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER,
 } from '@/views/reports/reports-customers/reports-customers-non-transactional/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   data() {
@@ -122,6 +131,7 @@ export default {
   },
   computed: {
     ...mapGetters(REPORT_CUSTOMERS_NON_TRANSACTIONAL, [PRINT_REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER]),
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
     commonInfo() {
       if (this.PRINT_REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER) {
         return this.PRINT_REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER
@@ -134,9 +144,27 @@ export default {
       }
       return []
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
   updated() {
-    window.print()
+    const printerName = this.printerOptions.reportPrinterName
+    const element = document.getElementById('report-customers-no-order')
+    const options = {
+      fileName: 'Báo cáo khách hàng không giao dịch',
+      format: 'a3',
+      // orientation: 'landscape',
+      // rotate: 'Rot90',
+      pageSizing: 'Fit',
+      isPaging: true,
+    }
+    if (jspmCheckStatus()) {
+      printActions(element, printerName, options)
+    }
   },
 }
 </script>
@@ -147,11 +175,13 @@ table {
 th {
   border-style: solid;
   border-width: 2px;
+  font-size: 14px;
 }
 td {
   border-style: dotted;
   border-width: 2px;
   word-wrap:break-word;
+  font-size: 14px;
 }
 table {
   width:100%;

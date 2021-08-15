@@ -2,12 +2,10 @@
   <b-container
     id="report-sales"
     fluid
-    class="d-none d-print-block px-3 py-2 text-brand-3"
+    class="d-print-block px-3 py-2 text-brand-3"
   >
     <!-- START - Header -->
     <b-row
-      id="abc"
-      ref="aaaa"
       class="mx-0 my-1"
       align-h="between"
       align-v="center"
@@ -73,19 +71,19 @@
       </span>
       <strong
         class="text-right"
-        style="width: 6.5%;"
+        style="width: 9%;"
       >{{ $formatNumberToLocale(reportSalesInfoData.totalQuantity) }}</strong>
       <strong
         class="text-right"
-        style="width: 12%;"
+        style="width: 12.5%;"
       >{{ $formatNumberToLocale(reportSalesInfoData.totalTotal) }}</strong>
       <strong
         class="text-right"
-        style="width: 10.5%;"
+        style="width: 8%;"
       >{{ $formatNumberToLocale(reportSalesInfoData.totalPromotionNotVat) }}</strong>
       <strong
         class="text-right"
-        style="width: 9.5%; padding-right: 0.1rem;"
+        style="width: 9%; padding-right: 0.1rem;"
       >{{ $formatNumberToLocale(reportSalesInfoData.totalPay) }}</strong>
     </b-row>
     <!-- END - Total view -->
@@ -128,13 +126,13 @@
           </th>
           <th
             class=" px-20"
-            style="width: 4%"
+            style="width: 5%"
           >
             Mã SP
           </th>
           <th
             class="text-left px-20"
-            style="width: 13.5%"
+            style="width: 15%"
           >
             Tên SP
           </th>
@@ -164,7 +162,7 @@
           </th>
           <th
             class="text-right px-20 ws-nowrap"
-            style="width: 10.5%"
+            style="width: 8%"
           >
             KM chưa VAT
           </th>
@@ -326,6 +324,7 @@ export default {
       orientation: 'landscape',
       rotate: 'Rot90',
       pageSizing: 'Fit',
+      isPaging: true,
     }
     if (jspmCheckStatus()) {
       printActions(element, printerName, options)
@@ -339,6 +338,7 @@ export default {
 <style lang="scss" scoped>
 table {
   width: 100%;
+  background: none;
   border-collapse: collapse;
   // border: 1px solid;
   table-layout: fixed;
@@ -346,6 +346,7 @@ table {
 th {
   border-style: solid;
   border-width: 1px;
+  font-size: 12px;
 }
 td, .td {
   border-style: dotted;

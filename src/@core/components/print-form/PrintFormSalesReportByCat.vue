@@ -1,7 +1,8 @@
 <template>
   <b-container
+    id="print-report-cat"
     fluid
-    class="d-none d-print-block px-0 text-brand-3"
+    class="d-none d-print-block py-1 px-3 text-brand-3"
   >
     <!-- START - Header -->
     <b-row
@@ -10,26 +11,38 @@
       align-v="center"
     >
       <div class="d-flex flex-column">
-        <strong style="font-size: 17px"> {{ printInfo.shopName }} </strong>
-        <p class="mt-1">
+        <strong style="font-size: 25px"> {{ printInfo.shopName }} </strong>
+        <p
+          class="my-1"
+          style="font-size: 20px;"
+        >
           Add: {{ printInfo.shopAddress }}
         </p>
-        <p>Tel: {{ printInfo.shopTel }}</p>
+        <p
+          class="my-1"
+          style="font-size: 20px;"
+        >Tel: {{ printInfo.shopTel }}</p>
       </div>
 
       <div class="d-flex flex-column align-items-center">
-        <strong style="font-size: 30px"> Báo cáo doanh số theo CAT </strong>
-        <p class="my-1">
+        <strong style="font-size: 38px"> Báo cáo doanh số theo CAT </strong>
+        <p
+          class="my-1"
+          style="font-size: 20px;"
+        >
           Từ ngày: {{ $formatISOtoVNI(printInfo.fromDate) }} đến ngày: {{ $formatISOtoVNI(printInfo.toDate) }}
         </p>
-        <p>Ngày in: {{ $formatPrintDate(printInfo.printDate) }}</p>
+        <p
+          class="my-1"
+          style="font-size: 20px;"
+        >Ngày in: {{ $formatPrintDate(printInfo.printDate) }}</p>
       </div>
       <!-- START - Invisible element to align title -->
       <div
         class="d-flex flex-column"
         style="opacity: 0"
       >
-        <strong style="font-size: 17px;">
+        <strong style="font-size: 25px;">
           CH GTSP Hải Dương
         </strong>
       </div>
@@ -86,7 +99,7 @@
             <td
               v-for="(data, idx) in rowData"
               :key="idx"
-              :class="{'text-right': (idx > 3)}"
+              :class="{'text-right': (idx > 3), 'name-width': (idx === 2)}"
               class="px-1"
             >
               <div v-if="idx <= 3">
@@ -109,10 +122,18 @@
 <script>
 import { mapGetters } from 'vuex'
 import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
+import {
   REPORT_SALES_CAT,
   // Getters
   PRINT_REPORT_GETTER,
 } from '@/views/reports/reports-sales/reports-sales-cat/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   data() {
@@ -124,6 +145,7 @@ export default {
     ...mapGetters(REPORT_SALES_CAT, [
       PRINT_REPORT_GETTER,
     ]),
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
 
     printInfo() {
       return {
@@ -169,9 +191,27 @@ export default {
       }
       return {}
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
   updated() {
-    window.print()
+    const printerName = this.printerOptions.reportPrinterName
+    const element = document.getElementById('print-report-cat')
+    const options = {
+      fileName: 'Báo cáo CAT',
+      format: 'a2',
+      orientation: 'landscape',
+      rotate: 'Rot90',
+      pageSizing: 'Fit',
+      isPaging: true,
+    }
+    if (jspmCheckStatus()) {
+      printActions(element, printerName, options)
+    }
   },
 }
 </script>
@@ -182,10 +222,12 @@ table {
 th {
   border-style: solid;
   border-width: 2px;
+  font-size: 17px;
 }
 td {
   border-style: dotted;
   border-width: 2px;
+  font-size: 17px;
 }
 
 </style>

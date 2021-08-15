@@ -193,8 +193,9 @@ export const printBillInvoiceActions = (data, printerName) => {
 export const printActions = (data, printerName, optionsPrinter) => {
   const opt = {
     margin: 1,
-    image: { type: 'jpeg', quality: 1 }, // type and quality image export
+    image: { type: 'png' }, // type and quality image export
     pagebreak: { mode: 'avoid-all' }, // break new page
+    html2canvas: { backgroundColor: null },
     jsPDF: {
       format: optionsPrinter.format ? optionsPrinter.format : '', // format paper
       orientation: optionsPrinter.orientation ? optionsPrinter.orientation : 'portrait', // format orientation paper
@@ -202,18 +203,33 @@ export const printActions = (data, printerName, optionsPrinter) => {
     },
   }
   data.classList.remove('d-none')
-  html2pdf().set(opt).from(data).output('datauristring')
+  html2pdf().set(opt).from(data)
+    .toPdf()
+    .get('pdf')
+    .then(file => {
+      if (optionsPrinter.isPaging) {
+        const totalPages = file.internal.getNumberOfPages()
+        for (let i = 1; i <= totalPages; i += 1) {
+          file.setPage(i)
+          file.setFontSize(10)
+          file.setTextColor('#6e6b7b')
+          file.text(`${i} / ${totalPages}`, file.internal.pageSize.getWidth() / 1.07, file.internal.pageSize.getHeight())
+        }
+      }
+    })
+    .output('datauristring')
     .then(pdf => {
       const cpj = new JSPM.ClientPrintJob()
       cpj.clientPrinter = new JSPM.InstalledPrinter(printerName) // get printer
-      const b64Prefix = 'data:application/pdf;base64,'
-      const imgBase64Content = pdf.substring(b64Prefix.length, pdf.length)
+      // const b64Prefix = 'data:application/pdf;base64,'
+      // const imgBase64Content = pdf.substring(b64Prefix.length, pdf.length)
       // convert data
-      const printContent = new JSPM.PrintFilePDF(imgBase64Content, JSPM.FileSourceType.Base64, `${optionsPrinter.fileName}.pdf`, 1)
+      const printContent = new JSPM.PrintFilePDF(pdf, JSPM.FileSourceType.URL, `${optionsPrinter.fileName}.pdf`, 1)
       // rotate pager áp dụng in ngang [RT90]
       printContent.printRotation = JSPM.PrintRotation[optionsPrinter.rotate ? optionsPrinter.rotate : 'None']
       // auto fit data print
       printContent.pageSizing = JSPM.Sizing[optionsPrinter.pageSizing ? optionsPrinter.pageSizing : 'None']
+      printContent.printAsGrayscale = true
       cpj.files.push(printContent)
       cpj.sendToClient()
       data.classList.add('d-none')
