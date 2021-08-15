@@ -279,7 +279,7 @@
                       :id="products[props.row.originalIndex].productCode"
                       v-model.number="products[props.row.originalIndex].quantity"
                       class="style-input text-right"
-                      maxlength="7"
+                      maxlength="9"
                       type="text"
                       @keypress="$onlyNumberInput"
                       @input="onInputValueQuantity(props.row.originalIndex)"
@@ -290,8 +290,8 @@
                   <div v-else-if="props.column.field === 'productPrice'">
                     <cleave
                       v-model="products[props.row.originalIndex].productPrice"
-                      class="form-control"
-                      maxlength="20"
+                      class="form-control  text-right"
+                      maxlength="22"
                       :raw="true"
                       :options="options.number"
                       @keypress.native="$onlyNumberInput"
@@ -965,8 +965,8 @@ export default {
       return (money * (vat / 100))
     },
     checkValue(index) {
-      if (this.products[index].vat === '0') {
-        this.products[index].vat = 1
+      if (this.products[index].vat < 0) {
+        this.products[index].vat = 0
       }
       if (this.products[index].vat > 100) {
         this.products[index].vat = 100
