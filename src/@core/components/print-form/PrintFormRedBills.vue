@@ -196,6 +196,7 @@ export default {
       // orientation: 'landscape',
       // rotate: 'Rot90',
       pageSizing: 'Fit',
+      scale: 3,
     }
     if (jspmCheckStatus()) {
       printActions(element, printerName, options)

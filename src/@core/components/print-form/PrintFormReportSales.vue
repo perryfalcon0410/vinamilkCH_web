@@ -2,7 +2,7 @@
   <b-container
     id="report-sales"
     fluid
-    class="d-print-block px-3 py-2 text-brand-3"
+    class="d-none d-print-block px-3 py-2 text-brand-3"
   >
     <!-- START - Header -->
     <b-row
@@ -325,6 +325,7 @@ export default {
       rotate: 'Rot90',
       pageSizing: 'Fit',
       isPaging: true,
+      scale: 2,
     }
     if (jspmCheckStatus()) {
       printActions(element, printerName, options)

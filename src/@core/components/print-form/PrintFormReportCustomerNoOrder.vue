@@ -161,6 +161,7 @@ export default {
       // rotate: 'Rot90',
       pageSizing: 'Fit',
       isPaging: true,
+      scale: 2,
     }
     if (jspmCheckStatus()) {
       printActions(element, printerName, options)

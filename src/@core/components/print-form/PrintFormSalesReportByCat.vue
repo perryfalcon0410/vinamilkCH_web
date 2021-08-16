@@ -202,12 +202,13 @@ export default {
     const printerName = this.printerOptions.reportPrinterName
     const element = document.getElementById('print-report-cat')
     const options = {
-      fileName: 'Báo cáo CAT',
+      fileName: 'Bao_cao_cat',
       format: 'a2',
       orientation: 'landscape',
       rotate: 'Rot90',
       pageSizing: 'Fit',
       isPaging: true,
+      scale: 3,
     }
     if (jspmCheckStatus()) {
       printActions(element, printerName, options)
