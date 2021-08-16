@@ -144,8 +144,10 @@
                 v-model="searchKeywords"
                 class="h8 text-brand-3"
                 maxlength="200"
+                autocomplete="off"
                 placeholder="Nhập mã hoặc tên sản phẩm"
                 @keydown.enter.prevent="onClickSearchButton()"
+                @keyup.down="moveToFirstRow()"
               />
             </div>
             <div
@@ -205,6 +207,7 @@
           >
             <div v-if="props.column.field === 'inventoryPacket'">
               <cleave
+                :id="products[props.row.originalIndex].productCode + 'inventoryPacket'"
                 v-model="products[props.row.originalIndex].inventoryPacket"
                 class="form-control text-right"
                 :raw="true"
@@ -213,11 +216,16 @@
                 :value="products[props.row.originalIndex].inventoryPacket"
                 @change.native="updateInventoryTotal(props.row.originalIndex)"
                 @keypress="$onlyNumberInput"
+                @keyup.up.native="onClickUpButtonInventoryPacket(props.row.originalIndex)"
+                @keyup.down.native="onClickDownButtonInventoryPacket(props.row.originalIndex)"
+                @keyup.left.native="onClickLeftButtonInventoryPacket(props.row.originalIndex)"
+                @keyup.right.native="onClickRightButtonInventoryPacket(props.row.originalIndex)"
               />
             </div>
 
             <div v-else-if="props.column.field === 'inventoryOdd'">
               <cleave
+                :id="products[props.row.originalIndex].productCode + 'inventoryOdd'"
                 v-model="products[props.row.originalIndex].inventoryOdd"
                 class="form-control text-right"
                 :raw="true"
@@ -226,6 +234,10 @@
                 :value="products[props.row.originalIndex].inventoryOdd"
                 @change.native="updateInventoryTotal(props.row.originalIndex)"
                 @keypress="$onlyNumberInput"
+                @keyup.up.native="onClickUpButtonInventoryOdd(props.row.originalIndex)"
+                @keyup.down.native="onClickDownButtonInventoryOdd(props.row.originalIndex)"
+                @keyup.left.native="onClickLeftButtonInventoryOdd(props.row.originalIndex)"
+                @keyup.right.native="onClickRightButtonInventoryOdd(props.row.originalIndex)"
               />
             </div>
             <div
@@ -803,6 +815,52 @@ export default {
     hideImportMessage() {
       this.showErrorMessage = false
       this.showSuccessMessage = false
+    },
+    moveToFirstRow() {
+      document.getElementById(`${this.products[0].productCode}inventoryPacket`).focus()
+    },
+    onClickUpButtonInventoryPacket(index) {
+      if (index !== 0) {
+        document.getElementById(`${this.products[index - 1].productCode}inventoryPacket`).focus()
+      } else {
+        document.getElementById('form-input-search-keywords').focus()
+      }
+    },
+    onClickDownButtonInventoryPacket(index) {
+      if (index !== this.products.length - 1) {
+        document.getElementById(`${this.products[index + 1].productCode}inventoryPacket`).focus()
+      }
+    },
+    onClickLeftButtonInventoryPacket(index) {
+      if (index !== 0) {
+        document.getElementById(`${this.products[index - 1].productCode}inventoryOdd`).focus()
+      } else {
+        document.getElementById('form-input-search-keywords').focus()
+      }
+    },
+    onClickRightButtonInventoryPacket(index) {
+      document.getElementById(`${this.products[index].productCode}inventoryOdd`).focus()
+    },
+
+    onClickUpButtonInventoryOdd(index) {
+      if (index !== 0) {
+        document.getElementById(`${this.products[index - 1].productCode}inventoryOdd`).focus()
+      } else {
+        document.getElementById('form-input-search-keywords').focus()
+      }
+    },
+    onClickDownButtonInventoryOdd(index) {
+      if (index !== this.products.length - 1) {
+        document.getElementById(`${this.products[index + 1].productCode}inventoryOdd`).focus()
+      }
+    },
+    onClickLeftButtonInventoryOdd(index) {
+      document.getElementById(`${this.products[index].productCode}inventoryPacket`).focus()
+    },
+    onClickRightButtonInventoryOdd(index) {
+      if (index !== this.products.length - 1) {
+        document.getElementById(`${this.products[index + 1].productCode}inventoryPacket`).focus()
+      }
     },
   },
 }
