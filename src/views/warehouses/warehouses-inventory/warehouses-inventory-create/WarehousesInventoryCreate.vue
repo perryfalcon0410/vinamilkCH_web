@@ -241,9 +241,14 @@
                 props.column.field === 'price' ||
                 props.column.field === 'totalPrice' ||
                 props.column.field === 'inventoryTotal' ||
-                props.column.field === 'unequal' ||
                 props.column.field === 'exchange'"
               class="pr-70"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'unequal'"
+              :class="products[props.row.originalIndex].unequal > 0 ? 'pr-70 background-yellow' : products[props.row.originalIndex].unequal < 0 ? 'pr-70 background-green' : 'pr-70'"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -987,5 +992,11 @@ export default {
   }
   thead tr:last-child th {
     vertical-align: middle;
+  }
+  .background-yellow {
+    background-color: yellow !important;
+  }
+  .background-green {
+    background-color: #83ba47 !important;
   }
 </style>
