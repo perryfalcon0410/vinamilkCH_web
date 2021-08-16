@@ -794,7 +794,7 @@ export default {
 
     onClickAddProduct(index) {
       // check permission online order manual or online order from system to add product
-      if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+      if (this.editOnlinePermission || this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
         if (index && index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
           if (productIndex === -1) {
@@ -820,7 +820,9 @@ export default {
       }
 
       // not have permission edit online order manual
-      if (this.editManualPermission === false && this.onlineOrderId === null && this.isOnline === true) {
+      if ((!this.editManualPermission && this.onlineOrderId === null && !this.isOnline)
+        || (!this.editOnlinePermission && this.onlineOrderId !== null && !this.isOnline)
+      ) {
         toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
         return
       }

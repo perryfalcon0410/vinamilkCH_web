@@ -480,6 +480,7 @@
       ref="salesSearchModal"
       :online-order-customers="onlineOrderCustomers"
       :order-online="orderOnline"
+      :open-popup="openPopup"
       @getCustomerInfo="getCustomerInfo"
     />
     <!-- END - Sales Search Modal -->
@@ -691,6 +692,7 @@ export default {
       search: '',
       customerOfShop: false,
       searchPhoneOnly: false,
+      openPopup: 0,
     }
   },
 
@@ -973,6 +975,7 @@ export default {
 
     showSearchModal() {
       this.$refs.salesSearchModal.$refs.salesSearchModal.show()
+      this.openPopup += 1
     },
 
     showSearchOnlineModal() {
@@ -1152,6 +1155,8 @@ export default {
       if (item.id === this.salemtPromotionObjectSelected) {
         this.orderOnline.orderNumber = null
         this.orderOnline.onlineOrderId = null
+        this.orderOnline.discountCode = null
+        this.orderOnline.discountValue = null
       }
     },
 

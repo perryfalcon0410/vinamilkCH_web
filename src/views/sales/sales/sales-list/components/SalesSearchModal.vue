@@ -325,6 +325,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    openPopup: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
