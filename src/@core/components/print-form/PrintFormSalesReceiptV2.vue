@@ -289,7 +289,11 @@
 <script>
 import { mapGetters } from 'vuex'
 import JSPM from 'jsprintmanager'
-import { printBillInvoiceActions } from '@core/utils/filter'
+import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
+// import { printBillInvoiceActions } from '@core/utils/filter'
 import {
   SALESRECEIPTS,
   // Getters
@@ -433,10 +437,14 @@ export default {
     } else {
       JSPM.JSPrintManager.start()
         .then(() => {
-          const text = document.getElementById('print-form-sale-receipt-v2')
-          text.classList.remove('d-none')
-          printBillInvoiceActions(text, printerName)
-          text.classList.add('d-none')
+          const element = document.getElementById('print-form-sale-receipt-v2')
+          const options = {
+            fileName: 'hoa_don_ban_hang',
+            scale: 4,
+          }
+          if (jspmCheckStatus()) {
+            printActions(element, printerName, options)
+          }
         })
         .catch(() => {
           toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')

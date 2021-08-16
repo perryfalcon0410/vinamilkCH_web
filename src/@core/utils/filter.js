@@ -195,7 +195,7 @@ export const printActions = (data, printerName, optionsPrinter) => {
     margin: 1,
     image: { type: 'png' }, // type and quality image export
     pagebreak: { mode: 'avoid-all' }, // break new page
-    html2canvas: { backgroundColor: null },
+    html2canvas: { backgroundColor: null, scale: optionsPrinter.scale ? optionsPrinter.scale : 2 },
     jsPDF: {
       format: optionsPrinter.format ? optionsPrinter.format : '', // format paper
       orientation: optionsPrinter.orientation ? optionsPrinter.orientation : 'portrait', // format orientation paper
