@@ -101,7 +101,7 @@
             </th>
             <th
               class="dotted px-50"
-              style="width: 19.5%"
+              style="width: 20%"
             >
               Ngày bán
             </th>
@@ -144,11 +144,11 @@
         <!-- START - Body -->
         <tbody>
           <tr
-            v-for="(product,stt) in reportData[index].productCats"
+            v-for="product in reportData[index].productCats"
             :key="product.id"
           >
             <td class="text-center px-1">
-              {{ stt + 1 }}
+              {{ product.len + 1 }}
             </td>
             <td class="px-50">
               {{ $moment(product.orderDate).locale('en').format('DD/MM/YYYY HH:mm:ss A') }}
@@ -222,6 +222,19 @@ export default {
         return this.PRINT_REPORT_PROMOTION_GETTER.productCats
       }
       return []
+    },
+  },
+  watch: {
+    reportData() {
+      this.reportProductData = [...this.reportData]
+      let i = 0
+      this.reportProductData.forEach(item => {
+        item.productCats.forEach(j => {
+          // eslint-disable-next-line no-param-reassign
+          j.len = i
+          i += 1
+        })
+      })
     },
   },
   updated() {
