@@ -654,7 +654,7 @@ export default {
       this.warehouseType = this.WAREHOUSE_INVENTORY_DETAIL_GETTER.info.warehouseType
 
       this.products = this.WAREHOUSE_INVENTORY_DETAIL_GETTER.response.map(data => ({
-        category: data.productCategory,
+        category: data.productCategoryCode,
         productId: data.productId,
         productCode: data.productCode,
         productName: data.productName,

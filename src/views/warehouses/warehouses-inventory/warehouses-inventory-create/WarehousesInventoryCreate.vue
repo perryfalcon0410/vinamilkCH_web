@@ -667,7 +667,7 @@ export default {
     getWarehouseInventoryStocks() {
       if (this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response) {
         return this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response.map(data => ({
-          category: data.productCategory,
+          category: data.productCategoryCode,
           productId: data.productId,
           productCode: data.productCode,
           productName: data.productName,
