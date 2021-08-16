@@ -851,7 +851,6 @@ export default {
           type: this.templateOptionSelected,
           ...this.decentralization,
         })
-        this.selectedRedBillRows = []
       } else {
         toasts.error('Xin vui lòng chọn hóa đơn muốn xuất')
       }

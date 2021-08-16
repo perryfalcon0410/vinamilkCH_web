@@ -317,6 +317,7 @@
                       <b-form-input
                         v-model="products[props.row.originalIndex].note"
                         class="style-input"
+                        disabled
                         maxlength="250"
                         @keyup.enter="focusInputSearch"
                       />
