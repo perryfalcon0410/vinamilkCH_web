@@ -218,12 +218,13 @@ export default {
         size: commonData.perPageSizes[0],
         page: commonData.pageNumber,
         sort: null,
-      },
-
-      // decentralization
-      decentralization: {
-        formId: 1,
-        ctrlId: 1,
+        // searchKeywords: string,
+        // phoneNumber: number,
+        // customerTypeId: number,
+        // status: number,
+        // genderId: number,
+        // areaId: number,
+        // isShop: boolean,
       },
 
       customersData: [
@@ -383,7 +384,7 @@ export default {
     },
 
     onClickExcelExportButton() {
-      this.EXPORT_CUSTOMERS_ACTION({ ...this.searchData, ...this.decentralization })
+      this.EXPORT_CUSTOMERS_ACTION({ ...this.searchData, isShop: true })
     },
 
     // START - Vue Good Table func
@@ -392,7 +393,7 @@ export default {
     },
     onPaginationChange(data, params) {
       this.updateSearchData(data)
-      this.GET_CUSTOMERS_ACTION({ ...this.searchData, ...this.decentralization, ...params })
+      this.GET_CUSTOMERS_ACTION({ ...this.searchData, ...params })
     },
     onSearchClick(event) {
       this.onPaginationChange(

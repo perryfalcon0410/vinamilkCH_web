@@ -255,12 +255,6 @@ export default {
         // customerTypes: false,
         shopLocationsSearch: false,
       },
-
-      // decentralization
-      decentralization: {
-        formId: 1,
-        ctrlId: 1,
-      },
     }
   },
 
@@ -317,7 +311,7 @@ export default {
 
   mounted() {
     this.GET_SHOP_LOCATIONS_SEARCH_ACTION({
-      data: { ...this.decentralization },
+      data: {},
       onSuccess: () => {
         // this.apiStatus.shopLocationsSearch = true
       },

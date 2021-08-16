@@ -201,15 +201,17 @@ import {
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
 import { $themeConfig } from '@themeConfig'
+import { getUserData } from '@/auth/utils'
 
 export default {
   components: {
     ValidationProvider,
     ValidationObserver,
   },
+
   data() {
     return {
-      username: localStorage.getItem('username') ? JSON.parse(localStorage.getItem('username')) : null,
+      username: getUserData().username,
       oldPassword: null,
       newPassword: null,
       confirmPassword: null,

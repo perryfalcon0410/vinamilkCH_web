@@ -208,7 +208,7 @@ import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
-import { getHomeRouteForLoggedInUser } from '@/auth/utils'
+import { getHomeRouteForLoggedInUser, getUserData } from '@/auth/utils'
 import { $themeConfig } from '@themeConfig'
 import CryptoJS from 'crypto-js'
 import RoleAndShopSelectionModal from './components/RoleAndShopSelectionModal.vue'
@@ -226,7 +226,7 @@ export default {
     return {
       saveStatus: localStorage.getItem('saveStatus') ? JSON.parse(localStorage.getItem('saveStatus')) : null,
       username: localStorage.getItem('username') ? JSON.parse(localStorage.getItem('username')) : null,
-      password: localStorage.getItem('password') ? JSON.parse(localStorage.getItem('password')) : null,
+      password: localStorage.getItem('password') ? getUserData('password') : null,
       sideImg: require('@/assets/images/pages/login-v2.svg'),
       captchaStatus: false,
       captchaCodeResponse: '',
@@ -321,7 +321,7 @@ export default {
       if (success) {
         // Save password
         if (this.saveStatus) {
-          localStorage.setItem('password', JSON.stringify(this.password))
+          localStorage.setItem('password', CryptoJS.AES.encrypt(JSON.stringify(this.password), process.env.VUE_APP_AES_SECRET_KEY).toString())
         }
 
         this.mapSubForms(data.forms || [])
@@ -329,7 +329,7 @@ export default {
         const userData = {
           id: data.userId,
           fullName: `${data.firstName} ${data.lastName}`,
-          username: data.username,
+          username: data.userAccount,
           email: data.email,
           usedRole: data.usedRole,
           usedShop: data.usedShop,

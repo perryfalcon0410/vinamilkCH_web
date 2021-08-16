@@ -20,10 +20,20 @@ export const isUserLoggedIn = () => {
   return false
 }
 
-export const getUserData = () => {
-  if (localStorage.getItem('userData')) {
-    return JSON.parse(CryptoJS.AES.decrypt(localStorage.getItem('userData'), process.env.VUE_APP_AES_SECRET_KEY).toString(CryptoJS.enc.Utf8))
+export const getUserData = keyword => {
+  switch (keyword) {
+    case 'password':
+      if (localStorage.getItem('password')) {
+        return JSON.parse(CryptoJS.AES.decrypt(localStorage.getItem('password'), process.env.VUE_APP_AES_SECRET_KEY).toString(CryptoJS.enc.Utf8))
+      }
+      break
+
+    default:
+      if (localStorage.getItem('userData')) {
+        return JSON.parse(CryptoJS.AES.decrypt(localStorage.getItem('userData'), process.env.VUE_APP_AES_SECRET_KEY).toString(CryptoJS.enc.Utf8))
+      }
   }
+
   return null
 }
 
