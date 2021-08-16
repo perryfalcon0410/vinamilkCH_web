@@ -375,7 +375,8 @@
                   <b-icon-download
                     class="mr-50"
                   />
-                  Trả hàng
+                  <span v-if="outputTypeSelected == adjustmentType">Lưu</span>
+                  <span v-else>Trả hàng</span>
                 </b-button>
 
                 <b-button
@@ -505,6 +506,7 @@ export default {
       },
       poOutputType: warehousesData.outputTypes[0].id,
       outputTypeSelected: warehousesData.outputTypes[0].id,
+      adjustmentType: warehousesData.outputTypes[1].id,
       warehousesOutput: {
         id: null,
         code: '',
