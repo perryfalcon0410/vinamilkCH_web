@@ -32,6 +32,7 @@
             @input="onChangeKeyWord"
             @selected="onClickAddProduct"
             @focus="focusInputProduct"
+            @blur="blurInputSearch"
           >
             <template
               slot-scope="{ suggestion }"
@@ -541,7 +542,7 @@ export default {
         return [{
           data: this.GET_TOP_SALE_PRODUCTS_GETTER.map(data => ({
             productId: data.id,
-            name: '',
+            name: this.searchOptions.keyWord,
             checkStockTotal: data.checkStockTotal,
             productName: data.productName,
             productCode: data.productCode,
@@ -603,7 +604,7 @@ export default {
       this.productsSearch = [...this.getProductSearch]
       this.productsSearchLength = this.productsSearch[0].data.length
       if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
-        // this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+        document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 }))
       }
     },
     getProducts() {
@@ -779,6 +780,10 @@ export default {
       if (this.isCheckShopId === false) {
         toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
       }
+      if (this.isSelectedProduct) {
+        this.productsSearch = [{ data: null }]
+        this.isSelectedProduct = false
+      }
     },
 
     onChangeKeyWord() {
@@ -789,6 +794,11 @@ export default {
           data: { ...this.searchOptions },
           onSuccess: () => {},
         })
+      }
+    },
+    blurInputSearch() {
+      if (this.searchOptions.keyWord.length < this.minSearch) {
+        this.productsSearch = [{ data: '' }]
       }
     },
 
@@ -816,6 +826,11 @@ export default {
           setTimeout(() => {
             document.getElementById(this.productIdSelected).focus()
           }, 100)
+
+          this.productsSearch = [{ data: '' }]
+          this.searchOptions.keyWord = ''
+        } else {
+          this.$refs.search.$el.querySelector('input').click()
         }
       }
 
@@ -824,11 +839,7 @@ export default {
         || (!this.editOnlinePermission && this.onlineOrderId !== null && !this.isOnline)
       ) {
         toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
-        return
       }
-
-      this.productsSearch = [{ data: null }]
-      this.searchOptions.keyWord = null
     },
 
     getOrderNumber(val) {
