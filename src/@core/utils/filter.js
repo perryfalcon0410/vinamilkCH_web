@@ -165,10 +165,6 @@ export const jspmCheckStatus = () => {
   if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
     return true
   }
-  if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
-    toasts.error('JSPrintManager (JSPM) chưa được cài đặt hoặc chưa được mở')
-    return false
-  }
   if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Blocked) {
     toasts.error('JSPrintManager (JSPM) đã chặn trang web này!')
     return false
@@ -203,8 +199,13 @@ export const printActions = (data, printerName, optionsPrinter) => {
     },
   }
   data.classList.remove('d-none')
-  html2pdf().set(opt).from(data)
+  const dataClone = document.createElement('div')
+  dataClone.appendChild(data)
+  html2pdf().set(opt).from(dataClone)
     .toPdf()
+    .then(() => {
+      data.classList.add('d-none')
+    })
     .get('pdf')
     .then(file => {
       if (optionsPrinter.isPaging) {
@@ -232,7 +233,6 @@ export const printActions = (data, printerName, optionsPrinter) => {
       printContent.printAsGrayscale = true
       cpj.files.push(printContent)
       cpj.sendToClient()
-      data.classList.add('d-none')
     })
 }
 // END - func print type A4

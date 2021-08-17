@@ -122,7 +122,6 @@ import {
   // GETTERS
   PRINTER_CLIENT_GETTER,
   // ACTIONS
-  GET_PRINTER_CLIENT_ACTIONS,
   CREATE_PRINTER_CLIENT_ACTIONS,
   UPDATE_PRINTER_CLIENT_ACTIONS,
 } from './store-module/type'
@@ -167,14 +166,6 @@ export default {
         }
       }
     },
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
-    },
     printerConfigOptions() {
       if (this.printerConfigOptions.find(data => data.id === this.printerDataDefault.defaultPrinterName)) {
         this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
@@ -206,7 +197,6 @@ export default {
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [
-      GET_PRINTER_CLIENT_ACTIONS,
       CREATE_PRINTER_CLIENT_ACTIONS,
       UPDATE_PRINTER_CLIENT_ACTIONS,
     ]),
