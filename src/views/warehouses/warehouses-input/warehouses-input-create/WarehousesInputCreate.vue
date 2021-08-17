@@ -12,7 +12,7 @@
         <!-- START - Form -->
         <b-col
           xl="4"
-          class="bg-white shadow rounded h7"
+          class="bg-white shadow rounded h7 pb-md-1 pb-sm-1"
         >
           <!-- START - Date -->
           <b-row class="mt-1">

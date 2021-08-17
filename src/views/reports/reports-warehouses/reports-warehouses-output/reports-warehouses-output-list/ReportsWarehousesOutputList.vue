@@ -11,8 +11,6 @@
     />
     <!-- END - Search -->
 
-    <print-form-report-output-store />
-
     <!-- START - Report Output list -->
     <div class="bg-white rounded shadow rounded my-1 d-print-none">
       <!-- START - Header -->
@@ -243,6 +241,7 @@
       <!-- END - Table -->
     </div>
     <!-- END - Report Output list -->
+    <print-form-report-output-store />
   </b-container>
 </template>
 
