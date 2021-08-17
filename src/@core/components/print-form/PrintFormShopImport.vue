@@ -1007,6 +1007,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import JSPM from 'jsprintmanager'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   printActions,
   jspmCheckStatus,
@@ -1095,17 +1097,29 @@ export default {
     },
   },
   updated() {
+    JSPM.JSPrintManager.auto_reconnect = true
     const printerName = this.printerOptions.reportPrinterName
-    const element = document.getElementById('print-form-shop-import')
-    const options = {
-      fileName: 'bao_cao_nhap_hang',
-      orientation: 'landscape',
-      rotate: 'Rot90',
-      pageSizing: 'Fit',
-      format: 'a4',
-    }
-    if (jspmCheckStatus()) {
-      printActions(element, printerName, options)
+    if (printerName === '' || printerName === null) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+        .then(() => {
+          const element = document.getElementById('print-form-shop-import')
+          const options = {
+            fileName: 'bao_cao_nhap_hang',
+            orientation: 'landscape',
+            rotate: 'Rot90',
+            pageSizing: 'Fit',
+            format: 'a4',
+            isPaging: true,
+          }
+          if (jspmCheckStatus()) {
+            printActions(element, printerName, options)
+          }
+        })
+        .catch(() => {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        })
     }
   },
 }
@@ -1127,18 +1141,18 @@ export default {
 }
 th {
   border-style: solid;
-  border-width: 1.8px;
+  border-width: 1px;
 }
 td {
   border-style: dashed;
-  border-width: 1.8px;
+  border-width: 1px;
 }
 
 .top-border-only {
   border-top: 2.5px solid rgb(100, 99, 99);
 }
 .bot-border-dotted {
-  border-bottom: 2px dashed;
+  border-bottom: none;
   border-collapse: collapse;
 }
 .total {
