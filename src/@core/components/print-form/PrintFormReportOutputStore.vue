@@ -900,26 +900,12 @@ export default {
         return this.PRINT_OUTPUT_GOODS_GETTER.expBorrow
       }
       return { orderImports: [] }
-<<<<<<< HEAD
     },
     printerOptions() {
       if (this.PRINTER_CLIENT_GETTER) {
         return this.PRINTER_CLIENT_GETTER
       }
       return {}
-=======
->>>>>>> 021f2365 (+ fix shot_output print form)
-    },
-  },
-  watch: {
-    lstAdjustInfo() {
-      this.expAdjust = { ...this.lstAdjustInfo }
-    },
-    lstPoInfo() {
-      this.expPO = { ...this.lstPoInfo }
-    },
-    lstStockInfo() {
-      this.expBorrow = { ...this.lstStockInfo }
     },
   },
   watch: {
