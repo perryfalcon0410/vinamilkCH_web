@@ -692,7 +692,7 @@ export default {
       search: '',
       customerOfShop: false,
       searchPhoneOnly: false,
-      openPopup: 0,
+      openPopup: false,
     }
   },
 
@@ -975,7 +975,7 @@ export default {
 
     showSearchModal() {
       this.$refs.salesSearchModal.$refs.salesSearchModal.show()
-      this.openPopup += 1
+      this.openPopup = true
     },
 
     showSearchOnlineModal() {

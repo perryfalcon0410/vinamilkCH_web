@@ -326,8 +326,8 @@ export default {
       default: () => {},
     },
     openPopup: {
-      type: Number,
-      default: 0,
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -471,11 +471,14 @@ export default {
     onlineOrderCustomers() {
       this.customers = [...this.onlineOrderCustomers]
     },
+    openPopup: {
+      handler() {
+        this.onSearch()
+      },
+      deep: true,
+    },
   },
   mounted() {
-    // this.onSearch()
-  },
-  created() {
   },
   methods: {
     ...mapActions(CUSTOMER, [

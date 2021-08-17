@@ -331,13 +331,6 @@ import {
   GET_PRODUCT_BY_BARCODE_ACTION,
   GET_EDIT_ONLINE_PERMISSION_ACTION,
 } from '../store-module/type'
-import {
-  CUSTOMER,
-  // GETTERS
-  CUSTOMER_DEFAULT_GETTER,
-  // Action
-  GET_CUSTOMER_DEFAULT_ACTION,
-} from '../../sales-customers/store-module/type'
 
 export default {
   components: {
@@ -504,9 +497,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(CUSTOMER, [
-      CUSTOMER_DEFAULT_GETTER,
-    ]),
     ...mapGetters(SALES, [
       GET_PRODUCTS_GETTER,
       GET_PRODUCT_INFOS_GETTER,
@@ -550,7 +540,7 @@ export default {
             productInventory: data.stockTotal,
             productUnitPrice: data.price,
             sumProductUnitPrice: data.price,
-            quantity: 1,
+            quantity: null,
             productTotalPrice: this.totalPrice(1, Number(data.price)),
             sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
             productImage: data.image,
@@ -730,9 +720,6 @@ export default {
       GET_PRODUCT_BY_BARCODE_ACTION,
       GET_EDIT_ONLINE_PERMISSION_ACTION,
     ]),
-    ...mapActions(CUSTOMER, [
-      GET_CUSTOMER_DEFAULT_ACTION,
-    ]),
 
     totalPrice(amount, price) {
       return amount * (price || 0)
@@ -756,7 +743,7 @@ export default {
       if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null)) {
         this.orderProducts[index].quantity -= 1
         if (this.orderProducts[index].quantity <= 0) {
-          this.orderProducts[index].quantity = 1
+          this.orderProducts[index].quantity = 0
         }
 
         this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
@@ -980,7 +967,7 @@ export default {
     },
     onChangeQuantity(index) {
       if (this.orderProducts[index].quantity <= 0) {
-        this.orderProducts[index].quantity = 1
+        this.orderProducts[index].quantity = 0
       }
       if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
         this.isDisabled = false
@@ -1072,6 +1059,7 @@ export default {
             this.customerTypeCurent = this.customerType
           }
         }
+        this.$refs.search.$el.querySelector('input').focus()
       } else {
         this.isCheckShopId = false
       }
