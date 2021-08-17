@@ -313,11 +313,10 @@ export default {
     this.GET_SHOP_LOCATIONS_SEARCH_ACTION({
       data: {},
       onSuccess: () => {
+        this.$refs.focusInput.focus()
         // this.apiStatus.shopLocationsSearch = true
       },
     })
-
-    this.$refs.focusInput.focus()
   },
 
   methods: {

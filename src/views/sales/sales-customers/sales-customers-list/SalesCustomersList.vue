@@ -37,7 +37,7 @@
           </b-button>
           <b-button
             v-if="statusExcelButton().show"
-            :disabled="statusExcelButton().disabled || !customersData.length"
+            :disabled="statusExcelButton().disabled || !customersData.length || searchData.isShop === false"
             class="btn-brand-1 h8 align-items-button-center rounded ml-1"
             variant="someThing"
             @click="onClickExcelExportButton"
