@@ -654,7 +654,7 @@ export default {
             productInventory: this.getProductByBarcode.stockTotal,
             productUnitPrice: this.getProductByBarcode.price,
             sumProductUnitPrice: this.getProductByBarcode.price,
-            quantity: 1,
+            quantity: null,
             productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
             sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
             productImage: this.getProductByBarcode.image,
