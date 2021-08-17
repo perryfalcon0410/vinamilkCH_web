@@ -324,7 +324,7 @@
               v-if="statusSaveButton().show && !isDisableSave"
               :disabled="statusSaveButton().disabled || invalid"
               variant="someThing"
-              class="align-items-button-center btn-brand-1 text-uppercase h8"
+              class="align-items-button-center btn-brand-1"
               @click="onClickUpdateWarehousesOutput"
             >
               <b-icon-download
@@ -334,7 +334,7 @@
             </b-button>
 
             <b-button
-              class="align-items-button-center text-uppercase ml-1 h8"
+              class="align-items-button-center ml-1"
               @click="navigateBack"
             >
               <b-icon-x

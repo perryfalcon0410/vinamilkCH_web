@@ -369,18 +369,18 @@
                   v-if="statusSaveButton().show"
                   :disabled="statusSaveButton().disabled || invalid"
                   variant="someThing"
-                  class="btn-brand-1 rounded text-uppercase aligns-items-button-center"
+                  class="btn-brand-1 rounded aligns-items-button-center"
                   @click="createExport"
                 >
                   <b-icon-download
                     class="mr-50"
                   />
-                  <span v-if="outputTypeSelected == adjustmentType">Lưu</span>
+                  <span v-if="outputTypeSelected != poOutputType">Lưu</span>
                   <span v-else>Trả hàng</span>
                 </b-button>
 
                 <b-button
-                  class="btn-brand-1 ml-1 rounded text-uppercase aligns-items-button-center"
+                  class="btn-brand-1 ml-1 rounded aligns-items-button-center"
                   @click="navigateBack"
                 >
                   <b-icon-x
@@ -461,9 +461,6 @@ import BorrowedModal from '../components/borrowed-modal/OutputBorrowedModal.vue'
 import {
   WAREHOUSES_OUTPUT,
   // GETTERS
-  // GET_EXPORT_PO_TRANS_DETAIL_GETTER,
-  // GET_EXPORT_AJUSTMENTS_DETAIL_GETTER,
-  // GET_EXPORT_BORROWINGS_DETAIL_GETTER,
   GET_WAREHOUSE_TYPE_GETTER,
   // ACTIONS
   GET_WAREHOUSE_TYPE_ACTION,
@@ -506,7 +503,6 @@ export default {
       },
       poOutputType: warehousesData.outputTypes[0].id,
       outputTypeSelected: warehousesData.outputTypes[0].id,
-      adjustmentType: warehousesData.outputTypes[1].id,
       warehousesOutput: {
         id: null,
         code: '',
