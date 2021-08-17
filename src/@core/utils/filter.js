@@ -177,7 +177,9 @@ export const printActions = (data, printerName, optionsPrinter) => {
   const opt = {
     margin: 1,
     image: { type: 'jpeg', quality: 0.9 }, // type and quality image export
-    pagebreak: { mode: optionsPrinter.pageBreak ? optionsPrinter.pageBreak : 'avoid-all' }, // break new page
+    pagebreak: {
+      mode: optionsPrinter.pageBreak ? optionsPrinter.pageBreak : 'avoid-all', // break new page
+    },
     html2canvas: {
       backgroundColor: null,
       scale: optionsPrinter.scale ? optionsPrinter.scale : 2.5, // increase quality data print

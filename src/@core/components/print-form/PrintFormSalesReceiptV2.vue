@@ -1,8 +1,8 @@
 <template>
   <div
     id="print-form-sale-receipt-v2"
-    class="d-print-block text-brand-3"
-    style="max-width: 90%; margin: 0 auto;"
+    class="d-none d-print-block text-brand-3"
+    style="max-width: 95%; margin: 0 auto;"
   >
     <!-- START - Header -->
     <b-row
@@ -293,7 +293,10 @@
     </div>
     <div class="text-center mt-50 text-nowrap">
       <strong style="font-size: 26px">Vinamilk online: <ins>www.giacmosuaviet.com.vn</ins></strong>
-      <div style="font-size: 28px">
+      <div
+        style="font-size: 28px"
+        class="html2pdf__page-break"
+      >
         Cảm ơn Quý khách. Hẹn gặp lại
       </div>
     </div>
@@ -459,6 +462,7 @@ export default {
             pageSizing: 'Fit',
             scale: 3,
             pageBreak: '',
+            format: [210, 600],
           }
           if (jspmCheckStatus()) {
             printActions(element, printerName, options)
