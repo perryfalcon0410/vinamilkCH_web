@@ -879,10 +879,8 @@ export default {
       this.UPDATE_RED_BILLS_ACTION({
         redInvoiceRequests,
         onSuccess: () => {
-          this.onSearchClick()
         },
       })
-      this.selectedRedBillRows = []
     },
   },
 }
