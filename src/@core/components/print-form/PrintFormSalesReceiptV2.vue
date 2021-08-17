@@ -1,8 +1,8 @@
 <template>
   <div
     id="print-form-sale-receipt-v2"
-    class="d-none d-print-block text-brand-3"
-    style="width: 400px"
+    class="d-print-block text-brand-3"
+    style="max-width: 90%; margin: 0 auto;"
   >
     <!-- START - Header -->
     <b-row
@@ -13,25 +13,32 @@
       <div class="d-flex flex-column align-items-center">
         <b-img
           src="@/assets/images/logo/VinamilkLogo.png"
-          width="120px"
+          width="240px"
         />
-        <div class="mb-50">
+        <div
+          class="mb-50"
+          style="font-size: 28px"
+        >
           CTY CP SUA VIET NAM - VINAMILK
         </div>
-        <strong style="font-size: 17px">
+        <strong style="font-size: 34px">
           {{ printSalesReceiptData.shopName }}
         </strong>
-        <div>Tel: {{ printSalesReceiptData.shopPhone }}</div>
-        <div>Add: {{ printSalesReceiptData.shopAddress }}</div>
+        <div style="font-size: 28px">
+          Tel: {{ printSalesReceiptData.shopPhone }}
+        </div>
+        <div style="font-size: 28px">
+          Add: {{ printSalesReceiptData.shopAddress }}
+        </div>
 
         <strong class="mt-1">
-          <div>
+          <div style="font-size: 28px">
             BIÊN NHẬN THANH TOÁN
           </div>
-          <div>
+          <div style="font-size: 28px">
             KIÊM PHIẾU GIAO HÀNG
           </div>
-          <div>
+          <div style="font-size: 28px">
             (CÓ GIÁ TRỊ NHƯ HÓA ĐƠN)
           </div>
         </strong>
@@ -41,10 +48,13 @@
 
     <!-- START - Order info -->
     <div>
-      <div>
+      <div style="font-size: 28px">
         Số HĐ: <strong>{{ printSalesReceiptData.orderNumber }}</strong>
       </div>
-      <b-row class="mx-0">
+      <b-row
+        class="mx-0"
+        style="font-size: 28px"
+      >
         <div class="mr-20">
           KH:
         </div>
@@ -52,7 +62,10 @@
           {{ printSalesReceiptData.customerName }} - {{ printSalesReceiptData.customerPhone }}
         </b-col>
       </b-row>
-      <b-row class="mx-0">
+      <b-row
+        class="mx-0"
+        style="font-size: 28px"
+      >
         <div class="mr-20">
           DC:
         </div>
@@ -60,16 +73,16 @@
           {{ printSalesReceiptData.customerAddress }}
         </b-col>
       </b-row>
-      <div>
+      <div style="font-size: 28px">
         Loại giao hàng: {{ printSalesReceiptData.deliveryType }}
       </div>
-      <div>
+      <div style="font-size: 28px">
         Doanh số tích lũy: {{ $formatNumberToLocale(printSalesReceiptData.customerPurchase) }}
       </div>
-      <div>
+      <div style="font-size: 28px">
         Ngày: {{ $formatPrintDate(printSalesReceiptData.orderDate) }}
       </div>
-      <div>
+      <div style="font-size: 28px">
         NV: {{ printSalesReceiptData.userName }}
       </div>
     </div>
@@ -201,6 +214,7 @@
         class="mx-0 "
         align-h="end"
         align-v="center"
+        style="font-size: 28px"
       >
         <div>
           <div>
@@ -236,6 +250,7 @@
         </div>
         <div
           class="ml-50"
+          style="font-size: 28px"
         >
           <div>
             {{ $formatNumberToLocale( printSalesReceiptData.amount ) || 0 }}
@@ -273,12 +288,12 @@
     <!-- END - Total section -->
 
     <!-- START - Footer -->
-    <div>
+    <div style="font-size: 28px">
       Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.
     </div>
     <div class="text-center mt-50 text-nowrap">
-      <strong style="font-size: 13px">Vinamilk online: <ins>www.giacmosuaviet.com.vn</ins></strong>
-      <div>
+      <strong style="font-size: 26px">Vinamilk online: <ins>www.giacmosuaviet.com.vn</ins></strong>
+      <div style="font-size: 28px">
         Cảm ơn Quý khách. Hẹn gặp lại
       </div>
     </div>
@@ -438,9 +453,12 @@ export default {
       JSPM.JSPrintManager.start()
         .then(() => {
           const element = document.getElementById('print-form-sale-receipt-v2')
+          element.classList.remove('d-none')
           const options = {
             fileName: 'hoa_don_ban_hang',
+            pageSizing: 'Fit',
             scale: 3,
+            pageBreak: '',
           }
           if (jspmCheckStatus()) {
             printActions(element, printerName, options)
@@ -456,6 +474,12 @@ export default {
 <style lang="scss" scoped>
 table {
   width: 100%;
+}
+th {
+  font-size: 28px;
+}
+td {
+  font-size: 28px;
 }
 thead {
  border-top: 1.5px dashed black;
