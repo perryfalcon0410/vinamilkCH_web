@@ -2,7 +2,6 @@ import moment from 'moment'
 import JSPM from 'jsprintmanager'
 // eslint-disable-next-line import/no-unresolved
 import html2pdf from 'html2pdf.js'
-import html2canvas from 'html2canvas'
 import toasts from './toasts/toasts'
 
 export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)
@@ -171,29 +170,21 @@ export const jspmCheckStatus = () => {
   }
   return false
 }
-export const printBillInvoiceActions = (data, printerName) => {
-  html2canvas(data).then(canvas => {
-    const cpj = new JSPM.ClientPrintJob()
-    cpj.clientPrinter = new JSPM.InstalledPrinter(printerName)
-    const b64Prefix = 'data:image/png;base64,'
-    const imgBase64DataUri = canvas.toDataURL('image/png')
-    const imgBase64Content = imgBase64DataUri.substring(b64Prefix.length, imgBase64DataUri.length)
-    const printContent = new JSPM.PrintFile(imgBase64Content, JSPM.FileSourceType.Base64, 'printNow.png', 1)
-    cpj.files.push(printContent)
-    cpj.sendToClient()
-  })
-}
 // check JSPM is running
 
 // START - func print type A4
 export const printActions = (data, printerName, optionsPrinter) => {
   const opt = {
     margin: 1,
-    image: { type: 'png' }, // type and quality image export
+    image: { type: 'jpeg', quality: 0.9 }, // type and quality image export
     pagebreak: { mode: 'avoid-all' }, // break new page
-    html2canvas: { backgroundColor: null, scale: optionsPrinter.scale ? optionsPrinter.scale : 2 },
+    html2canvas: {
+      backgroundColor: null,
+      scale: optionsPrinter.scale ? optionsPrinter.scale : 2.5, // increase quality data print
+      imageTimeout: 0,
+    },
     jsPDF: {
-      format: optionsPrinter.format ? optionsPrinter.format : '', // format paper
+      format: optionsPrinter.format ? optionsPrinter.format : '', // format paper convert
       orientation: optionsPrinter.orientation ? optionsPrinter.orientation : 'portrait', // format orientation paper
       hotfixes: 'px_scaling',
     },
@@ -222,19 +213,18 @@ export const printActions = (data, printerName, optionsPrinter) => {
     .then(pdf => {
       const cpj = new JSPM.ClientPrintJob()
       cpj.clientPrinter = new JSPM.InstalledPrinter(printerName) // get printer
-      // const b64Prefix = 'data:application/pdf;base64,'
-      // const imgBase64Content = pdf.substring(b64Prefix.length, pdf.length)
       // convert data
       const printContent = new JSPM.PrintFilePDF(pdf, JSPM.FileSourceType.URL, `${optionsPrinter.fileName}.pdf`, 1)
       // rotate pager áp dụng in ngang [RT90]
       printContent.printRotation = JSPM.PrintRotation[optionsPrinter.rotate ? optionsPrinter.rotate : 'None']
       // auto fit data print
       printContent.pageSizing = JSPM.Sizing[optionsPrinter.pageSizing ? optionsPrinter.pageSizing : 'None']
-      printContent.printAsGrayscale = true
+      printContent.printAsGrayscale = true // Options print black/white(=true) and color(=false)
       cpj.files.push(printContent)
       cpj.sendToClient()
     })
 }
+
 // END - func print type A4
 
 // count from isoDate to now

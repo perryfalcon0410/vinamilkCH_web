@@ -227,15 +227,15 @@ export default {
         this.isTrue = false
         JSPM.JSPrintManager.auto_reconnect = false
         toasts.error('JSPrintManager (JSPM) chưa được cài đặt hoặc chưa được mở')
-        if (navigator.appVersion.indexOf('Win64') !== -1) {
+        if (navigator.appVersion.indexOf('Win64') !== -1 || navigator.oscpu.indexOf('Win64') !== -1) {
           this.nameOS = 'Windows 64-bit'
           this.linkDownloadSoftWare = 'https://www.neodynamic.com/downloads/jspm/jspm-4.0.0-win64.msi'
         }
-        if (navigator.appVersion.indexOf('Win32') !== -1) {
+        if (navigator.appVersion.indexOf('Win32') !== -1 || navigator.oscpu.indexOf('Win32') !== -1) {
           this.nameOS = 'Windows 32-bit'
           this.linkDownloadSoftWare = 'https://www.neodynamic.com/downloads/jspm/jspm-4.0.0-win32.msi'
         }
-        if (navigator.appVersion.indexOf('Mac') !== -1) {
+        if (navigator.appVersion.indexOf('Mac') !== -1 || navigator.oscpu.indexOf('Mac') !== -1) {
           this.nameOS = 'MacOS'
           this.linkDownloadSoftWare = 'https://www.neodynamic.com/downloads/jspm/jspm-4.0.0.0-macOS.pkg'
         }

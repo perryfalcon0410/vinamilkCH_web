@@ -2,7 +2,7 @@
   <b-container
     id="print-report-cat"
     fluid
-    class="d-none d-print-block py-1 px-3 text-brand-3"
+    class="d-none d-print-block px-3 text-brand-3"
   >
     <!-- START - Header -->
     <b-row
@@ -25,7 +25,7 @@
       </div>
 
       <div class="d-flex flex-column align-items-center">
-        <strong style="font-size: 38px"> Báo cáo doanh số theo CAT </strong>
+        <strong style="font-size: 36px"> Báo cáo doanh số theo CAT </strong>
         <p
           class="my-1"
           style="font-size: 20px;"
@@ -121,6 +121,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import JSPM from 'jsprintmanager'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   printActions,
   jspmCheckStatus,
@@ -200,18 +202,29 @@ export default {
   },
   updated() {
     const printerName = this.printerOptions.reportPrinterName
-    const element = document.getElementById('print-report-cat')
-    const options = {
-      fileName: 'Bao_cao_cat',
-      format: 'a2',
-      orientation: 'landscape',
-      rotate: 'Rot90',
-      pageSizing: 'Fit',
-      isPaging: true,
-      scale: 3,
-    }
-    if (jspmCheckStatus()) {
-      printActions(element, printerName, options)
+    if (printerName === '' || printerName === null) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+        .then(() => {
+          const element = document.getElementById('print-report-cat')
+
+          const options = {
+            fileName: 'Bao_cao_cat',
+            format: 'a2',
+            orientation: 'landscape',
+            rotate: 'Rot90',
+            pageSizing: 'Fit',
+            scale: 2.5,
+            isPaging: true,
+          }
+          if (jspmCheckStatus()) {
+            printActions(element, printerName, options)
+          }
+        })
+        .catch(() => {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        })
     }
   },
 }

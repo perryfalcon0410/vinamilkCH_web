@@ -112,6 +112,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import JSPM from 'jsprintmanager'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   printActions,
   jspmCheckStatus,
@@ -153,18 +155,28 @@ export default {
   },
   updated() {
     const printerName = this.printerOptions.reportPrinterName
-    const element = document.getElementById('report-customers-no-order')
-    const options = {
-      fileName: 'Báo cáo khách hàng không giao dịch',
-      format: 'a3',
-      // orientation: 'landscape',
-      // rotate: 'Rot90',
-      pageSizing: 'Fit',
-      isPaging: true,
-      scale: 2,
-    }
-    if (jspmCheckStatus()) {
-      printActions(element, printerName, options)
+    if (printerName === '' || printerName === null) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+        .then(() => {
+          const element = document.getElementById('report-customers-no-order')
+          const options = {
+            fileName: 'Báo cáo khách hàng không giao dịch',
+            format: 'a3',
+            // orientation: 'landscape',
+            // rotate: 'Rot90',
+            pageSizing: 'Fit',
+            isPaging: true,
+            scale: 2,
+          }
+          if (jspmCheckStatus()) {
+            printActions(element, printerName, options)
+          }
+        })
+        .catch(() => {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        })
     }
   },
 }

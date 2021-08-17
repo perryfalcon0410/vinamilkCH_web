@@ -440,7 +440,7 @@ export default {
           const element = document.getElementById('print-form-sale-receipt-v2')
           const options = {
             fileName: 'hoa_don_ban_hang',
-            scale: 4,
+            scale: 3,
           }
           if (jspmCheckStatus()) {
             printActions(element, printerName, options)
