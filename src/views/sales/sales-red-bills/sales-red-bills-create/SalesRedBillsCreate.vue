@@ -355,7 +355,7 @@
                   </b-row>
 
                   <b-row
-                    v-else-if="props.column.field === 'productPriceTotal'"
+                    v-else-if="props.column.field === 'productPriceTotalOriginal'"
                     v-show="products.length > 0"
                     class="h7 mx-50"
                     align-h="end"
@@ -363,12 +363,20 @@
                     {{ $formatNumberToLocale(totalPriceTotal) }}
                   </b-row>
                   <b-row
+                    v-else-if="props.column.field === 'productPriceTotalVat'"
+                    v-show="products.length > 0"
+                    class="h7 mx-50"
+                    align-h="end"
+                  >
+                    {{ $formatNumberToLocale(totalPriceTotalVat) }}
+                  </b-row>
+                  <b-row
                     v-else-if="props.column.field === 'productExported'"
                     v-show="products.length > 0"
                     class="h7 px-0 mx-50"
                     align-h="end"
                   >
-                    {{ (totalProductExported ? $formatNumberToLocale(totalProductExported.toFixed(0)) : $formatNumberToLocale(totalProductExported)) }}
+                    {{ $formatNumberToLocale(Math.round((totalProductExported))) }}
                   </b-row>
                 </template>
                 <!-- END - Custome filter -->
@@ -556,6 +564,7 @@ export default {
       entryCouponModalVisible: false,
       totalQuantity: '',
       totalPriceTotal: '',
+      totalPriceTotalVat: '',
       totalProductExported: '',
       redBill: {
         customerId: null,
@@ -636,8 +645,8 @@ export default {
           sortable: false,
         },
         {
-          label: 'Thành tiền',
-          field: 'productPriceTotal',
+          label: 'Thành tiền chưa VAT',
+          field: 'productPriceTotalOriginal',
           type: 'number',
           thClass: 'text-nowrap',
           tdClass: 'align-middle pr-2',
@@ -645,6 +654,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'VAT %',
@@ -656,6 +666,15 @@ export default {
           sortable: false,
         },
         {
+          label: 'Thành tiền VAT',
+          field: 'productPriceTotalVat',
+          type: 'number',
+          thClass: 'text-nowrap',
+          tdClass: 'align-middle pr-2',
+          sortable: false,
+          formatFn: this.$formatNumberToLocale,
+        },
+        {
           label: 'Tiền thuế GTGT',
           field: 'productExported',
           type: 'number',
@@ -665,6 +684,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Ghi chú',
@@ -732,6 +752,7 @@ export default {
             productName: data.productName,
             groupVat: data.groupVat,
             unit: data.uom1,
+            convfact: data.convfact,
             quantity: 1,
             price: data.price,
             vat: data.vat,
@@ -756,6 +777,9 @@ export default {
     },
     getTotalProductExported() {
       return this.products.reduce((accum, item) => accum + Number(item.productExportedOriginal), 0)
+    },
+    getTotalPriceTotalVat() {
+      return this.products.reduce((accum, item) => accum + Number(item.productPriceTotalVat), 0)
     },
   },
 
@@ -788,6 +812,9 @@ export default {
     },
     getTotalProductExported() {
       this.totalProductExported = this.getTotalProductExported
+    },
+    getTotalPriceTotalVat() {
+      this.totalPriceTotalVat = this.getTotalPriceTotalVat
     },
   },
 
@@ -898,21 +925,24 @@ export default {
             productDVT: product.item.unit,
             quantity: 1,
             productPrice: this.$formatNumberToLocale(product.item.price),
-            productPriceTotal: this.$formatNumberToLocale(product.item.price),
+            // productPriceTotal: this.$formatNumberToLocale(product.item.price),
             productPriceOriginal: product.item.price,
             productPriceTotalOriginal: product.item.price,
             vat: product.item.vat,
-            productExported: this.$formatNumberToLocale(product.item.vatAmount),
+            convfact: (product.item.convfact && product.item.convfact > 0) ? product.item.convfact : 1,
+            productExported: product.item.vatAmount,
             productExportedOriginal: product.item.vatAmount,
             sumProductExportedOriginal: product.item.vatAmount,
+            productPriceTotalVat: product.item.vatAmount + product.item.price,
             note: '0T1',
             button: '1',
           })
         } else {
           this.products[existedProductIndex].quantity += product.item.quantity
-          // Công thức: ghi chú sp = (SL / quantityPerBox(=24))'T'(SL % quantityPerBox(=24))
-          // Gải thích: Ghi chú sp theo quy tắc: thùng T lẻ (24sp là 1 thùng)
-          this.products[existedProductIndex].note = `${Math.floor(this.products[existedProductIndex].quantity / this.quantityPerBox)}T${this.products[existedProductIndex].quantity % this.quantityPerBox}`
+          // convfact: số đơn vị SL của 1 thùng
+          // Công thức: ghi chú sp = (quantity / convfact)'T'(SL % convfact)
+          // Gải thích: Ghi chú sp theo quy tắc: thùng T lẻ
+          this.products[existedProductIndex].note = `${Math.floor(this.products[existedProductIndex].quantity / this.products[existedProductIndex].convfact)}T${this.products[existedProductIndex].quantity % this.products[existedProductIndex].convfact}`
           this.onChangeQuantityAndPrice(existedProductIndex)
           this.onChangeVAT(existedProductIndex)
           this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
@@ -937,15 +967,17 @@ export default {
           industry: data.groupVat,
           productDVT: data.uom1,
           quantity: data.quantity,
+          convfact: (data.convFact && data.convFact > 0) ? data.convFact : 1,
           productPrice: this.$formatNumberToLocale(data.priceNotVat),
-          productPriceTotal: this.$formatNumberToLocale(data.quantity * data.priceNotVat),
+          // productPriceTotal: this.$formatNumberToLocale(Math.round(data.quantity * data.priceNotVat)),
           productPriceOriginal: data.priceNotVat,
-          productPriceTotalOriginal: data.quantity * data.priceNotVat,
+          productPriceTotalOriginal: Math.round(data.quantity * data.priceNotVat),
           vat: data.vat,
-          productExported: this.$formatNumberToLocale((data.quantity * data.priceNotVat * data.vat) / 100), // tính giá VAT (SL*PRICE)*VAT/100%
+          productExported: Math.round((data.quantity * data.priceNotVat * data.vat) / 100), // tính giá VAT (SL*PRICE)*VAT/100%
           productExportedOriginal: (data.quantity * data.priceNotVat * data.vat) / 100,
           sumProductExportedOriginal: (data.quantity * data.priceNotVat * data.vat) / 100,
-          note: `${Math.floor(data.quantity / this.quantityPerBox)}T${data.quantity % this.quantityPerBox}`,
+          productPriceTotalVat: Math.round((data.quantity * data.priceNotVat) + ((data.quantity * data.priceNotVat * data.vat) / 100)),
+          note: data.note,
           button: '1',
         }))
         // Lấy dữ liệu khách hàng từ HDBH
@@ -959,6 +991,7 @@ export default {
         this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
         this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
         this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
+        this.totalPriceTotalVat = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalVat), 0)
       }
 
       this.saleOrderIds = invoiceData.saleOrderIds
@@ -979,7 +1012,6 @@ export default {
       if (this.products[index].productPrice === 0) {
         this.products[index].productPrice = 1
       }
-      // this.products[index].productPrice = Number(this.products[index].productPriceOriginal)
     },
     onInputValueQuantity(index) {
       if (this.products[index].quantity === 0) {
@@ -992,27 +1024,56 @@ export default {
         this.products[index].productPriceOriginal = 1
       }
       this.products[index].productPriceOriginal = Number(this.products[index].productPrice)
-      this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPrice))
-      this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPrice)
-      this.products[index].productExported = this.$formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
+      // this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPrice))
+      this.products[index].productPriceTotalOriginal = Math.round(Number(this.products[index].quantity) * Number(this.products[index].productPrice))
+
+      this.products[index].productExported = Math.round(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100))
+
       this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
+      // Tính giá trị VAt của từng sp
       this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
+      // Tính tổng VAT
       this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
+      // tính giá sản phẩm gồm VAT
+      this.products[index].productPriceTotalVat = Math.round(this.products[index].productPriceTotalOriginal + this.products[index].productExported)
+      // tổng giá trị gồm VAT
+      this.totalPriceTotalVat = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalVat), 0)
     },
     onChangeQuantityAndPrice(index) {
-      this.products[index].note = `${Math.floor(this.products[index].quantity / this.quantityPerBox)}T${this.products[index].quantity % this.quantityPerBox}`
-      this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal))
-      this.products[index].productPriceTotalOriginal = Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal)
-      this.products[index].productExported = this.$formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
+      // START- note
+      // convfact: số đơn vị SL của 1 thùng
+      // Công thức: ghi chú sp = (quantity / convfact)'T'(SL % convfact)
+      // Gải thích: Ghi chú sp theo quy tắc: thùng T lẻ
+      this.products[index].note = `${Math.floor(this.products[index].quantity / this.products[index].convfact)}T${this.products[index].quantity % this.products[index].convfact}`
+      // START- note
+      // Tính giá sp trước VAT
+      this.products[index].productPriceTotalOriginal = Math.round(Number(this.products[index].quantity) * Number(this.products[index].productPriceOriginal))
+
+      this.products[index].productExported = Math.round(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100))
+      // Tổng số lượng
       this.totalQuantity = this.products.reduce((accum, i) => accum + Number(i.quantity), 0)
+      // Tính tổng giá trước VAT
       this.totalPriceTotal = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalOriginal), 0)
-      this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
+      // Tính giá trị VAt của từng sp
+      this.products[index].sumProductExportedOriginal = Math.round(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100))
+      // Tính tổng VAT
       this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
+      // tính giá sản phẩm gồm VAT
+      this.products[index].productPriceTotalVat = Math.round(this.products[index].productPriceTotalOriginal + this.products[index].productExported)
+      // tổng giá trị gồm VAT
+      this.totalPriceTotalVat = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalVat), 0)
     },
+
     onChangeVAT(index) {
-      this.products[index].productExported = this.$formatNumberToLocale(parseInt(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100), 10))
-      this.products[index].sumProductExportedOriginal = Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100)
+      this.products[index].productExported = Math.round(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100))
+      // Tính giá trị VAt của từng sp
+      this.products[index].sumProductExportedOriginal = Math.round(Number(this.products[index].productPriceTotalOriginal) * (Number(this.products[index].vat) / 100))
+      // Tính tổng VAT
       this.totalProductExported = this.products.reduce((accum, i) => accum + Number(i.sumProductExportedOriginal), 0)
+      // tính giá sản phẩm gồm VAT
+      this.products[index].productPriceTotalVat = Math.round(this.products[index].productPriceTotalOriginal + this.products[index].productExported)
+      // tổng giá trị gồm VAT
+      this.totalPriceTotalVat = this.products.reduce((accum, i) => accum + Number(i.productPriceTotalVat), 0)
     },
     onClickCreateBill() {
       const productsData = this.products.map(data => ({
