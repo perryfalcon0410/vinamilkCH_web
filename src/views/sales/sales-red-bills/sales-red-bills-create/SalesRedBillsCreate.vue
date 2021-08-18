@@ -869,8 +869,10 @@ export default {
         this.redBill.officeWorking = customer.item.officeWorking
         this.redBill.officeAddress = customer.item.officeAddress
         this.redBill.taxCode = customer.item.taxCode
+        this.customers = [{ data: null }]
+      } else {
+        this.$refs.focusInput.$el.querySelector('input').click()
       }
-      this.customers = [{ data: null }]
     },
     // choose products func
     loadProducts() {
