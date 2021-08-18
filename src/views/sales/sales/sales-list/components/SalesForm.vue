@@ -113,6 +113,7 @@
                   }"
                   @selected="onclickChooseCustomer"
                   @keyup.enter="onChangeKeyWord"
+                  @input="debounceInput"
                   @focus="focusInput"
                 >
                   <template
@@ -715,6 +716,9 @@ export default {
       customerOfShop: false,
       searchPhoneOnly: false,
       openPopup: false,
+      message: null,
+      typing: null,
+      debounce: null,
     }
   },
 
@@ -1180,8 +1184,18 @@ export default {
       this.orderOnline.statusValue = this.onlineOrderCoincideId.statusValue
     },
 
+    debounceInput(event) {
+      this.message = null
+      this.typing = 'typing'
+      clearTimeout(this.debounce)
+      this.debounce = setTimeout(() => {
+        this.typing = null
+        this.message = event.target.value
+      }, 500)
+    },
+
     onChangeKeyWord() {
-      if (this.search) {
+      if (this.search && this.typing) {
         this.GET_CUSTOMERS_SALE_ACTION({
           ...this.pagination,
           customerOfShop: 0,
