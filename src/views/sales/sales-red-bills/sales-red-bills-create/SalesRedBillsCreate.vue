@@ -1009,8 +1009,8 @@ export default {
       }
     },
     onInputValueProductPrice(index) {
-      if (this.products[index].productPrice === 0) {
-        this.products[index].productPrice = 1
+      if (this.products[index].productPrice < 0) {
+        this.products[index].productPrice = 0
       }
     },
     onInputValueQuantity(index) {
@@ -1019,9 +1019,9 @@ export default {
       }
     },
     onChangePrice(index) {
-      if (this.products[index].productPrice === '0') {
-        this.products[index].productPrice = 1
-        this.products[index].productPriceOriginal = 1
+      if (this.products[index].productPrice < 0) {
+        this.products[index].productPrice = 0
+        this.products[index].productPriceOriginal = 0
       }
       this.products[index].productPriceOriginal = Number(this.products[index].productPrice)
       // this.products[index].productPriceTotal = this.$formatNumberToLocale(Number(this.products[index].quantity) * Number(this.products[index].productPrice))
