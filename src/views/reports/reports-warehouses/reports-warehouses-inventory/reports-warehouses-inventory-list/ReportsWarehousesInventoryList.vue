@@ -47,6 +47,7 @@
         <vue-good-table
           :columns="columns"
           :rows="rows"
+          mode="remote"
           style-class="vgt-table report-customers table-horizontal-scroll"
           :style="cssProps"
           :pagination-options="{
