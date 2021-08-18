@@ -59,6 +59,7 @@
                 Khách hàng <sup class="text-danger">*</sup>
               </div>
               <vue-autosuggest
+                ref="customers"
                 v-model="customerInfo.customerName"
                 maxlength="40"
                 :state="touched ? passed : null"
@@ -70,6 +71,7 @@
                 }"
                 @input="customerOptions"
                 @selected="selectCustomer"
+                @click="customerOptions"
               >
 
                 <template slot-scope="{ suggestion }">
@@ -692,7 +694,7 @@ export default {
     },
 
     selectCustomer(customer) {
-      if (customer.item) {
+      if (customer && customer.item) {
         this.customerId = customer.item.customerId
         this.customerInfo.customerCode = customer.item.customerCode
         this.customerInfo.customerName = customer.item.name
@@ -700,7 +702,7 @@ export default {
         this.customerInfo.customerPhone = customer.item.mobilePhone
         this.customerInfo.customerTypeId = customer.item.customerTypeId
         this.customers = [{ data: null }]
-      }
+      } else { this.$refs.customers.$el.querySelector('input').click() }
     },
 
     loadProducts(text) {
