@@ -1,8 +1,9 @@
 <template>
   <b-container
-    id="popover"
+    id="rp-input-order"
     fluid
     class="d-none d-print-block px-0 text-brand-3"
+    style="color:black"
   >
     <!-- START - Header -->
     <b-row
@@ -155,7 +156,8 @@ import {
   printActions,
   jspmCheckStatus,
 } from '@core/utils/filter'
-
+import JSPM from 'jsprintmanager'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   REPORT_PURCHASES,
   // Getters
@@ -213,16 +215,29 @@ export default {
   },
   updated() {
     const printerName = this.printerOptions.reportPrinterName
-    const element = document.getElementById('popover')
-    const options = {
-      fileName: 'bao_cao_ban_hang',
-      // orientation: 'landscape',
-      // rotate: 'Rot90',
-      pageSizing: 'Fit',
-      format: 'a3',
-    }
-    if (jspmCheckStatus()) {
-      printActions(element, printerName, options)
+    if (printerName === '' || printerName === null) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+        .then(() => {
+          const element = document.getElementById('rp-input-order')
+
+          const options = {
+            fileName: 'Bao_cao_chi_tiet_don_nhap_hang',
+            format: 'a3',
+            // orientation: 'landscape',
+            // rotate: 'Rot90',
+            pageSizing: 'Fit',
+            scale: 2.5,
+            // isPaging: true,
+          }
+          if (jspmCheckStatus()) {
+            printActions(element, printerName, options)
+          }
+        })
+        .catch(() => {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        })
     }
   },
 }

@@ -3,6 +3,7 @@
     id="rp-output-store"
     fluid
     class="d-none d-print-block px-0 text-brand-3"
+    style="color:black"
   >
     <!-- START - Header -->
     <b-row
@@ -842,6 +843,8 @@ import {
   printActions,
   jspmCheckStatus,
 } from '@core/utils/filter'
+import JSPM from 'jsprintmanager'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   REPORT_OUTPUT_GOODS,
   // Getters
@@ -921,18 +924,29 @@ export default {
   },
   updated() {
     const printerName = this.printerOptions.reportPrinterName
-    const element = document.getElementById('rp-output-store')
-    const options = {
-      fileName: 'bao_cao_xuat_hang',
-      // orientation: 'landscape',
-      // rotate: 'Rot90',
-      pageSizing: 'Fit',
-      format: 'a3',
-      isPaging: true,
-      scale: 2,
-    }
-    if (jspmCheckStatus()) {
-      printActions(element, printerName, options)
+    if (printerName === '' || printerName === null) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+        .then(() => {
+          const element = document.getElementById('rp-output-store')
+          const options = {
+            fileName: 'Bao_cao_xuat_hang',
+            format: 'a3',
+            // orientation: 'landscape',
+            // rotate: 'Rot90',
+            pageSizing: 'Fit',
+            scale: 2.5,
+            // isPaging: true,
+            pagebreak: { avoid: 'b-row' },
+          }
+          if (jspmCheckStatus()) {
+            printActions(element, printerName, options)
+          }
+        })
+        .catch(() => {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        })
     }
   },
 }
@@ -946,14 +960,18 @@ export default {
 }
 table {
   width: 100%;
+  border: 1.8px solid;
+  border-collapse: collapse;
 }
 th {
   border-style: solid;
-  border-width: 2px;
+  border-width: 1.8px;
 }
 td {
-  border-style: dotted;
-  border-width: 2px;
+  border-left: 1.8px dashed;
+  border-right: 1.8px dashed;
+  border-bottom: 1.8px dashed;
+  border-collapse: collapse;
 }
 </style>
 <style type="text/css" media="print">

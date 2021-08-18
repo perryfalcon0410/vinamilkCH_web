@@ -1,6 +1,6 @@
 <template>
   <div
-    id="report-sales-redbill"
+    id="rp-sales-redbill"
     class="d-none d-print-block text-brand-3 mx-0 mt-5"
   >
     <div style="min-height: 800px;">
@@ -143,7 +143,8 @@ import {
   printActions,
   jspmCheckStatus,
 } from '@core/utils/filter'
-
+import JSPM from 'jsprintmanager'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   RED_INVOICE,
   // Getters
@@ -190,19 +191,31 @@ export default {
   },
   updated() {
     const printerName = this.printerOptions.reportPrinterName
-    const element = document.getElementById('report-sales-redbill')
-    const options = {
-      fileName: 'bao_cao_ban_hang',
-      // orientation: 'landscape',
-      // rotate: 'Rot90',
-      pageSizing: 'Fit',
-      scale: 3,
-    }
-    if (jspmCheckStatus()) {
-      printActions(element, printerName, options)
+    if (printerName === '' || printerName === null) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+        .then(() => {
+          const element = document.getElementById('rp-sales-redbill')
+
+          const options = {
+            fileName: 'Hoa don do',
+            format: 'a4',
+            // orientation: 'landscape',
+            // rotate: 'Rot90',
+            pageSizing: 'Fit',
+            scale: 2.5,
+            // isPaging: true,
+          }
+          if (jspmCheckStatus()) {
+            printActions(element, printerName, options)
+          }
+        })
+        .catch(() => {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        })
     }
   },
-
 }
 </script>
 
