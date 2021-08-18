@@ -847,6 +847,7 @@ export default {
     customerDefault() {
       this.customer = { ...this.customerDefault }
       this.getCustomerDefault()
+      this.$refs.search.$el.querySelector('input').focus()
     },
     getCustomerInfo() {
       this.customer = { ...this.getCustomerInfo }
