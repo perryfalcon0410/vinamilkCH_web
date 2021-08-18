@@ -2,7 +2,7 @@
   <b-container
     id="print-form-input-order"
     fluid
-    class="d-none d-print-block px-0 text-brand-3"
+    class="d-none d-print-block px-0 text-black"
   >
     <!-- START - Header -->
     <b-row

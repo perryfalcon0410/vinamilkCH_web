@@ -2,7 +2,7 @@
   <b-container
     id="print-form-shop-import"
     fluid
-    class="d-none d-print-block px-1 text-brand-3"
+    class="d-none d-print-block px-1 text-black"
   >
     <!-- START - Header -->
     <b-row

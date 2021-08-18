@@ -2,7 +2,7 @@
   <b-container
     id="report-sales"
     fluid
-    class="d-none d-print-block px-3 py-2 text-brand-3"
+    class="d-none d-print-block px-3 py-2 text-black"
   >
     <!-- START - Header -->
     <b-row
