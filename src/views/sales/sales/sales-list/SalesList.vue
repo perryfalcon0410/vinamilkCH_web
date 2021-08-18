@@ -325,7 +325,6 @@ import {
 
   // Action
   GET_PRODUCTS_ACTION,
-  GET_PRODUCT_INFOS_ACTION,
   GET_TOP_SALE_PRODUCTS_ACTION,
   UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
   GET_PRODUCT_BY_BARCODE_ACTION,
@@ -681,11 +680,6 @@ export default {
   },
 
   mounted() {
-    const index = this.productInfoTypeOptions.findIndex(i => i.name === 'Ngành hàng')
-    const paramGetProductInfo = {
-      type: Number(this.productInfoTypeOptions[index].id),
-    }
-    this.GET_PRODUCT_INFOS_ACTION(paramGetProductInfo)
     this.GET_EDIT_ONLINE_PERMISSION_ACTION()
   },
   created() {
@@ -714,7 +708,6 @@ export default {
   methods: {
     ...mapActions(SALES, [
       GET_PRODUCTS_ACTION,
-      GET_PRODUCT_INFOS_ACTION,
       GET_TOP_SALE_PRODUCTS_ACTION,
       UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
       GET_PRODUCT_BY_BARCODE_ACTION,
