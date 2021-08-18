@@ -1,5 +1,6 @@
 <template>
   <b-container
+    id="rp-return-goods"
     fluid
     class="d-none d-print-block px-0 text-brand-3"
   >
@@ -267,7 +268,7 @@
               :key="stt"
             >
               <td class="px-1">
-                {{ stt + 1 }}
+                {{ product.len + 1 }}
               </td>
               <td class="px-50">
                 {{ product.productCode }}
@@ -319,11 +320,21 @@
 <script>
 import { mapGetters } from 'vuex'
 import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
+import JSPM from 'jsprintmanager'
+import toasts from '@/@core/utils/toasts/toasts'
+import {
   REPORT_RETURNED_GOODS,
   // Getters
   PRINT_INPUT_ORDER_DETIAL_GETTER,
   PRINT_RETURN_GOODS_GETTER,
 } from '@/views/reports/reports-returned-goods/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   data() {
@@ -336,7 +347,7 @@ export default {
       PRINT_INPUT_ORDER_DETIAL_GETTER,
       PRINT_RETURN_GOODS_GETTER,
     ]),
-
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
     // get data print
     commonData() {
       if (this.PRINT_RETURN_GOODS_GETTER) {
@@ -358,14 +369,52 @@ export default {
       }
       return []
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
   watch: {
     reportData() {
       this.reportProductData = [...this.reportData]
+      let i = 0
+      this.reportProductData.forEach(item => {
+        item.orderReturnGoods.forEach(j => {
+          // eslint-disable-next-line no-param-reassign
+          j.len = i
+          i += 1
+        })
+      })
     },
   },
   updated() {
-    window.print()
+    const printerName = this.printerOptions.reportPrinterName
+    if (printerName === '' || printerName === null) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+        .then(() => {
+          const element = document.getElementById('rp-return-goods')
+
+          const options = {
+            fileName: 'Bao cao hang tra lai',
+            format: 'a4',
+            // orientation: 'landscape',
+            // rotate: 'Rot90',
+            pageSizing: 'Fit',
+            scale: 2.5,
+            // isPaging: true,
+          }
+          if (jspmCheckStatus()) {
+            printActions(element, printerName, options)
+          }
+        })
+        .catch(() => {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        })
+    }
   },
 }
 </script>
@@ -398,6 +447,9 @@ td {
 }
 .total {
     background: rgb(192, 186, 186)
+}
+b-container{
+  color: black;
 }
 </style>
 <style type="text/css" media="print">

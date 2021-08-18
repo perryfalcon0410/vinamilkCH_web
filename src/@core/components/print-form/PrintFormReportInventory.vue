@@ -1,5 +1,6 @@
 <template>
   <b-container
+    id="rp-inventory"
     fluid
     class="d-none d-print-block px-0 text-brand-3"
   >
@@ -223,9 +224,19 @@
 <script>
 import { mapGetters } from 'vuex'
 import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
+import JSPM from 'jsprintmanager'
+import toasts from '@/@core/utils/toasts/toasts'
+import {
   REPORT_WAREHOUSES_INVENTORY,
   PRINT_REPORT_INVENTORY_GETTER,
 } from '@/views/reports/reports-warehouses/reports-warehouses-inventory/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   data() {
@@ -291,6 +302,8 @@ export default {
   },
   computed: {
     ...mapGetters(REPORT_WAREHOUSES_INVENTORY, [PRINT_REPORT_INVENTORY_GETTER]),
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
+
     commonInfo() {
       if (this.PRINT_REPORT_INVENTORY_GETTER) {
         return this.PRINT_REPORT_INVENTORY_GETTER
@@ -309,6 +322,12 @@ export default {
       }
       return []
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
   watch: {
     reportData() {
@@ -324,7 +343,31 @@ export default {
     },
   },
   updated() {
-    window.print()
+    const printerName = this.printerOptions.reportPrinterName
+    if (printerName === '' || printerName === null) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+        .then(() => {
+          const element = document.getElementById('rp-inventory')
+
+          const options = {
+            fileName: 'Bao cao ton kho',
+            format: 'a4',
+            // orientation: 'landscape',
+            // rotate: 'Rot90',
+            pageSizing: 'Fit',
+            scale: 2.5,
+            // isPaging: true,
+          }
+          if (jspmCheckStatus()) {
+            printActions(element, printerName, options)
+          }
+        })
+        .catch(() => {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        })
+    }
   },
 }
 </script>
@@ -355,6 +398,9 @@ td {
 .total-header{
   background: rgb(192, 186, 186);
   border-radius: 3px;
+}
+b-container{
+  color: black;
 }
 </style>
 <style type="text/css" media="print">

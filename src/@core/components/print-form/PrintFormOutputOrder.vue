@@ -1,5 +1,6 @@
 <template>
   <b-container
+    id="warehouses-output"
     fluid
     class="d-none d-print-block px-0 text-brand-3"
   >
@@ -256,12 +257,21 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
+import JSPM from 'jsprintmanager'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   WAREHOUSES_OUTPUT,
   // Getters
   PRINT_OUT_IN_PUT_ORDER_GETTER,
 } from '@/views/warehouses/warehouses-output/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   data() {
@@ -275,7 +285,7 @@ export default {
 
   computed: {
     ...mapGetters(WAREHOUSES_OUTPUT, [PRINT_OUT_IN_PUT_ORDER_GETTER]),
-
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
     inputOrderShopData() {
       if (this.PRINT_OUT_IN_PUT_ORDER_GETTER.shop) {
         return this.PRINT_OUT_IN_PUT_ORDER_GETTER.shop
@@ -318,10 +328,40 @@ export default {
       }
       return null
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
 
   updated() {
-    window.print()
+    const printerName = this.printerOptions.reportPrinterName
+    if (printerName === '' || printerName === null) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+        .then(() => {
+          const element = document.getElementById('warehouses-output')
+
+          const options = {
+            fileName: 'Kho xuat hang',
+            format: 'a4',
+            // orientation: 'landscape',
+            // rotate: 'Rot90',
+            pageSizing: 'Fit',
+            scale: 2.5,
+            // isPaging: true,
+          }
+          if (jspmCheckStatus()) {
+            printActions(element, printerName, options)
+          }
+        })
+        .catch(() => {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        })
+    }
   },
 }
 </script>
@@ -339,6 +379,9 @@ td, .td {
 }
 .oblique {
   font-style: oblique;
+}
+b-container{
+  color: black;
 }
 </style>
 <style type="text/css" media="print">
