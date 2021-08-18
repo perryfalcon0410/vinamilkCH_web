@@ -473,6 +473,12 @@ export default {
     },
   },
   methods: {
+    ...mapActions(REPORT_WAREHOUSES_INVENTORY, [
+      GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
+      EXPORT_REPORT_INVENTORIES_ACTION,
+      PRINT_REPORT_INVENTORY_ACTION,
+    ]),
+
     exportExcel() {
       this.EXPORT_REPORT_INVENTORIES_ACTION({
         productCodes: this.paginationData.productCodes,
@@ -481,11 +487,6 @@ export default {
         ...this.decentralization,
       })
     },
-    ...mapActions(REPORT_WAREHOUSES_INVENTORY, [
-      GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
-      EXPORT_REPORT_INVENTORIES_ACTION,
-      PRINT_REPORT_INVENTORY_ACTION,
-    ]),
 
     // START - permission
     statusExcelButton() {
