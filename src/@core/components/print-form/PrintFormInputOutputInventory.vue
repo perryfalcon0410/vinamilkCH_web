@@ -1,8 +1,9 @@
 <template>
   <b-container
+    id="print-form-input-output-inventory"
     fluid
-    class="d-none d-print-block px-0 text-brand-3"
-    style="font-size: 12px !important"
+    class="d-none d-print-block px-1 text-brand-3"
+    style="font-size: 12px !important; color: black"
   >
     <!-- START - Header -->
     <b-row
@@ -500,16 +501,32 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import JSPM from 'jsprintmanager'
+import toasts from '@/@core/utils/toasts/toasts'
+import {
+  printActions,
+  jspmCheckStatus,
+} from '@core/utils/filter'
 
 import {
   REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY,
   // Getters
   PRINT_INPUT_OUTPUT_INVENTORY_GETTER,
 } from '@/views/reports/reports-warehouses/reports-warehouses-input-output-inventory/store-module/type'
+import {
+  PRINTERCONFIG,
+  PRINTER_CLIENT_GETTER,
+} from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
+  data() {
+    return {
+      dataPrintOptions: {},
+    }
+  },
   computed: {
     ...mapGetters(REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY, [PRINT_INPUT_OUTPUT_INVENTORY_GETTER]),
+    ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
 
     reportSalesShopData() {
       if (this.PRINT_INPUT_OUTPUT_INVENTORY_GETTER.shop) {
@@ -543,10 +560,39 @@ export default {
       }
       return []
     },
+    printerOptions() {
+      if (this.PRINTER_CLIENT_GETTER) {
+        return this.PRINTER_CLIENT_GETTER
+      }
+      return {}
+    },
   },
 
   updated() {
-    window.print()
+    JSPM.JSPrintManager.auto_reconnect = true
+    const printerName = this.printerOptions.reportPrinterName
+    if (printerName === '' || printerName === null) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+        .then(() => {
+          const element = document.getElementById('print-form-input-output-inventory')
+          const options = {
+            fileName: 'bao_cao_xuat_nhap_ton',
+            orientation: 'landscape',
+            rotate: 'Rot90',
+            pageSizing: 'Fit',
+            format: 'a3',
+            isPaging: true,
+          }
+          if (jspmCheckStatus()) {
+            printActions(element, printerName, options)
+          }
+        })
+        .catch(() => {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        })
+    }
   },
 
 }
