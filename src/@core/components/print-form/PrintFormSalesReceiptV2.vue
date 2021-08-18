@@ -454,9 +454,9 @@ export default {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
-        .then(() => {
+      for (let i = 0; i < 3; i += 1) {
+        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
           const element = document.getElementById('print-form-sale-receipt-v2')
-          element.classList.remove('d-none')
           const options = {
             fileName: 'hoa_don_ban_hang',
             pageSizing: 'Fit',
@@ -467,10 +467,10 @@ export default {
           if (jspmCheckStatus()) {
             printActions(element, printerName, options)
           }
-        })
-        .catch(() => {
+        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
           toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-        })
+        }
+      }
     }
   },
 }

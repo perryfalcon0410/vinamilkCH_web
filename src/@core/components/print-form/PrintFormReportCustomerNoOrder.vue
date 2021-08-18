@@ -154,12 +154,14 @@ export default {
     },
   },
   updated() {
+    JSPM.JSPrintManager.auto_reconnect = true
     const printerName = this.printerOptions.reportPrinterName
     if (printerName === '' || printerName === null) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
-        .then(() => {
+      for (let i = 0; i < 3; i += 1) {
+        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
           const element = document.getElementById('report-customers-no-order')
           const options = {
             fileName: 'Báo cáo khách hàng không giao dịch',
@@ -173,10 +175,10 @@ export default {
           if (jspmCheckStatus()) {
             printActions(element, printerName, options)
           }
-        })
-        .catch(() => {
+        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
           toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-        })
+        }
+      }
     }
   },
 }
