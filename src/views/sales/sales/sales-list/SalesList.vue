@@ -632,7 +632,7 @@ export default {
       }
     },
     getProductByBarcode() {
-      if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+      if (this.editOnlinePermission || this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
         if (this.getProductByBarcode !== null) {
           const productByBarcode = {
             productId: this.getProductByBarcode.id,
@@ -1167,7 +1167,7 @@ export default {
     // Create callback function to receive barcode when the scanner is already done
     onBarcodeScanned(barcode) {
       if (barcode.length > 4) {
-        if (this.editOnlinePermission || !this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+        if (this.editOnlinePermission || this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
           this.GET_PRODUCT_BY_BARCODE_ACTION({
             data: {
               customerId: this.currentCustomer.id,

@@ -117,6 +117,7 @@
                             <b-input-group-text>{{ $formatNumberToLocale(props.row.quantityMax) }}</b-input-group-text>
                           </template>
                           <b-form-input
+                            :id="promotionPrograms[index].products[props.row.originalIndex].productCode+'_'+value.programId"
                             v-model.number="promotionPrograms[index].products[props.row.originalIndex].quantity"
                             :disabled="!value.isEditable"
                             maxlength="7"
@@ -151,14 +152,14 @@
                     >
                       <vue-autosuggest
                         ref="searchProduct"
-                        v-model="pay.productSearch"
+                        v-model="value.productSearch"
                         :suggestions="allProducts"
                         :input-props="{
-                          id:'autosuggest__input',
+                          id:'autosuggest__input_product',
                           class:'form-control w-50',
                           placeholder:'Nhập mã hoặc tên sản phẩm'
                         }"
-                        @input="loadProducts(value.programId)"
+                        @input="loadProducts(value.programId, value.productSearch)"
                         @selected="selectProduct(value.programId, $event)"
                       >
                         <template slot-scope="{ suggestion }">
@@ -249,14 +250,14 @@
                     >
                       <vue-autosuggest
                         ref="searchProduct"
-                        v-model="pay.productSearch"
+                        v-model="value.productSearch"
                         :suggestions="allProducts"
                         :input-props="{
-                          id:'autosuggest__input',
+                          id:'autosuggest__input_product',
                           class:'form-control w-50',
                           placeholder:'Nhập mã hoặc tên sản phẩm'
                         }"
-                        @input="loadProducts(value.programId)"
+                        @input="loadProducts(value.programId, value.productSearch)"
                         @selected="selectProduct(value.programId, $event)"
                       >
                         <template slot-scope="{ suggestion }">
@@ -894,7 +895,6 @@ export default {
         extraAmount: null,
         isVoucherLocked: false,
         promotionAmountExTax: null,
-        productSearch: '',
       },
       allProducts: [{ data: '' }],
       decentralization: { // hard code permission
@@ -1028,6 +1028,7 @@ export default {
           lstProductId: data.lstProductId,
           affected: data.affected,
           reCalculated: data.reCalculated,
+          productSearch: '',
         }))
         this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
         this.pay.promotionAmountExTax = this.getPromotionPrograms.promotionAmountExTax || null
@@ -1047,6 +1048,9 @@ export default {
     getItemsProduct() {
       // để show lên vue-autosuggest thì phải để [{data: value}]
       this.allProducts = [...this.getItemsProduct]
+      if (this.allProducts[0].data && this.allProducts[0].data.length === 1) {
+        document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 }))
+      }
     },
     needPayment() {
       this.pay.needPaymentAmount = Number(this.needPayment)
@@ -1384,11 +1388,12 @@ export default {
       })]
     },
 
-    loadProducts(programId) {
-      if (this.pay.productSearch !== null) {
-        if (this.pay.productSearch.length >= commonData.minSearchLength) {
+    loadProducts(programId, keyWord) {
+      this.allProducts = [{ data: null }]
+      if (keyWord !== null) {
+        if (keyWord.length >= commonData.minSearchLength) {
           this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
-            keyWord: this.pay.productSearch,
+            keyWord,
             promotionId: programId,
             ...this.decentralization,
           })
@@ -1398,6 +1403,7 @@ export default {
     selectProduct(programId, suggestion) {
       this.pay.productSearch = null
       this.allProducts = [{ data: null }]
+      let productCodeFocus = ''
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.programId === programId) {
           const existedProductIndex = program.products.findIndex(p => p.productCode === suggestion.item.productCode)
@@ -1413,9 +1419,11 @@ export default {
               quantityMax: program.numberLimited ? program.numberLimited : suggestion.item.stockQuantity,
               stockQuantity: suggestion.item.stockQuantity,
             })
+            productCodeFocus = suggestion.item.productCode
             return {
               ...program,
               products: arrProduct,
+              productSearch: null,
             }
           }
           return {
@@ -1433,6 +1441,10 @@ export default {
         }
         return program
       })]
+      productCodeFocus = `${productCodeFocus}_${programId}`
+      setTimeout(() => {
+        document.getElementById(productCodeFocus).focus()
+      }, 100)
     },
     onChangeCheckProgramPromotion(programId) {
       const programChecked = this.promotionPrograms.find(program => program.programId === programId)
