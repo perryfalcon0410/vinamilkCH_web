@@ -443,11 +443,12 @@ export default {
     },
     [GET_PROMOTION_PROGRAMS_ACTION]({ state }, val) {
       SalesServices
-        .getPromotionPrograms(val)
+        .getPromotionPrograms(val.data)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
             state.promotionPrograms = res.data
+            val.onSuccess()
           } else {
             throw new Error(res.statusValue)
           }
