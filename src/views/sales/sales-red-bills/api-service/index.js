@@ -12,6 +12,7 @@ import {
   exportRedBillsEndpoint,
   updateRedBillsEndpoint,
   printRedBillsByIdEndpoint,
+  getCustomersRedInvoiceEndpoint,
 } from './defaultConfig'
 
 export default {
@@ -27,6 +28,11 @@ export default {
   },
   getCustomers(args) {
     return axios.get(getCustomersEndpoint, {
+      params: formatURLParams(args),
+    })
+  },
+  getCustomersRedInvoice(args) {
+    return axios.get(getCustomersRedInvoiceEndpoint, {
       params: formatURLParams(args),
     })
   },

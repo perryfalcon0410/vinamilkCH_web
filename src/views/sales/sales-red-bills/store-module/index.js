@@ -12,6 +12,7 @@ import {
   GET_INVOICE_DETAIL_INFO_GETTER,
   PRINT_RED_INVOICES_GETTER,
   ID_CREATE_RED_INVOICES_GETTER_GETTER,
+  CUSTOMERS_TO_RED_INVOICE_GETTER,
   // ACTIONS
   GET_RED_INVOICES_ACTION,
   GET_CUSTOMERS_ACTION,
@@ -26,6 +27,7 @@ import {
   EXPORT_RED_BILLS_ACTION,
   UPDATE_RED_BILLS_ACTION,
   PRINT_RED_INVOICES_ACTION,
+  GET_CUSTOMERS_TO_RED_INVOICE_ACTION,
 
 } from './type'
 import toasts from '../../../../@core/utils/toasts/toasts'
@@ -47,6 +49,7 @@ export default {
     invoiceDetailInfo: {},
     printdata: [],
     idCreateRedInvoice: {},
+    customerToRedInvoice: {},
   },
 
   // GETTERS
@@ -80,6 +83,9 @@ export default {
     },
     [ID_CREATE_RED_INVOICES_GETTER_GETTER](state) {
       return state.idCreateRedInvoice
+    },
+    [CUSTOMERS_TO_RED_INVOICE_GETTER](state) {
+      return state.customerToRedInvoice
     },
 
   },
@@ -266,6 +272,22 @@ export default {
         .then(res => {
           if (res.success) {
             state.printdata = res.data || {}
+            val.onSuccess()
+          } else {
+            throw new Error(res.statusValue)
+          }
+        })
+        .catch(error => {
+          toasts.error(error.message)
+        })
+    },
+    [GET_CUSTOMERS_TO_RED_INVOICE_ACTION]({ state }, val) {
+      RedInvoiceService
+        .getCustomersRedInvoice(val.data)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.customerToRedInvoice = res.data
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)

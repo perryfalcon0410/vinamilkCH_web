@@ -26,50 +26,61 @@
               <div class="h7 mt-1">
                 Mã khách hàng
               </div>
-              <vue-autosuggest
-                ref="focusInput"
-                v-model="redBill.customerCode"
-                maxlength="200"
-                :suggestions="customers"
-                :input-props="{
-                  id:'autosuggest__input_customers',
-                  class:'form-control',
-                  disabled: isDisabled ? true : false,
-                }"
-                @input="loadCustomers"
-                @selected="selectCustomer"
-              >
-                <template
-                  slot-scope="{ suggestion }"
+              <b-input-group class="input-group-merge">
+                <vue-autosuggest
+                  ref="focusInput"
+                  v-model="redBill.customerCode"
+                  maxlength="200"
+                  :suggestions="customers"
+                  :input-props="{
+                    id:'autosuggest__input_customers',
+                    class:'form-control',
+                    disabled: isDisabled ? true : false,
+                  }"
+                  @input="loadCustomers"
+                  @selected="selectCustomer"
                 >
-                  <b-row>
-                    <!-- START - Section Label -->
-                    <b-col>
+                  <template
+                    slot-scope="{ suggestion }"
+                  >
+                    <b-row>
+                      <!-- START - Section Label -->
+                      <b-col>
 
-                      <b-form-row>
-                        <b-col
-                          class="my-1"
-                        >
-                          <b>{{ suggestion.item.customerName }}</b>
-                        </b-col>
-                      </b-form-row>
-                      <b-form-row>
-                        <b-col
-                          class="text-dark font-weight-bold"
-                          md="10"
-                        >
-                          {{ suggestion.item.customerCode }} - {{ suggestion.item.mobiPhone }}
-                        </b-col>
-                      </b-form-row>
-                    </b-col>
-                  <!-- END - Section Label -->
-                  </b-row>
-                  <!-- <div class="cursor-pointer"> -->
+                        <b-form-row>
+                          <b-col
+                            class="my-1"
+                          >
+                            <b>{{ suggestion.item.customerName }}</b>
+                          </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                          <b-col
+                            class="text-dark font-weight-bold"
+                            md="10"
+                          >
+                            {{ suggestion.item.customerCode }} - {{ suggestion.item.mobiPhone }}
+                          </b-col>
+                        </b-form-row>
+                      </b-col>
+                    <!-- END - Section Label -->
+                    </b-row>
+                    <!-- <div class="cursor-pointer"> -->
 
-                  <!-- <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }} -->
-                  <!-- </div> -->
-                </template>
-              </vue-autosuggest>
+                    <!-- <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }} -->
+                    <!-- </div> -->
+                  </template>
+                </vue-autosuggest>
+                <b-input-group-append
+                  is-text
+                  style="position: absolute; right: 0px; height: 100%;"
+                >
+                  <b-icon-three-dots-vertical
+                    v-b-popover.hover.top="'Tìm kiếm khách hàng'"
+                    @click="showSearchModal"
+                  />
+                </b-input-group-append>
+              </b-input-group>
             </b-col>
 
             <b-col>
@@ -492,7 +503,11 @@
     <!-- END - Customer Modal Close -->
 
     <bill-receipts-modal @productsOfBillSaleData="insertProducsFromBillSales($event)" />
-
+    <search-customers-modal
+      :visible="isShowSearchModal"
+      @getCustomerInfo="getCustomerInfo"
+      @onModalClose="onModalClose"
+    />
     <!-- START - Print form -->
     <print-form-red-bills />
     <!-- END - Print form -->
@@ -527,6 +542,7 @@ import {
 
 import saleData from '@/@db/sale'
 import BillReceiptsModal from './components/BillReceiptsModal.vue'
+import SearchCustomersModal from './components/SearchCustomersModal.vue'
 import {
   // GETTERS
   RED_INVOICE,
@@ -547,12 +563,14 @@ export default {
     ValidationProvider,
     ValidationObserver,
     PrintFormRedBills,
+    SearchCustomersModal,
     Cleave,
   },
 
   data() {
     return {
       idCreate: {},
+      isShowSearchModal: false,
       isPrintData: false,
       isDisabled: false,
       isModalShow: false,
@@ -1183,6 +1201,26 @@ export default {
     focusInputSearch() {
       this.$refs.searchProduct.$el.querySelector('input').focus()
       this.$refs.searchProduct.$el.querySelector('input').click()
+    },
+
+    showSearchModal() {
+      this.isShowSearchModal = true
+    },
+
+    onModalClose() {
+      this.isShowSearchModal = false
+    },
+
+    getCustomerInfo(data) {
+      this.isShowSearchModal = false
+      if (data) {
+        this.redBill.customerCode = data.customerCode
+        this.redBill.customerId = data.id
+        this.redBill.customerName = data.customersName
+        this.redBill.officeWorking = data.workingOffice
+        this.redBill.officeAddress = data.officeAddress
+        this.redBill.taxCode = data.taxCode
+      }
     },
   },
 }
