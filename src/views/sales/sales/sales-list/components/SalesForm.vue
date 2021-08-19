@@ -113,7 +113,7 @@
                   }"
                   @selected="onclickChooseCustomer"
                   @keyup.enter="onChangeKeyWord"
-                  @input="debounceInput"
+                  @input="changeInput"
                   @focus="focusInput"
                 >
                   <template
@@ -713,12 +713,12 @@ export default {
       status: customerData.status[0].id,
 
       search: '',
+      newSearch: '',
+      oldSearch: '',
       customerOfShop: false,
       searchPhoneOnly: false,
       openPopup: false,
-      message: null,
-      typing: null,
-      debounce: null,
+      allowCallAPI: true,
     }
   },
 
@@ -1184,18 +1184,14 @@ export default {
       this.orderOnline.statusValue = this.onlineOrderCoincideId.statusValue
     },
 
-    debounceInput(event) {
-      this.message = null
-      this.typing = 'typing'
-      clearTimeout(this.debounce)
-      this.debounce = setTimeout(() => {
-        this.typing = null
-        this.message = event.target.value
-      }, 500)
+    changeInput() {
+      if (this.newSearch !== this.oldSearch) {
+        this.allowCallAPI = true
+      }
     },
 
     onChangeKeyWord() {
-      if (this.search && this.typing) {
+      if (this.search && this.allowCallAPI === true) {
         this.GET_CUSTOMERS_SALE_ACTION({
           ...this.pagination,
           customerOfShop: 0,
@@ -1204,6 +1200,7 @@ export default {
         })
         this.$refs.search.$el.querySelector('input').click()
       }
+      this.allowCallAPI = false
     },
 
     resetOrderNumber(item) {
