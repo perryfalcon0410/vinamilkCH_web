@@ -175,7 +175,7 @@ export const jspmCheckStatus = () => {
 // START - func print type A4
 export const printActions = (data, printerName, optionsPrinter) => {
   const opt = {
-    margin: 1,
+    margin: optionsPrinter.margin ? optionsPrinter.margin : 1,
     image: { type: 'jpeg', quality: 0.9 }, // type and quality image export
     pagebreak: {
       mode: optionsPrinter.pageBreak ? optionsPrinter.pageBreak : 'avoid-all', // break new page
@@ -184,6 +184,8 @@ export const printActions = (data, printerName, optionsPrinter) => {
       backgroundColor: null,
       scale: optionsPrinter.scale ? optionsPrinter.scale : 2.5, // increase quality data print
       imageTimeout: 0,
+      top: 10,
+      bottom: 20,
     },
     jsPDF: {
       format: optionsPrinter.format ? optionsPrinter.format : '', // format paper convert
@@ -207,7 +209,7 @@ export const printActions = (data, printerName, optionsPrinter) => {
           file.setPage(i)
           file.setFontSize(10)
           file.setTextColor('#6e6b7b')
-          file.text(`${i} / ${totalPages}`, file.internal.pageSize.getWidth() / 1.07, file.internal.pageSize.getHeight())
+          file.text(`Trang ${i} / ${totalPages}`, file.internal.pageSize.getWidth() / 1.07, file.internal.pageSize.getHeight() - 5)
         }
       }
     })

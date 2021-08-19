@@ -2,8 +2,7 @@
   <b-container
     id="rp-output-store"
     fluid
-    class="d-none d-print-block px-0 text-brand-3"
-    style="color:black"
+    class="d-none d-print-block px-0 text-black"
   >
     <!-- START - Header -->
     <b-row
@@ -939,8 +938,9 @@ export default {
             // rotate: 'Rot90',
             pageSizing: 'Fit',
             scale: 2.5,
-            // isPaging: true,
+            isPaging: true,
             pagebreak: { avoid: 'b-row' },
+            margin: [5, 1, 5, 1],
           }
           if (jspmCheckStatus()) {
             printActions(element, printerName, options)
