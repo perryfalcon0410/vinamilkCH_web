@@ -919,6 +919,7 @@ export default {
       isPrint: false,
       isSaveSuccess: false,
       isDisabledDiscount: false,
+      isLoading: false,
     }
   },
 
@@ -1031,6 +1032,12 @@ export default {
       // get accumulate
       this.pay.accumulate.accumulateAmount = 0
       this.pay.accumulate.accumulatePoint = this.customer.scoreCumulated || null
+
+      this.isDisabledPrintTempBtn = false
+      this.isDisabledPaymentBtn = false
+      this.isDisabledPrintAndPaymentBtn = false
+      this.isDisabledRePrintBtn = true
+      this.isLoading = false
     },
     getItemsProduct() {
       // để show lên vue-autosuggest thì phải để [{data: value}]
@@ -1118,15 +1125,15 @@ export default {
       deep: true,
     },
 
-    orderOnline: {
-      handler() {
-        if (this.orderOnline.onlineOrderId !== null) {
-          this.pay.discount.discountCode = this.orderOnline.discountCode
-          this.pay.discount.discountAmount = this.orderOnline.discountValue
-        }
-      },
-      deep: true,
-    },
+    // orderOnline: {
+    //   handler() {
+    //     if (this.orderOnline.onlineOrderId !== null) {
+    //       this.pay.discount.discountCode = this.orderOnline.discountCode
+    //       this.pay.discount.discountAmount = this.orderOnline.discountValue
+    //     }
+    //   },
+    //   deep: true,
+    // },
     isOpenPayModal: {
       handler() {
         if (this.isOpenPayModal) {
@@ -1144,10 +1151,13 @@ export default {
             }))
             if (paramProducts.length > 0) {
               this.GET_PROMOTION_PROGRAMS_ACTION({
-                customerId: this.customer.id,
-                orderType: Number(this.orderSelected),
-                products: paramProducts,
-                invisibleLoading: false,
+                data: {
+                  customerId: this.customer.id,
+                  orderType: Number(this.orderSelected),
+                  products: paramProducts,
+                  invisibleLoading: false,
+                },
+                onSuccess: () => {},
               })
             }
             if (this.pay.discount.discountCode !== '') {
@@ -1155,6 +1165,11 @@ export default {
               this.pay.discount.discountAmount = 0
             }
           }
+          this.isDisabledPrintTempBtn = true
+          this.isDisabledPaymentBtn = true
+          this.isDisabledPaymentBtn = true
+          this.isDisabledRePrintBtn = true
+
           // clean data
           this.pay.extraAmount = null
           this.resetVoucher()
@@ -1162,12 +1177,8 @@ export default {
           // get accumulate
           this.pay.accumulate.accumulateAmount = 0
           this.pay.accumulate.accumulatePoint = this.customer.scoreCumulated || null
+          this.isLoading = true
           this.extraAmountCalculation()
-
-          if (this.orderOnline !== null && this.orderOnline.discountCode !== '') {
-            this.pay.discount.discountCode = this.orderOnline.discountCode
-            this.pay.discount.discountAmount = this.orderOnline.discountValue
-          }
 
           this.GET_SALE_PAYMENT_TYPES_ACTION({
             ...this.decentralization,
@@ -1508,7 +1519,10 @@ export default {
       } else {
         this.pay.extraAmount = Number(this.pay.salePayment.salePaymentAmount) - Number(this.pay.needPaymentAmount)
       }
-      if (Number(this.pay.extraAmount) < 0 || this.pay.extraAmount === null) {
+      if ((Number(this.pay.extraAmount) < 0 || this.pay.extraAmount === null)) {
+        this.isDisabledPaymentBtn = true
+        this.isDisabledPrintAndPaymentBtn = true
+      } else if (this.isLoading) {
         this.isDisabledPaymentBtn = true
         this.isDisabledPrintAndPaymentBtn = true
       } else {

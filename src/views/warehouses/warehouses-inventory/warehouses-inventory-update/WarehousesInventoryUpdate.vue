@@ -884,8 +884,10 @@ export default {
   }
   .background-yellow {
     background-color: yellow !important;
+    padding: 8px 0px 8px 0px;
   }
   .background-green {
     background-color: #83ba47 !important;
+    padding: 8px 0px 8px 0px;
   }
 </style>

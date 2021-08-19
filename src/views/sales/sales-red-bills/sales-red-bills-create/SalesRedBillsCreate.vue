@@ -145,7 +145,7 @@
             <b-col>
               <validation-provider
                 v-slot="{ errors, passed, touched }"
-                rules="required"
+                rules="required|code"
                 name="mã số thuế"
               >
                 <div class="h7 mt-1">
@@ -522,6 +522,7 @@ import {
   number,
   required,
   dateFormatVNI,
+  code,
 } from '@/@core/utils/validations/validations'
 
 import saleData from '@/@db/sale'
@@ -715,6 +716,7 @@ export default {
       number,
       required,
       dateFormatVNI,
+      code,
       productIdSelected: null,
     }
   },

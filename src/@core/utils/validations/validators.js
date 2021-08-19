@@ -49,7 +49,7 @@ export const validatorCode = val => {
   if (val === undefined || val === null || val.length === 0) {
     return true
   }
-  const regex = /^([\w\\.]{0,40})$/
+  const regex = /^([\w\\.,-]{0,40})$/
   return regex.test(val)
 }
 

@@ -99,7 +99,7 @@ export const url = extend('url', {
 
 export const code = extend('code', {
   validate: validatorCode,
-  message: 'Chỉ nhập các ký tự [0-9][a-Z] dấu chấm(.), dấu gạch dưới (_).',
+  message: 'Chỉ nhập các ký tự [0-9][a-Z] dấu chấm(.), dấu phẩy(,) dấu gạch dưới (_), dấu gạch ngang (-).',
 })
 
 export const number = extend('number', {
