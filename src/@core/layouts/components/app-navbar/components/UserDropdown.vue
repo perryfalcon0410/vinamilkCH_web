@@ -100,28 +100,6 @@ export default {
       ipAddress: null,
     }
   },
-  watch: {
-    // ipAddress() {
-    //   this.GET_PRINTER_CLIENT_ACTIONS({
-    //     data: {
-    //       clientId: this.ipAddress,
-    //     },
-    //     onSuccess: () => {},
-    //   })
-    // },
-  },
-  mounted() {
-    this.GET_PRINTER_CLIENT_ACTIONS({
-      data: {
-        clientId: this.ipAddress,
-      },
-      onSuccess: () => {},
-    })
-    // get ip client
-    // hostName().then(dta => {
-    //   this.ipAddress = dta.ip
-    // })
-  },
   methods: {
     ...mapActions(PRINTERCONFIG, [
       GET_PRINTER_CLIENT_ACTIONS,

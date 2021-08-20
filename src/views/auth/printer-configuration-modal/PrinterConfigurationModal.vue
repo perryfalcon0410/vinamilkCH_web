@@ -63,7 +63,7 @@
         </b-col>
         <b-col cols="6">
           <tree-select
-            v-model="printerReceiptSelected"
+            v-model="printerBillSelected"
             :options="printerConfigOptions"
             :searchable="false"
             placeholder="Chọn máy in"
@@ -112,9 +112,6 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-// import {
-//   hostName,
-// } from '@/@core/utils/filter'
 import JSPM from 'jsprintmanager'
 import toasts from '@core/utils/toasts/toasts'
 import {
@@ -142,7 +139,7 @@ export default {
       printerConfigOptions: [],
       printerDefaultSelected: null,
       printerReportSelected: null,
-      printerReceiptSelected: null,
+      printerBillSelected: null,
       nameOS: '',
       linkDownloadSoftWare: '',
     }
@@ -166,33 +163,14 @@ export default {
         }
       }
     },
-    printerConfigOptions() {
-      if (this.printerConfigOptions.find(data => data.id === this.printerDataDefault.defaultPrinterName)) {
-        this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
-      } else {
-        this.printerDefaultSelected = null
-      }
-      // selected printer report
-      if (this.printerConfigOptions.find(data => data.id === this.printerDataDefault.reportPrinterName)) {
-        this.printerReportSelected = this.printerDataDefault.reportPrinterName
-      } else {
-        this.printerReportSelected = null
-      }
-      // selected printer bills
-      if (this.printerConfigOptions.find(data => data.id === this.printerDataDefault.billPrinterName)) {
-        this.printerReceiptSelected = this.printerDataDefault.billPrinterName
-      } else {
-        this.printerReceiptSelected = null
-      }
-    },
-
     getPrinterData() {
       this.printerDataDefault = { ...this.getPrinterData }
+      this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
+      this.printerReportSelected = this.printerDataDefault.reportPrinterName
+      this.printerBillSelected = this.printerDataDefault.billPrinterName
     },
   },
   mounted() {
-    // hostName().then(dta => { this.ipAddress = dta.ip })
-    // this.getPrinterConfigOptions()
     this.jspmWSStatus()
   },
   methods: {
@@ -246,13 +224,13 @@ export default {
       }
     },
     onSaveClick() {
-      if (this.printerDefaultSelected && this.printerReportSelected && this.printerReceiptSelected) {
+      if (this.printerDefaultSelected && this.printerReportSelected && this.printerBillSelected) {
         if (this.printerDataDefault.id) {
           this.UPDATE_PRINTER_CLIENT_ACTIONS({
             data: {
               id: this.printerDataDefault.id,
               clientIp: this.ipAddress,
-              billPrinterName: this.printerReceiptSelected,
+              billPrinterName: this.printerBillSelected,
               defaultPrinterName: this.printerDefaultSelected,
               reportPrinterName: this.printerReportSelected,
             },
@@ -264,7 +242,7 @@ export default {
           this.CREATE_PRINTER_CLIENT_ACTIONS({
             data: {
               clientIp: this.ipAddress,
-              billPrinterName: this.printerReceiptSelected,
+              billPrinterName: this.printerBillSelected,
               defaultPrinterName: this.printerDefaultSelected,
               reportPrinterName: this.printerReportSelected,
             },
