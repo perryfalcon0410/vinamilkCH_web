@@ -333,59 +333,59 @@ export default {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
-      for (let i = 0; i < 3; i += 1) {
-        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          // eslint-disable-next-line new-cap
-          const pdf = new jsPDF('l', 'mm', 'a4')
-          pdf.addFileToVFS('Regular.ttf', myFont)
-          pdf.addFont('Regular.ttf', 'myFont', 'normal')
-          pdf.setFont('myFont')
-          pdf.setLanguage('vi-VN')
-          pdf.setFontSize(18)
-          pdf.text('Báo cáo bán hàng', 120, 10)
-          pdf.setFontSize(13)
-          pdf.text(`${this.reportSalesShopData.shopName}`, 15, 8)
-          pdf.setFontSize(9)
-          pdf.text(`Add: ${this.reportSalesShopData.address}`, 15, 17)
-          pdf.text(`Tel: ${this.reportSalesShopData.tel}`, 15, 24)
-          pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.fromDate}`, 110, 17)
-          pdf.text(`Ngày in: ${this.reportSalesShopData.dateOfPrinting}`, 119, 24)
-          const res = pdf.autoTableHtmlToJson(document.getElementById('report-sales-table'))
-          pdf.autoTable(res.columns, res.data, {
-            startY: 30,
-            theme: 'grid',
-            styles: {
-              font: 'myFont',
-              Color: [255, 0, 0],
-              fontSize: 8,
+      // for (let i = 0; i < 3; i += 1) {
+      //   if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
+      // eslint-disable-next-line new-cap
+      const pdf = new jsPDF('l', 'mm', 'a4')
+      pdf.addFileToVFS('Regular.ttf', myFont)
+      pdf.addFont('Regular.ttf', 'myFont', 'normal')
+      pdf.setFont('myFont')
+      pdf.setLanguage('vi-VN')
+      pdf.setFontSize(18)
+      pdf.text('Báo cáo bán hàng', 120, 10)
+      pdf.setFontSize(13)
+      pdf.text(`${this.reportSalesShopData.shopName}`, 15, 8)
+      pdf.setFontSize(9)
+      pdf.text(`Add: ${this.reportSalesShopData.address}`, 15, 17)
+      pdf.text(`Tel: ${this.reportSalesShopData.tel}`, 15, 24)
+      pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.fromDate}`, 110, 17)
+      pdf.text(`Ngày in: ${this.reportSalesShopData.dateOfPrinting}`, 119, 24)
+      const res = pdf.autoTableHtmlToJson(document.getElementById('report-sales-table'))
+      pdf.autoTable(res.columns, res.data, {
+        startY: 30,
+        theme: 'grid',
+        styles: {
+          font: 'myFont',
+          Color: [255, 0, 0],
+          fontSize: 8,
 
-            },
-            headStyles: {
-              fillColor: 'white',
-              font: 'myFont',
-              textColor: 'black',
-              fontSize: 9,
-              Border: 2,
-              lineColor: 'black',
-            },
-          })
-          for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
-            pdf.setPage(j)
-            pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
-          }
-          const options = {
-            fileName: 'bao_cao_ban_hang',
-            pageSizing: 'Fit',
-            rotate: 'Rot90',
-          }
-          if (jspmCheckStatus()) {
-            jsPdfPrint(pdf.output('datauristring'), printerName, options)
-            break
-          }
-        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-        }
+        },
+        headStyles: {
+          fillColor: 'white',
+          font: 'myFont',
+          textColor: 'black',
+          fontSize: 9,
+          Border: 2,
+          lineColor: 'black',
+        },
+      })
+      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+        pdf.setPage(j)
+        pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
       }
+      const options = {
+        fileName: 'bao_cao_ban_hang',
+        pageSizing: 'Fit',
+        rotate: 'Rot90',
+      }
+      if (jspmCheckStatus()) {
+        jsPdfPrint(pdf.output('datauristring'), printerName, options)
+      }
+      // }
+      // } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
+      //   toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+      // }
+      // }
     }
   },
   mounted() {
