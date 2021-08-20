@@ -73,7 +73,7 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  hostName,
+  // hostName,
   avatarText,
 } from '@/@core/utils/filter'
 import { initialAbility } from '@/libs/acl/config'
@@ -101,20 +101,26 @@ export default {
     }
   },
   watch: {
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
-    },
+    // ipAddress() {
+    //   this.GET_PRINTER_CLIENT_ACTIONS({
+    //     data: {
+    //       clientId: this.ipAddress,
+    //     },
+    //     onSuccess: () => {},
+    //   })
+    // },
   },
   mounted() {
-    // get ip client
-    hostName().then(dta => {
-      this.ipAddress = dta.ip
+    this.GET_PRINTER_CLIENT_ACTIONS({
+      data: {
+        clientId: this.ipAddress,
+      },
+      onSuccess: () => {},
     })
+    // get ip client
+    // hostName().then(dta => {
+    //   this.ipAddress = dta.ip
+    // })
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [

@@ -112,9 +112,9 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-import {
-  hostName,
-} from '@/@core/utils/filter'
+// import {
+//   hostName,
+// } from '@/@core/utils/filter'
 import JSPM from 'jsprintmanager'
 import toasts from '@core/utils/toasts/toasts'
 import {
@@ -191,7 +191,7 @@ export default {
     },
   },
   mounted() {
-    hostName().then(dta => { this.ipAddress = dta.ip })
+    // hostName().then(dta => { this.ipAddress = dta.ip })
     // this.getPrinterConfigOptions()
     this.jspmWSStatus()
   },
