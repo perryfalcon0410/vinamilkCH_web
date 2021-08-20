@@ -1,8 +1,9 @@
 <template>
   <div
     id="print-form-sale-receipt-v2"
-    class="d-none d-print-block text-brand-3"
+    ref="printSaleReceiptV2"
     style="max-width: 95%; margin: 0 auto;"
+    class="d-none d-print-block text-brand-3"
   >
     <!-- START - Header -->
     <b-row
@@ -89,7 +90,7 @@
     <!-- END - Order info -->
 
     <!-- START - Tables -->
-    <table>
+    <table id="table-header">
       <thead>
         <tr>
           <th class="width-15-per">
@@ -111,6 +112,7 @@
     <!-- START - Products -->
     <table
       v-for="(product,itemIndex) in printSalesReceiptData.products"
+      id="table-body"
       :key="itemIndex"
     >
       <thead class="border-0">
@@ -126,7 +128,7 @@
         :key="item.productId"
       >
         <tr>
-          <td colspan="4">
+          <td>
             {{ item.productName }}
           </td>
         </tr>
@@ -145,7 +147,7 @@
           </td>
         </tr>
         <tr v-show="item.totalDiscountPrice">
-          <td colspan="3">
+          <td>
             Giảm giá
           </td>
           <td class="text-right">
@@ -154,7 +156,7 @@
         </tr>
       </tbody>
       <tbody v-show="Boolean(Number(product.displayType))">
-        <td colspan="4">
+        <td>
           {{ product.groupName }}
         </td>
       </tbody>
@@ -172,7 +174,6 @@
           {{ item.quantity }}
         </td>
         <td
-          colspan="2"
           valign="top"
           class="pl-1"
         >
@@ -190,12 +191,12 @@
     >
       <tbody>
         <tr>
-          <td colspan="4">
+          <td>
             {{ item.promotionName }}
           </td>
         </tr>
         <tr>
-          <td colspan="3">
+          <td>
             {{ item.promotionCode }}
           </td>
           <td class="text-right">
@@ -308,10 +309,17 @@
 import { mapGetters } from 'vuex'
 import JSPM from 'jsprintmanager'
 import {
-  printActions,
+  // printActions,
   jspmCheckStatus,
+  // printTest,
 } from '@core/utils/filter'
-// import { printBillInvoiceActions } from '@core/utils/filter'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
+
+// import { autoTable } from 'jspdf-autotable'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { myFont } from '@/@core/libs/PTSans'
 import {
   SALESRECEIPTS,
   // Getters
@@ -454,22 +462,99 @@ export default {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
+      let connectOpen = false
       for (let i = 0; i < 3; i += 1) {
         if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          const element = document.getElementById('print-form-sale-receipt-v2')
-          const options = {
-            fileName: 'hoa_don_ban_hang',
-            pageSizing: 'Fit',
-            scale: 3,
-            pageBreak: '',
-            format: [210, 600],
-          }
-          if (jspmCheckStatus()) {
-            printActions(element, printerName, options)
-          }
+          connectOpen = true
         } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+          connectOpen = false
         }
+      }
+      if (connectOpen) {
+        const element = document.getElementById('print-form-sale-receipt-v2')
+        // const options = {
+        //   fileName: 'hoa_don_ban_hang',
+        //   pageSizing: 'Fit',
+        //   scale: 3,
+        //   pageBreak: '',
+        //   format: [210, 600],
+        // }
+        if (jspmCheckStatus()) {
+          // printActions(element, printerName, options)
+          // printTest(element, printerName)
+          // eslint-disable-next-line new-cap
+          const pdf = new jsPDF('p', 'pt', [element.offsetHeight, 400])
+          pdf.addFileToVFS('PTSans.ttf', myFont)
+          pdf.addFont('PTSans.ttf', 'PTSans', 'normal')
+          pdf.setFont('PTSans')
+          // doc.fromHTML(element)
+          pdf.text('CTY CP SUA VIET NAM - VINAMILK', 20, 25)
+          pdf.text(`${this.printSalesReceiptData.shopName}`, 20, 45)
+          pdf.text(`${this.printSalesReceiptData.shopPhone}`, 20, 65)
+          pdf.text(`${this.printSalesReceiptData.shopAddress}`, 20, 85)
+          pdf.text('BIÊN NHẬN THANH TOÁN', 20, 105)
+          pdf.text('KIÊM PHIẾU GIAO HÀNG', 20, 125)
+          pdf.text('(CÓ GIÁ TRỊ NHƯ HÓA ĐƠN)', 20, 145)
+          pdf.text(`Số HĐ: ${this.printSalesReceiptData.orderNumber}`, 20, 165)
+          pdf.text(`KH: ${this.printSalesReceiptData.customerName} - ${this.printSalesReceiptData.customerPhone}`, 20, 185)
+          pdf.text(`DC: ${this.printSalesReceiptData.customerAddress}`, 20, 205)
+          pdf.text(`Loại giao hàng: ${this.printSalesReceiptData.deliveryType}`, 20, 225)
+          pdf.text(`Doanh số tích lũy: ${this.$formatNumberToLocale(this.printSalesReceiptData.customerPurchase)}`, 20, 245)
+          pdf.text(`Ngày: 03/07/2021 - ${this.$formatPrintDate(this.printSalesReceiptData.orderDate)}`, 20, 265)
+          pdf.text(`NV: ${this.printSalesReceiptData.userName}`, 20, 285)
+          // pdf.autoTable({
+          //   head: [['SP', 'SL', 'Giá', 'T.Tiền']],
+          //   body: [
+          //     ['Sữa chua tổng hợp', '5', '163,647', '818,253'],
+          //     ['Sữa ông thọ', '1', '10,000', '10,000'],
+          //     // ...
+          //   ],
+          //   startY: 305,
+          //   styles: {
+          //     font: 'PTSans',
+          //   },
+          // })
+          pdf.autoTable({
+            html: '#table-header',
+            startY: 305,
+            theme: 'plain',
+            styles: {
+              font: 'PTSans',
+            },
+          })
+          pdf.autoTable({
+            html: '#table-body',
+            startY: 315,
+            theme: 'plain',
+            styles: {
+              font: 'PTSans',
+            },
+          })
+          pdf.text('Tổng cộng (bao gồm VAT):', 20, 405)
+          pdf.text('Tổng tiền (chưa VAT):', 20, 425)
+          pdf.text('Giảm giá (chưa VAT):', 20, 445)
+          pdf.text('Giảm giá (bao gồm VAT):', 20, 465)
+          pdf.text('Tiền tích lũy:', 20, 485)
+          pdf.text('Voucher:', 20, 505)
+          pdf.text('Thanh toán (chưa VAT):', 20, 525)
+          pdf.text('Thanh toán (bao gồm VAT):', 20, 545)
+          pdf.text('KH đưa:', 20, 565)
+          pdf.text('Trả lại:', 20, 585)
+
+          pdf.text('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.', 20, 605)
+          pdf.text('Vinamilk online: www.giacmosuaviet.com.vn', 20, 625)
+          pdf.text('Cảm ơn Quý khách. Hẹn gặp lại', 20, 645)
+          const cpj = new JSPM.ClientPrintJob()
+          cpj.clientPrinter = new JSPM.InstalledPrinter(printerName) // get printer
+          // convert data
+          const printContent = new JSPM.PrintFilePDF(pdf.output('datauristring'), JSPM.FileSourceType.URL, 'hoa_don_ban_hang.pdf', 1)
+          printContent.printAsGrayscale = true // Options print black/white(=true) and color(=false)
+          cpj.files.push(printContent)
+          cpj.sendToClient()
+          // pdf.save('test.pdf')
+        }
+      } else {
+        toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
       }
     }
   },
