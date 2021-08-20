@@ -36,6 +36,8 @@
     "html2pdf.js": "^0.9.3",
     "intl": "^1.2.5",
     "jsonwebtoken": "8.5.1",
+    "jspdf": "1.4.1",
+    "jspdf-autotable": "^3.5.15",
     "jsprintmanager": "^4.0.0",
     "leaflet": "1.6.0",
     "lodash": "4.17.21",

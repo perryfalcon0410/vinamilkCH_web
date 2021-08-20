@@ -304,3 +304,17 @@ export const checkingDateInput = date => {
   }
   return true
 }
+
+export const jsPdfPrint = (data, printerName, optionsPrinter) => {
+  const cpj = new JSPM.ClientPrintJob()
+  cpj.clientPrinter = new JSPM.InstalledPrinter(printerName)
+  // convert data
+  const printContent = new JSPM.PrintFilePDF(data, JSPM.FileSourceType.URL, `${optionsPrinter.fileName}.pdf`, 1)
+  // rotate pager áp dụng in ngang [RT90]
+  printContent.printRotation = JSPM.PrintRotation[optionsPrinter.rotate ? optionsPrinter.rotate : 'None']
+  // auto fit data print
+  printContent.pageSizing = JSPM.Sizing[optionsPrinter.pageSizing ? optionsPrinter.pageSizing : 'None']
+  printContent.printAsGrayscale = true // Options print black/white(=true) and color(=false)
+  cpj.files.push(printContent)
+  cpj.sendToClient()
+}
