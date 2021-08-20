@@ -325,7 +325,8 @@ export default {
     ]),
     areaSelectedDefault() {
       if (this.SHOP_LOCATIONS_SEARCH_GETTER) {
-        this.areasSelected = this.SHOP_LOCATIONS_SEARCH_GETTER.find(e => e.default === true).id
+        const areDefault = this.SHOP_LOCATIONS_SEARCH_GETTER.find(e => e.default === true)
+        this.areasSelected = areDefault?.id || null
         this.onSearch()
       }
     },
