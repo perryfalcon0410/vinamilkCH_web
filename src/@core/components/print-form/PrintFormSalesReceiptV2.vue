@@ -306,7 +306,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import JSPM from 'jsprintmanager'
 import {
   // printActions,
@@ -336,6 +336,7 @@ import toasts from '@/@core/utils/toasts/toasts'
 import {
   PRINTERCONFIG,
   PRINTER_CLIENT_GETTER,
+  GET_PRINTER_CLIENT_ACTIONS,
 } from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
@@ -418,9 +419,9 @@ export default {
         paymentAmount: 2000000.0, // Tiền khách đưa
         extraAmount: 662483.0, // Tiền trả lại khách
       },
+      printerName: '',
     }
   },
-
   computed: {
     ...mapGetters(SALESRECEIPTS, [PRINT_SALES_RECEIPT_GETTER]),
     ...mapGetters(SALES, [PRINT_SALES_TEMP_GETTER]),
@@ -453,110 +454,117 @@ export default {
     getPrintSalesReceiptTempData() {
       this.printSalesReceiptData = { ...this.getPrintSalesReceiptTempData }
     },
+    printerOptions() {
+      this.printerName = this.printerOptions.billPrinterName
+    },
   },
-
+  mounted() {
+    this.GET_PRINTER_CLIENT_ACTIONS({
+      data: {
+        clientId: this.ipAddress,
+      },
+      onSuccess: () => {},
+    })
+  },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.billPrinterName
-    if (printerName === '' || printerName === null) {
+    if (this.printerName === '' || this.printerName === null) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
-      JSPM.JSPrintManager.start()
-      let connectOpen = false
       for (let i = 0; i < 3; i += 1) {
         if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          connectOpen = true
-        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-          connectOpen = false
-        }
-      }
-      if (connectOpen) {
-        const element = document.getElementById('print-form-sale-receipt-v2')
-        // const options = {
-        //   fileName: 'hoa_don_ban_hang',
-        //   pageSizing: 'Fit',
-        //   scale: 3,
-        //   pageBreak: '',
-        //   format: [210, 600],
-        // }
-        if (jspmCheckStatus()) {
-          // printActions(element, printerName, options)
-          // printTest(element, printerName)
-          // eslint-disable-next-line new-cap
-          const pdf = new jsPDF('p', 'pt', [element.offsetHeight, 400])
-          pdf.addFileToVFS('PTSans.ttf', myFont)
-          pdf.addFont('PTSans.ttf', 'PTSans', 'normal')
-          pdf.setFont('PTSans')
-          // doc.fromHTML(element)
-          pdf.text('CTY CP SUA VIET NAM - VINAMILK', 20, 25)
-          pdf.text(`${this.printSalesReceiptData.shopName}`, 20, 45)
-          pdf.text(`${this.printSalesReceiptData.shopPhone}`, 20, 65)
-          pdf.text(`${this.printSalesReceiptData.shopAddress}`, 20, 85)
-          pdf.text('BIÊN NHẬN THANH TOÁN', 20, 105)
-          pdf.text('KIÊM PHIẾU GIAO HÀNG', 20, 125)
-          pdf.text('(CÓ GIÁ TRỊ NHƯ HÓA ĐƠN)', 20, 145)
-          pdf.text(`Số HĐ: ${this.printSalesReceiptData.orderNumber}`, 20, 165)
-          pdf.text(`KH: ${this.printSalesReceiptData.customerName} - ${this.printSalesReceiptData.customerPhone}`, 20, 185)
-          pdf.text(`DC: ${this.printSalesReceiptData.customerAddress}`, 20, 205)
-          pdf.text(`Loại giao hàng: ${this.printSalesReceiptData.deliveryType}`, 20, 225)
-          pdf.text(`Doanh số tích lũy: ${this.$formatNumberToLocale(this.printSalesReceiptData.customerPurchase)}`, 20, 245)
-          pdf.text(`Ngày: 03/07/2021 - ${this.$formatPrintDate(this.printSalesReceiptData.orderDate)}`, 20, 265)
-          pdf.text(`NV: ${this.printSalesReceiptData.userName}`, 20, 285)
-          // pdf.autoTable({
-          //   head: [['SP', 'SL', 'Giá', 'T.Tiền']],
-          //   body: [
-          //     ['Sữa chua tổng hợp', '5', '163,647', '818,253'],
-          //     ['Sữa ông thọ', '1', '10,000', '10,000'],
-          //     // ...
-          //   ],
-          //   startY: 305,
-          //   styles: {
-          //     font: 'PTSans',
-          //   },
-          // })
-          pdf.autoTable({
-            html: '#table-header',
-            startY: 305,
-            theme: 'plain',
-            styles: {
-              font: 'PTSans',
-            },
-          })
-          pdf.autoTable({
-            html: '#table-body',
-            startY: 315,
-            theme: 'plain',
-            styles: {
-              font: 'PTSans',
-            },
-          })
-          pdf.text('Tổng cộng (bao gồm VAT):', 20, 405)
-          pdf.text('Tổng tiền (chưa VAT):', 20, 425)
-          pdf.text('Giảm giá (chưa VAT):', 20, 445)
-          pdf.text('Giảm giá (bao gồm VAT):', 20, 465)
-          pdf.text('Tiền tích lũy:', 20, 485)
-          pdf.text('Voucher:', 20, 505)
-          pdf.text('Thanh toán (chưa VAT):', 20, 525)
-          pdf.text('Thanh toán (bao gồm VAT):', 20, 545)
-          pdf.text('KH đưa:', 20, 565)
-          pdf.text('Trả lại:', 20, 585)
+          // const element = document.getElementById('print-form-sale-receipt-v2')
+          // const options = {
+          //   fileName: 'hoa_don_ban_hang',
+          //   pageSizing: 'Fit',
+          //   scale: 3,
+          //   pageBreak: '',
+          //   format: [210, 600],
+          // }
+          if (jspmCheckStatus()) {
+            // printActions(element, printerName, options)
+            // printTest(element, printerName)
+            // eslint-disable-next-line new-cap
+            const pdf = new jsPDF('p', 'px', [1000, 400])
+            pdf.addFileToVFS('PTSans.ttf', myFont)
+            pdf.addFont('PTSans.ttf', 'PTSans', 'normal')
+            pdf.setFont('PTSans')
+            // doc.fromHTML(element)
+            pdf.text('CTY CP SUA VIET NAM - VINAMILK', 20, 25)
+            pdf.text(`${this.printSalesReceiptData.shopName}`, 20, 45)
+            pdf.text(`${this.printSalesReceiptData.shopPhone}`, 20, 65)
+            pdf.text(`${this.printSalesReceiptData.shopAddress}`, 20, 85)
+            pdf.text('BIÊN NHẬN THANH TOÁN', 20, 105)
+            pdf.text('KIÊM PHIẾU GIAO HÀNG', 20, 125)
+            pdf.text('(CÓ GIÁ TRỊ NHƯ HÓA ĐƠN)', 20, 145)
+            pdf.text(`Số HĐ: ${this.printSalesReceiptData.orderNumber}`, 20, 165)
+            pdf.text(`KH: ${this.printSalesReceiptData.customerName} - ${this.printSalesReceiptData.customerPhone}`, 20, 185)
+            pdf.text(`DC: ${this.printSalesReceiptData.customerAddress}`, 20, 205)
+            pdf.text(`Loại giao hàng: ${this.printSalesReceiptData.deliveryType}`, 20, 225)
+            pdf.text(`Doanh số tích lũy: ${this.$formatNumberToLocale(this.printSalesReceiptData.customerPurchase)}`, 20, 245)
+            pdf.text(`Ngày: 03/07/2021 - ${this.$formatPrintDate(this.printSalesReceiptData.orderDate)}`, 20, 265)
+            pdf.text(`NV: ${this.printSalesReceiptData.userName}`, 20, 285)
+            // pdf.autoTable({
+            //   head: [['SP', 'SL', 'Giá', 'T.Tiền']],
+            //   body: [
+            //     ['Sữa chua tổng hợp', '5', '163,647', '818,253'],
+            //     ['Sữa ông thọ', '1', '10,000', '10,000'],
+            //     // ...
+            //   ],
+            //   startY: 305,
+            //   styles: {
+            //     font: 'PTSans',
+            //   },
+            // })
+            pdf.autoTable({
+              html: '#table-header',
+              startY: 305,
+              theme: 'plain',
+              styles: {
+                font: 'PTSans',
+              },
+            })
+            pdf.autoTable({
+              html: '#table-body',
+              startY: 315,
+              theme: 'plain',
+              styles: {
+                font: 'PTSans',
+              },
+            })
+            pdf.text('Tổng cộng (bao gồm VAT):', 20, 405)
+            pdf.text('Tổng tiền (chưa VAT):', 20, 425)
+            pdf.text('Giảm giá (chưa VAT):', 20, 445)
+            pdf.text('Giảm giá (bao gồm VAT):', 20, 465)
+            pdf.text('Tiền tích lũy:', 20, 485)
+            pdf.text('Voucher:', 20, 505)
+            pdf.text('Thanh toán (chưa VAT):', 20, 525)
+            pdf.text('Thanh toán (bao gồm VAT):', 20, 545)
+            pdf.text('KH đưa:', 20, 565)
+            pdf.text('Trả lại:', 20, 585)
 
-          pdf.text('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.', 20, 605)
-          pdf.text('Vinamilk online: www.giacmosuaviet.com.vn', 20, 625)
-          pdf.text('Cảm ơn Quý khách. Hẹn gặp lại', 20, 645)
-          const cpj = new JSPM.ClientPrintJob()
-          cpj.clientPrinter = new JSPM.InstalledPrinter(printerName) // get printer
-          // convert data
-          const printContent = new JSPM.PrintFilePDF(pdf.output('datauristring'), JSPM.FileSourceType.URL, 'hoa_don_ban_hang.pdf', 1)
-          printContent.printAsGrayscale = true // Options print black/white(=true) and color(=false)
-          cpj.files.push(printContent)
-          cpj.sendToClient()
-          // pdf.save('test.pdf')
+            pdf.text('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.', 20, 605)
+            pdf.text('Vinamilk online: www.giacmosuaviet.com.vn', 20, 625)
+            pdf.text('Cảm ơn Quý khách. Hẹn gặp lại', 20, 645)
+            const cpj = new JSPM.ClientPrintJob()
+            cpj.clientPrinter = new JSPM.InstalledPrinter(this.printerName) // get printer
+            // convert data
+            const printContent = new JSPM.PrintFilePDF(pdf.output('datauristring'), JSPM.FileSourceType.URL, 'hoa_don_ban_hang.pdf', 1)
+            printContent.printAsGrayscale = true // Options print black/white(=true) and color(=false)
+            printContent.pageSizing = JSPM.Sizing.Fit
+            cpj.files.push(printContent)
+            cpj.sendToClient()
+            // pdf.save('test.pdf')
+            break
+          }
+        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
         }
-      } else {
-        toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
       }
     }
+  },
+  methods: {
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
   },
 }
 </script>
