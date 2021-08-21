@@ -490,9 +490,9 @@ export default {
           if (jspmCheckStatus()) {
             // printActions(element, printerName, options)
             // printTest(element, printerName)
-            const fontSize = 24
+            const fontSize = 20
             // eslint-disable-next-line new-cap
-            const pdf = new jsPDF('p', 'mm', [100, 76]) // portrait, heigth x width
+            const pdf = new jsPDF('p', 'px', [1000, 400]) // portrait, heigth x width
             pdf.setLineCap(2)
             // element.classList.add('d-none')
             pdf.setFontSize(fontSize)
