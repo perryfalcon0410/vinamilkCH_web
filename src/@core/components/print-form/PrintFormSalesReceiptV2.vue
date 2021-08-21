@@ -320,6 +320,9 @@ import 'jspdf-autotable'
 // import { autoTable } from 'jspdf-autotable'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { myFont } from '@/@core/libs/PTSans'
+// import { Roboto } from '@/@core/libs/Roboto-Regular-normal'
+// import '@/@core/libs/jspdf.customfonts.min.js'
+// import '@/@core/libs/default_vfs.js'
 import {
   SALESRECEIPTS,
   // Getters
@@ -420,6 +423,7 @@ export default {
         extraAmount: 662483.0, // Tiền trả lại khách
       },
       printerName: '',
+      ipAddress: null,
     }
   },
   computed: {
@@ -456,6 +460,7 @@ export default {
     },
     printerOptions() {
       this.printerName = this.printerOptions.billPrinterName
+      this.ipAddress = this.printerOptions.clientIp || null
     },
   },
   mounted() {
@@ -474,6 +479,7 @@ export default {
       for (let i = 0; i < 3; i += 1) {
         if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
           // const element = document.getElementById('print-form-sale-receipt-v2')
+          // element.classList.remove('d-none')
           // const options = {
           //   fileName: 'hoa_don_ban_hang',
           //   pageSizing: 'Fit',
@@ -484,11 +490,17 @@ export default {
           if (jspmCheckStatus()) {
             // printActions(element, printerName, options)
             // printTest(element, printerName)
+            const fontSize = 24
             // eslint-disable-next-line new-cap
-            const pdf = new jsPDF('p', 'px', [1000, 400])
+            const pdf = new jsPDF('p', 'mm', [100, 76]) // portrait, heigth x width
+            pdf.setLineCap(2)
+            // element.classList.add('d-none')
+            pdf.setFontSize(fontSize)
             pdf.addFileToVFS('PTSans.ttf', myFont)
             pdf.addFont('PTSans.ttf', 'PTSans', 'normal')
             pdf.setFont('PTSans')
+            // pdf.addFont('Arimo-Regular.ttf', 'Arimo', 'normal')
+            // pdf.setFont('Arimo')
             // doc.fromHTML(element)
             pdf.text('CTY CP SUA VIET NAM - VINAMILK', 20, 25)
             pdf.text(`${this.printSalesReceiptData.shopName}`, 20, 45)
@@ -522,6 +534,7 @@ export default {
               theme: 'plain',
               styles: {
                 font: 'PTSans',
+                fontSize,
               },
             })
             pdf.autoTable({

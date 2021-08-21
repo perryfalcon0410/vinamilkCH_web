@@ -168,6 +168,7 @@ export default {
       this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
       this.printerReportSelected = this.printerDataDefault.reportPrinterName
       this.printerBillSelected = this.printerDataDefault.billPrinterName
+      this.ipAddress = this.printerDataDefault.clientIp
     },
   },
   mounted() {
