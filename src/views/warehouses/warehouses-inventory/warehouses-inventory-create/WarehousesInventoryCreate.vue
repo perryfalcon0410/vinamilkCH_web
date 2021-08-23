@@ -255,13 +255,12 @@
             <div v-else-if="props.column.field === 'inventoryPacket'">
               <cleave
                 :id="products[props.row.originalIndex].productCode + 'inventoryPacket'"
-                v-model="products[props.row.originalIndex].inventoryPacket"
                 class="form-control text-right"
                 :raw="true"
                 :options="options.number"
-                maxlength="7"
+                maxlength="9"
                 :value="products[props.row.originalIndex].inventoryPacket"
-                @change.native="updateInventoryTotal(props.row.originalIndex)"
+                @change.native="updateInventoryTotal(props.row.originalIndex, $event, true)"
                 @keypress="$onlyNumberInput"
                 @keyup.up.native="onClickUpButtonInventoryPacket(props.row.originalIndex)"
                 @keyup.down.native="onClickDownButtonInventoryPacket(props.row.originalIndex)"
@@ -273,13 +272,12 @@
             <div v-else-if="props.column.field === 'inventoryOdd'">
               <cleave
                 :id="products[props.row.originalIndex].productCode + 'inventoryOdd'"
-                v-model="products[props.row.originalIndex].inventoryOdd"
                 class="form-control text-right"
                 :raw="true"
                 :options="options.number"
-                maxlength="7"
+                maxlength="9"
                 :value="products[props.row.originalIndex].inventoryOdd"
-                @change.native="updateInventoryTotal(props.row.originalIndex)"
+                @change.native="updateInventoryTotal(props.row.originalIndex, $event, false)"
                 @keypress="$onlyNumberInput"
                 @keyup.up.native="onClickUpButtonInventoryOdd(props.row.originalIndex)"
                 @keyup.down.native="onClickDownButtonInventoryOdd(props.row.originalIndex)"
@@ -802,7 +800,12 @@ export default {
         ctrlId: 7,
       })
     },
-    updateInventoryTotal(index) {
+    updateInventoryTotal(index, event, isInventoryPacket) {
+      if (isInventoryPacket) {
+        this.products[index].inventoryPacket = Number(event.target.value.replaceAll(',', ''))
+      } else {
+        this.products[index].inventoryOdd = Number(event.target.value.replaceAll(',', ''))
+      }
       this.products[index].inventoryTotal = Number(this.products[index].inventoryPacket) * this.products[index].exchange + Number(this.products[index].inventoryOdd)
       this.products[index].unequal = this.products[index].inventoryTotal - this.products[index].instockAmount
     },
