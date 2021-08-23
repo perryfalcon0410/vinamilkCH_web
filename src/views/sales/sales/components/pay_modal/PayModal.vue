@@ -1248,6 +1248,8 @@ export default {
         toasts.error('Bạn đã nhập sai quá số lần quy định và bị khóa chức năng trong ngày. Vui lòng liên hệ với bộ phận hỗ trợ để được tư vấn.')
       } else if (!isLocked && this.isPaid) {
         toasts.error('Bạn đã thanh toán hoá đơn này, nên sẽ không sử dụng được chức năng này nữa.')
+      } else if (this.totalQuantity === null || this.totalQuantity === 0) {
+        this.$bvModal.hide('VoucherModal')
       } else {
         this.$bvModal.show('VoucherModal')
       }
