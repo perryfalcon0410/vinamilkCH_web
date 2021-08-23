@@ -2,6 +2,7 @@ import moment from 'moment'
 import JSPM from 'jsprintmanager'
 // eslint-disable-next-line import/no-unresolved
 import html2pdf from 'html2pdf.js'
+import commonData from '@/@db/common'
 import toasts from './toasts/toasts'
 
 export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)
@@ -153,9 +154,23 @@ export const nowDate = () => moment().format('DD/MM/YYYY')
 
 // call api get ip client
 export const hostName = async () => {
-  const response = await fetch('https://jsonip.com', { mode: 'cors' })
-  const data = await response.json()
-  return data
+  for (let i = 0; i < commonData.apiGetIpList.length; i += 1) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      const response = await fetch(commonData.apiGetIpList[i], { mode: 'cors' })
+      // eslint-disable-next-line no-await-in-loop
+      const data = await response.json()
+      if (data.status && data.status !== 'success') {
+        // eslint-disable-next-line no-continue
+        continue
+      } else {
+        return data
+      }
+    } catch (error) {
+      // temp
+    }
+  }
+  return null
 }
 // call api get ip client
 

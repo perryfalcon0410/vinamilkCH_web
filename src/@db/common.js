@@ -28,4 +28,10 @@ export default {
   },
 
   errorAPIMessage: 'Server không hoạt động, vui lòng liên hệ Quản trị.',
+  apiGetIpList: [
+    'https://api.ipify.org?format=json',
+    'http://ip-api.com/json',
+    'http://www.geoplugin.net/json.gp',
+    'https://ipinfo.io/json',
+  ],
 }

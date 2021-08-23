@@ -130,10 +130,13 @@ export default {
       required: true,
       default: false,
     },
+    ipAddress: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
-      ipAddress: null,
       isTrue: false,
       printerDataDefault: {},
       printerConfigOptions: [],
@@ -168,7 +171,7 @@ export default {
       this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
       this.printerReportSelected = this.printerDataDefault.reportPrinterName
       this.printerBillSelected = this.printerDataDefault.billPrinterName
-      this.ipAddress = this.printerDataDefault.clientIp
+      // this.ipAddress = this.printerDataDefault.clientIp
     },
   },
   mounted() {

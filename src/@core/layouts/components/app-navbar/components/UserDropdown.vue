@@ -62,7 +62,9 @@
     </b-dropdown-item>
     <printer-configuration-modal
       :visible="isVisible"
+      :ip-address="ipAddress"
       @cancel="cancel"
+      @getIpClient="getIpClient"
     />
   </b-nav-item-dropdown>
 </template>
@@ -73,14 +75,13 @@ import {
   mapActions,
 } from 'vuex'
 import {
-  // hostName,
   avatarText,
+  hostName,
 } from '@/@core/utils/filter'
 import { initialAbility } from '@/libs/acl/config'
 import useJwt from '@/auth/jwt/useJwt'
 
 import { getUserData } from '@/auth/utils'
-// import PrinterConfigurationModal from '@/@core/components/printer-configuration-modal/PrinterConfigurationModal.vue'
 import {
   PRINTERCONFIG,
   GET_PRINTER_CLIENT_ACTIONS,
@@ -97,8 +98,19 @@ export default {
       userData: getUserData(),
       avatarText,
       isVisible: false,
-      ipAddress: null,
+      ipAddress: '',
     }
+  },
+  watch: {
+    ipAddress() {
+      this.GET_PRINTER_CLIENT_ACTIONS({
+        data: {
+          clientId: this.ipAddress,
+          ...this.decentralization,
+        },
+        onSuccess: () => {},
+      })
+    },
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [
@@ -126,17 +138,20 @@ export default {
       this.$router.push({ name: 'auth-reset-password' })
     },
     onClickPrintConfiguration() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-          ...this.decentralization,
-        },
-        onSuccess: () => {},
+      hostName().then(res => {
+        if (res) {
+          this.ipAddress = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddress = null
+        }
       })
       this.isVisible = true
     },
     cancel() {
       this.isVisible = false
+    },
+    getIpClient(ip) {
+      this.ipAddress = ip
     },
   },
 }
