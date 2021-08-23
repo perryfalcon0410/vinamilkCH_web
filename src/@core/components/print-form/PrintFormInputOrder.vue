@@ -482,6 +482,7 @@ export default {
             pageSizing: 'Fit',
             format: 'a4',
             isPaging: true,
+            x: 1.1,
           }
           if (jspmCheckStatus()) {
             printActions(element, printerName, options)

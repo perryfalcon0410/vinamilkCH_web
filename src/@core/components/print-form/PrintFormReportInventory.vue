@@ -354,12 +354,13 @@ export default {
           const element = document.getElementById('rp-inventory')
           const options = {
             fileName: 'Bao cao ton kho',
-            format: 'a4',
+            format: 'a3',
             // orientation: 'landscape',
             // rotate: 'Rot90',
             pageSizing: 'Fit',
             scale: 2.5,
-            // isPaging: true,
+            isPaging: true,
+            margin: [10, 1, 10, 1],
           }
           if (jspmCheckStatus()) {
             printActions(element, printerName, options)

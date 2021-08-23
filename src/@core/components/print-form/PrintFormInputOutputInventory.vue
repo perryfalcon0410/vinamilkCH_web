@@ -585,6 +585,7 @@ export default {
             pageSizing: 'Fit',
             format: 'a3',
             isPaging: true,
+            margin: [5, 1, 10, 1],
           }
           if (jspmCheckStatus()) {
             printActions(element, printerName, options)
