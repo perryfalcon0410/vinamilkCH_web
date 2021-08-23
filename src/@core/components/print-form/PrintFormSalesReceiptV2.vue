@@ -93,16 +93,16 @@
     <table id="table-header">
       <thead>
         <tr>
-          <th class="width-15-per">
+          <th>
             SP
           </th>
-          <th class="text-center width-15-per">
+          <th class="text-center">
             SL
           </th>
-          <th class="text-center width-30-per">
+          <th class="text-center">
             Giá
           </th>
-          <th class="text-right width-40-per">
+          <th class="text-right">
             T.Tiền
           </th>
         </tr>
@@ -488,77 +488,120 @@ export default {
           //   format: [210, 600],
           // }
           if (jspmCheckStatus()) {
-            // printActions(element, printerName, options)
-            // printTest(element, printerName)
-            const fontSize = 20
+            // format UI bill
             // eslint-disable-next-line new-cap
-            const pdf = new jsPDF('p', 'px', [1000, 400]) // portrait, heigth x width
-            pdf.setLineCap(2)
-            // element.classList.add('d-none')
+            const pdf = new jsPDF('p', 'px', [1000, 410]) // portrait, heigth x width
+            const marginLeft = 10
+            let marginTop = 10
+            const spaceRowTwoCluster = 25
+            const spaceRowInCluster = 18
+            // const pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight()
+            const pageWidth = pdf.internal.pageSize.width || pdf.internal.pageSize.getWidth()
+            const fontSize = 20
             pdf.setFontSize(fontSize)
             pdf.addFileToVFS('PTSans.ttf', myFont)
             pdf.addFont('PTSans.ttf', 'PTSans', 'normal')
             pdf.setFont('PTSans')
-            // pdf.addFont('Arimo-Regular.ttf', 'Arimo', 'normal')
-            // pdf.setFont('Arimo')
-            // doc.fromHTML(element)
-            pdf.text('CTY CP SUA VIET NAM - VINAMILK', 20, 25)
-            pdf.text(`${this.printSalesReceiptData.shopName}`, 20, 45)
-            pdf.text(`${this.printSalesReceiptData.shopPhone}`, 20, 65)
-            pdf.text(`${this.printSalesReceiptData.shopAddress}`, 20, 85)
-            pdf.text('BIÊN NHẬN THANH TOÁN', 20, 105)
-            pdf.text('KIÊM PHIẾU GIAO HÀNG', 20, 125)
-            pdf.text('(CÓ GIÁ TRỊ NHƯ HÓA ĐƠN)', 20, 145)
-            pdf.text(`Số HĐ: ${this.printSalesReceiptData.orderNumber}`, 20, 165)
-            pdf.text(`KH: ${this.printSalesReceiptData.customerName} - ${this.printSalesReceiptData.customerPhone}`, 20, 185)
-            pdf.text(`DC: ${this.printSalesReceiptData.customerAddress}`, 20, 205)
-            pdf.text(`Loại giao hàng: ${this.printSalesReceiptData.deliveryType}`, 20, 225)
-            pdf.text(`Doanh số tích lũy: ${this.$formatNumberToLocale(this.printSalesReceiptData.customerPurchase)}`, 20, 245)
-            pdf.text(`Ngày: 03/07/2021 - ${this.$formatPrintDate(this.printSalesReceiptData.orderDate)}`, 20, 265)
-            pdf.text(`NV: ${this.printSalesReceiptData.userName}`, 20, 285)
-            // pdf.autoTable({
-            //   head: [['SP', 'SL', 'Giá', 'T.Tiền']],
-            //   body: [
-            //     ['Sữa chua tổng hợp', '5', '163,647', '818,253'],
-            //     ['Sữa ông thọ', '1', '10,000', '10,000'],
-            //     // ...
-            //   ],
-            //   startY: 305,
-            //   styles: {
-            //     font: 'PTSans',
-            //   },
-            // })
+
+            // body bill
+            pdf.text('CTY CP SUA VIET NAM - VINAMILK', pageWidth / 2, marginTop, { align: 'center' })
+            marginTop += spaceRowTwoCluster
+            pdf.text(`${this.printSalesReceiptData.shopName}`, pageWidth / 2, marginTop, { align: 'center' })
+            marginTop += spaceRowInCluster
+            pdf.text(`Tel: ${this.printSalesReceiptData.shopPhone}`, pageWidth / 2, marginTop, { align: 'center' })
+            marginTop += spaceRowInCluster
+            pdf.text(`Add: ${this.printSalesReceiptData.shopAddress}`, pageWidth / 2, marginTop, { align: 'center' })
+            marginTop += spaceRowTwoCluster
+            pdf.text('BIÊN NHẬN THANH TOÁN', pageWidth / 2, marginTop, { align: 'center' })
+            marginTop += spaceRowInCluster
+            pdf.text('KIÊM PHIẾU GIAO HÀNG', pageWidth / 2, marginTop, { align: 'center' })
+            marginTop += spaceRowInCluster
+            pdf.text('(CÓ GIÁ TRỊ NHƯ HÓA ĐƠN)', pageWidth / 2, marginTop, { align: 'center' })
+            marginTop += spaceRowTwoCluster
+            pdf.text(`Số HĐ: ${this.printSalesReceiptData.orderNumber}`, marginLeft, marginTop)
+            marginTop += spaceRowInCluster
+            pdf.text(`KH: ${this.printSalesReceiptData.customerName} - ${this.printSalesReceiptData.customerPhone}`, marginLeft, marginTop)
+            marginTop += spaceRowInCluster
+            pdf.text(`DC: ${this.printSalesReceiptData.customerAddress}`, marginLeft, marginTop)
+            marginTop += spaceRowInCluster
+            pdf.text(`Loại giao hàng: ${this.printSalesReceiptData.deliveryType}`, marginLeft, marginTop)
+            marginTop += spaceRowInCluster
+            pdf.text(`Doanh số tích lũy: ${this.$formatNumberToLocale(this.printSalesReceiptData.customerPurchase)}`, marginLeft, marginTop)
+            marginTop += spaceRowInCluster
+            pdf.text(`Ngày: 03/07/2021 - ${this.$formatPrintDate(this.printSalesReceiptData.orderDate)}`, marginLeft, marginTop)
+            marginTop += spaceRowInCluster
+            pdf.text(`NV: ${this.printSalesReceiptData.userName}`, marginLeft, marginTop)
+            marginTop += 5
+
             pdf.autoTable({
               html: '#table-header',
-              startY: 305,
+              margin: { top: marginTop, left: 5 },
               theme: 'plain',
               styles: {
                 font: 'PTSans',
                 fontSize,
+                fontStyle: 'bold',
               },
             })
             pdf.autoTable({
               html: '#table-body',
-              startY: 315,
+              margin: { top: marginTop, left: 5 },
               theme: 'plain',
               styles: {
                 font: 'PTSans',
               },
             })
-            pdf.text('Tổng cộng (bao gồm VAT):', 20, 405)
-            pdf.text('Tổng tiền (chưa VAT):', 20, 425)
-            pdf.text('Giảm giá (chưa VAT):', 20, 445)
-            pdf.text('Giảm giá (bao gồm VAT):', 20, 465)
-            pdf.text('Tiền tích lũy:', 20, 485)
-            pdf.text('Voucher:', 20, 505)
-            pdf.text('Thanh toán (chưa VAT):', 20, 525)
-            pdf.text('Thanh toán (bao gồm VAT):', 20, 545)
-            pdf.text('KH đưa:', 20, 565)
-            pdf.text('Trả lại:', 20, 585)
-
-            pdf.text('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.', 20, 605)
-            pdf.text('Vinamilk online: www.giacmosuaviet.com.vn', 20, 625)
-            pdf.text('Cảm ơn Quý khách. Hẹn gặp lại', 20, 645)
+            marginTop += 100
+            const marginValueCalculate = pageWidth - 10
+            let maxLengthCalculate = 0
+            if (this.printSalesReceiptData.amount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.amount.toString().length
+            if (this.printSalesReceiptData.amountNotVAT.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.amountNotVAT.toString().length
+            if (this.printSalesReceiptData.promotionAmountNotVat.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.promotionAmountNotVat.toString().length
+            // if (this.printSalesReceiptData.promotionAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.promotionAmount.toString().length
+            // if (this.printSalesReceiptData.accumulatedAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.accumulatedAmount.toString().length
+            // if (this.printSalesReceiptData.voucherAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.voucherAmount.toString().length
+            if (this.printSalesReceiptData.totalNotVat.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.totalNotVat.toString().length
+            if (this.printSalesReceiptData.total.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.total.toString().length
+            if (this.printSalesReceiptData.paymentAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.paymentAmount.toString().length
+            if (this.printSalesReceiptData.extraAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.extraAmount.toString().length
+            const marginLabelCalculate = pageWidth - ((maxLengthCalculate * fontSize) / 2)
+            pdf.text('Tổng cộng (bao gồm VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.amount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
+            marginTop += spaceRowInCluster
+            pdf.text('Tổng tiền (chưa VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.amountNotVAT) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
+            marginTop += spaceRowInCluster
+            pdf.text('Giảm giá (chưa VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.promotionAmountNotVat) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
+            marginTop += spaceRowInCluster
+            pdf.text('Giảm giá (bao gồm VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.promotionAmount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
+            marginTop += spaceRowInCluster
+            pdf.text('Tiền tích lũy: ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.accumulatedAmount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
+            marginTop += spaceRowInCluster
+            pdf.text('Voucher:', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.voucherAmount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
+            marginTop += spaceRowInCluster
+            pdf.text('Thanh toán (chưa VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.totalNotVat) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
+            marginTop += spaceRowInCluster
+            pdf.text('Thanh toán (bao gồm VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.total) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
+            marginTop += spaceRowInCluster
+            pdf.text('KH đưa: ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.paymentAmount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
+            marginTop += spaceRowInCluster
+            pdf.text('Trả lại: ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.extraAmount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
+            marginTop += spaceRowTwoCluster
+            pdf.text('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng', marginLeft, marginTop)
+            marginTop += spaceRowInCluster
+            pdf.text('ngày mua hàng.', marginLeft, marginTop)
+            marginTop += spaceRowTwoCluster
+            pdf.text('Vinamilk online: www.giacmosuaviet.com.vn', pageWidth / 2, marginTop, { align: 'center' })
+            marginTop += spaceRowInCluster
+            pdf.text('Cảm ơn Quý khách. Hẹn gặp lại', pageWidth / 2, marginTop, { align: 'center' })
             const cpj = new JSPM.ClientPrintJob()
             cpj.clientPrinter = new JSPM.InstalledPrinter(this.printerName) // get printer
             // convert data
@@ -566,8 +609,8 @@ export default {
             printContent.printAsGrayscale = true // Options print black/white(=true) and color(=false)
             printContent.pageSizing = JSPM.Sizing.Fit
             cpj.files.push(printContent)
-            cpj.sendToClient()
-            // pdf.save('test.pdf')
+            // cpj.sendToClient()
+            pdf.save('test.pdf')
             break
           }
         } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
