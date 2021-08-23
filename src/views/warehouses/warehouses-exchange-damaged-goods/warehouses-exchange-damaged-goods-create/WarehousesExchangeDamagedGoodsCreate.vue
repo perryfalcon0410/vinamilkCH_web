@@ -278,7 +278,7 @@
                     class:'form-control w-30',
                     placeholder:'Nhập mã hoặc tên sản phẩm'
                   }"
-                  @input="loadProducts"
+                  @keydown.enter="loadProducts"
                   @selected="selectProduct"
                 >
                   <template
@@ -715,11 +715,11 @@ export default {
       } else this.$refs.focusCustomer.$el.querySelector('input').click()
     },
 
-    loadProducts(text) {
-      if (text) {
-        if (text.length >= commonData.minSearchLength) {
+    loadProducts() {
+      if (this.productInfos.productName) {
+        if (this.productInfos.productName.length >= commonData.minSearchLength) {
           const searchData = {
-            keyWord: text,
+            keyWord: this.productInfos.productName,
             customerId: this.customerId || null,
             ...this.decentralization,
           }
