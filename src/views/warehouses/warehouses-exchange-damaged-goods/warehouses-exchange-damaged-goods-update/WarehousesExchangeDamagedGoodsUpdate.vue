@@ -61,7 +61,7 @@
                 class:'form-control',
                 placeholder:'Nhập mã hoặc tên khách hàng',
               }"
-              @keyup.enter="customerOptions"
+              @input="customerOptions"
               @selected="selectCustomer"
             >
 
@@ -264,7 +264,7 @@
                   class:'form-control w-25',
                   placeholder:'Nhập mã hoặc tên sản phẩm'
                 }"
-                @keydown.enter="loadProducts"
+                @input="loadProducts"
                 @selected="selectProduct"
               >
                 <template
@@ -722,17 +722,17 @@ export default {
       })
     },
 
-    customerOptions() {
-      if (this.customerInfo.customerName) {
-        if (this.customerInfo.customerName.length >= commonData.minSearchLength) {
+    customerOptions(text) {
+      if (text) {
+        if (text.length >= commonData.minSearchLength) {
           const searchData = {
-            searchKeywords: this.customerInfo.customerName,
+            searchKeywords: text,
             status: this.customerInfo.status,
             ...this.decentralization,
           }
           this.GET_CUSTOMERS_ACTION(searchData)
         }
-      } else this.customers = [{ data: null }]
+      }
     },
 
     selectCustomer(customer) {
@@ -755,9 +755,9 @@ export default {
       } else this.$refs.focusInput.$el.querySelector('input').click()
     },
 
-    loadProducts() {
-      if (this.productInfos.productName) {
-        if (this.productInfos.productName.length >= commonData.minSearchLength) {
+    loadProducts(text) {
+      if (text) {
+        if (text.length >= commonData.minSearchLength) {
           const searchData = {
             keyWord: this.productInfos.productName,
             customerId: this.customerId || null,
@@ -765,7 +765,7 @@ export default {
           }
           this.GET_PRODUCTS_ACTION(searchData)
         }
-      } else this.products = [{ data: null }]
+      }
     },
 
     selectProduct(product) {

@@ -405,7 +405,7 @@
                       class:'form-control w-25 h7',
                       placeholder:'Nhập mã hoặc tên sản phẩm'
                     }"
-                    @keydown.enter="loadProducts"
+                    @input="loadProducts"
                     @selected="selectProduct"
                   >
                     <template
