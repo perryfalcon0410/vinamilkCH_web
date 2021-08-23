@@ -253,16 +253,17 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import JSPM from 'jsprintmanager'
 import { myFont } from '@/@core/libs/PTSans'
 import toasts from '@/@core/utils/toasts/toasts'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
-import autoTable from 'jspdf-autotable'
+// import autoTable from 'jspdf-autotable'
 import {
-  // printActions,
+// printActions,
+  hostName,
   jsPdfPrint,
   jspmCheckStatus,
 } from '@core/utils/filter'
@@ -274,6 +275,7 @@ import {
 import {
   PRINTERCONFIG,
   PRINTER_CLIENT_GETTER,
+  GET_PRINTER_CLIENT_ACTIONS,
 } from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
@@ -282,6 +284,7 @@ export default {
   data() {
     return {
       dataPrintOptions: {},
+      ipAddress: '',
     }
   },
   computed: {
@@ -326,6 +329,16 @@ export default {
       return null
     },
   },
+  watch: {
+    ipAddress() {
+      this.GET_PRINTER_CLIENT_ACTIONS({
+        data: {
+          clientId: this.ipAddress,
+        },
+        onSuccess: () => {},
+      })
+    },
+  },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
     const printerName = this.printerOptions.reportPrinterName
@@ -339,6 +352,7 @@ export default {
       const pdf = new jsPDF('l', 'mm', 'a4')
       pdf.addFileToVFS('Regular.ttf', myFont)
       pdf.addFont('Regular.ttf', 'myFont', 'normal')
+      pdf.addFont('Regular.ttf', 'myFont', 'bold')
       pdf.setFont('myFont')
       pdf.setLanguage('vi-VN')
       pdf.setFontSize(18)
@@ -348,16 +362,44 @@ export default {
       pdf.setFontSize(9)
       pdf.text(`Add: ${this.reportSalesShopData.address}`, 15, 17)
       pdf.text(`Tel: ${this.reportSalesShopData.tel}`, 15, 24)
-      pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.fromDate}`, 110, 17)
+      pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 110, 17)
       pdf.text(`Ngày in: ${this.reportSalesShopData.dateOfPrinting}`, 119, 24)
       const res = pdf.autoTableHtmlToJson(document.getElementById('report-sales-table'))
-      pdf.autoTable(res.columns, res.data, {
+      // total table
+      pdf.autoTable({
         startY: 30,
+        styles: {
+          font: 'myFont',
+          fontSize: 9,
+          textColor: 'black',
+          fontStyle: 'bold',
+        },
+        body: [
+          [
+            { content: 'Tổng Số HĐ:', halign: 'right', styles: { halign: 'right', cellWidth: 120 } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.someBills)}`, styles: { halign: 'right', cellWidth: 19 } },
+            { content: 'Tổng cộng:', styles: { halign: 'right', cellWidth: 35 } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalQuantity)}`, styles: { halign: 'right', cellWidth: 18 } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalTotal)}`, styles: { halign: 'right', cellWidth: 34 } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat)}`, styles: { halign: 'right', cellWidth: 23 } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay)}`, styles: { halign: 'right' } },
+          ],
+        ],
+        // columnStyles: {
+        //   0: {
+        //     cellWidth: 126,
+        //   },
+        // },
+      })
+      pdf.autoTable(res.columns, res.data, {
+        showHead: 'firstPage',
+        startY: 38,
         theme: 'grid',
         styles: {
           font: 'myFont',
           Color: [255, 0, 0],
           fontSize: 8,
+          textColor: 'black',
 
         },
         headStyles: {
@@ -365,14 +407,30 @@ export default {
           font: 'myFont',
           textColor: 'black',
           fontSize: 9,
-          Border: 2,
+          lineWidth: 0.1,
           lineColor: 'black',
+        },
+        columnStyles: {
+          0: { cellWidth: 10 },
+          1: { cellWidth: 35 },
+          2: { cellWidth: 28 },
+          3: { cellWidth: 35 },
+          4: { cellWidth: 18 },
+          5: { cellWidth: 13 },
+          6: { cellWidth: 30 },
+          7: { cellWidth: 10 },
+          8: { halign: 'right', cellWidth: 12 },
+          9: { halign: 'right', cellWidth: 15 },
+          10: { halign: 'right', cellWidth: 20 },
+          11: { halign: 'right', cellWidth: 23 },
+          12: { halign: 'right' },
         },
       })
       for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
         pdf.setPage(j)
         pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
       }
+      // pdf.save()
       const options = {
         fileName: 'bao_cao_ban_hang',
         pageSizing: 'Fit',
@@ -389,6 +447,16 @@ export default {
     }
   },
   mounted() {
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
+  },
+  methods: {
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
   },
 
 }
