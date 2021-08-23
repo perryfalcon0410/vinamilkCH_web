@@ -57,8 +57,9 @@
             Kho hàng
           </div>
           <tree-select
-            ref="focusInput"
             v-model="warehouseType"
+            :clearable="false"
+            :searchable="false"
             :options="warehouseTypes"
             placeholder="Tất cả"
           />
@@ -356,6 +357,7 @@
           >
             <b-col class="px-0">
               <b-form-file
+                id="import-file"
                 v-model="importFile"
                 placeholder="Vui lòng chọn file import kiểm kê"
                 accept=".xlsx, .xls"
@@ -758,7 +760,6 @@ export default {
 
   mounted() {
     this.GET_WAREHOUSE_TYPES_ACTION({ formId: 5, ctrlId: 7 })
-    this.$refs.focusInput.$el.querySelector('input').focus()
   },
 
   methods: {
@@ -906,6 +907,7 @@ export default {
               if (!this.showErrorMessage) {
                 this.onClickSaveButton()
               }
+              document.getElementById('import-file').value = ''
             })
           },
         })

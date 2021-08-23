@@ -357,6 +357,7 @@
           >
             <b-col class="px-0">
               <b-form-file
+                id="import-file"
                 v-model="importFile"
                 placeholder="Vui lòng chọn file import kiểm kê"
                 accept=".xlsx, .xls"
@@ -798,6 +799,7 @@ export default {
               if (!this.showErrorMessage) {
                 this.onClickSaveButton()
               }
+              document.getElementById('import-file').value = ''
             })
           },
         })
