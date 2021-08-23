@@ -382,9 +382,11 @@ export default {
       let i = 0
       this.reportProductData.forEach(item => {
         item.orderReturnGoods.forEach(j => {
-          // eslint-disable-next-line no-param-reassign
-          j.len = i
-          i += 1
+          j.reportPrintProductDTOS.forEach(x => {
+            // eslint-disable-next-line no-param-reassign
+            x.len = i
+            i += 1
+          })
         })
       })
     },
