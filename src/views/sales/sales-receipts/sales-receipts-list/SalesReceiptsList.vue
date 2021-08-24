@@ -260,6 +260,7 @@ import {
 import {
   earlyMonth,
   nowDate,
+  preventDefaultWindowPrint,
 } from '@core/utils/filter'
 import commonData from '@/@db/common'
 import {
@@ -553,15 +554,23 @@ export default {
 
   mounted() {
     resizeAbleTable()
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
   },
-
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
+  },
   methods: {
     ...mapActions(SALESRECEIPTS, [
       GET_SALES_RECEIPTS_ACTION,
       GET_SALES_RECEIPTS_DETAIL_ACTION,
       PRINT_SALES_RECEIPT_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.onClickPrintButton()
+      }
+    },
     statusPrintButton() {
       return this.$permission('SalesReceipts', 'SalesReceiptsPrint')
     },

@@ -219,6 +219,9 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import {
+  preventDefaultWindowPrint,
+} from '@core/utils/filter'
 import PrintFormSalesReportByCat from '@core/components/print-form/PrintFormSalesReportByCat.vue'
 import ReportsSalesCatListSearch from './components/ReportsSalesCatListSearch.vue'
 import {
@@ -391,6 +394,10 @@ export default {
   mounted() {
     this.columns = [...this.initalCol]
     resizeAbleTable()
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
   },
   methods: {
     ...mapActions(REPORT_SALES_CAT, [
@@ -398,7 +405,12 @@ export default {
       EXPORT_REPORT_SALES_CAT_ACTION,
       PRINT_REPORT_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.printReport()
+      }
+    },
     // START - permission
     statusExcelButton() {
       return this.$permission('ReportsSalesCatSale', 'ReportsSalesAmountCATExcel')

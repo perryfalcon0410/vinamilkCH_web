@@ -165,10 +165,12 @@ import commonData from '@/@db/common'
 import {
   earlyMonth,
   nowDate,
+  preventDefaultWindowPrint,
 } from '@/@core/utils/filter'
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
+
 import PrintFormReportCustomerNoOrder from '@core/components/print-form/PrintFormReportCustomerNoOrder.vue'
 import ReportsCustomersNonTransactionalListSearch from './components/ReportsCustomersNonTransactionalListSearch.vue'
 import {
@@ -281,6 +283,10 @@ export default {
   },
   mounted() {
     resizeAbleTable()
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
   },
 
   methods: {
@@ -289,7 +295,12 @@ export default {
       GET_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
       PRINT_REPORTS_CUSTOMERS_NON_TRANSACTIONAL_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.onClickPrintButton()
+      }
+    },
     // START - permission
     statusExcelButton() {
       return this.$permission('ReportsCustomersNonTransactional', 'ReportsCustomersNonTransactionalExcel')

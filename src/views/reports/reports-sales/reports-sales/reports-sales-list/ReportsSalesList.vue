@@ -217,7 +217,9 @@ import {
 } from 'vuex'
 import {
   formatISOtoVNI,
+  preventDefaultWindowPrint,
 } from '@core/utils/filter'
+
 import PrintFormReportSales from '@core/components/print-form/PrintFormReportSales.vue'
 import ReportsSalesListSearch from './components/ReportsSalesListSearch.vue'
 import {
@@ -464,14 +466,24 @@ export default {
       this.salesPagination = { ...this.getSalesPagination }
     },
   },
-
+  mounted() {
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
+  },
   methods: {
     ...mapActions(REPORT_SALES, [
       GET_REPORT_SALES_ACTION,
       EXPORT_REPORT_SALES_ACTION,
       PRINT_REPORT_SALES_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.onClickPrintButton()
+      }
+    },
     // START - permission
     statusExcelButton() {
       return this.$permission('ReportsSalesSale', 'ReportsSalesSaleExcel')

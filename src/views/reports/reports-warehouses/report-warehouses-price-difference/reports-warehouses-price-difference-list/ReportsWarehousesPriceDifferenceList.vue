@@ -207,6 +207,9 @@ import commonData from '@/@db/common'
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
+import {
+  preventDefaultWindowPrint,
+} from '@core/utils/filter'
 import PrintFormReportDiffPrice from '@core/components/print-form/PrintFormReportDiffPrice.vue'
 import ReportsWarehousesOutputListSearch from './components/ReportsWarehousesOutputListSearch.vue'
 import {
@@ -414,6 +417,10 @@ export default {
   },
   mounted() {
     resizeAbleTable()
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
   },
 
   methods: {
@@ -422,7 +429,12 @@ export default {
       EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION,
       PRINT_REPORT_DIFFERENCE_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.onClickPrintButton()
+      }
+    },
     // START - permission
     statusExcelButton() {
       return this.$permission('ReportsWarehousesPriceDifference', 'ReportsWarehousesPriceDifferenceExcel')

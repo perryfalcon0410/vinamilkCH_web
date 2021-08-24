@@ -334,6 +334,9 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
+import {
+  preventDefaultWindowPrint,
+} from '@core/utils/filter'
 import PrintFormInputOutputInventory from '@core/components/print-form/PrintFormInputOutputInventory.vue'
 import ReportsWarehousesInputOutputInventoryListSearch from './components/ReportsWarehousesInputOutputInventoryListSearch.vue'
 import {
@@ -657,7 +660,6 @@ export default {
       }
     },
   },
-
   watch: {
     getwarehousesInputOutputInventory() {
       this.warehousesInputOutputInventory = [...this.getwarehousesInputOutputInventory]
@@ -673,6 +675,12 @@ export default {
       this.warehousesInputOutputInventoryPagination = { ...this.getWarehousesInputOutputInventoryPagination }
     },
   },
+  mounted() {
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
+  },
 
   methods: {
     ...mapActions(REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY, [
@@ -680,7 +688,12 @@ export default {
       EXPORT_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
       PRINT_INPUT_OUTPUT_INVENTORY_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.printReport()
+      }
+    },
     // START - permission
     statusExcelButton() {
       return this.$permission('ReportsWarehousesInputOutputInventory', 'ReportsWarehousesInputOutputInventoryExcel')

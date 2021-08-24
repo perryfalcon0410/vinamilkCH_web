@@ -433,6 +433,7 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  preventDefaultWindowPrint,
 } from '@/@core/utils/filter'
 import {
   resizeAbleTable,
@@ -658,15 +659,23 @@ export default {
     }
     this.onPaginationChange()
     this.$refs.focusInput.focus()
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
   },
-
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
+  },
   methods: {
     ...mapActions(WAREHOUSES_OUTPUT, [
       GET_WAREHOUSES_OUTPUT_LIST_ACTION,
       PRINT_OUT_IN_PUT_ORDER_ACTION,
       DELETE_WAREHOUSES_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.onClickPrintButton()
+      }
+    },
     statusCreateButton() {
       return this.$permission('WarehousesOutput', 'WarehousesOutputCreate')
     },

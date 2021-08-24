@@ -459,6 +459,7 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  preventDefaultWindowPrint,
 } from '@/@core/utils/filter'
 import PrintFormRedBills from '@core/components/print-form/PrintFormRedBills.vue'
 import {
@@ -671,8 +672,11 @@ export default {
       minDate: this.fromDate,
     }
     this.$refs.focusInput.focus()
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
   },
-
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
+  },
   methods: {
     ...mapActions(RED_INVOICE, [
       GET_RED_INVOICES_ACTION,
@@ -681,7 +685,12 @@ export default {
       UPDATE_RED_BILLS_ACTION,
       PRINT_RED_INVOICES_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.onClickPrintButton()
+      }
+    },
     statusExcelButton() {
       return this.$permission('SalesRedBills', 'RedBillsExcel')
     },

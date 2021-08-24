@@ -226,7 +226,9 @@ import {
 } from 'vuex'
 import {
   formatISOtoVNI,
+  preventDefaultWindowPrint,
 } from '@core/utils/filter'
+
 import PrintFormShopImport from '@core/components/print-form/PrintFormShopImport.vue'
 import ReportsWarehousesInputListSearch from './components/ReportsWarehousesInputListSearch.vue'
 import {
@@ -467,7 +469,6 @@ export default {
       return {}
     },
   },
-
   watch: {
     getWarehousesInputs() {
       this.warehousesInputs = [...this.getWarehousesInputs]
@@ -479,6 +480,12 @@ export default {
       this.warehousesInputPagination = { ...this.getWarehousesInputPagination }
     },
   },
+  mounted() {
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
+  },
 
   methods: {
     ...mapActions(REPORT_WAREHOUSES_INPUT, [
@@ -486,7 +493,12 @@ export default {
       EXPORT_REPORT_WAREHOUSES_INPUT_ACTION,
       PRINT_SHOP_IMPORT_REPORT_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.printReport()
+      }
+    },
     // START - permission
     statusExcelButton() {
       return this.$permission('ReportsWarehousesInput', 'ReportsWarehousesInputExcel')

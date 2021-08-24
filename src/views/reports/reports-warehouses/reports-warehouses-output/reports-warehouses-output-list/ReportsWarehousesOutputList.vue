@@ -251,7 +251,9 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
-
+import {
+  preventDefaultWindowPrint,
+} from '@core/utils/filter'
 import PrintFormReportOutputStore from '@core/components/print-form/PrintFormReportOutputStore.vue'
 import ReportsWarehousesOutputListSearch from './components/ReportsWarehousesOutputListSearch.vue'
 
@@ -539,9 +541,10 @@ export default {
     },
   },
   mounted() {
-    // this.GET_OUTPUT_GOODS_ACTION({
-    //   ...this.decentralization,
-    // })
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
   },
   methods: {
     ...mapActions(REPORT_OUTPUT_GOODS, [
@@ -549,7 +552,12 @@ export default {
       EXPORT_OUTPUT_GOODS_ACTION,
       PRINT_OUTPUT_GOODS_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.onClickPrintExportButton()
+      }
+    },
     // START - permission
     statusExcelButton() {
       return this.$permission('ReportsWarehousesOutput', 'ReportsWarehousesOutputExcel')

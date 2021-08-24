@@ -208,6 +208,9 @@ import {
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
+import {
+  preventDefaultWindowPrint,
+} from '@core/utils/filter'
 import PrintFormReportInputOrdersDetail from '@core/components/print-form/PrintFormReportInputOrdersDetail.vue'
 import ListSearch from '../components/ListSearch.vue'
 import {
@@ -296,7 +299,6 @@ export default {
       reportInputReceiptDetailsPagination: {},
     }
   },
-
   computed: {
     ...mapGetters(REPORT_PURCHASES, [
       REPORT_INPUT_RECEIPT_DETAILS_GETTER,
@@ -350,8 +352,18 @@ export default {
   },
   mounted() {
     resizeAbleTable()
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
   },
   methods: {
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.printReport()
+      }
+    },
     printReport() {
       this.$root.$emit('bv::hide::popover')
       this.$root.$emit('bv::disable::popover')

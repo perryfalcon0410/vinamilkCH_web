@@ -243,6 +243,9 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import {
+  preventDefaultWindowPrint,
+} from '@core/utils/filter'
 import PrintFormReportInventory from '@core/components/print-form/PrintFormReportInventory.vue'
 import ListSearch from './components/ListSearch.vue'
 import {
@@ -472,6 +475,12 @@ export default {
       this.reportInventoryPagination = { ...this.getReportInventoryPagination }
     },
   },
+  mounted() {
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
+  },
   methods: {
     ...mapActions(REPORT_WAREHOUSES_INVENTORY, [
       GET_REPORT_WAREHOUSES_INVENTORY_ACTION,
@@ -487,7 +496,12 @@ export default {
         ...this.decentralization,
       })
     },
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.printReport()
+      }
+    },
     // START - permission
     statusExcelButton() {
       return this.$permission('ReportsWarehousesInventory', 'ReportsWarehousesInventoryExcel')

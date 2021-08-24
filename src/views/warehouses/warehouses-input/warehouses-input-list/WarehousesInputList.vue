@@ -258,6 +258,7 @@ import {
 } from 'vuex'
 import {
   nowDate,
+  preventDefaultWindowPrint,
 } from '@/@core/utils/filter'
 import PrintFormInputOrder from '@core/components/print-form/PrintFormInputOrder.vue'
 // Icons
@@ -428,6 +429,10 @@ export default {
 
   mounted() {
     resizeAbleTable()
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
   },
 
   methods: {
@@ -437,7 +442,12 @@ export default {
       REMOVE_RECEIPT_ACTION,
       PRINT_OUT_IN_PUT_ORDER_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.onClickPrintButton()
+      }
+    },
     statusCreateButton() {
       return this.$permission('WarehousesInput', 'WarehousesInputCreate')
     },

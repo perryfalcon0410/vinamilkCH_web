@@ -182,6 +182,9 @@ import {
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
+import {
+  preventDefaultWindowPrint,
+} from '@core/utils/filter'
 import PrintFormReportPromotion from '@core/components/print-form/PrintFormPromotionProducts.vue'
 import ReportsWarehousesPromotionListSearch from './components/ReportsWarehousesPromotionListSearch.vue'
 import {
@@ -349,15 +352,23 @@ export default {
   },
   mounted() {
     resizeAbleTable()
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
   },
-
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
+  },
   methods: {
     ...mapActions(REPORT_WAREHOUSES_PROMOTIONS, [
       GET_REPORT_WAREHOUSES_PROMOTIONS_ACTIONS,
       EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION,
       PRINT_REPORT_PROMOTION_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.onClickPrintButton()
+      }
+    },
     // START - permission
     statusExcelButton() {
       return this.$permission('ReportsWarehousesPromotions', 'ReportsWarehousesPromotionsExcel')

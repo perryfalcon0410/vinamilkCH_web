@@ -334,3 +334,11 @@ export const jsPdfPrint = (data, printerName, optionsPrinter) => {
   cpj.files.push(printContent)
   cpj.sendToClient()
 }
+export const preventDefaultWindowPrint = event => {
+  if ((event.ctrlKey || event.metaKey) && event.keyCode === 80) {
+    event.preventDefault()
+    event.stopImmediatePropagation()
+    return true
+  }
+  return false
+}

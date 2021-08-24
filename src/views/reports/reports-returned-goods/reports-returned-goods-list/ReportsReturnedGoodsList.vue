@@ -243,6 +243,9 @@ import {
   // getReportReasonTypeslabel,
   resizeAbleTable,
 } from '@core/utils/utils'
+import {
+  preventDefaultWindowPrint,
+} from '@core/utils/filter'
 import PrintFormReportReturnGoods from '@core/components/print-form/PrintFormReportReturnGoods.vue'
 import ReportsReturnedGoodsListSearch from './components/ReportsReturnedGoodsListSearch.vue'
 import {
@@ -457,16 +460,12 @@ export default {
       this.totalInfo = { ...this.getTotalInfo }
     },
   },
-
   mounted() {
     resizeAbleTable()
-    // this.PRINT_RETURN_GOODS_ACTION({
-    //   ...this.searchOptions,
-    //   ...this.decentralization,
-    //   onSuccess: () => {
-    //     this.$root.$emit('bv::enable::popover')
-    //   },
-    // })
+    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
   },
   methods: {
     ...mapActions(REPORT_RETURNED_GOODS, [
@@ -474,7 +473,12 @@ export default {
       EXPORT_REPORT_RETURNED_GOODS_ACTION,
       PRINT_RETURN_GOODS_ACTION,
     ]),
-
+    handleWindowPrintHotKey(event) {
+      const resolve = preventDefaultWindowPrint(event)
+      if (resolve) {
+        this.printReport()
+      }
+    },
     // START - permission
     statusExcelButton() {
       return this.$permission('ReportsReturnedGoods', 'ReportsReturnedGoodsExcel')
