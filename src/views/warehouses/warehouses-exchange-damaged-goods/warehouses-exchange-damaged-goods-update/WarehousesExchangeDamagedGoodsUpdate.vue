@@ -733,7 +733,7 @@ export default {
     },
 
     selectCustomer(customer) {
-      if (customer.item) {
+      if (customer && customer.item) {
         this.customerId = customer.item.customerId
         this.customerInfo.customerCode = customer.item.customerCode
         this.customerInfo.customerName = customer.item.name
@@ -749,54 +749,56 @@ export default {
           params: this.decentralization,
         })
         this.customers = [{ data: null }]
-      }
+      } else this.$refs.focusInput.$el.querySelector('input').click()
     },
 
     loadProducts(text) {
       if (text) {
         if (text.length >= commonData.minSearchLength) {
           const searchData = {
-            keyWord: this.productInfos.productName,
+            keyWord: text,
             customerId: this.customerId || null,
             ...this.decentralization,
           }
           this.GET_PRODUCTS_ACTION(searchData)
         }
-      }
+      } else this.products = [{ data: null }]
     },
 
     selectProduct(product) {
-      const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.item.productCode)
-      if (this.damagedProduct) {
-        const obj = {
-          count: this.damagedProduct.length,
-          id: null,
-          productId: product.item.id,
-          productCode: product.item.productCode,
-          productName: product.item.name,
-          productDVT: product.item.productDVT,
-          price: product.item.price,
-          quantity: '01',
-          totalPrice: null,
-          type: 0,
+      if (product && product.item) {
+        const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.item.productCode)
+        if (this.damagedProduct) {
+          const obj = {
+            count: this.damagedProduct.length,
+            id: null,
+            productId: product.item.id,
+            productCode: product.item.productCode,
+            productName: product.item.name,
+            productDVT: product.item.productDVT,
+            price: product.item.price,
+            quantity: '01',
+            totalPrice: null,
+            type: 0,
+          }
+          if (existedProductIndex === -1) {
+            obj.totalPrice = obj.price * Number(obj.quantity)
+            this.damagedProduct.push(obj)
+            this.listDamagedProducts.push(obj)
+          } else {
+            this.damagedProduct[existedProductIndex].quantity = Number(this.damagedProduct[existedProductIndex].quantity) + 1
+            this.listDamagedProducts[existedProductIndex].quantity = Number(this.listDamagedProducts[existedProductIndex].quantity) + 1
+            this.damagedProduct[existedProductIndex].totalPrice = Number(obj.price) * this.damagedProduct[existedProductIndex].quantity
+          }
+          this.productInfos.productName = null
+          this.products = [{ data: null }]
+          // auto focus when choose products
+          this.productIdSelected = product.item.productCode
+          setTimeout(() => {
+            document.getElementById(this.productIdSelected).focus()
+          }, 100)
         }
-        if (existedProductIndex === -1) {
-          obj.totalPrice = obj.price * Number(obj.quantity)
-          this.damagedProduct.push(obj)
-          this.listDamagedProducts.push(obj)
-        } else {
-          this.damagedProduct[existedProductIndex].quantity = Number(this.damagedProduct[existedProductIndex].quantity) + 1
-          this.listDamagedProducts[existedProductIndex].quantity = Number(this.listDamagedProducts[existedProductIndex].quantity) + 1
-          this.damagedProduct[existedProductIndex].totalPrice = Number(obj.price) * this.damagedProduct[existedProductIndex].quantity
-        }
-        this.productInfos.productName = null
-        this.products = [{ data: null }]
-        // auto focus when choose products
-        this.productIdSelected = product.item.productCode
-        setTimeout(() => {
-          document.getElementById(this.productIdSelected).focus()
-        }, 100)
-      }
+      } else this.$refs.searchProduct.$el.querySelector('input').click()
     },
 
     onChangeQuantity(props) {

@@ -59,6 +59,7 @@
                 Khách hàng <sup class="text-danger">*</sup>
               </div>
               <vue-autosuggest
+                ref="focusCustomer"
                 v-model="customerInfo.customerName"
                 maxlength="40"
                 :state="touched ? passed : null"
@@ -686,11 +687,11 @@ export default {
           }
           this.GET_CUSTOMERS_ACTION(searchData)
         }
-      }
+      } else this.customers = [{ data: null }]
     },
 
     selectCustomer(customer) {
-      if (customer.item) {
+      if (customer && customer.item) {
         this.customerId = customer.item.customerId
         this.customerInfo.customerCode = customer.item.customerCode
         this.customerInfo.customerName = customer.item.name
@@ -698,7 +699,7 @@ export default {
         this.customerInfo.customerPhone = customer.item.mobilePhone
         this.customerInfo.customerTypeId = customer.item.customerTypeId
         this.customers = [{ data: null }]
-      }
+      } else this.$refs.focusCustomer.$el.querySelector('input').click()
     },
 
     loadProducts(text) {
@@ -711,11 +712,11 @@ export default {
           }
           this.GET_PRODUCTS_ACTION(searchData)
         }
-      }
+      } else this.products = [{ data: null }]
     },
 
     selectProduct(product) {
-      if (product.item) {
+      if (product && product.item) {
         const existedProductIndex = this.damagedProduct.findIndex(damagedProduct => damagedProduct.productCode === product.item.productCode)
         if (this.damagedProduct) {
           const obj = {
@@ -743,7 +744,7 @@ export default {
             document.getElementById(this.productIdSelected).focus()
           }, 100)
         }
-      }
+      } else this.$refs.searchProduct.$el.querySelector('input').click()
     },
 
     onChangeQuantity(props) {
