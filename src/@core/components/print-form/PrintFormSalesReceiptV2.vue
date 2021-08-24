@@ -312,6 +312,7 @@ import {
   // printActions,
   jspmCheckStatus,
   // printTest,
+  hostName,
 } from '@core/utils/filter'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import jsPDF from 'jspdf'
@@ -345,83 +346,6 @@ import {
 export default {
   data() {
     return {
-      printSalesReceiptData: {
-        shopName: 'shop name',
-        shopPhone: '0123456789',
-        shopAddress: '123 Đường - Tinh',
-        shopEmail: 'shop@gamil.com',
-        customerName: 'customer name',
-        customerPhone: '123456789',
-        customerAddress: '123, Phường, Quận, Tỉnh/Thành',
-        deliveryType: 8, // 8 = Giao tại cửa hàng, 9 = Giao tại nhà
-        customerPurchase: 6.2162596E7,
-        orderNumber: 'SAL.SHOP1.21070300001',
-        orderDate: '2021-07-03T09:50:28.450',
-        userName: 'staff name',
-        products: [
-          {
-            displayType: 1,
-            groupName: 'ZV19_001, ZV20_001',
-            listOrderItems: [
-              {
-                productId: 1,
-                productName: 'Product name',
-                productCode: 'SP0000',
-                price: 5500000.0,
-                quantity: 10,
-                totalPrice: 55000000.0,
-                totalDiscountPrice: -10000,
-              },
-            ],
-            listFreeItems: [
-              {
-                productName: 'Product name',
-                productCode: 'SP0000',
-                quantity: 2,
-              },
-            ],
-          },
-          {
-            displayType: 1,
-            groupName: 'ZV19_001, ZV20_001',
-            listOrderItems: [
-              {
-                productId: 1,
-                productName: 'Product name',
-                productCode: 'SP0000',
-                price: 5500000.0,
-                quantity: 10,
-                totalPrice: 55000000.0,
-                totalDiscountPrice: -10000,
-              },
-            ],
-            listFreeItems: [
-              {
-                productName: 'Product name',
-                productCode: 'SP0001',
-                quantity: 2,
-              },
-            ],
-          },
-        ],
-        lstZM: [
-          {
-            promotionName: 'Chương trình ZV19 V1, Chương trình ZV20 V1',
-            promotionCode: 'ZV19_001, ZV20_001',
-            amount: -62333.16948699951,
-          },
-        ],
-        amount: 1727000.0, // Tổng tiền sản phẩm (Có thuế)
-        amountNotVAT: 1299001.0,
-        promotionAmountNotVat: -140900.1,
-        promotionAmount: -389483.0,
-        accumulatedAmount: -0.0, // Tiền tích lũy
-        voucherAmount: -0.0,
-        totalNotVat: 1158100.9,
-        total: 1337517.0, // Tổng tiền sản phẩm (Có thuế)
-        paymentAmount: 2000000.0, // Tiền khách đưa
-        extraAmount: 662483.0, // Tiền trả lại khách
-      },
       printerName: '',
       ipAddress: null,
     }
@@ -464,6 +388,13 @@ export default {
     },
   },
   mounted() {
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
     this.GET_PRINTER_CLIENT_ACTIONS({
       data: {
         clientId: this.ipAddress,
@@ -535,7 +466,8 @@ export default {
 
             pdf.autoTable({
               html: '#table-header',
-              margin: { top: marginTop, left: 5 },
+              startY: marginTop,
+              margin: { left: 5 },
               theme: 'plain',
               styles: {
                 font: 'PTSans',
@@ -543,9 +475,11 @@ export default {
                 fontStyle: 'bold',
               },
             })
+            marginTop += 5
             pdf.autoTable({
               html: '#table-body',
-              margin: { top: marginTop, left: 5 },
+              startY: marginTop,
+              margin: { left: 5 },
               theme: 'plain',
               styles: {
                 font: 'PTSans',
