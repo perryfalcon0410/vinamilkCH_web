@@ -1809,19 +1809,19 @@ export default {
       })
     },
     keyDown(e) {
-      if ((e.key === 'F7' && this.isOpenPayModal && this.totalQuantity > 0) || this.isUseChecked.length > 0) {
+      if (e.key === 'F7' && this.isOpenPayModal && this.totalQuantity > 0) {
         if (!this.isPaid && this.statusPrintTmpButton()) {
           this.printSaleOrderTemp()
         }
       }
-      if ((e.key === 'F8' && this.isOpenPayModal && this.totalQuantity > 0) || this.isUseChecked.length > 0) {
+      if (e.key === 'F8' && this.isOpenPayModal && this.totalQuantity > 0) {
         if (!this.isPaid && this.statusPayPrintButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
             this.createSaleOrderAndPrint()
           }
         }
       }
-      if ((e.key === 'F9' && this.isOpenPayModal && this.totalQuantity > 0) || this.isUseChecked.length > 0) {
+      if (e.key === 'F9' && this.isOpenPayModal && this.totalQuantity > 0) {
         if (!this.isPaid && this.statusPayButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
             this.createSaleOrder()
