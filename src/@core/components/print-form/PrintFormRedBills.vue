@@ -138,8 +138,9 @@
 
 <script>
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import {
+  hostName,
   printActions,
   jspmCheckStatus,
 } from '@core/utils/filter'
@@ -153,6 +154,7 @@ import {
 import {
   PRINTERCONFIG,
   PRINTER_CLIENT_GETTER,
+  GET_PRINTER_CLIENT_ACTIONS,
 } from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
@@ -188,6 +190,23 @@ export default {
     redBillData() {
       this.count = this.redBillData.length
     },
+    ipAddress() {
+      this.GET_PRINTER_CLIENT_ACTIONS({
+        data: {
+          clientId: this.ipAddress,
+        },
+        onSuccess: () => {},
+      })
+    },
+  },
+  mounted() {
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
@@ -216,6 +235,9 @@ export default {
         }
       }
     }
+  },
+  methods: {
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
   },
 }
 </script>
