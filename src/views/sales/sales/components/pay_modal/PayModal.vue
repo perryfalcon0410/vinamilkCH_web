@@ -1137,33 +1137,23 @@ export default {
     isOpenPayModal: {
       handler() {
         if (this.isOpenPayModal) {
-          let isValidProduct = true
-          this.orderProducts.forEach(product => {
-            if (product.quantity <= 0) {
-              isValidProduct = false
-            }
+          const paramProducts = this.orderProducts.map(data => ({
+            productId: data.productId,
+            productCode: data.productCode,
+            quantity: data.quantity,
+          }))
+          this.GET_PROMOTION_PROGRAMS_ACTION({
+            data: {
+              customerId: this.customer.id,
+              orderType: Number(this.orderSelected),
+              products: paramProducts,
+              invisibleLoading: false,
+            },
+            onSuccess: () => {},
           })
-          if (isValidProduct) {
-            const paramProducts = this.orderProducts.map(data => ({
-              productId: data.productId,
-              productCode: data.productCode,
-              quantity: data.quantity,
-            }))
-            if (paramProducts.length > 0) {
-              this.GET_PROMOTION_PROGRAMS_ACTION({
-                data: {
-                  customerId: this.customer.id,
-                  orderType: Number(this.orderSelected),
-                  products: paramProducts,
-                  invisibleLoading: false,
-                },
-                onSuccess: () => {},
-              })
-            }
-            if (this.pay.discount.discountCode !== '') {
-              this.pay.discount.discountCode = ''
-              this.pay.discount.discountAmount = 0
-            }
+          if (this.pay.discount.discountCode !== '') {
+            this.pay.discount.discountCode = ''
+            this.pay.discount.discountAmount = 0
           }
           this.isDisabledPrintTempBtn = true
           this.isDisabledPaymentBtn = true
