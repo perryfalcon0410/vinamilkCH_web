@@ -218,6 +218,8 @@ import {
 import {
   formatISOtoVNI,
   preventDefaultWindowPrint,
+  hostName,
+  checkIpClient,
 } from '@core/utils/filter'
 
 import PrintFormReportSales from '@core/components/print-form/PrintFormReportSales.vue'
@@ -231,6 +233,10 @@ import {
   EXPORT_REPORT_SALES_ACTION,
   PRINT_REPORT_SALES_ACTION,
 } from '../store-module/type'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '../../../../auth/printer-configuration-modal/store-module/type'
 
 export default {
   components: {
@@ -400,6 +406,8 @@ export default {
       sales: [],
       salesPagination: {},
       totalInfo: {},
+      ipAddressCurrent: '',
+      ipAddress: '',
     }
   },
 
@@ -468,6 +476,13 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleWindowPrintHotKey)
@@ -484,6 +499,8 @@ export default {
         this.onClickPrintButton()
       }
     },
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+
     // START - permission
     statusExcelButton() {
       return this.$permission('ReportsSalesSale', 'ReportsSalesSaleExcel')
@@ -536,22 +553,34 @@ export default {
       })
     },
     onClickPrintButton() {
-      this.$root.$emit('bv::hide::popover')
-      this.$root.$emit('bv::disable::popover')
-      this.PRINT_REPORT_SALES_ACTION({
-        collecter: this.paginationData.collecter,
-        customerKW: this.paginationData.customerKW?.trim(),
-        fromDate: this.paginationData.fromDate,
-        toDate: this.paginationData.toDate,
-        fromInvoiceSales: this.paginationData.fromInvoiceSales,
-        toInvoiceSales: this.paginationData.toInvoiceSales,
-        orderNumber: this.paginationData.orderNumber?.trim(),
-        phoneNumber: this.paginationData.phoneNumber?.trim(),
-        productKW: this.paginationData.productKW?.trim(),
-        salesChannel: this.paginationData.salesChannel,
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
+      hostName().then(res => {
+        if (res) {
+          this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddressCurrent = null
+        }
+        if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+          this.GET_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientId: this.ipAddressCurrent,
+            },
+            onSuccess: () => {
+              this.PRINT_REPORT_SALES_ACTION({
+                collecter: this.paginationData.collecter,
+                customerKW: this.paginationData.customerKW?.trim(),
+                fromDate: this.paginationData.fromDate,
+                toDate: this.paginationData.toDate,
+                fromInvoiceSales: this.paginationData.fromInvoiceSales,
+                toInvoiceSales: this.paginationData.toInvoiceSales,
+                orderNumber: this.paginationData.orderNumber?.trim(),
+                phoneNumber: this.paginationData.phoneNumber?.trim(),
+                productKW: this.paginationData.productKW?.trim(),
+                salesChannel: this.paginationData.salesChannel,
+                onSuccess: () => {},
+              })
+            },
+          })
+        }
       })
     },
   },

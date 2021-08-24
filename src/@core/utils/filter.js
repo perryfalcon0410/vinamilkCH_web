@@ -172,6 +172,13 @@ export const hostName = async () => {
   }
   return null
 }
+export const checkIpClient = (ipAddress, ipAddressCurrent) => {
+  if (ipAddressCurrent !== ipAddress) {
+    toasts.error('Không tìm thấy máy in. Vui lòng cấu hình lại máy in!')
+    return false
+  }
+  return true
+}
 // call api get ip client
 
 // check JSPM is running

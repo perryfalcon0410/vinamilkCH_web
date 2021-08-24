@@ -253,7 +253,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import JSPM from 'jsprintmanager'
 import { myFont } from '@/@core/libs/PTSans'
 import toasts from '@/@core/utils/toasts/toasts'
@@ -263,7 +263,6 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import {
 // printActions,
-  hostName,
   jsPdfPrint,
   jspmCheckStatus,
 } from '@core/utils/filter'
@@ -275,7 +274,6 @@ import {
 import {
   PRINTERCONFIG,
   PRINTER_CLIENT_GETTER,
-  GET_PRINTER_CLIENT_ACTIONS,
 } from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
@@ -284,7 +282,7 @@ export default {
   data() {
     return {
       dataPrintOptions: {},
-      ipAddress: '',
+      printerName: null,
     }
   },
   computed: {
@@ -330,31 +328,21 @@ export default {
     },
   },
   watch: {
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
+    printerOptions() {
+      this.printerName = this.printerOptions.reportPrinterName
     },
   },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.reportPrinterName
-    if (printerName === '' || printerName === null) {
+    if (this.printerName === '' || this.printerName === null) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
-      // for (let i = 0; i < 3; i += 1) {
-      //   if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('l', 'mm', 'a4')
-      pdf.addFileToVFS('Regular.ttf', myFont)
-      pdf.addFont('Regular.ttf', 'myFont', 'normal')
-      pdf.addFont('Regular.ttf', 'myFont', 'bold')
+      pdf.addFileToVFS('Roboto-Bold.ttf', myFont)
+      pdf.addFont('Roboto-Bold.ttf', 'myFont', 'normal')
       pdf.setFont('myFont')
-      pdf.setLanguage('vi-VN')
       pdf.setFontSize(18)
       pdf.text('Báo cáo bán hàng', 120, 10)
       pdf.setFontSize(13)
@@ -375,13 +363,13 @@ export default {
         },
         body: [
           [
-            { content: 'Tổng Số HĐ:', halign: 'right', styles: { halign: 'right', cellWidth: 120 } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.someBills)}`, styles: { halign: 'right', cellWidth: 19 } },
-            { content: 'Tổng cộng:', styles: { halign: 'right', cellWidth: 35 } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalQuantity)}`, styles: { halign: 'right', cellWidth: 18 } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalTotal)}`, styles: { halign: 'right', cellWidth: 34 } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat)}`, styles: { halign: 'right', cellWidth: 23 } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay)}`, styles: { halign: 'right' } },
+            { content: 'Tổng Số HĐ:', halign: 'right', styles: { halign: 'right', cellWidth: 120, fillColor: [211, 211, 211] } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.someBills)}`, styles: { halign: 'right', cellWidth: 19, fillColor: [211, 211, 211] } },
+            { content: 'Tổng cộng:', styles: { halign: 'right', cellWidth: 35, fillColor: [211, 211, 211] } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalQuantity)}`, styles: { halign: 'right', cellWidth: 18, fillColor: [211, 211, 211] } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalTotal)}`, styles: { halign: 'right', cellWidth: 34, fillColor: [211, 211, 211] } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat)}`, styles: { halign: 'right', cellWidth: 23, fillColor: [211, 211, 211] } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay)}`, styles: { halign: 'right', fillColor: [211, 211, 211] } },
           ],
         ],
       })
@@ -395,6 +383,9 @@ export default {
           Color: [255, 0, 0],
           fontSize: 8,
           textColor: 'black',
+          lineWidth: 0.1,
+          lineColor: 'black',
+          lineStyle: 'dotted',
 
         },
         headStyles: {
@@ -432,28 +423,10 @@ export default {
         rotate: 'Rot90',
       }
       if (jspmCheckStatus()) {
-        jsPdfPrint(pdf.output('datauristring'), printerName, options)
+        jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
       }
-      // }
-      // } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-      //   toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-      // }
-      // }
     }
   },
-  mounted() {
-    hostName().then(res => {
-      if (res) {
-        this.ipAddress = res.ip || res.query || res.geoplugin_request
-      } else {
-        this.ipAddress = null
-      }
-    })
-  },
-  methods: {
-    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
-  },
-
 }
 </script>
 <style lang="scss" scoped>
