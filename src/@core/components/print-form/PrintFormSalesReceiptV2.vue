@@ -513,7 +513,6 @@ export default {
                 pdf.text(`${this.$formatNumberToLocale(item.quantity)}`, marginLeft + marginLeftColumnSL, marginTop, { align: 'center' })
                 pdf.text(`${this.$formatNumberToLocale(item.price)}`, marginLeft + 250, marginTop, { align: 'center' })
                 pdf.text(`${this.$formatNumberToLocale(item.totalPrice)}`, marginLeft + 390, marginTop, { align: 'right' })
-                console.log(item)
                 if (item.totalDiscountPrice) {
                   marginTop += 20
                   pdf.text('Giảm giá', marginLeft, marginTop)
