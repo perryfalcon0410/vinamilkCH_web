@@ -107,7 +107,7 @@
             <!-- START -  Phone number -->
             <validation-provider
               v-slot="{ errors}"
-              rules="phoneNumber|required"
+              rules="required"
               name="số điện thoại"
             >
               <div class="mt-1">
@@ -374,7 +374,6 @@ import {
 } from 'vee-validate'
 import {
   code,
-  phoneNumber,
   required,
 } from '@/@core/utils/validations/validations'
 import { VueAutosuggest } from 'vue-autosuggest'
@@ -408,7 +407,6 @@ export default {
     return {
       // validation rules
       code,
-      phoneNumber,
       required,
 
       goNext: () => {},
