@@ -979,7 +979,7 @@ export default {
       this.customerFullName = val.fullName
 
       // check customers dafault
-      if (val.isDefault === true && val.status === 1) {
+      if (val) {
         this.isCheckShopId = true
       } else {
         this.isCheckShopId = false
