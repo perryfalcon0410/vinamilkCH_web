@@ -540,7 +540,7 @@ export default {
             productUnitPrice: data.price,
             sumProductUnitPrice: data.price,
             quantity: null,
-            productTotalPrice: this.totalPrice(1, Number(data.price)),
+            productTotalPrice: this.totalPrice(0, Number(data.price)),
             sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
             productImage: data.image,
           })),
@@ -1156,6 +1156,7 @@ export default {
       this.$refs.salesNotifyModal.hide()
       this.isDisabledOrder = true
     },
+
     // Create callback function to receive barcode when the scanner is already done
     onBarcodeScanned(barcode) {
       if (barcode.length > 4) {

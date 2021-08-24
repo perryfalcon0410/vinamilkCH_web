@@ -406,7 +406,7 @@
           <!-- START - Button pay -->
           <b-button
             v-if="statusPayButton().show"
-            :disabled="statusPayButton().disabled || totalQuantity === 0 || isDisabled"
+            :disabled="statusPayButton().disabled || isDisabled"
             variant="someThing"
             class="w-100 btn-brand-1 mt-1 aligns-items-button-center"
             @click="onPayButtonClick"
@@ -426,7 +426,7 @@
     <!-- START - Pay modal -->
     <pay-modal
       ref="payModal"
-      :order-products="orderProducts"
+      :order-products="productsHaveQuantity"
       :order-selected="salemtPromotionObjectSelected"
       :delivery-selected="salemtDeliveryTypeSelected"
       :customer="customer"
@@ -459,6 +459,27 @@
       </template>
     </b-modal>
     <!-- END - Notify Modal Close -->
+
+    <!-- START - Notify Modal Pay -->
+    <b-modal
+      ref="salesNotifyPayModal"
+      title="Thông báo"
+    >
+      Bạn có muốn tạo đơn hàng khuyến mãi tay không?
+      <template #modal-footer>
+        <b-button
+          variant="something"
+          class="btn-brand-1"
+          @click="onClickAgreePayButton()"
+        >
+          Xác nhận
+        </b-button>
+        <b-button @click="closeNotifyPayModal">
+          Đóng
+        </b-button>
+      </template>
+    </b-modal>
+    <!-- END - Notify Modal Pay -->
 
     <!-- START - Sales Create Modal -->
     <sales-create-modal
@@ -680,6 +701,7 @@ export default {
       tableProductUnitPrice: null,
       tableProductCode: null,
       products: [],
+      productsHaveQuantity: [],
       promotionPrograms: [],
       isClickRotate: false,
 
@@ -834,7 +856,7 @@ export default {
     },
 
     totalOrderPrice() {
-      return this.$formatNumberToLocale(this.orderProducts.reduce((sum, item) => sum + Number(item.sumProductTotalPrice), 0))
+      return this.$formatNumberToLocale(this.orderProducts.reduce((sum, item) => sum + Number(item.productTotalPrice), 0))
     },
 
     loginInfo() {
@@ -915,6 +937,16 @@ export default {
       },
       deep: true,
     },
+    search(newSearch, oldSearch) {
+      this.newSearch = newSearch
+      this.oldSearch = oldSearch
+    },
+    orderProducts: {
+      handler() {
+        this.productsHaveQuantity = this.orderProducts.filter(item => item.quantity > 0)
+      },
+      deep: true,
+    },
   },
 
   mounted() {
@@ -930,9 +962,7 @@ export default {
 
       if (e.key === 'F8' && !this.isOpenPayModal) {
         // check valid type selected online and permission online
-        if (
-          this.totalQuantity === 0
-          || this.salemtDeliveryTypeSelected === undefined
+        if (this.salemtDeliveryTypeSelected === undefined
           || this.salemtPromotionObjectSelected === undefined
           || (!this.checkApParramCode && this.orderOnline.orderNumber === '')
           || this.isDisabled
@@ -1006,7 +1036,12 @@ export default {
       if (this.salemtDeliveryTypeSelected !== undefined) {
         if (this.checkApParramCode && this.salemtPromotionObjectSelected !== undefined) {
           this.isOpenPayModal = true
-          this.showPayModal()
+          // check quantity product when pay
+          if (this.totalQuantity === null || this.totalQuantity === 0) {
+            this.$refs.salesNotifyPayModal.show()
+          } else {
+            this.showPayModal()
+          }
         } else if (this.salemtPromotionObjectSelected !== undefined) {
           // check valid condition online number
           this.$refs.formContainer.validate().then(success => {
@@ -1036,6 +1071,10 @@ export default {
 
     closeNotifyModal() {
       this.$refs.salesNotifyModal.hide()
+    },
+
+    closeNotifyPayModal() {
+      this.$refs.salesNotifyPayModal.hide()
     },
 
     totalPriceProducts(amount, price) {
@@ -1080,6 +1119,11 @@ export default {
     onClickAgreeButton() {
       this.showSearchOnlineModal()
       this.closeNotifyModal()
+    },
+
+    onClickAgreePayButton() {
+      this.showPayModal()
+      this.closeNotifyPayModal()
     },
 
     getCustomerDefault() {
