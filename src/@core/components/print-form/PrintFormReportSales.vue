@@ -260,7 +260,7 @@ import toasts from '@/@core/utils/toasts/toasts'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
-// import autoTable from 'jspdf-autotable'
+import autoTable from 'jspdf-autotable'
 import {
 // printActions,
   hostName,
@@ -364,7 +364,6 @@ export default {
       pdf.text(`Tel: ${this.reportSalesShopData.tel}`, 15, 24)
       pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 110, 17)
       pdf.text(`Ngày in: ${this.reportSalesShopData.dateOfPrinting}`, 119, 24)
-      const res = pdf.autoTableHtmlToJson(document.getElementById('report-sales-table'))
       // total table
       pdf.autoTable({
         startY: 30,
@@ -385,12 +384,8 @@ export default {
             { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay)}`, styles: { halign: 'right' } },
           ],
         ],
-        // columnStyles: {
-        //   0: {
-        //     cellWidth: 126,
-        //   },
-        // },
       })
+      const res = pdf.autoTableHtmlToJson(document.getElementById('report-sales-table'))
       pdf.autoTable(res.columns, res.data, {
         showHead: 'firstPage',
         startY: 38,
