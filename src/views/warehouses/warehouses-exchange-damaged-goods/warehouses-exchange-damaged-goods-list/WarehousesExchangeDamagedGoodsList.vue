@@ -56,7 +56,8 @@
             setCurrentPage: searchData.page + 1,
           }"
           :sort-options="{
-            enabled: false,
+            enabled: true,
+            multipleColumns: true,
           }"
           compact-mode
           line-numbers
@@ -108,7 +109,7 @@
                 @click="onClickUpdateButton(props.row.id)"
               />
               <v-icon-remove
-                v-show="$formatISOtoVNI(props.row.date) === nowDate && statusDeleteButton().show"
+                v-show="$formatISOtoVNI(props.row.transDate) === nowDate && statusDeleteButton().show"
                 :disabled="statusDeleteButton().disabled"
                 class="ml-1"
                 @click="onClickDeleteButton(props.row.id, props.row.originalIndex)"
@@ -133,7 +134,7 @@
               {{ $formatNumberToLocale(getTotalValues.totalQuantity) }}
             </div>
             <div
-              v-else-if="props.column.field === 'price'"
+              v-else-if="props.column.field === 'totalAmount'"
               v-show="exchangeDamagedGoodsPagination.totalElements"
               class="h7 text-brand-3 text-right"
             >
@@ -276,7 +277,7 @@ export default {
       isDisabledFeature: true,
       serverParams: {
         sort: {
-          field: 'date',
+          field: 'transDate',
           type: 'desc',
         },
       },
@@ -305,7 +306,7 @@ export default {
       columns: [
         {
           label: 'Ngày',
-          field: 'date',
+          field: 'transDate',
           thClass: 'text-left',
           tdClass: 'text-left',
           formatFn: value => this.$formatISOtoVNI(value),
@@ -329,7 +330,7 @@ export default {
         },
         {
           label: 'Số tiền',
-          field: 'price',
+          field: 'totalAmount',
           formatFn: this.$formatNumberToLocale,
           filterOptions: {
             enabled: true,
@@ -340,6 +341,7 @@ export default {
         {
           label: 'Lý do',
           field: 'reason',
+          sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
@@ -364,11 +366,11 @@ export default {
       if (this.EXCHANGE_DAMAGED_GOODS_GETTER.response) {
         return this.EXCHANGE_DAMAGED_GOODS_GETTER.response.content.map(data => ({
           id: data.id,
-          date: data.transDate === '' ? '' : data.transDate,
+          transDate: data.transDate === '' ? '' : data.transDate,
           transCode: data.transCode,
           quantity: data.quantity,
           exchangeDamagedGoodsQuantity: data.quantity,
-          price: data.totalAmount,
+          totalAmount: data.totalAmount,
           exchangeDamagedGoodsPrice: data.totalAmount,
           reason: data.reason,
         }))
@@ -462,22 +464,24 @@ export default {
       this.onPaginationChange()
       // this.pageNumber = commonData.pageNumber
     },
-    onPaginationChange() {
-      this.GET_EXCHANGE_DAMAGED_GOODS_ACTION({ ...this.searchData, ...this.decentralization })
+    onPaginationChange(data, params) {
+      this.updateSearchData(data)
+      this.GET_EXCHANGE_DAMAGED_GOODS_ACTION({ ...this.searchData, ...params })
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
+      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
     },
     onPerPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange()
+      this.onPaginationChange({ size: params.currentPerPage })
     },
     onSortChange(params) {
-      this.updateSearchData({
-        sort: `${params[0].field},${params[0].type}`,
-      })
-      this.onPaginationChange()
+      if (params[0].type !== 'none') {
+        this.onPaginationChange({ sort: `${params[0].field},${params[0].type}`, page: commonData.pageNumber - 1 })
+      } else {
+        this.onPaginationChange({ sort: null, page: commonData.pageNumber - 1 })
+      }
     },
   },
 }

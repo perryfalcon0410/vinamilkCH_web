@@ -52,7 +52,7 @@
           line-numbers
           :total-rows="orderReturnPagination.totalElements"
           :sort-options="{
-            enabled: false,
+            enabled: true,
             multipleColumns: true,
           }"
           @on-sort-change="onSortChange"
@@ -98,8 +98,8 @@
             </div>
             <div
               v-if="props.column.field === 'amount' ||
-                props.column.field === 'discount' ||
-                props.column.field === 'quantity' "
+                props.column.field === 'totalPromotion' ||
+                props.column.field === 'total' "
               class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -126,7 +126,7 @@
 
             <b-row
               v-show="orderReturnPagination.totalElements"
-              v-else-if="props.column.field === 'discount'"
+              v-else-if="props.column.field === 'totalPromotion'"
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
@@ -135,7 +135,7 @@
 
             <b-row
               v-show="orderReturnPagination.totalElements"
-              v-else-if="props.column.field === 'quantity'"
+              v-else-if="props.column.field === 'total'"
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
@@ -272,23 +272,26 @@ export default {
       columns: [
         {
           label: 'Mã trả hàng',
-          field: 'orderReturnNumber',
+          field: 'orderNumber',
         },
         {
           label: 'Đơn hàng tham chiếu',
-          field: 'orderNumber',
+          field: 'fromSaleOrderId',
         },
         {
           label: 'Nhân viên',
           field: 'userName',
+          sortable: false,
         },
         {
           label: 'Mã khách hàng',
           field: 'customerNumber',
+          sortable: false,
         },
         {
           label: 'Họ tên',
           field: 'customerName',
+          sortable: false,
         },
         {
           label: 'Ngày trả hàng',
@@ -306,13 +309,13 @@ export default {
         },
         {
           label: 'Tiền giảm giá',
-          field: 'discount',
+          field: 'totalPromotion',
           type: 'number',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Thành tiền thanh toán',
-          field: 'quantity',
+          field: 'total',
           filterOptions: {
             enabled: true,
           },
@@ -357,14 +360,14 @@ export default {
         return this.RETURNED_GOODS_GETTER.response.content.map(data => ({
           id: data.id,
           idDetail: data.id,
-          orderReturnNumber: data.orderNumber,
-          orderNumber: data.orderNumberRef,
+          orderNumber: data.orderNumber,
+          fromSaleOrderId: data.orderNumberRef,
           userName: data.userName,
           customerNumber: data.customerNumber,
           customerName: data.customerName,
           dateReturn: data.dateReturn,
-          quantity: data.total,
-          discount: data.totalPromotion,
+          total: data.total,
+          totalPromotion: data.totalPromotion,
           amount: data.amount,
         }))
       }
@@ -436,25 +439,27 @@ export default {
       })
       this.onPaginationChange()
     },
-    onPaginationChange() {
-      this.GET_RETURNED_GOODS_ACTION({ ...this.searchData, ...this.decentralization })
+    onPaginationChange(data, params) {
+      this.updateSearchData(data)
+      this.GET_RETURNED_GOODS_ACTION({ ...this.searchData, ...params })
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
+      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
     },
     onPerPageChange(params) {
       this.updateSearchData({
         size: params.currentPerPage,
         page: commonData.pageNumber - 1,
       })
-      this.onPaginationChange()
+      this.onPaginationChange({ size: params.currentPerPage })
     },
     onSortChange(params) {
-      this.updateSearchData({
-        sort: `${params[0].field},${params[0].type}`,
-      })
-      this.onPaginationChange()
+      if (params[0].type !== 'none') {
+        this.onPaginationChange({ sort: `${params[0].field},${params[0].type}`, page: commonData.pageNumber - 1 })
+      } else {
+        this.onPaginationChange({ sort: null, page: commonData.pageNumber - 1 })
+      }
     },
   },
 }

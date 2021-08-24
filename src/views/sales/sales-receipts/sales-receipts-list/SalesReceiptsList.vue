@@ -35,7 +35,7 @@
           line-numbers
           :style="cssProps"
           :sort-options="{
-            enabled: false,
+            enabled: true,
           }"
           :total-rows="salesReceiptsPagination.totalElements"
           @on-sort-change="onSortChange"
@@ -56,7 +56,7 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'totalValue'"
+              v-if="props.column.field === 'amount'"
               v-show="salesReceiptsTotal.totalAmount"
               class="mx-50 h7 text-brand-3"
               align-h="end"
@@ -64,7 +64,7 @@
               {{ $formatNumberToLocale(salesReceiptsTotal.totalAmount) }}
             </b-row>
             <b-row
-              v-if="props.column.field === 'discountMoney'"
+              v-if="props.column.field === 'totalPromotion'"
               v-show="salesReceiptsTotal.allPromotion"
               class="mx-50 h7 text-brand-3"
               align-h="end"
@@ -73,7 +73,7 @@
             </b-row>
 
             <b-row
-              v-else-if="props.column.field === 'payments'"
+              v-else-if="props.column.field === 'total'"
               v-show="salesReceiptsTotal.allTotal"
               class="mx-50 h7 text-brand-3"
               align-h="end"
@@ -93,7 +93,7 @@
             </div>
             <div
               v-else-if="props.column.label === 'Số hóa đơn'"
-              ref="numberBill"
+              ref="orderNumber"
             >
               {{ props.column.label }}
             </div>
@@ -134,24 +134,24 @@
                   v-if="statusDetailButton().show"
                   :disabled="statusDetailButton().disabled"
                   popover-content="Chi tiết hóa đơn"
-                  @click="showInvoiceDetailModal(props.row.id, props.row.numberBill)"
+                  @click="showInvoiceDetailModal(props.row.id, props.row.orderNumber)"
                 />
               </span>
             </div>
             <div
-              v-else-if="props.column.field === 'discountMoney' || props.column.field === 'moneyAccumulated'"
+              v-else-if="props.column.field === 'totalPromotion' || props.column.field === 'customerPurchase'"
               class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'totalValue' || props.column.field === 'payments'"
+              v-else-if="props.column.field === 'amount' || props.column.field === 'total'"
               class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'customerCode'"
+              v-else-if="props.column.field === 'customerNumber'"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -163,7 +163,7 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'note' || props.column.field === 'noteHdd'"
+              v-else-if="props.column.field === 'note' || props.column.field === 'redInvoiceRemark'"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -318,32 +318,34 @@ export default {
       columns: [
         {
           label: 'Số hóa đơn',
-          field: 'numberBill',
+          field: 'orderNumber',
           thClass: 'ws-nowrap scroll-column-header column-first',
           tdClass: 'scroll-column column-first',
         },
         {
           label: 'Mã khách hàng',
-          field: 'customerCode',
+          field: 'customerNumber',
+          sortable: false,
           thClass: 'ws-nowrap scroll-column-header column-second',
           tdClass: 'scroll-column column-second',
         },
         {
           label: 'Họ tên',
           field: 'name',
+          sortable: false,
           thClass: 'scroll-column-header column-third ws-nowrap',
           tdClass: 'scroll-column column-third',
         },
         {
           label: 'Ngày bán',
-          field: 'dayTime',
+          field: 'orderDate',
           thClass: 'text-center ws-nowrap scroll-column-header column-4',
           tdClass: 'text-center scroll-column column-4',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Tổng giá trị',
-          field: 'totalValue',
+          field: 'amount',
           type: 'number',
           filterOptions: {
             enabled: true,
@@ -354,7 +356,7 @@ export default {
         },
         {
           label: 'Tiền giảm giá',
-          field: 'discountMoney',
+          field: 'totalPromotion',
           type: 'number',
           thClass: 'text-right ws-nowrap',
           tdClass: 'text-right',
@@ -362,7 +364,7 @@ export default {
         },
         {
           label: 'Tiền tích lũy',
-          field: 'moneyAccumulated',
+          field: 'customerPurchase',
           type: 'number',
           thClass: 'text-right ws-nowrap',
           tdClass: 'text-right',
@@ -370,7 +372,7 @@ export default {
         },
         {
           label: 'Tiền phải trả',
-          field: 'payments',
+          field: 'total',
           type: 'number',
           filterOptions: {
             enabled: true,
@@ -382,39 +384,37 @@ export default {
         {
           label: 'Ghi chú',
           field: 'note',
-          sortable: false,
           thClass: 'text-left ws-nowrap',
           tdClass: 'text-left',
         },
         {
           label: 'In HĐ đỏ',
-          field: 'print',
+          field: 'usedRedInvoice',
           thClass: 'text-left ws-nowrap',
           tdClass: 'text-left',
           formatFn: value => (value === true ? 'Đã in ' : 'Chưa in'),
         },
         {
           label: 'Công ty',
-          field: 'company',
+          field: 'redInvoiceCompanyName',
           thClass: 'text-left ws-nowrap',
           tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Mã số thuế',
-          field: 'taxCode',
+          field: 'redInvoiceTaxCode',
           thClass: 'text-left ws-nowrap',
           tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Địa chỉ',
-          field: 'address',
+          field: 'redInvoiceAddress',
           thClass: 'text-left ws-nowrap',
           tdClass: 'text-left ws-nowrap',
         },
         {
           label: 'Ghi chú HĐĐ',
-          field: 'noteHdd',
-          sortable: false,
+          field: 'redInvoiceRemark',
           thClass: 'text-left text-nowrap',
           tdClass: 'text-left',
         },
@@ -444,20 +444,20 @@ export default {
       if (this.SALES_RECEIPTS_GETTER.response) {
         return this.SALES_RECEIPTS_GETTER.response.content.map(data => ({
           id: data.id,
-          numberBill: data.orderNumber,
-          customerCode: data.customerNumber,
+          orderNumber: data.orderNumber,
+          customerNumber: data.customerNumber,
           name: data.customerName,
-          dayTime: data.orderDate,
-          totalValue: data.amount,
+          orderDate: data.orderDate,
+          amount: data.amount,
           note: data.note,
-          discountMoney: data.totalPromotion,
-          moneyAccumulated: data.customerPurchase,
-          payments: data.total,
-          print: data.usedRedInvoice,
-          noteHdd: data.redInvoiceRemark,
-          company: data.redInvoiceCompanyName,
-          taxCode: data.redInvoiceTaxCode,
-          address: data.redInvoiceAddress,
+          totalPromotion: data.totalPromotion,
+          customerPurchase: data.customerPurchase,
+          total: data.total,
+          usedRedInvoice: data.usedRedInvoice,
+          redInvoiceRemark: data.redInvoiceRemark,
+          redInvoiceCompanyName: data.redInvoiceCompanyName,
+          redInvoiceTaxCode: data.redInvoiceTaxCode,
+          redInvoiceAddress: data.redInvoiceAddress,
         }))
       }
       return []
@@ -543,7 +543,7 @@ export default {
     getSalesReceiptList() {
       this.salesReceiptList = [...this.getSalesReceiptList]
       this.$nextTick(() => {
-        this.numberBillWidth = this.$refs.numberBill.offsetParent.offsetWidth
+        this.numberBillWidth = this.$refs.orderNumber.offsetParent.offsetWidth
         this.customerCodeWidth = this.$refs.customerCode.offsetParent.offsetWidth
         this.customerNameWidth = this.$refs.customerName.offsetParent.offsetWidth
       })
@@ -599,25 +599,27 @@ export default {
       this.onPaginationChange()
       this.pageNumber = commonData.pageNumber // temp
     },
-    onPaginationChange() {
-      this.GET_SALES_RECEIPTS_ACTION({ ...this.searchData, ...this.decentralization })
+    onPaginationChange(data, params) {
+      this.updateSearchData(data)
+      this.GET_SALES_RECEIPTS_ACTION({ ...this.searchData, ...params })
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
+      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
     },
     onPerPageChange(params) {
       this.updateSearchData({
         size: params.currentPerPage,
         page: commonData.pageNumber - 1,
       })
-      this.onPaginationChange()
+      this.onPaginationChange({ size: params.currentPerPage })
     },
     onSortChange(params) {
-      this.updateSearchData({
-        sort: `${params[0].field},${params[0].type}`,
-      })
-      this.onPaginationChange()
+      if (params[0].type !== 'none') {
+        this.onPaginationChange({ sort: `${params[0].field},${params[0].type}`, page: commonData.pageNumber - 1 })
+      } else {
+        this.onPaginationChange({ sort: null, page: commonData.pageNumber - 1 })
+      }
     },
     // END - Vue Good Table func
   },

@@ -346,21 +346,21 @@
             slot="table-row"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'numberBill'">
+            <div v-if="props.column.field === 'invoiceNumber'">
               <b-form-input
-                v-model="listRedBill[props.row.originalIndex].numberBill"
+                v-model="listRedBill[props.row.originalIndex].invoiceNumber"
                 maxlength="50"
-                :value="listRedBill[props.row.originalIndex].numberBill"
+                :value="listRedBill[props.row.originalIndex].invoiceNumber"
               />
             </div>
             <div
-              v-else-if="props.column.field === 'company'"
+              v-else-if="props.column.field === 'officeWorking'"
               class="style-width"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'address'"
+              v-else-if="props.column.field === 'officeAddress'"
               class="style-width"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -378,7 +378,7 @@
           >
             <b-row
               v-show="getRedBillPagination.totalElements"
-              v-if="props.column.field === 'quantity'"
+              v-if="props.column.field === 'totalQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
               align-h="end"
             >
@@ -387,7 +387,7 @@
 
             <b-row
               v-show="getRedBillPagination.totalElements"
-              v-else-if="props.column.field === 'goodsMoney'"
+              v-else-if="props.column.field === 'amountNotVat'"
               class="mx-0 h7 text-brand-3 text-right"
               align-h="end"
             >
@@ -395,7 +395,7 @@
             </b-row>
             <b-row
               v-show="getRedBillPagination.totalElements"
-              v-else-if="props.column.field === 'GTGT'"
+              v-else-if="props.column.field === 'amountGTGT'"
               class="mx-0 h7 text-brand-3 text-right"
               align-h="end"
             >
@@ -531,39 +531,34 @@ export default {
       columns: [
         {
           label: 'Số hóa đơn đỏ',
-          field: 'numberBill',
-          sortable: false,
+          field: 'invoiceNumber',
           width: '200px',
           thClass: 'text-nowrap',
           tdClass: 'align-middle',
         },
         {
           label: 'Tên công ty',
-          field: 'company',
-          sortable: false,
+          field: 'officeWorking',
           thClass: 'text-nowrap',
           tdClass: 'align-middle',
         },
         {
           label: 'Địa chỉ',
-          field: 'address',
-          sortable: false,
+          field: 'officeAddress',
           thClass: 'text-nowrap',
           tdClass: 'align-middle',
         },
         {
           label: 'Mã số thuế',
-          field: 'VATCode',
+          field: 'taxCode',
           thClass: 'text-nowrap',
           tdClass: 'align-middle',
-          sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
+          field: 'totalQuantity',
           thClass: 'text-nowrap',
           tdClass: 'align-middle pr-1',
-          sortable: false,
           filterOptions: {
             enabled: true,
           },
@@ -572,19 +567,17 @@ export default {
         },
         {
           label: 'Tiền hàng',
-          field: 'goodsMoney',
+          field: 'amountNotVat',
           thClass: 'text-nowrap',
           tdClass: 'align-middle pr-1',
-          sortable: false,
           type: 'number',
           formatFn: this.$formatNumberToLocale,
         },
         {
-          label: 'Tiền thuế GTGT',
-          field: 'GTGT',
+          label: 'Tiền thuế amountGTGT',
+          field: 'amountGTGT',
           thClass: 'text-nowrap',
           tdClass: 'align-middle pr-1',
-          sortable: false,
           type: 'number',
           formatFn: this.$formatNumberToLocale,
         },
@@ -593,7 +586,6 @@ export default {
           field: 'totalMoney',
           thClass: 'text-nowrap',
           tdClass: 'align-middle pr-1',
-          sortable: false,
           type: 'number',
           formatFn: this.$formatNumberToLocale,
         },
@@ -602,7 +594,6 @@ export default {
           field: 'printDate',
           thClass: 'text-nowrap',
           tdClass: 'align-middle',
-          sortable: false,
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
@@ -610,7 +601,6 @@ export default {
           field: 'note',
           thClass: 'text-nowrap',
           tdClass: 'align-middle',
-          sortable: false,
         },
       ],
     }
@@ -630,13 +620,13 @@ export default {
       if (this.RED_INVOICES_GETTER.response && this.RED_INVOICES_GETTER.response.content) {
         return this.RED_INVOICES_GETTER.response.content.map(data => ({
           id: data.id,
-          numberBill: data.invoiceNumber,
-          company: data.officeWorking,
-          address: data.officeAddress,
-          VATCode: data.taxCode,
-          quantity: data.totalQuantity,
-          goodsMoney: data.amountNotVat,
-          GTGT: data.amountGTGT,
+          invoiceNumber: data.invoiceNumber,
+          officeWorking: data.officeWorking,
+          officeAddress: data.officeAddress,
+          taxCode: data.taxCode,
+          totalQuantity: data.totalQuantity,
+          amountNotVat: data.amountNotVat,
+          amountGTGT: data.amountGTGT,
           totalMoney: data.totalMoney,
           note: data.note,
           printDate: data.printDate,
@@ -758,28 +748,36 @@ export default {
         // page: commonData.pageNumber - 1,
         ...this.searchOption,
       })
-      this.onPaginationChange()
+      this.onPaginationChange(this.searchOption)
       this.selectedRedBillRows = []
     },
-    onPaginationChange() {
-      this.GET_RED_INVOICES_ACTION({ ...this.searchData })
+    onPaginationChange(data, params) {
+      this.updateSearchData(data)
+      this.GET_RED_INVOICES_ACTION({ ...this.searchData, ...params })
       this.selectedRedBillRows = []
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
+      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
     },
     onPerPageChange(params) {
       this.updateSearchData({
         size: params.currentPerPage,
         page: commonData.pageNumber - 1,
       })
-      this.onPaginationChange()
+      this.onPaginationChange(this.onPaginationChange({ size: params.currentPerPage }))
+    },
+    onSortChange(params) {
+      if (params[0].type !== 'none') {
+        this.onPaginationChange({ sort: `${params[0].field},${params[0].type}`, page: commonData.pageNumber - 1 })
+      } else {
+        this.onPaginationChange({ sort: null, page: commonData.pageNumber - 1 })
+      }
     },
     // END - Pagination func
     // auto select rows when focus feld oderNumber
     focusRows(params) {
-      if (params.column.field === 'numberBill') {
+      if (params.column.field === 'invoiceNumber') {
         this.$set(this.listRedBill[params.row.originalIndex], 'vgtSelected', true)
         if (!this.selectedRedBillRows.find(data => data.id === params.row.id)) {
           this.selectedRedBillRows.push(params.row)
@@ -857,11 +855,11 @@ export default {
     },
     onClickUpdateRedBills() {
       this.selectedRedBillRows.forEach((data, index) => {
-        this.selectedRedBillRows[index].numberBill = this.listRedBill.find(item => item.id === data.id).numberBill
+        this.selectedRedBillRows[index].invoiceNumber = this.listRedBill.find(item => item.id === data.id).invoiceNumber
       })
       const redInvoiceRequests = this.selectedRedBillRows.map(data => ({
         id: data.id,
-        invoiceNumber: data.numberBill,
+        invoiceNumber: data.invoiceNumber,
       }))
       this.UPDATE_RED_BILLS_ACTION({
         redInvoiceRequests,

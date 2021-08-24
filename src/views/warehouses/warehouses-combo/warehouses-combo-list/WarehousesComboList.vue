@@ -57,7 +57,7 @@
           line-numbers
           :total-rows="warehousesComboPagination.totalElements"
           :sort-options="{
-            enabled: false,
+            enabled: true,
             multipleColumns: true,
           }"
           @on-sort-change="onSortChange"
@@ -115,14 +115,14 @@
             slot-scope="props"
           >
             <b-row
-              v-if="props.column.field === 'quantity'"
+              v-if="props.column.field === 'totalQuantity'"
               class="mx-0 h7 text-brand-3"
               align-h="end"
             >
               {{ $formatNumberToLocale(totalQuantity) }}
             </b-row>
             <b-row
-              v-else-if="props.column.field === 'price'"
+              v-else-if="props.column.field === 'totalAmount'"
               class="mx-0 h7 text-brand-3"
               align-h="end"
             >
@@ -247,18 +247,15 @@ export default {
         {
           label: 'Ngày',
           field: 'transDate',
-          sortable: false,
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Mã giao dịch',
           field: 'transCode',
-          sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
-          sortable: false,
+          field: 'totalQuantity',
           type: 'number',
           filterOptions: {
             enabled: true,
@@ -267,15 +264,13 @@ export default {
         },
         {
           label: 'Thành tiền',
-          field: 'price',
+          field: 'totalAmount',
           type: 'number',
-          sortable: false,
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'Loại giao dịch',
           field: 'transType',
-          sortable: false,
           formatFn: value => this.$getWarehousesStatuslabel(String(value)),
         },
         {
@@ -298,8 +293,8 @@ export default {
         return this.WAREHOUSES_COMBO_GETTER.response.content.map(data => ({
           transDate: data.transDate,
           transCode: data.transCode,
-          quantity: data.totalQuantity,
-          price: data.totalAmount,
+          totalQuantity: data.totalQuantity,
+          totalAmount: data.totalAmount,
           transType: data.transType,
           feature: '',
           id: data.id,
@@ -371,19 +366,27 @@ export default {
     },
 
     // START - Vue Good Table func
-    onPaginationChange() {
-      this.GET_WAREHOUSES_COMBO_ACTIONS(this.paginationData)
+    onPaginationChange(data, params) {
+      this.updatePaginationData(data)
+      this.GET_WAREHOUSES_COMBO_ACTIONS({ ...this.paginationData, ...params })
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
     },
     onPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
+      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
     },
     onPerPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange()
+      this.onPaginationChange({ size: params.currentPerPage })
+    },
+    onSortChange(params) {
+      if (params[0].type !== 'none') {
+        this.onPaginationChange({ sort: `${params[0].field},${params[0].type}`, page: commonData.pageNumber - 1 })
+      } else {
+        this.onPaginationChange({ sort: null, page: commonData.pageNumber - 1 })
+      }
     },
     // END - Vue Good Table func
 
