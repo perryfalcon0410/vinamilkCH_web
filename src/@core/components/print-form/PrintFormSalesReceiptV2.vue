@@ -316,14 +316,14 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import JSPM from 'jsprintmanager'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
   // printActions,
   jspmCheckStatus,
   // printTest,
-  hostName,
+  // hostName,
 } from '@core/utils/filter'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import jsPDF from 'jspdf'
@@ -348,7 +348,7 @@ import toasts from '@/@core/utils/toasts/toasts'
 import {
   PRINTERCONFIG,
   PRINTER_CLIENT_GETTER,
-  GET_PRINTER_CLIENT_ACTIONS,
+  // GET_PRINTER_CLIENT_ACTIONS,
 } from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
@@ -396,21 +396,6 @@ export default {
       this.printerName = this.printerOptions.billPrinterName
       this.ipAddress = this.printerOptions.clientIp || null
     },
-  },
-  mounted() {
-    hostName().then(res => {
-      if (res) {
-        this.ipAddress = res.ip || res.query || res.geoplugin_request
-      } else {
-        this.ipAddress = null
-      }
-    })
-    this.GET_PRINTER_CLIENT_ACTIONS({
-      data: {
-        clientId: this.ipAddress,
-      },
-      onSuccess: () => {},
-    })
   },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
@@ -616,7 +601,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+    // ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
     removeVietnameseTones(str, isRemove) {
       let stringRemove = str
       if (!isRemove) {

@@ -755,6 +755,10 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import {
+  hostName,
+  checkIpClient,
+} from '@core/utils/filter'
 import Cleave from 'vue-cleave-component'
 import saleData from '@/@db/sale'
 import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
@@ -785,6 +789,10 @@ import {
   GET_SALE_PAYMENT_TYPES_ACTION,
   PRINT_SALES_TEMP_ACTION,
 } from '../../store-module/type'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '../../../../auth/printer-configuration-modal/store-module/type'
 
 import VoucherModal from '../voucher-modal/VoucherModal.vue'
 
@@ -934,6 +942,8 @@ export default {
       isSaveSuccess: false,
       isDisabledDiscount: false,
       isLoading: false,
+      ipAddress: '',
+      ipAddressCurrent: '',
     }
   },
 
@@ -1119,12 +1129,28 @@ export default {
         toasts.success('Lưu đơn hàng thành công')
         this.pay.saleOrderId = this.getCreateSale.orderId
         if (this.isPrint) {
-          this.PRINT_SALES_RECEIPT_ACTION({
-            data: {
-              salesReceiptId: this.pay.saleOrderId,
-              params: { ...this.decentralization },
-            },
-            onSuccess: () => {},
+          hostName().then(res => {
+            if (res) {
+              this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+            } else {
+              this.ipAddressCurrent = null
+            }
+            if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+              this.GET_PRINTER_CLIENT_ACTIONS({
+                data: {
+                  clientId: this.ipAddressCurrent,
+                },
+                onSuccess: () => {
+                  this.PRINT_SALES_RECEIPT_ACTION({
+                    data: {
+                      salesReceiptId: this.pay.saleOrderId,
+                      params: { ...this.decentralization },
+                    },
+                    onSuccess: () => {},
+                  })
+                },
+              })
+            }
           })
         }
       }
@@ -1210,6 +1236,13 @@ export default {
     this.isDisabledPaymentBtn = true
     this.isDisabledPrintAndPaymentBtn = true
     this.isDisabledRePrintBtn = true
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   destroyed() {
     window.removeEventListener('keydown', this.keyDown, false)
@@ -1229,6 +1262,7 @@ export default {
     ...mapActions(SALESRECEIPTS, [
       PRINT_SALES_RECEIPT_ACTION,
     ]),
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
 
     statusPrintTmpButton() {
       return this.$permission('Sales', 'SalesPrinttmp')
@@ -1681,40 +1715,71 @@ export default {
       })
 
       if (isValid) {
-        this.PRINT_SALES_TEMP_ACTION({
-          orderSale: {
-            customerId: this.customer.id,
-            paymentType: this.pay.salePayment.salePaymentType,
-            deliveryType: Number(this.deliverySelected),
-            orderType: Number(this.orderSelected),
-            note: this.orderOnline.note,
-            orderOnlineId: this.orderOnline.onlineOrderId,
-            onlineNumber: this.orderOnline.orderNumber,
-            products: this.orderProducts,
-            promotionInfo: paramPromotionInfo,
-            totalOrderAmount: Number(this.pay.totalAmount) || 0,
-            promotionAmount: Number(this.pay.promotionAmount) || 0,
-            accumulatedAmount: Number(this.pay.accumulate.accumulateAmount) || 0,
-            discountAmount: Number(this.pay.discount.discountAmount) || 0,
-            discountCode: this.pay.discount.discountCode,
-            voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
-            vouchers: this.pay.voucher.vouchers,
-            remainAmount: Number(this.pay.needPaymentAmount) || 0,
-            paymentAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
-            extraAmount: Number(this.pay.extraAmount) || 0,
-          },
-          onSuccess: () => {},
+        hostName().then(res => {
+          if (res) {
+            this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+          } else {
+            this.ipAddressCurrent = null
+          }
+          if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+            this.GET_PRINTER_CLIENT_ACTIONS({
+              data: {
+                clientId: this.ipAddressCurrent,
+              },
+              onSuccess: () => {
+                this.PRINT_SALES_TEMP_ACTION({
+                  orderSale: {
+                    customerId: this.customer.id,
+                    paymentType: this.pay.salePayment.salePaymentType,
+                    deliveryType: Number(this.deliverySelected),
+                    orderType: Number(this.orderSelected),
+                    note: this.orderOnline.note,
+                    orderOnlineId: this.orderOnline.onlineOrderId,
+                    onlineNumber: this.orderOnline.orderNumber,
+                    products: this.orderProducts,
+                    promotionInfo: paramPromotionInfo,
+                    totalOrderAmount: Number(this.pay.totalAmount) || 0,
+                    promotionAmount: Number(this.pay.promotionAmount) || 0,
+                    accumulatedAmount: Number(this.pay.accumulate.accumulateAmount) || 0,
+                    discountAmount: Number(this.pay.discount.discountAmount) || 0,
+                    discountCode: this.pay.discount.discountCode,
+                    voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
+                    vouchers: this.pay.voucher.vouchers,
+                    paymentAmount: Number(this.pay.needPaymentAmount) || 0,
+                    remainAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
+                    extraAmount: Number(this.pay.extraAmount) || 0,
+                  },
+                  onSuccess: () => {},
+                })
+              },
+            })
+          }
         })
       }
     },
     rePrintSaleOrder() {
-      this.PRINT_SALES_RECEIPT_ACTION({
-        data: {
-          salesReceiptId: this.pay.saleOrderId,
-          params: { ...this.decentralization },
-        },
-        onSuccess: () => {
-        },
+      hostName().then(res => {
+        if (res) {
+          this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddressCurrent = null
+        }
+        if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+          this.GET_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientId: this.ipAddressCurrent,
+            },
+            onSuccess: () => {
+              this.PRINT_SALES_RECEIPT_ACTION({
+                data: {
+                  salesReceiptId: this.pay.saleOrderId,
+                  params: { ...this.decentralization },
+                },
+                onSuccess: () => {},
+              })
+            },
+          })
+        }
       })
     },
     removeProductPromotionProgramHandle(programId, productId) {

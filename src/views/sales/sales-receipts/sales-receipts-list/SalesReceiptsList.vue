@@ -261,6 +261,8 @@ import {
   earlyMonth,
   nowDate,
   preventDefaultWindowPrint,
+  hostName,
+  checkIpClient,
 } from '@core/utils/filter'
 import commonData from '@/@db/common'
 import {
@@ -280,6 +282,10 @@ import {
   GET_SALES_RECEIPTS_DETAIL_ACTION,
   PRINT_SALES_RECEIPT_ACTION,
 } from '../store-module/type'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '../../../auth/printer-configuration-modal/store-module/type'
 import InvoiceDetailModal from '../components/InvoiceDetailModal.vue'
 import SalesReceiptListSearch from './components/SalesReceiptListSearch.vue'
 
@@ -434,6 +440,8 @@ export default {
       numberBillWidth: 0,
       customerCodeWidth: 0,
       customerNameWidth: 0,
+      ipAddressCurrent: '',
+      ipAddress: '',
     }
   },
 
@@ -555,6 +563,13 @@ export default {
   mounted() {
     resizeAbleTable()
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleWindowPrintHotKey)
@@ -565,6 +580,7 @@ export default {
       GET_SALES_RECEIPTS_DETAIL_ACTION,
       PRINT_SALES_RECEIPT_ACTION,
     ]),
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
     handleWindowPrintHotKey(event) {
       const resolve = preventDefaultWindowPrint(event)
       if (resolve) {
@@ -584,16 +600,28 @@ export default {
     },
 
     onClickPrintButton(id) {
-      this.$root.$emit('bv::hide::popover')
-      this.$root.$emit('bv::disable::popover')
-      this.PRINT_SALES_RECEIPT_ACTION({
-        data: {
-          salesReceiptId: id,
-          params: { ...this.decentralization },
-        },
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
+      hostName().then(res => {
+        if (res) {
+          this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddressCurrent = null
+        }
+        if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+          this.GET_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientId: this.ipAddressCurrent,
+            },
+            onSuccess: () => {
+              this.PRINT_SALES_RECEIPT_ACTION({
+                data: {
+                  salesReceiptId: id,
+                  params: { ...this.decentralization },
+                },
+                onSuccess: () => {},
+              })
+            },
+          })
+        }
       })
     },
 
