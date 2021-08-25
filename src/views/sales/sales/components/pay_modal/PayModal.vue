@@ -1527,16 +1527,20 @@ export default {
         this.pay.extraAmount = Number(this.pay.salePayment.salePaymentAmount) - Number(this.pay.needPaymentAmount)
       }
       if ((Number(this.pay.extraAmount) < 0 || this.pay.extraAmount === null)) {
+        this.isDisabledPrintTempBtn = true
         this.isDisabledPaymentBtn = true
         this.isDisabledPrintAndPaymentBtn = true
       } else if (this.isLoading) {
+        this.isDisabledPrintTempBtn = true
         this.isDisabledPaymentBtn = true
         this.isDisabledPrintAndPaymentBtn = true
       } else {
+        this.isDisabledPrintTempBtn = false
         this.isDisabledPaymentBtn = false
         this.isDisabledPrintAndPaymentBtn = false
       }
       if (this.isPaid) {
+        this.isDisabledPrintTempBtn = this.isPaid
         this.isDisabledPaymentBtn = this.isPaid
         this.isDisabledPrintAndPaymentBtn = this.isPaid
       }
