@@ -369,7 +369,7 @@ export default {
             { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalQuantity)}`, styles: { halign: 'right', cellWidth: 18, fillColor: [211, 211, 211] } },
             { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalTotal)}`, styles: { halign: 'right', cellWidth: 34, fillColor: [211, 211, 211] } },
             { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat)}`, styles: { halign: 'right', cellWidth: 23, fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay)}`, styles: { halign: 'right', fillColor: [211, 211, 211] } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay)}`, styles: { halign: 'right', cellWidth: 23, fillColor: [211, 211, 211] } },
           ],
         ],
       })
@@ -383,10 +383,6 @@ export default {
           Color: [255, 0, 0],
           fontSize: 8,
           textColor: 'black',
-          lineWidth: 0.1,
-          lineColor: 'black',
-          lineStyle: 'dotted',
-
         },
         headStyles: {
           fillColor: 'white',
@@ -409,7 +405,29 @@ export default {
           9: { halign: 'right', cellWidth: 15 },
           10: { halign: 'right', cellWidth: 20 },
           11: { halign: 'right', cellWidth: 23 },
-          12: { halign: 'right' },
+          12: { halign: 'right', cellWidth: 23 },
+        },
+        didDrawCell: data => {
+          if (data.section === 'head') {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.5)
+            pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
+          }
+          if (data.section === 'body' && data.column.index === 0) {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.1)
+            pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+          }
+          if (data.section === 'body' && data.column.index === 12) {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.1)
+            pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+          }
+          if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.1)
+            pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
+          }
         },
       })
       for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
