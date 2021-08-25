@@ -422,7 +422,7 @@ export default {
           const element = document.getElementById('print-form-sale-receipt-v2')
           element.classList.remove('d-none')
           const heightPage = Number(element.offsetHeight) * 0.50
-          // element.classList.add('d-none')
+          element.classList.add('d-none')
           if (jspmCheckStatus()) {
             // format UI bill
             // eslint-disable-next-line new-cap
@@ -473,13 +473,13 @@ export default {
             const splitTitle = pdf.splitTextToSize(this.removeVietnameseTones(`DC: ${this.printSalesReceiptData.customerAddress}`, this.isRemoveVNTones), pageWidth - marginLeft - 10)
             pdf.text(splitTitle, marginLeft, marginTop)
             marginTop += spaceRowInCluster * splitTitle.length
-            pdf.text(this.removeVietnameseTones(`Loại giao hàng: ${this.printSalesReceiptData.deliveryType}`, this.isRemoveVNTones), marginLeft, marginTop)
+            pdf.text(`${this.removeVietnameseTones('Loại giao hàng', this.isRemoveVNTones)}: ${this.removeVietnameseTones(`${this.printSalesReceiptData.deliveryType}`, this.isRemoveVNTones)}`, marginLeft, marginTop)
             marginTop += spaceRowInCluster
-            pdf.text(`Doanh số tích lũy: ${this.$formatNumberToLocale(this.printSalesReceiptData.customerPurchase)}`, marginLeft, marginTop)
+            pdf.text(`${this.removeVietnameseTones('Doanh số tích luỹ', this.isRemoveVNTones)}: ${this.$formatNumberToLocale(this.printSalesReceiptData.customerPurchase)}`, marginLeft, marginTop)
             marginTop += spaceRowInCluster
             pdf.text(`Ngày: 03/07/2021 - ${this.$formatPrintDate(this.printSalesReceiptData.orderDate)}`, marginLeft, marginTop)
             marginTop += spaceRowInCluster
-            pdf.text(this.removeVietnameseTones(`NV: ${this.printSalesReceiptData.userName}`, this.isRemoveVNTones), marginLeft, marginTop)
+            pdf.text(`NV: ${this.removeVietnameseTones(`${this.printSalesReceiptData.userName}`, this.isRemoveVNTones)}`, marginLeft, marginTop)
             marginTop += 5
 
             pdf.autoTable({
@@ -602,11 +602,11 @@ export default {
             const cpj = new JSPM.ClientPrintJob()
             cpj.clientPrinter = new JSPM.InstalledPrinter(this.printerName) // get printer
             const printContent = new JSPM.PrintFilePDF(pdf.output('datauristring'), JSPM.FileSourceType.URL, 'hoa_don_ban_hang.pdf', 1)
-            printContent.printAsGrayscale = false // Options print black/white(=true) and color(=false)
+            printContent.printAsGrayscale = true // Options print black/white(=true) and color(=false)
             // printContent.pageSizing = JSPM.Sizing.Fit
             cpj.files.push(printContent)
-            // cpj.sendToClient()
-            pdf.save('test.pdf')
+            cpj.sendToClient()
+            // pdf.save('test.pdf')
             break
           }
         } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
