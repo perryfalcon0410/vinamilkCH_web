@@ -465,7 +465,7 @@ export default {
             marginTop += spaceRowTwoCluster
             pdf.setFontType('normal')
             if (this.printSalesReceiptData.orderNumber) {
-              pdf.text(`Số HĐ: ${this.printSalesReceiptData.orderNumber}`, marginLeft, marginTop)
+              pdf.text(`${this.removeVietnameseTones('Số HĐ', this.isRemoveVNTones)}: ${this.printSalesReceiptData.orderNumber}`, marginLeft, marginTop)
               marginTop += spaceRowInCluster
             }
             pdf.text(this.removeVietnameseTones(`KH: ${this.printSalesReceiptData.customerName} - ${this.printSalesReceiptData.customerPhone}`, this.isRemoveVNTones), marginLeft, marginTop)
@@ -497,7 +497,7 @@ export default {
                 [
                   { content: 'SP', styles: { halign: 'left', cellWidth: 150 } },
                   { content: 'SL', styles: { halign: 'center', cellWidth: 50 } },
-                  { content: 'Giá', styles: { halign: 'center', cellWidth: 100 } },
+                  { content: this.removeVietnameseTones('Giá', this.isRemoveVNTones), styles: { halign: 'center', cellWidth: 100 } },
                   { content: this.removeVietnameseTones('T.Tiền', this.isRemoveVNTones), styles: { halign: 'right', cellWidth: 100 } },
                 ],
               ],
@@ -519,14 +519,14 @@ export default {
                   pdf.text(`${this.$formatNumberToLocale(item.totalPrice)}`, marginLeft + 390, marginTop, { align: 'right' })
                   if (item.totalDiscountPrice) {
                     marginTop += 20
-                    pdf.text('Giảm giá', marginLeft, marginTop)
+                    pdf.text(this.removeVietnameseTones('Giảm giá', this.isRemoveVNTones), marginLeft, marginTop)
                     pdf.text(`${this.$formatNumberToLocale(item.totalDiscountPrice)}`, marginLeft + 390, marginTop, { align: 'right' })
                   }
                 })
               }
               if (Boolean((Number(product.displayType))) === true) {
                 marginTop += 20
-                pdf.text(`${product.groupName}`, marginLeft, marginTop)
+                pdf.text(this.removeVietnameseTones(`${product.groupName}`, this.isRemoveVNTones), marginLeft, marginTop)
               }
               if (product.listFreeItems !== null) {
                 product.listFreeItems.forEach(freeItem => {
@@ -602,8 +602,8 @@ export default {
             const cpj = new JSPM.ClientPrintJob()
             cpj.clientPrinter = new JSPM.InstalledPrinter(this.printerName) // get printer
             const printContent = new JSPM.PrintFilePDF(pdf.output('datauristring'), JSPM.FileSourceType.URL, 'hoa_don_ban_hang.pdf', 1)
-            printContent.printAsGrayscale = true // Options print black/white(=true) and color(=false)
-            // printContent.pageSizing = JSPM.Sizing.Fit
+            printContent.printAsGrayscale = false // Options print black/white(=true) and color(=false)
+            printContent.pageSizing = JSPM.Sizing.Fit
             cpj.files.push(printContent)
             cpj.sendToClient()
             // pdf.save('test.pdf')
