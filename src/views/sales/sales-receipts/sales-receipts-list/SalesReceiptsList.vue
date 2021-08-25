@@ -36,6 +36,7 @@
           :style="cssProps"
           :sort-options="{
             enabled: true,
+            multipleColumns: true,
           }"
           :total-rows="salesReceiptsPagination.totalElements"
           @on-sort-change="onSortChange"
@@ -151,13 +152,13 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'customerNumber'"
-              class="name-width"
+              v-else-if="props.column.field === 'customerCode'"
+              class="customerName-width"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'name'"
+              v-else-if="props.column.field === 'customerName'"
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -324,14 +325,14 @@ export default {
         },
         {
           label: 'Mã khách hàng',
-          field: 'customerNumber',
+          field: 'customerCode',
           sortable: false,
           thClass: 'ws-nowrap scroll-column-header column-second',
           tdClass: 'scroll-column column-second',
         },
         {
           label: 'Họ tên',
-          field: 'name',
+          field: 'customerName',
           sortable: false,
           thClass: 'scroll-column-header column-third ws-nowrap',
           tdClass: 'scroll-column column-third',
@@ -445,8 +446,8 @@ export default {
         return this.SALES_RECEIPTS_GETTER.response.content.map(data => ({
           id: data.id,
           orderNumber: data.orderNumber,
-          customerNumber: data.customerNumber,
-          name: data.customerName,
+          customerCode: data.customerNumber,
+          customerName: data.customerName,
           orderDate: data.orderDate,
           amount: data.amount,
           note: data.note,
@@ -533,7 +534,7 @@ export default {
     cssProps() {
       return {
         '--customer-code': `${this.numberBillWidth + 33}px`,
-        '--customer-name': `${this.numberBillWidth + this.customerCodeWidth + 33}px`,
+        '--customer-customerName': `${this.numberBillWidth + this.customerCodeWidth + 33}px`,
         '--date': `${this.numberBillWidth + this.customerCodeWidth + this.customerNameWidth + 32}px`,
       }
     },
@@ -568,8 +569,8 @@ export default {
       return this.$permission('SalesReceipts', 'SalesReceiptsDetail')
     },
 
-    showInvoiceDetailModal(id, numberBill) {
-      this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber: numberBill })
+    showInvoiceDetailModal(id, orderNumber) {
+      this.GET_SALES_RECEIPTS_DETAIL_ACTION({ saleOrderId: id, orderNumber })
       this.$bvModal.show('detail-modal')
     },
 
@@ -615,11 +616,26 @@ export default {
       this.onPaginationChange({ size: params.currentPerPage })
     },
     onSortChange(params) {
-      if (params[0].type !== 'none') {
-        this.onPaginationChange({ sort: `${params[0].field},${params[0].type}`, page: commonData.pageNumber - 1 })
+      params.forEach((item, index) => {
+        if (item.type === 'none') {
+          params.splice(index, 1)
+        }
+      })
+      if (params.length === 1) {
+        this.updateSearchData({
+          sort: `${params[0].field},${params[0].type}`,
+        })
       } else {
-        this.onPaginationChange({ sort: null, page: commonData.pageNumber - 1 })
+        this.updateSearchData({
+          sort: null,
+        })
       }
+      if (params.length >= 2) {
+        this.updateSearchData({
+          sort: [...params],
+        })
+      }
+      this.onPaginationChange()
     },
     // END - Vue Good Table func
   },
@@ -659,7 +675,7 @@ export default {
   }
   .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
     /* left: 163px; */
-    left: var(--customer-name);
+    left: var(--customer-customerName);
     z-index: 1;
   }
   .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(5) {
@@ -674,7 +690,7 @@ export default {
     left: var(--customer-code);
   }
   .sales-class.table-horizontal-scroll .column-third {
-    left: var(--customer-name);
+    left: var(--customer-customerName);
   }
   .sales-class.table-horizontal-scroll .column-4 {
     left: var(--date);

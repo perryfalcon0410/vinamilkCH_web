@@ -143,6 +143,32 @@ export const onlyDateInput = e => {
   return e.preventDefault()
 }
 
+export const formatSortUrl = args => {
+  let url = ''
+  if (args.sort !== null && typeof (args.sort) !== 'string') {
+    url = args.sort.reduce((prev, curr) => {
+      if (prev.field) {
+        return `?sort=${prev.field},${prev.type}&sort=${curr.field},${curr.type}`
+      }
+      return `${prev}&sort=${curr.field},${curr.type}`
+    })
+  }
+  return url
+}
+
+export const sortFilterParams = args => {
+  if (args.sort !== null && typeof (args.sort) !== 'string') {
+    const filtered = Object.keys(args)
+      .filter(key => key !== 'sort')
+      .reduce((obj, key) => ({
+        ...obj,
+        [key]: args[key],
+      }), {})
+    return filtered
+  }
+  return args
+}
+
 export const resizeAbleTable = () => {
   let thElm
   let startOffset

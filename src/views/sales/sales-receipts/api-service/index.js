@@ -1,5 +1,5 @@
 import axios from '@axios'
-import { formatURLParams } from '@/@core/utils/utils'
+import { formatURLParams, formatSortUrl, sortFilterParams } from '@/@core/utils/utils'
 import {
   getSalesReceiptsEndpoint,
   getSalesReceiptsDetailEndpoint,
@@ -8,8 +8,8 @@ import {
 
 export default {
   getSalesReceipts(args) {
-    return axios.get(`${getSalesReceiptsEndpoint}`, {
-      params: formatURLParams(args),
+    return axios.get(`${getSalesReceiptsEndpoint}${formatSortUrl(args)}`, {
+      params: formatURLParams(sortFilterParams(args)),
     })
   },
   getSalesReceiptsDetail(args) {
