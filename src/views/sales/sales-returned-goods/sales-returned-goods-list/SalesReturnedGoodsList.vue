@@ -295,7 +295,7 @@ export default {
         },
         {
           label: 'Ngày trả hàng',
-          field: 'dateReturn',
+          field: 'orderDate',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
@@ -365,7 +365,7 @@ export default {
           userName: data.userName,
           customerNumber: data.customerNumber,
           customerName: data.customerName,
-          dateReturn: data.dateReturn,
+          orderDate: data.dateReturn,
           total: data.total,
           totalPromotion: data.totalPromotion,
           amount: data.amount,

@@ -58,7 +58,8 @@
           line-numbers
           :total-rows="warehouseInventoryPagination.totalElements"
           :sort-options="{
-            enabled: false,
+            enabled: true,
+            multipleColumns: true,
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
@@ -231,25 +232,26 @@ export default {
         },
         {
           label: 'Kho',
-          field: 'warehouseType',
+          field: 'wareHouseTypeName',
         },
         {
           label: 'Người tạo',
-          field: 'createUser',
+          field: 'createdBy',
         },
         {
           label: 'Chỉnh sửa lần cuối',
-          field: 'updateDate',
+          field: 'updatedAt',
         },
         {
           label: 'Người chỉnh sửa',
-          field: 'updateUser',
+          field: 'updatedBy',
         },
         {
           label: 'Thao tác',
           field: 'feature',
           hidden: !this.statusUpdateButton().show,
           width: '30px',
+          sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
@@ -267,11 +269,11 @@ export default {
           id: data.id,
           countingDate: formatISOtoVNI(data.countingDate),
           stockCountingCode: data.stockCountingCode,
-          warehouseType: data.wareHouseTypeName,
-          createUser: data.createdBy,
-          createDate: formatISOtoVNI(data.createdAt),
-          updateUser: data.updatedBy,
-          updateDate: formatISOtoVNI(data.updatedAt),
+          wareHouseTypeName: data.wareHouseTypeName,
+          createdBy: data.createdBy,
+          createdAt: formatISOtoVNI(data.createdAt),
+          updatedBy: data.updatedBy,
+          updatedAt: formatISOtoVNI(data.updatedAt),
         }))
       }
       return []
@@ -333,19 +335,29 @@ export default {
       })
       this.onPaginationChange()
     },
-    onPaginationChange() {
-      this.GET_WAREHOUSE_INVENTORIES_ACTION({ ...this.searchData, ...this.decentralization })
+    onPaginationChange(data, params) {
+      this.updateSearchData(data)
+      this.GET_WAREHOUSE_INVENTORIES_ACTION({ ...this.searchData, ...params })
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
-      this.onPaginationChange()
+      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
     },
     onPerPageChange(params) {
       this.updateSearchData({
         size: params.currentPerPage,
         page: commonData.pageNumber - 1,
       })
-      this.onPaginationChange()
+      this.onPaginationChange({ size: params.currentPerPage })
+    },
+    onSortChange(params) {
+      if (params[0].type !== 'none') {
+        if (params[0].field === 'wareHouseTypeName') {
+          this.onPaginationChange({ sort: `w.wareHouseTypeName,${params[0].type}`, page: commonData.pageNumber - 1 })
+        } else this.onPaginationChange({ sort: `${params[0].field},${params[0].type}`, page: commonData.pageNumber - 1 })
+      } else {
+        this.onPaginationChange({ sort: null, page: commonData.pageNumber - 1 })
+      }
     },
   },
 
