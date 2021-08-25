@@ -5,311 +5,313 @@
     style="max-width: 95%; margin: 0 auto;"
     class="d-none d-print-block text-brand-3"
   >
-    <!-- START - Header -->
-    <b-row
-      class="mx-0 my-1 text-center"
-      align-h="center"
-      align-v="center"
-    >
-      <div class="d-flex flex-column align-items-center">
-        <b-img
-          src="@/assets/images/logo/VinamilkLogo.png"
-          width="240px"
-        />
-        <div
-          class="mb-50"
+    <div id="testHeight">
+      <!-- START - Header -->
+      <b-row
+        class="mx-0 my-1 text-center"
+        align-h="center"
+        align-v="center"
+      >
+        <div class="d-flex flex-column align-items-center">
+          <b-img
+            src="@/assets/images/logo/VinamilkLogo.png"
+            width="240px"
+          />
+          <div
+            class="mb-50"
+            style="font-size: 28px"
+          >
+            CTY CP SUA VIET NAM - VINAMILK
+          </div>
+          <strong style="font-size: 34px">
+            {{ printSalesReceiptData.shopName }}
+          </strong>
+          <div style="font-size: 28px">
+            Tel: {{ printSalesReceiptData.shopPhone }}
+          </div>
+          <div style="font-size: 28px">
+            Add: {{ printSalesReceiptData.shopAddress }}
+          </div>
+
+          <strong class="mt-1">
+            <div style="font-size: 28px">
+              BIÊN NHẬN THANH TOÁN
+            </div>
+            <div style="font-size: 28px">
+              KIÊM PHIẾU GIAO HÀNG
+            </div>
+            <div style="font-size: 28px">
+              (CÓ GIÁ TRỊ NHƯ HÓA ĐƠN)
+            </div>
+          </strong>
+        </div>
+      </b-row>
+      <!-- END - Header -->
+
+      <!-- START - Order info -->
+      <div>
+        <div style="font-size: 28px">
+          Số HĐ: <strong>{{ printSalesReceiptData.orderNumber }}</strong>
+        </div>
+        <b-row
+          class="mx-0"
           style="font-size: 28px"
         >
-          CTY CP SUA VIET NAM - VINAMILK
-        </div>
-        <strong style="font-size: 34px">
-          {{ printSalesReceiptData.shopName }}
-        </strong>
+          <div class="mr-20">
+            KH:
+          </div>
+          <b-col class="px-0">
+            {{ printSalesReceiptData.customerName }} - {{ printSalesReceiptData.customerPhone }}
+          </b-col>
+        </b-row>
+        <b-row
+          class="mx-0"
+          style="font-size: 28px"
+        >
+          <div class="mr-20">
+            DC:
+          </div>
+          <b-col class="px-0">
+            {{ printSalesReceiptData.customerAddress }}
+          </b-col>
+        </b-row>
         <div style="font-size: 28px">
-          Tel: {{ printSalesReceiptData.shopPhone }}
+          Loại giao hàng: {{ printSalesReceiptData.deliveryType }}
         </div>
         <div style="font-size: 28px">
-          Add: {{ printSalesReceiptData.shopAddress }}
+          Doanh số tích lũy: {{ $formatNumberToLocale(printSalesReceiptData.customerPurchase) }}
         </div>
-
-        <strong class="mt-1">
-          <div style="font-size: 28px">
-            BIÊN NHẬN THANH TOÁN
-          </div>
-          <div style="font-size: 28px">
-            KIÊM PHIẾU GIAO HÀNG
-          </div>
-          <div style="font-size: 28px">
-            (CÓ GIÁ TRỊ NHƯ HÓA ĐƠN)
-          </div>
-        </strong>
-      </div>
-    </b-row>
-    <!-- END - Header -->
-
-    <!-- START - Order info -->
-    <div>
-      <div style="font-size: 28px">
-        Số HĐ: <strong>{{ printSalesReceiptData.orderNumber }}</strong>
-      </div>
-      <b-row
-        class="mx-0"
-        style="font-size: 28px"
-      >
-        <div class="mr-20">
-          KH:
+        <div style="font-size: 28px">
+          Ngày: {{ $formatPrintDate(printSalesReceiptData.orderDate) }}
         </div>
-        <b-col class="px-0">
-          {{ printSalesReceiptData.customerName }} - {{ printSalesReceiptData.customerPhone }}
-        </b-col>
-      </b-row>
-      <b-row
-        class="mx-0"
-        style="font-size: 28px"
-      >
-        <div class="mr-20">
-          DC:
+        <div style="font-size: 28px">
+          NV: {{ printSalesReceiptData.userName }}
         </div>
-        <b-col class="px-0">
-          {{ printSalesReceiptData.customerAddress }}
-        </b-col>
-      </b-row>
-      <div style="font-size: 28px">
-        Loại giao hàng: {{ printSalesReceiptData.deliveryType }}
       </div>
-      <div style="font-size: 28px">
-        Doanh số tích lũy: {{ $formatNumberToLocale(printSalesReceiptData.customerPurchase) }}
-      </div>
-      <div style="font-size: 28px">
-        Ngày: {{ $formatPrintDate(printSalesReceiptData.orderDate) }}
-      </div>
-      <div style="font-size: 28px">
-        NV: {{ printSalesReceiptData.userName }}
-      </div>
-    </div>
-    <!-- END - Order info -->
+      <!-- END - Order info -->
 
-    <!-- START - Tables -->
-    <table id="table-header">
-      <thead>
-        <tr>
-          <th>
-            SP
-          </th>
-          <th class="text-center">
-            SL
-          </th>
-          <th class="text-center">
-            Giá
-          </th>
-          <th class="text-right">
-            T.Tiền
-          </th>
-        </tr>
-      </thead>
-    </table>
+      <!-- START - Tables -->
+      <table id="table-header">
+        <thead>
+          <tr>
+            <th>
+              SP
+            </th>
+            <th class="text-center">
+              SL
+            </th>
+            <th class="text-center">
+              Giá
+            </th>
+            <th class="text-right">
+              T.Tiền
+            </th>
+          </tr>
+        </thead>
+      </table>
 
-    <!-- START - Products -->
-    <table
-      v-for="(product,itemIndex) in printSalesReceiptData.products"
-      id="table-body"
-      :key="itemIndex"
-    >
-      <thead class="border-0">
-        <tr>
-          <th class="width-15-per" />
-          <th class="text-center width-15-per" />
-          <th class="text-center width-30-per" />
-          <th class="width-40-per" />
-        </tr>
-      </thead>
-      <tbody
-        v-for="item in product.listOrderItems"
-        :key="item.productId"
+      <!-- START - Products -->
+      <table
+        v-for="(product,itemIndex) in printSalesReceiptData.products"
+        id="table-body"
+        :key="itemIndex"
       >
-        <tr>
+        <thead class="border-0">
+          <tr>
+            <th class="width-15-per" />
+            <th class="text-center width-15-per" />
+            <th class="text-center width-30-per" />
+            <th class="width-40-per" />
+          </tr>
+        </thead>
+        <tbody
+          v-for="item in product.listOrderItems"
+          :key="item.productId"
+        >
+          <tr>
+            <td>
+              {{ item.productName }}
+            </td>
+          </tr>
+          <tr>
+            <td
+              style="width: 100px; text-align: left"
+            >
+              {{ item.productCode }}
+            </td>
+            <td
+              style="width: 100px; text-align: center"
+            >
+              {{ $formatNumberToLocale(item.quantity) }}
+            </td>
+            <td
+              style="width: 100px; text-align: center"
+            >
+              {{ $formatNumberToLocale(item.price) }}
+            </td>
+            <td
+              style="width: 100px; text-align: right"
+            >
+              {{ $formatNumberToLocale(item.totalPrice) }}
+            </td>
+          </tr>
+          <tr v-show="item.totalDiscountPrice">
+            <td>
+              Giảm giá
+            </td>
+            <td class="text-right">
+              {{ $formatNumberToLocale(item.totalDiscountPrice) }}
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-show="Boolean(Number(product.displayType))">
           <td>
+            {{ product.groupName }}
+          </td>
+        </tbody>
+        <tbody
+          v-for="item in product.listFreeItems"
+          :key="item.productCode"
+        >
+          <td valign="top">
+            KM
+          </td>
+          <td
+            class="text-right"
+            valign="top"
+          >
+            {{ item.quantity }}
+          </td>
+          <td
+            valign="top"
+            class="pl-1"
+          >
             {{ item.productName }}
           </td>
-        </tr>
-        <tr>
-          <td
-            style="width: 100px; text-align: left"
-          >
-            {{ item.productCode }}
-          </td>
-          <td
-            style="width: 100px; text-align: center"
-          >
-            {{ $formatNumberToLocale(item.quantity) }}
-          </td>
-          <td
-            style="width: 100px; text-align: center"
-          >
-            {{ $formatNumberToLocale(item.price) }}
-          </td>
-          <td
-            style="width: 100px; text-align: right"
-          >
-            {{ $formatNumberToLocale(item.totalPrice) }}
-          </td>
-        </tr>
-        <tr v-show="item.totalDiscountPrice">
-          <td>
-            Giảm giá
-          </td>
-          <td class="text-right">
-            {{ $formatNumberToLocale(item.totalDiscountPrice) }}
-          </td>
-        </tr>
-      </tbody>
-      <tbody v-show="Boolean(Number(product.displayType))">
-        <td>
-          {{ product.groupName }}
-        </td>
-      </tbody>
-      <tbody
-        v-for="item in product.listFreeItems"
-        :key="item.productCode"
+
+        </tbody>
+      </table>
+      <!-- END - Products -->
+
+      <!-- START - lstZM -->
+      <table
+        v-for="item in printSalesReceiptData.lstZM"
+        :key="item.promotionCode"
       >
-        <td valign="top">
-          KM
-        </td>
-        <td
-          class="text-right"
-          valign="top"
-        >
-          {{ item.quantity }}
-        </td>
-        <td
-          valign="top"
-          class="pl-1"
-        >
-          {{ item.productName }}
-        </td>
+        <tbody>
+          <tr>
+            <td>
+              {{ item.promotionName }}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ item.promotionCode }}
+            </td>
+            <td class="text-right">
+              {{ $formatNumberToLocale( item.amount ) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- END - lstZM -->
 
-      </tbody>
-    </table>
-    <!-- END - Products -->
+      <!-- END - Tables -->
 
-    <!-- START - lstZM -->
-    <table
-      v-for="item in printSalesReceiptData.lstZM"
-      :key="item.promotionCode"
-    >
-      <tbody>
-        <tr>
-          <td>
-            {{ item.promotionName }}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            {{ item.promotionCode }}
-          </td>
-          <td class="text-right">
-            {{ $formatNumberToLocale( item.amount ) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- END - lstZM -->
-
-    <!-- END - Tables -->
-
-    <!-- STAT - Total section -->
-    <div class="text-right th my-1">
-      <b-row
-        class="mx-0 "
-        align-h="end"
-        align-v="center"
-        style="font-size: 28px"
-      >
-        <div>
-          <div>
-            Tổng cộng (bao gồm VAT):
-          </div>
-          <div>
-            Tổng tiền (chưa VAT):
-          </div>
-          <div>
-            Giảm giá (chưa VAT):
-          </div>
-          <div>
-            Giảm giá (bao gồm VAT):
-          </div>
-          <div>
-            Tiền tích lũy:
-          </div>
-          <div>
-            Voucher:
-          </div>
-          <div>
-            Thanh toán (chưa VAT):
-          </div>
-          <div>
-            Thanh toán (bao gồm VAT):
-          </div>
-          <div>
-            KH đưa:
-          </div>
-          <div>
-            Trả lại:
-          </div>
-        </div>
-        <div
-          class="ml-50"
+      <!-- STAT - Total section -->
+      <div class="text-right th my-1">
+        <b-row
+          class="mx-0 "
+          align-h="end"
+          align-v="center"
           style="font-size: 28px"
         >
           <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.amount ) || 0 }}
+            <div>
+              Tổng cộng (bao gồm VAT):
+            </div>
+            <div>
+              Tổng tiền (chưa VAT):
+            </div>
+            <div>
+              Giảm giá (chưa VAT):
+            </div>
+            <div>
+              Giảm giá (bao gồm VAT):
+            </div>
+            <div>
+              Tiền tích lũy:
+            </div>
+            <div>
+              Voucher:
+            </div>
+            <div>
+              Thanh toán (chưa VAT):
+            </div>
+            <div>
+              Thanh toán (bao gồm VAT):
+            </div>
+            <div>
+              KH đưa:
+            </div>
+            <div>
+              Trả lại:
+            </div>
           </div>
-          <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.amountNotVAT ) || 0 }}
+          <div
+            class="ml-50"
+            style="font-size: 28px"
+          >
+            <div>
+              {{ $formatNumberToLocale( printSalesReceiptData.amount ) || 0 }}
+            </div>
+            <div>
+              {{ $formatNumberToLocale( printSalesReceiptData.amountNotVAT ) || 0 }}
+            </div>
+            <div>
+              {{ $formatNumberToLocale( printSalesReceiptData.promotionAmountNotVat ) || 0 }}
+            </div>
+            <div>
+              {{ $formatNumberToLocale( printSalesReceiptData.promotionAmount ) || 0 }}
+            </div>
+            <div>
+              {{ $formatNumberToLocale( printSalesReceiptData.accumulatedAmount ) || 0 }}
+            </div>
+            <div>
+              {{ $formatNumberToLocale( printSalesReceiptData.voucherAmount ) || 0 }}
+            </div>
+            <div>
+              {{ $formatNumberToLocale( printSalesReceiptData.totalNotVat ) || 0 }}
+            </div>
+            <div>
+              {{ $formatNumberToLocale( printSalesReceiptData.total ) || 0 }}
+            </div>
+            <div>
+              {{ $formatNumberToLocale( printSalesReceiptData.paymentAmount ) || 0 }}
+            </div>
+            <div>
+              {{ $formatNumberToLocale( printSalesReceiptData.extraAmount ) || 0 }}
+            </div>
           </div>
-          <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.promotionAmountNotVat ) || 0 }}
-          </div>
-          <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.promotionAmount ) || 0 }}
-          </div>
-          <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.accumulatedAmount ) || 0 }}
-          </div>
-          <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.voucherAmount ) || 0 }}
-          </div>
-          <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.totalNotVat ) || 0 }}
-          </div>
-          <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.total ) || 0 }}
-          </div>
-          <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.paymentAmount ) || 0 }}
-          </div>
-          <div>
-            {{ $formatNumberToLocale( printSalesReceiptData.extraAmount ) || 0 }}
-          </div>
-        </div>
-      </b-row>
-    </div>
-    <!-- END - Total section -->
-
-    <!-- START - Footer -->
-    <div style="font-size: 28px">
-      Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.
-    </div>
-    <div class="text-center mt-50 text-nowrap">
-      <strong style="font-size: 26px">Vinamilk online: <ins>www.giacmosuaviet.com.vn</ins></strong>
-      <div
-        style="font-size: 28px"
-        class="html2pdf__page-break"
-      >
-        Cảm ơn Quý khách. Hẹn gặp lại
+        </b-row>
       </div>
-    </div>
+      <!-- END - Total section -->
+
+      <!-- START - Footer -->
+      <div style="font-size: 28px">
+        Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.
+      </div>
+      <div class="text-center mt-50 text-nowrap">
+        <strong style="font-size: 26px">Vinamilk online: <ins>www.giacmosuaviet.com.vn</ins></strong>
+        <div
+          style="font-size: 28px"
+          class="html2pdf__page-break"
+        >
+          Cảm ơn Quý khách. Hẹn gặp lại
+        </div>
+      </div>
     <!-- END - Footer -->
+    </div>
   </div>
 </template>
 
@@ -355,6 +357,7 @@ export default {
       printerName: '',
       ipAddress: null,
       printSalesReceiptData: {},
+      isRemoveVNTones: true,
     }
   },
   computed: {
@@ -416,19 +419,14 @@ export default {
     } else {
       for (let i = 0; i < 3; i += 1) {
         if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          // const element = document.getElementById('print-form-sale-receipt-v2')
-          // element.classList.remove('d-none')
-          // const options = {
-          //   fileName: 'hoa_don_ban_hang',
-          //   pageSizing: 'Fit',
-          //   scale: 3,
-          //   pageBreak: '',
-          //   format: [210, 600],
-          // }
+          const element = document.getElementById('print-form-sale-receipt-v2')
+          element.classList.remove('d-none')
+          const heightPage = Number(element.offsetHeight) * 0.50
+          // element.classList.add('d-none')
           if (jspmCheckStatus()) {
             // format UI bill
             // eslint-disable-next-line new-cap
-            const pdf = new jsPDF('p', 'px', [1000, 410]) // portrait, heigth x width
+            const pdf = new jsPDF('p', 'px', [heightPage, 410]) // portrait, heigth x width
             const marginLeft = 10
             let marginTop = 10
             const spaceRowTwoCluster = 25
@@ -441,7 +439,7 @@ export default {
             pdf.addFileToVFS('Arimo-Regular.ttf', myFontNormal)
             pdf.addFont('Arimo-Bold.ttf', 'Arimo', 'bold')
             pdf.addFont('Arimo-Regular.ttf', 'Arimo', 'normal')
-
+            pdf.setTextColor(0, 0, 0)
             pdf.setFont('Arimo')
             pdf.setFontType('normal')
             // body bill
@@ -451,34 +449,37 @@ export default {
             pdf.text('CTY CP SUA VIET NAM - VINAMILK', pageWidth / 2, marginTop, { align: 'center' })
             marginTop += spaceRowTwoCluster
             pdf.setFontType('bold')
-            pdf.text(`${this.printSalesReceiptData.shopName}`, pageWidth / 2, marginTop, { align: 'center' })
+            pdf.text(this.removeVietnameseTones(`${this.printSalesReceiptData.shopName}`, this.isRemoveVNTones), pageWidth / 2, marginTop, { align: 'center' })
             marginTop += spaceRowInCluster
             pdf.setFontType('normal')
             pdf.text(`Tel: ${this.printSalesReceiptData.shopPhone}`, pageWidth / 2, marginTop, { align: 'center' })
             marginTop += spaceRowInCluster
-            pdf.text(`Add: ${this.printSalesReceiptData.shopAddress}`, pageWidth / 2, marginTop, { align: 'center' })
+            pdf.text(this.removeVietnameseTones(`Add: ${this.printSalesReceiptData.shopAddress}`, this.isRemoveVNTones), pageWidth / 2, marginTop, { align: 'center' })
             marginTop += spaceRowTwoCluster
             pdf.setFontType('bold')
-            pdf.text('BIÊN NHẬN THANH TOÁN', pageWidth / 2, marginTop, { align: 'center' })
+            pdf.text(this.removeVietnameseTones('BIÊN NHẬN THANH TOÁN', this.isRemoveVNTones), pageWidth / 2, marginTop, { align: 'center' })
             marginTop += spaceRowInCluster
-            pdf.text('KIÊM PHIẾU GIAO HÀNG', pageWidth / 2, marginTop, { align: 'center' })
+            pdf.text(this.removeVietnameseTones('KIÊM PHIẾU GIAO HÀNG', this.isRemoveVNTones), pageWidth / 2, marginTop, { align: 'center' })
             marginTop += spaceRowInCluster
-            pdf.text('(CÓ GIÁ TRỊ NHƯ HÓA ĐƠN)', pageWidth / 2, marginTop, { align: 'center' })
+            pdf.text(this.removeVietnameseTones('(CÓ GIÁ TRỊ NHƯ HÓA ĐƠN)', this.isRemoveVNTones), pageWidth / 2, marginTop, { align: 'center' })
             marginTop += spaceRowTwoCluster
             pdf.setFontType('normal')
-            pdf.text(`Số HĐ: ${this.printSalesReceiptData.orderNumber}`, marginLeft, marginTop)
+            if (this.printSalesReceiptData.orderNumber) {
+              pdf.text(`Số HĐ: ${this.printSalesReceiptData.orderNumber}`, marginLeft, marginTop)
+              marginTop += spaceRowInCluster
+            }
+            pdf.text(this.removeVietnameseTones(`KH: ${this.printSalesReceiptData.customerName} - ${this.printSalesReceiptData.customerPhone}`, this.isRemoveVNTones), marginLeft, marginTop)
             marginTop += spaceRowInCluster
-            pdf.text(`KH: ${this.printSalesReceiptData.customerName} - ${this.printSalesReceiptData.customerPhone}`, marginLeft, marginTop)
-            marginTop += spaceRowInCluster
-            pdf.text(`DC: ${this.printSalesReceiptData.customerAddress}`, marginLeft, marginTop)
-            marginTop += spaceRowInCluster
-            pdf.text(`Loại giao hàng: ${this.printSalesReceiptData.deliveryType}`, marginLeft, marginTop)
+            const splitTitle = pdf.splitTextToSize(this.removeVietnameseTones(`DC: ${this.printSalesReceiptData.customerAddress}`, this.isRemoveVNTones), pageWidth - marginLeft - 10)
+            pdf.text(splitTitle, marginLeft, marginTop)
+            marginTop += spaceRowInCluster * splitTitle.length
+            pdf.text(this.removeVietnameseTones(`Loại giao hàng: ${this.printSalesReceiptData.deliveryType}`, this.isRemoveVNTones), marginLeft, marginTop)
             marginTop += spaceRowInCluster
             pdf.text(`Doanh số tích lũy: ${this.$formatNumberToLocale(this.printSalesReceiptData.customerPurchase)}`, marginLeft, marginTop)
             marginTop += spaceRowInCluster
             pdf.text(`Ngày: 03/07/2021 - ${this.$formatPrintDate(this.printSalesReceiptData.orderDate)}`, marginLeft, marginTop)
             marginTop += spaceRowInCluster
-            pdf.text(`NV: ${this.printSalesReceiptData.userName}`, marginLeft, marginTop)
+            pdf.text(this.removeVietnameseTones(`NV: ${this.printSalesReceiptData.userName}`, this.isRemoveVNTones), marginLeft, marginTop)
             marginTop += 5
 
             pdf.autoTable({
@@ -490,35 +491,39 @@ export default {
                 font: 'Arimo',
                 fontSize,
                 fontStyle: 'bold',
+                textColor: [0, 0, 0],
               },
               body: [
                 [
                   { content: 'SP', styles: { halign: 'left', cellWidth: 150 } },
                   { content: 'SL', styles: { halign: 'center', cellWidth: 50 } },
                   { content: 'Giá', styles: { halign: 'center', cellWidth: 100 } },
-                  { content: 'T.Tiền', styles: { halign: 'right', cellWidth: 100 } },
+                  { content: this.removeVietnameseTones('T.Tiền', this.isRemoveVNTones), styles: { halign: 'right', cellWidth: 100 } },
                 ],
               ],
             })
-            // marginTop += 10
-            // pdf.fromHTML('<span style:"border-top: 1px dashed black" >ABC</span>', marginLeft, marginTop)
+
+            pdf.setTextColor(0, 0, 0)
             marginTop += 20
-            const marginLeftColumnSL = 170
+            const marginLeftColumnSL = 390
+
             this.printSalesReceiptData.products.forEach(product => {
-              product.listOrderItems.forEach(item => {
-                marginTop += 20
-                pdf.text(`${item.productName}`, marginLeft, marginTop)
-                marginTop += 20
-                pdf.text(`${item.productCode}`, marginLeft, marginTop)
-                pdf.text(`${this.$formatNumberToLocale(item.quantity)}`, marginLeft + marginLeftColumnSL, marginTop, { align: 'center' })
-                pdf.text(`${this.$formatNumberToLocale(item.price)}`, marginLeft + 250, marginTop, { align: 'center' })
-                pdf.text(`${this.$formatNumberToLocale(item.totalPrice)}`, marginLeft + 390, marginTop, { align: 'right' })
-                if (item.totalDiscountPrice) {
+              if (product.listOrderItems !== null) {
+                product.listOrderItems.forEach(item => {
                   marginTop += 20
-                  pdf.text('Giảm giá', marginLeft, marginTop)
-                  pdf.text(`${this.$formatNumberToLocale(item.totalDiscountPrice)}`, marginLeft + marginLeftColumnSL, marginTop, { align: 'center' })
-                }
-              })
+                  pdf.text(this.removeVietnameseTones(`${item.productName}`, this.isRemoveVNTones), marginLeft, marginTop)
+                  marginTop += 20
+                  pdf.text(`${item.productCode}`, marginLeft, marginTop)
+                  pdf.text(`${this.$formatNumberToLocale(item.quantity)}`, marginLeft + 170, marginTop, { align: 'center' })
+                  pdf.text(`${this.$formatNumberToLocale(item.price)}`, marginLeft + 250, marginTop, { align: 'center' })
+                  pdf.text(`${this.$formatNumberToLocale(item.totalPrice)}`, marginLeft + 390, marginTop, { align: 'right' })
+                  if (item.totalDiscountPrice) {
+                    marginTop += 20
+                    pdf.text('Giảm giá', marginLeft, marginTop)
+                    pdf.text(`${this.$formatNumberToLocale(item.totalDiscountPrice)}`, marginLeft + 390, marginTop, { align: 'right' })
+                  }
+                })
+              }
               if (Boolean((Number(product.displayType))) === true) {
                 marginTop += 20
                 pdf.text(`${product.groupName}`, marginLeft, marginTop)
@@ -527,18 +532,18 @@ export default {
                 product.listFreeItems.forEach(freeItem => {
                   marginTop += 20
                   pdf.text('KM', marginLeft, marginTop)
-                  pdf.text(`${this.$formatNumberToLocale(freeItem.quantity)}`, marginLeft + marginLeftColumnSL, marginTop)
-                  pdf.text(`${freeItem.productName}`, marginLeft + 250, marginTop)
+                  pdf.text(`${this.$formatNumberToLocale(freeItem.quantity)}`, marginLeft + 180, marginTop, { align: 'right' })
+                  pdf.text(this.removeVietnameseTones(`${freeItem.productName}`, this.isRemoveVNTones), marginLeft + 250, marginTop)
                 })
               }
             })
             if (this.printSalesReceiptData.lstZM !== null) {
               this.printSalesReceiptData.lstZM.forEach(zm => {
                 marginTop += 20
-                pdf.text(`${zm.promotionName}`, marginLeft, marginTop)
+                pdf.text(this.removeVietnameseTones(`${zm.promotionName}`, this.isRemoveVNTones), marginLeft, marginTop)
                 marginTop += 20
                 pdf.text(`${zm.promotionCode}`, marginLeft, marginTop)
-                pdf.text(`${this.$formatNumberToLocale(zm.amount)}`, marginLeft + marginLeftColumnSL, marginTop, { align: 'center' })
+                pdf.text(`${this.$formatNumberToLocale(zm.amount)}`, marginLeft + marginLeftColumnSL, marginTop, { align: 'right' })
               })
             }
             marginTop += 30
@@ -547,60 +552,58 @@ export default {
             if (this.printSalesReceiptData.amount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.amount.toString().length
             if (this.printSalesReceiptData.amountNotVAT.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.amountNotVAT.toString().length
             if (this.printSalesReceiptData.promotionAmountNotVat.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.promotionAmountNotVat.toString().length
-            // if (this.printSalesReceiptData.promotionAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.promotionAmount.toString().length
-            // if (this.printSalesReceiptData.accumulatedAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.accumulatedAmount.toString().length
-            // if (this.printSalesReceiptData.voucherAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.voucherAmount.toString().length
+            if (this.printSalesReceiptData.promotionAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.promotionAmount.toString().length
+            if (this.printSalesReceiptData.accumulatedAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.accumulatedAmount.toString().length
+            if (this.printSalesReceiptData.voucherAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.voucherAmount.toString().length
             if (this.printSalesReceiptData.totalNotVat.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.totalNotVat.toString().length
             if (this.printSalesReceiptData.total.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.total.toString().length
             if (this.printSalesReceiptData.paymentAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.paymentAmount.toString().length
             if (this.printSalesReceiptData.extraAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.extraAmount.toString().length
             const marginLabelCalculate = pageWidth - ((maxLengthCalculate * fontSize) / 2)
-            pdf.text('Tổng cộng (bao gồm VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.removeVietnameseTones('Tổng cộng (bao gồm VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
             pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.amount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
             marginTop += spaceRowInCluster
-            pdf.text('Tổng tiền (chưa VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.removeVietnameseTones('Tổng tiền (chưa VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
             pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.amountNotVAT) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
             marginTop += spaceRowInCluster
-            pdf.text('Giảm giá (chưa VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.removeVietnameseTones('Giảm giá (chưa VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
             pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.promotionAmountNotVat) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
             marginTop += spaceRowInCluster
-            pdf.text('Giảm giá (bao gồm VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.removeVietnameseTones('Giảm giá (bao gồm VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
             pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.promotionAmount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
             marginTop += spaceRowInCluster
-            pdf.text('Tiền tích lũy: ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.removeVietnameseTones('Tiền tích lũy', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
             pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.accumulatedAmount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
             marginTop += spaceRowInCluster
             pdf.text('Voucher: ', marginLabelCalculate, marginTop, { align: 'right' })
             pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.voucherAmount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
             marginTop += spaceRowInCluster
-            pdf.text('Thanh toán (chưa VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.removeVietnameseTones('Thanh toán (chưa VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
             pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.totalNotVat) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
             marginTop += spaceRowInCluster
-            pdf.text('Thanh toán (bao gồm VAT): ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.removeVietnameseTones('Thanh toán (bao gồm VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
             pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.total) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
             marginTop += spaceRowInCluster
-            pdf.text('KH đưa: ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.removeVietnameseTones('KH đưa:', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
             pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.paymentAmount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
             marginTop += spaceRowInCluster
-            pdf.text('Trả lại: ', marginLabelCalculate, marginTop, { align: 'right' })
+            pdf.text(`${this.removeVietnameseTones('Trả lại:', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
             pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.extraAmount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
             marginTop += spaceRowTwoCluster
-            pdf.text('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính ', marginLeft, marginTop)
-            marginTop += spaceRowInCluster
-            pdf.text('cùng ngày mua hàng.', marginLeft, marginTop)
-            marginTop += spaceRowTwoCluster
+            const splitRequest = pdf.splitTextToSize(this.removeVietnameseTones('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.', this.isRemoveVNTones), pageWidth - marginLeft - 10)
+            pdf.text(splitRequest, marginLeft, marginTop)
+            marginTop += spaceRowInCluster + spaceRowTwoCluster
             pdf.setFontType('bold')
             pdf.text('Vinamilk online: www.giacmosuaviet.com.vn', pageWidth / 2, marginTop, { align: 'center' })
             marginTop += spaceRowInCluster
             pdf.setFontType('normal')
-            pdf.text('Cảm ơn Quý khách. Hẹn gặp lại', pageWidth / 2, marginTop, { align: 'center' })
-
+            pdf.text(this.removeVietnameseTones('Cảm ơn Quý khách. Hẹn gặp lại', this.isRemoveVNTones), pageWidth / 2, marginTop, { align: 'center' })
             // setup printer
             const cpj = new JSPM.ClientPrintJob()
             cpj.clientPrinter = new JSPM.InstalledPrinter(this.printerName) // get printer
             const printContent = new JSPM.PrintFilePDF(pdf.output('datauristring'), JSPM.FileSourceType.URL, 'hoa_don_ban_hang.pdf', 1)
-            printContent.printAsGrayscale = true // Options print black/white(=true) and color(=false)
-            printContent.pageSizing = JSPM.Sizing.Fit
+            printContent.printAsGrayscale = false // Options print black/white(=true) and color(=false)
+            // printContent.pageSizing = JSPM.Sizing.Fit
             cpj.files.push(printContent)
             // cpj.sendToClient()
             pdf.save('test.pdf')
@@ -614,6 +617,40 @@ export default {
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+    removeVietnameseTones(str, isRemove) {
+      let stringRemove = str
+      if (!isRemove) {
+        return stringRemove
+      }
+
+      stringRemove = stringRemove.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a')
+      stringRemove = stringRemove.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e')
+      stringRemove = stringRemove.replace(/ì|í|ị|ỉ|ĩ/g, 'i')
+      stringRemove = stringRemove.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o')
+      stringRemove = stringRemove.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u')
+      stringRemove = stringRemove.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y')
+      stringRemove = stringRemove.replace(/đ/g, 'd')
+      stringRemove = stringRemove.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, 'A')
+      stringRemove = stringRemove.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, 'E')
+      stringRemove = stringRemove.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, 'I')
+      stringRemove = stringRemove.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, 'O')
+      stringRemove = stringRemove.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, 'U')
+      stringRemove = stringRemove.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, 'Y')
+      stringRemove = stringRemove.replace(/Đ/g, 'D')
+      // Some system encode vietnamese combining accent as individual utf-8 characters
+      // Một vài bộ encode coi các dấu mũ, dấu chữ như một kí tự riêng biệt nên thêm hai dòng này
+      stringRemove = stringRemove.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, '') // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+      stringRemove = stringRemove.replace(/\u02C6|\u0306|\u031B/g, '') // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+      // Remove extra spaces
+      // Bỏ các khoảng trắng liền nhau
+      stringRemove = stringRemove.replace(/ + /g, ' ')
+      stringRemove = stringRemove.trim()
+      // Remove punctuations
+      // Bỏ dấu câu, kí tự đặc biệt
+      // eslint-disable-next-line no-useless-escape
+      stringRemove = stringRemove.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, '')
+      return stringRemove
+    },
   },
 }
 </script>
