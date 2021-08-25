@@ -433,7 +433,7 @@ export default {
             const spaceRowInCluster = 18
             // const pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight()
             const pageWidth = pdf.internal.pageSize.width || pdf.internal.pageSize.getWidth()
-            const fontSize = 20
+            const fontSize = 16
             pdf.setFontSize(fontSize)
             pdf.addFileToVFS('Arimo-Bold.ttf', myFontBold)
             pdf.addFileToVFS('Arimo-Regular.ttf', myFontNormal)
