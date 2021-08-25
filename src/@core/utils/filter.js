@@ -337,7 +337,7 @@ export const jsPdfPrint = (data, printerName, optionsPrinter) => {
   printContent.printRotation = JSPM.PrintRotation[optionsPrinter.rotate ? optionsPrinter.rotate : 'None']
   // auto fit data print
   printContent.pageSizing = JSPM.Sizing[optionsPrinter.pageSizing ? optionsPrinter.pageSizing : 'None']
-  printContent.printAsGrayscale = true // Options print black/white(=true) and color(=false)
+  // printContent.printAsGrayscale = true // Options print black/white(=true) and color(=false)
   cpj.files.push(printContent)
   cpj.sendToClient()
 }

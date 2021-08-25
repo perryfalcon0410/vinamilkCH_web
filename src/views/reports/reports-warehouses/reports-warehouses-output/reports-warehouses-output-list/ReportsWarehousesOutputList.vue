@@ -253,6 +253,8 @@ import {
 } from 'vuex'
 import {
   preventDefaultWindowPrint,
+  hostName,
+  checkIpClient,
 } from '@core/utils/filter'
 import PrintFormReportOutputStore from '@core/components/print-form/PrintFormReportOutputStore.vue'
 import ReportsWarehousesOutputListSearch from './components/ReportsWarehousesOutputListSearch.vue'
@@ -266,6 +268,10 @@ import {
   EXPORT_OUTPUT_GOODS_ACTION,
   PRINT_OUTPUT_GOODS_ACTION,
 } from '../store-module/type'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '../../../../auth/printer-configuration-modal/store-module/type'
 
 export default {
   components: {
@@ -473,6 +479,8 @@ export default {
       outputGoodslist: [],
       totalValues: {},
       warehousesExportpagination: {},
+      ipAddressCurrent: '',
+      ipAddress: '',
     }
   },
   computed: {
@@ -542,6 +550,13 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleWindowPrintHotKey)
@@ -552,6 +567,7 @@ export default {
       EXPORT_OUTPUT_GOODS_ACTION,
       PRINT_OUTPUT_GOODS_ACTION,
     ]),
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
     handleWindowPrintHotKey(event) {
       const resolve = preventDefaultWindowPrint(event)
       if (resolve) {
@@ -598,14 +614,26 @@ export default {
       this.EXPORT_OUTPUT_GOODS_ACTION({ ...this.decentralization, ...this.searchOptions })
     },
     onClickPrintExportButton() {
-      this.$root.$emit('bv::hide::popover')
-      this.$root.$emit('bv::disable::popover')
-      this.PRINT_OUTPUT_GOODS_ACTION({
-        ...this.decentralization,
-        ...this.searchOptions,
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
+      hostName().then(res => {
+        if (res) {
+          this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddressCurrent = null
+        }
+        if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+          this.GET_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientId: this.ipAddressCurrent,
+            },
+            onSuccess: () => {
+              this.PRINT_OUTPUT_GOODS_ACTION({
+                ...this.decentralization,
+                ...this.searchOptions,
+                onSuccess: () => {},
+              })
+            },
+          })
+        }
       })
     },
   },
