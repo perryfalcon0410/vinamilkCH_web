@@ -110,7 +110,10 @@
                     >
                       <div v-if="props.column.field === 'quantity'">
                         <b-input-group>
-                          <template #append>
+                          <template
+                            v-if="value.promotionType === Number(promotionTypeOption[0].id)"
+                            #append
+                          >
                             <b-input-group-text>{{ $formatNumberToLocale(props.row.quantityMax) }}</b-input-group-text>
                           </template>
                           <b-form-input
