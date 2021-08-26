@@ -450,13 +450,13 @@ export default {
             pdf.text(`(${this.removeVietnameseTones('CÓ GIÁ TRỊ NHƯ HÓA ĐƠN', this.isRemoveVNTones)})`, pageWidth / 2, marginTop, { align: 'center' })
             marginTop += spaceRowTwoCluster
             pdf.setFontType('normal')
+            pdf.text(`${this.removeVietnameseTones('Số HĐ', this.isRemoveVNTones)}:`, marginLeft, marginTop)
             if (this.printSalesReceiptData.orderNumber) {
-              pdf.text(`${this.removeVietnameseTones('Số HĐ', this.isRemoveVNTones)}:`, marginLeft, marginTop)
               pdf.setFontType('bold')
               pdf.text(`${this.printSalesReceiptData.orderNumber}`, marginLeft + 25, marginTop)
               pdf.setFontType('normal')
-              marginTop += spaceRowInCluster
             }
+            marginTop += spaceRowInCluster
             pdf.text(`KH: ${this.removeVietnameseTones(`${this.printSalesReceiptData.customerName}`, this.isRemoveVNTones)} - ${this.printSalesReceiptData.customerPhone}`, marginLeft, marginTop)
             marginTop += spaceRowInCluster
             const splitTitle = pdf.splitTextToSize(`DC: ${this.removeVietnameseTones(`${this.printSalesReceiptData.customerAddress}`, this.isRemoveVNTones)}`, pageWidth - marginLeft - 10)
