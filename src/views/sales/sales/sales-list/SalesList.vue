@@ -266,6 +266,27 @@
         </b-modal>
         <!-- END - Notify Modal Close -->
 
+        <!-- START - Notify Modal Leave Page -->
+        <b-modal
+          ref="salesNotifyLeaveModal"
+          title="Thông báo"
+        >
+          Đơn hàng vẫn chưa được thanh toán, bạn có thực sự muốn chuyển sang chức năng khác không ?
+          <template #modal-footer>
+            <b-button
+              variant="someThing"
+              class="btn-brand-1"
+              @click="onClickAgreeLeaveButton()"
+            >
+              Đồng ý
+            </b-button>
+            <b-button @click="closeNotifyLeaveModal()">
+              Đóng
+            </b-button>
+          </template>
+        </b-modal>
+        <!-- END - Notify Modal Leave Page -->
+
       </b-col>
       <!-- END - Section Table product and list suggestion-->
 
@@ -356,6 +377,7 @@ export default {
       isSelectedProduct: false, // check selected product
       productIdSelected: null,
       minSearch: commonData.minSearchLength,
+      goNext: () => {},
 
       columns: [
         {
@@ -681,6 +703,15 @@ export default {
 
   mounted() {
     this.GET_EDIT_ONLINE_PERMISSION_ACTION()
+  },
+  // before page leave, this will check
+  beforeRouteLeave(to, from, next) {
+    if (this.checkProductNotPay()) {
+      this.$refs.salesNotifyLeaveModal.show()
+      this.goNext = next
+    } else {
+      next()
+    }
   },
   created() {
     window.addEventListener('keydown', e => {
@@ -1162,6 +1193,18 @@ export default {
     closeNotifyModal() {
       this.$refs.salesNotifyModal.hide()
       this.isDisabledOrder = true
+    },
+    onClickAgreeLeaveButton() {
+      this.goNext()
+    },
+    closeNotifyLeaveModal() {
+      this.$refs.salesNotifyLeaveModal.hide()
+    },
+    checkProductNotPay() {
+      if (this.orderProducts.length !== 0) {
+        return true
+      }
+      return false
     },
 
     // Create callback function to receive barcode when the scanner is already done
