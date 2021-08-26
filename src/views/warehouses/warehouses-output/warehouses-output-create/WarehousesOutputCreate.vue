@@ -251,7 +251,7 @@
                     :options="options.number"
                     maxlength="19"
                     :readonly="exportAll && outputTypeSelected !== poOutputType"
-                    @keypress="$onlyNumberInput"
+                    @keypress.native="$onlyNumberInput"
                     @keyup.native="changeQuantity()"
                   />
                 </div>
@@ -325,7 +325,7 @@
                       :raw="true"
                       :options="options.number"
                       maxlength="19"
-                      @keypress="$onlyNumberInput"
+                      @keypress.native="$onlyNumberInput"
                       @keyup.native="changeQuantity()"
                     />
                   </div>

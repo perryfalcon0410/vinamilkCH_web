@@ -201,7 +201,7 @@
                     :raw="true"
                     :options="options.number"
                     :disabled="isDisableSave"
-                    @keypress="$onlyNumberInput"
+                    @keypress.native="$onlyNumberInput"
                     @keyup.native="changeQuantity"
                   />
                 </div>
@@ -276,7 +276,7 @@
                     :options="options.number"
                     :disabled="isDisableSave"
                     maxlength="19"
-                    @keypress="$onlyNumberInput"
+                    @keypress.native="$onlyNumberInput"
                     @keyup.native="changeQuantity()"
                     @keydown.enter.native="focusInputSearch"
                   />

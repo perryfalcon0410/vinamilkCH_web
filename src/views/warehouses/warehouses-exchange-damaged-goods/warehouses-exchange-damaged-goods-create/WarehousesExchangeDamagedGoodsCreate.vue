@@ -222,21 +222,19 @@
                 slot="table-row"
                 slot-scope="props"
               >
-                <span v-if="props.column.field == 'productAmount'">
-                  <div v-if="props.row.productAmount != ''">
-                    <cleave
-                      :id="damagedProduct[props.row.originalIndex].productCode"
-                      v-model.trim="damagedProduct[props.index].productQuantity"
-                      class="form-control text-right"
-                      :raw="true"
-                      :options="options.number"
-                      maxlength="7"
-                      @keypress="$onlyNumberInput"
-                      @keyup.native="onChangeQuantity(damagedProduct[props.index])"
-                      @keydown.enter.native="focusInputSearch"
-                    />
-                  </div>
-                </span>
+                <div v-if="props.column.field == 'productAmount'">
+                  <cleave
+                    :id="damagedProduct[props.row.originalIndex].productCode"
+                    v-model.trim="damagedProduct[props.index].productQuantity"
+                    class="form-control text-right"
+                    :raw="true"
+                    :options="options.number"
+                    maxlength="7"
+                    @keypress.native="$onlyNumberInput"
+                    @keyup.native="onChangeQuantity(damagedProduct[props.index])"
+                    @keydown.enter.native="focusInputSearch"
+                  />
+                </div>
 
                 <div
                   v-if="props.column.field === 'feature'"

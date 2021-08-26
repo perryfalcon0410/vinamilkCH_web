@@ -219,7 +219,7 @@
                   :raw="true"
                   :options="options.number"
                   maxlength="7"
-                  @keypress="$onlyNumberInput"
+                  @keypress.native="$onlyNumberInput"
                   @keyup.native="onChangeQuantity(damagedProduct[props.index])"
                   @keydown.enter.native="focusInputSearch"
                 />
