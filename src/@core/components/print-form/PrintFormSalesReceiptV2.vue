@@ -478,7 +478,7 @@ export default {
             const columnWidth1 = pageWidth * 0.3
             const columnWidth2 = pageWidth * 0.15
             const columnWidth3 = pageWidth * 0.25
-            const columnWidth4 = pageWidth * 0.3
+            const columnWidth4 = pageWidth * 0.26
             pdf.autoTable({
               // html: '#table-header',
               startY: marginTop,
@@ -502,7 +502,6 @@ export default {
             marginTop += spaceRowTwoCluster + 5
             pdf.text('-----------------------------------------------------------------------------------', 0, marginTop)
             pdf.setTextColor(0, 0, 0)
-            const marginLeftColumnSL = 397
             pdf.setFontSize(fontSize - 1)
             this.printSalesReceiptData.products.forEach(product => {
               if (product.listOrderItems !== null) {
@@ -519,7 +518,7 @@ export default {
                     // giảm giá
                     marginTop += spaceRowInCluster
                     pdf.text(this.removeVietnameseTones('Giảm giá', this.isRemoveVNTones), marginLeft, marginTop)
-                    pdf.text(`${this.$formatNumberToLocale(item.totalDiscountPrice)}`, marginLeft + marginLeftColumnSL, marginTop, { align: 'right' })
+                    pdf.text(`${this.$formatNumberToLocale(item.totalDiscountPrice)}`, (columnWidth1 + columnWidth2 + columnWidth3 + columnWidth4) - 5, marginTop, { align: 'right' })
                   }
                 })
               }
@@ -551,7 +550,7 @@ export default {
             pdf.setFontSize(fontSize)
             pdf.text('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -', 0, marginTop)
             marginTop += spaceRowInCluster
-            const marginValueCalculate = pageWidth - 5
+            const marginValueCalculate = pageWidth - 10
             let maxLengthCalculate = 0
             if (this.printSalesReceiptData.amount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.amount.toString().length
             if (this.printSalesReceiptData.amountNotVAT.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.amountNotVAT.toString().length
@@ -563,7 +562,7 @@ export default {
             if (this.printSalesReceiptData.total.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.total.toString().length
             if (this.printSalesReceiptData.paymentAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.paymentAmount.toString().length
             if (this.printSalesReceiptData.extraAmount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.extraAmount.toString().length
-            const marginLabelCalculate = pageWidth - ((maxLengthCalculate * fontSize) / 2) - 10
+            const marginLabelCalculate = pageWidth - ((maxLengthCalculate * fontSize) / 2) - 15
             pdf.text(`${this.removeVietnameseTones('Tổng cộng (bao gồm VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
             pdf.text(`${this.$formatNumberToLocale(this.printSalesReceiptData.amount) || 0}`, marginValueCalculate, marginTop, { align: 'right' })
             marginTop += spaceRowInCluster
@@ -596,7 +595,7 @@ export default {
             marginTop += spaceRowInCluster
             pdf.text('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ', 0, marginTop)
             marginTop += spaceRowInCluster
-            const splitRequest = pdf.splitTextToSize(this.removeVietnameseTones('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.', this.isRemoveVNTones), pageWidth - 5)
+            const splitRequest = pdf.splitTextToSize(this.removeVietnameseTones('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.', this.isRemoveVNTones), pageWidth - 10)
             pdf.text(splitRequest, marginLeft, marginTop)
             marginTop += spaceRowInCluster * splitRequest.length
             pdf.setFontType('bold')
@@ -611,10 +610,9 @@ export default {
             cpj.clientPrinter = new JSPM.InstalledPrinter(this.printerName) // get printer
             const printContent = new JSPM.PrintFilePDF(pdf.output('datauristring'), JSPM.FileSourceType.URL, 'hoa_don_ban_hang.pdf', 1)
             printContent.printAsGrayscale = false // Options print black/white(=true) and color(=false)
-            // printContent.pageSizing = JSPM.Sizing.Fit
             cpj.files.push(printContent)
-            // cpj.sendToClient()
-            pdf.save('test.pdf')
+            cpj.sendToClient()
+            // pdf.save('test.pdf')
             break
           }
         } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
