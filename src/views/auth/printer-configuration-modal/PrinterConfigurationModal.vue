@@ -36,7 +36,7 @@
         class="my-2"
       >
         <b-col
-          cols="4"
+          cols="5"
           class="text-right"
         >
           Máy in mặc định:
@@ -56,7 +56,7 @@
         align-h="center"
       >
         <b-col
-          cols="4"
+          cols="5"
           class="text-right"
         >
           Máy in hóa đơn:
@@ -77,7 +77,7 @@
         class="my-2"
       >
         <b-col
-          cols="4"
+          cols="5"
           class="text-right"
         >
           Máy in báo cáo:
@@ -92,6 +92,25 @@
           />
         </b-col>
       </b-row>
+      <b-row
+        align-v="center"
+        align-h="center"
+        class="my-2"
+      >
+        <b-col
+          cols="5"
+          class="text-right"
+        >
+          In hoá đơn không dấu:
+        </b-col>
+        <b-col cols="6">
+          <b-form-checkbox
+            v-model="removeAccent"
+            class="mt-1"
+          />
+        </b-col>
+      </b-row>
+
     </b-container>
     <template #modal-footer="{}">
       <b-button
@@ -145,6 +164,7 @@ export default {
       printerBillSelected: null,
       nameOS: '',
       linkDownloadSoftWare: '',
+      removeAccent: false,
     }
   },
   computed: {
@@ -237,6 +257,7 @@ export default {
               billPrinterName: this.printerBillSelected,
               defaultPrinterName: this.printerDefaultSelected,
               reportPrinterName: this.printerReportSelected,
+              removeAccent: this.removeAccent,
             },
             onSuccess: () => {
               this.visible = false
@@ -249,6 +270,7 @@ export default {
               billPrinterName: this.printerBillSelected,
               defaultPrinterName: this.printerDefaultSelected,
               reportPrinterName: this.printerReportSelected,
+              removeAccent: this.removeAccent,
             },
             onSuccess: () => {
               this.visible = false
