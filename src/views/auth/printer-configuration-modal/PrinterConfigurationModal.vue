@@ -117,6 +117,7 @@
         size="sm"
         class="btn-brand-1"
         variant="something"
+        :disabled="isTrue === false"
         @click="onSaveClick"
       >
         Lưu
@@ -181,9 +182,9 @@ export default {
   watch: {
     visible() {
       if (this.visible) {
-        if (!this.isTrue) {
-          this.jspmWSStatus()
-        }
+        // if (!this.isTrue) {
+        this.jspmWSStatus()
+        // }
       }
     },
     getPrinterData() {

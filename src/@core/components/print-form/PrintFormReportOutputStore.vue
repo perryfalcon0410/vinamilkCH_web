@@ -838,10 +838,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import {
-  jspmCheckStatus,
-  jsPdfPrint,
-} from '@core/utils/filter'
+// import {
+//   jspmCheckStatus,
+//   jsPdfPrint,
+// } from '@core/utils/filter'
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
 import autoTable from 'jspdf-autotable'
@@ -977,16 +977,25 @@ export default {
         body: [
           [
             {
-              content: 'Tổng SL:', halign: 'right', styles: { halign: 'right', fillColor: [211, 211, 211] },
+              content: 'Tổng SL :',
+              styles: { halign: 'right', fillColor: [211, 211, 211], cellWidth: 132.5 },
             },
             {
               content: `${this.$formatNumberToLocale(this.printInfo.totalQuantity)}`,
               styles: {
-                halign: 'right', font: 'Ario-Bold', fillColor: [211, 211, 211],
+                halign: 'right', font: 'Ario-Bold', fillColor: [211, 211, 211], cellWidth: 17.5,
               },
             },
-            { content: 'T.Tiền:', styles: { halign: 'right', fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.printInfo.totalPriceVat)}`, styles: { font: 'Ario-Bold', halign: 'right', fillColor: [211, 211, 211] } },
+            {
+              content: 'T.Tiền :',
+              styles: { halign: 'right', fillColor: [211, 211, 211], cellWidth: 20 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.printInfo.totalPriceVat)}`,
+              styles: {
+                font: 'Ario-Bold', halign: 'right', fillColor: [211, 211, 211], cellWidth: 30,
+              },
+            },
           ],
         ],
       })
@@ -1004,14 +1013,14 @@ export default {
       this.createTableExpBorrow(pdf)
       // END - table xuất vay mượn
 
-      // pdf.save()
-      const options = {
-        fileName: 'Bao_cao_xuat_hang',
-        pageSizing: 'Fit',
-      }
-      if (jspmCheckStatus()) {
-        jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
-      }
+      pdf.save()
+      // const options = {
+      //   fileName: 'Bao_cao_xuat_hang',
+      //   pageSizing: 'Fit',
+      // }
+      // if (jspmCheckStatus()) {
+      //   jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+      // }
     }
   },
   methods: {
@@ -1033,15 +1042,22 @@ export default {
           },
           body: [
             [
-              { content: 'Loại: Xuất điều chỉnh', styles: { font: 'Ario-Bold' } },
-              { content: 'Tổng SL :' },
-              { content: `${this.$formatNumberToLocale(this.expAdjust.totalQuantity || 0)}`, styles: { font: 'Ario-Bold', halign: 'right' } },
-              { content: 'T.Tiền :' },
-              { content: `${this.$formatNumberToLocale(this.expAdjust.totalPriceVat || 0)}`, styles: { font: 'Ario-Bold', halign: 'right' } },
+              { content: 'Loại: Xuất điều chỉnh', styles: { font: 'Ario-Bold', cellWidth: 115 } },
+              { content: 'Tổng SL :', styles: { cellWidth: 20 } },
+              { content: `${this.$formatNumberToLocale(this.expAdjust.totalQuantity || 0)}`, styles: { font: 'Ario-Bold', halign: 'right', cellWidth: 15 } },
+              { content: 'T.Tiền :', styles: { halign: 'right', cellWidth: 20 } },
+              { content: `${this.$formatNumberToLocale(this.expAdjust.totalPriceVat || 0)}`, styles: { font: 'Ario-Bold', halign: 'right', cellWidth: 30 } },
             ],
           ],
           headStyles: {
             Loai: { font: 'Ario-Bold', fontSize: 14 },
+          },
+          didDrawCell: data => {
+            if (data.section === 'body' && data.row.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+            }
           },
         })
 
@@ -1059,48 +1075,104 @@ export default {
               fontSize: 7.5,
               textColor: 'black',
             },
-            tableLineWidth: 0.1,
+            tableLineWidth: 0,
             tableLineColor: 'black',
             body: [
               [
-                { content: `Số HĐ: ${this.expAdjust.orderImports[i].redInvoiceNo}`, halign: 'right' },
+                { content: `Số HĐ: ${this.expAdjust.orderImports[i].redInvoiceNo}` },
                 { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.expAdjust.orderImports[i].orderDate)}` },
                 { content: `- Số PO: ${this.expAdjust.orderImports[i].poNumber}` },
                 { content: `- Số nội bộ: ${this.expAdjust.orderImports[i].internalNumber}` },
                 { content: `- Mã xuất hàng: ${this.expAdjust.orderImports[i].transCode}` },
               ],
+            ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 4) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
+          })
+
+          pdf.autoTable({
+            startY: pdf.previousAutoTable.finalY,
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Regular',
+              fontSize: 9,
+              textColor: 'black',
+            },
+            body: [
               [
                 {
-                  content: 'Tổng SL:',
+                  content: 'Tổng SL :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 132.5 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.expAdjust.orderImports[i].totalQuantity)}`,
                   styles: {
-                    font: 'Ario-Regular', fontSize: 9, halign: 'right',
+                    halign: 'right', font: 'Ario-Bold', fillColor: 'white', cellWidth: 17.5,
                   },
                 },
-                { content: `${this.$formatNumberToLocale(this.expAdjust.orderImports[i].totalQuantity)}`, styles: { fontSize: 9, halign: 'right' } },
-                { content: 'T.Tiền: ', styles: { font: 'Ario-Regular', fontSize: 9, halign: 'right' } },
-                { content: `${this.$formatNumberToLocale(this.expAdjust.orderImports[i].totalPriceVat)}`, styles: { fontSize: 9, halign: 'right' } },
+                {
+                  content: 'T.Tiền :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 20 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.expAdjust.orderImports[i].totalPriceVat)}`,
+                  styles: {
+                    font: 'Ario-Bold', halign: 'right', fillColor: 'white', cellWidth: 30,
+                  },
+                },
               ],
             ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 3) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
           })
 
           this.expAdjust.orderImports[i].cats.forEach(data => {
             const row = [
-              { content: `Ngành hàng:         ${data.catName}`, colSpan: 3, styles: { lineWidth: 0 } },
+              { content: 'Ngành hàng:', colSpan: 2, styles: { lineWidth: 0 } },
+              { content: `${data.catName}`, styles: { font: 'Ario-Bold', lineWidth: 0 } },
               { content: 'Tổng SL :', styles: { lineWidth: 0 } },
-              { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
               { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
-              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
             ]
             this.bodyData.push(row)
             data.products.forEach(pro => {
               this.bodyData.push([
-                { content: `${this.count}` },
-                { content: `${pro.productCode}` },
-                { content: `${pro.productName}` },
-                { content: `${pro.uom1}` },
-                { content: `${this.$formatNumberToLocale(pro.quantity)}` },
-                { content: `${this.$formatNumberToLocale(pro.price)}` },
-                { content: `${this.$formatNumberToLocale(pro.totalPriceVat)}` },
+                { content: `${this.count}`, styles: { cellWidth: 10 } },
+                { content: `${pro.productCode}`, styles: { cellWidth: 25 } },
+                { content: `${pro.productName}`, styles: { cellWidth: 80 } },
+                { content: `${pro.uom1}`, styles: { cellWidth: 20, halign: 'center' } },
+                { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.price)}`, styles: { cellWidth: 20, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.totalPriceVat)}`, styles: { cellWidth: 30, halign: 'right' } },
               ])
               this.count += 1
             })
@@ -1129,7 +1201,7 @@ export default {
             didDrawCell: data => {
               if (data.section === 'body' && data.row.index === 0) {
                 pdf.setDrawColor('black')
-                pdf.setLineWidth(0.5)
+                pdf.setLineWidth(0.1)
                 pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
               }
               if (data.section === 'body' && data.column.index === 0) {
@@ -1141,6 +1213,11 @@ export default {
                 pdf.setDrawColor('black')
                 pdf.setLineWidth(0.1)
                 pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
               }
             },
             columns: [
@@ -1175,6 +1252,7 @@ export default {
             right: 5,
             left: 5,
           },
+          rowPageBreak: 'avoid',
           styles: {
             font: 'Ario-Regular',
             fontSize: 9,
@@ -1189,6 +1267,13 @@ export default {
               { content: `${this.$formatNumberToLocale(this.expPO.totalPriceVat || 0)}`, styles: { font: 'Ario-Bold', halign: 'right' } },
             ],
           ],
+          didDrawCell: data => {
+            if (data.section === 'body' && data.row.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+            }
+          },
         })
 
         for (let i = 0; i < this.expPO.orderImports.length; i += 1) {
@@ -1200,12 +1285,13 @@ export default {
               right: 5,
               left: 5,
             },
+            rowPageBreak: 'avoid',
             styles: {
               font: 'Ario-Bold',
               fontSize: 7.5,
               textColor: 'black',
             },
-            tableLineWidth: 0.1,
+            tableLineWidth: 0,
             tableLineColor: 'black',
             body: [
               [
@@ -1215,33 +1301,95 @@ export default {
                 { content: `- Số nội bộ: ${this.expPO.orderImports[i].internalNumber}` },
                 { content: `- Mã xuất hàng: ${this.expPO.orderImports[i].transCode}` },
               ],
+            ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 4) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
+          })
+
+          pdf.autoTable({
+            startY: pdf.previousAutoTable.finalY,
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            rowPageBreak: 'avoid',
+            styles: {
+              font: 'Ario-Regular',
+              fontSize: 9,
+              textColor: 'black',
+            },
+            body: [
               [
-                { content: 'Tổng SL:', halign: 'right', styles: { font: 'Ario-Regular', fontSize: 9 } },
-                { content: `${this.$formatNumberToLocale(this.expPO.orderImports[i].totalQuantity)}`, styles: { fontSize: 9 } },
-                { content: 'T.Tiền: ', styles: { font: 'Ario-Regular', fontSize: 9 } },
-                { content: `${this.$formatNumberToLocale(this.expPO.orderImports[i].totalPriceVat)}`, styles: { fontSize: 9 } },
+                {
+                  content: 'Tổng SL :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 132.5 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.expPO.orderImports[i].totalQuantity)}`,
+                  styles: {
+                    halign: 'right', font: 'Ario-Bold', fillColor: 'white', cellWidth: 17.5,
+                  },
+                },
+                {
+                  content: 'T.Tiền :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 20 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.expPO.orderImports[i].totalPriceVat)}`,
+                  styles: {
+                    font: 'Ario-Bold', halign: 'right', fillColor: 'white', cellWidth: 30,
+                  },
+                },
               ],
             ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 3) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
           })
 
           this.expPO.orderImports[i].cats.forEach(data => {
             const row = [
-              { content: `Ngành hàng:         ${data.catName}`, colSpan: 3, styles: { lineWidth: 0 } },
+              { content: 'Ngành hàng:', colSpan: 2, styles: { lineWidth: 0 } },
+              { content: `${data.catName}`, styles: { font: 'Ario-Bold', lineWidth: 0 } },
               { content: 'Tổng SL :', styles: { lineWidth: 0 } },
-              { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
               { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
-              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
             ]
             this.bodyData.push(row)
             data.products.forEach(pro => {
               this.bodyData.push([
-                { content: `${this.count}` },
-                { content: `${pro.productCode}` },
-                { content: `${pro.productName}` },
-                { content: `${pro.uom1}` },
-                { content: `${this.$formatNumberToLocale(pro.quantity)}` },
-                { content: `${this.$formatNumberToLocale(pro.price)}` },
-                { content: `${this.$formatNumberToLocale(pro.totalPriceVat)}` },
+                { content: `${this.count}`, styles: { cellWidth: 10 } },
+                { content: `${pro.productCode}`, styles: { cellWidth: 25 } },
+                { content: `${pro.productName}`, styles: { cellWidth: 80 } },
+                { content: `${pro.uom1}`, styles: { cellWidth: 20, halign: 'center' } },
+                { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.price)}`, styles: { cellWidth: 20, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.totalPriceVat)}`, styles: { cellWidth: 30, halign: 'right' } },
               ])
               this.count += 1
             })
@@ -1254,6 +1402,7 @@ export default {
               right: 5,
               left: 5,
             },
+            pageBreak: 'avoid',
             styles: {
               font: 'Ario-Regular',
               fontSize: 9,
@@ -1270,7 +1419,7 @@ export default {
             didDrawCell: data => {
               if (data.section === 'body' && data.row.index === 0) {
                 pdf.setDrawColor('black')
-                pdf.setLineWidth(0.5)
+                pdf.setLineWidth(0.1)
                 pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
               }
               if (data.section === 'body' && data.column.index === 0) {
@@ -1282,6 +1431,11 @@ export default {
                 pdf.setDrawColor('black')
                 pdf.setLineWidth(0.1)
                 pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
               }
             },
             columns: [
@@ -1323,13 +1477,20 @@ export default {
           },
           body: [
             [
-              { content: 'Loại: Xuất vay mượn', styles: { font: 'Ario-Bold' } },
-              { content: 'Tổng SL :' },
-              { content: `${this.$formatNumberToLocale(this.expBorrow.totalQuantity || 0)}`, styles: { font: 'Ario-Bold', halign: 'right' } },
-              { content: 'T.Tiền :' },
-              { content: `${this.$formatNumberToLocale(this.expBorrow.totalPriceVat || 0)}`, styles: { font: 'Ario-Bold', halign: 'right' } },
+              { content: 'Loại: Xuất vay mượn', styles: { font: 'Ario-Bold', cellWidth: 115 } },
+              { content: 'Tổng SL :', styles: { cellWidth: 20 } },
+              { content: `${this.$formatNumberToLocale(this.expBorrow.totalQuantity || 0)}`, styles: { font: 'Ario-Bold', halign: 'right', cellWidth: 15 } },
+              { content: 'T.Tiền :', styles: { halign: 'right', cellWidth: 20 } },
+              { content: `${this.$formatNumberToLocale(this.expBorrow.totalPriceVat || 0)}`, styles: { font: 'Ario-Bold', halign: 'right', cellWidth: 30 } },
             ],
           ],
+          didDrawCell: data => {
+            if (data.section === 'body' && data.row.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+            }
+          },
         })
 
         for (let i = 0; i < this.expBorrow.orderImports.length; i += 1) {
@@ -1346,7 +1507,7 @@ export default {
               fontSize: 7.5,
               textColor: 'black',
             },
-            tableLineWidth: 0.1,
+            tableLineWidth: 0,
             tableLineColor: 'black',
             body: [
               [
@@ -1356,33 +1517,93 @@ export default {
                 { content: `- Số nội bộ: ${this.expBorrow.orderImports[i].internalNumber}` },
                 { content: `- Mã xuất hàng: ${this.expBorrow.orderImports[i].transCode}` },
               ],
+            ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 4) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
+          })
+
+          pdf.autoTable({
+            startY: pdf.previousAutoTable.finalY,
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Regular',
+              fontSize: 9,
+              textColor: 'black',
+            },
+            body: [
               [
-                { content: 'Tổng SL:', halign: 'right', styles: { font: 'Ario-Regular', fontSize: 9 } },
-                { content: `${this.$formatNumberToLocale(this.expBorrow.orderImports[i].totalQuantity)}`, styles: { fontSize: 9 } },
-                { content: 'T.Tiền: ', styles: { font: 'Ario-Regular', fontSize: 9 } },
-                { content: `${this.$formatNumberToLocale(this.expBorrow.orderImports[i].totalPriceVat)}`, styles: { fontSize: 9 } },
+                {
+                  content: 'Tổng SL :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 132.5 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.expBorrow.orderImports[i].totalQuantity)}`,
+                  styles: {
+                    halign: 'right', font: 'Ario-Bold', fillColor: 'white', cellWidth: 17.5,
+                  },
+                },
+                {
+                  content: 'T.Tiền :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 20 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.expBorrow.orderImports[i].totalPriceVat)}`,
+                  styles: {
+                    font: 'Ario-Bold', halign: 'right', fillColor: 'white', cellWidth: 30,
+                  },
+                },
               ],
             ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 3) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
           })
 
           this.expBorrow.orderImports[i].cats.forEach(data => {
             const row = [
               { content: `Ngành hàng:         ${data.catName}`, colSpan: 3, styles: { lineWidth: 0 } },
               { content: 'Tổng SL :', styles: { lineWidth: 0 } },
-              { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
               { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
-              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
             ]
             this.bodyData.push(row)
             data.products.forEach(pro => {
               this.bodyData.push([
-                { content: `${this.count}` },
-                { content: `${pro.productCode}` },
-                { content: `${pro.productName}` },
-                { content: `${pro.uom1}` },
-                { content: `${this.$formatNumberToLocale(pro.quantity)}` },
-                { content: `${this.$formatNumberToLocale(pro.price)}` },
-                { content: `${this.$formatNumberToLocale(pro.totalPriceVat)}` },
+                { content: `${this.count}`, styles: { cellWidth: 10 } },
+                { content: `${pro.productCode}`, styles: { cellWidth: 25 } },
+                { content: `${pro.productName}`, styles: { cellWidth: 80 } },
+                { content: `${pro.uom1}`, styles: { cellWidth: 20, halign: 'center' } },
+                { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.price)}`, styles: { cellWidth: 20, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.totalPriceVat)}`, styles: { cellWidth: 30, halign: 'right' } },
               ])
               this.count += 1
             })
@@ -1411,7 +1632,7 @@ export default {
             didDrawCell: data => {
               if (data.section === 'body' && data.row.index === 0) {
                 pdf.setDrawColor('black')
-                pdf.setLineWidth(0.5)
+                pdf.setLineWidth(0.1)
                 pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
               }
               if (data.section === 'body' && data.column.index === 0) {
@@ -1423,6 +1644,11 @@ export default {
                 pdf.setDrawColor('black')
                 pdf.setLineWidth(0.1)
                 pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
               }
             },
             columns: [
