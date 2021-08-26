@@ -723,16 +723,19 @@ export default {
     },
 
     customerOptions(text) {
-      if (text) {
-        if (text.length >= commonData.minSearchLength) {
-          const searchData = {
-            searchKeywords: text,
-            status: this.customerInfo.status,
-            ...this.decentralization,
+      this.customers = [{ data: null }]
+      setTimeout(() => {
+        if (text) {
+          if (text.length >= commonData.minSearchLength) {
+            const searchData = {
+              searchKeywords: text,
+              status: this.customerInfo.status,
+              ...this.decentralization,
+            }
+            this.GET_CUSTOMERS_ACTION({ ...searchData, isShop: true })
           }
-          this.GET_CUSTOMERS_ACTION(searchData)
-        }
-      }
+        } else this.customers = [{ data: null }]
+      }, 1000)
     },
 
     selectCustomer(customer) {
