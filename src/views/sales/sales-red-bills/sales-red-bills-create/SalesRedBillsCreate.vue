@@ -898,15 +898,16 @@ export default {
       this.$bvModal.show('bill-receipt-modal')
     },
     loadCustomers() {
-      if (this.redBill.customerCode.length >= commonData.minSearchLength) {
-        const searchData = {
-          searchKeywords: this.redBill.customerCode?.trim(),
-        }
+      this.customers = [{ data: null }]
+      setTimeout(() => {
+        if (this.redBill.customerCode.length >= commonData.minSearchLength) {
+          const searchData = {
+            searchKeywords: this.redBill.customerCode?.trim(),
+          }
 
-        this.GET_CUSTOMERS_ACTION({ ...searchData, isShop: true })
-      } else {
-        this.customers = [{ data: null }]
-      }
+          this.GET_CUSTOMERS_ACTION({ ...searchData, isShop: true })
+        } else { this.customers = [{ data: null }] }
+      }, 1000)
     },
     selectCustomer(customer) {
       if (customer && customer.item) {
