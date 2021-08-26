@@ -483,10 +483,10 @@ export default {
               },
               body: [
                 [
-                  { content: 'SP', styles: { halign: 'left', cellWidth: 150 } },
-                  { content: 'SL', styles: { halign: 'center', cellWidth: 50 } },
-                  { content: this.removeVietnameseTones('Giá', this.isRemoveVNTones), styles: { halign: 'center', cellWidth: 100 } },
-                  { content: this.removeVietnameseTones('T.Tiền', this.isRemoveVNTones), styles: { halign: 'right', cellWidth: 105 } },
+                  { content: 'SP', styles: { halign: 'left', cellWidth: (pageWidth - 10) * 0.6 } },
+                  { content: 'SL', styles: { halign: 'center', cellWidth: (pageWidth - 10) * 0.08 } },
+                  { content: this.removeVietnameseTones('Giá', this.isRemoveVNTones), styles: { halign: 'center', cellWidth: (pageWidth - 10) * 0.15 } },
+                  { content: this.removeVietnameseTones('T.Tiền', this.isRemoveVNTones), styles: { halign: 'right', cellWidth: (pageWidth - 10) * 0.17 } },
                 ],
               ],
             })
@@ -502,9 +502,9 @@ export default {
                   pdf.text(this.removeVietnameseTones(`${item.productName}`, this.isRemoveVNTones), marginLeft, marginTop)
                   marginTop += 20
                   pdf.text(`${item.productCode}`, marginLeft, marginTop)
-                  pdf.text(`${this.$formatNumberToLocale(item.quantity)}`, marginLeft + 190, marginTop, { align: 'right' })
-                  pdf.text(`${this.$formatNumberToLocale(item.price)}`, marginLeft + 280, marginTop, { align: 'right' })
-                  pdf.text(`${this.$formatNumberToLocale(item.totalPrice)}`, marginLeft + marginLeftColumnSL, marginTop, { align: 'right' })
+                  pdf.text(`${this.$formatNumberToLocale(item.quantity)}`, ((pageWidth - 5) * 0.68), marginTop, { align: 'right' })
+                  pdf.text(`${this.$formatNumberToLocale(item.price)}`, ((pageWidth - 8) * 0.83), marginTop, { align: 'right' })
+                  pdf.text(`${this.$formatNumberToLocale(item.totalPrice)}`, (pageWidth - 8), marginTop, { align: 'right' })
                   if (item.totalDiscountPrice) {
                     marginTop += 15
                     pdf.text(this.removeVietnameseTones('Giảm giá', this.isRemoveVNTones), marginLeft, marginTop)
@@ -585,7 +585,7 @@ export default {
             marginTop += 10
             const splitRequest = pdf.splitTextToSize(this.removeVietnameseTones('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.', this.isRemoveVNTones), pageWidth - marginLeft - 5)
             pdf.text(splitRequest, marginLeft, marginTop)
-            marginTop += spaceRowInCluster * splitRequest.length
+            marginTop += 10 * splitRequest.length
             pdf.setFontType('bold')
             pdf.text('Vinamilk online: www.giacmosuaviet.com.vn', pageWidth / 2, marginTop, { align: 'center' })
             marginTop += spaceRowInCluster
