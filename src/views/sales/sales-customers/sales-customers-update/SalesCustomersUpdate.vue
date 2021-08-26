@@ -13,7 +13,7 @@
         <b-col
           xl="3"
           md="6"
-          class="shadow bg-white rounded pb-1"
+          class="shadow bg-white rounded pb-1 custom-disabled"
         >
           <label class="w-100 text-center mb-2 h5"><strong>Thông tin cá nhân</strong></label>
 
@@ -27,7 +27,7 @@
 
           <!-- START - Customer Name -->
           <b-form-row>
-            <b-col>
+            <b-col class="custom-disabled">
               <validation-provider
                 v-slot="{ errors, passed, touched }"
                 rules="required"
@@ -48,7 +48,7 @@
               </validation-provider>
             </b-col>
 
-            <b-col>
+            <b-col class="custom-disabled">
               <validation-provider
                 v-slot="{ errors, passed, touched }"
                 rules="required"
@@ -75,6 +75,7 @@
             v-slot="{ errors, passed, touched }"
             rules="code"
             name="mã vạch"
+            class="custom-disabled"
           >
             <div class="mt-1">
               Mã vạch
@@ -104,7 +105,7 @@
                   Ngày sinh <sup class="text-danger">*</sup>
                 </div>
                 <b-form-group
-                  class="m-0"
+                  class="m-0 custom-disabled"
                   :state="touched ? passed : null"
                 >
                   <b-row
@@ -132,7 +133,7 @@
             </b-col>
 
             <!-- Gender -->
-            <b-col>
+            <b-col class="custom-disabled">
               <div
                 class="mt-1"
               >
@@ -215,6 +216,7 @@
             v-model="note"
             :disabled="canDisableInputField(customer.noted)"
             maxlength="250"
+            class="custom-disabled"
           />
           <!-- END - Customer Note -->
 
@@ -231,7 +233,7 @@
         <b-col
           xl
           md="6"
-          class="bg-light pb-1"
+          class="bg-light pb-1 custom-disabled"
           style="box-shadow: 10px 10px 15px 1px #EEEEEE"
         >
           <label class="h5 text-light"><strong>Label</strong></label>
@@ -330,7 +332,7 @@
         <b-col
           xl="3"
           md
-          class="bg-white shadow rounded pb-1 mt-1 ml-xl-1 mt-xl-0"
+          class="bg-white shadow rounded pb-1 mt-1 ml-xl-1 mt-xl-0 custom-disabled"
         >
           <label class="w-100 text-center h5"><strong>Thông tin liên hệ</strong></label>
           <!-- START - Customer Phone Number -->
@@ -563,7 +565,7 @@
       >
         <b-button
           v-if="statusSaveButton().show"
-          :disabled="statusSaveButton().disabled || invalid"
+          :disabled="statusSaveButton().disabled || invalid || (isEdit === 0)"
           variant="someThing"
           class="btn-brand-1 aligns-items-button-center"
           @click="onClickSaveButton()"
@@ -1075,3 +1077,8 @@ export default {
 
 }
 </script>
+<style scoped>
+.custom-disabled .form-control:disabled, .form-control[readonly] {
+  background-color: #f9f9f9 !important;
+}
+</style>
