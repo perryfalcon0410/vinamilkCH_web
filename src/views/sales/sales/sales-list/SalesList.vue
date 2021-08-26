@@ -725,8 +725,11 @@ export default {
         this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
 
-        if (this.orderProducts[index].productInventory <= this.orderProducts[index].quantity) {
-          this.orderProducts[index].quantity = this.orderProducts[index].productInventory
+        if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
+          // this.orderProducts[index].quantity = this.orderProducts[index].productInventory
+          this.isDisabled = true
+        } else {
+          this.isDisabled = false
         }
       }
     },
@@ -792,9 +795,11 @@ export default {
             this.orderProducts.push(index.item)
           } else {
             this.orderProducts[productIndex].productInventory = index.item.productInventory
-            if (this.orderProducts[productIndex].productInventory <= this.orderProducts[productIndex].quantity) {
-              this.orderProducts[productIndex].quantity = this.orderProducts[productIndex].productInventory
+            if (this.orderProducts[productIndex].productInventory < this.orderProducts[productIndex].quantity) {
+              // this.orderProducts[productIndex].quantity = this.orderProducts[productIndex].productInventory
+              this.isDisabled = true
             } else {
+              this.isDisabled = false
               this.orderProducts[productIndex].quantity += 1
             }
             this.orderProducts[productIndex].productUnitPrice = index.item.productUnitPrice
@@ -963,8 +968,10 @@ export default {
         this.orderProducts[index].quantity = 0
       }
       if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
+        this.isDisabled = true
+        // this.orderProducts[index].quantity = this.orderProducts[index].productInventory
+      } else {
         this.isDisabled = false
-        this.orderProducts[index].quantity = this.orderProducts[index].productInventory
       }
       this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
