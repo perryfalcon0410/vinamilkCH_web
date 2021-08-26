@@ -460,7 +460,7 @@
                       :options="options.number"
                       :state="isPositive(rowsProductPromotion[props.index].quantity)"
                       maxlength="7"
-                      @keypress="$onlyNumberInput"
+                      @keypress.native="$onlyNumberInput"
                       @keydown.enter.native="focusInputSearch"
                     />
                   </span>
