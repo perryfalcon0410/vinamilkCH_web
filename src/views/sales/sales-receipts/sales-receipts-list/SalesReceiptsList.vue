@@ -260,7 +260,6 @@ import {
 import {
   earlyMonth,
   nowDate,
-  preventDefaultWindowPrint,
   hostName,
   checkIpClient,
 } from '@core/utils/filter'
@@ -562,7 +561,6 @@ export default {
 
   mounted() {
     resizeAbleTable()
-    document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
     hostName().then(res => {
       if (res) {
         this.ipAddress = res.ip || res.query || res.geoplugin_request
@@ -571,9 +569,6 @@ export default {
       }
     })
   },
-  beforeDestroy() {
-    document.removeEventListener('keydown', this.handleWindowPrintHotKey)
-  },
   methods: {
     ...mapActions(SALESRECEIPTS, [
       GET_SALES_RECEIPTS_ACTION,
@@ -581,12 +576,7 @@ export default {
       PRINT_SALES_RECEIPT_ACTION,
     ]),
     ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
-    handleWindowPrintHotKey(event) {
-      const resolve = preventDefaultWindowPrint(event)
-      if (resolve) {
-        this.onClickPrintButton()
-      }
-    },
+
     statusPrintButton() {
       return this.$permission('SalesReceipts', 'SalesReceiptsPrint')
     },

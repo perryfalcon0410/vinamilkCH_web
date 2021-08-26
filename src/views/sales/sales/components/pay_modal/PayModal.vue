@@ -758,6 +758,7 @@ import {
 import {
   hostName,
   checkIpClient,
+  preventDefaultWindowPrint,
 } from '@core/utils/filter'
 import Cleave from 'vue-cleave-component'
 import saleData from '@/@db/sale'
@@ -1210,7 +1211,6 @@ export default {
           this.isDisabledPaymentBtn = true
           this.isDisabledPaymentBtn = true
           this.isDisabledRePrintBtn = true
-
           // clean data
           this.pay.extraAmount = null
           this.resetVoucher()
@@ -1818,6 +1818,13 @@ export default {
           this.rePrintSaleOrder()
         }
       }
+      const resolve = preventDefaultWindowPrint(e)
+      if (resolve && this.isPaid === false && this.statusPrintTmpButton()) {
+        this.printSaleOrderTemp()
+      }
+      if (resolve && this.isPaid === true && this.statusRePrintButton()) {
+        this.rePrintSaleOrder()
+      }
     },
     resetPayModal() {
       this.pay.accumulate.accumulatePoint = null
@@ -1830,7 +1837,6 @@ export default {
       this.isPrint = false
       this.isSaveSuccess = false
       this.isDisabledDiscount = false
-
       // Enable/disable buttons
       this.isDisabledPrintTempBtn = false
       this.isDisabledRePrintBtn = true
