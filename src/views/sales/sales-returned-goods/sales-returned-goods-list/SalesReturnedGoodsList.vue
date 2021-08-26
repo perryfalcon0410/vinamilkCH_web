@@ -279,11 +279,6 @@ export default {
           field: 'fromSaleOrderId',
         },
         {
-          label: 'Nhân viên',
-          field: 'userName',
-          sortable: false,
-        },
-        {
           label: 'Mã khách hàng',
           field: 'customerNumber',
           sortable: false,
@@ -321,6 +316,10 @@ export default {
           },
           type: 'number',
           formatFn: this.$formatNumberToLocale,
+        },
+        {
+          label: 'Nhân viên',
+          field: 'createdBy',
         },
         {
           label: 'Thao tác',
@@ -362,7 +361,7 @@ export default {
           idDetail: data.id,
           orderNumber: data.orderNumber,
           fromSaleOrderId: data.orderNumberRef,
-          userName: data.userName,
+          createdBy: data.createdBy,
           customerNumber: data.customerNumber,
           customerName: data.customerName,
           orderDate: data.dateReturn,
