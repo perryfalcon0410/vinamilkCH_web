@@ -1,5 +1,5 @@
 import axios from '@axios'
-import { formatURLParams } from '@/@core/utils/utils'
+import { formatURLParams, formatSortUrl, sortFilterParams } from '@/@core/utils/utils'
 import {
   getWareHouseComboDetailEndPoint,
   getWarehousesComboEndPoint,
@@ -16,8 +16,8 @@ export default {
     })
   },
   getWarehousesCombo(args) {
-    return axios.get(getWarehousesComboEndPoint, {
-      params: formatURLParams(args),
+    return axios.get(`${getWarehousesComboEndPoint}${formatSortUrl(args)}`, {
+      params: formatURLParams(sortFilterParams(args)),
     })
   },
   getComboProducts(args) {

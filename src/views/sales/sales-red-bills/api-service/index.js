@@ -1,5 +1,5 @@
 import axios from '@axios'
-import { formatURLParams } from '@/@core/utils/utils'
+import { formatURLParams, formatSortUrl, sortFilterParams } from '@/@core/utils/utils'
 import {
   getRedInvoiceEndpoint,
   getCustomersEndpoint,
@@ -17,8 +17,8 @@ import {
 
 export default {
   getRedInvoices(args) {
-    return axios.get(getRedInvoiceEndpoint, {
-      params: formatURLParams(args),
+    return axios.get(`${getRedInvoiceEndpoint}${formatSortUrl(args)}`, {
+      params: formatURLParams(sortFilterParams(args)),
     })
   },
   getBillOfSales(args) {

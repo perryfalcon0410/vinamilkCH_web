@@ -768,11 +768,26 @@ export default {
       this.onPaginationChange(this.onPaginationChange({ size: params.currentPerPage }))
     },
     onSortChange(params) {
-      if (params[0].type !== 'none') {
-        this.onPaginationChange({ sort: `${params[0].field},${params[0].type}`, page: commonData.pageNumber - 1 })
+      params.forEach((item, index) => {
+        if (item.type === 'none') {
+          params.splice(index, 1)
+        }
+      })
+      if (params.length === 1) {
+        this.updateSearchData({
+          sort: `${params[0].field},${params[0].type}`,
+        })
       } else {
-        this.onPaginationChange({ sort: null, page: commonData.pageNumber - 1 })
+        this.updateSearchData({
+          sort: null,
+        })
       }
+      if (params.length >= 2) {
+        this.updateSearchData({
+          sort: [...params],
+        })
+      }
+      this.onPaginationChange()
     },
     // END - Pagination func
     // auto select rows when focus feld oderNumber

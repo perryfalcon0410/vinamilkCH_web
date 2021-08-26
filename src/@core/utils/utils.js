@@ -145,7 +145,7 @@ export const onlyDateInput = e => {
 
 export const formatSortUrl = args => {
   let url = ''
-  if (args.sort !== null && typeof (args.sort) !== 'string') {
+  if (args.sort !== undefined && args.sort !== null && typeof (args.sort) !== 'string') {
     url = args.sort.reduce((prev, curr) => {
       if (prev.field) {
         return `?sort=${prev.field},${prev.type}&sort=${curr.field},${curr.type}`
