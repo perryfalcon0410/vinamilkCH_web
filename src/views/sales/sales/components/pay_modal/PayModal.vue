@@ -59,8 +59,8 @@
                 <div class="text-white">
                   {{ value.promotionProgramCode }} - {{ value.promotionProgramName }}
                   <b-icon-shield-exclamation
-                    v-if="(value.receiveShopQty + value.orderInQty <= value.maxShopQty) || (value.numberLimited === 'Không giới hạn')"
-                    v-b-popover.hover="{variant: 'info', content: `<p>Thông tin số suất:</p><p>- Được phân bố: ${value.maxShopQty}</p><p>- Đã sử dụng: ${value.receiveShopQty}</p><p>- Còn lại: ${value.numberLimited}</p>`, html: true}"
+                    v-if="(value.numberLimited !== 0) && (value.receiveShopQty + value.orderInQty <= value.maxShopQty)"
+                    v-b-popover.hover="{variant: 'info', content: `<p>Thông tin số suất:</p><p>- Được phân bố: ${value.maxShopQty || 'Không giới hạn'}</p><p>- Đã sử dụng: ${value.receiveShopQty || 'Không giới hạn'}</p><p>- Còn lại: ${value.numberLimited || 'Không giới hạn'}</p>`, html: true}"
                     class="cursor-pointer ml-1"
                     color="white"
                     font-scale="1.5"
@@ -1024,7 +1024,7 @@ export default {
           products: data.products || [],
           amount: data.amount,
           isEditable: data.isEditable,
-          numberLimited: data.numberLimited || 'Không giới hạn',
+          numberLimited: data.numberLimited,
           isInsertItemProducts: (data.products === null && data.amount === null),
           levelNumber: data.levelNumber,
           totalQty: data.totalQty,
@@ -1036,8 +1036,8 @@ export default {
           affected: data.affected,
           reCalculated: data.reCalculated,
           productSearch: '',
-          maxShopQty: data.maxShopQty || 'Không giới hạn', // số xuất phân bổ
-          receiveShopQty: data.receiveShopQty || 0, // Đã sử dụng
+          maxShopQty: data.maxShopQty, // số xuất phân bổ
+          receiveShopQty: data.receiveShopQty, // Đã sử dụng
           orderInQty: data.totalQty !== null ? data.totalQty : data.totalAmtInTax, // số suất trong đơn hàng
         }))
         this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
