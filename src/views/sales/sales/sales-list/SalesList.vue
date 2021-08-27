@@ -464,6 +464,7 @@ export default {
       isActive: false,
       customerFullName: null, // get bills Name
       billSelected: 1,
+      billFirst: 1,
       bills: [
         {
           id: 1,
@@ -987,12 +988,12 @@ export default {
           this.currentOrderNumber.onlineOrderId = bill.orderId
           this.currentOrderNumber.orderNumber = bill.orderNumber
           this.currentOrderNumber.note = bill.note
-          this.onlineOrderId = bill.orderNumber
 
-          if (this.onlineOrderId === undefined) {
+          if (bill.id === this.billFirst) {
             this.onlineOrderId = null
+          } else {
+            this.onlineOrderId = bill.orderNumber
           }
-
           return {
             ...bill,
             active: true,
