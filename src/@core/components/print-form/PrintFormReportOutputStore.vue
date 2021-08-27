@@ -838,10 +838,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import {
-//   jspmCheckStatus,
-//   jsPdfPrint,
-// } from '@core/utils/filter'
+import {
+  jspmCheckStatus,
+  jsPdfPrint,
+} from '@core/utils/filter'
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
 import autoTable from 'jspdf-autotable'
@@ -1013,14 +1013,14 @@ export default {
       this.createTableExpBorrow(pdf)
       // END - table xuất vay mượn
 
-      pdf.save()
-      // const options = {
-      //   fileName: 'Bao_cao_xuat_hang',
-      //   pageSizing: 'Fit',
-      // }
-      // if (jspmCheckStatus()) {
-      //   jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
-      // }
+      // pdf.save()
+      const options = {
+        fileName: 'Bao_cao_xuat_hang',
+        pageSizing: 'Fit',
+      }
+      if (jspmCheckStatus()) {
+        jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+      }
     }
   },
   methods: {
@@ -1146,6 +1146,11 @@ export default {
                 pdf.setLineWidth(0.1)
                 pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
               }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cursor.y + data.cell.height, data.cell.x + data.cell.width, data.cursor.y + data.cell.height)
+              }
               if (data.section === 'body' && data.column.index === 3) {
                 pdf.setDrawColor('black')
                 pdf.setLineWidth(0.1)
@@ -1181,6 +1186,7 @@ export default {
           pdf.autoTable({
             theme: 'grid',
             startY: pdf.previousAutoTable.finalY,
+            pageBreak: 'avoid',
             margin: {
               right: 5,
               left: 5,
@@ -1192,13 +1198,18 @@ export default {
             },
             headStyles: {
               fillColor: 'white',
-              font: 'Ario-Regular',
+              font: 'Ario-Bold',
               textColor: 'black',
               fontSize: 9,
               lineWidth: 0.1,
               lineColor: 'black',
             },
             didDrawCell: data => {
+              if (data.section === 'body' && data.row.raw.length === 6) {
+                pdf.setDrawColor(200)
+                pdf.setLineWidth(0.01)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
               if (data.section === 'body' && data.row.index === 0) {
                 pdf.setDrawColor('black')
                 pdf.setLineWidth(0.1)
@@ -1363,6 +1374,11 @@ export default {
                 pdf.setLineWidth(0.1)
                 pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
               }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cursor.y + data.cell.height, data.cell.x + data.cell.width, data.cursor.y + data.cell.height)
+              }
               if (data.section === 'body' && data.column.index === 3) {
                 pdf.setDrawColor('black')
                 pdf.setLineWidth(0.1)
@@ -1410,13 +1426,18 @@ export default {
             },
             headStyles: {
               fillColor: 'white',
-              font: 'Ario-Regular',
+              font: 'Ario-Bold',
               textColor: 'black',
               fontSize: 9,
               lineWidth: 0.1,
               lineColor: 'black',
             },
             didDrawCell: data => {
+              if (data.section === 'body' && data.row.raw.length === 6) {
+                pdf.setDrawColor(200)
+                pdf.setLineWidth(0.01)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
               if (data.section === 'body' && data.row.index === 0) {
                 pdf.setDrawColor('black')
                 pdf.setLineWidth(0.1)
@@ -1578,6 +1599,11 @@ export default {
                 pdf.setLineWidth(0.1)
                 pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
               }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cursor.y + data.cell.height, data.cell.x + data.cell.width, data.cursor.y + data.cell.height)
+              }
               if (data.section === 'body' && data.column.index === 3) {
                 pdf.setDrawColor('black')
                 pdf.setLineWidth(0.1)
@@ -1588,7 +1614,8 @@ export default {
 
           this.expBorrow.orderImports[i].cats.forEach(data => {
             const row = [
-              { content: `Ngành hàng:         ${data.catName}`, colSpan: 3, styles: { lineWidth: 0 } },
+              { content: 'Ngành hàng:', colSpan: 2, styles: { lineWidth: 0 } },
+              { content: `${data.catName}`, styles: { font: 'Ario-Bold', lineWidth: 0 } },
               { content: 'Tổng SL :', styles: { lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
               { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
@@ -1612,6 +1639,7 @@ export default {
           pdf.autoTable({
             theme: 'grid',
             startY: pdf.previousAutoTable.finalY,
+            pageBreak: 'avoid',
             margin: {
               right: 5,
               left: 5,
@@ -1623,13 +1651,18 @@ export default {
             },
             headStyles: {
               fillColor: 'white',
-              font: 'Ario-Regular',
+              font: 'Ario-Bold',
               textColor: 'black',
               fontSize: 9,
               lineWidth: 0.1,
               lineColor: 'black',
             },
             didDrawCell: data => {
+              if (data.section === 'body' && data.row.raw.length === 6) {
+                pdf.setDrawColor(200)
+                pdf.setLineWidth(0.01)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
               if (data.section === 'body' && data.row.index === 0) {
                 pdf.setDrawColor('black')
                 pdf.setLineWidth(0.1)
