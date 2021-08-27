@@ -1080,6 +1080,7 @@ export default {
       this.poNo = poNum
       this.poId = id
       this.totalPoPromoProduct = this.rowsProductPromotionLoad.length
+      this.promotionRow.length = 0
       // show promotion grid if it's not null
       if (this.rowsProductPromotionLoad.length > 0) {
         this.isShowPoPromoTable = true
