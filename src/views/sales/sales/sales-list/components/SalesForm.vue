@@ -1172,6 +1172,7 @@ export default {
       this.salemtPromotionObjectSelected = this.onlineOrder.type.value
       this.quantity = this.onlineOrder.quantity
       this.totalPrice = this.onlineOrder.totalPrice
+      this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)
       this.$emit('getOrderNumber', this.orderOnline)
     },
 
