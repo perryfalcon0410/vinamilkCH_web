@@ -57,7 +57,7 @@
           line-numbers
           :total-rows="receiptPagination.totalElements"
           :sort-options="{
-            enabled: false,
+            enabled: true,
             multipleColumns: true,
           }"
           @on-sort-change="onSortChange"
@@ -109,17 +109,17 @@
                 :disabled="statusUpdateButton().disabled"
                 class="ml-1"
                 popover-position="top"
-                @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
+                @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
               />
               <v-icon-remove
                 v-show="$formatISOtoVNI(props.row.transDate) === nowDate && statusDeleteButton().show"
                 :disabled="statusDeleteButton().disabled"
                 class="ml-1"
-                @click="onClickDeleteButton(props.row.id, props.row.inputTypes, props.row.originalIndex, props.row.transCode)"
+                @click="onClickDeleteButton(props.row.id, props.row.receiptType, props.row.originalIndex, props.row.transCode)"
               />
             </b-row>
             <div
-              v-else-if="props.column.field === 'quantity' || props.column.field === 'price'"
+              v-else-if="props.column.field === 'totalQuantity' || props.column.field === 'totalAmount'"
               style="padding-right: 4px"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -137,7 +137,7 @@
           >
             <div
               v-show="receiptPagination.totalElements"
-              v-if="props.column.field === 'quantity'"
+              v-if="props.column.field === 'totalQuantity'"
               class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
@@ -145,7 +145,7 @@
 
             <div
               v-show="receiptPagination.totalElements"
-              v-else-if="props.column.field === 'price'"
+              v-else-if="props.column.field === 'totalAmount'"
               class="mx-0 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(totalInfo.totalPrice) }}
@@ -335,7 +335,7 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
+          field: 'totalQuantity',
           type: 'number',
           thClass: 'text-nowrap',
           filterOptions: {
@@ -345,7 +345,7 @@ export default {
         },
         {
           label: 'Số tiền',
-          field: 'price',
+          field: 'totalAmount',
           type: 'number',
           thClass: 'text-nowrap',
           filterOptions: {
@@ -355,7 +355,7 @@ export default {
         },
         {
           label: 'Loại nhập',
-          field: 'inputTypes',
+          field: 'receiptType',
           thClass: 'text-nowrap',
           tdClass: 'text-nowrap',
           formatFn: this.$getInputTypeslabel,
@@ -365,7 +365,6 @@ export default {
           field: 'note',
           thClass: 'text-nowrap',
           tdClass: 'text-nowrap',
-          sortable: false,
         },
         {
           label: 'Thao tác',
@@ -391,9 +390,9 @@ export default {
           transCode: data.transCode,
           redInvoiceNo: data.redInvoiceNo,
           internalNumber: data.internalNumber,
-          quantity: data.totalQuantity,
-          price: data.totalAmount,
-          inputTypes: data.receiptType,
+          totalQuantity: data.totalQuantity,
+          totalAmount: data.totalAmount,
+          receiptType: data.receiptType,
           note: data.note,
           poId: data.poId || 0,
         }))
@@ -480,7 +479,7 @@ export default {
       this.PRINT_OUT_IN_PUT_ORDER_ACTION({
         data: {
           transCode: inputOrderData.id,
-          params: { ...this.decentralization, receiptType: inputOrderData.inputTypes },
+          params: { ...this.decentralization, receiptType: inputOrderData.receiptType },
         },
         onSuccess: () => {
           this.$root.$emit('bv::enable::popover')
@@ -508,8 +507,9 @@ export default {
       })
       this.isDeleteModalShow = !this.isDeleteModalShow
     },
-    onPaginationChange() {
-      this.GET_RECEIPTS_ACTION(this.paginationData)
+    onPaginationChange(data, params) {
+      this.updateSearchData(data)
+      this.GET_RECEIPTS_ACTION({ ...this.paginationData, ...params })
     },
     updatePaginationData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
@@ -527,6 +527,28 @@ export default {
       this.updatePaginationData({
         ...event,
       })
+    },
+    onSortChange(params) {
+      params.forEach((item, index) => {
+        if (item.type === 'none') {
+          params.splice(index, 1)
+        }
+      })
+      if (params.length === 1) {
+        this.updateSearchData({
+          sort: `${params[0].field},${params[0].type}`,
+        })
+      } else {
+        this.updateSearchData({
+          sort: null,
+        })
+      }
+      if (params.length >= 2) {
+        this.updateSearchData({
+          sort: [...params],
+        })
+      }
+      this.onPaginationChange()
     },
   },
 }

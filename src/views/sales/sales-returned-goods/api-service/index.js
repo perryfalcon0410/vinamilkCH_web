@@ -1,4 +1,4 @@
-import { formatURLParams } from '@/@core/utils/utils'
+import { formatURLParams, formatSortUrl, sortFilterParams } from '@/@core/utils/utils'
 import axios from '@axios'
 import {
   getReturnedGoodsEndPoint,
@@ -11,8 +11,8 @@ import {
 
 export default {
   getOrderReturnedGoods(args) {
-    return axios.get(getReturnedGoodsEndPoint, {
-      params: formatURLParams(args),
+    return axios.get(`${getReturnedGoodsEndPoint}${formatSortUrl(args)}`, {
+      params: formatURLParams(sortFilterParams(args)),
     })
   },
 

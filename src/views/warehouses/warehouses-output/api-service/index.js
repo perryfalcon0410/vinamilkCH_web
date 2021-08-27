@@ -1,5 +1,5 @@
 import axios from '@axios'
-import { formatURLParams } from '@/@core/utils/utils'
+import { formatURLParams, formatSortUrl, sortFilterParams } from '@/@core/utils/utils'
 import {
   getWarehousesOutputsEndpoint,
   printWarehousesOutputEndpoint,
@@ -20,8 +20,8 @@ import {
 
 export default {
   getWarehouseOutputs(args) {
-    return axios.get(getWarehousesOutputsEndpoint, {
-      params: formatURLParams(args),
+    return axios.get(`${getWarehousesOutputsEndpoint}${formatSortUrl(args)}`, {
+      params: formatURLParams(sortFilterParams(args)),
     })
   },
   printWarehouseOutput(args) {

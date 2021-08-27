@@ -1,5 +1,5 @@
 import axios from '@axios'
-import { formatURLParams } from '@/@core/utils/utils'
+import { formatURLParams, formatSortUrl, sortFilterParams } from '@/@core/utils/utils'
 import {
   getPoConfirmEndpoint,
   getPoProductsEndpoint,
@@ -76,8 +76,8 @@ export default {
     return axios.put(`${updateNotImportEndpoint}/${args.id}`, args)
   },
   getReceiptImport(args) {
-    return axios.get(getReceiptsEndpoint, {
-      params: formatURLParams(args),
+    return axios.get(`${getReceiptsEndpoint}${formatSortUrl(args)}`, {
+      params: formatURLParams(sortFilterParams(args)),
     })
   },
   exportReceiptImport(args) {

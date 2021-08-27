@@ -1,5 +1,5 @@
 import axios from '@axios'
-import { formatURLParams } from '@/@core/utils/utils'
+import { formatURLParams, formatSortUrl, sortFilterParams } from '@/@core/utils/utils'
 import {
   getWarehouseInventoriesEndpoint,
   getWarehouseTypesEndpoint,
@@ -17,8 +17,8 @@ import {
 
 export default {
   getWarehouseInventories(args) {
-    return axios.get(getWarehouseInventoriesEndpoint, {
-      params: formatURLParams(args),
+    return axios.get(`${getWarehouseInventoriesEndpoint}${formatSortUrl(args)}`, {
+      params: formatURLParams(sortFilterParams(args)),
     })
   },
   getWarehouseTypes(args) {

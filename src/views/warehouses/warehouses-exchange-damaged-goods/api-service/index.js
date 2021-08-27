@@ -1,5 +1,5 @@
 import axios from '@axios'
-import { formatURLParams } from '@/@core/utils/utils'
+import { formatURLParams, formatSortUrl, sortFilterParams } from '@/@core/utils/utils'
 import {
   getExchangeDamagedGoodsEndpoint,
   getExchangeDamagedGoodsReasonsEndpoint,
@@ -15,8 +15,8 @@ import {
 
 export default {
   getExchangeDamagedGoods(args) {
-    return axios.get(`${getExchangeDamagedGoodsEndpoint}`, {
-      params: formatURLParams(args),
+    return axios.get(`${getExchangeDamagedGoodsEndpoint}${formatSortUrl(args)}`, {
+      params: formatURLParams(sortFilterParams(args)),
     })
   },
   getExchangeDamagedGoodsReasons() {

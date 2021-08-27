@@ -238,7 +238,7 @@
           line-numbers
           :total-rows="warehousesOutputPagination.totalElements"
           :sort-options="{
-            enabled: false,
+            enabled: true,
             multipleColumns: true,
           }"
           @on-sort-change="onSortChange"
@@ -290,17 +290,17 @@
                 :disabled="statusUpdateButton().disabled"
                 class="ml-1"
                 popover-position="top"
-                @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
+                @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
               />
               <v-icon-remove
-                v-show="$formatISOtoVNI(props.row.date) === nowDate && statusDeleteButton().show"
+                v-show="$formatISOtoVNI(props.row.transDate) === nowDate && statusDeleteButton().show"
                 :disabled="statusDeleteButton().disabled"
                 class="ml-1"
-                @click="onClickDeleteWarehousesOutput(props.row.id,props.row.inputTypes,props.row.code, props.row.originalIndex, $formatISOtoVNI(props.row.date))"
+                @click="onClickDeleteWarehousesOutput(props.row.id,props.row.receiptType,props.row.transCode, props.row.originalIndex, $formatISOtoVNI(props.row.transDate))"
               />
             </div>
             <div
-              v-else-if="props.column.field === 'quantity' || props.column.field === 'price'"
+              v-else-if="props.column.field === 'totalQuantity' || props.column.field === 'totalAmount'"
               style="padding-right: 4px"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -317,7 +317,7 @@
             slot-scope="props"
           >
             <div
-              v-if="props.column.field === 'quantity'"
+              v-if="props.column.field === 'totalQuantity'"
               v-show="warehousesOutputPagination.totalElements"
               class="h7 text-brand-3 text-right"
             >
@@ -325,7 +325,7 @@
             </div>
 
             <div
-              v-else-if="props.column.field === 'price'"
+              v-else-if="props.column.field === 'totalAmount'"
               v-show="warehousesOutputPagination.totalElements"
               class="h7 text-brand-3 text-right"
             >
@@ -402,7 +402,7 @@
       ref="salesNotifyModal"
       title="Thông báo"
     >
-      Bạn có muốn xóa đợt xuất hàng {{ warehousesOutputSelected.code }} ?
+      Bạn có muốn xóa đợt xuất hàng {{ warehousesOutputSelected.transCode }} ?
       <template #modal-footer>
         <b-button
           class="btn-brand-1"
@@ -477,12 +477,6 @@ export default {
       warehousesTypeSelected: null,
       elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
-      serverParams: {
-        sort: {
-          field: 'date',
-          type: 'desc',
-        },
-      },
       paginationData: {
         size: this.elementSize,
         page: this.pageNumber - 1,
@@ -503,18 +497,18 @@ export default {
         },
         {
           label: 'Ngày',
-          field: 'date',
+          field: 'transDate',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Mã xuất hàng',
-          field: 'code',
+          field: 'transCode',
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
-          field: 'billNumber',
+          field: 'redInvoiceNo',
           type: 'number',
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -528,7 +522,7 @@ export default {
         },
         {
           label: 'Số lượng',
-          field: 'quantity',
+          field: 'totalQuantity',
           type: 'number',
           filterOptions: {
             enabled: true,
@@ -537,7 +531,7 @@ export default {
         },
         {
           label: 'Số tiền',
-          field: 'price',
+          field: 'totalAmount',
           type: 'number',
           filterOptions: {
             enabled: true,
@@ -546,7 +540,7 @@ export default {
         },
         {
           label: 'Loại xuất',
-          field: 'inputTypes',
+          field: 'receiptType',
           formatFn: this.$getOutputTypeslabel,
           tdClass: 'text-nowrap',
         },
@@ -555,7 +549,6 @@ export default {
           field: 'note',
           width: '300px',
           maxlength: 100,
-          sortable: false,
         },
         {
           label: 'Thao tác',
@@ -589,7 +582,7 @@ export default {
       warehousesOutputSelected: {
         id: 0,
         type: 0,
-        code: '',
+        transCode: '',
       },
 
     }
@@ -603,13 +596,13 @@ export default {
       if (this.GET_WAREHOUSES_OUTPUT_LIST_GETTER.response) {
         return this.GET_WAREHOUSES_OUTPUT_LIST_GETTER.response.content.map(data => ({
           id: data.id,
-          date: data.transDate,
-          code: data.transCode,
-          billNumber: data.redInvoiceNo,
+          transDate: data.transDate,
+          transCode: data.transCode,
+          redInvoiceNo: data.redInvoiceNo,
           internalNumber: data.internalNumber,
-          quantity: data.totalQuantity,
-          price: data.totalAmount,
-          inputTypes: data.receiptType,
+          totalQuantity: data.totalQuantity,
+          totalAmount: data.totalAmount,
+          receiptType: data.receiptType,
           note: data.note,
           poId: data.poId || 0,
         }))
@@ -708,7 +701,7 @@ export default {
       this.PRINT_OUT_IN_PUT_ORDER_ACTION({
         data: {
           transCode: outputOrderData.id,
-          params: { ...this.decentralization, receiptType: outputOrderData.inputTypes },
+          params: { ...this.decentralization, receiptType: outputOrderData.receiptType },
         },
         onSuccess: () => {
           this.$root.$emit('bv::enable::popover')
@@ -720,33 +713,37 @@ export default {
       this.onPaginationChange()
       this.pageNumber = 1
     },
-    onClickDeleteWarehousesOutput(id, type, code, index, date) {
+    onClickDeleteWarehousesOutput(id, type, transCode, index, transDate) {
       this.$refs.salesNotifyModal.show()
       this.warehousesOutputSelected.id = id
       this.warehousesOutputSelected.type = type
-      this.warehousesOutputSelected.code = code
+      this.warehousesOutputSelected.transCode = transCode
       this.warehousesOutputSelected.index = index
-      this.warehousesOutputSelected.date = date
+      this.warehousesOutputSelected.transDate = transDate
     },
     closeNotifyModal() {
       this.$refs.salesNotifyModal.hide()
       this.warehousesOutputSelected.id = null
       this.warehousesOutputSelected.type = null
-      this.warehousesOutputSelected.code = ''
+      this.warehousesOutputSelected.transCode = ''
     },
     onClickAgreeButton() {
       const paramDeleteWarehousesOutput = {
         id: this.warehousesOutputSelected.id,
         type: this.warehousesOutputSelected.type,
       }
-      if (this.warehousesOutputSelected.date === nowDate()) {
+      if (this.warehousesOutputSelected.transDate === nowDate()) {
         this.warehousesOutputList.splice(this.warehousesOutputSelected.index, 1)
       }
       this.DELETE_WAREHOUSES_ACTION(paramDeleteWarehousesOutput)
       this.warehousesOutputPagination.totalElements -= 1
       this.closeNotifyModal()
     },
-    onPaginationChange() {
+    updateSearchData(newProps) {
+      this.paginationData = { ...this.paginationData, ...newProps }
+    },
+    onPaginationChange(data, params) {
+      this.updateSearchData(data)
       const searchData = {
         redInvoiceNo: this.searchOptions.redInvoiceNo,
         fromDate: reverseVniDate(this.fromDate),
@@ -755,23 +752,43 @@ export default {
         transCode: this.searchOptions.exportNo,
         size: this.paginationData.size,
         page: this.paginationData.page,
+        sort: this.paginationData.sort,
         ...this.decentralization,
       }
       this.paginationData = searchData
-      this.GET_WAREHOUSES_OUTPUT_LIST_ACTION(this.paginationData)
-    },
-    updatePaginationData(newProps) {
-      this.paginationData = { ...this.paginationData, ...newProps }
+      this.GET_WAREHOUSES_OUTPUT_LIST_ACTION({ ...this.paginationData, ...params })
     },
     onPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1 })
+      this.updateSearchData({ page: params.currentPage - 1 })
       this.paginationData.page = params.currentPage - 1
-      this.onPaginationChange()
+      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
+      this.updateSearchData({ page: params.currentPage - 1, size: params.currentPerPage })
       this.paginationData.page = params.currentPage - 1
       this.paginationData.size = params.currentPerPage
+      this.onPaginationChange({ size: params.currentPerPage })
+    },
+    onSortChange(params) {
+      params.forEach((item, index) => {
+        if (item.type === 'none') {
+          params.splice(index, 1)
+        }
+      })
+      if (params.length === 1) {
+        this.updateSearchData({
+          sort: `${params[0].field},${params[0].type}`,
+        })
+      } else {
+        this.updateSearchData({
+          sort: null,
+        })
+      }
+      if (params.length >= 2) {
+        this.updateSearchData({
+          sort: [...params],
+        })
+      }
       this.onPaginationChange()
     },
   },
