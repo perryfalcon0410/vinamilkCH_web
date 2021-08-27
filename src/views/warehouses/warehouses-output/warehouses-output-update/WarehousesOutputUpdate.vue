@@ -390,6 +390,7 @@ export default {
       products: [],
       nullCheck: true,
       rowsProductPromotion: [],
+      negativeCheck: true,
 
       options: {
         number: {
@@ -788,12 +789,42 @@ export default {
         })
       }
     },
-
+    checkNegativeNumber() {
+      this.negativeCheck = true
+      if (this.products.length > 0) {
+        this.products.forEach(item => {
+          if (this.negativeCheck) {
+            if (item.productReturnAmount < 0) {
+              this.negativeCheck = false
+            } else {
+              this.rowsProductPromotion.forEach(i => {
+                if (i.productReturnAmount < 0) {
+                  this.negativeCheck = false
+                } else {
+                  this.negativeCheck = true
+                }
+              })
+            }
+          }
+        })
+      } else {
+        this.rowsProductPromotion.forEach(i => {
+          if (this.negativeCheck) {
+            if (i.productReturnAmount < 0) {
+              this.negativeCheck = false
+            } else {
+              this.negativeCheck = true
+            }
+          }
+        })
+      }
+    },
     onClickUpdateWarehousesOutput() {
       if (this.warehousesOutput.receiptType === this.poOutputType) {
         this.checkNull()
+        this.checkNegativeNumber()
       }
-      if (this.products.findIndex(item => item.productReturnAmount < 0) === -1 && this.rowsProductPromotion.findIndex(item => item.productReturnAmount < 0) === -1) {
+      if (this.negativeCheck) {
         if (this.nullCheck) {
           if (this.products) {
             const products = [...this.products.map(data => ({
