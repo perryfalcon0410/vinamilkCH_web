@@ -390,6 +390,7 @@ export default {
       products: [],
       nullCheck: true,
       rowsProductPromotion: [],
+      negativeCheck: true,
 
       options: {
         number: {
@@ -788,10 +789,10 @@ export default {
         })
       }
     },
-
     onClickUpdateWarehousesOutput() {
       if (this.warehousesOutput.receiptType === this.poOutputType) {
         this.checkNull()
+        this.checkNegativeNumber()
       }
       if (this.products.findIndex(item => item.productReturnAmount < 0) === -1 && this.rowsProductPromotion.findIndex(item => item.productReturnAmount < 0) === -1) {
         if (this.nullCheck) {
