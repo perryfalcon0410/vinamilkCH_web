@@ -838,19 +838,18 @@ export default {
             this.orderProducts[productIndex].productTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
             this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
           }
-          this.productIdSelected = index.item.productCode
           this.isSelectedProduct = true
+          this.productsSearch = [{ data: null }]
+          this.searchOptions.keyWord = ''
+          this.productIdSelected = index.item.productCode
           setTimeout(() => {
             document.getElementById(this.productIdSelected).focus()
           }, 100)
-
-          this.productsSearch = [{ data: '' }]
-          this.searchOptions.keyWord = ''
         } else {
           this.$refs.search.$el.querySelector('input').click()
         }
       }
-
+      this.productsSearch = [{ data: null }]
       // not have permission edit online order manual
       if ((!this.editManualPermission && this.onlineOrderId === null && this.isOnline === true)) {
         toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
