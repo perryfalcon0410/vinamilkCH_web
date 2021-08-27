@@ -1201,7 +1201,8 @@ export default {
       this.$refs.salesNotifyLeaveModal.hide()
     },
     checkProductNotPay() {
-      if (this.orderProducts.length !== 0) {
+      const billHaveProduct = this.bills.some(item => item.products.length > 0)
+      if (this.orderProducts.length > 0 || billHaveProduct) {
         return true
       }
       return false
