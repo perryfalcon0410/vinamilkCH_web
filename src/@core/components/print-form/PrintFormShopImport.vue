@@ -1006,14 +1006,18 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import JSPM from 'jsprintmanager'
 import toasts from '@/@core/utils/toasts/toasts'
+import jsPDF from 'jspdf'
+// eslint-disable-next-line no-unused-vars
+import autoTable from 'jspdf-autotable'
 import {
-  hostName,
-  printActions,
+  jsPdfPrint,
   jspmCheckStatus,
 } from '@core/utils/filter'
+import { myFontNormal } from '@/@core/libs/Arimo-Regular'
+import { myFontBold } from '@/@core/libs/Arimo-Bold'
 import {
   REPORT_WAREHOUSES_INPUT,
   PRINT_SHOP_IMPORT_REPORT_GETTER,
@@ -1021,7 +1025,6 @@ import {
 import {
   PRINTERCONFIG,
   PRINTER_CLIENT_GETTER,
-  GET_PRINTER_CLIENT_ACTIONS,
 } from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
@@ -1032,7 +1035,9 @@ export default {
       lstBorrow: { orderImports: [] },
       lstExpPo: { orderImports: [] },
       dataPrintOptions: {},
-      ipAddress: '',
+      printerName: null,
+      bodyData: [],
+      count: 1,
     }
   },
   computed: {
@@ -1098,55 +1103,817 @@ export default {
     getLstExpPo() {
       this.lstExpPo = { ...this.getLstExpPo }
     },
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
+    printerOptions() {
+      this.printerName = this.printerOptions.reportPrinterName
     },
   },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.reportPrinterName
-    if (printerName === '' || printerName === null) {
+    if (this.printerName === '' || this.printerName === null) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
-      for (let i = 0; i < 3; i += 1) {
-        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          const element = document.getElementById('print-form-shop-import')
-          const options = {
-            fileName: 'bao_cao_nhap_hang',
-            orientation: 'landscape',
-            rotate: 'Rot90',
-            pageSizing: 'Fit',
-            format: 'a4',
-            isPaging: true,
-            margin: [1, 5, 1, 5],
-            x: 1.1,
-          }
-          if (jspmCheckStatus()) {
-            printActions(element, printerName, options)
-          }
-        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-        }
+      // eslint-disable-next-line new-cap
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      // START - add font family
+      pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+      pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+      pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+      pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+      // END - add font family
+
+      // START - hearder page
+      pdf.setFont('Ario-Bold')
+      pdf.setFontSize(13)
+      pdf.text('Cửa hàng nhập hàng', 90, 10)
+      pdf.setFontSize(9)
+      pdf.text(`${this.commonData.shopName}`, 5, 10)
+      pdf.setFontSize(8)
+      pdf.setFont('Ario-Regular')
+      pdf.text(`Add: ${this.commonData.address}`, 5, 17)
+      pdf.text(`Tel: ${this.commonData.shopTel}`, 5, 24)
+      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonData.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonData.toDate)}`, 83, 17)
+      pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonData.printDate)}`, 91, 24)
+      // END - hearder page
+
+      // START - table tổng đầu tiên
+      pdf.autoTable({
+        startY: 30,
+        margin: {
+          right: 5,
+          left: 5,
+        },
+        styles: {
+          font: 'Ario-Regular',
+          fontSize: 9,
+          textColor: 'black',
+        },
+        body: [
+          [
+            {
+              content: 'Tổng SL :',
+              styles: { halign: 'right', fillColor: [211, 211, 211], cellWidth: 132.5 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.commonData.totalQuantity)}`,
+              styles: {
+                halign: 'right', font: 'Ario-Bold', fillColor: [211, 211, 211], cellWidth: 17.5,
+              },
+            },
+            {
+              content: 'T.Tiền :',
+              styles: { halign: 'right', fillColor: [211, 211, 211], cellWidth: 20 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.commonData.totalAmount)}`,
+              styles: {
+                font: 'Ario-Bold', halign: 'right', fillColor: [211, 211, 211], cellWidth: 30,
+              },
+            },
+          ],
+        ],
+      })
+      // END - table tổng đầu tiên
+
+      // START - table nhập điều chỉnh
+      this.createTableInputAdjust(pdf)
+      // END - table nhập điều chỉnh
+
+      // START - table nhập hàng
+      this.createTableInput(pdf)
+      // END - table nhập hàng
+
+      // START - table nhập vay mượn
+      this.createTableInputBorrow(pdf)
+      // END - table nhập vay mượn
+
+      const options = {
+        fileName: 'Bao_cao_nhap_hang',
+        pageSizing: 'Fit',
+      }
+      if (jspmCheckStatus()) {
+        jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
       }
     }
   },
   mounted() {
-    hostName().then(res => {
-      if (res) {
-        this.ipAddress = res.ip || res.query || res.geoplugin_request
-      } else {
-        this.ipAddress = null
-      }
-    })
   },
   methods: {
-    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+    // Start - Bảng nhập điều chỉnh
+    createTableInputAdjust(pdf) {
+      if (this.lstAdjust.orderImports.length > 0) {
+        pdf.autoTable({
+          startY: 37,
+          theme: 'plain',
+          margin: {
+            right: 5,
+            left: 5,
+            // bottom: 0,
+          },
+          styles: {
+            font: 'Ario-Regular',
+            fontSize: 9,
+            textColor: 'black',
+          },
+          body: [
+            [
+              { content: 'Loại: Nhập điều chỉnh', styles: { font: 'Ario-Bold', cellWidth: 115 } },
+              { content: 'Tổng SL :', styles: { cellWidth: 20 } },
+              { content: `${this.$formatNumberToLocale(this.lstAdjust.totalQuantity || 0)}`, styles: { font: 'Ario-Bold', halign: 'right', cellWidth: 15 } },
+              { content: 'T.Tiền :', styles: { halign: 'right', cellWidth: 20 } },
+              { content: `${this.$formatNumberToLocale(this.lstAdjust.totalPriceVat || 0)}`, styles: { font: 'Ario-Bold', halign: 'right', cellWidth: 30 } },
+            ],
+          ],
+          headStyles: {
+            Loai: { font: 'Ario-Bold', fontSize: 14 },
+          },
+          didDrawCell: data => {
+            if (data.section === 'body' && data.row.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+            }
+          },
+        })
+
+        for (let i = 0; i < this.lstAdjust.orderImports.length; i += 1) {
+          const startYTotal = (i === 0) ? { startY: pdf.previousAutoTable.finalY } : {}
+          pdf.autoTable({
+            theme: 'plain',
+            ...startYTotal,
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Bold',
+              fontSize: 7.5,
+              textColor: 'black',
+            },
+            tableLineWidth: 0,
+            tableLineColor: 'black',
+            body: [
+              [
+                { content: `Số HĐ: ${this.lstAdjust.orderImports[i].redInvoiceNo}` },
+                { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstAdjust.orderImports[i].orderDate)}` },
+                { content: this.lstAdjust.orderImports[i].poNumber !== null ? `- Số PO: ${this.lstAdjust.orderImports[i].poNumber}` : '- Số PO:' },
+                { content: `- Số nội bộ: ${this.lstAdjust.orderImports[i].internalNumber}` },
+                { content: `- Mã xuất hàng: ${this.lstAdjust.orderImports[i].transCode}` },
+              ],
+            ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 4) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
+          })
+
+          pdf.autoTable({
+            startY: pdf.previousAutoTable.finalY,
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Regular',
+              fontSize: 9,
+              textColor: 'black',
+            },
+            body: [
+              [
+                {
+                  content: 'Tổng SL :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 132.5 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.lstAdjust.orderImports[i].totalQuantity)}`,
+                  styles: {
+                    halign: 'right', font: 'Ario-Bold', fillColor: 'white', cellWidth: 17.5,
+                  },
+                },
+                {
+                  content: 'T.Tiền :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 20 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.lstAdjust.orderImports[i].totalPriceVat)}`,
+                  styles: {
+                    font: 'Ario-Bold', halign: 'right', fillColor: 'white', cellWidth: 30,
+                  },
+                },
+              ],
+            ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cursor.y + data.cell.height, data.cell.x + data.cell.width, data.cursor.y + data.cell.height)
+              }
+              if (data.section === 'body' && data.column.index === 3) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
+          })
+
+          this.lstAdjust.orderImports[i].cats.forEach(data => {
+            const row = [
+              { content: 'Ngành hàng:', colSpan: 2, styles: { lineWidth: 0 } },
+              { content: `${data.catName}`, styles: { font: 'Ario-Bold', lineWidth: 0 } },
+              { content: 'Tổng SL :', styles: { lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
+              { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
+            ]
+            this.bodyData.push(row)
+            data.products.forEach(pro => {
+              this.bodyData.push([
+                { content: `${this.count}`, styles: { cellWidth: 10 } },
+                { content: `${pro.productCode}`, styles: { cellWidth: 25 } },
+                { content: `${pro.productName}`, styles: { cellWidth: 80 } },
+                { content: `${pro.uom1}`, styles: { cellWidth: 20, halign: 'center' } },
+                { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.price)}`, styles: { cellWidth: 20, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.total)}`, styles: { cellWidth: 30, halign: 'right' } },
+              ])
+              this.count += 1
+            })
+          })
+
+          pdf.autoTable({
+            theme: 'grid',
+            startY: pdf.previousAutoTable.finalY,
+            pageBreak: 'avoid',
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Regular',
+              fontSize: 9,
+              textColor: 'black',
+            },
+            headStyles: {
+              fillColor: 'white',
+              font: 'Ario-Bold',
+              textColor: 'black',
+              fontSize: 9,
+              lineWidth: 0.1,
+              lineColor: 'black',
+            },
+            didDrawCell: data => {
+              if (data.section === 'body' && data.row.raw.length === 6) {
+                pdf.setDrawColor(200)
+                pdf.setLineWidth(0.01)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 6) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
+              }
+            },
+            columns: [
+              { header: 'STT', dataKey: 'STT', cellWidth: 10 },
+              { header: 'Mã SP', dataKey: 'Mã SP', cellWidth: 35 },
+              { header: 'Tên SP', dataKey: 'Tên SP', cellWidth: 60 },
+              { header: 'ĐVT', dataKey: 'ĐVT', cellWidth: 15 },
+              { header: 'SL', dataKey: 'SL', cellWidth: 15 },
+              { header: 'Giá', dataKey: 'Giá', cellWidth: 20 },
+              { header: 'T.Tiền', dataKey: 'T.Tiền', cellWidth: 30 },
+            ],
+            body: [...this.bodyData],
+          })
+          this.bodyData = []
+
+          // START - table tổng cộng và điều chỉnh
+          this.createTableTotal(pdf, this.lstAdjust.orderImports[i], false)
+          // END - table tổng cộng và điều chỉnh
+        }
+      }
+    },
+    // END - Bảng xuất điều chỉnh
+
+    // Start - Bảng nhập hàng
+    createTableInput(pdf) {
+      if (this.lstPo.orderImports.length > 0) {
+        const startY = (this.lstAdjust.orderImports.length === 0) ? { startY: 37 } : { }
+        pdf.autoTable({
+          ...startY,
+          theme: 'plain',
+          margin: {
+            right: 5,
+            left: 5,
+            // bottom: 0,
+          },
+          styles: {
+            font: 'Ario-Regular',
+            fontSize: 9,
+            textColor: 'black',
+          },
+          body: [
+            [
+              { content: 'Loại: Nhập hàng', styles: { font: 'Ario-Bold', cellWidth: 115 } },
+              { content: 'Tổng SL :', styles: { cellWidth: 20 } },
+              { content: `${this.$formatNumberToLocale(this.lstPo.totalQuantity || 0)}`, styles: { font: 'Ario-Bold', halign: 'right', cellWidth: 15 } },
+              { content: 'T.Tiền :', styles: { halign: 'right', cellWidth: 20 } },
+              { content: `${this.$formatNumberToLocale(this.lstPo.totalPriceVat || 0)}`, styles: { font: 'Ario-Bold', halign: 'right', cellWidth: 30 } },
+            ],
+          ],
+          headStyles: {
+            Loai: { font: 'Ario-Bold', fontSize: 14 },
+          },
+          didDrawCell: data => {
+            if (data.section === 'body' && data.row.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+            }
+          },
+        })
+
+        for (let i = 0; i < this.lstPo.orderImports.length; i += 1) {
+          const startYTotal = (i === 0) ? { startY: pdf.previousAutoTable.finalY } : {}
+          pdf.autoTable({
+            theme: 'plain',
+            ...startYTotal,
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Bold',
+              fontSize: 7.5,
+              textColor: 'black',
+            },
+            tableLineWidth: 0,
+            tableLineColor: 'black',
+            body: [
+              [
+                { content: `Số HĐ: ${this.lstPo.orderImports[i].redInvoiceNo}` },
+                { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstPo.orderImports[i].orderDate)}` },
+                { content: this.lstPo.orderImports[i].poNumber !== null ? `- Số PO: ${this.lstPo.orderImports[i].poNumber}` : '- Số PO:' },
+                { content: `- Số nội bộ: ${this.lstPo.orderImports[i].internalNumber}` },
+                { content: `- Mã xuất hàng: ${this.lstPo.orderImports[i].transCode}` },
+              ],
+            ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 4) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
+          })
+
+          pdf.autoTable({
+            startY: pdf.previousAutoTable.finalY,
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Regular',
+              fontSize: 9,
+              textColor: 'black',
+            },
+            body: [
+              [
+                {
+                  content: 'Tổng SL :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 132.5 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.lstPo.orderImports[i].totalQuantity)}`,
+                  styles: {
+                    halign: 'right', font: 'Ario-Bold', fillColor: 'white', cellWidth: 17.5,
+                  },
+                },
+                {
+                  content: 'T.Tiền :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 20 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.lstPo.orderImports[i].totalPriceVat)}`,
+                  styles: {
+                    font: 'Ario-Bold', halign: 'right', fillColor: 'white', cellWidth: 30,
+                  },
+                },
+              ],
+            ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cursor.y + data.cell.height, data.cell.x + data.cell.width, data.cursor.y + data.cell.height)
+              }
+              if (data.section === 'body' && data.column.index === 3) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
+          })
+
+          this.lstPo.orderImports[i].cats.forEach(data => {
+            const row = [
+              { content: 'Ngành hàng:', colSpan: 2, styles: { lineWidth: 0 } },
+              { content: `${data.catName}`, styles: { font: 'Ario-Bold', lineWidth: 0 } },
+              { content: 'Tổng SL :', styles: { lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
+              { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
+            ]
+            this.bodyData.push(row)
+            data.products.forEach(pro => {
+              this.bodyData.push([
+                { content: `${this.count}`, styles: { cellWidth: 10 } },
+                { content: `${pro.productCode}`, styles: { cellWidth: 25 } },
+                { content: `${pro.productName}`, styles: { cellWidth: 80 } },
+                { content: `${pro.uom1}`, styles: { cellWidth: 20, halign: 'center' } },
+                { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.priceNotVat)}`, styles: { cellWidth: 20, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.amount)}`, styles: { cellWidth: 30, halign: 'right' } },
+              ])
+              this.count += 1
+            })
+          })
+
+          pdf.autoTable({
+            theme: 'grid',
+            startY: pdf.previousAutoTable.finalY,
+            pageBreak: 'avoid',
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Regular',
+              fontSize: 9,
+              textColor: 'black',
+            },
+            headStyles: {
+              fillColor: 'white',
+              font: 'Ario-Bold',
+              textColor: 'black',
+              fontSize: 9,
+              lineWidth: 0.1,
+              lineColor: 'black',
+            },
+            didDrawCell: data => {
+              if (data.section === 'body' && data.row.raw.length === 6) {
+                pdf.setDrawColor(200)
+                pdf.setLineWidth(0.01)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 6) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
+              }
+            },
+            columns: [
+              { header: 'STT', dataKey: 'STT', cellWidth: 10 },
+              { header: 'Mã SP', dataKey: 'Mã SP', cellWidth: 35 },
+              { header: 'Tên SP', dataKey: 'Tên SP', cellWidth: 60 },
+              { header: 'ĐVT', dataKey: 'ĐVT', cellWidth: 15 },
+              { header: 'SL', dataKey: 'SL', cellWidth: 15 },
+              { header: 'Giá', dataKey: 'Giá', cellWidth: 20 },
+              { header: 'T.Tiền', dataKey: 'T.Tiền', cellWidth: 30 },
+            ],
+            body: [...this.bodyData],
+          })
+          this.bodyData = []
+
+          // START - table tổng cộng và điều chỉnh
+          this.createTableTotal(pdf, this.lstPo.orderImports[i], true)
+          // END - table tổng cộng và điều chỉnh
+        }
+      }
+    },
+    // END - Bảng nhập hàng
+
+    // START - Bảng nhập vay mượn
+    createTableInputBorrow(pdf) {
+      if (this.lstBorrow.orderImports.length > 0) {
+        const startY = (this.lstAdjust.orderImports.length === 0 && this.lstPo.orderImports.length === 0) ? { startY: 37 } : { }
+        pdf.autoTable({
+          ...startY,
+          theme: 'plain',
+          margin: {
+            right: 5,
+            left: 5,
+          },
+          styles: {
+            font: 'Ario-Regular',
+            fontSize: 9,
+            textColor: 'black',
+          },
+          body: [
+            [
+              { content: 'Loại: Nhập vay mượn', styles: { font: 'Ario-Bold', cellWidth: 115 } },
+              { content: 'Tổng SL :', styles: { cellWidth: 20 } },
+              { content: `${this.$formatNumberToLocale(this.lstBorrow.totalQuantity || 0)}`, styles: { font: 'Ario-Bold', halign: 'right', cellWidth: 15 } },
+              { content: 'T.Tiền :', styles: { halign: 'right', cellWidth: 20 } },
+              { content: `${this.$formatNumberToLocale(this.lstBorrow.totalPriceVat || 0)}`, styles: { font: 'Ario-Bold', halign: 'right', cellWidth: 30 } },
+            ],
+          ],
+          didDrawCell: data => {
+            if (data.section === 'body' && data.row.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+            }
+          },
+        })
+
+        for (let i = 0; i < this.lstBorrow.orderImports.length; i += 1) {
+          const startYTotal = (i === 0) ? { startY: pdf.previousAutoTable.finalY } : {}
+          pdf.autoTable({
+            theme: 'plain',
+            ...startYTotal,
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Bold',
+              fontSize: 7.5,
+              textColor: 'black',
+            },
+            tableLineWidth: 0,
+            tableLineColor: 'black',
+            body: [
+              [
+                { content: `Số HĐ: ${this.lstBorrow.orderImports[i].redInvoiceNo}`, halign: 'right' },
+                { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstBorrow.orderImports[i].orderDate)}` },
+                { content: this.lstBorrow.orderImports[i].poNumber !== null ? `- Số PO: ${this.lstBorrow.orderImports[i].poNumber}` : '- Số PO:' },
+                { content: `- Số nội bộ: ${this.lstBorrow.orderImports[i].internalNumber}` },
+                { content: `- Mã xuất hàng: ${this.lstBorrow.orderImports[i].transCode}` },
+              ],
+            ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 4) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
+          })
+
+          pdf.autoTable({
+            startY: pdf.previousAutoTable.finalY,
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Regular',
+              fontSize: 9,
+              textColor: 'black',
+            },
+            body: [
+              [
+                {
+                  content: 'Tổng SL :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 132.5 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.lstBorrow.orderImports[i].totalQuantity)}`,
+                  styles: {
+                    halign: 'right', font: 'Ario-Bold', fillColor: 'white', cellWidth: 17.5,
+                  },
+                },
+                {
+                  content: 'T.Tiền :',
+                  styles: { halign: 'right', fillColor: 'white', cellWidth: 20 },
+                },
+                {
+                  content: `${this.$formatNumberToLocale(this.lstBorrow.orderImports[i].totalPriceVat)}`,
+                  styles: {
+                    font: 'Ario-Bold', halign: 'right', fillColor: 'white', cellWidth: 30,
+                  },
+                },
+              ],
+            ],
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cursor.y + data.cell.height, data.cell.x + data.cell.width, data.cursor.y + data.cell.height)
+              }
+              if (data.section === 'body' && data.column.index === 3) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+            },
+          })
+
+          this.lstBorrow.orderImports[i].cats.forEach(data => {
+            const row = [
+              { content: 'Ngành hàng:', colSpan: 2, styles: { lineWidth: 0 } },
+              { content: `${data.catName}`, styles: { font: 'Ario-Bold', lineWidth: 0 } },
+              { content: 'Tổng SL :', styles: { lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
+              { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
+            ]
+            this.bodyData.push(row)
+            data.products.forEach(pro => {
+              this.bodyData.push([
+                { content: `${this.count}`, styles: { cellWidth: 10 } },
+                { content: `${pro.productCode}`, styles: { cellWidth: 25 } },
+                { content: `${pro.productName}`, styles: { cellWidth: 80 } },
+                { content: `${pro.uom1}`, styles: { cellWidth: 20, halign: 'center' } },
+                { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.price)}`, styles: { cellWidth: 20, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.total)}`, styles: { cellWidth: 30, halign: 'right' } },
+              ])
+              this.count += 1
+            })
+          })
+
+          pdf.autoTable({
+            theme: 'grid',
+            startY: pdf.previousAutoTable.finalY,
+            pageBreak: 'avoid',
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Regular',
+              fontSize: 9,
+              textColor: 'black',
+            },
+            headStyles: {
+              fillColor: 'white',
+              font: 'Ario-Bold',
+              textColor: 'black',
+              fontSize: 9,
+              lineWidth: 0.1,
+              lineColor: 'black',
+            },
+            didDrawCell: data => {
+              if (data.section === 'body' && data.row.raw.length === 6) {
+                pdf.setDrawColor(200)
+                pdf.setLineWidth(0.01)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+              }
+              if (data.section === 'body' && data.column.index === 6) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+              }
+              if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
+              }
+            },
+            columns: [
+              { header: 'STT', dataKey: 'STT', cellWidth: 10 },
+              { header: 'Mã SP', dataKey: 'Mã SP', cellWidth: 35 },
+              { header: 'Tên SP', dataKey: 'Tên SP', cellWidth: 60 },
+              { header: 'ĐVT', dataKey: 'ĐVT', cellWidth: 15 },
+              { header: 'SL', dataKey: 'SL', cellWidth: 15 },
+              { header: 'Giá', dataKey: 'Giá', cellWidth: 20 },
+              { header: 'T.Tiền', dataKey: 'T.Tiền', cellWidth: 30 },
+            ],
+            body: [...this.bodyData],
+          })
+          this.bodyData = []
+
+          // START - table tổng cộng và điều chỉnh
+          this.createTableTotal(pdf, this.lstBorrow.orderImports[i], false)
+          // END - table tổng cộng và điều chỉnh
+        }
+      }
+    },
+    // END - Bảng nhập vay mượn
+
+    // START - table tổng cộng và điều chỉnh
+    createTableTotal(pdf, data, isPo) {
+      if (data.redInvoiceNo !== 'null') {
+        pdf.autoTable({
+          theme: 'plain',
+          startY: pdf.previousAutoTable.finalY + 2,
+          margin: { left: 145, right: 5 },
+          styles: {
+            font: 'Ario-Bold',
+            fontSize: 9,
+            textColor: 'black',
+          },
+          tableLineWidth: 0.1,
+          tableLineColor: [211, 211, 211],
+          tableWidth: 60,
+          body: [
+            [
+              { content: 'Điều chỉnh:', styles: { halign: 'right' } },
+              { content: `${this.$formatNumberToLocale(data.adjusted)}` !== 'null' ? `${this.$formatNumberToLocale(data.adjusted)}` : '', styles: { halign: 'right' } },
+            ],
+            [
+              { content: 'VAT:', styles: { halign: 'right' } },
+              { content: isPo ? `${this.$formatNumberToLocale(data.vat)}` : '', styles: { halign: 'right' } },
+            ],
+            [
+              { content: 'T.Cộng:', styles: { halign: 'right' } },
+              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { halign: 'right' } },
+            ],
+          ],
+        })
+      }
+    },
+    // END - table tổng cộng và điểu chỉnh
   },
 }
 </script>

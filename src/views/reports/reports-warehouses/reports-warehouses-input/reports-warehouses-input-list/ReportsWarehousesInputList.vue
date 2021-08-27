@@ -227,6 +227,8 @@ import {
 import {
   formatISOtoVNI,
   preventDefaultWindowPrint,
+  hostName,
+  checkIpClient,
 } from '@core/utils/filter'
 
 import PrintFormShopImport from '@core/components/print-form/PrintFormShopImport.vue'
@@ -240,6 +242,10 @@ import {
   EXPORT_REPORT_WAREHOUSES_INPUT_ACTION,
   PRINT_SHOP_IMPORT_REPORT_ACTION,
 } from '../store-module/type'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '../../../../auth/printer-configuration-modal/store-module/type'
 
 export default {
   components: {
@@ -419,6 +425,8 @@ export default {
       warehousesInputs: [],
       warehousesInputPagination: {},
       totalInfo: {},
+      ipAddressCurrent: '',
+      ipAddress: '',
     }
   },
 
@@ -482,6 +490,13 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleWindowPrintHotKey)
@@ -493,6 +508,7 @@ export default {
       EXPORT_REPORT_WAREHOUSES_INPUT_ACTION,
       PRINT_SHOP_IMPORT_REPORT_ACTION,
     ]),
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
     handleWindowPrintHotKey(event) {
       const resolve = preventDefaultWindowPrint(event)
       if (resolve) {
@@ -546,19 +562,26 @@ export default {
       })
     },
     printReport() {
-      this.$root.$emit('bv::hide::popover')
-      this.$root.$emit('bv::disable::popover')
-      this.PRINT_SHOP_IMPORT_REPORT_ACTION({
-        productCodes: this.paginationData.productCodes,
-        internalNumber: this.paginationData.internalNumber,
-        importType: this.paginationData.importType,
-        fromOrderDate: this.paginationData.fromOrderDate,
-        fromDate: this.paginationData.fromDate,
-        toOrderDate: this.paginationData.toOrderDate,
-        toDate: this.paginationData.toDate,
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
+      hostName().then(res => {
+        if (res) {
+          this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddressCurrent = null
+        }
+        if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+          this.GET_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientId: this.ipAddressCurrent,
+            },
+            onSuccess: () => {
+              this.PRINT_SHOP_IMPORT_REPORT_ACTION({
+                ...this.decentralization,
+                ...this.searchOptions,
+                onSuccess: () => {},
+              })
+            },
+          })
+        }
       })
     },
   },
