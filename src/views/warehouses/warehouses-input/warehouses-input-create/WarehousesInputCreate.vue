@@ -1122,60 +1122,62 @@ export default {
     create() {
       this.isFieldCanCheck = false
       // this mean status != -1
-      if (this.promotionRow.length === 0) {
-        const obj = {
-          importType: this.status,
-          poCoNumber: this.poNo?.trim(),
-          internalNumber: this.internalNumber?.trim(),
-          redInvoiceNo: this.billNumber?.toUpperCase()?.trim(),
-          orderDate: formatVniDateToISO(this.billDate),
-          poId: this.poId,
-          note: this.note?.trim(),
-        }
-        if (obj.importType === -1) {
-          toasts.error('Cần chọn ít nhất 1 sản phẩm khuyến mãi')
-        }
-        // if import type = choose poConfirm -> check redInvoice
-        if (this.status === 0) {
+      if (this.promotionRow.findIndex(item => item.quantity < 0) === -1) {
+        if (this.promotionRow.length === 0) {
+          const obj = {
+            importType: this.status,
+            poCoNumber: this.poNo?.trim(),
+            internalNumber: this.internalNumber?.trim(),
+            redInvoiceNo: this.billNumber?.toUpperCase()?.trim(),
+            orderDate: formatVniDateToISO(this.billDate),
+            poId: this.poId,
+            note: this.note?.trim(),
+          }
+          if (obj.importType === -1) {
+            toasts.error('Cần chọn ít nhất 1 sản phẩm khuyến mãi')
+          }
+          // if import type = choose poConfirm -> check redInvoice
+          if (this.status === 0) {
+            this.$refs.formContainer.validate().then(success => {
+              if (success) {
+                this.CREATE_SALE_IMPORT_ACTION({
+                  ...obj,
+                  wareHouseTypeId: this.defaultWarehouse.warehouseTypeId,
+                })
+              }
+            })
+          }
+          // nhap dieu chinh
+          if (this.status === 1) {
+            this.CREATE_SALE_IMPORT_ACTION({
+              ...obj,
+              wareHouseTypeId: this.defaultWarehouse.warehouseTypeId,
+            })
+          }
+          // nhap vay muon
+          if (this.status === 2) {
+            this.CREATE_SALE_IMPORT_ACTION({
+              ...obj,
+              wareHouseTypeId: this.warehouseSelected,
+            })
+          }
+        } else {
           this.$refs.formContainer.validate().then(success => {
             if (success) {
               this.CREATE_SALE_IMPORT_ACTION({
-                ...obj,
-                wareHouseTypeId: this.defaultWarehouse.warehouseTypeId,
+                importType: 0,
+                poCoNumber: this.poNo?.trim(),
+                internalNumber: this.internalNumber?.trim(),
+                redInvoiceNo: this.billNumber?.toUpperCase()?.trim(),
+                orderDate: formatVniDateToISO(this.billDate),
+                note: this.note?.trim(),
+                lst: this.promotionRow,
+                wareHouseTypeId: this.warehouseSelected,
               })
             }
           })
         }
-        // nhap dieu chinh
-        if (this.status === 1) {
-          this.CREATE_SALE_IMPORT_ACTION({
-            ...obj,
-            wareHouseTypeId: this.defaultWarehouse.warehouseTypeId,
-          })
-        }
-        // nhap vay muon
-        if (this.status === 2) {
-          this.CREATE_SALE_IMPORT_ACTION({
-            ...obj,
-            wareHouseTypeId: this.warehouseSelected,
-          })
-        }
-      } else {
-        this.$refs.formContainer.validate().then(success => {
-          if (success) {
-            this.CREATE_SALE_IMPORT_ACTION({
-              importType: 0,
-              poCoNumber: this.poNo?.trim(),
-              internalNumber: this.internalNumber?.trim(),
-              redInvoiceNo: this.billNumber?.toUpperCase()?.trim(),
-              orderDate: formatVniDateToISO(this.billDate),
-              note: this.note?.trim(),
-              lst: this.promotionRow,
-              wareHouseTypeId: this.warehouseSelected,
-            })
-          }
-        })
-      }
+      } else toasts.error('Không được nhập số âm.')
     },
     isPositive(num) {
       if (num >= 0) {

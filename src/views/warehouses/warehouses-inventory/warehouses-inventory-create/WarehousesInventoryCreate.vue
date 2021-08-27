@@ -526,7 +526,7 @@ export default {
       isCreateModalShow: false,
       isCreated: false,
       warehousesInventoryData: null,
-      stop: true,
+      negativeCheck: true,
       columns: [
         {
           label: 'Ngành hàng',
@@ -822,7 +822,7 @@ export default {
                                                            || product.productName.toLowerCase().includes(this.searchKeywords.trim().toLowerCase()))
     },
     onClickSaveButton() {
-      this.stop = true
+      this.negativeCheck = true
       const lstCreate = this.originalProducts.map(data => ({
         productId: data.productId,
         productCategory: data.category,
@@ -842,11 +842,11 @@ export default {
       this.originalProducts.forEach(item => {
         if (this.top) {
           if (item.inventoryPacket < 0 || item.inventoryOdd < 0) {
-            this.stop = false
-          } else this.stop = true
+            this.negativeCheck = false
+          } else this.negativeCheck = true
         }
       })
-      if (this.stop) {
+      if (this.negativeCheck) {
         this.CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION({
           data: {
             wareHouseTypeId: this.warehouseType,
@@ -867,7 +867,7 @@ export default {
       } else toasts.error('Không được nhập số âm!')
     },
     onClickAgreeButton() {
-      this.stop = true
+      this.negativeCheck = true
       const lstCreate = this.originalProducts.map(data => ({
         productId: data.productId,
         productCategory: data.category,
@@ -885,14 +885,13 @@ export default {
         unitQuantity: data.inventoryOdd || 0,
       }))
       this.originalProducts.forEach(item => {
-        if (this.stop) {
+        if (this.negativeCheck) {
           if (item.inventoryPacket < 0 || item.inventoryOdd < 0) {
-            this.stop = false
-          } else this.stop = true
+            this.negativeCheck = false
+          } else this.negativeCheck = true
         }
       })
-      console.log(this.stop)
-      if (this.stop) {
+      if (this.negativeCheck) {
         this.CREATE_WAREHOUSE_INVENTORY_ACTION({
           lstCreate,
           wareHouseTypeId: this.warehouseType,

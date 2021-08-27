@@ -410,6 +410,7 @@ export default {
       isFieldCheck: true,
       customers: [{ data: '' }],
       products: [{ data: '' }],
+      negativeCheck: true,
 
       reasonObj: {
         reasonOptions: [],
@@ -693,28 +694,30 @@ export default {
     updateExchangeDamagedGoods() {
       this.$refs.formContainer.validate().then(success => {
         if (success && this.checkDuplicatesName() > -1) {
-          if (this.damagedProduct.length > 0) {
-            this.UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION({
-              exchangeDamagedGoods: {
-                customerId: this.customerId,
-                id: this.exchangeDamagedGoodsId,
-                lstExchangeDetail: this.listDamagedProducts.map(data => ({
-                  id: data.id,
-                  productId: data.productId,
-                  productCode: data.productCode,
-                  productName: data.productName,
-                  quantity: data.quantity,
-                  type: data.type,
-                })),
-                reason: this.exchangeGoodsInfo.reason,
-                reasonId: this.exchangeGoodsInfo.reasonId,
-                transCode: this.exchangeGoodsInfo.transCode,
-              },
-              onSuccess: () => {
-                this.navigateBack()
-              },
-            })
-          } else toasts.error('Vui lòng thêm sản phẩm')
+          if (this.negativeCheck) {
+            if (this.damagedProduct.length > 0) {
+              this.UPDATE_EXCHANGE_DAMAGED_GOODS_ACTION({
+                exchangeDamagedGoods: {
+                  customerId: this.customerId,
+                  id: this.exchangeDamagedGoodsId,
+                  lstExchangeDetail: this.listDamagedProducts.map(data => ({
+                    id: data.id,
+                    productId: data.productId,
+                    productCode: data.productCode,
+                    productName: data.productName,
+                    quantity: data.quantity,
+                    type: data.type,
+                  })),
+                  reason: this.exchangeGoodsInfo.reason,
+                  reasonId: this.exchangeGoodsInfo.reasonId,
+                  transCode: this.exchangeGoodsInfo.transCode,
+                },
+                onSuccess: () => {
+                  this.navigateBack()
+                },
+              })
+            } else toasts.error('Vui lòng thêm sản phẩm')
+          } else toasts.error('Không được nhập số âm')
         } else toasts.error('Khách hàng không tồn tại')
       })
     },
@@ -849,10 +852,21 @@ export default {
     checkDuplicatesName() {
       return this.getAllCustomer.findIndex(x => x.customerName === this.customerInfo.customerName)
     },
+    checkNegativeNumber() {
+      this.negativeCheck = true
+      this.listDamagedProducts.forEach(item => {
+        if (this.negativeCheck) {
+          if (item.quantity < 0) {
+            this.negativeCheck = false
+          } else this.negativeCheck = true
+        }
+      })
+    },
 
     onClickSaveButton() {
       this.isFieldCheck = false
       this.checkDuplicatesName()
+      this.checkNegativeNumber()
       this.updateExchangeDamagedGoods()
     },
 

@@ -415,6 +415,7 @@ export default {
       isFieldCheck: true,
       customers: [{ data: '' }],
       products: [{ data: '' }],
+      negativeCheck: true,
 
       reasonObj: {
         reasonSelected: null,
@@ -651,30 +652,42 @@ export default {
     createDamagedGoods() {
       this.$refs.formContainer.validate().then(success => {
         if (success && this.checkDuplicatesName() > -1) {
-          if (this.damagedProduct.length > 0) {
-            this.CREATE_EXCHANGE_DAMAGED_GOODS_ACTION({
-              damagedGoodsData: {
-                transCode: this.exchangeGoodsInfo.transCode,
-                customerId: this.customerId,
-                reasonId: this.reasonObj.reasonSelected,
-                lstExchangeDetail: this.damagedProduct.map(item => ({
-                  productId: item.id,
-                  productCode: item.productCode,
-                  productName: item.productName,
-                  quantity: item.productQuantity,
-                })),
-              },
-              onSuccess: () => {
-                this.navigateBack()
-              },
-            })
-          } else toasts.error('Vui lòng thêm sản phẩm')
+          if (this.negativeCheck) {
+            if (this.damagedProduct.length > 0) {
+              this.CREATE_EXCHANGE_DAMAGED_GOODS_ACTION({
+                damagedGoodsData: {
+                  transCode: this.exchangeGoodsInfo.transCode,
+                  customerId: this.customerId,
+                  reasonId: this.reasonObj.reasonSelected,
+                  lstExchangeDetail: this.damagedProduct.map(item => ({
+                    productId: item.id,
+                    productCode: item.productCode,
+                    productName: item.productName,
+                    quantity: item.productQuantity,
+                  })),
+                },
+                onSuccess: () => {
+                  this.navigateBack()
+                },
+              })
+            } else toasts.error('Vui lòng thêm sản phẩm')
+          } else toasts.error('Không được nhập số âm')
         } else toasts.error('Khách hàng không tồn tại')
       })
     },
 
     checkDuplicatesName() {
       return this.getAllCustomer.findIndex(x => x.customerName === this.customerInfo.customerName)
+    },
+    checkNegativeNumber() {
+      this.negativeCheck = true
+      this.damagedProduct.forEach(item => {
+        if (this.negativeCheck) {
+          if (item.productQuantity < 0) {
+            this.negativeCheck = false
+          } else this.negativeCheck = true
+        }
+      })
     },
 
     customerOptions(text) {
@@ -777,6 +790,7 @@ export default {
     onClickSaveButton() {
       this.isFieldCheck = false
       this.checkDuplicatesName()
+      this.checkNegativeNumber()
       this.createDamagedGoods()
     },
 

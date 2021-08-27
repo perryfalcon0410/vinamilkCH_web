@@ -489,6 +489,7 @@ export default {
       nullCheck: true,
       hideFilter: true,
       columnType: null,
+      negativeCheck: true,
 
       options: {
         number: {
@@ -857,34 +858,67 @@ export default {
         })
       }
     },
+    checkNegativeNumber() {
+      this.negativeCheck = true
+      if (this.products.length > 0) {
+        this.products.forEach(item => {
+          if (this.negativeCheck) {
+            if (item.quantityReturn < 0) {
+              this.negativeCheck = false
+            } else {
+              this.rowsProductPromotion.forEach(i => {
+                if (i.quantityPromo < 0) {
+                  this.negativeCheck = false
+                } else {
+                  this.negativeCheck = true
+                }
+              })
+            }
+          }
+        })
+      } else {
+        this.rowsProductPromotion.forEach(i => {
+          if (this.negativeCheck) {
+            if (i.quantityPromo < 0) {
+              this.negativeCheck = false
+            } else {
+              this.negativeCheck = true
+            }
+          }
+        })
+      }
+    },
     createExport() {
       if (this.outputTypeSelected === this.poOutputType) {
         this.checkNull()
+        this.checkNegativeNumber()
       }
       if (this.products.length > 0 || this.rowsProductPromotion.length > 0) {
-        if (this.nullCheck) {
-          this.CREATE_EXPORT_ACTION(
-            {
-              importType: Number(this.outputTypeSelected),
-              isRemainAll: this.exportAll,
-              receiptImportId: Number(this.warehousesOutput.id),
-              note: this.warehousesOutput.note,
-              litQuantityRemain: [...this.products.map(item => ({
-                id: item.id,
-                quantity: Number(item.quantityReturn) || 0,
-                productCode: item.productCode,
-                productName: item.productName,
-              })),
-              ...this.rowsProductPromotion.map(item => ({
-                id: item.id,
-                quantity: Number(item.quantityPromo) || 0,
-                productCode: item.productCode,
-                productName: item.productName,
-              })),
-              ],
-            },
-          )
-        } else toasts.error('Tổng số lượng trả phải lớn hơn 0.')
+        if (this.negativeCheck) {
+          if (this.nullCheck) {
+            this.CREATE_EXPORT_ACTION(
+              {
+                importType: Number(this.outputTypeSelected),
+                isRemainAll: this.exportAll,
+                receiptImportId: Number(this.warehousesOutput.id),
+                note: this.warehousesOutput.note,
+                litQuantityRemain: [...this.products.map(item => ({
+                  id: item.id,
+                  quantity: Number(item.quantityReturn) || 0,
+                  productCode: item.productCode,
+                  productName: item.productName,
+                })),
+                ...this.rowsProductPromotion.map(item => ({
+                  id: item.id,
+                  quantity: Number(item.quantityPromo) || 0,
+                  productCode: item.productCode,
+                  productName: item.productName,
+                })),
+                ],
+              },
+            )
+          } else toasts.error('Tổng số lượng trả phải lớn hơn 0.')
+        } else toasts.error('Không được nhập số âm.')
       } else toasts.error('Vui lòng chọn phiếu.')
     },
     navigateBack() {

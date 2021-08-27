@@ -587,6 +587,7 @@ export default {
       today: nowDate(),
       importTypeName: null,
       warehousesInputOptions: warehousesData.inputTypes,
+      negativeCheck: true,
       configDate: {
         wrap: true,
         allowInput: true,
@@ -1005,12 +1006,13 @@ export default {
       this.promotions[index].quantity = Number(value) + 0
     },
     updateReceipt() {
+      this.checkNegativeNumber()
       const updatedPromotions = this.promotions.map(data => ({
         id: data.id,
         productId: data.productId,
         quantity: data.quantity,
       }))
-      if (updatedPromotions.findIndex(promotion => promotion.quantity === 0) !== -1) {
+      if (updatedPromotions.findIndex(promotion => promotion.quantity < 0) !== -1) {
         toasts.error('Số lượng sản phẩm phải lớn hơn 0')
         return
       }
@@ -1034,6 +1036,18 @@ export default {
           })
         }
       })
+    },
+    checkNegativeNumber() {
+      this.negativeCheck = true
+      if (this.promotions.length > 0) {
+        this.promotions.forEach(item => {
+          if (this.negativeCheck) {
+            if (item.quantity < 0) {
+              this.negativeCheck = false
+            } else this.negativeCheck = true
+          }
+        })
+      }
     },
     click() {
       if (this.productSearch === null) return

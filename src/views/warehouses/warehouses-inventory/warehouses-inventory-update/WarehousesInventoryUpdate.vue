@@ -475,7 +475,7 @@ export default {
       isImportModalShow: false,
       isModalCloseShow: false,
       warehousesInventoryData: null,
-      stop: true,
+      negativeCheck: true,
       columns: [
         {
           label: 'Ngành hàng',
@@ -760,7 +760,7 @@ export default {
                                                            || product.productName.toLowerCase().includes(this.searchKeywords.trim().toLowerCase()))
     },
     onClickSaveButton() {
-      this.stop = true
+      this.negativeCheck = true
       const lstUpdate = this.originalProducts.map(data => ({
         productId: data.productId,
         convfact: data.exchange,
@@ -768,14 +768,13 @@ export default {
         unitQuantity: data.inventoryOdd || 0,
       }))
       this.originalProducts.forEach(item => {
-        if (this.stop) {
+        if (this.negativeCheck) {
           if (item.inventoryPacket < 0 || item.inventoryOdd < 0) {
-            this.stop = false
-          } else this.stop = true
+            this.negativeCheck = false
+          } else this.negativeCheck = true
         }
       })
-      console.log(this.stop)
-      if (this.stop) {
+      if (this.negativeCheck) {
         this.UPDATE_WAREHOUSE_INVENTORY_ACTION({
           lstUpdate,
           id: this.id,

@@ -390,6 +390,7 @@ export default {
       products: [],
       nullCheck: true,
       rowsProductPromotion: [],
+      negativeCheck: true,
 
       options: {
         number: {
@@ -788,39 +789,72 @@ export default {
         })
       }
     },
+    checkNegativeNumber() {
+      this.negativeCheck = true
+      if (this.products.length > 0) {
+        this.products.forEach(item => {
+          if (this.negativeCheck) {
+            if (item.productReturnAmount < 0) {
+              this.negativeCheck = false
+            } else {
+              this.rowsProductPromotion.forEach(i => {
+                if (i.productReturnAmount < 0) {
+                  this.negativeCheck = false
+                } else {
+                  this.negativeCheck = true
+                }
+              })
+            }
+          }
+        })
+      } else {
+        this.rowsProductPromotion.forEach(i => {
+          if (this.negativeCheck) {
+            if (i.productReturnAmount < 0) {
+              this.negativeCheck = false
+            } else {
+              this.negativeCheck = true
+            }
+          }
+        })
+      }
+    },
     onClickUpdateWarehousesOutput() {
       if (this.warehousesOutput.receiptType === this.poOutputType) {
         this.checkNull()
+        this.checkNegativeNumber()
       }
-      if (this.nullCheck) {
-        if (this.products) {
-          const products = [...this.products.map(data => ({
-            id: data.productID,
-            quantity: Number(data.productReturnAmount) || 0,
-            productCode: data.productCode,
-            productName: data.productName,
-          })),
-          ...this.rowsProductPromotion.map(data => ({
-            id: data.productID,
-            quantity: Number(data.productReturnAmount) || 0,
-            productCode: data.productCode,
-            productName: data.productName,
-          })),
-          ]
+      if (this.negativeCheck) {
+        if (this.nullCheck) {
+          if (this.products) {
+            const products = [...this.products.map(data => ({
+              id: data.productID,
+              quantity: Number(data.productReturnAmount) || 0,
+              productCode: data.productCode,
+              productName: data.productName,
+            })),
+            ...this.rowsProductPromotion.map(data => ({
+              id: data.productID,
+              quantity: Number(data.productReturnAmount) || 0,
+              productCode: data.productCode,
+              productName: data.productName,
+            })),
+            ]
 
-          this.UPDATE_WAREHOUSES_OUTPUT_ACTION({
-            updateWarehouseOutput: {
-              id: this.warehousesOutput.id,
-              type: this.warehousesOutput.receiptType,
-              note: this.warehousesOutput.note,
-              listProductRemain: products,
-            },
-            onSuccess: () => {
-              this.navigateBack()
-            },
-          })
-        }
-      } else toasts.error('Tổng số lượng trả phải lớn hơn 0.')
+            this.UPDATE_WAREHOUSES_OUTPUT_ACTION({
+              updateWarehouseOutput: {
+                id: this.warehousesOutput.id,
+                type: this.warehousesOutput.receiptType,
+                note: this.warehousesOutput.note,
+                listProductRemain: products,
+              },
+              onSuccess: () => {
+                this.navigateBack()
+              },
+            })
+          }
+        } else toasts.error('Tổng số lượng trả phải lớn hơn 0.')
+      } else toasts.error('Không được nhập số âm.')
     },
     changeQuantity() {
       this.products.forEach(item => {
