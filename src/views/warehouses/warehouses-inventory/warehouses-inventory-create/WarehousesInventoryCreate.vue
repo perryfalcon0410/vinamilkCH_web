@@ -526,6 +526,7 @@ export default {
       isCreateModalShow: false,
       isCreated: false,
       warehousesInventoryData: null,
+      stop: true,
       columns: [
         {
           label: 'Ngành hàng',
@@ -821,6 +822,7 @@ export default {
                                                            || product.productName.toLowerCase().includes(this.searchKeywords.trim().toLowerCase()))
     },
     onClickSaveButton() {
+      this.stop = true
       const lstCreate = this.originalProducts.map(data => ({
         productId: data.productId,
         productCategory: data.category,
@@ -837,25 +839,35 @@ export default {
         packetQuantity: data.inventoryPacket || 0,
         unitQuantity: data.inventoryOdd || 0,
       }))
-      this.CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION({
-        data: {
-          wareHouseTypeId: this.warehouseType,
-        },
-        onSuccess: () => {
-          if (this.isExistedWarehouseInventory) {
-            this.isCreateModalShow = !this.isCreateModalShow
-          } else {
-            this.CREATE_WAREHOUSE_INVENTORY_ACTION({
-              lstCreate,
-              wareHouseTypeId: this.warehouseType,
-              formId: 5,
-              ctrlId: 7,
-            })
-          }
-        },
+      this.originalProducts.forEach(item => {
+        if (this.top) {
+          if (item.inventoryPacket < 0 || item.inventoryOdd < 0) {
+            this.stop = false
+          } else this.stop = true
+        }
       })
+      if (this.stop) {
+        this.CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION({
+          data: {
+            wareHouseTypeId: this.warehouseType,
+          },
+          onSuccess: () => {
+            if (this.isExistedWarehouseInventory) {
+              this.isCreateModalShow = !this.isCreateModalShow
+            } else {
+              this.CREATE_WAREHOUSE_INVENTORY_ACTION({
+                lstCreate,
+                wareHouseTypeId: this.warehouseType,
+                formId: 5,
+                ctrlId: 7,
+              })
+            }
+          },
+        })
+      } else toasts.error('Không được nhập số âm!')
     },
     onClickAgreeButton() {
+      this.stop = true
       const lstCreate = this.originalProducts.map(data => ({
         productId: data.productId,
         productCategory: data.category,
@@ -872,14 +884,24 @@ export default {
         packetQuantity: data.inventoryPacket || 0,
         unitQuantity: data.inventoryOdd || 0,
       }))
-      this.CREATE_WAREHOUSE_INVENTORY_ACTION({
-        lstCreate,
-        wareHouseTypeId: this.warehouseType,
-        override: true,
-        formId: 5,
-        ctrlId: 7,
+      this.originalProducts.forEach(item => {
+        if (this.stop) {
+          if (item.inventoryPacket < 0 || item.inventoryOdd < 0) {
+            this.stop = false
+          } else this.stop = true
+        }
       })
-      this.isCreateModalShow = !this.isCreateModalShow
+      console.log(this.stop)
+      if (this.stop) {
+        this.CREATE_WAREHOUSE_INVENTORY_ACTION({
+          lstCreate,
+          wareHouseTypeId: this.warehouseType,
+          override: true,
+          formId: 5,
+          ctrlId: 7,
+        })
+        this.isCreateModalShow = !this.isCreateModalShow
+      } else toasts.error('Không được nhập số âm!')
     },
     onClickImportButton() {
       this.isImportModalShow = !this.isImportModalShow

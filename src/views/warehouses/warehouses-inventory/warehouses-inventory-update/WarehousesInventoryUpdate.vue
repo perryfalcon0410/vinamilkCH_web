@@ -102,7 +102,7 @@
         <strong
           class="text-brand-1"
         >
-          Danh sách sản phẩm kiểm kê
+          Danh sách sản phẩm kiểm
         </strong>
       </div>
       <!-- END - Title -->
@@ -475,6 +475,7 @@ export default {
       isImportModalShow: false,
       isModalCloseShow: false,
       warehousesInventoryData: null,
+      stop: true,
       columns: [
         {
           label: 'Ngành hàng',
@@ -759,19 +760,29 @@ export default {
                                                            || product.productName.toLowerCase().includes(this.searchKeywords.trim().toLowerCase()))
     },
     onClickSaveButton() {
+      this.stop = true
       const lstUpdate = this.originalProducts.map(data => ({
         productId: data.productId,
         convfact: data.exchange,
         packetQuantity: data.inventoryPacket || 0,
         unitQuantity: data.inventoryOdd || 0,
       }))
-
-      this.UPDATE_WAREHOUSE_INVENTORY_ACTION({
-        lstUpdate,
-        id: this.id,
-        formId: 5,
-        ctrlId: 7,
+      this.originalProducts.forEach(item => {
+        if (this.stop) {
+          if (item.inventoryPacket < 0 || item.inventoryOdd < 0) {
+            this.stop = false
+          } else this.stop = true
+        }
       })
+      console.log(this.stop)
+      if (this.stop) {
+        this.UPDATE_WAREHOUSE_INVENTORY_ACTION({
+          lstUpdate,
+          id: this.id,
+          formId: 5,
+          ctrlId: 7,
+        })
+      } else toasts.error('Không được nhập số âm!')
     },
     onClickConfirmCloseButton() {
       this.$router.replace({ name: 'warehouses-inventory' })
