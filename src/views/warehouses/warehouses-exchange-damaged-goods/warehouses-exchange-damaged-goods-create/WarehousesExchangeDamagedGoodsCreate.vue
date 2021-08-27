@@ -706,7 +706,6 @@ export default {
         }
       })
     },
-
     customerOptions() {
       if (this.customerName) {
         if (this.customerName.length >= commonData.minSearchLength) {
