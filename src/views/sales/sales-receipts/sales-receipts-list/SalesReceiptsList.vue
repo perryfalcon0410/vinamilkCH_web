@@ -100,7 +100,7 @@
             </div>
             <div
               v-else-if="props.column.label === 'Mã khách hàng'"
-              ref="customerCode"
+              ref="customerNumber"
             >
               {{ props.column.label }}
             </div>
@@ -152,7 +152,7 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
-              v-else-if="props.column.field === 'customerCode'"
+              v-else-if="props.column.field === 'customerNumber'"
               class="customerName-width"
             >
               {{ props.formattedRow[props.column.field] }}
@@ -331,15 +331,13 @@ export default {
         },
         {
           label: 'Mã khách hàng',
-          field: 'customerCode',
-          sortable: false,
+          field: 'customerNumber',
           thClass: 'ws-nowrap scroll-column-header column-second',
           tdClass: 'scroll-column column-second',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
-          sortable: false,
           thClass: 'scroll-column-header column-third ws-nowrap',
           tdClass: 'scroll-column column-third',
         },
@@ -454,7 +452,7 @@ export default {
         return this.SALES_RECEIPTS_GETTER.response.content.map(data => ({
           id: data.id,
           orderNumber: data.orderNumber,
-          customerCode: data.customerNumber,
+          customerNumber: data.customerNumber,
           customerName: data.customerName,
           orderDate: data.orderDate,
           amount: data.amount,
@@ -553,7 +551,7 @@ export default {
       this.salesReceiptList = [...this.getSalesReceiptList]
       this.$nextTick(() => {
         this.numberBillWidth = this.$refs.orderNumber.offsetParent.offsetWidth
-        this.customerCodeWidth = this.$refs.customerCode.offsetParent.offsetWidth
+        this.customerCodeWidth = this.$refs.customerNumber.offsetParent.offsetWidth
         this.customerNameWidth = this.$refs.customerName.offsetParent.offsetWidth
       })
     },
