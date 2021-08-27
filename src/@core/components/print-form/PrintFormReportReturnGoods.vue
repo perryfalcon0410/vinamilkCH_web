@@ -318,12 +318,16 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import {
-  hostName,
-  printActions,
   jspmCheckStatus,
+  jsPdfPrint,
 } from '@core/utils/filter'
+import jsPDF from 'jspdf'
+// eslint-disable-next-line no-unused-vars
+import autoTable from 'jspdf-autotable'
+import { myFontNormal } from '@/@core/libs/Arimo-Regular'
+import { myFontBold } from '@/@core/libs/Arimo-Bold'
 import JSPM from 'jsprintmanager'
 import toasts from '@/@core/utils/toasts/toasts'
 import {
@@ -335,14 +339,17 @@ import {
 import {
   PRINTERCONFIG,
   PRINTER_CLIENT_GETTER,
-  GET_PRINTER_CLIENT_ACTIONS,
 } from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   data() {
     return {
-      ipAddress: '',
+      printerName: null,
       reportProductData: [],
+      bodyData: [],
+      count: 1,
+      checkHeight: true,
+      checkHeader: true,
     }
   },
   computed: {
@@ -380,6 +387,9 @@ export default {
     },
   },
   watch: {
+    printerOptions() {
+      this.printerName = this.printerOptions.reportPrinterName
+    },
     reportData() {
       this.reportProductData = [...this.reportData]
       let i = 0
@@ -393,55 +403,355 @@ export default {
         })
       })
     },
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
-    },
-  },
-  mounted() {
-    hostName().then(res => {
-      if (res) {
-        this.ipAddress = res.ip || res.query || res.geoplugin_request
-      } else {
-        this.ipAddress = null
-      }
-    })
   },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.reportPrinterName
-    if (printerName === '' || printerName === null) {
+    if (this.printerName === '' || this.printerName === null) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
-      for (let i = 0; i < 3; i += 1) {
-        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          const element = document.getElementById('rp-return-goods')
-          const options = {
-            fileName: 'Bao cao hang tra lai',
-            format: 'a3',
-            // orientation: 'landscape',
-            // rotate: 'Rot90',
-            pageSizing: 'Fit',
-            scale: 2.5,
-            isPaging: true,
-            margin: [5, 1, 5, 1],
-          }
-          if (jspmCheckStatus()) {
-            printActions(element, printerName, options)
-          }
-        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-        }
+      // eslint-disable-next-line new-cap
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      // START - add font family
+      pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+      pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+      pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+      pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+      // END - add font family
+
+      // START - hearder page
+      pdf.setFont('Ario-Bold')
+      pdf.setFontSize(13.5)
+      pdf.text('Hàng trả lại', 110, 10)
+      pdf.setFontSize(9.5)
+      pdf.text(`${this.commonData.shopName}`, 5, 10)
+      pdf.setFontSize(8.5)
+      pdf.setFont('Ario-Regular')
+      pdf.text(`Add: ${this.commonData.address}`, 5, 17)
+      pdf.text(`Tel: ${this.commonData.shopTel}`, 5, 24)
+      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonData.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonData.toDate)}`, 93, 17)
+      pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonData.printDate)}`, 101, 24)
+      // END - hearder page
+
+      // START - table tổng đầu tiên
+      this.createTable1(pdf)
+      // END - table tổng đầu tiên
+
+      // table 3
+      this.createTable2(pdf)
+      // table 3
+      // end pager
+      pdf.setFontSize(9)
+      pdf.text('........, Ngày..... tháng..... năm.......', 135, pdf.previousAutoTable.finalY + 10)
+      pdf.setFont('Ario-Bold')
+      pdf.text('Người in', 20, pdf.previousAutoTable.finalY + 14)
+      pdf.text('Cửa hàng trưởng', 147, pdf.previousAutoTable.finalY + 14)
+      // end pager
+
+      this.checkHeight = true
+      const options = {
+        fileName: 'Bao_cao_xuat_hang',
+        // pageSizing: 'Fit',
+      }
+      if (jspmCheckStatus()) {
+        jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
       }
     }
   },
   methods: {
-    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+    // tablle 1
+    createTable1(pdf) {
+      pdf.autoTable({
+        startY: 30,
+        margin: {
+          right: 5,
+          left: 5,
+        },
+        styles: {
+          font: 'Ario-Regular',
+          fontSize: 8,
+          textColor: 'black',
+        },
+        body: [
+          [
+            {
+              content: 'Tổng SL:',
+              styles: { halign: 'right', fillColor: [211, 211, 211], cellWidth: 92 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.totalInfoReturnedGood.totalQuantity)}`,
+              styles: {
+                halign: 'right', font: 'Ario-Bold', fillColor: [211, 211, 211], cellWidth: 15,
+              },
+            },
+            {
+              content: 'T.Tiền:',
+              styles: { halign: 'right', fillColor: [211, 211, 211], cellWidth: 25 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.totalInfoReturnedGood.totalAmount)}`,
+              styles: {
+                font: 'Ario-Bold', halign: 'right', fillColor: [211, 211, 211], cellWidth: 30,
+              },
+            },
+            {
+              content: 'T.TL:',
+              styles: { fillColor: [211, 211, 211], cellWidth: 20 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.totalInfoReturnedGood.totalRefunds)}`,
+              styles: {
+                font: 'Ario-Bold', halign: 'right', fillColor: [211, 211, 211],
+              },
+            },
+          ],
+        ],
+        didDrawCell: key => {
+          if (key.section === 'body' && key.row.index === 0) {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.1)
+            pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+          }
+          if (key.section === 'body' && key.row.index === key.table.body.length - 1) {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.1)
+            pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y + key.cell.height)
+          }
+          if (key.section === 'body' && key.column.index === 0) {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.1)
+            pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x, key.cell.y)
+          }
+          if (key.section === 'body' && key.column.index === 5) {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.1)
+            pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+          }
+        },
+      })
+    },
+    // table 1
+    // table 2
+    createTable2(pdf) {
+      this.reportProductData.forEach(item => {
+        const startHeight = this.checkHeight ? { startY: pdf.previousAutoTable.finalY } : { }
+        pdf.autoTable({
+          ...startHeight,
+          theme: 'plain',
+          margin: {
+            right: 5,
+            left: 5,
+          },
+          styles: {
+            font: 'Ario-Regular',
+            fontSize: 8,
+            textColor: 'black',
+          },
+          body: [
+            [
+              {
+                content: `Ngành hàng:  ${item.category}`,
+                styles: { font: 'Ario-Bold', cellWidth: 77 },
+              },
+              {
+                content: 'Tổng SL:',
+                styles: { halign: 'right', cellWidth: 15 },
+              },
+              {
+                content: `${this.$formatNumberToLocale(item.totalQuantity)}`,
+                styles: {
+                  halign: 'right', font: 'Ario-Bold', cellWidth: 15,
+                },
+              },
+              {
+                content: 'T.Tiền :',
+                styles: { halign: 'right', cellWidth: 25 },
+              },
+              {
+                content: `${this.$formatNumberToLocale(item.totalAmount)}`,
+                styles: {
+                  font: 'Ario-Bold', halign: 'right', cellWidth: 30,
+                },
+              },
+              {
+                content: 'T.TL:',
+                styles: { cellWidth: 20 },
+              },
+              {
+                content: `${this.$formatNumberToLocale(item.totalRefunds)}`,
+                styles: {
+                  font: 'Ario-Bold', halign: 'right',
+                },
+              },
+            ],
+          ],
+          didDrawCell: key => {
+            if (key.section === 'body' && key.row.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+            }
+            if (key.section === 'body' && key.row.index === key.table.body.length - 1) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y + key.cell.height)
+            }
+            if (key.section === 'body' && key.column.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x, key.cell.y)
+            }
+            if (key.section === 'body' && key.column.index === 6) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+            }
+          },
+        })
+        item.orderReturnGoods.forEach(order => {
+          const row1 = [
+            {
+              content: `Mã trả hàng:${order.returnNumber} - Mã hóa đơn:${order.orderNumber} - KH: ${order.customerName}`,
+              colSpan: 9,
+              styles: { lineWidth: 0 },
+            },
+          ]
+          this.bodyData.push(row1)
+          const row2 = [
+            {
+              content: '',
+              colSpan: 3,
+              styles: { lineWidth: 0 },
+            },
+            {
+              content: 'Tổng SL:',
+              styles: { lineWidth: 0, halign: 'right' },
+            },
+            {
+              content: `${this.$formatNumberToLocale(order.orderQuantity)}`,
+              styles: { font: 'Ario-Bold', lineWidth: 0, halign: 'right' },
+            },
+            {
+              content: 'Tổng T.Tiền:',
+              styles: { lineWidth: 0, halign: 'right' },
+            },
+            {
+              content: `${this.$formatNumberToLocale(order.orderAmount)}`,
+              styles: { font: 'Ario-Bold', lineWidth: 0, halign: 'right' },
+            },
+            {
+              content: 'Tổng TTL:',
+              styles: { lineWidth: 0, cellWidth: 20 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(order.orderRefund)}`,
+              styles: { font: 'Ario-Bold', lineWidth: 0, halign: 'right' },
+            },
+          ]
+          this.bodyData.push(row2)
+          const title = [
+            { content: 'STT', dataKey: 'STT', styles: { font: 'Ario-Bold' } },
+            {
+              content: 'Mã SP', dataKey: 'Mã SP', styles: { font: 'Ario-Bold' },
+            },
+            {
+              content: 'Tên SP', dataKey: 'Tên SP', styles: { font: 'Ario-Bold' },
+            },
+            {
+              content: 'ĐVT', dataKey: 'ĐVT', styles: { font: 'Ario-Bold' },
+            },
+            {
+              content: 'SL', dataKey: 'SL', styles: { font: 'Ario-Bold' },
+            },
+            {
+              content: 'Giá', dataKey: 'Giá', styles: { font: 'Ario-Bold' },
+            },
+            {
+              content: 'T.Tiền', dataKey: 'T.Tiền', styles: { font: 'Ario-Bold' },
+            },
+            {
+              content: 'Tiền trả lại', colSpan: 2, dataKey: 'T.Tiền', styles: { font: 'Ario-Bold' },
+            },
+          ]
+          this.bodyData.push(title)
+          order.reportPrintProductDTOS.forEach(pro => {
+            this.bodyData.push([
+              { content: `${this.count}`, styles: { cellWidth: 9 } },
+              { content: `${pro.productCode}`, styles: { cellWidth: 18 } },
+              { content: `${pro.productName}`, styles: { cellWidth: 50 } },
+              { content: `${pro.unit}`, styles: { cellWidth: 15, halign: 'center' } },
+              { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
+              { content: `${this.$formatNumberToLocale(pro.price)}`, styles: { cellWidth: 25, halign: 'right' } },
+              { content: `${this.$formatNumberToLocale(pro.totalAmount)}`, styles: { cellWidth: 30, halign: 'right' } },
+              { content: `${this.$formatNumberToLocale(pro.totalRefunds)}`, colSpan: 2, styles: { halign: 'right' } },
+            ])
+            this.count += 1
+          })
+          const startY = this.checkHeader ? { startY: pdf.previousAutoTable.finalY } : { }
+          pdf.autoTable({
+            theme: 'grid',
+            ...startY,
+            pageBreak: 'avoid',
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Regular',
+              fontSize: 8,
+              textColor: 'black',
+            },
+            body: [...this.bodyData],
+            didDrawCell: key => {
+              if (key.section === 'body' && key.row.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+              }
+              if (key.section === 'body' && key.column.index === 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x, key.cell.y)
+                pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+              }
+              if (key.section === 'body' && key.column.index === 8) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+              }
+              if (key.section === 'body' && key.column.index === 7 && key.row.index !== 1) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+              }
+              if (key.section === 'body' && key.row.index === key.table.body.length - 1) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y + key.cell.height)
+              }
+              if (key.section === 'body' && key.row.index === 2) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+                if (key.column.index === 1 || key.column.index === 2 || key.column.index === 3 || key.column.index === 4 || key.column.index === 5 || key.column.index === 6 || key.column.index === 7) {
+                  pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x, key.cell.y)
+                }
+              }
+              if (key.section === 'body' && key.row.index === 3) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+              }
+            },
+          })
+          this.checkHeight = false
+          this.checkHeader = false
+          this.bodyData = []
+        })
+        this.checkHeader = true
+      })
+    },
+    // table 2
   },
 }
 </script>
