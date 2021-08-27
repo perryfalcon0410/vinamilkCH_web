@@ -458,7 +458,6 @@ export default {
         }
       })
       if (params.length === 1) {
-        console.log(1)
         this.updateSearchData({
           sort: `${params[0].field},${params[0].type}`,
         })
@@ -468,7 +467,6 @@ export default {
         })
       }
       if (params.length >= 2) {
-        console.log(2)
         this.updateSearchData({
           sort: [...params],
         })

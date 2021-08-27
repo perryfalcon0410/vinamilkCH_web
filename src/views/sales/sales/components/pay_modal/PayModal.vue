@@ -160,11 +160,11 @@
                       class="mx-1 my-2 px-2"
                     >
                       <vue-autosuggest
-                        ref="searchProduct"
+                        ref="searchProductPayModal"
                         v-model="value.productSearch"
                         :suggestions="allProducts"
                         :input-props="{
-                          id:'autosuggest__input_product',
+                          id:'autosuggest__product',
                           class:'form-control w-50',
                           placeholder:'Nhập mã hoặc tên sản phẩm'
                         }"
@@ -258,11 +258,11 @@
                       class="mx-1 my-2 px-2"
                     >
                       <vue-autosuggest
-                        ref="searchProduct"
+                        ref="searchProductPayModal"
                         v-model="value.productSearch"
                         :suggestions="allProducts"
                         :input-props="{
-                          id:'autosuggest__input_product',
+                          id:'autosuggest__product',
                           class:'form-control w-50',
                           placeholder:'Nhập mã hoặc tên sản phẩm'
                         }"
@@ -709,7 +709,7 @@
             class="mr-1"
             scale="1.5"
           />
-          In hóa đơn (F10)
+          In lại hóa đơn (F10)
         </b-button>
         <!-- END - Reprint  -->
 
@@ -1073,7 +1073,7 @@ export default {
       // để show lên vue-autosuggest thì phải để [{data: value}]
       this.allProducts = [...this.getItemsProduct]
       if (this.allProducts[0].data && this.allProducts[0].data.length === 1) {
-        document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 }))
+        this.$nextTick(() => document.getElementById('autosuggest__product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
       }
     },
     needPayment() {

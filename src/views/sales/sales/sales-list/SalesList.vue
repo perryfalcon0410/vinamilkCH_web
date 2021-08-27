@@ -799,7 +799,7 @@ export default {
       if (this.defaultCustomer === null) {
         toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
       }
-
+      this.productsSearch = [{ data: null }]
       if (this.searchOptions.keyWord.length >= this.minSearch) {
         this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
         this.searchOptions.customerId = this.currentCustomer.id
@@ -816,6 +816,8 @@ export default {
     },
 
     onClickAddProduct(index) {
+      this.productsSearch = [{ data: null }]
+      this.searchOptions.keyWord = ''
       // check permission online order manual or online order from system to add product
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
         || this.isOnline === false
