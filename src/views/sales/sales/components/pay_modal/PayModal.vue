@@ -57,10 +57,17 @@
                   @change="onChangeCheckProgramPromotion(value.programId)"
                 />
                 <div class="text-white">
-                  {{ value.promotionProgramName }} <span>- Số suất: {{ $formatNumberToLocale(value.numberLimited) }}</span>
+                  {{ value.promotionProgramCode }} - {{ value.promotionProgramName }}
                   <b-icon-shield-exclamation
-                    v-if="(!value.isEditable && !value.isUse && value.promotionType === Number(promotionTypeOption[1].id)) || (value.promotionType === Number(promotionTypeOption[0].id) && !value.isUse)"
-                    v-b-popover.hover="{variant: 'danger', content: 'Chương trình này không được áp dụng do số suất không đủ'}"
+                    v-if="(value.receiveShopQty + value.orderInQty <= value.maxShopQty) || (value.numberLimited === 'Không giới hạn')"
+                    v-b-popover.hover="{variant: 'info', content: `<p>Thông tin số suất:</p><p>- Được phân bố: ${value.maxShopQty}</p><p>- Đã sử dụng: ${value.receiveShopQty}</p><p>- Còn lại: ${value.numberLimited}</p>`, html: true}"
+                    class="cursor-pointer ml-1"
+                    color="white"
+                    font-scale="1.5"
+                  />
+                  <b-icon-shield-exclamation
+                    v-else
+                    v-b-popover.hover="{variant: 'danger', content: `<p>Chương trình này không được áp dụng do đã hết số suất khuyến mãi</p><p>Thông tin số suất:</p><p>- Được phân bố: ${value.maxShopQty}</p><p>- Đã sử dụng: ${value.receiveShopQty}</p><p>- Còn lại: ${value.numberLimited}</p>`, html: true}"
                     class="cursor-pointer ml-1 text-danger"
                     font-scale="1.5"
                   />
@@ -1017,7 +1024,7 @@ export default {
           products: data.products || [],
           amount: data.amount,
           isEditable: data.isEditable,
-          numberLimited: data.numberLimited,
+          numberLimited: data.numberLimited || 'Không giới hạn',
           isInsertItemProducts: (data.products === null && data.amount === null),
           levelNumber: data.levelNumber,
           totalQty: data.totalQty,
@@ -1029,6 +1036,9 @@ export default {
           affected: data.affected,
           reCalculated: data.reCalculated,
           productSearch: '',
+          maxShopQty: data.maxShopQty || 'Không giới hạn', // số xuất phân bổ
+          receiveShopQty: data.receiveShopQty || 0, // Đã sử dụng
+          orderInQty: data.totalQty !== null ? data.totalQty : data.totalAmtInTax, // số suất trong đơn hàng
         }))
         this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
         this.pay.promotionAmountExTax = this.getPromotionPrograms.promotionAmountExTax || null
