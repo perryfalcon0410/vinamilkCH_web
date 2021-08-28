@@ -209,9 +209,15 @@ import {
   resizeAbleTable,
 } from '@core/utils/utils'
 import {
+  checkIpClient,
+  hostName,
   preventDefaultWindowPrint,
 } from '@core/utils/filter'
 import PrintFormReportInputOrdersDetail from '@core/components/print-form/PrintFormReportInputOrdersDetail.vue'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '@/views/auth/printer-configuration-modal/store-module/type'
 import ListSearch from '../components/ListSearch.vue'
 import {
   REPORT_PURCHASES,
@@ -230,6 +236,8 @@ export default {
   },
   data() {
     return {
+      ipAddressCurrent: '',
+      ipAddress: '',
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
       paginationData: {
@@ -353,6 +361,13 @@ export default {
   mounted() {
     resizeAbleTable()
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleWindowPrintHotKey)
@@ -365,15 +380,28 @@ export default {
       }
     },
     printReport() {
-      this.$root.$emit('bv::hide::popover')
-      this.$root.$emit('bv::disable::popover')
-      this.PRINT_REPORT_INPUT_RECEIPT_DETAILS_ACTION({
-        ...this.searchData,
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
+      hostName().then(res => {
+        if (res) {
+          this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddressCurrent = null
+        }
+        if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+          this.GET_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientId: this.ipAddressCurrent,
+            },
+            onSuccess: () => {
+              this.PRINT_REPORT_INPUT_RECEIPT_DETAILS_ACTION({
+                ...this.searchData,
+                onSuccess: () => {},
+              })
+            },
+          })
+        }
       })
     },
+
     exportReport() {
       this.EXPORT_REPORT_INPUT_RECEIPT_DETAILS_ACTION(this.searchData)
     },
@@ -382,6 +410,7 @@ export default {
       EXPORT_REPORT_INPUT_RECEIPT_DETAILS_ACTION,
       PRINT_REPORT_INPUT_RECEIPT_DETAILS_ACTION,
     ]),
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
 
     // START - permission
     statusExcelButton() {
