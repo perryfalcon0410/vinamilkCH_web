@@ -126,8 +126,13 @@ export default {
   },
 
   getVoucherBySerial(args) {
-    return axios.get(`${getVoucherBySerialEndpoint}/${args.serial}`, {
-      params: formatURLParams(args),
+    return axios.post(getVoucherBySerialEndpoint, { serial: args.serial }, {
+      params: {
+        customerId: args.customerId,
+        productIds: args.productIds,
+        formId: args.formId,
+        ctrlId: args.ctrlId,
+      },
     })
   },
 

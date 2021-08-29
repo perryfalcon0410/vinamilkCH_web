@@ -41,7 +41,7 @@ export const getPromotionCalculationEndpoint = `${SALES}/promotion-calculation`
 
 export const getItemsProductsProgramEndpoint = `${SALES}/promotion-products`
 
-export const getVoucherBySerialEndpoint = `${PROMOTION}/${VOUCHERS}/code`
+export const getVoucherBySerialEndpoint = `${PROMOTION}${VOUCHERS}/code`
 
 export const getCustomerToSaleEndpoint = `${CUSTOMER}/autocomplete`
 
