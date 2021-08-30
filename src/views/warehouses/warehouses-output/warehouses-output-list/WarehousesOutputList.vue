@@ -519,6 +519,7 @@ export default {
           type: 'number',
           thClass: 'text-left',
           tdClass: 'text-left',
+          sortable: false,
         },
         {
           label: 'Số lượng',
@@ -528,6 +529,7 @@ export default {
             enabled: true,
           },
           formatFn: this.$formatNumberToLocale,
+          sortable: false,
         },
         {
           label: 'Số tiền',
@@ -537,12 +539,14 @@ export default {
             enabled: true,
           },
           formatFn: this.$formatNumberToLocale,
+          sortable: false,
         },
         {
           label: 'Loại xuất',
           field: 'receiptType',
           formatFn: this.$getOutputTypeslabel,
           tdClass: 'text-nowrap',
+          sortable: false,
         },
         {
           label: 'Ghi chú',

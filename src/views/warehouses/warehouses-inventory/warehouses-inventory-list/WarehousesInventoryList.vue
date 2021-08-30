@@ -229,31 +229,36 @@ export default {
         {
           label: 'Mã kiểm kê',
           field: 'stockCountingCode',
+          sortable: false,
         },
         {
           label: 'Kho',
-          field: 'wareHouseTypeName',
+          field: 'warehouseType',
+          sortable: false,
         },
         {
           label: 'Người tạo',
-          field: 'createdBy',
+          field: 'createUser',
+          sortable: false,
         },
         {
           label: 'Chỉnh sửa lần cuối',
-          field: 'updatedAt',
+          field: 'updateDate',
+          sortable: false,
         },
         {
           label: 'Người chỉnh sửa',
-          field: 'updatedBy',
+          field: 'updateUser',
+          sortable: false,
         },
         {
           label: 'Thao tác',
           field: 'feature',
           hidden: !this.statusUpdateButton().show,
           width: '30px',
-          sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
+          sortable: false,
         },
       ],
     }

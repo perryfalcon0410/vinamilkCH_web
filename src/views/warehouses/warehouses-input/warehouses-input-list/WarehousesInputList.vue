@@ -332,6 +332,7 @@ export default {
           label: 'Số nội bộ',
           field: 'internalNumber',
           thClass: 'text-nowrap',
+          sortable: false,
         },
         {
           label: 'Số lượng',
@@ -342,6 +343,7 @@ export default {
             enabled: true,
           },
           formatFn: this.$formatNumberToLocale,
+          sortable: false,
         },
         {
           label: 'Số tiền',
@@ -352,6 +354,7 @@ export default {
             enabled: true,
           },
           formatFn: this.$formatNumberToLocale,
+          sortable: false,
         },
         {
           label: 'Loại nhập',
@@ -359,6 +362,7 @@ export default {
           thClass: 'text-nowrap',
           tdClass: 'text-nowrap',
           formatFn: this.$getInputTypeslabel,
+          sortable: false,
         },
         {
           label: 'Ghi chú',
