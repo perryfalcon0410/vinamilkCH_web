@@ -587,7 +587,6 @@ export default {
       today: nowDate(),
       importTypeName: null,
       warehousesInputOptions: warehousesData.inputTypes,
-      negativeCheck: true,
       configDate: {
         wrap: true,
         allowInput: true,
@@ -1036,18 +1035,6 @@ export default {
           })
         }
       })
-    },
-    checkNegativeNumber() {
-      this.negativeCheck = true
-      if (this.promotions.length > 0) {
-        this.promotions.forEach(item => {
-          if (this.negativeCheck) {
-            if (item.quantity < 0) {
-              this.negativeCheck = false
-            } else this.negativeCheck = true
-          }
-        })
-      }
     },
     click() {
       if (this.productSearch === null) return

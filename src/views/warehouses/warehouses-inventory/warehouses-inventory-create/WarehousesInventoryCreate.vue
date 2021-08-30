@@ -526,7 +526,6 @@ export default {
       isCreateModalShow: false,
       isCreated: false,
       warehousesInventoryData: null,
-      negativeCheck: true,
       columns: [
         {
           label: 'Ngành hàng',
@@ -822,7 +821,6 @@ export default {
                                                            || product.productName.toLowerCase().includes(this.searchKeywords.trim().toLowerCase()))
     },
     onClickSaveButton() {
-      this.negativeCheck = true
       const lstCreate = this.originalProducts.map(data => ({
         productId: data.productId,
         productCategory: data.category,
@@ -839,14 +837,7 @@ export default {
         packetQuantity: data.inventoryPacket || 0,
         unitQuantity: data.inventoryOdd || 0,
       }))
-      this.originalProducts.forEach(item => {
-        if (this.top) {
-          if (item.inventoryPacket < 0 || item.inventoryOdd < 0) {
-            this.negativeCheck = false
-          } else this.negativeCheck = true
-        }
-      })
-      if (this.negativeCheck) {
+      if (this.originalProducts.findIndex(item => item.inventoryPacket < 0) === -1 && this.originalProducts.findIndex(item => item.inventoryOdd < 0) === -1) {
         this.CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION({
           data: {
             wareHouseTypeId: this.warehouseType,
@@ -867,7 +858,6 @@ export default {
       } else toasts.error('Không được nhập số âm!')
     },
     onClickAgreeButton() {
-      this.negativeCheck = true
       const lstCreate = this.originalProducts.map(data => ({
         productId: data.productId,
         productCategory: data.category,
@@ -884,14 +874,7 @@ export default {
         packetQuantity: data.inventoryPacket || 0,
         unitQuantity: data.inventoryOdd || 0,
       }))
-      this.originalProducts.forEach(item => {
-        if (this.negativeCheck) {
-          if (item.inventoryPacket < 0 || item.inventoryOdd < 0) {
-            this.negativeCheck = false
-          } else this.negativeCheck = true
-        }
-      })
-      if (this.negativeCheck) {
+      if (this.originalProducts.findIndex(item => item.inventoryPacket < 0) === -1 && this.originalProducts.findIndex(item => item.inventoryOdd < 0) === -1) {
         this.CREATE_WAREHOUSE_INVENTORY_ACTION({
           lstCreate,
           wareHouseTypeId: this.warehouseType,
