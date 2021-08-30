@@ -17,6 +17,7 @@
         <strong> Ngày in: {{ reportInfos.dateOfPrinting }} </strong>
       </div>
       <b-img
+        id="logo-image"
         src="@/assets/images/logo/VinamilkLogo.png"
         alt="logo"
         width="200px"
@@ -42,7 +43,7 @@
     <!-- END - Title -->
 
     <!-- START - Table -->
-    <table>
+    <table id="input-orders-detail">
       <thead>
         <tr>
           <th
@@ -151,10 +152,14 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { myFontNormal } from '@/@core/libs/Arimo-Regular'
+import { myFontBold } from '@/@core/libs/Arimo-Bold'
+// eslint-disable-next-line no-unused-vars
+import autoTable from 'jspdf-autotable'
+import jsPDF from 'jspdf'
 import {
-// printActions,
-  hostName,
-  printActions,
+// printActions
+  jsPdfPrint,
   jspmCheckStatus,
 } from '@core/utils/filter'
 import JSPM from 'jsprintmanager'
@@ -174,6 +179,7 @@ export default {
   data() {
     return {
       ipAddress: '',
+      printerName: null,
     }
   },
 
@@ -214,57 +220,142 @@ export default {
       }
       return {}
     },
-  },
-  watch: {
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
+    logo() {
+      const img = document.getElementById('logo-image')
+      const canvas = document.createElement('canvas')
+      canvas.width = img.width
+      canvas.height = img.height
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0)
+      const dataURL = canvas.toDataURL('image/png')
+      return dataURL.replace(/^data:image\/(png|jpg);base64,/, '')
     },
   },
-  mounted() {
-    hostName().then(res => {
-      if (res) {
-        this.ipAddress = res.ip || res.query || res.geoplugin_request
-      } else {
-        this.ipAddress = null
-      }
-    })
+  watch: {
+    printerOptions() {
+      this.printerName = this.printerOptions.reportPrinterName
+    },
   },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.reportPrinterName
-    if (printerName === '' || printerName === null) {
+    if (this.printerName === '' || this.printerName === null) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
-    } else {
-      JSPM.JSPrintManager.start()
-      for (let i = 0; i < 3; i += 1) {
-        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          const element = document.getElementById('rp-input-order')
-          const options = {
-            fileName: 'Bao_cao_chi_tiet_don_nhap_hang',
-            format: 'a3',
-            // orientation: 'landscape',
-            // rotate: 'Rot90',
-            pageSizing: 'Fit',
-            scale: 2.5,
-            isPaging: true,
-            margin: [5, 1, 10, 1],
-          }
-          if (jspmCheckStatus()) {
-            printActions(element, printerName, options)
-          }
-        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-        }
-      }
+    } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
+      this.generatePdf(this.logo)
+    } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
+      toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+      window.print()
     }
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+
+    generatePdf(img) {
+      const x = 8
+      const y = 10
+      JSPM.JSPrintManager.start()
+      // eslint-disable-next-line new-cap
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      // START - add font family
+      pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+      pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+      pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+      pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+      pdf.setFont('Ario-Bold')
+      // END - add font family
+      pdf.addImage(img, 'PNG', x + 149, y - 5)
+      pdf.setFontSize(13)
+      pdf.text('CÔNG TY CP SỮA VIỆT NAM', x, y)
+      pdf.setFontSize(11)
+      pdf.text(this.reportInfos.shopName, x, y + 5)
+      pdf.text(`Add: ${this.reportInfos.address}`, x, y + 10)
+      pdf.text(`Ngày in: ${this.reportInfos.dateOfPrinting}`, x, y + 15)
+      pdf.setFontSize(20)
+      pdf.text('Bảng kê chi tiết các hóa đơn nhập hàng', x + 33, y + 25)
+      pdf.setFont('Ario-Regular')
+      pdf.setFontSize(10)
+      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.reportInfos.fromDate)}         đến: ${this.$formatISOtoVNI(this.reportInfos.toDate)}`, x + 60, y + 30)
+      const res = pdf.autoTableHtmlToJson(document.getElementById('input-orders-detail'))
+      pdf.autoTable(res.columns, res.data, {
+        showHead: 'firstPage',
+        startY: y + 35,
+        theme: 'plain',
+        margin: {
+          right: 10,
+          left: 7,
+        },
+        styles: {
+          font: 'Ario-Regular',
+          Color: [255, 0, 0],
+          fontSize: 9,
+          textColor: 'black',
+        },
+        headStyles: {
+          fillColor: 'white',
+          font: 'Ario-Bold',
+          textColor: 'black',
+          fontSize: 10,
+        },
+        columnStyles: {
+          0: { cellWidth: 10 },
+          1: { cellWidth: 25 },
+          2: { cellWidth: 25 },
+          3: { cellWidth: 28 },
+          4: { cellWidth: 26 },
+          5: { cellWidth: 26 },
+          6: { cellWidth: 25 },
+          7: { cellWidth: 29 },
+        },
+        didDrawCell: data => {
+          if (data.section === 'head') {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.5)
+            pdf.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height)
+          }
+          if (data.section === 'body') {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.5)
+            pdf.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height)
+          }
+        },
+      })
+      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+        pdf.setPage(j)
+        pdf.text(`Trang ${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 25, pdf.internal.pageSize.getHeight() - 10)
+      }
+      pdf.autoTable({
+        theme: 'plain',
+        startY: pdf.previousAutoTable.finalY,
+        margin: {
+          right: 10,
+          left: 7.5,
+        },
+        body: [
+          [
+            { content: 'Tổng cộng:', styles: { halign: 'right', font: 'Ario-Bold', cellWidth: 136 } },
+            { content: `${this.$formatNumberToLocale(this.reportInfos.totalAmount || 0)}`, styles: { halign: 'right', font: 'Ario-Bold', cellWidth: 30 } },
+          ],
+        ],
+        didDrawCell: data => {
+          if (data.column.index === 1) {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.5)
+            pdf.line(data.cell.x + (data.cell.width - data.cell.contentWidth) + 1, data.cell.y + data.cell.height - 2, data.cell.x + data.cell.width - 1, data.cell.y + data.cell.height - 2)
+          }
+        },
+      })
+      pdf.setFont('Ario-Regular')
+      pdf.setFontSize(10)
+      pdf.text('Nhân viên nhập hàng', x + 20, pdf.previousAutoTable.finalY + 12)
+      pdf.text('Cửa hàng trưởng', x + 150, pdf.previousAutoTable.finalY + 12)
+      const options = {
+        fileName: 'bao_cao_ban_hang',
+        pageSizing: 'Fit',
+      }
+      if (jspmCheckStatus()) {
+        jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+      }
+    },
   },
 }
 </script>
