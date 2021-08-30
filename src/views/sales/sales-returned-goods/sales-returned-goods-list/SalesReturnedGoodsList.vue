@@ -52,7 +52,7 @@
           line-numbers
           :total-rows="orderReturnPagination.totalElements"
           :sort-options="{
-            enabled: true,
+            enabled: false,
             multipleColumns: true,
           }"
           @on-sort-change="onSortChange"
@@ -273,10 +273,16 @@ export default {
         {
           label: 'Mã trả hàng',
           field: 'orderNumber',
+          sortable: true,
         },
         {
           label: 'Đơn hàng tham chiếu',
           field: 'fromSaleOrderId',
+          sortable: true,
+        },
+        {
+          label: 'Nhân viên',
+          field: 'userName',
         },
         {
           label: 'Mã khách hàng',
@@ -288,7 +294,8 @@ export default {
         },
         {
           label: 'Ngày trả hàng',
-          field: 'orderDate',
+          field: 'dateReturn',
+          sortable: true,
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {

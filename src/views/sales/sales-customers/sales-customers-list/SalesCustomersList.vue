@@ -60,6 +60,9 @@
           mode="remote"
           compact-mode
           line-numbers
+          :sort-options="{
+            enabled: false,
+          }"
           style-class="vgt-table"
           :pagination-options="{
             enabled: true,

@@ -35,7 +35,7 @@
           line-numbers
           :style="cssProps"
           :sort-options="{
-            enabled: true,
+            enabled: false,
             multipleColumns: true,
           }"
           :total-rows="salesReceiptsPagination.totalElements"
@@ -326,12 +326,13 @@ export default {
         {
           label: 'Số hóa đơn',
           field: 'orderNumber',
+          sortable: true,
           thClass: 'ws-nowrap scroll-column-header column-first',
           tdClass: 'scroll-column column-first',
         },
         {
           label: 'Mã khách hàng',
-          field: 'customerNumber',
+          field: 'customerCode',
           thClass: 'ws-nowrap scroll-column-header column-second',
           tdClass: 'scroll-column column-second',
         },
@@ -344,6 +345,7 @@ export default {
         {
           label: 'Ngày bán',
           field: 'orderDate',
+          sortable: true,
           thClass: 'text-center ws-nowrap scroll-column-header column-4',
           tdClass: 'text-center scroll-column column-4',
           formatFn: value => this.$formatISOtoVNI(value),

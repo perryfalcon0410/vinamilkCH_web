@@ -57,7 +57,7 @@
           line-numbers
           :total-rows="warehousesComboPagination.totalElements"
           :sort-options="{
-            enabled: true,
+            enabled: false,
             multipleColumns: true,
           }"
           @on-sort-change="onSortChange"
@@ -247,11 +247,13 @@ export default {
         {
           label: 'Ngày',
           field: 'transDate',
+          sortable: true,
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Mã giao dịch',
           field: 'transCode',
+          sortable: true,
         },
         {
           label: 'Số lượng',

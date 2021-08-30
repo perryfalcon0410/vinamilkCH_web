@@ -56,7 +56,7 @@
             setCurrentPage: searchData.page + 1,
           }"
           :sort-options="{
-            enabled: true,
+            enabled: false,
             multipleColumns: true,
           }"
           compact-mode
@@ -307,6 +307,7 @@ export default {
         {
           label: 'Ngày',
           field: 'transDate',
+          sortable: true,
           thClass: 'text-left',
           tdClass: 'text-left',
           formatFn: value => this.$formatISOtoVNI(value),
@@ -314,6 +315,7 @@ export default {
         {
           label: 'Số biên bản',
           field: 'transCode',
+          sortable: true,
           firstSortType: 'desc',
           thClass: 'text-left',
           tdClass: 'text-left',

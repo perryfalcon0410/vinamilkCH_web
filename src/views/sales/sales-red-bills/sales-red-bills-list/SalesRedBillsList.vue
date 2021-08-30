@@ -251,6 +251,9 @@
           :columns="columns"
           :rows="listRedBill"
           mode="remote"
+          :sort-options="{
+            enabled: false,
+          }"
           style-class="vgt-table"
           :pagination-options="{
             enabled: true,
@@ -534,6 +537,7 @@ export default {
           label: 'Số hóa đơn đỏ',
           field: 'invoiceNumber',
           width: '200px',
+          sortable: true,
           thClass: 'text-nowrap',
           tdClass: 'align-middle',
         },
@@ -593,6 +597,7 @@ export default {
         {
           label: 'Ngày in',
           field: 'printDate',
+          sortable: true,
           thClass: 'text-nowrap',
           tdClass: 'align-middle',
           formatFn: value => this.$formatISOtoVNI(value),
