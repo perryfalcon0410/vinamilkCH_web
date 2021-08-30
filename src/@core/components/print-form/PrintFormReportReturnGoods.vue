@@ -450,11 +450,15 @@ export default {
 
       this.checkHeight = true
       const options = {
-        fileName: 'Bao_cao_xuat_hang',
-        // pageSizing: 'Fit',
+        fileName: 'Bao_cao_hang_tra_lai',
+        pageSizing: 'Fit',
       }
       if (jspmCheckStatus()) {
-        jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+        if (this.printerName.includes('PDF')) {
+          pdf.save('Bao_cao_hang_tra_lai.pdf')
+        } else {
+          jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+        }
       }
     }
   },

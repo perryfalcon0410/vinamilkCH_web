@@ -369,7 +369,7 @@ export default {
             { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalQuantity)}`, styles: { halign: 'right', cellWidth: 18, fillColor: [211, 211, 211] } },
             { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalTotal)}`, styles: { halign: 'right', cellWidth: 34, fillColor: [211, 211, 211] } },
             { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat)}`, styles: { halign: 'right', cellWidth: 23, fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay)}`, styles: { halign: 'right', cellWidth: 23, fillColor: [211, 211, 211] } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay)}`, styles: { halign: 'right', fillColor: [211, 211, 211] } },
           ],
         ],
       })
@@ -405,7 +405,7 @@ export default {
           9: { halign: 'right', cellWidth: 15 },
           10: { halign: 'right', cellWidth: 20 },
           11: { halign: 'right', cellWidth: 23 },
-          12: { halign: 'right', cellWidth: 23 },
+          12: { halign: 'right' },
         },
         didDrawCell: data => {
           if (data.section === 'head') {
@@ -441,7 +441,11 @@ export default {
         rotate: 'Rot90',
       }
       if (jspmCheckStatus()) {
-        jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+        if (this.printerName.includes('PDF')) {
+          pdf.save('bao_cao_ban_hang.pdf')
+        } else {
+          jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+        }
       }
     }
   },

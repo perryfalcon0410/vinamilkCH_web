@@ -1024,7 +1024,11 @@ export default {
         pageSizing: 'Fit',
       }
       if (jspmCheckStatus()) {
-        jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+        if (this.printerName.includes('PDF')) {
+          pdf.save('bao_cao_xuat_hang.pdf')
+        } else {
+          jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+        }
       }
     }
   },
