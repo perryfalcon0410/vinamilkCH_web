@@ -61,7 +61,7 @@
                 class:'form-control',
                 placeholder:'Nhập mã hoặc tên khách hàng',
               }"
-              @input="customerOptions"
+              @keyup.enter="customerOptions"
               @selected="selectCustomer"
             >
 
@@ -724,20 +724,17 @@ export default {
       })
     },
 
-    customerOptions(text) {
-      this.customers = [{ data: null }]
-      setTimeout(() => {
-        if (text) {
-          if (text.length >= commonData.minSearchLength) {
-            const searchData = {
-              searchKeywords: text,
-              status: this.customerInfo.status,
-              ...this.decentralization,
-            }
-            this.GET_CUSTOMERS_ACTION({ ...searchData, isShop: true })
+    customerOptions() {
+      if (this.customerInfo.customerName) {
+        if (this.customerInfo.customerName.length >= commonData.minSearchLength) {
+          const searchData = {
+            searchKeywords: this.customerInfo.customerName,
+            status: this.customerInfo.status,
+            ...this.decentralization,
           }
-        } else this.customers = [{ data: null }]
-      }, 1000)
+          this.GET_CUSTOMERS_ACTION(searchData)
+        }
+      } else this.customers = [{ data: null }]
     },
 
     selectCustomer(customer) {
