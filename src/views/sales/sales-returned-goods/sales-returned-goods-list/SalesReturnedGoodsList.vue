@@ -294,7 +294,7 @@ export default {
         },
         {
           label: 'Ngày trả hàng',
-          field: 'dateReturn',
+          field: 'orderDate',
           sortable: true,
           formatFn: value => this.$formatISOtoVNI(value),
         },
