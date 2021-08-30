@@ -289,7 +289,7 @@
             <b-button-group>
               <b-button
                 v-if="statusSaveButton().show"
-                :disabled="statusSaveButton().disabled || invalid"
+                :disabled="statusSaveButton().disabled || invalid || exchangeGoodsInfo.transDate !== nowDate"
                 variant="someThing"
                 class="btn-brand-1 rounded text-uppercase aligns-items-button-center"
                 @click="onClickSaveButton()"
@@ -369,6 +369,7 @@ import toasts from '@core/utils/toasts/toasts'
 import {
   formatISOtoVNI,
   getTimeOfDate,
+  nowDate,
 } from '@/@core/utils/filter'
 import {
   WAREHOUSES_EXCHANGE_DAMAGED_GOODS,
@@ -411,6 +412,7 @@ export default {
       customers: [{ data: '' }],
       products: [{ data: '' }],
       negativeCheck: true,
+      nowDate: nowDate(),
 
       reasonObj: {
         reasonOptions: [],
