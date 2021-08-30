@@ -990,12 +990,12 @@ export default {
           this.currentOrderNumber.onlineOrderId = bill.orderId
           this.currentOrderNumber.orderNumber = bill.orderNumber
           this.currentOrderNumber.note = bill.note
+          this.onlineOrderId = bill.orderNumber
 
-          if (bill.id === this.billFirst) {
+          if (this.onlineOrderId === undefined) {
             this.onlineOrderId = null
-          } else {
-            this.onlineOrderId = bill.orderNumber
           }
+
           return {
             ...bill,
             active: true,
