@@ -852,21 +852,10 @@ export default {
     checkDuplicatesName() {
       return this.getAllCustomer.findIndex(x => x.customerName === this.customerInfo.customerName)
     },
-    checkNegativeNumber() {
-      this.negativeCheck = true
-      this.listDamagedProducts.forEach(item => {
-        if (this.negativeCheck) {
-          if (item.quantity < 0) {
-            this.negativeCheck = false
-          } else this.negativeCheck = true
-        }
-      })
-    },
 
     onClickSaveButton() {
       this.isFieldCheck = false
       this.checkDuplicatesName()
-      this.checkNegativeNumber()
       this.updateExchangeDamagedGoods()
     },
 
