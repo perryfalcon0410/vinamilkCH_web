@@ -58,19 +58,21 @@
                 />
                 <div class="text-white">
                   {{ value.promotionProgramCode }} - {{ value.promotionProgramName }}
-                  <b-icon-shield-exclamation
-                    v-if="(value.numberLimited !== 0) && (value.receiveShopQty + value.orderInQty <= value.maxShopQty)"
-                    v-b-popover.hover="{variant: 'info', content: `<p>Thông tin số suất:</p><p>- Được phân bố: ${value.maxShopQty || 'Không giới hạn'}</p><p>- Đã sử dụng: ${value.receiveShopQty || 'Không giới hạn'}</p><p>- Còn lại: ${value.numberLimited || 'Không giới hạn'}</p>`, html: true}"
-                    class="cursor-pointer ml-1"
-                    color="white"
-                    font-scale="1.5"
-                  />
-                  <b-icon-shield-exclamation
-                    v-else
-                    v-b-popover.hover="{variant: 'danger', content: `<p>Chương trình này không được áp dụng do đã hết số suất khuyến mãi</p><p>Thông tin số suất:</p><p>- Được phân bố: ${value.maxShopQty}</p><p>- Đã sử dụng: ${value.receiveShopQty}</p><p>- Còn lại: ${value.numberLimited}</p>`, html: true}"
-                    class="cursor-pointer ml-1 text-danger"
-                    font-scale="1.5"
-                  />
+                  <span v-show="value.maxShopQty !== null">
+                    <b-icon-shield-exclamation
+                      v-if="(value.numberLimited !== 0) && (value.receiveShopQty + value.orderInQty <= value.maxShopQty)"
+                      v-b-popover.hover="{variant: 'info', content: `<p>Thông tin số suất:</p><p>- Được phân bố: ${$formatNumberToLocale(value.maxShopQty) || 'Không giới hạn'}</p><p>- Đã sử dụng: ${$formatNumberToLocale(value.receiveShopQty) || 'Không giới hạn'}</p><p>- Còn lại: ${$formatNumberToLocale(value.numberLimited) || 'Không giới hạn'}</p>`, html: true}"
+                      class="cursor-pointer ml-1"
+                      color="white"
+                      font-scale="1.5"
+                    />
+                    <b-icon-shield-exclamation
+                      v-else
+                      v-b-popover.hover="{variant: 'danger', content: `<p>Chương trình này không được áp dụng do đã hết số suất khuyến mãi</p><p>Thông tin số suất:</p><p>- Được phân bố: ${$formatNumberToLocale(value.maxShopQty)}</p><p>- Đã sử dụng: ${$formatNumberToLocale(value.receiveShopQty)}</p><p>- Còn lại: ${$formatNumberToLocale(value.numberLimited)}</p>`, html: true}"
+                      class="cursor-pointer ml-1 text-danger"
+                      font-scale="1.5"
+                    />
+                  </span>
                 </div>
                 <div
                   v-b-toggle="'collapse-'+value.programId"
