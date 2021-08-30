@@ -1013,6 +1013,11 @@ export default {
       this.createTableExpBorrow(pdf)
       // END - table xuất vay mượn
 
+      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+        pdf.setPage(j)
+        pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
+      }
+
       // pdf.save()
       const options = {
         fileName: 'Bao_cao_xuat_hang',

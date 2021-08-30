@@ -788,6 +788,11 @@ export default {
     pdf.setFont('Ario-Regular')
     pdf.text('NGƯỜI NHẬP', 163, pdf.previousAutoTable.finalY + 7)
 
+    for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+      pdf.setPage(j)
+      pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
+    }
+
     const options = {
       fileName: 'Bao_cao_xuat_hang',
       pageSizing: 'Fit',
