@@ -666,7 +666,7 @@ export default {
             productInventory: this.getProductByBarcode.stockTotal,
             productUnitPrice: this.getProductByBarcode.price,
             sumProductUnitPrice: this.getProductByBarcode.price,
-            quantity: null,
+            quantity: 1,
             productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
             sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
             productImage: this.getProductByBarcode.image,
@@ -1244,6 +1244,7 @@ export default {
     onBarcodeScanned(barcode) {
       if (barcode.length > 4) {
         if (this.editOnlinePermission || this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+          this.searchOptions.keyWord = ''
           this.GET_PRODUCT_BY_BARCODE_ACTION({
             data: {
               customerId: this.currentCustomer.id,
