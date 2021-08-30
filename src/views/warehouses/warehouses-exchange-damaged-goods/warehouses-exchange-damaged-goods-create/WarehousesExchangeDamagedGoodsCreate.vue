@@ -413,7 +413,6 @@ export default {
       isFieldCheck: true,
       customers: [{ data: '' }],
       products: [{ data: '' }],
-      negativeCheck: true,
 
       reasonObj: {
         reasonSelected: null,
@@ -650,7 +649,7 @@ export default {
     createDamagedGoods() {
       this.$refs.formContainer.validate().then(success => {
         if (success && this.checkDuplicatesName() > -1) {
-          if (this.negativeCheck) {
+          if (this.damagedProduct.findIndex(item => item.productQuantity < 0) === -1) {
             if (this.damagedProduct.length > 0) {
               this.CREATE_EXCHANGE_DAMAGED_GOODS_ACTION({
                 damagedGoodsData: {
@@ -676,16 +675,6 @@ export default {
 
     checkDuplicatesName() {
       return this.getAllCustomer.findIndex(x => x.customerName === this.customerInfo.customerName)
-    },
-    checkNegativeNumber() {
-      this.negativeCheck = true
-      this.damagedProduct.forEach(item => {
-        if (this.negativeCheck) {
-          if (item.productQuantity < 0) {
-            this.negativeCheck = false
-          } else this.negativeCheck = true
-        }
-      })
     },
 
     customerOptions(text) {
@@ -790,7 +779,6 @@ export default {
     onClickSaveButton() {
       this.isFieldCheck = false
       this.checkDuplicatesName()
-      this.checkNegativeNumber()
       this.createDamagedGoods()
     },
 
