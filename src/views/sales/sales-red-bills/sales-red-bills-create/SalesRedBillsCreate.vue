@@ -37,7 +37,7 @@
                     class:'form-control',
                     disabled: isDisabled ? true : false,
                   }"
-                  @input="loadCustomers"
+                  @keyup.enter="loadCustomers"
                   @selected="selectCustomer"
                 >
                   <template

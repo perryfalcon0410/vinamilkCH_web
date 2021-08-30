@@ -69,7 +69,7 @@
                   class:'form-control',
                   placeholder:'Nhập mã hoặc tên khách hàng'
                 }"
-                @input="customerOptions"
+                @keyup.enter="customerOptions"
                 @selected="selectCustomer"
               >
 
@@ -690,11 +690,11 @@ export default {
       })
     },
 
-    customerOptions(text) {
-      if (text) {
-        if (text.length >= commonData.minSearchLength) {
+    customerOptions() {
+      if (this.customerInfo.customerName) {
+        if (this.customerInfo.customerName.length >= commonData.minSearchLength) {
           const searchData = {
-            searchKeywords: text,
+            searchKeywords: this.customerInfo.customerName,
             status: this.customerInfo.status,
             ...this.decentralization,
           }
