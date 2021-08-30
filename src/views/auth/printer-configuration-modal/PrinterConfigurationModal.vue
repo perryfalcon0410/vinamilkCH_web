@@ -134,6 +134,7 @@ import {
 } from 'vuex'
 import JSPM from 'jsprintmanager'
 import toasts from '@core/utils/toasts/toasts'
+import { getJSPMDownloadInfo } from '@core/utils/utils'
 import {
   PRINTERCONFIG,
   // GETTERS
@@ -230,18 +231,9 @@ export default {
         this.isTrue = false
         JSPM.JSPrintManager.auto_reconnect = false
         toasts.error('JSPrintManager (JSPM) chưa được cài đặt hoặc chưa được mở')
-        if (navigator.appVersion.indexOf('Win64') !== -1 || navigator.oscpu.indexOf('Win64') !== -1) {
-          this.nameOS = 'Windows 64-bit'
-          this.linkDownloadSoftWare = 'https://www.neodynamic.com/downloads/jspm/jspm-4.0.0-win64.msi'
-        }
-        if (navigator.appVersion.indexOf('Win32') !== -1 || navigator.oscpu.indexOf('Win32') !== -1) {
-          this.nameOS = 'Windows 32-bit'
-          this.linkDownloadSoftWare = 'https://www.neodynamic.com/downloads/jspm/jspm-4.0.0-win32.msi'
-        }
-        if (navigator.appVersion.indexOf('Mac') !== -1 || navigator.oscpu.indexOf('Mac') !== -1) {
-          this.nameOS = 'MacOS'
-          this.linkDownloadSoftWare = 'https://www.neodynamic.com/downloads/jspm/jspm-4.0.0.0-macOS.pkg'
-        }
+
+        this.nameOS = getJSPMDownloadInfo().os
+        this.linkDownloadSoftWare = getJSPMDownloadInfo().link
       } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Blocked) {
         toasts.error('JSPrintManager (JSPM) đã chặn trang web này!')
         this.isTrue = false

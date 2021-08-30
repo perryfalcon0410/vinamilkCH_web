@@ -11,6 +11,7 @@ import commonData from '@/@db/common'
 import warehousesData from '@/@db/warehouses'
 import reportsData from '@/@db/report'
 import salesData from '@/@db/sale'
+import systemData from '@/@db/system'
 
 import moment from 'moment'
 
@@ -176,7 +177,7 @@ export const resizeAbleTable = () => {
   Array.prototype.forEach.call(
     document.querySelectorAll('table th'),
     th => {
-    // eslint-disable-next-line no-param-reassign
+      // eslint-disable-next-line no-param-reassign
       th.style.position = 'relative'
 
       const grip = document.createElement('div')
@@ -204,4 +205,30 @@ export const resizeAbleTable = () => {
   document.addEventListener('mouseup', () => {
     thElm = undefined
   })
+}
+
+export const getJSPMDownloadInfo = () => {
+  const { platform } = window.navigator
+  const macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K']
+  let os = null
+  let link = null
+
+  if (macosPlatforms.indexOf(platform) !== -1) {
+    os = 'MacOS'
+    link = systemData.jspmDownloadLinks.macOS
+  } else if (platform === 'Win32') {
+    os = 'Windows'
+    link = systemData.jspmDownloadLinks.win32
+  } else if (platform === 'Win64') {
+    os = 'Windows'
+    link = systemData.jspmDownloadLinks.win64
+  } else if (!os && /Linux/.test(platform)) {
+    os = 'Linux'
+    link = systemData.jspmDownloadLinks.linux
+  }
+
+  return {
+    os,
+    link,
+  }
 }
