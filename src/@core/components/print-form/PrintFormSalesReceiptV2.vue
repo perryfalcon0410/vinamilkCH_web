@@ -407,7 +407,7 @@ export default {
         if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
           const element = document.getElementById('print-form-sale-receipt-v2')
           element.classList.remove('d-none')
-          const heightPage = Number(element.offsetHeight) * 0.29
+          const heightPage = Number(element.offsetHeight) * 0.28
           element.classList.add('d-none')
           if (jspmCheckStatus()) {
             // format UI bill
@@ -444,9 +444,9 @@ export default {
             marginTop += spaceRowTwoCluster
             pdf.setFontType('bold')
             pdf.text(this.removeVietnameseTones('BIÊN NHẬN THANH TOÁN', this.isRemoveVNTones), pageWidth / 2, marginTop, { align: 'center' })
-            marginTop += spaceRowInCluster
+            marginTop += 8
             pdf.text(this.removeVietnameseTones('KIÊM PHIẾU GIAO HÀNG', this.isRemoveVNTones), pageWidth / 2, marginTop, { align: 'center' })
-            marginTop += spaceRowInCluster
+            marginTop += 8
             pdf.text(`(${this.removeVietnameseTones('CÓ GIÁ TRỊ NHƯ HÓA ĐƠN', this.isRemoveVNTones)})`, pageWidth / 2, marginTop, { align: 'center' })
             marginTop += spaceRowTwoCluster
             pdf.setFontType('normal')
@@ -475,10 +475,10 @@ export default {
             pdf.text(`NV: ${this.removeVietnameseTones(`${this.printSalesReceiptData.userName}`, this.isRemoveVNTones)}`, marginLeft, marginTop)
             marginTop += spaceRowInCluster
             pdf.text('-----------------------------------------------------------------------------------', 0, marginTop)
-            const columnWidth1 = pageWidth * 0.3
+            const columnWidth1 = pageWidth * 0.2
             const columnWidth2 = pageWidth * 0.15
-            const columnWidth3 = pageWidth * 0.25
-            const columnWidth4 = pageWidth * 0.26
+            const columnWidth3 = pageWidth * 0.3
+            const columnWidth4 = pageWidth * 0.3
             pdf.autoTable({
               // html: '#table-header',
               startY: marginTop,
@@ -531,8 +531,9 @@ export default {
                 product.listFreeItems.forEach(freeItem => {
                   // sản phẩm của CTKM
                   marginTop += spaceRowInCluster
-                  pdf.text(`KM: ${this.removeVietnameseTones(freeItem.productName, this.isRemoveVNTones)}`, marginLeft, marginTop)
-                  pdf.text(`${this.$formatNumberToLocale(freeItem.quantity)}`, (columnWidth1 + columnWidth2 + columnWidth3 + columnWidth4) - 5, marginTop, { align: 'right' })
+                  pdf.text('KM:', marginLeft, marginTop)
+                  pdf.text(`${this.$formatNumberToLocale(freeItem.quantity)}`, (columnWidth1 + columnWidth2) - 5, marginTop, { align: 'right' })
+                  pdf.text(`${this.removeVietnameseTones(freeItem.productName, this.isRemoveVNTones)}`, (columnWidth1 + columnWidth2 + columnWidth3 + columnWidth4) - 5, marginTop, { align: 'right' })
                 })
               }
             })
@@ -655,7 +656,7 @@ export default {
       // Remove punctuations
       // Bỏ dấu câu, kí tự đặc biệt
       // eslint-disable-next-line no-useless-escape
-      stringRemove = stringRemove.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|{|}|\||\\/g, '')
+      stringRemove = stringRemove.replace(/!|@|%|\^|\*|\+|\=|\<|\>|\?|\/|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|{|}|\||\\/g, '')
       return stringRemove
     },
   },
