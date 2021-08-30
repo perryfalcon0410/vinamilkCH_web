@@ -243,7 +243,7 @@
                     v-model="salemtPromotionObjectSelected"
                     :options="getSalemtPromotionObjectOptions"
                     placeholder="Chọn loại đơn hàng"
-                    :disabled="orderOnline.onlineOrderId != null && editManualPermission === false"
+                    :disabled="orderOnline.onlineOrderId !== null && editManualPermission === false && editOnlinePermission === false"
                     @select="resetOrderNumber"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -280,7 +280,7 @@
                         || salemtPromotionObjectSelected === salemtPromotionId
                         || salemtPromotionObjectSelected === undefined
                         || editManualPermission === false
-                        || (orderOnline.onlineOrderId != null && orderOnline.orderNumber.length > 0)"
+                        || (orderOnline.onlineOrderId !== null && orderOnline.orderNumber.length > 0)"
                       @input="getOrderNumber"
                     />
                     <b-input-group-append is-text>

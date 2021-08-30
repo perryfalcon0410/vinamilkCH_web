@@ -481,6 +481,7 @@ export default {
           deliveryType: {
             value: null,
           },
+          orderId: null,
           orderNumber: null,
           note: null,
           active: true,
@@ -751,7 +752,7 @@ export default {
 
     increaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null)) {
+      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOnline === false) {
         this.orderProducts[index].quantity += 1
         this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
@@ -767,7 +768,7 @@ export default {
 
     decreaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null)) {
+      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOnline === false) {
         this.orderProducts[index].quantity -= 1
         if (this.orderProducts[index].quantity <= 0) {
           this.orderProducts[index].quantity = 0
@@ -785,7 +786,7 @@ export default {
     },
 
     onClickDeleteProduct(index) {
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null)) {
+      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOnline === false) {
         this.orderProducts.splice(index, 1)
       }
     },
@@ -819,7 +820,10 @@ export default {
 
     onClickAddProduct(index) {
       // check permission online order manual or online order from system to add product
-      if (this.editOnlinePermission || this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+      if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
+        || this.isOnline === false
+        || (this.editManualPermission === true && this.onlineOrderId === null)
+        || (this.editOnlinePermission === true && this.editManualPermission === true)) {
         if (index && index.item) {
           const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
           if (productIndex === -1) {
@@ -852,19 +856,38 @@ export default {
       }
 
       // not have permission edit online order manual
-      if ((!this.editManualPermission && this.onlineOrderId === null && !this.isOnline)
-        || (!this.editOnlinePermission && this.onlineOrderId !== null && !this.isOnline)
-      ) {
+      if ((!this.editManualPermission && this.onlineOrderId === null && this.isOnline === true)) {
         toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
       }
     },
 
     getOrderNumber(val) {
       this.currentOrderNumber = val
+      this.onlineOrderId = val.onlineOrderId
+
+      if (this.currentOrderNumber.type.apParamCode.includes('ONLINE')) {
+        this.isOnline = true
+      } else {
+        this.isOnline = false
+      }
+
+      this.bills = this.bills.map(bill => {
+        if (bill.id === this.orderCurrentId) {
+          return {
+            ...bill,
+            orderType: {
+              value: val.type.value,
+            },
+            orderId: val.onlineOrderId,
+          }
+        }
+        return bill
+      })
     },
 
     onClickAddButton() {
       const lastIteminBill = this.bills[this.bills.length - 1]
+
       if (lastIteminBill) {
         this.bills.push({
           id: lastIteminBill.id + 1,
@@ -883,6 +906,7 @@ export default {
           deliveryType: {
             value: this.defaultDTSelected,
           },
+          orderId: null,
           orderNumber: null,
           note: null,
           active: false,
@@ -907,6 +931,7 @@ export default {
           deliveryType: {
             value: this.defaultDTSelected,
           },
+          orderId: null,
           orderNumber: null,
           note: null,
           active: false,
@@ -946,6 +971,7 @@ export default {
               totalBill: this.currentCustomer.totalBill,
               address: this.currentCustomer.address,
             },
+            orderId: this.currentOrderNumber.onlineOrderId,
             orderNumber: this.currentOrderNumber.orderNumber,
             note: this.currentOrderNumber.note,
             active: false,
@@ -963,9 +989,15 @@ export default {
           this.currentCustomer.phoneNumber = bill.customer.phoneNumber
           this.currentCustomer.totalBill = bill.customer.totalBill
           this.currentCustomer.address = bill.customer.address
+          this.currentOrderNumber.onlineOrderId = bill.orderId
           this.currentOrderNumber.orderNumber = bill.orderNumber
           this.currentOrderNumber.note = bill.note
           this.onlineOrderId = bill.orderNumber
+
+          if (this.onlineOrderId === undefined) {
+            this.onlineOrderId = null
+          }
+
           return {
             ...bill,
             active: true,
@@ -1025,7 +1057,6 @@ export default {
     },
 
     getOnlineCustomer(val) {
-      this.onlineOrderId = val.id
       this.searchOptions.customerId = val.id
       this.customerFullName = val.fullName
     },
@@ -1156,6 +1187,7 @@ export default {
 
     getDefaultPromotionObjectSelected(val) {
       this.defaultPOSelected = val
+      this.isOnline = false
       this.bills = this.bills.map(bill => {
         if (bill.id === this.orderCurrentId) {
           return {
