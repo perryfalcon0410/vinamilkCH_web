@@ -22,6 +22,12 @@
       style-class="vgt-table striped"
       line-numbers
     >
+      <div
+        slot="emptystate"
+        class="text-center"
+      >
+        Không có dữ liệu
+      </div>
       <template
         slot="table-row"
         slot-scope="props"

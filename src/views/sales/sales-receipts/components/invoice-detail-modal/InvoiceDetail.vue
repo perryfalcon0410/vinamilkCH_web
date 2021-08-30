@@ -6,6 +6,12 @@
     style-class="vgt-table striped"
     line-numbers
   >
+    <div
+      slot="emptystate"
+      class="text-center"
+    >
+      Không có dữ liệu
+    </div>
     <!-- START - Custom row -->
     <template
       slot="table-row"
