@@ -462,9 +462,15 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  hostName,
+  checkIpClient,
   preventDefaultWindowPrint,
 } from '@/@core/utils/filter'
 import PrintFormRedBills from '@core/components/print-form/PrintFormRedBills.vue'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '@/views/auth/printer-configuration-modal/store-module/type'
 import {
   RED_INVOICE,
   RED_INVOICES_GETTER,
@@ -678,6 +684,13 @@ export default {
     }
     this.$refs.focusInput.focus()
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleWindowPrintHotKey)
@@ -690,6 +703,9 @@ export default {
       UPDATE_RED_BILLS_ACTION,
       PRINT_RED_INVOICES_ACTION,
     ]),
+
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+
     handleWindowPrintHotKey(event) {
       const resolve = preventDefaultWindowPrint(event)
       if (resolve) {
@@ -729,17 +745,33 @@ export default {
     },
     onClickPrintButton() {
       if (this.selectedRedBillRows && this.selectedRedBillRows.length > 0) {
-        this.selectedRedBillRows.forEach(data => {
-          this.PRINT_RED_INVOICES_ACTION({
-            data: {
-              id: data.id,
-              params: { ...this.decentralization },
-            },
-            onSuccess: () => {},
-          })
+        hostName().then(res => {
+          if (res) {
+            this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+          } else {
+            this.ipAddressCurrent = null
+          }
+          if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+            this.GET_PRINTER_CLIENT_ACTIONS({
+              data: {
+                clientId: this.ipAddressCurrent,
+              },
+              onSuccess: () => {
+                this.selectedRedBillRows.forEach(data => {
+                  this.PRINT_RED_INVOICES_ACTION({
+                    data: {
+                      id: data.id,
+                      params: { ...this.decentralization },
+                    },
+                    onSuccess: () => {},
+                  })
+                })
+                this.selectedRedBillRows = []
+                this.onSearchClick()
+              },
+            })
+          }
         })
-        this.selectedRedBillRows = []
-        this.onSearchClick()
       } else {
         toasts.error('Vui lòng chọn hoá đơn đỏ để in!')
       }

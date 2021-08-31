@@ -568,6 +568,7 @@ export default {
       PRINT_OUTPUT_GOODS_ACTION,
     ]),
     ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+
     handleWindowPrintHotKey(event) {
       const resolve = preventDefaultWindowPrint(event)
       if (resolve) {

@@ -240,11 +240,14 @@ export default {
     JSPM.JSPrintManager.auto_reconnect = true
     if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
-    } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
-      this.generatePdf(this.logo)
-    } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
-      toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-      window.print()
+    } else {
+      if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
+        this.generatePdf(this.logo)
+      }
+      if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
+        toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        window.print()
+      }
     }
   },
   methods: {
@@ -353,7 +356,9 @@ export default {
         pageSizing: 'Fit',
       }
       if (jspmCheckStatus()) {
-        jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+        if (this.printerName.includes('PDF')) {
+          pdf.save('Chi_tiet_don_nhap_hang.pdf')
+        } else { jsPdfPrint(pdf.output('datauristring'), this.printerName, options) }
       }
     },
   },

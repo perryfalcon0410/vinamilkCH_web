@@ -47,7 +47,10 @@
         </div>
       </b-row>
 
-      <table class="mt-5 align-text-bottom">
+      <table
+        id="red-bill-table"
+        class="mt-5 align-text-bottom"
+      >
         <tbody>
           <tr
             v-for="(item,index) in redBillData"
@@ -140,10 +143,13 @@
 
 import { mapGetters, mapActions } from 'vuex'
 import {
-  hostName,
-  printActions,
+  jsPdfPrint,
   jspmCheckStatus,
 } from '@core/utils/filter'
+import { myFontNormal } from '@/@core/libs/Arimo-Regular'
+import jsPDF from 'jspdf'
+// eslint-disable-next-line no-unused-vars
+import autoTable from 'jspdf-autotable'
 import JSPM from 'jsprintmanager'
 import toasts from '@/@core/utils/toasts/toasts'
 import {
@@ -161,6 +167,8 @@ export default {
   data() {
     return {
       count: 0,
+      printerName: '',
+      bodyData: [],
     }
   },
   computed: {
@@ -190,54 +198,108 @@ export default {
     redBillData() {
       this.count = this.redBillData.length
     },
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
+    printerOptions() {
+      this.printerName = this.printerOptions.reportPrinterName
     },
-  },
-  mounted() {
-    hostName().then(res => {
-      if (res) {
-        this.ipAddress = res.ip || res.query || res.geoplugin_request
-      } else {
-        this.ipAddress = null
-      }
-    })
   },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.reportPrinterName
-    if (printerName === '' || printerName === null) {
+    if (this.printerName === '' || this.printerName === null) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
-      JSPM.JSPrintManager.start()
-      for (let i = 0; i < 3; i += 1) {
-        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          const element = document.getElementById('rp-sales-redbill')
-          const options = {
-            fileName: 'Hoa don do',
-            format: 'a4',
-            // orientation: 'landscape',
-            // rotate: 'Rot90',
-            pageSizing: 'Fit',
-            scale: 2.5,
-            // isPaging: true,
-          }
-          if (jspmCheckStatus()) {
-            printActions(element, printerName, options)
-          }
-        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-        }
+      if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
+        this.generatePdf()
+      }
+      if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
+        toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+        window.print()
       }
     }
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+
+    generatePdf() {
+      const x = 10
+      const y = 20
+      this.redBillData.forEach((item, index) => {
+        const row = [
+          { content: index, styles: { lineWidth: 0 } },
+          { content: item.productName, styles: { lineWidth: 0 } },
+          { content: item.productCode, styles: { lineWidth: 0 } },
+          { content: item.uom1, styles: { lineWidth: 0 } },
+          { content: item.quantity, styles: { lineWidth: 0 } },
+          { content: item.price, styles: { lineWidth: 0 } },
+          { content: item.intoMoney, styles: { lineWidth: 0 } },
+          { content: item.note, styles: { lineWidth: 0 } },
+        ]
+        this.bodyData.push(row)
+      })
+      console.log(this.bodyData)
+      JSPM.JSPrintManager.start()
+      // eslint-disable-next-line new-cap
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      // START - add font family
+      pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+      pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+      // END - add font family
+      pdf.setFontSize(8)
+      pdf.setFont('Ario-Regular')
+      pdf.text('MT1008', x + 40, y)
+      pdf.text(`${this.$moment().format('DD')}`, x + 95, y)
+      pdf.text(`${this.$moment().format('MM')}`, x + 110, y)
+      pdf.text(`${this.$moment().format('YYYY')}`, x + 125, y)
+      pdf.text(`Số HĐ: ${this.redBillInfoData.redInvoiceNumber}`, x + 140, y)
+      pdf.text('CÔNG TY CỔ PHẦN SỮA VIỆT NAM', x + 25, y + 10)
+      pdf.text('Số 10 Tân Trào, Phường Tân Phú, Quận 7, TP.HCM', x + 15, y + 15)
+      pdf.text('0300588569', x + 15, y + 20)
+      pdf.text(`${this.redBillInfoData.shopName}`, x + 15, y + 52)
+      pdf.text(`${this.redBillInfoData.shopAddress}`, x + 15, y + 57)
+      pdf.text(`${this.redBillInfoData.shopTel}`, x + 20, y + 62)
+      pdf.text('Tiền mặt', x + 90, y + 62)
+      pdf.autoTable({
+        startY: y + 90,
+        theme: 'plain',
+        margin: {
+          right: 15,
+          left: 15,
+        },
+        styles: {
+          font: 'Ario-Regular',
+          Color: [255, 0, 0],
+          fontSize: 8,
+          textColor: 'black',
+        },
+        columnStyles: {
+          0: { cellWidth: 10 },
+          1: { cellWidth: 40 },
+          2: { cellWidth: 25 },
+          3: { cellWidth: 12 },
+          4: { cellWidth: 15 },
+          5: { cellWidth: 25 },
+          6: { cellWidth: 25 },
+          7: { cellWidth: 29 },
+          8: { cellWidth: 29 },
+        },
+        body: [...this.bodyData],
+      })
+      pdf.text('10', x + 90, pdf.internal.pageSize.getHeight() - 60)
+      pdf.text(`${this.count}`, x + 40, pdf.internal.pageSize.getHeight() - 55)
+      pdf.text(`${this.redBillInfoData.totalAmountString}`, x + 30, pdf.internal.pageSize.getHeight() - 50)
+      pdf.text(`${this.$formatNumberToLocale(this.redBillInfoData.amount)}`, x + 150, pdf.internal.pageSize.getHeight() - 60)
+      pdf.text(`${this.$formatNumberToLocale(this.redBillInfoData.valueAddedTax)}`, x + 150, pdf.internal.pageSize.getHeight() - 55)
+      pdf.text(`${this.$formatNumberToLocale(this.redBillInfoData.totalAmountNumber)}`, x + 150, pdf.internal.pageSize.getHeight() - 50)
+      pdf.text('Nguyễn Thị Thu Vân', pdf.internal.pageSize.getWidth() - 55, pdf.internal.pageSize.getHeight() - 15)
+      const options = {
+        fileName: 'Hoa_don_do',
+        pageSizing: 'Fit',
+      }
+      if (jspmCheckStatus()) {
+        if (this.printerName.includes('PDF')) {
+          pdf.save('Hoa_don_do.pdf')
+        } else { jsPdfPrint(pdf.output('datauristring'), this.printerName, options) }
+      }
+    },
   },
 }
 </script>
