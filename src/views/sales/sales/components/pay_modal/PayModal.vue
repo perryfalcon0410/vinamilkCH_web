@@ -15,6 +15,9 @@
     <b-container
       fluid
       class="px-0 d-print-none"
+      @mousedown="mouseDown"
+      @mouseup="mouseUp"
+      @mousemove="mouseMove"
     >
       <b-row class="mx-0">
         <!-- START - Section table -->
@@ -644,7 +647,9 @@
     <!-- END - Body -->
 
     <!-- START - Footer -->
-    <template #modal-footer="{}">
+    <template
+      #modal-footer="{}"
+    >
       <b-row
         class="mx-auto d-print-none"
       >
@@ -844,6 +849,8 @@ export default {
 
   data() {
     return {
+      isMouseDown: false,
+      offset: [0, 0],
       promotionTypeOption: saleData.promotionType,
       columnsAdm: [
         {
@@ -1244,9 +1251,13 @@ export default {
     //   deep: true,
     // },
   },
+
   created() {
-    window.addEventListener('keydown', this.keyDown)
+    window.onload = () => {
+      window.addEventListener('keydown', this.keyDown)
+    }
   },
+
   mounted() {
     this.isDisabledPaymentBtn = true
     this.isDisabledPrintAndPaymentBtn = true
@@ -1259,9 +1270,11 @@ export default {
       }
     })
   },
+
   destroyed() {
     window.removeEventListener('keydown', this.keyDown, false)
   },
+
   methods: {
     ...mapActions(SALES, [
       CREATE_SALE_ORDER_ACTION,
@@ -1290,6 +1303,31 @@ export default {
     },
     statusRePrintButton() {
       return this.$permission('Sales', 'SalesReloadPrint')
+    },
+
+    mouseDown(e) {
+      this.isMouseDown = true
+      const el = document.getElementById('pay-modal___BV_modal_content_')
+      this.offset = [
+        el.offsetLeft - e.clientX,
+        el.offsetTop - e.clientY,
+      ]
+    },
+
+    mouseUp() {
+      this.isMouseDown = false
+    },
+
+    mouseMove(e) {
+      const el = document.getElementById('pay-modal___BV_modal_content_')
+      if (this.isMouseDown) {
+        const mousePosition = {
+          x: e.clientX,
+          y: e.clientY,
+        }
+        el.style.left = `${mousePosition.x + this.offset[0]}px`
+        el.style.top = `${mousePosition.y + this.offset[1]}px`
+      }
     },
 
     onVoucherButtonClick(isLocked) {
