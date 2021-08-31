@@ -374,7 +374,7 @@ export default {
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
     const printerName = this.printerOptions.reportPrinterName
-    if (printerName === '' || printerName === null) {
+    if (printerName === '' || printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()

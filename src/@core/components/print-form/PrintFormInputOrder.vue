@@ -493,7 +493,7 @@ export default {
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
     this.printerName = this.printerOptions.reportPrinterName
-    if (this.printerName === '' || this.printerName === null) {
+    if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       // eslint-disable-next-line new-cap

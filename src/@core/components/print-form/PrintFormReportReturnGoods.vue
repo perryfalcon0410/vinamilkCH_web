@@ -406,7 +406,7 @@ export default {
   },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    if (this.printerName === '' || this.printerName === null) {
+    if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
