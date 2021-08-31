@@ -166,7 +166,7 @@ export default {
       printerBillSelected: null,
       nameOS: '',
       linkDownloadSoftWare: '',
-      removeAccent: false,
+      removeAccent: true,
     }
   },
   computed: {
