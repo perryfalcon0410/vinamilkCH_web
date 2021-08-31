@@ -454,8 +454,8 @@ export default {
 
       const maxOnlinePageSize = (size * (page + 1)) > totalOnlineElements
         ? totalOnlineElements : (size * (page + 1))
-      const maxPages = this.customers ? maxOnlinePageSize : maxPageSize
-      const totals = this.customers ? totalOnlineElements : totalElements
+      const maxPages = this.onlineOrderCustomers.length > 0 ? maxOnlinePageSize : maxPageSize
+      const totals = this.onlineOrderCustomers.length > 0 ? totalOnlineElements : totalElements
 
       return `${minPageSize} - ${maxPages} của ${totals} mục`
     },

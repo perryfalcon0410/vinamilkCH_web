@@ -1043,7 +1043,6 @@ export default {
       this.customerId = val.id
       this.searchOptions.customerId = this.customerId
       this.currentCustomerId = this.customerId
-      // this.GET_PRODUCTS_ACTION(this.searchOptions)
       this.customerFullName = val.fullName
 
       // check customers dafault
@@ -1063,24 +1062,29 @@ export default {
       // check customers dafault
       if (val) {
         this.isCheckShopId = true
+        this.customerType = val.customerTypeId
+        this.searchOptions.customerId = val.id
+        this.customerFullName = val.fullName
+
+        // update price product when different type id customer
+        if (this.customerTypeCurent !== this.customerType) {
+          if (this.orderProducts.length > 0) {
+            this.productChangePrice = this.orderProducts.map(item => ({
+              productId: item.productId,
+              quantity: item.quantity,
+            }))
+            this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
+              customerTypeId: this.customerType,
+              products: this.productChangePrice,
+              params: this.decentralization,
+            })
+            this.customerTypeCurent = this.customerType
+          }
+          this.customerTypeCurent = this.customerType
+        }
+        this.$refs.search.$el.querySelector('input').focus()
       } else {
         this.isCheckShopId = false
-      }
-      // check customers dafault
-      this.customerType = val.customerTypeId
-      this.searchOptions.customerId = val.id
-      this.customerFullName = val.fullName
-
-      this.productChangePrice = this.orderProducts.map(data => ({
-        productId: data.productId,
-        quantity: data.quantity,
-      }))
-      if (this.productChangePrice.length > 0) {
-        this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
-          customerTypeId: this.customerType,
-          products: this.productChangePrice,
-          params: this.decentralization,
-        })
       }
     },
 
@@ -1118,6 +1122,7 @@ export default {
             })
             this.customerTypeCurent = this.customerType
           }
+          this.customerTypeCurent = this.customerType
         }
         this.$refs.search.$el.querySelector('input').focus()
       } else {
