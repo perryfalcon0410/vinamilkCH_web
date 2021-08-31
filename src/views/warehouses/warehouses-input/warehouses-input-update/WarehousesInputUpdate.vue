@@ -1005,7 +1005,6 @@ export default {
       this.promotions[index].quantity = Number(value) + 0
     },
     updateReceipt() {
-      this.checkNegativeNumber()
       const updatedPromotions = this.promotions.map(data => ({
         id: data.id,
         productId: data.productId,
