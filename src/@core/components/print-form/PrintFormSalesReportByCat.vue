@@ -122,12 +122,17 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import JSPM from 'jsprintmanager'
-import toasts from '@/@core/utils/toasts/toasts'
+import jsPDF from 'jspdf'
+// eslint-disable-next-line no-unused-vars
+import autoTable from 'jspdf-autotable'
+import { myFontNormal } from '@/@core/libs/Arimo-Regular'
+import { myFontBold } from '@/@core/libs/Arimo-Bold'
 import {
   hostName,
-  printActions,
+  jsPdfPrint,
   jspmCheckStatus,
 } from '@core/utils/filter'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   REPORT_SALES_CAT,
   // Getters
@@ -144,6 +149,9 @@ export default {
     return {
       titles: ['STT', 'Mã KH', 'Tên KH', 'Địa chỉ', 'Tần suất'],
       ipAddress: '',
+      printerName: '',
+      bodyData: [],
+      count: 1,
     }
   },
   computed: {
@@ -212,6 +220,9 @@ export default {
         onSuccess: () => {},
       })
     },
+    printerOptions() {
+      this.printerName = this.printerOptions.reportPrinterName
+    },
   },
   mounted() {
     hostName().then(res => {
@@ -224,28 +235,169 @@ export default {
   },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.reportPrinterName
-    if (printerName === '' || printerName === null) {
+    if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
       for (let i = 0; i < 3; i += 1) {
         if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          const element = document.getElementById('print-report-cat')
+          this.printerName = this.printerOptions.reportPrinterName
+          // eslint-disable-next-line new-cap
+          const pdf = new jsPDF('l', 'mm', 'a4')
+          pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+          pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+          pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+          pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+          pdf.setFont('Ario-Bold')
+          pdf.setFontSize(13)
+          pdf.text('Báo cáo doanh số theo CAT', 95, 10)
+          pdf.setFontSize(9)
+          pdf.text(`${this.printInfo.shopName}`, 10, 10)
+          pdf.setFontSize(8)
+          pdf.setFont('Ario-Regular')
+          pdf.text(`Add: ${this.printInfo.shopAddress}`, 10, 17)
+          pdf.text(`Tel: ${this.printInfo.shopTel}`, 10, 24)
+          pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.printInfo.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.printInfo.toDate)}`, 92, 17)
+          pdf.text(`Ngày in: ${this.$formatPrintDate(this.printInfo.printDate)}`, 97, 24)
+
+          const totalRow = [
+            {
+              content: '',
+              styles: {
+                font: 'Ario-Bold', lineWidth: 0, fillColor: [211, 211, 211], halign: 'right',
+              },
+            },
+            {
+              content: '',
+              styles: {
+                font: 'Ario-Bold', lineWidth: 0, fillColor: [211, 211, 211], halign: 'right',
+              },
+            },
+            {
+              content: '',
+              styles: {
+                font: 'Ario-Bold', lineWidth: 0, fillColor: [211, 211, 211], halign: 'right',
+              },
+            },
+            {
+              content: 'Tổng cộng :',
+              styles: {
+                font: 'Ario-Bold', lineWidth: 0, fillColor: [211, 211, 211], halign: 'right',
+              },
+            },
+          ]
+
+          this.totalDetails.forEach(item => {
+            totalRow.push({
+              content: `${this.$formatNumberToLocale(item)}`,
+              styles: {
+                font: 'Ario-Bold', lineWidth: 0, fillColor: [211, 211, 211], halign: 'right',
+              },
+            })
+          })
+
+          const header = []
+
+          this.columnList.forEach(column => {
+            if (column === this.columnList[0]
+      || column === this.columnList[1]
+      || column === this.columnList[2]
+      || column === this.columnList[3]) {
+              header.push({ content: column, styles: { font: 'Ario-Bold' } })
+            } else {
+              header.push({ content: column, styles: { font: 'Ario-Bold', halign: 'center' } })
+            }
+          })
+          header.push({ content: 'Tổng cộng', styles: { font: 'Ario-Bold', halign: 'center' } })
+
+          this.bodyData.push(totalRow)
+          this.bodyData.push(header)
+
+          if (this.reportData && this.reportData.length > 0) {
+            this.reportData.forEach(data => {
+              this.bodyData.push([
+                { content: `${this.count}`, styles: { cellWidth: 10 } },
+                { content: `${data[0]}`, styles: { cellWidth: 28 } },
+                { content: `${data[1]}`, styles: { cellWidth: 28 } },
+                { content: `${data[2]}`, styles: { cellWidth: 65 } },
+                { content: data[3] === null ? '' : `${data[3]}`, styles: { cellWidth: 16, halign: 'right' } },
+                { content: data[4] === null ? '' : `${data[4]}`, styles: { halign: 'right' } },
+                { content: data[5] === null ? '' : `${data[5]}`, styles: { halign: 'right' } },
+                { content: data[6] === null ? '' : `${data[6]}`, styles: { halign: 'right' } },
+                { content: data[7] === null ? '' : `${data[7]}`, styles: { halign: 'right' } },
+                { content: data[8] === null ? '' : `${data[8]}`, styles: { halign: 'right' } },
+                { content: data[9] === null ? '' : `${data[9]}`, styles: { halign: 'right' } },
+                { content: data[10] === null ? '' : `${data[10]}`, styles: { halign: 'right' } },
+                { content: data[11] === null ? '' : `${data[11]}`, styles: { halign: 'right' } },
+              ])
+              this.count += 1
+            })
+          }
+
+          pdf.autoTable({
+            theme: 'grid',
+            startY: 37,
+            margin: {
+              right: 5,
+              left: 5,
+            },
+            styles: {
+              font: 'Ario-Regular',
+              fontSize: 7,
+              textColor: 'black',
+            },
+            didDrawCell: key => {
+              if (key.section === 'body' && key.row.index === 1) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+              }
+              if (key.section === 'body' && key.row.index === 2) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+              }
+              if (key.section === 'body' && key.column.index === 0 && key.row.index !== 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x, key.cell.y)
+              }
+              if (key.section === 'body' && key.column.index === this.columnList.length - 1 && key.row.index !== 0) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+              }
+              if (key.section === 'body' && key.row.index === key.table.body.length - 1) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y + key.cell.height)
+              }
+            },
+            body: [...this.bodyData],
+          })
+          this.bodyData = []
+
+          for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+            pdf.setPage(j)
+            pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
+          }
+
           const options = {
-            fileName: 'Bao_cao_cat',
-            format: 'a2',
-            orientation: 'landscape',
-            rotate: 'Rot90',
+            fileName: 'bao_cao_doanh_so_cat',
             pageSizing: 'Fit',
-            scale: 2.5,
-            isPaging: true,
+            rotate: 'Rot90',
           }
           if (jspmCheckStatus()) {
-            printActions(element, printerName, options)
+            if (this.printerName.includes('PDF')) {
+              pdf.save('bao_cao_doanh_so_cat.pdf')
+            } else {
+              jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+            }
           }
+          break
         } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
           toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+          window.print()
         }
       }
     }
