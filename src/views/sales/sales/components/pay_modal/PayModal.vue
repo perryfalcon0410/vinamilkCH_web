@@ -61,7 +61,7 @@
                   <span v-show="value.maxShopQty !== null">
                     <b-icon-shield-exclamation
                       v-if="(value.numberLimited !== 0) && (value.receiveShopQty + value.orderInQty <= value.maxShopQty)"
-                      v-b-popover.hover="{variant: 'info', content: `<p>Thông tin số suất:</p><p>- Được phân bố: ${$formatNumberToLocale(value.maxShopQty) || 'Không giới hạn'}</p><p>- Đã sử dụng: ${$formatNumberToLocale(value.receiveShopQty) || 'Không giới hạn'}</p><p>- Còn lại: ${$formatNumberToLocale(value.numberLimited) || 'Không giới hạn'}</p>`, html: true}"
+                      v-b-popover.hover="{variant: 'info', content: `<p>Thông tin số suất:</p><p>- Được phân bố: ${$formatNumberToLocale(value.maxShopQty) || 'Không giới hạn'}</p><p>- Đã sử dụng: ${$formatNumberToLocale(value.receiveShopQty) || 0}</p><p>- Còn lại: ${$formatNumberToLocale(value.numberLimited) || 'Không giới hạn'}</p>`, html: true}"
                       class="cursor-pointer ml-1"
                       color="white"
                       font-scale="1.5"
@@ -1040,7 +1040,8 @@ export default {
           productSearch: '',
           maxShopQty: data.maxShopQty, // số xuất phân bổ
           receiveShopQty: data.receiveShopQty, // Đã sử dụng
-          orderInQty: data.totalQty !== null ? data.totalQty : data.totalAmtInTax, // số suất trong đơn hàng
+          // eslint-disable-next-line no-nested-ternary
+          orderInQty: data.totalQty !== null ? data.totalQty : data.amount !== null ? data.amount.amount : 0, // số suất trong đơn hàng
         }))
         this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
         this.pay.promotionAmountExTax = this.getPromotionPrograms.promotionAmountExTax || null
