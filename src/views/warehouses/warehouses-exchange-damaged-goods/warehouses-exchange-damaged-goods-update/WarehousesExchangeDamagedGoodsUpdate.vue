@@ -626,7 +626,7 @@ export default {
   // before page leave this will check input
   beforeRouteLeave(to, from, next) {
     if (this.isFieldCheck) {
-      if (this.checkFieldsValueLength()) {
+      if (this.checkFieldsValueLength() && this.exchangeGoodsInfo.transDate === nowDate) {
         this.isModalShow = !this.isModalShow
         this.goNext = next
       } else {
