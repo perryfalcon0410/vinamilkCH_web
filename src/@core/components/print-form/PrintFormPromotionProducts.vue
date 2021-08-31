@@ -194,13 +194,17 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import {
-  hostName,
-  printActions,
+  jsPdfPrint,
   jspmCheckStatus,
 } from '@core/utils/filter'
 import JSPM from 'jsprintmanager'
+import jsPDF from 'jspdf'
+// eslint-disable-next-line no-unused-vars
+import autoTable from 'jspdf-autotable'
+import { myFontNormal } from '@/@core/libs/Arimo-Regular'
+import { myFontBold } from '@/@core/libs/Arimo-Bold'
 import toasts from '@/@core/utils/toasts/toasts'
 import {
   REPORT_WAREHOUSES_PROMOTIONS,
@@ -210,10 +214,18 @@ import {
 import {
   PRINTERCONFIG,
   PRINTER_CLIENT_GETTER,
-  GET_PRINTER_CLIENT_ACTIONS,
 } from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
+  data() {
+    return {
+      printerName: null,
+      bodyData: [],
+      headerData: [],
+      count: 1,
+      checkHeight: true,
+    }
+  },
   computed: {
     ...mapGetters(REPORT_WAREHOUSES_PROMOTIONS, [PRINT_REPORT_PROMOTION_GETTER]),
     ...mapGetters(PRINTERCONFIG, [PRINTER_CLIENT_GETTER]),
@@ -256,48 +268,42 @@ export default {
         })
       })
     },
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
+    printerOptions() {
+      this.printerName = this.printerOptions.reportPrinterName
     },
-  },
-  mounted() {
-    hostName().then(res => {
-      if (res) {
-        this.ipAddress = res.ip || res.query || res.geoplugin_request
-      } else {
-        this.ipAddress = null
-      }
-    })
   },
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.reportPrinterName
-    if (printerName === '' || printerName === null) {
+    if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
       for (let i = 0; i < 3; i += 1) {
         if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          const element = document.getElementById('rp-promotion-products')
+          // eslint-disable-next-line new-cap
+          const pdf = new jsPDF('p', 'mm', 'a4')
+          // START - add font family
+          pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+          pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+          pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+          pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+          this.createHeader(pdf)
+          this.createTableFirst(pdf)
+          this.createTableSecond(pdf)
+          this.createFooter(pdf)
+
           const options = {
-            fileName: 'Bao cao hang khuyen mai',
-            format: 'a4',
-            // orientation: 'landscape',
-            // rotate: 'Rot90',
+            fileName: 'bao_cao_hang_khuyen_mai',
             pageSizing: 'Fit',
-            scale: 2.5,
-            isPaging: true,
-            margin: [10, 1, 10, 1],
-            x: 1.1,
           }
           if (jspmCheckStatus()) {
-            printActions(element, printerName, options)
+            if (this.printerName.includes('PDF')) {
+              pdf.save('bao_cao_hang_khuyen_mai.pdf')
+            } else {
+              jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+            }
           }
+          break
         } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
           toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
         }
@@ -305,7 +311,191 @@ export default {
     }
   },
   methods: {
-    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+    createHeader(pdf) {
+      pdf.setFont('Ario-Bold')
+      pdf.setFontSize(13.5)
+      pdf.text('Hàng khuyến mãi', 90, 10)
+      pdf.setFontSize(9.5)
+      pdf.text(`${this.shopInfo.shopName}`, 5, 10)
+      pdf.setFontSize(8.5)
+      pdf.setFont('Ario-Regular')
+      pdf.text(`Add: ${this.shopInfo.address || ''}`, 5, 16)
+      pdf.text(`Tel: ${this.shopInfo.phone || ''}`, 5, 22)
+      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonInfo.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonInfo.toDate)}`, 80, 16)
+      pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonInfo.printDate)}`, 87, 22)
+    },
+    createTableFirst(pdf) {
+      pdf.autoTable({
+        startY: 30,
+        margin: {
+          right: 5,
+          left: 5,
+        },
+        styles: {
+          font: 'Ario-Regular',
+          fontSize: 9,
+          textColor: 'black',
+        },
+        body: [
+          [
+            {
+              content: 'Tổng Cộng:',
+              styles: {
+                halign: 'right', fillColor: [211, 211, 211], lineWidth: 0, cellWidth: 187,
+              },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.commonInfo.totalQuantity)}`,
+              styles: {
+                halign: 'right', font: 'Ario-Bold', fillColor: [211, 211, 211], lineWidth: 0,
+              },
+            },
+          ],
+        ],
+      })
+    },
+    createTableSecond(pdf) {
+      this.reportData.forEach(item => {
+        const header1 = [
+          {
+            content: '',
+            styles: { lineWidth: 0 },
+          },
+          {
+            content: 'Mã trả hàng:',
+            styles: { lineWidth: 0 },
+          },
+          {
+            content: `${item.productCatName}`,
+            styles: { lineWidth: 0, font: 'Ario-Bold' },
+          },
+          {
+            content: 'Tổng cộng:',
+            colSpan: 3,
+            styles: { lineWidth: 0, halign: 'right' },
+          },
+          {
+            content: `${this.$formatNumberToLocale(item.totalQuantity)}`,
+            styles: { lineWidth: 0, font: 'Ario-Bold', halign: 'right' },
+          },
+        ]
+        this.bodyData.push(header1)
+        const title = [
+          { content: 'STT', styles: { font: 'Ario-Bold', cellWidth: 10 } },
+          { content: 'Ngày bán', styles: { font: 'Ario-Bold', cellWidth: 40 } },
+          { content: 'Hóa đơn', styles: { font: 'Ario-Bold', halign: 'center', cellWidth: 40 } },
+          {
+            content: 'Mã SP', styles: { font: 'Ario-Bold', cellWidth: 15 },
+          },
+          {
+            content: 'Tên SP', styles: { font: 'Ario-Bold', cellWidth: 70 },
+          },
+          {
+            content: 'ĐVT', styles: { font: 'Ario-Bold', cellWidth: 12 },
+          },
+          {
+            content: 'SL', styles: { font: 'Ario-Bold', halign: 'center' },
+          },
+        ]
+        this.bodyData.push(title)
+        item.productCats.forEach(pro => {
+          this.bodyData.push([
+            { content: `${this.count}`, styles: { } },
+            { content: `${this.$moment(pro.orderDate).locale('en').format('DD/MM/YYYY HH:mm:ss A')}`, styles: { } },
+            { content: `${pro.orderNumber}`, styles: { } },
+            { content: `${pro.productCode}`, styles: { } },
+            { content: `${pro.productName}`, styles: { } },
+            { content: `${pro.uom}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(pro.quantity) || ''}`, styles: { halign: 'right' } },
+          ])
+          this.count += 1
+        })
+        const startY = this.checkHeight ? { startY: pdf.previousAutoTable.finalY } : { }
+        pdf.autoTable({
+          theme: 'grid',
+          ...startY,
+          rowPageBreak: 'avoid',
+          margin: {
+            right: 5,
+            left: 5,
+          },
+          styles: {
+            font: 'Ario-Regular',
+            fontSize: 8,
+            textColor: 'black',
+          },
+          body: [...this.bodyData],
+          didDrawCell: key => {
+            if (key.section === 'body' && key.row.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+              if (key.column.index === 5) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+              }
+            }
+            if (key.section === 'body' && key.column.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x, key.cell.y)
+            }
+            if (key.section === 'body' && key.row.index === 1) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+              if (key.column.index === 1 || key.column.index === 2 || key.column.index === 3 || key.column.index === 4 || key.column.index === 5 || key.column.index === 6) {
+                pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x, key.cell.y)
+              }
+            }
+            if (key.section === 'body' && key.row.index === 2) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+            }
+            if (key.section === 'body' && key.column.index === 6) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+            }
+            if (key.section === 'body' && key.row.index === key.table.body.length - 1) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y + key.cell.height)
+            }
+          },
+        })
+        this.bodyData = []
+        this.checkHeight = false
+      })
+      this.checkHeight = true
+      this.count = 1
+    },
+    createFooter(pdf) {
+      if (pdf.previousAutoTable.finalY + 40 > pdf.internal.pageSize.getHeight()) {
+        pdf.addPage()
+        pdf.setFontSize(9)
+        pdf.setFont('Ario-Regular')
+        pdf.text('........, Ngày..... tháng..... năm.......', 135, 14)
+        pdf.setFont('Ario-Bold')
+        pdf.text('Người in', 20, 18)
+        pdf.text('Cửa hàng trưởng', 147, 18)
+      } else {
+        pdf.setFontSize(9)
+        pdf.setFont('Ario-Regular')
+        pdf.text('........, Ngày..... tháng..... năm.......', 135, pdf.previousAutoTable.finalY + 10)
+        pdf.setFont('Ario-Bold')
+        pdf.text('Người in', 20, pdf.previousAutoTable.finalY + 14)
+        pdf.text('Cửa hàng trưởng', 147, pdf.previousAutoTable.finalY + 14)
+      }
+
+      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+        pdf.setPage(j)
+        pdf.setFont('Ario-Regular')
+        pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 13, pdf.internal.pageSize.getHeight() - 10)
+      }
+    },
   },
 }
 </script>

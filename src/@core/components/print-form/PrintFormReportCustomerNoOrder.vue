@@ -123,6 +123,7 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import { myFontBold } from '@/@core/libs/Arimo-Bold'
+import toasts from '@/@core/utils/toasts/toasts'
 import {
   REPORT_CUSTOMERS_NON_TRANSACTIONAL,
   PRINT_REPORT_CUSTOMERS_NON_TRANSACTIONAL_GETTER,
@@ -185,105 +186,121 @@ export default {
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
     this.printerName = this.printerOptions.reportPrinterName
+    if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
+      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
+    } else {
+      JSPM.JSPrintManager.start()
+      for (let i = 0; i < 3; i += 1) {
+        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
+          // eslint-disable-next-line new-cap
+          const pdf = new jsPDF('p', 'mm', 'a4')
+          // START - add font family
+          pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+          pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+          pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+          pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+          // END - add font family
 
-    // eslint-disable-next-line new-cap
-    const pdf = new jsPDF('p', 'mm', 'a4')
-    // START - add font family
-    pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
-    pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
-    pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
-    pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
-    // END - add font family
+          // START - hearder page
+          pdf.setFont('Ario-Bold')
+          pdf.setFontSize(13)
+          pdf.text('Báo cáo KH không có giao dịch', 85, 10)
+          pdf.setFontSize(9)
+          pdf.text(`${this.commonInfo.shopName}`, 10, 10)
+          pdf.setFontSize(8)
+          pdf.setFont('Ario-Regular')
+          pdf.text(`Add: ${this.commonInfo.address}`, 10, 17)
+          pdf.text(`Tel: ${this.commonInfo.shopTel || ''}`, 10, 24)
+          pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonInfo.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonInfo.toDate)}`, 88, 17)
+          pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonInfo.printDate)}`, 96, 24)
+          // END - hearder page
 
-    // START - hearder page
-    pdf.setFont('Ario-Bold')
-    pdf.setFontSize(13)
-    pdf.text('Báo cáo KH không có giao dịch', 85, 10)
-    pdf.setFontSize(9)
-    pdf.text(`${this.commonInfo.shopName}`, 10, 10)
-    pdf.setFontSize(8)
-    pdf.setFont('Ario-Regular')
-    pdf.text(`Add: ${this.commonInfo.address}`, 10, 17)
-    pdf.text(`Tel: ${this.commonInfo.shopTel}`, 10, 24)
-    pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonInfo.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonInfo.toDate)}`, 88, 17)
-    pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonInfo.printDate)}`, 96, 24)
-    // END - hearder page
-
-    if (this.reportData && this.reportData.length > 0) {
-      this.reportData.forEach(data => {
-        this.bodyData.push([
-          { content: `${this.count}`, styles: { cellWidth: 15, halign: 'right' } },
-          { content: `${data.customerCode}`, styles: { cellWidth: 35 } },
-          { content: `${data.customerName}`, styles: { cellWidth: 45 } },
-          { content: `${data.address}`, styles: { cellWidth: 95 } },
-        ])
-        this.count += 1
-      })
-      pdf.autoTable({
-        theme: 'grid',
-        showHead: 'firstPage',
-        margin: {
-          right: 10,
-          left: 10,
-        },
-        startY: 37,
-        headStyles: {
-          fillColor: 'white',
-          font: 'Ario-Bold',
-          textColor: 'black',
-          fontSize: 9,
-          lineWidth: 0.1,
-          lineColor: 'black',
-        },
-        styles: {
-          font: 'Ario-Regular',
-          fontSize: 9,
-          textColor: 'black',
-        },
-        didDrawCell: key => {
-          if (key.section === 'body' && key.column.index === 0) {
-            pdf.setDrawColor('black')
-            pdf.setLineWidth(0.1)
-            pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x, key.cell.y)
+          if (this.reportData && this.reportData.length > 0) {
+            this.reportData.forEach(data => {
+              this.bodyData.push([
+                { content: `${this.count}`, styles: { cellWidth: 15, halign: 'right' } },
+                { content: `${data.customerCode}`, styles: { cellWidth: 35 } },
+                { content: `${data.customerName}`, styles: { cellWidth: 45 } },
+                { content: `${data.address}`, styles: { cellWidth: 95 } },
+              ])
+              this.count += 1
+            })
+            pdf.autoTable({
+              theme: 'grid',
+              showHead: 'firstPage',
+              margin: {
+                right: 10,
+                left: 10,
+              },
+              startY: 37,
+              headStyles: {
+                fillColor: 'white',
+                font: 'Ario-Bold',
+                textColor: 'black',
+                fontSize: 9,
+                lineWidth: 0.1,
+                lineColor: 'black',
+              },
+              styles: {
+                font: 'Ario-Regular',
+                fontSize: 9,
+                textColor: 'black',
+              },
+              didDrawCell: key => {
+                if (key.section === 'body' && key.column.index === 0) {
+                  pdf.setDrawColor('black')
+                  pdf.setLineWidth(0.1)
+                  pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x, key.cell.y)
+                }
+                if (key.section === 'body' && key.column.index === 3) {
+                  pdf.setDrawColor('black')
+                  pdf.setLineWidth(0.1)
+                  pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+                }
+                if (key.section === 'body' && key.row.index === key.table.body.length - 1) {
+                  pdf.setDrawColor('black')
+                  pdf.setLineWidth(0.1)
+                  pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y + key.cell.height)
+                }
+                if (key.section === 'body' && key.row.index === 0) {
+                  pdf.setDrawColor('black')
+                  pdf.setLineWidth(0.1)
+                  pdf.line(key.cell.x, key.cell.y, key.cell.x + key.cell.width, key.cell.y)
+                }
+              },
+              columns: [
+                { header: 'STT', dataKey: 'STT', cellWidth: 15 },
+                { header: 'Mã KH', dataKey: 'Mã KH', cellWidth: 35 },
+                { header: 'Tên KH', dataKey: 'Tên KH', cellWidth: 45 },
+                { header: 'Địa chỉ', dataKey: 'Địa chỉ', cellWidth: 95 },
+              ],
+              body: [...this.bodyData],
+            })
+            this.bodyData = []
           }
-          if (key.section === 'body' && key.column.index === 3) {
-            pdf.setDrawColor('black')
-            pdf.setLineWidth(0.1)
-            pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
-          }
-          if (key.section === 'body' && key.row.index === key.table.body.length - 1) {
-            pdf.setDrawColor('black')
-            pdf.setLineWidth(0.1)
-            pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y + key.cell.height)
-          }
-          if (key.section === 'body' && key.row.index === 0) {
-            pdf.setDrawColor('black')
-            pdf.setLineWidth(0.1)
-            pdf.line(key.cell.x, key.cell.y, key.cell.x + key.cell.width, key.cell.y)
-          }
-        },
-        columns: [
-          { header: 'STT', dataKey: 'STT', cellWidth: 15 },
-          { header: 'Mã KH', dataKey: 'Mã KH', cellWidth: 35 },
-          { header: 'Tên KH', dataKey: 'Tên KH', cellWidth: 45 },
-          { header: 'Địa chỉ', dataKey: 'Địa chỉ', cellWidth: 95 },
-        ],
-        body: [...this.bodyData],
-      })
-      this.bodyData = []
-    }
 
-    for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
-      pdf.setPage(j)
-      pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
-    }
+          for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+            pdf.setPage(j)
+            pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
+          }
 
-    const options = {
-      fileName: 'bao_cao_khach_hang_khong_giao_dich',
-      pageSizing: 'Fit',
-    }
-    if (jspmCheckStatus()) {
-      jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+          const options = {
+            fileName: 'bao_cao_khach_hang_khong_giao_dich',
+            pageSizing: 'Fit',
+          }
+          if (jspmCheckStatus()) {
+            if (this.printerName.includes('PDF')) {
+              pdf.save('bao_cao_ton_kho.pdf')
+            } else {
+              jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+            }
+          }
+          break
+        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+          window.print()
+        }
+      }
     }
   },
   methods: {

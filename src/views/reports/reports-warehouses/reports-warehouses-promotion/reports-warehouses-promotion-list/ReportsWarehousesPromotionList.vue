@@ -184,6 +184,8 @@ import {
 } from '@core/utils/utils'
 import {
   preventDefaultWindowPrint,
+  hostName,
+  checkIpClient,
 } from '@core/utils/filter'
 import PrintFormReportPromotion from '@core/components/print-form/PrintFormPromotionProducts.vue'
 import ReportsWarehousesPromotionListSearch from './components/ReportsWarehousesPromotionListSearch.vue'
@@ -196,6 +198,10 @@ import {
   EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION,
   PRINT_REPORT_PROMOTION_ACTION,
 } from '../store-module/type'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '../../../../auth/printer-configuration-modal/store-module/type'
 
 export default {
   components: {
@@ -293,6 +299,8 @@ export default {
         },
 
       ],
+      ipAddressCurrent: '',
+      ipAddress: '',
     }
   },
 
@@ -353,6 +361,13 @@ export default {
   mounted() {
     resizeAbleTable()
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleWindowPrintHotKey)
@@ -363,6 +378,7 @@ export default {
       EXPORT_REPORT_WAREHOUSES_PROMOTIONS_ACTION,
       PRINT_REPORT_PROMOTION_ACTION,
     ]),
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
     handleWindowPrintHotKey(event) {
       const resolve = preventDefaultWindowPrint(event)
       if (resolve) {
@@ -379,14 +395,27 @@ export default {
 
     // END - permission
     onClickPrintButton() {
-      this.$root.$emit('bv::hide::popover')
-      this.$root.$emit('bv::disable::popover')
-      this.PRINT_REPORT_PROMOTION_ACTION({
-        ...this.searchOptions,
-        ...this.decentralization,
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
+      hostName().then(res => {
+        if (res) {
+          this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddressCurrent = null
+        }
+        if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+          this.GET_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientId: this.ipAddressCurrent,
+            },
+            onSuccess: () => {
+              this.PRINT_REPORT_PROMOTION_ACTION({
+                ...this.searchOptions,
+                ...this.decentralization,
+                onSuccess: () => {
+                },
+              })
+            },
+          })
+        }
       })
     },
     // Start - xuat excel

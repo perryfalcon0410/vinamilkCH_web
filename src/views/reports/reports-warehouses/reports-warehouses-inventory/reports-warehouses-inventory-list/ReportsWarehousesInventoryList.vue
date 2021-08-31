@@ -245,6 +245,8 @@ import {
 } from 'vuex'
 import {
   preventDefaultWindowPrint,
+  hostName,
+  checkIpClient,
 } from '@core/utils/filter'
 import PrintFormReportInventory from '@core/components/print-form/PrintFormReportInventory.vue'
 import ListSearch from './components/ListSearch.vue'
@@ -259,6 +261,10 @@ import {
   EXPORT_REPORT_INVENTORIES_ACTION,
   PRINT_REPORT_INVENTORY_ACTION,
 } from '../store-module/type'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '../../../../auth/printer-configuration-modal/store-module/type'
 
 export default {
   components: {
@@ -406,6 +412,8 @@ export default {
       rows: [],
       reportInventoryInfo: {},
       reportInventoryPagination: {},
+      ipAddressCurrent: '',
+      ipAddress: '',
     }
   },
   computed: {
@@ -477,6 +485,13 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleWindowPrintHotKey)
@@ -487,7 +502,7 @@ export default {
       EXPORT_REPORT_INVENTORIES_ACTION,
       PRINT_REPORT_INVENTORY_ACTION,
     ]),
-
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
     exportExcel() {
       this.EXPORT_REPORT_INVENTORIES_ACTION({
         productCodes: this.paginationData.productCodes,
@@ -512,15 +527,28 @@ export default {
 
     // END - permission
     printReport() {
-      this.$root.$emit('bv::hide::popover')
-      this.$root.$emit('bv::disable::popover')
-      this.PRINT_REPORT_INVENTORY_ACTION({
-        productCodes: this.paginationData.productCodes,
-        stockDate: this.paginationData.stockDate,
-        warehouseTypeId: this.paginationData.warehouseTypeId,
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
+      hostName().then(res => {
+        if (res) {
+          this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddressCurrent = null
+        }
+        if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+          this.GET_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientId: this.ipAddressCurrent,
+            },
+            onSuccess: () => {
+              this.PRINT_REPORT_INVENTORY_ACTION({
+                productCodes: this.paginationData.productCodes,
+                stockDate: this.paginationData.stockDate,
+                warehouseTypeId: this.paginationData.warehouseTypeId,
+                onSuccess: () => {
+                },
+              })
+            },
+          })
+        }
       })
     },
     // pagnigation funcs
