@@ -235,7 +235,6 @@ export default {
         ]
         this.bodyData.push(row)
       })
-      console.log(this.bodyData)
       JSPM.JSPrintManager.start()
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('p', 'mm', 'a4')
