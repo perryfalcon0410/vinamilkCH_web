@@ -29,7 +29,7 @@
               <b-input-group class="input-group-merge">
                 <vue-autosuggest
                   ref="focusInput"
-                  v-model="redBill.customerCode"
+                  v-model="customerCode"
                   maxlength="200"
                   :suggestions="customers"
                   :input-props="{
@@ -38,6 +38,7 @@
                     disabled: isDisabled ? true : false,
                   }"
                   @keyup.enter="loadCustomers"
+                  @input="changeInput"
                   @selected="selectCustomer"
                 >
                   <template
@@ -585,9 +586,12 @@ export default {
       totalPriceTotal: '',
       totalPriceTotalVat: '',
       totalProductExported: '',
+      newSearch: '',
+      oldSearch: '',
+      allowCallAPI: true,
+      customerCode: '',
       redBill: {
         customerId: null,
-        customerCode: '',
         customerName: '',
         billNumber: '',
         printDate: nowDate(),
@@ -836,6 +840,10 @@ export default {
     getTotalPriceTotalVat() {
       this.totalPriceTotalVat = this.getTotalPriceTotalVat
     },
+    customerCode(newSearch, oldSearch) {
+      this.newSearch = newSearch
+      this.oldSearch = oldSearch
+    },
   },
 
   // before page leave this will check input
@@ -898,20 +906,22 @@ export default {
       this.$bvModal.show('bill-receipt-modal')
     },
     loadCustomers() {
-      this.customers = [{ data: null }]
-      setTimeout(() => {
-        if (this.redBill.customerCode.length >= commonData.minSearchLength) {
-          const searchData = {
-            searchKeywords: this.redBill.customerCode?.trim(),
-          }
+      if (this.customerCode) {
+        if (this.customerCode.length >= commonData.minSearchLength) {
+          if (this.allowCallAPI) {
+            const searchData = {
+              searchKeywords: this.customerCode?.trim(),
+            }
 
-          this.GET_CUSTOMERS_ACTION({ ...searchData, isShop: true })
-        } else { this.customers = [{ data: null }] }
-      }, 1000)
+            this.GET_CUSTOMERS_ACTION({ ...searchData, isShop: true })
+          }
+        }
+      } else { this.customers = [{ data: null }] }
+      this.allowCallAPI = false
     },
     selectCustomer(customer) {
       if (customer && customer.item) {
-        this.redBill.customerCode = customer.item.customerCode
+        this.customerCode = customer.item.customerCode
         this.redBill.customerId = customer.item.id
         this.redBill.customerName = customer.item.customerName
         this.redBill.officeWorking = customer.item.officeWorking
@@ -1004,7 +1014,7 @@ export default {
         // Lấy dữ liệu khách hàng từ HDBH
         this.redBill.customerId = invoiceDetail.customerId
         this.redBill.customerName = invoiceDetail.customerName
-        this.redBill.customerCode = invoiceDetail.customerCode
+        this.customerCode = invoiceDetail.customerCode
         this.redBill.officeWorking = invoiceDetail.officeWorking
         this.redBill.officeAddress = invoiceDetail.officeAddress
         this.redBill.taxCode = invoiceDetail.taxCode
@@ -1215,12 +1225,17 @@ export default {
     getCustomerInfo(data) {
       this.isShowSearchModal = false
       if (data) {
-        this.redBill.customerCode = data.customerCode
+        this.customerCode = data.customerCode
         this.redBill.customerId = data.id
         this.redBill.customerName = data.customersName
         this.redBill.officeWorking = data.workingOffice
         this.redBill.officeAddress = data.officeAddress
         this.redBill.taxCode = data.taxCode
+      }
+    },
+    changeInput() {
+      if (this.newSearch !== this.oldSearch) {
+        this.allowCallAPI = true
       }
     },
   },

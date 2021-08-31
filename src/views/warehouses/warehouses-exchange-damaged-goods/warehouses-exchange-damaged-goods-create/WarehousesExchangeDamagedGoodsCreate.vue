@@ -60,7 +60,7 @@
               </div>
               <vue-autosuggest
                 ref="focusCustomer"
-                v-model="customerInfo.customerName"
+                v-model="customerName"
                 maxlength="40"
                 :state="touched ? passed : null"
                 :suggestions="customers"
@@ -70,6 +70,7 @@
                   placeholder:'Nhập mã hoặc tên khách hàng'
                 }"
                 @keyup.enter="customerOptions"
+                @input="changeInput"
                 @selected="selectCustomer"
               >
 
@@ -414,6 +415,9 @@ export default {
       customers: [{ data: '' }],
       products: [{ data: '' }],
       negativeCheck: true,
+      newSearch: '',
+      oldSearch: '',
+      allowCallAPI: true,
 
       reasonObj: {
         reasonSelected: null,
@@ -425,9 +429,9 @@ export default {
         ctrlId: 7,
       },
       customerId: '',
+      customerName: '',
       customerInfo: {
         customerCode: '',
-        customerName: '',
         customerAddress: '',
         customerPhone: '',
         customerTypeId: '',
@@ -613,6 +617,10 @@ export default {
     getChangePriceProduct() {
       this.damagedProduct = [...this.getChangePriceProduct]
     },
+    customerName(newSearch, oldSearch) {
+      this.newSearch = newSearch
+      this.oldSearch = oldSearch
+    },
   },
 
   mounted() {
@@ -675,7 +683,7 @@ export default {
     },
 
     checkDuplicatesName() {
-      return this.getAllCustomer.findIndex(x => x.customerName === this.customerInfo.customerName)
+      return this.getAllCustomer.findIndex(x => x.customerName === this.customerName)
     },
     checkNegativeNumber() {
       this.negativeCheck = true
@@ -689,22 +697,25 @@ export default {
     },
 
     customerOptions() {
-      if (this.customerInfo.customerName) {
-        if (this.customerInfo.customerName.length >= commonData.minSearchLength) {
-          const searchData = {
-            searchKeywords: this.customerInfo.customerName,
-            status: this.customerInfo.status,
-            ...this.decentralization,
+      if (this.customerName) {
+        if (this.customerName.length >= commonData.minSearchLength) {
+          if (this.allowCallAPI) {
+            const searchData = {
+              searchKeywords: this.customerName,
+              status: this.customerInfo.status,
+              ...this.decentralization,
+            }
+            this.GET_CUSTOMERS_ACTION(searchData)
           }
-          this.GET_CUSTOMERS_ACTION(searchData)
         }
       } else this.customers = [{ data: null }]
+      this.allowCallAPI = false
     },
     selectCustomer(customer) {
       if (customer && customer.item) {
         this.customerId = customer.item.customerId
         this.customerInfo.customerCode = customer.item.customerCode
-        this.customerInfo.customerName = customer.item.name
+        this.customerName = customer.item.name
         this.customerInfo.customerAddress = customer.item.address
         this.customerInfo.customerPhone = customer.item.mobilePhone
         this.customerInfo.customerTypeId = customer.item.customerTypeId
@@ -769,7 +780,7 @@ export default {
       if (
         // START FORM
         this.exchangeGoodsInfo.transCode
-        || this.customerInfo.customerName
+        || this.customerName
         || this.customerInfo.customerAddress
         || this.customerInfo.customerPhone
         || this.reasonObj.reasonSelected
@@ -798,6 +809,11 @@ export default {
     focusInputSearch() {
       this.$refs.searchProduct.$el.querySelector('input').focus()
       this.$refs.searchProduct.$el.querySelector('input').click()
+    },
+    changeInput() {
+      if (this.newSearch !== this.oldSearch) {
+        this.allowCallAPI = true
+      }
     },
   },
 }

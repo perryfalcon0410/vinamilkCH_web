@@ -52,7 +52,7 @@
             </div>
             <vue-autosuggest
               ref="focusInput"
-              v-model="customerInfo.customerName"
+              v-model="customerName"
               maxlength="40"
               :state="touched ? passed : null"
               :suggestions="customers"
@@ -62,6 +62,7 @@
                 placeholder:'Nhập mã hoặc tên khách hàng',
               }"
               @keyup.enter="customerOptions"
+              @input="changeInput"
               @selected="selectCustomer"
             >
 
@@ -411,7 +412,12 @@ export default {
       isFieldCheck: true,
       customers: [{ data: '' }],
       products: [{ data: '' }],
+      negativeCheck: true,
       nowDate: nowDate(),
+      newSearch: '',
+      oldSearch: '',
+      allowCallAPI: true,
+
       reasonObj: {
         reasonOptions: [],
       },
@@ -422,9 +428,9 @@ export default {
       },
       listDamagedProducts: [],
       customerId: '',
+      customerName: '',
       customerInfo: {
         customerCode: '',
-        customerName: '',
         customerAddress: '',
         customerPhone: '',
         customerTypeId: '',
@@ -615,6 +621,10 @@ export default {
     getChangePriceProduct() {
       this.damagedProduct = [...this.getChangePriceProduct]
     },
+    customerName(newSearch, oldSearch) {
+      this.newSearch = newSearch
+      this.oldSearch = oldSearch
+    },
   },
 
   mounted() {
@@ -660,7 +670,7 @@ export default {
         this.exchangeGoodsInfo.transTime = getTimeOfDate(this.exchangeDamagedGoods.transDate)
         this.exchangeGoodsInfo.shopId = this.exchangeDamagedGoods.shopId
         this.customerId = this.exchangeDamagedGoods.customerId
-        this.customerInfo.customerName = this.exchangeDamagedGoods.customerName
+        this.customerName = this.exchangeDamagedGoods.customerName
         this.customerInfo.customerAddress = this.exchangeDamagedGoods.customerAddress
         this.customerInfo.customerPhone = this.exchangeDamagedGoods.customerPhone
         this.exchangeGoodsInfo.reasonId = this.exchangeDamagedGoods.reasonId
@@ -680,7 +690,7 @@ export default {
         }))
         // END - Exchange Damaged Goods
       }
-      this.GET_CUSTOMERS_ACTION({ searchKeywords: this.customerInfo.customerName })
+      this.GET_CUSTOMERS_ACTION({ searchKeywords: this.customerName })
       this.listDamagedProducts = this.damagedProduct.map(data => ({
         id: data.id,
         productId: data.productId,
@@ -723,23 +733,26 @@ export default {
     },
 
     customerOptions() {
-      if (this.customerInfo.customerName) {
-        if (this.customerInfo.customerName.length >= commonData.minSearchLength) {
-          const searchData = {
-            searchKeywords: this.customerInfo.customerName,
-            status: this.customerInfo.status,
-            ...this.decentralization,
+      if (this.customerName) {
+        if (this.customerName.length >= commonData.minSearchLength) {
+          if (this.allowCallAPI) {
+            const searchData = {
+              searchKeywords: this.customerName,
+              status: this.customerInfo.status,
+              ...this.decentralization,
+            }
+            this.GET_CUSTOMERS_ACTION(searchData)
           }
-          this.GET_CUSTOMERS_ACTION(searchData)
         }
       } else this.customers = [{ data: null }]
+      this.allowCallAPI = false
     },
 
     selectCustomer(customer) {
       if (customer && customer.item) {
         this.customerId = customer.item.customerId
         this.customerInfo.customerCode = customer.item.customerCode
-        this.customerInfo.customerName = customer.item.name
+        this.customerName = customer.item.name
         this.customerInfo.customerAddress = customer.item.address
         this.customerInfo.customerPhone = customer.item.mobilePhone
         this.customerInfo.customerTypeId = customer.item.customerTypeId
@@ -812,7 +825,7 @@ export default {
     },
 
     clearCustomer() {
-      this.customerInfo.customerName = ''
+      this.customerName = ''
     },
 
     clearProduct() {
@@ -834,7 +847,7 @@ export default {
       if (
         // START FORM
         this.exchangeGoodsInfo.transCode
-        || this.customerInfo.customerName
+        || this.customerName
         || this.customerInfo.customerAddress
         || this.customerInfo.customerPhone
         || this.exchangeGoodsInfo.reasonId
@@ -850,7 +863,7 @@ export default {
     },
 
     checkDuplicatesName() {
-      return this.getAllCustomer.findIndex(x => x.customerName === this.customerInfo.customerName)
+      return this.getAllCustomer.findIndex(x => x.customerName === this.customerName)
     },
     checkNegativeNumber() {
       this.negativeCheck = true
@@ -877,6 +890,11 @@ export default {
     focusInputSearch() {
       this.$refs.searchProduct.$el.querySelector('input').focus()
       this.$refs.searchProduct.$el.querySelector('input').click()
+    },
+    changeInput() {
+      if (this.newSearch !== this.oldSearch) {
+        this.allowCallAPI = true
+      }
     },
   },
 }
