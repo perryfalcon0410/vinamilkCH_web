@@ -449,6 +449,12 @@ export default {
       // end pager
 
       this.checkHeight = true
+      pdf.setFont('Ario-Regular')
+      pdf.setFontSize(9)
+      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+        pdf.setPage(j)
+        pdf.text(`Trang ${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 24, pdf.internal.pageSize.getHeight() - 10)
+      }
       const options = {
         fileName: 'Bao_cao_hang_tra_lai',
         pageSizing: 'Fit',
