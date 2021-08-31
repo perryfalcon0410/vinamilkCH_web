@@ -632,7 +632,6 @@ export default {
       this.GET_SALES_RECEIPTS_ACTION({ ...this.searchData, ...params })
     },
     onPageChange(params) {
-      console.log(params)
       this.updateSearchData({ page: params.currentPage - 1 })
       this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
     },
