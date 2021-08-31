@@ -503,10 +503,16 @@
 import { mapGetters, mapActions } from 'vuex'
 import JSPM from 'jsprintmanager'
 import toasts from '@/@core/utils/toasts/toasts'
+import jsPDF from 'jspdf'
+// eslint-disable-next-line no-unused-vars
+import autoTable from 'jspdf-autotable'
+import { myFontNormal } from '@/@core/libs/Arimo-Regular'
+import { myFontBold } from '@/@core/libs/Arimo-Bold'
 import {
   hostName,
-  printActions,
+  // printActions,
   jspmCheckStatus,
+  jsPdfPrint,
 } from '@core/utils/filter'
 
 import {
@@ -525,6 +531,11 @@ export default {
     return {
       dataPrintOptions: {},
       ipAddress: '',
+      bodyData: [],
+      count: 1,
+      header: [],
+      checkheader: true,
+      printerName: null,
     }
   },
   computed: {
@@ -579,32 +590,47 @@ export default {
         onSuccess: () => {},
       })
     },
+    printerOptions() {
+      this.printerName = this.printerOptions.reportPrinterName
+    },
   },
 
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.reportPrinterName
-    if (printerName === '' || printerName === null) {
+    if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
       for (let i = 0; i < 3; i += 1) {
         if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          const element = document.getElementById('print-form-input-output-inventory')
+          // eslint-disable-next-line new-cap
+          const pdf = new jsPDF('l', 'mm', 'a4')
+          // START - add font family
+          pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+          pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+          pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+          pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+          // content
+          this.createHeader(pdf)
+          this.createTableFirst(pdf)
+          this.createTableSecond(pdf)
+          // content
           const options = {
             fileName: 'bao_cao_xuat_nhap_ton',
-            orientation: 'landscape',
             rotate: 'Rot90',
             pageSizing: 'Fit',
-            format: 'a3',
-            isPaging: true,
-            margin: [5, 1, 10, 1],
           }
           if (jspmCheckStatus()) {
-            printActions(element, printerName, options)
+            if (this.printerName.includes('PDF')) {
+              pdf.save('bao_cao_xuat_hang.pdf')
+            } else {
+              jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+            }
           }
+          break
         } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
           toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+          window.print()
         }
       }
     }
@@ -621,6 +647,288 @@ export default {
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+    createHeader(pdf) {
+      pdf.setFont('Ario-Bold')
+      pdf.setFontSize(13)
+      pdf.text('Báo cáo Xuất nhập Tồn', 125, 10)
+      pdf.setFontSize(9)
+      pdf.text(`${this.reportSalesShopData.shopName}`, 15, 9)
+      pdf.setFont('Ario-Regular')
+      pdf.setFontSize(8)
+      pdf.text(`Add: ${this.reportSalesShopData.address}`, 15, 16)
+      pdf.text(`Tel: ${this.reportSalesShopData.phone || ''}`, 15, 22)
+      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.reportDateData.fromDate)}    đến    ${this.$formatISOtoVNI(this.reportDateData.toDate)}`, 125, 16)
+      pdf.text(`Ngày in: ${this.$formatPrintDate(this.reportDateData.reportDate)}`, 129, 22)
+    },
+
+    createFooter(pdf) {
+      if (pdf.previousAutoTable.finalY + 40 > pdf.internal.pageSize.getHeight()) {
+        pdf.addPage()
+        pdf.setFont('Ario-Regular')
+        pdf.setFontSize(9)
+        pdf.text('........, Ngày..... tháng..... năm.......', 135, 10)
+        pdf.setFont('Ario-Bold')
+        pdf.text('Người in', 20, 14)
+        pdf.text('Cửa hàng trưởng', 147, 14)
+      } else {
+        pdf.setFont('Ario-Regular')
+        pdf.setFontSize(9)
+        pdf.text('........, Ngày..... tháng..... năm.......', 135, pdf.previousAutoTable.finalY + 10)
+        pdf.setFont('Ario-Bold')
+        pdf.text('Người in', 20, pdf.previousAutoTable.finalY + 14)
+        pdf.text('Cửa hàng trưởng', 147, pdf.previousAutoTable.finalY + 14)
+      }
+    },
+
+    createTableFirst(pdf) {
+      pdf.autoTable({
+        startY: 25,
+        margin: {
+          right: 4,
+          left: 4,
+        },
+        styles: {
+          font: 'Ario-Bold',
+          fontSize: 6,
+          textColor: 'black',
+        },
+        body: [
+          [
+            {
+              content: 'Tổng cộng:',
+              styles: { halign: 'right', cellWidth: 35 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.beginningQty)}`,
+              styles: { halign: 'right', cellWidth: 24 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.beginningAmount)}`,
+              styles: { halign: 'right', cellWidth: 26 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.impTotalQty)}`,
+              styles: { halign: 'right', cellWidth: 12 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.impAdjustmentAmount)}`,
+              styles: { halign: 'right', cellWidth: 51 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expTotalQty)}`,
+              styles: { halign: 'right', cellWidth: 11 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expSalesAmount)}`,
+              styles: { halign: 'right', cellWidth: 27 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expExchangeAmount)}`,
+              styles: { halign: 'right', cellWidth: 49 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expExchangeQty)}`,
+              styles: { halign: 'right', cellWidth: 10 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.endingQty)}`,
+              styles: { halign: 'right', cellWidth: 20 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.endingAmount)}`,
+              styles: { },
+            },
+          ],
+        ],
+      })
+    },
+    createTableSecond(pdf) {
+      const header1 = [
+        {
+          content: '',
+          colSpan: 4,
+          styles: { },
+        },
+        {
+          content: 'Đầu kỳ',
+          colSpan: 3,
+          styles: { },
+        },
+        {
+          content: 'Nhập trong kỳ',
+          colSpan: 5,
+          styles: { },
+        },
+        {
+          content: 'Xuất trong kỳ',
+          colSpan: 8,
+          styles: { },
+        },
+        {
+          content: 'Cuối kỳ',
+          colSpan: 3,
+          styles: { },
+        },
+      ]
+      this.header.push(header1)
+      const padding = {
+        cellPadding: {
+          top: 2, bottom: 2, left: 1, right: 1,
+        },
+      }
+      const header2 = [
+        { content: 'STT', styles: { cellWidth: 7.5 } },
+        { content: 'Mã SP', styles: { cellWidth: 10 } },
+        { content: 'Tên SP', styles: { cellWidth: 20 } },
+        { content: 'ĐVT', styles: { cellWidth: 7.5 } },
+        { content: 'SL', styles: { cellWidth: 14 } },
+        { content: 'Giá', styles: { cellWidth: 10 } },
+        { content: 'T.Tiền', styles: { cellWidth: 16 } },
+        { content: 'Tổng', styles: { cellWidth: 12 } },
+        { content: 'SL', styles: { cellWidth: 9 } },
+        { content: 'T.Tiền', styles: { cellWidth: 15 } },
+        { content: 'ĐC', styles: { cellWidth: 11 } },
+        { content: 'T.Tiền', styles: { cellWidth: 16 } },
+        { content: 'Tổng', styles: { cellWidth: 11 } },
+        { content: 'BH', styles: { cellWidth: 11 } },
+        { content: 'T.Tiền', styles: { cellWidth: 16 } },
+        { content: 'KM', styles: { cellWidth: 7 } },
+        { content: 'T.Tiền', styles: { cellWidth: 15 } },
+        { content: 'ĐC', styles: { cellWidth: 11 } },
+        { content: 'T.Tiền', styles: { cellWidth: 16 } },
+        { content: 'ĐH', styles: { cellWidth: 10 } },
+        { content: 'SL', styles: { cellWidth: 14 } },
+        { content: 'Giá', styles: { cellWidth: 10 } },
+        { content: 'T.Tiền', styles: { } },
+      ]
+      this.header.push(header2)
+      this.reportInputOutputinventoryData.forEach(item => {
+        const halign = { halign: 'right' }
+        const valign = { valign: 'middle' }
+        const styleDef = { font: 'Ario-Bold', lineWidth: 0, ...halign }
+        const row = [
+          { content: 'Ngàng hàng:', colSpan: 2, styles: { font: 'Ario-Bold', lineWidth: 0, ...valign } },
+          {
+            content: `${item.catName}`,
+            styles: {
+              font: 'Ario-Bold', lineWidth: 0, halign: 'center', ...valign,
+            },
+          },
+          { content: `${this.$formatNumberToLocale(item.beginningQty)}`, colSpan: 2, styles: { ...styleDef, ...valign } },
+          { content: `${this.$formatNumberToLocale(item.beginningAmount)}`, colSpan: 2, styles: { ...styleDef, ...padding, ...valign } },
+          { content: `${this.$formatNumberToLocale(item.impTotalQty)}`, styles: { ...styleDef, ...padding, ...valign } },
+          { content: `${this.$formatNumberToLocale(item.impAdjustmentAmount)}`, colSpan: 4, styles: { ...styleDef, ...padding, ...valign } },
+          // { content: '', colSpan: 3, styles: { ...styleDef } },
+          { content: `${this.$formatNumberToLocale(item.expTotalQty)}`, styles: { ...styleDef, ...padding, ...valign } },
+          { content: `${this.$formatNumberToLocale(item.expSalesAmount)}`, colSpan: 2, styles: { ...styleDef, ...padding, ...valign } },
+          { content: '', colSpan: 2, styles: { ...styleDef } },
+          { content: `${this.$formatNumberToLocale(item.expExchangeAmount)}`, colSpan: 2, styles: { ...styleDef, ...padding, ...valign } },
+          { content: `${this.$formatNumberToLocale(item.expExchangeQty)}`, styles: { ...styleDef, ...padding, ...valign } },
+          { content: `${this.$formatNumberToLocale(item.endingQty)}`, styles: { ...styleDef, ...padding, ...valign } },
+          { content: `${this.$formatNumberToLocale(item.endingAmount)}`, colSpan: 2, styles: { ...styleDef, ...padding, ...valign } },
+        ]
+        this.bodyData.push(row)
+        item.products.forEach(pro => {
+          this.bodyData.push([
+            { content: `${this.count}`, styles: { ...padding, ...valign } },
+            { content: `${pro.productCode}`, styles: { ...padding, ...valign } },
+            { content: `${pro.productName}`, styles: { ...padding, ...valign } },
+            { content: `${pro.uom}`, styles: { ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.beginningQty) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.beginningPrice) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.beginningAmount) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.impTotalQty) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.impQty) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.impAmount) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.impAdjustmentQty) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.impAdjustmentAmount) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.expTotalQty) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.expSalesQty) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.expSalesAmount) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.expPromotionQty) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.expPromotionAmount) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.expAdjustmentQty) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.expAdjustmentAmount) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.expExchangeQty) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.endingQty) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.endingPrice) || ''}`, styles: { ...halign, ...padding, ...valign } },
+            { content: `${this.$formatNumberToLocale(pro.endingAmount) || ''}`, styles: { ...halign, ...padding, ...valign } },
+          ])
+          this.count += 1
+        })
+        const startY = this.checkheader ? { startY: pdf.previousAutoTable.finalY } : {}
+        pdf.autoTable({
+          ...startY,
+          theme: 'grid',
+          rowPageBreak: 'avoid',
+          showHead: 'firstPage',
+          pageBreak: 'auto',
+          margin: {
+            right: 4,
+            left: 4,
+          },
+          styles: {
+            font: 'Ario-Regular',
+            fontSize: 6,
+            textColor: 'black',
+          },
+          headStyles: {
+            fillColor: 'white',
+            font: 'Ario-Bold',
+            textColor: 'black',
+            lineWidth: 0.1,
+            lineColor: 'black',
+            halign: 'center',
+          },
+          head: [...this.header],
+          body: [...this.bodyData],
+          didDrawCell: key => {
+            // if (key.section === 'head' && key.row.index === 1) {
+            //   pdf.setDrawColor('black')
+            //   pdf.setLineWidth(0.7)
+            //   pdf.line(key.cell.x, key.cursor.y + key.cell.height, key.cell.x + key.cell.width, key.cursor.y + key.cell.height)
+            // }
+            if (key.section === 'body' && key.row.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+              pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y + key.cell.height)
+              if (key.section === 'body' && key.column.index === 21) {
+                pdf.setDrawColor('black')
+                pdf.setLineWidth(0.1)
+                pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+              } // sai chỗ này khác à rồi ... hiểu
+            }
+            if (key.section === 'body' && key.row.index === 1) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+            }
+            if (key.section === 'body' && key.row.index === key.table.body.length - 1) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y + key.cell.height)
+            }
+            if (key.section === 'body' && key.column.index === 22) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+            }
+            if (key.section === 'body' && key.column.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x, key.cell.y)
+            }
+          },
+        })
+        this.bodyData = []
+        this.checkheader = false
+      })
+      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+        pdf.setPage(j)
+        pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
+      }
+    },
   },
 }
 </script>

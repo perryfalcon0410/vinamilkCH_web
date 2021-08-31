@@ -410,16 +410,58 @@ export default {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
-      // eslint-disable-next-line new-cap
-      const pdf = new jsPDF('p', 'mm', 'a4')
-      // START - add font family
-      pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
-      pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
-      pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
-      pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
-      // END - add font family
+      for (let i = 0; i < 3; i += 1) {
+        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
+          // eslint-disable-next-line new-cap
+          const pdf = new jsPDF('p', 'mm', 'a4')
+          // START - add font family
+          pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+          pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+          pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+          pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+          // END - add font family
 
-      // START - hearder page
+          // START - hearder page
+          this.createHeader(pdf)
+          // END - hearder page
+
+          // START - table tổng đầu tiên
+          this.createTable1(pdf)
+          // END - table tổng đầu tiên
+
+          // table 3
+          this.createTable2(pdf)
+          // table 3
+          // end pager
+          pdf.setFontSize(9)
+          pdf.text('........, Ngày..... tháng..... năm.......', 135, pdf.previousAutoTable.finalY + 10)
+          pdf.setFont('Ario-Bold')
+          pdf.text('Người in', 20, pdf.previousAutoTable.finalY + 14)
+          pdf.text('Cửa hàng trưởng', 147, pdf.previousAutoTable.finalY + 14)
+          // end pager
+
+          this.checkHeight = true
+          const options = {
+            fileName: 'Bao_cao_hang_tra_lai',
+            pageSizing: 'Fit',
+          }
+          if (jspmCheckStatus()) {
+            if (this.printerName.includes('PDF')) {
+              pdf.save('Bao_cao_hang_tra_lai.pdf')
+            } else {
+              jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+            }
+          }
+          break
+        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
+          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+          window.print()
+        }
+      }
+    }
+  },
+  methods: {
+    createHeader(pdf) {
       pdf.setFont('Ario-Bold')
       pdf.setFontSize(13.5)
       pdf.text('Hàng trả lại', 110, 10)
@@ -431,44 +473,7 @@ export default {
       pdf.text(`Tel: ${this.commonData.shopTel}`, 5, 24)
       pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonData.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonData.toDate)}`, 93, 17)
       pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonData.printDate)}`, 101, 24)
-      // END - hearder page
-
-      // START - table tổng đầu tiên
-      this.createTable1(pdf)
-      // END - table tổng đầu tiên
-
-      // table 3
-      this.createTable2(pdf)
-      // table 3
-      // end pager
-      pdf.setFontSize(9)
-      pdf.text('........, Ngày..... tháng..... năm.......', 135, pdf.previousAutoTable.finalY + 10)
-      pdf.setFont('Ario-Bold')
-      pdf.text('Người in', 20, pdf.previousAutoTable.finalY + 14)
-      pdf.text('Cửa hàng trưởng', 147, pdf.previousAutoTable.finalY + 14)
-      // end pager
-
-      this.checkHeight = true
-      pdf.setFont('Ario-Regular')
-      pdf.setFontSize(9)
-      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
-        pdf.setPage(j)
-        pdf.text(`Trang ${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 24, pdf.internal.pageSize.getHeight() - 10)
-      }
-      const options = {
-        fileName: 'Bao_cao_hang_tra_lai',
-        pageSizing: 'Fit',
-      }
-      if (jspmCheckStatus()) {
-        if (this.printerName.includes('PDF')) {
-          pdf.save('Bao_cao_hang_tra_lai.pdf')
-        } else {
-          jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
-        }
-      }
-    }
-  },
-  methods: {
+    },
     // tablle 1
     createTable1(pdf) {
       pdf.autoTable({
@@ -760,6 +765,10 @@ export default {
         })
         this.checkHeader = true
       })
+      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+        pdf.setPage(j)
+        pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
+      }
     },
     // table 2
   },

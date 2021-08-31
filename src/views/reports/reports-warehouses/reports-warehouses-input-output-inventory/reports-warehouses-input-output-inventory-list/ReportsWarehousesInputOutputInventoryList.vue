@@ -336,6 +336,8 @@ import {
 } from 'vuex'
 import {
   preventDefaultWindowPrint,
+  hostName,
+  checkIpClient,
 } from '@core/utils/filter'
 import PrintFormInputOutputInventory from '@core/components/print-form/PrintFormInputOutputInventory.vue'
 import ReportsWarehousesInputOutputInventoryListSearch from './components/ReportsWarehousesInputOutputInventoryListSearch.vue'
@@ -349,6 +351,10 @@ import {
   EXPORT_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
   PRINT_INPUT_OUTPUT_INVENTORY_ACTION,
 } from '../store-module/type'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '../../../../auth/printer-configuration-modal/store-module/type'
 
 export default {
   components: {
@@ -599,6 +605,8 @@ export default {
       totalInfo: {},
       firstCol: 0,
       secondCol: 0,
+      ipAddressCurrent: '',
+      ipAddress: '',
     }
   },
 
@@ -677,6 +685,13 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleWindowPrintHotKey)
@@ -688,6 +703,7 @@ export default {
       EXPORT_REPORT_WAREHOUSES_INPUT_OUTPUT_INVENTORY_ACTION,
       PRINT_INPUT_OUTPUT_INVENTORY_ACTION,
     ]),
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
     handleWindowPrintHotKey(event) {
       const resolve = preventDefaultWindowPrint(event)
       if (resolve) {
@@ -739,17 +755,30 @@ export default {
       })
     },
     printReport() {
-      this.$root.$emit('bv::hide::popover')
-      this.$root.$emit('bv::disable::popover')
-      this.PRINT_INPUT_OUTPUT_INVENTORY_ACTION({
-        fromDate: this.paginationData.fromDate,
-        toDate: this.paginationData.toDate,
-        productCodes: this.paginationData.productCodes,
-        warehouseTypeId: this.paginationData.warehouseTypeId,
-        ...this.decentralization,
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
+      hostName().then(res => {
+        if (res) {
+          this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddressCurrent = null
+        }
+        if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+          this.GET_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientId: this.ipAddressCurrent,
+            },
+            onSuccess: () => {
+              this.PRINT_INPUT_OUTPUT_INVENTORY_ACTION({
+                fromDate: this.paginationData.fromDate,
+                toDate: this.paginationData.toDate,
+                productCodes: this.paginationData.productCodes,
+                warehouseTypeId: this.paginationData.warehouseTypeId,
+                ...this.decentralization,
+                onSuccess: () => {
+                },
+              })
+            },
+          })
+        }
       })
     },
   },
