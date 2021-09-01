@@ -255,7 +255,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import JSPM from 'jsprintmanager'
-import { myFont } from '@/@core/libs/PTSans'
+import { myFontNormal } from '@/@core/libs/Arimo-Regular'
+import { myFontBold } from '@/@core/libs/Arimo-Bold'
 import toasts from '@/@core/utils/toasts/toasts'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import jsPDF from 'jspdf'
@@ -342,14 +343,17 @@ export default {
         if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
           // eslint-disable-next-line new-cap
           const pdf = new jsPDF('l', 'mm', 'a4')
-          pdf.addFileToVFS('Roboto-Bold.ttf', myFont)
-          pdf.addFont('Roboto-Bold.ttf', 'myFont', 'normal')
-          pdf.setFont('myFont')
+          pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+          pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+          pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+          pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+          pdf.setFont('Ario-Bold')
           pdf.setFontSize(18)
           pdf.text('Báo cáo bán hàng', 120, 10)
           pdf.setFontSize(13)
           pdf.text(`${this.reportSalesShopData.shopName}`, 15, 8)
           pdf.setFontSize(9)
+          pdf.setFont('Ario-Regular')
           pdf.text(`Add: ${this.reportSalesShopData.address}`, 15, 17)
           pdf.text(`Tel: ${this.reportSalesShopData.tel}`, 15, 24)
           pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 110, 17)
@@ -358,8 +362,8 @@ export default {
           pdf.autoTable({
             startY: 30,
             styles: {
-              font: 'myFont',
-              fontSize: 9,
+              font: 'Ario-Bold',
+              fontSize: 8,
               textColor: 'black',
               fontStyle: 'bold',
             },
@@ -381,16 +385,16 @@ export default {
             startY: 38,
             theme: 'grid',
             styles: {
-              font: 'myFont',
+              font: 'Ario-Regular',
               Color: [255, 0, 0],
               fontSize: 8,
               textColor: 'black',
             },
             headStyles: {
               fillColor: 'white',
-              font: 'myFont',
+              font: 'Ario-Bold',
               textColor: 'black',
-              fontSize: 9,
+              fontSize: 8,
               lineWidth: 0.1,
               lineColor: 'black',
             },
@@ -432,6 +436,24 @@ export default {
               }
             },
           })
+
+          if (pdf.previousAutoTable.finalY + 50 > pdf.internal.pageSize.getHeight()) {
+            pdf.addPage()
+            pdf.setFontSize(9)
+            pdf.setFont('Ario-Regular')
+            pdf.text('........, Ngày..... tháng..... năm.......', 218, 14)
+            pdf.setFont('Ario-Bold')
+            pdf.text('Người in', 30, 18)
+            pdf.text('Cửa hàng trưởng', 230, 18)
+          } else {
+            pdf.setFontSize(9)
+            pdf.setFont('Ario-Regular')
+            pdf.text('........, Ngày..... tháng..... năm.......', 218, pdf.previousAutoTable.finalY + 10)
+            pdf.setFont('Ario-Bold')
+            pdf.text('Người in', 30, pdf.previousAutoTable.finalY + 14)
+            pdf.text('Cửa hàng trưởng', 230, pdf.previousAutoTable.finalY + 14)
+          }
+
           for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
             pdf.setPage(j)
             pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
