@@ -401,13 +401,13 @@ export default {
             content: 'ĐVT', dataKey: 'ĐVT', cellWidth: 15, styles: { font: 'Ario-Bold' },
           },
           {
-            content: 'SL', dataKey: 'SL', cellWidth: 15, styles: { font: 'Ario-Bold' },
+            content: 'SL', dataKey: 'SL', cellWidth: 15, styles: { font: 'Ario-Bold', halign: 'right' },
           },
           {
-            content: 'Giá', dataKey: 'Giá', cellWidth: 20, styles: { font: 'Ario-Bold' },
+            content: 'Giá', dataKey: 'Giá', cellWidth: 20, styles: { font: 'Ario-Bold', halign: 'right' },
           },
           {
-            content: 'T.Tiền', dataKey: 'T.Tiền', cellWidth: 30, styles: { font: 'Ario-Bold' },
+            content: 'T.Tiền', dataKey: 'T.Tiền', cellWidth: 30, styles: { font: 'Ario-Bold', halign: 'right' },
           },
         ]
         this.bodyData.push(title)
@@ -501,6 +501,8 @@ export default {
     if (jspmCheckStatus()) {
       jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
     }
+
+    this.count = 1
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
@@ -553,7 +555,7 @@ export default {
           [
             { content: '', styles: { cellWidth: 20, ...cellPadding } },
             {
-              content: `Tel: ${this.inputOrderShopData.phone} - Fax: ${this.inputOrderShopData.fax}`, styles: { ...cellPadding },
+              content: this.inputOrderShopData.fax === null ? `Tel: ${this.inputOrderShopData.phone} - Fax:` : `Tel: ${this.inputOrderShopData.phone} - Fax: ${this.inputOrderShopData.fax}`, styles: { ...cellPadding },
             },
             { content: '', styles: { cellWidth: 10, ...cellPadding } },
             {
@@ -598,7 +600,7 @@ export default {
           [
             { content: 'Loại xuất hàng:', styles: { cellWidth: 30, ...styleDef } },
             {
-              content: `${this.$getInputTypeslabel(this.inputOrderInfoData.transType)}`,
+              content: `${this.$getOutputTypeslabel(this.inputOrderInfoData.transType)}`,
               styles: {
                 cellWidth: 50, font: 'Ario-Bold', ...styleDef,
               },
@@ -614,9 +616,9 @@ export default {
           ],
           [
             { content: 'Số PO:', styles: { ...styleDef } },
-            { content: `${this.inputOrderInfoData.poNumber}`, styles: { font: 'Ario-Bold', ...styleDef } },
+            { content: this.inputOrderInfoData.poNumber === null ? '' : `${this.inputOrderInfoData.poNumber}`, styles: { font: 'Ario-Bold', ...styleDef } },
             { content: 'Số nội bộ:', styles: { ...styleDef } },
-            { content: `${this.inputOrderInfoData.internalNumber}`, styles: { font: 'Ario-Bold', ...styleDef } },
+            { content: this.inputOrderInfoData.internalNumber === null ? '' : `${this.inputOrderInfoData.internalNumber}`, styles: { font: 'Ario-Bold', ...styleDef } },
           ],
           [
             { content: 'Số hóa đơn:', styles: { ...styleDef } },
