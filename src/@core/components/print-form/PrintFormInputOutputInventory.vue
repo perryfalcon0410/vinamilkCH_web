@@ -500,7 +500,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import JSPM from 'jsprintmanager'
 import toasts from '@/@core/utils/toasts/toasts'
 import jsPDF from 'jspdf'
@@ -509,7 +509,6 @@ import autoTable from 'jspdf-autotable'
 import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import { myFontBold } from '@/@core/libs/Arimo-Bold'
 import {
-  hostName,
   // printActions,
   jspmCheckStatus,
   jsPdfPrint,
@@ -523,14 +522,12 @@ import {
 import {
   PRINTERCONFIG,
   PRINTER_CLIENT_GETTER,
-  GET_PRINTER_CLIENT_ACTIONS,
 } from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
   data() {
     return {
       dataPrintOptions: {},
-      ipAddress: '',
       bodyData: [],
       count: 1,
       header: [],
@@ -582,14 +579,6 @@ export default {
     },
   },
   watch: {
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
-    },
     printerOptions() {
       this.printerName = this.printerOptions.reportPrinterName
     },
@@ -622,7 +611,7 @@ export default {
           }
           if (jspmCheckStatus()) {
             if (this.printerName.includes('PDF')) {
-              pdf.save('bao_cao_xuat_hang.pdf')
+              pdf.save('bao_cao_xuat_nhap_ton.pdf')
             } else {
               jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
             }
@@ -636,17 +625,7 @@ export default {
     }
   },
 
-  mounted() {
-    hostName().then(res => {
-      if (res) {
-        this.ipAddress = res.ip || res.query || res.geoplugin_request
-      } else {
-        this.ipAddress = null
-      }
-    })
-  },
   methods: {
-    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
     createHeader(pdf) {
       pdf.setFont('Ario-Bold')
       pdf.setFontSize(13)

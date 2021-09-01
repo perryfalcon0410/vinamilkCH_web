@@ -470,7 +470,7 @@ export default {
       pdf.setFontSize(8.5)
       pdf.setFont('Ario-Regular')
       pdf.text(`Add: ${this.commonData.address}`, 5, 17)
-      pdf.text(`Tel: ${this.commonData.shopTel}`, 5, 24)
+      pdf.text(`Tel: ${this.commonData.shopTel || ''}`, 5, 24)
       pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonData.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonData.toDate)}`, 93, 17)
       pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonData.printDate)}`, 101, 24)
     },
@@ -792,7 +792,7 @@ td {
 }
 .second-tr th{
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
   font-weight: bold;
 }
 .second-sector {

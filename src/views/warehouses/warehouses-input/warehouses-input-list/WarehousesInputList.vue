@@ -259,6 +259,8 @@ import {
 import {
   nowDate,
   preventDefaultWindowPrint,
+  hostName,
+  checkIpClient,
 } from '@/@core/utils/filter'
 import PrintFormInputOrder from '@core/components/print-form/PrintFormInputOrder.vue'
 // Icons
@@ -279,6 +281,11 @@ import {
   PRINT_OUT_IN_PUT_ORDER_ACTION,
 } from '../store-module/type'
 
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '../../../auth/printer-configuration-modal/store-module/type'
+
 export default {
   components: {
     WarehousesInputListSearch,
@@ -297,6 +304,8 @@ export default {
       selectedReceiptType: '',
       selectedReceiptIndex: '',
       selectedReceiptCode: '',
+      ipAddressCurrent: '',
+      ipAddress: '',
       nowDate: nowDate(),
       elementSize: commonData.perPageSizes[0],
       pageNumber: 1,
@@ -433,6 +442,13 @@ export default {
   mounted() {
     resizeAbleTable()
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleWindowPrintHotKey)
@@ -445,6 +461,7 @@ export default {
       REMOVE_RECEIPT_ACTION,
       PRINT_OUT_IN_PUT_ORDER_ACTION,
     ]),
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
     handleWindowPrintHotKey(event) {
       const resolve = preventDefaultWindowPrint(event)
       if (resolve) {
@@ -478,16 +495,29 @@ export default {
       })
     },
     onClickPrintButton(inputOrderData) {
-      this.$root.$emit('bv::hide::popover')
-      this.$root.$emit('bv::disable::popover')
-      this.PRINT_OUT_IN_PUT_ORDER_ACTION({
-        data: {
-          transCode: inputOrderData.id,
-          params: { ...this.decentralization, receiptType: inputOrderData.receiptType },
-        },
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
+      hostName().then(res => {
+        if (res) {
+          this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddressCurrent = null
+        }
+        if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+          this.GET_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientId: this.ipAddressCurrent,
+            },
+            onSuccess: () => {
+              this.PRINT_OUT_IN_PUT_ORDER_ACTION({
+                data: {
+                  transCode: inputOrderData.id,
+                  params: { ...this.decentralization, receiptType: inputOrderData.receiptType },
+                },
+                onSuccess: () => {
+                },
+              })
+            },
+          })
+        }
       })
     },
     onClickDeleteButton(id, type, index, code) {

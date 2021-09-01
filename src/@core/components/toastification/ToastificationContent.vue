@@ -1,5 +1,5 @@
 <template>
-  <div class="toastification">
+  <div class="toastification d-print-none">
     <div class="d-flex align-items-start">
       <b-avatar
         :variant="variant"

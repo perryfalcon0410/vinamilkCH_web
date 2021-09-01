@@ -3,6 +3,7 @@
     title="Cấu hình máy in"
     :visible="visible"
     title-class="font-weight-bolder text-brand-1"
+    class="d-print-none"
     @hidden="cancel()"
   >
     <b-container>
@@ -10,7 +11,7 @@
         v-if="!isTrue"
         align-v="center"
         align-h="center"
-        class="my-2"
+        class="my-2 d-print-none"
       >
         <div>
           <p>

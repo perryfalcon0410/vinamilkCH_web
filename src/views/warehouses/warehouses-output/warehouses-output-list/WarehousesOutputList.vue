@@ -460,6 +460,8 @@ import {
   nowDate,
   preventDefaultWindowPrint,
   checkingDateInput,
+  hostName,
+  checkIpClient,
 } from '@/@core/utils/filter'
 import {
   resizeAbleTable,
@@ -491,6 +493,10 @@ import {
   DELETE_WAREHOUSES_ACTION,
   PRINT_OUT_IN_PUT_ORDER_ACTION,
 } from '../store-module/type'
+import {
+  PRINTERCONFIG,
+  GET_PRINTER_CLIENT_ACTIONS,
+} from '../../../auth/printer-configuration-modal/store-module/type'
 
 export default {
   components: {
@@ -525,6 +531,8 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
+      ipAddressCurrent: '',
+      ipAddress: '',
       columns: [
         {
           label: 'ID',
@@ -693,6 +701,13 @@ export default {
     this.onPaginationChange()
     this.$refs.focusInput.focus()
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
+    hostName().then(res => {
+      if (res) {
+        this.ipAddress = res.ip || res.query || res.geoplugin_request
+      } else {
+        this.ipAddress = null
+      }
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleWindowPrintHotKey)
@@ -703,6 +718,7 @@ export default {
       PRINT_OUT_IN_PUT_ORDER_ACTION,
       DELETE_WAREHOUSES_ACTION,
     ]),
+    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
     handleWindowPrintHotKey(event) {
       const resolve = preventDefaultWindowPrint(event)
       if (resolve) {
@@ -736,16 +752,29 @@ export default {
       })
     },
     onClickPrintButton(outputOrderData) {
-      this.$root.$emit('bv::hide::popover')
-      this.$root.$emit('bv::disable::popover')
-      this.PRINT_OUT_IN_PUT_ORDER_ACTION({
-        data: {
-          transCode: outputOrderData.id,
-          params: { ...this.decentralization, receiptType: outputOrderData.receiptType },
-        },
-        onSuccess: () => {
-          this.$root.$emit('bv::enable::popover')
-        },
+      hostName().then(res => {
+        if (res) {
+          this.ipAddressCurrent = res.ip || res.query || res.geoplugin_request
+        } else {
+          this.ipAddressCurrent = null
+        }
+        if (checkIpClient(this.ipAddress, this.ipAddressCurrent)) {
+          this.GET_PRINTER_CLIENT_ACTIONS({
+            data: {
+              clientId: this.ipAddressCurrent,
+            },
+            onSuccess: () => {
+              this.PRINT_OUT_IN_PUT_ORDER_ACTION({
+                data: {
+                  transCode: outputOrderData.id,
+                  params: { ...this.decentralization, receiptType: outputOrderData.receiptType },
+                },
+                onSuccess: () => {
+                },
+              })
+            },
+          })
+        }
       })
     },
     onClickSearchWarehousesOutput() {

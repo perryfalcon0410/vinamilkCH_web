@@ -306,6 +306,7 @@ export default {
           break
         } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
           toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+          window.print()
         }
       }
     }

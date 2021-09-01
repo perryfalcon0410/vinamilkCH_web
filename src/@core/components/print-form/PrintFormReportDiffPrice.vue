@@ -242,13 +242,18 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import JSPM from 'jsprintmanager'
+import jsPDF from 'jspdf'
+// eslint-disable-next-line no-unused-vars
+import autoTable from 'jspdf-autotable'
+import { myFontNormal } from '@/@core/libs/Arimo-Regular'
+import { myFontBold } from '@/@core/libs/Arimo-Bold'
 import toasts from '@/@core/utils/toasts/toasts'
 import {
-  hostName,
-  printActions,
+  // printActions,
   jspmCheckStatus,
+  jsPdfPrint,
 } from '@core/utils/filter'
 import {
   REPORT_WAREHOUSES_DIFFERENCE_PRICE,
@@ -258,7 +263,6 @@ import {
 import {
   PRINTERCONFIG,
   PRINTER_CLIENT_GETTER,
-  GET_PRINTER_CLIENT_ACTIONS,
 } from '../../../views/auth/printer-configuration-modal/store-module/type'
 
 export default {
@@ -272,7 +276,7 @@ export default {
   data() {
     return {
       dataPrintOptions: {},
-      ipAddress: '',
+      printerName: '',
       columns: [
         {
           label: 'Mã khách hàng',
@@ -329,6 +333,9 @@ export default {
           tdClass: 'text-left',
         },
       ],
+      bodyData: [],
+      count: 1,
+      checkHeader: true,
     }
   },
   computed: {
@@ -361,35 +368,45 @@ export default {
     },
   },
   watch: {
-    ipAddress() {
-      this.GET_PRINTER_CLIENT_ACTIONS({
-        data: {
-          clientId: this.ipAddress,
-        },
-        onSuccess: () => {},
-      })
+    printerOptions() {
+      this.printerName = this.printerOptions.reportPrinterName
     },
   },
 
   updated() {
     JSPM.JSPrintManager.auto_reconnect = true
-    const printerName = this.printerOptions.reportPrinterName
-    if (printerName === '' || printerName === null || printerName === undefined) {
+    if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
       for (let i = 0; i < 3; i += 1) {
         if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          const element = document.getElementById('print-form-diff-price')
+          // eslint-disable-next-line new-cap
+          const pdf = new jsPDF('p', 'mm', 'a4')
+          // START - add font family
+          pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+          pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+          pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+          pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+          // END - add font family
+          // START - hearder page
+          this.createHeader(pdf)
+          // END - hearder page
+          this.createTableFirst(pdf)
+          this.createTableSecond(pdf)
+          pdf.save()
           const options = {
-            fileName: 'bao_cao_chenh_lech_gia',
+            fileName: 'Bao_cao_chenh_lech_gia',
             pageSizing: 'Fit',
-            format: 'a3',
-            isPaging: true,
           }
           if (jspmCheckStatus()) {
-            printActions(element, printerName, options)
+            if (this.printerName.includes('PDF')) {
+              pdf.save('Bao_cao_chenh_lech_gia.pdf')
+            } else {
+              jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+            }
           }
+          break
         } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
           toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
           window.print()
@@ -397,17 +414,232 @@ export default {
       }
     }
   },
-  mounted() {
-    hostName().then(res => {
-      if (res) {
-        this.ipAddress = res.ip || res.query || res.geoplugin_request
-      } else {
-        this.ipAddress = null
-      }
-    })
-  },
   methods: {
-    ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),
+    createHeader(pdf) {
+      pdf.setFont('Ario-Bold')
+      pdf.setFontSize(13.5)
+      pdf.text('BÁO CÁO CHÊNH LỆCH GIÁ', 90, 10)
+      pdf.setFontSize(9.5)
+      pdf.text(`${this.commonInfo.shopName}`, 5, 10)
+      pdf.setFontSize(8.5)
+      pdf.setFont('Ario-Regular')
+      pdf.text(`Add: ${this.commonInfo.address || ''}`, 5, 17)
+      pdf.text(`Tel: ${this.commonInfo.phone || ''}`, 5, 24)
+      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.totalData.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.totalData.toDate)}`, 91, 17)
+      pdf.text(`Ngày in: ${this.$formatPrintDate(this.totalData.printDate)}`, 98, 24)
+    },
+    createTableFirst(pdf) {
+      pdf.autoTable({
+        startY: 30,
+        margin: {
+          right: 5,
+          left: 5,
+        },
+        styles: {
+          font: 'Ario-Bold',
+          fontSize: 8.5,
+          textColor: 'black',
+        },
+        body: [
+          [
+            {
+              content: 'Tổng cộng:',
+              styles: {
+                halign: 'right', fillColor: [211, 211, 211], cellWidth: 88, lineWidth: 0,
+              },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.totalData.totalQuantity) || ''}`,
+              styles: {
+                halign: 'right', fillColor: [211, 211, 211], lineWidth: 0, cellWidth: 17,
+              },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.totalData.totalPriceInput) || ''}`,
+              styles: {
+                halign: 'right', fillColor: [211, 211, 211], lineWidth: 0, cellWidth: 37,
+              },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.totalData.totalPriceOutput) || ''}`,
+              styles: {
+                halign: 'right', fillColor: [211, 211, 211], lineWidth: 0, cellWidth: 37,
+              },
+            },
+            {
+              content: '',
+              styles: {
+                halign: 'right', fillColor: [211, 211, 211], lineWidth: 0,
+              },
+            },
+          ],
+        ],
+      })
+    },
+    createTableSecond(pdf) {
+      this.reportData.forEach(order => {
+        const row1 = [
+          {
+            content: `Số HĐ:${order.response.redInvoiceNo} - Ngày HĐ: ${this.$formatISOtoVNI(order.response.orderDate)} - Số PO: ${order.response.poNumber} - Số nội bộ: ${order.response.internalNumber} - Mã nhập hàng: ${order.response.transCode}`,
+            colSpan: 10,
+            styles: { lineWidth: 0, font: 'Ario-Bold' },
+          },
+        ]
+        this.bodyData.push(row1)
+        const border = { lineColor: 'black', lineWidth: 0.1 }
+        const row2 = [
+          {
+            content: 'Tổng cộng:',
+            colSpan: 4,
+            styles: { lineWidth: 0, halign: 'right' },
+          },
+          {
+            content: `${this.$formatNumberToLocale(order.response.totalQuantity)}`,
+            styles: { font: 'Ario-Bold', lineWidth: 0, halign: 'right' },
+          },
+          {
+            content: `${this.$formatNumberToLocale(order.response.totalPriceInput)}`,
+            colSpan: 2,
+            styles: { font: 'Ario-Bold', lineWidth: 0, halign: 'right' },
+          },
+          {
+            content: `${this.$formatNumberToLocale(order.response.totalPriceOutput)}`,
+            colSpan: 2,
+            styles: { font: 'Ario-Bold', lineWidth: 0, halign: 'right' },
+          },
+          {
+            content: '',
+            styles: { font: 'Ario-Bold', lineWidth: 0, halign: 'right' },
+          },
+        ]
+        this.bodyData.push(row2)
+        const title = [
+          {
+            content: 'STT',
+            rowSpan: 2,
+            styles: {
+              ...border, font: 'Ario-Bold', halign: 'center', valign: 'middle',
+            },
+          },
+          {
+            content: 'Mã SP', rowSpan: 2, styles: { ...border, font: 'Ario-Bold', valign: 'middle' },
+          },
+          {
+            content: 'Tên SP', rowSpan: 2, styles: { ...border, font: 'Ario-Bold', valign: 'middle' },
+          },
+          {
+            content: 'ĐVT', rowSpan: 2, styles: { ...border, font: 'Ario-Bold', valign: 'middle' },
+          },
+          {
+            content: 'SL',
+            rowSpan: 2,
+            styles: {
+              ...border, font: 'Ario-Bold', halign: 'right', valign: 'middle',
+            },
+          },
+          {
+            content: 'Đầu vào', colSpan: 2, styles: { ...border, font: 'Ario-Bold', halign: 'center' },
+          },
+          {
+            content: 'Đầu ra', colSpan: 2, styles: { ...border, font: 'Ario-Bold', halign: 'center' },
+          },
+          {
+            content: 'Chênh lệch',
+            rowSpan: 2,
+            styles: {
+              ...border, font: 'Ario-Bold', halign: 'center', valign: 'middle',
+            },
+          },
+        ]
+        this.bodyData.push(title)
+        const title1 = [
+          {
+            content: 'Giá', styles: { ...border, font: 'Ario-Bold', halign: 'right' },
+          },
+          {
+            content: 'T.Tiền', styles: { ...border, font: 'Ario-Bold', halign: 'right' },
+          },
+          {
+            content: 'Giá', styles: { ...border, font: 'Ario-Bold', halign: 'right' },
+          },
+          {
+            content: 'T.Tiền', styles: { ...border, font: 'Ario-Bold', halign: 'right' },
+          },
+        ]
+        this.bodyData.push(title1)
+        order.info.forEach(pro => {
+          this.bodyData.push([
+            { content: `${this.count}`, styles: { cellWidth: 9 } },
+            { content: `${pro.productCode}`, styles: { cellWidth: 18 } },
+            { content: `${pro.productName}`, styles: { cellWidth: 48 } },
+            { content: `${pro.unit}`, styles: { cellWidth: 13, halign: 'center' } },
+            { content: `${this.$formatNumberToLocale(pro.quantity) || ''}`, styles: { cellWidth: 17, halign: 'right' } },
+            { content: `${this.$formatNumberToLocale(pro.inputPrice) || ''}`, styles: { cellWidth: 17, halign: 'right' } },
+            { content: `${this.$formatNumberToLocale(pro.totalInput) || ''}`, styles: { cellWidth: 20, halign: 'right' } },
+            { content: `${this.$formatNumberToLocale(pro.outputPrice) || ''}`, styles: { cellWidth: 17, halign: 'right' } },
+            { content: `${this.$formatNumberToLocale(pro.totalOutput) || ''}`, styles: { cellWidth: 20, halign: 'right' } },
+            { content: `${this.$formatNumberToLocale(pro.priceChange) || ''}`, styles: { halign: 'right' } },
+          ])
+          this.count += 1
+        })
+        const startY = this.checkHeader ? { startY: pdf.previousAutoTable.finalY + 1 } : { }
+        pdf.autoTable({
+          theme: 'grid',
+          ...startY,
+          pageBreak: 'avoid',
+          margin: {
+            right: 5,
+            left: 5,
+          },
+          styles: {
+            font: 'Ario-Regular',
+            fontSize: 8.5,
+            textColor: 'black',
+          },
+          body: [...this.bodyData],
+          didDrawCell: key => {
+            if (key.section === 'body' && key.row.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+              if (key.column.index === 0) {
+                pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+              }
+            }
+            if (key.section === 'body' && key.column.index === 0) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x, key.cell.y)
+            }
+            if (key.section === 'body' && key.column.index === 9) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
+            }
+            if (key.section === 'body' && key.row.index === key.table.body.length - 1) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y + key.cell.height)
+            }
+
+            if (key.section === 'body' && key.row.index === 4) {
+              pdf.setDrawColor('black')
+              pdf.setLineWidth(0.1)
+              pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
+            }
+          },
+        })
+        this.bodyData = []
+        this.count = 1
+        this.checkHeader = false
+      })
+      this.checkHeader = true
+
+      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+        pdf.setPage(j)
+        pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
+      }
+    },
   },
 }
 </script>

@@ -290,7 +290,7 @@ export default {
           }
           if (jspmCheckStatus()) {
             if (this.printerName.includes('PDF')) {
-              pdf.save('bao_cao_ton_kho.pdf')
+              pdf.save('bao_cao_khach_hang_khong_giao_dich.pdf')
             } else {
               jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
             }
