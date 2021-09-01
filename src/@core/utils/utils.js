@@ -208,20 +208,25 @@ export const resizeAbleTable = () => {
 }
 
 export const getJSPMDownloadInfo = () => {
-  const { platform } = window.navigator
+  const { platform, userAgent } = window.navigator
+
   const macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K']
+  const windowsPlatforms = ['Win32', 'Win64']
+  const isWin64OS = userAgent.indexOf('WOW64') || platform === 'Win64'
   let os = null
   let link = null
 
   if (macosPlatforms.indexOf(platform) !== -1) {
     os = 'MacOS'
     link = systemData.jspmDownloadLinks.macOS
-  } else if (platform === 'Win32') {
+  } else if (windowsPlatforms.indexOf(platform) !== -1) {
     os = 'Windows'
-    link = systemData.jspmDownloadLinks.win32
-  } else if (platform === 'Win64') {
-    os = 'Windows'
-    link = systemData.jspmDownloadLinks.win64
+
+    if (isWin64OS) {
+      link = systemData.jspmDownloadLinks.win64
+    } else {
+      link = systemData.jspmDownloadLinks.win32
+    }
   } else if (!os && /Linux/.test(platform)) {
     os = 'Linux'
     link = systemData.jspmDownloadLinks.linux
