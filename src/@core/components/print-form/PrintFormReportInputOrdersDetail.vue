@@ -180,6 +180,7 @@ export default {
     return {
       ipAddress: '',
       printerName: null,
+      bodyData: [],
     }
   },
 
@@ -266,26 +267,51 @@ export default {
       pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
       pdf.setFont('Ario-Bold')
       // END - add font family
+      //
+      const title = [
+        { content: 'STT', styles: { font: 'Ario-Bold', fontSize: 10 } },
+        { content: 'Số PO', styles: { font: 'Ario-Bold', fontSize: 10 } },
+        { content: 'Số nội bộ', styles: { font: 'Ario-Bold', fontSize: 10 } },
+        { content: 'Số hóa đơn', styles: { font: 'Ario-Bold', fontSize: 10 } },
+        { content: 'Ngày xuất HĐ', styles: { font: 'Ario-Bold', fontSize: 10 } },
+        { content: 'Ngày ĐHTT', styles: { font: 'Ario-Bold', fontSize: 10 } },
+        { content: 'Tiền HĐ', styles: { halign: 'right', font: 'Ario-Bold', fontSize: 10 } },
+        { content: 'HĐ khuyến mãi', styles: { font: 'Ario-Bold', fontSize: 10 } },
+      ]
+      this.bodyData.push(title)
+      this.reportData.forEach((item, index) => {
+        this.bodyData.push([
+          { content: `${index + 1}`, styles: { fontSize: 9.5, cellWidth: 10 } },
+          { content: `${item.poNumber}`, styles: { fontSize: 9.5, cellWidth: 28 } },
+          { content: `${item.internalNumber}`, styles: { fontSize: 9.5, cellWidth: 28 } },
+          { content: `${item.redInvoiceNo || ''}`, styles: { fontSize: 9.5, cellWidth: 28 } },
+          { content: `${item.billDate}`, styles: { fontSize: 9.5, cellWidth: 23 } },
+          { content: `${item.dateOfPayment}`, styles: { fontSize: 9.5, cellWidth: 23 } },
+          { content: `${item.totalAmount}` || '', styles: { fontSize: 9.5, cellWidth: 24, halign: 'right' } },
+          { content: `${item.promotionalOrders}`, styles: { fontSize: 9.5, cellWidth: 28 } },
+        ])
+      })
+
+      //
       pdf.addImage(img, 'PNG', x + 149, y - 5)
-      pdf.setFontSize(13)
+      pdf.setFontSize(12.5)
       pdf.text('CÔNG TY CP SỮA VIỆT NAM', x, y)
-      pdf.setFontSize(11)
+      pdf.setFontSize(10.5)
       pdf.text(this.reportInfos.shopName, x, y + 5)
       pdf.text(`Add: ${this.reportInfos.address}`, x, y + 10)
       pdf.text(`Ngày in: ${this.reportInfos.dateOfPrinting}`, x, y + 15)
-      pdf.setFontSize(20)
+      pdf.setFontSize(19)
       pdf.text('Bảng kê chi tiết các hóa đơn nhập hàng', x + 33, y + 25)
       pdf.setFont('Ario-Regular')
-      pdf.setFontSize(10)
-      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.reportInfos.fromDate)}         đến: ${this.$formatISOtoVNI(this.reportInfos.toDate)}`, x + 60, y + 30)
-      const res = pdf.autoTableHtmlToJson(document.getElementById('input-orders-detail'))
-      pdf.autoTable(res.columns, res.data, {
+      pdf.setFontSize(9.5)
+      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.reportInfos.fromDate)}         đến: ${this.$formatISOtoVNI(this.reportInfos.toDate)}`, x + 60, y + 33)
+      pdf.autoTable({
         showHead: 'firstPage',
         startY: y + 35,
         theme: 'plain',
         margin: {
           right: 10,
-          left: 7,
+          left: 8,
         },
         styles: {
           font: 'Ario-Regular',
@@ -299,25 +325,16 @@ export default {
           textColor: 'black',
           fontSize: 10,
         },
-        columnStyles: {
-          0: { cellWidth: 10 },
-          1: { cellWidth: 25 },
-          2: { cellWidth: 25 },
-          3: { cellWidth: 28 },
-          4: { cellWidth: 26 },
-          5: { cellWidth: 26 },
-          6: { cellWidth: 25 },
-          7: { cellWidth: 29 },
-        },
+        body: [...this.bodyData],
         didDrawCell: data => {
           if (data.section === 'head') {
             pdf.setDrawColor('black')
-            pdf.setLineWidth(0.5)
+            pdf.setLineWidth(0.4)
             pdf.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height)
           }
           if (data.section === 'body') {
             pdf.setDrawColor('black')
-            pdf.setLineWidth(0.5)
+            pdf.setLineWidth(0.4)
             pdf.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height)
           }
         },
@@ -330,13 +347,13 @@ export default {
         theme: 'plain',
         startY: pdf.previousAutoTable.finalY,
         margin: {
-          right: 10,
-          left: 7.5,
+          right: 8,
+          left: 8,
         },
         body: [
           [
-            { content: 'Tổng cộng:', styles: { halign: 'right', font: 'Ario-Bold', cellWidth: 136 } },
-            { content: `${this.$formatNumberToLocale(this.reportInfos.totalAmount || 0)}`, styles: { halign: 'right', font: 'Ario-Bold', cellWidth: 30 } },
+            { content: 'Tổng cộng:', styles: { halign: 'right', font: 'Ario-Bold', cellWidth: 138 } },
+            { content: `${this.$formatNumberToLocale(this.reportInfos.totalAmount || 0)}`, styles: { halign: 'right', font: 'Ario-Bold', cellWidth: 26 } },
           ],
         ],
         didDrawCell: data => {
