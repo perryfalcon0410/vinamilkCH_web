@@ -362,7 +362,7 @@ export default {
             styles: { lineWidth: 0 },
           },
           {
-            content: 'Mã trả hàng:',
+            content: 'Ngành hàng:',
             styles: { lineWidth: 0 },
           },
           {
