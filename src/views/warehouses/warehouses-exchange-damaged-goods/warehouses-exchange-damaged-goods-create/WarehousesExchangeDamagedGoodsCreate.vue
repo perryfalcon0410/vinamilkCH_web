@@ -463,16 +463,22 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
         {
           label: 'ĐVT',
           field: 'productDVT',
           sortable: false,
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
         {
           label: 'Giá',
@@ -480,6 +486,8 @@ export default {
           type: 'number',
           sortable: false,
           formatFn: this.$formatNumberToLocale,
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
         {
           label: 'Số lượng',
@@ -500,12 +508,15 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap',
         },
         {
           label: 'Thao tác',
           field: 'feature',
           sortable: false,
-          tdClass: 'align-middle',
+          tdClass: 'align-middle text-nowrap',
+          thClass: 'text-nowrap',
         },
       ],
       productInfos: {
