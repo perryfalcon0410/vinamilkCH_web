@@ -256,7 +256,7 @@
             <div v-else-if="props.column.field === 'inventoryPacket'">
               <cleave
                 :id="products[props.row.originalIndex].productCode + 'inventoryPacket'"
-                class="form-control text-right"
+                class="form-control text-right text-bold"
                 :raw="true"
                 :options="options.number"
                 maxlength="9"
@@ -273,7 +273,7 @@
             <div v-else-if="props.column.field === 'inventoryOdd'">
               <cleave
                 :id="products[props.row.originalIndex].productCode + 'inventoryOdd'"
-                class="form-control text-right"
+                class="form-control text-right text-bold"
                 :raw="true"
                 :options="options.number"
                 maxlength="9"
@@ -589,6 +589,7 @@ export default {
           field: 'inventoryTotal',
           type: 'number',
           thClass: 'text-nowrap',
+          tdClass: 'text-bold',
           formatFn: this.$formatNumberToLocale,
         },
         {
@@ -596,6 +597,7 @@ export default {
           field: 'unequal',
           type: 'number',
           thClass: 'text-nowrap',
+          tdClass: 'text-bold',
           formatFn: this.$formatNumberToLocale,
         },
         {
@@ -1009,5 +1011,8 @@ export default {
   .background-green {
     background-color: #83ba47 !important;
     padding: 8px 0px 8px 0px;
+  }
+  .text-bold {
+    font-weight: bold !important;
   }
 </style>
