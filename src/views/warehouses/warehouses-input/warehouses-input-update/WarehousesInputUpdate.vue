@@ -321,21 +321,21 @@
                 >
                   <div
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-50 h7 text-brand-3 text-right"
                   >
                     {{ $formatNumberToLocale(totalProductQuantity) }}
                   </div>
 
                   <div
                     v-else-if="props.column.field === 'totalPriceNotVat'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-50 h7 text-brand-3 text-right"
                   >
                     {{ totalProductPriceNotVat }}
                   </div>
 
                   <div
                     v-else-if="props.column.field === 'totalPrice'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-50 h7 text-brand-3 text-right"
                   >
                     {{ totalProductPrice }}
                   </div>
@@ -353,8 +353,17 @@
                   slot-scope="props"
                 >
                   <div
-                    v-if="props.column.field === 'quantity' || props.column.field === 'totalPrice' || props.column.field === 'totalPriceNotVat'"
-                    style="padding-right: 4px"
+                    v-if="props.column.field === 'totalPriceNotVat' ||
+                      props.column.field ==='totalPriceVat' ||
+                      props.column.field ==='totalPrice' ||
+                      props.column.field === 'vat'"
+                    class="pr-70"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div
+                    v-else-if="props.column.field === 'quantity'"
+                    class="pr-80"
                   >
                     {{ props.formattedRow[props.column.field] }}
                   </div>
@@ -625,7 +634,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-nowrap',
+          thClass: 'text-right text-nowrap',
         },
         {
           label: 'Giá',
