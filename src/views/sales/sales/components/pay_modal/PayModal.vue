@@ -1098,6 +1098,9 @@ export default {
               programInPromotionCalculation.products = programInPromotionCalculation.products || [] // Phải để products là mảng rỗng không thôi vẽ layout lại sẽ lỗi
               return {
                 ...programInPromotionCalculation,
+                productSearch: '',
+                // eslint-disable-next-line no-nested-ternary
+                orderInQty: programInPromotionCalculation.totalQty !== null ? programInPromotionCalculation.totalQty : programInPromotionCalculation.amount !== null ? programInPromotionCalculation.amount.amount : 0,
                 isUse: true,
               }
             }
