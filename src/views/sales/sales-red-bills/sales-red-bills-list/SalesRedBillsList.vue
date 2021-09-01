@@ -3,163 +3,187 @@
     fluid
     class="d-flex flex-column px-0"
   >
-    <!-- START - Search -->
-    <b-form>
-      <v-card-actions
-        title="Tìm kiếm"
-      ><b-col
-         xl
-         lg="3"
-         sm="4"
-       >
-         <div
-           class="h7 mt-sm-1 mt-xl-0"
+    <validation-observer
+      ref="formContainer"
+      v-slot="{invalid}"
+      slim
+    >
+      <!-- START - Search -->
+      <b-form>
+        <v-card-actions
+          title="Tìm kiếm"
+        ><b-col
+           xl
+           lg="3"
+           sm="4"
          >
-           Khách hàng
-         </div>
-         <b-input-group
-           class="input-group-merge"
-         >
-           <b-form-input
-             ref="focusInput"
-             v-model.trim="customer"
-             class="h7"
-             placeholder="Nhập Mã/SĐT/Tên khách hàng"
-             @keyup.enter="onSearchClick"
-           />
-           <b-input-group-append
-             is-text
+           <div
+             class="h7 mt-sm-1 mt-xl-0"
            >
-             <b-icon-x
-               v-show="customer"
-               class="cursor-pointer text-gray"
-               @click="customer = null"
+             Khách hàng
+           </div>
+           <b-input-group
+             class="input-group-merge"
+           >
+             <b-form-input
+               ref="focusInput"
+               v-model.trim="customer"
+               class="h7"
+               placeholder="Nhập Mã/SĐT/Tên khách hàng"
+               @keyup.enter="onSearchClick"
              />
-           </b-input-group-append>
-         </b-input-group>
-       </b-col>
-        <b-col
-          xl
-          lg="3"
-          sm="4"
-        >
-          <div
-            class="h7 mt-sm-1 mt-xl-0"
+             <b-input-group-append
+               is-text
+             >
+               <b-icon-x
+                 v-show="customer"
+                 class="cursor-pointer text-gray"
+                 @click="customer = null"
+               />
+             </b-input-group-append>
+           </b-input-group>
+         </b-col>
+          <b-col
+            xl
+            lg="3"
+            sm="4"
           >
-            Số hóa đơn
-          </div>
-          <b-input-group
-            class="input-group-merge"
-          >
-            <b-form-input
-              v-model.trim="invoiceNumber"
-              class="h7"
-              placeholder="Nhập số hóa đơn"
-              @keyup.enter="onSearchClick"
-            />
-            <b-input-group-append
-              is-text
+            <div
+              class="h7 mt-sm-1 mt-xl-0"
             >
-              <b-icon-x
-                v-show="invoiceNumber"
-                class="cursor-pointer text-gray"
-                @click="invoiceNumber = null"
+              Số hóa đơn
+            </div>
+            <b-input-group
+              class="input-group-merge"
+            >
+              <b-form-input
+                v-model.trim="invoiceNumber"
+                class="h7"
+                placeholder="Nhập số hóa đơn"
+                @keyup.enter="onSearchClick"
               />
-            </b-input-group-append>
-          </b-input-group>
-        </b-col>
+              <b-input-group-append
+                is-text
+              >
+                <b-icon-x
+                  v-show="invoiceNumber"
+                  class="cursor-pointer text-gray"
+                  @click="invoiceNumber = null"
+                />
+              </b-input-group-append>
+            </b-input-group>
+          </b-col>
 
-        <!-- START - Date From -->
-        <b-col
-          xl
-          lg="3"
-          sm="4"
-        >
-          <div
-            class="h7 mt-sm-1 mt-xl-0"
+          <!-- START - Date From -->
+          <b-col
+            xl
+            lg="3"
+            sm="4"
           >
-            Từ ngày
-          </div>
-          <b-row
-            class="v-flat-pickr-group mx-0"
-            align-v="center"
-            @keypress="$onlyDateInput"
-          >
-            <b-icon-x
-              v-show="fromDate"
-              style="position: absolute; right: 15px"
-              class="cursor-pointer text-gray"
-              scale="1.3"
-              data-clear
-            />
-            <vue-flat-pickr
-              v-model="fromDate"
-              :config="configFromDate"
-              class="form-control h7"
-              placeholder="Chọn ngày"
-            />
-          </b-row>
-        </b-col>
-        <!-- END - Date From -->
+            <validation-provider
+              v-slot="{ errors, passed, touched }"
+              rules="required"
+              name="Từ ngày"
+            >
+              <div
+                class="h7 mt-sm-1 mt-xl-0"
+              >
+                Từ ngày
+              </div>
+              <b-row
+                class="v-flat-pickr-group mx-0"
+                align-v="center"
+                @keypress="$onlyDateInput"
+                @change="isFromDateValid"
+              >
+                <b-icon-x
+                  v-show="fromDate"
+                  style="position: absolute; right: 15px"
+                  class="cursor-pointer text-gray"
+                  scale="1.3"
+                  data-clear
+                />
+                <vue-flat-pickr
+                  v-model="fromDate"
+                  :state="touched ? passed : null"
+                  :config="configFromDate"
+                  class="form-control h7"
+                  placeholder="Chọn ngày"
+                />
+              </b-row>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-col>
+          <!-- END - Date From -->
 
-        <!-- START - Date To -->
-        <b-col
-          xl
-          lg="3"
-          sm="4"
-        >
-          <div
-            class="h7 mt-sm-1 mt-xl-0"
+          <!-- START - Date To -->
+          <b-col
+            xl
+            lg="3"
+            sm="4"
           >
-            Đến ngày
-          </div>
-          <b-row
-            class="v-flat-pickr-group mx-0"
-            align-v="center"
-            @keypress="$onlyDateInput"
-          >
-            <b-icon-x
-              v-show="toDate"
-              style="position: absolute; right: 15px"
-              class="cursor-pointer text-gray"
-              scale="1.3"
-              data-clear
-            />
-            <vue-flat-pickr
-              v-model="toDate"
-              :config="configToDate"
-              class="form-control h7"
-              placeholder="Chọn ngày"
-            />
-          </b-row>
+            <validation-provider
+              v-slot="{ errors, passed, touched }"
+              rules="required"
+              name="Đến ngày"
+            >
+              <div
+                class="h7 mt-sm-1 mt-xl-0"
+              >
+                Đến ngày
+              </div>
+              <b-row
+                class="v-flat-pickr-group mx-0"
+                align-v="center"
+                @keypress="$onlyDateInput"
+                @change="isToDateValid"
+              >
+                <b-icon-x
+                  v-show="toDate"
+                  style="position: absolute; right: 15px"
+                  class="cursor-pointer text-gray"
+                  scale="1.3"
+                  data-clear
+                />
+                <vue-flat-pickr
+                  v-model="toDate"
+                  :state="touched ? passed : null"
+                  :config="configToDate"
+                  class="form-control h7"
+                  placeholder="Chọn ngày"
+                />
+              </b-row>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-col>
+          <!-- END - Date To -->
 
-        </b-col>
-        <!-- END - Date To -->
-
-        <b-col
-          xl
-          lg="3"
-          sm="4"
-        >
-          <div
-            class="h7 text-white"
-            onmousedown="return false;"
-            style="cursor: context-menu;"
+          <b-col
+            xl
+            lg="3"
+            sm="4"
           >
-            Tìm kiếm
-          </div>
-          <b-button
-            variant="someThing"
-            class="btn-brand-1 align-items-button-center h8 mt-sm-1 mt-xl-0"
-            @click="onSearchClick()"
-          >
-            <b-icon-search class="mr-50" />
-            Tìm kiếm
-          </b-button>
-        </b-col>
-      </v-card-actions>
-    </b-form>
+            <div
+              class="h7 text-white"
+              onmousedown="return false;"
+              style="cursor: context-menu;"
+            >
+              Tìm kiếm
+            </div>
+            <b-button
+              variant="someThing"
+              class="btn-brand-1 align-items-button-center h8 mt-sm-1 mt-xl-0"
+              :disabled="invalid"
+              @click="onSearchClick()"
+            >
+              <b-icon-search class="mr-50" />
+              Tìm kiếm
+            </b-button>
+          </b-col>
+        </v-card-actions>
+      </b-form>
     <!-- END - Search -->
+    </validation-observer>
 
     <div class="d-print-none bg-white rounded shadow my-1">
       <!-- START - Header -->
@@ -455,6 +479,13 @@ import {
   mapGetters,
 } from 'vuex'
 import toasts from '@core/utils/toasts/toasts'
+import {
+  ValidationProvider,
+  ValidationObserver,
+} from 'vee-validate'
+import {
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'
@@ -465,6 +496,7 @@ import {
   hostName,
   checkIpClient,
   preventDefaultWindowPrint,
+  checkingDateInput,
 } from '@/@core/utils/filter'
 import PrintFormRedBills from '@core/components/print-form/PrintFormRedBills.vue'
 import {
@@ -485,10 +517,13 @@ export default {
   components: {
     VCardActions,
     PrintFormRedBills,
+    ValidationProvider,
+    ValidationObserver,
   },
 
   data() {
     return {
+      dateFormatVNI,
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
       searchData: {
@@ -927,6 +962,16 @@ export default {
         onSuccess: () => {
         },
       })
+    },
+    isFromDateValid() {
+      if (!checkingDateInput(this.fromDate)) {
+        this.fromDate = earlyMonth()
+      }
+    },
+    isToDateValid() {
+      if (!checkingDateInput(this.toDate)) {
+        this.toDate = nowDate()
+      }
     },
   },
 }
