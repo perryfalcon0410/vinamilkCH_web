@@ -281,10 +281,6 @@ export default {
           sortable: true,
         },
         {
-          label: 'Nhân viên',
-          field: 'userName',
-        },
-        {
           label: 'Mã khách hàng',
           field: 'customerNumber',
         },

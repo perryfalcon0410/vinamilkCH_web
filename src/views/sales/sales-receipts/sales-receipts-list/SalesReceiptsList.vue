@@ -332,7 +332,7 @@ export default {
         },
         {
           label: 'Mã khách hàng',
-          field: 'customerCode',
+          field: 'customerNumber',
           thClass: 'ws-nowrap scroll-column-header column-second',
           tdClass: 'scroll-column column-second',
         },
