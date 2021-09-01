@@ -256,7 +256,7 @@ export default {
           pdf.setFontSize(8)
           pdf.setFont('Ario-Regular')
           pdf.text(`Add: ${this.printInfo.shopAddress}`, 10, 17)
-          pdf.text(`Tel: ${this.printInfo.shopTel}`, 10, 24)
+          pdf.text(this.printInfo.shopTel === null ? 'Tel:' : `Tel: ${this.printInfo.shopTel}`, 10, 24)
           pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.printInfo.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.printInfo.toDate)}`, 92, 17)
           pdf.text(`Ngày in: ${this.$formatPrintDate(this.printInfo.printDate)}`, 97, 24)
 
@@ -320,15 +320,15 @@ export default {
                 { content: `${data[0]}`, styles: { cellWidth: 28 } },
                 { content: `${data[1]}`, styles: { cellWidth: 28 } },
                 { content: `${data[2]}`, styles: { cellWidth: 65 } },
-                { content: data[3] === null ? '' : `${data[3]}`, styles: { cellWidth: 16, halign: 'right' } },
-                { content: data[4] === null ? '' : `${data[4]}`, styles: { halign: 'right' } },
-                { content: data[5] === null ? '' : `${data[5]}`, styles: { halign: 'right' } },
-                { content: data[6] === null ? '' : `${data[6]}`, styles: { halign: 'right' } },
-                { content: data[7] === null ? '' : `${data[7]}`, styles: { halign: 'right' } },
-                { content: data[8] === null ? '' : `${data[8]}`, styles: { halign: 'right' } },
-                { content: data[9] === null ? '' : `${data[9]}`, styles: { halign: 'right' } },
-                { content: data[10] === null ? '' : `${data[10]}`, styles: { halign: 'right' } },
-                { content: data[11] === null ? '' : `${data[11]}`, styles: { halign: 'right' } },
+                { content: data[3] === null ? '' : `${this.$formatNumberToLocale(data[3])}`, styles: { cellWidth: 16, halign: 'right' } },
+                { content: data[4] === null ? '' : `${this.$formatNumberToLocale(data[4])}`, styles: { halign: 'right' } },
+                { content: data[5] === null ? '' : `${this.$formatNumberToLocale(data[5])}`, styles: { halign: 'right' } },
+                { content: data[6] === null ? '' : `${this.$formatNumberToLocale(data[6])}`, styles: { halign: 'right' } },
+                { content: data[7] === null ? '' : `${this.$formatNumberToLocale(data[7])}`, styles: { halign: 'right' } },
+                { content: data[8] === null ? '' : `${this.$formatNumberToLocale(data[8])}`, styles: { halign: 'right' } },
+                { content: data[9] === null ? '' : `${this.$formatNumberToLocale(data[9])}`, styles: { halign: 'right' } },
+                { content: data[10] === null ? '' : `${this.$formatNumberToLocale(data[10])}`, styles: { halign: 'right' } },
+                { content: data[11] === null ? '' : `${this.$formatNumberToLocale(data[11])}`, styles: { halign: 'right' } },
               ])
               this.count += 1
             })
