@@ -1101,8 +1101,8 @@ export default {
               [
                 { content: `Số HĐ: ${this.expAdjust.orderImports[i].redInvoiceNo}` },
                 { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.expAdjust.orderImports[i].orderDate)}` },
-                { content: `- Số PO: ${this.expAdjust.orderImports[i].poNumber}` },
-                { content: `- Số nội bộ: ${this.expAdjust.orderImports[i].internalNumber}` },
+                { content: this.expAdjust.orderImports[i].poNumber === null ? '- Số PO:' : `- Số PO: ${this.expAdjust.orderImports[i].poNumber}` },
+                { content: this.expAdjust.orderImports[i].internalNumber === null ? '- Số nội bộ:' : `- Số nội bộ: ${this.expAdjust.orderImports[i].internalNumber}` },
                 { content: `- Mã xuất hàng: ${this.expAdjust.orderImports[i].transCode}` },
               ],
             ],
@@ -1328,8 +1328,8 @@ export default {
               [
                 { content: `Số HĐ: ${this.expPO.orderImports[i].redInvoiceNo}`, halign: 'right' },
                 { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.expPO.orderImports[i].orderDate)}` },
-                { content: `- Số PO: ${this.expPO.orderImports[i].poNumber}` },
-                { content: `- Số nội bộ: ${this.expPO.orderImports[i].internalNumber}` },
+                { content: this.expPO.orderImports[i].poNumber === null ? '- Số PO:' : `- Số PO: ${this.expPO.orderImports[i].poNumber}` },
+                { content: this.expPO.orderImports[i].internalNumber === null ? '- Số nội bộ:' : `- Số nội bộ: ${this.expPO.orderImports[i].internalNumber}` },
                 { content: `- Mã xuất hàng: ${this.expPO.orderImports[i].transCode}` },
               ],
             ],
@@ -1554,8 +1554,8 @@ export default {
               [
                 { content: `Số HĐ: ${this.expBorrow.orderImports[i].redInvoiceNo}`, halign: 'right' },
                 { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.expBorrow.orderImports[i].orderDate)}` },
-                { content: `- Số PO: ${this.expBorrow.orderImports[i].poNumber}` },
-                { content: `- Số nội bộ: ${this.expBorrow.orderImports[i].internalNumber}` },
+                { content: this.expBorrow.orderImports[i].poNumber === null ? '- Số PO:' : `- Số PO: ${this.expBorrow.orderImports[i].poNumber}` },
+                { content: this.expBorrow.orderImports[i].internalNumber === null ? '- Số nội bộ:' : `- Số nội bộ: ${this.expBorrow.orderImports[i].internalNumber}` },
                 { content: `- Mã xuất hàng: ${this.expBorrow.orderImports[i].transCode}` },
               ],
             ],

@@ -450,8 +450,8 @@ export default {
                   { content: `${pro.productName}`, styles: { cellWidth: 53 } },
                   { content: `${pro.unit}`, styles: { cellWidth: 18, halign: 'center' } },
                   { content: `${pro.stockQuantity}`, styles: { cellWidth: 25, halign: 'right' } },
-                  { content: `${this.$formatNumberToLocale(pro.price)}`, styles: { cellWidth: 25, halign: 'right' } },
-                  { content: `${this.$formatNumberToLocale(pro.totalAmount)}`, styles: { halign: 'right' } },
+                  { content: pro.price === null ? '' : `${this.$formatNumberToLocale(pro.price)}`, styles: { cellWidth: 25, halign: 'right' } },
+                  { content: pro.totalAmount === null ? '' : `${this.$formatNumberToLocale(pro.totalAmount)}`, styles: { halign: 'right' } },
                 ])
                 this.count += 1
               })
