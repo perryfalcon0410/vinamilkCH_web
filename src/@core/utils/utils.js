@@ -12,6 +12,11 @@ import warehousesData from '@/@db/warehouses'
 import reportsData from '@/@db/report'
 import salesData from '@/@db/sale'
 import systemData from '@/@db/system'
+import JSPM from 'jsprintmanager'
+import {
+  jspmCheckStatus,
+} from '@core/utils/filter'
+import toasts from '@/@core/utils/toasts/toasts'
 
 import moment from 'moment'
 
@@ -235,5 +240,36 @@ export const getJSPMDownloadInfo = () => {
   return {
     os,
     link,
+  }
+}
+
+export const printFile = (fileName, printerName, pdf) => {
+  for (let i = 0; i < 3; i += 1) {
+    if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
+      if (jspmCheckStatus()) {
+        // setup printer
+        const cpj = new JSPM.ClientPrintJob()
+        cpj.clientPrinter = new JSPM.InstalledPrinter(printerName) // get printer
+        const printContent = new JSPM.PrintFilePDF(pdf.output('datauristring'), JSPM.FileSourceType.URL, fileName, 1)
+        printContent.printAsGrayscale = false // Options print black/white(=true) and color(=false)
+        cpj.files.push(printContent)
+        cpj.sendToClient()
+        // pdf.save('test.pdf')
+        break
+      }
+    } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
+      toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+      // Create an IFrame.
+      const iframe = document.createElement('iframe')
+      // Hide the IFrame.
+      iframe.style.visibility = 'hidden'
+      // Define the source.
+      iframe.type = 'application/pdf'
+      iframe.src = pdf.output('bloburl')
+      // Add the IFrame to the web page.
+      document.body.appendChild(iframe)
+      iframe.contentWindow.focus()
+      iframe.contentWindow.print() // Print.
+    }
   }
 }
