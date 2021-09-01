@@ -233,22 +233,22 @@ export default {
         },
         {
           label: 'Kho',
-          field: 'warehouseType',
+          field: 'wareHouseTypeName',
           sortable: false,
         },
         {
           label: 'Người tạo',
-          field: 'createUser',
+          field: 'createdBy',
           sortable: false,
         },
         {
           label: 'Chỉnh sửa lần cuối',
-          field: 'updateDate',
+          field: 'updatedAt',
           sortable: false,
         },
         {
           label: 'Người chỉnh sửa',
-          field: 'updateUser',
+          field: 'updatedBy',
           sortable: false,
         },
         {
