@@ -16,7 +16,7 @@
       <b-form class="bg-white rounded shadow">
         <b-form-row
           class="v-search-form border-top mx-0 p-1"
-          @keyup.enter="onClickSearchButton"
+          @keyup.enter="onClickSearchButton()"
         >
           <b-col
             xl
@@ -40,7 +40,7 @@
               >
                 <b-form-input
                   ref="focusInput"
-                  v-model.trim="searchKeywords"
+                  v-model="searchKeywords"
                   placeholder="Nhập mã/ họ tên"
                 />
                 <b-input-group-append
@@ -103,7 +103,7 @@
               class="input-group-merge"
             >
               <b-form-input
-                v-model.trim="idNo"
+                v-model="idNo"
               />
               <b-input-group-append
                 is-text
@@ -242,7 +242,7 @@
                 </div>
                 <b-pagination
                   v-model="pageNumber"
-                  :total-rows="orderOnline.onlineOrderId !== null ? totalOnlineElements : customerPagination.totalElements"
+                  :total-rows="(orderOnline.onlineOrderId !== null && onlineOrderCustomers.length > 1) ? onlineOrderCustomers.length : customerPagination.totalElements"
                   :per-page="searchData.size"
                   first-number
                   last-number
@@ -454,8 +454,8 @@ export default {
 
       const maxOnlinePageSize = (size * (page + 1)) > totalOnlineElements
         ? totalOnlineElements : (size * (page + 1))
-      const maxPages = this.onlineOrderCustomers.length > 0 ? maxOnlinePageSize : maxPageSize
-      const totals = this.onlineOrderCustomers.length > 0 ? totalOnlineElements : totalElements
+      const maxPages = (this.orderOnline.onlineOrderId !== null && this.onlineOrderCustomers.length > 1) ? maxOnlinePageSize : maxPageSize
+      const totals = (this.orderOnline.onlineOrderId !== null && this.onlineOrderCustomers.length > 1) ? totalOnlineElements : totalElements
 
       return `${minPageSize} - ${maxPages} của ${totals} mục`
     },
@@ -469,7 +469,9 @@ export default {
       }
     },
     onlineOrderCustomers() {
-      this.customers = [...this.onlineOrderCustomers]
+      if (this.orderOnline.onlineOrderId !== null && this.onlineOrderCustomers.length > 1) {
+        this.customers = [...this.onlineOrderCustomers]
+      }
     },
     openPopup: {
       handler() {
@@ -489,9 +491,9 @@ export default {
     // func pagination
     onSearch() {
       this.searchOption = {
-        searchKeywords: this.searchKeywords,
+        searchKeywords: this.searchKeywords?.trim(),
         phoneNumber: this.phoneNumber,
-        idNo: this.idNo.trim(),
+        idNo: this.idNo?.trim(),
         status: customerData.status[0].id,
         ...this.decentralization,
         ...this.searchData,
@@ -505,9 +507,9 @@ export default {
 
     onClickSearchButton() {
       this.searchOption = {
-        searchKeywords: this.searchKeywords.trim(),
+        searchKeywords: this.searchKeywords?.trim(),
         phoneNumber: this.phoneNumber,
-        idNo: this.idNo.trim(),
+        idNo: this.idNo?.trim(),
         status: customerData.status[0].id,
       }
       this.updateSearchData({

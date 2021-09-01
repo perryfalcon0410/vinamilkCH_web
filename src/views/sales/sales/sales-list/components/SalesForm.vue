@@ -883,6 +883,9 @@ export default {
     },
     getCustomerSearch() {
       this.customersSearch = [...this.getCustomerSearch]
+      if (this.customersSearch[0].data && this.customersSearch[0].data.length === 1) {
+        this.$nextTick(() => document.getElementById('autosuggest__input').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+      }
     },
     onlineOrder() {
       this.getOnlineOrderById()
