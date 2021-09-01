@@ -59,7 +59,11 @@
             <div
               class=" mt-sm-1 mt-xl-0"
             >
+<<<<<<< HEAD
               Từ ngày
+=======
+              Từ ngày <span class="text-danger">*</span>
+>>>>>>> 826f7ca6 (+ constraint date input)
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"
@@ -102,7 +106,11 @@
             <div
               class=" mt-sm-1 mt-xl-0 h7"
             >
+<<<<<<< HEAD
               Đến ngày
+=======
+              Đến ngày <span class="text-danger">*</span>
+>>>>>>> 826f7ca6 (+ constraint date input)
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"

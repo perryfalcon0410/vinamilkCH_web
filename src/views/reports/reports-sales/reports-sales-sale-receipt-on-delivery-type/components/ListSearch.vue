@@ -61,7 +61,7 @@
             <div
               class="h7 mt-sm-1 mt-xl-0"
             >
-              Từ ngày
+              Từ ngày <span class="text-danger">*</span>
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"
@@ -103,7 +103,7 @@
             <div
               class="h7 mt-sm-1 mt-xl-0"
             >
-              Đến ngày
+              Đến ngày <span class="text-danger">*</span>
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"

@@ -1,12 +1,12 @@
 <template>
-  <b-container
-    fluid
-    class="d-flex flex-column p-0"
+  <validation-observer
+    ref="formContainer"
+    v-slot="{invalid}"
+    slim
   >
-    <validation-observer
-      ref="formContainer"
-      v-slot="{invalid}"
-      slim
+    <b-container
+      fluid
+      class="d-flex flex-column p-0"
     >
       <b-from
         class="d-print-none"
@@ -92,7 +92,7 @@
               <div
                 class="mt-sm-1 mt-xl-0"
               >
-                Từ ngày
+                Từ ngày <span class="text-danger">*</span>
               </div>
               <b-row
                 class="v-flat-pickr-group mx-0"
@@ -135,7 +135,7 @@
               <div
                 class="mt-sm-1 mt-xl-0"
               >
-                Đến ngày
+                Đến ngày <span class="text-danger">*</span>
               </div>
               <b-row
                 class="v-flat-pickr-group mx-0"
@@ -201,8 +201,8 @@
             <b-button
               id="form-button-search"
               class="btn-brand-1 align-items-button-center mt-sm-1 mt-xl-0 h8"
-              variant="someThing"
               :disabled="invalid"
+              variant="someThing"
               @click="onClickSearchWarehousesOutput()"
             >
               <b-icon-search class="mr-50" />
@@ -213,243 +213,251 @@
 
         </v-card-actions>
       </b-from>
-    <!-- END - Search -->
-    </validation-observer>
-
-    <!-- START - Table -->
-    <div class="bg-white rounded shadow rounded my-1 d-print-none">
-      <!-- START - Table header -->
-      <b-row
-        class="border-bottom px-1 mx-0"
-        style="padding: 5px 0;"
-        align-v="center"
-        align-h="between"
-      >
-        <strong class="text-brand-1">
-          Danh sách phiếu xuất hàng
-        </strong>
-        <b-button-group>
-          <b-button
-            v-if="statusCreateButton().show"
-            :disabled="statusCreateButton().disabled"
-            class="btn-brand-1 align-items-button-center h8"
-            variant="someThing"
-            @click="onClickCreateButton"
-          >
-            <b-icon-plus
-              scale="2"
-              class="mr-50"
-            />
-            Thêm mới
-          </b-button>
-        </b-button-group>
-
-      </b-row>
-      <!-- END - Table header -->
+      <!-- END - Search -->
 
       <!-- START - Table -->
-      <b-col class="py-1">
-        <vue-good-table
-          mode="remote"
-          :columns="columns"
-          :rows="warehousesOutputList"
-          style-class="vgt-table"
-          :pagination-options="{
-            enabled: true,
-            perPage: elementSize,
-            setCurrentPage: pageNumber,
-          }"
-          compact-mode
-          line-numbers
-          :total-rows="warehousesOutputPagination.totalElements"
-          :sort-options="{
-            enabled: true,
-            multipleColumns: true,
-          }"
-          @on-sort-change="onSortChange"
-          @on-page-change="onPageChange"
-          @on-per-page-change="onPerPageChange"
+      <div class="bg-white rounded shadow rounded my-1 d-print-none">
+        <!-- START - Table header -->
+        <b-row
+          class="border-bottom px-1 mx-0"
+          style="padding: 5px 0;"
+          align-v="center"
+          align-h="between"
         >
-          <!-- START - Empty rows -->
-          <div
-            slot="emptystate"
-            class="text-center"
-          >
-            Không có dữ liệu
-          </div>
-          <!-- END - Empty rows -->
-
-          <!-- START - Column -->
-          <template
-            slot="table-column"
-            slot-scope="props"
-          >
-            <div
-              v-if="props.column.field === 'feature'"
+          <strong class="text-brand-1">
+            Danh sách phiếu xuất hàng
+          </strong>
+          <b-button-group>
+            <b-button
+              v-if="statusCreateButton().show"
+              :disabled="statusCreateButton().disabled"
+              class="btn-brand-1 align-items-button-center h8"
+              variant="someThing"
+              @click="onClickCreateButton"
             >
-              <v-icon-manipulation />
-            </div>
+              <b-icon-plus
+                scale="2"
+                class="mr-50"
+              />
+              Thêm mới
+            </b-button>
+          </b-button-group>
 
-            <div v-else>
-              {{ props.column.label }}
-            </div>
-          </template>
-          <!-- END - Column -->
+        </b-row>
+        <!-- END - Table header -->
 
-          <!-- START - Row -->
-          <template
-            slot="table-row"
-            slot-scope="props"
+        <!-- START - Table -->
+        <b-col class="py-1">
+          <vue-good-table
+            mode="remote"
+            :columns="columns"
+            :rows="warehousesOutputList"
+            style-class="vgt-table"
+            :pagination-options="{
+              enabled: true,
+              perPage: elementSize,
+              setCurrentPage: pageNumber,
+            }"
+            compact-mode
+            line-numbers
+            :total-rows="warehousesOutputPagination.totalElements"
+            :sort-options="{
+              enabled: false,
+              multipleColumns: true,
+            }"
+            @on-sort-change="onSortChange"
+            @on-page-change="onPageChange"
+            @on-per-page-change="onPerPageChange"
           >
-            <div
-              v-if="props.column.field === 'feature'"
-              class="mx-0"
-            >
-              <v-icon-printer
-                v-if="statusPrintButton().show"
-                :disabled="statusPrintButton().disabled"
-                @click="onClickPrintButton(props.row)"
-              />
-              <v-icon-edit
-                v-if="statusUpdateButton().show"
-                :disabled="statusUpdateButton().disabled"
-                class="ml-1"
-                popover-position="top"
-                @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
-              />
-              <v-icon-remove
-                v-show="$formatISOtoVNI(props.row.transDate) === nowDate && statusDeleteButton().show"
-                :disabled="statusDeleteButton().disabled"
-                class="ml-1"
-                @click="onClickDeleteWarehousesOutput(props.row.id,props.row.receiptType,props.row.transCode, props.row.originalIndex, $formatISOtoVNI(props.row.transDate))"
-              />
-            </div>
-            <div
-              v-else-if="props.column.field === 'totalQuantity' || props.column.field === 'totalAmount'"
-              style="padding-right: 4px"
-            >
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-            <div v-else>
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-          </template>
-          <!-- END - Row -->
-
-          <!-- START - Customer filter -->
-          <template
-            slot="column-filter"
-            slot-scope="props"
-          >
+            <!-- START - Empty rows -->
             <div
               v-if="props.column.field === 'totalQuantity'"
               v-show="warehousesOutputPagination.totalElements"
               class="h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
+              Không có dữ liệu
             </div>
+            <!-- END - Empty rows -->
 
             <div
               v-else-if="props.column.field === 'totalAmount'"
               v-show="warehousesOutputPagination.totalElements"
               class="h7 text-brand-3 text-right"
             >
-              {{ $formatNumberToLocale(totalInfo.totalPrice) }}
-            </div>
-          </template>
-          <!-- END - Customer filter -->
+              <div
+                v-if="props.column.field === 'feature'"
+              >
+                <v-icon-manipulation />
+              </div>
 
-          <!-- START - Pagination -->
-          <template
-            slot="pagination-bottom"
-            slot-scope="props"
-          >
-            <b-row
-              v-show="warehousesOutputPagination.totalElements"
-              class="v-pagination px-1 mx-0"
-              align-h="between"
-              align-v="center"
+              <div v-else>
+                {{ props.column.label }}
+              </div>
+            </template>
+            <!-- END - Column -->
+
+            <!-- START - Row -->
+            <template
+              slot="table-row"
+              slot-scope="props"
             >
               <div
-                class="d-flex align-items-center"
+                v-if="props.column.field === 'feature'"
+                class="mx-0"
               >
-                <span
-                  class="text-nowrap"
-                >
-                  Số hàng hiển thị
-                </span>
-                <b-form-select
-                  v-model="elementSize"
-                  size="sm"
-                  :options="perPageSizeOptions"
-                  class="mx-1"
-                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                <v-icon-printer
+                  v-if="statusPrintButton().show"
+                  :disabled="statusPrintButton().disabled"
+                  @click="onClickPrintButton(props.row)"
                 />
-                <span class="text-nowrap">{{ paginationDetailContent }}</span>
+                <v-icon-edit
+                  v-if="statusUpdateButton().show"
+                  :disabled="statusUpdateButton().disabled"
+                  class="ml-1"
+                  popover-position="top"
+                  @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
+                />
+                <v-icon-remove
+                  v-show="$formatISOtoVNI(props.row.date) === nowDate && statusDeleteButton().show"
+                  :disabled="statusDeleteButton().disabled"
+                  class="ml-1"
+                  @click="onClickDeleteWarehousesOutput(props.row.id,props.row.inputTypes,props.row.code, props.row.originalIndex, $formatISOtoVNI(props.row.date))"
+                />
               </div>
-              <b-pagination
-                v-model="pageNumber"
-                :total-rows="warehousesOutputPagination.totalElements"
-                :per-page="elementSize"
-                first-number
-                last-number
-                align="right"
-                prev-class="prev-item"
-                next-class="next-item"
-                class="mt-1"
-                @input="(value)=>props.pageChanged({currentPage: value})"
+              <div
+                v-else-if="props.column.field === 'quantity' || props.column.field === 'price'"
+                style="padding-right: 4px"
               >
-                <template slot="prev-text">
-                  <feather-icon
-                    icon="ChevronLeftIcon"
-                    size="18"
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+              <div v-else>
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+            </template>
+            <!-- END - Row -->
+
+            <!-- START - Customer filter -->
+            <template
+              slot="column-filter"
+              slot-scope="props"
+            >
+              <div
+                v-if="props.column.field === 'quantity'"
+                v-show="warehousesOutputPagination.totalElements"
+                class="h7 text-brand-3 text-right"
+              >
+                {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
+              </div>
+
+              <div
+                v-else-if="props.column.field === 'price'"
+                v-show="warehousesOutputPagination.totalElements"
+                class="h7 text-brand-3 text-right"
+              >
+                {{ $formatNumberToLocale(totalInfo.totalPrice) }}
+              </div>
+            </template>
+            <!-- END - Customer filter -->
+
+            <!-- START - Pagination -->
+            <template
+              slot="pagination-bottom"
+              slot-scope="props"
+            >
+              <b-row
+                v-show="warehousesOutputPagination.totalElements"
+                class="v-pagination px-1 mx-0"
+                align-h="between"
+                align-v="center"
+              >
+                <div
+                  class="d-flex align-items-center"
+                >
+                  <span
+                    class="text-nowrap"
+                  >
+                    Số hàng hiển thị
+                  </span>
+                  <b-form-select
+                    v-model="elementSize"
+                    size="sm"
+                    :options="perPageSizeOptions"
+                    class="mx-1"
+                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
                   />
-                </template>
-                <template slot="next-text">
-                  <feather-icon
-                    icon="ChevronRightIcon"
-                    size="18"
-                  />
-                </template>
-              </b-pagination>
-            </b-row>
-          </template>
+                  <span class="text-nowrap">{{ paginationDetailContent }}</span>
+                </div>
+                <b-pagination
+                  v-model="pageNumber"
+                  :total-rows="warehousesOutputPagination.totalElements"
+                  :per-page="elementSize"
+                  first-number
+                  last-number
+                  align="right"
+                  prev-class="prev-item"
+                  next-class="next-item"
+                  class="mt-1"
+                  @input="(value)=>props.pageChanged({currentPage: value})"
+                >
+                  <template slot="prev-text">
+                    <feather-icon
+                      icon="ChevronLeftIcon"
+                      size="18"
+                    />
+                  </template>
+                  <template slot="next-text">
+                    <feather-icon
+                      icon="ChevronRightIcon"
+                      size="18"
+                    />
+                  </template>
+                </b-pagination>
+              </b-row>
+            </template>
           <!-- END - Pagination -->
-        </vue-good-table>
-      </b-col>
+          </vue-good-table>
+        </b-col>
       <!-- END - Table -->
 
-    </div>
-    <!-- END - Table -->
+      </div>
+      <!-- END - Table -->
 
-    <!-- START - Notify Modal Close -->
-    <b-modal
-      ref="salesNotifyModal"
-      title="Thông báo"
-    >
-      Bạn có muốn xóa đợt xuất hàng {{ warehousesOutputSelected.transCode }} ?
-      <template #modal-footer>
-        <b-button
-          class="btn-brand-1"
-          variant="someThing"
-          @click="onClickAgreeButton()"
-        >
-          Đồng ý
-        </b-button>
-        <b-button @click="closeNotifyModal">
-          Đóng
-        </b-button>
-      </template>
-    </b-modal>
-    <!-- END - Notify Modal Close -->
+      <!-- START - Notify Modal Close -->
+      <b-modal
+        ref="salesNotifyModal"
+        title="Thông báo"
+      >
+        Bạn có muốn xóa đợt xuất hàng {{ warehousesOutputSelected.code }} ?
+        <template #modal-footer>
+          <b-button
+            class="btn-brand-1"
+            variant="someThing"
+            @click="onClickAgreeButton()"
+          >
+            Đồng ý
+          </b-button>
+          <b-button @click="closeNotifyModal">
+            Đóng
+          </b-button>
+        </template>
+      </b-modal>
+      <!-- END - Notify Modal Close -->
 
-    <!-- STAT - Print form -->
-    <print-form-output-order />
+      <!-- STAT - Print form -->
+      <print-form-output-order />
     <!-- END - Print form -->
-  </b-container>
+    </b-container>
+  </validation-observer>
 </template>
 
 <script>
+import {
+  ValidationProvider,
+  ValidationObserver,
+} from 'vee-validate'
+import {
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
 import {
   mapActions,
   mapGetters,
@@ -458,10 +466,14 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+<<<<<<< HEAD
   preventDefaultWindowPrint,
   checkingDateInput,
   hostName,
   checkIpClient,
+=======
+  checkingDateInput,
+>>>>>>> 826f7ca6 (+ constraint date input)
 } from '@/@core/utils/filter'
 import {
   resizeAbleTable,

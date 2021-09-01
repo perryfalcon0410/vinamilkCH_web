@@ -1,12 +1,12 @@
 <template>
-  <b-container
-    fluid
-    class="d-flex flex-column px-0"
+  <validation-observer
+    ref="formContainer"
+    v-slot="{invalid}"
+    slim
   >
-    <validation-observer
-      ref="formContainer"
-      v-slot="{invalid}"
-      slim
+    <b-container
+      fluid
+      class="d-flex flex-column px-0"
     >
       <!-- START - Search -->
       <b-form>
@@ -88,7 +88,7 @@
               <div
                 class="h7 mt-sm-1 mt-xl-0"
               >
-                Từ ngày
+                Từ ngày <span class="text-danger">*</span>
               </div>
               <b-row
                 class="v-flat-pickr-group mx-0"
@@ -130,7 +130,7 @@
               <div
                 class="h7 mt-sm-1 mt-xl-0"
               >
-                Đến ngày
+                Đến ngày <span class="text-danger">*</span>
               </div>
               <b-row
                 class="v-flat-pickr-group mx-0"
@@ -172,8 +172,8 @@
             </div>
             <b-button
               variant="someThing"
-              class="btn-brand-1 align-items-button-center h8 mt-sm-1 mt-xl-0"
               :disabled="invalid"
+              class="btn-brand-1 align-items-button-center h8 mt-sm-1 mt-xl-0"
               @click="onSearchClick()"
             >
               <b-icon-search class="mr-50" />
@@ -182,303 +182,295 @@
           </b-col>
         </v-card-actions>
       </b-form>
-    <!-- END - Search -->
-    </validation-observer>
+      <!-- END - Search -->
 
-    <div class="d-print-none bg-white rounded shadow my-1">
-      <!-- START - Header -->
-      <b-row
-        class="border-bottom mx-0 px-1"
-        style="padding: 5px 0"
-        align-v="center"
-        align-h="between"
-      >
-        <strong class="text-brand-1">
-          Danh sách hóa đơn đỏ
-        </strong>
-
-        <!-- START - Button Head -->
+      <div class="d-print-none bg-white rounded shadow my-1">
+        <!-- START - Header -->
         <b-row
-          class="mx-0"
+          class="border-bottom mx-0 px-1"
+          style="padding: 5px 0"
           align-v="center"
+          align-h="between"
         >
-          <b-form-radio-group
-            v-model="templateOptionSelected"
-            :options="options"
-            value-field="item"
-            text-field="name"
-          />
-          <b-button
-            v-if="statusExcelButton().show"
-            :disabled="statusExcelButton().disabled"
-            class="align-items-button-center h8 ml-1 btn-brand-1"
-            variant="someThing"
-            @click="onClickExportRedBills"
+          <strong class="text-brand-1">
+            Danh sách hóa đơn đỏ
+          </strong>
+
+          <!-- START - Button Head -->
+          <b-row
+            class="mx-0"
+            align-v="center"
           >
-            <b-icon-file-earmark-x-fill class="mr-50" />
-            Xuất Excel
-          </b-button>
-          <b-button
-            v-if="statusPrintButton().show"
-            :disabled="statusPrintButton().disabled"
-            variant="someThing"
-            class="align-items-button-center h8 ml-1 btn-brand-1"
-            @click="onClickPrintButton"
-          >
-            <b-icon-printer-fill class="mr-50" />
-            In HĐ
-          </b-button>
-          <b-button
-            v-if="statusUpdateButton().show"
-            :disabled="statusUpdateButton().disabled"
-            class="align-items-button-center h8 ml-1 btn-brand-1"
-            variant="someThing"
-            @click="onClickUpdateRedBills"
-          >
-            <b-icon-arrow-clockwise
-              class="mr-50"
-              scale="1.2"
+            <b-form-radio-group
+              v-model="templateOptionSelected"
+              :options="options"
+              value-field="item"
+              text-field="name"
             />
-            Cập nhật HĐ
+            <b-button
+              v-if="statusExcelButton().show"
+              :disabled="statusExcelButton().disabled"
+              class="align-items-button-center h8 ml-1 btn-brand-1"
+              variant="someThing"
+              @click="onClickExportRedBills"
+            >
+              <b-icon-file-earmark-x-fill class="mr-50" />
+              Xuất Excel
+            </b-button>
+            <b-button
+              v-if="statusPrintButton().show"
+              :disabled="statusPrintButton().disabled"
+              variant="someThing"
+              class="align-items-button-center h8 ml-1 btn-brand-1"
+              @click="onClickPrintButton"
+            >
+              <b-icon-printer-fill class="mr-50" />
+              In HĐ
+            </b-button>
+            <b-button
+              v-if="statusUpdateButton().show"
+              :disabled="statusUpdateButton().disabled"
+              class="align-items-button-center h8 ml-1 btn-brand-1"
+              variant="someThing"
+              @click="onClickUpdateRedBills"
+            >
+              <b-icon-arrow-clockwise
+                class="mr-50"
+                scale="1.2"
+              />
+              Cập nhật HĐ
+            </b-button>
+            <b-button
+              v-if="statusCreateButton().show"
+              :disabled="statusCreateButton().disabled"
+              class="align-items-button-center h8 ml-1 btn-brand-1"
+              variant="someThing"
+              @click="addSaleRedBillsCreate"
+            >
+              <b-icon-plus
+                class="mr-50"
+                scale="1.8"
+              />
+              Thêm mới
+            </b-button>
+            <b-button
+              v-if="statusDeleteButton().show"
+              :disabled="statusDeleteButton().disabled"
+              class="align-items-button-center h8 ml-1 btn-brand-1"
+              variant="someThing"
+              @click="onClickDeleteButton"
+            >
+              <b-icon-trash class="mr-50" />
+              Xóa
+            </b-button>
+          </b-row>
+        <!-- END - Button Head -->
+        </b-row>
+        <!-- END - Header -->
+
+        <!-- START - Table -->
+        <b-col class="py-1">
+          <vue-good-table
+            :columns="columns"
+            :rows="listRedBill"
+            mode="remote"
+            style-class="vgt-table"
+            :pagination-options="{
+              enabled: true,
+              perPage: searchData.size,
+              setCurrentPage: searchData.page + 1,
+            }"
+            line-numbers
+            :total-rows="getRedBillPagination.totalElements"
+            :select-options="{
+              enabled: true,
+              selectOnCheckboxOnly: true,
+              selectionInfoClass: 'custom-class',
+              clearSelectionText: 'clear',
+              disableSelectInfo: true,
+              selectAllByGroup: true,
+              multipleColumns: true,
+              selected: true,
+            }"
+            @on-row-click="selectionRow"
+            @on-select-all="selectAllRows"
+            @on-sort-change="onSortChange"
+            @on-page-change="onPageChange"
+            @on-per-page-change="onPerPageChange"
+            @on-cell-click="focusRows"
+          >
+            <!-- START - Empty rows -->
+            <div
+              slot="emptystate"
+              class="text-center"
+            >
+              Không có dữ liệu
+            </div>
+            <!-- END - Empty rows -->
+
+            <!-- START - Pagination -->
+            <template
+              slot="pagination-bottom"
+              slot-scope="props"
+            >
+              <b-row
+                v-show="getRedBillPagination.totalElements"
+                class="v-pagination px-1 mx-0"
+                align-h="between"
+                align-v="center"
+              >
+                <div
+                  class="d-flex align-items-center"
+                >
+                  <span
+                    class="text-nowrap"
+                  >
+                    Số hàng hiển thị
+                  </span>
+                  <b-form-select
+                    v-model="searchData.size"
+                    size="sm"
+                    :options="perPageSizeOptions"
+                    class="mx-1"
+                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
+                  />
+                  <span class="text-nowrap">{{ paginationDetailContent }}</span>
+                </div>
+                <b-pagination
+                  v-model="pageNumber"
+                  :total-rows="getRedBillPagination.totalElements"
+                  :per-page="searchData.size"
+                  first-number
+                  last-number
+                  align="right"
+                  prev-class="prev-item"
+                  next-class="next-item"
+                  class="mt-1"
+                  @input="(value)=>props.pageChanged({currentPage: value})"
+                >
+                  <template slot="prev-text">
+                    <feather-icon
+                      icon="ChevronLeftIcon"
+                      size="18"
+                    />
+                  </template>
+                  <template slot="next-text">
+                    <feather-icon
+                      icon="ChevronRightIcon"
+                      size="18"
+                    />
+                  </template>
+                </b-pagination>
+              </b-row>
+            </template>
+            <!-- END - Pagination -->
+            <!-- START - Row -->
+            <template
+              slot="table-row"
+              slot-scope="props"
+            >
+              <div v-if="props.column.field === 'invoiceNumber'">
+                <b-form-input
+                  v-model="listRedBill[props.row.originalIndex].invoiceNumber"
+                  maxlength="50"
+                  :value="listRedBill[props.row.originalIndex].invoiceNumber"
+                />
+              </div>
+              <div
+                v-else-if="props.column.field === 'officeWorking'"
+                class="style-width"
+              >
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+              <div
+                v-else-if="props.column.field === 'officeAddress'"
+                class="style-width"
+              >
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+              <div v-else>
+                {{ props.formattedRow[props.column.field] }}
+              </div>
+            </template>
+            <!-- END - Row -->
+
+            <!-- START - Column filter -->
+            <template
+              slot="column-filter"
+              slot-scope="props"
+            >
+              <b-row
+                v-show="getRedBillPagination.totalElements"
+                v-if="props.column.field === 'totalQuantity'"
+                class="mx-0 h7 text-brand-3 text-right"
+                align-h="end"
+              >
+                {{ $formatNumberToLocale(totalInfo.sumTotalQuantity) }}
+              </b-row>
+
+              <b-row
+                v-show="getRedBillPagination.totalElements"
+                v-else-if="props.column.field === 'amountNotVat'"
+                class="mx-0 h7 text-brand-3 text-right"
+                align-h="end"
+              >
+                {{ $formatNumberToLocale(totalInfo.sumAmountNotVat) }}
+              </b-row>
+              <b-row
+                v-show="getRedBillPagination.totalElements"
+                v-else-if="props.column.field === 'amountGTGT'"
+                class="mx-0 h7 text-brand-3 text-right"
+                align-h="end"
+              >
+                {{ $formatNumberToLocale(totalInfo.sumAmountGTGT) }}
+              </b-row>
+              <b-row
+                v-show="getRedBillPagination.totalElements"
+                v-else-if="props.column.field === 'totalMoney'"
+                class="mx-0 h7 text-brand-3 text-right"
+                align-h="end"
+              >
+                {{ $formatNumberToLocale(totalInfo.sumTotalMoney) }}
+              </b-row>
+            </template>
+          <!-- START - Column filter -->
+          </vue-good-table>
+        </b-col>
+      <!-- END - Table -->
+      </div>
+
+      <!-- START - Red Bill Modal Delete -->
+      <b-modal
+        v-model="isDeleteModalShow"
+        title="Thông báo"
+      >
+        Bạn có muốn xóa các hóa đơn đỏ?
+        <template #modal-footer>
+          <b-button
+            @click="isDeleteModalShow = false"
+          >
+            Hủy
           </b-button>
           <b-button
-            v-if="statusCreateButton().show"
-            :disabled="statusCreateButton().disabled"
-            class="align-items-button-center h8 ml-1 btn-brand-1"
+            class="btn-brand-1 h9 align-items-button-center rounded"
             variant="someThing"
-            @click="addSaleRedBillsCreate"
+            @click="confirmDelete"
           >
-            <b-icon-plus
-              class="mr-50"
-              scale="1.8"
-            />
-            Thêm mới
-          </b-button>
-          <b-button
-            v-if="statusDeleteButton().show"
-            :disabled="statusDeleteButton().disabled"
-            class="align-items-button-center h8 ml-1 btn-brand-1"
-            variant="someThing"
-            @click="onClickDeleteButton"
-          >
-            <b-icon-trash class="mr-50" />
             Xóa
           </b-button>
-        </b-row>
-        <!-- END - Button Head -->
-      </b-row>
-      <!-- END - Header -->
+        </template>
 
-      <!-- START - Table -->
-      <b-col class="py-1">
-        <vue-good-table
-          :columns="columns"
-          :rows="listRedBill"
-          mode="remote"
-          :sort-options="{
-            enabled: false,
-          }"
-          style-class="vgt-table"
-          :pagination-options="{
-            enabled: true,
-            perPage: searchData.size,
-            setCurrentPage: searchData.page + 1,
-          }"
-          line-numbers
-          :total-rows="getRedBillPagination.totalElements"
-          :select-options="{
-            enabled: true,
-            selectOnCheckboxOnly: true,
-            selectionInfoClass: 'custom-class',
-            clearSelectionText: 'clear',
-            disableSelectInfo: true,
-            selectAllByGroup: true,
-            multipleColumns: true,
-            selected: true,
-          }"
-          @on-row-click="selectionRow"
-          @on-select-all="selectAllRows"
-          @on-sort-change="onSortChange"
-          @on-page-change="onPageChange"
-          @on-per-page-change="onPerPageChange"
-          @on-cell-click="focusRows"
-        >
-          <!-- START - Empty rows -->
-          <div
-            slot="emptystate"
-            class="text-center"
-          >
-            Không có dữ liệu
-          </div>
-          <!-- END - Empty rows -->
+      </b-modal>
+      <!-- END - Red Bill Modal Delete -->
 
-          <!-- START - Pagination -->
-          <template
-            slot="pagination-bottom"
-            slot-scope="props"
-          >
-            <b-row
-              v-show="getRedBillPagination.totalElements"
-              class="v-pagination px-1 mx-0"
-              align-h="between"
-              align-v="center"
-            >
-              <div
-                class="d-flex align-items-center"
-              >
-                <span
-                  class="text-nowrap"
-                >
-                  Số hàng hiển thị
-                </span>
-                <b-form-select
-                  v-model="searchData.size"
-                  size="sm"
-                  :options="perPageSizeOptions"
-                  class="mx-1"
-                  @input="(value)=>props.perPageChanged({currentPerPage: value})"
-                />
-                <span class="text-nowrap">{{ paginationDetailContent }}</span>
-              </div>
-              <b-pagination
-                v-model="pageNumber"
-                :total-rows="getRedBillPagination.totalElements"
-                :per-page="searchData.size"
-                first-number
-                last-number
-                align="right"
-                prev-class="prev-item"
-                next-class="next-item"
-                class="mt-1"
-                @input="(value)=>props.pageChanged({currentPage: value})"
-              >
-                <template slot="prev-text">
-                  <feather-icon
-                    icon="ChevronLeftIcon"
-                    size="18"
-                  />
-                </template>
-                <template slot="next-text">
-                  <feather-icon
-                    icon="ChevronRightIcon"
-                    size="18"
-                  />
-                </template>
-              </b-pagination>
-            </b-row>
-          </template>
-          <!-- END - Pagination -->
-          <!-- START - Row -->
-          <template
-            slot="table-row"
-            slot-scope="props"
-          >
-            <div v-if="props.column.field === 'invoiceNumber'">
-              <b-form-input
-                v-model="listRedBill[props.row.originalIndex].invoiceNumber"
-                maxlength="50"
-                :value="listRedBill[props.row.originalIndex].invoiceNumber"
-              />
-            </div>
-            <div
-              v-else-if="props.column.field === 'officeWorking'"
-              class="style-width"
-            >
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-            <div
-              v-else-if="props.column.field === 'officeAddress'"
-              class="style-width"
-            >
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-            <div v-else>
-              {{ props.formattedRow[props.column.field] }}
-            </div>
-          </template>
-          <!-- END - Row -->
-
-          <!-- START - Column filter -->
-          <template
-            slot="column-filter"
-            slot-scope="props"
-          >
-            <b-row
-              v-show="getRedBillPagination.totalElements"
-              v-if="props.column.field === 'totalQuantity'"
-              class="mx-0 h7 text-brand-3 text-right"
-              align-h="end"
-            >
-              {{ $formatNumberToLocale(totalInfo.sumTotalQuantity) }}
-            </b-row>
-
-            <b-row
-              v-show="getRedBillPagination.totalElements"
-              v-else-if="props.column.field === 'amountNotVat'"
-              class="mx-0 h7 text-brand-3 text-right"
-              align-h="end"
-            >
-              {{ $formatNumberToLocale(totalInfo.sumAmountNotVat) }}
-            </b-row>
-            <b-row
-              v-show="getRedBillPagination.totalElements"
-              v-else-if="props.column.field === 'amountGTGT'"
-              class="mx-0 h7 text-brand-3 text-right"
-              align-h="end"
-            >
-              {{ $formatNumberToLocale(totalInfo.sumAmountGTGT) }}
-            </b-row>
-            <b-row
-              v-show="getRedBillPagination.totalElements"
-              v-else-if="props.column.field === 'totalMoney'"
-              class="mx-0 h7 text-brand-3 text-right"
-              align-h="end"
-            >
-              {{ $formatNumberToLocale(totalInfo.sumTotalMoney) }}
-            </b-row>
-          </template>
-          <!-- START - Column filter -->
-        </vue-good-table>
-      </b-col>
-      <!-- END - Table -->
-    </div>
-
-    <!-- START - Red Bill Modal Delete -->
-    <b-modal
-      v-model="isDeleteModalShow"
-      title="Thông báo"
-    >
-      Bạn có muốn xóa các hóa đơn đỏ?
-      <template #modal-footer>
-        <b-button
-          @click="isDeleteModalShow = false"
-        >
-          Hủy
-        </b-button>
-        <b-button
-          class="btn-brand-1 h9 align-items-button-center rounded"
-          variant="someThing"
-          @click="confirmDelete"
-        >
-          Xóa
-        </b-button>
-      </template>
-
-    </b-modal>
-    <!-- END - Red Bill Modal Delete -->
-
-    <!-- START - Print form -->
-    <print-form-red-bills />
+      <!-- START - Print form -->
+      <print-form-red-bills />
     <!-- END - Print form -->
-  </b-container>
+    </b-container>
+  </validation-observer>
 </template>
 
 <script>
-import {
-  mapActions,
-  mapGetters,
-} from 'vuex'
-import toasts from '@core/utils/toasts/toasts'
 import {
   ValidationProvider,
   ValidationObserver,
@@ -486,6 +478,11 @@ import {
 import {
   dateFormatVNI,
 } from '@/@core/utils/validations/validations'
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import toasts from '@core/utils/toasts/toasts'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import commonData from '@/@db/common'
 import redBillData from '@/@db/redBill'

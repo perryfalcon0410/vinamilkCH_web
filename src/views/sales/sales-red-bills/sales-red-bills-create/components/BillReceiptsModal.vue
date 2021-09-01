@@ -1,408 +1,439 @@
 <template>
-  <b-modal
-    id="bill-receipt-modal"
-    size="xl"
-    title="Chọn hoá đơn bán hàng"
-    title-class="text-uppercase font-weight-bold text-brand-1"
-    content-class="bg-light"
-    footer-border-variant="light"
-    @hidden="cancel()"
+  <validation-observer
+    ref="formContainer"
+    v-slot="{invalid}"
+    slim
   >
-    <b-container
-      fluid
-      class="d-flex flex-column"
-      @keyup.enter="onClickSearchButton"
+    <b-modal
+      id="bill-receipt-modal"
+      size="xl"
+      title="Chọn hoá đơn bán hàng"
+      title-class="text-uppercase font-weight-bold text-brand-1"
+      content-class="bg-light"
+      footer-border-variant="light"
+      @hidden="cancel()"
     >
-      <!-- START - Search -->
-      <v-card-actions title="Tìm kiếm">
-        <b-col
-          xl
-          lg="3"
-          sm="4"
-        >
-          <div class="h7 mt-sm-1 mt-xl-0">
-            {{ 'Khách hàng' }}
-          </div>
-          <b-input-group
-            class="input-group-merge"
-          >
-            <b-form-input
-              v-model.trim="searchOptions.customerKeywords"
-              class="h7 text-brand-3"
-              placeholder="Nhập Mã/SĐT/Tên khách hàng"
-              autofocus
-              @keyup.enter="onClickSearchButton"
-            />
-            <b-input-group-append
-              is-text
-            >
-              <b-icon-x
-                v-show="searchOptions.customerKeywords"
-                class="cursor-pointer text-gray"
-                @click="searchOptions.customerKeywords = null"
-              />
-            </b-input-group-append>
-          </b-input-group>
-        </b-col>
-
-        <b-col
-          xl
-          lg="3"
-          sm="4"
-        >
-          <div class="h7 mt-sm-1 mt-xl-0">
-            {{ 'Số hóa đơn' }}
-          </div>
-          <b-input-group
-            class="input-group-merge"
-          >
-            <b-form-input
-              v-model.trim="searchOptions.invoiceNumberKeywords"
-              class="h7 text-brand-3"
-              placeholder="Nhập số hóa đơn"
-              @keyup.enter="onClickSearchButton"
-            />
-            <b-input-group-append
-              is-text
-            >
-              <b-icon-x
-                v-show="searchOptions.invoiceNumberKeywords"
-                class="cursor-pointer text-gray"
-                @click="searchOptions.invoiceNumberKeywords = null"
-              />
-            </b-input-group-append>
-          </b-input-group>
-        </b-col>
-
-        <!-- START - Date From -->
-        <b-col
-          xl
-          lg="3"
-          sm="4"
-        >
-          <div
-            class="h7 mt-sm-1 mt-xl-0"
-          >
-            Từ ngày
-          </div>
-          <b-row
-            class="v-flat-pickr-group mx-0"
-            align-v="center"
-            @keypress="$onlyDateInput"
-          >
-            <b-icon-x
-              v-show="fromDate"
-              style="position: absolute; right: 15px"
-              class="cursor-pointer text-gray"
-              scale="1.3"
-              data-clear
-            />
-            <vue-flat-pickr
-              v-model="fromDate"
-              :config="configFromDate"
-              class="form-control h7"
-              placeholder="Chọn ngày"
-            />
-          </b-row>
-        </b-col>
-        <!-- END - Date From -->
-
-        <!-- START - Date To -->
-        <b-col
-          xl
-          lg="3"
-          sm="4"
-        >
-          <div
-            class="h7 mt-sm-1 mt-xl-0"
-          >
-            Đến ngày
-          </div>
-          <b-row
-            class="v-flat-pickr-group mx-0"
-            align-v="center"
-            @keypress="$onlyDateInput"
-          >
-            <b-icon-x
-              v-show="toDate"
-              style="position: absolute; right: 15px"
-              class="cursor-pointer text-gray"
-              scale="1.3"
-              data-clear
-            />
-            <vue-flat-pickr
-              v-model="toDate"
-              :config="configToDate"
-              class="form-control h7"
-              placeholder="Chọn ngày"
-            />
-          </b-row>
-
-        </b-col>
-        <!-- END - Date To -->
-        <b-col
-          xl
-          lg="3"
-          sm="4"
-        >
-          <div
-            class="h7 text-white"
-            onmousedown="return false;"
-            style="cursor: context-menu;"
-          >
-            Tìm kiếm
-          </div>
-          <b-button
-            id="form-button-search"
-            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
-            variant="someThing"
-            @click="onClickSearchButton()"
-          >
-            <b-icon-search class="mr-50" />
-            Tìm kiếm
-          </b-button>
-        </b-col>
-      </v-card-actions>
-      <!-- END - Search -->
-
-      <!-- START - Coupon list -->
-      <b-form
-        class="bg-white rounded shadow rounded mt-1"
+      <b-container
+        fluid
+        class="d-flex flex-column"
+        @keyup.enter="onClickSearchButton"
       >
-        <!-- START - Header -->
-        <b-row
-          class="border-bottom mx-0 px-1"
-          align-v="center"
-          style="padding: 5px 0"
-        >
-          <strong class="text-brand-1"> Danh sách hóa đơn bán hàng </strong>
-        </b-row>
-        <!-- END - Header -->
-
-        <!-- START - Table -->
-        <b-col class="py-1">
-          <vue-good-table
-            ref="bill-of-sales-table"
-            :columns="columnsInvoice"
-            :rows="billSales"
-            mode="remote"
-            style-class="vgt-table"
-            :pagination-options="{
-              enabled: true,
-              perPage: searchData.size,
-              setCurrentPage: searchData.page + 1,
-            }"
-            compact-mode
-            line-numbers
-            :total-rows="paging.totalElements"
-            :select-options="{
-              enabled: true,
-              selectOnCheckboxOnly: true,
-              selectionInfoClass: 'custom-class',
-              clearSelectionText: 'clear',
-              disableSelectInfo: true,
-              selectAllByGroup: true,
-              multipleColumns: true,
-            }"
-            @on-selected-rows-change="selectionChanged"
-            @on-sort-change="onSortChange"
-            @on-page-change="onPageChange"
-            @on-per-page-change="onPerPageChange"
+        <!-- START - Search -->
+        <v-card-actions title="Tìm kiếm">
+          <b-col
+            xl
+            lg="3"
+            sm="4"
           >
-            <template
-              slot="table-row"
-              slot-scope="props"
+            <div class="h7 mt-sm-1 mt-xl-0">
+              {{ 'Khách hàng' }}
+            </div>
+            <b-input-group
+              class="input-group-merge"
             >
-              <span v-if="props.column.field == 'billNumber'">
-                <span>
-                  {{ props.row.billNumber }}
+              <b-form-input
+                v-model.trim="searchOptions.customerKeywords"
+                class="h7 text-brand-3"
+                placeholder="Nhập Mã/SĐT/Tên khách hàng"
+                autofocus
+                @keyup.enter="onClickSearchButton"
+              />
+              <b-input-group-append
+                is-text
+              >
+                <b-icon-x
+                  v-show="searchOptions.customerKeywords"
+                  class="cursor-pointer text-gray"
+                  @click="searchOptions.customerKeywords = null"
+                />
+              </b-input-group-append>
+            </b-input-group>
+          </b-col>
+
+          <b-col
+            xl
+            lg="3"
+            sm="4"
+          >
+            <div class="h7 mt-sm-1 mt-xl-0">
+              {{ 'Số hóa đơn' }}
+            </div>
+            <b-input-group
+              class="input-group-merge"
+            >
+              <b-form-input
+                v-model.trim="searchOptions.invoiceNumberKeywords"
+                class="h7 text-brand-3"
+                placeholder="Nhập số hóa đơn"
+                @keyup.enter="onClickSearchButton"
+              />
+              <b-input-group-append
+                is-text
+              >
+                <b-icon-x
+                  v-show="searchOptions.invoiceNumberKeywords"
+                  class="cursor-pointer text-gray"
+                  @click="searchOptions.invoiceNumberKeywords = null"
+                />
+              </b-input-group-append>
+            </b-input-group>
+          </b-col>
+
+          <!-- START - Date From -->
+          <b-col
+            xl
+            lg="3"
+            sm="4"
+          >
+            <validation-provider
+              v-slot="{ errors, passed, touched }"
+              rules="required"
+              name="Từ ngày"
+            >
+              <div
+                class="h7 mt-sm-1 mt-xl-0"
+              >
+                Từ ngày <span class="text-danger">*</span>
+              </div>
+              <b-row
+                class="v-flat-pickr-group mx-0"
+                align-v="center"
+                @keypress="$onlyDateInput"
+                @change="isFromDateValid"
+              >
+                <b-icon-x
+                  v-show="fromDate"
+                  style="position: absolute; right: 15px"
+                  class="cursor-pointer text-gray"
+                  scale="1.3"
+                  data-clear
+                />
+                <vue-flat-pickr
+                  v-model="fromDate"
+                  :state="touched ? passed : null"
+                  :config="configFromDate"
+                  class="form-control h7"
+                  placeholder="Chọn ngày"
+                />
+              </b-row>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-col>
+          <!-- END - Date From -->
+
+          <!-- START - Date To -->
+          <b-col
+            xl
+            lg="3"
+            sm="4"
+          >
+            <validation-provider
+              v-slot="{ errors, passed, touched }"
+              rules="required"
+              name="Đến ngày"
+            >
+              <div
+                class="h7 mt-sm-1 mt-xl-0"
+              >
+                Đến ngày <span class="text-danger">*</span>
+              </div>
+              <b-row
+                class="v-flat-pickr-group mx-0"
+                align-v="center"
+                @keypress="$onlyDateInput"
+                @change="isToDateValid"
+              >
+                <b-icon-x
+                  v-show="toDate"
+                  style="position: absolute; right: 15px"
+                  class="cursor-pointer text-gray"
+                  scale="1.3"
+                  data-clear
+                />
+                <vue-flat-pickr
+                  v-model="toDate"
+                  :state="touched ? passed : null"
+                  :config="configToDate"
+                  class="form-control h7"
+                  placeholder="Chọn ngày"
+                />
+              </b-row>
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-col>
+          <!-- END - Date To -->
+          <b-col
+            xl
+            lg="3"
+            sm="4"
+          >
+            <div
+              class="h7 text-white"
+              onmousedown="return false;"
+              style="cursor: context-menu;"
+            >
+              Tìm kiếm
+            </div>
+            <b-button
+              id="form-button-search"
+              class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
+              variant="someThing"
+              :disabled="invalid"
+              @click="onClickSearchButton()"
+            >
+              <b-icon-search class="mr-50" />
+              Tìm kiếm
+            </b-button>
+          </b-col>
+        </v-card-actions>
+        <!-- END - Search -->
+
+        <!-- START - Coupon list -->
+        <b-form
+          class="bg-white rounded shadow rounded mt-1"
+        >
+          <!-- START - Header -->
+          <b-row
+            class="border-bottom mx-0 px-1"
+            align-v="center"
+            style="padding: 5px 0"
+          >
+            <strong class="text-brand-1"> Danh sách hóa đơn bán hàng </strong>
+          </b-row>
+          <!-- END - Header -->
+
+          <!-- START - Table -->
+          <b-col class="py-1">
+            <vue-good-table
+              ref="bill-of-sales-table"
+              :columns="columnsInvoice"
+              :rows="billSales"
+              mode="remote"
+              style-class="vgt-table"
+              :pagination-options="{
+                enabled: true,
+                perPage: searchData.size,
+                setCurrentPage: searchData.page + 1,
+              }"
+              compact-mode
+              line-numbers
+              :total-rows="paging.totalElements"
+              :select-options="{
+                enabled: true,
+                selectOnCheckboxOnly: true,
+                selectionInfoClass: 'custom-class',
+                clearSelectionText: 'clear',
+                disableSelectInfo: true,
+                selectAllByGroup: true,
+                multipleColumns: true,
+              }"
+              @on-selected-rows-change="selectionChanged"
+              @on-sort-change="onSortChange"
+              @on-page-change="onPageChange"
+              @on-per-page-change="onPerPageChange"
+            >
+              <template
+                slot="table-row"
+                slot-scope="props"
+              >
+                <span v-if="props.column.field == 'billNumber'">
+                  <span>
+                    {{ props.row.billNumber }}
+                  </span>
                 </span>
-              </span>
-              <span v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </span>
-            </template>
-            <!-- START - Empty rows -->
-            <div
-              slot="emptystate"
-              class="text-center"
-            >
-              Không có dữ liệu
-            </div>
-            <!-- END - Empty rows -->
-
-            <!-- START - Pagination -->
-            <template
-              slot="pagination-bottom"
-              slot-scope="props"
-            >
-              <b-row
-                v-show="paging.totalElements"
-                class="v-pagination px-1 mx-0"
-                align-h="between"
-                align-v="center"
+                <span v-else>
+                  {{ props.formattedRow[props.column.field] }}
+                </span>
+              </template>
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
               >
-                <div
-                  class="d-flex align-items-center"
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
+
+              <!-- START - Pagination -->
+              <template
+                slot="pagination-bottom"
+                slot-scope="props"
+              >
+                <b-row
+                  v-show="paging.totalElements"
+                  class="v-pagination px-1 mx-0"
+                  align-h="between"
+                  align-v="center"
                 >
-                  <span
-                    class="text-nowrap"
+                  <div
+                    class="d-flex align-items-center"
                   >
-                    Số hàng hiển thị
-                  </span>
-                  <b-form-select
-                    v-model="searchData.size"
-                    size="sm"
-                    :options="perPageSizeOptions"
-                    class="mx-1"
-                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
-                  />
-                  <span class="text-nowrap">{{ paginationDetailContent }}</span>
-                </div>
-                <b-pagination
-                  v-model="pageNumber"
-                  :total-rows="paging.totalElements"
-                  :per-page="searchData.size"
-                  first-number
-                  last-number
-                  align="right"
-                  prev-class="prev-item"
-                  next-class="next-item"
-                  class="mt-1"
-                  @input="(value)=>props.pageChanged({currentPage: value})"
-                >
-                  <template slot="prev-text">
-                    <feather-icon
-                      icon="ChevronLeftIcon"
-                      size="18"
+                    <span
+                      class="text-nowrap"
+                    >
+                      Số hàng hiển thị
+                    </span>
+                    <b-form-select
+                      v-model="searchData.size"
+                      size="sm"
+                      :options="perPageSizeOptions"
+                      class="mx-1"
+                      @input="(value)=>props.perPageChanged({currentPerPage: value})"
                     />
-                  </template>
-                  <template slot="next-text">
-                    <feather-icon
-                      icon="ChevronRightIcon"
-                      size="18"
-                    />
-                  </template>
-                </b-pagination>
-              </b-row>
-            </template>
+                    <span class="text-nowrap">{{ paginationDetailContent }}</span>
+                  </div>
+                  <b-pagination
+                    v-model="pageNumber"
+                    :total-rows="paging.totalElements"
+                    :per-page="searchData.size"
+                    first-number
+                    last-number
+                    align="right"
+                    prev-class="prev-item"
+                    next-class="next-item"
+                    class="mt-1"
+                    @input="(value)=>props.pageChanged({currentPage: value})"
+                  >
+                    <template slot="prev-text">
+                      <feather-icon
+                        icon="ChevronLeftIcon"
+                        size="18"
+                      />
+                    </template>
+                    <template slot="next-text">
+                      <feather-icon
+                        icon="ChevronRightIcon"
+                        size="18"
+                      />
+                    </template>
+                  </b-pagination>
+                </b-row>
+              </template>
             <!-- END - Pagination -->
-          </vue-good-table>
-        </b-col>
+            </vue-good-table>
+          </b-col>
         <!-- END - Table -->
-      </b-form>
-      <!-- END - Coupon list -->
+        </b-form>
+        <!-- END - Coupon list -->
 
-      <!-- START - Product list -->
-      <b-form
-        v-if="isHidden === true"
-        class="bg-white rounded shadow rounded mt-1"
-      >
-        <!-- START - Header -->
-        <b-row
-          class="justify-content-between border-bottom px-1 mx-0"
-          style="padding: 5px 0"
-          align-v="center"
+        <!-- START - Product list -->
+        <b-form
+          v-if="isHidden === true"
+          class="bg-white rounded shadow rounded mt-1"
         >
-          <strong class="text-brand-1"> Danh sách sản phẩm </strong>
-        </b-row>
-        <!-- END - Header -->
-
-        <!-- START - Table Products -->
-        <b-col class="py-1">
-          <vue-good-table
-            ref="bill-of-sales-table"
-            :columns="columnsProducts"
-            :rows="productSales"
-            style-class="vgt-table striped"
-            compact-mode
-            line-numbers
+          <!-- START - Header -->
+          <b-row
+            class="justify-content-between border-bottom px-1 mx-0"
+            style="padding: 5px 0"
+            align-v="center"
           >
-            <!-- START - Empty rows -->
-            <div
-              slot="emptystate"
-              class="text-center"
+            <strong class="text-brand-1"> Danh sách sản phẩm </strong>
+          </b-row>
+          <!-- END - Header -->
+
+          <!-- START - Table Products -->
+          <b-col class="py-1">
+            <vue-good-table
+              ref="bill-of-sales-table"
+              :columns="columnsProducts"
+              :rows="productSales"
+              style-class="vgt-table striped"
+              compact-mode
+              line-numbers
             >
-              Không có dữ liệu
-            </div>
-            <!-- END - Empty rows -->
-            <!-- START - Pagination -->
-            <template
-              slot="pagination-bottom"
-              slot-scope="props"
-            >
-              <b-row
-                class="v-pagination px-1 mx-0"
-                align-h="between"
-                align-v="center"
+              <!-- START - Empty rows -->
+              <div
+                slot="emptystate"
+                class="text-center"
               >
-                <div
-                  class="d-flex align-items-center"
+                Không có dữ liệu
+              </div>
+              <!-- END - Empty rows -->
+              <!-- START - Pagination -->
+              <template
+                slot="pagination-bottom"
+                slot-scope="props"
+              >
+                <b-row
+                  class="v-pagination px-1 mx-0"
+                  align-h="between"
+                  align-v="center"
                 >
-                  <span
-                    class="text-nowrap"
+                  <div
+                    class="d-flex align-items-center"
                   >
-                    Hiển thị 1 đến
-                  </span>
-                  <b-form-select
-                    v-model="elementSize"
-                    size="sm"
-                    :options="paginationOptions"
-                    class="mx-1 mt-1 mb-1"
-                    @input="(value)=>props.perPageChanged({currentPerPage: value})"
-                  />
-                  <span
-                    class="text-nowrap"
-                  > trong {{ totalElementProduct }} mục </span>
-                </div>
-                <b-pagination
-                  v-model="pageNumber"
-                  :total-rows="totalElementProducts"
-                  :per-page="elementSize"
-                  first-number
-                  last-number
-                  align="right"
-                  prev-class="prev-item"
-                  next-class="next-item"
-                  class="mt-1"
-                  @input="(value)=>props.pageChanged({currentPage: value})"
-                >
-                  <template slot="prev-text">
-                    <feather-icon
-                      icon="ChevronLeftIcon"
-                      size="18"
+                    <span
+                      class="text-nowrap"
+                    >
+                      Hiển thị 1 đến
+                    </span>
+                    <b-form-select
+                      v-model="elementSize"
+                      size="sm"
+                      :options="paginationOptions"
+                      class="mx-1 mt-1 mb-1"
+                      @input="(value)=>props.perPageChanged({currentPerPage: value})"
                     />
-                  </template>
-                  <template slot="next-text">
-                    <feather-icon
-                      icon="ChevronRightIcon"
-                      size="18"
-                    />
-                  </template>
-                </b-pagination>
-              </b-row>
-            </template>
-          <!-- END - Pagination -->
-          </vue-good-table>
-        </b-col>
-      <!-- END - Table Products-->
-      </b-form>
+                    <span
+                      class="text-nowrap"
+                    > trong {{ totalElementProduct }} mục </span>
+                  </div>
+                  <b-pagination
+                    v-model="pageNumber"
+                    :total-rows="totalElementProducts"
+                    :per-page="elementSize"
+                    first-number
+                    last-number
+                    align="right"
+                    prev-class="prev-item"
+                    next-class="next-item"
+                    class="mt-1"
+                    @input="(value)=>props.pageChanged({currentPage: value})"
+                  >
+                    <template slot="prev-text">
+                      <feather-icon
+                        icon="ChevronLeftIcon"
+                        size="18"
+                      />
+                    </template>
+                    <template slot="next-text">
+                      <feather-icon
+                        icon="ChevronRightIcon"
+                        size="18"
+                      />
+                    </template>
+                  </b-pagination>
+                </b-row>
+              </template>
+              <!-- END - Pagination -->
+            </vue-good-table>
+          </b-col>
+          <!-- END - Table Products-->
+        </b-form>
       <!-- END - Product list -->
-    </b-container>
-    <template #modal-footer>
-      <b-button
-        variant="someThing"
-        class="btn-brand-1 aligns-items-button-center h8"
-        :disabled="isCheckValue"
-        @click="onClickChooseButton()"
-      >
-        Chọn
-      </b-button>
-    </template>
-  </b-modal>
+      </b-container>
+      <template #modal-footer>
+        <b-button
+          variant="someThing"
+          class="btn-brand-1 aligns-items-button-center h8"
+          :disabled="isCheckValue"
+          @click="onClickChooseButton()"
+        >
+          Chọn
+        </b-button>
+      </template>
+    </b-modal>
+  </validation-observer>
 </template>
 
 <script>
+import {
+  ValidationProvider,
+  ValidationObserver,
+} from 'vee-validate'
+import {
+  dateFormatVNI,
+} from '@/@core/utils/validations/validations'
 import {
   mapActions,
   mapGetters,
@@ -412,6 +443,7 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
+  checkingDateInput,
 } from '@/@core/utils/filter'
 import commonData from '@/@db/common'
 import toasts from '@/@core/utils/toasts/toasts'
@@ -436,6 +468,9 @@ import {
 export default {
   components: {
     VCardActions,
+    // eslint-disable-next-line vue/no-unused-components
+    ValidationProvider,
+    ValidationObserver,
   },
   props: {
     visible: {
@@ -446,6 +481,7 @@ export default {
   },
   data() {
     return {
+      dateFormatVNI,
       isCheckValue: true,
       isHidden: false,
       perPageSizeOptions: commonData.perPageSizes,
@@ -801,6 +837,16 @@ export default {
       this.productSales = []
       this.billSalesSelected = []
       this.isHidden = false
+    },
+    isFromDateValid() {
+      if (!checkingDateInput(this.fromDate)) {
+        this.fromDate = earlyMonth()
+      }
+    },
+    isToDateValid() {
+      if (!checkingDateInput(this.toDate)) {
+        this.toDate = nowDate()
+      }
     },
   },
 }

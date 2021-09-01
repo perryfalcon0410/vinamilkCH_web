@@ -126,7 +126,7 @@
             <div
               class="h7 mt-sm-1 mt-xl-0"
             >
-              Từ ngày
+              Từ ngày <span class="text-danger">*</span>
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"
@@ -143,8 +143,8 @@
               />
               <vue-flat-pickr
                 v-model="fromDate"
-                :state="touched ? passed : null"
                 :config="configFromDate"
+                :state="touched ? passed : null"
                 class="form-control h7 text-brand-3 height-button-brand-1"
                 placeholder="Chọn ngày"
               />
@@ -168,7 +168,7 @@
             <div
               class="h7 mt-sm-1 mt-xl-0"
             >
-              Đến ngày
+              Đến ngày <span class="text-danger">*</span>
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"
@@ -185,8 +185,8 @@
               />
               <vue-flat-pickr
                 v-model="toDate"
-                :state="touched ? passed : null"
                 :config="configToDate"
+                :state="touched ? passed : null"
                 class="form-control h7 text-brand-3 height-button-brand-1"
                 placeholder="Chọn ngày"
               />
@@ -216,11 +216,18 @@
         <!-- END - Status -->
 
         <!-- START - Search button -->
-        <div
-          class="mt-auto mx-40"
+        <b-col
+          xl
+          sm="4"
+          md="3"
         >
+          <div
+            class="h8 text-white"
+          >
+            Tìm kiếm
+          </div>
           <b-button
-            class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-xl-0"
+            class="shadow-brand-1 bg-brand-1 text-white h8 align-items-button-center mt-sm-1 mt-xl-0 font-weight-bolder height-button-brand-1"
             variant="someThing"
             :disabled="invalid"
             @click="onClickSearchButton()"
@@ -228,11 +235,11 @@
             <b-icon-search class="mr-50" />
             Tìm kiếm
           </b-button>
-        </div>
-      <!-- END - Search button -->
+        </b-col>
+        <!-- END - Search button -->
       </v-card-actions>
     </b-form>
-  <!-- END - Search -->
+    <!-- END - Search -->
   </validation-observer>
 </template>
 

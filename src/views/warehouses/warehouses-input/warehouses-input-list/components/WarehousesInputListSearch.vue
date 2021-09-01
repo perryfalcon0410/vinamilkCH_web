@@ -1,10 +1,17 @@
 <template>
+<<<<<<< HEAD
+=======
+  <!-- START - Search -->
+>>>>>>> 826f7ca6 (+ constraint date input)
   <validation-observer
     ref="formContainer"
     v-slot="{invalid}"
     slim
   >
+<<<<<<< HEAD
     <!-- START - Search -->
+=======
+>>>>>>> 826f7ca6 (+ constraint date input)
     <b-form
       @keydown.enter="onClickSearchButton"
     >
@@ -99,7 +106,11 @@
             <div
               class="mt-sm-1 mt-xl-0"
             >
+<<<<<<< HEAD
               Từ ngày
+=======
+              Từ ngày <span class="text-danger">*</span>
+>>>>>>> 826f7ca6 (+ constraint date input)
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"
@@ -142,7 +153,11 @@
             <div
               class="mt-sm-1 mt-xl-0"
             >
+<<<<<<< HEAD
               Đến ngày
+=======
+              Đến ngày <span class="text-danger">*</span>
+>>>>>>> 826f7ca6 (+ constraint date input)
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"
@@ -221,7 +236,11 @@
       <!-- END - Search button -->
       </v-card-actions>
     </b-form>
+<<<<<<< HEAD
   <!-- END - Search -->
+=======
+    <!-- END - Search -->
+>>>>>>> 826f7ca6 (+ constraint date input)
   </validation-observer>
 </template>
 
@@ -252,6 +271,8 @@ export default {
     ValidationProvider,
     ValidationObserver,
     VCardActions,
+    ValidationProvider,
+    ValidationObserver,
   },
   data() {
     return {
