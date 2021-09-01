@@ -348,7 +348,6 @@ import {
   GET_PRODUCTS_ACTION,
   GET_TOP_SALE_PRODUCTS_ACTION,
   UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
-  GET_PRODUCT_BY_BARCODE_ACTION,
   GET_EDIT_ONLINE_PERMISSION_ACTION,
 } from '../store-module/type'
 
@@ -454,6 +453,7 @@ export default {
         status: null,
         size: 10,
         page: 0,
+        checkBarcode: false,
       },
       orderProducts: [],
       productInfos: [],
@@ -554,7 +554,6 @@ export default {
         return [{
           data: this.GET_TOP_SALE_PRODUCTS_GETTER.map(data => ({
             productId: data.id,
-            name: this.searchOptions.keyWord,
             checkStockTotal: data.checkStockTotal,
             productName: data.productName,
             productCode: data.productCode,
@@ -613,11 +612,44 @@ export default {
       this.productInfos = [...this.getProductInfos]
     },
     getProductSearch() {
-      this.productsSearch = [...this.getProductSearch]
-      this.productsSearchLength = this.productsSearch[0].data.length
-      if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
-        document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 }))
+      if (this.getProductSearch[0].data.length === 1 && this.searchOptions.checkBarcode === true) {
+        const productByBarcode = {
+          productId: this.getProductByBarcode.id,
+          name: this.getProductByBarcode.productCode,
+          productName: this.getProductByBarcode.productName,
+          productCode: this.getProductByBarcode.productCode,
+          productUnit: this.getProductByBarcode.uom1,
+          productInventory: this.getProductByBarcode.stockTotal,
+          productUnitPrice: this.getProductByBarcode.price,
+          sumProductUnitPrice: this.getProductByBarcode.price,
+          quantity: 1,
+          productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
+          sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
+          productImage: this.getProductByBarcode.image,
+          comboProductId: this.getProductByBarcode.comboProductId,
+        }
+        const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
+        if (indexProductExisted === -1) {
+          this.orderProducts.push(productByBarcode)
+        } else {
+          this.orderProducts = this.orderProducts.map(product => {
+            if (product.productId === productByBarcode.productId) {
+              return {
+                ...product,
+                quantity: product.quantity + 1,
+              }
+            }
+            return product
+          })
+        }
+      } else {
+        this.productsSearch = [...this.getProductSearch]
+        this.productsSearchLength = this.productsSearch[0].data.length
+        if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
+          document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 }))
+        }
       }
+      this.searchOptions.checkBarcode = false
     },
     getProducts() {
       this.orderProducts = []
@@ -654,42 +686,49 @@ export default {
         this.isDisabled = false
       }
     },
-    getProductByBarcode() {
-      if (this.editOnlinePermission || this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
-        if (this.getProductByBarcode !== null) {
-          const productByBarcode = {
-            productId: this.getProductByBarcode.id,
-            name: this.getProductByBarcode.productCode,
-            productName: this.getProductByBarcode.productName,
-            productCode: this.getProductByBarcode.productCode,
-            productUnit: this.getProductByBarcode.uom1,
-            productInventory: this.getProductByBarcode.stockTotal,
-            productUnitPrice: this.getProductByBarcode.price,
-            sumProductUnitPrice: this.getProductByBarcode.price,
-            quantity: 1,
-            productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
-            sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
-            productImage: this.getProductByBarcode.image,
-            comboProductId: this.getProductByBarcode.comboProductId,
-          }
+    // getProductByBarcode() {
+    //   if (this.editOnlinePermission || this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+    //     if (this.getProductByBarcode !== null) {
+    //       if (this.getProductByBarcode.length > 1) {
+    //         this.searchOptions.keyWord = this.searchOptions.barcode
+    //         this.$refs.search.$el.querySelector('input').focus()
+    //         this.$refs.search.$el.querySelector('input').click()
+    //         this.onChangeKeyWord()
+    //       } else {
+    //         const productByBarcode = {
+    //           productId: this.getProductByBarcode.id,
+    //           name: this.getProductByBarcode.productCode,
+    //           productName: this.getProductByBarcode.productName,
+    //           productCode: this.getProductByBarcode.productCode,
+    //           productUnit: this.getProductByBarcode.uom1,
+    //           productInventory: this.getProductByBarcode.stockTotal,
+    //           productUnitPrice: this.getProductByBarcode.price,
+    //           sumProductUnitPrice: this.getProductByBarcode.price,
+    //           quantity: 1,
+    //           productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
+    //           sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
+    //           productImage: this.getProductByBarcode.image,
+    //           comboProductId: this.getProductByBarcode.comboProductId,
+    //         }
 
-          const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
-          if (indexProductExisted === -1) {
-            this.orderProducts.push(productByBarcode)
-          } else {
-            this.orderProducts = this.orderProducts.map(product => {
-              if (product.productId === productByBarcode.productId) {
-                return {
-                  ...product,
-                  quantity: product.quantity + 1,
-                }
-              }
-              return product
-            })
-          }
-        }
-      }
-    },
+    //         const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
+    //         if (indexProductExisted === -1) {
+    //           this.orderProducts.push(productByBarcode)
+    //         } else {
+    //           this.orderProducts = this.orderProducts.map(product => {
+    //             if (product.productId === productByBarcode.productId) {
+    //               return {
+    //                 ...product,
+    //                 quantity: product.quantity + 1,
+    //               }
+    //             }
+    //             return product
+    //           })
+    //         }
+    //       }
+    //     }
+    //   }
+    // },
     customerFullName() {
       if (this.customerFullName !== '') {
         this.bills.find(item => item.id === this.billSelected).billName = this.customerFullName
@@ -742,7 +781,6 @@ export default {
       GET_PRODUCTS_ACTION,
       GET_TOP_SALE_PRODUCTS_ACTION,
       UPDATE_PRICE_TYPE_CUSTOMER_ACTION,
-      GET_PRODUCT_BY_BARCODE_ACTION,
       GET_EDIT_ONLINE_PERMISSION_ACTION,
     ]),
 
@@ -1244,17 +1282,11 @@ export default {
     onBarcodeScanned(barcode) {
       if (barcode.length > 4) {
         if (this.editOnlinePermission || this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
-          this.searchOptions.keyWord = ''
-          this.GET_PRODUCT_BY_BARCODE_ACTION({
-            data: {
-              customerId: this.currentCustomer.id,
-              barcode: barcode.toString(),
-            },
-            onSuccess: () => {
-            },
-            onFailure: () => {
-            },
-          })
+          this.searchOptions.keyWord = 'B123711' // barcode.toString()
+          this.searchOptions.checkBarcode = true
+          this.$refs.search.$el.querySelector('input').focus()
+          this.$refs.search.$el.querySelector('input').click()
+          this.onChangeKeyWord()
         }
       }
     },

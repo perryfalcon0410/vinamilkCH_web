@@ -132,7 +132,7 @@ export default {
       return state.productInfos
     },
     [GET_TOP_SALE_PRODUCTS_GETTER](state) {
-      return state.topSaleProducts
+      return state.topSaleProducts || []
     },
     [GET_HOT_PRODUCTS_GETTER](state) {
       return state.hotProducts
@@ -334,11 +334,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            if (res.data != null) {
-              state.topSaleProducts = res.data.content
-            } else {
-              state.topSaleProducts = []
-            }
+            state.topSaleProducts = res.data.content
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)
