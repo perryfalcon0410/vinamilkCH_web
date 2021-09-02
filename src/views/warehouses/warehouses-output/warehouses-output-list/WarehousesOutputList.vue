@@ -271,18 +271,17 @@
           >
             <!-- START - Empty rows -->
             <div
-              v-if="props.column.field === 'totalQuantity'"
-              v-show="warehousesOutputPagination.totalElements"
-              class="h7 text-brand-3 text-right"
+              slot="emptystate"
+              class="text-center"
             >
               Không có dữ liệu
             </div>
             <!-- END - Empty rows -->
 
-            <div
-              v-else-if="props.column.field === 'totalAmount'"
-              v-show="warehousesOutputPagination.totalElements"
-              class="h7 text-brand-3 text-right"
+            <!-- START - Column -->
+            <template
+              slot="table-column"
+              slot-scope="props"
             >
               <div
                 v-if="props.column.field === 'feature'"
@@ -466,27 +465,16 @@ import {
   reverseVniDate,
   earlyMonth,
   nowDate,
-<<<<<<< HEAD
   preventDefaultWindowPrint,
   checkingDateInput,
   hostName,
   checkIpClient,
-=======
-  checkingDateInput,
->>>>>>> 826f7ca6 (+ constraint date input)
 } from '@/@core/utils/filter'
 import {
   resizeAbleTable,
 } from '@core/utils/utils'
 import warehousesData from '@/@db/warehouses'
 import commonData from '@/@db/common'
-import {
-  ValidationProvider,
-  ValidationObserver,
-} from 'vee-validate'
-import {
-  dateFormatVNI,
-} from '@/@core/utils/validations/validations'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import PrintFormOutputOrder from '@core/components/print-form/PrintFormOutputOrder.vue'
 
