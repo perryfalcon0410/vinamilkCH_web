@@ -1293,7 +1293,7 @@ export default {
               { content: 'Tổng SL :' },
               { content: `${this.$formatNumberToLocale(this.expPO.totalQuantity || 0)}`, styles: { font: 'Ario-Bold', halign: 'right' } },
               { content: 'T.Tiền :' },
-              { content: `${this.$formatNumberToLocale(this.expPO.totalPriceVat || 0)}`, styles: { font: 'Ario-Bold', halign: 'right' } },
+              { content: `${this.$formatNumberToLocale(this.expPO.totalPriceNotVat || 0)}`, styles: { font: 'Ario-Bold', halign: 'right' } },
             ],
           ],
           didDrawCell: data => {
@@ -1379,7 +1379,7 @@ export default {
                   styles: { halign: 'right', fillColor: 'white', cellWidth: 20 },
                 },
                 {
-                  content: `${this.$formatNumberToLocale(this.expPO.orderImports[i].totalPriceVat)}`,
+                  content: `${this.$formatNumberToLocale(this.expPO.orderImports[i].totalPriceNotVat)}`,
                   styles: {
                     font: 'Ario-Bold', halign: 'right', fillColor: 'white', cellWidth: 30,
                   },
@@ -1412,7 +1412,7 @@ export default {
               { content: 'Tổng SL :', styles: { lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
               { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
-              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalPriceNotVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
             ]
             this.bodyData.push(row)
             data.products.forEach(pro => {
@@ -1422,8 +1422,8 @@ export default {
                 { content: `${pro.productName}`, styles: { cellWidth: 80 } },
                 { content: `${pro.uom1}`, styles: { cellWidth: 20, halign: 'center' } },
                 { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
-                { content: `${this.$formatNumberToLocale(pro.price)}`, styles: { cellWidth: 20, halign: 'right' } },
-                { content: `${this.$formatNumberToLocale(pro.totalPriceVat)}`, styles: { cellWidth: 30, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.priceNotVat)}`, styles: { cellWidth: 20, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(pro.totalPriceNotVat)}`, styles: { cellWidth: 30, halign: 'right' } },
               ])
               this.count += 1
             })

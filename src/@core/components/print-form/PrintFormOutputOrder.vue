@@ -371,8 +371,8 @@ export default {
             { content: `${data.type}`, styles: { font: 'Ario-Bold', lineWidth: 0 } },
             { content: 'Tổng SL :', styles: { lineWidth: 0 } },
             { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
-            { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
-            { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? data.totalPriceNotVat : data.totalPrice)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
+            { content: 'Tổng T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
+            { content: `${this.$formatNumberToLocale(data.totalPrice)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
           ]
           this.bodyData.push(row)
           const title = [
@@ -467,7 +467,7 @@ export default {
       this.createTable3(pdf)
       pdf.setFontSize(10)
       pdf.setFont('Ario-Regular')
-      pdf.text(`Ghi chú: ${this.inputOrderInfoData.note}`, 10, startYNote + 24, {
+      pdf.text(`Ghi chú: ${this.inputOrderInfoData.note || ''}`, 10, startYNote + 24, {
         maxWidth: 60,
       })
       pdf.setFontSize(10)
