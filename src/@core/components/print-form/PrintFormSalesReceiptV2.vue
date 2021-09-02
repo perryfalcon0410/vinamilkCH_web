@@ -597,7 +597,11 @@ export default {
       marginTop += spaceRowInCluster
       pdf.setFontType('normal')
       pdf.text(this.removeVietnameseTones('Cảm ơn Quý khách. Hẹn gặp lại', this.isRemoveVNTones), pageWidth / 2, marginTop, { align: 'center' })
-      printFile('hoa_don_ban_hang.pdf', this.printerName, pdf)
+      if (this.printerName.includes('PDF')) {
+        pdf.save('hoa_don_ban_hang.pdf')
+      } else {
+        printFile('hoa_don_ban_hang.pdf', this.printerName, pdf)
+      }
     }
   },
   methods: {
