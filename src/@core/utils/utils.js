@@ -247,14 +247,18 @@ export const printFile = (fileName, printerName, pdf) => {
   for (let i = 0; i < 3; i += 1) {
     if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
       if (jspmCheckStatus()) {
-        // setup printer
-        const cpj = new JSPM.ClientPrintJob()
-        cpj.clientPrinter = new JSPM.InstalledPrinter(printerName) // get printer
-        const printContent = new JSPM.PrintFilePDF(pdf.output('datauristring'), JSPM.FileSourceType.URL, fileName, 1)
-        printContent.printAsGrayscale = false // Options print black/white(=true) and color(=false)
-        cpj.files.push(printContent)
-        cpj.sendToClient()
+        if (printerName.includes('PDF')) {
+          pdf.save(fileName)
+        } else {
+          // setup printer
+          const cpj = new JSPM.ClientPrintJob()
+          cpj.clientPrinter = new JSPM.InstalledPrinter(printerName) // get printer
+          const printContent = new JSPM.PrintFilePDF(pdf.output('datauristring'), JSPM.FileSourceType.URL, fileName, 1)
+          printContent.printAsGrayscale = false // Options print black/white(=true) and color(=false)
+          cpj.files.push(printContent)
+          cpj.sendToClient()
         // pdf.save('test.pdf')
+        }
         break
       }
     } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {

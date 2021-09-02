@@ -142,10 +142,7 @@
 <script>
 
 import { mapGetters, mapActions } from 'vuex'
-import {
-  jsPdfPrint,
-  jspmCheckStatus,
-} from '@core/utils/filter'
+import { printFile } from '@/@core/utils/utils'
 import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
@@ -207,13 +204,7 @@ export default {
     if (this.printerName === '' || this.printerName === null) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
-      if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
-        this.generatePdf()
-      }
-      if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
-        toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-        window.print()
-      }
+      this.generatePdf()
     }
   },
   methods: {
@@ -289,15 +280,16 @@ export default {
       pdf.text(`${this.$formatNumberToLocale(this.redBillInfoData.valueAddedTax)}`, x + 150, pdf.internal.pageSize.getHeight() - 55)
       pdf.text(`${this.$formatNumberToLocale(this.redBillInfoData.totalAmountNumber)}`, x + 150, pdf.internal.pageSize.getHeight() - 50)
       pdf.text('Nguyễn Thị Thu Vân', pdf.internal.pageSize.getWidth() - 55, pdf.internal.pageSize.getHeight() - 15)
-      const options = {
-        fileName: 'Hoa_don_do',
-        pageSizing: 'Fit',
-      }
-      if (jspmCheckStatus()) {
-        if (this.printerName.includes('PDF')) {
-          pdf.save('Hoa_don_do.pdf')
-        } else { jsPdfPrint(pdf.output('datauristring'), this.printerName, options) }
-      }
+      // const options = {
+      //   fileName: 'Hoa_don_do',
+      //   pageSizing: 'Fit',
+      // }
+      printFile('Hoa_don_do.pdf', this.printerName, pdf)
+      // if (jspmCheckStatus()) {
+      //   if (this.printerName.includes('PDF')) {
+      //     pdf.save('Hoa_don_do.pdf')
+      //   } else { jsPdfPrint(pdf.output('datauristring'), this.printerName, options) }
+      // }
     },
   },
 }

@@ -838,13 +838,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import {
-  jspmCheckStatus,
-  jsPdfPrint,
-} from '@core/utils/filter'
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
 import autoTable from 'jspdf-autotable'
+import { printFile } from '@/@core/utils/utils'
 import JSPM from 'jsprintmanager'
 import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import { myFontBold } from '@/@core/libs/Arimo-Bold'
@@ -939,70 +936,71 @@ export default {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
-      for (let i = 0; i < 3; i += 1) {
-        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          // eslint-disable-next-line new-cap
-          const pdf = new jsPDF('p', 'mm', 'a4')
-          // START - add font family
-          pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
-          pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
-          pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
-          pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
-          // END - add font family
+      // eslint-disable-next-line new-cap
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      // START - add font family
+      pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+      pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+      pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+      pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+      // END - add font family
 
-          // START - hearder page
-          pdf.setFont('Ario-Bold')
-          pdf.setFontSize(13)
-          pdf.text('Cửa hàng Xuất hàng', 90, 10)
-          pdf.setFontSize(9)
-          pdf.text(`${this.printInfo.shopName}`, 5, 10)
-          pdf.setFontSize(8)
-          pdf.setFont('Ario-Regular')
-          pdf.text(`Add: ${this.printInfo.shopAddress}`, 5, 17)
-          pdf.text(`Tel: ${this.printInfo.shopPhone || ''}`, 5, 24)
-          pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.printInfo.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.printInfo.toDate)}`, 83, 17)
-          pdf.text(`Ngày in: ${this.$formatPrintDate(this.printInfo.printDate)}`, 91, 24)
-          // END - hearder page
+      // START - hearder page
+      pdf.setFont('Ario-Bold')
+      pdf.setFontSize(13)
+      pdf.text('Cửa hàng Xuất hàng', 90, 10)
+      pdf.setFontSize(9)
+      pdf.text(`${this.printInfo.shopName}`, 5, 10)
+      pdf.setFontSize(8)
+      pdf.setFont('Ario-Regular')
+      pdf.text(`Add: ${this.printInfo.shopAddress}`, 5, 17)
+      pdf.text(`Tel: ${this.printInfo.shopPhone || ''}`, 5, 24)
+      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.printInfo.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.printInfo.toDate)}`, 83, 17)
+      pdf.text(`Ngày in: ${this.$formatPrintDate(this.printInfo.printDate)}`, 91, 24)
+      // END - hearder page
 
-          // START - table tổng đầu tiên
-          this.createTableHeader(pdf)
-          // END - table tổng đầu tiên
+      // START - table tổng đầu tiên
+      this.createTableHeader(pdf)
+      // END - table tổng đầu tiên
 
-          // START - table xuất điều chỉnh
-          this.createTableExpAdjust(pdf)
-          // END - table xuất điều chỉnh
+      // START - table xuất điều chỉnh
+      this.createTableExpAdjust(pdf)
+      // END - table xuất điều chỉnh
 
-          // START - table xuất PO
-          this.createTableExpPO(pdf)
-          // END - table xuất PO
+      // START - table xuất PO
+      this.createTableExpPO(pdf)
+      // END - table xuất PO
 
-          // START - table xuất vay mượn
-          this.createTableExpBorrow(pdf)
-          // END - table xuất vay mượn
+      // START - table xuất vay mượn
+      this.createTableExpBorrow(pdf)
+      // END - table xuất vay mượn
 
-          for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
-            pdf.setPage(j)
-            pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
-          }
-
-          // pdf.save()
-          const options = {
-            fileName: 'Bao_cao_xuat_hang',
-            pageSizing: 'Fit',
-          }
-          if (jspmCheckStatus()) {
-            if (this.printerName.includes('PDF')) {
-              pdf.save('bao_cao_xuat_hang.pdf')
-            } else {
-              jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
-            }
-          }
-          break
-        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-          window.print()
-        }
+      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+        pdf.setPage(j)
+        pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
       }
+      printFile('Bao_cao_xuat_hang.pdf', this.printerName, pdf)
+      //   for (let i = 0; i < 3; i += 1) {
+      //     if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
+
+    //       // pdf.save()
+    //       const options = {
+    //         fileName: 'Bao_cao_xuat_hang',
+    //         pageSizing: 'Fit',
+    //       }
+    //       if (jspmCheckStatus()) {
+    //         if (this.printerName.includes('PDF')) {
+    //           pdf.save('bao_cao_xuat_hang.pdf')
+    //         } else {
+    //           jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
+    //         }
+    //       }
+    //       break
+    //     } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
+    //       toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
+    //       window.print()
+    //     }
+    //   }
     }
   },
   methods: {

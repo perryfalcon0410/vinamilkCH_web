@@ -319,16 +319,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import {
-  jspmCheckStatus,
-  jsPdfPrint,
-} from '@core/utils/filter'
+
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
 import autoTable from 'jspdf-autotable'
 import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import { myFontBold } from '@/@core/libs/Arimo-Bold'
 import JSPM from 'jsprintmanager'
+import { printFile } from '@/@core/utils/utils'
 import toasts from '@/@core/utils/toasts/toasts'
 import {
   REPORT_RETURNED_GOODS,
@@ -410,54 +408,36 @@ export default {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
-      for (let i = 0; i < 3; i += 1) {
-        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          // eslint-disable-next-line new-cap
-          const pdf = new jsPDF('p', 'mm', 'a4')
-          // START - add font family
-          pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
-          pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
-          pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
-          pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
-          // END - add font family
+      // eslint-disable-next-line new-cap
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      // START - add font family
+      pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+      pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+      pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+      pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+      // END - add font family
 
-          // START - hearder page
-          this.createHeader(pdf)
-          // END - hearder page
+      // START - hearder page
+      this.createHeader(pdf)
+      // END - hearder page
 
-          // START - table tổng đầu tiên
-          this.createTable1(pdf)
-          // END - table tổng đầu tiên
+      // START - table tổng đầu tiên
+      this.createTable1(pdf)
+      // END - table tổng đầu tiên
 
-          // table 3
-          this.createTable2(pdf)
-          // table 3
-          // end pager
-          pdf.setFontSize(9)
-          pdf.text('........, Ngày..... tháng..... năm.......', 135, pdf.previousAutoTable.finalY + 10)
-          pdf.setFont('Ario-Bold')
-          pdf.text('Người in', 20, pdf.previousAutoTable.finalY + 14)
-          pdf.text('Cửa hàng trưởng', 147, pdf.previousAutoTable.finalY + 14)
-          // end pager
+      // table 3
+      this.createTable2(pdf)
+      // table 3
+      // end pager
+      pdf.setFontSize(9)
+      pdf.text('........, Ngày..... tháng..... năm.......', 135, pdf.previousAutoTable.finalY + 10)
+      pdf.setFont('Ario-Bold')
+      pdf.text('Người in', 20, pdf.previousAutoTable.finalY + 14)
+      pdf.text('Cửa hàng trưởng', 147, pdf.previousAutoTable.finalY + 14)
+      // end pager
 
-          this.checkHeight = true
-          const options = {
-            fileName: 'Bao_cao_hang_tra_lai',
-            pageSizing: 'Fit',
-          }
-          if (jspmCheckStatus()) {
-            if (this.printerName.includes('PDF')) {
-              pdf.save('Bao_cao_hang_tra_lai.pdf')
-            } else {
-              jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
-            }
-          }
-          break
-        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-          window.print()
-        }
-      }
+      this.checkHeight = true
+      printFile('Bao_cao_hang_tra_lai.pdf', this.printerName, pdf)
     }
   },
   methods: {

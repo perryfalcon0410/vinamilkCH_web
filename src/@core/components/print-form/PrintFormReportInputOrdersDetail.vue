@@ -157,11 +157,7 @@ import { myFontBold } from '@/@core/libs/Arimo-Bold'
 // eslint-disable-next-line no-unused-vars
 import autoTable from 'jspdf-autotable'
 import jsPDF from 'jspdf'
-import {
-// printActions
-  jsPdfPrint,
-  jspmCheckStatus,
-} from '@core/utils/filter'
+import { printFile } from '@/@core/utils/utils'
 import JSPM from 'jsprintmanager'
 import toasts from '@/@core/utils/toasts/toasts'
 import {
@@ -242,13 +238,7 @@ export default {
     if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
-      if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open) {
-        this.generatePdf(this.logo)
-      }
-      if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
-        toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-        window.print()
-      }
+      this.generatePdf(this.logo)
     }
   },
   methods: {
@@ -368,15 +358,16 @@ export default {
       pdf.setFontSize(10)
       pdf.text('Nhân viên nhập hàng', x + 20, pdf.previousAutoTable.finalY + 12)
       pdf.text('Cửa hàng trưởng', x + 150, pdf.previousAutoTable.finalY + 12)
-      const options = {
-        fileName: 'bao_cao_ban_hang',
-        pageSizing: 'Fit',
-      }
-      if (jspmCheckStatus()) {
-        if (this.printerName.includes('PDF')) {
-          pdf.save('Chi_tiet_don_nhap_hang.pdf')
-        } else { jsPdfPrint(pdf.output('datauristring'), this.printerName, options) }
-      }
+      printFile('Bao_cao_bang_ke_chi_tiet_don_nhap_hang.pdf', this.printerName, pdf)
+      // const options = {
+      //   fileName: 'bao_cao_ban_hang',
+      //   pageSizing: 'Fit',
+      // }
+      // if (jspmCheckStatus()) {
+      //   if (this.printerName.includes('PDF')) {
+      //     pdf.save('Chi_tiet_don_nhap_hang.pdf')
+      //   } else { jsPdfPrint(pdf.output('datauristring'), this.printerName, options) }
+      // }
     },
   },
 }

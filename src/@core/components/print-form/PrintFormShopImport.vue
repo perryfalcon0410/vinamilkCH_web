@@ -1012,10 +1012,7 @@ import toasts from '@/@core/utils/toasts/toasts'
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
 import autoTable from 'jspdf-autotable'
-import {
-  jsPdfPrint,
-  jspmCheckStatus,
-} from '@core/utils/filter'
+import { printFile } from '@/@core/utils/utils'
 import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import { myFontBold } from '@/@core/libs/Arimo-Bold'
 import {
@@ -1113,99 +1110,80 @@ export default {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       JSPM.JSPrintManager.start()
-      for (let i = 0; i < 3; i += 1) {
-        if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-          // eslint-disable-next-line new-cap
-          const pdf = new jsPDF('p', 'mm', 'a4')
-          // START - add font family
-          pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
-          pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
-          pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
-          pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
-          // END - add font family
+      // eslint-disable-next-line new-cap
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      // START - add font family
+      pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+      pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+      pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+      pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+      // END - add font family
 
-          // START - hearder page
-          pdf.setFont('Ario-Bold')
-          pdf.setFontSize(13)
-          pdf.text('Cửa hàng nhập hàng', 90, 10)
-          pdf.setFontSize(9)
-          pdf.text(`${this.commonData.shopName}`, 5, 10)
-          pdf.setFontSize(8)
-          pdf.setFont('Ario-Regular')
-          pdf.text(`Add: ${this.commonData.address}`, 5, 17)
-          pdf.text(`Tel: ${this.commonData.shopTel}`, 5, 24)
-          pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonData.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonData.toDate)}`, 83, 17)
-          pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonData.printDate)}`, 91, 24)
-          // END - hearder page
+      // START - hearder page
+      pdf.setFont('Ario-Bold')
+      pdf.setFontSize(13)
+      pdf.text('Cửa hàng nhập hàng', 90, 10)
+      pdf.setFontSize(9)
+      pdf.text(`${this.commonData.shopName}`, 5, 10)
+      pdf.setFontSize(8)
+      pdf.setFont('Ario-Regular')
+      pdf.text(`Add: ${this.commonData.address}`, 5, 17)
+      pdf.text(`Tel: ${this.commonData.shopTel}`, 5, 24)
+      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonData.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonData.toDate)}`, 83, 17)
+      pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonData.printDate)}`, 91, 24)
+      // END - hearder page
 
-          // START - table tổng đầu tiên
-          pdf.autoTable({
-            startY: 30,
-            margin: {
-              right: 5,
-              left: 5,
+      // START - table tổng đầu tiên
+      pdf.autoTable({
+        startY: 30,
+        margin: {
+          right: 5,
+          left: 5,
+        },
+        styles: {
+          font: 'Ario-Regular',
+          fontSize: 9,
+          textColor: 'black',
+        },
+        body: [
+          [
+            {
+              content: 'Tổng SL :',
+              styles: { halign: 'right', fillColor: [211, 211, 211], cellWidth: 132.5 },
             },
-            styles: {
-              font: 'Ario-Regular',
-              fontSize: 9,
-              textColor: 'black',
+            {
+              content: `${this.$formatNumberToLocale(this.commonData.totalQuantity)}`,
+              styles: {
+                halign: 'right', font: 'Ario-Bold', fillColor: [211, 211, 211], cellWidth: 17.5,
+              },
             },
-            body: [
-              [
-                {
-                  content: 'Tổng SL :',
-                  styles: { halign: 'right', fillColor: [211, 211, 211], cellWidth: 132.5 },
-                },
-                {
-                  content: `${this.$formatNumberToLocale(this.commonData.totalQuantity)}`,
-                  styles: {
-                    halign: 'right', font: 'Ario-Bold', fillColor: [211, 211, 211], cellWidth: 17.5,
-                  },
-                },
-                {
-                  content: 'T.Tiền :',
-                  styles: { halign: 'right', fillColor: [211, 211, 211], cellWidth: 20 },
-                },
-                {
-                  content: `${this.$formatNumberToLocale(this.commonData.totalAmount)}`,
-                  styles: {
-                    font: 'Ario-Bold', halign: 'right', fillColor: [211, 211, 211], cellWidth: 30,
-                  },
-                },
-              ],
-            ],
-          })
-          // END - table tổng đầu tiên
+            {
+              content: 'T.Tiền :',
+              styles: { halign: 'right', fillColor: [211, 211, 211], cellWidth: 20 },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.commonData.totalAmount)}`,
+              styles: {
+                font: 'Ario-Bold', halign: 'right', fillColor: [211, 211, 211], cellWidth: 30,
+              },
+            },
+          ],
+        ],
+      })
+      // END - table tổng đầu tiên
 
-          // START - table nhập điều chỉnh
-          this.createTableInputAdjust(pdf)
-          // END - table nhập điều chỉnh
+      // START - table nhập điều chỉnh
+      this.createTableInputAdjust(pdf)
+      // END - table nhập điều chỉnh
 
-          // START - table nhập hàng
-          this.createTableInput(pdf)
-          // END - table nhập hàng
+      // START - table nhập hàng
+      this.createTableInput(pdf)
+      // END - table nhập hàng
 
-          // START - table nhập vay mượn
-          this.createTableInputBorrow(pdf)
-          // END - table nhập vay mượn
-
-          const options = {
-            fileName: 'Bao_cao_nhap_hang',
-            pageSizing: 'Fit',
-          }
-          if (jspmCheckStatus()) {
-            if (this.printerName.includes('PDF')) {
-              pdf.save('Bao_cao_chenh_lech_gia.pdf')
-            } else {
-              jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
-            }
-          }
-          break
-        } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-          toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-          window.print()
-        }
-      }
+      // START - table nhập vay mượn
+      this.createTableInputBorrow(pdf)
+      // END - table nhập vay mượn
+      printFile('Bao_cao_nhap_hang.pdf', this.printerName, pdf)
     }
   },
   mounted() {
