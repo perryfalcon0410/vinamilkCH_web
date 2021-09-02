@@ -246,15 +246,15 @@ export default {
       pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
       pdf.setFont('Ario-Bold')
       pdf.setFontSize(13)
-      pdf.text('Báo cáo doanh số theo CAT', 95, 10)
+      pdf.text('Báo cáo doanh số theo CAT', 120, 10)
       pdf.setFontSize(9)
       pdf.text(`${this.printInfo.shopName}`, 10, 10)
       pdf.setFontSize(8)
       pdf.setFont('Ario-Regular')
-      pdf.text(`Add: ${this.printInfo.shopAddress}`, 10, 17)
-      pdf.text(this.printInfo.shopTel === null ? 'Tel:' : `Tel: ${this.printInfo.shopTel}`, 10, 24)
-      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.printInfo.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.printInfo.toDate)}`, 92, 17)
-      pdf.text(`Ngày in: ${this.$formatPrintDate(this.printInfo.printDate)}`, 97, 24)
+      pdf.text(`Add: ${this.printInfo.shopAddress}`, 10, 16)
+      pdf.text(this.printInfo.shopTel === null ? 'Tel:' : `Tel: ${this.printInfo.shopTel}`, 10, 22)
+      pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.printInfo.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.printInfo.toDate)}`, 120, 16)
+      pdf.text(`Ngày in: ${this.$formatPrintDate(this.printInfo.printDate)}`, 126, 22)
 
       const totalRow = [
         {
@@ -312,10 +312,10 @@ export default {
       if (this.reportData && this.reportData.length > 0) {
         this.reportData.forEach(data => {
           this.bodyData.push([
-            { content: `${this.count}`, styles: { cellWidth: 10 } },
+            { content: `${this.count}`, styles: { cellWidth: 8 } },
             { content: `${data[0]}`, styles: { cellWidth: 28 } },
-            { content: `${data[1]}`, styles: { cellWidth: 28 } },
-            { content: `${data[2]}`, styles: { cellWidth: 65 } },
+            { content: `${data[1]}`, styles: { cellWidth: 33 } },
+            { content: `${data[2]}`, styles: { cellWidth: 62 } },
             { content: data[3] === null ? '' : `${this.$formatNumberToLocale(data[3])}`, styles: { cellWidth: 16, halign: 'right' } },
             { content: data[4] === null ? '' : `${this.$formatNumberToLocale(data[4])}`, styles: { halign: 'right' } },
             { content: data[5] === null ? '' : `${this.$formatNumberToLocale(data[5])}`, styles: { halign: 'right' } },
@@ -332,10 +332,10 @@ export default {
 
       pdf.autoTable({
         theme: 'grid',
-        startY: 37,
+        startY: 28,
         margin: {
-          right: 5,
-          left: 5,
+          right: 7,
+          left: 7,
         },
         styles: {
           font: 'Ario-Regular',

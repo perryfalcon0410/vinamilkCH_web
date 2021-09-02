@@ -343,21 +343,25 @@ export default {
       pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
       pdf.setFont('Ario-Bold')
       pdf.setFontSize(18)
-      pdf.text('Báo cáo bán hàng', 120, 10)
-      pdf.setFontSize(13)
-      pdf.text(`${this.reportSalesShopData.shopName}`, 15, 8)
+      pdf.text('Báo cáo bán hàng', 122, 10)
       pdf.setFontSize(9)
+      pdf.text(`${this.reportSalesShopData.shopName}`, 10, 9)
+      pdf.setFontSize(8)
       pdf.setFont('Ario-Regular')
-      pdf.text(`Add: ${this.reportSalesShopData.address}`, 15, 17)
-      pdf.text(`Tel: ${this.reportSalesShopData.tel}`, 15, 24)
-      pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 110, 17)
-      pdf.text(`Ngày in: ${this.reportSalesShopData.dateOfPrinting}`, 119, 24)
+      pdf.text(`Add: ${this.reportSalesShopData.address}`, 10, 16)
+      pdf.text(`Tel: ${this.reportSalesShopData.tel}`, 10, 22)
+      pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 110, 16)
+      pdf.text(`Ngày in: ${this.reportSalesShopData.dateOfPrinting}`, 119, 22)
       // total table
       pdf.autoTable({
         startY: 30,
+        margin: {
+          right: 10,
+          left: 10,
+        },
         styles: {
           font: 'Ario-Bold',
-          fontSize: 8,
+          fontSize: 7.5,
           textColor: 'black',
           fontStyle: 'bold',
         },
@@ -376,12 +380,16 @@ export default {
       const res = pdf.autoTableHtmlToJson(document.getElementById('report-sales-table'))
       pdf.autoTable(res.columns, res.data, {
         showHead: 'firstPage',
-        startY: 38,
+        startY: pdf.previousAutoTable.finalY + 2,
+        margin: {
+          right: 10,
+          left: 10,
+        },
         theme: 'grid',
         styles: {
           font: 'Ario-Regular',
           Color: [255, 0, 0],
-          fontSize: 8,
+          fontSize: 7.5,
           textColor: 'black',
         },
         headStyles: {
@@ -399,12 +407,12 @@ export default {
           3: { cellWidth: 35 },
           4: { cellWidth: 18 },
           5: { cellWidth: 13 },
-          6: { cellWidth: 30 },
+          6: { cellWidth: 45 },
           7: { cellWidth: 10 },
           8: { halign: 'right', cellWidth: 12 },
           9: { halign: 'right', cellWidth: 15 },
           10: { halign: 'right', cellWidth: 20 },
-          11: { halign: 'right', cellWidth: 23 },
+          11: { halign: 'right' },
           12: { halign: 'right' },
         },
         didDrawCell: data => {
@@ -433,14 +441,14 @@ export default {
 
       if (pdf.previousAutoTable.finalY + 50 > pdf.internal.pageSize.getHeight()) {
         pdf.addPage()
-        pdf.setFontSize(9)
+        pdf.setFontSize(8.5)
         pdf.setFont('Ario-Regular')
         pdf.text('........, Ngày..... tháng..... năm.......', 218, 14)
         pdf.setFont('Ario-Bold')
         pdf.text('Người in', 30, 18)
         pdf.text('Cửa hàng trưởng', 230, 18)
       } else {
-        pdf.setFontSize(9)
+        pdf.setFontSize(8.5)
         pdf.setFont('Ario-Regular')
         pdf.text('........, Ngày..... tháng..... năm.......', 218, pdf.previousAutoTable.finalY + 10)
         pdf.setFont('Ario-Bold')
@@ -450,6 +458,7 @@ export default {
 
       for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
         pdf.setPage(j)
+        pdf.setFontSize(8)
         pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 20, pdf.internal.pageSize.getHeight() - 10)
       }
       printFile('Bao_cao_ban_hang.pdf', this.printerName, pdf)
