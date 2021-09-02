@@ -1,13 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <validation-observer
-    ref="formContainer"
-    v-slot="{invalid}"
-    slim
-  >
-    <!-- START - Search -->
-    <b-form>
-=======
 
   <!-- START - Search -->
   <b-form>
@@ -16,7 +7,6 @@
       v-slot="{invalid}"
       slim
     >
->>>>>>> 826f7ca6 (+ constraint date input)
       <v-card-actions
         title="Tìm kiếm"
       >
@@ -137,20 +127,12 @@
             <div
               class="h7 mt-sm-1 mt-xl-0"
             >
-<<<<<<< HEAD
-              Từ ngày
-=======
               Từ ngày <span class="text-danger">*</span>
->>>>>>> 826f7ca6 (+ constraint date input)
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"
               align-v="center"
-<<<<<<< HEAD
-              @change="isFromDateValid"
-=======
               @change="validateFromDate"
->>>>>>> 826f7ca6 (+ constraint date input)
               @keypress="$onlyDateInput"
             >
               <b-icon-x
@@ -187,20 +169,12 @@
             <div
               class="h7 mt-sm-1 mt-xl-0"
             >
-<<<<<<< HEAD
-              Đến ngày
-=======
               Đến ngày <span class="text-danger">*</span>
->>>>>>> 826f7ca6 (+ constraint date input)
             </div>
             <b-row
               class="v-flat-pickr-group mx-0"
               align-v="center"
-<<<<<<< HEAD
-              @change="isToDateValid"
-=======
               @change="validateToDate"
->>>>>>> 826f7ca6 (+ constraint date input)
               @keypress="$onlyDateInput"
             >
               <b-icon-x
@@ -249,14 +223,9 @@
         </b-col>
       <!-- END - Search button -->
       </v-card-actions>
-<<<<<<< HEAD
-    </b-form>
-=======
     </validation-observer>
   </b-form>
->>>>>>> 826f7ca6 (+ constraint date input)
   <!-- END - Search -->
-  </validation-observer>
 </template>
 
 <script>
