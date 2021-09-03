@@ -314,13 +314,13 @@
                   :disabled="statusUpdateButton().disabled"
                   class="ml-1"
                   popover-position="top"
-                  @click="onClickUpdateButton(props.row.id, props.row.inputTypes, props.row.poId)"
+                  @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
                 />
                 <v-icon-remove
                   v-show="$formatISOtoVNI(props.row.date) === nowDate && statusDeleteButton().show"
                   :disabled="statusDeleteButton().disabled"
                   class="ml-1"
-                  @click="onClickDeleteWarehousesOutput(props.row.id,props.row.inputTypes,props.row.code, props.row.originalIndex, $formatISOtoVNI(props.row.date))"
+                  @click="onClickDeleteWarehousesOutput(props.row.id,props.row.receiptType,props.row.code, props.row.originalIndex, $formatISOtoVNI(props.row.date))"
                 />
               </div>
               <div

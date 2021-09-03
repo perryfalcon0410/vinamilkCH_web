@@ -30,7 +30,7 @@
               trim
               class="h7"
               placeholder="Nhập họ tên/mã"
-              @keyup.enter="onClickSearchButton"
+              @keydown.enter="onClickSearchButton"
             />
             <b-input-group-append
               is-text
@@ -98,7 +98,7 @@
               trim
               class="h7"
               placeholder="Nhập mã trả hàng"
-              @keyup.enter="onClickSearchButton"
+              @keydown.enter="onClickSearchButton"
             />
             <b-input-group-append
               is-text
@@ -132,7 +132,7 @@
             <b-row
               class="v-flat-pickr-group mx-0"
               align-v="center"
-              @change="validateFromDate"
+              @change="isFromDateValid"
               @keypress="$onlyDateInput"
             >
               <b-icon-x
@@ -174,7 +174,7 @@
             <b-row
               class="v-flat-pickr-group mx-0"
               align-v="center"
-              @change="validateToDate"
+              @change="isToDateValid"
               @keypress="$onlyDateInput"
             >
               <b-icon-x
