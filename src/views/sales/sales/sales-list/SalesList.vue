@@ -614,6 +614,7 @@ export default {
       this.productInfos = [...this.getProductInfos]
     },
     getProductSearch() {
+      this.productsSearch = [...this.getProductSearch]
       if (this.getProductSearch[0].data.length === 1 && this.searchOptions.checkBarcode === true) {
         const productByBarcode = {
           productId: this.getProductByBarcode.id,
@@ -645,7 +646,6 @@ export default {
           })
         }
       } else {
-        this.productsSearch = [...this.getProductSearch]
         this.productsSearchLength = this.productsSearch[0].data.length
         if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
           this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
@@ -817,7 +817,6 @@ export default {
 
     onClickAddProduct(index) {
       this.productsSearch = [{ data: null }]
-      this.searchOptions.keyWord = ''
       // check permission online order manual or online order from system to add product
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
         || this.isOnline === false
@@ -843,7 +842,6 @@ export default {
           }
           this.isSelectedProduct = true
           this.productsSearch = [{ data: null }]
-          this.searchOptions.keyWord = ''
           this.productIdSelected = index.item.productCode
           setTimeout(() => {
             document.getElementById(this.productIdSelected).focus()
