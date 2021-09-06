@@ -28,7 +28,6 @@
               placeholder:'Tìm sản phẩm (F3) - Vui lòng nhập ít nhất 4 kí tự',
             }"
             :component-attr-class-autosuggest-results="(productsSearchLength < 11) ? 'autosuggest__results check-auto-suggesst' : 'autosuggest__results'"
-            :salemt-promotion-object-selected="salemtPromotionObjectSelected"
             @input="onChangeKeyWord"
             @selected="onClickAddProduct"
             @focus="focusInputProduct"
@@ -556,7 +555,7 @@ export default {
           data: this.GET_TOP_SALE_PRODUCTS_GETTER.map(data => ({
             productId: data.id,
             checkStockTotal: data.checkStockTotal,
-            name: data.productCode,
+            name: this.searchOptions.keyWord,
             productName: data.productName,
             productCode: data.productCode,
             productUnit: data.uom1,
@@ -817,6 +816,7 @@ export default {
 
     onClickAddProduct(index) {
       this.productsSearch = [{ data: null }]
+      this.searchOptions.keyWord = ''
       // check permission online order manual or online order from system to add product
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
         || this.isOnline === false
