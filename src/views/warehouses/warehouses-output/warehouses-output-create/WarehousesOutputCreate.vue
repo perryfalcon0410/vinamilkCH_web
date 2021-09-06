@@ -489,7 +489,6 @@ export default {
       nullCheck: true,
       hideFilter: true,
       columnType: null,
-      negativeCheck: true,
 
       options: {
         number: {
@@ -858,40 +857,10 @@ export default {
         })
       }
     },
-    checkNegativeNumber() {
-      this.negativeCheck = true
-      if (this.products.length > 0) {
-        this.products.forEach(item => {
-          if (this.negativeCheck) {
-            if (item.quantityReturn < 0) {
-              this.negativeCheck = false
-            } else {
-              this.rowsProductPromotion.forEach(i => {
-                if (i.quantityPromo < 0) {
-                  this.negativeCheck = false
-                } else {
-                  this.negativeCheck = true
-                }
-              })
-            }
-          }
-        })
-      } else {
-        this.rowsProductPromotion.forEach(i => {
-          if (this.negativeCheck) {
-            if (i.quantityPromo < 0) {
-              this.negativeCheck = false
-            } else {
-              this.negativeCheck = true
-            }
-          }
-        })
-      }
-    },
+
     createExport() {
       if (this.outputTypeSelected === this.poOutputType) {
         this.checkNull()
-        this.checkNegativeNumber()
       }
       if (this.products.length > 0 || this.rowsProductPromotion.length > 0) {
         if (this.products.findIndex(item => item.quantityReturn < 0) === -1 && this.rowsProductPromotion.findIndex(item => item.quantityPromo < 0) === -1) {

@@ -414,7 +414,6 @@ export default {
       isFieldCheck: true,
       customers: [{ data: '' }],
       products: [{ data: '' }],
-      negativeCheck: true,
       newSearch: '',
       oldSearch: '',
       allowCallAPI: true,
@@ -696,16 +695,6 @@ export default {
     checkDuplicatesName() {
       return this.getAllCustomer.findIndex(x => x.customerName === this.customerName)
     },
-    checkNegativeNumber() {
-      this.negativeCheck = true
-      this.damagedProduct.forEach(item => {
-        if (this.negativeCheck) {
-          if (item.productQuantity < 0) {
-            this.negativeCheck = false
-          } else this.negativeCheck = true
-        }
-      })
-    },
     customerOptions() {
       if (this.customerName) {
         if (this.customerName.length >= commonData.minSearchLength) {
@@ -808,7 +797,6 @@ export default {
     onClickSaveButton() {
       this.isFieldCheck = false
       this.checkDuplicatesName()
-      this.checkNegativeNumber()
       this.createDamagedGoods()
     },
 
