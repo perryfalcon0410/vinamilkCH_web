@@ -900,12 +900,12 @@ export default {
         })
         this.bodyData = []
         this.checkheader = false
-        this.count = 1
       })
       for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
         pdf.setPage(j)
         pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
       }
+      this.count = 1
     },
   },
 }

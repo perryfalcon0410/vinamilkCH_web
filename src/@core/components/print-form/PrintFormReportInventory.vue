@@ -500,8 +500,8 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
-          this.count = 1
         })
+        this.count = 1
       }
 
       if (pdf.previousAutoTable.finalY + 50 > pdf.internal.pageSize.getHeight()) {

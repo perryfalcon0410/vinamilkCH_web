@@ -1408,12 +1408,12 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
-          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.lstAdjust.orderImports[i], false)
           // END - table tổng cộng và điều chỉnh
         }
+        this.count = 1
       }
     },
     // END - Bảng nhập điều chỉnh
@@ -1638,12 +1638,12 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
-          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.lstPo.orderImports[i], true)
           // END - table tổng cộng và điều chỉnh
         }
+        this.count = 1
       }
     },
     // END - Bảng nhập hàng
@@ -1864,12 +1864,12 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
-          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.lstBorrow.orderImports[i], false)
           // END - table tổng cộng và điều chỉnh
         }
+        this.count = 1
       }
     },
     // END - Bảng nhập vay mượn

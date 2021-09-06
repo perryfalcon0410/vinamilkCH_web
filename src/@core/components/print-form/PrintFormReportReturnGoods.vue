@@ -742,7 +742,6 @@ export default {
           this.checkHeight = false
           this.checkHeader = false
           this.bodyData = []
-          this.count = 1
         })
         this.checkHeader = true
       })
@@ -750,6 +749,7 @@ export default {
         pdf.setPage(j)
         pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
       }
+      this.count = 1
     },
     // table 2
   },

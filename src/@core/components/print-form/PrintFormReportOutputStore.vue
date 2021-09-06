@@ -1261,12 +1261,12 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
-          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.expAdjust.orderImports[i])
           // END - table tổng cộng và điều chỉnh
         }
+        this.count = 1
       }
     },
     // END - Bảng xuất điều chỉnh
@@ -1490,12 +1490,12 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
-          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.expPO.orderImports[i])
           // END - table tổng cộng và điều chỉnh
         }
+        this.count = 1
       }
     },
     // END - Bảng xuất PO
@@ -1716,12 +1716,12 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
-          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.expBorrow.orderImports[i])
           // END - table tổng cộng và điều chỉnh
         }
+        this.count = 1
       }
     },
     // END - Bảng xuất vay mượn

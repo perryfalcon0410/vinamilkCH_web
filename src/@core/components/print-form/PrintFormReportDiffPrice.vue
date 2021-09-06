@@ -628,10 +628,10 @@ export default {
           },
         })
         this.bodyData = []
-        this.count = 1
         this.checkHeader = false
       })
       this.checkHeader = true
+      this.count = 1
 
       for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
         pdf.setPage(j)
