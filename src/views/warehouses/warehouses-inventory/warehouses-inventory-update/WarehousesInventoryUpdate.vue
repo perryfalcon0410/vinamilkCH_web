@@ -767,7 +767,7 @@ export default {
         packetQuantity: data.inventoryPacket || 0,
         unitQuantity: data.inventoryOdd || 0,
       }))
-      if (this.originalProducts.findIndex(item => item.inventoryPacket) === -1 && this.originalProducts.findIndex(item => item.inventoryOdd) === -1) {
+      if (this.originalProducts.findIndex(item => item.inventoryPacket < 0) === -1 && this.originalProducts.findIndex(item => item.inventoryOdd < 0) === -1) {
         this.UPDATE_WAREHOUSE_INVENTORY_ACTION({
           lstUpdate,
           id: this.id,
