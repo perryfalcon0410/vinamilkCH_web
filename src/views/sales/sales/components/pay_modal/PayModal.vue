@@ -15,9 +15,6 @@
     <b-container
       fluid
       class="px-0 d-print-none"
-      @mousedown="mouseDown"
-      @mouseup="mouseUp"
-      @mousemove="mouseMove"
     >
       <b-row class="mx-0">
         <!-- START - Section table -->
@@ -1075,6 +1072,10 @@ export default {
       this.isDisabledPrintAndPaymentBtn = false
       this.isDisabledRePrintBtn = true
       this.isLoading = false
+
+      document.getElementById('pay-modal___BV_modal_header_').addEventListener('mousemove', this.mouseMove)
+      document.getElementById('pay-modal___BV_modal_header_').addEventListener('mousedown', this.mouseDown)
+      document.getElementById('pay-modal___BV_modal_header_').addEventListener('mouseup', this.mouseUp)
     },
     getItemsProduct() {
       // để show lên vue-autosuggest thì phải để [{data: value}]
