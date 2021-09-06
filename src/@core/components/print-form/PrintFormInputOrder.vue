@@ -765,7 +765,7 @@ export default {
       this.createTable3(pdf)
       pdf.setFontSize(9)
       pdf.setFont('Ario-Italic')
-      pdf.text(`Ghi chú: ${this.inputOrderInfoData.note}`, 10, startYNote + 24, {
+      pdf.text(`Ghi chú: ${this.inputOrderInfoData.note || ''}`, 10, startYNote + 24, {
         maxWidth: 60,
       })
       pdf.setDrawColor('black')
@@ -784,6 +784,7 @@ export default {
       //   pageSizing: 'Fit',
       // }
       printFile('Hoa_don_nhap_hang', this.printerName, pdf)
+      this.count = 1
     }
   },
 

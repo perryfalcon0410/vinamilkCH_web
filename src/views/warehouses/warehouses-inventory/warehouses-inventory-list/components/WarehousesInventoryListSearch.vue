@@ -262,7 +262,6 @@ export default {
 
   mounted() {
     this.GET_WAREHOUSE_TYPES_ACTION({ formId: 5, ctrlId: 7 })
-    this.onClickSearchButton()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
