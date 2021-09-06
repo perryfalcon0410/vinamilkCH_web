@@ -1407,7 +1407,6 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
-          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.lstAdjust.orderImports[i], false)
@@ -1638,7 +1637,6 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
-          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.lstPo.orderImports[i], true)
@@ -1865,7 +1863,6 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
-          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.lstBorrow.orderImports[i], false)
