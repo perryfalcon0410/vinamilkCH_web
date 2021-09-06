@@ -438,6 +438,7 @@ export default {
 
       this.checkHeight = true
       printFile('Bao_cao_hang_tra_lai.pdf', this.printerName, pdf)
+      this.count = 1
     }
   },
   methods: {
@@ -656,16 +657,16 @@ export default {
               content: 'ĐVT', dataKey: 'ĐVT', styles: { font: 'Ario-Bold' },
             },
             {
-              content: 'SL', dataKey: 'SL', styles: { font: 'Ario-Bold' },
+              content: 'SL', dataKey: 'SL', styles: { halign: 'right', font: 'Ario-Bold' },
             },
             {
-              content: 'Giá', dataKey: 'Giá', styles: { font: 'Ario-Bold' },
+              content: 'Giá', dataKey: 'Giá', styles: { halign: 'right', font: 'Ario-Bold' },
             },
             {
-              content: 'T.Tiền', dataKey: 'T.Tiền', styles: { font: 'Ario-Bold' },
+              content: 'T.Tiền', dataKey: 'T.Tiền', styles: { halign: 'right', font: 'Ario-Bold' },
             },
             {
-              content: 'Tiền trả lại', colSpan: 2, dataKey: 'T.Tiền', styles: { font: 'Ario-Bold' },
+              content: 'Tiền trả lại', colSpan: 2, dataKey: 'T.Tiền', styles: { halign: 'right', font: 'Ario-Bold' },
             },
           ]
           this.bodyData.push(title)
