@@ -1261,6 +1261,7 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
+          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.expAdjust.orderImports[i].totalPriceVat, this.expAdjust.orderImports[i].redInvoiceNo)
@@ -1490,6 +1491,7 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
+          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.expPO.orderImports[i].totalPriceNotVat, this.expPO.orderImports[i].redInvoiceNo)
@@ -1716,6 +1718,7 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
+          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.expBorrow.orderImports[i].totalPriceVat, this.expBorrow.orderImports[i].redInvoiceNo)
