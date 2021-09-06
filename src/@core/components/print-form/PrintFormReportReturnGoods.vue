@@ -742,6 +742,7 @@ export default {
           this.checkHeight = false
           this.checkHeader = false
           this.bodyData = []
+          this.count = 1
         })
         this.checkHeader = true
       })
