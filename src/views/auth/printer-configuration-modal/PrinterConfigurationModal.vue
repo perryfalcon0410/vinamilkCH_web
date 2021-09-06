@@ -194,7 +194,7 @@ export default {
       this.printerDefaultSelected = this.printerDataDefault.defaultPrinterName
       this.printerReportSelected = this.printerDataDefault.reportPrinterName
       this.printerBillSelected = this.printerDataDefault.billPrinterName
-      this.removeAccent = this.printerDataDefault.removeAccent
+      this.removeAccent = this.printerDataDefault.removeAccent || true
       // this.ipAddress = this.printerDataDefault.clientIp
     },
   },

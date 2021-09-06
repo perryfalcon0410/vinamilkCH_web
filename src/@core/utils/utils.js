@@ -264,16 +264,39 @@ export const printFile = (fileName, printerName, pdf) => {
     } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
       toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
       // Create an IFrame.
-      const iframe = document.createElement('iframe')
-      // Hide the IFrame.
-      iframe.style.visibility = 'hidden'
-      // Define the source.
-      iframe.type = 'application/pdf'
-      iframe.src = pdf.output('bloburl')
-      // Add the IFrame to the web page.
-      document.body.appendChild(iframe)
-      iframe.contentWindow.focus()
-      iframe.contentWindow.print() // Print.
+      // const iframe = document.createElement('iframe')
+      // // Hide the IFrame.
+      // iframe.style.visibility = 'hidden'
+      // // Define the source.
+      // iframe.type = 'application/pdf'
+      // iframe.src = pdf.output('bloburl')
+      // // Add the IFrame to the web page.
+      // document.body.appendChild(iframe)
+      // iframe.contentWindow.focus()
+      // iframe.contentWindow.print() // Print.
+
+      pdf.autoPrint()
+      const hiddFrame = document.createElement('iframe')
+      hiddFrame.style.position = 'fixed'
+      // "visibility: hidden" would trigger safety rules in some browsers like safari，
+      // in which the iframe display in a pretty small size instead of hidden.
+      // here is some little hack ~
+      hiddFrame.style.width = '1px'
+      hiddFrame.style.height = '1px'
+      hiddFrame.style.opacity = '0.01'
+      const isSafari = /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent)
+      if (isSafari) {
+        // fallback in safari
+        hiddFrame.onload = () => {
+          try {
+            hiddFrame.contentWindow.document.execCommand('print', false, null)
+          } catch (e) {
+            hiddFrame.contentWindow.print()
+          }
+        }
+      }
+      hiddFrame.src = pdf.output('bloburl')
+      document.body.appendChild(hiddFrame)
     }
   }
 }
