@@ -208,7 +208,7 @@
             <div v-if="props.column.field === 'inventoryPacket'">
               <cleave
                 :id="products[props.row.originalIndex].productCode + 'inventoryPacket'"
-                class="form-control text-right text-bold"
+                class="form-control text-right text-bold h9"
                 :raw="true"
                 :options="options.number"
                 maxlength="9"
@@ -225,7 +225,7 @@
             <div v-else-if="props.column.field === 'inventoryOdd'">
               <cleave
                 :id="products[props.row.originalIndex].productCode + 'inventoryOdd'"
-                class="form-control text-right text-bold"
+                class="form-control text-right text-bold h9"
                 :raw="true"
                 :options="options.number"
                 maxlength="9"
