@@ -387,13 +387,13 @@ export default {
               content: 'ĐVT', dataKey: 'ĐVT', cellWidth: 15, styles: { font: 'Ario-Bold' },
             },
             {
-              content: 'SL', dataKey: 'SL', cellWidth: 15, styles: { font: 'Ario-Bold' },
+              content: 'SL', dataKey: 'SL', cellWidth: 15, styles: { font: 'Ario-Bold', halign: 'right' },
             },
             {
-              content: 'Giá', dataKey: 'Giá', cellWidth: 20, styles: { font: 'Ario-Bold' },
+              content: 'Giá', dataKey: 'Giá', cellWidth: 20, styles: { font: 'Ario-Bold', halign: 'right' },
             },
             {
-              content: 'T.Tiền', dataKey: 'T.Tiền', cellWidth: 30, styles: { font: 'Ario-Bold' },
+              content: 'T.Tiền', dataKey: 'T.Tiền', cellWidth: 30, styles: { font: 'Ario-Bold', halign: 'right' },
             },
           ]
           this.bodyData.push(title)
