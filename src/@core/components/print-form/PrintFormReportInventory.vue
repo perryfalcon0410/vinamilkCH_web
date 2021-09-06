@@ -499,6 +499,7 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
+          this.count = 1
         })
         this.count = 1
       }
