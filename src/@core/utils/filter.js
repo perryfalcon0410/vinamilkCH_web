@@ -321,7 +321,8 @@ export const countDays = isoDate => {
 
 export const checkingDateInput = date => {
   const isValid = moment(date, 'DD/MM/YYYY', true).isValid()
-  if (!isValid) {
+  const yearNotValid = date.slice(6)
+  if (!isValid || yearNotValid === '0000') {
     toasts.error('Ngày tháng không tồn tại')
     return false
   }

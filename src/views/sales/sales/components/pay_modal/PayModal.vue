@@ -775,6 +775,7 @@
       :order-products="orderProducts"
       :customer="customer"
       @getVoucherInfo="getVoucherInfo"
+      @getIsLockedVoucher="getIsLockedVoucher"
     />
 
     <!-- START - Print form -->
@@ -987,6 +988,7 @@ export default {
       isLoading: false,
       ipAddress: '',
       ipAddressCurrent: '',
+      isLockedVoucher: false,
     }
   },
 
@@ -1371,7 +1373,7 @@ export default {
     },
 
     onVoucherButtonClick(isLocked) {
-      if (isLocked) {
+      if (isLocked || this.isLockedVoucher === true) {
         toasts.error('Bạn đã nhập sai quá số lần quy định và bị khóa chức năng trong ngày. Vui lòng liên hệ với bộ phận hỗ trợ để được tư vấn.')
       } else if (!isLocked && this.isPaid) {
         toasts.error('Bạn đã thanh toán hoá đơn này, nên sẽ không sử dụng được chức năng này nữa.')
@@ -1939,6 +1941,9 @@ export default {
       this.isDisabledRePrintBtn = true
       this.isDisabledPaymentBtn = true
       this.isDisabledPrintAndPaymentBtn = true
+    },
+    getIsLockedVoucher(val) {
+      this.isLockedVoucher = val
     },
   },
 }
