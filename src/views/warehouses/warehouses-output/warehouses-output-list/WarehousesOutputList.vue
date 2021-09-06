@@ -314,10 +314,10 @@
                   :disabled="statusUpdateButton().disabled"
                   class="ml-1"
                   popover-position="top"
-                  @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
+                  @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId, props.row.transDate)"
                 />
                 <v-icon-remove
-                  v-show="$formatISOtoVNI(props.row.date) === nowDate && statusDeleteButton().show"
+                  v-show="$formatISOtoVNI(props.row.transDate) === nowDate && statusDeleteButton().show"
                   :disabled="statusDeleteButton().disabled"
                   class="ml-1"
                   @click="onClickDeleteWarehousesOutput(props.row.id,props.row.receiptType,props.row.code, props.row.originalIndex, $formatISOtoVNI(props.row.date))"
@@ -341,7 +341,7 @@
               slot-scope="props"
             >
               <div
-                v-if="props.column.field === 'quantity'"
+                v-if="props.column.field === 'totalQuantity'"
                 v-show="warehousesOutputPagination.totalElements"
                 class="h7 text-brand-3 text-right"
               >
@@ -349,7 +349,7 @@
               </div>
 
               <div
-                v-else-if="props.column.field === 'price'"
+                v-else-if="props.column.field === 'totalAmount'"
                 v-show="warehousesOutputPagination.totalElements"
                 class="h7 text-brand-3 text-right"
               >
@@ -741,7 +741,9 @@ export default {
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-output-create' })
     },
-    onClickUpdateButton(id, type, poId) {
+    onClickUpdateButton(id, type, poId, d) {
+      console.log(d)
+      console.log(nowDate)
       this.$router.push({
         name: 'warehouses-output-update',
         params: {

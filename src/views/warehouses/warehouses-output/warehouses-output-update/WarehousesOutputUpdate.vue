@@ -388,7 +388,6 @@ export default {
       poOutputType: warehousesData.outputTypes[0].id,
       exportAll: true,
       products: [],
-      nullCheck: true,
       rowsProductPromotion: [],
 
       options: {
@@ -754,47 +753,10 @@ export default {
         })
       }
     },
-    checkNull() {
-      let stop = true
-      if (this.products.length > 0) {
-        this.products.forEach(item => {
-          if (stop) {
-            if (item.productReturnAmount != null && item.productReturnAmount > 0) {
-              this.nullCheck = true
-              stop = false
-            } else {
-              this.nullCheck = false
-              this.rowsProductPromotion.forEach(i => {
-                if (i.productReturnAmount != null && i.productReturnAmount !== 0) {
-                  this.nullCheck = true
-                  stop = false
-                } else {
-                  this.nullCheck = false
-                }
-              })
-            }
-          }
-        })
-      } else {
-        this.rowsProductPromotion.forEach(i => {
-          if (stop) {
-            if (i.productReturnAmount != null && i.productReturnAmount > 0) {
-              this.nullCheck = true
-              stop = false
-            } else {
-              this.nullCheck = false
-            }
-          }
-        })
-      }
-    },
 
     onClickUpdateWarehousesOutput() {
-      if (this.warehousesOutput.receiptType === this.poOutputType) {
-        this.checkNull()
-      }
       if (this.products.findIndex(item => item.productReturnAmount < 0) === -1 && this.rowsProductPromotion.findIndex(item => item.productReturnAmount < 0) === -1) {
-        if (this.nullCheck) {
+        if (this.products.reduce((accum, i) => accum + Number(i.productReturnAmount) || 0, 0) > 0 || this.rowsProductPromotion.reduce((accum, i) => accum + Number(i.productReturnAmount) || 0, 0) > 0) {
           if (this.products) {
             const products = [...this.products.map(data => ({
               id: data.productID,
