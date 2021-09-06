@@ -1708,6 +1708,7 @@ export default {
             this.isDisabledPaymentBtn = true
             this.isPaid = true
             this.isSaveSuccess = true
+            this.isLoading = false
           },
           onFailure: () => {
             this.isDisabledRePrintBtn = true
@@ -1723,6 +1724,7 @@ export default {
     createSaleOrderAndPrint() {
       this.createSaleOrder()
       this.isPrint = this.isPaid
+      this.isLoading = false
     },
     cancel() {
       this.isOpenPayModal = false
@@ -1856,6 +1858,7 @@ export default {
       if (e.key === 'F8' && this.isOpenPayModal && this.totalQuantity > 0) {
         if (!this.isPaid && this.statusPayPrintButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
+            this.isLoading = true
             this.createSaleOrderAndPrint()
           }
         }
@@ -1863,6 +1866,7 @@ export default {
       if (e.key === 'F9' && this.isOpenPayModal && this.totalQuantity > 0) {
         if (!this.isPaid && this.statusPayButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
+            this.isLoading = true
             this.createSaleOrder()
           }
         }
