@@ -251,7 +251,6 @@ import {
 export default {
   components: {
     VCardActions,
-    // eslint-disable-next-line vue/no-unused-components
     ValidationProvider,
     ValidationObserver,
   },
