@@ -1248,7 +1248,7 @@ export default {
                 { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstAdjust.orderImports[i].orderDate)}` },
                 { content: this.lstAdjust.orderImports[i].poNumber !== null ? `- Số PO: ${this.lstAdjust.orderImports[i].poNumber}` : '- Số PO:' },
                 { content: `- Số nội bộ: ${this.lstAdjust.orderImports[i].internalNumber}` },
-                { content: `- Mã xuất hàng: ${this.lstAdjust.orderImports[i].transCode}` },
+                { content: `- Mã nhập hàng: ${this.lstAdjust.orderImports[i].transCode}` },
               ],
             ],
             didDrawCell: data => {
@@ -1415,7 +1415,7 @@ export default {
         }
       }
     },
-    // END - Bảng xuất điều chỉnh
+    // END - Bảng nhập điều chỉnh
 
     // Start - Bảng nhập hàng
     createTableInput(pdf) {
@@ -1477,7 +1477,7 @@ export default {
                 { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstPo.orderImports[i].orderDate)}` },
                 { content: this.lstPo.orderImports[i].poNumber !== null ? `- Số PO: ${this.lstPo.orderImports[i].poNumber}` : '- Số PO:' },
                 { content: `- Số nội bộ: ${this.lstPo.orderImports[i].internalNumber}` },
-                { content: `- Mã xuất hàng: ${this.lstPo.orderImports[i].transCode}` },
+                { content: `- Mã nhập hàng: ${this.lstPo.orderImports[i].transCode}` },
               ],
             ],
             didDrawCell: data => {
@@ -1560,7 +1560,7 @@ export default {
               { content: 'Tổng SL :', styles: { lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
               { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
-              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalPriceNotVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
             ]
             this.bodyData.push(row)
             data.products.forEach(pro => {
@@ -1702,7 +1702,7 @@ export default {
                 { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstBorrow.orderImports[i].orderDate)}` },
                 { content: this.lstBorrow.orderImports[i].poNumber !== null ? `- Số PO: ${this.lstBorrow.orderImports[i].poNumber}` : '- Số PO:' },
                 { content: `- Số nội bộ: ${this.lstBorrow.orderImports[i].internalNumber}` },
-                { content: `- Mã xuất hàng: ${this.lstBorrow.orderImports[i].transCode}` },
+                { content: `- Mã nhập hàng: ${this.lstBorrow.orderImports[i].transCode}` },
               ],
             ],
             didDrawCell: data => {
@@ -1877,6 +1877,7 @@ export default {
         pdf.autoTable({
           theme: 'plain',
           startY: pdf.previousAutoTable.finalY + 2,
+          pageBreak: 'avoid',
           margin: { left: 145, right: 5 },
           styles: {
             font: 'Ario-Bold',
