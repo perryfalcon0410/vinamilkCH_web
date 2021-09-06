@@ -449,7 +449,7 @@ export default {
       pdf.text(`${this.commonData.shopName}`, 5, 10)
       pdf.setFontSize(8.5)
       pdf.setFont('Ario-Regular')
-      pdf.text(`Add: ${this.commonData.address}`, 5, 17)
+      pdf.text(`Add: ${this.commonData.address || ''}`, 5, 17)
       pdf.text(`Tel: ${this.commonData.shopTel || ''}`, 5, 24)
       pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonData.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonData.toDate)}`, 93, 17)
       pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonData.printDate)}`, 101, 24)
@@ -742,6 +742,7 @@ export default {
           this.checkHeight = false
           this.checkHeader = false
           this.bodyData = []
+          this.count = 1
         })
         this.checkHeader = true
       })

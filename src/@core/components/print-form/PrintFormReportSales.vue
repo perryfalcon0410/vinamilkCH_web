@@ -348,8 +348,8 @@ export default {
       pdf.text(`${this.reportSalesShopData.shopName}`, 10, 9)
       pdf.setFontSize(8)
       pdf.setFont('Ario-Regular')
-      pdf.text(`Add: ${this.reportSalesShopData.address}`, 10, 16)
-      pdf.text(`Tel: ${this.reportSalesShopData.tel}`, 10, 22)
+      pdf.text(`Add: ${this.reportSalesShopData.address || ''}`, 10, 16)
+      pdf.text(`Tel: ${this.reportSalesShopData.tel || ''}`, 10, 22)
       pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 110, 16)
       pdf.text(`Ngày in: ${this.reportSalesShopData.dateOfPrinting}`, 119, 22)
       // total table

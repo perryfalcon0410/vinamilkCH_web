@@ -840,7 +840,7 @@ export default {
           [
             { content: '', styles: { cellWidth: 20, ...cellPadding } },
             {
-              content: `Tel: ${this.inputOrderShopData.phone} - Fax: ${this.inputOrderShopData.fax || ''}`, styles: { ...cellPadding },
+              content: `Tel: ${this.inputOrderShopData.phone || ''} - Fax: ${this.inputOrderShopData.fax || ''}`, styles: { ...cellPadding },
             },
             { content: '', styles: { cellWidth: 10, ...cellPadding } },
             {

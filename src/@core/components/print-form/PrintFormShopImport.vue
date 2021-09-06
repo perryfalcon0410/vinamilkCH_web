@@ -1128,7 +1128,7 @@ export default {
       pdf.setFontSize(8)
       pdf.setFont('Ario-Regular')
       pdf.text(`Add: ${this.commonData.address}`, 5, 17)
-      pdf.text(`Tel: ${this.commonData.shopTel}`, 5, 24)
+      pdf.text(`Tel: ${this.commonData.shopTel || ''}`, 5, 24)
       pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonData.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonData.toDate)}`, 83, 17)
       pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonData.printDate)}`, 91, 24)
       // END - hearder page
@@ -1408,6 +1408,7 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
+          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.lstAdjust.orderImports[i], false)
@@ -1637,6 +1638,7 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
+          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.lstPo.orderImports[i], true)
@@ -1862,6 +1864,7 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
+          this.count = 1
 
           // START - table tổng cộng và điều chỉnh
           this.createTableTotal(pdf, this.lstBorrow.orderImports[i], false)

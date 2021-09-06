@@ -900,6 +900,7 @@ export default {
         })
         this.bodyData = []
         this.checkheader = false
+        this.count = 1
       })
       for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
         pdf.setPage(j)

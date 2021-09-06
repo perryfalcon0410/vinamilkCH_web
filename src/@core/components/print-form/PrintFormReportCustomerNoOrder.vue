@@ -274,6 +274,7 @@ export default {
           body: [...this.bodyData],
         })
         this.bodyData = []
+        this.count = 1
       }
 
       for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {

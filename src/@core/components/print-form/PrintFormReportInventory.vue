@@ -368,8 +368,8 @@ export default {
       pdf.text(`${this.commonInfo.shopName}`, 10, 10)
       pdf.setFontSize(8)
       pdf.setFont('Ario-Regular')
-      pdf.text(`Add: ${this.commonInfo.address}`, 10, 17)
-      pdf.text(`Tel: ${this.commonInfo.shopTel}`, 10, 24)
+      pdf.text(`Add: ${this.commonInfo.address || ''}`, 10, 17)
+      pdf.text(`Tel: ${this.commonInfo.shopTel || ''}`, 10, 24)
       pdf.text(`Ngày: ${this.$formatISOtoVNI(this.commonInfo.date)}`, 98, 17)
       pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonInfo.printDate)}`, 92, 24)
       pdf.autoTable({
@@ -500,6 +500,7 @@ export default {
             body: [...this.bodyData],
           })
           this.bodyData = []
+          this.count = 1
         })
       }
 
