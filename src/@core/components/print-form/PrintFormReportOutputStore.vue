@@ -979,6 +979,7 @@ export default {
         pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
       }
       printFile('Bao_cao_xuat_hang.pdf', this.printerName, pdf)
+      this.count = 1
       //   for (let i = 0; i < 3; i += 1) {
       //     if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
 

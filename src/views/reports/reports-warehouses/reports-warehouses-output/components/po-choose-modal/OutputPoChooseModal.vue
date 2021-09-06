@@ -267,7 +267,7 @@
           width="20"
           height="20"
         />
-        Lưu
+        Chọn
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder d-flex justify-content-center align-items-center ml-1"

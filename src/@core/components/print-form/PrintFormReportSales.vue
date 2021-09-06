@@ -342,7 +342,7 @@ export default {
       pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
       pdf.setFont('Ario-Bold')
       pdf.setFontSize(18)
-      pdf.text('Báo cáo bán hàng', 122, 10)
+      pdf.text('Báo cáo bán hàng', 118, 10)
       pdf.setFontSize(9)
       pdf.text(`${this.reportSalesShopData.shopName}`, 10, 9)
       pdf.setFontSize(8)
@@ -350,7 +350,7 @@ export default {
       pdf.text(`Add: ${this.reportSalesShopData.address || ''}`, 10, 16)
       pdf.text(`Tel: ${this.reportSalesShopData.tel || ''}`, 10, 22)
       pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 110, 16)
-      pdf.text(`Ngày in: ${this.reportSalesShopData.dateOfPrinting}`, 119, 22)
+      pdf.text(`Ngày in: ${this.$moment().locale('en').format('DD/MM/YYYY - HH:mm:ss A')}`, 125, 22)
       // total table
       pdf.autoTable({
         startY: 30,
@@ -369,12 +369,15 @@ export default {
             { content: 'Tổng Số HĐ:', halign: 'right', styles: { halign: 'right', cellWidth: 120, fillColor: [211, 211, 211] } },
             { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.someBills)}`, styles: { halign: 'right', cellWidth: 19, fillColor: [211, 211, 211] } },
             { content: 'Tổng cộng:', styles: { halign: 'right', cellWidth: 35, fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalQuantity)}`, styles: { halign: 'right', cellWidth: 18, fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalTotal)}`, styles: { halign: 'right', cellWidth: 34, fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat)}`, styles: { halign: 'right', cellWidth: 23, fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay)}`, styles: { halign: 'right', fillColor: [211, 211, 211] } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalQuantity)}`, styles: { halign: 'right', cellWidth: 32, fillColor: [211, 211, 211] } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalTotal)}`, styles: { halign: 'right', cellWidth: 35, fillColor: [211, 211, 211] } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat)}`, styles: { halign: 'right', cellWidth: 18, fillColor: [211, 211, 211] } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay)}`, styles: { halign: 'right', cellWidth: 18, fillColor: [211, 211, 211] } },
           ],
         ],
+        didDrawCell: data => {
+          pdf.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height)
+        },
       })
       const res = pdf.autoTableHtmlToJson(document.getElementById('report-sales-table'))
       pdf.autoTable(res.columns, res.data, {
