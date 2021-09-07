@@ -1109,6 +1109,11 @@ export default {
         this.searchOptions.customerId = data.id
         this.editOnlinePermission = true
         this.customerFullName = data.fullName
+        if (this.getEditOnlinePermission.editable) {
+          this.editOnlinePermission = true
+        } else {
+          this.editOnlinePermission = false
+        }
         // update price product when different type id customer
         if (this.customerTypeCurent !== this.customerType) {
           if (this.orderProducts.length > 0) {

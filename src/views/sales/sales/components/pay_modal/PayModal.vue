@@ -989,6 +989,7 @@ export default {
       ipAddress: '',
       ipAddressCurrent: '',
       isLockedVoucher: false,
+      isUseChecked: [],
     }
   },
 
@@ -1276,21 +1277,23 @@ export default {
       },
       deep: true,
     },
-    // promotionPrograms: {
-    //   handler() {
-    //     this.isUseChecked = this.promotionPrograms.filter(p => p.isUse)
-    //     if (this.isUseChecked.length === 0) {
-    //       this.isDisabledPrintTempBtn = true
-    //       this.isDisabledPrintAndPaymentBtn = true
-    //       this.isDisabledPaymentBtn = true
-    //     } else {
-    //       this.isDisabledPrintAndPaymentBtn = false
-    //       this.isDisabledPrintTempBtn = false
-    //       this.isDisabledPaymentBtn = false
-    //     }
-    //   },
-    //   deep: true,
-    // },
+    promotionPrograms: {
+      handler() {
+        this.isUseChecked = this.promotionPrograms.filter(p => p.isUse)
+        if (this.totalQuantity === 0) {
+          if (this.isUseChecked.length === 0) {
+            this.isDisabledPrintTempBtn = true
+            this.isDisabledPrintAndPaymentBtn = true
+            this.isDisabledPaymentBtn = true
+          } else {
+            this.isDisabledPrintAndPaymentBtn = false
+            this.isDisabledPrintTempBtn = false
+            this.isDisabledPaymentBtn = false
+          }
+        }
+      },
+      deep: true,
+    },
   },
 
   // created() {
