@@ -181,7 +181,7 @@ export default {
       closeOnClick: false,
       closeButton: false,
       icon: false,
-      timeout: 3000,
+      timeout: 5000,
       transition: 'Vue-Toastification__fade',
     })
 
