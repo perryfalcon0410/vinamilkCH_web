@@ -551,23 +551,7 @@ export default {
     },
     getProductSearch() {
       if (this.GET_TOP_SALE_PRODUCTS_GETTER) {
-        return [{
-          data: this.GET_TOP_SALE_PRODUCTS_GETTER.map(data => ({
-            productId: data.id,
-            checkStockTotal: data.checkStockTotal,
-            name: this.searchOptions.keyWord,
-            productName: data.productName,
-            productCode: data.productCode,
-            productUnit: data.uom1,
-            productInventory: data.stockTotal,
-            productUnitPrice: data.price,
-            sumProductUnitPrice: data.price,
-            quantity: null,
-            productTotalPrice: this.totalPrice(0, Number(data.price)),
-            sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
-            productImage: data.image,
-          })),
-        }]
+        return this.GET_TOP_SALE_PRODUCTS_GETTER
       }
       return []
     },
@@ -613,8 +597,7 @@ export default {
       this.productInfos = [...this.getProductInfos]
     },
     getProductSearch() {
-      this.productsSearch = [...this.getProductSearch]
-      if (this.getProductSearch[0].data.length === 1 && this.searchOptions.checkBarcode === true) {
+      if (this.getProductSearch.length === 1 && this.searchOptions.checkBarcode === true) {
         const productByBarcode = {
           productId: this.getProductByBarcode.id,
           name: this.getProductByBarcode.productCode,
@@ -645,6 +628,24 @@ export default {
           })
         }
       } else {
+        const productsBySearch = [...this.getProductSearch.map(data => ({
+          productId: data.id,
+          checkStockTotal: data.checkStockTotal,
+          name: this.searchOptions.keyWord,
+          productName: data.productName,
+          productCode: data.productCode,
+          productUnit: data.uom1,
+          productInventory: data.stockTotal,
+          productUnitPrice: data.price,
+          sumProductUnitPrice: data.price,
+          quantity: null,
+          productTotalPrice: this.totalPrice(0, Number(data.price)),
+          sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
+          productImage: data.image,
+        }))]
+        this.productsSearch = [{
+          data: productsBySearch,
+        }]
         this.productsSearchLength = this.productsSearch[0].data.length
         if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
           this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
@@ -810,12 +811,11 @@ export default {
     },
     blurInputSearch() {
       if (this.searchOptions.keyWord.length < this.minSearch) {
-        this.productsSearch = [{ data: '' }]
+        this.productsSearch = [{ data: null }]
       }
     },
 
     onClickAddProduct(index) {
-      this.productsSearch = [{ data: null }]
       this.searchOptions.keyWord = ''
       // check permission online order manual or online order from system to add product
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
