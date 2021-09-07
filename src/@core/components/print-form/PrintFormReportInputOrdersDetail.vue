@@ -154,6 +154,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import { myFontBold } from '@/@core/libs/Arimo-Bold'
+import { myFontBoldItalic } from '@/@core/libs/Arimo-BoldItalic'
 // eslint-disable-next-line no-unused-vars
 import autoTable from 'jspdf-autotable'
 import jsPDF from 'jspdf'
@@ -255,6 +256,8 @@ export default {
       pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
       pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
       pdf.setFont('Ario-Bold')
+      pdf.addFileToVFS('Ario-BoldItalic.ttf', myFontBoldItalic)
+      pdf.addFont('Ario-BoldItalic.ttf', 'Ario-BoldItalic', 'normal')
       // END - add font family
       //
       const title = [
@@ -270,13 +273,13 @@ export default {
       this.bodyData.push(title)
       this.reportData.forEach((item, index) => {
         this.bodyData.push([
-          { content: `${index + 1}`, styles: { fontSize: 9.5, cellWidth: 10 } },
-          { content: `${item.poNumber}`, styles: { fontSize: 9.5, cellWidth: 28 } },
-          { content: `${item.internalNumber}`, styles: { fontSize: 9.5, cellWidth: 28 } },
+          { content: `${index + 1}`, styles: { fontSize: 9.5, cellWidth: 10, halign: 'right' } },
+          { content: `${item.poNumber || ''}`, styles: { fontSize: 9.5, cellWidth: 28 } },
+          { content: `${item.internalNumber || ''}`, styles: { fontSize: 9.5, cellWidth: 28 } },
           { content: `${item.redInvoiceNo || ''}`, styles: { fontSize: 9.5, cellWidth: 28 } },
-          { content: `${item.billDate}`, styles: { fontSize: 9.5, cellWidth: 23 } },
+          { content: `${item.billDate || ''}`, styles: { fontSize: 9.5, cellWidth: 23 } },
           { content: `${item.dateOfPayment}`, styles: { fontSize: 9.5, cellWidth: 23 } },
-          { content: `${this.$formatNumberToLocale(item.totalAmount)}` || '', styles: { fontSize: 9.5, cellWidth: 24, halign: 'right' } },
+          { content: `${this.$formatNumberToLocale(item.totalAmount) || ''}`, styles: { fontSize: 9.5, cellWidth: 24, halign: 'right' } },
           { content: `${item.promotionalOrders || ''}`, styles: { fontSize: 9.5, cellWidth: 28 } },
         ])
       })
@@ -287,10 +290,10 @@ export default {
       pdf.text('CÔNG TY CP SỮA VIỆT NAM', x, y)
       pdf.setFontSize(10.5)
       pdf.text(this.reportInfos.shopName, x, y + 5)
-      pdf.text(`Add: ${this.reportInfos.address}`, x, y + 10)
+      pdf.text(`${this.reportInfos.address}`, x, y + 10)
       pdf.text(`Ngày in: ${this.reportInfos.dateOfPrinting}`, x, y + 15)
       pdf.setFontSize(19)
-      pdf.text('Bảng kê chi tiết các hóa đơn nhập hàng', x + 33, y + 25)
+      pdf.text('BẢNG KÊ CHI TIẾT CÁC HÓA ĐƠN NHẬP HÀNG', x + 33, y + 25)
       pdf.setFont('Ario-Regular')
       pdf.setFontSize(9.5)
       pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.reportInfos.fromDate)}         đến: ${this.$formatISOtoVNI(this.reportInfos.toDate)}`, x + 60, y + 33)
@@ -342,8 +345,8 @@ export default {
         },
         body: [
           [
-            { content: 'Tổng cộng:', styles: { halign: 'right', font: 'Ario-Bold', cellWidth: 138 } },
-            { content: `${this.$formatNumberToLocale(this.reportInfos.totalAmount || 0)}`, styles: { halign: 'right', font: 'Ario-Bold', cellWidth: 26 } },
+            { content: 'Tổng cộng:', styles: { halign: 'right', font: 'Ario-BoldItalic', cellWidth: 138 } },
+            { content: `${this.$formatNumberToLocale(this.reportInfos.totalAmount || 0)}`, styles: { halign: 'right', font: 'Ario-BoldItalic', cellWidth: 26 } },
           ],
         ],
         didDrawCell: data => {
@@ -359,6 +362,7 @@ export default {
       pdf.text('Nhân viên nhập hàng', x + 20, pdf.previousAutoTable.finalY + 12)
       pdf.text('Cửa hàng trưởng', x + 150, pdf.previousAutoTable.finalY + 12)
       printFile('Bao_cao_bang_ke_chi_tiet_don_nhap_hang.pdf', this.printerName, pdf)
+      this.bodyData = []
       // const options = {
       //   fileName: 'bao_cao_ban_hang',
       //   pageSizing: 'Fit',
