@@ -278,7 +278,7 @@ export default {
           { content: `${item.billDate}`, styles: { fontSize: 9.5, cellWidth: 23 } },
           { content: `${item.dateOfPayment}`, styles: { fontSize: 9.5, cellWidth: 23 } },
           { content: `${this.$formatNumberToLocale(item.totalAmount)}` || '', styles: { fontSize: 9.5, cellWidth: 24, halign: 'right' } },
-          { content: `${item.promotionalOrders}`, styles: { fontSize: 9.5, cellWidth: 28 } },
+          { content: `${item.promotionalOrders || ''}`, styles: { fontSize: 9.5, cellWidth: 28 } },
         ])
       })
 
