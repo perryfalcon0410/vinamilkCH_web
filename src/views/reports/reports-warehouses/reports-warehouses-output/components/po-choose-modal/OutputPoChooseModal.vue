@@ -316,6 +316,10 @@ export default {
       required: true,
       default: false,
     },
+    rowSelected: {
+      type: Array,
+      default: null,
+    },
   },
 
   data() {
@@ -342,6 +346,7 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
+      allProducts: [],
       columns: [
         // {
         //   label: 'STT',
@@ -429,6 +434,18 @@ export default {
     },
     visible() {
       if (this.visible) {
+        // func delete products name
+        this.allProducts = []
+        this.rowSelected.forEach(data => {
+          const index = this.selectedProductRow.findIndex((item => item.productCode.toUpperCase() === data.toUpperCase()))
+          if (index > -1) {
+            if (!this.allProducts.find(dta => dta.id === this.selectedProductRow[index].id)) {
+              this.allProducts.push(this.selectedProductRow[index])
+            }
+          }
+        })
+        this.selectedProductRow = this.allProducts
+        // func delete products name
         this.products.forEach((item, index) => {
           const productSelectedFoundIndex = this.selectedProductRow.findIndex(data => item.id === data.id)
           if (productSelectedFoundIndex > -1) {
@@ -458,9 +475,11 @@ export default {
       GET_PRODUCT_CAT_ACTION,
     ]),
     onModalClose() {
+      this.isCheckAllRows = false
       this.$emit('onModalClose')
     },
     onSaveClick() {
+      this.isCheckAllRows = false
       this.$emit('onSaveClick', this.selectedProductRow)
     },
     onPaginationChange() {
@@ -493,7 +512,6 @@ export default {
     },
     selectAllRows(params) {
       if (params.selected) {
-        this.selectedProductRow = []
         params.selectedRows.forEach(item => {
           if (!this.selectedProductRow.find(data => data.id === item.id)) {
             this.selectedProductRow.push(item)
@@ -501,9 +519,12 @@ export default {
         })
         this.isCheckAllRows = true
       } else if (this.isCheckAllRows) {
-        this.selectedProductRow = []
-        this.isCheckAllRows = false
+        this.products.forEach(item => {
+          const index = this.selectedProductRow.findIndex(data => data.id === item.id)
+          this.selectedProductRow.splice(index, 1)
+        })
       }
+      this.isCheckAllRows = true
     },
     selectionRow(params) {
       if (params.selected) {

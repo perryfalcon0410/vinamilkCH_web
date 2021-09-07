@@ -544,7 +544,7 @@ export default {
               { content: `${data.type}`, styles: { font: 'Ario-Bold', lineWidth: 0 } },
               { content: 'Tổng SL :', styles: { lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
-              { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
+              { content: 'Tổng T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? data.totalPriceNotVat : data.totalPrice)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
             ]
             this.bodyData.push(row)
@@ -669,7 +669,7 @@ export default {
               { content: `${data.type}`, styles: { font: 'Ario-Bold', lineWidth: 0 } },
               { content: 'Tổng SL :', styles: { lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
-              { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
+              { content: 'Tổng T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? data.totalPriceNotVat : data.totalPrice)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
             ]
             this.bodyData.push(row)
@@ -895,7 +895,7 @@ export default {
           ],
           [
             { content: 'Mã nhập hàng:', styles: { ...styleDef } },
-            { content: `${this.inputOrderInfoData.transCode}`, styles: { font: 'Ario-Bold', ...styleDef } },
+            { content: `${this.inputOrderInfoData.transCode || ''}`, styles: { font: 'Ario-Bold', ...styleDef } },
             { content: 'Ngày nhập:', styles: { ...styleDef } },
             { content: `${this.$formatISOtoVNI(this.inputOrderInfoData.transDate, true)}`, styles: { font: 'Ario-Bold', ...styleDef } },
           ],
@@ -907,7 +907,7 @@ export default {
           ],
           [
             { content: 'Số hóa đơn:', styles: { ...styleDef } },
-            { content: `${this.inputOrderInfoData.invoiceNumber}`, styles: { font: 'Ario-Bold', ...styleDef } },
+            { content: `${this.inputOrderInfoData.invoiceNumber || ''}`, styles: { font: 'Ario-Bold', ...styleDef } },
             { content: 'Ngày hóa đơn:', styles: { ...styleDef } },
             { content: `${this.$formatISOtoVNI(this.inputOrderInfoData.orderDate)}`, styles: { font: 'Ario-Bold', ...styleDef } },
           ],

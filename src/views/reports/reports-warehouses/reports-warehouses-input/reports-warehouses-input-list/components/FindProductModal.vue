@@ -477,9 +477,11 @@ export default {
       GET_PRODUCT_CAT_LISTS_ACTIONS,
     ]),
     onModalClose() {
+      this.isCheckAllRows = false
       this.$emit('onModalClose')
     },
     onSaveClick() {
+      this.isCheckAllRows = false
       this.$emit('onSaveClick', this.selectedProductRow)
     },
     onSearch() {
@@ -514,7 +516,6 @@ export default {
     },
     selectAllRows(params) {
       if (params.selected) {
-        this.selectedProductRow = []
         params.selectedRows.forEach(item => {
           if (!this.selectedProductRow.find(data => data.id === item.id)) {
             this.selectedProductRow.push(item)
@@ -522,9 +523,12 @@ export default {
         })
         this.isCheckAllRows = true
       } else if (this.isCheckAllRows) {
-        this.selectedProductRow = []
-        this.isCheckAllRows = false
+        this.products.forEach(item => {
+          const index = this.selectedProductRow.findIndex(data => data.id === item.id)
+          this.selectedProductRow.splice(index, 1)
+        })
       }
+      this.isCheckAllRows = true
     },
     selectionRow(params) {
       if (params.selected) {

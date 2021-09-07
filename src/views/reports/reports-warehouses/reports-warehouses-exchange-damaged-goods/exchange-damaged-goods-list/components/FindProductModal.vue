@@ -10,6 +10,7 @@
     class="d-print-none"
     footer-border-variant="light"
     centered
+    @hidden="onModalClose"
   >
     <b-container fluid>
       <!-- START - Body -->
@@ -305,6 +306,10 @@ export default {
       required: true,
       default: false,
     },
+    rowSelected: {
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
@@ -323,6 +328,7 @@ export default {
       },
       selectedProductRow: [],
       selectedCurrentPage: [],
+      allProducts: [],
       productCategorySelected: null,
       // searchOptions
       decentralization: {
@@ -400,6 +406,18 @@ export default {
     },
     visible() {
       if (this.visible) {
+        // func delete products name
+        this.allProducts = []
+        this.rowSelected.forEach(data => {
+          const index = this.selectedProductRow.findIndex((item => item.productCode.toUpperCase() === data.toUpperCase()))
+          if (index > -1) {
+            if (!this.allProducts.find(dta => dta.id === this.selectedProductRow[index].id)) {
+              this.allProducts.push(this.selectedProductRow[index])
+            }
+          }
+        })
+        this.selectedProductRow = this.allProducts
+        // func delete products name
         this.products.forEach((item, index) => {
           const productSelectedFoundIndex = this.selectedProductRow.findIndex(data => item.id === data.id)
           if (productSelectedFoundIndex > -1) {
@@ -432,9 +450,15 @@ export default {
     ]),
     save() {
       this.$emit('onSaveClick', this.selectedProductRow)
+      this.isCheckAllRows = false
       this.$bvModal.hide('find-product-modal')
     },
+    onModalClose() {
+      this.isCheckAllRows = false
+      this.$emit('onModalClose')
+    },
     cancel() {
+      this.isCheckAllRows = false
       this.$bvModal.hide('find-product-modal')
     },
     // pagination funcs
@@ -470,7 +494,6 @@ export default {
     },
     selectAllRows(params) {
       if (params.selected) {
-        this.selectedProductRow = []
         params.selectedRows.forEach(item => {
           if (!this.selectedProductRow.find(data => data.id === item.id)) {
             this.selectedProductRow.push(item)
@@ -478,9 +501,12 @@ export default {
         })
         this.isCheckAllRows = true
       } else if (this.isCheckAllRows) {
-        this.selectedProductRow = []
-        this.isCheckAllRows = false
+        this.products.forEach(item => {
+          const index = this.selectedProductRow.findIndex(data => data.id === item.id)
+          this.selectedProductRow.splice(index, 1)
+        })
       }
+      this.isCheckAllRows = true
     },
     selectionRow(params) {
       if (params.selected) {

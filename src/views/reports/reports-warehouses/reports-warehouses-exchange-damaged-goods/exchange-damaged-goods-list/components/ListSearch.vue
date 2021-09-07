@@ -210,8 +210,10 @@
       </v-card-actions>
       <find-product-modal
         :visible="isShowFindProductModal"
+        :row-selected="productSelected"
         @close="isShowFindProductModal = false"
         @onSaveClick="onSaveClick($event)"
+        @onModalClose="onModalCloseClick"
       />
     </b-form>
   </validation-observer>
@@ -285,6 +287,7 @@ export default {
         formId: 1,
         ctrlId: 1,
       },
+      productSelected: [],
     }
   },
   computed: {
@@ -304,6 +307,14 @@ export default {
         ...this.configToDate,
         minDate: this.fromDate,
       }
+    },
+    productCodes() {
+      if (this.productCodes) {
+        this.productCodes = this.productCodes?.replace(/\s+/g, '')
+        this.productSelected = this.productCodes.split(',')
+        return
+      }
+      this.productSelected = []
     },
   },
   created() {
@@ -350,6 +361,9 @@ export default {
     },
     showFindProductModal() {
       this.isShowFindProductModal = !this.isShowFindProductModal
+    },
+    onModalCloseClick() {
+      this.isShowFindProductModal = false
     },
     isFromDateValid() {
       if (!checkingDateInput(this.fromDate)) {
