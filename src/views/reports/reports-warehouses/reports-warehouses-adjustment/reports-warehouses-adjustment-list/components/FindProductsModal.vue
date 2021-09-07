@@ -7,7 +7,6 @@
     footer-class="justify-content-center"
     content-class="bg-light"
     footer-border-variant="light"
-    hide-header-close
     centered
     @hidden="onModalClose"
   >
@@ -261,7 +260,7 @@
           height="20"
           class="mr-50"
         />
-        Lưu
+        Chọn
       </b-button>
       <b-button
         variant="secondary"

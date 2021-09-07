@@ -249,12 +249,12 @@
         @click="save()"
       >
         <b-icon
-          icon="download"
-          width="15"
-          height="15"
-          class="mr-1"
+          icon="check2"
+          width="20"
+          height="20"
+          class="mr-50"
         />
-        Lưu
+        Chọn
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder d-flex justify-content-center align-items-center ml-1"
