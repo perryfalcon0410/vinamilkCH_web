@@ -155,7 +155,7 @@
 
                     <!-- START - Action bottom -->
                     <div
-                      v-if="value.isInsertItemProducts"
+                      v-show="value.isInsertItemProducts"
                       slot="table-actions-bottom"
                       class="mx-1 my-2 px-2"
                     >
@@ -990,6 +990,7 @@ export default {
       ipAddressCurrent: '',
       isLockedVoucher: false,
       isUseChecked: [],
+      productKeyWord: '',
     }
   },
 
@@ -1025,20 +1026,7 @@ export default {
       return this.GET_PROMOTION_PROGRAMS_GETTER
     },
     getItemsProduct() {
-      // return this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER
-      return [{
-        data: this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER.map(data => ({
-          groupOneFreeItem: data.groupOneFreeItem,
-          levelNumber: data.levelNumber,
-          productCode: data.productCode,
-          productId: data.productId,
-          productName: data.productName,
-          quantity: data.quantity,
-          quantityMax: data.quantityMax,
-          stockQuantity: data.stockQuantity,
-          name: data.productName,
-        })),
-      }]
+      return this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER
     },
     getPromotionCalculation() {
       return this.GET_PROMOTION_CALCULATION_GETTER
@@ -1120,9 +1108,26 @@ export default {
     },
     getItemsProduct() {
       // để show lên vue-autosuggest thì phải để [{data: value}]
-      this.allProducts = [...this.getItemsProduct]
+      const getItemProductProgram = [...this.getItemsProduct.map(data => ({
+        groupOneFreeItem: data.groupOneFreeItem,
+        levelNumber: data.levelNumber,
+        productCode: data.productCode,
+        productId: data.productId,
+        productName: data.productName,
+        quantity: data.quantity,
+        quantityMax: data.quantityMax,
+        stockQuantity: data.stockQuantity,
+        name: this.productKeyWord,
+      }))]
+      this.allProducts = [{
+        data: getItemProductProgram,
+      }]
       if (this.allProducts[0].data && this.allProducts[0].data.length === 1) {
-        this.$nextTick(() => document.getElementById('autosuggest__product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+        this.$nextTick(() => {
+          setTimeout(() => {
+            document.getElementById('autosuggest__product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 }))
+          }, 100)
+        })
       }
     },
     needPayment() {
@@ -1540,6 +1545,7 @@ export default {
 
     loadProducts(programId, keyWord) {
       this.allProducts = [{ data: null }]
+      this.productKeyWord = keyWord
       if (keyWord !== null) {
         if (keyWord.length >= commonData.minSearchLength) {
           this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
@@ -1551,7 +1557,7 @@ export default {
       }
     },
     selectProduct(programId, suggestion) {
-      this.pay.productSearch = null
+      this.pay.productSearch = ''
       this.allProducts = [{ data: null }]
       let productCodeFocus = ''
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
