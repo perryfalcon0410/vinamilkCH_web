@@ -861,10 +861,12 @@ export default {
       this.currentOrderNumber = val
       this.onlineOrderId = val.onlineOrderId
 
-      if (this.currentOrderNumber.type.apParamCode.includes('ONLINE')) {
-        this.isOnline = true
-      } else {
-        this.isOnline = false
+      if (this.onlineOrderId !== null) {
+        if (this.currentOrderNumber.type.apParamCode.includes('ONLINE')) {
+          this.isOnline = true
+        } else {
+          this.isOnline = false
+        }
       }
 
       this.bills = this.bills.map(bill => {
