@@ -280,6 +280,8 @@ export default {
     return {
       dataPrintOptions: {},
       printerName: null,
+      bodyData: [],
+      header: [],
     }
   },
   computed: {
@@ -349,9 +351,14 @@ export default {
       pdf.setFont('Ario-Regular')
       pdf.text(`Add: ${this.reportSalesShopData.address || ''}`, 10, 16)
       pdf.text(`Tel: ${this.reportSalesShopData.tel || ''}`, 10, 22)
-      pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 110, 16)
-      pdf.text(`Ngày in: ${this.$moment().locale('en').format('DD/MM/YYYY - HH:mm:ss A')}`, 125, 22)
+      pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 117, 16)
+      pdf.text(`Ngày in: ${this.reportSalesShopData.dateOfPrinting}`, 124, 22)
       // total table
+      const padding = {
+        cellPadding: {
+          top: 2, bottom: 2, left: 0, right: 0,
+        },
+      }
       pdf.autoTable({
         startY: 30,
         margin: {
@@ -360,27 +367,152 @@ export default {
         },
         styles: {
           font: 'Ario-Bold',
-          fontSize: 7.5,
+          fontSize: 7,
           textColor: 'black',
           fontStyle: 'bold',
         },
         body: [
           [
-            { content: 'Tổng Số HĐ:', halign: 'right', styles: { halign: 'right', cellWidth: 120, fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.someBills)}`, styles: { halign: 'right', cellWidth: 19, fillColor: [211, 211, 211] } },
-            { content: 'Tổng cộng:', styles: { halign: 'right', cellWidth: 35, fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalQuantity)}`, styles: { halign: 'right', cellWidth: 32, fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalTotal)}`, styles: { halign: 'right', cellWidth: 35, fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat)}`, styles: { halign: 'right', cellWidth: 18, fillColor: [211, 211, 211] } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay)}`, styles: { halign: 'right', cellWidth: 18, fillColor: [211, 211, 211] } },
+            {
+              content: 'Tổng Số HĐ:',
+              halign: 'right',
+              styles: {
+                halign: 'right', cellWidth: 120, fillColor: [211, 211, 211], ...padding,
+              },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.someBills) || ''}`,
+              styles: {
+                halign: 'right', cellWidth: 29, fillColor: [211, 211, 211], ...padding,
+              },
+            },
+            {
+              content: 'Tổng cộng:',
+              styles: {
+                halign: 'right', cellWidth: 22, fillColor: [211, 211, 211], ...padding,
+              },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalQuantity) || ''}`,
+              styles: {
+                halign: 'right', cellWidth: 18, fillColor: [211, 211, 211], ...padding,
+              },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalTotal) || ''}`,
+              styles: {
+                halign: 'right', cellWidth: 32, fillColor: [211, 211, 211], ...padding,
+              },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotion) || ''}`,
+              styles: {
+                halign: 'right', cellWidth: 17, fillColor: [211, 211, 211], ...padding,
+              },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat) || ''}`,
+              styles: {
+                halign: 'right', cellWidth: 18, fillColor: [211, 211, 211], ...padding,
+              },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay) || ''}`,
+              styles: {
+                halign: 'right',
+                fillColor: [211, 211, 211],
+                cellPadding: {
+                  top: 2, bottom: 2, left: 0, right: 2,
+                },
+              },
+            },
           ],
         ],
         didDrawCell: data => {
           pdf.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height)
         },
       })
-      const res = pdf.autoTableHtmlToJson(document.getElementById('report-sales-table'))
-      pdf.autoTable(res.columns, res.data, {
+      const header = [
+        { content: 'STT', styles: { font: 'Ario-Bold' } },
+        {
+          content: 'Mã HĐ', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'Mã KH', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'Tên KH', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'Ngành', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'Mã SP', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'Tên SP', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'ĐVT', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'SL', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'Giá', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'T.Tiền', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'KM', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'KM (VAT)', styles: { font: 'Ario-Bold' },
+        },
+        {
+          content: 'Thanh toán', styles: { font: 'Ario-Bold' },
+        },
+      ]
+      this.header.push(header)
+      for (let i = 0; i < this.reportSalesData.length; i += 1) {
+        if (i > 0 && this.reportSalesData[i].orderNumber === this.reportSalesData[i - 1].orderNumber) {
+          this.bodyData.push([
+            { content: `${i + 1}`, styles: { } },
+            { content: `${this.reportSalesData[i].orderNumber}`, styles: { } },
+            { content: '"', styles: { halign: 'center' } },
+            { content: '"', styles: { halign: 'center' } },
+            { content: `${this.reportSalesData[i].industry || ''}`, styles: { } },
+            { content: `${this.reportSalesData[i].productCode || ''}`, styles: { } },
+            { content: `${this.reportSalesData[i].productName || ''}`, styles: { } },
+            { content: `${this.reportSalesData[i].unit || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].quantity) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].price) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].total) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotion) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotionNotVAT) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].pay) || ''}`, styles: { } },
+          ])
+        } else {
+          this.bodyData.push([
+            { content: `${i + 1}`, styles: { } },
+            { content: `${this.reportSalesData[i].orderNumber}`, styles: { } },
+            { content: `${this.reportSalesData[i].customerCode}`, styles: { } },
+            { content: `${this.reportSalesData[i].customerName}`, styles: { } },
+            { content: `${this.reportSalesData[i].industry || ''}`, styles: { } },
+            { content: `${this.reportSalesData[i].productCode || ''}`, styles: { } },
+            { content: `${this.reportSalesData[i].productName || ''}`, styles: { } },
+            { content: `${this.reportSalesData[i].unit || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].quantity) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].price) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].total) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotion) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotionNotVAT) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].pay) || ''}`, styles: { } },
+          ])
+        }
+      }
+      pdf.autoTable({
         showHead: 'firstPage',
         startY: pdf.previousAutoTable.finalY + 2,
         margin: {
@@ -391,14 +523,14 @@ export default {
         styles: {
           font: 'Ario-Regular',
           Color: [255, 0, 0],
-          fontSize: 7.5,
+          fontSize: 7,
           textColor: 'black',
         },
         headStyles: {
           fillColor: 'white',
           font: 'Ario-Bold',
           textColor: 'black',
-          fontSize: 8,
+          fontSize: 7.5,
           lineWidth: 0.1,
           lineColor: 'black',
         },
@@ -409,19 +541,25 @@ export default {
           3: { cellWidth: 35 },
           4: { cellWidth: 18 },
           5: { cellWidth: 13 },
-          6: { cellWidth: 45 },
+          6: { cellWidth: 30 },
           7: { cellWidth: 10 },
-          8: { halign: 'right', cellWidth: 12 },
-          9: { halign: 'right', cellWidth: 15 },
-          10: { halign: 'right', cellWidth: 20 },
-          11: { halign: 'right' },
-          12: { halign: 'right' },
+          8: { halign: 'right', cellWidth: 11 },
+          9: { halign: 'right', cellWidth: 14 },
+          10: { halign: 'right', cellWidth: 18 },
+          11: { halign: 'right', cellWidth: 18 },
+          12: { halign: 'right', cellWidth: 18 },
+          13: { halign: 'right' },
         },
         didDrawCell: data => {
           if (data.section === 'head') {
             pdf.setDrawColor('black')
             pdf.setLineWidth(0.5)
             pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
+          }
+          if (data.section === 'body' && data.row.index === 0) {
+            pdf.setDrawColor('black')
+            pdf.setLineWidth(0.1)
+            pdf.line(data.cell.x, data.cursor.y, data.cell.x + data.cell.width, data.cursor.y)
           }
           if (data.section === 'body' && data.column.index === 0) {
             pdf.setDrawColor('black')
@@ -439,7 +577,11 @@ export default {
             pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
           }
         },
+        head: [...this.header],
+        body: [...this.bodyData],
       })
+      this.header = []
+      this.bodyData = []
 
       if (pdf.previousAutoTable.finalY + 50 > pdf.internal.pageSize.getHeight()) {
         pdf.addPage()
