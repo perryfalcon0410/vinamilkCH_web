@@ -1263,7 +1263,7 @@ export default {
           this.bodyData = []
 
           // START - table tổng cộng và điều chỉnh
-          this.createTableTotal(pdf, this.expAdjust.orderImports[i])
+          this.createTableTotal(pdf, this.expAdjust.orderImports[i].totalPriceVat, this.expAdjust.orderImports[i].redInvoiceNo)
           // END - table tổng cộng và điều chỉnh
         }
         this.count = 1
@@ -1290,10 +1290,10 @@ export default {
           },
           body: [
             [
-              { content: 'Loại: Xuất trả PO', styles: { font: 'Ario-Bold' } },
-              { content: 'Tổng SL :' },
-              { content: `${this.$formatNumberToLocale(this.expPO.totalQuantity || 0)}`, styles: { font: 'Ario-Bold', halign: 'right' } },
-              { content: 'T.Tiền :' },
+              { content: 'Loại: Xuất trả PO', styles: { font: 'Ario-Bold', cellWidth: 115 } },
+              { content: 'Tổng SL :', styles: { cellWidth: 20 } },
+              { content: `${this.$formatNumberToLocale(this.expPO.totalQuantity || 0)}`, styles: { font: 'Ario-Bold', halign: 'right', cellWidth: 15 } },
+              { content: 'T.Tiền :', styles: { halign: 'right', cellWidth: 20 } },
               { content: `${this.$formatNumberToLocale(this.expPO.totalPriceNotVat || 0)}`, styles: { font: 'Ario-Bold', halign: 'right' } },
             ],
           ],
@@ -1492,7 +1492,7 @@ export default {
           this.bodyData = []
 
           // START - table tổng cộng và điều chỉnh
-          this.createTableTotal(pdf, this.expPO.orderImports[i])
+          this.createTableTotal(pdf, this.expPO.orderImports[i].totalPriceNotVat, this.expPO.orderImports[i].redInvoiceNo)
           // END - table tổng cộng và điều chỉnh
         }
         this.count = 1
@@ -1718,7 +1718,7 @@ export default {
           this.bodyData = []
 
           // START - table tổng cộng và điều chỉnh
-          this.createTableTotal(pdf, this.expBorrow.orderImports[i])
+          this.createTableTotal(pdf, this.expBorrow.orderImports[i].totalPriceVat, this.expBorrow.orderImports[i].redInvoiceNo)
           // END - table tổng cộng và điều chỉnh
         }
         this.count = 1
@@ -1727,8 +1727,8 @@ export default {
     // END - Bảng xuất vay mượn
 
     // START - table tổng cộng và điều chỉnh
-    createTableTotal(pdf, data) {
-      if (data.redInvoiceNo !== 'null') {
+    createTableTotal(pdf, data, redInvoiceNo) {
+      if (redInvoiceNo !== 'null') {
         pdf.autoTable({
           theme: 'plain',
           startY: pdf.previousAutoTable.finalY + 2,
@@ -1748,7 +1748,7 @@ export default {
             ],
             [
               { content: 'T.Cộng:', styles: { halign: 'right' } },
-              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { halign: 'right' } },
+              { content: `${this.$formatNumberToLocale(data)}`, styles: { halign: 'right' } },
             ],
           ],
         })
