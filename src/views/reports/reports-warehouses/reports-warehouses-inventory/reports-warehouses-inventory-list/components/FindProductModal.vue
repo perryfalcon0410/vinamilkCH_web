@@ -479,7 +479,7 @@ export default {
       this.onPaginationChange()
     },
     onSearchClick() {
-      this.GET_PRODUCT_LIST_ACTION({
+      this.updateSearchData({
         ...this.decentralization,
         ...this.searchOptions,
         catId: this.productCategorySelected,
