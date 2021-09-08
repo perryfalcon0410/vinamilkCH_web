@@ -503,7 +503,9 @@
       :online-order-customers="onlineOrderCustomers"
       :order-online="orderOnline"
       :open-popup="openPopup"
+      :order-current-id="orderCurrentId"
       @getCustomerInfo="getCustomerInfo"
+      @getSearchOption="getSearchOption"
     />
     <!-- END - Sales Search Modal -->
   </b-col>
@@ -1281,6 +1283,10 @@ export default {
     },
     changeStateOpenPayModal(isOpened) {
       this.isOpenPayModal = isOpened
+    },
+    getSearchOption(val) {
+      const searchOption = val
+      this.$emit('getSearchOption', searchOption)
     },
   },
 }

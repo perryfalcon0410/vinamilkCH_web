@@ -27,7 +27,7 @@
               class:'form-control pr-3 h7',
               placeholder:'Tìm sản phẩm (F3) - Vui lòng nhập ít nhất 4 kí tự',
             }"
-            :component-attr-class-autosuggest-results="(productsSearchLength < 11) ? 'autosuggest__results check-auto-suggesst' : 'autosuggest__results'"
+            :component-attr-class-autosuggest-results="(productsSearchLength < 10) ? 'autosuggest__results check-auto-suggesst' : 'autosuggest__results'"
             @input="onChangeKeyWord"
             @selected="onClickAddProduct"
             @focus="focusInputProduct"
@@ -313,6 +313,7 @@
         @getIdCustomer="getIdCustomer"
         @deleteSaveBill="deleteSaveBill"
         @getOrderNumber="getOrderNumber"
+        @getSearchOption="getSearchOption"
       />
       <!-- END - Section Form pay -->
 
@@ -367,6 +368,7 @@ export default {
       currentCustomer: {},
       defaultCustomer: {},
       currentOrderNumber: {},
+      searchOptionModalSearch: {},
       salemtPOOptions: [],
       selectedValue: null,
       checkStock: false,
@@ -479,6 +481,11 @@ export default {
           },
           deliveryType: {
             value: null,
+          },
+          searchModalOption: {
+            searchKeywords: null,
+            phoneNumber: null,
+            idNo: null,
           },
           orderId: null,
           orderNumber: null,
@@ -885,6 +892,11 @@ export default {
           deliveryType: {
             value: this.defaultDTSelected,
           },
+          searchModalOption: {
+            searchKeywords: '',
+            phoneNumber: '',
+            idNo: '',
+          },
           orderId: null,
           orderNumber: null,
           note: null,
@@ -909,6 +921,11 @@ export default {
           },
           deliveryType: {
             value: this.defaultDTSelected,
+          },
+          searchModalOption: {
+            searchKeywords: '',
+            phoneNumber: '',
+            idNo: '',
           },
           orderId: null,
           orderNumber: null,
@@ -971,6 +988,7 @@ export default {
           this.currentOrderNumber.onlineOrderId = bill.orderId
           this.currentOrderNumber.orderNumber = bill.orderNumber
           this.currentOrderNumber.note = bill.note
+
           this.onlineOrderId = bill.orderNumber
 
           if (this.onlineOrderId === undefined) {
@@ -1214,6 +1232,23 @@ export default {
         return true
       }
       return false
+    },
+
+    getSearchOption(val) {
+      this.searchOptionModalSearch = val
+      this.bills = this.bills.map(bill => {
+        if (bill.id === this.orderCurrentId) {
+          return {
+            ...bill,
+            searchModalOption: {
+              searchKeywords: val.searchKeywords,
+              phoneNumber: val.phoneNumber,
+              idNo: val.idNo,
+            },
+          }
+        }
+        return bill
+      })
     },
 
     // Create callback function to receive barcode when the scanner is already done

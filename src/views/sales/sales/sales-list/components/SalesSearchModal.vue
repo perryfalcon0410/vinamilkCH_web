@@ -42,6 +42,7 @@
                   ref="focusInput"
                   v-model="searchKeywords"
                   placeholder="Nhập mã/ họ tên"
+                  @input="getSearchOption"
                 />
                 <b-input-group-append
                   is-text
@@ -75,6 +76,7 @@
                 autocomplete="on"
                 maxlength="10"
                 @keypress="$onlyNumberInput"
+                @input="getSearchOption"
               />
               <b-input-group-append
                 is-text
@@ -104,6 +106,7 @@
             >
               <b-form-input
                 v-model="idNo"
+                @input="getSearchOption"
               />
               <b-input-group-append
                 is-text
@@ -329,6 +332,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    orderCurrentId: {
+      type: Number,
+      default: Number,
+    },
   },
   data() {
     return {
@@ -542,6 +549,14 @@ export default {
       this.onClickCloseButton()
       this.$emit('getCustomerInfo', {
         data: obj,
+      })
+    },
+
+    getSearchOption() {
+      this.$emit('getSearchOption', {
+        searchKeywords: this.searchKeywords,
+        phoneNumber: this.phoneNumber,
+        idNo: this.idNo,
       })
     },
   },
