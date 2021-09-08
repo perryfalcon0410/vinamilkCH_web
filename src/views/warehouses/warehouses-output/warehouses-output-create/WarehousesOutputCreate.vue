@@ -826,7 +826,7 @@ export default {
     createExport() {
       if (this.products.length > 0 || this.rowsProductPromotion.length > 0) {
         if (this.products.findIndex(item => item.quantityReturn < 0) === -1 && this.rowsProductPromotion.findIndex(item => item.quantityPromo < 0) === -1) {
-          if (this.products.reduce((accum, i) => accum + Number(i.quantityReturn) || 0, 0) > 0 || this.rowsProductPromotion.reduce((accum, i) => accum + Number(i.quantityPromo) || 0, 0) > 0) {
+          if (this.products.reduce((accum, i) => accum + Number(i.quantityReturn) || 0, 0) > 0 || this.rowsProductPromotion.reduce((accum, i) => accum + Number(i.quantityPromo) || 0, 0) > 0 || this.products.reduce((accum, i) => accum + Number(i.quantity) || 0, 0) > 0) {
             this.CREATE_EXPORT_ACTION(
               {
                 importType: Number(this.outputTypeSelected),
