@@ -314,7 +314,7 @@
                   :disabled="statusUpdateButton().disabled"
                   class="ml-1"
                   popover-position="top"
-                  @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId, props.row.transDate)"
+                  @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
                 />
                 <v-icon-remove
                   v-show="$formatISOtoVNI(props.row.transDate) === nowDate && statusDeleteButton().show"

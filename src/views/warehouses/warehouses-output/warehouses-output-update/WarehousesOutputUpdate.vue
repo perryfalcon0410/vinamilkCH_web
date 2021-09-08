@@ -127,7 +127,6 @@
           Ghi chú
         </div>
         <b-form-textarea
-          ref="focusInput"
           v-model="warehousesOutput.note"
           maxlength="250"
           class="mb-1"
