@@ -1409,7 +1409,7 @@ export default {
           this.bodyData = []
 
           // START - table tổng cộng và điều chỉnh
-          this.createTableTotal(pdf, this.lstAdjust.orderImports[i], false)
+          this.createTableTotal(pdf, this.lstAdjust.orderImports[i], true)
           // END - table tổng cộng và điều chỉnh
         }
         this.count = 1
@@ -1699,11 +1699,11 @@ export default {
             tableLineColor: 'black',
             body: [
               [
-                { content: `Số HĐ: ${this.lstBorrow.orderImports[i].redInvoiceNo}`, halign: 'right' },
-                { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstBorrow.orderImports[i].orderDate)}` },
+                { content: `Số HĐ: ${this.lstBorrow.orderImports[i].redInvoiceNo || ''}`, halign: 'right' },
+                { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstBorrow.orderImports[i].orderDate) || ''}` },
                 { content: this.lstBorrow.orderImports[i].poNumber !== null ? `- Số PO: ${this.lstBorrow.orderImports[i].poNumber}` : '- Số PO:' },
-                { content: `- Số nội bộ: ${this.lstBorrow.orderImports[i].internalNumber}` },
-                { content: `- Mã nhập hàng: ${this.lstBorrow.orderImports[i].transCode}` },
+                { content: `- Số nội bộ: ${this.lstBorrow.orderImports[i].internalNumber || ''}` },
+                { content: `- Mã nhập hàng: ${this.lstBorrow.orderImports[i].transCode || ''}` },
               ],
             ],
             didDrawCell: data => {
@@ -1865,7 +1865,7 @@ export default {
           this.bodyData = []
 
           // START - table tổng cộng và điều chỉnh
-          this.createTableTotal(pdf, this.lstBorrow.orderImports[i], false)
+          this.createTableTotal(pdf, this.lstBorrow.orderImports[i], true)
           // END - table tổng cộng và điều chỉnh
         }
         this.count = 1
