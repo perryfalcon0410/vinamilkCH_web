@@ -578,7 +578,7 @@ export default {
                 { content: `${pro.unit}`, styles: { cellWidth: 20, halign: 'center' } },
                 { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
                 { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.priceNotVat : pro.price)}`, styles: { cellWidth: 30, halign: 'right' } },
-                { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.priceNotVat : pro.totalPrice)}`, styles: { cellWidth: 30, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.totalPriceNotVat : pro.totalPrice)}`, styles: { cellWidth: 30, halign: 'right' } },
               ])
               this.count += 1
             })
@@ -703,7 +703,7 @@ export default {
                 { content: `${pro.unit}`, styles: { cellWidth: 20, halign: 'center' } },
                 { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
                 { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.priceNotVat : pro.price)}`, styles: { cellWidth: 30, halign: 'right' } },
-                { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.priceNotVat : pro.totalPrice)}`, styles: { cellWidth: 30, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.totalPriceNotVat : pro.totalPrice)}`, styles: { cellWidth: 30, halign: 'right' } },
               ])
               this.count += 1
             })
@@ -903,7 +903,7 @@ export default {
             { content: 'Số PO:', styles: { ...styleDef } },
             { content: this.inputOrderInfoData.transType === 0 ? `${this.inputOrderInfoData.poNumber}` : '', styles: { font: 'Ario-Bold', ...styleDef } },
             { content: 'Số nội bộ:', styles: { ...styleDef } },
-            { content: `${this.inputOrderInfoData.internalNumber}`, styles: { font: 'Ario-Bold', ...styleDef } },
+            { content: `${this.inputOrderInfoData.internalNumber || ''}`, styles: { font: 'Ario-Bold', ...styleDef } },
           ],
           [
             { content: 'Số hóa đơn:', styles: { ...styleDef } },
