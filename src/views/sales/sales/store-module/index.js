@@ -443,7 +443,7 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            state.promotionPrograms = res.data
+            state.promotionPrograms = res.data || {}
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)
