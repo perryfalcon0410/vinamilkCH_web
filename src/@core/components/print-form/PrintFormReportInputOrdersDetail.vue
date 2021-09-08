@@ -329,6 +329,7 @@ export default {
           }
         },
       })
+      this.bodyData = []
       for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
         pdf.setPage(j)
         pdf.text(`Trang ${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 25, pdf.internal.pageSize.getHeight() - 10)
