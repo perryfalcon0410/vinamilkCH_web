@@ -53,7 +53,7 @@
               >
                 <b-check
                   v-model="value.isUse"
-                  :disabled="!value.isEditable || value.promotionType === Number(promotionTypeOption[0].id)"
+                  :disabled="(!value.isEditable || value.promotionType === Number(promotionTypeOption[0].id)) || isPaid"
                   @change="onChangeCheckProgramPromotion(value.programId)"
                 />
                 <div class="text-white">
@@ -440,7 +440,10 @@
                       cols="6"
                       class="h6 mb-0"
                     >
-                      <b-input-group class="input-group-merge">
+                      <b-input-group
+                        v-if="!isPaid"
+                        class="input-group-merge"
+                      >
                         <b-input-group-prepend
                           v-b-popover.hover="'Chọn voucher'"
                           is-text
@@ -461,6 +464,31 @@
                             scale="1.0"
                             class="cursor-pointer"
                             @click="resetVoucher()"
+                          />
+                        </b-input-group-text>
+                      </b-input-group>
+                      <b-input-group
+                        v-else
+                        class="input-group-merge"
+                      >
+                        <b-input-group-prepend
+                          v-b-popover.hover="'Chọn voucher'"
+                          is-text
+                          class="cursor-pointer text-right"
+                        >
+                          <b-icon-three-dots-vertical
+                            scale="1.5"
+                          />
+                        </b-input-group-prepend>
+                        <b-form-input
+                          v-model="pay.voucher.voucherSerials"
+                          class="pl-1 h6 mb-0 text-right"
+                          readonly
+                        />
+                        <b-input-group-text>
+                          <b-icon-x
+                            scale="1.0"
+                            class="cursor-pointer"
                           />
                         </b-input-group-text>
                       </b-input-group>
@@ -508,12 +536,22 @@
                           @keyup.enter="searchDiscount"
                         />
                         <b-input-group-append
+                          v-if="!isPaid"
                           is-text
                         >
                           <b-icon-x
                             scale="1.0"
                             class="cursor-pointer"
                             @click="resetDiscount"
+                          />
+                        </b-input-group-append>
+                        <b-input-group-append
+                          v-else
+                          is-text
+                        >
+                          <b-icon-x
+                            scale="1.0"
+                            class="cursor-pointer"
                           />
                         </b-input-group-append>
                       </b-input-group>
