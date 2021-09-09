@@ -399,7 +399,7 @@ export default {
     } else {
       const element = document.getElementById('print-form-sale-receipt-v2')
       element.classList.remove('d-none')
-      const heightPage = Number(element.offsetHeight) * 0.28
+      const heightPage = Number(element.offsetHeight) * 0.29
       element.classList.add('d-none')
       // format UI bill
       // eslint-disable-next-line new-cap

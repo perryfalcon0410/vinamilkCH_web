@@ -1253,11 +1253,11 @@ export default {
     // },
   },
 
-  created() {
-    window.onload = () => {
-      window.addEventListener('keydown', this.keyDown)
-    }
-  },
+  // created() {
+  //   window.onload = () => {
+  //     window.addEventListener('keydown', this.keyDown)
+  //   }
+  // },
 
   mounted() {
     this.isDisabledPaymentBtn = true
@@ -1270,11 +1270,12 @@ export default {
         this.ipAddress = null
       }
     })
+    window.addEventListener('keydown', this.keyDown)
   },
 
-  destroyed() {
-    window.removeEventListener('keydown', this.keyDown, false)
-  },
+  // destroyed() {
+  //   window.removeEventListener('keydown', this.keyDown, false)
+  // },
 
   methods: {
     ...mapActions(SALES, [
@@ -1697,8 +1698,8 @@ export default {
             discountCode: this.pay.discount.discountCode,
             voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
             vouchers: this.pay.voucher.vouchers,
-            remainAmount: Number(this.pay.needPaymentAmount) || 0,
-            paymentAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
+            paymentAmount: Number(this.pay.needPaymentAmount) || 0,
+            remainAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
             extraAmount: Number(this.pay.extraAmount) || 0,
           },
           onSuccess: () => {
@@ -1850,12 +1851,12 @@ export default {
       })
     },
     keyDown(e) {
-      if (e.key === 'F7' && this.isOpenPayModal && this.totalQuantity > 0) {
+      if (e.key === 'F7' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading) {
         if (!this.isPaid && this.statusPrintTmpButton()) {
           this.printSaleOrderTemp()
         }
       }
-      if (e.key === 'F8' && this.isOpenPayModal && this.totalQuantity > 0) {
+      if (e.key === 'F8' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading) {
         if (!this.isPaid && this.statusPayPrintButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
             this.isLoading = true
@@ -1863,7 +1864,7 @@ export default {
           }
         }
       }
-      if (e.key === 'F9' && this.isOpenPayModal && this.totalQuantity > 0) {
+      if (e.key === 'F9' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading) {
         if (!this.isPaid && this.statusPayButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
             this.isLoading = true
