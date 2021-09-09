@@ -216,19 +216,19 @@
             {{ products.unit }}
           </td>
           <td class="text-right px-20">
-            {{ $formatNumberToLocale(products.quantity) }}
+            {{ $formatNumberToLocale(products.quantity) || '' }}
           </td>
           <td class="text-right px-20">
-            {{ $formatNumberToLocale(products.price) }}
+            {{ $formatNumberToLocale(products.price) || '' }}
           </td>
           <td class="text-right px-20">
-            {{ $formatNumberToLocale(products.total) }}
+            {{ $formatNumberToLocale(products.total) || '' }}
           </td>
           <td class="text-right px-20">
-            {{ $formatNumberToLocale(products.promotionNotVAT) }}
+            {{ $formatNumberToLocale(products.promotionNotVAT) || '' }}
           </td>
           <td class="text-right px-20">
-            {{ $formatNumberToLocale(products.pay) }}
+            {{ $formatNumberToLocale(products.pay) || '' }}
           </td>
         </tr>
       </tbody>

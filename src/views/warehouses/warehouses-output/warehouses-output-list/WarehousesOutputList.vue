@@ -10,7 +10,6 @@
     >
       <b-from
         class="d-print-none"
-        @keydown.enter="onClickSearchWarehousesOutput"
       >
         <!-- START - Search -->
         <v-card-actions
@@ -36,6 +35,7 @@
                 maxlength="20"
                 placeholder="Nhập mã xuất hàng"
                 trim
+                @keydown.enter="onClickSearchWarehousesOutput"
               />
               <b-input-group-append is-text>
                 <b-icon-x
@@ -65,6 +65,7 @@
                 maxlength="20"
                 placeholder="Nhập số hoá đơn"
                 trim
+                @keydown.enter="onClickSearchWarehousesOutput"
               />
               <b-input-group-append is-text>
                 <b-icon-x
