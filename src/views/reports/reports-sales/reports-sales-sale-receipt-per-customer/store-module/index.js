@@ -74,7 +74,7 @@ export default {
             throw new Error('Không có dữ liệu xuất')
           }
 
-          const fileName = `Bao_cao_doanh_so_theo_hoa_don_Filled_${moment().format('YYYYMMDD')}_${moment().locale('vi').format('hhmmss')}.xlsx`
+          const fileName = `Bao_cao_doanh_so_theo_hoa_don_Filled_${moment().format('YYYYMMDD')}_${moment().locale('vi').format('HHmmss')}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
           FileSaver.saveAs(blob, fileName)
         })

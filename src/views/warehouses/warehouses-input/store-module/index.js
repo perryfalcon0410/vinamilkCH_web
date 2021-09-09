@@ -199,7 +199,7 @@ export default {
           if (res.type === 'application/json') {
             throw new Error('Không có dữ liệu xuất')
           }
-          const fileName = `Danh_sach_san_pham_PO_nhap hang_${moment().format('YYYYMMDD')}_${moment().locale('vi').format('hhmmss')}.xlsx`
+          const fileName = `Danh_sach_san_pham_PO_nhap hang_${moment().format('YYYYMMDD')}_${moment().locale('vi').format('HHmmss')}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
         })

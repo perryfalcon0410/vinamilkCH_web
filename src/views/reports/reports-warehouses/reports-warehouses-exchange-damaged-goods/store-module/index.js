@@ -92,7 +92,7 @@ export default {
             throw new Error('Không có dữ liệu xuất')
           }
 
-          const fileName = `BC đổi hàng hỏng_Filled_${moment().format('YYYYMMDD')}_${moment().locale('vi').format('hhmmss')}_${Math.floor(Math.random() * 1000)}.xlsx`
+          const fileName = `BC đổi hàng hỏng_Filled_${moment().format('YYYYMMDD')}_${moment().locale('vi').format('HHmmss')}_${Math.floor(Math.random() * 1000)}.xlsx`
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
           FileSaver.saveAs(blob, fileName)
         })

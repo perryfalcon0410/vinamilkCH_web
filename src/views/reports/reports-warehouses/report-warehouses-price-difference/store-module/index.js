@@ -101,7 +101,7 @@ export default {
             throw new Error('Không có dữ liệu xuất')
           }
 
-          const fileName = `Chênh lệch giá Filled_${moment().format('DDMMYYYY')}_${moment().locale('vi').format('hhmmss')}_${Math.floor(Math.random() * 900 + 100)}.xlsx`
+          const fileName = `Chênh lệch giá Filled_${moment().format('DDMMYYYY')}_${moment().locale('vi').format('HHmmss')}_${Math.floor(Math.random() * 900 + 100)}.xlsx`
           const blob = new Blob([res], { type: 'data:application/xlsx' })
           FileSaver.saveAs(blob, fileName)
         })
