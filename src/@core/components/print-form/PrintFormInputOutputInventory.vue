@@ -712,11 +712,11 @@ export default {
             },
             {
               content: `${this.$formatNumberToLocale(this.reportTotalInfoData.endingQty) || ''}`,
-              styles: { halign: 'right', cellWidth: 20 },
+              styles: { cellWidth: 18 },
             },
             {
               content: `${this.$formatNumberToLocale(this.reportTotalInfoData.endingAmount) || ''}`,
-              styles: { },
+              styles: { halign: 'right' },
             },
           ],
         ],
