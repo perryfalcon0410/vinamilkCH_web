@@ -331,7 +331,7 @@ export default {
         },
         styles: {
           font: 'Ario-Regular',
-          fontSize: 9,
+          fontSize: 8.5,
           textColor: 'black',
         },
         body: [
@@ -339,11 +339,17 @@ export default {
             {
               content: 'Tổng Cộng:',
               styles: {
-                halign: 'right', fillColor: [211, 211, 211], lineWidth: 0, cellWidth: 187,
+                halign: 'right', font: 'Ario-Bold', fillColor: [211, 211, 211], lineWidth: 0, cellWidth: 146,
               },
             },
             {
               content: `${this.$formatNumberToLocale(this.commonInfo.totalQuantity)}`,
+              styles: {
+                halign: 'right', font: 'Ario-Bold', fillColor: [211, 211, 211], lineWidth: 0, cellWidth: 15,
+              },
+            },
+            {
+              content: `${this.$formatNumberToLocale(this.commonInfo.totalPrice)}`,
               styles: {
                 halign: 'right', font: 'Ario-Bold', fillColor: [211, 211, 211], lineWidth: 0,
               },
@@ -374,25 +380,38 @@ export default {
           },
           {
             content: `${this.$formatNumberToLocale(item.totalQuantity)}`,
+            styles: {
+              lineWidth: 0, font: 'Ario-Bold', halign: 'right', cellWidth: 15,
+            },
+          },
+          {
+            content: `${this.$formatNumberToLocale(item.totalPrice)}`,
+            colSpan: 2,
             styles: { lineWidth: 0, font: 'Ario-Bold', halign: 'right' },
           },
         ]
         this.bodyData.push(header1)
         const title = [
           { content: 'STT', styles: { font: 'Ario-Bold', cellWidth: 10 } },
-          { content: 'Ngày bán', styles: { font: 'Ario-Bold', cellWidth: 40 } },
-          { content: 'Hóa đơn', styles: { font: 'Ario-Bold', halign: 'center', cellWidth: 40 } },
+          { content: 'Ngày bán', styles: { font: 'Ario-Bold', cellWidth: 37 } },
+          { content: 'Hóa đơn', styles: { font: 'Ario-Bold', halign: 'center', cellWidth: 37 } },
           {
             content: 'Mã SP', styles: { font: 'Ario-Bold', cellWidth: 15 },
           },
           {
-            content: 'Tên SP', styles: { font: 'Ario-Bold', cellWidth: 70 },
+            content: 'Tên SP', styles: { font: 'Ario-Bold', cellWidth: 35 },
           },
           {
             content: 'ĐVT', styles: { font: 'Ario-Bold', cellWidth: 12 },
           },
           {
-            content: 'SL', styles: { font: 'Ario-Bold', halign: 'center' },
+            content: 'SL', styles: { font: 'Ario-Bold', halign: 'center', cellWidth: 14 },
+          },
+          {
+            content: 'Giá', styles: { font: 'Ario-Bold', halign: 'center', cellWidth: 16 },
+          },
+          {
+            content: 'T.Tiền', styles: { font: 'Ario-Bold', halign: 'center' },
           },
         ]
         this.bodyData.push(title)
@@ -405,6 +424,8 @@ export default {
             { content: `${pro.productName}`, styles: { } },
             { content: `${pro.uom}`, styles: { } },
             { content: `${this.$formatNumberToLocale(pro.quantity) || ''}`, styles: { halign: 'right' } },
+            { content: `${this.$formatNumberToLocale(pro.price) || ''}`, styles: { halign: 'right' } },
+            { content: `${this.$formatNumberToLocale(pro.totalPrice) || ''}`, styles: { halign: 'right' } },
           ])
           this.count += 1
         })
@@ -428,7 +449,7 @@ export default {
               pdf.setDrawColor('black')
               pdf.setLineWidth(0.1)
               pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
-              if (key.column.index === 5) {
+              if (key.column.index === 7) {
                 pdf.setDrawColor('black')
                 pdf.setLineWidth(0.1)
                 pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)
@@ -452,7 +473,7 @@ export default {
               pdf.setLineWidth(0.1)
               pdf.line(key.cell.x, key.cursor.y, key.cell.x + key.cell.width, key.cursor.y)
             }
-            if (key.section === 'body' && key.column.index === 6) {
+            if (key.section === 'body' && key.column.index === 8) {
               pdf.setDrawColor('black')
               pdf.setLineWidth(0.1)
               pdf.line(key.cell.x + key.cell.width, key.cell.y + key.cell.height, key.cell.x + key.cell.width, key.cell.y)

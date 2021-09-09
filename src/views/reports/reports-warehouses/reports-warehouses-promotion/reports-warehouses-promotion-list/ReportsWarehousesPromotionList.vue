@@ -101,7 +101,14 @@
               class="mx-50 h7 text-brand-3"
               align-h="end"
             >
-              {{ totalInfo.totalQuantity }}
+              {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
+            </b-row>
+            <b-row
+              v-if="props.column.field === 'totalPrice'"
+              class="mx-50 h7 text-brand-3"
+              align-h="end"
+            >
+              {{ $formatNumberToLocale(totalInfo.totalPrice) }}
             </b-row>
 
           </template>
@@ -268,6 +275,27 @@ export default {
           thClass: 'text-nowrap',
         },
         {
+          label: 'Giá',
+          field: 'price',
+          sortable: false,
+          type: 'number',
+          tdClass: 'pr-2',
+          formatFn: this.$formatNumberToLocale,
+          thClass: 'text-nowrap',
+        },
+        {
+          label: 'Thành tiền',
+          field: 'totalPrice',
+          type: 'number',
+          tdClass: 'pr-2',
+          formatFn: this.$formatNumberToLocale,
+          sortable: false,
+          filterOptions: {
+            enabled: true,
+          },
+          thClass: 'text-nowrap',
+        },
+        {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
@@ -322,6 +350,8 @@ export default {
           promotionCode: data.promotionCode,
           onlineNumber: data.onlineNumber,
           orderType: data.orderType,
+          price: data.price,
+          totalPrice: data.totalPrice,
         }))
       }
       return []

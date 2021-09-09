@@ -165,7 +165,7 @@
                   class="form-control text-right"
                   :raw="true"
                   :options="options.number"
-                  maxlength="7"
+                  maxlength="9"
                   :state="isPricePositive(comboListRows[props.index].numProduct,props.index)"
                   @change.native="onChangeQuantity(props.row.originalIndex)"
                   @keydown.enter.native="onChangeQuantity(props.row.originalIndex)"
@@ -179,7 +179,7 @@
                   class="form-control text-right"
                   :raw="true"
                   :options="options.number"
-                  maxlength="12"
+                  maxlength="15"
                   @keypress="$onlyNumberInput"
                   @keyup.enter.native="focusInputSearch"
                 />
