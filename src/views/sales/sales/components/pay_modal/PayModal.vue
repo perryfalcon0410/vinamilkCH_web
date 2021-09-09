@@ -633,7 +633,7 @@
                         class="form-control h6 text-right"
                         :raw="true"
                         :options="options.number"
-                        maxlength="20"
+                        maxlength="15"
                         :disabled="totalQuantity === 0"
                         @keyup.native="extraAmountCalculation"
                       />
