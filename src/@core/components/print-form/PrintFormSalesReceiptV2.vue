@@ -387,7 +387,7 @@ export default {
       this.printSalesReceiptData = { ...this.getPrintSalesReceiptTempData }
     },
     printerOptions() {
-      this.printerName = this.printerOptions.billPrinterName
+      this.printerName = this.printerOptions.billPrinterName || ''
       this.ipAddress = this.printerOptions.clientIp || null
       this.isRemoveVNTones = this.printerOptions.removeAccent
     },
