@@ -368,7 +368,7 @@ export default {
       currentCustomer: {},
       defaultCustomer: {},
       currentOrderNumber: {},
-      searchOptionModalSearch: {},
+      currentSearchModalOption: {},
       salemtPOOptions: [],
       selectedValue: null,
       checkStock: false,
@@ -893,9 +893,9 @@ export default {
             value: this.defaultDTSelected,
           },
           searchModalOption: {
-            searchKeywords: '',
-            phoneNumber: '',
-            idNo: '',
+            searchKeywords: null,
+            phoneNumber: null,
+            idNo: null,
           },
           orderId: null,
           orderNumber: null,
@@ -923,9 +923,9 @@ export default {
             value: this.defaultDTSelected,
           },
           searchModalOption: {
-            searchKeywords: '',
-            phoneNumber: '',
-            idNo: '',
+            searchKeywords: null,
+            phoneNumber: null,
+            idNo: null,
           },
           orderId: null,
           orderNumber: null,
@@ -970,6 +970,11 @@ export default {
             orderId: this.currentOrderNumber.onlineOrderId,
             orderNumber: this.currentOrderNumber.orderNumber,
             note: this.currentOrderNumber.note,
+            searchModalOption: {
+              searchKeywords: this.currentSearchModalOption.searchKeywords,
+              phoneNumber: this.currentSearchModalOption.phoneNumber,
+              idNo: this.currentSearchModalOption.idNo,
+            },
             active: false,
             class: '',
           }
@@ -988,7 +993,9 @@ export default {
           this.currentOrderNumber.onlineOrderId = bill.orderId
           this.currentOrderNumber.orderNumber = bill.orderNumber
           this.currentOrderNumber.note = bill.note
-
+          this.currentSearchModalOption.searchKeywords = bill.searchModalOption.searchKeywords
+          this.currentSearchModalOption.phoneNumber = bill.searchModalOption.phoneNumber
+          this.currentSearchModalOption.idNo = bill.searchModalOption.idNo
           this.onlineOrderId = bill.orderNumber
 
           if (this.onlineOrderId === undefined) {
@@ -1019,6 +1026,11 @@ export default {
     onChangeQuantity(index) {
       if (this.orderProducts[index].quantity <= 0) {
         this.orderProducts[index].quantity = 0
+      }
+      if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
+        this.isDisabled = true
+      } else {
+        this.isDisabled = false
       }
       this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
@@ -1235,20 +1247,7 @@ export default {
     },
 
     getSearchOption(val) {
-      this.searchOptionModalSearch = val
-      this.bills = this.bills.map(bill => {
-        if (bill.id === this.orderCurrentId) {
-          return {
-            ...bill,
-            searchModalOption: {
-              searchKeywords: val.searchKeywords,
-              phoneNumber: val.phoneNumber,
-              idNo: val.idNo,
-            },
-          }
-        }
-        return bill
-      })
+      this.currentSearchModalOption = val
     },
 
     // Create callback function to receive barcode when the scanner is already done

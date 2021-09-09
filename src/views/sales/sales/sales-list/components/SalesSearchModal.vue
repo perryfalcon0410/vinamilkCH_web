@@ -336,6 +336,10 @@ export default {
       type: Number,
       default: Number,
     },
+    bills: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -486,6 +490,15 @@ export default {
       },
       deep: true,
     },
+    orderCurrentId: {
+      handler() {
+        const bill = this.bills.find(b => b.id === this.orderCurrentId)
+        this.searchKeywords = bill.searchModalOption.searchKeywords
+        this.phoneNumber = bill.searchModalOption.phoneNumber
+        this.idNo = bill.searchModalOption.idNo
+      },
+    },
+    deep: true,
   },
   mounted() {
   },

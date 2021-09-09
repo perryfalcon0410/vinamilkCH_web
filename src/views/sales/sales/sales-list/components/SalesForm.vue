@@ -504,6 +504,7 @@
       :order-online="orderOnline"
       :open-popup="openPopup"
       :order-current-id="orderCurrentId"
+      :bills="bills"
       @getCustomerInfo="getCustomerInfo"
       @getSearchOption="getSearchOption"
     />
