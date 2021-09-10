@@ -358,6 +358,7 @@ export default {
         cellPadding: {
           top: 2, bottom: 2, left: 0, right: 0,
         },
+        lineWidth: 0,
       }
       pdf.autoTable({
         startY: 30,
@@ -428,9 +429,6 @@ export default {
             },
           ],
         ],
-        didDrawCell: data => {
-          pdf.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height)
-        },
       })
       const header = [
         { content: 'STT', styles: { font: 'Ario-Bold' } },
