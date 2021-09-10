@@ -741,9 +741,7 @@ export default {
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-output-create' })
     },
-    onClickUpdateButton(id, type, poId, d) {
-      console.log(d)
-      console.log(nowDate)
+    onClickUpdateButton(id, type, poId) {
       this.$router.push({
         name: 'warehouses-output-update',
         params: {
