@@ -861,12 +861,14 @@ export default {
 
       this.bills = this.bills.map(bill => {
         if (bill.id === this.orderCurrentId) {
-          return {
-            ...bill,
-            orderType: {
-              value: val.type.value,
-            },
-            orderId: val.onlineOrderId,
+          if (this.onlineOrderId !== null) {
+            return {
+              ...bill,
+              orderType: {
+                value: val.type.value,
+              },
+              orderId: val.onlineOrderId,
+            }
           }
         }
         return bill

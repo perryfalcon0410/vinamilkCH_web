@@ -280,8 +280,8 @@
                       :disabled="checkApParramCode
                         || salemtPromotionObjectSelected === salemtPromotionId
                         || salemtPromotionObjectSelected === undefined
-                        || editManualPermission === false
-                        || (orderOnline.onlineOrderId !== null && orderOnline.orderNumber.length > 0)"
+                        || (orderOnline.onlineOrderId !== null && editManualPermission === false && editOnlinePermission === false)
+                        || (orderOnline.onlineOrderId !== null && editManualPermission === true && editOnlinePermission === false)"
                       @input="getOrderNumber"
                     />
                     <b-input-group-append is-text>
