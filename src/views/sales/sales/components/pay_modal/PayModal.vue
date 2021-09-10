@@ -128,7 +128,7 @@
                           <b-form-input
                             :id="promotionPrograms[index].products[props.row.originalIndex].productCode+'_'+value.programId"
                             v-model.number="promotionPrograms[index].products[props.row.originalIndex].quantity"
-                            :disabled="!value.isEditable"
+                            :disabled="!value.isEditable || isPaid"
                             maxlength="7"
                             @change="onChangeQuantity(value.programId, props)"
                             @keypress="$onlyNumberInput"
@@ -141,11 +141,19 @@
                         class="mx-0"
                       >
                         <b-icon-x
+                          v-if="!isPaid"
                           v-b-popover.hover="'Xóa'"
                           scale="2.0"
                           class="cursor-pointer mt-1"
                           color="red"
                           @click="removeProductPromotionProgramHandle(value.programId,props.row.productId)"
+                        />
+                        <b-icon-x
+                          v-else
+                          v-b-popover.hover="'Xóa'"
+                          scale="2.0"
+                          class="cursor-pointer mt-1"
+                          color="red"
                         />
                       </div>
                       <div v-else>
@@ -167,8 +175,9 @@
                         :input-props="{
                           id:'autosuggest__product_' + value.programId,
                           class:'form-control w-50',
-                          placeholder:'Nhập mã hoặc tên sản phẩm'
+                          placeholder:'Nhập mã hoặc tên sản phẩm',
                         }"
+                        :disabled="!value.isEditable || isPaid"
                         @input="loadProducts(value.programId, value.productSearch)"
                         @selected="selectProduct(value.programId, $event)"
                       >
@@ -224,7 +233,7 @@
                           class="form-control"
                           :raw="true"
                           :options="options.number"
-                          :disabled="!value.isEditable"
+                          :disabled="!value.isEditable || isPaid"
                           @change.native="onChangePromotionAmout(value.programId, value.amount.amount, value.amount.maxAmount)"
                         />
                       </b-col>
@@ -267,6 +276,7 @@
                           class:'form-control w-50',
                           placeholder:'Nhập mã hoặc tên sản phẩm'
                         }"
+                        :disabled="isPaid"
                         @input="loadProducts(value.programId, value.productSearch)"
                         @selected="selectProduct(value.programId, $event)"
                       >
@@ -1553,7 +1563,7 @@ export default {
     loadProducts(programId, keyWord) {
       this.allProducts = [{ data: null }]
       this.productKeyWord = keyWord
-      if (keyWord !== null) {
+      if (keyWord !== null && !this.isPaid) {
         if (keyWord.length >= commonData.minSearchLength) {
           this.programIdSelected = programId
           this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
@@ -1586,21 +1596,16 @@ export default {
             })
             return {
               ...program,
-              products: arrProduct,
-              productSearch: null,
-            }
-          }
-          return {
-            ...program,
-            products: [...program.products.map(product => {
-              if (product.productCode === suggestion.item.productCode) {
-                return {
-                  ...product,
-                  quantity: Number(product.quantity) + 1,
+              products: [...program.products.map(product => {
+                if (product.productCode === suggestion.item.productCode) {
+                  return {
+                    ...product,
+                    quantity: Number(product.quantity) + 1,
+                  }
                 }
-              }
-              return product
-            })],
+                return product
+              })],
+            }
           }
         }
         return program
@@ -1909,7 +1914,7 @@ export default {
     },
     keyDown(e) {
       if (e.key === 'F7' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading) {
-        if (!this.isPaid && this.statusPrintTmpButton()) {
+        if (!this.isPaid && this.statusPrintTmpButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           this.printSaleOrderTemp()
         }
       }
