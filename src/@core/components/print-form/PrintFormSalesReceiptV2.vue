@@ -399,9 +399,40 @@ export default {
     } else {
       const element = document.getElementById('print-form-sale-receipt-v2')
       element.classList.remove('d-none')
-      const heightPage = Number(element.offsetHeight) * 0.29
+      // const heightPage = Number(element.offsetHeight) * 0.29
       element.classList.add('d-none')
       // format UI bill
+      const topHeight = 181
+      const bottomHeight = 200
+      let countPromotion = 0
+      const rowHeight = 10
+      if (this.printSalesReceiptData.products !== null) {
+        this.printSalesReceiptData.products.forEach(product => {
+          if (product.listOrderItems !== null) {
+            product.listOrderItems.forEach(item => {
+              countPromotion += rowHeight * 2
+              if (item.totalDiscountPrice) {
+                countPromotion += rowHeight
+              }
+            })
+          }
+          if (Boolean((Number(product.displayType))) === true) {
+            countPromotion += rowHeight
+          }
+          if (product.listFreeItems !== null) {
+            product.listFreeItems.forEach(() => {
+              countPromotion += rowHeight
+            })
+          }
+        })
+      }
+      if (this.printSalesReceiptData.lstZM !== null) {
+        this.printSalesReceiptData.lstZM.forEach(() => {
+          countPromotion += rowHeight * 2
+        })
+      }
+      console.log(countPromotion)
+      const heightPage = topHeight + countPromotion + bottomHeight
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('p', 'px', [heightPage, 143]) // portrait, heigth x width (287.24409449)
       const marginLeft = 5
@@ -494,6 +525,7 @@ export default {
       pdf.text('-----------------------------------------------------------------------------------', 0, marginTop)
       pdf.setTextColor(0, 0, 0)
       pdf.setFontSize(fontSize - 1)
+      console.log(marginTop) // height = 181px
       this.printSalesReceiptData.products.forEach(product => {
         if (product.listOrderItems !== null) {
           product.listOrderItems.forEach(item => {
@@ -538,6 +570,7 @@ export default {
           pdf.text(`${this.$formatNumberToLocale(zm.amount)}`, (columnWidth1 + columnWidth2 + columnWidth3 + columnWidth4) - 3, marginTop, { align: 'right' })
         })
       }
+      console.log(marginTop)
       marginTop += spaceRowInCluster
       pdf.setFontSize(fontSize)
       pdf.text('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -', 0, marginTop)
@@ -598,6 +631,7 @@ export default {
       pdf.setFontType('normal')
       pdf.text(this.removeVietnameseTones('Cảm ơn Quý khách. Hẹn gặp lại', this.isRemoveVNTones), pageWidth / 2, marginTop, { align: 'center' })
       printFile('hoa_don_ban_hang.pdf', this.printerName, pdf)
+      console.log(marginTop)
     }
   },
   methods: {
