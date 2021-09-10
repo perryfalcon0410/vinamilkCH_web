@@ -294,7 +294,7 @@
                       maxlength="9"
                       type="text"
                       @keypress="$onlyNumberInput"
-                      @input="onInputValueQuantity(props.row.originalIndex)"
+                      @blur="onInputValueQuantity(props.row.originalIndex)"
                       @change="onChangeQuantityAndPrice(props.row.originalIndex)"
                       @keyup.enter="focusInputSearch"
                     />
@@ -827,6 +827,9 @@ export default {
     },
     allProducts() {
       this.productRows = [...this.allProducts]
+      if (this.productRows[0].data && this.productRows[0].data.length === 1) {
+        this.$nextTick(() => document.getElementById('autosuggest__input').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+      }
     },
     getTotalQuantity() {
       this.totalQuantity = this.getTotalQuantity
@@ -954,18 +957,18 @@ export default {
             productName: product.item.productName,
             industry: product.item.groupVat,
             productDVT: product.item.unit,
-            quantity: 1,
+            quantity: null,
             productPrice: this.$formatNumberToLocale(product.item.price),
             // productPriceTotal: this.$formatNumberToLocale(product.item.price),
             productPriceOriginal: product.item.price,
-            productPriceTotalOriginal: product.item.price,
+            productPriceTotalOriginal: 0,
             vat: product.item.vat,
             convfact: (product.item.convfact && product.item.convfact > 0) ? product.item.convfact : 1,
-            productExported: product.item.vatAmount,
+            productExported: 0,
             productExportedOriginal: product.item.vatAmount,
             sumProductExportedOriginal: product.item.vatAmount,
-            productPriceTotalVat: product.item.vatAmount + product.item.price,
-            note: '0T1',
+            productPriceTotalVat: 0,
+            note: '0T0',
             button: '1',
           })
         } else {
@@ -1045,8 +1048,8 @@ export default {
       }
     },
     onInputValueQuantity(index) {
-      if (this.products[index].quantity === 0) {
-        this.products[index].quantity = 1
+      if (this.products[index].quantity === '' || this.products[index].quantity === null) {
+        this.products[index].quantity = ''
       }
     },
     onChangePrice(index) {
