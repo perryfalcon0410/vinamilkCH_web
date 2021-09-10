@@ -321,7 +321,7 @@
                   v-show="$formatISOtoVNI(props.row.transDate) === nowDate && statusDeleteButton().show"
                   :disabled="statusDeleteButton().disabled"
                   class="ml-1"
-                  @click="onClickDeleteWarehousesOutput(props.row.id,props.row.receiptType,props.row.code, props.row.originalIndex, $formatISOtoVNI(props.row.date))"
+                  @click="onClickDeleteWarehousesOutput(props.row.id,props.row.receiptType,props.row.transCode, props.row.originalIndex, $formatISOtoVNI(props.row.transDate))"
                 />
               </div>
               <div
@@ -427,7 +427,7 @@
         ref="salesNotifyModal"
         title="Thông báo"
       >
-        Bạn có muốn xóa đợt xuất hàng {{ warehousesOutputSelected.code }} ?
+        Bạn có muốn xóa đợt xuất hàng {{ warehousesOutputSelected.transCode }} ?
         <template #modal-footer>
           <b-button
             class="btn-brand-1"
@@ -802,9 +802,8 @@ export default {
         id: this.warehousesOutputSelected.id,
         type: this.warehousesOutputSelected.type,
       }
-      if (this.warehousesOutputSelected.transDate === nowDate()) {
-        this.warehousesOutputList.splice(this.warehousesOutputSelected.index, 1)
-      }
+
+      this.warehousesOutputList.splice(this.warehousesOutputSelected.index, 1)
       this.DELETE_WAREHOUSES_ACTION(paramDeleteWarehousesOutput)
       this.warehousesOutputPagination.totalElements -= 1
       this.closeNotifyModal()
