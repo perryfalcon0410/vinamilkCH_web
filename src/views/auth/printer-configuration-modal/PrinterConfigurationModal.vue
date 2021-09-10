@@ -211,7 +211,6 @@ export default {
     },
     getPrinterConfigOptions() {
       this.printerConfigOptions = []
-      // JSPM.JSPrintManager.start()
       // this.jspmWSStatus()
       JSPM.JSPrintManager.WS.onStatusChanged = () => {
         JSPM.JSPrintManager.getPrinters().then(data => {

@@ -226,7 +226,6 @@ export default {
         ]
         this.bodyData.push(row)
       })
-      JSPM.JSPrintManager.start()
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('p', 'mm', 'a4')
       // START - add font family

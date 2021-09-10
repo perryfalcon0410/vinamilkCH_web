@@ -334,7 +334,6 @@ export default {
     if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
-      JSPM.JSPrintManager.start()
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('l', 'mm', 'a4')
       pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)

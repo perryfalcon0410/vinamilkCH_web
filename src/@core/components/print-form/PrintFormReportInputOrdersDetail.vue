@@ -247,7 +247,6 @@ export default {
     generatePdf(img) {
       const x = 8
       const y = 10
-      JSPM.JSPrintManager.start()
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('p', 'mm', 'a4')
       // START - add font family
