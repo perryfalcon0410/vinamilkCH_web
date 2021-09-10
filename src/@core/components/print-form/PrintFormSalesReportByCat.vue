@@ -284,7 +284,7 @@ export default {
 
       this.totalDetails.forEach(item => {
         totalRow.push({
-          content: `${this.$formatNumberToLocale(item)}`,
+          content: `${item === null || item === 0 ? '' : this.$formatNumberToLocale(item)}`,
           styles: {
             font: 'Ario-Bold', lineWidth: 0, fillColor: [211, 211, 211], halign: 'right',
           },
@@ -315,20 +315,20 @@ export default {
             { content: `${data[0]}`, styles: { cellWidth: 26 } },
             { content: `${data[1]}`, styles: { cellWidth: 33 } },
             { content: `${data[2]}`, styles: { cellWidth: this.columnList.length < 13 ? 70 : 40 } },
-            { content: data[3] === null ? '' : `${this.$formatNumberToLocale(data[3])}`, styles: { cellWidth: 16, halign: 'right' } },
-            { content: data[4] === null ? '' : `${this.$formatNumberToLocale(data[4])}`, styles: { halign: 'right' } },
-            { content: data[5] === null ? '' : `${this.$formatNumberToLocale(data[5])}`, styles: { halign: 'right' } },
-            { content: data[6] === null ? '' : `${this.$formatNumberToLocale(data[6])}`, styles: { halign: 'right' } },
-            { content: data[7] === null ? '' : `${this.$formatNumberToLocale(data[7])}`, styles: { halign: 'right' } },
-            { content: data[8] === null ? '' : `${this.$formatNumberToLocale(data[8])}`, styles: { halign: 'right' } },
-            { content: data[9] === null ? '' : `${this.$formatNumberToLocale(data[9])}`, styles: { halign: 'right' } },
-            { content: data[10] === null ? '' : `${this.$formatNumberToLocale(data[10])}`, styles: { halign: 'right' } },
-            { content: data[11] === null ? '' : `${this.$formatNumberToLocale(data[11])}`, styles: { halign: 'right' } },
-            { content: data[12] === null ? '' : `${this.$formatNumberToLocale(data[12])}`, styles: { halign: 'right' } },
-            { content: data[13] === null ? '' : `${this.$formatNumberToLocale(data[13])}`, styles: { halign: 'right' } },
-            { content: data[14] === null ? '' : `${this.$formatNumberToLocale(data[14])}`, styles: { halign: 'right' } },
-            { content: data[15] === null ? '' : `${this.$formatNumberToLocale(data[15])}`, styles: { halign: 'right' } },
-            { content: data[16] === null ? '' : `${this.$formatNumberToLocale(data[16])}`, styles: { halign: 'right' } },
+            { content: data[3] === null || data[3] === 0 ? '' : `${this.$formatNumberToLocale(data[3])}`, styles: { cellWidth: 16, halign: 'right' } },
+            { content: data[4] === null || data[4] === 0 ? '' : `${this.$formatNumberToLocale(data[4])}`, styles: { halign: 'right' } },
+            { content: data[5] === null || data[5] === 0 ? '' : `${this.$formatNumberToLocale(data[5])}`, styles: { halign: 'right' } },
+            { content: data[6] === null || data[6] === 0 ? '' : `${this.$formatNumberToLocale(data[6])}`, styles: { halign: 'right' } },
+            { content: data[7] === null || data[7] === 0 ? '' : `${this.$formatNumberToLocale(data[7])}`, styles: { halign: 'right' } },
+            { content: data[8] === null || data[8] === 0 ? '' : `${this.$formatNumberToLocale(data[8])}`, styles: { halign: 'right' } },
+            { content: data[9] === null || data[9] === 0 ? '' : `${this.$formatNumberToLocale(data[9])}`, styles: { halign: 'right' } },
+            { content: data[10] === null || data[10] === 0 ? '' : `${this.$formatNumberToLocale(data[10])}`, styles: { halign: 'right' } },
+            { content: data[11] === null || data[11] === 0 ? '' : `${this.$formatNumberToLocale(data[11])}`, styles: { halign: 'right' } },
+            { content: data[12] === null || data[12] === 0 ? '' : `${this.$formatNumberToLocale(data[12])}`, styles: { halign: 'right' } },
+            { content: data[13] === null || data[13] === 0 ? '' : `${this.$formatNumberToLocale(data[13])}`, styles: { halign: 'right' } },
+            { content: data[14] === null || data[14] === 0 ? '' : `${this.$formatNumberToLocale(data[14])}`, styles: { halign: 'right' } },
+            { content: data[15] === null || data[15] === 0 ? '' : `${this.$formatNumberToLocale(data[15])}`, styles: { halign: 'right' } },
+            { content: data[16] === null || data[16] === 0 ? '' : `${this.$formatNumberToLocale(data[16])}`, styles: { halign: 'right' } },
           ])
           this.count += 1
         })
