@@ -203,7 +203,6 @@
                 maxlength="7"
                 class="text-center h7 p-input"
                 @change="onChangeQuantity(props.row.originalIndex)"
-                @input="onInputChangeQuantity(props.row.originalIndex)"
                 @keydown.enter="focusInputSearch"
                 @keypress="$onlyNumberInput"
               />
@@ -677,7 +676,7 @@ export default {
     },
     orderProducts() {
       this.orderProducts.forEach(data => {
-        if (data.productInventory < 1 || data.productInventory < data.quantity || data.productUnitPrice === null) {
+        if (data.productUnitPrice === null) {
           this.checkStock = true
         }
       })
@@ -753,13 +752,6 @@ export default {
         this.orderProducts[index].quantity += 1
         this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
-
-        if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-          // this.orderProducts[index].quantity = this.orderProducts[index].productInventory
-          this.isDisabled = true
-        } else {
-          this.isDisabled = false
-        }
       }
     },
 
@@ -773,12 +765,6 @@ export default {
 
         this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
-
-        if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-          this.isDisabled = true
-        } else {
-          this.isDisabled = false
-        }
       }
     },
 
@@ -829,13 +815,7 @@ export default {
             this.orderProducts.push(index.item)
           } else {
             this.orderProducts[productIndex].productInventory = index.item.productInventory
-            if (this.orderProducts[productIndex].productInventory < this.orderProducts[productIndex].quantity) {
-              // this.orderProducts[productIndex].quantity = this.orderProducts[productIndex].productInventory
-              this.isDisabled = true
-            } else {
-              this.isDisabled = false
-              this.orderProducts[productIndex].quantity += 1
-            }
+            this.orderProducts[productIndex].quantity += 1
             this.orderProducts[productIndex].productUnitPrice = index.item.productUnitPrice
             this.orderProducts[productIndex].sumProductUnitPrice = index.item.sumProductUnitPrice
             this.orderProducts[productIndex].productTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
@@ -1018,22 +998,9 @@ export default {
       this.$refs.search.$el.querySelector('input').focus()
       this.$refs.search.$el.querySelector('input').click()
     },
-    onInputChangeQuantity(index) {
-      if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-        this.isDisabled = true
-        return
-      }
-      this.isDisabled = false
-    },
     onChangeQuantity(index) {
       if (this.orderProducts[index].quantity <= 0) {
         this.orderProducts[index].quantity = 0
-      }
-      if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-        this.isDisabled = true
-        // this.orderProducts[index].quantity = this.orderProducts[index].productInventory
-      } else {
-        this.isDisabled = false
       }
       this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))

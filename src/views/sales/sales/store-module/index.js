@@ -446,6 +446,7 @@ export default {
             state.promotionPrograms = res.data || {}
             val.onSuccess()
           } else {
+            val.onFailure()
             throw new Error(res.statusValue)
           }
         })

@@ -1256,6 +1256,10 @@ export default {
               invisibleLoading: false,
             },
             onSuccess: () => {},
+            onFailure: () => {
+              this.cancel()
+              toasts.error('Mất kết nối với máy chủ, vui lòng nhấn thanh toán lại')
+            },
           })
           if (this.pay.discount.discountCode !== '') {
             this.pay.discount.discountCode = ''
