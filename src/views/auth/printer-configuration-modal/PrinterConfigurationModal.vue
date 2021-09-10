@@ -22,9 +22,9 @@
             >JSPrintManager</a> và cài đặt cho {{ nameOS }}.
           </p>
           <p>
-            File hướng dẫn sử dùng JSPrintManager:
+            File hướng dẫn sử dụng JSPrintManager:
             <a
-              href="/documents/Hướng dẫn sử dùng JSPrintManager.docx"
+              href="/documents/Hướng dẫn sử dụng JSPrintManager.docx"
               download
               target="_blank"
             > Tải về</a>
