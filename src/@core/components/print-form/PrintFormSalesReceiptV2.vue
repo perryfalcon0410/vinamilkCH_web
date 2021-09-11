@@ -402,38 +402,39 @@ export default {
       // const heightPage = Number(element.offsetHeight) * 0.29
       element.classList.add('d-none')
       // format UI bill
-      const topHeight = 181
-      const bottomHeight = 180
-      let countPromotion = 0
-      const rowHeight = 10
-      if (this.printSalesReceiptData.products !== null) {
-        this.printSalesReceiptData.products.forEach(product => {
-          if (product.listOrderItems !== null) {
-            product.listOrderItems.forEach(item => {
-              countPromotion += rowHeight * 2
-              if (item.totalDiscountPrice) {
-                countPromotion += rowHeight
-              }
-            })
-          }
-          if (Boolean((Number(product.displayType))) === true) {
-            countPromotion += rowHeight
-          }
-          if (product.listFreeItems !== null) {
-            product.listFreeItems.forEach(() => {
-              countPromotion += rowHeight
-            })
-          }
-        })
-      }
-      if (this.printSalesReceiptData.lstZM !== null) {
-        this.printSalesReceiptData.lstZM.forEach(() => {
-          countPromotion += rowHeight * 2
-        })
-      }
-      const heightPage = topHeight + countPromotion + bottomHeight
+      // const topHeight = 181
+      // const bottomHeight = 180
+      // let countPromotion = 0
+      // const rowHeight = 10
+      // if (this.printSalesReceiptData.products !== null) {
+      //   this.printSalesReceiptData.products.forEach(product => {
+      //     if (product.listOrderItems !== null) {
+      //       product.listOrderItems.forEach(item => {
+      //         countPromotion += rowHeight * 2
+      //         if (item.totalDiscountPrice) {
+      //           countPromotion += rowHeight
+      //         }
+      //       })
+      //     }
+      //     if (Boolean((Number(product.displayType))) === true) {
+      //       countPromotion += rowHeight
+      //     }
+      //     if (product.listFreeItems !== null) {
+      //       product.listFreeItems.forEach(() => {
+      //         countPromotion += rowHeight
+      //       })
+      //     }
+      //   })
+      // }
+      // if (this.printSalesReceiptData.lstZM !== null) {
+      //   this.printSalesReceiptData.lstZM.forEach(() => {
+      //     countPromotion += rowHeight * 2
+      //   })
+      // }
+      // const heightPage = topHeight + countPromotion + bottomHeight
+      const pageSizePrinterEPOS = 1120 / 2
       // eslint-disable-next-line new-cap
-      const pdf = new jsPDF('p', 'px', [heightPage, 143]) // portrait, heigth x width (287.24409449)
+      const pdf = new jsPDF('p', 'px', [pageSizePrinterEPOS, 143]) // portrait, heigth x width (287.24409449)
       const marginLeft = 5
       let marginTop = 0
       const spaceRowTwoCluster = 10
@@ -529,8 +530,16 @@ export default {
           product.listOrderItems.forEach(item => {
             // sản phẩm bán
             marginTop += 8
+            if (marginTop >= pageSizePrinterEPOS) {
+              pdf.addPage()
+              marginTop = 10
+            }
             pdf.text(this.removeVietnameseTones(`${item.productName}`, this.isRemoveVNTones), marginLeft, marginTop)
             marginTop += spaceRowInCluster
+            if (marginTop >= pageSizePrinterEPOS) {
+              pdf.addPage()
+              marginTop = 10
+            }
             pdf.text(`${item.productCode}`, marginLeft, marginTop)
             pdf.text(`${item.quantity.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2) - 10, marginTop, { align: 'right' })
             pdf.text(`${item.price.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2 + columnWidth3) - 5, marginTop, { align: 'right' })
@@ -538,6 +547,10 @@ export default {
             if (item.totalDiscountPrice) {
               // giảm giá
               marginTop += spaceRowInCluster
+              if (marginTop >= pageSizePrinterEPOS) {
+                pdf.addPage()
+                marginTop = 10
+              }
               pdf.text(this.removeVietnameseTones('Giảm giá', this.isRemoveVNTones), marginLeft, marginTop)
               pdf.text(`${item.totalDiscountPrice.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2 + columnWidth3 + columnWidth4) - 3, marginTop, { align: 'right' })
             }
@@ -546,12 +559,20 @@ export default {
         if (Boolean((Number(product.displayType))) === true) {
           // CTKM
           marginTop += spaceRowInCluster
+          if (marginTop >= pageSizePrinterEPOS) {
+            pdf.addPage()
+            marginTop = 10
+          }
           pdf.text(this.removeVietnameseTones(`${product.groupName}`, this.isRemoveVNTones), marginLeft, marginTop)
         }
         if (product.listFreeItems !== null) {
           product.listFreeItems.forEach(freeItem => {
             // sản phẩm của CTKM
             marginTop += spaceRowInCluster
+            if (marginTop >= pageSizePrinterEPOS) {
+              pdf.addPage()
+              marginTop = 10
+            }
             pdf.text('KM:', marginLeft, marginTop)
             pdf.text(`${freeItem.quantity.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2) - 10, marginTop, { align: 'right' })
             pdf.text(`${this.removeVietnameseTones(freeItem.productName, this.isRemoveVNTones)}`, (columnWidth1 + columnWidth2), marginTop, { align: 'left' })
@@ -562,6 +583,10 @@ export default {
         this.printSalesReceiptData.lstZM.forEach(zm => {
           // CTKM tay
           marginTop += spaceRowInCluster
+          if (marginTop >= pageSizePrinterEPOS) {
+            pdf.addPage()
+            marginTop = 10
+          }
           pdf.text(this.removeVietnameseTones(`${zm.promotionName}`, this.isRemoveVNTones), marginLeft, marginTop)
           marginTop += spaceRowInCluster
           pdf.text(`${zm.promotionCode}`, marginLeft, marginTop)
@@ -569,9 +594,17 @@ export default {
         })
       }
       marginTop += spaceRowInCluster - 3
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.setFontSize(fontSize)
       pdf.text('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -', 0, marginTop)
       marginTop += spaceRowInCluster - 3
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       const marginValueCalculate = pageWidth - 10
       let maxLengthCalculate = 0
       if (this.printSalesReceiptData.amount.toString().length > maxLengthCalculate) maxLengthCalculate = this.printSalesReceiptData.amount.toString().length
@@ -588,43 +621,99 @@ export default {
       pdf.text(`${this.removeVietnameseTones('Tổng cộng (bao gồm VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
       pdf.text(`${this.printSalesReceiptData.amount.toLocaleString('vi-VN') || 0}`, marginValueCalculate, marginTop, { align: 'right' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.text(`${this.removeVietnameseTones('Tổng tiền (chưa VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
       pdf.text(`${this.printSalesReceiptData.amountNotVAT.toLocaleString('vi-VN') || 0}`, marginValueCalculate, marginTop, { align: 'right' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.text(`${this.removeVietnameseTones('Giảm giá (chưa VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
       pdf.text(`${this.printSalesReceiptData.promotionAmountNotVat.toLocaleString('vi-VN') || 0}`, marginValueCalculate, marginTop, { align: 'right' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.text(`${this.removeVietnameseTones('Giảm giá (bao gồm VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
       pdf.text(`${this.printSalesReceiptData.promotionAmount.toLocaleString('vi-VN') || 0}`, marginValueCalculate, marginTop, { align: 'right' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.text(`${this.removeVietnameseTones('Tiền tích lũy', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
       pdf.text(`${this.printSalesReceiptData.accumulatedAmount.toLocaleString('vi-VN') || 0}`, marginValueCalculate, marginTop, { align: 'right' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.text('Voucher: ', marginLabelCalculate, marginTop, { align: 'right' })
       pdf.text(`${this.printSalesReceiptData.voucherAmount.toLocaleString('vi-VN') || 0}`, marginValueCalculate, marginTop, { align: 'right' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.text(`${this.removeVietnameseTones('Thanh toán (chưa VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
       pdf.text(`${this.printSalesReceiptData.totalNotVat.toLocaleString('vi-VN') || 0}`, marginValueCalculate, marginTop, { align: 'right' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.text(`${this.removeVietnameseTones('Thanh toán (bao gồm VAT)', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
       pdf.text(`${this.printSalesReceiptData.total.toLocaleString('vi-VN') || 0}`, marginValueCalculate, marginTop, { align: 'right' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.text(`${this.removeVietnameseTones('KH đưa', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
       pdf.text(`${this.printSalesReceiptData.paymentAmount.toLocaleString('vi-VN') || 0}`, marginValueCalculate, marginTop, { align: 'right' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.text(`${this.removeVietnameseTones('Trả lại', this.isRemoveVNTones)}: `, marginLabelCalculate, marginTop, { align: 'right' })
       pdf.text(`${this.printSalesReceiptData.extraAmount.toLocaleString('vi-VN') || 0}`, marginValueCalculate, marginTop, { align: 'right' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.text('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ', 0, marginTop)
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       const splitRequest = pdf.splitTextToSize(this.removeVietnameseTones('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.', this.isRemoveVNTones), pageWidth - 10)
       pdf.text(splitRequest, marginLeft, marginTop)
       marginTop += spaceRowInCluster * splitRequest.length
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.setFontType('bold')
       pdf.text('Vinamilk online', pageWidth / 2, marginTop, { align: 'center' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.text('www.giacmosuaviet.com.vn', pageWidth / 2, marginTop, { align: 'center' })
       marginTop += spaceRowInCluster
+      if (marginTop >= pageSizePrinterEPOS) {
+        pdf.addPage()
+        marginTop = 10
+      }
       pdf.setFontType('normal')
       pdf.text(this.removeVietnameseTones('Cảm ơn Quý khách. Hẹn gặp lại', this.isRemoveVNTones), pageWidth / 2, marginTop, { align: 'center' })
       printFile('hoa_don_ban_hang.pdf', this.printerName, pdf)
