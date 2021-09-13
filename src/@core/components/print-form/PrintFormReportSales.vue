@@ -406,13 +406,13 @@ export default {
               },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotion) || ''}`,
+              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat) || ''}`,
               styles: {
                 halign: 'right', cellWidth: 17, fillColor: [211, 211, 211], ...padding,
               },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat) || ''}`,
+              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotion) || ''}`,
               styles: {
                 halign: 'right', cellWidth: 18, fillColor: [211, 211, 211], ...padding,
               },
@@ -487,8 +487,8 @@ export default {
             { content: `${this.$formatNumberToLocale(this.reportSalesData[i].quantity) || ''}`, styles: { } },
             { content: `${this.$formatNumberToLocale(this.reportSalesData[i].price) || ''}`, styles: { } },
             { content: `${this.$formatNumberToLocale(this.reportSalesData[i].total) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotion) || ''}`, styles: { } },
             { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotionNotVAT) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotion) || ''}`, styles: { } },
             { content: `${this.$formatNumberToLocale(this.reportSalesData[i].pay) || ''}`, styles: { } },
           ])
         } else {
@@ -504,8 +504,8 @@ export default {
             { content: `${this.$formatNumberToLocale(this.reportSalesData[i].quantity) || ''}`, styles: { } },
             { content: `${this.$formatNumberToLocale(this.reportSalesData[i].price) || ''}`, styles: { } },
             { content: `${this.$formatNumberToLocale(this.reportSalesData[i].total) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotion) || ''}`, styles: { } },
             { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotionNotVAT) || ''}`, styles: { } },
+            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotion) || ''}`, styles: { } },
             { content: `${this.$formatNumberToLocale(this.reportSalesData[i].pay) || ''}`, styles: { } },
           ])
         }
