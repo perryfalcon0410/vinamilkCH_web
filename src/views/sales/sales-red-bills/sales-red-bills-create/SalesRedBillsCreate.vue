@@ -296,7 +296,7 @@
                       @keypress="$onlyNumberInput"
                       @blur="onInputValueQuantity(props.row.originalIndex)"
                       @change="onChangeQuantityAndPrice(props.row.originalIndex)"
-                      @keyup.enter="focusInputSearch"
+                      @keydown.enter="focusInputSearch"
                     />
                   </div>
                   <div v-else-if="props.column.field === 'productPrice'">
@@ -308,7 +308,7 @@
                       :options="options.number"
                       @keypress.native="$onlyNumberInput"
                       @keyup.native="onChangePrice(props.row.originalIndex)"
-                      @keyup.enter.native="focusInputSearch"
+                      @keydown.enter.native="focusInputSearch"
                     />
                   </div>
                   <div v-else-if="props.column.field === 'vat'">
@@ -320,7 +320,7 @@
                         @input="checkValue(props.row.originalIndex)"
                         @keypress="$onlyNumberInput"
                         @change="onChangeVAT(props.row.originalIndex)"
-                        @keyup.enter="focusInputSearch"
+                        @keydown.enter="focusInputSearch"
                       />
                     </b-col>
                   </div>
@@ -331,7 +331,7 @@
                         class="style-input"
                         disabled
                         maxlength="250"
-                        @keyup.enter="focusInputSearch"
+                        @keydown.enter="focusInputSearch"
                       />
                     </b-col>
                   </div>
@@ -965,7 +965,7 @@ export default {
             vat: product.item.vat,
             convfact: (product.item.convfact && product.item.convfact > 0) ? product.item.convfact : 1,
             productExported: 0,
-            productExportedOriginal: product.item.vatAmount,
+            productExportedOriginal: 0,
             sumProductExportedOriginal: product.item.vatAmount,
             productPriceTotalVat: 0,
             note: '0T0',
