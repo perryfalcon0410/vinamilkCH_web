@@ -278,10 +278,9 @@
                       maxlength="50"
                       :state="(!checkApParramCode && touched) ? passed : null"
                       :disabled="checkApParramCode
-                        || salemtPromotionObjectSelected === salemtPromotionId
                         || salemtPromotionObjectSelected === undefined
-                        || editManualPermission === false
-                        || (orderOnline.onlineOrderId !== null && orderOnline.orderNumber.length > 0)"
+                        || (orderOnline.onlineOrderId === null && editManualPermission === false)
+                        || (orderOnline.onlineOrderId !== null && editOnlinePermission === false)"
                       @input="getOrderNumber"
                     />
                     <b-input-group-append is-text>
@@ -940,6 +939,7 @@ export default {
         } else {
           this.checkApParramCode = true
         }
+        this.$emit('checkApParramCode', this.checkApParramCode)
       }
     },
     bills() {
@@ -1190,6 +1190,9 @@ export default {
       this.salemtPromotionObjectSelected = this.onlineOrder.type.value
       this.quantity = this.onlineOrder.quantity
       this.totalPrice = this.onlineOrder.totalPrice
+      if (this.orderOnline.onlineOrderId !== null) {
+        this.disableNotPermissionManual = false
+      }
       this.$emit('getOrderNumber', this.orderOnline)
     },
 
@@ -1228,16 +1231,21 @@ export default {
       // check order number is Online or Offline
       if (apParramCode.includes('ONLINE')) {
         // check orderNumber not permission edit manual
-        if (this.editManualPermission === false) {
-          this.disableNotPermissionManual = true
-          this.orderProducts.splice(0, this.orderProducts.length)
-          toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+        if (this.orderOnline.onlineOrderId === null) {
+          if (this.editManualPermission === false) {
+            this.orderProducts.splice(0, this.orderProducts.length)
+            toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+            this.disableNotPermissionManual = true
+          }
+        } else {
+          this.disableNotPermissionManual = false
         }
       } else {
         this.orderOnline.orderNumber = null
         this.orderOnline.onlineOrderId = null
         this.orderOnline.discountCode = null
         this.orderOnline.discountValue = null
+        this.disableNotPermissionManual = false
       }
     },
 

@@ -315,6 +315,7 @@
         @deleteSaveBill="deleteSaveBill"
         @getOrderNumber="getOrderNumber"
         @getSearchOption="getSearchOption"
+        @checkApParramCode="checkApParramCode"
       />
       <!-- END - Section Form pay -->
 
@@ -502,7 +503,7 @@ export default {
       deliverySelected: {},
       editOnlinePermission: true,
       editManualPermission: true,
-      isOnline: false,
+      isOffline: true,
       isDisabledOrder: false,
       defaultPOSelected: null,
       defaultDTSelected: null,
@@ -707,7 +708,6 @@ export default {
       this.editOnlinePermission = this.getEditOnlinePermission.editable
     },
   },
-
   mounted() {
     this.GET_EDIT_ONLINE_PERMISSION_ACTION()
   },
@@ -757,7 +757,7 @@ export default {
 
     increaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOnline === false) {
+      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOffline === true) {
         this.orderProducts[index].quantity += 1
         this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
@@ -766,7 +766,7 @@ export default {
 
     decreaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOnline === false) {
+      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOffline === true) {
         this.orderProducts[index].quantity -= 1
         if (this.orderProducts[index].quantity <= 0) {
           this.orderProducts[index].quantity = 0
@@ -778,7 +778,7 @@ export default {
     },
 
     onClickDeleteProduct(index) {
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOnline === false) {
+      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOffline === true) {
         this.orderProducts.splice(index, 1)
       }
     },
@@ -815,7 +815,7 @@ export default {
       this.searchOptions.keyWord = ''
       // check permission online order manual or online order from system to add product
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
-        || this.isOnline === false
+        || this.isOffline === true
         || (this.editManualPermission === true && this.onlineOrderId === null)
         || (this.editOnlinePermission === true && this.editManualPermission === true)) {
         if (index && index.item) {
@@ -842,26 +842,18 @@ export default {
       }
       this.productsSearch = [{ data: null }]
       // not have permission edit online order manual
-      if ((!this.editManualPermission && this.onlineOrderId === null && this.isOnline === true)) {
+      if ((!this.editManualPermission && this.onlineOrderId === null && this.isOffline === false)) {
         toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
       }
     },
 
     getOrderNumber(val) {
-      this.currentOrderNumber = val
-      this.onlineOrderId = val.onlineOrderId
+      if (val) {
+        this.currentOrderNumber = val
+        this.onlineOrderId = val.onlineOrderId
 
-      if (this.onlineOrderId !== null) {
-        if (this.currentOrderNumber.type.apParamCode.includes('ONLINE')) {
-          this.isOnline = true
-        } else {
-          this.isOnline = false
-        }
-      }
-
-      this.bills = this.bills.map(bill => {
-        if (bill.id === this.orderCurrentId) {
-          if (this.onlineOrderId !== null) {
+        this.bills = this.bills.map(bill => {
+          if (bill.id === this.orderCurrentId) {
             return {
               ...bill,
               orderType: {
@@ -870,9 +862,9 @@ export default {
               orderId: val.onlineOrderId,
             }
           }
-        }
-        return bill
-      })
+          return bill
+        })
+      }
     },
 
     onClickAddButton() {
@@ -1142,7 +1134,6 @@ export default {
       this.orderSelected = val
       const { usedShop } = this.loginInfo
       if (this.orderSelected.apParamCode.includes('ONLINE')) {
-        this.isOnline = true
         if (this.orderProducts.length > 0) {
           if (val.id !== this.defaultPOSelected && usedShop.id === this.currentCustomer.shopId) {
             if (!this.editOnlinePermission && this.onlineOrderId !== null) {
@@ -1150,8 +1141,6 @@ export default {
             }
           }
         }
-      } else {
-        this.isOnline = false
       }
       // assgin value of order type to current bill being selected
       this.bills = this.bills.map(bill => {
@@ -1165,15 +1154,6 @@ export default {
         }
         return bill
       })
-
-      // have permission edit online order manual and online order from system
-      if (val.id === this.defaultPOSelected) {
-        this.isOnline = false
-        this.onlineOrderId = null
-      } else {
-        this.isOnline = true
-        this.onlineOrderId = null
-      }
     },
 
     salemtDeliveryTypeSelected(val) {
@@ -1198,7 +1178,6 @@ export default {
 
     getDefaultPromotionObjectSelected(val) {
       this.defaultPOSelected = val
-      this.isOnline = false
       this.bills = this.bills.map(bill => {
         if (bill.id === this.orderCurrentId) {
           return {
@@ -1255,10 +1234,14 @@ export default {
       this.currentSearchModalOption = val
     },
 
+    checkApParramCode(val) {
+      this.isOffline = val
+    },
+
     // Create callback function to receive barcode when the scanner is already done
     onBarcodeScanned(barcode) {
       if (barcode.length > 4) {
-        if (this.editOnlinePermission || this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
+        if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
           this.searchOptions.keyWord = barcode.toString()
           this.searchOptions.checkBarcode = true
           this.$refs.search.$el.querySelector('input').focus()
