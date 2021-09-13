@@ -1044,11 +1044,6 @@ export default {
       if (this.orderProducts[index].quantity <= 0) {
         this.orderProducts[index].quantity = 0
       }
-      if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-        this.isDisabled = true
-      } else {
-        this.isDisabled = false
-      }
       this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
     },
