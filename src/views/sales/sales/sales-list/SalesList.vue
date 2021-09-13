@@ -342,7 +342,6 @@ import {
   GET_PRODUCT_INFOS_GETTER,
   GET_TOP_SALE_PRODUCTS_GETTER,
   UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
-  GET_PRODUCT_BY_BARCODE_GETTER,
   GET_EDIT_ONLINE_PERMISSION_GETTER,
 
   // Action
@@ -533,7 +532,6 @@ export default {
       GET_PRODUCT_INFOS_GETTER,
       GET_TOP_SALE_PRODUCTS_GETTER,
       UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
-      GET_PRODUCT_BY_BARCODE_GETTER,
       GET_EDIT_ONLINE_PERMISSION_GETTER,
     ]),
     getProducts() {
@@ -594,9 +592,6 @@ export default {
     selectedProduct() {
       return this.salemtPromotionObjectSelected
     },
-    getProductByBarcode() {
-      return this.GET_PRODUCT_BY_BARCODE_GETTER
-    },
     getEditOnlinePermission() {
       return this.GET_EDIT_ONLINE_PERMISSION_GETTER
     },
@@ -608,19 +603,19 @@ export default {
     getProductSearch() {
       if (this.getProductSearch.length === 1 && this.searchOptions.checkBarcode === true) {
         const productByBarcode = {
-          productId: this.getProductByBarcode.id,
-          name: this.getProductByBarcode.productCode,
-          productName: this.getProductByBarcode.productName,
-          productCode: this.getProductByBarcode.productCode,
-          productUnit: this.getProductByBarcode.uom1,
-          productInventory: this.getProductByBarcode.stockTotal,
-          productUnitPrice: this.getProductByBarcode.price,
-          sumProductUnitPrice: this.getProductByBarcode.price,
+          productId: this.getProductSearch.id,
+          name: this.getProductSearch.productCode,
+          productName: this.getProductSearch[0].productName,
+          productCode: this.getProductSearch[0].productCode,
+          productUnit: this.getProductSearch[0].uom1,
+          productInventory: this.getProductSearch[0].stockTotal,
+          productUnitPrice: this.getProductSearch[0].price,
+          sumProductUnitPrice: this.getProductSearch[0].price,
           quantity: 1,
-          productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
-          sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
-          productImage: this.getProductByBarcode.image,
-          comboProductId: this.getProductByBarcode.comboProductId,
+          productTotalPrice: this.totalPrice(1, Number(this.getProductSearch[0].price)),
+          sumProductTotalPrice: this.totalPrice(1, Number(this.getProductSearch[0].price)),
+          productImage: this.getProductSearch[0].image,
+          comboProductId: this.getProductSearch[0].comboProductId,
         }
         const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
         if (indexProductExisted === -1) {
@@ -1242,7 +1237,7 @@ export default {
     onBarcodeScanned(barcode) {
       if (barcode.length > 4) {
         if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
-          this.searchOptions.keyWord = barcode.toString()
+          this.searchOptions.keyWord = barcode
           this.searchOptions.checkBarcode = true
           this.$refs.search.$el.querySelector('input').focus()
           this.$refs.search.$el.querySelector('input').click()
