@@ -407,7 +407,7 @@
           <!-- START - Button pay -->
           <b-button
             v-if="statusPayButton().show"
-            :disabled="statusPayButton().disabled || isDisabled"
+            :disabled="statusPayButton().disabled || isDisabled || disableNotPermissionManual"
             variant="someThing"
             class="w-100 btn-brand-1 mt-1 aligns-items-button-center"
             @click="onPayButtonClick"
@@ -727,6 +727,7 @@ export default {
       searchPhoneOnly: false,
       openPopup: false,
       allowCallAPI: true,
+      disableNotPermissionManual: false,
     }
   },
 
@@ -943,12 +944,17 @@ export default {
     },
     bills() {
       this.billButtons = [...this.bills]
+      if (this.bills[0].id && this.orderOnline.onlineOrderId !== null) {
+        this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)
+      }
     },
     orderCurrentId: {
       handler() {
         const bill = this.bills.find(b => b.id === this.orderCurrentId)
         this.salemtPromotionObjectSelected = bill.orderType.value
         this.salemtDeliveryTypeSelected = bill.deliveryType.value
+        this.orderOnline.orderNumber = bill.orderNumber
+        this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)
       },
       deep: true,
     },
@@ -981,6 +987,7 @@ export default {
           || this.salemtPromotionObjectSelected === undefined
           || (!this.checkApParramCode && this.orderOnline.orderNumber === '')
           || this.isDisabled
+          || this.disableNotPermissionManual
         ) {
           this.isOpenPayModal = false
           this.hidePayModal()
@@ -1183,7 +1190,6 @@ export default {
       this.salemtPromotionObjectSelected = this.onlineOrder.type.value
       this.quantity = this.onlineOrder.quantity
       this.totalPrice = this.onlineOrder.totalPrice
-      this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)
       this.$emit('getOrderNumber', this.orderOnline)
     },
 
@@ -1217,10 +1223,17 @@ export default {
 
     resetOrderNumber(item) {
       this.$emit('getSalemtPOSelected', item)
-      if (this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE')) {
-        this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE').id
-      }
-      if (item.id === this.salemtPromotionObjectSelected) {
+      this.salemtPromotionObjectSelected = item.id
+      const apParramCode = this.salemtPromotionObjectOptions.find(data => data.id === this.salemtPromotionObjectSelected).apParamCode
+      // check order number is Online or Offline
+      if (apParramCode.includes('ONLINE')) {
+        // check orderNumber not permission edit manual
+        if (this.editManualPermission === false) {
+          this.disableNotPermissionManual = true
+          this.orderProducts.splice(0, this.orderProducts.length)
+          toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+        }
+      } else {
         this.orderOnline.orderNumber = null
         this.orderOnline.onlineOrderId = null
         this.orderOnline.discountCode = null
