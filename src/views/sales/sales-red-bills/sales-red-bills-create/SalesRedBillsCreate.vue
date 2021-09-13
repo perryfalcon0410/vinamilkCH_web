@@ -603,7 +603,7 @@ export default {
         note: '',
         shopId: 0,
       },
-      productSearch: null,
+      productSearch: '',
       quantityPerBox: redBillData.quantityPerBox,
       products: [],
       productRows: [{ data: '' }],
@@ -768,24 +768,9 @@ export default {
     },
     allProducts() {
       if (this.PRODUCTS_GETTER) {
-        return [{
-          data: this.PRODUCTS_GETTER.map(data => ({
-            name: data.productCode,
-            productId: data.id,
-            productCode: data.productCode,
-            productName: data.productName,
-            groupVat: data.groupVat,
-            unit: data.uom1,
-            convfact: data.convfact,
-            quantity: 1,
-            price: data.price,
-            vat: data.vat,
-            vatAmount: data.vatAmount,
-            note: data.note,
-          })),
-        }]
+        return this.PRODUCTS_GETTER
       }
-      return [{ data: '' }]
+      return []
     },
     getIdCreateRedinvoice() {
       if (this.ID_CREATE_RED_INVOICES_GETTER_GETTER) {
@@ -826,10 +811,24 @@ export default {
       this.customers = [...this.getCustomers]
     },
     allProducts() {
-      this.productRows = [...this.allProducts]
-      if (this.productRows[0].data && this.productRows[0].data.length === 1) {
-        this.$nextTick(() => document.getElementById('autosuggest__input').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
-      }
+      const listProducts = [...this.allProducts.map(data => ({
+        name: this.productSearch,
+        productId: data.id,
+        productCode: data.productCode,
+        productName: data.productName,
+        groupVat: data.groupVat,
+        unit: data.uom1,
+        convfact: data.convfact,
+        quantity: 1,
+        price: data.price,
+        vat: data.vat,
+        vatAmount: data.vatAmount,
+        note: data.note,
+      }))]
+      this.productRows = [{
+        data: listProducts,
+      }]
+      this.$nextTick(() => document.getElementById('autosuggest__input').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
     },
     getTotalQuantity() {
       this.totalQuantity = this.getTotalQuantity
@@ -937,17 +936,17 @@ export default {
     },
     // choose products func
     loadProducts() {
+      this.productRows = [{ data: null }]
       if (this.productSearch.length >= commonData.minSearchLength) {
         this.GET_PRODUCTS_ACTION({
           keyWord: this.productSearch?.trim(),
           formId: this.formId,
           ctrlId: this.ctrlId,
         })
-      } else {
-        this.productRows = [{ data: null }]
       }
     },
     selectProduct(product) {
+      this.productSearch = ''
       if (product && product.item) {
         const existedProductIndex = this.products.findIndex(products => products.productCode === product.item.productCode)
         if (existedProductIndex === -1) {
@@ -966,11 +965,12 @@ export default {
             convfact: (product.item.convfact && product.item.convfact > 0) ? product.item.convfact : 1,
             productExported: 0,
             productExportedOriginal: 0,
-            sumProductExportedOriginal: product.item.vatAmount,
+            sumProductExportedOriginal: 0,
             productPriceTotalVat: 0,
             note: '0T0',
             button: '1',
           })
+          this.productRows = [{ data: null }]
         } else {
           this.products[existedProductIndex].quantity += product.item.quantity
           // convfact: số đơn vị SL của 1 thùng
@@ -987,7 +987,6 @@ export default {
           document.getElementById(this.productIdSelected).focus()
         }, 100)
       }
-      this.productSearch = null
       this.productRows = [{ data: null }]
     },
     insertProducsFromBillSales(invoiceData) {
