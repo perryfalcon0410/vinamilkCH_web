@@ -505,6 +505,7 @@
       :open-popup="openPopup"
       :order-current-id="orderCurrentId"
       :bills="bills"
+      :is-new-button="isNewButton"
       @getCustomerInfo="getCustomerInfo"
       @getSearchOption="getSearchOption"
     />
@@ -619,6 +620,10 @@ export default {
     orderCurrentId: {
       type: Number,
       default: Number,
+    },
+    isNewButton: {
+      type: Boolean,
+      default: false,
     },
   },
 

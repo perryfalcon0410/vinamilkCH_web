@@ -298,6 +298,7 @@
         :is-disabled="isDisabled"
         :order-number-bill="orderNumber"
         :order-current-id="orderCurrentId"
+        :is-new-button="isNewButton"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
@@ -522,6 +523,7 @@ export default {
       orderCurrentId: 1, // Id of order current
       loading: false,
       disableOnline: false,
+      isNewButton: false,
     }
   },
   computed: {
@@ -904,6 +906,7 @@ export default {
           class: '',
         })
         this.customerFullName = ''
+        this.isNewButton = true
         this.clickBillButton(lastIteminBill.id + 1)
       } else {
         this.bills.push({

@@ -340,6 +340,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    isNewButton: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -496,9 +500,13 @@ export default {
         this.searchKeywords = bill.searchModalOption.searchKeywords
         this.phoneNumber = bill.searchModalOption.phoneNumber
         this.idNo = bill.searchModalOption.idNo
+
+        if (this.isNewButton === true) {
+          this.onClickSearchButton()
+        }
       },
+      deep: true,
     },
-    deep: true,
   },
   mounted() {
   },
