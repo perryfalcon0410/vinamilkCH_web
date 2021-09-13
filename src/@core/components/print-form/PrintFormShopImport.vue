@@ -1181,6 +1181,10 @@ export default {
 
       // START - table nhập vay mượn
       this.createTableInputBorrow(pdf)
+      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+        pdf.setPage(j)
+        pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
+      }
       // END - table nhập vay mượn
       printFile('Bao_cao_nhap_hang.pdf', this.printerName, pdf)
     }
@@ -1350,7 +1354,7 @@ export default {
           pdf.autoTable({
             theme: 'grid',
             startY: pdf.previousAutoTable.finalY,
-            pageBreak: 'avoid',
+            rowPageBreak: 'avoid',
             margin: {
               right: 5,
               left: 5,
@@ -1580,7 +1584,7 @@ export default {
           pdf.autoTable({
             theme: 'grid',
             startY: pdf.previousAutoTable.finalY,
-            pageBreak: 'avoid',
+            rowPageBreak: 'avoid',
             margin: {
               right: 5,
               left: 5,
@@ -1806,7 +1810,7 @@ export default {
           pdf.autoTable({
             theme: 'grid',
             startY: pdf.previousAutoTable.finalY,
-            pageBreak: 'avoid',
+            rowPageBreak: 'avoid',
             margin: {
               right: 5,
               left: 5,
