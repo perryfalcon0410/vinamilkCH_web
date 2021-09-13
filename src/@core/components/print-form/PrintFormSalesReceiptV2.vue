@@ -752,7 +752,7 @@ export default {
       // Remove punctuations
       // Bỏ dấu câu, kí tự đặc biệt
       // eslint-disable-next-line no-useless-escape
-      stringRemove = stringRemove.replace(/!|@|%|\^|\*|\+|\=|\<|\>|\?|\/|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|{|}|\||\\/g, '')
+      // stringRemove = stringRemove.replace(/!|@|%|\^|\*|\+|\=|\<|\>|\?|\/|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|{|}|\||\\/g, '')
       return stringRemove
     },
   },
