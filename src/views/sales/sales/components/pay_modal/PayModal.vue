@@ -132,6 +132,7 @@
                             maxlength="7"
                             @change="onChangeQuantity(value.programId, props)"
                             @keypress="$onlyNumberInput"
+                            @keyup="onKeyUpEnterChangeQuantity(props.row.originalIndex,value.programId, value.products, $event)"
                           />
                         </b-input-group>
                       </div>
@@ -164,7 +165,7 @@
                         v-model="value.productSearch"
                         :suggestions="allProducts"
                         :input-props="{
-                          id:'autosuggest__product',
+                          id:'autosuggest__product_' + value.programId,
                           class:'form-control w-50',
                           placeholder:'Nhập mã hoặc tên sản phẩm'
                         }"
@@ -262,7 +263,7 @@
                         v-model="value.productSearch"
                         :suggestions="allProducts"
                         :input-props="{
-                          id:'autosuggest__product',
+                          id:'autosuggest__product_' + value.programId,
                           class:'form-control w-50',
                           placeholder:'Nhập mã hoặc tên sản phẩm'
                         }"
@@ -991,6 +992,7 @@ export default {
       isLockedVoucher: false,
       isUseChecked: [],
       productKeyWord: '',
+      programIdSelected: null,
     }
   },
 
@@ -1114,7 +1116,7 @@ export default {
         productCode: data.productCode,
         productId: data.productId,
         productName: data.productName,
-        quantity: data.quantity,
+        quantity: null,
         quantityMax: data.quantityMax,
         stockQuantity: data.stockQuantity,
         name: this.productKeyWord,
@@ -1123,9 +1125,10 @@ export default {
         data: getItemProductProgram,
       }]
       if (this.allProducts[0].data && this.allProducts[0].data.length === 1) {
+        const elementAutosuggestProductId = `autosuggest__product_${this.programIdSelected}`
         this.$nextTick(() => {
           setTimeout(() => {
-            document.getElementById('autosuggest__product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 }))
+            document.getElementById(elementAutosuggestProductId).dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 }))
           }, 100)
         })
       }
@@ -1552,6 +1555,7 @@ export default {
       this.productKeyWord = keyWord
       if (keyWord !== null) {
         if (keyWord.length >= commonData.minSearchLength) {
+          this.programIdSelected = programId
           this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
             keyWord,
             promotionId: programId,
@@ -1580,7 +1584,6 @@ export default {
               quantityMax: program.numberLimited ? program.numberLimited : suggestion.item.stockQuantity,
               stockQuantity: suggestion.item.stockQuantity,
             })
-            productCodeFocus = suggestion.item.productCode
             return {
               ...program,
               products: arrProduct,
@@ -1602,10 +1605,10 @@ export default {
         }
         return program
       })]
-      productCodeFocus = `${productCodeFocus}_${programId}`
+      productCodeFocus = `${suggestion.item.productCode}_${programId}`
       setTimeout(() => {
         document.getElementById(productCodeFocus).focus()
-      }, 100)
+      }, 200)
     },
     onChangeCheckProgramPromotion(programId) {
       const programChecked = this.promotionPrograms.find(program => program.programId === programId)
@@ -1958,6 +1961,24 @@ export default {
     },
     getIsLockedVoucher(val) {
       this.isLockedVoucher = val
+    },
+    onKeyUpEnterChangeQuantity(index, programId, products, e) {
+      let elementIdProductNext = `${products[index].productCode}_${programId}`
+      if (index < products.length - 1) {
+        if (e.key === 'ArrowDown' || e.key === 'Enter') {
+          elementIdProductNext = `${products[index + 1].productCode}_${programId}`
+        } else if (e.key === 'ArrowUp' && index !== 0) {
+          elementIdProductNext = `${products[index - 1].productCode}_${programId}`
+        }
+        document.getElementById(elementIdProductNext).focus()
+      } else if (index === products.length - 1) {
+        if (e.key === 'Enter') {
+          elementIdProductNext = `autosuggest__product_${programId}`
+        } else if (e.key === 'ArrowUp') {
+          elementIdProductNext = `${products[index - 1].productCode}_${programId}`
+        }
+        document.getElementById(elementIdProductNext).focus()
+      }
     },
   },
 }
