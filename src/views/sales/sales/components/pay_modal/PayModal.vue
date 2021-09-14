@@ -1555,6 +1555,7 @@ export default {
           this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
             keyWord,
             promotionId: programId,
+            customerId: this.customer.id,
             ...this.decentralization,
           })
         }
