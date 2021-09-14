@@ -1237,7 +1237,12 @@ export default {
     onBarcodeScanned(barcode) {
       if (barcode.length > 4) {
         if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
-          this.searchOptions.keyWord = barcode
+          let barcodeParam = barcode
+          if (barcodeParam.includes('Enter')) {
+            barcodeParam = barcodeParam.slice(0, -5)
+          }
+
+          this.searchOptions.keyWord = barcodeParam
           this.searchOptions.checkBarcode = true
           this.$refs.search.$el.querySelector('input').focus()
           this.$refs.search.$el.querySelector('input').click()
