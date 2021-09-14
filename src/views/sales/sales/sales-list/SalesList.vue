@@ -807,7 +807,6 @@ export default {
     },
 
     onClickAddProduct(index) {
-      this.searchOptions.keyWord = ''
       // check permission online order manual or online order from system to add product
       if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
         || this.isOffline === true
@@ -825,6 +824,7 @@ export default {
             this.orderProducts[productIndex].productTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
             this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
           }
+          this.searchOptions.keyWord = ''
           this.isSelectedProduct = true
           this.productsSearch = [{ data: null }]
           this.productIdSelected = index.item.productCode
