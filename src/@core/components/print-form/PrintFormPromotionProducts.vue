@@ -418,7 +418,7 @@ export default {
         item.productCats.forEach(pro => {
           this.bodyData.push([
             { content: `${this.count}`, styles: { } },
-            { content: `${this.$moment(pro.orderDate).locale('en').format('DD/MM/YYYY HH:mm:ss A')}`, styles: { } },
+            { content: `${this.$formatPrintDate(pro.orderDate)}`, styles: { } },
             { content: `${pro.orderNumber}`, styles: { } },
             { content: `${pro.productCode}`, styles: { } },
             { content: `${pro.productName}`, styles: { } },
