@@ -217,7 +217,7 @@
                 @keypress.native="$onlyNumberInput"
                 @keyup.up.native="onClickUpButtonInventoryPacket(props.row.originalIndex)"
                 @keyup.down.native="onClickDownButtonInventoryPacket(props.row.originalIndex)"
-                @keyup.enter.native="onClickDownButtonInventoryPacket(props.row.originalIndex)"
+                @keyup.enter.native="onClickRightButtonInventoryPacket(props.row.originalIndex)"
                 @keyup.left.native="onClickLeftButtonInventoryPacket(props.row.originalIndex)"
                 @keyup.right.native="onClickRightButtonInventoryPacket(props.row.originalIndex)"
               />
@@ -235,7 +235,7 @@
                 @keypress.native="$onlyNumberInput"
                 @keyup.up.native="onClickUpButtonInventoryOdd(props.row.originalIndex)"
                 @keyup.down.native="onClickDownButtonInventoryOdd(props.row.originalIndex)"
-                @keyup.enter.native="onClickDownButtonInventoryOdd(props.row.originalIndex)"
+                @keyup.enter.native="onClickRightButtonInventoryOdd(props.row.originalIndex)"
                 @keyup.left.native="onClickLeftButtonInventoryOdd(props.row.originalIndex)"
                 @keyup.right.native="onClickRightButtonInventoryOdd(props.row.originalIndex)"
               />
