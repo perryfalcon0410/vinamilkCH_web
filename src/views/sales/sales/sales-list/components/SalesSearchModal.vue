@@ -1,12 +1,13 @@
 <template>
   <b-modal
-    ref="salesSearchModal"
+    id="sales-search-modal"
     size="xl"
     class="d-print-none"
     title="Tìm kiếm khách hàng"
     title-class="font-weight-bold text-brand-1"
     content-class="bg-light"
     hide-footer
+    @hidden="onClickCloseButton()"
   >
     <b-container
       fluid
@@ -490,6 +491,7 @@ export default {
     },
     openPopup: {
       handler() {
+        console.log('open popup', this.openPopup)
         this.onSearch()
       },
       deep: true,
@@ -562,7 +564,7 @@ export default {
     // func pagination
 
     onClickCloseButton() {
-      this.$refs.salesSearchModal.hide()
+      this.$bvModal.hide('sales-search-modal')
       this.autofocus = true
     },
 

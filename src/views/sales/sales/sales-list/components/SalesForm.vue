@@ -96,6 +96,7 @@
                 >
                   <b-icon-search
                     v-b-popover.hover.top="'Tìm kiếm khách hàng'"
+                    class="cursor-pointer"
                     @click="showSearchModal"
                   />
                 </b-input-group-prepend>
@@ -145,6 +146,7 @@
                 >
                   <b-icon-plus
                     v-b-popover.hover.top="'Thêm mới khách hàng'"
+                    class="cursor-pointer"
                     @click="showModalCreate"
                   />
                 </b-input-group-append>
@@ -283,11 +285,13 @@
                         || (orderOnline.onlineOrderId !== null && editOnlinePermission === false)"
                       @input="getOrderNumber"
                     />
-                    <b-input-group-append is-text>
-                      <b-icon-three-dots-vertical
-                        v-b-popover.hover.top="'Chọn đơn online'"
-                        @click="showNotifyModal"
-                      />
+                    <b-input-group-append
+                      v-b-popover.hover.top="'Chọn đơn online'"
+                      is-text
+                      class="cursor-pointer"
+                      @click="showNotifyModal"
+                    >
+                      <b-icon-three-dots-vertical />
                     </b-input-group-append>
                   </b-input-group>
                   <small
@@ -727,6 +731,7 @@ export default {
       openPopup: false,
       allowCallAPI: true,
       disableNotPermissionManual: false,
+      hover: false,
     }
   },
 
@@ -912,7 +917,7 @@ export default {
       this.onlineOrderCustomers = [...this.getOnlineOrderCustomers]
 
       if (this.onlineOrderCustomers.length > 1) {
-        this.$refs.salesSearchModal.$refs.salesSearchModal.show()
+        this.$bvModal.show('sales-search-modal')
       } else {
         const arrayToString = JSON.stringify(...this.onlineOrderCustomers)
         const customerOnline = JSON.parse(arrayToString)
@@ -1027,7 +1032,7 @@ export default {
     },
 
     showSearchModal() {
-      this.$refs.salesSearchModal.$refs.salesSearchModal.show()
+      this.$bvModal.show('sales-search-modal')
       this.openPopup = true
     },
 
@@ -1246,6 +1251,8 @@ export default {
         this.orderOnline.discountCode = null
         this.orderOnline.discountValue = null
         this.disableNotPermissionManual = false
+        this.checkApParramCode = true
+        this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)
       }
     },
 
