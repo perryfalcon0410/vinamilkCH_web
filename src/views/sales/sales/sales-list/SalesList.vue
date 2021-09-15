@@ -807,38 +807,43 @@ export default {
     },
 
     onClickAddProduct(index) {
-      // check permission online order manual or online order from system to add product
-      if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
+      if (index === null) {
+        this.$refs.search.$el.querySelector('input').focus()
+        this.$refs.search.$el.querySelector('input').click()
+      } else {
+        // check permission online order manual or online order from system to add product
+        if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
         || this.isOffline === true
         || (this.editManualPermission === true && this.onlineOrderId === null)
         || (this.editOnlinePermission === true && this.editManualPermission === true)) {
-        if (index && index.item) {
-          const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
-          if (productIndex === -1) {
-            this.orderProducts.push(index.item)
+          if (index && index.item) {
+            const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
+            if (productIndex === -1) {
+              this.orderProducts.push(index.item)
+            } else {
+              this.orderProducts[productIndex].productInventory = index.item.productInventory
+              this.orderProducts[productIndex].quantity += 1
+              this.orderProducts[productIndex].productUnitPrice = index.item.productUnitPrice
+              this.orderProducts[productIndex].sumProductUnitPrice = index.item.sumProductUnitPrice
+              this.orderProducts[productIndex].productTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
+              this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
+            }
+            this.searchOptions.keyWord = ''
+            this.isSelectedProduct = true
+            this.productsSearch = [{ data: null }]
+            this.productIdSelected = index.item.productCode
+            setTimeout(() => {
+              document.getElementById(this.productIdSelected).focus()
+            }, 100)
           } else {
-            this.orderProducts[productIndex].productInventory = index.item.productInventory
-            this.orderProducts[productIndex].quantity += 1
-            this.orderProducts[productIndex].productUnitPrice = index.item.productUnitPrice
-            this.orderProducts[productIndex].sumProductUnitPrice = index.item.sumProductUnitPrice
-            this.orderProducts[productIndex].productTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
-            this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
+            this.$refs.search.$el.querySelector('input').click()
           }
-          this.searchOptions.keyWord = ''
-          this.isSelectedProduct = true
-          this.productsSearch = [{ data: null }]
-          this.productIdSelected = index.item.productCode
-          setTimeout(() => {
-            document.getElementById(this.productIdSelected).focus()
-          }, 100)
-        } else {
-          this.$refs.search.$el.querySelector('input').click()
         }
-      }
-      this.productsSearch = [{ data: null }]
-      // not have permission edit online order manual
-      if ((!this.editManualPermission && this.onlineOrderId === null && this.isOffline === false)) {
-        toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+        this.productsSearch = [{ data: null }]
+        // not have permission edit online order manual
+        if ((!this.editManualPermission && this.onlineOrderId === null && this.isOffline === false)) {
+          toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+        }
       }
     },
 
