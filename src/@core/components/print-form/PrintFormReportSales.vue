@@ -31,7 +31,7 @@
           Từ ngày: {{ reportSalesInfoData.fromDate }} Đến ngày: {{ reportSalesInfoData.toDate }}
         </p>
         <p>
-          Ngày in : {{ reportSalesInfoData.dateOfPrinting }}
+          Ngày in : {{ $formatPrintDate(reportSalesInfoData.dateOfPrinting) }}
         </p>
       </div>
 
@@ -352,7 +352,7 @@ export default {
       pdf.text(`Add: ${this.reportSalesShopData.address || ''}`, 10, 16)
       pdf.text(`Tel: ${this.reportSalesShopData.tel || ''}`, 10, 22)
       pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 117, 16)
-      pdf.text(`Ngày in: ${this.reportSalesShopData.dateOfPrinting}`, 124, 22)
+      pdf.text(`Ngày in: ${this.$moment().locale('en').format('DD/MM/YYYY - HH:mm:ss')}`, 124, 22)
       // total table
       const padding = {
         cellPadding: {
