@@ -34,6 +34,7 @@ export default {
   promotionType: [
     { id: '0', label: 'Khuyến mãi tự động' },
     { id: '1', label: 'Khuyến mãi bằng tay' },
+    { id: '2', label: 'Khuyến mãi thêm' },
   ],
   constraintType: [
     { id: '0', label: 'All free item' },
@@ -55,5 +56,4 @@ export default {
     { id: '0', label: 'Chưa in HĐĐ' },
   ],
   pageSizeRecommendProducts: 8,
-  pageNumberRecommendProducts: 0,
 }

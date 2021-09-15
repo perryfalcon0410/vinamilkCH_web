@@ -21,24 +21,6 @@
         <b-col
           class="shadow py-1 scrollspy-promotion-program"
         >
-          <b-row>
-            <div
-              class="mx-1 bg-light spacing m-bottom pl-2 pr-2 rounded"
-              align-v="center"
-              align-h="center"
-            >
-              <b-icon-gift
-                scale="1.2"
-                color="red"
-              />
-              <strong
-                class="ml-1 text-brand-1 h7 mt-1"
-                align-v="center"
-              >
-                Khuyến mãi
-              </strong>
-            </div>
-          </b-row>
           <!-- START - Promotion Programs-->
           <div
             v-for="(value,index) in promotionPrograms"
@@ -46,6 +28,39 @@
           >
             <!-- START - Table Promotion -->
             <b-col class="p-0">
+              <b-row v-show="value.programId === firstItemProgramGroupOne || value.programId === firstItemProgramGroupTwo || value.programId === firstItemProgramGroupThree">
+                <div
+                  class="mx-1 bg-light spacing m-bottom pl-2 pr-2 rounded"
+                  align-v="center"
+                  align-h="center"
+                >
+                  <b-icon-gift
+                    scale="1.2"
+                    color="red"
+                  />
+                  <strong
+                    v-if="value.promotionType === Number(promotionTypeOption[0].id)"
+                    class="ml-1 text-brand-1 h7 mt-1"
+                    align-v="center"
+                  >
+                    {{ promotionTypeOption[0].label }}
+                  </strong>
+                  <strong
+                    v-else-if="value.promotionType === Number(promotionTypeOption[1].id) && value.isUse"
+                    class="ml-1 text-brand-1 h7 mt-1"
+                    align-v="center"
+                  >
+                    {{ promotionTypeOption[1].label }}
+                  </strong>
+                  <strong
+                    v-else
+                    class="ml-1 text-brand-1 h7 mt-1"
+                    align-v="center"
+                  >
+                    {{ promotionTypeOption[2].label }}
+                  </strong>
+                </div>
+              </b-row>
               <!-- START - Title -->
               <b-row
                 align-v="center"
@@ -1003,6 +1018,9 @@ export default {
       isUseChecked: [],
       productKeyWord: '',
       programIdSelected: null,
+      firstItemProgramGroupOne: null,
+      firstItemProgramGroupTwo: null,
+      firstItemProgramGroupThree: null,
     }
   },
 
@@ -1098,12 +1116,13 @@ export default {
           receiveShopQty: data.receiveShopQty, // Đã sử dụng
           // eslint-disable-next-line no-nested-ternary
           orderInQty: data.totalQty !== null ? data.totalQty : data.amount !== null ? data.amount.amount : 0, // số suất trong đơn hàng
+          groupPromotion: '',
         }))
         this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
         this.pay.promotionAmountExTax = this.getPromotionPrograms.promotionAmountExTax || null
         this.pay.isVoucherLocked = this.getPromotionPrograms.lockVoucher
       }
-
+      this.sortPromotionProgram()
       // get accumulate
       this.pay.accumulate.accumulateAmount = 0
       this.pay.accumulate.accumulatePoint = this.customer.scoreCumulated || null
@@ -1187,6 +1206,7 @@ export default {
           return program
         })]
         this.promotionPrograms = [...promotionPrgramsReCalculated.filter(i => i !== null)]
+        this.sortPromotionProgram()
       }
     },
     getPrintSaleData() {
@@ -1557,6 +1577,7 @@ export default {
         }
         return program
       })]
+      this.sortPromotionProgram()
     },
 
     loadProducts(programId, keyWord) {
@@ -1628,6 +1649,7 @@ export default {
             }
             return program
           })]
+          this.sortPromotionProgram()
         } else {
           const paramPromotionAmountInfos = this.promotionPrograms.filter(p => p.reCalculated && p.isUse)
           const paramOrderRequest = {
@@ -1672,6 +1694,7 @@ export default {
           }
           return program
         })]
+        this.sortPromotionProgram()
       } else {
         this.promotionPrograms = [...this.promotionPrograms.map(program => {
           if (program.programId === programId) {
@@ -1983,6 +2006,43 @@ export default {
         }
         document.getElementById(elementIdProductNext).focus()
       }
+    },
+    sortPromotionProgram() {
+      this.firstItemProgramGroupOne = null
+      this.firstItemProgramGroupTwo = null
+      this.firstItemProgramGroupThree = null
+      this.promotionPrograms = [...this.promotionPrograms.map(program => {
+        // Nếu là CTKM auto thì gán là nhóm 1
+        // Còn nếu là CTKM bằng tay thì
+        //  . isUse = true thì là khuyến mãi nhóm 2
+        //  . isUser = false thì là khuyến mãi nhóm 3
+        if (program.promotionType === Number(this.promotionTypeOption[0].id)) {
+          if (this.firstItemProgramGroupOne === null) {
+            this.firstItemProgramGroupOne = program.programId
+          }
+          return {
+            ...program,
+            groupPromotion: this.promotionTypeOption[0].id,
+          }
+        }
+        if (program.isUse) {
+          if (this.firstItemProgramGroupTwo === null) {
+            this.firstItemProgramGroupTwo = program.programId
+          }
+          return {
+            ...program,
+            groupPromotion: this.promotionTypeOption[1].id,
+          }
+        }
+        if (this.firstItemProgramGroupThree === null) {
+          this.firstItemProgramGroupThree = program.programId
+        }
+        return {
+          ...program,
+          groupPromotion: this.promotionTypeOption[2].id,
+        }
+      })]
+      this.promotionPrograms = this.promotionPrograms.sort((a, b) => a.groupPromotion - b.groupPromotion)
     },
   },
 }
