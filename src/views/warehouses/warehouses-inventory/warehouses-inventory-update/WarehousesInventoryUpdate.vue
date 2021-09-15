@@ -699,10 +699,12 @@ export default {
       this.rowsFail = this.warehouseInventoryImportData.info.importFailed
       this.warehouseInventoryImportData.response.importSuccess.forEach(productData => {
         const index = this.originalProducts.findIndex(product => product.productCode === productData.productCode)
-        this.originalProducts[index].inventoryPacket = productData.packetQuantity.toString()
-        this.originalProducts[index].inventoryOdd = productData.unitQuantity.toString()
-        this.originalProducts[index].inventoryTotal = Number(this.originalProducts[index].inventoryPacket) * this.originalProducts[index].exchange + Number(this.originalProducts[index].inventoryOdd)
-        this.originalProducts[index].unequal = this.originalProducts[index].inventoryTotal - this.originalProducts[index].instockAmount
+        if (index !== -1) {
+          this.originalProducts[index].inventoryPacket = (productData.packetQuantity !== null && productData.packetQuantity > 0) ? productData.packetQuantity.toString() : null
+          this.originalProducts[index].inventoryOdd = (productData.unitQuantity !== null && productData.unitQuantity > 0) ? productData.unitQuantity.toString() : null
+          this.originalProducts[index].inventoryTotal = Number(this.originalProducts[index].inventoryPacket) * this.originalProducts[index].exchange + Number(this.originalProducts[index].inventoryOdd)
+          this.originalProducts[index].unequal = this.originalProducts[index].inventoryTotal - this.originalProducts[index].instockAmount
+        }
       })
     },
   },
@@ -823,7 +825,10 @@ export default {
       data.append('name', this.importFile.name)
       data.append('file', this.importFile)
       this.GET_FAILED_IMPORT_FILE_ACTION({
-        data,
+        data: {
+          data,
+          wareHouseTypeId: this.warehouseType,
+        },
         date: reverseVniDate(this.countingDate),
       })
     },
