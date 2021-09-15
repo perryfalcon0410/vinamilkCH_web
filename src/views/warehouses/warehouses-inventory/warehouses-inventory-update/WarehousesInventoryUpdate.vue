@@ -855,6 +855,7 @@ export default {
     },
     onClickRightButtonInventoryPacket(index) {
       document.getElementById(`${this.products[index].productCode}inventoryOdd`).focus()
+      document.getElementById(`${this.products[index].productCode}inventoryOdd`).select()
     },
 
     onClickUpButtonInventoryOdd(index) {
@@ -875,6 +876,7 @@ export default {
     onClickRightButtonInventoryOdd(index) {
       if (index !== this.products.length - 1) {
         document.getElementById(`${this.products[index + 1].productCode}inventoryPacket`).focus()
+        document.getElementById(`${this.products[index + 1].productCode}inventoryPacket`).select()
       }
     },
   },
