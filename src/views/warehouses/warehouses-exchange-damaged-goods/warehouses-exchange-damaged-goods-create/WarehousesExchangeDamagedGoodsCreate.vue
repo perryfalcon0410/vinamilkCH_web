@@ -286,7 +286,7 @@
                   >
                     <div class="cursor-pointer">
                       {{ suggestions }}
-                      <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.name }}
+                      <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
                     </div>
                   </template>
                 </vue-autosuggest>
@@ -577,20 +577,11 @@ export default {
         customerName: data.fullName,
       }))
     },
-
     getProducts() {
-      return [{
-        data: this.PRODUCTS_GETTER.map(data => ({
-          id: data.id,
-          productCode: data.productCode,
-          name: data.productName,
-          productDVT: data.uom1,
-          productPrice: data.price,
-          productQuantity: data.totalAmount,
-          productPriceTotal: data.price * data.totalAmount,
-          count: null,
-        })),
-      }]
+      if (this.PRODUCTS_GETTER) {
+        return this.PRODUCTS_GETTER
+      }
+      return []
     },
 
     totalProducts() {
@@ -612,7 +603,24 @@ export default {
       this.customers = [...this.getCustomers]
     },
     getProducts() {
-      this.products = [...this.getProducts]
+      const listProducts = [...this.getProducts.map(data => ({
+        id: data.id,
+        productCode: data.productCode,
+        name: this.productInfos.productName,
+        productName: data.productName,
+        productDVT: data.uom1,
+        productPrice: data.price,
+        productQuantity: data.totalAmount,
+        productPriceTotal: data.price * data.totalAmount,
+        count: null,
+      }))]
+      this.products = [{
+        data: listProducts,
+      }]
+      if (this.products[0].data.length > 0) {
+        this.$nextTick(() => document.getElementById('autosuggest__input').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 38 })))
+        this.$nextTick(() => document.getElementById('autosuggest_product__input').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+      }
     },
     customerId() {
       this.UPDATE_PRICE_PRODUCT_ACTION({
@@ -723,6 +731,7 @@ export default {
     },
 
     loadProducts(text) {
+      this.products = [{ data: null }]
       if (text) {
         if (text.length >= commonData.minSearchLength) {
           const searchData = {
@@ -746,7 +755,7 @@ export default {
             productName: product.item.name,
             productDVT: product.item.productDVT,
             productPrice: product.item.productPrice,
-            productQuantity: '01',
+            productQuantity: '',
             productPriceTotal: null,
           }
           if (existedProductIndex === -1) {
@@ -756,7 +765,7 @@ export default {
             this.damagedProduct[existedProductIndex].productQuantity = Number(this.damagedProduct[existedProductIndex].productQuantity) + Number(obj.productQuantity)
             this.damagedProduct[existedProductIndex].productPriceTotal = Number(obj.productPrice) * this.damagedProduct[existedProductIndex].productQuantity
           }
-          this.productInfos.productName = null
+          this.productInfos.productName = ''
           this.products = [{ data: null }]
           // auto focus when choose products
           this.productIdSelected = product.item.productCode
