@@ -1132,15 +1132,15 @@ export default {
 
     getSalemtPOSelected(val) {
       this.orderSelected = val
-      const { usedShop } = this.loginInfo
+      // const { usedShop } = this.loginInfo
       if (this.orderSelected.apParamCode.includes('ONLINE')) {
-        if (this.orderProducts.length > 0) {
-          if (val.id !== this.defaultPOSelected && usedShop.id === this.currentCustomer.shopId) {
-            if (!this.editOnlinePermission && this.onlineOrderId !== null) {
-              this.disableOnline = true
-            }
-          }
+        if (!this.editOnlinePermission && this.onlineOrderId !== null) {
+          this.disableOnline = true
         }
+      } else {
+        this.disableOnline = false
+        this.isOffline = true
+        this.onlineOrderId = null
       }
       // assgin value of order type to current bill being selected
       this.bills = this.bills.map(bill => {
