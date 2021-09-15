@@ -491,7 +491,6 @@ export default {
     },
     openPopup: {
       handler() {
-        console.log('open popup', this.openPopup)
         this.onSearch()
       },
       deep: true,
