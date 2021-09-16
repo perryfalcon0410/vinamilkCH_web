@@ -1271,7 +1271,6 @@ export default {
             onSuccess: () => {},
             onFailure: () => {
               this.cancel()
-              toasts.error('Mất kết nối với máy chủ, vui lòng nhấn thanh toán lại')
             },
           })
           if (this.pay.discount.discountCode !== '') {
