@@ -1055,6 +1055,7 @@ export default {
       firstItemProgramGroupOne: null,
       firstItemProgramGroupTwo: null,
       firstItemProgramGroupThree: null,
+      expandGroupThree: false,
     }
   },
 
@@ -2076,7 +2077,7 @@ export default {
         return {
           ...program,
           groupPromotion: this.promotionTypeOption[2].id,
-          expand: false,
+          expand: this.expandGroupThree,
         }
       })]
       this.promotionPrograms = this.promotionPrograms.sort((a, b) => a.groupPromotion - b.groupPromotion)
@@ -2084,6 +2085,7 @@ export default {
     openPromotionProgramsGroup() {
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
         if (program.groupPromotion === this.promotionTypeOption[2].id) {
+          this.expandGroupThree = !program.expand
           return {
             ...program,
             expand: !program.expand,
