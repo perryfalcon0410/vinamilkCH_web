@@ -28,7 +28,7 @@
           >
             <!-- START - Table Promotion -->
             <b-col class="p-0">
-              <b-row v-show="value.programId === firstItemProgramGroupOne || value.programId === firstItemProgramGroupTwo || value.programId === firstItemProgramGroupThree">
+              <b-row v-if="value.programId === firstItemProgramGroupOne">
                 <div
                   class="mx-1 bg-light spacing m-bottom pl-2 pr-2 rounded"
                   align-v="center"
@@ -39,21 +39,49 @@
                     color="red"
                   />
                   <strong
-                    v-if="value.promotionType === Number(promotionTypeOption[0].id)"
                     class="ml-1 text-brand-1 h7 mt-1"
                     align-v="center"
                   >
                     {{ promotionTypeOption[0].label }}
                   </strong>
+                </div>
+              </b-row>
+              <b-row
+                v-else-if="value.programId === firstItemProgramGroupTwo"
+                class="mt-1"
+              >
+                <div
+                  class="mx-1 bg-light spacing m-bottom pl-2 pr-2 rounded"
+                  align-v="center"
+                  align-h="center"
+                >
+                  <b-icon-gift
+                    scale="1.2"
+                    color="red"
+                  />
                   <strong
-                    v-else-if="value.promotionType === Number(promotionTypeOption[1].id) && value.isUse"
                     class="ml-1 text-brand-1 h7 mt-1"
                     align-v="center"
                   >
                     {{ promotionTypeOption[1].label }}
                   </strong>
+                </div>
+              </b-row>
+              <b-row
+                v-else-if="value.programId === firstItemProgramGroupThree"
+                class="mt-1"
+              >
+                <div
+                  class="mx-1 bg-light spacing m-bottom pl-2 pr-2 rounded"
+                  align-v="center"
+                  align-h="center"
+                  @click="openPromotionProgramsGroup()"
+                >
+                  <b-icon-gift
+                    scale="1.2"
+                    color="red"
+                  />
                   <strong
-                    v-else
                     class="ml-1 text-brand-1 h7 mt-1"
                     align-v="center"
                   >
@@ -63,6 +91,7 @@
               </b-row>
               <!-- START - Title -->
               <b-row
+                v-show="value.expand"
                 align-v="center"
                 class="mx-0 style-padding bg-brand-1"
               >
@@ -108,6 +137,7 @@
 
               <!-- START - Body -->
               <b-collapse
+                v-show="value.expand"
                 :id="'collapse-'+value.programId"
                 visible
               >
@@ -1117,6 +1147,7 @@ export default {
           // eslint-disable-next-line no-nested-ternary
           orderInQty: data.totalQty !== null ? data.totalQty : data.amount !== null ? data.amount.amount : 0, // số suất trong đơn hàng
           groupPromotion: '',
+          expand: true,
         }))
         this.pay.promotionAmount = this.getPromotionPrograms.promotionAmount
         this.pay.promotionAmountExTax = this.getPromotionPrograms.promotionAmountExTax || null
@@ -1206,8 +1237,8 @@ export default {
           return program
         })]
         this.promotionPrograms = [...promotionPrgramsReCalculated.filter(i => i !== null)]
-        this.sortPromotionProgram()
       }
+      this.sortPromotionProgram()
     },
     getPrintSaleData() {
       this.printSaleData = { ...this.getPrintSaleData }
@@ -2040,9 +2071,21 @@ export default {
         return {
           ...program,
           groupPromotion: this.promotionTypeOption[2].id,
+          expand: false,
         }
       })]
       this.promotionPrograms = this.promotionPrograms.sort((a, b) => a.groupPromotion - b.groupPromotion)
+    },
+    openPromotionProgramsGroup() {
+      this.promotionPrograms = [...this.promotionPrograms.map(program => {
+        if (program.groupPromotion === this.promotionTypeOption[2].id) {
+          return {
+            ...program,
+            expand: !program.expand,
+          }
+        }
+        return program
+      })]
     },
   },
 }

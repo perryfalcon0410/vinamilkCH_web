@@ -56,4 +56,5 @@ export default {
     { id: '0', label: 'Chưa in HĐĐ' },
   ],
   pageSizeRecommendProducts: 8,
+  pageNumberRecommendProducts: 0,
 }
