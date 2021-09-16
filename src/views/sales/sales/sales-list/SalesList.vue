@@ -368,7 +368,11 @@ export default {
       isCheckShopId: false, // check shop default
       currentCustomer: {},
       defaultCustomer: {},
-      currentOrderNumber: {},
+      currentOrderNumber: {
+        onlineOrderId: null,
+        orderNumber: null,
+        note: null,
+      },
       currentSearchModalOption: {},
       salemtPOOptions: [],
       selectedValue: null,
@@ -853,13 +857,15 @@ export default {
         this.onlineOrderId = val.onlineOrderId
 
         this.bills = this.bills.map(bill => {
-          if (bill.id === this.orderCurrentId) {
-            return {
-              ...bill,
-              orderType: {
-                value: val.type.value,
-              },
-              orderId: val.onlineOrderId,
+          if (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null) {
+            if (bill.id === this.orderCurrentId) {
+              return {
+                ...bill,
+                orderType: {
+                  value: val.type.value,
+                },
+                orderId: val.onlineOrderId,
+              }
             }
           }
           return bill
