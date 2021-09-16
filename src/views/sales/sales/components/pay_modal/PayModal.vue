@@ -72,7 +72,8 @@
                 class="mt-1"
               >
                 <div
-                  class="mx-1 bg-light spacing m-bottom pl-2 pr-2 rounded"
+                  class="mx-1 bg-light spacing m-bottom pl-2 rounded"
+                  style="padding-right: 4px"
                   align-v="center"
                   align-h="center"
                   @click="openPromotionProgramsGroup()"
@@ -87,6 +88,9 @@
                   >
                     {{ promotionTypeOption[2].label }}
                   </strong>
+                  <b-icon-three-dots-vertical
+                    class="cursor-pointer"
+                  />
                 </div>
               </b-row>
               <!-- START - Title -->
@@ -1712,6 +1716,7 @@ export default {
           }
         }
       }
+      this.sortPromotionProgram()
     },
     onChangePromotionAmout(programId, amount, maxAmount) {
       if (amount > maxAmount) {
