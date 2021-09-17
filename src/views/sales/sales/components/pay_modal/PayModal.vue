@@ -116,7 +116,7 @@
                     />
                     <b-icon-shield-exclamation
                       v-else
-                      v-b-popover.hover="{variant: 'danger', content: `<p>Chương trình này không được áp dụng do đã hết số suất khuyến mãi</p><p>Thông tin số suất:</p><p>- Được phân bố: ${$formatNumberToLocale(value.maxShopQty)}</p><p>- Đã sử dụng: ${$formatNumberToLocale(value.receiveShopQty)}</p><p>- Còn lại: ${$formatNumberToLocale(value.numberLimited)}</p>`, html: true}"
+                      v-b-popover.hover="{variant: 'danger', content: `<p>Chương trình này không được áp dụng do thiếu số suất khuyến mãi</p><p>Thông tin số suất:</p><p>- Được phân bố: ${$formatNumberToLocale(value.maxShopQty) || 'Không giới hạn'}</p><p>- Đã sử dụng: ${$formatNumberToLocale(value.receiveShopQty) || 0}</p><p>- Còn lại: ${$formatNumberToLocale(value.numberLimited) || 'Không giới hạn'}</p>`, html: true}"
                       class="cursor-pointer ml-1 text-danger"
                       font-scale="1.5"
                     />
