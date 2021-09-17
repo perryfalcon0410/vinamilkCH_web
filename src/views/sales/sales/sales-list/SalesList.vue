@@ -199,7 +199,7 @@
                 v-model="orderProducts[props.row.originalIndex].quantity"
                 :value="orderProducts[props.row.originalIndex].quantity"
                 :number="true"
-                :disabled="editOnlinePermission === false && onlineOrderId !== null || disableOnline"
+                :disabled="(currentOrderNumber.onlineOrderId !== null && currentOrderNumber.orderNumber !== null && editOnlinePermission === false)"
                 maxlength="7"
                 class="text-center h7 p-input"
                 @change="onChangeQuantity(props.row.originalIndex)"
@@ -756,7 +756,11 @@ export default {
 
     increaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOffline === true) {
+      if (this.isOffline === true
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true)
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editOnlinePermission === true && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true && this.editManualPermission === true)) {
         this.orderProducts[index].quantity += 1
         this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
@@ -765,7 +769,11 @@ export default {
 
     decreaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOffline === true) {
+      if (this.isOffline === true
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true)
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editOnlinePermission === true && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true && this.editManualPermission === true)) {
         this.orderProducts[index].quantity -= 1
         if (this.orderProducts[index].quantity <= 0) {
           this.orderProducts[index].quantity = 0
@@ -777,7 +785,11 @@ export default {
     },
 
     onClickDeleteProduct(index) {
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOffline === true) {
+      if (this.isOffline === true
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true)
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editOnlinePermission === true && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true && this.editManualPermission === true)) {
         this.orderProducts.splice(index, 1)
       }
     },
@@ -816,10 +828,11 @@ export default {
         this.$refs.search.$el.querySelector('input').click()
       } else {
         // check permission online order manual or online order from system to add product
-        if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
-        || this.isOffline === true
-        || (this.editManualPermission === true && this.onlineOrderId === null)
-        || (this.editOnlinePermission === true && this.editManualPermission === true)) {
+        if (this.isOffline === true
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true)
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editOnlinePermission === true && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true && this.editManualPermission === true)) {
           if (index && index.item) {
             const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
             if (productIndex === -1) {
@@ -868,6 +881,7 @@ export default {
               }
             }
           }
+
           return bill
         })
       }
@@ -1138,9 +1152,9 @@ export default {
 
     getSalemtPOSelected(val) {
       this.orderSelected = val
-      // const { usedShop } = this.loginInfo
       if (this.orderSelected.apParamCode.includes('ONLINE')) {
-        if (!this.editOnlinePermission && this.onlineOrderId !== null) {
+        if ((this.currentOrderNumber.onlineOrderId === null && this.editManualPermission === false)
+          || (this.currentOrderNumber.onlineOrderId !== null && this.editOnlinePermission === false)) {
           this.disableOnline = true
         }
       } else {

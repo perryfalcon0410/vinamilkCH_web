@@ -1195,7 +1195,7 @@ export default {
       this.salemtPromotionObjectSelected = this.onlineOrder.type.value
       this.quantity = this.onlineOrder.quantity
       this.totalPrice = this.onlineOrder.totalPrice
-      if (this.orderOnline.onlineOrderId !== null) {
+      if (this.orderOnline.onlineOrderId !== null && this.orderOnline.orderNumber !== null) {
         this.disableNotPermissionManual = false
       }
       this.$emit('getOrderNumber', this.orderOnline)
@@ -1235,6 +1235,7 @@ export default {
       const apParramCode = this.salemtPromotionObjectOptions.find(data => data.id === this.salemtPromotionObjectSelected).apParamCode
       // check order number is Online or Offline
       if (apParramCode.includes('ONLINE')) {
+        this.checkApParramCode = false
         // check orderNumber not permission edit manual
         if (this.orderOnline.onlineOrderId === null) {
           if (this.editManualPermission === false) {
