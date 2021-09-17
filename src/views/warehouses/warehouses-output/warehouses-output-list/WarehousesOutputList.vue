@@ -256,14 +256,13 @@
             style-class="vgt-table"
             :pagination-options="{
               enabled: true,
-              perPage: elementSize,
+              perPage: paginationData.size,
               setCurrentPage: pageNumber,
             }"
             compact-mode
-            line-numbers
             :total-rows="warehousesOutputPagination.totalElements"
             :sort-options="{
-              enabled: false,
+              enabled: true,
               multipleColumns: true,
             }"
             @on-sort-change="onSortChange"
@@ -289,7 +288,7 @@
               >
                 <v-icon-manipulation />
               </div>
-
+              <b-row v-else-if="props.column.field === 'index'" />
               <div v-else>
                 {{ props.column.label }}
               </div>
@@ -329,6 +328,11 @@
                 style="padding-right: 6px"
               >
                 {{ props.formattedRow[props.column.field] }}
+              </div>
+              <div
+                v-else-if="props.column.field === 'index'"
+              >
+                {{ paginationData.page === 0 || isNaN(paginationData.page) ? props.index + 1 : paginationData.page*paginationData.size + (props.index + 1) }}
               </div>
               <div v-else>
                 {{ props.formattedRow[props.column.field] }}
@@ -379,7 +383,7 @@
                     Số hàng hiển thị
                   </span>
                   <b-form-select
-                    v-model="elementSize"
+                    v-model="paginationData.size"
                     size="sm"
                     :options="perPageSizeOptions"
                     class="mx-1"
@@ -390,7 +394,7 @@
                 <b-pagination
                   v-model="pageNumber"
                   :total-rows="warehousesOutputPagination.totalElements"
-                  :per-page="elementSize"
+                  :per-page="paginationData.size"
                   first-number
                   last-number
                   align="right"
@@ -518,10 +522,9 @@ export default {
       warehousesOptions: warehousesData.outputTypes,
       perPageSizeOptions: commonData.perPageSizes,
       warehousesTypeSelected: null,
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
+      pageNumber: commonData.pageNumber,
       paginationData: {
-        size: this.elementSize,
+        size: commonData.perPageSizes[0],
         page: this.pageNumber - 1,
         sort: null,
       },
@@ -535,6 +538,11 @@ export default {
       ipAddressCurrent: '',
       ipAddress: '',
       columns: [
+        {
+          label: 'index',
+          field: 'index',
+          sortable: false,
+        },
         {
           label: 'ID',
           field: 'id',
@@ -680,9 +688,9 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehousesOutputPagination.totalElements
-        ? this.warehousesOutputPagination.totalElements : (this.elementSize * this.pageNumber)
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.warehousesOutputPagination.totalElements
+        ? this.warehousesOutputPagination.totalElements : (this.paginationData.size * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${this.warehousesOutputPagination.totalElements} mục`
     },
@@ -836,14 +844,11 @@ export default {
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
-      this.paginationData.page = params.currentPage - 1
-      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
+      this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updateSearchData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.paginationData.page = params.currentPage - 1
-      this.paginationData.size = params.currentPerPage
-      this.onPaginationChange({ size: params.currentPerPage })
+      this.updateSearchData({ size: params.currentPerPage })
+      this.onPaginationChange()
     },
     onSortChange(params) {
       params.forEach((item, index) => {

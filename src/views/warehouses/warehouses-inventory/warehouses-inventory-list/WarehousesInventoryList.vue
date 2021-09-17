@@ -51,11 +51,10 @@
           style-class="vgt-table"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize,
+            perPage: paginationData.size,
             setCurrentPage: pageNumber,
           }"
           compact-mode
-          line-numbers
           :total-rows="warehouseInventoryPagination.totalElements"
           :sort-options="{
             enabled: true,
@@ -83,6 +82,7 @@
             >
               <v-icon-manipulation />
             </b-row>
+            <b-row v-else-if="props.column.field === 'index'" />
             <div v-else>
               {{ props.column.label }}
             </div>
@@ -104,6 +104,11 @@
                 @click="onClickUpdateButton(props.row.id)"
               />
             </b-row>
+            <div
+              v-else-if="props.column.field === 'index'"
+            >
+              {{ paginationData.page === 0 || isNaN(paginationData.page) ? props.index + 1 : paginationData.page*paginationData.size + (props.index + 1) }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -129,7 +134,7 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="paginationData.size"
                   size="sm"
                   :options="paginationOptions"
                   class="mx-1"
@@ -140,7 +145,7 @@
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="warehouseInventoryPagination.totalElements"
-                :per-page="elementSize"
+                :per-page="paginationData.size"
                 first-number
                 last-number
                 align="right"
@@ -206,11 +211,10 @@ export default {
     return {
       fromDate: formatISOtoVNI(new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
       toDate: formatISOtoVNI(new Date()),
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
+      pageNumber: commonData.pageNumber,
       paginationOptions: commonData.perPageSizes,
       paginationData: {
-        size: this.elementSize,
+        size: commonData.perPageSizes[0],
         page: this.pageNumber - 1,
         sort: null,
       },
@@ -222,6 +226,11 @@ export default {
       },
 
       columns: [
+        {
+          label: 'index',
+          field: 'index',
+          sortable: false,
+        },
         {
           label: 'Ngày',
           field: 'countingDate',
@@ -290,9 +299,9 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehouseInventoryPagination.totalElements
-        ? this.warehouseInventoryPagination.totalElements : (this.elementSize * this.pageNumber)
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.warehouseInventoryPagination.totalElements
+        ? this.warehouseInventoryPagination.totalElements : (this.paginationData.size * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${this.warehouseInventoryPagination.totalElements} mục`
     },
@@ -332,7 +341,7 @@ export default {
       })
     },
     updateSearchData(newProps) {
-      this.searchData = { ...this.searchData, ...newProps }
+      this.paginationData = { ...this.paginationData, ...newProps }
     },
     onSearchClick(event) {
       this.updateSearchData({
@@ -342,18 +351,17 @@ export default {
     },
     onPaginationChange(data, params) {
       this.updateSearchData(data)
-      this.GET_WAREHOUSE_INVENTORIES_ACTION({ ...this.searchData, ...params })
+      this.GET_WAREHOUSE_INVENTORIES_ACTION({ ...this.paginationData, ...params })
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
-      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
+      this.onPaginationChange()
     },
     onPerPageChange(params) {
       this.updateSearchData({
         size: params.currentPerPage,
-        page: commonData.pageNumber - 1,
       })
-      this.onPaginationChange({ size: params.currentPerPage })
+      this.onPaginationChange()
     },
     onSortChange(params) {
       params.forEach((item, index) => {

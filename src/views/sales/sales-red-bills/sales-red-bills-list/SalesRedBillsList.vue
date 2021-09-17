@@ -278,9 +278,8 @@
             :pagination-options="{
               enabled: true,
               perPage: searchData.size,
-              setCurrentPage: searchData.page + 1,
+              setCurrentPage: pageNumber,
             }"
-            line-numbers
             :total-rows="getRedBillPagination.totalElements"
             :select-options="{
               enabled: true,
@@ -307,6 +306,17 @@
               Không có dữ liệu
             </div>
             <!-- END - Empty rows -->
+            <!-- START - Column -->
+            <template
+              slot="table-column"
+              slot-scope="props"
+            >
+              <b-row v-if="props.column.field === 'index'" />
+              <div v-else>
+                {{ props.column.label }}
+              </div>
+            </template>
+            <!-- END - Column -->
 
             <!-- START - Pagination -->
             <template
@@ -387,6 +397,11 @@
                 class="style-width"
               >
                 {{ props.formattedRow[props.column.field] }}
+              </div>
+              <div
+                v-else-if="props.column.field === 'index'"
+              >
+                {{ searchData.page === 0 || isNaN(searchData.page) ? props.index + 1 : searchData.page*searchData.size + (props.index + 1) }}
               </div>
               <div v-else>
                 {{ props.formattedRow[props.column.field] }}
@@ -525,7 +540,7 @@ export default {
       pageNumber: commonData.pageNumber,
       searchData: {
         size: commonData.perPageSizes[0],
-        page: commonData.pageNumber - 1,
+        page: this.pageNumber - 1,
         sort: null,
       },
       searchOption: {
@@ -571,6 +586,11 @@ export default {
       },
       options: redBillData.templateOptions,
       columns: [
+        {
+          label: 'index',
+          field: 'index',
+          sortable: false,
+        },
         {
           label: 'Số hóa đơn đỏ',
           field: 'invoiceNumber',
@@ -836,14 +856,13 @@ export default {
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
-      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
+      this.onPaginationChange()
     },
     onPerPageChange(params) {
       this.updateSearchData({
         size: params.currentPerPage,
-        page: commonData.pageNumber - 1,
       })
-      this.onPaginationChange(this.onPaginationChange({ size: params.currentPerPage }))
+      this.onPaginationChange()
     },
     onSortChange(params) {
       params.forEach((item, index) => {

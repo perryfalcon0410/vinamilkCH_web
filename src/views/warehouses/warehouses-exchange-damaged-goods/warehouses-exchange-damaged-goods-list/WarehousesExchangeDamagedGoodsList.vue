@@ -53,14 +53,13 @@
           :pagination-options="{
             enabled: true,
             perPage: searchData.size,
-            setCurrentPage: searchData.page + 1,
+            setCurrentPage: pageNumber,
           }"
           :sort-options="{
             enabled: false,
             multipleColumns: true,
           }"
           compact-mode
-          line-numbers
           :total-rows="exchangeDamagedGoodsPagination.totalElements"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
@@ -86,6 +85,7 @@
             >
               <v-icon-manipulation />
             </div>
+            <b-row v-else-if="props.column.field === 'index'" />
             <div v-else>
               {{ props.column.label }}
             </div>
@@ -115,6 +115,11 @@
                 @click="onClickDeleteButton(props.row.id, props.row.originalIndex)"
               />
             </b-row>
+            <div
+              v-else-if="props.column.field === 'index'"
+            >
+              {{ searchData.page === 0 || isNaN(searchData.page) ? props.index + 1 : searchData.page*searchData.size + (props.index + 1) }}
+            </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -283,12 +288,11 @@ export default {
       },
       nowDate: nowDate(),
 
-      elementSize: commonData.pageNumber,
-      pageNumber: 1,
+      pageNumber: commonData.pageNumber,
       paginationOptions: commonData.perPageSizes,
       searchData: {
         size: commonData.perPageSizes[0],
-        page: commonData.pageNumber - 1,
+        page: this.pageNumber - 1,
         sort: null,
       },
 
@@ -304,6 +308,11 @@ export default {
         allowInvalidPreload: false,
       },
       columns: [
+        {
+          label: 'index',
+          field: 'index',
+          sortable: false,
+        },
         {
           label: 'Ngày',
           field: 'transDate',
@@ -459,11 +468,9 @@ export default {
 
     onSearchClick(event) {
       this.updateSearchData({
-        // page: commonData.pageNumber - 1,
         ...event,
       })
       this.onPaginationChange()
-      // this.pageNumber = commonData.pageNumber
     },
     onPaginationChange(data, params) {
       this.updateSearchData(data)
@@ -471,11 +478,11 @@ export default {
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
-      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
+      this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updateSearchData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange({ size: params.currentPerPage })
+      this.updateSearchData({ size: params.currentPerPage })
+      this.onPaginationChange()
     },
     onSortChange(params) {
       params.forEach((item, index) => {

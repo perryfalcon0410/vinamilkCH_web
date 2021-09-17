@@ -32,7 +32,6 @@
             perPage: paginationData.size,
             setCurrentPage: pageNumber,
           }"
-          line-numbers
           :style="cssProps"
           :sort-options="{
             enabled: false,
@@ -110,6 +109,7 @@
             >
               {{ props.column.label }}
             </div>
+            <b-row v-else-if="props.column.field === 'index'" />
             <div v-else>
               {{ props.column.label }}
             </div>
@@ -168,6 +168,11 @@
               class="name-width"
             >
               {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'index'"
+            >
+              {{ paginationData.page === 0 || isNaN(paginationData.page) ? props.index + 1 : paginationData.page*paginationData.size + (props.index + 1) }}
             </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
@@ -307,22 +312,21 @@ export default {
       valueDateFrom: earlyMonth(),
       valueDateTo: nowDate(),
       selected: null,
-
       perPageSizeOptions: commonData.perPageSizes,
       pageNumber: commonData.pageNumber,
       paginationData: {
         size: commonData.perPageSizes[0],
-        page: this.pageNumber,
+        page: this.pageNumber - 1,
         sort: null,
       },
 
       selectedRows: [], // array receipt
-      searchData: {
-        size: commonData.perPageSizes[0],
-        page: commonData.pageNumber - 1,
-        sort: null,
-      },
       columns: [
+        {
+          label: 'index',
+          field: 'index',
+          sortable: false,
+        },
         {
           label: 'Số hóa đơn',
           field: 'orderNumber',
@@ -533,11 +537,14 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
-      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.salesReceiptsPagination.totalElements
-        ? this.salesReceiptsPagination.totalElements : (this.paginationData.size * this.pageNumber)
+      const { page, size } = this.paginationData
+      const { totalElements } = this.salesReceiptsPagination
 
-      return `${minPageSize} - ${maxPageSize} của ${this.salesReceiptsPagination.totalElements} mục`
+      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
+      const maxPageSize = (size * (page + 1)) > totalElements
+        ? totalElements : (size * (page + 1))
+
+      return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },
     cssProps() {
       return {
@@ -617,30 +624,27 @@ export default {
 
     // START - Vue Good Table func
     updateSearchData(newProps) {
-      this.searchData = { ...this.searchData, ...newProps }
+      this.paginationData = { ...this.paginationData, ...newProps }
     },
     onSearchClick(event) {
       this.updateSearchData({
-        // page: commonData.pageNumber - 1,
         ...event,
       })
       this.onPaginationChange()
-      this.pageNumber = commonData.pageNumber // temp
     },
     onPaginationChange(data, params) {
       this.updateSearchData(data)
-      this.GET_SALES_RECEIPTS_ACTION({ ...this.searchData, ...params })
+      this.GET_SALES_RECEIPTS_ACTION({ ...this.paginationData, ...params })
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
-      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
+      this.onPaginationChange()
     },
     onPerPageChange(params) {
       this.updateSearchData({
         size: params.currentPerPage,
-        page: commonData.pageNumber - 1,
       })
-      this.onPaginationChange({ size: params.currentPerPage })
+      this.onPaginationChange()
     },
     onSortChange(params) {
       params.forEach((item, index) => {
@@ -662,7 +666,7 @@ export default {
           sort: [...params],
         })
       }
-      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
+      this.onPaginationChange()
     },
     // END - Vue Good Table func
   },

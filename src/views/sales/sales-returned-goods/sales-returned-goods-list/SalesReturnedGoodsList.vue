@@ -49,7 +49,6 @@
             setCurrentPage: searchData.page + 1,
           }"
           compact-mode
-          line-numbers
           :total-rows="orderReturnPagination.totalElements"
           :sort-options="{
             enabled: false,
@@ -79,6 +78,7 @@
                 scale="1.3"
               />
             </div>
+            <b-row v-else-if="props.column.field === 'index'" />
             <div v-else>
               {{ props.column.label }}
             </div>
@@ -103,6 +103,11 @@
               class="pr-70"
             >
               {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'index'"
+            >
+              {{ searchData.page === 0 || isNaN(searchData.page) ? props.index + 1 : searchData.page*searchData.size + (props.index + 1) }}
             </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
@@ -256,7 +261,7 @@ export default {
       pageNumber: commonData.pageNumber,
       searchData: {
         size: commonData.perPageSizes[0],
-        page: commonData.pageNumber - 1,
+        page: this.pageNumber - 1,
         sort: null,
       },
       // decentralization
@@ -270,6 +275,11 @@ export default {
       detailReturnPromotions: [],
 
       columns: [
+        {
+          label: 'index',
+          field: 'index',
+          sortable: false,
+        },
         {
           label: 'Mã trả hàng',
           field: 'orderNumber',
@@ -434,7 +444,6 @@ export default {
     },
     onClickSearchButton(event) {
       this.updateSearchData({
-        // page: commonData.pageNumber - 1,
         ...event,
       })
       this.onPaginationChange()
@@ -445,14 +454,13 @@ export default {
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
-      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
+      this.onPaginationChange()
     },
     onPerPageChange(params) {
       this.updateSearchData({
         size: params.currentPerPage,
-        page: commonData.pageNumber - 1,
       })
-      this.onPaginationChange({ size: params.currentPerPage })
+      this.onPaginationChange()
     },
     onSortChange(params) {
       params.forEach((item, index) => {

@@ -50,11 +50,10 @@
           style-class="vgt-table"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize,
+            perPage: paginationData.size,
             setCurrentPage: pageNumber,
           }"
           compact-mode
-          line-numbers
           :total-rows="warehousesComboPagination.totalElements"
           :sort-options="{
             enabled: false,
@@ -75,22 +74,15 @@
           <!-- END - Empty rows -->
 
           <!-- START - Columns -->
-          <!-- <template
+          <template
             slot="table-column"
             slot-scope="props"
           >
-            <div v-if="props.column.field === 'feature'">
-              <b-icon-bricks
-                v-b-popover.hover="'Thao tác'"
-                class="cursor-pointer"
-                scale="1.3"
-              />
-            </div>
-
+            <b-row v-if="props.column.field === 'index'" />
             <div v-else>
               {{ props.column.label }}
             </div>
-          </template> -->
+          </template>
           <!-- END - Columns -->
 
           <!-- START - Rows -->
@@ -102,6 +94,11 @@
               <v-icon-detail
                 @click="navigateToDetail(props.row.id)"
               />
+            </div>
+            <div
+              v-else-if="props.column.field === 'index'"
+            >
+              {{ paginationData.page === 0 || isNaN(paginationData.page) ? props.index + 1 : paginationData.page*paginationData.size + (props.index + 1) }}
             </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
@@ -151,7 +148,7 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="paginationData.size"
                   size="sm"
                   :options="paginationOptions"
                   class="mx-1"
@@ -166,7 +163,7 @@
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="warehousesComboPagination.totalElements"
-                :per-page="elementSize"
+                :per-page="paginationData.size"
                 first-number
                 last-number
                 align="right"
@@ -232,11 +229,10 @@ export default {
 
   data() {
     return {
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
+      pageNumber: commonData.pageNumber,
       paginationOptions: commonData.perPageSizes,
       paginationData: {
-        size: this.elementSize,
+        size: commonData.perPageSizes[0],
         page: this.pageNumber - 1,
         sort: null,
       },
@@ -244,6 +240,11 @@ export default {
       selectedColumnName: [],
       warehousesCombos: [],
       columns: [
+        {
+          label: 'index',
+          field: 'index',
+          sortable: false,
+        },
         {
           label: 'Ngày',
           field: 'transDate',
@@ -325,9 +326,9 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.warehousesComboPagination.totalElements
-        ? this.warehousesComboPagination.totalElements : (this.elementSize * this.pageNumber)
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.warehousesComboPagination.totalElements
+        ? this.warehousesComboPagination.totalElements : (this.paginationData.size * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${this.warehousesComboPagination.totalElements} mục`
     },
@@ -377,11 +378,11 @@ export default {
     },
     onPageChange(params) {
       this.updatePaginationData({ page: params.currentPage - 1 })
-      this.onPaginationChange({ page: params.currentPage }, { page: params.currentPage - 1 })
+      this.onPaginationChange()
     },
     onPerPageChange(params) {
-      this.updatePaginationData({ page: params.currentPage - 1, size: params.currentPerPage })
-      this.onPaginationChange({ size: params.currentPerPage })
+      this.updatePaginationData({ size: params.currentPerPage })
+      this.onPaginationChange()
     },
     onSortChange(params) {
       params.forEach((item, index) => {

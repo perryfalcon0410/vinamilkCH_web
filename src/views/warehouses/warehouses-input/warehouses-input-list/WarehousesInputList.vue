@@ -50,11 +50,10 @@
           style-class="vgt-table"
           :pagination-options="{
             enabled: true,
-            perPage: elementSize,
+            perPage: paginationData.size,
             setCurrentPage: pageNumber,
           }"
           compact-mode
-          line-numbers
           :total-rows="receiptPagination.totalElements"
           :sort-options="{
             enabled: true,
@@ -84,6 +83,7 @@
             >
               <v-icon-manipulation />
             </b-row>
+            <b-row v-if="props.column.field === 'index'" />
             <div v-else>
               {{ props.column.label }}
             </div>
@@ -123,6 +123,11 @@
               style="padding-right: 6px"
             >
               {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
+              v-else-if="props.column.field === 'index'"
+            >
+              {{ paginationData.page === 0 || isNaN(paginationData.page) ? props.index + 1 : paginationData.page*paginationData.size + (props.index + 1) }}
             </div>
             <div v-else>
               {{ props.formattedRow[props.column.field] }}
@@ -173,7 +178,7 @@
                   Số hàng hiển thị
                 </span>
                 <b-form-select
-                  v-model="elementSize"
+                  v-model="paginationData.size"
                   size="sm"
                   :options="paginationOptions"
                   class="mx-1"
@@ -184,7 +189,7 @@
               <b-pagination
                 v-model="pageNumber"
                 :total-rows="receiptPagination.totalElements"
-                :per-page="elementSize"
+                :per-page="paginationData.size"
                 first-number
                 last-number
                 align="right"
@@ -307,11 +312,10 @@ export default {
       ipAddressCurrent: '',
       ipAddress: '',
       nowDate: nowDate(),
-      elementSize: commonData.perPageSizes[0],
-      pageNumber: 1,
+      pageNumber: commonData.pageNumber,
       paginationOptions: commonData.perPageSizes,
       paginationData: {
-        size: this.elementSize,
+        size: commonData.perPageSizes[0],
         page: this.pageNumber - 1,
         sort: null,
       },
@@ -321,6 +325,11 @@ export default {
         ctrlId: 1,
       },
       columns: [
+        {
+          label: 'index',
+          field: 'index',
+          sortable: false,
+        },
         {
           label: 'Ngày',
           field: 'transDate',
@@ -427,9 +436,9 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.elementSize) - this.elementSize + 1
-      const maxPageSize = (this.elementSize * this.pageNumber) > this.receiptPagination.totalElements
-        ? this.receiptPagination.totalElements : (this.elementSize * this.pageNumber)
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * this.paginationData.size) - this.paginationData.size + 1
+      const maxPageSize = (this.paginationData.size * this.pageNumber) > this.receiptPagination.totalElements
+        ? this.receiptPagination.totalElements : (this.paginationData.size * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${this.receiptPagination.totalElements} mục`
     },
