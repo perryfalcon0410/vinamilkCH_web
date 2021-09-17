@@ -1134,8 +1134,12 @@ export default {
             poId: this.poId,
             note: this.note?.trim(),
           }
-          if (obj.importType === -1) {
-            toasts.error('Cần chọn ít nhất 1 sản phẩm khuyến mãi')
+
+          if (this.status === -1 && this.inputTypeSelected === '0') {
+            toasts.error('Vui lòng chọn phiếu hoặc sản phẩm khuyến mãi')
+          }
+          if (this.status === -1 && this.inputTypeSelected !== '0') {
+            toasts.error('Vui lòng chọn đơn')
           }
           // if import type = choose poConfirm -> check redInvoice
           if (this.status === 0) {

@@ -147,6 +147,7 @@ import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
 import autoTable from 'jspdf-autotable'
+import { getUserData } from '@/auth/utils'
 import JSPM from 'jsprintmanager'
 import toasts from '@/@core/utils/toasts/toasts'
 import {
@@ -166,6 +167,7 @@ export default {
       count: 0,
       printerName: '',
       bodyData: [],
+      username: getUserData().fullName,
     }
   },
   computed: {
@@ -205,6 +207,7 @@ export default {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
       this.generatePdf()
+      this.bodyData = []
     }
   },
   methods: {
@@ -215,7 +218,7 @@ export default {
       const y = 20
       this.redBillData.forEach((item, index) => {
         const row = [
-          { content: index, styles: { lineWidth: 0 } },
+          { content: index + 1, styles: { lineWidth: 0 } },
           { content: item.productName, styles: { lineWidth: 0 } },
           { content: item.productCode, styles: { lineWidth: 0 } },
           { content: item.uom1, styles: { lineWidth: 0 } },
@@ -244,7 +247,7 @@ export default {
       pdf.text('0300588569', x + 15, y + 20)
       pdf.text(`${this.redBillInfoData.shopName}`, x + 15, y + 52)
       pdf.text(`${this.redBillInfoData.shopAddress}`, x + 15, y + 57)
-      pdf.text(`${this.redBillInfoData.shopTel}`, x + 20, y + 62)
+      pdf.text(`${this.redBillInfoData.shopTel || ''}`, x + 20, y + 62)
       pdf.text('Tiền mặt', x + 90, y + 62)
       pdf.autoTable({
         startY: y + 90,
@@ -278,7 +281,7 @@ export default {
       pdf.text(`${this.$formatNumberToLocale(this.redBillInfoData.amount)}`, x + 150, pdf.internal.pageSize.getHeight() - 60)
       pdf.text(`${this.$formatNumberToLocale(this.redBillInfoData.valueAddedTax)}`, x + 150, pdf.internal.pageSize.getHeight() - 55)
       pdf.text(`${this.$formatNumberToLocale(this.redBillInfoData.totalAmountNumber)}`, x + 150, pdf.internal.pageSize.getHeight() - 50)
-      pdf.text('Nguyễn Thị Thu Vân', pdf.internal.pageSize.getWidth() - 55, pdf.internal.pageSize.getHeight() - 15)
+      pdf.text(`${this.username}`, pdf.internal.pageSize.getWidth() - 55, pdf.internal.pageSize.getHeight() - 15)
       // const options = {
       //   fileName: 'Hoa_don_do',
       //   pageSizing: 'Fit',
