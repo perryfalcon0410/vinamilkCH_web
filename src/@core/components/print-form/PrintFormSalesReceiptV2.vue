@@ -399,39 +399,8 @@ export default {
     } else {
       const element = document.getElementById('print-form-sale-receipt-v2')
       element.classList.remove('d-none')
-      // const heightPage = Number(element.offsetHeight) * 0.29
       element.classList.add('d-none')
       // format UI bill
-      // const topHeight = 181
-      // const bottomHeight = 180
-      // let countPromotion = 0
-      // const rowHeight = 10
-      // if (this.printSalesReceiptData.products !== null) {
-      //   this.printSalesReceiptData.products.forEach(product => {
-      //     if (product.listOrderItems !== null) {
-      //       product.listOrderItems.forEach(item => {
-      //         countPromotion += rowHeight * 2
-      //         if (item.totalDiscountPrice) {
-      //           countPromotion += rowHeight
-      //         }
-      //       })
-      //     }
-      //     if (Boolean((Number(product.displayType))) === true) {
-      //       countPromotion += rowHeight
-      //     }
-      //     if (product.listFreeItems !== null) {
-      //       product.listFreeItems.forEach(() => {
-      //         countPromotion += rowHeight
-      //       })
-      //     }
-      //   })
-      // }
-      // if (this.printSalesReceiptData.lstZM !== null) {
-      //   this.printSalesReceiptData.lstZM.forEach(() => {
-      //     countPromotion += rowHeight * 2
-      //   })
-      // }
-      // const heightPage = topHeight + countPromotion + bottomHeight
       const pageSizePrinterEPOS = 1120 / 2
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('p', 'px', [pageSizePrinterEPOS, 143]) // portrait, heigth x width (287.24409449)
@@ -479,17 +448,27 @@ export default {
         pdf.setFontType('normal')
       }
       marginTop += spaceRowInCluster - 2
-      pdf.text(`KH: ${this.removeVietnameseTones(`${this.printSalesReceiptData.customerName}`, this.isRemoveVNTones)} - ${this.printSalesReceiptData.customerPhone}`, marginLeft, marginTop)
-      marginTop += spaceRowInCluster - 2
+      const splitCustomerName = pdf.splitTextToSize(`KH: ${this.removeVietnameseTones(`${this.printSalesReceiptData.customerName}`, this.isRemoveVNTones)} - ${this.printSalesReceiptData.customerPhone}`, pageWidth - marginLeft - 10)
+      pdf.text(splitCustomerName, marginLeft, marginTop)
+      if (splitCustomerName.length === 1) {
+        marginTop += spaceRowInCluster - 2
+      } else {
+        marginTop += (spaceRowInCluster * splitCustomerName.length) - 5
+      }
       const splitTitle = pdf.splitTextToSize(`DC: ${this.removeVietnameseTones(`${this.printSalesReceiptData.customerAddress}`, this.isRemoveVNTones)}`, pageWidth - marginLeft - 10)
       pdf.text(splitTitle, marginLeft, marginTop)
       if (splitTitle.length === 1) {
-        marginTop += spaceRowInCluster
+        marginTop += spaceRowInCluster - 2
       } else {
         marginTop += (spaceRowInCluster * splitTitle.length) - 5
       }
-      pdf.text(`${this.removeVietnameseTones('Loại giao hàng', this.isRemoveVNTones)}: ${this.removeVietnameseTones(`${this.printSalesReceiptData.deliveryType}`, this.isRemoveVNTones)}`, marginLeft, marginTop)
-      marginTop += spaceRowInCluster - 2
+      const splitSalesReceiptData = pdf.splitTextToSize(`${this.removeVietnameseTones('Loại giao hàng', this.isRemoveVNTones)}: ${this.removeVietnameseTones(`${this.printSalesReceiptData.deliveryType}`, this.isRemoveVNTones)}`, pageWidth - marginLeft - 10)
+      pdf.text(splitSalesReceiptData, marginLeft, marginTop)
+      if (splitSalesReceiptData.length === 1) {
+        marginTop += spaceRowInCluster - 2
+      } else {
+        marginTop += (spaceRowInCluster * splitSalesReceiptData.length) - 7
+      }
       pdf.text(`${this.removeVietnameseTones('Doanh số tích luỹ', this.isRemoveVNTones)}: ${this.printSalesReceiptData.customerPurchase.toLocaleString('vi-VN')}`, marginLeft, marginTop)
       marginTop += spaceRowInCluster - 2
       pdf.text(`${this.removeVietnameseTones('Ngày', this.isRemoveVNTones)}: ${this.$formatPrintDate(this.printSalesReceiptData.orderDate)}`, marginLeft, marginTop)
@@ -534,8 +513,13 @@ export default {
               pdf.addPage()
               marginTop = 10
             }
-            pdf.text(this.removeVietnameseTones(`${item.productName}`, this.isRemoveVNTones), marginLeft, marginTop)
-            marginTop += spaceRowInCluster
+            const splitProductName = pdf.splitTextToSize(this.removeVietnameseTones(`${item.productName}`, this.isRemoveVNTones), pageWidth - marginLeft - 10)
+            pdf.text(splitProductName, marginLeft, marginTop)
+            if (splitProductName.length === 1) {
+              marginTop += spaceRowInCluster - 2
+            } else {
+              marginTop += spaceRowInCluster + 12
+            }
             if (marginTop >= pageSizePrinterEPOS) {
               pdf.addPage()
               marginTop = 10
@@ -575,7 +559,13 @@ export default {
             }
             pdf.text('KM:', marginLeft, marginTop)
             pdf.text(`${freeItem.quantity.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2) - 10, marginTop, { align: 'right' })
-            pdf.text(`${this.removeVietnameseTones(freeItem.productName, this.isRemoveVNTones)}`, (columnWidth1 + columnWidth2), marginTop, { align: 'left' })
+            const splitProductNameKM = pdf.splitTextToSize(`${this.removeVietnameseTones(freeItem.productName, this.isRemoveVNTones)}`, pageWidth - marginLeft - 10)
+            pdf.text(splitProductNameKM, (columnWidth1 + columnWidth2), marginTop, { align: 'left' })
+            if (splitProductNameKM.length === 1) {
+              marginTop += spaceRowInCluster - 10
+            } else {
+              marginTop += spaceRowInCluster + 2
+            }
           })
         }
       })
@@ -587,7 +577,13 @@ export default {
             pdf.addPage()
             marginTop = 10
           }
-          pdf.text(this.removeVietnameseTones(`${zm.promotionName}`, this.isRemoveVNTones), marginLeft, marginTop)
+          const splitPromotionName = pdf.splitTextToSize(this.removeVietnameseTones(`${zm.promotionName}`, this.isRemoveVNTones), pageWidth - marginLeft - 10)
+          pdf.text(splitPromotionName, marginLeft, marginTop)
+          if (splitPromotionName.length === 1) {
+            marginTop += spaceRowInCluster - 10
+          } else {
+            marginTop += spaceRowInCluster - 4
+          }
           marginTop += spaceRowInCluster
           pdf.text(`${zm.promotionCode}`, marginLeft, marginTop)
           pdf.text(`${zm.amount.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2 + columnWidth3 + columnWidth4) - 3, marginTop, { align: 'right' })
