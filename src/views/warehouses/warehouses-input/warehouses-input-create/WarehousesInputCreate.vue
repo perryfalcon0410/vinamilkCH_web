@@ -509,7 +509,7 @@
                     <template slot-scope="{ suggestion }">
                       <div class="cursor-pointer">
                         {{ suggestions }}
-                        <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.name }}
+                        <b>{{ suggestion.item.productCode }}</b> - {{ suggestion.item.productName }}
                       </div>
                     </template>
                   </vue-autosuggest>
@@ -919,16 +919,7 @@ export default {
     getProducts() {
       if (this.PRODUCTS_GETTER) {
         // để show lên vue-autosuggest thì phải để [{data: value}]
-        return [{
-          data: this.PRODUCTS_GETTER.map(data => ({
-            productId: data.id,
-            productCode: data.productCode,
-            name: data.productName,
-            price: data.price,
-            totalPrice: data.stockTotal,
-            unit: data.uom1,
-          })),
-        }]
+        return this.PRODUCTS_GETTER
       }
       return []
     },
@@ -976,10 +967,23 @@ export default {
       }
     },
     getProducts() {
-      this.products = [...this.getProducts]
-      if (this.products[0].data && this.products[0].data.length === 1) {
-        this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
-      }
+      // this.products = [...this.getProducts]
+      const listProducts = [...this.getProducts.map(data => ({
+        productId: data.id,
+        productCode: data.productCode,
+        name: this.productSearch,
+        productName: data.productName,
+        price: data.price,
+        totalPrice: data.stockTotal,
+        unit: data.uom1,
+      }))]
+      this.products = [{
+        data: listProducts,
+      }]
+      // if (this.products[0].data && this.products[0].data.length === 1) {
+      this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 38 })))
+      this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+      // }
     },
     status() {
       if (this.inputTypeSelected === '0' && this.status === -1) {
@@ -1209,8 +1213,8 @@ export default {
           const obj = {
             productId: product.item.productId,
             productCode: product.item.productCode,
-            productName: product.item.name,
-            quantity: '01', // default quantity
+            productName: product.item.productName,
+            quantity: '', // default quantity
             price: product.item.price || 0,
             totalPrice: product.item.stockTotal || 0,
             unit: product.item.unit,
