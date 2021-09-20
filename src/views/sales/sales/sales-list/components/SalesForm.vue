@@ -1075,6 +1075,7 @@ export default {
           if (this.totalQuantity === null || this.totalQuantity === 0) {
             this.$refs.salesNotifyPayModal.show()
           } else {
+            this.isOpenPayModal = true
             this.showPayModal()
           }
         } else if (this.salemtPromotionObjectSelected !== undefined) {
@@ -1084,11 +1085,17 @@ export default {
               // check permission online manual
               if (this.orderOnline.onlineOrderId === null && this.orderOnline.orderNumber.length > 0) {
                 if (this.editManualPermission) {
-                  this.isOpenPayModal = true
-                  this.showPayModal()
+                  if (this.totalQuantity === null || this.totalQuantity === 0) {
+                    this.$refs.salesNotifyPayModal.show()
+                  } else {
+                    this.isOpenPayModal = true
+                    this.showPayModal()
+                  }
                 } else {
                   toasts.error('Bạn không có quyền tạo đơn Online tay. Vui lòng chọn đơn Online đang có trên hệ thống.')
                 }
+              } else if (this.totalQuantity === null || this.totalQuantity === 0) {
+                this.$refs.salesNotifyPayModal.show()
               } else {
                 this.isOpenPayModal = true
                 this.showPayModal()
@@ -1157,6 +1164,7 @@ export default {
     },
 
     onClickAgreePayButton() {
+      this.isOpenPayModal = true
       this.showPayModal()
       this.closeNotifyPayModal()
     },
