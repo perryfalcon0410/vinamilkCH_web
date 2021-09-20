@@ -401,12 +401,12 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const { page, size } = this.searchData
+      const { size } = this.searchData
       const { totalElements } = this.exchangeDamagedGoodsPagination
 
-      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
-      const maxPageSize = (size * (page + 1)) > totalElements
-        ? totalElements : (size * (page + 1))
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * size) - size + 1
+      const maxPageSize = (size * this.pageNumber) > totalElements
+        ? totalElements : (size * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },

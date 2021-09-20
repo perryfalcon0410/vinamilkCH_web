@@ -232,9 +232,9 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-import {
-  resizeAbleTable,
-} from '@core/utils/utils'
+// import {
+//   resizeAbleTable,
+// } from '@core/utils/utils'
 import VIconDetail from '@core/components/v-icons/IconDetail.vue'
 import commonData from '@/@db/common'
 // import OrderDetailsModal from '../components/OrderDetailsModal.vue'
@@ -282,6 +282,7 @@ export default {
         },
         {
           label: 'Mã trả hàng',
+          thClass: 'align-middle',
           field: 'orderNumber',
           sortable: true,
         },
@@ -292,13 +293,16 @@ export default {
         },
         {
           label: 'Mã khách hàng',
+          thClass: 'align-middle',
           field: 'customerNumber',
         },
         {
           label: 'Họ tên',
+          thClass: 'align-middle',
           field: 'customerName',
         },
         {
+          thClass: 'align-middle',
           label: 'Ngày trả hàng',
           field: 'orderDate',
           sortable: true,
@@ -311,6 +315,7 @@ export default {
             enabled: true,
           },
           type: 'number',
+          thClass: 'align-middle',
           formatFn: this.$formatNumberToLocale,
         },
         {
@@ -330,6 +335,7 @@ export default {
         },
         {
           label: 'Nhân viên',
+          thClass: 'align-middle',
           field: 'createdBy',
         },
         {
@@ -338,7 +344,7 @@ export default {
           sortable: false,
           width: '40px',
           hidden: !this.statusCreateButton().show,
-          thClass: 'text-center',
+          thClass: 'text-center align-middle',
           tdClass: 'text-center',
         },
       ],
@@ -356,12 +362,12 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const { page, size } = this.searchData
+      const { size } = this.searchData
       const { totalElements } = this.orderReturnPagination
 
-      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
-      const maxPageSize = (size * (page + 1)) > totalElements
-        ? totalElements : (size * (page + 1))
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * size) - size + 1
+      const maxPageSize = (size * this.pageNumber) > totalElements
+        ? totalElements : (size * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },
@@ -410,7 +416,7 @@ export default {
   },
 
   mounted() {
-    resizeAbleTable()
+    // resizeAbleTable()
   },
 
   methods: {

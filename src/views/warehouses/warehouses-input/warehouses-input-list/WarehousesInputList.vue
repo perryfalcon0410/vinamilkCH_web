@@ -254,9 +254,9 @@
 
 <script>
 import commonData from '@/@db/common'
-import {
-  resizeAbleTable,
-} from '@core/utils/utils'
+// import {
+//   resizeAbleTable,
+// } from '@core/utils/utils'
 import {
   mapGetters,
   mapActions,
@@ -451,7 +451,7 @@ export default {
   },
 
   mounted() {
-    resizeAbleTable()
+    // resizeAbleTable()
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
     hostName().then(res => {
       if (res) {

@@ -269,9 +269,9 @@ import {
   checkIpClient,
 } from '@core/utils/filter'
 import commonData from '@/@db/common'
-import {
-  resizeAbleTable,
-} from '@core/utils/utils'
+// import {
+//   resizeAbleTable,
+// } from '@core/utils/utils'
 import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
 // Icons
 import VIconPrinter from '@core/components/v-icons/IconPrinter.vue'
@@ -537,12 +537,12 @@ export default {
       return {}
     },
     paginationDetailContent() {
-      const { page, size } = this.paginationData
+      const { size } = this.paginationData
       const { totalElements } = this.salesReceiptsPagination
 
-      const minPageSize = page === 0 ? 1 : ((page + 1) * size) - size + 1
-      const maxPageSize = (size * (page + 1)) > totalElements
-        ? totalElements : (size * (page + 1))
+      const minPageSize = this.pageNumber === 1 ? 1 : (this.pageNumber * size) - size + 1
+      const maxPageSize = (size * this.pageNumber) > totalElements
+        ? totalElements : (size * this.pageNumber)
 
       return `${minPageSize} - ${maxPageSize} của ${totalElements} mục`
     },
@@ -567,7 +567,7 @@ export default {
   },
 
   mounted() {
-    resizeAbleTable()
+    // resizeAbleTable()
     hostName().then(res => {
       if (res) {
         this.ipAddress = res.ip || res.query || res.geoplugin_request
