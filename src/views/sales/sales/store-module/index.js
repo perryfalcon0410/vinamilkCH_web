@@ -34,6 +34,7 @@ import {
   GET_EDIT_ONLINE_PERMISSION_GETTER,
   GET_DEFAULT_CUSTOMER_TYPE_GETTER,
   GET_SCORECUMULATED_CUSTOMER_BY_ID_GETTER,
+  GET_TOP_SALE_PRODUCTS_INFO_GETTER,
 
   // ACTIONS
   GET_VOUCHERS_ACTION,
@@ -104,6 +105,7 @@ export default {
     editOnlinePermission: {},
     defaultCustomerType: {},
     scorecumulated: {},
+    topsaleProductsInfo: {},
   },
 
   getters: {
@@ -133,6 +135,9 @@ export default {
     },
     [GET_TOP_SALE_PRODUCTS_GETTER](state) {
       return state.topSaleProducts || []
+    },
+    [GET_TOP_SALE_PRODUCTS_INFO_GETTER](state) {
+      return state.topsaleProductsInfo
     },
     [GET_HOT_PRODUCTS_GETTER](state) {
       return state.hotProducts
@@ -335,6 +340,7 @@ export default {
         .then(res => {
           if (res.success) {
             state.topSaleProducts = res.data.content
+            state.topsaleProductsInfo = res.data
             val.onSuccess()
           } else {
             throw new Error(res.statusValue)

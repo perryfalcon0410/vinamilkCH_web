@@ -20,7 +20,7 @@
           <vue-autosuggest
             ref="search"
             v-model="searchOptions.keyWord"
-            :suggestions="productsSearch"
+            :suggestions="(searchOptions.keyWord.length <= minSearch) ? productsSearch : productsLocal"
             class="w-100"
             :input-props="{
               id:'autosuggest__input_product',
@@ -343,6 +343,7 @@ import {
   GET_TOP_SALE_PRODUCTS_GETTER,
   UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
   GET_EDIT_ONLINE_PERMISSION_GETTER,
+  GET_TOP_SALE_PRODUCTS_INFO_GETTER,
 
   // Action
   GET_PRODUCTS_ACTION,
@@ -456,8 +457,8 @@ export default {
         catId: null,
         customerId: null,
         status: null,
-        size: 10,
-        page: 0,
+        size: 2,
+        // page: 0,
         checkBarcode: false,
       },
       orderProducts: [],
@@ -518,6 +519,10 @@ export default {
       productChangePrice: [],
       customerDefaultTypeId: null,
       customerTypeCurent: null,
+      checkSearch: true,
+      productsLocal: [{ data: '' }],
+      productsInput: [],
+      paging: 0,
       // decentralization
       decentralization: {
         formId: 1,
@@ -528,6 +533,7 @@ export default {
       loading: false,
       disableOnline: false,
       isNewButton: false,
+      productsRow: [],
     }
   },
   computed: {
@@ -537,6 +543,7 @@ export default {
       GET_TOP_SALE_PRODUCTS_GETTER,
       UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
       GET_EDIT_ONLINE_PERMISSION_GETTER,
+      GET_TOP_SALE_PRODUCTS_INFO_GETTER,
     ]),
     getProducts() {
       return this.GET_PRODUCTS_GETTER.map(data => ({
@@ -565,6 +572,12 @@ export default {
         return this.GET_TOP_SALE_PRODUCTS_GETTER
       }
       return []
+    },
+    totalPageProductSearch() {
+      if (this.GET_TOP_SALE_PRODUCTS_INFO_GETTER) {
+        return this.GET_TOP_SALE_PRODUCTS_INFO_GETTER.totalPages
+      }
+      return {}
     },
     onlineCustomer() {
       return this.getOnlineCustomer
@@ -636,23 +649,45 @@ export default {
           })
         }
       } else {
-        const productsBySearch = [...this.getProductSearch.map(data => ({
-          productId: data.id,
-          checkStockTotal: data.checkStockTotal,
-          name: this.searchOptions.keyWord,
-          productName: data.productName,
-          productCode: data.productCode,
-          productUnit: data.uom1,
-          productInventory: data.stockTotal,
-          productUnitPrice: data.price,
-          sumProductUnitPrice: data.price,
-          quantity: null,
-          productTotalPrice: this.totalPrice(0, Number(data.price)),
-          sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
-          productImage: data.image,
-        }))]
+        // const productsBySearch = [...this.getProductSearch.map(data => ({
+        //   productId: data.id,
+        //   checkStockTotal: data.checkStockTotal,
+        //   name: this.searchOptions.keyWord,
+        //   productName: data.productName,
+        //   productCode: data.productCode,
+        //   productUnit: data.uom1,
+        //   productInventory: data.stockTotal,
+        //   productUnitPrice: data.price,
+        //   sumProductUnitPrice: data.price,
+        //   quantity: null,
+        //   productTotalPrice: this.totalPrice(0, Number(data.price)),
+        //   sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
+        //   productImage: data.image,
+        // }))]
+        // this.productsSearch = [{
+        //   data: productsBySearch,
+        // }]
+        this.getProductSearch.forEach(data => {
+          if (!this.productsRow.find(item => item.id === data.id)) {
+            this.productsRow.push({
+              productId: data.id,
+              checkStockTotal: data.checkStockTotal,
+              name: this.searchOptions.keyWord,
+              productName: data.productName,
+              productCode: data.productCode,
+              productUnit: data.uom1,
+              productInventory: data.stockTotal,
+              productUnitPrice: data.price,
+              sumProductUnitPrice: data.price,
+              quantity: null,
+              productTotalPrice: this.totalPrice(0, Number(data.price)),
+              sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
+              productImage: data.image,
+            })
+          }
+        })
         this.productsSearch = [{
-          data: productsBySearch,
+          data: this.productsRow,
         }]
         this.productsSearchLength = this.productsSearch[0].data.length
         if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
@@ -802,18 +837,60 @@ export default {
     },
 
     onChangeKeyWord() {
-      this.productsSearch = [{ data: null }]
+      // this.productsSearch = [{ data: null }]
       this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-      if (this.searchOptions.keyWord.length >= this.minSearch) {
+      // if (this.searchOptions.keyWord.length >= this.minSearch) {
+      //   if (this.isCheckShopId) {
+      //     this.searchOptions.customerId = this.currentCustomer.id
+      //     this.GET_TOP_SALE_PRODUCTS_ACTION({
+      //       data: { ...this.searchOptions },
+      //       onSuccess: () => {},
+      //     })
+      //   } else {
+      //     toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
+      //   }
+      // }
+      if (this.searchOptions.keyWord.length < this.minSearch) {
+        this.productsSearch = [{ data: null }]
+        this.productsInput = []
+        this.productsRow = []
+        this.checkSearch = true
+      }
+      if (this.searchOptions.keyWord.length === this.minSearch && this.checkSearch) {
+        this.productsRow = []
+        this.productsInput = []
+        this.paging = 0
         if (this.isCheckShopId) {
-          this.searchOptions.customerId = this.currentCustomer.id
           this.GET_TOP_SALE_PRODUCTS_ACTION({
-            data: { ...this.searchOptions },
-            onSuccess: () => {},
+            data: {
+              page: this.paging,
+              ...this.searchOptions,
+            },
+            onSuccess: () => {
+              this.paging = 1
+              do {
+                this.GET_TOP_SALE_PRODUCTS_ACTION({
+                  data: {
+                    page: this.paging,
+                    ...this.searchOptions,
+                  },
+                  onSuccess: () => { },
+                })
+                this.paging += 1
+              } while (this.paging < this.totalPageProductSearch)
+            },
           })
+          this.checkSearch = false
         } else {
           toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
         }
+      }
+      if (this.searchOptions.keyWord.length > this.minSearch) {
+        this.productsInput = this.productsSearch[0].data.filter(product => product.productCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
+                                                            || product.productName.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
+        this.productsLocal = [{
+          data: this.productsInput,
+        }]
       }
     },
     blurInputSearch() {
