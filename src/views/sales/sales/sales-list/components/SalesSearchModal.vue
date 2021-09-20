@@ -528,6 +528,7 @@ export default {
         ...this.searchData,
       }
       this.searchData = { ...this.searchData, ...this.searchOption }
+      this.onlineOrderCustomers.length = 0
       this.GET_CUSTOMERS_ACTION(this.searchOption)
     },
     updateSearchData(newProps) {
@@ -544,6 +545,7 @@ export default {
       this.updateSearchData({
         ...this.searchOption,
       })
+      this.onlineOrderCustomers.length = 0
       this.onPaginationChange()
     },
     onPaginationChange() {

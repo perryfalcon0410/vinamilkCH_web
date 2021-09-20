@@ -941,6 +941,14 @@ export default {
         const apParramCode = this.salemtPromotionObjectOptions.find(data => data.id === this.salemtPromotionObjectSelected).apParamCode
         if (apParramCode.includes('ONLINE')) {
           this.checkApParramCode = false
+          if (this.orderOnline.onlineOrderId === null) {
+            if (this.editManualPermission === false) {
+              this.disableNotPermissionManual = true
+              this.checkApParramCode = true
+            }
+          } else {
+            this.disableNotPermissionManual = false
+          }
         } else {
           this.checkApParramCode = true
         }
@@ -1242,9 +1250,11 @@ export default {
             this.orderProducts.splice(0, this.orderProducts.length)
             toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
             this.disableNotPermissionManual = true
+            this.checkApParramCode = true
           }
         } else {
           this.disableNotPermissionManual = false
+          this.checkApParramCode = false
         }
       } else {
         this.orderOnline.orderNumber = null
