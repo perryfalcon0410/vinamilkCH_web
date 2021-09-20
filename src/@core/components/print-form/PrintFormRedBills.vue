@@ -3,7 +3,7 @@
     id="rp-sales-redbill"
     class="d-none d-print-block text-black mx-0 mt-5"
   >
-    <div style="min-height: 800px;">
+    <div style="min-height: 800px">
       <b-row
         align-h="around"
         class="mb-5"
@@ -18,13 +18,13 @@
         </div>
 
         <div>
-          {{ $moment().format('DD') }}
+          {{ $moment().format("DD") }}
         </div>
         <div>
-          {{ $moment().format('MM') }}
+          {{ $moment().format("MM") }}
         </div>
         <div>
-          {{ $moment().format('YYYY') }}
+          {{ $moment().format("YYYY") }}
         </div>
         <!-- <div>tháng {{ $moment().format('MM') }}</div>
         <div>năm {{ $moment().format('YYYY') }}</div> -->
@@ -42,7 +42,7 @@
           <div>{{ redBillInfoData.shopTel }}</div>
         </div>
         <div>Tiền mặt</div>
-        <div style="width: 6%;">
+        <div style="width: 6%">
           <!-- {{ $formatNumberToLocale(redBillInfoData.amount) }} -->
         </div>
       </b-row>
@@ -53,13 +53,13 @@
       >
         <tbody>
           <tr
-            v-for="(item,index) in redBillData"
+            v-for="(item, index) in redBillData"
             :key="item.productCode"
           >
             <td>{{ index + 1 }}</td>
-            <td
-              style="max-width:150px;"
-            >{{ item.productName }}</td>
+            <td style="max-width: 150px">
+              {{ item.productName }}
+            </td>
             <td>{{ item.productCode }}</td>
             <td>{{ item.uom1 }}</td>
             <td class="text-right">
@@ -83,9 +83,7 @@
         class="mx-0 mt-5 text-center"
         align-v="end"
       >
-        <div
-          class="width-50-per"
-        >
+        <div class="width-50-per">
           <div class="d-flex text-right">
             <div class="width-80-per" />
             <div class="width-20-per pr-5">
@@ -99,9 +97,7 @@
             </div>
           </div>
         </div>
-        <div
-          class="width-45-per"
-        >
+        <div class="width-45-per">
           <div class="text-right">
             {{ $formatNumberToLocale(redBillInfoData.amount) }}
           </div>
@@ -117,9 +113,7 @@
         class="mx-0 text-center"
         align-v="end"
       >
-        <div
-          class="text-right width-60-per"
-        >
+        <div class="text-right width-60-per">
           {{ redBillInfoData.totalAmountString }}
         </div>
       </b-row>
@@ -140,14 +134,12 @@
 </template>
 
 <script>
-
 import { mapGetters, mapActions } from 'vuex'
 import { printFile } from '@/@core/utils/utils'
 import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
 import autoTable from 'jspdf-autotable'
-import { getUserData } from '@/auth/utils'
 import JSPM from 'jsprintmanager'
 import toasts from '@/@core/utils/toasts/toasts'
 import {
@@ -167,7 +159,6 @@ export default {
       count: 0,
       printerName: '',
       bodyData: [],
-      username: getUserData().fullName,
     }
   },
   computed: {
@@ -243,7 +234,11 @@ export default {
       pdf.text(`${this.$moment().format('YYYY')}`, x + 125, y)
       pdf.text(`Số HĐ: ${this.redBillInfoData.redInvoiceNumber}`, x + 140, y)
       pdf.text('CÔNG TY CỔ PHẦN SỮA VIỆT NAM', x + 25, y + 10)
-      pdf.text('Số 10 Tân Trào, Phường Tân Phú, Quận 7, TP.HCM', x + 15, y + 15)
+      pdf.text(
+        'Số 10 Tân Trào, Phường Tân Phú, Quận 7, TP.HCM',
+        x + 15,
+        y + 15,
+      )
       pdf.text('0300588569', x + 15, y + 20)
       pdf.text(`${this.redBillInfoData.shopName}`, x + 15, y + 52)
       pdf.text(`${this.redBillInfoData.shopAddress}`, x + 15, y + 57)
@@ -277,11 +272,26 @@ export default {
       })
       pdf.text('10', x + 90, pdf.internal.pageSize.getHeight() - 60)
       pdf.text(`${this.count}`, x + 40, pdf.internal.pageSize.getHeight() - 55)
-      pdf.text(`${this.redBillInfoData.totalAmountString}`, x + 30, pdf.internal.pageSize.getHeight() - 50)
-      pdf.text(`${this.$formatNumberToLocale(this.redBillInfoData.amount)}`, x + 150, pdf.internal.pageSize.getHeight() - 60)
-      pdf.text(`${this.$formatNumberToLocale(this.redBillInfoData.valueAddedTax)}`, x + 150, pdf.internal.pageSize.getHeight() - 55)
-      pdf.text(`${this.$formatNumberToLocale(this.redBillInfoData.totalAmountNumber)}`, x + 150, pdf.internal.pageSize.getHeight() - 50)
-      pdf.text(`${this.username}`, pdf.internal.pageSize.getWidth() - 55, pdf.internal.pageSize.getHeight() - 15)
+      pdf.text(
+        `${this.redBillInfoData.totalAmountString}`,
+        x + 30,
+        pdf.internal.pageSize.getHeight() - 50,
+      )
+      pdf.text(
+        `${this.$formatNumberToLocale(this.redBillInfoData.amount)}`,
+        x + 150,
+        pdf.internal.pageSize.getHeight() - 60,
+      )
+      pdf.text(
+        `${this.$formatNumberToLocale(this.redBillInfoData.valueAddedTax)}`,
+        x + 150,
+        pdf.internal.pageSize.getHeight() - 55,
+      )
+      pdf.text(
+        `${this.$formatNumberToLocale(this.redBillInfoData.totalAmountNumber)}`,
+        x + 150,
+        pdf.internal.pageSize.getHeight() - 50,
+      )
       // const options = {
       //   fileName: 'Hoa_don_do',
       //   pageSizing: 'Fit',
