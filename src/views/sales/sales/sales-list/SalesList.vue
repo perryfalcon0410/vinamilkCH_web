@@ -20,7 +20,7 @@
           <vue-autosuggest
             ref="search"
             v-model="searchOptions.keyWord"
-            :suggestions="(searchOptions.keyWord.length <= minSearch) ? productsSearch : productsLocal"
+            :suggestions="productsSearch"
             class="w-100"
             :input-props="{
               id:'autosuggest__input_product',
@@ -322,6 +322,15 @@
     </b-row>
     <!-- END - Body -->
 
+    <loading
+      class="d-print-none"
+      :active="isLoading"
+      :can-cancel="false"
+      :is-full-page="true"
+      loader="spinner"
+      color="#315899"
+      opacity="0"
+    />
   </b-container>
 </template>
 
@@ -333,6 +342,7 @@ import VIconRemove from '@/@core/components/v-icons/IconRemove.vue'
 import saleData from '@/@db/sale'
 import commonData from '@/@db/common'
 import { getUserData } from '@/auth/utils'
+import Loading from 'vue-loading-overlay'
 import SalesForm from './components/SalesForm.vue'
 // import SalesProducts from './components/SalesProducts.vue'
 import {
@@ -343,7 +353,6 @@ import {
   GET_TOP_SALE_PRODUCTS_GETTER,
   UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
   GET_EDIT_ONLINE_PERMISSION_GETTER,
-  GET_TOP_SALE_PRODUCTS_INFO_GETTER,
 
   // Action
   GET_PRODUCTS_ACTION,
@@ -358,6 +367,7 @@ export default {
     SalesForm,
     VIconRemove,
     // SalesProducts,
+    Loading,
   },
   data() {
     return {
@@ -457,8 +467,8 @@ export default {
         catId: null,
         customerId: null,
         status: null,
-        size: 2,
-        // page: 0,
+        size: 10,
+        page: 0,
         checkBarcode: false,
       },
       orderProducts: [],
@@ -519,9 +529,6 @@ export default {
       productChangePrice: [],
       customerDefaultTypeId: null,
       customerTypeCurent: null,
-      checkSearch: true,
-      productsLocal: [{ data: '' }],
-      productsInput: [],
       paging: 0,
       // decentralization
       decentralization: {
@@ -530,10 +537,11 @@ export default {
       },
 
       orderCurrentId: 1, // Id of order current
-      loading: false,
+      isLoading: false,
       disableOnline: false,
       isNewButton: false,
       productsRow: [],
+      totalPageProductsSearch: 0,
     }
   },
   computed: {
@@ -543,7 +551,6 @@ export default {
       GET_TOP_SALE_PRODUCTS_GETTER,
       UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
       GET_EDIT_ONLINE_PERMISSION_GETTER,
-      GET_TOP_SALE_PRODUCTS_INFO_GETTER,
     ]),
     getProducts() {
       return this.GET_PRODUCTS_GETTER.map(data => ({
@@ -567,18 +574,18 @@ export default {
 
       }))
     },
-    getProductSearch() {
+    getTopSaleProduct() {
       if (this.GET_TOP_SALE_PRODUCTS_GETTER) {
         return this.GET_TOP_SALE_PRODUCTS_GETTER
       }
-      return []
-    },
-    totalPageProductSearch() {
-      if (this.GET_TOP_SALE_PRODUCTS_INFO_GETTER) {
-        return this.GET_TOP_SALE_PRODUCTS_INFO_GETTER.totalPages
-      }
       return {}
     },
+    // getProductSearch() {
+    //   if (this.GET_TOP_SALE_PRODUCTS_GETTER.content) {
+    //     return this.GET_TOP_SALE_PRODUCTS_GETTER
+    //   }
+    //   return []
+    // },
     onlineCustomer() {
       return this.getOnlineCustomer
     },
@@ -617,84 +624,82 @@ export default {
     getProductInfos() {
       this.productInfos = [...this.getProductInfos]
     },
-    getProductSearch() {
-      if (this.getProductSearch.length === 1 && this.searchOptions.checkBarcode === true) {
-        const productByBarcode = {
-          productId: this.getProductSearch.id,
-          name: this.getProductSearch.productCode,
-          productName: this.getProductSearch[0].productName,
-          productCode: this.getProductSearch[0].productCode,
-          productUnit: this.getProductSearch[0].uom1,
-          productInventory: this.getProductSearch[0].stockTotal,
-          productUnitPrice: this.getProductSearch[0].price,
-          sumProductUnitPrice: this.getProductSearch[0].price,
-          quantity: 1,
-          productTotalPrice: this.totalPrice(1, Number(this.getProductSearch[0].price)),
-          sumProductTotalPrice: this.totalPrice(1, Number(this.getProductSearch[0].price)),
-          productImage: this.getProductSearch[0].image,
-          comboProductId: this.getProductSearch[0].comboProductId,
-        }
-        const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
-        if (indexProductExisted === -1) {
-          this.orderProducts.push(productByBarcode)
-        } else {
-          this.orderProducts = this.orderProducts.map(product => {
-            if (product.productId === productByBarcode.productId) {
-              return {
-                ...product,
-                quantity: product.quantity + 1,
+    getTopSaleProduct() {
+      if (this.getTopSaleProduct.content) {
+        if (this.getTopSaleProduct.content.length === 1 && this.searchOptions.checkBarcode === true) {
+          const productByBarcode = {
+            productId: this.getTopSaleProduct.content[0].id,
+            name: this.etTopSaleProduct.content[0].productCode,
+            productName: this.getTopSaleProduct.content[0].productName,
+            productCode: this.getTopSaleProduct.content[0].productCode,
+            productUnit: this.getTopSaleProduct.content[0].uom1,
+            productInventory: this.getTopSaleProduct.content[0].stockTotal,
+            productUnitPrice: this.getTopSaleProduct.content[0].price,
+            sumProductUnitPrice: this.getTopSaleProduct.content[0].price,
+            quantity: 1,
+            productTotalPrice: this.totalPrice(1, Number(this.getTopSaleProduct.content[0].price)),
+            sumProductTotalPrice: this.totalPrice(1, Number(this.getTopSaleProduct.content[0].price)),
+            productImage: this.getTopSaleProduct.content[0].image,
+            comboProductId: this.getTopSaleProduct.content[0].comboProductId,
+          }
+          const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
+          if (indexProductExisted === -1) {
+            this.orderProducts.push(productByBarcode)
+          } else {
+            this.orderProducts = this.orderProducts.map(product => {
+              if (product.productId === productByBarcode.productId) {
+                return {
+                  ...product,
+                  quantity: product.quantity + 1,
+                }
               }
-            }
-            return product
-          })
-        }
-      } else {
-        // const productsBySearch = [...this.getProductSearch.map(data => ({
-        //   productId: data.id,
-        //   checkStockTotal: data.checkStockTotal,
-        //   name: this.searchOptions.keyWord,
-        //   productName: data.productName,
-        //   productCode: data.productCode,
-        //   productUnit: data.uom1,
-        //   productInventory: data.stockTotal,
-        //   productUnitPrice: data.price,
-        //   sumProductUnitPrice: data.price,
-        //   quantity: null,
-        //   productTotalPrice: this.totalPrice(0, Number(data.price)),
-        //   sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
-        //   productImage: data.image,
-        // }))]
-        // this.productsSearch = [{
-        //   data: productsBySearch,
-        // }]
-        this.getProductSearch.forEach(data => {
-          if (!this.productsRow.find(item => item.id === data.id)) {
-            this.productsRow.push({
-              productId: data.id,
-              checkStockTotal: data.checkStockTotal,
-              name: this.searchOptions.keyWord,
-              productName: data.productName,
-              productCode: data.productCode,
-              productUnit: data.uom1,
-              productInventory: data.stockTotal,
-              productUnitPrice: data.price,
-              sumProductUnitPrice: data.price,
-              quantity: null,
-              productTotalPrice: this.totalPrice(0, Number(data.price)),
-              sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
-              productImage: data.image,
+              return product
             })
           }
-        })
-        this.productsSearch = [{
-          data: this.productsRow,
-        }]
-        this.productsSearchLength = this.productsSearch[0].data.length
-        if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
-          this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+        } else {
+          this.getTopSaleProduct.content.forEach(data => {
+            if (!this.productsRow.find(item => item.id === data.id)) {
+              this.productsRow.push({
+                productId: data.id,
+                checkStockTotal: data.checkStockTotal,
+                name: this.searchOptions.keyWord,
+                productName: data.productName,
+                productCode: data.productCode,
+                productUnit: data.uom1,
+                productInventory: data.stockTotal,
+                productUnitPrice: data.price,
+                sumProductUnitPrice: data.price,
+                quantity: null,
+                productTotalPrice: this.totalPrice(0, Number(data.price)),
+                sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
+                productImage: data.image,
+              })
+            }
+          })
+          this.productsSearch = [{
+            data: this.productsRow,
+          }]
+          this.productsSearchLength = this.productsSearch[0].data.length
+          if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
+            this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+          }
+        }
+        this.searchOptions.checkBarcode = false
+      }
+      if (this.getTopSaleProduct.totalPages) {
+        if (this.getTopSaleProduct.totalPages !== this.totalPageProductsSearch) {
+          this.totalPageProductsSearch = this.getTopSaleProduct.totalPages
+          if (this.totalPageProductsSearch > 1) {
+            // eslint-disable-next-line no-plusplus
+            for (let i = 1; i < this.totalPageProductsSearch; i++) {
+              this.callTopSaleProductsAction(i)
+            }
+          } else {
+            this.isLoading = false
+            this.$nextTick(() => document.getElementById('autosuggest__input_product').focus())
+          }
         }
       }
-      this.searchOptions.checkBarcode = false
     },
     getProducts() {
       this.orderProducts = []
@@ -839,59 +844,49 @@ export default {
     onChangeKeyWord() {
       // this.productsSearch = [{ data: null }]
       this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-      // if (this.searchOptions.keyWord.length >= this.minSearch) {
-      //   if (this.isCheckShopId) {
-      //     this.searchOptions.customerId = this.currentCustomer.id
-      //     this.GET_TOP_SALE_PRODUCTS_ACTION({
-      //       data: { ...this.searchOptions },
-      //       onSuccess: () => {},
-      //     })
-      //   } else {
-      //     toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
-      //   }
-      // }
       if (this.searchOptions.keyWord.length < this.minSearch) {
         this.productsSearch = [{ data: null }]
-        this.productsInput = []
         this.productsRow = []
-        this.checkSearch = true
-      }
-      if (this.searchOptions.keyWord.length === this.minSearch && this.checkSearch) {
-        this.productsRow = []
-        this.productsInput = []
-        this.paging = 0
+        this.totalPageProductsSearch = 0
+      } else if (this.searchOptions.keyWord.length === this.minSearch) {
         if (this.isCheckShopId) {
-          this.GET_TOP_SALE_PRODUCTS_ACTION({
-            data: {
-              page: this.paging,
-              ...this.searchOptions,
-            },
-            onSuccess: () => {
-              this.paging = 1
-              do {
-                this.GET_TOP_SALE_PRODUCTS_ACTION({
-                  data: {
-                    page: this.paging,
-                    ...this.searchOptions,
-                  },
-                  onSuccess: () => { },
-                })
-                this.paging += 1
-              } while (this.paging < this.totalPageProductSearch)
-            },
-          })
-          this.checkSearch = false
+          this.isLoading = true
+          const el = document.querySelector(':focus')
+          if (el) el.blur()
+          this.totalPageProductsSearch = 0
+          this.callTopSaleProductsAction(this.searchOptions.page)
         } else {
           toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
         }
-      }
-      if (this.searchOptions.keyWord.length > this.minSearch) {
-        this.productsInput = this.productsSearch[0].data.filter(product => product.productCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
+      } else if (this.searchOptions.keyWord.length > this.minSearch) {
+        let productsFiltered = this.productsRow.filter(product => product.productCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
                                                             || product.productName.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
-        this.productsLocal = [{
-          data: this.productsInput,
+        productsFiltered = [...productsFiltered.map(item => ({
+          ...item,
+          name: this.searchOptions.keyWord,
+        }))]
+        this.productsSearch = [{
+          data: productsFiltered,
         }]
+        this.productsSearchLength = this.productsSearch[0].data.length
+        if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
+          this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+        }
       }
+    },
+    callTopSaleProductsAction(page) {
+      this.GET_TOP_SALE_PRODUCTS_ACTION({
+        data: {
+          ...this.searchOptions,
+          page,
+        },
+        onSuccess: () => {
+          if (page + 1 === this.totalPageProductsSearch) {
+            this.isLoading = false
+            this.$nextTick(() => document.getElementById('autosuggest__input_product').focus())
+          }
+        },
+      })
     },
     blurInputSearch() {
       if (this.searchOptions.keyWord.length < this.minSearch) {
@@ -1341,9 +1336,8 @@ export default {
 
           this.searchOptions.keyWord = barcodeParam
           this.searchOptions.checkBarcode = true
-          this.$refs.search.$el.querySelector('input').focus()
-          this.$refs.search.$el.querySelector('input').click()
-          this.onChangeKeyWord()
+          this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+          this.callTopSaleProductsAction(0)
         }
       }
     },
