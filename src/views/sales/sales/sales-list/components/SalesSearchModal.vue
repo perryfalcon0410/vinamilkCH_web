@@ -549,7 +549,10 @@ export default {
       this.onPaginationChange()
     },
     onPaginationChange() {
-      this.GET_CUSTOMERS_ACTION({ ...this.searchData })
+      const conditionOnline = (this.orderOnline.onlineOrderId !== null && this.onlineOrderCustomers.length > 1)
+      if (!conditionOnline) {
+        this.GET_CUSTOMERS_ACTION({ ...this.searchData })
+      }
     },
     onPageChange(params) {
       this.updateSearchData({ page: params.currentPage - 1 })
