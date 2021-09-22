@@ -57,7 +57,7 @@
           :total-rows="receiptPagination.totalElements"
           :sort-options="{
             enabled: true,
-            multipleColumns: true,
+            multipleColumns: false,
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"
@@ -254,9 +254,9 @@
 
 <script>
 import commonData from '@/@db/common'
-// import {
-//   resizeAbleTable,
-// } from '@core/utils/utils'
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
 import {
   mapGetters,
   mapActions,
@@ -451,7 +451,7 @@ export default {
   },
 
   mounted() {
-    // resizeAbleTable()
+    resizeAbleTable()
     document.addEventListener('keydown', this.handleWindowPrintHotKey, false)
     hostName().then(res => {
       if (res) {
@@ -553,7 +553,7 @@ export default {
       this.isDeleteModalShow = !this.isDeleteModalShow
     },
     onPaginationChange(data, params) {
-      this.updateSearchData(data)
+      this.updatePaginationData(data)
       this.GET_RECEIPTS_ACTION({ ...this.paginationData, ...params })
     },
     updatePaginationData(newProps) {
@@ -572,6 +572,7 @@ export default {
       this.updatePaginationData({
         ...event,
       })
+      this.onPaginationChange()
     },
     onSortChange(params) {
       params.forEach((item, index) => {
@@ -580,16 +581,16 @@ export default {
         }
       })
       if (params.length === 1) {
-        this.updateSearchData({
+        this.updatePaginationData({
           sort: `${params[0].field},${params[0].type}`,
         })
       } else {
-        this.updateSearchData({
+        this.updatePaginationData({
           sort: null,
         })
       }
       if (params.length >= 2) {
-        this.updateSearchData({
+        this.updatePaginationData({
           sort: [...params],
         })
       }

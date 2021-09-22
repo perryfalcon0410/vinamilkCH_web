@@ -282,7 +282,7 @@
             }"
             :sort-options="{
               enabled: false,
-              multipleColumns: true,
+              multipleColumns: false,
             }"
             :total-rows="getRedBillPagination.totalElements"
             :select-options="{
@@ -501,6 +501,9 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
 import toasts from '@core/utils/toasts/toasts'
 import VCardActions from '@core/components/v-card-actions/VCardActions.vue'
 import commonData from '@/@db/common'
@@ -733,6 +736,7 @@ export default {
   },
 
   mounted() {
+    resizeAbleTable()
     this.onSearch()
     this.configToDate = {
       ...this.configToDate,

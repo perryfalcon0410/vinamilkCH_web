@@ -52,7 +52,7 @@
           :total-rows="orderReturnPagination.totalElements"
           :sort-options="{
             enabled: false,
-            multipleColumns: true,
+            multipleColumns: false,
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"

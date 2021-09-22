@@ -58,7 +58,7 @@
           :total-rows="warehouseInventoryPagination.totalElements"
           :sort-options="{
             enabled: true,
-            multipleColumns: true,
+            multipleColumns: false,
           }"
           @on-sort-change="onSortChange"
           @on-page-change="onPageChange"

@@ -57,7 +57,7 @@
           }"
           :sort-options="{
             enabled: false,
-            multipleColumns: true,
+            multipleColumns: false,
           }"
           compact-mode
           :total-rows="exchangeDamagedGoodsPagination.totalElements"

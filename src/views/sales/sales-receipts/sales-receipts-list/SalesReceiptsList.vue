@@ -35,7 +35,7 @@
           :style="cssProps"
           :sort-options="{
             enabled: false,
-            multipleColumns: true,
+            multipleColumns: false,
           }"
           :total-rows="salesReceiptsPagination.totalElements"
           @on-sort-change="onSortChange"
@@ -269,9 +269,9 @@ import {
   checkIpClient,
 } from '@core/utils/filter'
 import commonData from '@/@db/common'
-// import {
-//   resizeAbleTable,
-// } from '@core/utils/utils'
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
 import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
 // Icons
 import VIconPrinter from '@core/components/v-icons/IconPrinter.vue'
@@ -325,6 +325,9 @@ export default {
         {
           label: 'index',
           field: 'index',
+          width: '35px',
+          thClass: 'ws-nowrap scroll-column-header column-index',
+          tdClass: 'scroll-column column-index',
           sortable: false,
         },
         {
@@ -567,7 +570,7 @@ export default {
   },
 
   mounted() {
-    // resizeAbleTable()
+    resizeAbleTable()
     hostName().then(res => {
       if (res) {
         this.ipAddress = res.ip || res.query || res.geoplugin_request
@@ -696,6 +699,11 @@ export default {
   .custom-table.vgt-table thead tr:first-child th {
     border-bottom: 0px;
   }
+
+  .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(1) {
+    left: 34px;
+    z-index: 1;
+  }
   .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
     left: 34px;
     z-index: 1;
@@ -713,6 +721,10 @@ export default {
     left: var(--date);
     /* left: 310px; */
     z-index: 1;
+  }
+
+  .sales-class.table-horizontal-scroll .column-index {
+    left: -1px;
   }
   .sales-class.table-horizontal-scroll .column-first {
     left: 34px;

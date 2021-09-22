@@ -311,7 +311,6 @@ export default {
         ctrlId: 7,
       }
       this.updateSearchData(searchData)
-      this.GET_RECEIPTS_ACTION(searchData)
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)

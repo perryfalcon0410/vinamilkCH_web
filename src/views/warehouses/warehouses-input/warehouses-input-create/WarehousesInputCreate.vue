@@ -1148,6 +1148,9 @@ export default {
           if (this.status === -1 && this.inputTypeSelected !== '0') {
             toasts.error('Vui lòng chọn phiếu')
           }
+          // if (obj.importType === -1) {
+          //   toasts.error('Vui lòng chọn phiếu')
+          // }
           // if import type = choose poConfirm -> check redInvoice
           if (this.status === 0) {
             this.$refs.formContainer.validate().then(success => {
