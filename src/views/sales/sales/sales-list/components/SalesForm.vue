@@ -247,7 +247,7 @@
                     :options="getSalemtPromotionObjectOptions"
                     placeholder="Chọn loại đơn hàng"
                     :disabled="orderOnline.onlineOrderId !== null && editManualPermission === false && editOnlinePermission === false"
-                    @select="resetOrderNumber"
+                    @select="selectOrderNumber"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </b-col>
@@ -1237,7 +1237,7 @@ export default {
       this.allowCallAPI = false
     },
 
-    resetOrderNumber(item) {
+    selectOrderNumber(item) {
       this.$emit('getSalemtPOSelected', item)
       this.salemtPromotionObjectSelected = item.id
       const apParramCode = this.salemtPromotionObjectOptions.find(data => data.id === this.salemtPromotionObjectSelected).apParamCode
@@ -1247,7 +1247,6 @@ export default {
         // check orderNumber not permission edit manual
         if (this.orderOnline.onlineOrderId === null) {
           if (this.editManualPermission === false) {
-            this.orderProducts.splice(0, this.orderProducts.length)
             toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
             this.disableNotPermissionManual = true
             this.checkApParramCode = true
