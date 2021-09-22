@@ -559,12 +559,12 @@ export default {
             }
             pdf.text('KM:', marginLeft, marginTop)
             pdf.text(`${freeItem.quantity.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2) - 10, marginTop, { align: 'right' })
-            const splitProductNameKM = pdf.splitTextToSize(`${this.removeVietnameseTones(freeItem.productName, this.isRemoveVNTones)}`, pageWidth - marginLeft - 10)
+            const splitProductNameKM = pdf.splitTextToSize(`${this.removeVietnameseTones(freeItem.productName.slice(0, 69), this.isRemoveVNTones)}`, pageWidth - marginLeft - 40)
             pdf.text(splitProductNameKM, (columnWidth1 + columnWidth2), marginTop, { align: 'left' })
             if (splitProductNameKM.length === 1) {
               marginTop += spaceRowInCluster - 10
             } else {
-              marginTop += spaceRowInCluster + 2
+              marginTop += spaceRowInCluster - 5
             }
           })
         }
@@ -585,8 +585,14 @@ export default {
             marginTop += spaceRowInCluster - 4
           }
           marginTop += spaceRowInCluster
-          pdf.text(`${zm.promotionCode}`, marginLeft, marginTop)
+          const splitPromotionCode = pdf.splitTextToSize(`${zm.promotionCode}`, pageWidth - marginLeft - 50)
+          pdf.text(splitPromotionCode, marginLeft, marginTop)
           pdf.text(`${zm.amount.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2 + columnWidth3 + columnWidth4) - 3, marginTop, { align: 'right' })
+          if (splitPromotionName.length === 1) {
+            marginTop += spaceRowInCluster - 6
+          } else {
+            marginTop += spaceRowInCluster - 4
+          }
         })
       }
       marginTop += spaceRowInCluster - 3
