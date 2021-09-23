@@ -658,7 +658,7 @@ export default {
           }
         } else {
           this.getTopSaleProduct.content.forEach(data => {
-            if (!this.productsRow.find(item => item.id === data.id)) {
+            if (!this.productsRow.find(item => item.productCode === data.productCode)) {
               this.productsRow.push({
                 productId: data.id,
                 checkStockTotal: data.checkStockTotal,
@@ -852,6 +852,7 @@ export default {
         this.productsRow = []
         this.totalPageProductsSearch = 0
       } else if (this.searchOptions.keyWord.length === this.minSearch) {
+        this.productsRow = []
         if (this.isCheckShopId) {
           this.isLoading = true
           const el = document.querySelector(':focus')
