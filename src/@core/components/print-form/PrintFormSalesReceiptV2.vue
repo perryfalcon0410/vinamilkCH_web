@@ -476,10 +476,10 @@ export default {
       pdf.text(`NV: ${this.removeVietnameseTones(`${this.printSalesReceiptData.userName}`, this.isRemoveVNTones)}`, marginLeft, marginTop)
       marginTop += spaceRowInCluster - 2
       pdf.text('-----------------------------------------------------------------------------------', 0, marginTop)
-      const columnWidth1 = pageWidth * 0.15
-      const columnWidth2 = pageWidth * 0.2
-      const columnWidth3 = pageWidth * 0.25
-      const columnWidth4 = pageWidth * 0.35
+      const columnWidth1 = pageWidth * 0.35
+      const columnWidth2 = pageWidth * 0.15
+      const columnWidth3 = pageWidth * 0.2
+      const columnWidth4 = pageWidth * 0.25
       pdf.autoTable({
         // html: '#table-header',
         startY: marginTop - 3,
@@ -524,10 +524,17 @@ export default {
               pdf.addPage()
               marginTop = 10
             }
-            pdf.text(`${item.productCode}`, marginLeft, marginTop)
+            const splitProductCode = pdf.splitTextToSize(`${item.productCode.slice(0, 26)}`, columnWidth1)
+            pdf.text(splitProductCode, marginLeft, marginTop)
             pdf.text(`${item.quantity.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2) - 10, marginTop, { align: 'right' })
             pdf.text(`${item.price.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2 + columnWidth3) - 5, marginTop, { align: 'right' })
             pdf.text(`${item.totalPrice.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2 + columnWidth3 + columnWidth4) - 3, marginTop, { align: 'right' })
+            if (splitProductCode.length === 1) {
+              marginTop += spaceRowInCluster - 10
+            } else {
+              marginTop += spaceRowInCluster - 5
+            }
+
             if (item.totalDiscountPrice) {
               // giảm giá
               marginTop += spaceRowInCluster
