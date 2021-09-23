@@ -876,6 +876,8 @@ export default {
           totalBill: data.totalBill,
           amountCumulated: data.amountCumulated,
           createdAt: data.createdAt,
+          birthDay: formatDateToLocale(data.dob),
+          idNo: data.idNo,
         }))
       }
       return []
