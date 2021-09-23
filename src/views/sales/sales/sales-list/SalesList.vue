@@ -699,6 +699,9 @@ export default {
             this.$nextTick(() => document.getElementById('autosuggest__input_product').focus())
           }
         }
+      } else {
+        this.isLoading = false
+        this.$nextTick(() => document.getElementById('autosuggest__input_product').focus())
       }
     },
     getProducts() {
