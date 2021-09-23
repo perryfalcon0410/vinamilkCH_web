@@ -467,7 +467,7 @@ export default {
         catId: null,
         customerId: null,
         status: null,
-        size: 10,
+        size: commonData.minSearchSize,
         page: 0,
         checkBarcode: false,
       },
@@ -542,6 +542,7 @@ export default {
       isNewButton: false,
       productsRow: [],
       totalPageProductsSearch: 0,
+      keyWordExist: '',
     }
   },
   computed: {
@@ -658,7 +659,7 @@ export default {
           }
         } else {
           this.getTopSaleProduct.content.forEach(data => {
-            if (!this.productsRow.find(item => item.productCode === data.productCode)) {
+            if (!this.productsRow.find(item => item.productId === data.id)) {
               this.productsRow.push({
                 productId: data.id,
                 checkStockTotal: data.checkStockTotal,
@@ -851,14 +852,22 @@ export default {
         this.productsSearch = [{ data: null }]
         this.productsRow = []
         this.totalPageProductsSearch = 0
+        this.keyWordExist = ''
       } else if (this.searchOptions.keyWord.length === this.minSearch) {
-        this.productsRow = []
         if (this.isCheckShopId) {
-          this.isLoading = true
-          const el = document.querySelector(':focus')
-          if (el) el.blur()
-          this.totalPageProductsSearch = 0
-          this.callTopSaleProductsAction(this.searchOptions.page)
+          if (this.keyWordExist !== this.searchOptions.keyWord) {
+            this.keyWordExist = this.searchOptions.keyWord
+            this.isLoading = true
+            const el = document.querySelector(':focus')
+            if (el) el.blur()
+            this.totalPageProductsSearch = 0
+            this.productsRow = []
+            this.callTopSaleProductsAction(this.searchOptions.page)
+          } else {
+            this.productsSearch = [{
+              data: this.productsRow,
+            }]
+          }
         } else {
           toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
         }
@@ -1341,6 +1350,7 @@ export default {
           this.searchOptions.keyWord = barcodeParam
           this.searchOptions.checkBarcode = true
           this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+          this.productsRow = []
           this.callTopSaleProductsAction(0)
         }
       }
