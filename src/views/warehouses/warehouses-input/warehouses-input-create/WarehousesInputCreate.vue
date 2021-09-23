@@ -1196,13 +1196,17 @@ export default {
     },
     // START - Search product func
     loadProducts(text) {
+      this.products = [{ data: null }]
       if (text) {
         if (text.length >= commonData.minSearchLength) {
-          const searchData = {
-            keyWord: text,
-            ...this.decentralization,
-          }
-          this.GET_PRODUCTS_ACTION(searchData)
+          clearTimeout(this.timeOut)
+          this.timeOut = setTimeout(() => {
+            const searchData = {
+              keyWord: text,
+              ...this.decentralization,
+            }
+            this.GET_PRODUCTS_ACTION(searchData)
+          }, 700)
         }
       }
     },
