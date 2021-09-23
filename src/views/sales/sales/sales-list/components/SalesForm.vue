@@ -848,9 +848,9 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           productUnit: data.uom1,
-          productInventory: data.stockTotal,
+          productInventory: data.stockTotal ? data.stockTotal : 0,
           quantity: data.quantity,
-          productUnitPrice: data.price,
+          productUnitPrice: data.price ? data.price : 0,
           sumProductUnitPrice: data.price,
           productTotalPrice: data.totalPrice,
           sumProductTotalPrice: data.totalPrice,
@@ -993,6 +993,20 @@ export default {
     orderProducts: {
       handler() {
         this.productsHaveQuantity = this.orderProducts.filter(item => item.quantity > 0)
+
+        const productsNotExist = this.orderProducts.map(item => {
+          if ((item.productInventory === 0 && item.productUnitPrice === 0) || item.productUnitPrice === 0) {
+            return item.productCode
+          }
+          return null
+        })
+
+        if (productsNotExist) {
+          const productsNotNull = productsNotExist.filter(item => item !== null)
+          if (productsNotNull.length > 0) {
+            toasts.error(`Không tìm thấy sản phẩm ${productsNotNull}`)
+          }
+        }
       },
       deep: true,
     },

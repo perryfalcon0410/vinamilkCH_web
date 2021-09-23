@@ -214,6 +214,23 @@
             </div>
             <!-- END - quantity -->
 
+            <!-- START - tableProductUnitPrice -->
+            <b-row
+              v-else-if="props.column.field === 'productUnitPrice'"
+              align-v="center"
+              align-h="end"
+              class="mx-0 pr-1"
+            >
+              {{ $formatNumberToLocale(props.row.productUnitPrice) }}
+              <b-icon-shield-exclamation
+                v-if="props.row.productUnitPrice === 0"
+                color="red"
+                class="cursor-pointer ml-icon"
+                font-scale="1.5"
+              />
+            </b-row>
+            <!-- END - tableProductUnitPrice -->
+
             <!-- START - tableProductFeature -->
             <div
               v-else-if="props.column.field === 'tableProductFeature'"
@@ -560,9 +577,9 @@ export default {
         productCode: data.productCode,
         productName: data.productName,
         productUnit: data.uom1,
-        productInventory: data.stockTotal,
+        productInventory: data.stockTotal ? data.stockTotal : 0,
         quantity: 1,
-        productUnitPrice: data.price,
+        productUnitPrice: data.price ? data.price : 0,
         sumProductUnitPrice: data.price,
         productTotalPrice: this.totalPrice(1, Number(data.price)),
         sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
@@ -599,9 +616,9 @@ export default {
           productCode: data.productCode,
           productName: data.productName,
           productUnit: data.uom1,
-          productInventory: data.stockTotal,
+          productInventory: data.stockTotal ? data.stockTotal : 0,
           quantity: data.quantity,
-          productUnitPrice: data.price,
+          productUnitPrice: data.price ? data.price : 0,
           sumProductUnitPrice: data.price,
           productTotalPrice: data.totalPrice,
           sumProductTotalPrice: data.totalPrice,
@@ -1162,20 +1179,18 @@ export default {
         this.customerFullName = val.fullName
 
         // update price product when different type id customer
-        if (this.customerTypeCurent !== this.customerType) {
-          if (this.orderProducts.length > 0) {
-            this.productChangePrice = this.orderProducts.map(item => ({
-              productId: item.productId,
-              quantity: item.quantity,
-            }))
-            this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
-              customerTypeId: this.customerType,
-              products: this.productChangePrice,
-              params: this.decentralization,
-            })
-            this.customerTypeCurent = this.customerType
-          }
-          this.customerTypeCurent = this.customerType
+        if (this.orderProducts.length > 0) {
+          this.productChangePrice = this.orderProducts.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            productName: item.productName,
+            productCode: item.productCode,
+          }))
+          this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
+            customerTypeId: this.customerType,
+            products: this.productChangePrice,
+            params: this.decentralization,
+          })
         }
         this.$refs.search.$el.querySelector('input').focus()
       } else {
@@ -1214,6 +1229,8 @@ export default {
             this.productChangePrice = this.orderProducts.map(item => ({
               productId: item.productId,
               quantity: item.quantity,
+              productName: item.productName,
+              productCode: item.productCode,
             }))
             this.UPDATE_PRICE_TYPE_CUSTOMER_ACTION({
               customerTypeId: this.customerType,
