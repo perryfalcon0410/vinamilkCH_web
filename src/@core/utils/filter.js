@@ -106,12 +106,30 @@ export const replaceDotWithComma = value => {
   }
   return value.split('.').join(',')
 }
+// Replace , with .
+export const replaceCommaWithDot = value => {
+  if (!value) return value
+  // equals to -1 if the value is decimal
+  if (value.lastIndexOf('.') !== -1) {
+    // replacing all dot to comma
+    const removedDotVal = value.split(',').join('.')
+    const newValue = removedDotVal.replace(/,([^,]*)$/, '.$1')
+    return newValue
+  }
+  return value.split(',').join('.')
+}
 
 // Format number to locale
 export const formatNumberToLocale = value => {
   if (!value) return value
   const valueFormated = Number(value)
   return replaceDotWithComma(valueFormated.toLocaleString('vi-VN'))
+}
+//  Format number to locale (Dot)
+export const formatDotNumberToLocale = value => {
+  if (!value) return value
+  const valueFormated = Number(value)
+  return replaceCommaWithDot(valueFormated.toLocaleString('vi-VN'))
 }
 
 // Format from dd/mm/yyyy to yyyy-mm-dd

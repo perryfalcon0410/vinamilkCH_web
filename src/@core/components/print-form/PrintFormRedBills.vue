@@ -136,6 +136,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { printFile } from '@/@core/utils/utils'
+import { formatDotNumberToLocale } from '@/@core/utils/filter'
 import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
@@ -206,9 +207,9 @@ export default {
           { content: item.productName, styles: { lineWidth: 0 } },
           { content: item.productCode, styles: { lineWidth: 0 } },
           { content: item.uom1, styles: { lineWidth: 0 } },
-          { content: item.quantity, styles: { lineWidth: 0 } },
-          { content: item.price, styles: { lineWidth: 0 } },
-          { content: item.intoMoney, styles: { lineWidth: 0 } },
+          { content: formatDotNumberToLocale(item.quantity), styles: { lineWidth: 0 } },
+          { content: formatDotNumberToLocale(item.price), styles: { lineWidth: 0 } },
+          { content: formatDotNumberToLocale(item.intoMoney), styles: { lineWidth: 0 } },
           { content: item.note, styles: { lineWidth: 0 } },
         ]
         this.bodyData.push(row)
@@ -221,18 +222,18 @@ export default {
       // END - add font family
       pdf.setFontSize(8)
       pdf.setFont('Ario-Regular')
-      pdf.text('MT1008', x + 40, y)
+      pdf.text(`${this.redBillInfoData.parentShopCode}`, x + 40, y)
       pdf.text(`${this.$moment().format('DD')}`, x + 95, y)
       pdf.text(`${this.$moment().format('MM')}`, x + 110, y)
       pdf.text(`${this.$moment().format('YYYY')}`, x + 125, y)
       pdf.text(`Số HĐ: ${this.redBillInfoData.redInvoiceNumber}`, x + 140, y)
       pdf.text('CÔNG TY CỔ PHẦN SỮA VIỆT NAM', x + 25, y + 10)
       pdf.text(
-        'Số 10 Tân Trào, Phường Tân Phú, Quận 7, TP.HCM',
+        `${this.redBillInfoData.parentShopAddress}`,
         x + 15,
         y + 15,
       )
-      pdf.text('0300588569', x + 15, y + 20)
+      pdf.text(`${this.redBillInfoData.parentShopTel || ''}`, x + 15, y + 20)
       pdf.text(`${this.redBillInfoData.shopName}`, x + 15, y + 52)
       pdf.text(`${this.redBillInfoData.shopAddress}`, x + 15, y + 57)
       pdf.text(`${this.redBillInfoData.shopTel || ''}`, x + 20, y + 62)
@@ -263,7 +264,7 @@ export default {
         },
         body: [...this.bodyData],
       })
-      pdf.text('10', x + 90, pdf.internal.pageSize.getHeight() - 60)
+      pdf.text(`${formatDotNumberToLocale(this.redBillInfoData.totalQuantity)}`, x + 90, pdf.internal.pageSize.getHeight() - 60)
       pdf.text(`${this.count}`, x + 40, pdf.internal.pageSize.getHeight() - 55)
       pdf.text(
         `${this.redBillInfoData.totalAmountString}`,
@@ -271,17 +272,17 @@ export default {
         pdf.internal.pageSize.getHeight() - 50,
       )
       pdf.text(
-        `${this.$formatNumberToLocale(this.redBillInfoData.amount)}`,
+        `${formatDotNumberToLocale(this.redBillInfoData.amount)}`,
         x + 150,
         pdf.internal.pageSize.getHeight() - 60,
       )
       pdf.text(
-        `${this.$formatNumberToLocale(this.redBillInfoData.valueAddedTax)}`,
+        `${formatDotNumberToLocale(this.redBillInfoData.valueAddedTax)}`,
         x + 150,
         pdf.internal.pageSize.getHeight() - 55,
       )
       pdf.text(
-        `${this.$formatNumberToLocale(this.redBillInfoData.totalAmountNumber)}`,
+        `${formatDotNumberToLocale(this.redBillInfoData.totalAmountNumber)}`,
         x + 150,
         pdf.internal.pageSize.getHeight() - 50,
       )
