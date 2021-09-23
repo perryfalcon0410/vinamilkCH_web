@@ -254,7 +254,7 @@ export default {
   },
 
   mounted() {
-    this.onSearch()
+    this.onClickSearchButton()
     this.configToDate = {
       ...this.configToDate,
       minDate: this.fromDate,
@@ -266,7 +266,7 @@ export default {
     ...mapActions(WAREHOUSES_COMBO, [
       GET_WAREHOUSES_COMBO_ACTIONS,
     ]),
-    onSearch() {
+    onClickSearchButton() {
       const searchData = {
         transCode: this.transCode?.trim(),
         transType: this.transTypeSelected,
@@ -275,11 +275,7 @@ export default {
         ...this.decentralization,
       }
       this.updateSearchData(searchData)
-      this.GET_WAREHOUSES_COMBO_ACTIONS(searchData)
-    },
-    onClickSearchButton() {
-      this.onSearch()
-      this.$emit('onClickSearchButton')
+      // this.GET_WAREHOUSES_COMBO_ACTIONS(searchData)
     },
     updateSearchData(data) {
       this.$emit('updateSearchData', data)

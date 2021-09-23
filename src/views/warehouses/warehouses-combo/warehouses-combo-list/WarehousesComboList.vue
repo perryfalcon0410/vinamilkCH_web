@@ -5,10 +5,7 @@
   >
     <!-- START - Search -->
     <warehouses-comboList-search
-      @onClickSearchButton="onClickSearchButton"
-      @updateSearchData="paginationData = {
-        ...paginationData,
-        ...$event }"
+      @updateSearchData="updateSearchData"
     />
     <!-- END - Search -->
 
@@ -364,8 +361,12 @@ export default {
         },
       })
     },
-    onClickSearchButton() {
+    updateSearchData(event) {
       this.pageNumber = 1
+      this.updatePaginationData({
+        ...event,
+      })
+      this.onPaginationChange()
     },
 
     // START - Vue Good Table func

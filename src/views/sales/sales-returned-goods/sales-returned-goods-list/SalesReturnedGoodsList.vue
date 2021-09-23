@@ -232,9 +232,9 @@ import {
   mapGetters,
   mapActions,
 } from 'vuex'
-// import {
-//   resizeAbleTable,
-// } from '@core/utils/utils'
+import {
+  resizeAbleTable,
+} from '@core/utils/utils'
 import VIconDetail from '@core/components/v-icons/IconDetail.vue'
 import commonData from '@/@db/common'
 // import OrderDetailsModal from '../components/OrderDetailsModal.vue'
@@ -416,7 +416,7 @@ export default {
   },
 
   mounted() {
-    // resizeAbleTable()
+    resizeAbleTable()
   },
 
   methods: {
