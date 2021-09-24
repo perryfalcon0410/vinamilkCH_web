@@ -120,7 +120,7 @@
             </b-row>
             <div
               v-else-if="props.column.field === 'totalQuantity' || props.column.field === 'totalAmount'"
-              style="padding-right: 4px"
+              style="padding-right: 6px"
             >
               {{ props.formattedRow[props.column.field] }}
             </div>
@@ -138,7 +138,7 @@
             <div
               v-show="receiptPagination.totalElements"
               v-if="props.column.field === 'totalQuantity'"
-              class="mx-0 h7 text-brand-3 text-right"
+              class="mx-50 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
             </div>
@@ -146,7 +146,7 @@
             <div
               v-show="receiptPagination.totalElements"
               v-else-if="props.column.field === 'totalAmount'"
-              class="mx-0 h7 text-brand-3 text-right"
+              class="mx-50 h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(totalInfo.totalPrice) }}
             </div>
@@ -347,7 +347,7 @@ export default {
           label: 'Số lượng',
           field: 'totalQuantity',
           type: 'number',
-          thClass: 'text-nowrap',
+          tdClass: 'text-nowrap pr-1',
           filterOptions: {
             enabled: true,
           },
@@ -358,6 +358,7 @@ export default {
           label: 'Số tiền',
           field: 'totalAmount',
           type: 'number',
+          tdClass: 'pr-1',
           thClass: 'text-nowrap',
           filterOptions: {
             enabled: true,

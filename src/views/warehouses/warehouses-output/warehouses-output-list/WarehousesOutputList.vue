@@ -325,8 +325,8 @@
                 />
               </div>
               <div
-                v-else-if="props.column.field === 'quantity' || props.column.field === 'price'"
-                style="padding-right: 4px"
+                v-else-if="props.column.field === 'totalQuantity' || props.column.field === 'totalAmount'"
+                style="padding-right: 6px"
               >
                 {{ props.formattedRow[props.column.field] }}
               </div>
@@ -344,7 +344,7 @@
               <div
                 v-if="props.column.field === 'totalQuantity'"
                 v-show="warehousesOutputPagination.totalElements"
-                class="h7 text-brand-3 text-right"
+                class="mx-50 h7 text-brand-3 text-right"
               >
                 {{ $formatNumberToLocale(totalInfo.totalQuantity) }}
               </div>
@@ -352,7 +352,7 @@
               <div
                 v-else-if="props.column.field === 'totalAmount'"
                 v-show="warehousesOutputPagination.totalElements"
-                class="h7 text-brand-3 text-right"
+                class="mx-50 h7 text-brand-3 text-right"
               >
                 {{ $formatNumberToLocale(totalInfo.totalPrice) }}
               </div>
@@ -573,6 +573,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          tdClass: 'pr-1',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
         },
@@ -583,6 +584,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          tdClass: 'pr-1',
           formatFn: this.$formatNumberToLocale,
           sortable: false,
         },

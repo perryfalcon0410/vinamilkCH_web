@@ -235,21 +235,21 @@
                 >
                   <div
                     v-if="props.column.field === 'quantity'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-50 h7 text-brand-3 text-right"
                   >
                     {{ $formatNumberToLocale(totalProductQuantity) }}
                   </div>
 
                   <div
                     v-else-if="props.column.field === 'totalPrice'"
-                    class="mx-0 h7 text-brand-3 text-right"
+                    class="mx-50 h7 text-brand-3 text-right"
                   >
                     {{ totalProductPrice }}
                   </div>
 
                   <div
                     v-else-if="props.column.field === 'productCode'"
-                    class="mx-0 h7 text-brand-3"
+                    class="mx-50 h7 text-brand-3"
                   >
                     {{ totalProductCode }}
                   </div>
@@ -260,14 +260,14 @@
                   slot-scope="props"
                 >
                   <div
-                    v-if="props.column.field === 'quantity' || props.column.field === 'totalPrice'"
-                    style="padding-right: 4px"
+                    v-if="props.column.field === 'quantity' || props.column.field === 'price' || props.column.field === 'totalPrice'"
+                    style="padding-right: 6px"
                   >
                     {{ props.formattedRow[props.column.field] }}
                   </div>
                   <div
                     v-else
-                    style="width: max-content"
+                    style="width: max-content; padding-left: 0.05em"
                   >
                     {{ props.formattedRow[props.column.field] }}
                   </div>
@@ -446,7 +446,7 @@
                   </div>
                   <div
                     v-else-if="props.column.field === 'quantity'"
-                    style="padding-right: 4px"
+                    style="padding-right: 6px"
                   >
                     {{ props.formattedRow[props.column.field] }}
                   </div>
@@ -634,12 +634,14 @@ export default {
             enabled: true,
           },
           thClass: 'text-right text-nowrap',
+          tdClass: 'pr-1',
         },
         {
           label: 'Giá',
           field: 'price',
           type: 'number',
           sortable: false,
+          tdClass: 'pr-1',
           thClass: 'text-nowrap',
         },
         {
@@ -660,6 +662,7 @@ export default {
           type: 'number',
           sortable: false,
           thClass: 'text-nowrap',
+          tdClass: 'pr-1',
         },
         {
           label: 'SO No',
@@ -785,6 +788,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
+          tdClass: 'pr-1',
           thClass: 'text-nowrap',
         },
         {
