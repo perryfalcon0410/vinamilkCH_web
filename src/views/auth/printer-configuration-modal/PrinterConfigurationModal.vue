@@ -156,6 +156,9 @@ export default {
       type: String,
       default: null,
     },
+    isOpenConfigurationModal: {
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -207,6 +210,7 @@ export default {
       UPDATE_PRINTER_CLIENT_ACTIONS,
     ]),
     cancel() {
+      this.isOpenConfigurationModal = true
       this.$emit('cancel')
     },
     getPrinterConfigOptions() {
@@ -231,12 +235,15 @@ export default {
       } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed) {
         this.isTrue = false
         JSPM.JSPrintManager.auto_reconnect = false
-        toasts.error('JSPrintManager (JSPM) chưa được cài đặt hoặc chưa được mở')
-
+        if (this.isOpenConfigurationModal) {
+          toasts.error('JSPrintManager (JSPM) chưa được cài đặt hoặc chưa được mở')
+        }
         this.nameOS = getJSPMDownloadInfo().os
         this.linkDownloadSoftWare = getJSPMDownloadInfo().link
       } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Blocked) {
-        toasts.error('JSPrintManager (JSPM) đã chặn trang web này!')
+        if (this.isOpenConfigurationModal) {
+          toasts.error('JSPrintManager (JSPM) đã chặn trang web này!')
+        }
         this.isTrue = false
         JSPM.JSPrintManager.auto_reconnect = false
       }
