@@ -995,7 +995,10 @@ export default {
         this.productsHaveQuantity = this.orderProducts.filter(item => item.quantity > 0)
 
         const productsNotExist = this.orderProducts.map(item => {
-          if ((item.productInventory === 0 && item.productUnitPrice === 0) || item.productUnitPrice === 0) {
+          if (item.productId === null
+            || item.status === 0
+            || item.status === null
+            || (item.productInventory === 0 && item.productUnitPrice === 0)) {
             return item.productCode
           }
           return null
