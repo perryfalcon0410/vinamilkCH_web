@@ -820,7 +820,7 @@ export default {
             },
             { content: '', styles: { cellWidth: 10, ...cellPadding } },
             {
-              content: 'CÔNG TY CP SỮA VIỆT NAM',
+              content: `${this.inputOrderShopData.parentShop.shopName}`,
               styles: {
                 font: 'Ario-Bold', fontSize: 15, ...styleDef,
               },
@@ -834,7 +834,7 @@ export default {
             },
             { content: '', styles: { cellWidth: 10, ...cellPadding } },
             {
-              content: 'Số 10 Tân Trào, Phường Tân Phú, Q7, Tp.HCM', styles: { ...styleDef },
+              content: `${this.inputOrderShopData.parentShop.address}`, styles: { ...styleDef },
             },
           ],
           [
@@ -844,7 +844,7 @@ export default {
             },
             { content: '', styles: { cellWidth: 10, ...cellPadding } },
             {
-              content: 'Tel: (84.8) 54 155 555 - Fax: (84.8) 54 161 226', styles: { ...cellPadding },
+              content: `Tel: ${this.inputOrderShopData.parentShop.phone || ''} - Fax: ${this.inputOrderShopData.parentShop.fax || ''}`, styles: { ...cellPadding },
             },
           ],
         ],
