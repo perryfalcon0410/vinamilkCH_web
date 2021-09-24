@@ -448,7 +448,7 @@ export default {
             val.onSuccess()
           } else {
             val.onFailure()
-            if (res.statusCode === 6100) {
+            if (res.statusCode === 6174) {
               throw new Error(res.statusValue)
             } else if (res.statusCode === 500) {
               toasts.error('Mất kết nối với máy chủ, vui lòng nhấn thanh toán lại')
