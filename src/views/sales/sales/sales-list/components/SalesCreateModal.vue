@@ -587,6 +587,7 @@ export default {
       this.onClickCloseButton()
       this.$emit('getCreateInfo', {
         id: this.customerCreate.id,
+        customerCode: this.customerCreate.customerCode,
         shopId: this.customerCreate.shopId,
         firstName: this.customerCreate.firstName,
         lastName: this.customerCreate.lastName,

@@ -154,6 +154,19 @@
             </b-row>
 
             <!-- END - Search -->
+            <!-- START - Customers Code -->
+            <b-row
+              class="m-top text-brand-3"
+              align-v="center"
+            >
+              <b-col cols="5">
+                Mã khách hàng
+              </b-col>
+              <b-col>
+                {{ customer.code }}
+              </b-col>
+            </b-row>
+            <!-- END - Customers Code -->
 
             <!-- START - Phone Number -->
             <b-row
@@ -853,7 +866,7 @@ export default {
           lastName: data.lastName,
           fullName: data.fullName,
           shopId: data.shopId,
-          customerCode: data.customerCode,
+          code: data.customerCode,
           customerTypeId: data.customerTypeId,
           status: data.status,
           phoneNumber: data.mobiPhone,
@@ -1148,6 +1161,7 @@ export default {
     getCreateInfo(val) {
       this.customer.id = val.id
       this.customer.shopId = val.shopId
+      this.customer.code = val.customerCode
       this.customer.fullName = `${val.lastName} ${val.firstName}`
       this.customer.phoneNumber = val.phoneNumber
       this.customer.address = val.address
@@ -1171,6 +1185,7 @@ export default {
 
     getCustomerDefault() {
       this.customer.id = this.customerDefault.id
+      this.customer.code = this.customerDefault.customerCode
       this.customer.shopId = this.customerDefault.shopId
       this.customer.firstName = this.customerDefault.firstName
       this.customer.lastName = this.customerDefault.lastName

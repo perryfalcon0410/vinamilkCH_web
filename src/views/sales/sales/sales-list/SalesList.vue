@@ -491,6 +491,7 @@ export default {
             phoneNumber: null,
             totalBill: null,
             address: null,
+            code: null,
           },
           orderType: {
             value: null,
@@ -986,6 +987,7 @@ export default {
             phoneNumber: this.defaultCustomer.mobiPhone,
             totalBill: this.defaultCustomer.totalBill,
             address: this.defaultCustomer.address,
+            code: this.defaultCustomer.customerCode,
           },
           orderType: {
             value: this.defaultPOSelected,
@@ -1017,6 +1019,7 @@ export default {
             phoneNumber: this.defaultCustomer.phoneNumber,
             totalBill: this.defaultCustomer.totalBill,
             address: this.defaultCustomer.address,
+            code: this.defaultCustomer.customerCode,
           },
           orderType: {
             value: this.defaultPOSelected,
@@ -1068,6 +1071,7 @@ export default {
               phoneNumber: this.currentCustomer.phoneNumber,
               totalBill: this.currentCustomer.totalBill,
               address: this.currentCustomer.address,
+              code: this.currentCustomer.code,
             },
             orderId: this.currentOrderNumber.onlineOrderId,
             orderNumber: this.currentOrderNumber.orderNumber,
@@ -1091,6 +1095,7 @@ export default {
           this.currentCustomer.fullName = bill.customer.fullName
           this.currentCustomer.phoneNumber = bill.customer.phoneNumber
           this.currentCustomer.totalBill = bill.customer.totalBill
+          this.currentCustomer.code = bill.customer.code
           this.currentCustomer.address = bill.customer.address
           this.currentOrderNumber.onlineOrderId = bill.orderId
           this.currentOrderNumber.orderNumber = bill.orderNumber
