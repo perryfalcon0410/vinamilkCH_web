@@ -389,6 +389,7 @@ export default {
           field: 'note',
           thClass: 'text-nowrap align-middle',
           tdClass: 'text-nowrap',
+          sortable: false,
         },
         {
           label: 'Thao tác',

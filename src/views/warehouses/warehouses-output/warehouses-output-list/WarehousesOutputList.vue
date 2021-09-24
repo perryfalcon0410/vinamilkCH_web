@@ -613,6 +613,7 @@ export default {
           width: '300px',
           maxlength: 100,
           thClass: 'text-nowrap align-middle',
+          sortable: false,
         },
         {
           label: 'Thao tác',
