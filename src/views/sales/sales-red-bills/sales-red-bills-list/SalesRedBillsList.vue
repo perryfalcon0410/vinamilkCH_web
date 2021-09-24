@@ -617,7 +617,7 @@ export default {
           formatFn: this.$formatNumberToLocale,
         },
         {
-          label: 'Tiền thuế amountGTGT',
+          label: 'Tiền thuế GTGT',
           field: 'amountGTGT',
           thClass: 'text-nowrap',
           tdClass: 'align-middle pr-1',

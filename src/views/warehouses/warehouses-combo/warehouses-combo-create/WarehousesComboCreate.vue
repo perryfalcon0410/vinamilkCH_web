@@ -165,7 +165,7 @@
                   class="form-control text-right"
                   :raw="true"
                   :options="options.number"
-                  maxlength="7"
+                  maxlength="9"
                   :state="isPricePositive(comboListRows[props.index].numProduct,props.index)"
                   @change.native="onChangeQuantity(props.row.originalIndex)"
                   @keydown.enter.native="onChangeQuantity(props.row.originalIndex)"
@@ -179,7 +179,7 @@
                   class="form-control text-right"
                   :raw="true"
                   :options="options.number"
-                  maxlength="12"
+                  maxlength="15"
                   @keypress="$onlyNumberInput"
                   @keyup.enter.native="focusInputSearch"
                 />
@@ -484,24 +484,12 @@ export default {
       COMBO_PRODUCTS_DETAILS_GETTER,
       WAREHOUSES_TYPE_GETTER,
     ]),
-
     getProducts() {
       if (this.COMBO_PRODUCTS_GETTER) {
-        return [{
-          data: this.COMBO_PRODUCTS_GETTER.map(data => ({
-            name: data.productCode,
-            id: data.id,
-            productCode: data.productCode,
-            numProduct: 1,
-            productPrice: data.productPrice,
-            productName: data.productName,
-            status: data.status,
-          })),
-        }]
+        return this.COMBO_PRODUCTS_GETTER
       }
       return []
     },
-
     comboProductsInfo() {
       return this.COMBO_PRODUCTS_INFO_GETTER
     },
@@ -552,7 +540,22 @@ export default {
       this.totalExchangeQuantity = this.getTotalExchangeQuantity
     },
     getProducts() {
-      this.products = [...this.getProducts]
+      const listProducts = [...this.getProducts.map(data => ({
+        name: this.comboSearchQuery,
+        id: data.id,
+        productCode: data.productCode,
+        numProduct: 1,
+        productPrice: data.productPrice,
+        productName: data.productName,
+        status: data.status,
+      }))]
+      this.products = [{
+        data: listProducts,
+      }]
+      if (this.products[0].data.length > 0) {
+        this.$nextTick(() => document.getElementById('autosuggest__input').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 38 })))
+        this.$nextTick(() => document.getElementById('autosuggest__input').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+      }
     },
   },
   mounted() {
@@ -583,7 +586,7 @@ export default {
         const obj = {
           id: combo.item.id,
           comboCode: combo.item.productCode,
-          numProduct: '01',
+          numProduct: '',
           price: combo.item.productPrice || 0,
           comboName: combo.item.productName,
           selectedComboId: combo.item.id,
@@ -613,7 +616,7 @@ export default {
             document.getElementById(this.comboIdSelected).focus()
           }, 100)
         }
-        this.comboSearchQuery = null
+        this.comboSearchQuery = ''
         this.products = [{ data: null }]
         // auto focus when choose combo
         this.comboIdSelected = combo.item.productCode
@@ -668,6 +671,7 @@ export default {
       this.$router.push({ name: 'warehouses-combo' })
     },
     loadProducts(text) {
+      this.products = [{ data: null }]
       if (text.length >= commonData.minSearchLength) {
         const searchData = {
           keyWord: text?.trim(),

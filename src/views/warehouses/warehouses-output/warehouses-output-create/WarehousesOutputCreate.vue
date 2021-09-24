@@ -486,7 +486,6 @@ export default {
       outputTypesOptions: warehousesData.outputTypes,
       exportAll: false,
       quantityCheck: true,
-      nullCheck: true,
       hideFilter: true,
       columnType: null,
 
@@ -823,48 +822,11 @@ export default {
       this.warehousesOutput.internalNumber = ''
       this.warehousesOutput.poNumber = ''
     },
-    checkNull() {
-      let stop = true
-      if (this.products.length > 0) {
-        this.products.forEach(item => {
-          if (stop) {
-            if (item.quantityReturn != null && item.quantityReturn > 0) {
-              this.nullCheck = true
-              stop = false
-            } else {
-              this.nullCheck = false
-              this.rowsProductPromotion.forEach(i => {
-                if (i.quantityPromo != null && i.quantityPromo > 0) {
-                  this.nullCheck = true
-                  stop = false
-                } else {
-                  this.nullCheck = false
-                }
-              })
-            }
-          }
-        })
-      } else {
-        this.rowsProductPromotion.forEach(i => {
-          if (stop) {
-            if (i.quantityPromo != null && i.quantityPromo > 0) {
-              this.nullCheck = true
-              stop = false
-            } else {
-              this.nullCheck = false
-            }
-          }
-        })
-      }
-    },
 
     createExport() {
-      if (this.outputTypeSelected === this.poOutputType) {
-        this.checkNull()
-      }
       if (this.products.length > 0 || this.rowsProductPromotion.length > 0) {
         if (this.products.findIndex(item => item.quantityReturn < 0) === -1 && this.rowsProductPromotion.findIndex(item => item.quantityPromo < 0) === -1) {
-          if (this.nullCheck) {
+          if (this.products.reduce((accum, i) => accum + Number(i.quantityReturn) || 0, 0) > 0 || this.rowsProductPromotion.reduce((accum, i) => accum + Number(i.quantityPromo) || 0, 0) > 0 || this.products.reduce((accum, i) => accum + Number(i.quantity) || 0, 0) > 0) {
             this.CREATE_EXPORT_ACTION(
               {
                 importType: Number(this.outputTypeSelected),

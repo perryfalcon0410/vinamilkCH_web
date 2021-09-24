@@ -141,7 +141,10 @@
       <!-- END - Search button -->
       </v-card-actions>
       <find-product-modal
+        :visible="isShowFindProductModal"
+        :row-selected="productSelected"
         @onSaveClick="onSaveClick($event)"
+        @onModalClose="onModalCloseClick"
       />
     </b-form>
   </validation-observer>
@@ -193,6 +196,7 @@ export default {
         allowInput: true,
         dateFormat: 'd/m/Y',
       },
+      productSelected: [],
       // decentralization
       decentralization: {
         formId: 1,
@@ -216,6 +220,14 @@ export default {
   watch: {
     warehouseTypes() {
       this.warehouseTypeSelected = this.warehouseTypes.find(types => types.isDefault === 1).id // number 1 is default warehouse type
+    },
+    productCodes() {
+      if (this.productCodes) {
+        this.productCodes = this.productCodes?.replace(/\s+/g, '')
+        this.productSelected = this.productCodes.split(',')
+        return
+      }
+      this.productSelected = []
     },
   },
   mounted() {
@@ -253,7 +265,11 @@ export default {
       this.$emit('updateSearchData', data)
     },
     showFindProductModal() {
+      this.isShowFindProductModal = true
       this.$bvModal.show('find-product-modal')
+    },
+    onModalCloseClick() {
+      this.isShowFindProductModal = false
     },
     isDateValid() {
       if (!checkingDateInput(this.date)) {

@@ -63,6 +63,7 @@
     <printer-configuration-modal
       :visible="isVisible"
       :ip-address="ipAddress"
+      :is-open-configuration-modal="isOpenConfigurationModal"
       @cancel="cancel"
       @getIpClient="getIpClient"
     />
@@ -99,6 +100,7 @@ export default {
       avatarText,
       isVisible: false,
       ipAddress: '',
+      isOpenConfigurationModal: false,
     }
   },
   watch: {
@@ -146,6 +148,7 @@ export default {
         }
       })
       this.isVisible = true
+      this.isOpenConfigurationModal = true
     },
     cancel() {
       this.isVisible = false

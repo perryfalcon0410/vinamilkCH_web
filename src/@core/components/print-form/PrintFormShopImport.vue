@@ -1109,7 +1109,6 @@ export default {
     if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
-      JSPM.JSPrintManager.start()
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('p', 'mm', 'a4')
       // START - add font family
@@ -1128,7 +1127,7 @@ export default {
       pdf.setFontSize(8)
       pdf.setFont('Ario-Regular')
       pdf.text(`Add: ${this.commonData.address}`, 5, 17)
-      pdf.text(`Tel: ${this.commonData.shopTel}`, 5, 24)
+      pdf.text(`Tel: ${this.commonData.shopTel || ''}`, 5, 24)
       pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonData.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonData.toDate)}`, 83, 17)
       pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonData.printDate)}`, 91, 24)
       // END - hearder page
@@ -1182,6 +1181,10 @@ export default {
 
       // START - table nhập vay mượn
       this.createTableInputBorrow(pdf)
+      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+        pdf.setPage(j)
+        pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
+      }
       // END - table nhập vay mượn
       printFile('Bao_cao_nhap_hang.pdf', this.printerName, pdf)
     }
@@ -1248,7 +1251,7 @@ export default {
                 { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstAdjust.orderImports[i].orderDate)}` },
                 { content: this.lstAdjust.orderImports[i].poNumber !== null ? `- Số PO: ${this.lstAdjust.orderImports[i].poNumber}` : '- Số PO:' },
                 { content: `- Số nội bộ: ${this.lstAdjust.orderImports[i].internalNumber}` },
-                { content: `- Mã xuất hàng: ${this.lstAdjust.orderImports[i].transCode}` },
+                { content: `- Mã nhập hàng: ${this.lstAdjust.orderImports[i].transCode}` },
               ],
             ],
             didDrawCell: data => {
@@ -1351,7 +1354,7 @@ export default {
           pdf.autoTable({
             theme: 'grid',
             startY: pdf.previousAutoTable.finalY,
-            pageBreak: 'avoid',
+            rowPageBreak: 'avoid',
             margin: {
               right: 5,
               left: 5,
@@ -1410,12 +1413,13 @@ export default {
           this.bodyData = []
 
           // START - table tổng cộng và điều chỉnh
-          this.createTableTotal(pdf, this.lstAdjust.orderImports[i], false)
+          this.createTableTotal(pdf, this.lstAdjust.orderImports[i], true)
           // END - table tổng cộng và điều chỉnh
         }
+        this.count = 1
       }
     },
-    // END - Bảng xuất điều chỉnh
+    // END - Bảng nhập điều chỉnh
 
     // Start - Bảng nhập hàng
     createTableInput(pdf) {
@@ -1477,7 +1481,7 @@ export default {
                 { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstPo.orderImports[i].orderDate)}` },
                 { content: this.lstPo.orderImports[i].poNumber !== null ? `- Số PO: ${this.lstPo.orderImports[i].poNumber}` : '- Số PO:' },
                 { content: `- Số nội bộ: ${this.lstPo.orderImports[i].internalNumber}` },
-                { content: `- Mã xuất hàng: ${this.lstPo.orderImports[i].transCode}` },
+                { content: `- Mã nhập hàng: ${this.lstPo.orderImports[i].transCode}` },
               ],
             ],
             didDrawCell: data => {
@@ -1560,7 +1564,7 @@ export default {
               { content: 'Tổng SL :', styles: { lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
               { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
-              { content: `${this.$formatNumberToLocale(data.totalPriceVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
+              { content: `${this.$formatNumberToLocale(data.totalPriceNotVat)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
             ]
             this.bodyData.push(row)
             data.products.forEach(pro => {
@@ -1580,7 +1584,7 @@ export default {
           pdf.autoTable({
             theme: 'grid',
             startY: pdf.previousAutoTable.finalY,
-            pageBreak: 'avoid',
+            rowPageBreak: 'avoid',
             margin: {
               right: 5,
               left: 5,
@@ -1642,6 +1646,7 @@ export default {
           this.createTableTotal(pdf, this.lstPo.orderImports[i], true)
           // END - table tổng cộng và điều chỉnh
         }
+        this.count = 1
       }
     },
     // END - Bảng nhập hàng
@@ -1698,11 +1703,11 @@ export default {
             tableLineColor: 'black',
             body: [
               [
-                { content: `Số HĐ: ${this.lstBorrow.orderImports[i].redInvoiceNo}`, halign: 'right' },
-                { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstBorrow.orderImports[i].orderDate)}` },
+                { content: `Số HĐ: ${this.lstBorrow.orderImports[i].redInvoiceNo || ''}`, halign: 'right' },
+                { content: `- Ngày HĐ: ${this.$formatISOtoVNI(this.lstBorrow.orderImports[i].orderDate) || ''}` },
                 { content: this.lstBorrow.orderImports[i].poNumber !== null ? `- Số PO: ${this.lstBorrow.orderImports[i].poNumber}` : '- Số PO:' },
-                { content: `- Số nội bộ: ${this.lstBorrow.orderImports[i].internalNumber}` },
-                { content: `- Mã xuất hàng: ${this.lstBorrow.orderImports[i].transCode}` },
+                { content: `- Số nội bộ: ${this.lstBorrow.orderImports[i].internalNumber || ''}` },
+                { content: `- Mã nhập hàng: ${this.lstBorrow.orderImports[i].transCode || ''}` },
               ],
             ],
             didDrawCell: data => {
@@ -1805,7 +1810,7 @@ export default {
           pdf.autoTable({
             theme: 'grid',
             startY: pdf.previousAutoTable.finalY,
-            pageBreak: 'avoid',
+            rowPageBreak: 'avoid',
             margin: {
               right: 5,
               left: 5,
@@ -1864,9 +1869,10 @@ export default {
           this.bodyData = []
 
           // START - table tổng cộng và điều chỉnh
-          this.createTableTotal(pdf, this.lstBorrow.orderImports[i], false)
+          this.createTableTotal(pdf, this.lstBorrow.orderImports[i], true)
           // END - table tổng cộng và điều chỉnh
         }
+        this.count = 1
       }
     },
     // END - Bảng nhập vay mượn
@@ -1877,6 +1883,7 @@ export default {
         pdf.autoTable({
           theme: 'plain',
           startY: pdf.previousAutoTable.finalY + 2,
+          pageBreak: 'avoid',
           margin: { left: 145, right: 5 },
           styles: {
             font: 'Ario-Bold',

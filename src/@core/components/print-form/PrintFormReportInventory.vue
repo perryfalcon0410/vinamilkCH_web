@@ -354,7 +354,6 @@ export default {
     if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
-      JSPM.JSPrintManager.start()
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('p', 'mm', 'a4')
       pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
@@ -368,8 +367,8 @@ export default {
       pdf.text(`${this.commonInfo.shopName}`, 10, 10)
       pdf.setFontSize(8)
       pdf.setFont('Ario-Regular')
-      pdf.text(`Add: ${this.commonInfo.address}`, 10, 17)
-      pdf.text(`Tel: ${this.commonInfo.shopTel}`, 10, 24)
+      pdf.text(`Add: ${this.commonInfo.address || ''}`, 10, 17)
+      pdf.text(`Tel: ${this.commonInfo.shopTel || ''}`, 10, 24)
       pdf.text(`Ngày: ${this.$formatISOtoVNI(this.commonInfo.date)}`, 98, 17)
       pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonInfo.printDate)}`, 92, 24)
       pdf.autoTable({
@@ -501,6 +500,7 @@ export default {
           })
           this.bodyData = []
         })
+        this.count = 1
       }
 
       if (pdf.previousAutoTable.finalY + 50 > pdf.internal.pageSize.getHeight()) {

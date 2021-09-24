@@ -407,7 +407,6 @@ export default {
     if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
-      JSPM.JSPrintManager.start()
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('p', 'mm', 'a4')
       // START - add font family
@@ -438,6 +437,7 @@ export default {
 
       this.checkHeight = true
       printFile('Bao_cao_hang_tra_lai.pdf', this.printerName, pdf)
+      this.count = 1
     }
   },
   methods: {
@@ -449,7 +449,7 @@ export default {
       pdf.text(`${this.commonData.shopName}`, 5, 10)
       pdf.setFontSize(8.5)
       pdf.setFont('Ario-Regular')
-      pdf.text(`Add: ${this.commonData.address}`, 5, 17)
+      pdf.text(`Add: ${this.commonData.address || ''}`, 5, 17)
       pdf.text(`Tel: ${this.commonData.shopTel || ''}`, 5, 24)
       pdf.text(`Từ ngày: ${this.$formatISOtoVNI(this.commonData.fromDate)}       Đến ngày: ${this.$formatISOtoVNI(this.commonData.toDate)}`, 93, 17)
       pdf.text(`Ngày in: ${this.$formatPrintDate(this.commonData.printDate)}`, 101, 24)
@@ -656,16 +656,16 @@ export default {
               content: 'ĐVT', dataKey: 'ĐVT', styles: { font: 'Ario-Bold' },
             },
             {
-              content: 'SL', dataKey: 'SL', styles: { font: 'Ario-Bold' },
+              content: 'SL', dataKey: 'SL', styles: { halign: 'right', font: 'Ario-Bold' },
             },
             {
-              content: 'Giá', dataKey: 'Giá', styles: { font: 'Ario-Bold' },
+              content: 'Giá', dataKey: 'Giá', styles: { halign: 'right', font: 'Ario-Bold' },
             },
             {
-              content: 'T.Tiền', dataKey: 'T.Tiền', styles: { font: 'Ario-Bold' },
+              content: 'T.Tiền', dataKey: 'T.Tiền', styles: { halign: 'right', font: 'Ario-Bold' },
             },
             {
-              content: 'Tiền trả lại', colSpan: 2, dataKey: 'T.Tiền', styles: { font: 'Ario-Bold' },
+              content: 'Tiền trả lại', colSpan: 2, dataKey: 'T.Tiền', styles: { halign: 'right', font: 'Ario-Bold' },
             },
           ]
           this.bodyData.push(title)
@@ -749,6 +749,7 @@ export default {
         pdf.setPage(j)
         pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
       }
+      this.count = 1
     },
     // table 2
   },

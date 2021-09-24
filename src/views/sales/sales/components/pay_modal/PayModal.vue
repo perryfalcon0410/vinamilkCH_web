@@ -53,7 +53,7 @@
               >
                 <b-check
                   v-model="value.isUse"
-                  :disabled="!value.isEditable || value.promotionType === Number(promotionTypeOption[0].id)"
+                  :disabled="(!value.isEditable || value.promotionType === Number(promotionTypeOption[0].id)) || isPaid"
                   @change="onChangeCheckProgramPromotion(value.programId)"
                 />
                 <div class="text-white">
@@ -128,10 +128,11 @@
                           <b-form-input
                             :id="promotionPrograms[index].products[props.row.originalIndex].productCode+'_'+value.programId"
                             v-model.number="promotionPrograms[index].products[props.row.originalIndex].quantity"
-                            :disabled="!value.isEditable"
+                            :disabled="!value.isEditable || isPaid"
                             maxlength="7"
                             @change="onChangeQuantity(value.programId, props)"
                             @keypress="$onlyNumberInput"
+                            @keyup="onKeyUpEnterChangeQuantity(props.row.originalIndex,value.programId, value.products, $event)"
                           />
                         </b-input-group>
                       </div>
@@ -140,11 +141,19 @@
                         class="mx-0"
                       >
                         <b-icon-x
+                          v-if="!isPaid"
                           v-b-popover.hover="'Xóa'"
                           scale="2.0"
                           class="cursor-pointer mt-1"
                           color="red"
                           @click="removeProductPromotionProgramHandle(value.programId,props.row.productId)"
+                        />
+                        <b-icon-x
+                          v-else
+                          v-b-popover.hover="'Xóa'"
+                          scale="2.0"
+                          class="cursor-pointer mt-1"
+                          color="red"
                         />
                       </div>
                       <div v-else>
@@ -155,7 +164,7 @@
 
                     <!-- START - Action bottom -->
                     <div
-                      v-if="value.isInsertItemProducts"
+                      v-show="value.isInsertItemProducts"
                       slot="table-actions-bottom"
                       class="mx-1 my-2 px-2"
                     >
@@ -164,10 +173,11 @@
                         v-model="value.productSearch"
                         :suggestions="allProducts"
                         :input-props="{
-                          id:'autosuggest__product',
+                          id:'autosuggest__product_' + value.programId,
                           class:'form-control w-50',
-                          placeholder:'Nhập mã hoặc tên sản phẩm'
+                          placeholder:'Nhập mã hoặc tên sản phẩm',
                         }"
+                        :disabled="!value.isEditable || isPaid"
                         @input="loadProducts(value.programId, value.productSearch)"
                         @selected="selectProduct(value.programId, $event)"
                       >
@@ -223,7 +233,7 @@
                           class="form-control"
                           :raw="true"
                           :options="options.number"
-                          :disabled="!value.isEditable"
+                          :disabled="!value.isEditable || isPaid"
                           @change.native="onChangePromotionAmout(value.programId, value.amount.amount, value.amount.maxAmount)"
                         />
                       </b-col>
@@ -262,10 +272,11 @@
                         v-model="value.productSearch"
                         :suggestions="allProducts"
                         :input-props="{
-                          id:'autosuggest__product',
+                          id:'autosuggest__product_' + value.programId,
                           class:'form-control w-50',
                           placeholder:'Nhập mã hoặc tên sản phẩm'
                         }"
+                        :disabled="isPaid"
                         @input="loadProducts(value.programId, value.productSearch)"
                         @selected="selectProduct(value.programId, $event)"
                       >
@@ -440,7 +451,10 @@
                       cols="6"
                       class="h6 mb-0"
                     >
-                      <b-input-group class="input-group-merge">
+                      <b-input-group
+                        v-if="!isPaid"
+                        class="input-group-merge"
+                      >
                         <b-input-group-prepend
                           v-b-popover.hover="'Chọn voucher'"
                           is-text
@@ -461,6 +475,31 @@
                             scale="1.0"
                             class="cursor-pointer"
                             @click="resetVoucher()"
+                          />
+                        </b-input-group-text>
+                      </b-input-group>
+                      <b-input-group
+                        v-else
+                        class="input-group-merge"
+                      >
+                        <b-input-group-prepend
+                          v-b-popover.hover="'Chọn voucher'"
+                          is-text
+                          class="cursor-pointer text-right"
+                        >
+                          <b-icon-three-dots-vertical
+                            scale="1.5"
+                          />
+                        </b-input-group-prepend>
+                        <b-form-input
+                          v-model="pay.voucher.voucherSerials"
+                          class="pl-1 h6 mb-0 text-right"
+                          readonly
+                        />
+                        <b-input-group-text>
+                          <b-icon-x
+                            scale="1.0"
+                            class="cursor-pointer"
                           />
                         </b-input-group-text>
                       </b-input-group>
@@ -508,12 +547,22 @@
                           @keyup.enter="searchDiscount"
                         />
                         <b-input-group-append
+                          v-if="!isPaid"
                           is-text
                         >
                           <b-icon-x
                             scale="1.0"
                             class="cursor-pointer"
                             @click="resetDiscount"
+                          />
+                        </b-input-group-append>
+                        <b-input-group-append
+                          v-else
+                          is-text
+                        >
+                          <b-icon-x
+                            scale="1.0"
+                            class="cursor-pointer"
                           />
                         </b-input-group-append>
                       </b-input-group>
@@ -595,7 +644,7 @@
                         class="form-control h6 text-right"
                         :raw="true"
                         :options="options.number"
-                        maxlength="20"
+                        maxlength="15"
                         :disabled="totalQuantity === 0"
                         @keyup.native="extraAmountCalculation"
                       />
@@ -737,6 +786,7 @@
       :order-products="orderProducts"
       :customer="customer"
       @getVoucherInfo="getVoucherInfo"
+      @getIsLockedVoucher="getIsLockedVoucher"
     />
 
     <!-- START - Print form -->
@@ -949,6 +999,10 @@ export default {
       isLoading: false,
       ipAddress: '',
       ipAddressCurrent: '',
+      isLockedVoucher: false,
+      isUseChecked: [],
+      productKeyWord: '',
+      programIdSelected: null,
     }
   },
 
@@ -984,20 +1038,7 @@ export default {
       return this.GET_PROMOTION_PROGRAMS_GETTER
     },
     getItemsProduct() {
-      // return this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER
-      return [{
-        data: this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER.map(data => ({
-          groupOneFreeItem: data.groupOneFreeItem,
-          levelNumber: data.levelNumber,
-          productCode: data.productCode,
-          productId: data.productId,
-          productName: data.productName,
-          quantity: data.quantity,
-          quantityMax: data.quantityMax,
-          stockQuantity: data.stockQuantity,
-          name: data.productName,
-        })),
-      }]
+      return this.GET_ITEMS_PRODUCTS_PROGRAM_GETTER
     },
     getPromotionCalculation() {
       return this.GET_PROMOTION_CALCULATION_GETTER
@@ -1079,9 +1120,27 @@ export default {
     },
     getItemsProduct() {
       // để show lên vue-autosuggest thì phải để [{data: value}]
-      this.allProducts = [...this.getItemsProduct]
+      const getItemProductProgram = [...this.getItemsProduct.map(data => ({
+        groupOneFreeItem: data.groupOneFreeItem,
+        levelNumber: data.levelNumber,
+        productCode: data.productCode,
+        productId: data.productId,
+        productName: data.productName,
+        quantity: null,
+        quantityMax: data.quantityMax,
+        stockQuantity: data.stockQuantity,
+        name: this.productKeyWord,
+      }))]
+      this.allProducts = [{
+        data: getItemProductProgram,
+      }]
       if (this.allProducts[0].data && this.allProducts[0].data.length === 1) {
-        this.$nextTick(() => document.getElementById('autosuggest__product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+        const elementAutosuggestProductId = `autosuggest__product_${this.programIdSelected}`
+        this.$nextTick(() => {
+          setTimeout(() => {
+            document.getElementById(elementAutosuggestProductId).dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 }))
+          }, 100)
+        })
       }
     },
     needPayment() {
@@ -1210,6 +1269,9 @@ export default {
               invisibleLoading: false,
             },
             onSuccess: () => {},
+            onFailure: () => {
+              this.cancel()
+            },
           })
           if (this.pay.discount.discountCode !== '') {
             this.pay.discount.discountCode = ''
@@ -1236,28 +1298,30 @@ export default {
       },
       deep: true,
     },
-    // promotionPrograms: {
-    //   handler() {
-    //     this.isUseChecked = this.promotionPrograms.filter(p => p.isUse)
-    //     if (this.isUseChecked.length === 0) {
-    //       this.isDisabledPrintTempBtn = true
-    //       this.isDisabledPrintAndPaymentBtn = true
-    //       this.isDisabledPaymentBtn = true
-    //     } else {
-    //       this.isDisabledPrintAndPaymentBtn = false
-    //       this.isDisabledPrintTempBtn = false
-    //       this.isDisabledPaymentBtn = false
-    //     }
-    //   },
-    //   deep: true,
-    // },
+    promotionPrograms: {
+      handler() {
+        this.isUseChecked = this.promotionPrograms.filter(p => p.isUse)
+        if (this.totalQuantity === 0) {
+          if (this.isUseChecked.length === 0) {
+            this.isDisabledPrintTempBtn = true
+            this.isDisabledPrintAndPaymentBtn = true
+            this.isDisabledPaymentBtn = true
+          } else {
+            this.isDisabledPrintAndPaymentBtn = false
+            this.isDisabledPrintTempBtn = false
+            this.isDisabledPaymentBtn = false
+          }
+        }
+      },
+      deep: true,
+    },
   },
 
-  created() {
-    window.onload = () => {
-      window.addEventListener('keydown', this.keyDown)
-    }
-  },
+  // created() {
+  //   window.onload = () => {
+  //     window.addEventListener('keydown', this.keyDown)
+  //   }
+  // },
 
   mounted() {
     this.isDisabledPaymentBtn = true
@@ -1270,11 +1334,12 @@ export default {
         this.ipAddress = null
       }
     })
+    window.addEventListener('keydown', this.keyDown)
   },
 
-  destroyed() {
-    window.removeEventListener('keydown', this.keyDown, false)
-  },
+  // destroyed() {
+  //   window.removeEventListener('keydown', this.keyDown, false)
+  // },
 
   methods: {
     ...mapActions(SALES, [
@@ -1332,7 +1397,7 @@ export default {
     },
 
     onVoucherButtonClick(isLocked) {
-      if (isLocked) {
+      if (isLocked || this.isLockedVoucher === true) {
         toasts.error('Bạn đã nhập sai quá số lần quy định và bị khóa chức năng trong ngày. Vui lòng liên hệ với bộ phận hỗ trợ để được tư vấn.')
       } else if (!isLocked && this.isPaid) {
         toasts.error('Bạn đã thanh toán hoá đơn này, nên sẽ không sử dụng được chức năng này nữa.')
@@ -1496,18 +1561,21 @@ export default {
 
     loadProducts(programId, keyWord) {
       this.allProducts = [{ data: null }]
-      if (keyWord !== null) {
+      this.productKeyWord = keyWord
+      if (keyWord !== null && !this.isPaid) {
         if (keyWord.length >= commonData.minSearchLength) {
+          this.programIdSelected = programId
           this.GET_ITEMS_PRODUCTS_PROGRAM_ACTION({
             keyWord,
             promotionId: programId,
+            customerId: this.customer.id,
             ...this.decentralization,
           })
         }
       }
     },
     selectProduct(programId, suggestion) {
-      this.pay.productSearch = null
+      this.pay.productSearch = ''
       this.allProducts = [{ data: null }]
       let productCodeFocus = ''
       this.promotionPrograms = [...this.promotionPrograms.map(program => {
@@ -1525,32 +1593,26 @@ export default {
               quantityMax: program.numberLimited ? program.numberLimited : suggestion.item.stockQuantity,
               stockQuantity: suggestion.item.stockQuantity,
             })
-            productCodeFocus = suggestion.item.productCode
             return {
               ...program,
-              products: arrProduct,
-              productSearch: null,
-            }
-          }
-          return {
-            ...program,
-            products: [...program.products.map(product => {
-              if (product.productCode === suggestion.item.productCode) {
-                return {
-                  ...product,
-                  quantity: Number(product.quantity) + 1,
+              products: [...program.products.map(product => {
+                if (product.productCode === suggestion.item.productCode) {
+                  return {
+                    ...product,
+                    quantity: Number(product.quantity) + 1,
+                  }
                 }
-              }
-              return product
-            })],
+                return product
+              })],
+            }
           }
         }
         return program
       })]
-      productCodeFocus = `${productCodeFocus}_${programId}`
+      productCodeFocus = `${suggestion.item.productCode}_${programId}`
       setTimeout(() => {
         document.getElementById(productCodeFocus).focus()
-      }, 100)
+      }, 200)
     },
     onChangeCheckProgramPromotion(programId) {
       const programChecked = this.promotionPrograms.find(program => program.programId === programId)
@@ -1697,8 +1759,8 @@ export default {
             discountCode: this.pay.discount.discountCode,
             voucherAmount: Number(this.pay.voucher.totalVoucherAmount) || 0,
             vouchers: this.pay.voucher.vouchers,
-            remainAmount: Number(this.pay.needPaymentAmount) || 0,
-            paymentAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
+            paymentAmount: Number(this.pay.needPaymentAmount) || 0,
+            remainAmount: Number(this.pay.salePayment.salePaymentAmount) || 0,
             extraAmount: Number(this.pay.extraAmount) || 0,
           },
           onSuccess: () => {
@@ -1708,6 +1770,7 @@ export default {
             this.isDisabledPaymentBtn = true
             this.isPaid = true
             this.isSaveSuccess = true
+            this.isLoading = false
           },
           onFailure: () => {
             this.isDisabledRePrintBtn = true
@@ -1723,6 +1786,7 @@ export default {
     createSaleOrderAndPrint() {
       this.createSaleOrder()
       this.isPrint = this.isPaid
+      this.isLoading = false
     },
     cancel() {
       this.isOpenPayModal = false
@@ -1848,21 +1912,23 @@ export default {
       })
     },
     keyDown(e) {
-      if (e.key === 'F7' && this.isOpenPayModal && this.totalQuantity > 0) {
-        if (!this.isPaid && this.statusPrintTmpButton()) {
+      if (e.key === 'F7' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading) {
+        if (!this.isPaid && this.statusPrintTmpButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           this.printSaleOrderTemp()
         }
       }
-      if (e.key === 'F8' && this.isOpenPayModal && this.totalQuantity > 0) {
+      if (e.key === 'F8' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading) {
         if (!this.isPaid && this.statusPayPrintButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
+            this.isLoading = true
             this.createSaleOrderAndPrint()
           }
         }
       }
-      if (e.key === 'F9' && this.isOpenPayModal && this.totalQuantity > 0) {
+      if (e.key === 'F9' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading) {
         if (!this.isPaid && this.statusPayButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
+            this.isLoading = true
             this.createSaleOrder()
           }
         }
@@ -1896,6 +1962,27 @@ export default {
       this.isDisabledRePrintBtn = true
       this.isDisabledPaymentBtn = true
       this.isDisabledPrintAndPaymentBtn = true
+    },
+    getIsLockedVoucher(val) {
+      this.isLockedVoucher = val
+    },
+    onKeyUpEnterChangeQuantity(index, programId, products, e) {
+      let elementIdProductNext = `${products[index].productCode}_${programId}`
+      if (index < products.length - 1) {
+        if (e.key === 'ArrowDown' || e.key === 'Enter') {
+          elementIdProductNext = `${products[index + 1].productCode}_${programId}`
+        } else if (e.key === 'ArrowUp' && index !== 0) {
+          elementIdProductNext = `${products[index - 1].productCode}_${programId}`
+        }
+        document.getElementById(elementIdProductNext).focus()
+      } else if (index === products.length - 1) {
+        if (e.key === 'Enter') {
+          elementIdProductNext = `autosuggest__product_${programId}`
+        } else if (e.key === 'ArrowUp') {
+          elementIdProductNext = `${products[index - 1].productCode}_${programId}`
+        }
+        document.getElementById(elementIdProductNext).focus()
+      }
     },
   },
 }

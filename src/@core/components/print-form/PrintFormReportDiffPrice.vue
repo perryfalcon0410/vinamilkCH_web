@@ -374,7 +374,6 @@ export default {
     if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
-      JSPM.JSPrintManager.start()
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('p', 'mm', 'a4')
       // START - add font family
@@ -628,10 +627,10 @@ export default {
           },
         })
         this.bodyData = []
-        this.count = 1
         this.checkHeader = false
       })
       this.checkHeader = true
+      this.count = 1
 
       for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
         pdf.setPage(j)

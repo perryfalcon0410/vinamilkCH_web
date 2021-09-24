@@ -97,7 +97,7 @@
               :key="index"
             >
               <b-row
-                v-if="props.column.field === `${item.field}`"
+                v-if="props.column.field === `${item.field}` && totalQuantity[index] !== 0"
                 class="h7 text-brand-3 pr-50"
                 align-h="end"
               >
@@ -383,7 +383,7 @@ export default {
       for (let i = 0; i <= this.reportSalesCatList.length - 1; i += 1) {
         for (let j = 3; j <= this.getReportSalesCatPrices[i].length - 1; j += 1) {
           if (j < this.getReportSalesCatPrices[i].length - 1) {
-            this.reportSalesCatList[i][j] = this.getReportSalesCatPrices[i][j]
+            this.reportSalesCatList[i][j] = this.getReportSalesCatPrices[i][j] === 0 ? null : this.getReportSalesCatPrices[i][j]
           } else {
             this.reportSalesCatList[i].sumTotal = this.getReportSalesCatPrices[i][j]
           }

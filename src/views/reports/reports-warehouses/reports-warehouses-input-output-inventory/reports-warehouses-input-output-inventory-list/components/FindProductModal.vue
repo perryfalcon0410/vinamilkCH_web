@@ -7,7 +7,6 @@
     footer-class="justify-content-center"
     content-class="bg-light"
     footer-border-variant="light"
-    hide-header-close
     centered
     @hidden="onModalClose"
   >
@@ -267,7 +266,7 @@
           height="20"
           class="mr-50"
         />
-        Lưu
+        Chọn
       </b-button>
       <b-button
         variant="secondary"
@@ -478,9 +477,11 @@ export default {
       GET_PRODUCT_CAT_LISTS_ACTIONS,
     ]),
     onModalClose() {
+      this.isCheckAllRows = false
       this.$emit('onModalClose')
     },
     onSaveClick() {
+      this.isCheckAllRows = false
       this.$emit('onSaveClick', this.selectedProductRow)
     },
 
@@ -516,7 +517,6 @@ export default {
     },
     selectAllRows(params) {
       if (params.selected) {
-        this.selectedProductRow = []
         params.selectedRows.forEach(item => {
           if (!this.selectedProductRow.find(data => data.id === item.id)) {
             this.selectedProductRow.push(item)
@@ -524,9 +524,12 @@ export default {
         })
         this.isCheckAllRows = true
       } else if (this.isCheckAllRows) {
-        this.selectedProductRow = []
-        this.isCheckAllRows = false
+        this.products.forEach(item => {
+          const index = this.selectedProductRow.findIndex(data => data.id === item.id)
+          this.selectedProductRow.splice(index, 1)
+        })
       }
+      this.isCheckAllRows = true
     },
     selectionRow(params) {
       if (params.selected) {

@@ -1,12 +1,13 @@
 <template>
   <b-modal
-    ref="salesSearchModal"
+    id="sales-search-modal"
     size="xl"
     class="d-print-none"
     title="Tìm kiếm khách hàng"
     title-class="font-weight-bold text-brand-1"
     content-class="bg-light"
     hide-footer
+    @hidden="onClickCloseButton()"
   >
     <b-container
       fluid
@@ -42,6 +43,7 @@
                   ref="focusInput"
                   v-model="searchKeywords"
                   placeholder="Nhập mã/ họ tên"
+                  @input="getSearchOption"
                 />
                 <b-input-group-append
                   is-text
@@ -75,6 +77,7 @@
                 autocomplete="on"
                 maxlength="10"
                 @keypress="$onlyNumberInput"
+                @input="getSearchOption"
               />
               <b-input-group-append
                 is-text
@@ -104,6 +107,7 @@
             >
               <b-form-input
                 v-model="idNo"
+                @input="getSearchOption"
               />
               <b-input-group-append
                 is-text
@@ -329,6 +333,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    orderCurrentId: {
+      type: Number,
+      default: Number,
+    },
+    bills: {
+      type: Array,
+      default: () => [],
+    },
+    isNewButton: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -479,6 +495,19 @@ export default {
       },
       deep: true,
     },
+    orderCurrentId: {
+      handler() {
+        const bill = this.bills.find(b => b.id === this.orderCurrentId)
+        this.searchKeywords = bill.searchModalOption.searchKeywords
+        this.phoneNumber = bill.searchModalOption.phoneNumber
+        this.idNo = bill.searchModalOption.idNo
+
+        if (this.isNewButton === true) {
+          this.onClickSearchButton()
+        }
+      },
+      deep: true,
+    },
   },
   mounted() {
   },
@@ -499,6 +528,7 @@ export default {
         ...this.searchData,
       }
       this.searchData = { ...this.searchData, ...this.searchOption }
+      this.onlineOrderCustomers.length = 0
       this.GET_CUSTOMERS_ACTION(this.searchOption)
     },
     updateSearchData(newProps) {
@@ -515,6 +545,7 @@ export default {
       this.updateSearchData({
         ...this.searchOption,
       })
+      this.onlineOrderCustomers.length = 0
       this.onPaginationChange()
     },
     onPaginationChange() {
@@ -534,7 +565,7 @@ export default {
     // func pagination
 
     onClickCloseButton() {
-      this.$refs.salesSearchModal.hide()
+      this.$bvModal.hide('sales-search-modal')
       this.autofocus = true
     },
 
@@ -542,6 +573,14 @@ export default {
       this.onClickCloseButton()
       this.$emit('getCustomerInfo', {
         data: obj,
+      })
+    },
+
+    getSearchOption() {
+      this.$emit('getSearchOption', {
+        searchKeywords: this.searchKeywords,
+        phoneNumber: this.phoneNumber,
+        idNo: this.idNo,
       })
     },
   },

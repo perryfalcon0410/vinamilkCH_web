@@ -348,7 +348,7 @@ export default {
           sortable: true,
           thClass: 'text-center ws-nowrap scroll-column-header column-4',
           tdClass: 'text-center scroll-column column-4',
-          formatFn: value => this.$formatISOtoVNI(value),
+          formatFn: value => this.$formatISOtoVNI(value, true, false),
         },
         {
           label: 'Tổng giá trị',

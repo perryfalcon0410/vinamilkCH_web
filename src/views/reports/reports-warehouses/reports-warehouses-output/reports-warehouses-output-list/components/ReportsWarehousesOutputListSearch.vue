@@ -282,6 +282,7 @@
       <!-- START - Modal -->
       <output-po-choose-modal
         :visible="selectProductModalVisible"
+        :row-selected="productSelected"
         @onModalClose="onModalCloseClick"
         @onSaveClick="onSaveClick"
       />
@@ -368,6 +369,7 @@ export default {
         dateFormat: 'd/m/Y',
         minDate: this.fromDate,
       },
+      productSelected: [],
     }
   },
   computed: {
@@ -384,6 +386,14 @@ export default {
         ...this.configToOrderDate,
         minDate: this.fromOrderDate,
       }
+    },
+    ids() {
+      if (this.ids) {
+        this.ids = this.ids?.replace(/\s+/g, '')
+        this.productSelected = this.ids.split(',')
+        return
+      }
+      this.productSelected = []
     },
   },
   mounted() {

@@ -10,6 +10,7 @@
     class="d-print-none"
     footer-border-variant="light"
     centered
+    @hidden="onModalClose"
   >
     <b-container fluid>
       <!-- START - Body -->
@@ -245,12 +246,12 @@
         @click="save()"
       >
         <b-icon
-          icon="download"
-          width="15"
-          height="15"
+          icon="check2"
+          width="20"
+          height="20"
           class="mr-50"
         />
-        Lưu
+        Chọn
       </b-button>
       <b-button
         class="shadow-brand-1 rounded bg-brand-1 text-white h8 font-weight-bolder d-flex justify-content-center align-items-center ml-1"
@@ -302,6 +303,10 @@ export default {
       required: true,
       default: false,
     },
+    rowSelected: {
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
@@ -320,6 +325,7 @@ export default {
       },
       selectedProductRow: [],
       selectedCurrentPage: [],
+      allProducts: [],
       productCategorySelected: null,
       // searchOptions
       decentralization: {
@@ -400,6 +406,18 @@ export default {
     },
     visible() {
       if (this.visible) {
+        // func delete products name
+        this.allProducts = []
+        this.rowSelected.forEach(data => {
+          const index = this.selectedProductRow.findIndex((item => item.productCode.toUpperCase() === data.toUpperCase()))
+          if (index > -1) {
+            if (!this.allProducts.find(dta => dta.id === this.selectedProductRow[index].id)) {
+              this.allProducts.push(this.selectedProductRow[index])
+            }
+          }
+        })
+        this.selectedProductRow = this.allProducts
+        // func delete products name
         this.products.forEach((item, index) => {
           const productSelectedFoundIndex = this.selectedProductRow.findIndex(data => item.id === data.id)
           if (productSelectedFoundIndex > -1) {
@@ -432,10 +450,16 @@ export default {
     ]),
     save() {
       this.$emit('onSaveClick', this.selectedProductRow)
+      this.isCheckAllRows = false
       this.$bvModal.hide('find-product-modal')
     },
     cancel() {
       this.$bvModal.hide('find-product-modal')
+      this.isCheckAllRows = false
+    },
+    onModalClose() {
+      this.isCheckAllRows = false
+      this.$emit('onModalClose')
     },
     updateSearchData(newProps) {
       this.paginationData = { ...this.paginationData, ...newProps }
@@ -455,7 +479,7 @@ export default {
       this.onPaginationChange()
     },
     onSearchClick() {
-      this.GET_PRODUCT_LIST_ACTION({
+      this.updateSearchData({
         ...this.decentralization,
         ...this.searchOptions,
         catId: this.productCategorySelected,
@@ -464,7 +488,6 @@ export default {
     },
     selectAllRows(params) {
       if (params.selected) {
-        this.selectedProductRow = []
         params.selectedRows.forEach(item => {
           if (!this.selectedProductRow.find(data => data.id === item.id)) {
             this.selectedProductRow.push(item)
@@ -472,9 +495,12 @@ export default {
         })
         this.isCheckAllRows = true
       } else if (this.isCheckAllRows) {
-        this.selectedProductRow = []
-        this.isCheckAllRows = false
+        this.products.forEach(item => {
+          const index = this.selectedProductRow.findIndex(data => data.id === item.id)
+          this.selectedProductRow.splice(index, 1)
+        })
       }
+      this.isCheckAllRows = true
     },
     selectionRow(params) {
       if (params.selected) {

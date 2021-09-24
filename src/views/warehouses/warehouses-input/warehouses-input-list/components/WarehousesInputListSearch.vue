@@ -6,7 +6,7 @@
     slim
   >
     <b-form
-      @keydown.enter="onClickSearchButton"
+      @keyup.enter="onClickSearchButton"
     >
       <v-card-actions
         title="Tìm kiếm"

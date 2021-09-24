@@ -10,7 +10,6 @@
     >
       <b-from
         class="d-print-none"
-        @keydown.enter="onClickSearchWarehousesOutput"
       >
         <!-- START - Search -->
         <v-card-actions
@@ -36,6 +35,7 @@
                 maxlength="20"
                 placeholder="Nhập mã xuất hàng"
                 trim
+                @keydown.enter="onClickSearchWarehousesOutput"
               />
               <b-input-group-append is-text>
                 <b-icon-x
@@ -65,6 +65,7 @@
                 maxlength="20"
                 placeholder="Nhập số hoá đơn"
                 trim
+                @keydown.enter="onClickSearchWarehousesOutput"
               />
               <b-input-group-append is-text>
                 <b-icon-x
@@ -317,7 +318,7 @@
                   @click="onClickUpdateButton(props.row.id, props.row.receiptType, props.row.poId)"
                 />
                 <v-icon-remove
-                  v-show="$formatISOtoVNI(props.row.date) === nowDate && statusDeleteButton().show"
+                  v-show="$formatISOtoVNI(props.row.transDate) === nowDate && statusDeleteButton().show"
                   :disabled="statusDeleteButton().disabled"
                   class="ml-1"
                   @click="onClickDeleteWarehousesOutput(props.row.id,props.row.receiptType,props.row.code, props.row.originalIndex, $formatISOtoVNI(props.row.date))"
@@ -341,7 +342,7 @@
               slot-scope="props"
             >
               <div
-                v-if="props.column.field === 'quantity'"
+                v-if="props.column.field === 'totalQuantity'"
                 v-show="warehousesOutputPagination.totalElements"
                 class="h7 text-brand-3 text-right"
               >
@@ -349,7 +350,7 @@
               </div>
 
               <div
-                v-else-if="props.column.field === 'price'"
+                v-else-if="props.column.field === 'totalAmount'"
                 v-show="warehousesOutputPagination.totalElements"
                 class="h7 text-brand-3 text-right"
               >

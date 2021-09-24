@@ -544,7 +544,7 @@ export default {
               { content: `${data.type}`, styles: { font: 'Ario-Bold', lineWidth: 0 } },
               { content: 'Tổng SL :', styles: { lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
-              { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
+              { content: 'Tổng T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? data.totalPriceNotVat : data.totalPrice)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
             ]
             this.bodyData.push(row)
@@ -578,7 +578,7 @@ export default {
                 { content: `${pro.unit}`, styles: { cellWidth: 20, halign: 'center' } },
                 { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
                 { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.priceNotVat : pro.price)}`, styles: { cellWidth: 30, halign: 'right' } },
-                { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.priceNotVat : pro.totalPrice)}`, styles: { cellWidth: 30, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.totalPriceNotVat : pro.totalPrice)}`, styles: { cellWidth: 30, halign: 'right' } },
               ])
               this.count += 1
             })
@@ -669,7 +669,7 @@ export default {
               { content: `${data.type}`, styles: { font: 'Ario-Bold', lineWidth: 0 } },
               { content: 'Tổng SL :', styles: { lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(data.totalQuantity)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
-              { content: 'T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
+              { content: 'Tổng T.Tiền :', styles: { halign: 'right', lineWidth: 0 } },
               { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? data.totalPriceNotVat : data.totalPrice)}`, styles: { font: 'Ario-Bold', halign: 'right', lineWidth: 0 } },
             ]
             this.bodyData.push(row)
@@ -703,7 +703,7 @@ export default {
                 { content: `${pro.unit}`, styles: { cellWidth: 20, halign: 'center' } },
                 { content: `${this.$formatNumberToLocale(pro.quantity)}`, styles: { cellWidth: 15, halign: 'right' } },
                 { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.priceNotVat : pro.price)}`, styles: { cellWidth: 30, halign: 'right' } },
-                { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.priceNotVat : pro.totalPrice)}`, styles: { cellWidth: 30, halign: 'right' } },
+                { content: `${this.$formatNumberToLocale(this.inputOrderInfoData.transType === 0 ? pro.totalPriceNotVat : pro.totalPrice)}`, styles: { cellWidth: 30, halign: 'right' } },
               ])
               this.count += 1
             })
@@ -840,7 +840,7 @@ export default {
           [
             { content: '', styles: { cellWidth: 20, ...cellPadding } },
             {
-              content: `Tel: ${this.inputOrderShopData.phone} - Fax: ${this.inputOrderShopData.fax || ''}`, styles: { ...cellPadding },
+              content: `Tel: ${this.inputOrderShopData.phone || ''} - Fax: ${this.inputOrderShopData.fax || ''}`, styles: { ...cellPadding },
             },
             { content: '', styles: { cellWidth: 10, ...cellPadding } },
             {
@@ -895,7 +895,7 @@ export default {
           ],
           [
             { content: 'Mã nhập hàng:', styles: { ...styleDef } },
-            { content: `${this.inputOrderInfoData.transCode}`, styles: { font: 'Ario-Bold', ...styleDef } },
+            { content: `${this.inputOrderInfoData.transCode || ''}`, styles: { font: 'Ario-Bold', ...styleDef } },
             { content: 'Ngày nhập:', styles: { ...styleDef } },
             { content: `${this.$formatISOtoVNI(this.inputOrderInfoData.transDate, true)}`, styles: { font: 'Ario-Bold', ...styleDef } },
           ],
@@ -903,11 +903,11 @@ export default {
             { content: 'Số PO:', styles: { ...styleDef } },
             { content: this.inputOrderInfoData.transType === 0 ? `${this.inputOrderInfoData.poNumber}` : '', styles: { font: 'Ario-Bold', ...styleDef } },
             { content: 'Số nội bộ:', styles: { ...styleDef } },
-            { content: `${this.inputOrderInfoData.internalNumber}`, styles: { font: 'Ario-Bold', ...styleDef } },
+            { content: `${this.inputOrderInfoData.internalNumber || ''}`, styles: { font: 'Ario-Bold', ...styleDef } },
           ],
           [
             { content: 'Số hóa đơn:', styles: { ...styleDef } },
-            { content: `${this.inputOrderInfoData.invoiceNumber}`, styles: { font: 'Ario-Bold', ...styleDef } },
+            { content: `${this.inputOrderInfoData.invoiceNumber || ''}`, styles: { font: 'Ario-Bold', ...styleDef } },
             { content: 'Ngày hóa đơn:', styles: { ...styleDef } },
             { content: `${this.$formatISOtoVNI(this.inputOrderInfoData.orderDate)}`, styles: { font: 'Ario-Bold', ...styleDef } },
           ],

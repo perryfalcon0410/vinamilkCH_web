@@ -265,6 +265,7 @@
                 @keypress.native="$onlyNumberInput"
                 @keyup.up.native="onClickUpButtonInventoryPacket(props.row.originalIndex)"
                 @keyup.down.native="onClickDownButtonInventoryPacket(props.row.originalIndex)"
+                @keyup.enter.native="onClickRightButtonInventoryPacket(props.row.originalIndex)"
                 @keyup.left.native="onClickLeftButtonInventoryPacket(props.row.originalIndex)"
                 @keyup.right.native="onClickRightButtonInventoryPacket(props.row.originalIndex)"
               />
@@ -282,6 +283,7 @@
                 @keypress.native="$onlyNumberInput"
                 @keyup.up.native="onClickUpButtonInventoryOdd(props.row.originalIndex)"
                 @keyup.down.native="onClickDownButtonInventoryOdd(props.row.originalIndex)"
+                @keyup.enter.native="onClickRightButtonInventoryOdd(props.row.originalIndex)"
                 @keyup.left.native="onClickLeftButtonInventoryOdd(props.row.originalIndex)"
                 @keyup.right.native="onClickRightButtonInventoryOdd(props.row.originalIndex)"
               />
@@ -748,8 +750,8 @@ export default {
       this.rowsFail = this.warehouseInventoryImportData.info.importFailed
       this.warehouseInventoryImportData.response.importSuccess.forEach(productData => {
         const index = this.originalProducts.findIndex(product => product.productCode === productData.productCode)
-        this.originalProducts[index].inventoryPacket = productData.packetQuantity.toString()
-        this.originalProducts[index].inventoryOdd = productData.unitQuantity.toString()
+        this.originalProducts[index].inventoryPacket = (productData.packetQuantity !== null && productData.packetQuantity > 0) ? productData.packetQuantity.toString() : null
+        this.originalProducts[index].inventoryOdd = (productData.unitQuantity !== null && productData.unitQuantity > 0) ? productData.unitQuantity.toString() : null
         this.originalProducts[index].inventoryTotal = Number(this.originalProducts[index].inventoryPacket) * this.originalProducts[index].exchange + Number(this.originalProducts[index].inventoryOdd)
         this.originalProducts[index].unequal = this.originalProducts[index].inventoryTotal - this.originalProducts[index].instockAmount
       })
@@ -967,6 +969,7 @@ export default {
     },
     onClickRightButtonInventoryPacket(index) {
       document.getElementById(`${this.products[index].productCode}inventoryOdd`).focus()
+      document.getElementById(`${this.products[index].productCode}inventoryOdd`).select()
     },
 
     onClickUpButtonInventoryOdd(index) {
@@ -987,6 +990,7 @@ export default {
     onClickRightButtonInventoryOdd(index) {
       if (index !== this.products.length - 1) {
         document.getElementById(`${this.products[index + 1].productCode}inventoryPacket`).focus()
+        document.getElementById(`${this.products[index + 1].productCode}inventoryPacket`).select()
       }
     },
   },

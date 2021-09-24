@@ -352,7 +352,6 @@ export default {
     if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
-      JSPM.JSPrintManager.start()
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('p', 'mm', 'a4')
       // START - add font family
@@ -472,14 +471,14 @@ export default {
       })
       pdf.setFontSize(10)
       pdf.setFont('Ario-Regular')
-      pdf.text('NGƯỜI NHẬP HÀNG', 25, pdf.previousAutoTable.finalY + 30)
+      pdf.text('NGƯỜI NHẬN HÀNG', 25, pdf.previousAutoTable.finalY + 30)
       pdf.text('NGƯỜI XUẤT HÀNG', 163, pdf.previousAutoTable.finalY + 30)
 
       for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
         pdf.setPage(j)
         pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
       }
-      printFile('Bao_cao_xuat_hang.pdf', this.printerName, pdf)
+      printFile('Hoa_don_xuat_hang.pdf', this.printerName, pdf)
       // for (let i = 0; i < 3; i += 1) {
       //   if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
       //     const options = {
@@ -518,7 +517,7 @@ export default {
         },
         styles: {
           font: 'Ario-Regular',
-          fontSize: 10,
+          fontSize: 9,
           textColor: 'black',
         },
         body: [
@@ -553,7 +552,7 @@ export default {
           [
             { content: '', styles: { cellWidth: 20, ...cellPadding } },
             {
-              content: this.inputOrderShopData.fax === null ? `Tel: ${this.inputOrderShopData.phone} - Fax:` : `Tel: ${this.inputOrderShopData.phone} - Fax: ${this.inputOrderShopData.fax}`, styles: { ...cellPadding },
+              content: `Tel: ${this.inputOrderShopData.phone || ''} - Fax: ${this.inputOrderShopData.fax || ''}`, styles: { ...cellPadding },
             },
             { content: '', styles: { cellWidth: 10, ...cellPadding } },
             {
@@ -580,7 +579,7 @@ export default {
         Padding: 0,
         styles: {
           font: 'Ario-Regular',
-          fontSize: 10,
+          fontSize: 9,
           textColor: 'black',
         },
         didDrawCell: data => {

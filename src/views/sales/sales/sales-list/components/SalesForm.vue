@@ -96,6 +96,7 @@
                 >
                   <b-icon-search
                     v-b-popover.hover.top="'Tìm kiếm khách hàng'"
+                    class="cursor-pointer"
                     @click="showSearchModal"
                   />
                 </b-input-group-prepend>
@@ -145,6 +146,7 @@
                 >
                   <b-icon-plus
                     v-b-popover.hover.top="'Thêm mới khách hàng'"
+                    class="cursor-pointer"
                     @click="showModalCreate"
                   />
                 </b-input-group-append>
@@ -278,17 +280,18 @@
                       maxlength="50"
                       :state="(!checkApParramCode && touched) ? passed : null"
                       :disabled="checkApParramCode
-                        || salemtPromotionObjectSelected === salemtPromotionId
                         || salemtPromotionObjectSelected === undefined
-                        || editManualPermission === false
-                        || (orderOnline.onlineOrderId !== null && orderOnline.orderNumber.length > 0)"
+                        || (orderOnline.onlineOrderId === null && editManualPermission === false)
+                        || (orderOnline.onlineOrderId !== null && editOnlinePermission === false)"
                       @input="getOrderNumber"
                     />
-                    <b-input-group-append is-text>
-                      <b-icon-three-dots-vertical
-                        v-b-popover.hover.top="'Chọn đơn online'"
-                        @click="showNotifyModal"
-                      />
+                    <b-input-group-append
+                      v-b-popover.hover.top="'Chọn đơn online'"
+                      is-text
+                      class="cursor-pointer"
+                      @click="showNotifyModal"
+                    >
+                      <b-icon-three-dots-vertical />
                     </b-input-group-append>
                   </b-input-group>
                   <small
@@ -407,7 +410,7 @@
           <!-- START - Button pay -->
           <b-button
             v-if="statusPayButton().show"
-            :disabled="statusPayButton().disabled || isDisabled"
+            :disabled="statusPayButton().disabled || isDisabled || disableNotPermissionManual"
             variant="someThing"
             class="w-100 btn-brand-1 mt-1 aligns-items-button-center"
             @click="onPayButtonClick"
@@ -503,7 +506,11 @@
       :online-order-customers="onlineOrderCustomers"
       :order-online="orderOnline"
       :open-popup="openPopup"
+      :order-current-id="orderCurrentId"
+      :bills="bills"
+      :is-new-button="isNewButton"
       @getCustomerInfo="getCustomerInfo"
+      @getSearchOption="getSearchOption"
     />
     <!-- END - Sales Search Modal -->
   </b-col>
@@ -617,6 +624,10 @@ export default {
       type: Number,
       default: Number,
     },
+    isNewButton: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
@@ -719,6 +730,8 @@ export default {
       searchPhoneOnly: false,
       openPopup: false,
       allowCallAPI: true,
+      disableNotPermissionManual: false,
+      hover: false,
     }
   },
 
@@ -904,7 +917,7 @@ export default {
       this.onlineOrderCustomers = [...this.getOnlineOrderCustomers]
 
       if (this.onlineOrderCustomers.length > 1) {
-        this.$refs.salesSearchModal.$refs.salesSearchModal.show()
+        this.$bvModal.show('sales-search-modal')
       } else {
         const arrayToString = JSON.stringify(...this.onlineOrderCustomers)
         const customerOnline = JSON.parse(arrayToString)
@@ -928,19 +941,33 @@ export default {
         const apParramCode = this.salemtPromotionObjectOptions.find(data => data.id === this.salemtPromotionObjectSelected).apParamCode
         if (apParramCode.includes('ONLINE')) {
           this.checkApParramCode = false
+          if (this.orderOnline.onlineOrderId === null) {
+            if (this.editManualPermission === false) {
+              this.disableNotPermissionManual = true
+              this.checkApParramCode = true
+            }
+          } else {
+            this.disableNotPermissionManual = false
+          }
         } else {
           this.checkApParramCode = true
         }
+        this.$emit('checkApParramCode', this.checkApParramCode)
       }
     },
     bills() {
       this.billButtons = [...this.bills]
+      if (this.bills[0].id && this.orderOnline.onlineOrderId !== null) {
+        this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)
+      }
     },
     orderCurrentId: {
       handler() {
         const bill = this.bills.find(b => b.id === this.orderCurrentId)
         this.salemtPromotionObjectSelected = bill.orderType.value
         this.salemtDeliveryTypeSelected = bill.deliveryType.value
+        this.orderOnline.orderNumber = bill.orderNumber
+        this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)
       },
       deep: true,
     },
@@ -973,6 +1000,7 @@ export default {
           || this.salemtPromotionObjectSelected === undefined
           || (!this.checkApParramCode && this.orderOnline.orderNumber === '')
           || this.isDisabled
+          || this.disableNotPermissionManual
         ) {
           this.isOpenPayModal = false
           this.hidePayModal()
@@ -1012,7 +1040,7 @@ export default {
     },
 
     showSearchModal() {
-      this.$refs.salesSearchModal.$refs.salesSearchModal.show()
+      this.$bvModal.show('sales-search-modal')
       this.openPopup = true
     },
 
@@ -1175,7 +1203,9 @@ export default {
       this.salemtPromotionObjectSelected = this.onlineOrder.type.value
       this.quantity = this.onlineOrder.quantity
       this.totalPrice = this.onlineOrder.totalPrice
-      this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)
+      if (this.orderOnline.onlineOrderId !== null && this.orderOnline.orderNumber !== null) {
+        this.disableNotPermissionManual = false
+      }
       this.$emit('getOrderNumber', this.orderOnline)
     },
 
@@ -1209,14 +1239,31 @@ export default {
 
     resetOrderNumber(item) {
       this.$emit('getSalemtPOSelected', item)
-      if (this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE')) {
-        this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE').id
-      }
-      if (item.id === this.salemtPromotionObjectSelected) {
+      this.salemtPromotionObjectSelected = item.id
+      const apParramCode = this.salemtPromotionObjectOptions.find(data => data.id === this.salemtPromotionObjectSelected).apParamCode
+      // check order number is Online or Offline
+      if (apParramCode.includes('ONLINE')) {
+        this.checkApParramCode = false
+        // check orderNumber not permission edit manual
+        if (this.orderOnline.onlineOrderId === null) {
+          if (this.editManualPermission === false) {
+            this.orderProducts.splice(0, this.orderProducts.length)
+            toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+            this.disableNotPermissionManual = true
+            this.checkApParramCode = true
+          }
+        } else {
+          this.disableNotPermissionManual = false
+          this.checkApParramCode = false
+        }
+      } else {
         this.orderOnline.orderNumber = null
         this.orderOnline.onlineOrderId = null
         this.orderOnline.discountCode = null
         this.orderOnline.discountValue = null
+        this.disableNotPermissionManual = false
+        this.checkApParramCode = true
+        this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)
       }
     },
 
@@ -1281,6 +1328,10 @@ export default {
     },
     changeStateOpenPayModal(isOpened) {
       this.isOpenPayModal = isOpened
+    },
+    getSearchOption(val) {
+      const searchOption = val
+      this.$emit('getSearchOption', searchOption)
     },
   },
 }

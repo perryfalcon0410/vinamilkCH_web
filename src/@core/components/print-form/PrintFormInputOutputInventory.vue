@@ -585,7 +585,6 @@ export default {
     if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
       toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
     } else {
-      JSPM.JSPrintManager.start()
       // eslint-disable-next-line new-cap
       const pdf = new jsPDF('l', 'mm', 'a4')
       // START - add font family
@@ -599,6 +598,9 @@ export default {
       this.createTableSecond(pdf)
       // content
       printFile('Bao_cao_xuat_nhap_ton.pdf', this.printerName, pdf)
+      this.count = 1
+      this.header = []
+      this.checkheader = true
       // for (let i = 0; i < 3; i += 1) {
       //   if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
 
@@ -676,44 +678,44 @@ export default {
               styles: { halign: 'right', cellWidth: 35 },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.beginningQty)}`,
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.beginningQty) || ''}`,
               styles: { halign: 'right', cellWidth: 24 },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.beginningAmount)}`,
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.beginningAmount) || ''}`,
               styles: { halign: 'right', cellWidth: 26 },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.impTotalQty)}`,
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.impTotalQty) || ''}`,
               styles: { halign: 'right', cellWidth: 12 },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.impAdjustmentAmount)}`,
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.impAdjustmentAmount) || ''}`,
               styles: { halign: 'right', cellWidth: 51 },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expTotalQty)}`,
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expTotalQty) || ''}`,
               styles: { halign: 'right', cellWidth: 11 },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expSalesAmount)}`,
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expSalesAmount) || ''}`,
               styles: { halign: 'right', cellWidth: 27 },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expExchangeAmount)}`,
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expExchangeAmount) || ''}`,
               styles: { halign: 'right', cellWidth: 49 },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expExchangeQty)}`,
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.expExchangeQty) || ''}`,
               styles: { halign: 'right', cellWidth: 10 },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.endingQty)}`,
-              styles: { halign: 'right', cellWidth: 20 },
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.endingQty) || ''}`,
+              styles: { cellWidth: 18 },
             },
             {
-              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.endingAmount)}`,
-              styles: { },
+              content: `${this.$formatNumberToLocale(this.reportTotalInfoData.endingAmount) || ''}`,
+              styles: { halign: 'right' },
             },
           ],
         ],
@@ -905,6 +907,8 @@ export default {
         pdf.setPage(j)
         pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 10)
       }
+      this.count = 1
+      this.header = []
     },
   },
 }

@@ -294,9 +294,9 @@
                       maxlength="9"
                       type="text"
                       @keypress="$onlyNumberInput"
-                      @input="onInputValueQuantity(props.row.originalIndex)"
+                      @blur="onInputValueQuantity(props.row.originalIndex)"
                       @change="onChangeQuantityAndPrice(props.row.originalIndex)"
-                      @keyup.enter="focusInputSearch"
+                      @keydown.enter="focusInputSearch"
                     />
                   </div>
                   <div v-else-if="props.column.field === 'productPrice'">
@@ -308,7 +308,7 @@
                       :options="options.number"
                       @keypress.native="$onlyNumberInput"
                       @keyup.native="onChangePrice(props.row.originalIndex)"
-                      @keyup.enter.native="focusInputSearch"
+                      @keydown.enter.native="focusInputSearch"
                     />
                   </div>
                   <div v-else-if="props.column.field === 'vat'">
@@ -320,7 +320,7 @@
                         @input="checkValue(props.row.originalIndex)"
                         @keypress="$onlyNumberInput"
                         @change="onChangeVAT(props.row.originalIndex)"
-                        @keyup.enter="focusInputSearch"
+                        @keydown.enter="focusInputSearch"
                       />
                     </b-col>
                   </div>
@@ -331,7 +331,7 @@
                         class="style-input"
                         disabled
                         maxlength="250"
-                        @keyup.enter="focusInputSearch"
+                        @keydown.enter="focusInputSearch"
                       />
                     </b-col>
                   </div>
@@ -603,7 +603,7 @@ export default {
         note: '',
         shopId: 0,
       },
-      productSearch: null,
+      productSearch: '',
       quantityPerBox: redBillData.quantityPerBox,
       products: [],
       productRows: [{ data: '' }],
@@ -768,24 +768,9 @@ export default {
     },
     allProducts() {
       if (this.PRODUCTS_GETTER) {
-        return [{
-          data: this.PRODUCTS_GETTER.map(data => ({
-            name: data.productCode,
-            productId: data.id,
-            productCode: data.productCode,
-            productName: data.productName,
-            groupVat: data.groupVat,
-            unit: data.uom1,
-            convfact: data.convfact,
-            quantity: 1,
-            price: data.price,
-            vat: data.vat,
-            vatAmount: data.vatAmount,
-            note: data.note,
-          })),
-        }]
+        return this.PRODUCTS_GETTER
       }
-      return [{ data: '' }]
+      return []
     },
     getIdCreateRedinvoice() {
       if (this.ID_CREATE_RED_INVOICES_GETTER_GETTER) {
@@ -826,7 +811,24 @@ export default {
       this.customers = [...this.getCustomers]
     },
     allProducts() {
-      this.productRows = [...this.allProducts]
+      const listProducts = [...this.allProducts.map(data => ({
+        name: this.productSearch,
+        productId: data.id,
+        productCode: data.productCode,
+        productName: data.productName,
+        groupVat: data.groupVat,
+        unit: data.uom1,
+        convfact: data.convfact,
+        quantity: 1,
+        price: data.price,
+        vat: data.vat,
+        vatAmount: data.vatAmount,
+        note: data.note,
+      }))]
+      this.productRows = [{
+        data: listProducts,
+      }]
+      this.$nextTick(() => document.getElementById('autosuggest__input').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
     },
     getTotalQuantity() {
       this.totalQuantity = this.getTotalQuantity
@@ -934,17 +936,17 @@ export default {
     },
     // choose products func
     loadProducts() {
+      this.productRows = [{ data: null }]
       if (this.productSearch.length >= commonData.minSearchLength) {
         this.GET_PRODUCTS_ACTION({
           keyWord: this.productSearch?.trim(),
           formId: this.formId,
           ctrlId: this.ctrlId,
         })
-      } else {
-        this.productRows = [{ data: null }]
       }
     },
     selectProduct(product) {
+      this.productSearch = ''
       if (product && product.item) {
         const existedProductIndex = this.products.findIndex(products => products.productCode === product.item.productCode)
         if (existedProductIndex === -1) {
@@ -954,20 +956,21 @@ export default {
             productName: product.item.productName,
             industry: product.item.groupVat,
             productDVT: product.item.unit,
-            quantity: 1,
+            quantity: null,
             productPrice: this.$formatNumberToLocale(product.item.price),
             // productPriceTotal: this.$formatNumberToLocale(product.item.price),
             productPriceOriginal: product.item.price,
-            productPriceTotalOriginal: product.item.price,
+            productPriceTotalOriginal: 0,
             vat: product.item.vat,
             convfact: (product.item.convfact && product.item.convfact > 0) ? product.item.convfact : 1,
-            productExported: product.item.vatAmount,
-            productExportedOriginal: product.item.vatAmount,
-            sumProductExportedOriginal: product.item.vatAmount,
-            productPriceTotalVat: product.item.vatAmount + product.item.price,
-            note: '0T1',
+            productExported: 0,
+            productExportedOriginal: 0,
+            sumProductExportedOriginal: 0,
+            productPriceTotalVat: 0,
+            note: '0T0',
             button: '1',
           })
+          this.productRows = [{ data: null }]
         } else {
           this.products[existedProductIndex].quantity += product.item.quantity
           // convfact: số đơn vị SL của 1 thùng
@@ -984,7 +987,6 @@ export default {
           document.getElementById(this.productIdSelected).focus()
         }, 100)
       }
-      this.productSearch = null
       this.productRows = [{ data: null }]
     },
     insertProducsFromBillSales(invoiceData) {
@@ -1045,8 +1047,8 @@ export default {
       }
     },
     onInputValueQuantity(index) {
-      if (this.products[index].quantity === 0) {
-        this.products[index].quantity = 1
+      if (this.products[index].quantity === '' || this.products[index].quantity === null) {
+        this.products[index].quantity = ''
       }
     },
     onChangePrice(index) {

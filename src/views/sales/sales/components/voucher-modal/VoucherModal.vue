@@ -7,6 +7,7 @@
     title-class="text-uppercase font-weight-bold text-brand-1 d-print-none"
     content-class="bg-white"
     footer-border-variant="white"
+    @hidden="cancel()"
   >
     <!-- START - Body -->
     <b-container
@@ -277,6 +278,7 @@ export default {
       this.keyword = ''
       this.vouchers = []
       this.$bvModal.hide('VoucherModal')
+      this.$emit('getIsLockedVoucher', this.isLocked)
     },
     checkKeywordSearch() {
       this.isDisableSearch = this.keyword === ''

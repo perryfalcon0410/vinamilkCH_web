@@ -27,8 +27,7 @@
               class:'form-control pr-3 h7',
               placeholder:'Tìm sản phẩm (F3) - Vui lòng nhập ít nhất 4 kí tự',
             }"
-            :component-attr-class-autosuggest-results="(productsSearchLength < 11) ? 'autosuggest__results check-auto-suggesst' : 'autosuggest__results'"
-            :salemt-promotion-object-selected="salemtPromotionObjectSelected"
+            :component-attr-class-autosuggest-results="(productsSearchLength < 10) ? 'autosuggest__results check-auto-suggesst' : 'autosuggest__results'"
             @input="onChangeKeyWord"
             @selected="onClickAddProduct"
             @focus="focusInputProduct"
@@ -200,11 +199,10 @@
                 v-model="orderProducts[props.row.originalIndex].quantity"
                 :value="orderProducts[props.row.originalIndex].quantity"
                 :number="true"
-                :disabled="editOnlinePermission === false && onlineOrderId !== null || disableOnline"
+                :disabled="(currentOrderNumber.onlineOrderId !== null && currentOrderNumber.orderNumber !== null && editOnlinePermission === false)"
                 maxlength="7"
                 class="text-center h7 p-input"
                 @change="onChangeQuantity(props.row.originalIndex)"
-                @input="onInputChangeQuantity(props.row.originalIndex)"
                 @keydown.enter="focusInputSearch"
                 @keypress="$onlyNumberInput"
               />
@@ -300,6 +298,7 @@
         :is-disabled="isDisabled"
         :order-number-bill="orderNumber"
         :order-current-id="orderCurrentId"
+        :is-new-button="isNewButton"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
@@ -315,6 +314,8 @@
         @getIdCustomer="getIdCustomer"
         @deleteSaveBill="deleteSaveBill"
         @getOrderNumber="getOrderNumber"
+        @getSearchOption="getSearchOption"
+        @checkApParramCode="checkApParramCode"
       />
       <!-- END - Section Form pay -->
 
@@ -341,7 +342,6 @@ import {
   GET_PRODUCT_INFOS_GETTER,
   GET_TOP_SALE_PRODUCTS_GETTER,
   UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
-  GET_PRODUCT_BY_BARCODE_GETTER,
   GET_EDIT_ONLINE_PERMISSION_GETTER,
 
   // Action
@@ -368,7 +368,12 @@ export default {
       isCheckShopId: false, // check shop default
       currentCustomer: {},
       defaultCustomer: {},
-      currentOrderNumber: {},
+      currentOrderNumber: {
+        onlineOrderId: null,
+        orderNumber: null,
+        note: null,
+      },
+      currentSearchModalOption: {},
       salemtPOOptions: [],
       selectedValue: null,
       checkStock: false,
@@ -482,6 +487,11 @@ export default {
           deliveryType: {
             value: null,
           },
+          searchModalOption: {
+            searchKeywords: null,
+            phoneNumber: null,
+            idNo: null,
+          },
           orderId: null,
           orderNumber: null,
           note: null,
@@ -496,7 +506,7 @@ export default {
       deliverySelected: {},
       editOnlinePermission: true,
       editManualPermission: true,
-      isOnline: false,
+      isOffline: true,
       isDisabledOrder: false,
       defaultPOSelected: null,
       defaultDTSelected: null,
@@ -517,6 +527,7 @@ export default {
       orderCurrentId: 1, // Id of order current
       loading: false,
       disableOnline: false,
+      isNewButton: false,
     }
   },
   computed: {
@@ -525,7 +536,6 @@ export default {
       GET_PRODUCT_INFOS_GETTER,
       GET_TOP_SALE_PRODUCTS_GETTER,
       UPDATE_PRICE_TYPE_CUSTOMER_GETTER,
-      GET_PRODUCT_BY_BARCODE_GETTER,
       GET_EDIT_ONLINE_PERMISSION_GETTER,
     ]),
     getProducts() {
@@ -552,23 +562,7 @@ export default {
     },
     getProductSearch() {
       if (this.GET_TOP_SALE_PRODUCTS_GETTER) {
-        return [{
-          data: this.GET_TOP_SALE_PRODUCTS_GETTER.map(data => ({
-            productId: data.id,
-            checkStockTotal: data.checkStockTotal,
-            name: data.productCode,
-            productName: data.productName,
-            productCode: data.productCode,
-            productUnit: data.uom1,
-            productInventory: data.stockTotal,
-            productUnitPrice: data.price,
-            sumProductUnitPrice: data.price,
-            quantity: null,
-            productTotalPrice: this.totalPrice(0, Number(data.price)),
-            sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
-            productImage: data.image,
-          })),
-        }]
+        return this.GET_TOP_SALE_PRODUCTS_GETTER
       }
       return []
     },
@@ -602,9 +596,6 @@ export default {
     selectedProduct() {
       return this.salemtPromotionObjectSelected
     },
-    getProductByBarcode() {
-      return this.GET_PRODUCT_BY_BARCODE_GETTER
-    },
     getEditOnlinePermission() {
       return this.GET_EDIT_ONLINE_PERMISSION_GETTER
     },
@@ -614,22 +605,21 @@ export default {
       this.productInfos = [...this.getProductInfos]
     },
     getProductSearch() {
-      this.productsSearch = [...this.getProductSearch]
-      if (this.getProductSearch[0].data.length === 1 && this.searchOptions.checkBarcode === true) {
+      if (this.getProductSearch.length === 1 && this.searchOptions.checkBarcode === true) {
         const productByBarcode = {
-          productId: this.getProductByBarcode.id,
-          name: this.getProductByBarcode.productCode,
-          productName: this.getProductByBarcode.productName,
-          productCode: this.getProductByBarcode.productCode,
-          productUnit: this.getProductByBarcode.uom1,
-          productInventory: this.getProductByBarcode.stockTotal,
-          productUnitPrice: this.getProductByBarcode.price,
-          sumProductUnitPrice: this.getProductByBarcode.price,
+          productId: this.getProductSearch.id,
+          name: this.getProductSearch.productCode,
+          productName: this.getProductSearch[0].productName,
+          productCode: this.getProductSearch[0].productCode,
+          productUnit: this.getProductSearch[0].uom1,
+          productInventory: this.getProductSearch[0].stockTotal,
+          productUnitPrice: this.getProductSearch[0].price,
+          sumProductUnitPrice: this.getProductSearch[0].price,
           quantity: 1,
-          productTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
-          sumProductTotalPrice: this.totalPrice(1, Number(this.getProductByBarcode.price)),
-          productImage: this.getProductByBarcode.image,
-          comboProductId: this.getProductByBarcode.comboProductId,
+          productTotalPrice: this.totalPrice(1, Number(this.getProductSearch[0].price)),
+          sumProductTotalPrice: this.totalPrice(1, Number(this.getProductSearch[0].price)),
+          productImage: this.getProductSearch[0].image,
+          comboProductId: this.getProductSearch[0].comboProductId,
         }
         const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
         if (indexProductExisted === -1) {
@@ -646,6 +636,24 @@ export default {
           })
         }
       } else {
+        const productsBySearch = [...this.getProductSearch.map(data => ({
+          productId: data.id,
+          checkStockTotal: data.checkStockTotal,
+          name: this.searchOptions.keyWord,
+          productName: data.productName,
+          productCode: data.productCode,
+          productUnit: data.uom1,
+          productInventory: data.stockTotal,
+          productUnitPrice: data.price,
+          sumProductUnitPrice: data.price,
+          quantity: null,
+          productTotalPrice: this.totalPrice(0, Number(data.price)),
+          sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
+          productImage: data.image,
+        }))]
+        this.productsSearch = [{
+          data: productsBySearch,
+        }]
         this.productsSearchLength = this.productsSearch[0].data.length
         if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
           this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
@@ -677,7 +685,7 @@ export default {
     },
     orderProducts() {
       this.orderProducts.forEach(data => {
-        if (data.productInventory < 1 || data.productInventory < data.quantity || data.productUnitPrice === null) {
+        if (data.productUnitPrice === null) {
           this.checkStock = true
         }
       })
@@ -699,7 +707,6 @@ export default {
       this.editOnlinePermission = this.getEditOnlinePermission.editable
     },
   },
-
   mounted() {
     this.GET_EDIT_ONLINE_PERMISSION_ACTION()
   },
@@ -749,23 +756,24 @@ export default {
 
     increaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOnline === false) {
+      if (this.isOffline === true
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true)
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editOnlinePermission === true && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true && this.editManualPermission === true)) {
         this.orderProducts[index].quantity += 1
         this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
-
-        if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-          // this.orderProducts[index].quantity = this.orderProducts[index].productInventory
-          this.isDisabled = true
-        } else {
-          this.isDisabled = false
-        }
       }
     },
 
     decreaseAmount(productId) {
       const index = this.orderProducts.findIndex(i => i.productId === productId)
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOnline === false) {
+      if (this.isOffline === true
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true)
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editOnlinePermission === true && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true && this.editManualPermission === true)) {
         this.orderProducts[index].quantity -= 1
         if (this.orderProducts[index].quantity <= 0) {
           this.orderProducts[index].quantity = 0
@@ -773,17 +781,15 @@ export default {
 
         this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
         this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
-
-        if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-          this.isDisabled = true
-        } else {
-          this.isDisabled = false
-        }
       }
     },
 
     onClickDeleteProduct(index) {
-      if (this.editOnlinePermission || (this.editManualPermission && this.onlineOrderId === null) || this.isOnline === false) {
+      if (this.isOffline === true
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true)
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editOnlinePermission === true && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true && this.editManualPermission === true)) {
         this.orderProducts.splice(index, 1)
       }
     },
@@ -796,89 +802,89 @@ export default {
     },
 
     onChangeKeyWord() {
-      if (this.defaultCustomer === null) {
-        toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
-      }
       this.productsSearch = [{ data: null }]
+      this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
       if (this.searchOptions.keyWord.length >= this.minSearch) {
-        this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-        this.searchOptions.customerId = this.currentCustomer.id
-        this.GET_TOP_SALE_PRODUCTS_ACTION({
-          data: { ...this.searchOptions },
-          onSuccess: () => {},
-        })
+        if (this.isCheckShopId) {
+          this.searchOptions.customerId = this.currentCustomer.id
+          this.GET_TOP_SALE_PRODUCTS_ACTION({
+            data: { ...this.searchOptions },
+            onSuccess: () => {},
+          })
+        } else {
+          toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
+        }
       }
     },
     blurInputSearch() {
       if (this.searchOptions.keyWord.length < this.minSearch) {
-        this.productsSearch = [{ data: '' }]
+        this.productsSearch = [{ data: null }]
       }
     },
 
     onClickAddProduct(index) {
-      this.productsSearch = [{ data: null }]
-      // check permission online order manual or online order from system to add product
-      if ((this.editOnlinePermission === true && this.onlineOrderId !== null)
-        || this.isOnline === false
-        || (this.editManualPermission === true && this.onlineOrderId === null)
-        || (this.editOnlinePermission === true && this.editManualPermission === true)) {
-        if (index && index.item) {
-          const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
-          if (productIndex === -1) {
-            this.orderProducts.push(index.item)
-          } else {
-            this.orderProducts[productIndex].productInventory = index.item.productInventory
-            if (this.orderProducts[productIndex].productInventory < this.orderProducts[productIndex].quantity) {
-              // this.orderProducts[productIndex].quantity = this.orderProducts[productIndex].productInventory
-              this.isDisabled = true
+      if (index === null) {
+        this.$refs.search.$el.querySelector('input').focus()
+        this.$refs.search.$el.querySelector('input').click()
+      } else {
+        // check permission online order manual or online order from system to add product
+        if (this.isOffline === true
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true)
+        || (this.isOffline === false && this.currentOrderNumber.onlineOrderId === null && this.editOnlinePermission === true && this.editManualPermission === true)
+        || (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null && this.editOnlinePermission === true && this.editManualPermission === true)) {
+          if (index && index.item) {
+            const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
+            if (productIndex === -1) {
+              this.orderProducts.push(index.item)
             } else {
-              this.isDisabled = false
+              this.orderProducts[productIndex].productInventory = index.item.productInventory
               this.orderProducts[productIndex].quantity += 1
+              this.orderProducts[productIndex].productUnitPrice = index.item.productUnitPrice
+              this.orderProducts[productIndex].sumProductUnitPrice = index.item.sumProductUnitPrice
+              this.orderProducts[productIndex].productTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
+              this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
             }
-            this.orderProducts[productIndex].productUnitPrice = index.item.productUnitPrice
-            this.orderProducts[productIndex].sumProductUnitPrice = index.item.sumProductUnitPrice
-            this.orderProducts[productIndex].productTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
-            this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
+            this.searchOptions.keyWord = ''
+            this.isSelectedProduct = true
+            this.productsSearch = [{ data: null }]
+            this.productIdSelected = index.item.productCode
+            setTimeout(() => {
+              document.getElementById(this.productIdSelected).focus()
+            }, 100)
+          } else {
+            this.$refs.search.$el.querySelector('input').click()
           }
-          this.isSelectedProduct = true
-          this.productsSearch = [{ data: null }]
-          this.productIdSelected = index.item.productCode
-          setTimeout(() => {
-            document.getElementById(this.productIdSelected).focus()
-          }, 100)
-        } else {
-          this.$refs.search.$el.querySelector('input').click()
         }
-      }
-      this.productsSearch = [{ data: null }]
-      // not have permission edit online order manual
-      if ((!this.editManualPermission && this.onlineOrderId === null && this.isOnline === true)) {
-        toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+        this.productsSearch = [{ data: null }]
+        // not have permission edit online order manual
+        if ((!this.editManualPermission && this.onlineOrderId === null && this.isOffline === false)) {
+          toasts.error('Vui lòng vào chức năng "Đơn online" trên màn hình Bán hàng để chọn đơn hàng online cần xử lý!')
+        }
       }
     },
 
     getOrderNumber(val) {
-      this.currentOrderNumber = val
-      this.onlineOrderId = val.onlineOrderId
+      if (val) {
+        this.currentOrderNumber = val
+        this.onlineOrderId = val.onlineOrderId
 
-      if (this.currentOrderNumber.type.apParamCode.includes('ONLINE')) {
-        this.isOnline = true
-      } else {
-        this.isOnline = false
-      }
-
-      this.bills = this.bills.map(bill => {
-        if (bill.id === this.orderCurrentId) {
-          return {
-            ...bill,
-            orderType: {
-              value: val.type.value,
-            },
-            orderId: val.onlineOrderId,
+        this.bills = this.bills.map(bill => {
+          if (this.currentOrderNumber.onlineOrderId !== null && this.currentOrderNumber.orderNumber !== null) {
+            if (bill.id === this.orderCurrentId) {
+              return {
+                ...bill,
+                orderType: {
+                  value: val.type.value,
+                },
+                orderId: val.onlineOrderId,
+              }
+            }
           }
-        }
-        return bill
-      })
+
+          return bill
+        })
+      }
     },
 
     onClickAddButton() {
@@ -902,6 +908,11 @@ export default {
           deliveryType: {
             value: this.defaultDTSelected,
           },
+          searchModalOption: {
+            searchKeywords: null,
+            phoneNumber: null,
+            idNo: null,
+          },
           orderId: null,
           orderNumber: null,
           note: null,
@@ -909,6 +920,7 @@ export default {
           class: '',
         })
         this.customerFullName = ''
+        this.isNewButton = true
         this.clickBillButton(lastIteminBill.id + 1)
       } else {
         this.bills.push({
@@ -926,6 +938,11 @@ export default {
           },
           deliveryType: {
             value: this.defaultDTSelected,
+          },
+          searchModalOption: {
+            searchKeywords: null,
+            phoneNumber: null,
+            idNo: null,
           },
           orderId: null,
           orderNumber: null,
@@ -970,6 +987,11 @@ export default {
             orderId: this.currentOrderNumber.onlineOrderId,
             orderNumber: this.currentOrderNumber.orderNumber,
             note: this.currentOrderNumber.note,
+            searchModalOption: {
+              searchKeywords: this.currentSearchModalOption.searchKeywords,
+              phoneNumber: this.currentSearchModalOption.phoneNumber,
+              idNo: this.currentSearchModalOption.idNo,
+            },
             active: false,
             class: '',
           }
@@ -988,6 +1010,9 @@ export default {
           this.currentOrderNumber.onlineOrderId = bill.orderId
           this.currentOrderNumber.orderNumber = bill.orderNumber
           this.currentOrderNumber.note = bill.note
+          this.currentSearchModalOption.searchKeywords = bill.searchModalOption.searchKeywords
+          this.currentSearchModalOption.phoneNumber = bill.searchModalOption.phoneNumber
+          this.currentSearchModalOption.idNo = bill.searchModalOption.idNo
           this.onlineOrderId = bill.orderNumber
 
           if (this.onlineOrderId === undefined) {
@@ -1015,22 +1040,9 @@ export default {
       this.$refs.search.$el.querySelector('input').focus()
       this.$refs.search.$el.querySelector('input').click()
     },
-    onInputChangeQuantity(index) {
-      if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-        this.isDisabled = true
-        return
-      }
-      this.isDisabled = false
-    },
     onChangeQuantity(index) {
       if (this.orderProducts[index].quantity <= 0) {
         this.orderProducts[index].quantity = 0
-      }
-      if (this.orderProducts[index].productInventory < this.orderProducts[index].quantity) {
-        this.isDisabled = true
-        // this.orderProducts[index].quantity = this.orderProducts[index].productInventory
-      } else {
-        this.isDisabled = false
       }
       this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
@@ -1106,6 +1118,11 @@ export default {
         this.searchOptions.customerId = data.id
         this.editOnlinePermission = true
         this.customerFullName = data.fullName
+        if (this.getEditOnlinePermission.editable) {
+          this.editOnlinePermission = true
+        } else {
+          this.editOnlinePermission = false
+        }
         // update price product when different type id customer
         if (this.customerTypeCurent !== this.customerType) {
           if (this.orderProducts.length > 0) {
@@ -1130,18 +1147,15 @@ export default {
 
     getSalemtPOSelected(val) {
       this.orderSelected = val
-      const { usedShop } = this.loginInfo
       if (this.orderSelected.apParamCode.includes('ONLINE')) {
-        this.isOnline = true
-        if (this.orderProducts.length > 0) {
-          if (val.id !== this.defaultPOSelected && usedShop.id === this.currentCustomer.shopId) {
-            if (!this.editOnlinePermission && this.onlineOrderId !== null) {
-              this.disableOnline = true
-            }
-          }
+        if ((this.currentOrderNumber.onlineOrderId === null && this.editManualPermission === false)
+          || (this.currentOrderNumber.onlineOrderId !== null && this.editOnlinePermission === false)) {
+          this.disableOnline = true
         }
       } else {
-        this.isOnline = false
+        this.disableOnline = false
+        this.isOffline = true
+        this.onlineOrderId = null
       }
       // assgin value of order type to current bill being selected
       this.bills = this.bills.map(bill => {
@@ -1155,15 +1169,6 @@ export default {
         }
         return bill
       })
-
-      // have permission edit online order manual and online order from system
-      if (val.id === this.defaultPOSelected) {
-        this.isOnline = false
-        this.onlineOrderId = null
-      } else {
-        this.isOnline = true
-        this.onlineOrderId = null
-      }
     },
 
     salemtDeliveryTypeSelected(val) {
@@ -1188,7 +1193,6 @@ export default {
 
     getDefaultPromotionObjectSelected(val) {
       this.defaultPOSelected = val
-      this.isOnline = false
       this.bills = this.bills.map(bill => {
         if (bill.id === this.orderCurrentId) {
           return {
@@ -1241,11 +1245,24 @@ export default {
       return false
     },
 
+    getSearchOption(val) {
+      this.currentSearchModalOption = val
+    },
+
+    checkApParramCode(val) {
+      this.isOffline = val
+    },
+
     // Create callback function to receive barcode when the scanner is already done
     onBarcodeScanned(barcode) {
       if (barcode.length > 4) {
-        if (this.editOnlinePermission || this.isOnline || (this.editManualPermission && this.onlineOrderId === null)) {
-          this.searchOptions.keyWord = barcode.toString()
+        if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
+          let barcodeParam = barcode
+          if (barcodeParam.includes('Enter')) {
+            barcodeParam = barcodeParam.slice(0, -5)
+          }
+
+          this.searchOptions.keyWord = barcodeParam
           this.searchOptions.checkBarcode = true
           this.$refs.search.$el.querySelector('input').focus()
           this.$refs.search.$el.querySelector('input').click()
