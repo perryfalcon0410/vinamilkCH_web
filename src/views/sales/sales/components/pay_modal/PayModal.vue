@@ -1111,6 +1111,12 @@ export default {
     getDiscount() {
       if (this.getDiscount !== null) {
         this.pay.discount.discountAmount = this.getDiscount.amount.amount
+        const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount) + Number(this.pay.discount.discountAmount)
+        if (totalPromotion > this.pay.totalAmount) {
+          if (this.pay.discount.discountAmount > this.pay.totalAmount) {
+            toasts.error('Số tiền mã giảm giá vượt quá tiền thanh toán.')
+          }
+        }
       } else {
         this.pay.discount.discountCode = ''
         this.pay.discount.discountAmount = 0
@@ -1202,13 +1208,9 @@ export default {
       this.pay.needPaymentAmount = Number(this.needPayment)
       this.pay.salePayment.salePaymentAmount = Number(this.needPayment)
       if (this.pay.needPaymentAmount < 0) {
+        toasts.error('Tổng tiền khuyến mãi đã vượt quá Tổng tiền hàng. Vui lòng kiểm tra lại.')
         this.pay.needPaymentAmount = 0
         this.pay.salePayment.salePaymentAmount = 0
-      }
-
-      const totalPromotion = Number(this.pay.accumulate.accumulateAmount) - Number(this.pay.voucher.voucherAmount) - Number(this.pay.discount.discountAmount)
-      if (totalPromotion > this.pay.totalAmount) {
-        toasts.error('Tổng tiền khuyến mãi đã vượt quá Tổng tiền hàng. Vui lòng kiểm tra lại')
       }
       this.extraAmountCalculation()
     },
@@ -1476,6 +1478,12 @@ export default {
         totalVoucherAmount += voucher.price
       })
       this.pay.voucher.totalVoucherAmount = totalVoucherAmount
+      const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount) + Number(this.pay.discount.discountAmount) + Number(this.pay.voucher.voucherAmount)
+      if (totalPromotion > this.pay.totalAmount) {
+        if (this.pay.voucher.totalVoucherAmount > this.pay.totalAmount) {
+          toasts.error('Số tiền voucher vượt quá tiền thanh toán.')
+        }
+      }
     },
 
     searchDiscount() {
@@ -1874,6 +1882,12 @@ export default {
 
       if (Number(this.pay.accumulate.accumulateAmount) > this.customer.scoreCumulated) {
         this.pay.accumulate.accumulateAmount = this.customer.scoreCumulated
+      }
+      const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount)
+      if (totalPromotion > this.pay.totalAmount) {
+        if (this.pay.accumulate.accumulateAmount > this.pay.totalAmount) {
+          toasts.error('Số tiền tích lũy vượt quá tiền thanh toán.')
+        }
       }
     },
     printSaleOrderTemp() {
