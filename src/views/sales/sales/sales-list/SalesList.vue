@@ -848,7 +848,6 @@ export default {
 
     onChangeKeyWord() {
       // this.productsSearch = [{ data: null }]
-      this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
       if (this.searchOptions.keyWord.length < this.minSearch) {
         this.productsSearch = [{ data: null }]
         this.productsRow = []
@@ -889,6 +888,8 @@ export default {
       }
     },
     callTopSaleProductsAction(page) {
+      this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+      this.searchOptions.customerId = this.currentCustomer.id
       this.GET_TOP_SALE_PRODUCTS_ACTION({
         data: {
           ...this.searchOptions,
