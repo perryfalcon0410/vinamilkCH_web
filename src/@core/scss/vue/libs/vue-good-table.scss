@@ -15,18 +15,18 @@ $background-odd: #edf2f7;
   #vgt-table {
     thead {
       tr:first-child {
-        background-color: $brand-1;
+        background-color: $brand-4;
 
         th {
-          color: white;
+          color: $brand-3;
           font-size: 13px;
         }
         th.sortable {
           button:after {
-            border-bottom: 5px solid white;
+            border-bottom: 5px solid $brand-3;
           }
           button:before {
-            border-top: 5px solid white;
+            border-top: 5px solid $brand-3;
           }
         }
         th.sorting-asc button:after {

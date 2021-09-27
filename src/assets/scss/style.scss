@@ -185,7 +185,7 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
     // style scroll header
     position: -webkit-sticky; /* for Safari */
     position: sticky !important;
-    background: #315899 !important;
+    background: $brand-4 !important;
     top: 0.9px;
     z-index: 1;
   }
@@ -206,7 +206,7 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   thead tr th.line-numbers {
     position: -webkit-sticky;
     position: sticky !important;
-    background: $brand-1 !important;
+    background: $brand-4 !important;
     left: -1px;
     top: 0.9px;
     z-index: 1;

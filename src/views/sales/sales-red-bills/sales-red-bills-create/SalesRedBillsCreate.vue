@@ -1265,7 +1265,7 @@ export default {
     right: -1px;
     top: auto;
     z-index: 99;
-    background: #315899 !important;
+    background: #d7e1f2 !important;
   }
   .move-column {
     position: sticky;
