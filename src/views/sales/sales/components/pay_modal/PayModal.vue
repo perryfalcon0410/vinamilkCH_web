@@ -1480,7 +1480,7 @@ export default {
         totalVoucherAmount += voucher.price
       })
       this.pay.voucher.totalVoucherAmount = totalVoucherAmount
-      const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount) + Number(this.pay.discount.discountAmount) + Number(this.pay.voucher.voucherAmount)
+      const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount) + Number(this.pay.discount.discountAmount) + Number(this.pay.voucher.totalVoucherAmount)
       if (totalPromotion > this.pay.totalAmount) {
         if (this.pay.voucher.totalVoucherAmount > this.pay.totalAmount) {
           toasts.error('Số tiền voucher vượt quá tiền thanh toán.')
