@@ -1208,9 +1208,11 @@ export default {
       this.pay.needPaymentAmount = Number(this.needPayment)
       this.pay.salePayment.salePaymentAmount = Number(this.needPayment)
       if (this.pay.needPaymentAmount < 0) {
-        toasts.error('Tổng tiền khuyến mãi đã vượt quá Tổng tiền hàng. Vui lòng kiểm tra lại.')
         this.pay.needPaymentAmount = 0
         this.pay.salePayment.salePaymentAmount = 0
+        if (this.isOpenPayModal && this.pay.accumulate.accumulateAmount > 0 && this.pay.voucher.totalVoucherAmount > 0 && this.pay.discount.discountAmount > 0) {
+          toasts.error('Tổng tiền khuyến mãi đã vượt quá Tổng tiền hàng. Vui lòng kiểm tra lại.')
+        }
       }
       this.extraAmountCalculation()
     },
