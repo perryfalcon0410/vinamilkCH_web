@@ -32,7 +32,7 @@
                 ref="focusInput"
                 v-model="searchOptions.exportNo"
                 class="text-brand-3"
-                maxlength="20"
+                maxlength="40"
                 placeholder="Nhập mã xuất hàng"
                 trim
                 @keydown.enter="onClickSearchWarehousesOutput"
@@ -62,7 +62,7 @@
               <b-form-input
                 v-model="searchOptions.redInvoiceNo"
                 class="text-brand-3"
-                maxlength="20"
+                maxlength="40"
                 placeholder="Nhập số hoá đơn"
                 trim
                 @keydown.enter="onClickSearchWarehousesOutput"

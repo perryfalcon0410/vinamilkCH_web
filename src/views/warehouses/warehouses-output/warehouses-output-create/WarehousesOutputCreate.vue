@@ -88,6 +88,7 @@
           </div>
           <b-form-input
             v-model="warehousesOutput.wareHouseTypeName"
+            maxlength="40"
             disabled
           />
           <!-- END -  Stock  -->
@@ -105,6 +106,7 @@
                 <b-form-input
                   v-model.trim="warehousesOutput.redInvoiceNo"
                   :state="touched ? passed : null"
+                  maxlength="40"
                   disabled
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -144,6 +146,7 @@
                 <b-form-input
                   v-model.trim="warehousesOutput.internalNumber"
                   :state="touched ? passed : null"
+                  maxlength="40"
                   disabled
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -169,6 +172,7 @@
                   <b-form-input
                     v-model.trim="warehousesOutput.poNumber"
                     :state="outputTypeSelected !== poOutputType && touched ? passed : null"
+                    maxlength="40"
                     disabled
                   />
 
