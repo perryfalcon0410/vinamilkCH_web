@@ -1113,9 +1113,7 @@ export default {
         this.pay.discount.discountAmount = this.getDiscount.amount.amount
         const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount) + Number(this.pay.discount.discountAmount)
         if (totalPromotion > this.pay.totalAmount) {
-          if (this.pay.discount.discountAmount > this.pay.totalAmount) {
-            toasts.error('Số tiền mã giảm giá vượt quá tiền thanh toán.')
-          }
+          toasts.error('Số tiền mã giảm giá vượt quá tiền thanh toán.')
         }
       } else {
         this.pay.discount.discountCode = ''
@@ -1482,9 +1480,7 @@ export default {
       this.pay.voucher.totalVoucherAmount = totalVoucherAmount
       const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount) + Number(this.pay.discount.discountAmount) + Number(this.pay.voucher.totalVoucherAmount)
       if (totalPromotion > this.pay.totalAmount) {
-        if (this.pay.voucher.totalVoucherAmount > this.pay.totalAmount) {
-          toasts.error('Số tiền voucher vượt quá tiền thanh toán.')
-        }
+        toasts.error('Số tiền voucher vượt quá tiền thanh toán.')
       }
     },
 
@@ -1887,9 +1883,7 @@ export default {
       }
       const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount)
       if (totalPromotion > this.pay.totalAmount) {
-        if (this.pay.accumulate.accumulateAmount > this.pay.totalAmount) {
-          toasts.error('Số tiền tích lũy vượt quá tiền thanh toán.')
-        }
+        toasts.error('Số tiền tích lũy vượt quá tiền thanh toán.')
       }
     },
     printSaleOrderTemp() {
