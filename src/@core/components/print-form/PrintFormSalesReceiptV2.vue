@@ -524,7 +524,7 @@ export default {
               pdf.addPage()
               marginTop = 10
             }
-            const splitProductCode = pdf.splitTextToSize(`${item.productCode.slice(0, 26)}`, columnWidth1)
+            const splitProductCode = pdf.splitTextToSize(`${item.productCode.slice(0, 22)}`, columnWidth1 - 5)
             pdf.text(splitProductCode, marginLeft, marginTop)
             pdf.text(`${item.quantity.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2) - 10, marginTop, { align: 'right' })
             pdf.text(`${item.price.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2 + columnWidth3) - 5, marginTop, { align: 'right' })
@@ -566,8 +566,8 @@ export default {
             }
             pdf.text('KM:', marginLeft, marginTop)
             pdf.text(`${freeItem.quantity.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2) - 10, marginTop, { align: 'right' })
-            const splitProductNameKM = pdf.splitTextToSize(`${this.removeVietnameseTones(freeItem.productName.slice(0, 69), this.isRemoveVNTones)}`, pageWidth - marginLeft - 40)
-            pdf.text(splitProductNameKM, (columnWidth1 + columnWidth2), marginTop, { align: 'left' })
+            const splitProductNameKM = pdf.splitTextToSize(`${this.removeVietnameseTones(freeItem.productName.slice(0, 54), this.isRemoveVNTones)}`, pageWidth - marginLeft - 50)
+            pdf.text(splitProductNameKM, (columnWidth1 + columnWidth2) - 5, marginTop, { align: 'left' })
             if (splitProductNameKM.length === 1) {
               marginTop += spaceRowInCluster - 10
             } else {
