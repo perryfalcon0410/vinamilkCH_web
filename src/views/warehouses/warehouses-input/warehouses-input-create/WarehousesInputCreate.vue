@@ -467,7 +467,10 @@
                   <span v-if="props.column.field === 'price'">
                     {{ $formatNumberToLocale(rowsProductPromotion[props.index].price) }}
                   </span>
-                  <span v-if="props.column.field === 'productName'">
+                  <span
+                    v-if="props.column.field === 'productName'"
+                    class="name-width"
+                  >
                     {{ rowsProductPromotion[props.index].productName }}
                   </span>
                   <span v-if="props.column.field === 'unit'">
@@ -732,7 +735,7 @@ export default {
           field: 'productName',
           sortable: false,
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left text-nowrap align-middle',
+          tdClass: 'text-left align-middle',
         },
         {
           label: 'ĐVT',
@@ -794,7 +797,7 @@ export default {
           field: 'productName',
           sortable: false,
           thClass: 'text-left text-nowrap',
-          tdClass: 'text-left text-nowrap',
+          tdClass: 'text-left',
         },
         {
           label: 'ĐVT',

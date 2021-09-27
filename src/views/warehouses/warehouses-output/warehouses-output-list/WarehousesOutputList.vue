@@ -543,26 +543,27 @@ export default {
         {
           label: 'Ngày',
           field: 'transDate',
+          thClass: 'text-nowrap align-middle',
           formatFn: value => this.$formatISOtoVNI(value),
         },
         {
           label: 'Mã xuất hàng',
           field: 'transCode',
-          thClass: 'text-left',
+          thClass: 'text-left align-middle',
           tdClass: 'text-left',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
           type: 'number',
-          thClass: 'text-left',
+          thClass: 'text-left align-middle',
           tdClass: 'text-left',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
           type: 'number',
-          thClass: 'text-left',
+          thClass: 'text-left align-middle',
           tdClass: 'text-left',
           sortable: false,
         },
@@ -570,6 +571,7 @@ export default {
           label: 'Số lượng',
           field: 'totalQuantity',
           type: 'number',
+          thClass: 'text-nowrap align-middle',
           filterOptions: {
             enabled: true,
           },
@@ -581,6 +583,7 @@ export default {
           label: 'Số tiền',
           field: 'totalAmount',
           type: 'number',
+          thClass: 'text-nowrap align-middle',
           filterOptions: {
             enabled: true,
           },
@@ -593,6 +596,7 @@ export default {
           field: 'receiptType',
           formatFn: this.$getOutputTypeslabel,
           tdClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
           sortable: false,
         },
         {
@@ -600,6 +604,7 @@ export default {
           field: 'note',
           width: '300px',
           maxlength: 100,
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Thao tác',

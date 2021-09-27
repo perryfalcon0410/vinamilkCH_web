@@ -325,28 +325,29 @@ export default {
           label: 'Ngày',
           field: 'transDate',
           formatFn: value => this.$formatISOtoVNI(value),
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Mã nhập hàng',
           field: 'transCode',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Số hóa đơn',
           field: 'redInvoiceNo',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Số nội bộ',
           field: 'internalNumber',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
           sortable: false,
         },
         {
           label: 'Số lượng',
           field: 'totalQuantity',
           type: 'number',
+          thClass: 'text-nowrap align-middle',
           tdClass: 'text-nowrap pr-1',
           filterOptions: {
             enabled: true,
@@ -359,7 +360,7 @@ export default {
           field: 'totalAmount',
           type: 'number',
           tdClass: 'pr-1',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
           filterOptions: {
             enabled: true,
           },
@@ -369,7 +370,7 @@ export default {
         {
           label: 'Loại nhập',
           field: 'receiptType',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
           tdClass: 'text-nowrap',
           formatFn: this.$getInputTypeslabel,
           sortable: false,
@@ -377,13 +378,13 @@ export default {
         {
           label: 'Ghi chú',
           field: 'note',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
           tdClass: 'text-nowrap',
         },
         {
           label: 'Thao tác',
           field: 'feature',
-          thClass: 'text-center move-header',
+          thClass: 'text-center move-header align-middle',
           tdClass: 'text-center move-column',
           width: '90px',
           sortable: false,

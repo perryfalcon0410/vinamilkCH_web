@@ -362,8 +362,14 @@
                     {{ props.formattedRow[props.column.field] }}
                   </div>
                   <div
-                    v-else-if="props.column.field === 'quantity'"
+                    v-else-if="props.column.field === 'quantity' || props.column.field === 'priceNotVat'"
                     class="pr-80"
+                  >
+                    {{ props.formattedRow[props.column.field] }}
+                  </div>
+                  <div
+                    v-else-if="props.column.field === 'name'"
+                    class="name-width"
                   >
                     {{ props.formattedRow[props.column.field] }}
                   </div>
@@ -623,7 +629,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Số lượng',
@@ -633,7 +639,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-right text-nowrap',
+          thClass: 'text-right text-nowrap align-middle',
           tdClass: 'pr-1',
         },
         {
@@ -642,39 +648,39 @@ export default {
           type: 'number',
           sortable: false,
           tdClass: 'pr-1',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Tên hàng',
           field: 'name',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           type: 'number',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
           tdClass: 'pr-1',
         },
         {
           label: 'SO No',
           field: 'soNo',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: '',
           field: 'feature',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-center align-middle',
           tdClass: 'text-center',
         },
       ],
@@ -702,7 +708,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Số lượng',
@@ -712,7 +718,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
           tdClass: 'pr-50',
         },
         {
@@ -720,46 +726,46 @@ export default {
           field: 'priceNotVat',
           type: 'number',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Tên hàng',
           field: 'name',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Thành tiền (chưa VAT)',
           field: 'totalPriceNotVat',
           type: 'number',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'VAT',
           field: 'vat',
           type: 'number',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Thành tiền (VAT)',
           field: 'totalPrice',
           type: 'number',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'SO No',
           field: 'soNo',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: '',
@@ -778,7 +784,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Số lượng',
@@ -789,27 +795,27 @@ export default {
             enabled: true,
           },
           tdClass: 'pr-1',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
         },
         {
           label: 'Tên hàng',
           field: 'name',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
           tdClass: 'pl-70',
         },
         {
           label: 'ĐVT',
           field: 'unit',
           sortable: false,
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap align-middle',
           tdClass: 'pl-70',
         },
         {
           label: '',
           field: 'feature',
           sortable: false,
-          thClass: 'text-center',
+          thClass: 'text-center align-middle',
           tdClass: 'text-center',
         },
       ],
