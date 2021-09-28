@@ -1646,44 +1646,46 @@ export default {
       }
     },
     selectProduct(programId, suggestion) {
-      this.pay.productSearch = ''
-      this.allProducts = [{ data: null }]
-      let productCodeFocus = ''
-      this.promotionPrograms = [...this.promotionPrograms.map(program => {
-        if (program.programId === programId) {
-          const existedProductIndex = program.products.findIndex(p => p.productCode === suggestion.item.productCode)
-          if (existedProductIndex === -1 || program.products.length === 0) {
-            const arrProduct = program.products
-            arrProduct.push({
-              groupOneFreeItem: suggestion.item.groupOneFreeItem,
-              levelNumber: suggestion.item.levelNumber,
-              productCode: suggestion.item.productCode,
-              productId: suggestion.item.productId,
-              productName: suggestion.item.productName,
-              quantity: suggestion.item.quantity,
-              quantityMax: program.numberLimited ? program.numberLimited : suggestion.item.stockQuantity,
-              stockQuantity: suggestion.item.stockQuantity,
-            })
-            return {
-              ...program,
-              products: [...program.products.map(product => {
-                if (product.productCode === suggestion.item.productCode) {
-                  return {
-                    ...product,
-                    quantity: Number(product.quantity) + 1,
+      if (suggestion) {
+        this.allProducts = [{ data: null }]
+        let productCodeFocus = ''
+        this.promotionPrograms = [...this.promotionPrograms.map(program => {
+          if (program.programId === programId) {
+            const existedProductIndex = program.products.findIndex(p => p.productCode === suggestion.item.productCode)
+            if (existedProductIndex === -1 || program.products.length === 0) {
+              const arrProduct = program.products
+              arrProduct.push({
+                groupOneFreeItem: suggestion.item.groupOneFreeItem,
+                levelNumber: suggestion.item.levelNumber,
+                productCode: suggestion.item.productCode,
+                productId: suggestion.item.productId,
+                productName: suggestion.item.productName,
+                quantity: suggestion.item.quantity,
+                quantityMax: program.numberLimited ? program.numberLimited : suggestion.item.stockQuantity,
+                stockQuantity: suggestion.item.stockQuantity,
+              })
+              return {
+                ...program,
+                productSearch: '',
+                products: [...program.products.map(product => {
+                  if (product.productCode === suggestion.item.productCode) {
+                    return {
+                      ...product,
+                      quantity: Number(product.quantity) + 1,
+                    }
                   }
-                }
-                return product
-              })],
+                  return product
+                })],
+              }
             }
           }
-        }
-        return program
-      })]
-      productCodeFocus = `${suggestion.item.productCode}_${programId}`
-      setTimeout(() => {
-        document.getElementById(productCodeFocus).focus()
-      }, 200)
+          return program
+        })]
+        productCodeFocus = `${suggestion.item.productCode}_${programId}`
+        setTimeout(() => {
+          document.getElementById(productCodeFocus).focus()
+        }, 200)
+      }
     },
     onChangeCheckProgramPromotion(programId) {
       const programChecked = this.promotionPrograms.find(program => program.programId === programId)
