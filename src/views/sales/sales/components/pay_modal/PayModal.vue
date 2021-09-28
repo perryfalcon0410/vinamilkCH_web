@@ -97,9 +97,9 @@
               <b-row
                 v-show="value.expand"
                 align-v="center"
-                class="mx-0 style-padding bg-brand-1"
+                class="mx-0 style-padding bg-brand-1 style-per-promotion"
               >
-                <b-check
+                <b-form-checkbox
                   v-model="value.isUse"
                   :disabled="(!value.isEditable || value.promotionType === Number(promotionTypeOption[0].id)) || isPaid"
                   @change="onChangeCheckProgramPromotion(value.programId)"
@@ -126,13 +126,13 @@
                   v-b-toggle="'collapse-'+value.programId"
                   class="ml-auto"
                 >
-                  <b-icon-chevron-down
-                    class="when-opened"
-                    color="white"
-                  />
                   <b-icon-chevron-up
                     color="white"
                     class="when-closed"
+                  />
+                  <b-icon-chevron-down
+                    class="when-opened"
+                    color="white"
                   />
                 </div>
 
@@ -143,7 +143,7 @@
               <b-collapse
                 v-show="value.expand"
                 :id="'collapse-'+value.programId"
-                visible
+                :visible="value.groupPromotion !== promotionTypeOption[2].id"
               >
                 <div v-if="value.products.length > 0">
                   <vue-good-table
@@ -193,7 +193,7 @@
                           v-if="!isPaid"
                           v-b-popover.hover="'Xóa'"
                           scale="2.0"
-                          class="cursor-pointer mt-1"
+                          class="cursor-pointer"
                           color="red"
                           @click="removeProductPromotionProgramHandle(value.programId,props.row.productId)"
                         />
@@ -201,7 +201,7 @@
                           v-else
                           v-b-popover.hover="'Xóa'"
                           scale="2.0"
-                          class="cursor-pointer mt-1"
+                          class="cursor-pointer"
                           color="red"
                         />
                       </div>
@@ -954,21 +954,21 @@ export default {
           field: 'productCode',
           sortable: false,
           thClass: 'text-left text-nowrap align-middle font-weight-700 col-2',
-          tdClass: 'text-left col-2',
+          tdClass: 'text-left col-2 align-middle',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
           thClass: 'text-left text-nowrap align-middle font-weight-700 col-5',
-          tdClass: 'text-left col-5',
+          tdClass: 'text-left col-5 align-middle',
         },
         {
           label: 'Tồn kho',
           field: 'stockQuantity',
           sortable: false,
           thClass: 'text-center text-nowrap align-middle font-weight-700 col-2',
-          tdClass: 'text-center col-2',
+          tdClass: 'text-center col-2 align-middle',
           formatFn: value => this.$formatNumberToLocale(value),
         },
         {
@@ -977,14 +977,14 @@ export default {
           sortable: false,
           type: 'number',
           thClass: 'text-center text-nowrap align-middle font-weight-700 col-3',
-          tdClass: 'text-center col-3',
+          tdClass: 'text-center col-3 align-middle',
         },
         {
           label: '',
           field: 'tableProductFeature',
           sortable: false,
           thClass: 'text-center col-1',
-          tdClass: 'text-center col-1',
+          tdClass: 'text-center col-1 align-middle',
         },
       ],
 
@@ -2131,5 +2131,9 @@ export default {
   }
   .font-weight-700 {
     font-weight: 700 !important;
+  }
+  .style-per-promotion {
+    margin-top: 2px;
+    background-color: #597db4;
   }
 </style>
