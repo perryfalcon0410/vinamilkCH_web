@@ -264,27 +264,27 @@ export default {
         },
         body: [...this.bodyData],
       })
-      pdf.text(`${formatDotNumberToLocale(this.redBillInfoData.totalQuantity)}`, x + 90, pdf.internal.pageSize.getHeight() - 90)
-      pdf.text(`${this.count}`, x + 40, pdf.internal.pageSize.getHeight() - 85)
+      pdf.text(`${formatDotNumberToLocale(this.redBillInfoData.totalQuantity)}`, x + 90, pdf.previousAutoTable.finalY + 75)
+      pdf.text(`${this.count}`, x + 40, pdf.previousAutoTable.finalY + 80)
       pdf.text(
         `${this.redBillInfoData.totalAmountString}`,
         x + 30,
-        pdf.internal.pageSize.getHeight() - 80,
+        pdf.previousAutoTable.finalY + 85,
       )
       pdf.text(
         `${formatDotNumberToLocale(this.redBillInfoData.amount)}`,
         x + 150,
-        pdf.internal.pageSize.getHeight() - 90,
+        pdf.previousAutoTable.finalY + 75,
       )
       pdf.text(
         `${formatDotNumberToLocale(this.redBillInfoData.valueAddedTax)}`,
         x + 150,
-        pdf.internal.pageSize.getHeight() - 85,
+        pdf.previousAutoTable.finalY + 80,
       )
       pdf.text(
         `${formatDotNumberToLocale(this.redBillInfoData.totalAmountNumber)}`,
         x + 150,
-        pdf.internal.pageSize.getHeight() - 80,
+        pdf.previousAutoTable.finalY + 85,
       )
       // const options = {
       //   fileName: 'Hoa_don_do',
@@ -296,6 +296,7 @@ export default {
       //     pdf.save('Hoa_don_do.pdf')
       //   } else { jsPdfPrint(pdf.output('datauristring'), this.printerName, options) }
       // }
+      this.bodyData = []
     },
   },
 }

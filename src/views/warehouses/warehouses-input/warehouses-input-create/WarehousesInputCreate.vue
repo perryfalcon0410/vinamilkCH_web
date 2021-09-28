@@ -1146,7 +1146,7 @@ export default {
             toasts.error('Vui lòng chọn phiếu hoặc sản phẩm khuyến mãi')
           }
           if (this.status === -1 && this.inputTypeSelected !== '0') {
-            toasts.error('Vui lòng chọn đơn')
+            toasts.error('Vui lòng chọn phiếu')
           }
           // if import type = choose poConfirm -> check redInvoice
           if (this.status === 0) {
