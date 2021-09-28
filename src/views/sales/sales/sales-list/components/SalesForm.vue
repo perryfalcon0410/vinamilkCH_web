@@ -423,7 +423,7 @@
           <!-- START - Button pay -->
           <b-button
             v-if="statusPayButton().show"
-            :disabled="statusPayButton().disabled || isDisabled || disableNotPermissionManual"
+            :disabled="statusPayButton().disabled || isDisabled || disableNotPermissionManual || disableNotFindProduct"
             variant="someThing"
             class="w-100 btn-brand-1 mt-1 aligns-items-button-center"
             @click="onPayButtonClick"
@@ -727,6 +727,8 @@ export default {
       tableProductCode: null,
       products: [],
       productsHaveQuantity: [],
+      productsNotExist: [],
+      productsNotNull: [],
       promotionPrograms: [],
       isClickRotate: false,
 
@@ -745,6 +747,7 @@ export default {
       allowCallAPI: true,
       disableNotPermissionManual: false,
       hover: false,
+      disableNotFindProduct: false,
     }
   },
 
@@ -994,7 +997,8 @@ export default {
       handler() {
         this.productsHaveQuantity = this.orderProducts.filter(item => item.quantity > 0)
 
-        const productsNotExist = this.orderProducts.map(item => {
+        // Not find product when choose order online
+        this.productsNotExist = this.orderProducts.map(item => {
           if (item.productId === null
             || item.status === 0
             || item.status === null
@@ -1004,10 +1008,17 @@ export default {
           return null
         })
 
-        if (productsNotExist) {
-          const productsNotNull = productsNotExist.filter(item => item !== null)
-          if (productsNotNull.length > 0) {
-            toasts.error(`Không tìm thấy sản phẩm ${productsNotNull}`)
+        this.productsNotNull = this.productsNotExist.filter(item => item !== null)
+
+        // case order online has one customer
+        if (this.productsNotExist) {
+          if (this.productsNotNull.length > 0) {
+            this.disableNotFindProduct = true
+            if (this.onlineOrderCustomers.length <= 1) {
+              toasts.error(`Không tìm thấy sản phẩm ${this.productsNotNull}`)
+            }
+          } else {
+            this.disableNotFindProduct = false
           }
         }
       },
@@ -1033,6 +1044,7 @@ export default {
           || (!this.checkApParramCode && this.orderOnline.orderNumber === '')
           || this.isDisabled
           || this.disableNotPermissionManual
+          || this.disableNotFindProduct
         ) {
           this.isOpenPayModal = false
           this.hidePayModal()
@@ -1171,6 +1183,15 @@ export default {
       this.$emit('getCustomerIdInfo', val.data.id)
       this.$emit('currentCustomer', this.customer)
       this.GET_SCORECUMULATED_CUSTOMER_BY_ID_ACTION(`${this.customer.id}`)
+
+      // case order online has many customers
+      if (this.onlineOrderCustomers.length > 1) {
+        if (this.productsNotExist) {
+          if (this.productsNotNull.length > 0) {
+            toasts.error(`Không tìm thấy sản phẩm ${this.productsNotNull}`)
+          }
+        }
+      }
     },
 
     getOnlineOrderInfo(id) {
@@ -1342,6 +1363,7 @@ export default {
     getDefaultPromotionObjectSelected() {
       if (this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE')) {
         this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions.find(data => data.apParamCode === 'OFFLINE').id
+        this.disableNotFindProduct = false
       } else {
         this.salemtPromotionObjectSelected = this.salemtPromotionObjectOptions[0].id
       }
