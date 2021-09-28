@@ -904,21 +904,21 @@ export default {
           label: 'Mã sản phẩm',
           field: 'productCode',
           sortable: false,
-          thClass: 'text-left text-nowrap font-weight-normal col-2',
+          thClass: 'text-left text-nowrap font-weight-700 col-2',
           tdClass: 'text-left col-2',
         },
         {
           label: 'Tên sản phẩm',
           field: 'productName',
           sortable: false,
-          thClass: 'text-left font-weight-normal col-5',
+          thClass: 'text-left font-weight-700 col-5',
           tdClass: 'text-left col-5',
         },
         {
           label: 'Tồn kho',
           field: 'stockQuantity',
           sortable: false,
-          thClass: 'text-center font-weight-normal col-2',
+          thClass: 'text-center font-weight-700 col-2',
           tdClass: 'text-center col-2',
           formatFn: value => this.$formatNumberToLocale(value),
         },
@@ -927,7 +927,7 @@ export default {
           field: 'quantity',
           sortable: false,
           type: 'number',
-          thClass: 'text-center font-weight-normal col-3',
+          thClass: 'text-center font-weight-700 col-3',
           tdClass: 'text-center col-3',
         },
         {
@@ -2016,5 +2016,8 @@ export default {
   }
   .font-weight-600 {
     font-weight: 600 !important;
+  }
+  .font-weight-700 {
+    font-weight: 700 !important;
   }
 </style>
