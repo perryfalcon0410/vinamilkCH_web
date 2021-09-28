@@ -1350,6 +1350,8 @@ export default {
           this.GET_SALE_PAYMENT_TYPES_ACTION({
             ...this.decentralization,
           })
+
+          this.expandGroupThree = false
         }
       },
       deep: true,
