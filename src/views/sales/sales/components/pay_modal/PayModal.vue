@@ -1111,10 +1111,6 @@ export default {
     getDiscount() {
       if (this.getDiscount !== null) {
         this.pay.discount.discountAmount = this.getDiscount.amount.amount
-        const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount) + Number(this.pay.discount.discountAmount)
-        if (totalPromotion > this.pay.totalAmount) {
-          toasts.error('Số tiền mã giảm giá vượt quá tiền thanh toán.')
-        }
       } else {
         this.pay.discount.discountCode = ''
         this.pay.discount.discountAmount = 0
@@ -1209,8 +1205,21 @@ export default {
         this.pay.needPaymentAmount = 0
         this.pay.salePayment.salePaymentAmount = 0
       }
-      if (this.isOpenPayModal && this.pay.promotionAmount > this.pay.totalAmount) {
-        toasts.error('Tổng tiền khuyến mãi đã vượt quá Tổng tiền hàng. Vui lòng kiểm tra lại.')
+      const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.voucher.totalVoucherAmount) + Number(this.pay.discount.discountAmount)
+      if (this.isOpenPayModal) {
+        if (totalPromotion > Number(this.pay.totalAmount)) {
+          // kiểm tra tổng KM
+          if (Number(this.pay.promotionAmount) > Number(this.pay.totalAmount)) {
+            // Kiểm tra tiền giảm giá của các CTKM
+            toasts.error('Tổng tiền khuyến mãi đã vượt quá Tổng tiền hàng. Vui lòng kiểm tra lại.')
+          } else if (Number(this.pay.voucher.totalVoucherAmount) > (Number(this.pay.totalAmount) - Number(this.pay.promotionAmount))) {
+            // Kiểm tra tiền voucher
+            toasts.error('Số tiền voucher vượt quá tiền thanh toán.')
+          } else if (Number(this.pay.discount.discountAmount) > (Number(this.pay.totalAmount) - Number(this.pay.promotionAmount) - Number(this.pay.voucher.totalVoucherAmount))) {
+            // Kiểm tra tiền mã giảm giá
+            toasts.error('Số tiền mã giảm giá vượt quá tiền thanh toán.')
+          }
+        }
       }
       this.extraAmountCalculation()
     },
@@ -1478,10 +1487,6 @@ export default {
         totalVoucherAmount += voucher.price
       })
       this.pay.voucher.totalVoucherAmount = totalVoucherAmount
-      const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount) + Number(this.pay.discount.discountAmount) + Number(this.pay.voucher.totalVoucherAmount)
-      if (totalPromotion > this.pay.totalAmount) {
-        toasts.error('Số tiền voucher vượt quá tiền thanh toán.')
-      }
     },
 
     searchDiscount() {
@@ -1767,7 +1772,7 @@ export default {
         this.isDisabledPrintTempBtn = true
         this.isDisabledPaymentBtn = true
         this.isDisabledPrintAndPaymentBtn = true
-      } else if (this.isLoading || (this.isOpenPayModal && this.pay.promotionAmount > this.pay.totalAmount)) {
+      } else if (this.isLoading || (this.isOpenPayModal && Number(this.pay.promotionAmount) > Number(this.pay.totalAmount))) {
         this.isDisabledPrintTempBtn = true
         this.isDisabledPaymentBtn = true
         this.isDisabledPrintAndPaymentBtn = true
