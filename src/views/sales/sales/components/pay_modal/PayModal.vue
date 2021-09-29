@@ -1208,9 +1208,9 @@ export default {
       if (this.pay.needPaymentAmount < 0) {
         this.pay.needPaymentAmount = 0
         this.pay.salePayment.salePaymentAmount = 0
-        if (this.isOpenPayModal && this.pay.accumulate.accumulateAmount > 0 && this.pay.voucher.totalVoucherAmount > 0 && this.pay.discount.discountAmount > 0) {
-          toasts.error('Tổng tiền khuyến mãi đã vượt quá Tổng tiền hàng. Vui lòng kiểm tra lại.')
-        }
+      }
+      if (this.isOpenPayModal && this.pay.promotionAmount > this.pay.totalAmount) {
+        toasts.error('Tổng tiền khuyến mãi đã vượt quá Tổng tiền hàng. Vui lòng kiểm tra lại.')
       }
       this.extraAmountCalculation()
     },
@@ -1767,7 +1767,7 @@ export default {
         this.isDisabledPrintTempBtn = true
         this.isDisabledPaymentBtn = true
         this.isDisabledPrintAndPaymentBtn = true
-      } else if (this.isLoading) {
+      } else if (this.isLoading || (this.isOpenPayModal && this.pay.promotionAmount > this.pay.totalAmount)) {
         this.isDisabledPrintTempBtn = true
         this.isDisabledPaymentBtn = true
         this.isDisabledPrintAndPaymentBtn = true
@@ -1880,10 +1880,6 @@ export default {
 
       if (Number(this.pay.accumulate.accumulateAmount) > this.customer.scoreCumulated) {
         this.pay.accumulate.accumulateAmount = this.customer.scoreCumulated
-      }
-      const totalPromotion = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount)
-      if (totalPromotion > this.pay.totalAmount) {
-        toasts.error('Số tiền tích lũy vượt quá tiền thanh toán.')
       }
     },
     printSaleOrderTemp() {
