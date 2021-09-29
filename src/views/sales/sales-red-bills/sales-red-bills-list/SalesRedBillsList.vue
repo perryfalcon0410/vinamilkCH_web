@@ -597,6 +597,7 @@ export default {
           label: 'index',
           field: 'index',
           sortable: false,
+          tdClass: 'align-middle',
         },
         {
           label: 'Số hóa đơn đỏ',

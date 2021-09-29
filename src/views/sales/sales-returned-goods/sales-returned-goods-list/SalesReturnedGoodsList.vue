@@ -278,10 +278,12 @@ export default {
         {
           label: 'index',
           field: 'index',
+          tdClass: 'align-middle',
           sortable: false,
         },
         {
           label: 'Mã trả hàng',
+          tdClass: 'align-middle',
           thClass: 'align-middle',
           field: 'orderNumber',
           sortable: true,
@@ -289,16 +291,19 @@ export default {
         {
           label: 'Đơn hàng tham chiếu',
           field: 'fromSaleOrderId',
+          tdClass: 'align-middle',
           sortable: true,
         },
         {
           label: 'Mã khách hàng',
           thClass: 'align-middle',
+          tdClass: 'align-middle',
           field: 'customerNumber',
         },
         {
           label: 'Họ tên',
-          thClass: 'align-middle',
+          thClass: 'align-middle text-nowrap',
+          tdClass: 'align-middle',
           field: 'customerName',
         },
         {
@@ -307,6 +312,7 @@ export default {
           field: 'orderDate',
           sortable: true,
           formatFn: value => this.$formatISOtoVNI(value),
+          tdClass: 'align-middle',
         },
         {
           label: 'Tổng giá trị',
@@ -316,6 +322,7 @@ export default {
           },
           type: 'number',
           thClass: 'align-middle',
+          tdClass: 'align-middle',
           formatFn: this.$formatNumberToLocale,
         },
         {
@@ -323,6 +330,7 @@ export default {
           field: 'totalPromotion',
           type: 'number',
           formatFn: this.$formatNumberToLocale,
+          tdClass: 'align-middle',
         },
         {
           label: 'Thành tiền thanh toán',
@@ -332,11 +340,13 @@ export default {
           },
           type: 'number',
           formatFn: this.$formatNumberToLocale,
+          tdClass: 'align-middle',
         },
         {
           label: 'Nhân viên',
           thClass: 'align-middle',
           field: 'createdBy',
+          tdClass: 'align-middle',
         },
         {
           label: 'Thao tác',
@@ -345,7 +355,7 @@ export default {
           width: '40px',
           hidden: !this.statusCreateButton().show,
           thClass: 'text-center align-middle',
-          tdClass: 'text-center',
+          tdClass: 'text-center align-middle',
         },
       ],
     }
