@@ -24,7 +24,7 @@
           <!-- START - Promotion Programs-->
           <div
             v-for="(value,index) in promotionPrograms"
-            :key="index"
+            :key="value.programId"
           >
             <!-- START - Table Promotion -->
             <b-col class="p-0">
@@ -1235,6 +1235,7 @@ export default {
                 // eslint-disable-next-line no-nested-ternary
                 orderInQty: programInPromotionCalculation.totalQty !== null ? programInPromotionCalculation.totalQty : programInPromotionCalculation.amount !== null ? programInPromotionCalculation.amount.amount : 0,
                 isUse: true,
+                expand: true,
               }
             }
             return null
