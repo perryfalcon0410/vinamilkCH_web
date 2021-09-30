@@ -486,7 +486,7 @@ export default {
         status: null,
         size: commonData.minSearchSize,
         page: 0,
-        checkBarcode: false,
+        checkBarcode: true,
       },
       orderProducts: [],
       productInfos: [],
@@ -648,7 +648,7 @@ export default {
         if (this.getTopSaleProduct.content.length === 1 && this.searchOptions.checkBarcode === true) {
           const productByBarcode = {
             productId: this.getTopSaleProduct.content[0].id,
-            name: this.etTopSaleProduct.content[0].productCode,
+            name: this.getTopSaleProduct.content[0].productCode,
             productName: this.getTopSaleProduct.content[0].productName,
             productCode: this.getTopSaleProduct.content[0].productCode,
             productUnit: this.getTopSaleProduct.content[0].uom1,
@@ -660,6 +660,8 @@ export default {
             sumProductTotalPrice: this.totalPrice(1, Number(this.getTopSaleProduct.content[0].price)),
             productImage: this.getTopSaleProduct.content[0].image,
             comboProductId: this.getTopSaleProduct.content[0].comboProductId,
+            nameText: this.getTopSaleProduct.content[0].nameText,
+            barCode: this.getTopSaleProduct.content[0].barCode,
           }
           const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
           if (indexProductExisted === -1) {
@@ -675,6 +677,7 @@ export default {
               return product
             })
           }
+          this.searchOptions.keyWord = ''
         } else {
           this.getTopSaleProduct.content.forEach(data => {
             if (!this.productsRow.find(item => item.productId === data.id)) {
@@ -692,6 +695,9 @@ export default {
                 productTotalPrice: this.totalPrice(0, Number(data.price)),
                 sumProductTotalPrice: this.totalPrice(1, Number(data.price)),
                 productImage: data.image,
+                comboProductId: data.comboProductId,
+                nameText: data.nameText,
+                barCode: data.barCode,
               })
             }
           })
@@ -703,7 +709,6 @@ export default {
             this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
           }
         }
-        this.searchOptions.checkBarcode = false
       }
       if (this.getTopSaleProduct.totalPages) {
         if (this.getTopSaleProduct.totalPages !== this.totalPageProductsSearch) {
@@ -861,6 +866,7 @@ export default {
         this.productsSearch = [{ data: null }]
         this.isSelectedProduct = false
       }
+      this.searchOptions.checkBarcode = false
     },
 
     onChangeKeyWord() {
@@ -870,13 +876,16 @@ export default {
         this.productsRow = []
         this.totalPageProductsSearch = 0
         this.keyWordExist = ''
-      } else if (this.searchOptions.keyWord.length === this.minSearch) {
+      } else if (this.searchOptions.keyWord.length === this.minSearch && !this.searchOptions.checkBarcode) {
         if (this.isCheckShopId) {
           if (this.keyWordExist !== this.searchOptions.keyWord) {
             this.keyWordExist = this.searchOptions.keyWord
             this.isLoading = true
             const el = document.querySelector(':focus')
-            if (el) el.blur()
+            if (el) {
+              el.blur()
+              this.searchOptions.checkBarcode = false
+            }
             this.totalPageProductsSearch = 0
             this.productsRow = []
             this.callTopSaleProductsAction(this.searchOptions.page)
@@ -890,7 +899,7 @@ export default {
         }
       } else if (this.searchOptions.keyWord.length > this.minSearch) {
         let productsFiltered = this.productsRow.filter(product => product.productCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
-                                                            || product.productName.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
+                                                            || product.productName.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()) || product.barCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
         productsFiltered = [...productsFiltered.map(item => ({
           ...item,
           name: this.searchOptions.keyWord,
@@ -924,6 +933,7 @@ export default {
       if (this.searchOptions.keyWord.length < this.minSearch) {
         this.productsSearch = [{ data: null }]
       }
+      this.searchOptions.checkBarcode = true
     },
 
     onClickAddProduct(index) {
@@ -1363,12 +1373,15 @@ export default {
           if (barcodeParam.includes('Enter')) {
             barcodeParam = barcodeParam.slice(0, -5)
           }
-
           this.searchOptions.keyWord = barcodeParam
-          this.searchOptions.checkBarcode = true
-          this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-          this.productsRow = []
-          this.callTopSaleProductsAction(0)
+          if (this.searchOptions.checkBarcode) {
+            this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+            this.productsRow = []
+            this.callTopSaleProductsAction(0)
+          } else {
+            this.onChangeKeyWord()
+            this.searchOptions.checkBarcode = true
+          }
         }
       }
     },
