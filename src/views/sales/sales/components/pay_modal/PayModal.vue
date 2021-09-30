@@ -1988,7 +1988,7 @@ export default {
       })
     },
     keyDown(e) {
-      if (e.key === 'F7' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading) {
+      if (e.key === 'F7' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading && Number(this.pay.promotionAmount) < Number(this.pay.totalAmount)) {
         if (!this.isPaid && this.statusPrintTmpButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           this.printSaleOrderTemp()
         }
