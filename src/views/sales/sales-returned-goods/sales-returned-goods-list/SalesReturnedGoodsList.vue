@@ -298,12 +298,14 @@ export default {
           label: 'Mã khách hàng',
           thClass: 'align-middle',
           tdClass: 'align-middle',
+          sortable: false,
           field: 'customerNumber',
         },
         {
           label: 'Họ tên',
           thClass: 'align-middle text-nowrap',
           tdClass: 'align-middle',
+          sortable: false,
           field: 'customerName',
         },
         {
@@ -329,12 +331,14 @@ export default {
           label: 'Tiền giảm giá',
           field: 'totalPromotion',
           type: 'number',
+          sortable: false,
           formatFn: this.$formatNumberToLocale,
           tdClass: 'align-middle',
         },
         {
           label: 'Thành tiền thanh toán',
           field: 'total',
+          sortable: false,
           filterOptions: {
             enabled: true,
           },
@@ -346,6 +350,7 @@ export default {
           label: 'Nhân viên',
           thClass: 'align-middle',
           field: 'createdBy',
+          sortable: false,
           tdClass: 'align-middle',
         },
         {

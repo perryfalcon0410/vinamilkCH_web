@@ -340,12 +340,14 @@ export default {
         {
           label: 'Mã khách hàng',
           field: 'customerNumber',
+          sortable: false,
           thClass: 'ws-nowrap scroll-column-header column-second',
           tdClass: 'scroll-column align-middle column-second',
         },
         {
           label: 'Họ tên',
           field: 'customerName',
+          sortable: false,
           thClass: 'scroll-column-header column-third ws-nowrap',
           tdClass: 'scroll-column align-middle column-third',
         },
@@ -360,6 +362,7 @@ export default {
         {
           label: 'Tổng giá trị',
           field: 'amount',
+          sortable: false,
           type: 'number',
           filterOptions: {
             enabled: true,
@@ -372,6 +375,7 @@ export default {
           label: 'Tiền giảm giá',
           field: 'totalPromotion',
           type: 'number',
+          sortable: false,
           thClass: 'text-right ws-nowrap',
           tdClass: 'text-right align-middle',
           formatFn: value => this.$formatNumberToLocale(value),
@@ -380,6 +384,7 @@ export default {
           label: 'Tiền tích lũy',
           field: 'customerPurchase',
           type: 'number',
+          sortable: false,
           thClass: 'text-right ws-nowrap',
           tdClass: 'text-right align-middle',
           formatFn: value => this.$formatNumberToLocale(value),
@@ -388,6 +393,7 @@ export default {
           label: 'Tiền phải trả',
           field: 'total',
           type: 'number',
+          sortable: false,
           filterOptions: {
             enabled: true,
           },
@@ -398,12 +404,14 @@ export default {
         {
           label: 'Ghi chú',
           field: 'note',
+          sortable: false,
           thClass: 'text-left ws-nowrap',
           tdClass: 'text-left align-middle',
         },
         {
           label: 'In HĐ đỏ',
           field: 'usedRedInvoice',
+          sortable: false,
           thClass: 'text-left ws-nowrap',
           tdClass: 'text-left align-middle',
           formatFn: value => (value === true ? 'Đã in ' : 'Chưa in'),
@@ -411,23 +419,27 @@ export default {
         {
           label: 'Công ty',
           field: 'redInvoiceCompanyName',
+          sortable: false,
           thClass: 'text-left ws-nowrap',
           tdClass: 'text-left ws-nowrap align-middle',
         },
         {
           label: 'Mã số thuế',
           field: 'redInvoiceTaxCode',
+          sortable: false,
           thClass: 'text-left ws-nowrap',
           tdClass: 'text-left ws-nowrap align-middle',
         },
         {
           label: 'Địa chỉ',
           field: 'redInvoiceAddress',
+          sortable: false,
           thClass: 'text-left ws-nowrap',
           tdClass: 'text-left ws-nowrap align-middle',
         },
         {
           label: 'Ghi chú HĐĐ',
+          sortable: false,
           field: 'redInvoiceRemark',
           thClass: 'text-left text-nowrap align-middle',
           tdClass: 'text-left',
