@@ -171,6 +171,7 @@
             </div>
             <div
               v-else-if="props.column.field === 'index'"
+              class="align-middle"
             >
               {{ paginationData.page === 0 || isNaN(paginationData.page) ? props.index + 1 : paginationData.page*paginationData.size + (props.index + 1) }}
             </div>
