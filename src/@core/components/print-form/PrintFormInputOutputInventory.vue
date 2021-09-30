@@ -501,8 +501,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import JSPM from 'jsprintmanager'
-import toasts from '@/@core/utils/toasts/toasts'
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
 import autoTable from 'jspdf-autotable'
@@ -581,48 +579,22 @@ export default {
   },
 
   updated() {
-    JSPM.JSPrintManager.auto_reconnect = true
-    if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
-      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
-    } else {
-      // eslint-disable-next-line new-cap
-      const pdf = new jsPDF('l', 'mm', 'a4')
-      // START - add font family
-      pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
-      pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
-      pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
-      pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
-      // content
-      this.createHeader(pdf)
-      this.createTableFirst(pdf)
-      this.createTableSecond(pdf)
-      // content
-      printFile('Bao_cao_xuat_nhap_ton.pdf', this.printerName, pdf)
-      this.count = 1
-      this.header = []
-      this.checkheader = true
-      // for (let i = 0; i < 3; i += 1) {
-      //   if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-
-      //     const options = {
-      //       fileName: 'bao_cao_xuat_nhap_ton',
-      //       rotate: 'Rot90',
-      //       pageSizing: 'Fit',
-      //     }
-      //     if (jspmCheckStatus()) {
-      //       if (this.printerName.includes('PDF')) {
-      //         pdf.save('bao_cao_xuat_nhap_ton.pdf')
-      //       } else {
-      //         jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
-      //       }
-      //     }
-      //     break
-      //   } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-      //     toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-      //     window.print()
-      //   }
-      // }
-    }
+    // eslint-disable-next-line new-cap
+    const pdf = new jsPDF('l', 'mm', 'a4')
+    // START - add font family
+    pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+    pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+    pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+    pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+    // content
+    this.createHeader(pdf)
+    this.createTableFirst(pdf)
+    this.createTableSecond(pdf)
+    // content
+    printFile('Bao_cao_xuat_nhap_ton.pdf', this.printerName, pdf)
+    this.count = 1
+    this.header = []
+    this.checkheader = true
   },
 
   methods: {

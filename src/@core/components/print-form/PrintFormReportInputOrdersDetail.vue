@@ -159,8 +159,6 @@ import { myFontBoldItalic } from '@/@core/libs/Arimo-BoldItalic'
 import autoTable from 'jspdf-autotable'
 import jsPDF from 'jspdf'
 import { printFile } from '@/@core/utils/utils'
-import JSPM from 'jsprintmanager'
-import toasts from '@/@core/utils/toasts/toasts'
 import {
   REPORT_PURCHASES,
   // Getters
@@ -235,12 +233,7 @@ export default {
     },
   },
   updated() {
-    JSPM.JSPrintManager.auto_reconnect = true
-    if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
-      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
-    } else {
-      this.generatePdf(this.logo)
-    }
+    this.generatePdf(this.logo)
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),

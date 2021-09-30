@@ -254,10 +254,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import JSPM from 'jsprintmanager'
 import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import { myFontBold } from '@/@core/libs/Arimo-Bold'
-import toasts from '@/@core/utils/toasts/toasts'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
@@ -332,301 +330,274 @@ export default {
     },
   },
   updated() {
-    JSPM.JSPrintManager.auto_reconnect = true
-    if (this.printerName === '' || this.printerName === null || this.printerName === undefined) {
-      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
-    } else {
-      // eslint-disable-next-line new-cap
-      const pdf = new jsPDF('l', 'mm', 'a4')
-      pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
-      pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
-      pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
-      pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
-      pdf.setFont('Ario-Bold')
-      pdf.setFontSize(18)
-      pdf.text('Báo cáo bán hàng', 118, 10)
-      pdf.setFontSize(9)
-      pdf.text(`${this.reportSalesShopData.shopName}`, 10, 9)
-      pdf.setFontSize(8)
-      pdf.setFont('Ario-Regular')
-      pdf.text(`Add: ${this.reportSalesShopData.address || ''}`, 10, 16)
-      pdf.text(`Tel: ${this.reportSalesShopData.tel || ''}`, 10, 22)
-      pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 117, 16)
-      pdf.text(`Ngày in: ${this.$moment().locale('en').format('DD/MM/YYYY - HH:mm:ss')}`, 124, 22)
-      // total table
-      const padding = {
-        cellPadding: {
-          top: 2, bottom: 2, left: 0, right: 0,
-        },
-        lineWidth: 0,
-      }
-      pdf.autoTable({
-        startY: 30,
-        margin: {
-          right: 10,
-          left: 10,
-        },
-        styles: {
-          font: 'Ario-Bold',
-          fontSize: 7,
-          textColor: 'black',
-          fontStyle: 'bold',
-        },
-        body: [
-          [
-            {
-              content: 'Tổng Số HĐ:',
-              halign: 'right',
-              styles: {
-                halign: 'right', cellWidth: 120, fillColor: [211, 211, 211], ...padding,
-              },
-            },
-            {
-              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.someBills) || ''}`,
-              styles: {
-                halign: 'right', cellWidth: 29, fillColor: [211, 211, 211], ...padding,
-              },
-            },
-            {
-              content: 'Tổng cộng:',
-              styles: {
-                halign: 'right', cellWidth: 22, fillColor: [211, 211, 211], ...padding,
-              },
-            },
-            {
-              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalQuantity) || ''}`,
-              styles: {
-                halign: 'right', cellWidth: 18, fillColor: [211, 211, 211], ...padding,
-              },
-            },
-            {
-              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalTotal) || ''}`,
-              styles: {
-                halign: 'right', cellWidth: 32, fillColor: [211, 211, 211], ...padding,
-              },
-            },
-            {
-              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat) || ''}`,
-              styles: {
-                halign: 'right', cellWidth: 17, fillColor: [211, 211, 211], ...padding,
-              },
-            },
-            {
-              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotion) || ''}`,
-              styles: {
-                halign: 'right', cellWidth: 18, fillColor: [211, 211, 211], ...padding,
-              },
-            },
-            {
-              content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay) || ''}`,
-              styles: {
-                halign: 'right',
-                fillColor: [211, 211, 211],
-                cellPadding: {
-                  top: 2, bottom: 2, left: 0, right: 2,
-                },
-              },
-            },
-          ],
-        ],
-      })
-      const header = [
-        { content: 'STT', styles: { font: 'Ario-Bold' } },
-        {
-          content: 'Mã HĐ', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'Mã KH', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'Tên KH', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'Ngành', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'Mã SP', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'Tên SP', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'ĐVT', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'SL', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'Giá', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'T.Tiền', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'KM', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'KM (VAT)', styles: { font: 'Ario-Bold' },
-        },
-        {
-          content: 'Thanh toán', styles: { font: 'Ario-Bold' },
-        },
-      ]
-      this.header.push(header)
-      for (let i = 0; i < this.reportSalesData.length; i += 1) {
-        if (i > 0 && this.reportSalesData[i].orderNumber === this.reportSalesData[i - 1].orderNumber) {
-          this.bodyData.push([
-            { content: `${i + 1}`, styles: { } },
-            { content: `${this.reportSalesData[i].orderNumber}`, styles: { } },
-            { content: '"', styles: { halign: 'center' } },
-            { content: '"', styles: { halign: 'center' } },
-            { content: `${this.reportSalesData[i].industry || ''}`, styles: { } },
-            { content: `${this.reportSalesData[i].productCode || ''}`, styles: { } },
-            { content: `${this.reportSalesData[i].productName || ''}`, styles: { } },
-            { content: `${this.reportSalesData[i].unit || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].quantity) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].price) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].total) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotionNotVAT) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotion) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].pay) || ''}`, styles: { } },
-          ])
-        } else {
-          this.bodyData.push([
-            { content: `${i + 1}`, styles: { } },
-            { content: `${this.reportSalesData[i].orderNumber}`, styles: { } },
-            { content: `${this.reportSalesData[i].customerCode}`, styles: { } },
-            { content: `${this.reportSalesData[i].customerName}`, styles: { } },
-            { content: `${this.reportSalesData[i].industry || ''}`, styles: { } },
-            { content: `${this.reportSalesData[i].productCode || ''}`, styles: { } },
-            { content: `${this.reportSalesData[i].productName || ''}`, styles: { } },
-            { content: `${this.reportSalesData[i].unit || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].quantity) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].price) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].total) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotionNotVAT) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotion) || ''}`, styles: { } },
-            { content: `${this.$formatNumberToLocale(this.reportSalesData[i].pay) || ''}`, styles: { } },
-          ])
-        }
-      }
-      pdf.autoTable({
-        showHead: 'firstPage',
-        startY: pdf.previousAutoTable.finalY + 2,
-        margin: {
-          right: 10,
-          left: 10,
-        },
-        theme: 'grid',
-        styles: {
-          font: 'Ario-Regular',
-          Color: [255, 0, 0],
-          fontSize: 7,
-          textColor: 'black',
-        },
-        headStyles: {
-          fillColor: 'white',
-          font: 'Ario-Bold',
-          textColor: 'black',
-          fontSize: 7.5,
-          lineWidth: 0.1,
-          lineColor: 'black',
-        },
-        columnStyles: {
-          0: { cellWidth: 10 },
-          1: { cellWidth: 35 },
-          2: { cellWidth: 28 },
-          3: { cellWidth: 35 },
-          4: { cellWidth: 18 },
-          5: { cellWidth: 13 },
-          6: { cellWidth: 30 },
-          7: { cellWidth: 10 },
-          8: { halign: 'right', cellWidth: 11 },
-          9: { halign: 'right', cellWidth: 14 },
-          10: { halign: 'right', cellWidth: 18 },
-          11: { halign: 'right', cellWidth: 18 },
-          12: { halign: 'right', cellWidth: 18 },
-          13: { halign: 'right' },
-        },
-        didDrawCell: data => {
-          if (data.section === 'head') {
-            pdf.setDrawColor('black')
-            pdf.setLineWidth(0.5)
-            pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
-          }
-          if (data.section === 'body' && data.row.index === 0) {
-            pdf.setDrawColor('black')
-            pdf.setLineWidth(0.1)
-            pdf.line(data.cell.x, data.cursor.y, data.cell.x + data.cell.width, data.cursor.y)
-          }
-          if (data.section === 'body' && data.column.index === 0) {
-            pdf.setDrawColor('black')
-            pdf.setLineWidth(0.1)
-            pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
-          }
-          if (data.section === 'body' && data.column.index === 12) {
-            pdf.setDrawColor('black')
-            pdf.setLineWidth(0.1)
-            pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
-          }
-          if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
-            pdf.setDrawColor('black')
-            pdf.setLineWidth(0.1)
-            pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
-          }
-        },
-        head: [...this.header],
-        body: [...this.bodyData],
-      })
-      this.header = []
-      this.bodyData = []
-
-      if (pdf.previousAutoTable.finalY + 50 > pdf.internal.pageSize.getHeight()) {
-        pdf.addPage()
-        pdf.setFontSize(8.5)
-        pdf.setFont('Ario-Regular')
-        pdf.text('........, Ngày..... tháng..... năm.......', 218, 14)
-        pdf.setFont('Ario-Bold')
-        pdf.text('Người in', 30, 18)
-        pdf.text('Cửa hàng trưởng', 230, 18)
-      } else {
-        pdf.setFontSize(8.5)
-        pdf.setFont('Ario-Regular')
-        pdf.text('........, Ngày..... tháng..... năm.......', 218, pdf.previousAutoTable.finalY + 10)
-        pdf.setFont('Ario-Bold')
-        pdf.text('Người in', 30, pdf.previousAutoTable.finalY + 14)
-        pdf.text('Cửa hàng trưởng', 230, pdf.previousAutoTable.finalY + 14)
-      }
-
-      for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
-        pdf.setPage(j)
-        pdf.setFontSize(8)
-        pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 20, pdf.internal.pageSize.getHeight() - 10)
-      }
-      printFile('Bao_cao_ban_hang.pdf', this.printerName, pdf)
-      // for (let i = 0; i < 3; i += 1) {
-      //   if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
-
-      //     // pdf.save()
-      //     const options = {
-      //       fileName: 'bao_cao_ban_hang',
-      //       pageSizing: 'Fit',
-      //       rotate: 'Rot90',
-      //     }
-      //     if (jspmCheckStatus()) {
-      //       if (this.printerName.includes('PDF')) {
-      //         pdf.save('bao_cao_ban_hang.pdf')
-      //       } else {
-      //         jsPdfPrint(pdf.output('datauristring'), this.printerName, options)
-      //       }
-      //     }
-      //     break
-      //   } else if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Closed && i === 2) {
-      //     toasts.error('Bạn hãy vào cấu hình máy in trước khi in.')
-      //     window.print()
-      //   }
-      // }
+    // eslint-disable-next-line new-cap
+    const pdf = new jsPDF('l', 'mm', 'a4')
+    pdf.addFileToVFS('Ario-Regular.ttf', myFontNormal)
+    pdf.addFileToVFS('Ario-Bold.ttf', myFontBold)
+    pdf.addFont('Ario-Regular.ttf', 'Ario-Regular', 'normal')
+    pdf.addFont('Ario-Bold.ttf', 'Ario-Bold', 'normal')
+    pdf.setFont('Ario-Bold')
+    pdf.setFontSize(18)
+    pdf.text('Báo cáo bán hàng', 118, 10)
+    pdf.setFontSize(9)
+    pdf.text(`${this.reportSalesShopData.shopName}`, 10, 9)
+    pdf.setFontSize(8)
+    pdf.setFont('Ario-Regular')
+    pdf.text(`Add: ${this.reportSalesShopData.address || ''}`, 10, 16)
+    pdf.text(`Tel: ${this.reportSalesShopData.tel || ''}`, 10, 22)
+    pdf.text(`Từ ngày: ${this.reportSalesShopData.fromDate}                Đến ngày: ${this.reportSalesShopData.toDate}`, 117, 16)
+    pdf.text(`Ngày in: ${this.$moment().locale('en').format('DD/MM/YYYY - HH:mm:ss')}`, 124, 22)
+    // total table
+    const padding = {
+      cellPadding: {
+        top: 2, bottom: 2, left: 0, right: 0,
+      },
+      lineWidth: 0,
     }
+    pdf.autoTable({
+      startY: 30,
+      margin: {
+        right: 10,
+        left: 10,
+      },
+      styles: {
+        font: 'Ario-Bold',
+        fontSize: 7,
+        textColor: 'black',
+        fontStyle: 'bold',
+      },
+      body: [
+        [
+          {
+            content: 'Tổng Số HĐ:',
+            halign: 'right',
+            styles: {
+              halign: 'right', cellWidth: 120, fillColor: [211, 211, 211], ...padding,
+            },
+          },
+          {
+            content: `${this.$formatNumberToLocale(this.reportSalesInfoData.someBills) || ''}`,
+            styles: {
+              halign: 'right', cellWidth: 29, fillColor: [211, 211, 211], ...padding,
+            },
+          },
+          {
+            content: 'Tổng cộng:',
+            styles: {
+              halign: 'right', cellWidth: 22, fillColor: [211, 211, 211], ...padding,
+            },
+          },
+          {
+            content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalQuantity) || ''}`,
+            styles: {
+              halign: 'right', cellWidth: 18, fillColor: [211, 211, 211], ...padding,
+            },
+          },
+          {
+            content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalTotal) || ''}`,
+            styles: {
+              halign: 'right', cellWidth: 32, fillColor: [211, 211, 211], ...padding,
+            },
+          },
+          {
+            content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotionNotVat) || ''}`,
+            styles: {
+              halign: 'right', cellWidth: 17, fillColor: [211, 211, 211], ...padding,
+            },
+          },
+          {
+            content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPromotion) || ''}`,
+            styles: {
+              halign: 'right', cellWidth: 18, fillColor: [211, 211, 211], ...padding,
+            },
+          },
+          {
+            content: `${this.$formatNumberToLocale(this.reportSalesInfoData.totalPay) || ''}`,
+            styles: {
+              halign: 'right',
+              fillColor: [211, 211, 211],
+              cellPadding: {
+                top: 2, bottom: 2, left: 0, right: 2,
+              },
+            },
+          },
+        ],
+      ],
+    })
+    const header = [
+      { content: 'STT', styles: { font: 'Ario-Bold' } },
+      {
+        content: 'Mã HĐ', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'Mã KH', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'Tên KH', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'Ngành', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'Mã SP', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'Tên SP', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'ĐVT', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'SL', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'Giá', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'T.Tiền', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'KM', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'KM (VAT)', styles: { font: 'Ario-Bold' },
+      },
+      {
+        content: 'Thanh toán', styles: { font: 'Ario-Bold' },
+      },
+    ]
+    this.header.push(header)
+    for (let i = 0; i < this.reportSalesData.length; i += 1) {
+      if (i > 0 && this.reportSalesData[i].orderNumber === this.reportSalesData[i - 1].orderNumber) {
+        this.bodyData.push([
+          { content: `${i + 1}`, styles: { } },
+          { content: `${this.reportSalesData[i].orderNumber}`, styles: { } },
+          { content: '"', styles: { halign: 'center' } },
+          { content: '"', styles: { halign: 'center' } },
+          { content: `${this.reportSalesData[i].industry || ''}`, styles: { } },
+          { content: `${this.reportSalesData[i].productCode || ''}`, styles: { } },
+          { content: `${this.reportSalesData[i].productName || ''}`, styles: { } },
+          { content: `${this.reportSalesData[i].unit || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].quantity) || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].price) || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].total) || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotionNotVAT) || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotion) || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].pay) || ''}`, styles: { } },
+        ])
+      } else {
+        this.bodyData.push([
+          { content: `${i + 1}`, styles: { } },
+          { content: `${this.reportSalesData[i].orderNumber}`, styles: { } },
+          { content: `${this.reportSalesData[i].customerCode}`, styles: { } },
+          { content: `${this.reportSalesData[i].customerName}`, styles: { } },
+          { content: `${this.reportSalesData[i].industry || ''}`, styles: { } },
+          { content: `${this.reportSalesData[i].productCode || ''}`, styles: { } },
+          { content: `${this.reportSalesData[i].productName || ''}`, styles: { } },
+          { content: `${this.reportSalesData[i].unit || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].quantity) || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].price) || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].total) || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotionNotVAT) || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].promotion) || ''}`, styles: { } },
+          { content: `${this.$formatNumberToLocale(this.reportSalesData[i].pay) || ''}`, styles: { } },
+        ])
+      }
+    }
+    pdf.autoTable({
+      showHead: 'firstPage',
+      startY: pdf.previousAutoTable.finalY + 2,
+      margin: {
+        right: 10,
+        left: 10,
+      },
+      theme: 'grid',
+      styles: {
+        font: 'Ario-Regular',
+        Color: [255, 0, 0],
+        fontSize: 7,
+        textColor: 'black',
+      },
+      headStyles: {
+        fillColor: 'white',
+        font: 'Ario-Bold',
+        textColor: 'black',
+        fontSize: 7.5,
+        lineWidth: 0.1,
+        lineColor: 'black',
+      },
+      columnStyles: {
+        0: { cellWidth: 10 },
+        1: { cellWidth: 35 },
+        2: { cellWidth: 28 },
+        3: { cellWidth: 35 },
+        4: { cellWidth: 18 },
+        5: { cellWidth: 13 },
+        6: { cellWidth: 30 },
+        7: { cellWidth: 10 },
+        8: { halign: 'right', cellWidth: 11 },
+        9: { halign: 'right', cellWidth: 14 },
+        10: { halign: 'right', cellWidth: 18 },
+        11: { halign: 'right', cellWidth: 18 },
+        12: { halign: 'right', cellWidth: 18 },
+        13: { halign: 'right' },
+      },
+      didDrawCell: data => {
+        if (data.section === 'head') {
+          pdf.setDrawColor('black')
+          pdf.setLineWidth(0.5)
+          pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
+        }
+        if (data.section === 'body' && data.row.index === 0) {
+          pdf.setDrawColor('black')
+          pdf.setLineWidth(0.1)
+          pdf.line(data.cell.x, data.cursor.y, data.cell.x + data.cell.width, data.cursor.y)
+        }
+        if (data.section === 'body' && data.column.index === 0) {
+          pdf.setDrawColor('black')
+          pdf.setLineWidth(0.1)
+          pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x, data.cell.y)
+        }
+        if (data.section === 'body' && data.column.index === 12) {
+          pdf.setDrawColor('black')
+          pdf.setLineWidth(0.1)
+          pdf.line(data.cell.x + data.cell.width, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y)
+        }
+        if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
+          pdf.setDrawColor('black')
+          pdf.setLineWidth(0.1)
+          pdf.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height)
+        }
+      },
+      head: [...this.header],
+      body: [...this.bodyData],
+    })
+    this.header = []
+    this.bodyData = []
+
+    if (pdf.previousAutoTable.finalY + 50 > pdf.internal.pageSize.getHeight()) {
+      pdf.addPage()
+      pdf.setFontSize(8.5)
+      pdf.setFont('Ario-Regular')
+      pdf.text('........, Ngày..... tháng..... năm.......', 218, 14)
+      pdf.setFont('Ario-Bold')
+      pdf.text('Người in', 30, 18)
+      pdf.text('Cửa hàng trưởng', 230, 18)
+    } else {
+      pdf.setFontSize(8.5)
+      pdf.setFont('Ario-Regular')
+      pdf.text('........, Ngày..... tháng..... năm.......', 218, pdf.previousAutoTable.finalY + 10)
+      pdf.setFont('Ario-Bold')
+      pdf.text('Người in', 30, pdf.previousAutoTable.finalY + 14)
+      pdf.text('Cửa hàng trưởng', 230, pdf.previousAutoTable.finalY + 14)
+    }
+
+    for (let j = 1; j <= pdf.internal.getNumberOfPages(); j += 1) {
+      pdf.setPage(j)
+      pdf.setFontSize(8)
+      pdf.text(`${j} / ${pdf.internal.getNumberOfPages()}`, pdf.internal.pageSize.getWidth() - 20, pdf.internal.pageSize.getHeight() - 10)
+    }
+    printFile('Bao_cao_ban_hang.pdf', this.printerName, pdf)
   },
 }
 </script>

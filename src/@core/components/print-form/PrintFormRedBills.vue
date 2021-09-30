@@ -140,8 +140,6 @@ import { myFontNormal } from '@/@core/libs/Arimo-Regular'
 import jsPDF from 'jspdf'
 // eslint-disable-next-line no-unused-vars
 import autoTable from 'jspdf-autotable'
-import JSPM from 'jsprintmanager'
-import toasts from '@/@core/utils/toasts/toasts'
 import {
   RED_INVOICE,
   // Getters
@@ -193,13 +191,8 @@ export default {
     },
   },
   updated() {
-    JSPM.JSPrintManager.auto_reconnect = true
-    if (this.printerName === '' || this.printerName === null) {
-      toasts.error('Không tìm thấy tên máy in. Bạn hãy vào cấu hình máy in')
-    } else {
-      this.generatePdf()
-      this.bodyData = []
-    }
+    this.generatePdf()
+    this.bodyData = []
   },
   methods: {
     ...mapActions(PRINTERCONFIG, [GET_PRINTER_CLIENT_ACTIONS]),

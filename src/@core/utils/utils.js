@@ -244,8 +244,9 @@ export const getJSPMDownloadInfo = () => {
 }
 
 export const printFile = (fileName, printerName, pdf) => {
+  JSPM.JSPrintManager.auto_reconnect = true
   for (let i = 0; i < 3; i += 1) {
-    if (JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) {
+    if ((JSPM.JSPrintManager.websocket_status === JSPM.WSStatus.Open && i < 3) && (printerName !== '' && printerName !== null && printerName !== undefined)) {
       if (jspmCheckStatus()) {
         if (printerName.includes('PDF')) {
           pdf.save(fileName)
