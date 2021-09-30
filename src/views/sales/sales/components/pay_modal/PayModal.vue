@@ -1874,6 +1874,8 @@ export default {
           }
         }
       }
+      this.pay.promotionAmount = 0
+      this.promotionPrograms = []
       this.$emit('changeStateOpenPayModal', false)
       this.$bvModal.hide('pay-modal')
     },
@@ -1991,7 +1993,7 @@ export default {
           this.printSaleOrderTemp()
         }
       }
-      if (e.key === 'F8' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading) {
+      if (e.key === 'F8' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading && Number(this.pay.promotionAmount) < Number(this.pay.totalAmount)) {
         if (!this.isPaid && this.statusPayPrintButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
             this.isLoading = true
@@ -1999,7 +2001,7 @@ export default {
           }
         }
       }
-      if (e.key === 'F9' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading) {
+      if (e.key === 'F9' && this.isOpenPayModal && this.totalQuantity > 0 && !this.isLoading && Number(this.pay.promotionAmount) < Number(this.pay.totalAmount)) {
         if (!this.isPaid && this.statusPayButton() && this.pay.extraAmount !== null && Number(this.pay.extraAmount) >= 0 && this.pay.extraAmount !== '') {
           if (this.pay.salePayment.salePaymentType !== undefined) {
             this.isLoading = true
@@ -2023,7 +2025,8 @@ export default {
     resetPayModal() {
       this.pay.accumulate.accumulatePoint = null
       this.pay.accumulate.accumulateAmount = 0
-
+      this.pay.promotionAmount = 0
+      this.promotionPrograms = []
       this.resetVoucher()
       this.resetDiscount()
       this.isPaid = false
