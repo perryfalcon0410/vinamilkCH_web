@@ -903,18 +903,23 @@ export default {
           toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
         }
       } else if (this.searchOptions.keyWord.length > this.minSearch) {
-        let productsFiltered = this.productsRow.filter(product => product.productCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
-                                                            || product.productName.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()) || product.barCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
-        productsFiltered = [...productsFiltered.map(item => ({
-          ...item,
-          name: this.searchOptions.keyWord,
-        }))]
-        this.productsSearch = [{
-          data: productsFiltered,
-        }]
-        this.productsSearchLength = this.productsSearch[0].data.length
-        if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
-          this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+        if (this.productsRow.length > 0) {
+          let productsFiltered = this.productsRow.filter(product => product.productCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
+                                                            || product.productName.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
+          productsFiltered = [...productsFiltered.map(item => ({
+            ...item,
+            name: this.searchOptions.keyWord,
+          }))]
+          this.productsSearch = [{
+            data: productsFiltered,
+          }]
+          this.productsSearchLength = this.productsSearch[0].data.length
+          if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
+            this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+          }
+        } else {
+          this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
+          this.callTopSaleProductsAction(0)
         }
       }
     },
@@ -961,6 +966,7 @@ export default {
             this.isSelectedProduct = true
             this.productsSearch = [{ data: null }]
             this.productIdSelected = index.item.productCode
+            this.productsRow = []
             setTimeout(() => {
               document.getElementById(this.productIdSelected).focus()
               document.getElementById(this.productIdSelected).select()
