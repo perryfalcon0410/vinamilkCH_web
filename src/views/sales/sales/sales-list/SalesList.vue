@@ -924,13 +924,6 @@ export default {
             const productIndex = this.orderProducts.findIndex(data => data.productCode === index.item.productCode)
             if (productIndex === -1) {
               this.orderProducts.push(index.item)
-            } else {
-              this.orderProducts[productIndex].productInventory = index.item.productInventory
-              this.orderProducts[productIndex].quantity += 1
-              this.orderProducts[productIndex].productUnitPrice = index.item.productUnitPrice
-              this.orderProducts[productIndex].sumProductUnitPrice = index.item.sumProductUnitPrice
-              this.orderProducts[productIndex].productTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
-              this.orderProducts[productIndex].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[productIndex].quantity), Number(this.orderProducts[productIndex].sumProductUnitPrice))
             }
             this.searchOptions.keyWord = ''
             this.isSelectedProduct = true
@@ -938,6 +931,7 @@ export default {
             this.productIdSelected = index.item.productCode
             setTimeout(() => {
               document.getElementById(this.productIdSelected).focus()
+              document.getElementById(this.productIdSelected).select()
             }, 100)
           } else {
             this.$refs.search.$el.querySelector('input').click()
