@@ -133,7 +133,7 @@
                         <b-col
                           class="text-dark font-weight-bold border-bottom"
                         >
-                          {{ suggestion.item.code }} - {{ suggestion.item.phoneNumber }}
+                          {{ suggestion.item.code }} - {{ suggestion.item.phoneNumber }} - {{ suggestion.item.birthDay }}
                         </b-col>
                       </b-col>
                     <!-- END - Section Label -->
