@@ -905,7 +905,7 @@ export default {
       } else if (this.searchOptions.keyWord.length > this.minSearch) {
         if (this.productsRow.length > 0) {
           let productsFiltered = this.productsRow.filter(product => product.productCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
-                                                            || product.productName.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
+                                                            || product.productName.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()) || product.barCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
           productsFiltered = [...productsFiltered.map(item => ({
             ...item,
             name: this.searchOptions.keyWord,
