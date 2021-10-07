@@ -546,6 +546,7 @@ import {
   earlyMonth,
   nowDate,
   reverseVniDate,
+  removeVietnameseTones,
 } from '@core/utils/filter'
 import {
   orderNumber,
@@ -553,7 +554,7 @@ import {
 import {
   validatorOnlineOrder,
 } from '@/@core/utils/validations/validators'
-import { getCurrentTime } from '@core/utils/utils'
+import { getCurrentTime, sendToCustomerDisplay } from '@core/utils/utils'
 import { getUserData } from '@/auth/utils'
 import { VueAutosuggest } from 'vue-autosuggest'
 import toasts from '@/@core/utils/toasts/toasts'
@@ -1358,6 +1359,8 @@ export default {
         this.isSelected = true
         this.$emit('getIdCustomer', suggestion.item)
         this.$refs.search.$el.querySelector('input').blur()
+        sendToCustomerDisplay('Kinh chao quy khach', true)
+        sendToCustomerDisplay(removeVietnameseTones(suggestion.item.fullName, true), false)
       }
     },
     getDefaultPromotionObjectSelected() {

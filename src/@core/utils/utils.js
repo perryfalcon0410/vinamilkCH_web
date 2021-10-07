@@ -13,11 +13,11 @@ import reportsData from '@/@db/report'
 import salesData from '@/@db/sale'
 import systemData from '@/@db/system'
 import JSPM from 'jsprintmanager'
+import Serial from '@core/libs/serial'
 import {
   jspmCheckStatus,
 } from '@core/utils/filter'
 import toasts from '@/@core/utils/toasts/toasts'
-
 import moment from 'moment'
 
 export const isObject = obj => typeof obj === 'object' && obj !== null
@@ -290,4 +290,43 @@ export const printFile = (fileName, printerName, pdf) => {
     hiddFrame.src = pdf.output('bloburl')
     document.body.appendChild(hiddFrame)
   }
+}
+
+export const formatTextCustomerDisplay = (textParam, isLeft) => {
+  let text = '                        '
+  if (isLeft) {
+    text = textParam + text
+    return text.slice(0, 20)
+  }
+  text += textParam
+  return text.slice(text.length - 20, text.length)
+}
+
+let serial = null
+export const sendToCustomerDisplay = async (textData, isLeft) => {
+  let initText = textData
+  if (initText === '' || initText === null || initText === undefined) {
+    initText = 'Xin kinh chao quy khach.'
+  }
+  initText = formatTextCustomerDisplay(initText, isLeft)
+  if ('serial' in navigator) {
+    if (serial === null) {
+      serial = new Serial()
+    }
+    if (!serial.isOpen()) {
+      // await serial.connectAndOpen()
+      const checkConnect = await serial.autoConnectAndOpenPreviouslyApprovedPort()
+      if (checkConnect) {
+        // serial.write(initText)
+        setTimeout(() => {
+          serial.write(initText)
+        }, 500)
+      }
+    } else { // no error
+      serial.write(initText)
+    }
+  }
+  // else {
+  //   toasts.error('Trình duyệt không hỗ trợ kết nối với máy hiển thị.')
+  // }
 }

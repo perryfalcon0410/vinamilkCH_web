@@ -860,7 +860,9 @@ import {
   hostName,
   checkIpClient,
   preventDefaultWindowPrint,
+  formatTextDisplayCustomer,
 } from '@core/utils/filter'
+import { sendToCustomerDisplay } from '@core/utils/utils'
 import Cleave from 'vue-cleave-component'
 import saleData from '@/@db/sale'
 import PrintFormSalesReceipt from '@core/components/print-form/PrintFormSalesReceiptV2.vue'
@@ -1787,6 +1789,11 @@ export default {
         this.isDisabledPrintTempBtn = this.isPaid
         this.isDisabledPaymentBtn = this.isPaid
         this.isDisabledPrintAndPaymentBtn = this.isPaid
+      }
+      const totalPromotionAmount = Number(this.pay.promotionAmount) + Number(this.pay.accumulate.accumulateAmount) + Number(this.pay.voucher.totalVoucherAmount) + Number(this.pay.discount.discountAmount)
+      if (this.isOpenPayModal) {
+        sendToCustomerDisplay(formatTextDisplayCustomer('KM:', this.$formatNumberToLocale(totalPromotionAmount)), true)
+        sendToCustomerDisplay(formatTextDisplayCustomer('T.Toan:', this.$formatNumberToLocale(this.pay.needPaymentAmount)), true)
       }
     },
 

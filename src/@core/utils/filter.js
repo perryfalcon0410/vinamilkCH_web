@@ -3,6 +3,7 @@ import JSPM from 'jsprintmanager'
 // eslint-disable-next-line import/no-unresolved
 import html2pdf from 'html2pdf.js'
 import commonData from '@/@db/common'
+import saleData from '@/@db/sale'
 import toasts from './toasts/toasts'
 
 export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)
@@ -367,4 +368,51 @@ export const preventDefaultWindowPrint = event => {
     return true
   }
   return false
+}
+
+export const removeVietnameseTones = (str, isRemove) => {
+  let stringRemove = str
+  if (!isRemove) {
+    return stringRemove
+  }
+  stringRemove = stringRemove.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a')
+  stringRemove = stringRemove.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e')
+  stringRemove = stringRemove.replace(/ì|í|ị|ỉ|ĩ/g, 'i')
+  stringRemove = stringRemove.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o')
+  stringRemove = stringRemove.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u')
+  stringRemove = stringRemove.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y')
+  stringRemove = stringRemove.replace(/đ/g, 'd')
+  stringRemove = stringRemove.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, 'A')
+  stringRemove = stringRemove.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, 'E')
+  stringRemove = stringRemove.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, 'I')
+  stringRemove = stringRemove.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, 'O')
+  stringRemove = stringRemove.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, 'U')
+  stringRemove = stringRemove.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, 'Y')
+  stringRemove = stringRemove.replace(/Đ/g, 'D')
+  // Some system encode vietnamese combining accent as individual utf-8 characters
+  // Một vài bộ encode coi các dấu mũ, dấu chữ như một kí tự riêng biệt nên thêm hai dòng này
+  stringRemove = stringRemove.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, '') // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+  stringRemove = stringRemove.replace(/\u02C6|\u0306|\u031B/g, '') // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+  // Remove extra spaces
+  // Bỏ các khoảng trắng liền nhau
+  stringRemove = stringRemove.replace(/ + /g, ' ')
+  stringRemove = stringRemove.trim()
+  // Remove punctuations
+  // Bỏ dấu câu, kí tự đặc biệt
+  // eslint-disable-next-line no-useless-escape
+  // stringRemove = stringRemove.replace(/!|@|%|\^|\*|\+|\=|\<|\>|\?|\/|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|{|}|\||\\/g, '')
+  return stringRemove
+}
+
+export const formatTextDisplayCustomer = (text1, text2) => {
+  if (text1 === '' || text1 === '0' || text2 === '' || text2 === '0') {
+    return '                      '
+  }
+
+  let spaceText = ''
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < saleData.sizeTextDisplayCustomer - (text1.length + text2.length); i++) {
+    spaceText += ' '
+  }
+  return `${text1}${spaceText}${text2}`
 }

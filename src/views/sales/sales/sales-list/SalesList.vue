@@ -360,6 +360,8 @@ import saleData from '@/@db/sale'
 import commonData from '@/@db/common'
 import { getUserData } from '@/auth/utils'
 import Loading from 'vue-loading-overlay'
+import { sendToCustomerDisplay } from '@core/utils/utils'
+import { removeVietnameseTones } from '@core/utils/filter'
 import SalesForm from './components/SalesForm.vue'
 // import SalesProducts from './components/SalesProducts.vue'
 import {
@@ -776,6 +778,8 @@ export default {
   },
   mounted() {
     this.GET_EDIT_ONLINE_PERMISSION_ACTION()
+    sendToCustomerDisplay('Kinh chao quy khach', true)
+    sendToCustomerDisplay('                  ', false)
   },
   // before page leave, this will check
   beforeRouteLeave(to, from, next) {
@@ -967,6 +971,8 @@ export default {
             this.productsSearch = [{ data: null }]
             this.productIdSelected = index.item.productCode
             this.productsRow = []
+            sendToCustomerDisplay(removeVietnameseTones(index.item.productName, true), true)
+            sendToCustomerDisplay('                                         ', true)
             setTimeout(() => {
               document.getElementById(this.productIdSelected).focus()
               document.getElementById(this.productIdSelected).select()
@@ -1169,6 +1175,9 @@ export default {
       }
       this.orderProducts[index].productTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
       this.orderProducts[index].sumProductTotalPrice = this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice))
+      const totalPriceShow = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
+      sendToCustomerDisplay(removeVietnameseTones(this.orderProducts[index].productName, true), true)
+      sendToCustomerDisplay(this.formatTextDisplayCustomer(this.$formatNumberToLocale(this.orderProducts[index].quantity), totalPriceShow), true)
     },
     getCustomerDefault(val) {
       this.customerTypeCurent = val.customerTypeId
@@ -1395,6 +1404,18 @@ export default {
           }
         }
       }
+    },
+    formatTextDisplayCustomer(quantity, amount) {
+      if (quantity === null || quantity === 0 || amount === null || amount === 0) {
+        return '                      '
+      }
+
+      let spaceText = ''
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < saleData.sizeTextDisplayCustomer - (quantity.toString().length + amount.toString().length); i++) {
+        spaceText += ' '
+      }
+      return `${quantity.toString()}${spaceText}${amount.toString()}`
     },
   },
 }

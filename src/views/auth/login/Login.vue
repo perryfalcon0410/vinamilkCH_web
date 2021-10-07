@@ -208,6 +208,7 @@ import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
+import { sendToCustomerDisplay } from '@core/utils/utils'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
 import { $themeConfig } from '@themeConfig'
 import CryptoJS from 'crypto-js'
@@ -441,6 +442,8 @@ export default {
           } = response.data
 
           this.loginAction(success, data, token, statusValue)
+          sendToCustomerDisplay(null, true)
+          sendToCustomerDisplay('                                     ', true)
         })
         .catch(error => {
           toasts.error(error.message)

@@ -57,4 +57,5 @@ export default {
   ],
   pageSizeRecommendProducts: 8,
   pageNumberRecommendProducts: 0,
+  sizeTextDisplayCustomer: 20,
 }
