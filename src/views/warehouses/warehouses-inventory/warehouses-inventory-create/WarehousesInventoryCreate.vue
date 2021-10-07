@@ -535,12 +535,12 @@ export default {
       warehousesInventoryData: null,
       columns: [
         {
-          label: 'Ngành hàng',
+          label: 'NH',
           field: 'category',
           thClass: 'text-nowrap scroll-column-header column-first',
           tdClass: 'scroll-column column-first',
 
-          width: '90px',
+          width: '40px',
         },
         {
           label: 'Mã SP',
@@ -584,6 +584,7 @@ export default {
           type: 'number',
           thClass: 'text-nowrap pl-20',
           formatFn: this.$formatNumberToLocale,
+          width: '80px',
         },
         {
           label: 'SL packet kiểm kê',
@@ -1041,11 +1042,11 @@ export default {
     z-index: 1;
   }
   .inventory.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
-    left: 123px;
+    left: 73px;
     z-index: 1;
   }
   .inventory.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
-    left: 207px;
+    left: 157px;
     z-index: 1;
   }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
@@ -1061,10 +1062,10 @@ export default {
     left: 34px;
   }
   .inventory.table-horizontal-scroll .column-second {
-    left: 123px;
+    left: 73px;
   }
   .inventory.table-horizontal-scroll .column-third {
-    left: 207px;
+    left: 157px;
   }
   /* tùy chỉnh left khi scroll*/
 </style>
