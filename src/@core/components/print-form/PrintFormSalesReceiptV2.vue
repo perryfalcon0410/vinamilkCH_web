@@ -413,7 +413,10 @@ export default {
     // const pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight()
     const pageWidth = pdf.internal.pageSize.width || pdf.internal.pageSize.getWidth()
     const fontSize = 9
+    const GS = String.fromCharCode(29)
+    const ESC = String.fromCharCode(27)
     let cmds = ''
+    cmds += `${ESC}@`
     pdf.setFontSize(fontSize)
     pdf.addFileToVFS('Arimo-Bold.ttf', myFontBold)
     pdf.addFileToVFS('Arimo-Regular.ttf', myFontNormal)
@@ -815,7 +818,7 @@ export default {
 
     const splitRequest = pdf.splitTextToSize(this.removeVietnameseTones('Quý khách có thể yêu cầu cửa hàng xuất hóa đơn tài chính cùng ngày mua hàng.', this.isRemoveVNTones), pageWidth - 10)
     pdf.text(splitRequest, marginLeft, marginTop)
-    cmds += this.formatTextHeaderPrintBill('Quy khach co the yeu cau cua hang xuat hoa don tai chinh cung ngay mua hang.', 'left')
+    cmds += this.formatTextHeaderPrintBill('Quy khach co the yeu cau cua hang xuat  hoa don tai chinh cung ngay mua hang.', 'left')
     cmds += this.newLine
 
     marginTop += spaceRowInCluster * splitRequest.length - spaceRowInClusterProduct
@@ -855,6 +858,8 @@ export default {
     cmds += this.newLine
     cmds += this.newLine
     cmds += this.newLine
+    cmds += `${GS}V${String.fromCharCode(48)}`
+    // console.log(cmds)
     // today = new Date()
     // date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
     // time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}:${today.getMilliseconds()}`
@@ -954,8 +959,8 @@ export default {
     },
     formatTextTable4ColumnsPrintBill(text1, text2, text3, text4) {
       const sizeText2 = 4
-      const sizeText3 = 8
-      const sizeText4 = 11
+      const sizeText3 = 11
+      const sizeText4 = 13
       const sizeText1 = this.sizeTextBill - sizeText2 - sizeText3 - sizeText4
       let size = 0
       let displayText1 = text1
@@ -1005,7 +1010,7 @@ export default {
     },
     formatTextTable3ColumnsPrintBill(text1, text2, text3) {
       const sizeText2 = 4
-      const sizeText3 = 19
+      const sizeText3 = 24
       const sizeText1 = this.sizeTextBill - sizeText2 - sizeText3
       let size = 0
       let displayText1 = text1
@@ -1027,23 +1032,24 @@ export default {
         }
       }
       if (displayText3.length <= sizeText3) {
-        size = sizeText3 - displayText3.length
-        // eslint-disable-next-line no-plusplus
-        for (let i = 0; i < size; i++) {
-          displayText3 = ` ${displayText3}`
-        }
+        // size = sizeText3 - displayText3.length
+        // // eslint-disable-next-line no-plusplus
+        // for (let i = 0; i < size; i++) {
+        //   displayText3 = ` ${displayText3}`
+        // }
+        displayText3 = ` ${displayText3}`
       } else {
         // eslint-disable-next-line no-plusplus
         for (let i = 0; i < sizeText1 + sizeText2; i++) {
           nextLine += ' '
         }
-        nextLine += this.newLine + displayText3.slice(sizeText3 + 1, (sizeText3 * 2) + 1)
-        displayText3 = displayText3.slice(0, sizeText3)
+        nextLine += displayText3.slice(sizeText3 - 1, (sizeText3 * 2) - 1)
+        displayText3 = displayText3.slice(0, sizeText3 - 1)
       }
       if (nextLine === '') {
         return `${displayText1}${displayText2}${displayText3}${this.newLine}`
       }
-      return `${displayText1}${displayText2}${displayText3}${nextLine}${this.newLine}`
+      return `${displayText1}${displayText2} ${displayText3}${nextLine}${this.newLine}`
     },
     formatTextTable2ColumnsPrintBill(text1, text2) {
       const sizeText2 = 11
