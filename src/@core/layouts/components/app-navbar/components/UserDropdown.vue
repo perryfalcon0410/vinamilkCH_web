@@ -48,6 +48,17 @@
       <span>Cấu hình máy in</span>
     </b-dropdown-item>
 
+    <b-dropdown-item
+      link-class="d-flex align-items-center"
+      @click="onClickGuideline"
+    >
+      <b-icon-book-half
+        class="mr-50"
+        scale="1.2"
+      />
+      <span>Hướng dẫn</span>
+    </b-dropdown-item>
+
     <!-- system print -->
     <b-dropdown-item
       link-class="d-flex align-items-center"
@@ -66,6 +77,11 @@
       :is-open-configuration-modal="isOpenConfigurationModal"
       @cancel="cancel"
       @getIpClient="getIpClient"
+    />
+    <guideline-modal
+      :show="isShow"
+      :is-open-guideline-modal="isOpenGuidelineModal"
+      @cancelGuideline="cancelGuideline"
     />
   </b-nav-item-dropdown>
 </template>
@@ -88,10 +104,12 @@ import {
   GET_PRINTER_CLIENT_ACTIONS,
 } from '@/views/auth/printer-configuration-modal/store-module/type'
 import PrinterConfigurationModal from '@/views/auth/printer-configuration-modal/PrinterConfigurationModal.vue'
+import GuidelineModal from '@/views/dashboard/guideline/GuidelineModal.vue'
 
 export default {
   components: {
     PrinterConfigurationModal,
+    GuidelineModal,
   },
 
   data() {
@@ -101,6 +119,8 @@ export default {
       isVisible: false,
       ipAddress: '',
       isOpenConfigurationModal: false,
+      isShow: false,
+      isOpenGuidelineModal: false,
     }
   },
   watch: {
@@ -150,8 +170,15 @@ export default {
       this.isVisible = true
       this.isOpenConfigurationModal = true
     },
+    onClickGuideline() {
+      this.isShow = true
+      this.isOpenGuidelineModal = true
+    },
     cancel() {
       this.isVisible = false
+    },
+    cancelGuideline() {
+      this.isShow = false
     },
     getIpClient(ip) {
       this.ipAddress = ip
