@@ -657,7 +657,7 @@ export default {
             productInventory: this.getTopSaleProduct.content[0].stockTotal,
             productUnitPrice: this.getTopSaleProduct.content[0].price,
             sumProductUnitPrice: this.getTopSaleProduct.content[0].price,
-            quantity: 1,
+            quantity: null,
             productTotalPrice: this.totalPrice(1, Number(this.getTopSaleProduct.content[0].price)),
             sumProductTotalPrice: this.totalPrice(1, Number(this.getTopSaleProduct.content[0].price)),
             productImage: this.getTopSaleProduct.content[0].image,
@@ -668,18 +668,16 @@ export default {
           const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
           if (indexProductExisted === -1) {
             this.orderProducts.push(productByBarcode)
-          } else {
-            this.orderProducts = this.orderProducts.map(product => {
-              if (product.productId === productByBarcode.productId) {
-                return {
-                  ...product,
-                  quantity: product.quantity + 1,
-                }
-              }
-              return product
-            })
           }
+
+          this.productIdSelected = productByBarcode.productCode
+          setTimeout(() => {
+            document.getElementById(this.productIdSelected).focus()
+            document.getElementById(this.productIdSelected).select()
+          }, 100)
+
           this.searchOptions.keyWord = ''
+          this.searchOptions.checkBarcode = true
         } else {
           this.getTopSaleProduct.content.forEach(data => {
             if (!this.productsRow.find(item => item.productId === data.id)) {
@@ -871,11 +869,11 @@ export default {
     },
     // check shop default
     focusInputProduct() {
+      this.searchOptions.checkBarcode = false
       if (this.isSelectedProduct) {
         this.productsSearch = [{ data: null }]
         this.isSelectedProduct = false
       }
-      this.searchOptions.checkBarcode = false
     },
 
     onChangeKeyWord() {
@@ -917,6 +915,7 @@ export default {
           this.productsSearch = [{
             data: productsFiltered,
           }]
+
           this.productsSearchLength = this.productsSearch[0].data.length
           if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
             this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
@@ -1178,6 +1177,12 @@ export default {
       const totalPriceShow = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
       sendToCustomerDisplay(removeVietnameseTones(this.orderProducts[index].productName, true), true)
       sendToCustomerDisplay(this.formatTextDisplayCustomer(this.$formatNumberToLocale(this.orderProducts[index].quantity), totalPriceShow), true)
+      if (this.searchOptions.checkBarcode === true) {
+        const el = document.querySelector(':focus')
+        if (el) {
+          el.blur()
+        }
+      }
     },
     getCustomerDefault(val) {
       this.customerTypeCurent = val.customerTypeId
@@ -1393,6 +1398,7 @@ export default {
           if (barcodeParam.includes('Enter')) {
             barcodeParam = barcodeParam.slice(0, -5)
           }
+
           this.searchOptions.keyWord = barcodeParam
           if (this.searchOptions.checkBarcode) {
             this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
