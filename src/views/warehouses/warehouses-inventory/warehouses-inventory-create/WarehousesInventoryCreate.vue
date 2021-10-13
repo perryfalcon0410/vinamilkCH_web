@@ -555,8 +555,7 @@ export default {
           filterOptions: {
             enabled: true,
           },
-          thClass: 'text-nowrap scroll-column-header column-third',
-          tdClass: 'scroll-column column-third',
+          thClass: 'text-nowrap',
           width: '220px',
         },
         {
@@ -1045,10 +1044,6 @@ export default {
     left: 73px;
     z-index: 1;
   }
-  .inventory.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
-    left: 157px;
-    z-index: 1;
-  }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
 
   /* tùy chỉnh left khi scroll*/
@@ -1063,9 +1058,6 @@ export default {
   }
   .inventory.table-horizontal-scroll .column-second {
     left: 73px;
-  }
-  .inventory.table-horizontal-scroll .column-third {
-    left: 157px;
   }
   /* tùy chỉnh left khi scroll*/
 </style>
