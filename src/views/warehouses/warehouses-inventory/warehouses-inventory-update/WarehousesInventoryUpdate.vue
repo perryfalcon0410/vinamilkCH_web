@@ -298,7 +298,6 @@
             </div>
             <div
               v-else-if="props.column.field === 'instockAmount' ||
-                props.column.field === 'price' ||
                 props.column.field === 'totalPrice' ||
                 props.column.field === 'inventoryTotal' ||
                 props.column.field === 'exchange'"
@@ -533,11 +532,11 @@ export default {
       nowDate: nowDate(),
       columns: [
         {
-          label: 'Ngành hàng',
+          label: 'NH',
           field: 'category',
           thClass: 'text-nowrap  scroll-column-header column-first',
           tdClass: 'scroll-column column-first',
-          width: '90px',
+          width: '40px',
         },
         {
           label: 'Mã SP',
@@ -556,7 +555,7 @@ export default {
           width: '220px',
         },
         {
-          label: 'SL tồn kho',
+          label: 'Tồn kho',
           field: 'instockAmount',
           type: 'number',
           filterOptions: {
@@ -569,14 +568,17 @@ export default {
           label: 'Giá',
           field: 'price',
           type: 'number',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap pr-20',
+          tdClass: 'pr-20',
           formatFn: this.$formatNumberToLocale,
+          width: '40px',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           type: 'number',
           thClass: 'text-nowrap',
+          width: '80px',
           formatFn: this.$formatNumberToLocale,
         },
         {
@@ -702,21 +704,10 @@ export default {
     },
     getWarehouseInventoryStocks() {
       if (this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response) {
+        // return this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response
         return this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response.map(data => ({
-          category: data.productCategoryCode,
-          productId: data.productId,
           productCode: data.productCode,
-          productName: data.productName,
           instockAmount: data.stockQuantity,
-          price: data.price,
-          totalPrice: data.totalAmount,
-          inventoryPacket: null,
-          inventoryOdd: null,
-          inventoryTotal: 0,
-          unequal: data.changeQuantity,
-          packetUnit: data.packetUnit,
-          exchange: data.convfact,
-          oddUnit: data.unit,
         }))
       }
       return []
@@ -788,7 +779,10 @@ export default {
       })
     },
     getWarehouseInventoryStocks() {
-      this.products = [...this.getWarehouseInventoryStocks]
+      for (let i = 0; i < this.products.length; i += 1) {
+        this.products[i].instockAmount = this.getWarehouseInventoryStocks.find(item => item.productCode === this.products[i].productCode).instockAmount
+        this.products[i].unequal = this.products[i].inventoryTotal - this.products[i].instockAmount
+      }
       this.originalProducts = this.products
     },
   },
@@ -1015,7 +1009,7 @@ export default {
     z-index: 1;
   }
   .inventory-update.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
-    left: 123px;
+    left: 73px;
     z-index: 1;
   }
   /* scroll ô filter tùy chỉnh theo số lượng ô*/
@@ -1031,7 +1025,7 @@ export default {
     left: 34px;
   }
   .inventory-update.table-horizontal-scroll .column-second {
-    left: 123px;
+    left: 73px;
   }
   /* tùy chỉnh left khi scroll*/
 </style>
