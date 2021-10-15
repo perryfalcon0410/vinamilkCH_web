@@ -565,7 +565,7 @@ export default {
       keyWordExist: '',
       arrDateTime: [],
       keyWordExistCheckDateTime: '',
-      runBarcode: false,
+      runBarcode: true,
     }
   },
   computed: {
@@ -680,7 +680,6 @@ export default {
           }, 100)
 
           this.searchOptions.keyWord = ''
-          this.searchOptions.checkBarcode = true
         } else {
           this.getTopSaleProduct.content.forEach(data => {
             if (!this.productsRow.find(item => item.productId === data.id)) {
