@@ -1226,12 +1226,6 @@ export default {
       const totalPriceShow = this.$formatNumberToLocale(this.totalPrice(Number(this.orderProducts[index].quantity), Number(this.orderProducts[index].sumProductUnitPrice)))
       sendToCustomerDisplay(removeVietnameseTones(this.orderProducts[index].productName, true), true)
       sendToCustomerDisplay(this.formatTextDisplayCustomer(this.$formatNumberToLocale(this.orderProducts[index].quantity), totalPriceShow), true)
-      if (this.searchOptions.checkBarcode === true) {
-        const el = document.querySelector(':focus')
-        if (el) {
-          el.blur()
-        }
-      }
     },
     getCustomerDefault(val) {
       this.customerTypeCurent = val.customerTypeId
@@ -1449,13 +1443,6 @@ export default {
         spaceText += ' '
       }
       return `${quantity.toString()}${spaceText}${amount.toString()}`
-    },
-    getTimeInputKeyWord() {
-      const today = new Date()
-      const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
-      const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}:${today.getMilliseconds()}`
-      const dateTime = `${date} ${time}`
-      return dateTime
     },
   },
 }
