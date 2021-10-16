@@ -63,9 +63,60 @@
           />
         </b-col>
         <!-- END - Warehouse -->
+        <b-button-group>
+          <!-- START - Button take inventory -->
+          <div
+            v-if="countingDate === nowDate"
+            class="mx-50"
+          >
+            <div
+              class="text-white h7"
+              onmousedown="return false;"
+              style="cursor: context-menu;"
+            >
+              Lấy tồn kho
+            </div>
+            <b-button
+              v-if="statusTakeButton().show"
+              id="form-button-get-inventory"
+              :disabled="statusTakeButton().disabled"
+              class="btn-brand-1 h8 aligns-items-button-center"
+              variant="someThing"
+              @click="onClickGetInventoryStocksButton()"
+            >
+              Lấy tồn kho
+            </b-button>
+          </div>
+          <!-- END - Button take inventory -->
+
+          <!-- START - Button import -->
+          <div>
+            <div
+              class="text-white h7"
+              onmousedown="return false;"
+              style="cursor: context-menu;"
+            >
+              Import
+            </div>
+            <b-button
+              v-if="statusImportButton().show"
+              :disabled="statusImportButton().disabled"
+              class="btn-brand-1 h8 aligns-items-button-center"
+              variant="someThing"
+              @click="onClickImportButton()"
+            >
+              <b-icon-arrow-repeat
+                scale="1.5"
+                class="mr-1"
+              />
+              Import
+            </b-button>
+          </div>
+        <!-- END - Button import -->
+        </b-button-group>
 
         <!-- START - Button import -->
-        <div class="mx-50">
+        <!-- <div class="mx-50">
           <div
             class="text-white h7"
             onmousedown="return false;"
@@ -86,7 +137,7 @@
             />
             Import
           </b-button>
-        </div>
+        </div> -->
 
         <!-- END - Button import -->
       </v-card-actions>
@@ -116,7 +167,7 @@
           mode="remote"
           :columns="columns"
           :rows="products"
-          style-class="vgt-table"
+          style-class="vgt-table table-horizontal-scroll inventory-update"
           compact-mode
           line-numbers
           :sort-options="{
@@ -247,7 +298,6 @@
             </div>
             <div
               v-else-if="props.column.field === 'instockAmount' ||
-                props.column.field === 'price' ||
                 props.column.field === 'totalPrice' ||
                 props.column.field === 'inventoryTotal' ||
                 props.column.field === 'exchange'"
@@ -453,6 +503,7 @@ import {
   WAREHOUSE_INVENTORY_DATA_GETTER,
   WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
   WAREHOUSE_INVENTORY_DETAIL_GETTER,
+  WAREHOUSE_INVENTORY_STOCKS_GETTER,
   GET_WAREHOUSE_TYPES_ACTION,
   EXPORT_FILLED_STOCKS_ACTION,
   CREATE_WAREHOUSE_INVENTORY_ACTION,
@@ -461,6 +512,7 @@ import {
   GET_FAILED_IMPORT_FILE_ACTION,
   GET_WAREHOUSE_INVENTORY_DETAIL_ACTION,
   UPDATE_WAREHOUSE_INVENTORY_ACTION,
+  GET_WAREHOUSE_INVENTORY_STOCKS_ACTION,
 } from '../store-module/type'
 
 export default {
@@ -477,16 +529,21 @@ export default {
       isImportModalShow: false,
       isModalCloseShow: false,
       warehousesInventoryData: null,
+      nowDate: nowDate(),
       columns: [
         {
-          label: 'Ngành hàng',
+          label: 'NH',
           field: 'category',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap  scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
+          width: '40px',
         },
         {
           label: 'Mã SP',
           field: 'productCode',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
+          width: '70px',
         },
         {
           label: 'Tên SP',
@@ -498,7 +555,7 @@ export default {
           width: '220px',
         },
         {
-          label: 'SL tồn kho',
+          label: 'Tồn kho',
           field: 'instockAmount',
           type: 'number',
           filterOptions: {
@@ -511,14 +568,17 @@ export default {
           label: 'Giá',
           field: 'price',
           type: 'number',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap pr-20',
+          tdClass: 'pr-20',
           formatFn: this.$formatNumberToLocale,
+          width: '40px',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           type: 'number',
           thClass: 'text-nowrap',
+          width: '80px',
           formatFn: this.$formatNumberToLocale,
         },
         {
@@ -600,6 +660,7 @@ export default {
       WAREHOUSE_INVENTORY_DATA_GETTER,
       WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER,
       WAREHOUSE_INVENTORY_DETAIL_GETTER,
+      WAREHOUSE_INVENTORY_STOCKS_GETTER,
     ]),
     warehouseTypes() {
       return this.WAREHOUSE_TYPES_GETTER.map(data => ({
@@ -640,6 +701,16 @@ export default {
     },
     getWarehouseInventoryImportData() {
       return this.WAREHOUSE_INVENTORY_IMPORT_DATA_GETTER
+    },
+    getWarehouseInventoryStocks() {
+      if (this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response) {
+        // return this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response
+        return this.WAREHOUSE_INVENTORY_STOCKS_GETTER.response.map(data => ({
+          productCode: data.productCode,
+          instockAmount: data.stockQuantity,
+        }))
+      }
+      return []
     },
   },
 
@@ -707,6 +778,13 @@ export default {
         }
       })
     },
+    getWarehouseInventoryStocks() {
+      for (let i = 0; i < this.products.length; i += 1) {
+        this.products[i].instockAmount = this.getWarehouseInventoryStocks.find(item => item.productCode === this.products[i].productCode).instockAmount
+        this.products[i].unequal = this.products[i].inventoryTotal - this.products[i].instockAmount
+      }
+      this.originalProducts = this.products
+    },
   },
 
   mounted() {
@@ -724,6 +802,7 @@ export default {
       GET_FAILED_IMPORT_FILE_ACTION,
       GET_WAREHOUSE_INVENTORY_DETAIL_ACTION,
       UPDATE_WAREHOUSE_INVENTORY_ACTION,
+      GET_WAREHOUSE_INVENTORY_STOCKS_ACTION,
     ]),
 
     statusSaveButton() {
@@ -734,6 +813,9 @@ export default {
     },
     statusExcelButton() {
       return this.$permission('WarehousesInventoryUpdate', 'WarehousesInventoryUpdateExcel')
+    },
+    statusTakeButton() {
+      return this.$permission('WarehousesInventoryCreate', 'WarehousesInventoryTake')
     },
 
     onClickCloseButton() {
@@ -756,6 +838,13 @@ export default {
       this.EXPORT_FILLED_STOCKS_ACTION({
         id: this.id,
         date: reverseVniDate(this.countingDate),
+        formId: 5,
+        ctrlId: 7,
+      })
+    },
+    onClickGetInventoryStocksButton() {
+      this.GET_WAREHOUSE_INVENTORY_STOCKS_ACTION({
+        wareHouseTypeId: this.warehouseType,
         formId: 5,
         ctrlId: 7,
       })
@@ -910,4 +999,33 @@ export default {
   .text-bold {
     font-weight: bold !important;
   }
+
+  .inventory-update.table-horizontal-scroll thead tr:first-child th {
+  border-bottom: 0px !important;
+}
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .inventory-update.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 34px;
+    z-index: 1;
+  }
+  .inventory-update.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 73px;
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+
+  /* tùy chỉnh left khi scroll*/
+  .inventory-update thead tr th.line-numbers {
+    top: -1.1px;
+  }
+  .inventory-update .scroll-column-header{
+    top: -1.1px;
+  }
+   .inventory-update.table-horizontal-scroll .column-first {
+    left: 34px;
+  }
+  .inventory-update.table-horizontal-scroll .column-second {
+    left: 73px;
+  }
+  /* tùy chỉnh left khi scroll*/
 </style>
