@@ -220,7 +220,7 @@
             <div
               v-show="products.length"
               v-else-if="props.column.field === 'inventoryPacket'"
-              class="mx-50 h7 text-brand-3 text-right"
+              class="h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryPacket) }}
             </div>
@@ -228,7 +228,7 @@
             <div
               v-show="products.length"
               v-else-if="props.column.field === 'inventoryOdd'"
-              class="mx-50 h7 text-brand-3 text-right"
+              class="h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryOdd) }}
             </div>
@@ -585,14 +585,16 @@ export default {
           label: 'SL packet kiểm kê',
           field: 'inventoryPacket',
           type: 'number',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap text-right pr-90',
+          tdClass: 'text-right pr-90',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'SL lẻ kiểm kê',
           field: 'inventoryOdd',
           type: 'number',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap text-right pr-90',
+          tdClass: 'text-right pr-90',
           formatFn: this.$formatNumberToLocale,
         },
         {
