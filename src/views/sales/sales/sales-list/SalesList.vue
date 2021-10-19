@@ -933,6 +933,8 @@ export default {
         }
         if ((count1 === (this.arrDateTime.length - 1) && count2 === 0) || (count1 === 0 && count2 === (this.arrDateTime.length - 1))) {
           this.searchOptions.checkBarcode = true
+        } else {
+          this.searchOptions.checkBarcode = false
         }
         this.arrDateTime = []
       }
@@ -971,6 +973,8 @@ export default {
           if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
             this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
           }
+        } else { // copy paste keyword
+          this.callTopSaleProductsAction(this.searchOptions.page)
         }
       }
     },
