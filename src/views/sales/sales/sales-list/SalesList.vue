@@ -944,6 +944,7 @@ export default {
         this.runBarcode = false
         if (this.isCheckShopId) {
           this.keyWordExist = this.searchOptions.keyWord
+          this.productsRow = []
           this.isLoading = true
           const el = document.querySelector(':focus')
           if (el) {
@@ -957,7 +958,7 @@ export default {
         }
       }
 
-      if (this.searchOptions.keyWord.length > this.minSearch && !this.searchOptions.checkBarcode) {
+      if ((this.searchOptions.keyWord.length > this.minSearch && !this.searchOptions.checkBarcode) || (this.searchOptions.keyWord.length === this.minSearch && this.keyWordExist === this.searchOptions.keyWord)) {
         this.runBarcode = false
         if (this.productsRow.length > 0) {
           let productsFiltered = this.productsRow.filter(product => (product.productCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
