@@ -904,6 +904,7 @@ export default {
         this.productsRow = []
         this.totalPageProductsSearch = 0
         this.keyWordExist = ''
+        this.searchOptions.checkBarcode = false
       }
 
       if (this.searchOptions.keyWord.length <= this.minSearch) {
@@ -931,7 +932,7 @@ export default {
             count2 += 1
           }
         }
-        if ((count1 === (this.arrDateTime.length - 1) && count2 === 0) || (count1 === 0 && count2 === (this.arrDateTime.length - 1))) {
+        if ((count1 === (this.arrDateTime.length - 1) && count2 === 0 && count1 !== 0) || (count1 === 0 && count2 === (this.arrDateTime.length - 1) && count2 !== 0)) {
           this.searchOptions.checkBarcode = true
         } else {
           this.searchOptions.checkBarcode = false
@@ -959,8 +960,8 @@ export default {
       if (this.searchOptions.keyWord.length > this.minSearch && !this.searchOptions.checkBarcode) {
         this.runBarcode = false
         if (this.productsRow.length > 0) {
-          let productsFiltered = this.productsRow.filter(product => product.productCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
-                                                            || product.productName.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()) || product.barCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
+          let productsFiltered = this.productsRow.filter(product => (product.productCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
+                                                            || (product.productName || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()) || (product.barCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
           productsFiltered = [...productsFiltered.map(item => ({
             ...item,
             name: this.searchOptions.keyWord,
