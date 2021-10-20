@@ -533,10 +533,10 @@ export default {
     lineText = lineText.slice(0, this.sizeTextBill) + this.newLine
     cmds += lineText
 
-    const columnWidth1 = pageWidth * 0.35
-    const columnWidth2 = pageWidth * 0.15
+    const columnWidth1 = pageWidth * 0.27
+    const columnWidth2 = pageWidth * 0.18
     const columnWidth3 = pageWidth * 0.2
-    const columnWidth4 = pageWidth * 0.25
+    const columnWidth4 = pageWidth * 0.3
     const spaceRowInClusterProduct = 2
 
     pdf.autoTable({
@@ -648,11 +648,12 @@ export default {
         })
       }
     })
+    marginTop += 5
     if (this.printSalesReceiptData.lstZM !== null) {
       this.printSalesReceiptData.lstZM.forEach(zm => {
         // CTKM tay
-        marginTop += spaceRowInCluster - spaceRowInClusterProduct
-        if (marginTop >= pageSizePrinterEPOS) {
+        marginTop += spaceRowInCluster
+        if ((marginTop + spaceRowInCluster) >= pageSizePrinterEPOS) {
           pdf.addPage()
           marginTop = 10
         }
@@ -673,8 +674,8 @@ export default {
         pdf.text(`${zm.amount.toLocaleString('vi-VN')}`, (columnWidth1 + columnWidth2 + columnWidth3 + columnWidth4) - 3, marginTop, { align: 'right' })
         cmds += this.formatTextTable2ColumnsPrintBill(`${zm.promotionCode}`, `${zm.amount.toLocaleString('vi-VN')}`)
 
-        if (splitPromotionName.length === 1) {
-          marginTop += spaceRowInCluster - 6
+        if (splitPromotionCode.length === 1) {
+          marginTop += spaceRowInCluster - 10
         } else {
           marginTop += spaceRowInCluster - 4
         }

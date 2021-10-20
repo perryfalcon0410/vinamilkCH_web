@@ -144,7 +144,7 @@
           mode="remote"
           :columns="columns"
           :rows="products"
-          style-class="vgt-table"
+          style-class="vgt-table  table-horizontal-scroll inventory"
           compact-mode
           line-numbers
           :sort-options="{
@@ -197,7 +197,7 @@
             <div
               v-show="products.length"
               v-else-if="props.column.field === 'inventoryPacket'"
-              class="mx-50 h7 text-brand-3 text-right"
+              class="h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryPacket) }}
             </div>
@@ -205,7 +205,7 @@
             <div
               v-show="products.length"
               v-else-if="props.column.field === 'inventoryOdd'"
-              class="mx-50 h7 text-brand-3 text-right"
+              class="h7 text-brand-3 text-right"
             >
               {{ $formatNumberToLocale(inventoryOdd) }}
             </div>
@@ -238,8 +238,13 @@
               {{ props.formattedRow[props.column.field] }}
             </div>
             <div
+              v-else-if="props.column.field === 'productCode'"
+              style="width: max-content"
+            >
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+            <div
               v-else-if="props.column.field === 'instockAmount' ||
-                props.column.field === 'price' ||
                 props.column.field === 'totalPrice' ||
                 props.column.field === 'inventoryTotal' ||
                 props.column.field === 'exchange'"
@@ -530,14 +535,19 @@ export default {
       warehousesInventoryData: null,
       columns: [
         {
-          label: 'Ngành hàng',
+          label: 'NH',
           field: 'category',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-first',
+          tdClass: 'scroll-column column-first',
+
+          width: '40px',
         },
         {
           label: 'Mã SP',
           field: 'productCode',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap scroll-column-header column-second',
+          tdClass: 'scroll-column column-second',
+          width: '70px',
         },
         {
           label: 'Tên SP',
@@ -549,7 +559,7 @@ export default {
           width: '220px',
         },
         {
-          label: 'SL tồn kho',
+          label: 'Tồn kho',
           field: 'instockAmount',
           type: 'number',
           filterOptions: {
@@ -562,28 +572,33 @@ export default {
           label: 'Giá',
           field: 'price',
           type: 'number',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap pr-20',
+          tdClass: 'pr-20',
           formatFn: this.$formatNumberToLocale,
+          width: '40px',
         },
         {
           label: 'Thành tiền',
           field: 'totalPrice',
           type: 'number',
-          thClass: 'text-nowrap',
+          thClass: 'text-nowrap pl-20',
           formatFn: this.$formatNumberToLocale,
+          width: '80px',
         },
         {
           label: 'SL packet kiểm kê',
           field: 'inventoryPacket',
           type: 'number',
-          thClass: 'text-nowrap',
+          tdClass: 'text-right pr-90',
+          thClass: 'text-nowrap text-right pr-90',
           formatFn: this.$formatNumberToLocale,
         },
         {
           label: 'SL lẻ kiểm kê',
           field: 'inventoryOdd',
           type: 'number',
-          thClass: 'text-nowrap',
+          tdClass: 'text-right pr-90',
+          thClass: 'text-nowrap text-right pr-90',
           formatFn: this.$formatNumberToLocale,
         },
         {
@@ -1019,4 +1034,32 @@ export default {
   .text-bold {
     font-weight: bold !important;
   }
+  .inventory.table-horizontal-scroll thead tr:first-child th {
+  border-bottom: 0px !important;
+}
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+  .inventory.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+    left: 34px;
+    z-index: 1;
+  }
+  .inventory.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+    left: 73px;
+    z-index: 1;
+  }
+  /* scroll ô filter tùy chỉnh theo số lượng ô*/
+
+  /* tùy chỉnh left khi scroll*/
+  .inventory thead tr th.line-numbers {
+    top: -1.1px;
+  }
+  .inventory .scroll-column-header{
+    top: -1.1px;
+  }
+   .inventory.table-horizontal-scroll .column-first {
+    left: 34px;
+  }
+  .inventory.table-horizontal-scroll .column-second {
+    left: 73px;
+  }
+  /* tùy chỉnh left khi scroll*/
 </style>

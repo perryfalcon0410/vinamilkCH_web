@@ -563,6 +563,9 @@ export default {
       productsRow: [],
       totalPageProductsSearch: 0,
       keyWordExist: '',
+      arrDateTime: [],
+      keyWordExistCheckDateTime: '',
+      runBarcode: true,
     }
   },
   computed: {
@@ -657,7 +660,7 @@ export default {
             productInventory: this.getTopSaleProduct.content[0].stockTotal,
             productUnitPrice: this.getTopSaleProduct.content[0].price,
             sumProductUnitPrice: this.getTopSaleProduct.content[0].price,
-            quantity: 1,
+            quantity: null,
             productTotalPrice: this.totalPrice(1, Number(this.getTopSaleProduct.content[0].price)),
             sumProductTotalPrice: this.totalPrice(1, Number(this.getTopSaleProduct.content[0].price)),
             productImage: this.getTopSaleProduct.content[0].image,
@@ -668,17 +671,14 @@ export default {
           const indexProductExisted = this.orderProducts.findIndex(p => p.productId === productByBarcode.productId)
           if (indexProductExisted === -1) {
             this.orderProducts.push(productByBarcode)
-          } else {
-            this.orderProducts = this.orderProducts.map(product => {
-              if (product.productId === productByBarcode.productId) {
-                return {
-                  ...product,
-                  quantity: product.quantity + 1,
-                }
-              }
-              return product
-            })
           }
+
+          this.productIdSelected = productByBarcode.productCode
+          setTimeout(() => {
+            document.getElementById(this.productIdSelected).focus()
+            document.getElementById(this.productIdSelected).select()
+          }, 100)
+
           this.searchOptions.keyWord = ''
         } else {
           this.getTopSaleProduct.content.forEach(data => {
@@ -805,7 +805,7 @@ export default {
 
     // Pass an options object with `eventBus: true` to receive an eventBus back
     // which emits `start` and `finish` events
-    this.$barcodeScanner.setSensitivity(20)
+    this.$barcodeScanner.setSensitivity(17)
     // Add barcode scan listener and pass the callback function
     this.$barcodeScanner.init(this.onBarcodeScanned)
     // const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, { eventBus: true })
@@ -871,45 +871,98 @@ export default {
     },
     // check shop default
     focusInputProduct() {
+      this.searchOptions.checkBarcode = false
+      this.arrDateTime = []
       if (this.isSelectedProduct) {
         this.productsSearch = [{ data: null }]
         this.isSelectedProduct = false
       }
-      this.searchOptions.checkBarcode = false
     },
-
+    // Create callback function to receive barcode when the scanner is already done
+    onBarcodeScanned(barcode) {
+      if (barcode.length > 4 && this.runBarcode) {
+        if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
+          let barcodeParam = barcode
+          if (barcodeParam.includes('Enter')) { // remove Enter keyword after scan barcode
+            barcodeParam = barcodeParam.slice(0, -5)
+          }
+          this.searchOptions.keyWord = barcodeParam
+          this.productsRow = []
+          this.callTopSaleProductsAction(0)
+        }
+      }
+    },
     onChangeKeyWord() {
-      // this.productsSearch = [{ data: null }]
-      if (this.searchOptions.keyWord.length < this.minSearch) {
+      // const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
+      // const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}:${today.getMilliseconds()}`
+      // const dateTime = `${date} ${time}`
+      // console.log(dateTime)
+      this.runBarcode = true
+      if (this.searchOptions.keyWord.length < 2) {
+        this.arrDateTime = []
         this.productsSearch = [{ data: null }]
         this.productsRow = []
         this.totalPageProductsSearch = 0
         this.keyWordExist = ''
-      } else if (this.searchOptions.keyWord.length === this.minSearch && !this.searchOptions.checkBarcode) {
-        if (this.isCheckShopId) {
-          if (this.keyWordExist !== this.searchOptions.keyWord) {
-            this.keyWordExist = this.searchOptions.keyWord
-            this.isLoading = true
-            const el = document.querySelector(':focus')
-            if (el) {
-              el.blur()
-              this.searchOptions.checkBarcode = false
-            }
-            this.totalPageProductsSearch = 0
-            this.productsRow = []
-            this.callTopSaleProductsAction(this.searchOptions.page)
-          } else {
-            this.productsSearch = [{
-              data: this.productsRow,
-            }]
+        this.searchOptions.checkBarcode = false
+      }
+
+      if (this.searchOptions.keyWord.length <= this.minSearch) {
+        if (this.keyWordExistCheckDateTime.length > this.searchOptions.keyWord.length) {
+          this.arrDateTime.splice(this.searchOptions.keyWord.length, this.keyWordExistCheckDateTime.length - this.searchOptions.keyWord.length)
+        }
+        this.keyWordExistCheckDateTime = this.searchOptions.keyWord
+        const today = new Date()
+        this.arrDateTime.push(today)
+      }
+
+      if (this.searchOptions.keyWord.length === this.minSearch) {
+        const maxInput1 = 10 // setSensitivity tóc độ máy scan cầm tay
+        const minInput2 = 15 // setSensitivity tóc độ nhỏ nhất của máy scan để bàn
+        const maxInput2 = 18 // setSensitivity tóc độ lớn nhất của máy scan để bàn
+        let count1 = 0
+        let count2 = 0
+        let diffTime = 0
+        // eslint-disable-next-line no-plusplus
+        for (let i = 1; i < this.minSearch; i++) {
+          diffTime = this.arrDateTime[i] - this.arrDateTime[i - 1]
+          if (diffTime <= maxInput1) {
+            count1 += 1
+          } else if (minInput2 <= diffTime && diffTime <= maxInput2) {
+            count2 += 1
           }
+        }
+        if ((count1 === (this.arrDateTime.length - 1) && count2 === 0 && count1 !== 0) || (count1 === 0 && count2 === (this.arrDateTime.length - 1) && count2 !== 0)) {
+          this.searchOptions.checkBarcode = true
+        } else {
+          this.searchOptions.checkBarcode = false
+        }
+        this.arrDateTime = []
+      }
+
+      if (this.searchOptions.keyWord.length === this.minSearch && !this.searchOptions.checkBarcode && this.keyWordExist !== this.searchOptions.keyWord) {
+        this.runBarcode = false
+        if (this.isCheckShopId) {
+          this.keyWordExist = this.searchOptions.keyWord
+          this.productsRow = []
+          this.isLoading = true
+          const el = document.querySelector(':focus')
+          if (el) {
+            el.blur()
+            this.searchOptions.checkBarcode = false
+          }
+          this.totalPageProductsSearch = 0
+          this.callTopSaleProductsAction(this.searchOptions.page)
         } else {
           toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
         }
-      } else if (this.searchOptions.keyWord.length > this.minSearch) {
+      }
+
+      if ((this.searchOptions.keyWord.length > this.minSearch && !this.searchOptions.checkBarcode) || (this.searchOptions.keyWord.length === this.minSearch && this.keyWordExist === this.searchOptions.keyWord)) {
+        this.runBarcode = false
         if (this.productsRow.length > 0) {
-          let productsFiltered = this.productsRow.filter(product => product.productCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
-                                                            || product.productName.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()) || product.barCode.toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
+          let productsFiltered = this.productsRow.filter(product => (product.productCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
+                                                            || (product.productName || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()) || (product.barCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
           productsFiltered = [...productsFiltered.map(item => ({
             ...item,
             name: this.searchOptions.keyWord,
@@ -917,13 +970,13 @@ export default {
           this.productsSearch = [{
             data: productsFiltered,
           }]
+
           this.productsSearchLength = this.productsSearch[0].data.length
           if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
             this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
           }
-        } else {
-          this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-          this.callTopSaleProductsAction(0)
+        } else { // copy paste keyword
+          this.callTopSaleProductsAction(this.searchOptions.page)
         }
       }
     },
@@ -1383,27 +1436,6 @@ export default {
 
     checkApParramCode(val) {
       this.isOffline = val
-    },
-
-    // Create callback function to receive barcode when the scanner is already done
-    onBarcodeScanned(barcode) {
-      if (barcode.length > 4) {
-        if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
-          let barcodeParam = barcode
-          if (barcodeParam.includes('Enter')) {
-            barcodeParam = barcodeParam.slice(0, -5)
-          }
-          this.searchOptions.keyWord = barcodeParam
-          if (this.searchOptions.checkBarcode) {
-            this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
-            this.productsRow = []
-            this.callTopSaleProductsAction(0)
-          } else {
-            this.onChangeKeyWord()
-            this.searchOptions.checkBarcode = true
-          }
-        }
-      }
     },
     formatTextDisplayCustomer(quantity, amount) {
       if (quantity === null || quantity === 0 || amount === null || amount === 0) {
