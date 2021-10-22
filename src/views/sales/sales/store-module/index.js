@@ -1,6 +1,6 @@
 import SalesServices from '@/views/sales/sales/api-service'
 import toasts from '@core/utils/toasts/toasts'
-
+import { notificationResponseMessage } from '@core/utils/utils'
 import {
   // GETTERS
   VOUCHERS_GETTER,
@@ -214,11 +214,11 @@ export default {
           if (res.success) {
             state.vouchers = res.data.content
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -230,11 +230,11 @@ export default {
           if (res.success) {
             state.voucherInfo = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -248,11 +248,11 @@ export default {
             val.onSuccess()
           } else {
             val.onFailure()
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -264,11 +264,11 @@ export default {
           if (res.success) {
             state.onlineOrders = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_ONLINE_ORDER_BY_ID_ACTION]({ state }, val) {
@@ -281,11 +281,11 @@ export default {
               state.onlineOrder = res.data
             }
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_ONLINE_ORDER_COINCIDE_ID_ACTION]({ state }, val) {
@@ -293,10 +293,16 @@ export default {
         .checkOnlineOrderCoincideId(val)
         .then(response => response.data)
         .then(res => {
-          state.messageCoincide = res
+          if (res.success) {
+            if (res.data !== null) {
+              state.messageCoincide = res
+            }
+          } else {
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
+          }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PRODUCTS_ACTION]({ state }, val) {
@@ -307,11 +313,11 @@ export default {
           if (res.success) {
             state.products = res.data.content || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PRODUCT_INFOS_ACTION]({ state }, val) {
@@ -322,11 +328,11 @@ export default {
           if (res.success) {
             state.productInfos = res.data.content || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_TOP_SALE_PRODUCTS_ACTION]({ state }, val) {
@@ -338,11 +344,11 @@ export default {
             state.topSaleProducts = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_HOT_PRODUCTS_ACTION]({ state }, val) {
@@ -353,11 +359,11 @@ export default {
           if (res.success) {
             state.hotProducts = res.data.content || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_ALL_PRODUCT_ACTION]({ state }, val) {
@@ -368,11 +374,11 @@ export default {
           if (res.success) {
             state.allProduct = res.data.content || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [CREATE_SALE_ORDER_ACTION]({ state }, val) {
@@ -385,11 +391,11 @@ export default {
             val.onSuccess()
           } else {
             val.onFailure()
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [UPDATE_PRICE_TYPE_CUSTOMER_ACTION]({ state }, val) {
@@ -398,14 +404,13 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            // toasts.success(res.statusValue)
             state.customerTypeProducts = res.data.products
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_TOP_SALE_PRODUCTS_IN_MONTH_ACTION]({ state }, val) {
@@ -416,11 +421,11 @@ export default {
           if (res.success) {
             state.productsInMonth = res.data.content || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PROMOTION_FREE_ITEMS_ACTION]({ state }, val) {
@@ -431,11 +436,11 @@ export default {
           if (res.success) {
             state.promotionFreeItems = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PROMOTION_PROGRAMS_ACTION]({ state }, val) {
@@ -448,15 +453,11 @@ export default {
             val.onSuccess()
           } else {
             val.onFailure()
-            if (res.statusCode === 6174) {
-              throw new Error(res.statusValue)
-            } else if (res.statusCode === 500) {
-              toasts.error('Mất kết nối với máy chủ, vui lòng nhấn thanh toán lại')
-            }
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PROMOTION_CALCULATION_ACTION]({ state }, val) {
@@ -467,11 +468,11 @@ export default {
           if (res.success) {
             state.promotionCalculation = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_ITEMS_PRODUCTS_PROGRAM_ACTION]({ state }, val) {
@@ -482,11 +483,11 @@ export default {
           if (res.success) {
             state.itemsProductsProgram = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_VOUCHER_BY_SERIAL_ACTION]({ state }, val) {
@@ -502,11 +503,11 @@ export default {
             if (res.statusCode === 11008) {
               val.onFailure()
             }
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_CUSTOMERS_SALE_ACTION]({ state }, val) {
@@ -519,11 +520,11 @@ export default {
               state.customer = res.data
             }
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_SALES_ACTION]({ state }, val) {
@@ -535,11 +536,11 @@ export default {
             state.printSaleData = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_SALES_TEMP_ACTION]({}, val) {
@@ -550,11 +551,11 @@ export default {
           if (res.success) {
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_SALE_PAYMENT_TYPES_ACTION]({ state }, val) {
@@ -565,11 +566,11 @@ export default {
           if (res.success) {
             state.salePaymentTypes = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_SALES_TEMP_ACTION]({ state }, val) {
@@ -581,11 +582,11 @@ export default {
             state.printSaleTempData = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_LIMIT_AGE_CUSTOMERS_ACTION]({ state }, val) {
@@ -596,11 +597,11 @@ export default {
           if (res.success) {
             state.limitAge = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PRODUCT_BY_BARCODE_ACTION]({ state }, val) {
@@ -613,11 +614,11 @@ export default {
             val.onSuccess()
           } else {
             val.onFailure()
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_SALEMT_PROMOTION_OBJECT_ACTION]({ state }, val) {
@@ -628,11 +629,11 @@ export default {
           if (res.success) {
             state.salemtPromotions = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_SALEMT_DELIVERY_TYPE_ACTION]({ state }, val) {
@@ -643,11 +644,11 @@ export default {
           if (res.success) {
             state.salemtDeliveries = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_EDIT_ONLINE_PERMISSION_ACTION]({ state }, val) {
@@ -658,11 +659,11 @@ export default {
           if (res.success) {
             state.editOnlinePermission = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_DEFAULT_CUSTOMER_TYPE_ACTION]({ state }, val) {
@@ -673,11 +674,11 @@ export default {
           if (res.success) {
             state.defaultCustomerType = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_SCORECUMULATED_CUSTOMER_BY_ID_ACTION]({ state }, val) {
@@ -685,10 +686,14 @@ export default {
         .getScorecumulatedById(val)
         .then(response => response.data)
         .then(res => {
-          state.scorecumulated = res
+          if (res.success) {
+            state.scorecumulated = res
+          } else {
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
+          }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

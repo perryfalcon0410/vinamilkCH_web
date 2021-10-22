@@ -1,6 +1,7 @@
 import WareHouseComboService from '@/views/warehouses/warehouses-combo/api-service'
 import toasts from '@core/utils/toasts/toasts'
 import router from '@/router/index'
+import { notificationResponseMessage } from '@core/utils/utils'
 import {
   // getter
   GET_WAREHOUSE_COMBO_DETAIL_GETTER,
@@ -67,11 +68,11 @@ export default {
           if (res.success) {
             state.wareHouseComboDetail = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_WAREHOUSES_COMBO_ACTIONS]({ state }, val) {
@@ -82,11 +83,11 @@ export default {
           if (res.success) {
             state.warehousesComboData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_COMBO_PRODUCTS_ACTION]({ state }, val) {
@@ -97,11 +98,11 @@ export default {
           if (res.success) {
             state.comboProducts = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_COMBO_PRODUCTS_DETAILS_ACTION]({ state }, val) {
@@ -114,11 +115,11 @@ export default {
             state.comboProductsDetails = res.data.details
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [CREATE_COMBO_PRODUCT_ACTION]({}, val) {
@@ -127,14 +128,14 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
             router.push({ name: 'warehouses-combo' })
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_WAREHOUSES_TYPE_ACTION]({ state }, val) {
@@ -146,11 +147,11 @@ export default {
             state.warehouseTypes = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },
