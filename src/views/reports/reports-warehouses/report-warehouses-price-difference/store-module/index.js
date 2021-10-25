@@ -2,6 +2,7 @@ import DifferencePriceServices from '@/views/reports/reports-warehouses/report-w
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import { notificationResponseMessage } from '@core/utils/utils'
 
 import {
   // GETTERS
@@ -53,11 +54,11 @@ export default {
           if (res.success) {
             state.differencePrices = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -69,11 +70,11 @@ export default {
           if (res.success) {
             state.productData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -85,11 +86,11 @@ export default {
           if (res.success) {
             state.productCatData = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [EXPORT_REPORT_WAREHOUSES_DIFFERENCE_PRICE_ACTION]({ }, val) {
@@ -106,7 +107,7 @@ export default {
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_REPORT_DIFFERENCE_ACTION]({ state }, val) {
@@ -117,11 +118,11 @@ export default {
           if (res.success) {
             state.printData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

@@ -2,6 +2,8 @@ import ReportsService from '@/views/reports/reports-returned-goods/api-service/i
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import { notificationResponseMessage } from '@core/utils/utils'
+
 import {
   // GETTERS
   REPORT_RETURNED_GOODS_GETTER,
@@ -78,11 +80,11 @@ export default {
           if (res.success) {
             state.reportReturnedgoodData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [EXPORT_REPORT_RETURNED_GOODS_ACTION]({ }, val) {
@@ -99,7 +101,7 @@ export default {
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -111,11 +113,11 @@ export default {
           if (res.success) {
             state.reasonType = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -127,11 +129,11 @@ export default {
           if (res.success) {
             state.productData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -143,11 +145,11 @@ export default {
           if (res.success) {
             state.productCatData = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_INPUT_ORDER_DETIAL_ACTION]({ state }, val) { // temp
@@ -158,11 +160,11 @@ export default {
           if (res.success) {
             state.printInputOrderDetailData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_SELLS_ACTION]({ state }, val) { // temp
@@ -173,11 +175,11 @@ export default {
           if (res.success) {
             state.printSellsData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_RETURN_GOODS_ACTION]({ state }, val) {
@@ -188,11 +190,11 @@ export default {
           if (res.success) {
             state.printReturnGoodsData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

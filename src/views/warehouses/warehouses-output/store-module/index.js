@@ -1,6 +1,8 @@
 import WarehousesService from '@/views/warehouses/warehouses-output/api-service'
 import FileSaver from 'file-saver'
 import router from '@/router/index'
+import { notificationResponseMessage } from '@core/utils/utils'
+
 import {
   // GETTERS
   GET_WAREHOUSES_OUTPUT_LIST_GETTER,
@@ -97,11 +99,11 @@ export default {
           if (res.success) {
             state.warehousesOutputs = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_WAREHOUSES_OUTPUT_ACTION]({ }, val) {
@@ -118,7 +120,7 @@ export default {
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_WAREHOUSES_OUTPUT_BY_ID_ACTION]({ state }, val) {
@@ -129,11 +131,11 @@ export default {
           if (res.success) {
             state.warehousesOutput = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PRODUCTS_OF_WAREHOUSES_OUTPUT_ACTION]({ state }, val) {
@@ -144,11 +146,11 @@ export default {
           if (res.success) {
             state.products = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [UPDATE_WAREHOUSES_OUTPUT_ACTION]({ }, val) {
@@ -160,11 +162,11 @@ export default {
             toasts.success(res.statusValue)
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_EXPORT_BORROWINGS_ACTION]({ state }, val) {
@@ -175,11 +177,11 @@ export default {
           if (res.success) {
             state.borrowing = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_EXPORT_ADJUSTMENT_ACTION]({ state }, val) {
@@ -190,11 +192,11 @@ export default {
           if (res.success) {
             state.adjustmentTrans = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_EXPORT_PO_TRANS_ACTION]({ state }, val) {
@@ -206,11 +208,11 @@ export default {
             state.poTrans = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_EXPORT_PO_TRANS_DETAIL_ACTION]({ state }, val) {
@@ -222,11 +224,11 @@ export default {
             state.poProducts = res.data
             val.onSuccess(state.poProducts)
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_EXPORT_BORROWINGS_DETAIL_ACTION]({ state }, val) {
@@ -238,11 +240,11 @@ export default {
             state.borrowedProducts = res.data || []
             val.onSuccess(state.borrowedProducts)
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_EXPORT_ADJUSTMENT_DETAIL_ACTION]({ state }, val) {
@@ -254,11 +256,11 @@ export default {
             state.adjustmentProducts = res.data || []
             val.onSuccess(state.adjustmentProducts)
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_WAREHOUSE_TYPE_ACTION]({ state }) {
@@ -269,11 +271,11 @@ export default {
           if (res.success) {
             state.wareHouseType = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [CREATE_EXPORT_ACTION]({ }, val) {
@@ -285,11 +287,11 @@ export default {
             toasts.success(res.statusValue)
             router.push({ name: 'warehouses-output' })
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [DELETE_WAREHOUSES_ACTION]({}, val) {
@@ -300,11 +302,11 @@ export default {
           if (res.success) {
             toasts.success(res.statusValue)
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_OUT_IN_PUT_ORDER_ACTION]({ state }, val) {
@@ -316,11 +318,11 @@ export default {
             state.printOutInputOrderData = res.data || {}
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

@@ -1,6 +1,8 @@
 import RedInvoiceService from '@/views/sales/sales-red-bills/api-service'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import { notificationResponseMessage } from '@core/utils/utils'
+
 import {
   // GETTERS
   RED_INVOICES_GETTER,
@@ -110,11 +112,11 @@ export default {
           if (res.success) {
             state.redInvoices = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_BILL_OF_SALES_ACTION]({ state }, val) {
@@ -131,11 +133,11 @@ export default {
               numberOfElements: res.data.numberOfElements,
             }
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PRODUCTS_IN_SELECTED_BILL_ACTION]({ state }, val) {
@@ -146,11 +148,11 @@ export default {
           if (res.success) {
             state.productOfBills = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_CUSTOMERS_ACTION]({ state }, val) {
@@ -161,11 +163,11 @@ export default {
           if (res.success) {
             state.customers = res.data.content || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PRODUCTS_ACTION]({ state }, val) {
@@ -176,11 +178,11 @@ export default {
           if (res.success) {
             state.products = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [CREATE_RED_BILL_ACTION]({ state }, val) {
@@ -189,15 +191,15 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
             state.idCreateRedInvoice = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_INVOICE_DETAIL_ACTION]({ state }, val) {
@@ -209,11 +211,11 @@ export default {
             state.invoiceDetail = res.data || {}
             val.onSuccess(state.invoiceDetail)
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [DELETE_RED_INVOICE_ACTION]({}, val) {
@@ -222,14 +224,14 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [EXPORT_RED_BILLS_ACTION]({}, val) {
@@ -246,7 +248,7 @@ export default {
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [UPDATE_RED_BILLS_ACTION]({}, val) {
@@ -255,14 +257,14 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_RED_INVOICES_ACTION]({ state }, val) {
@@ -274,11 +276,11 @@ export default {
             state.printdata = res.data || {}
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_CUSTOMERS_TO_RED_INVOICE_ACTION]({ state }, val) {
@@ -290,11 +292,11 @@ export default {
             state.customerToRedInvoice = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

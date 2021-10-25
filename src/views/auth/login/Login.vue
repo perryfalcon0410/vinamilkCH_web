@@ -304,9 +304,12 @@ export default {
           if (res.success) {
             this.captchaCodeResponse = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
-        }).catch(error => toasts.error(error.message))
+        })
+        .catch(error => {
+          toasts.error(notificationResponseMessage(null, error.message))
+        })
     },
 
     checkCaptchaExist(captcha) {

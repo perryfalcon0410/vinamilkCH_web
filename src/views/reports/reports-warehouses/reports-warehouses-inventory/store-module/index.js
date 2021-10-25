@@ -2,6 +2,8 @@ import reportWarehousesInventoryService from '@/views/reports/reports-warehouses
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import { notificationResponseMessage } from '@core/utils/utils'
+
 import {
   // GETTERS
   REPORT_WAREHOUSES_INVENTORY_GETTER,
@@ -79,11 +81,11 @@ export default {
             state.reportWarehousesInventoryInfo = res.data.info
             state.reportWarehousesInventoryPagination = res.data.response
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [EXPORT_REPORT_INVENTORIES_ACTION]({ }, val) {
@@ -100,7 +102,7 @@ export default {
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PRODUCT_LIST_ACTION]({ state }, val) {
@@ -112,11 +114,11 @@ export default {
             state.productList = res.data.content
             state.productListPagination = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PRODUCT_CAT_LIST_ACTION]({ state }, val) {
@@ -127,11 +129,11 @@ export default {
           if (res.success) {
             state.productCatList = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_REPORT_INVENTORY_ACTION]({ state }, val) {
@@ -142,11 +144,11 @@ export default {
           if (res.success) {
             state.printData = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_WAREHOUSE_TYPES_ACTION]({ state }, val) {
@@ -157,11 +159,11 @@ export default {
           if (res.success) {
             state.warehouseTypes = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

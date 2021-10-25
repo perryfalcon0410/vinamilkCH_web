@@ -3,6 +3,8 @@ import toasts from '@core/utils/toasts/toasts'
 import router from '@/router/index'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import { notificationResponseMessage } from '@core/utils/utils'
+
 import {
   // GETTERS
   POCONFIRM_GETTER,
@@ -154,11 +156,11 @@ export default {
           if (res.success) {
             state.poConfirm = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PODETAIL_PRODUCTS_ACTION]({ state }, val) {
@@ -169,11 +171,11 @@ export default {
           if (res.success) {
             state.poConfirmDetails = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PODETAIL_PRODUCTS_PROMO_ACTION]({ state }, val) {
@@ -184,11 +186,11 @@ export default {
           if (res.success) {
             state.poConfirmPromoDetails = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_IMPORTEXCEL_ACTION]({}, val) {
@@ -204,7 +206,7 @@ export default {
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_IMPORT_ADJUSTMENTS_ACTION]({ state }, val) {
@@ -215,11 +217,11 @@ export default {
           if (res.success) {
             state.importAdjustments = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_IMPORT_ADJUSTMENTS_DETAIL_ACTION]({ state }, val) {
@@ -231,11 +233,11 @@ export default {
             state.importAdjustmentsDetails = res.data
             state.importAdjustmentsDetailInfo = res.data.info || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_IMPORT_BORROWINGS_ACTION]({ state }, val) {
@@ -246,11 +248,11 @@ export default {
           if (res.success) {
             state.importBorrowings = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_IMPORT_BORROWINGS_DETAIL_ACTION]({ state }, val) {
@@ -261,11 +263,11 @@ export default {
           if (res.success) {
             state.importBorrowingsDetails = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [UPDATE_NOT_IMPORT_ACTION]({ state }, val) {
@@ -276,11 +278,11 @@ export default {
           if (res.success) {
             state.statusNotImport = res.success
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [CREATE_SALE_IMPORT_ACTION]({}, val) {
@@ -289,14 +291,14 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
             router.push({ name: 'warehouses-input' })
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // START - GET RECEIPTS
@@ -308,11 +310,11 @@ export default {
           if (res.success) {
             state.receipts = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - GET RECEIPTS
@@ -324,13 +326,13 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - EXPORT RECEIPTS
@@ -342,11 +344,11 @@ export default {
           if (res.success) {
             state.receiptById = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PRODUCTS_BY_ID_ACTION]({ state }, val) {
@@ -358,11 +360,11 @@ export default {
             state.products = res.data.response
             state.promotions = res.data.info
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_PRODUCTS_ACTION]({ state }, val) {
@@ -373,11 +375,11 @@ export default {
           if (res.success) {
             state.suggestProducts = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [REMOVE_RECEIPT_ACTION]({ }, val) {
@@ -386,14 +388,14 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [UPDATE_RECEIPT_ACTION]({}, val) {
@@ -402,13 +404,13 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_WAREHOUSES_INPUT_ACTION]({}, val) {
@@ -425,7 +427,7 @@ export default {
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_NOT_IMPORT_REASONS_ACTION]({ state }, val) {
@@ -436,11 +438,11 @@ export default {
           if (res.success) {
             state.notImportReasons = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_OUT_IN_PUT_ORDER_ACTION]({ state }, val) {
@@ -452,11 +454,11 @@ export default {
             state.printOutInputOrderData = res.data || {}
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_IMPORT_PO_CONFIRM_ACTION]({ }, val) {
@@ -467,11 +469,11 @@ export default {
           if (res.success) {
             val.onSuccess(res.data)
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_WAREHOUSES_LIST_ACTION]({ state }, val) {
@@ -483,11 +485,11 @@ export default {
             state.warehousesList = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

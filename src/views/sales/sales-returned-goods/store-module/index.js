@@ -1,6 +1,7 @@
 import OderReturnService from '@/views/sales/sales-returned-goods/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
 import router from '@/router/index'
+import { notificationResponseMessage } from '@core/utils/utils'
 
 import {
   // GETTERS
@@ -72,11 +73,11 @@ export default {
           if (res.success) {
             state.orderReturnData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - GET RETURN GOODS
@@ -91,12 +92,11 @@ export default {
             state.salesOrderData = res.data
             val.onSuccess()
           } else {
-            state.salesOrderData = {}
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - GET SALE ODERS
@@ -109,10 +109,12 @@ export default {
         .then(res => {
           if (res.success) {
             state.chooseProductData = res.data || {}
+          } else {
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - GET SALE ODERS DETAIL
@@ -123,14 +125,14 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
             router.push({ name: 'sales-returned-goods' })
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - CREATE_SALE_ODER
@@ -145,11 +147,11 @@ export default {
             state.productDetailData = res.data || {}
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -162,11 +164,11 @@ export default {
             state.reasonType = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },
