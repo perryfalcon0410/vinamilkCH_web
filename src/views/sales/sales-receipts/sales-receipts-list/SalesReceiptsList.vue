@@ -26,7 +26,7 @@
           mode="remote"
           :rows="salesReceiptList"
           class="pb-1"
-          style-class="vgt-table table-horizontal-scroll sales-class"
+          style-class="vgt-table table-horizontal-scroll sales-class custom-table"
           :pagination-options="{
             enabled: true,
             perPage: paginationData.size,
@@ -697,58 +697,111 @@ export default {
   // }
   .move-header {
     position: sticky !important;
-    right: 0;
+    right: -2px;
     top: 0.9px;
     z-index: 1;
     background: #d7e1f2 !important;
   }
   .move-column {
     position: sticky;
-    right: 0;
+    right: -2px;
     z-index: 99;
     background: inherit;
+  }
+  .custom-table thead tr:last-child th:last-child {
+    position: sticky;
+    right: -1px;
+    z-index: 99;
+    background: #fff;
   }
 
   .custom-table.vgt-table thead tr:first-child th {
     border-bottom: 0px;
   }
+  // code fix scroll tablet
+  @media only screen and (min-width: 800px) {
+    // fix issue scroll tablet
+    .sales-class.table-horizontal-scroll {
+      .scroll-column-header {
+        // style scroll header
+        position: -webkit-sticky;
+        position: sticky !important;
+        top: 0.9px;
+        z-index: 1;
+      }
+      .scroll-column {
+        // style scroll columns
+        position: -webkit-sticky;
+        position: sticky;
+        background: inherit;
+      }
 
-  .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(1) {
-    left: 34px;
-    z-index: 1;
-  }
-  .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
-    left: 34px;
-    z-index: 1;
-  }
-  .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
-    left: var(--customer-code);
-    z-index: 1;
-  }
-  .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
-    /* left: 163px; */
-    left: var(--customer-customerName);
-    z-index: 1;
-  }
-  .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(5) {
-    left: var(--date);
-    /* left: 310px; */
-    z-index: 1;
-  }
+      // style scroll columns line-number
+      tr th.line-numbers {
+        position: -webkit-sticky;
+        position: sticky;
+        left: -1px;
+        background: inherit !important;
+      }
+      thead tr th.line-numbers {
+        position: -webkit-sticky;
+        position: sticky !important;
+        left: -1px;
+        top: 0.9px;
+        z-index: 1;
+      }
+      thead tr:last-child th:first-child {
+        left: -1px;
+        // background: #fff !important;
+        z-index: 1;
+      }
+      // style scroll columns line-number
 
-  .sales-class.table-horizontal-scroll .column-index {
-    left: -1px;
-  }
-  .sales-class.table-horizontal-scroll .column-first {
-    left: 34px;
-  }
-  .sales-class.table-horizontal-scroll .column-second {
-    left: var(--customer-code);
-  }
-  .sales-class.table-horizontal-scroll .column-third {
-    left: var(--customer-customerName);
-  }
-  .sales-class.table-horizontal-scroll .column-4 {
-    left: var(--date);
+      // style scroll row filter
+      thead tr:last-child th {
+        position: -webkit-sticky;
+        position: sticky !important;
+      }
+    }
+    // fix issue scroll tablet
+
+    .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(1) {
+      left: -1px;
+      z-index: 1;
+    }
+    .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(2) {
+      left: 34px;
+      z-index: 1;
+    }
+    .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(3) {
+      left: var(--customer-code);
+      z-index: 1;
+    }
+    .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(4) {
+      /* left: 163px; */
+      left: var(--customer-customerName);
+      z-index: 1;
+    }
+    .sales-class.table-horizontal-scroll thead tr:last-child th:nth-child(5) {
+      left: var(--date);
+      /* left: 310px; */
+      z-index: 1;
+    }
+
+    .sales-class.table-horizontal-scroll .column-index {
+      left: -1px;
+    }
+    .sales-class.table-horizontal-scroll .column-first {
+      left: 34px;
+    }
+    .sales-class.table-horizontal-scroll .column-second {
+      left: var(--customer-code);
+    }
+    .sales-class.table-horizontal-scroll .column-third {
+      left: var(--customer-customerName);
+    }
+    .sales-class.table-horizontal-scroll .column-4 {
+      left: var(--date);
+    }
   }
 </style>
