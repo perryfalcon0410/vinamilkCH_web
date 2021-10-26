@@ -261,7 +261,7 @@
             <div v-else-if="props.column.field === 'inventoryPacket'">
               <cleave
                 :id="products[props.row.originalIndex].productCode + 'inventoryPacket'"
-                class="form-control text-right text-bold h9"
+                class="form-control text-right text-bold h9 pr-textbox"
                 :raw="true"
                 :options="options.number"
                 maxlength="9"
@@ -279,7 +279,7 @@
             <div v-else-if="props.column.field === 'inventoryOdd'">
               <cleave
                 :id="products[props.row.originalIndex].productCode + 'inventoryOdd'"
-                class="form-control text-right text-bold h9"
+                class="form-control text-right text-bold h9 pr-textbox"
                 :raw="true"
                 :options="options.number"
                 maxlength="9"
@@ -1062,4 +1062,8 @@ export default {
     left: 73px;
   }
   /* tùy chỉnh left khi scroll*/
+
+  .pr-textbox {
+    padding-right: 6px;
+  }
 </style>
