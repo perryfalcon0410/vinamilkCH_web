@@ -1,5 +1,7 @@
 import PrintService from '@/views/auth/printer-configuration-modal/api-service'
 import toasts from '@core/utils/toasts/toasts'
+import { notificationResponseMessage } from '@core/utils/utils'
+
 import {
   PRINTER_CLIENT_GETTER,
   GET_PRINTER_CLIENT_ACTIONS,
@@ -29,11 +31,11 @@ export default {
             state.printConfigData = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -46,11 +48,11 @@ export default {
             toasts.success('Lưu cấu hình in thành công')
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -63,11 +65,11 @@ export default {
             toasts.success('Cập nhật cấu hình in thành công')
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

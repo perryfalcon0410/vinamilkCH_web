@@ -1,5 +1,6 @@
 import WarehousesInventoryService from '@/views/warehouses/warehouses-inventory/api-service'
 import toasts from '@core/utils/toasts/toasts'
+import { notificationResponseMessage } from '@core/utils/utils'
 
 import {
   // GETTERS
@@ -77,11 +78,11 @@ export default {
           if (res.success) {
             state.warehouseInventories = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_WAREHOUSE_TYPES_ACTION]({ state }, val) {
@@ -92,11 +93,11 @@ export default {
           if (res.success) {
             state.warehouseTypes = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_WAREHOUSE_INVENTORY_STOCKS_ACTION]({ state }, val) {
@@ -108,11 +109,11 @@ export default {
             state.warehouseInventoryStocks = res.data
             state.warehouseInventoryStatusCode = res.statusCode
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [EXPORT_FILLED_STOCKS_ACTION]({}, val) {
@@ -134,7 +135,7 @@ export default {
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [CREATE_WAREHOUSE_INVENTORY_ACTION]({ state }, val) {
@@ -147,11 +148,11 @@ export default {
             state.warehouseInventoryStatusCode = res.statusCode
             state.warehouseInventoryData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [IMPORT_FILLED_STOCKS_ACTION]({ state }, val) {
@@ -163,11 +164,11 @@ export default {
             state.warehouseInventoryImportData = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [CHECK_EXISTED_WAREHOUSE_INVENTORY_ACTION]({ state }, val) {
@@ -179,11 +180,11 @@ export default {
             state.isExistedWarehouseInventory = !res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_SAMPLE_IMPORT_FILE_ACTION]({}) {
@@ -205,7 +206,7 @@ export default {
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_FAILED_IMPORT_FILE_ACTION]({}, val) {
@@ -227,7 +228,7 @@ export default {
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_WAREHOUSE_INVENTORY_DETAIL_ACTION]({ state }, val) {
@@ -238,11 +239,11 @@ export default {
           if (res.success) {
             state.warehouseInventoryDetail = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [UPDATE_WAREHOUSE_INVENTORY_ACTION]({ state }, val) {
@@ -254,11 +255,11 @@ export default {
             toasts.success(res.statusValue)
             state.warehouseInventoryStatusCode = res.statusCode
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

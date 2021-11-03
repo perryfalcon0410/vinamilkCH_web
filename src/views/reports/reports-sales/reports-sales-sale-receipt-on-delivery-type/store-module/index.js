@@ -2,6 +2,7 @@ import reportSalesSaleOnDeliveryTypeService from '@/views/reports/reports-sales/
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import { notificationResponseMessage } from '@core/utils/utils'
 
 import {
   // GETTERS
@@ -48,11 +49,11 @@ export default {
             state.reportSalesSaleOnDeliveryType = res.data
             state.reportSalesSaleOnDeliveryTypeContent = res.data.response.content
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_SALES_DELIVERY_TYPES_ACTION]({ state }, val) {
@@ -63,11 +64,11 @@ export default {
           if (res.success) {
             state.reportSalesDeliveryType = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [EXPORT_REPORT_SALE_ON_DELIVERY_TYPE_ACTION]({ }, val) {
@@ -84,7 +85,7 @@ export default {
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

@@ -1,5 +1,6 @@
 import exchangeDamagedGoodsService from '@/views/warehouses/warehouses-exchange-damaged-goods/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
+import { notificationResponseMessage } from '@core/utils/utils'
 
 import {
   // GETTERS
@@ -74,11 +75,11 @@ export default {
           if (res.success) {
             state.exchangeDamagedGoods = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - GET EXCHANGE DAMAGED GOODS
@@ -92,11 +93,11 @@ export default {
           if (res.success) {
             state.exchangeDamagedGoodsById = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - GET EXCHANGE DAMAGED GOODS BY ID
@@ -110,11 +111,11 @@ export default {
           if (res.success) {
             state.exchangeDamagedGoodsReasons = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - GET EXCHANGE DAMAGED GOODS REASONS
@@ -124,14 +125,14 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -144,11 +145,11 @@ export default {
           if (res.success) {
             state.customers = res.data.content || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - GET CUSTOMERS
@@ -162,11 +163,11 @@ export default {
           if (res.success) {
             state.products = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - GET PRODUCTS
@@ -178,13 +179,13 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - REMOVE DAMAGED GOODS BY ID
@@ -196,14 +197,14 @@ export default {
         .then(response => response.data)
         .then(res => {
           if (res.success) {
-            toasts.success(res.statusValue)
+            toasts.success(notificationResponseMessage(res.statusCode, res.statusValue))
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END UPDATE EXCHANGE GOODS
@@ -217,11 +218,11 @@ export default {
           if (res.success) {
             state.damagedGoodsById = res.data || []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     // END - GET DAMAGED GOODS BY ID
@@ -233,11 +234,11 @@ export default {
           if (res.success) {
             state.customerTypeProducts = res.data.products
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 

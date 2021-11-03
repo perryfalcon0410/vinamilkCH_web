@@ -2,6 +2,8 @@ import ReportsService from '@/views/reports/reports-sales/reports-sales-cat/api-
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import { notificationResponseMessage } from '@core/utils/utils'
+
 import {
   // GETTERS
   REPORT_SALES_CAT_GETTER,
@@ -46,11 +48,11 @@ export default {
           if (res.success) {
             state.reportCustomerData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [EXPORT_REPORT_SALES_CAT_ACTION]({}, val) {
@@ -67,7 +69,7 @@ export default {
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_CUSTOMER_TYPES_ACTION]({ state }, val) {
@@ -78,11 +80,11 @@ export default {
           if (res.success) {
             state.customerTypes = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_REPORT_ACTION]({ state }, val) {
@@ -93,11 +95,11 @@ export default {
           if (res.success) {
             state.printReportData = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

@@ -642,6 +642,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    isOpenPayModal: {
+      type: Boolean,
+    },
   },
 
   data() {
@@ -736,7 +739,7 @@ export default {
       salemtPromotionObjectOptions: [],
       checkApParramCode: false, // check disabled so hoa don
 
-      isOpenPayModal: false,
+      // isOpenPayModal: false,
       status: customerData.status[0].id,
 
       search: '',
@@ -1149,6 +1152,7 @@ export default {
           })
         }
       }
+      this.$emit('changeStateOpenPayModal', this.isOpenPayModal)
     },
 
     showNotifyModal() {
@@ -1394,6 +1398,7 @@ export default {
     },
     changeStateOpenPayModal(isOpened) {
       this.isOpenPayModal = isOpened
+      this.$emit('changeStateOpenPayModal', this.isOpenPayModal)
     },
     getSearchOption(val) {
       const searchOption = val

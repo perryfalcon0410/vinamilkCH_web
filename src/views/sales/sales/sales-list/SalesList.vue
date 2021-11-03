@@ -316,6 +316,7 @@
         :order-number-bill="orderNumber"
         :order-current-id="orderCurrentId"
         :is-new-button="isNewButton"
+        :is-open-pay-modal="isOpenPayModal"
         @getOnlineOrderInfoForm="getOnlineOrderInfoForm"
         @getCustomerTypeInfo="getCustomerTypeInfo"
         @getCustomerIdInfo="getCustomerIdInfo"
@@ -333,6 +334,7 @@
         @getOrderNumber="getOrderNumber"
         @getSearchOption="getSearchOption"
         @checkApParramCode="checkApParramCode"
+        @changeStateOpenPayModal="changeStateOpenPayModal"
       />
       <!-- END - Section Form pay -->
 
@@ -486,7 +488,7 @@ export default {
         catId: null,
         customerId: null,
         status: null,
-        size: commonData.minSearchSize,
+        size: 2, // commonData.minSearchSize
         page: 0,
         checkBarcode: true,
       },
@@ -566,6 +568,7 @@ export default {
       arrDateTime: [],
       keyWordExistCheckDateTime: '',
       runBarcode: true,
+      isOpenPayModal: false,
     }
   },
   computed: {
@@ -722,7 +725,25 @@ export default {
             }
           } else {
             this.isLoading = false
-            this.$nextTick(() => document.getElementById('autosuggest__input_product').focus())
+            this.$nextTick(() => {
+              document.getElementById('autosuggest__input_product').focus()
+              document.getElementById('autosuggest__input_product').click()
+            })
+          }
+        } else if (this.searchOptions.keyWord !== this.searchOptions.keyWordExist) {
+          let productsFiltered = this.productsRow.filter(product => (product.productCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
+                                                            || (product.productName || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()) || (product.barCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
+          productsFiltered = [...productsFiltered.map(item => ({
+            ...item,
+            name: this.searchOptions.keyWord,
+          }))]
+          this.productsSearch = [{
+            data: productsFiltered,
+          }]
+
+          this.productsSearchLength = this.productsSearch[0].data.length
+          if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
+            this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
           }
         }
       } else {
@@ -805,7 +826,7 @@ export default {
 
     // Pass an options object with `eventBus: true` to receive an eventBus back
     // which emits `start` and `finish` events
-    this.$barcodeScanner.setSensitivity(17)
+    this.$barcodeScanner.setSensitivity(100)
     // Add barcode scan listener and pass the callback function
     this.$barcodeScanner.init(this.onBarcodeScanned)
     // const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, { eventBus: true })
@@ -878,17 +899,32 @@ export default {
         this.isSelectedProduct = false
       }
     },
+    blurInputSearch() {
+      if (this.searchOptions.keyWord.length < this.minSearch) {
+        this.productsSearch = [{ data: null }]
+      }
+      this.searchOptions.checkBarcode = true
+    },
+
     // Create callback function to receive barcode when the scanner is already done
     onBarcodeScanned(barcode) {
-      if (barcode.length > 4 && this.runBarcode) {
-        if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
-          let barcodeParam = barcode
-          if (barcodeParam.includes('Enter')) { // remove Enter keyword after scan barcode
-            barcodeParam = barcodeParam.slice(0, -5)
+      this.searchOptions.keyWord = ''
+      if (!this.isOpenPayModal) {
+        let barcodeParam = barcode
+        if (barcodeParam.includes('Enter')) { // remove Enter keyword after scan barcode
+          barcodeParam = barcodeParam.slice(0, -5)
+        }
+        if (this.searchOptions.checkBarcode) {
+          if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
+            this.searchOptions.keyWord = barcodeParam
+            this.productsSearch = [{ data: null }]
+            this.productsRow = []
+            this.totalPageProductsSearch = 0
+            this.callTopSaleProductsAction(0)
           }
+        } else if (this.searchOptions.keyWord !== barcodeParam) {
           this.searchOptions.keyWord = barcodeParam
-          this.productsRow = []
-          this.callTopSaleProductsAction(0)
+          this.onChangeKeyWord()
         }
       }
     },
@@ -897,70 +933,71 @@ export default {
       // const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}:${today.getMilliseconds()}`
       // const dateTime = `${date} ${time}`
       // console.log(dateTime)
-      this.runBarcode = true
-      if (this.searchOptions.keyWord.length < 2) {
-        this.arrDateTime = []
-        this.productsSearch = [{ data: null }]
-        this.productsRow = []
-        this.totalPageProductsSearch = 0
-        this.keyWordExist = ''
-        this.searchOptions.checkBarcode = false
-      }
+      // this.runBarcode = true
+      // if (this.searchOptions.keyWord.length === 0) {
+      //   this.productsSearch = [{ data: null }]
+      //   this.productsRow = []
+      //   this.totalPageProductsSearch = 0
+      //   this.keyWordExist = ''
+      //   // this.searchOptions.checkBarcode = false
+      // }
 
-      if (this.searchOptions.keyWord.length <= this.minSearch) {
-        if (this.keyWordExistCheckDateTime.length > this.searchOptions.keyWord.length) {
-          this.arrDateTime.splice(this.searchOptions.keyWord.length, this.keyWordExistCheckDateTime.length - this.searchOptions.keyWord.length)
-        }
-        this.keyWordExistCheckDateTime = this.searchOptions.keyWord
-        const today = new Date()
-        this.arrDateTime.push(today)
-      }
+      // if (this.searchOptions.keyWord.length <= this.minSearch) {
+      //   if (this.keyWordExistCheckDateTime.length > this.searchOptions.keyWord.length) {
+      //     this.arrDateTime.splice(this.searchOptions.keyWord.length, this.keyWordExistCheckDateTime.length - this.searchOptions.keyWord.length)
+      //   }
+      //   this.keyWordExistCheckDateTime = this.searchOptions.keyWord
+      //   const today = new Date()
+      //   this.arrDateTime.push(today)
+      // }
 
-      if (this.searchOptions.keyWord.length === this.minSearch) {
-        const maxInput1 = 10 // setSensitivity tóc độ máy scan cầm tay
-        const minInput2 = 15 // setSensitivity tóc độ nhỏ nhất của máy scan để bàn
-        const maxInput2 = 18 // setSensitivity tóc độ lớn nhất của máy scan để bàn
-        let count1 = 0
-        let count2 = 0
-        let diffTime = 0
-        // eslint-disable-next-line no-plusplus
-        for (let i = 1; i < this.minSearch; i++) {
-          diffTime = this.arrDateTime[i] - this.arrDateTime[i - 1]
-          if (diffTime <= maxInput1) {
-            count1 += 1
-          } else if (minInput2 <= diffTime && diffTime <= maxInput2) {
-            count2 += 1
-          }
+      // if (this.searchOptions.keyWord.length === this.minSearch) {
+      //   const maxInput1 = 10 // setSensitivity tóc độ máy scan cầm tay
+      //   const minInput2 = 15 // setSensitivity tóc độ nhỏ nhất của máy scan để bàn
+      //   const maxInput2 = 18 // setSensitivity tóc độ lớn nhất của máy scan để bàn
+      //   let count1 = 0
+      //   let count2 = 0
+      //   let diffTime = 0
+      //   // eslint-disable-next-line no-plusplus
+      //   for (let i = 1; i < this.minSearch; i++) {
+      //     diffTime = this.arrDateTime[i] - this.arrDateTime[i - 1]
+      //     if (diffTime <= maxInput1) {
+      //       count1 += 1
+      //     } else if (minInput2 <= diffTime && diffTime <= maxInput2) {
+      //       count2 += 1
+      //     }
+      //   }
+      //   if ((count1 === (this.arrDateTime.length - 1) && count2 === 0 && count1 !== 0) || (count1 === 0 && count2 === (this.arrDateTime.length - 1) && count2 !== 0)) {
+      //     this.searchOptions.checkBarcode = true
+      //   } else {
+      //     this.searchOptions.checkBarcode = false
+      //   }
+      //   this.arrDateTime = []
+      // }
+      if (this.searchOptions.keyWord.length >= this.minSearch) {
+        let keywordSplice = this.searchOptions.keyWord
+        if (this.keyWordExist.length > 0) {
+          keywordSplice = keywordSplice.slice(0, this.keyWordExist.length)
         }
-        if ((count1 === (this.arrDateTime.length - 1) && count2 === 0 && count1 !== 0) || (count1 === 0 && count2 === (this.arrDateTime.length - 1) && count2 !== 0)) {
-          this.searchOptions.checkBarcode = true
-        } else {
-          this.searchOptions.checkBarcode = false
-        }
-        this.arrDateTime = []
-      }
-
-      if (this.searchOptions.keyWord.length === this.minSearch && !this.searchOptions.checkBarcode && this.keyWordExist !== this.searchOptions.keyWord) {
-        this.runBarcode = false
-        if (this.isCheckShopId) {
-          this.keyWordExist = this.searchOptions.keyWord
+        if (this.keyWordExist !== keywordSplice) {
+          // this.runBarcode = false
+          this.productsSearch = [{ data: null }]
           this.productsRow = []
-          this.isLoading = true
-          const el = document.querySelector(':focus')
-          if (el) {
-            el.blur()
-            this.searchOptions.checkBarcode = false
-          }
           this.totalPageProductsSearch = 0
-          this.callTopSaleProductsAction(this.searchOptions.page)
-        } else {
-          toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
-        }
-      }
-
-      if ((this.searchOptions.keyWord.length > this.minSearch && !this.searchOptions.checkBarcode) || (this.searchOptions.keyWord.length === this.minSearch && this.keyWordExist === this.searchOptions.keyWord)) {
-        this.runBarcode = false
-        if (this.productsRow.length > 0) {
+          if (this.isCheckShopId) {
+            this.keyWordExist = this.searchOptions.keyWord
+            this.isLoading = true
+            this.totalPageProductsSearch = 0
+            this.callTopSaleProductsAction(this.searchOptions.page)
+            const el = document.querySelector(':focus')
+            if (el) {
+              el.blur()
+              // this.searchOptions.checkBarcode = false
+            }
+          } else {
+            toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
+          }
+        } else if (this.productsRow.length > 0) {
           let productsFiltered = this.productsRow.filter(product => (product.productCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
                                                             || (product.productName || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()) || (product.barCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
           productsFiltered = [...productsFiltered.map(item => ({
@@ -975,18 +1012,21 @@ export default {
           if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
             this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
           }
-        } else { // copy paste keyword
-          this.callTopSaleProductsAction(this.searchOptions.page)
         }
       }
     },
     callTopSaleProductsAction(page) {
+      let keyWordSearch = this.searchOptions.keyWord
       this.searchOptions.checkStockTotal = this.checkStockTotal ? 1 : 0
       this.searchOptions.customerId = this.currentCustomer.id
+      if (this.keyWordExist.length > 0) {
+        keyWordSearch = this.keyWordExist
+      }
       this.GET_TOP_SALE_PRODUCTS_ACTION({
         data: {
           ...this.searchOptions,
           page,
+          keyWord: keyWordSearch,
         },
         onSuccess: () => {
           if (page + 1 === this.totalPageProductsSearch) {
@@ -995,12 +1035,6 @@ export default {
           }
         },
       })
-    },
-    blurInputSearch() {
-      if (this.searchOptions.keyWord.length < this.minSearch) {
-        this.productsSearch = [{ data: null }]
-      }
-      this.searchOptions.checkBarcode = true
     },
 
     onClickAddProduct(index) {
@@ -1024,6 +1058,7 @@ export default {
             this.productsSearch = [{ data: null }]
             this.productIdSelected = index.item.productCode
             this.productsRow = []
+            this.keyWordExist = ''
             sendToCustomerDisplay(removeVietnameseTones(index.item.productName, true), true)
             sendToCustomerDisplay('                                         ', true)
             setTimeout(() => {
@@ -1448,6 +1483,9 @@ export default {
         spaceText += ' '
       }
       return `${quantity.toString()}${spaceText}${amount.toString()}`
+    },
+    changeStateOpenPayModal(state) {
+      this.isOpenPayModal = state
     },
   },
 }

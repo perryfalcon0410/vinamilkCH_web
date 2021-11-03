@@ -208,7 +208,7 @@ import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
 import toasts from '@core/utils/toasts/toasts'
 import useJwt from '@/auth/jwt/useJwt'
-import { sendToCustomerDisplay } from '@core/utils/utils'
+import { sendToCustomerDisplay, notificationResponseMessage } from '@core/utils/utils'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
 import { $themeConfig } from '@themeConfig'
 import CryptoJS from 'crypto-js'
@@ -304,9 +304,12 @@ export default {
           if (res.success) {
             this.captchaCodeResponse = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
-        }).catch(error => toasts.error(error.message))
+        })
+        .catch(error => {
+          toasts.error(notificationResponseMessage(null, error.message))
+        })
     },
 
     checkCaptchaExist(captcha) {
@@ -414,11 +417,11 @@ export default {
                 if (data) {
                   this.checkCaptchaExist(data.captcha)
                 }
-                throw new Error(statusValue)
+                toasts.error(notificationResponseMessage(4007, statusValue))
               }
             })
             .catch(error => {
-              toasts.error(error.message)
+              toasts.error(notificationResponseMessage(null, error.message))
             })
         }
       })
@@ -446,7 +449,7 @@ export default {
           sendToCustomerDisplay('                                     ', true)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

@@ -2,6 +2,7 @@ import reportSalesService from '@/views/reports/reports-sales/reports-sales-amou
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import { notificationResponseMessage } from '@core/utils/utils'
 
 import {
   // GETTERS
@@ -52,11 +53,11 @@ export default {
             // }
             // state.reportSalesQuantityReceiptContent = []
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_CUSTOMERS_TYPES_ACTION]({ state }, val) {
@@ -67,11 +68,11 @@ export default {
           if (res.success) {
             state.reportSalesCustomerType = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [EXPORT_REPORT_SALES_QUANTITY_RECEIPT_ACTION]({ }, val) {
@@ -88,7 +89,7 @@ export default {
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

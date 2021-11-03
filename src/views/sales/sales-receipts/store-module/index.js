@@ -1,5 +1,7 @@
 import SaleReceiptService from '@/views/sales/sales-receipts/api-service/index'
 import toasts from '@core/utils/toasts/toasts'
+import { notificationResponseMessage } from '@core/utils/utils'
+
 import {
   // GETTERS
   SALES_RECEIPTS_GETTER,
@@ -40,11 +42,11 @@ export default {
           if (res.success) {
             state.saleReceipts = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [GET_SALES_RECEIPTS_DETAIL_ACTION]({ state }, val) {
@@ -55,11 +57,11 @@ export default {
           if (res.success) {
             state.saleReceiptsDetail = res.data || {}
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [PRINT_SALES_RECEIPT_ACTION]({ state }, val) {
@@ -71,11 +73,11 @@ export default {
             state.printSalesReceiptData = res.data
             val.onSuccess()
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },

@@ -2,6 +2,8 @@ import ReportsPurchasesSerivce from '@/views/reports/reports-purchases/api-servi
 import toasts from '@core/utils/toasts/toasts'
 import FileSaver from 'file-saver'
 import moment from 'moment'
+import { notificationResponseMessage } from '@core/utils/utils'
+
 import {
   // GETTERS
   REPORT_INPUT_RECEIPT_DETAILS_GETTER,
@@ -39,11 +41,11 @@ export default {
           if (res.success) {
             state.reportInputReceiptDetails = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
     [EXPORT_REPORT_INPUT_RECEIPT_DETAILS_ACTION]({ }, val) {
@@ -60,7 +62,7 @@ export default {
           FileSaver.saveAs(blob, fileName)
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
 
@@ -72,11 +74,11 @@ export default {
           if (res.success) {
             state.printInputReceiptDetails = res.data
           } else {
-            throw new Error(res.statusValue)
+            toasts.error(notificationResponseMessage(res.statusCode, res.statusValue))
           }
         })
         .catch(error => {
-          toasts.error(error.message)
+          toasts.error(notificationResponseMessage(null, error.message))
         })
     },
   },
