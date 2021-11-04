@@ -488,7 +488,7 @@ export default {
         catId: null,
         customerId: null,
         status: null,
-        size: 2, // commonData.minSearchSize
+        size: commonData.minSearchSize,
         page: 0,
         checkBarcode: true,
       },
