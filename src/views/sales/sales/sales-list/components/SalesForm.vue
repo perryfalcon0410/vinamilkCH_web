@@ -115,7 +115,7 @@
                   @selected="onclickChooseCustomer"
                   @keyup.enter="onChangeKeyWord"
                   @input="changeInput"
-                  @focus="focusInput"
+                  @focus="focusInputCustomer"
                 >
                   <template
                     slot-scope="{ suggestion }"
@@ -297,6 +297,7 @@
                         || (orderOnline.onlineOrderId === null && editManualPermission === false)
                         || (orderOnline.onlineOrderId !== null && editOnlinePermission === false)"
                       @input="getOrderNumber"
+                      @focus="focusOrderOnline"
                     />
                     <b-input-group-append
                       v-b-popover.hover.top="'Chọn đơn online'"
@@ -414,6 +415,7 @@
                 placeholder="Ghi chú"
                 maxlength="4000"
                 @input="getOrderNumber"
+                @focus="focusInputNote"
               />
 
             </b-input-group>
@@ -1028,6 +1030,12 @@ export default {
       },
       deep: true,
     },
+    // runBarcode: {
+    //   handler() {
+
+    //   },
+    //   deep: true,
+    // },
   },
 
   mounted() {
@@ -1337,12 +1345,13 @@ export default {
     getDeliveryType(item) {
       this.$emit('salemtDeliveryTypeSelected', item)
     },
-    focusInput() {
+    focusInputCustomer() {
       if (this.isSelected) {
         this.customersSearch = [{ data: null }]
         this.search = ''
         this.isSelected = false
       }
+      this.$emit('focusInputCustomer')
     },
 
     onclickChooseCustomer(suggestion) {
@@ -1393,7 +1402,6 @@ export default {
       this.$emit('deleteSaveBill')
     },
     getOrderNumber() {
-      this.GET_ONLINE_ORDER_COINCIDE_ID_ACTION(`${this.orderOnline.orderNumber}`)
       this.$emit('getOrderNumber', this.orderOnline)
     },
     changeStateOpenPayModal(isOpened) {
@@ -1403,6 +1411,12 @@ export default {
     getSearchOption(val) {
       const searchOption = val
       this.$emit('getSearchOption', searchOption)
+    },
+    focusInputNote() {
+      this.$emit('focusInputNote')
+    },
+    focusOrderOnline() {
+      this.$emit('focusOrderOnline')
     },
   },
 }

@@ -335,6 +335,9 @@
         @getSearchOption="getSearchOption"
         @checkApParramCode="checkApParramCode"
         @changeStateOpenPayModal="changeStateOpenPayModal"
+        @focusInputCustomer="focusInputCustomer"
+        @focusInputNote="focusInputNote"
+        @focusOrderOnline="focusOrderOnline"
       />
       <!-- END - Section Form pay -->
 
@@ -796,6 +799,12 @@ export default {
       this.editManualPermission = this.getEditOnlinePermission.manuallyCreatable
       this.editOnlinePermission = this.getEditOnlinePermission.editable
     },
+    // runBarcode: {
+    //   handler() {
+    //     console.log(this.runBarcode)
+    //   },
+    //   deep: true,
+    // },
   },
   mounted() {
     this.GET_EDIT_ONLINE_PERMISSION_ACTION()
@@ -826,7 +835,7 @@ export default {
 
     // Pass an options object with `eventBus: true` to receive an eventBus back
     // which emits `start` and `finish` events
-    this.$barcodeScanner.setSensitivity(100)
+    this.$barcodeScanner.setSensitivity(30)
     // Add barcode scan listener and pass the callback function
     this.$barcodeScanner.init(this.onBarcodeScanned)
     // const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, { eventBus: true })
@@ -893,7 +902,7 @@ export default {
     // check shop default
     focusInputProduct() {
       this.searchOptions.checkBarcode = false
-      this.arrDateTime = []
+      this.runBarcode = true
       if (this.isSelectedProduct) {
         this.productsSearch = [{ data: null }]
         this.isSelectedProduct = false
@@ -904,12 +913,13 @@ export default {
         this.productsSearch = [{ data: null }]
       }
       this.searchOptions.checkBarcode = true
+      this.searchOptions.runBarcode = true
     },
 
-    // Create callback function to receive barcode when the scanner is already done
+    // Create callback function to receve barcode when the scanner is already done
     onBarcodeScanned(barcode) {
-      this.searchOptions.keyWord = ''
-      if (!this.isOpenPayModal) {
+      if (!this.isOpenPayModal && this.runBarcode && barcode.length > 4) {
+        this.searchOptions.keyWord = ''
         let barcodeParam = barcode
         if (barcodeParam.includes('Enter')) { // remove Enter keyword after scan barcode
           barcodeParam = barcodeParam.slice(0, -5)
@@ -929,51 +939,6 @@ export default {
       }
     },
     onChangeKeyWord() {
-      // const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
-      // const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}:${today.getMilliseconds()}`
-      // const dateTime = `${date} ${time}`
-      // console.log(dateTime)
-      // this.runBarcode = true
-      // if (this.searchOptions.keyWord.length === 0) {
-      //   this.productsSearch = [{ data: null }]
-      //   this.productsRow = []
-      //   this.totalPageProductsSearch = 0
-      //   this.keyWordExist = ''
-      //   // this.searchOptions.checkBarcode = false
-      // }
-
-      // if (this.searchOptions.keyWord.length <= this.minSearch) {
-      //   if (this.keyWordExistCheckDateTime.length > this.searchOptions.keyWord.length) {
-      //     this.arrDateTime.splice(this.searchOptions.keyWord.length, this.keyWordExistCheckDateTime.length - this.searchOptions.keyWord.length)
-      //   }
-      //   this.keyWordExistCheckDateTime = this.searchOptions.keyWord
-      //   const today = new Date()
-      //   this.arrDateTime.push(today)
-      // }
-
-      // if (this.searchOptions.keyWord.length === this.minSearch) {
-      //   const maxInput1 = 10 // setSensitivity tóc độ máy scan cầm tay
-      //   const minInput2 = 15 // setSensitivity tóc độ nhỏ nhất của máy scan để bàn
-      //   const maxInput2 = 18 // setSensitivity tóc độ lớn nhất của máy scan để bàn
-      //   let count1 = 0
-      //   let count2 = 0
-      //   let diffTime = 0
-      //   // eslint-disable-next-line no-plusplus
-      //   for (let i = 1; i < this.minSearch; i++) {
-      //     diffTime = this.arrDateTime[i] - this.arrDateTime[i - 1]
-      //     if (diffTime <= maxInput1) {
-      //       count1 += 1
-      //     } else if (minInput2 <= diffTime && diffTime <= maxInput2) {
-      //       count2 += 1
-      //     }
-      //   }
-      //   if ((count1 === (this.arrDateTime.length - 1) && count2 === 0 && count1 !== 0) || (count1 === 0 && count2 === (this.arrDateTime.length - 1) && count2 !== 0)) {
-      //     this.searchOptions.checkBarcode = true
-      //   } else {
-      //     this.searchOptions.checkBarcode = false
-      //   }
-      //   this.arrDateTime = []
-      // }
       if (this.searchOptions.keyWord.length >= this.minSearch) {
         let keywordSplice = this.searchOptions.keyWord
         if (this.keyWordExist.length > 0) {
@@ -1486,6 +1451,15 @@ export default {
     },
     changeStateOpenPayModal(state) {
       this.isOpenPayModal = state
+    },
+    focusInputCustomer() {
+      this.runBarcode = false
+    },
+    focusInputNote() {
+      this.runBarcode = false
+    },
+    focusOrderOnline() {
+      this.runBarcode = false
     },
   },
 }
