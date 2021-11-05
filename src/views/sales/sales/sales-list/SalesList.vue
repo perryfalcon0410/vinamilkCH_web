@@ -934,11 +934,18 @@ export default {
           }
         } else if (this.searchOptions.keyWord !== barcodeParam) {
           this.searchOptions.keyWord = barcodeParam
+          this.searchOptions.checkBarcode = true
           this.onChangeKeyWord()
         }
       }
     },
     onChangeKeyWord() {
+      if (this.searchOptions.keyWord < 1) {
+        this.keyWordExist = ''
+        this.productsSearch = [{ data: null }]
+        this.productsRow = []
+        this.totalPageProductsSearch = 0
+      }
       if (this.searchOptions.keyWord.length >= this.minSearch) {
         let keywordSplice = this.searchOptions.keyWord
         if (this.keyWordExist.length > 0) {
@@ -957,7 +964,7 @@ export default {
             const el = document.querySelector(':focus')
             if (el) {
               el.blur()
-              // this.searchOptions.checkBarcode = false
+              this.searchOptions.checkBarcode = false
             }
           } else {
             toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
