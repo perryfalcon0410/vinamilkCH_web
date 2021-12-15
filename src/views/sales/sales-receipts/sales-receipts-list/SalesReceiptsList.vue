@@ -410,6 +410,20 @@ export default {
           tdClass: 'text-left align-middle',
         },
         {
+          label: 'Loại đơn hàng',
+          field: 'orderTypeName',
+          sortable: false,
+          thClass: 'text-left ws-nowrap',
+          tdClass: 'text-left align-middle',
+        },
+        {
+          label: 'Số đơn hàng',
+          field: 'onlineNumber',
+          sortable: false,
+          thClass: 'text-left ws-nowrap',
+          tdClass: 'text-left align-middle',
+        },
+        {
           label: 'In HĐ đỏ',
           field: 'usedRedInvoice',
           sortable: false,
@@ -487,6 +501,8 @@ export default {
           redInvoiceCompanyName: data.redInvoiceCompanyName,
           redInvoiceTaxCode: data.redInvoiceTaxCode,
           redInvoiceAddress: data.redInvoiceAddress,
+          orderTypeName: data.orderTypeName,
+          onlineNumber: data.onlineNumber,
         }))
       }
       return []

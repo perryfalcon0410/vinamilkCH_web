@@ -1151,6 +1151,7 @@ export default {
           productSearch: '',
           maxShopQty: data.maxShopQty, // số xuất phân bổ
           receiveShopQty: data.receiveShopQty, // Đã sử dụng
+          editable: data.editable, // allow edit number of, flow: editable = 0 or null => cannot edit, editable = 1 can edit
           // eslint-disable-next-line no-nested-ternary
           orderInQty: data.totalQty !== null ? data.totalQty : data.amount !== null ? data.amount.amount : 0, // số suất trong đơn hàng
           groupPromotion: '',
@@ -1582,15 +1583,21 @@ export default {
                       quantity: 0,
                     }
                   }
-                  if (product.productId === params.row.productId && product.quantity === 0) {
+                  if (product.productId === params.row.productId) {
+                    if (product.quantity === 0) {
+                      return {
+                        ...product,
+                        quantity: 0,
+                      }
+                    }
+
+                    if (program.editable === 1) {
+                      return product
+                    }
                     return {
                       ...product,
-                      quantity: 0,
+                      quantity: params.row.quantityMax,
                     }
-                  }
-                  return {
-                    ...product,
-                    quantity: params.row.quantityMax,
                   }
                 }
                 return product
