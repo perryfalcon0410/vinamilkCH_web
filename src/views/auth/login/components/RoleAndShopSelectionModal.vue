@@ -11,13 +11,32 @@
       >
         Vai trò <sup class="text-danger">*</sup>
       </div>
-      <tree-select
+      <!-- <tree-select
         v-model="roleSelected"
         :options="roleOptions"
         :searchable="false"
         placeholder="Chọn vai trò"
         no-options-text="Không có dữ liệu"
-      />
+      /> -->
+
+      <vue-autosuggest
+        ref="searchCombo"
+        v-model="roleKeyword"
+        :suggestions="listRole"
+        :input-props="{
+          id:'autosuggest__input',
+          class:'form-control w-100',
+          placeholder:'Nhập vai trò'
+        }"
+        @input="loadRoles"
+        @selected="onSelectedRole"
+      >
+        <template slot-scope="{ suggestion }">
+          <div class="cursor-pointer">
+            <b>{{ suggestion.item.roleName }}</b>
+          </div>
+        </template>
+      </vue-autosuggest>
 
       <div
         class="mt-1"
@@ -33,7 +52,7 @@
       />
     </b-form>
 
-    <template #modal-footer="{ cancel }">
+    <template #modal-footer="{}">
       <b-button
         variant="someThing"
         class="btn-brand-1 aligns-items-button-center"
@@ -44,7 +63,7 @@
       </b-button>
       <b-button
         class="aligns-items-button-center"
-        @click="cancel"
+        @click="cancel()"
       >
         Đóng
       </b-button>
@@ -57,8 +76,13 @@ import {
   VBModal,
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
+import { VueAutosuggest } from 'vue-autosuggest'
 
 export default {
+  components: {
+    VueAutosuggest,
+  },
+
   directives: {
     'b-modal': VBModal,
     Ripple,
@@ -79,18 +103,14 @@ export default {
     return {
       roleSelected: null,
       shopSelected: null,
+      listRole: [{ data: '' }],
+      roleKeyword: '',
     }
   },
 
   computed: {
     isOkButtonDisabled() {
       return !this.roleSelected || !this.shopSelected
-    },
-    roleOptions() {
-      return this.roles.map(e => ({
-        label: e.roleName,
-        id: e.id,
-      }))
     },
     shopOptions() {
       if (this.roleSelected) {
@@ -121,6 +141,16 @@ export default {
     roleSelected() {
       this.shopSelected = this.getFirstShop
     },
+    // roles: {
+    //   handler() {
+    //     console.log(this.roles)
+    //     const roleFilter = this.roles.filter(role => role.roleName.trim() === this.roleSelected.trim())
+    //     this.listRole = [{
+    //       data: roleFilter,
+    //     }]
+    //   },
+    //   deep: true,
+    // },
   },
 
   mounted() {
@@ -138,6 +168,38 @@ export default {
         roleSelected: this.roleSelected,
         shopSelected: this.shopSelected,
       })
+    },
+    loadRoles() {
+      if (this.roles.length > 0) {
+        let roleFilter = this.roles.filter(r => r.roleName.toLowerCase().includes(this.roleKeyword.trim().toLowerCase()))
+        roleFilter = roleFilter.map(role => ({
+          ...role,
+          name: this.roleKeyword,
+        }))
+        this.listRole = [{
+          data: roleFilter,
+        }]
+
+        if (this.listRole[0].data) {
+          this.$nextTick(() => document.getElementById('autosuggest__input').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
+        }
+      }
+    },
+
+    onSelectedRole(index) {
+      if (index.item) {
+        this.roleSelected = index.item.id
+        this.roleKeyword = index.item.roleName
+        this.listRole = [{ data: '' }]
+      }
+    },
+
+    cancel() {
+      this.roleSelected = null
+      this.shopSelected = null
+      this.listRole = [{ data: '' }]
+      this.roleKeyword = ''
+      this.$bvModal.hide('roleAndShopModal')
     },
   },
 }
