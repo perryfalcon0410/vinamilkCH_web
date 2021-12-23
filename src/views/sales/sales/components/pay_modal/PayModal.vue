@@ -2030,6 +2030,9 @@ export default {
           this.rePrintSaleOrder()
         }
       }
+      if (e.key === 'Escape' && this.isOpenPayModal) {
+        this.cancel()
+      }
       const resolve = preventDefaultWindowPrint(e)
       if (resolve && this.isPaid === false && this.statusPrintTmpButton()) {
         this.printSaleOrderTemp()
