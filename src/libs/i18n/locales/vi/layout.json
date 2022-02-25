@@ -26,5 +26,7 @@
   "BillPerCustomer": "Số lượng hóa đơn theo KH",
   "ReceiptOnDeliveryType": "Hóa đơn theo loại giao hàng",
   "CustomerNonTransactional": "Khách hàng không giao dịch",
-  "Vouchers": "Danh sách voucher"
+  "Vouchers": "Danh sách voucher",
+  "CreatePO": "Tạo đơn",
+  "ListPO": "Danh sách đơn"
 }

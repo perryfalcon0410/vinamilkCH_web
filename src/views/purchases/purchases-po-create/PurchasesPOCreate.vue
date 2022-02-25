@@ -315,7 +315,7 @@ export default {
       paginationOptions: purchaseData.pagination,
       //
       isChooseProductsModal: false,
-      selected: 'A',
+      selected: 0,
       options: purchaseData.poType,
       recommendPoColumns: [
         {

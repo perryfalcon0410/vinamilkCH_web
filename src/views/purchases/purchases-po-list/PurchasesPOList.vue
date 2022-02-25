@@ -145,21 +145,9 @@
           >
             <b-form-select
               id="Status"
-              v-model="status"
-            >
-              <b-form-select-option value="">
-                Tất cả
-              </b-form-select-option>
-              <b-form-select-option value="1">
-                Chưa duyệt
-              </b-form-select-option>
-              <b-form-select-option value="2">
-                Đã gửi
-              </b-form-select-option>
-              <b-form-select-option value="3">
-                Đã hủy
-              </b-form-select-option>
-            </b-form-select>
+              v-model="sttSelected"
+              :options="poStatuses"
+            />
           </b-form-group>
         </b-col>
 
@@ -175,6 +163,7 @@
             <b-button
               id="SearchButton"
               variant="primary"
+              @click="searchPoList"
             >
               <b-icon-search class="mr-1" />
               Tìm kiếm
@@ -203,6 +192,8 @@
         class="py-1"
       >
         <vue-good-table
+          id="my-table"
+          ref="my-table"
           :columns="columns"
           :rows="rows"
           style-class="vgt-table striped"
@@ -248,6 +239,7 @@
               <b-button
                 variant="light"
                 class="rounded-circle p-1 ml-1"
+                @click="onClickCancelPo(props.formattedRow['poAutoNumber'])"
               >
                 <b-icon-file-earmark-excel
                   color="blue"
@@ -256,7 +248,7 @@
               <b-button
                 variant="light"
                 class="rounded-circle ml-1 p-1"
-                @click="isModalShow = !isModalShow"
+                @click="onClickOpenPoAuToDetailProduct(props.formattedRow['poAutoNumber'])"
               >
                 <b-icon-eye-fill
                   color="blue"
@@ -279,6 +271,7 @@
       >
         <b-button
           variant="primary"
+          @click="onClickSelectRow()"
         >
           <b-icon-check
             scale="2"
@@ -304,14 +297,36 @@
     <!-- END - Product  list -->
 
     <!-- START - Modal -->
-    <po-detail-modal :visible="isModalShow" />
+    <po-detail-modal
+      :value="poAutoDetailProductNumber"
+      :visible="isModalShow"
+    />
     <!-- END - Modal -->
   </b-container>
 </template>
 
 <script>
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
 import VIconManipulation from '@core/components/v-icons/IconManipulation.vue'
+import PoAutoService from '@/views/purchases/api-service'
 import PoDetailModal from './components/PODetailModal.vue'
+import POdata from '../../../@db/purchase'
+import {
+  PURCHASES,
+  // GETTERS
+  GET_PO_LIST_GETTER,
+  POST_APPROVE_PO_GETTER,
+  POST_CANCEL_PO_GETTER,
+  // ACTIONS
+  GET_PO_LIST_ACTION,
+  GET_PO_SEARCH_LIST_ACTION,
+  POST_CANCEL_PO_ACTION,
+  POST_APPROVE_PO_ACTION,
+
+} from '../store-module/type'
 
 export default {
   components: {
@@ -321,44 +336,48 @@ export default {
   data() {
     return {
       isModalShow: false,
-
+      poAutoDetailProductNumber: 0,
+      options: { year: 'numeric', month: '2-digit', day: '2-digit' },
       poNumber: '',
       codeGroup: '',
+      newDate: new Date(),
       fromDateCreate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       toDateCreate: new Date(),
       fromDateShip: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       toDateShip: new Date(),
-      status: '',
-
+      sttSelected: POdata.poStatus[0].value,
+      poStatuses: POdata.poStatus,
+      poNumberSelectedList: [],
+      rows: [],
       columns: [
         {
           label: 'Số PO',
-          field: 'PoNumber',
+          field: 'poAutoNumber',
           sortable: false,
         },
         {
           label: 'Mã nhóm',
-          field: 'GroupCode',
+          field: 'groupCode',
           sortable: false,
         },
         {
           label: 'Trạng thái',
-          field: 'Status',
+          field: 'status',
           sortable: false,
         },
         {
           label: 'Ngày tạo',
-          field: 'DateCreate',
+          field: 'createAt',
           sortable: false,
         },
         {
           label: 'Ngày gửi',
-          field: 'DateShip',
+          field: 'approveDate',
           sortable: false,
         },
         {
           label: 'Tổng tiền',
-          field: 'TotalPrice',
+          field: 'amount',
           type: 'number',
           sortable: false,
         },
@@ -368,54 +387,113 @@ export default {
           sortable: false,
         },
       ],
-      rows: [
-        {
-          PoNumber: 'PO000000000628',
-          GroupCode: 'GROUP_NON_POAUTO_GROUP ',
-          Status: 'Đã hủy',
-          DateCreate: '31/10/2020 11:06:19',
-          DateShip: '23/11/2020 11:06:20',
-          TotalPrice: '2,046,840,000',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          PoNumber: 'PO000000000628',
-          GroupCode: 'GROUP_NON_POAUTO_GROUP ',
-          Status: 'Đã gửi',
-          DateCreate: '31/10/2020 11:06:19',
-          DateShip: '23/11/2020 11:06:20',
-          TotalPrice: '2,046,840,000',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          PoNumber: 'PO000000000628',
-          GroupCode: 'GROUP_NON_POAUTO_GROUP ',
-          Status: 'Đã gửi',
-          DateCreate: '31/10/2020 11:06:19',
-          DateShip: '23/11/2020 11:06:20',
-          TotalPrice: '2,046,840,000',
-          Feature: 'Chỉnh sửa',
-        },
-        {
-          PoNumber: 'PO000000000628',
-          GroupCode: 'GROUP_NON_POAUTO_GROUP ',
-          Status: 'Đã gửi',
-          DateCreate: '31/10/2020 11:06:19',
-          DateShip: '23/11/2020 11:06:20',
-          TotalPrice: '2,046,840,000',
-          Feature: 'Chỉnh sửa',
-        },
-      ],
     }
   },
 
+  computed: {
+    ...mapGetters(PURCHASES, [
+      GET_PO_LIST_GETTER,
+      POST_APPROVE_PO_GETTER,
+      POST_CANCEL_PO_GETTER,
+    ]),
+
+    allPoList() {
+      return this.GET_PO_LIST_GETTER
+    },
+
+    updateList() {
+      return this.POST_CANCEL_PO_GETTER
+    },
+  },
+
+  watch: {
+    allPoList() {
+      this.rows = this.allPoList
+      this.rows.forEach(n => {
+        const objIndex = POdata.poStatus.findIndex((obj => obj.value === n.status))
+        n.status = POdata.poStatus[objIndex].text
+
+        n.createAt = new Date(n.createAt)
+        let dateString = ('0' + n.createAt.getUTCDate()).slice(-2) + '/'
+          + ('0' + n.createAt.getUTCMonth() + 1).slice(-2) + '/'
+          + n.createAt.getUTCFullYear() + ' '
+          + ('0' + n.createAt.getUTCHours()).slice(-2) + ':'
+          + ('0' + n.createAt.getUTCMinutes()).slice(-2) + ':'
+          + ('0' + n.createAt.getUTCSeconds()).slice(-2)
+        n.createAt = dateString
+
+        n.approveDate = new Date(n.approveDate)
+        dateString = ('0' + n.approveDate.getUTCDate()).slice(-2) + '/'
+          + ('0' + n.approveDate.getUTCMonth() + 1).slice(-2) + '/'
+          + n.approveDate.getUTCFullYear() + ' '
+          + ('0' + n.approveDate.getUTCHours()).slice(-2) + ':'
+          + ('0' + n.approveDate.getUTCMinutes()).slice(-2) + ':'
+          + ('0' + n.approveDate.getUTCSeconds()).slice(-2)
+        n.approveDate = dateString
+      })
+    },
+  },
+
+  mounted() {
+    this.init()
+  },
+
   methods: {
+    ...mapActions(PURCHASES, [
+      GET_PO_LIST_ACTION,
+      GET_PO_SEARCH_LIST_ACTION,
+      POST_CANCEL_PO_ACTION,
+      POST_APPROVE_PO_ACTION,
+    ]),
     onClickCreateButton() {
       this.$router.push({ name: 'warehouses-input-create' })
     },
     onClickUpdateButton() {
       this.$router.push({ name: 'warehouses-input-update' })
     },
+    init() {
+      this.GET_PO_LIST_ACTION()
+    },
+    searchPoList() {
+      this.GET_PO_SEARCH_LIST_ACTION({
+        poAutoNumber: this.poNumber,
+        poGroupCode: this.codeGroup,
+        fromCreateDate: this.fromDateCreate.toLocaleString('en-CA', this.options),
+        toCreateDate: this.toDateCreate.toLocaleString('en-CA', this.options),
+        fromApproveDate: this.fromDateShip.toLocaleString('en-CA', this.options),
+        toApproveDate: this.toDateShip.toLocaleString('en-CA', this.options),
+        poStatus: this.sttSelected,
+      })
+    },
+    onClickOpenPoAuToDetailProduct(poAutoNumber) {
+      this.poAutoDetailProductNumber = poAutoNumber
+      this.isModalShow = !this.isModalShow
+    },
+    onClickCancelPo(poAutoNumber1) {
+      const lst = []
+      lst.push(poAutoNumber1)
+      PoAutoService.cancelPoAuto({ poAutoNumberList: lst }).then(res => {
+        if (res.data.data === 1) {
+          this.GET_PO_LIST_ACTION()
+        }
+      })
+    },
+    onClickSelectRow() {
+      this.$refs['my-table'].selectedRows.forEach(n => {
+        this.poNumberSelectedList.push(n.poAutoNumber)
+      })
+      PoAutoService.approvePoAUto({ poAutoNumberList: this.poNumberSelectedList }).then(res => {
+        if (res.data.data === 1) {
+          this.GET_PO_LIST_ACTION()
+        }
+      })
+      // this.POST_APPROVE_PO_ACTION({
+      //   poAutoNumberList: this.poNumberSelectedList,
+      // })
+      this.poNumberSelectedList = []
+    },
+
   },
+
 }
 </script>

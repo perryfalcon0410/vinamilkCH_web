@@ -22,11 +22,11 @@
           slot-scope="props"
         >
           <b-row
-            v-if="props.column.field === 'PriceTotal'"
+            v-if="props.column.field === 'amount'"
             class="mx-0"
             align-h="end"
           >
-            250.300.000
+            {{ totalPrice }}
           </b-row>
         </template>
         <!-- START - Column filter -->
@@ -57,6 +57,19 @@
 </template>
 
 <script>
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex'
+import {
+  PURCHASES,
+  // GETTERS
+  GET_PO_AUTO_PRODUCT_GETTER,
+  // ACTIONS
+  GET_PO_AUTO_PRODUCT_ACTION,
+
+} from '../../store-module/type'
+
 export default {
   props: {
     visible: {
@@ -64,35 +77,44 @@ export default {
       required: true,
       default: false,
     },
+    value: {
+      type: String,
+      required: true,
+      default: '',
+    },
   },
   data() {
     return {
+
+      poAutoId: 0,
+      totalPrice: 0,
+      rows: [],
       columns: [
         {
           label: 'Mã hàng',
-          field: 'ProductCode',
+          field: 'productCode',
           sortable: false,
         },
         {
           label: 'Tên hàng',
-          field: 'ProductName',
+          field: 'productName',
           sortable: false,
         },
         {
           label: 'Số lượng',
-          field: 'Quantity',
+          field: 'quantity',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Đơn giá',
-          field: 'PriceUnit',
+          field: 'price',
           sortable: false,
           type: 'number',
         },
         {
           label: 'Thành tiền',
-          field: 'PriceTotal',
+          field: 'amount',
           sortable: false,
           type: 'number',
           filterOptions: {
@@ -100,32 +122,47 @@ export default {
           },
         },
       ],
-      rows: [
-        {
-          ProductCode: '290365412',
-          ProductName: 'Thức uống cacao lúa mạch 180ml',
-          Quantity: '100',
-          PriceUnit: '5,000',
-          PriceTotal: '1,200,000',
-        },
-        {
-          ProductCode: '290365412',
-          ProductName: 'Thức uống cacao lúa mạch 180ml',
-          Quantity: '100',
-          PriceUnit: '5,000',
-          PriceTotal: '1,200,000',
-        },
-        {
-          ProductCode: '290365412',
-          ProductName: 'Thức uống cacao lúa mạch 180ml',
-          Quantity: '100',
-          PriceUnit: '5,000',
-          PriceTotal: '1,200,000',
-        },
-      ],
     }
   },
+
+  computed: {
+    ...mapGetters(PURCHASES, [
+      GET_PO_AUTO_PRODUCT_GETTER,
+    ]),
+
+    poAutoDetailProduct() {
+      return this.GET_PO_AUTO_PRODUCT_GETTER
+    },
+    getPassValue() {
+      return this.value
+    },
+  },
+
+  watch: {
+    poAutoDetailProduct() {
+      this.rows = this.poAutoDetailProduct
+      this.totalPrice = 0
+      this.rows.forEach(n => {
+        this.totalPrice += n.amount
+      })
+    },
+    getPassValue() {
+      this.poAutoId = this.getPassValue
+      this.getPoAutoDetailProduct()
+    },
+  },
+
   methods: {
+    ...mapActions(PURCHASES, [
+      GET_PO_AUTO_PRODUCT_ACTION,
+    ]),
+    getPoAutoDetailProduct() {
+      if (this.poAutoId !== '') {
+        this.GET_PO_AUTO_PRODUCT_ACTION({
+          poAutoNumber: this.value,
+        })
+      }
+    },
     hoverHandler(hovered) {
       this.isHover = hovered
     },

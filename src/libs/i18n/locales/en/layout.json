@@ -26,5 +26,7 @@
   "BillPerCustomer": "Bill per customer",
   "ReceiptOnDeliveryType": "Receipt on delivery type",
   "CustomerNonTransactional": "Customer non transactional",
-  "Vouchers": "Voucher list"
+  "Vouchers": "Voucher list",
+  "CreatePO": "Create PO",
+  "ListPO": "List PO"
 }

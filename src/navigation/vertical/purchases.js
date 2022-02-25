@@ -1,11 +1,31 @@
 export default [
+  // {
+  //   header: 'Purchases',
+  // },
+  // {
+  //   title: 'Purchases',
+  //   route: 'purchases',
+  //   icon: 'ShoppingCartIcon',
+  //   resource: 'Purchases',
+  // },
   {
-    header: 'Purchases',
-  },
-  {
-    title: 'Purchases',
-    route: 'purchases',
+  title: 'Purchases',
     icon: 'ShoppingCartIcon',
-    resource: 'Purchases',
-  },
+    tag: '5',
+    tagVariant: 'light-warning',
+    children: [
+      {
+        title: 'CreatePO',
+        route: 'purchases-create',
+        icon: 'ShoppingCartIcon',
+        resource: 'PurchasesPOCreate',
+      },
+      {
+        title: 'ListPO',
+        route: 'purchases-list',
+        icon: 'ShoppingCartIcon',
+        resource: 'PurchasesPOList',
+      },
+    ],
+  }
 ]

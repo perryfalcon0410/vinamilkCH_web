@@ -1,7 +1,7 @@
 export default [
   {
-    path: '/purchases',
-    name: 'purchases',
+    path: '/purchases/list',
+    name: 'purchases-list',
     component: () => import('@/views/purchases/purchases-po-list/PurchasesPOList.vue'),
     meta: {
       pageTitle: 'Mua hàng',
@@ -11,9 +11,10 @@ export default [
           active: true,
         },
       ],
-      resource: 'Purchases',
+      resource: 'PurchasesPOList',
     },
   },
+
   {
     path: '/purchases/create',
     name: 'purchases-create',
@@ -30,7 +31,7 @@ export default [
           active: true,
         },
       ],
-      resource: 'PurchasesCreate',
+      resource: 'PurchasesPOCreate',
     },
   },
 ]
