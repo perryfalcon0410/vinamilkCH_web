@@ -1,7 +1,7 @@
 <template>
   <b-container
     fluid
-    class="d-flex flex-column p-0"
+    class="d-flex flex-column px-0"
   >
     <!-- START - Search -->
     <b-form class="bg-white shadow rounded">
@@ -162,6 +162,7 @@
           >
             <b-button
               id="SearchButton"
+              class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0"
               variant="primary"
               @click="searchPoList"
             >
@@ -217,7 +218,7 @@
             <b-row
               v-if="props.column.field === 'Feature'"
               align-h="center"
-              class="mx-0"
+              class="mx-0 my-0"
             >
               <v-icon-manipulation />
             </b-row>
@@ -238,20 +239,11 @@
             >
               <b-button
                 variant="light"
-                class="rounded-circle p-1 ml-1"
-                @click="onClickCancelPo(props.formattedRow['poAutoNumber'])"
-              >
-                <b-icon-file-earmark-excel
-                  color="blue"
-                />
-              </b-button>
-              <b-button
-                variant="light"
                 class="rounded-circle ml-1 p-1"
                 @click="onClickOpenPoAuToDetailProduct(props.formattedRow['poAutoNumber'])"
               >
                 <b-icon-eye-fill
-                  color="blue"
+                  color="#315899"
                 />
               </b-button>
             </b-row>
@@ -263,6 +255,61 @@
         </vue-good-table>
       </b-col>
       <!-- END - Table -->
+
+      <!-- START - Pagination -->
+      <div>
+        <b-row
+          class="v-pagination px-1 mx-0"
+          align-h="between"
+          align-v="center"
+        >
+          <div
+            class="d-flex align-items-center"
+          >
+            <span
+              class="text-nowrap"
+            >
+              Hiển thị 1 đến
+            </span>
+            <b-form-select
+              v-model="elementSize"
+              size="sm"
+              :options="paginationOptions"
+              class="mx-1"
+              @input="(value)=>props.perPageChanged({currentPerPage: value})"
+            />
+            <span
+              class="text-nowrap"
+            > trong 69 mục </span>
+          </div>
+          <b-pagination
+            v-model="pageNumber"
+            :total-rows="69"
+            :per-page="elementSize"
+            first-number
+            last-number
+            align="right"
+            prev-class="prev-item"
+            next-class="next-item"
+            class="mt-1"
+            @input="(value)=>props.pageChanged({currentPage: value})"
+          >
+            <template slot="prev-text">
+              <feather-icon
+                icon="ChevronLeftIcon"
+                size="18"
+              />
+            </template>
+            <template slot="next-text">
+              <feather-icon
+                icon="ChevronRightIcon"
+                size="18"
+              />
+            </template>
+          </b-pagination>
+        </b-row>
+      </div>
+      <!-- END - Pagination -->
 
       <!-- START - Group Button -->
       <b-row
@@ -280,15 +327,15 @@
           Duyệt
         </b-button>
         <b-button
-          class="mx-1"
           variant="danger"
+          @click="onClickCancelPo()"
         >
           <b-icon-x-circle
             scale="1.5"
             class="mr-1"
           />
 
-          Đóng
+          Hủy đơn
         </b-button>
       </b-row>
     <!-- END - Group Button -->
@@ -412,7 +459,6 @@ export default {
       this.rows.forEach(n => {
         const objIndex = POdata.poStatus.findIndex((obj => obj.value === n.status))
         n.status = POdata.poStatus[objIndex].text
-
         n.createAt = new Date(n.createAt)
         let dateString = ('0' + n.createAt.getUTCDate()).slice(-2) + '/'
           + ('0' + n.createAt.getUTCMonth() + 1).slice(-2) + '/'
@@ -470,13 +516,15 @@ export default {
       this.isModalShow = !this.isModalShow
     },
     onClickCancelPo(poAutoNumber1) {
-      const lst = []
-      lst.push(poAutoNumber1)
-      PoAutoService.cancelPoAuto({ poAutoNumberList: lst }).then(res => {
+      this.$refs['my-table'].selectedRows.forEach(n => {
+        this.poNumberSelectedList.push(n.poAutoNumber)
+      })
+      PoAutoService.cancelPoAuto({ poAutoNumberList: this.poNumberSelectedList }).then(res => {
         if (res.data.data === 1) {
           this.GET_PO_LIST_ACTION()
         }
       })
+      this.poNumberSelectedList = []
     },
     onClickSelectRow() {
       this.$refs['my-table'].selectedRows.forEach(n => {
@@ -487,9 +535,6 @@ export default {
           this.GET_PO_LIST_ACTION()
         }
       })
-      // this.POST_APPROVE_PO_ACTION({
-      //   poAutoNumberList: this.poNumberSelectedList,
-      // })
       this.poNumberSelectedList = []
     },
 
@@ -497,3 +542,21 @@ export default {
 
 }
 </script>
+
+<style>
+.btn-primary{
+	background-color: #315899 !important;
+	border-color: #315899 !important;
+}
+.text-primary{
+	color: #315899 !important;
+}
+.btn-danger{
+  background-color: #ea5455 !important;
+	border-color: #ea5455 !important;
+  margin-left: 10px !important;
+}
+table.vgt-table{
+  width: 99.6% !important;
+}
+</style>

@@ -53,7 +53,8 @@ $background-odd: #edf2f7;
 
         th,
         td {
-          font-weight: normal;
+          vertical-align: middle;
+          font-weight:normal;
           color: $brand-3;
         }
       }

@@ -12,6 +12,8 @@ module.exports = {
   },
   "ignorePatterns": ["src/@core/libs/*","public/*"],
   rules: {
+    'no-param-reassign': 0,
+    "prefer-template": 0,
     'import/no-cycle': 'off',
     'import/prefer-default-export': 'off',
     'no-empty-pattern': 'off',
