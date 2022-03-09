@@ -292,7 +292,7 @@
             prev-class="prev-item"
             next-class="next-item"
             class="mt-1"
-            @input="(value)=>props.pageChanged({currentPage: value})"
+            @input="(value)=>pageChanged({currentPage: value})"
           >
             <template slot="prev-text">
               <feather-icon
@@ -318,7 +318,7 @@
       >
         <b-button
           variant="primary"
-          @click="onClickSelectRow()"
+          @click="onClickApprovePo()"
         >
           <b-icon-check
             scale="2"
@@ -396,6 +396,7 @@ export default {
       poStatuses: POdata.poStatus,
       poNumberSelectedList: [],
       rows: [],
+      pageNumber: 1,
       columns: [
         {
           label: 'Số PO',
@@ -498,9 +499,13 @@ export default {
       this.$router.push({ name: 'warehouses-input-update' })
     },
     init() {
-      this.GET_PO_LIST_ACTION()
+      this.page = 1
+      this.GET_PO_LIST_ACTION({
+        page: this.page - 1,
+      })
     },
     searchPoList() {
+      this.page = 1
       this.GET_PO_SEARCH_LIST_ACTION({
         poAutoNumber: this.poNumber,
         poGroupCode: this.codeGroup,
@@ -509,13 +514,14 @@ export default {
         fromApproveDate: this.fromDateShip.toLocaleString('en-CA', this.options),
         toApproveDate: this.toDateShip.toLocaleString('en-CA', this.options),
         poStatus: this.sttSelected,
+        page: (this.page - 1),
       })
     },
     onClickOpenPoAuToDetailProduct(poAutoNumber) {
       this.poAutoDetailProductNumber = poAutoNumber
       this.isModalShow = !this.isModalShow
     },
-    onClickCancelPo(poAutoNumber1) {
+    onClickCancelPo() {
       this.$refs['my-table'].selectedRows.forEach(n => {
         this.poNumberSelectedList.push(n.poAutoNumber)
       })
@@ -526,7 +532,7 @@ export default {
       })
       this.poNumberSelectedList = []
     },
-    onClickSelectRow() {
+    onClickApprovePo() {
       this.$refs['my-table'].selectedRows.forEach(n => {
         this.poNumberSelectedList.push(n.poAutoNumber)
       })
@@ -537,6 +543,13 @@ export default {
       })
       this.poNumberSelectedList = []
     },
+    pageChanged(value) {
+      console.log(value)
+      this.page = value.currentPage
+      this.GET_PO_LIST_ACTION({
+        page: (this.page - 1),
+      })
+    },
 
   },
 
@@ -545,18 +558,18 @@ export default {
 
 <style>
 .btn-primary{
-	background-color: #315899 !important;
-	border-color: #315899 !important;
+background-color: #315899 !important;
+border-color: #315899 !important;
 }
 .text-primary{
-	color: #315899 !important;
+color: #315899 !important;
 }
 .btn-danger{
-  background-color: #ea5455 !important;
-	border-color: #ea5455 !important;
-  margin-left: 10px !important;
+background-color: #ea5455 !important;
+border-color: #ea5455 !important;
+margin-left: 10px !important;
 }
 table.vgt-table{
-  width: 99.6% !important;
+width: 99.6% !important;
 }
 </style>

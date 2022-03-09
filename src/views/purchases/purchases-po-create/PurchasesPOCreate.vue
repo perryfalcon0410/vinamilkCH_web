@@ -136,7 +136,7 @@
               slot="table-column"
               slot-scope="props"
             >
-              <span v-if="props.column.label === 'Chức năng'">
+              <span v-if="props.column.field === 'button'">
                 <b-icon-plus
                   v-b-popover.hover="'Chọn sản phẩm'"
                   class="cursor-pointer ml-2"
@@ -155,19 +155,20 @@
               slot="table-row"
               slot-scope="props"
             >
-              <span v-if="props.column.label === 'Số lượng đặt'">
+              <span v-if="props.column.field === 'userInput'">
                 <b-input
-                  size="sm"
+                  v-model="props.row.userInput"
+                  type="number"
                 />
               </span>
-              <span v-if="props.column.label === 'Chức năng'">
+              <span v-if="props.column.field === 'button'">
                 <b-icon-x
                   v-b-popover.hover="'Xóa'"
                   class="cursor-pointer ml-1"
                   scale="2.5"
                 />
               </span>
-              <span v-else>
+              <span v-if="props.column.field != 'button' && props.column.field != 'userInput' ">
                 {{ props.formattedRow[props.column.field] }}
               </span>
             </template>
@@ -293,7 +294,9 @@
 
     <choose-products-modal
       :visible="isChooseProductsModal"
-      @close="isChooseProductsModal = false"
+      :pochooselist="poChooseList"
+      @close="closeChooseProductsModal()"
+      @passvalue="passValue($event)"
     />
   </b-container>
 </template>
@@ -313,10 +316,11 @@ export default {
       elementSize: 20,
       pageNumber: 1,
       paginationOptions: purchaseData.pagination,
-      //
       isChooseProductsModal: false,
       selected: 0,
       options: purchaseData.poType,
+      poChooseList: [],
+      manualRows: [],
       recommendPoColumns: [
         {
           label: 'Mã SP',
@@ -490,7 +494,7 @@ export default {
         },
         {
           label: 'Số lượng đặt',
-          field: 'quantity',
+          field: 'userInput',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -517,20 +521,18 @@ export default {
           tdClass: 'text-center',
         },
       ],
-      manualRows: [
-        {
-          productCode: '04AA10',
-          productName: 'STT dâu ADM GOLD 180ml',
-          warehouseName: '1500',
-          price: '20.333',
-          button: '',
-        },
-      ],
     }
   },
   methods: {
     showChooseProductsModal() {
       this.isChooseProductsModal = !this.isChooseProductsModal
+    },
+    closeChooseProductsModal() {
+      this.isChooseProductsModal = false
+    },
+    passValue(value) {
+      this.manualRows = value
+      this.poChooseList = this.manualRows
     },
   },
 }

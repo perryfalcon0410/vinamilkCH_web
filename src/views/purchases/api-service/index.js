@@ -2,8 +2,10 @@ import axios from '@axios'
 import { formatURLParams } from '@/@core/utils/utils'
 
 export default {
-  getAllPoAuto() {
-    return axios.get('/sales/po-auto/po-list')
+  getAllPoAuto(args) {
+    return axios.get('/sales/po-auto/po-list', {
+      params: formatURLParams(args),
+    })
   },
 
   getSearchPoAuto(args) {
@@ -24,5 +26,9 @@ export default {
 
   cancelPoAuto(args) {
     return axios.post('/sales/po-auto/cancel-po', args)
+  },
+
+  getProduct(args) {
+    return axios.get('/sales/po-auto/product-list', args)
   },
 }

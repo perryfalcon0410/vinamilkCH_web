@@ -61,6 +61,8 @@
         </b-col>
       </b-row>
       <vue-good-table
+        id="my-table"
+        ref="my-table"
         :columns="columns"
         :rows="rows"
         class="pt-2"
@@ -84,8 +86,9 @@
           slot="table-row"
           slot-scope="props"
         >
-          <div v-if="props.column.field === 'quantity'">
+          <div v-if="props.column.field === 'userInput'">
             <b-input
+              v-model="props.row.userInput"
               type="number"
             />
           </div>
@@ -104,25 +107,7 @@
             align-h="between"
             align-v="center"
           >
-            <div
-              class="d-flex align-items-center"
-            >
-              <span
-                class="text-nowrap"
-              >
-                Hiển thị 1 đến
-              </span>
-              <b-form-select
-                v-model="elementSize"
-                size="sm"
-                :options="paginationOptions"
-                class="mx-1"
-                @input="(value)=>props.perPageChanged({currentPerPage: value})"
-              />
-              <span
-                class="text-nowrap"
-              > trong 69 mục </span>
-            </div>
+            <div class="d-flex align-items-center" />
             <b-pagination
               v-model="pageNumber"
               :total-rows="69"
@@ -132,7 +117,7 @@
               align="right"
               prev-class="prev-item"
               next-class="next-item"
-              class="mt-1"
+              class="mt-2"
               @input="(value)=>props.pageChanged({currentPage: value})"
             >
               <template slot="prev-text">
@@ -157,6 +142,7 @@
           <b-button
             class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder mr-1"
             variant="someThing"
+            @click="onClickChooseProduct()"
           >
             <b-icon
               icon="download"
@@ -180,8 +166,16 @@
   </b-modal>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import purchaseData from '@/@db/purchase'
 import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
+import {
+  PURCHASES,
+
+  GET_PRODUCT_GETTER,
+
+  GET_PRODUCT_ACTION,
+} from '../../store-module/type'
 
 export default {
   components: {
@@ -191,12 +185,19 @@ export default {
     visible: {
       type: Boolean,
     },
+    pochooselist: {
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
       elementSize: 20,
       pageNumber: 1,
       paginationOptions: purchaseData.pagination,
+      poSelectedList: [],
+      userInputMap: [],
+      poPassingValue: [],
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -214,25 +215,67 @@ export default {
         },
         {
           label: 'Số lượng đặt',
-          field: 'quantity',
+          field: 'userInput',
           type: 'number',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
       ],
-      rows: [
-        {
-          productCode: '04DC10',
-          productName: 'Thức uống cacao lúa mạch 180ml',
-          quantity: '',
-        },
-      ],
+      rows: [],
     }
   },
+
+  computed: {
+    ...mapGetters(PURCHASES, [
+      GET_PRODUCT_GETTER,
+    ]),
+
+    productList() {
+      return this.GET_PRODUCT_GETTER
+    },
+
+    getPassValue() {
+      return this.pochooselist
+    },
+  },
+
+  watch: {
+    productList() {
+      this.productList.content.forEach(n => {
+        n.userInput = 0
+        this.rows.push(n)
+      })
+    },
+    getPassValue() {
+      this.poPassingValue = this.pochooselist
+      console.log('pass value')
+      console.log(this.poPassingValue)
+    },
+  },
+
+  mounted() {
+    this.init()
+  },
+
   methods: {
+    ...mapActions(PURCHASES, [
+      GET_PRODUCT_ACTION,
+    ]),
     hide() {
       this.$emit('close')
+    },
+    init() {
+      this.GET_PRODUCT_ACTION({
+        page: 0,
+      })
+    },
+    onClickChooseProduct() {
+      this.$refs['my-table'].selectedRows.forEach(n => {
+        this.poSelectedList.push(n.productCode)
+      })
+      this.$emit('close')
+      this.$emit('passvalue', this.$refs['my-table'].selectedRows)
     },
   },
 }
