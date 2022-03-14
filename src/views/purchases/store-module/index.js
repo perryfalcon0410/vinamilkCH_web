@@ -103,9 +103,9 @@ export default {
         })
     },
 
-    [GET_PRODUCT_ACTION]({ state }) {
+    [GET_PRODUCT_ACTION]({ state }, val) {
       PoAutoService
-        .getProduct()
+        .getProduct(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {

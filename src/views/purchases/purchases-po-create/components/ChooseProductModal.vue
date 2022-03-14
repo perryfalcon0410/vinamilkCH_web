@@ -16,13 +16,17 @@
           sm="4"
           class="pr-0"
         >
-          <v-input-select
+          <div
+            class="h8 mt-sm-1 mt-xl-0"
+          >
+            Ngành hàng
+          </div>
+          <b-input
             title="Ngành hàng"
             placeholder=""
             title-class="h8 mt-sm-1 mt-xl-0"
             input-class="h9"
             suggestions-class="h9"
-            :clear-able="true"
           />
         </b-col>
         <b-col
@@ -36,7 +40,10 @@
           >
             Sản phẩm
           </div>
-          <b-input size="sm" />
+          <b-input 
+            size="sm"
+            v-model="searchKeyword"
+          />
         </b-col>
         <b-col
           xl
@@ -54,6 +61,7 @@
             class="shadow-brand-1 bg-brand-1 text-white h9 d-flex justify-content-center align-items-center mt-sm-1 mt-xl-0 font-weight-bolder"
             variant="someThing"
             style="height: 30px;"
+            @click="searchWithKeyword()"
           >
             <b-icon-search />
             Tìm kiếm
@@ -100,7 +108,6 @@
         <!-- START - Pagination -->
         <template
           slot="pagination-bottom"
-          slot-scope="props"
         >
           <b-row
             class="v-pagination px-1 mx-0"
@@ -110,15 +117,15 @@
             <div class="d-flex align-items-center" />
             <b-pagination
               v-model="pageNumber"
-              :total-rows="69"
-              :per-page="elementSize"
+              :total-rows="maxRow"
+              :per-page="maxPage"
               first-number
               last-number
               align="right"
               prev-class="prev-item"
               next-class="next-item"
               class="mt-2"
-              @input="(value)=>props.pageChanged({currentPage: value})"
+              @input="(value)=>pageChanged({currentPage: value})"
             >
               <template slot="prev-text">
                 <feather-icon
@@ -167,8 +174,6 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import purchaseData from '@/@db/purchase'
-import VInputSelect from '@core/components/v-input-select/VInputSelect.vue'
 import {
   PURCHASES,
 
@@ -179,7 +184,6 @@ import {
 
 export default {
   components: {
-    VInputSelect,
   },
   props: {
     visible: {
@@ -192,12 +196,21 @@ export default {
   },
   data() {
     return {
-      elementSize: 20,
       pageNumber: 1,
-      paginationOptions: purchaseData.pagination,
       poSelectedList: [],
       userInputMap: [],
       poPassingValue: [],
+      currentPage: 1,
+      maxPage: 1,
+      maxRow: 1,
+      select: ['Vuetify', 'Programming'],
+      items: [
+        'Programming',
+        'Design',
+        'Vue',
+        'Vuetify',
+      ],
+      searchKeyword: '',
       columns: [
         {
           label: 'Mã sản phẩm',
@@ -238,19 +251,27 @@ export default {
     getPassValue() {
       return this.pochooselist
     },
+    getMaxPage() {
+      return this.maxRow
+    },
   },
 
   watch: {
     productList() {
+      this.rows = []
       this.productList.content.forEach(n => {
-        n.userInput = 0
-        this.rows.push(n)
+        n.userInput = null
       })
+      this.rows = this.productList.content
+      this.maxPage = this.productList.totalPages
+      this.maxRow = this.productList.totalElements
+      console.log(this.maxPage)
     },
     getPassValue() {
       this.poPassingValue = this.pochooselist
-      console.log('pass value')
-      console.log(this.poPassingValue)
+    },
+    getMaxPage() {
+      console.log('max page change ' + this.maxPage)
     },
   },
 
@@ -267,16 +288,33 @@ export default {
     },
     init() {
       this.GET_PRODUCT_ACTION({
-        page: 0,
+        page: (this.currentPage - 1),
+        size: 10,
       })
     },
     onClickChooseProduct() {
       this.$refs['my-table'].selectedRows.forEach(n => {
-        this.poSelectedList.push(n.productCode)
+        this.poSelectedList.push(n)
       })
       this.$emit('close')
-      this.$emit('passvalue', this.$refs['my-table'].selectedRows)
+      this.$emit('passvalue', this.poSelectedList)
     },
+    pageChanged(page) {
+      this.$refs['my-table'].selectedRows.forEach(n => {
+        this.poSelectedList.push(n)
+      })
+      this.GET_PRODUCT_ACTION({
+        page: (page.currentPage - 1),
+        size: 10,
+      })
+    },
+    searchWithKeyword() {
+      this.GET_PRODUCT_ACTION({
+        keyword: this.searchKeyword,
+        page: (page.currentPage - 1),
+        size: 10,
+      })
+    }
   },
 }
 </script>

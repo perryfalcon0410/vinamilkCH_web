@@ -29,6 +29,8 @@ export default {
   },
 
   getProduct(args) {
-    return axios.get('/sales/po-auto/product-list', args)
+    return axios.get('/sales/po-auto/product-list', {
+      params: formatURLParams(args),
+    })
   },
 }

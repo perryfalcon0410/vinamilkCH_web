@@ -8,7 +8,7 @@
       <div
         class="m-1 text-primary"
       >
-        <strong>
+        <strong class="text-brand-1">
           Tìm kiếm
         </strong>
       </div>
@@ -163,7 +163,7 @@
             <b-button
               id="SearchButton"
               class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0"
-              variant="primary"
+              variant="someThing"
               @click="searchPoList"
             >
               <b-icon-search class="mr-1" />
@@ -181,7 +181,7 @@
       <!-- START - Title -->
       <b-form-row class="align-items-center border-bottom p-1">
         <strong
-          class="text-primary"
+          class="text-brand-1"
         >
           Danh sách PO
         </strong>
@@ -238,7 +238,7 @@
               align-h="center"
             >
               <b-button
-                variant="light"
+                variant="someThing"
                 class="rounded-circle ml-1 p-1"
                 @click="onClickOpenPoAuToDetailProduct(props.formattedRow['poAutoNumber'])"
               >
@@ -265,27 +265,11 @@
         >
           <div
             class="d-flex align-items-center"
-          >
-            <span
-              class="text-nowrap"
-            >
-              Hiển thị 1 đến
-            </span>
-            <b-form-select
-              v-model="elementSize"
-              size="sm"
-              :options="paginationOptions"
-              class="mx-1"
-              @input="(value)=>props.perPageChanged({currentPerPage: value})"
-            />
-            <span
-              class="text-nowrap"
-            > trong 69 mục </span>
-          </div>
+          />
           <b-pagination
             v-model="pageNumber"
-            :total-rows="69"
-            :per-page="elementSize"
+            :total-rows="2"
+            :per-page="10"
             first-number
             last-number
             align="right"
@@ -317,7 +301,8 @@
         align-h="center"
       >
         <b-button
-          variant="primary"
+          class="btn-brand-1 h8 align-items-button-center mt-sm-1 mt-lg-0"
+          variant="someThing"
           @click="onClickApprovePo()"
         >
           <b-icon-check
@@ -327,14 +312,14 @@
           Duyệt
         </b-button>
         <b-button
-          variant="danger"
+          class="btn-brand-2 h8 align-items-button-center mt-sm-1 mt-lg-0"
+          variant="someThing"
           @click="onClickCancelPo()"
         >
           <b-icon-x-circle
             scale="1.5"
             class="mr-1"
           />
-
           Hủy đơn
         </b-button>
       </b-row>
@@ -397,6 +382,7 @@ export default {
       poNumberSelectedList: [],
       rows: [],
       pageNumber: 1,
+      totalRows: 1,
       columns: [
         {
           label: 'Số PO',
@@ -456,28 +442,32 @@ export default {
 
   watch: {
     allPoList() {
-      this.rows = this.allPoList
-      this.rows.forEach(n => {
-        const objIndex = POdata.poStatus.findIndex((obj => obj.value === n.status))
-        n.status = POdata.poStatus[objIndex].text
-        n.createAt = new Date(n.createAt)
-        let dateString = ('0' + n.createAt.getUTCDate()).slice(-2) + '/'
-          + ('0' + n.createAt.getUTCMonth() + 1).slice(-2) + '/'
-          + n.createAt.getUTCFullYear() + ' '
-          + ('0' + n.createAt.getUTCHours()).slice(-2) + ':'
-          + ('0' + n.createAt.getUTCMinutes()).slice(-2) + ':'
-          + ('0' + n.createAt.getUTCSeconds()).slice(-2)
-        n.createAt = dateString
+      if (this.allPoList.content) {
+        this.rows = this.allPoList.content
+        this.rows.forEach(n => {
+          const objIndex = POdata.poStatus.findIndex((obj => obj.value === n.status))
+          n.status = POdata.poStatus[objIndex].text
+          n.createAt = new Date(n.createAt)
+          let dateString = ('0' + n.createAt.getUTCDate()).slice(-2) + '/'
+            + ('0' + n.createAt.getUTCMonth() + 1).slice(-2) + '/'
+            + n.createAt.getUTCFullYear() + ' '
+            + ('0' + n.createAt.getUTCHours()).slice(-2) + ':'
+            + ('0' + n.createAt.getUTCMinutes()).slice(-2) + ':'
+            + ('0' + n.createAt.getUTCSeconds()).slice(-2)
+          n.createAt = dateString
 
-        n.approveDate = new Date(n.approveDate)
-        dateString = ('0' + n.approveDate.getUTCDate()).slice(-2) + '/'
-          + ('0' + n.approveDate.getUTCMonth() + 1).slice(-2) + '/'
-          + n.approveDate.getUTCFullYear() + ' '
-          + ('0' + n.approveDate.getUTCHours()).slice(-2) + ':'
-          + ('0' + n.approveDate.getUTCMinutes()).slice(-2) + ':'
-          + ('0' + n.approveDate.getUTCSeconds()).slice(-2)
-        n.approveDate = dateString
-      })
+          n.approveDate = new Date(n.approveDate)
+          dateString = ('0' + n.approveDate.getUTCDate()).slice(-2) + '/'
+            + ('0' + n.approveDate.getUTCMonth() + 1).slice(-2) + '/'
+            + n.approveDate.getUTCFullYear() + ' '
+            + ('0' + n.approveDate.getUTCHours()).slice(-2) + ':'
+            + ('0' + n.approveDate.getUTCMinutes()).slice(-2) + ':'
+            + ('0' + n.approveDate.getUTCSeconds()).slice(-2)
+          n.approveDate = dateString
+        })
+
+        this.totalRows = this.allPoList.totalElements
+      }
     },
   },
 
@@ -544,7 +534,6 @@ export default {
       this.poNumberSelectedList = []
     },
     pageChanged(value) {
-      console.log(value)
       this.page = value.currentPage
       this.GET_PO_LIST_ACTION({
         page: (this.page - 1),
@@ -555,21 +544,3 @@ export default {
 
 }
 </script>
-
-<style>
-.btn-primary{
-background-color: #315899 !important;
-border-color: #315899 !important;
-}
-.text-primary{
-color: #315899 !important;
-}
-.btn-danger{
-background-color: #ea5455 !important;
-border-color: #ea5455 !important;
-margin-left: 10px !important;
-}
-table.vgt-table{
-width: 99.6% !important;
-}
-</style>

@@ -163,9 +163,6 @@ export default {
         })
       }
     },
-    hoverHandler(hovered) {
-      this.isHover = hovered
-    },
   },
 }
 </script>

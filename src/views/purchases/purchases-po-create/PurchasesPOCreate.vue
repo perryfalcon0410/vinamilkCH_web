@@ -166,6 +166,7 @@
                   v-b-popover.hover="'Xóa'"
                   class="cursor-pointer ml-1"
                   scale="2.5"
+                  @click="deleteFromList(props.row)"
                 />
               </span>
               <span v-if="props.column.field != 'button' && props.column.field != 'userInput' ">
@@ -473,7 +474,7 @@ export default {
       manualPoColumns: [
         {
           label: 'Mã SP',
-          field: 'productCode', // custom filed name
+          field: 'productCode',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -486,8 +487,8 @@ export default {
           tdClass: 'text-left',
         },
         {
-          label: 'Tên kho',
-          field: 'warehouseName',
+          label: 'Trong kho',
+          field: 'quantity',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
@@ -533,6 +534,10 @@ export default {
     passValue(value) {
       this.manualRows = value
       this.poChooseList = this.manualRows
+    },
+    deleteFromList(row) {
+      this.manualRows.splice(row.originalIndex, 1)
+      console.log(row)
     },
   },
 }
