@@ -20,7 +20,7 @@ export default {
     })
   },
 
-  approvePoAUto(args) {
+  approvePoAuto(args) {
     return axios.post('/sales/po-auto/approve-po', args)
   },
 
@@ -32,5 +32,9 @@ export default {
     return axios.get('/sales/po-auto/product-list', {
       params: formatURLParams(args),
     })
+  },
+
+  savePoAuto(args) {
+    return axios.post('/sales/po-auto/save-po', args)
   },
 }

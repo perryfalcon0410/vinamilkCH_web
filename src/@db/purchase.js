@@ -5,9 +5,9 @@ export default {
   ],
 
   poStatus: [
-    { value: -1, text: 'Tất cả' },
-    { value: 0, text: 'Chưa duyệt' },
-    { value: 1, text: 'Đã gửi' },
-    { value: 2, text: 'Đã hủy' },
+    { id: -1, label: 'Tất cả' },
+    { id: 0, label: 'Chưa duyệt' },
+    { id: 1, label: 'Đã gửi' },
+    { id: 2, label: 'Đã hủy' },
   ],
 }

@@ -122,6 +122,8 @@
           <!--START - Manual Po-->
           <vue-good-table
             v-if="selected == 'B'"
+            id="my-table"
+            ref="my-table"
             :columns="manualPoColumns"
             :rows="manualRows"
             style-class="vgt-table striped"
@@ -304,6 +306,7 @@
 
 <script>
 import purchaseData from '@/@db/purchase'
+import PoAutoService from '@/views/purchases/api-service'
 import ChooseProductsModal from './components/ChooseProductModal.vue'
 import CommonInfo from './components/CommonInfo.vue'
 
@@ -322,6 +325,7 @@ export default {
       options: purchaseData.poType,
       poChooseList: [],
       manualRows: [],
+      productQuantityList: [],
       recommendPoColumns: [
         {
           label: 'Mã SP',
@@ -537,7 +541,23 @@ export default {
     },
     deleteFromList(row) {
       this.manualRows.splice(row.originalIndex, 1)
-      console.log(row)
+    },
+    onClickSavePO() {
+      this.productQuantityList = []
+      this.$refs['my-table'].selectedRows.forEach(n => {
+        const temp = {
+          productCode: n.productCode,
+          productConv: 0,
+          quantity: n.userInput,
+          groupId: 0,
+        }
+        this.productQuantityList.push(temp)
+      })
+      PoAutoService.approvePoAUto({ productQuantityList: this.productQuantityList }).then(res => {
+        if (res.data.data === 1) {
+          console.log('SUCCESS')
+        }
+      })
     },
   },
 }

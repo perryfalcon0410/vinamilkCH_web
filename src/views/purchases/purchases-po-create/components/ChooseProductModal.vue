@@ -40,9 +40,9 @@
           >
             Sản phẩm
           </div>
-          <b-input 
-            size="sm"
+          <b-input
             v-model="searchKeyword"
+            size="sm"
           />
         </b-col>
         <b-col
@@ -263,15 +263,10 @@ export default {
         n.userInput = null
       })
       this.rows = this.productList.content
-      this.maxPage = this.productList.totalPages
       this.maxRow = this.productList.totalElements
-      console.log(this.maxPage)
     },
     getPassValue() {
       this.poPassingValue = this.pochooselist
-    },
-    getMaxPage() {
-      console.log('max page change ' + this.maxPage)
     },
   },
 
@@ -311,10 +306,10 @@ export default {
     searchWithKeyword() {
       this.GET_PRODUCT_ACTION({
         keyword: this.searchKeyword,
-        page: (page.currentPage - 1),
+        page: (this.currentPage - 1),
         size: 10,
       })
-    }
+    },
   },
 }
 </script>

@@ -58,19 +58,38 @@
         <b-col
           xl
           lg="3"
-          md="4"
+          sm="4"
         >
-          <b-form-group
-            label="Từ ngày tạo"
-            label-for="FromDateCreate"
+          <validation-provider
+            v-slot="{ passed, touched }"
+            rules="required"
+            name="Từ ngày tạo"
           >
-            <b-form-datepicker
-              id="FromDateCreate"
-              v-model="fromDateCreate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
+            <div class="h7 mt-sm-1 mt-xl-0">
+              Từ ngày tạo
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+              @change="isFromCreateDateValid"
+            >
+              <b-icon-x
+                v-show="fromCreateDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
+              />
+              <vue-flat-pickr
+                v-model="fromCreateDate"
+                :state="touched ? passed : null"
+                :config="configFromCreateDate"
+                class="form-control h7"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
+          </validation-provider>
         </b-col>
         <!-- END - From Date Create -->
 
@@ -78,19 +97,38 @@
         <b-col
           xl
           lg="3"
-          md="4"
+          sm="4"
         >
-          <b-form-group
-            label="Đến ngày tạo"
-            label-for="ToDateCreate"
+          <validation-provider
+            v-slot="{ passed, touched }"
+            rules="required"
+            name="Đến ngày tạo"
           >
-            <b-form-datepicker
-              id="ToDateCreate"
-              v-model="toDateCreate"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
+            <div class="h7 mt-sm-1 mt-xl-0">
+              Đến ngày tạo
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+              @change="isToCreateDateValid"
+            >
+              <b-icon-x
+                v-show="toCreateDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
+              />
+              <vue-flat-pickr
+                v-model="toCreateDate"
+                :state="touched ? passed : null"
+                :config="configToCreateDate"
+                class="form-control h7"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
+          </validation-provider>
         </b-col>
         <!-- END - To Date Create -->
 
@@ -98,57 +136,99 @@
         <b-col
           xl
           lg="3"
-          md="4"
+          sm="4"
         >
-          <b-form-group
-            label="Từ ngày gửi"
-            label-for="FromDateShip"
+          <validation-provider
+            v-slot="{ passed, touched }"
+            rules="required"
+            name="Từ ngày gửi"
           >
-            <b-form-datepicker
-              id="FromDateShip"
-              v-model="fromDateShip"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
+            <div class="h7 mt-sm-1 mt-xl-0">
+              Từ ngày gửi
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+              @change="isFromApproveDateValid"
+            >
+              <b-icon-x
+                v-show="fromApproveDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
+              />
+              <vue-flat-pickr
+                v-model="fromApproveDate"
+                :state="touched ? passed : null"
+                :config="configFromApproveDate"
+                class="form-control h7"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
+          </validation-provider>
         </b-col>
-        <!-- END - From Date Ship -->
+        <!-- END - From Date Approve -->
 
-        <!-- START - To Date Ship -->
+        <!-- START - To Date Approve -->
         <b-col
           xl
           lg="3"
-          md="4"
+          sm="4"
         >
-          <b-form-group
-            label="Đến ngày gửi"
-            label-for="ToDateShip"
+          <validation-provider
+            v-slot="{ passed, touched }"
+            rules="required"
+            name="Đến ngày gửi"
           >
-            <b-form-datepicker
-              id="ToDateShip"
-              v-model="toDateShip"
-              :date-format-options="{day: '2-digit', month: '2-digit', year: 'numeric'}"
-              locale="vi"
-            />
-          </b-form-group>
+            <div class="h7 mt-sm-1 mt-xl-0">
+              Đến ngày gửi
+            </div>
+            <b-row
+              class="v-flat-pickr-group mx-0"
+              align-v="center"
+              @keypress="$onlyDateInput"
+              @change="isToApproveDateValid"
+            >
+              <b-icon-x
+                v-show="toApproveDate"
+                style="position: absolute; right: 15px"
+                class="cursor-pointer text-gray"
+                scale="1.3"
+                data-clear
+              />
+              <vue-flat-pickr
+                v-model="toApproveDate"
+                :state="touched ? passed : null"
+                :config="configToApproveDate"
+                class="form-control h7"
+                placeholder="Chọn ngày"
+              />
+            </b-row>
+          </validation-provider>
         </b-col>
-        <!-- END - To Date Ship -->
+        <!-- END - To Date Approve -->
 
         <b-col
           xl
           lg="3"
-          md="4"
+          sm="4"
+          class="h7"
         >
-          <b-form-group
-            label="Trạng thái"
-            label-for="Status"
+          <div
+            class="mt-sm-1 mt-xl-0"
           >
-            <b-form-select
-              id="Status"
-              v-model="sttSelected"
-              :options="poStatuses"
-            />
-          </b-form-group>
+            Trạng thái
+          </div>
+          <tree-select
+            v-model="sttSelected"
+            :options="poStatuses"
+            :searchable="false"
+            placeholder="Tất cả"
+            class="h7"
+            no-options-text="Không có dữ liệu"
+          />
         </b-col>
 
         <b-col
@@ -342,6 +422,18 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex'
+import {
+  ValidationProvider,
+} from 'vee-validate'
+import {
+  required,
+} from '@/@core/utils/validations/validations'
+import {
+  reverseVniDate,
+  earlyMonth,
+  nowDate,
+  checkingDateInput,
+} from '@/@core/utils/filter'
 import VIconManipulation from '@core/components/v-icons/IconManipulation.vue'
 import PoAutoService from '@/views/purchases/api-service'
 import PoDetailModal from './components/PODetailModal.vue'
@@ -364,6 +456,7 @@ export default {
   components: {
     PoDetailModal,
     VIconManipulation,
+    ValidationProvider,
   },
   data() {
     return {
@@ -372,11 +465,35 @@ export default {
       options: { year: 'numeric', month: '2-digit', day: '2-digit' },
       poNumber: '',
       codeGroup: '',
-      newDate: new Date(),
-      fromDateCreate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      toDateCreate: new Date(),
-      fromDateShip: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      toDateShip: new Date(),
+      required,
+      fromDateCreate: earlyMonth(),
+      toDateCreate: nowDate(),
+      fromDateApprove: earlyMonth(),
+      toDateApprovee: nowDate(),
+      configFromCreateDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        maxDate: this.toCreateDate,
+      },
+      configToCreateDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromCreateDate,
+      },
+      configFromApproveDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        maxDate: this.toApproveDate,
+      },
+      configToApproveDate: {
+        wrap: true,
+        allowInput: true,
+        dateFormat: 'd/m/Y',
+        minDate: this.fromApproveDate,
+      },
       sttSelected: POdata.poStatus[0].value,
       poStatuses: POdata.poStatus,
       poNumberSelectedList: [],
@@ -445,11 +562,11 @@ export default {
       if (this.allPoList.content) {
         this.rows = this.allPoList.content
         this.rows.forEach(n => {
-          const objIndex = POdata.poStatus.findIndex((obj => obj.value === n.status))
-          n.status = POdata.poStatus[objIndex].text
+          const objIndex = POdata.poStatus.findIndex((obj => obj.id === n.status))
+          n.status = POdata.poStatus[objIndex].label
           n.createAt = new Date(n.createAt)
           let dateString = ('0' + n.createAt.getUTCDate()).slice(-2) + '/'
-            + ('0' + n.createAt.getUTCMonth() + 1).slice(-2) + '/'
+            + ('0' + (n.createAt.getUTCMonth() + 1)).slice(-2) + '/'
             + n.createAt.getUTCFullYear() + ' '
             + ('0' + n.createAt.getUTCHours()).slice(-2) + ':'
             + ('0' + n.createAt.getUTCMinutes()).slice(-2) + ':'
@@ -458,7 +575,7 @@ export default {
 
           n.approveDate = new Date(n.approveDate)
           dateString = ('0' + n.approveDate.getUTCDate()).slice(-2) + '/'
-            + ('0' + n.approveDate.getUTCMonth() + 1).slice(-2) + '/'
+            + ('0' + (n.approveDate.getUTCMonth() + 1)).slice(-2) + '/'
             + n.approveDate.getUTCFullYear() + ' '
             + ('0' + n.approveDate.getUTCHours()).slice(-2) + ':'
             + ('0' + n.approveDate.getUTCMinutes()).slice(-2) + ':'
@@ -469,10 +586,50 @@ export default {
         this.totalRows = this.allPoList.totalElements
       }
     },
+    fromCreateDate() {
+      this.configFromCreateDate = {
+        ...this.configFromCreateDate,
+        minDate: this.fromCreateDate,
+      }
+    },
+    toCreateDate() {
+      this.configToCreateDate = {
+        ...this.configToCreateDate,
+        maxDate: this.toCreateDate,
+      }
+    },
+    fromApproveDate() {
+      this.configFromApproveDate = {
+        ...this.configFromApproveDate,
+        minDate: this.fromApproveDate,
+      }
+    },
+    toApproveDate() {
+      this.configToApproveDate = {
+        ...this.configToApproveDate,
+        maxDate: this.toApproveDate,
+      }
+    },
   },
 
   mounted() {
     this.init()
+    this.configFromCreateDate = {
+      ...this.configFromCreateDate,
+      minDate: this.fromCreateDate,
+    }
+    this.configToCreateDate = {
+      ...this.configToCreateDate,
+      maxDate: this.toCreateDate,
+    }
+    this.configFromApproveDate = {
+      ...this.configFromApproveDate,
+      minDate: this.fromApproveDate,
+    }
+    this.configToApproveDate = {
+      ...this.configToApproveDate,
+      maxDate: this.toApproveDate,
+    }
   },
 
   methods: {
@@ -499,10 +656,10 @@ export default {
       this.GET_PO_SEARCH_LIST_ACTION({
         poAutoNumber: this.poNumber,
         poGroupCode: this.codeGroup,
-        fromCreateDate: this.fromDateCreate.toLocaleString('en-CA', this.options),
-        toCreateDate: this.toDateCreate.toLocaleString('en-CA', this.options),
-        fromApproveDate: this.fromDateShip.toLocaleString('en-CA', this.options),
-        toApproveDate: this.toDateShip.toLocaleString('en-CA', this.options),
+        fromCreateDate: reverseVniDate(this.fromCreateDate),
+        toCreateDate: reverseVniDate(this.toCreateDate),
+        fromApproveDate: reverseVniDate(this.fromApproveDate),
+        toApproveDate: reverseVniDate(this.toApproveDate),
         poStatus: this.sttSelected,
         page: (this.page - 1),
       })
@@ -539,8 +696,26 @@ export default {
         page: (this.page - 1),
       })
     },
-
+    isFromCreateDateValid() {
+      if (!checkingDateInput(this.fromCreateDate)) {
+        this.fromCreateDate = earlyMonth()
+      }
+    },
+    isToCreateDateValid() {
+      if (!checkingDateInput(this.toCreateDate)) {
+        this.toCreateDate = nowDate()
+      }
+    },
+    isFromApproveDateValid() {
+      if (!checkingDateInput(this.fromApproveDate)) {
+        this.fromApproveDate = earlyMonth()
+      }
+    },
+    isToApproveDateValid() {
+      if (!checkingDateInput(this.toApproveDate)) {
+        this.toApproveDate = nowDate()
+      }
+    },
   },
-
 }
 </script>

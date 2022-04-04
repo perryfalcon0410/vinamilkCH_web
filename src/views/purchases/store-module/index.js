@@ -7,6 +7,7 @@ import {
   POST_CANCEL_PO_GETTER,
   POST_APPROVE_PO_GETTER,
   GET_PRODUCT_GETTER,
+  POST_SAVE_PO_GETTER,
 
   // ACTIONS
   GET_PO_LIST_ACTION,
@@ -15,6 +16,7 @@ import {
   POST_CANCEL_PO_ACTION,
   POST_APPROVE_PO_ACTION,
   GET_PRODUCT_ACTION,
+  POST_SAVE_PO_ACTION,
 } from './type'
 
 export default {
@@ -25,6 +27,7 @@ export default {
     productList: [],
     poAutoCancle: 0,
     poAutoApprove: 0,
+    savePoAutoStatus: 0,
   },
   getters: {
     [GET_PO_LIST_GETTER](state) {
@@ -44,6 +47,9 @@ export default {
     },
     [GET_PRODUCT_GETTER](state) {
       return state.productList
+    },
+    [POST_SAVE_PO_GETTER](state) {
+      return state.savePoAutoStatus
     },
   },
   mutations: {},
@@ -94,7 +100,7 @@ export default {
 
     [POST_APPROVE_PO_ACTION]({ state }, val) {
       PoAutoService
-        .approvePoAUto(val)
+        .approvePoAuto(val)
         .then(response => response.data)
         .then(res => {
           if (res.success) {
@@ -110,6 +116,17 @@ export default {
         .then(res => {
           if (res.success) {
             state.productList = res.data
+          }
+        })
+    },
+
+    [POST_SAVE_PO_ACTION]({ state }, val) {
+      PoAutoService
+        .savePoAuto(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.savePoAutoStatus = res.data
           }
         })
     },
