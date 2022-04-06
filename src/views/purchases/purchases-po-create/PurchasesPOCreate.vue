@@ -285,6 +285,7 @@
           <b-button
             class="shadow-brand-1 rounded bg-brand-1 text-white h9 font-weight-bolder"
             variant="someThing"
+            @click="onClickSavePO()"
           >
             <b-icon-download />
             Lưu
@@ -553,7 +554,7 @@ export default {
         }
         this.productQuantityList.push(temp)
       })
-      PoAutoService.approvePoAUto({ productQuantityList: this.productQuantityList }).then(res => {
+      PoAutoService.savePoAuto({ productQuantityList: this.productQuantityList }).then(res => {
         if (res.data.data === 1) {
           console.log('SUCCESS')
         }
