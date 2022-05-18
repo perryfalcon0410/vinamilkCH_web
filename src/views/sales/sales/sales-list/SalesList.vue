@@ -28,7 +28,7 @@
               placeholder:'Tìm sản phẩm (F3) - Vui lòng nhập ít nhất 4 kí tự',
             }"
             :component-attr-class-autosuggest-results="(productsSearchLength < 10) ? 'autosuggest__results check-auto-suggesst' : 'autosuggest__results'"
-            @input="onChangeKeyWord"
+            @keyup.enter="onChangeKeyWord"
             @selected="onClickAddProduct"
             @focus="focusInputProduct"
             @blur="blurInputSearch"
@@ -338,6 +338,7 @@
         @focusInputCustomer="focusInputCustomer"
         @focusInputNote="focusInputNote"
         @focusOrderOnline="focusOrderOnline"
+        @blurInputSearchCustomers="blurInputSearchCustomer"
       />
       <!-- END - Section Form pay -->
 
@@ -914,6 +915,12 @@ export default {
       }
       this.searchOptions.checkBarcode = true
       this.searchOptions.runBarcode = true
+    },
+
+    blurInputSearchCustomer() {
+      console.log('parent')
+      this.$nextTick(() => document.getElementById('autosuggest__input_product').blur())
+      this.runBarcode = true
     },
 
     // Create callback function to receve barcode when the scanner is already done

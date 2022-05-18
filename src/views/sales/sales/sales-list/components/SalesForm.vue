@@ -116,6 +116,7 @@
                   @keyup.enter="onChangeKeyWord"
                   @input="changeInput"
                   @focus="focusInputCustomer"
+                  @blur="blurInputSearchCustomers"
                 >
                   <template
                     slot-scope="{ suggestion }"
@@ -434,7 +435,7 @@
               font-scale="1.7"
               class="mr-1"
             />
-            Thanh toán (F8)
+            Thanh toán (F6)
           </b-button>
           <!-- END - Button pay -->
         </b-col>
@@ -1049,7 +1050,7 @@ export default {
         this.$refs.search.$el.querySelector('input').focus()
       }
 
-      if (e.key === 'F8' && !this.isOpenPayModal) {
+      if (e.key === 'F6' && !this.isOpenPayModal) {
         // check valid type selected online and permission online
         if (this.salemtDeliveryTypeSelected === undefined
           || this.salemtPromotionObjectSelected === undefined
@@ -1417,6 +1418,11 @@ export default {
     },
     focusOrderOnline() {
       this.$emit('focusOrderOnline')
+    },
+
+    blurInputSearchCustomers() {
+      this.$emit('blurInputSearchCustomers')
+      console.log('child')
     },
   },
 }
