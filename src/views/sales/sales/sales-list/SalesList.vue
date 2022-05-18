@@ -918,7 +918,6 @@ export default {
     },
 
     blurInputSearchCustomer() {
-      console.log('parent')
       this.$nextTick(() => document.getElementById('autosuggest__input_product').blur())
       this.runBarcode = true
     },

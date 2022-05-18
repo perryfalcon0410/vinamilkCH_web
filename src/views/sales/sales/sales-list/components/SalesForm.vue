@@ -1422,7 +1422,6 @@ export default {
 
     blurInputSearchCustomers() {
       this.$emit('blurInputSearchCustomers')
-      console.log('child')
     },
   },
 }
