@@ -370,6 +370,7 @@ import { sendToCustomerDisplay } from '@core/utils/utils'
 import { removeVietnameseTones } from '@core/utils/filter'
 import SalesForm from './components/SalesForm.vue'
 // import SalesProducts from './components/SalesProducts.vue'
+
 import {
   SALES,
   // Getter
@@ -924,72 +925,58 @@ export default {
 
     // Create callback function to receve barcode when the scanner is already done
     onBarcodeScanned(barcode) {
-      if (!this.isOpenPayModal && this.runBarcode && barcode.length > 4) {
+      if (!this.isOpenPayModal && this.runBarcode) {
         this.searchOptions.keyWord = ''
         let barcodeParam = barcode
         if (barcodeParam.includes('Enter')) { // remove Enter keyword after scan barcode
           barcodeParam = barcodeParam.slice(0, -5)
         }
-        if (this.searchOptions.checkBarcode) {
-          if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
-            this.searchOptions.keyWord = barcodeParam
-            this.productsSearch = [{ data: null }]
-            this.productsRow = []
-            this.totalPageProductsSearch = 0
-            this.callTopSaleProductsAction(0)
-          }
-        } else if (this.searchOptions.keyWord !== barcodeParam) {
+        if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
           this.searchOptions.keyWord = barcodeParam
-          this.searchOptions.checkBarcode = true
-          this.onChangeKeyWord()
+          this.productsSearch = [{ data: null }]
+          this.productsRow = []
+          this.totalPageProductsSearch = 0
+          this.callTopSaleProductsAction(0)
         }
       }
     },
     onChangeKeyWord() {
-      if (this.searchOptions.keyWord < 1) {
-        this.keyWordExist = ''
+      let keywordSplice = this.searchOptions.keyWord
+      if (this.keyWordExist.length > 0) {
+        keywordSplice = keywordSplice.slice(0, this.keyWordExist.length)
+      }
+      if (this.keyWordExist !== keywordSplice) {
+        // this.runBarcode = false
         this.productsSearch = [{ data: null }]
         this.productsRow = []
         this.totalPageProductsSearch = 0
-      }
-      if (this.searchOptions.keyWord.length >= this.minSearch) {
-        let keywordSplice = this.searchOptions.keyWord
-        if (this.keyWordExist.length > 0) {
-          keywordSplice = keywordSplice.slice(0, this.keyWordExist.length)
-        }
-        if (this.keyWordExist !== keywordSplice) {
-          // this.runBarcode = false
-          this.productsSearch = [{ data: null }]
-          this.productsRow = []
+        if (this.isCheckShopId) {
+          this.keyWordExist = this.searchOptions.keyWord
+          this.isLoading = true
           this.totalPageProductsSearch = 0
-          if (this.isCheckShopId) {
-            this.keyWordExist = this.searchOptions.keyWord
-            this.isLoading = true
-            this.totalPageProductsSearch = 0
-            this.callTopSaleProductsAction(this.searchOptions.page)
-            const el = document.querySelector(':focus')
-            if (el) {
-              el.blur()
-              this.searchOptions.checkBarcode = false
-            }
-          } else {
-            toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
+          this.callTopSaleProductsAction(this.searchOptions.page)
+          const el = document.querySelector(':focus')
+          if (el) {
+            el.blur()
+            this.searchOptions.checkBarcode = false
           }
-        } else if (this.productsRow.length > 0) {
-          let productsFiltered = this.productsRow.filter(product => (product.productCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
+        } else {
+          toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
+        }
+      } else if (this.productsRow.length > 0) {
+        let productsFiltered = this.productsRow.filter(product => (product.productCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase())
                                                             || (product.productName || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()) || (product.barCode || '').toLowerCase().includes(this.searchOptions.keyWord.trim().toLowerCase()))
-          productsFiltered = [...productsFiltered.map(item => ({
-            ...item,
-            name: this.searchOptions.keyWord,
-          }))]
-          this.productsSearch = [{
-            data: productsFiltered,
-          }]
+        productsFiltered = [...productsFiltered.map(item => ({
+          ...item,
+          name: this.searchOptions.keyWord,
+        }))]
+        this.productsSearch = [{
+          data: productsFiltered,
+        }]
 
-          this.productsSearchLength = this.productsSearch[0].data.length
-          if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
-            this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
-          }
+        this.productsSearchLength = this.productsSearch[0].data.length
+        if (this.productsSearch[0].data && this.productsSearch[0].data.length === 1) {
+          this.$nextTick(() => document.getElementById('autosuggest__input_product').dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 })))
         }
       }
     },
