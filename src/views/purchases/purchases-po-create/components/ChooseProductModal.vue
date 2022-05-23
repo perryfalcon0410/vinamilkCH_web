@@ -118,7 +118,7 @@
             <b-pagination
               v-model="pageNumber"
               :total-rows="maxRow"
-              :per-page="maxPage"
+              :per-page="perPage"
               first-number
               last-number
               align="right"
@@ -203,6 +203,7 @@ export default {
       currentPage: 1,
       maxPage: 1,
       maxRow: 1,
+      perPage: 10,
       select: ['Vuetify', 'Programming'],
       items: [
         'Programming',

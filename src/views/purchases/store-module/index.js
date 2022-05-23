@@ -4,18 +4,20 @@ import {
   GET_PO_LIST_GETTER,
   GET_PO_SEARCH_LIST_GETTER,
   GET_PO_AUTO_PRODUCT_GETTER,
+  GET_PRODUCT_GETTER,
+  GET_PO_REQUEST_LIST_GETTER,
   POST_CANCEL_PO_GETTER,
   POST_APPROVE_PO_GETTER,
-  GET_PRODUCT_GETTER,
   POST_SAVE_PO_GETTER,
 
   // ACTIONS
   GET_PO_LIST_ACTION,
   GET_PO_SEARCH_LIST_ACTION,
   GET_PO_AUTO_PRODUCT_ACTION,
+  GET_PRODUCT_ACTION,
+  GET_PO_REQUEST_LIST_ACTION,
   POST_CANCEL_PO_ACTION,
   POST_APPROVE_PO_ACTION,
-  GET_PRODUCT_ACTION,
   POST_SAVE_PO_ACTION,
 } from './type'
 
@@ -25,6 +27,7 @@ export default {
     poList: [],
     poDetailProduct: [],
     productList: [],
+    productRequestList: [],
     poAutoCancle: 0,
     poAutoApprove: 0,
     savePoAutoStatus: 0,
@@ -38,6 +41,9 @@ export default {
     },
     [GET_PO_AUTO_PRODUCT_GETTER](state) {
       return state.poDetailProduct
+    },
+    [GET_PO_REQUEST_LIST_GETTER](state) {
+      return state.productRequestList
     },
     [POST_CANCEL_PO_GETTER](state) {
       return state.poAutoCancle
@@ -86,6 +92,27 @@ export default {
           }
         })
     },
+    [GET_PRODUCT_ACTION]({ state }, val) {
+      PoAutoService
+        .getProduct(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.productList = res.data
+          }
+        })
+    },
+
+    [GET_PO_REQUEST_LIST_ACTION]({ state }, val) {
+      PoAutoService
+        .getProductOfferPo(val)
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            state.productRequestList = res.data
+          }
+        })
+    },
 
     [POST_CANCEL_PO_ACTION]({ state }, val) {
       PoAutoService
@@ -105,17 +132,6 @@ export default {
         .then(res => {
           if (res.success) {
             state.poAutoApprove += res.data
-          }
-        })
-    },
-
-    [GET_PRODUCT_ACTION]({ state }, val) {
-      PoAutoService
-        .getProduct(val)
-        .then(response => response.data)
-        .then(res => {
-          if (res.success) {
-            state.productList = res.data
           }
         })
     },

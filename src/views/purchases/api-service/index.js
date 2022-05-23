@@ -37,4 +37,10 @@ export default {
   savePoAuto(args) {
     return axios.post('/sales/po-auto/save-po', args)
   },
+
+  getProductOfferPo(args) {
+    return axios.get('/sales/po-auto/request-po-list', {
+      params: formatURLParams(args),
+    })
+  },
 }

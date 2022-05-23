@@ -48,15 +48,7 @@
               slot="table-row"
               slot-scope="props"
             >
-              <div v-if="props.column.field === 'slt'">
-                <b-input
-                  type="number"
-                  size="sm"
-                />
-              </div>
-              <div v-else>
-                {{ props.formattedRow[props.column.field] }}
-              </div>
+              {{ props.formattedRow[props.column.field] }}
             </template>
 
             <!-- START - Pagination -->
@@ -306,16 +298,26 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import purchaseData from '@/@db/purchase'
 import PoAutoService from '@/views/purchases/api-service'
 import ChooseProductsModal from './components/ChooseProductModal.vue'
 import CommonInfo from './components/CommonInfo.vue'
+import {
+  PURCHASES,
+
+  GET_PO_REQUEST_LIST_GETTER,
+
+  GET_PO_REQUEST_LIST_ACTION,
+
+} from '../store-module/type'
 
 export default {
   components: {
     ChooseProductsModal,
     CommonInfo,
   },
+
   data() {
     return {
       elementSize: 20,
@@ -330,56 +332,56 @@ export default {
       recommendPoColumns: [
         {
           label: 'Mã SP',
-          field: 'productCode', // custom filed name
+          field: 'MH', // custom filed name
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Tên SP',
-          field: 'productName',
+          field: 'TH',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Đầu kỳ',
-          field: 'firstPeriod',
+          field: 'TDK',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Nhập',
-          field: 'input',
+          field: 'Nhap',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Xuất',
-          field: 'output',
+          field: 'Xuat',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'LKTTT',
-          field: 'lkttt',
+          field: 'LKTT',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'KHTTT',
-          field: 'khttt',
+          field: 'KHTT',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'DMKH',
-          field: 'dmkh',
+          field: 'DMKH',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -393,7 +395,7 @@ export default {
         },
         {
           label: 'Dự trữ(TT)',
-          field: 'tt',
+          field: 'DTTT',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -406,8 +408,8 @@ export default {
           tdClass: 'text-center',
         },
         {
-          label: 'Tồn kho(Max)',
-          field: 'max',
+          label: 'Tồn kho(Next)',
+          field: 'next',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
@@ -421,60 +423,55 @@ export default {
         },
         {
           label: 'Y/c tồn SL',
-          field: 'amountInventory',
+          field: 'YCT',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'PO nhập hàng',
-          field: 'poInput',
+          field: 'HDD',
           sortable: false,
           thClass: 'text-left',
           tdClass: 'text-left',
         },
         {
           label: 'Yêu cầu(QC)',
-          field: 'qc',
+          field: 'QC',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Yêu cầu(SLT)',
-          field: 'slt',
+          field: 'SLT',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'Yêu cầu(Thành tiền)',
-          field: 'totalPaid',
+          field: 'TT',
           sortable: false,
           thClass: 'text-right',
           tdClass: 'text-right',
         },
         {
           label: 'Yêu cầu(Trọng lượng)',
-          field: 'weight',
+          field: 'TL',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
         {
           label: 'CB',
-          field: 'cb',
+          field: 'CB',
           sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center',
         },
       ],
-      recommendPoRows: [
-        {
-          productCode: '04AA10',
-          productName: 'STT dâu ADM GOLD 180ml',
-        },
-      ],
+      recommendPoRows: [],
       // Manual Po
       manualPoColumns: [
         {
@@ -529,7 +526,34 @@ export default {
       ],
     }
   },
+
+  computed: {
+    ...mapGetters(PURCHASES, [
+      GET_PO_REQUEST_LIST_GETTER,
+    ]),
+
+    productRequestList() {
+      return this.GET_PO_REQUEST_LIST_GETTER
+    },
+  },
+
+  watch: {
+    productRequestList() {
+      this.recommendPoRows = this.productRequestList
+    },
+  },
+
+  mounted() {
+    this.init()
+  },
+
   methods: {
+    ...mapActions(PURCHASES, [
+      GET_PO_REQUEST_LIST_ACTION,
+    ]),
+    init() {
+      this.GET_PO_REQUEST_LIST_ACTION()
+    },
     showChooseProductsModal() {
       this.isChooseProductsModal = !this.isChooseProductsModal
     },
