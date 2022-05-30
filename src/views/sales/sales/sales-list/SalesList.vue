@@ -31,7 +31,6 @@
             @keyup.enter="onChangeKeyWord"
             @selected="onClickAddProduct"
             @focus="focusInputProduct"
-            @blur="blurInputSearch"
           >
             <template
               slot-scope="{ suggestion }"
@@ -911,9 +910,6 @@ export default {
       }
     },
     blurInputSearch() {
-      if (this.searchOptions.keyWord.length < this.minSearch) {
-        this.productsSearch = [{ data: null }]
-      }
       this.searchOptions.checkBarcode = true
       this.searchOptions.runBarcode = true
     },
