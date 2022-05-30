@@ -348,8 +348,8 @@
           />
           <b-pagination
             v-model="pageNumber"
-            :total-rows="2"
-            :per-page="10"
+            :total-rows="maxRow"
+            :per-page="5"
             first-number
             last-number
             align="right"
@@ -470,6 +470,7 @@ export default {
       toDateCreate: nowDate(),
       fromDateApprove: earlyMonth(),
       toDateApprovee: nowDate(),
+      maxRow: 1,
       configFromCreateDate: {
         wrap: true,
         allowInput: true,
@@ -555,12 +556,17 @@ export default {
     updateList() {
       return this.POST_CANCEL_PO_GETTER
     },
+
+    getMaxPage() {
+      return this.maxRow
+    },
   },
 
   watch: {
     allPoList() {
       if (this.allPoList.content) {
         this.rows = this.allPoList.content
+        this.maxRow = this.allPoList.totalElements
         this.rows.forEach(n => {
           const objIndex = POdata.poStatus.findIndex((obj => obj.id === n.status))
           n.status = POdata.poStatus[objIndex].label
@@ -683,7 +689,7 @@ export default {
       this.$refs['my-table'].selectedRows.forEach(n => {
         this.poNumberSelectedList.push(n.poAutoNumber)
       })
-      PoAutoService.approvePoAUto({ poAutoNumberList: this.poNumberSelectedList }).then(res => {
+      PoAutoService.approvePoAuto({ poAutoNumberList: this.poNumberSelectedList }).then(res => {
         if (res.data.data === 1) {
           this.GET_PO_LIST_ACTION()
         }
