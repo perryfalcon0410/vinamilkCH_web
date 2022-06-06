@@ -192,7 +192,7 @@
               v-model="customerStatusSelected"
               :options="customerStatusOptions"
               placeholder="Chọn trạng thái"
-              :disabled="canDisableInputField(customer.status)"
+              disabled
               :clearable="false"
             />
           </b-col>

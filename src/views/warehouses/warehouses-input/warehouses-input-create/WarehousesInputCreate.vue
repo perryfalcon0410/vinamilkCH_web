@@ -493,7 +493,7 @@
                 <!-- END - Custom row-->
 
                 <!-- START - Table action bottom -->
-                <div
+                <!-- <div
                   slot="table-actions-bottom"
                   class="m-2"
                 >
@@ -516,7 +516,7 @@
                       </div>
                     </template>
                   </vue-autosuggest>
-                </div>
+                </div> -->
               <!-- END - Table action bottom -->
 
               </vue-good-table>
