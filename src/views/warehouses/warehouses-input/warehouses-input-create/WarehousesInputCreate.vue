@@ -498,13 +498,15 @@
                   class="m-2"
                 >
                   <vue-autosuggest
+                    v-if="statusSearchProductCodeInput().show"
                     ref="searchProduct"
                     v-model="productSearch"
                     :suggestions="products"
                     :input-props="{
                       id:'autosuggest__input_product',
                       class:'form-control w-30',
-                      placeholder:'Nhập mã hoặc tên sản phẩm'
+                      placeholder:'Nhập mã hoặc tên sản phẩm',
+                      disabled: statusSearchProductCodeInput().disabled
                     }"
                     @input="loadProducts"
                     @selected="productSelected"
@@ -1034,7 +1036,11 @@ export default {
     ]),
 
     statusSaveButton() {
-      return this.$permission('WarehousesInputCreate', 'WarehousesInputCreateSave')
+      return this.$permission('WarehousesInputCreate', 'WarehousesInputSearchProduct')
+    },
+    // permission input textbox mã sản phẩm
+    statusSearchProductCodeInput() {
+      return this.$permission('WarehousesInputCreate', 'WarehousesInputSearchProduct')
     },
 
     // clear text in input form in case changes import type
