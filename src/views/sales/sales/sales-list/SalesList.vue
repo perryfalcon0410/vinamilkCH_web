@@ -838,7 +838,7 @@ export default {
     // which emits `start` and `finish` events
     this.$barcodeScanner.setSensitivity(30)
     // Add barcode scan listener and pass the callback function
-    this.$barcodeScanner.init(this.onBarcodeScanned)
+    // this.$barcodeScanner.init(this.onBarcodeScanned)
     // const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, { eventBus: true })
     // if (eventBus) {
     //   eventBus.$on('start', () => { console.log('start') })
@@ -909,10 +909,10 @@ export default {
         this.isSelectedProduct = false
       }
     },
-    blurInputSearch() {
-      this.searchOptions.checkBarcode = true
-      this.searchOptions.runBarcode = true
-    },
+    // blurInputSearch() {
+    //   this.searchOptions.checkBarcode = true
+    //   this.searchOptions.runBarcode = true
+    // },
 
     blurInputSearchCustomer() {
       this.$nextTick(() => document.getElementById('autosuggest__input_product').blur())
@@ -920,22 +920,22 @@ export default {
     },
 
     // Create callback function to receve barcode when the scanner is already done
-    onBarcodeScanned(barcode) {
-      if (!this.isOpenPayModal && this.runBarcode) {
-        this.searchOptions.keyWord = ''
-        let barcodeParam = barcode
-        if (barcodeParam.includes('Enter')) { // remove Enter keyword after scan barcode
-          barcodeParam = barcodeParam.slice(0, -5)
-        }
-        if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
-          this.searchOptions.keyWord = barcodeParam
-          this.productsSearch = [{ data: null }]
-          this.productsRow = []
-          this.totalPageProductsSearch = 0
-          this.callTopSaleProductsAction(0)
-        }
-      }
-    },
+    // onBarcodeScanned(barcode) {
+    //   if (!this.isOpenPayModal && this.runBarcode) {
+    //     this.searchOptions.keyWord = ''
+    //     let barcodeParam = barcode
+    //     if (barcodeParam.includes('Enter')) { // remove Enter keyword after scan barcode
+    //       barcodeParam = barcodeParam.slice(0, -5)
+    //     }
+    //     if (this.editOnlinePermission || this.isOffline === true || (this.editManualPermission && this.onlineOrderId === null)) {
+    //       this.searchOptions.keyWord = barcodeParam
+    //       this.productsSearch = [{ data: null }]
+    //       this.productsRow = []
+    //       this.totalPageProductsSearch = 0
+    //       this.callTopSaleProductsAction(0)
+    //     }
+    //   }
+    // },
     onChangeKeyWord() {
       let keywordSplice = this.searchOptions.keyWord
       if (this.keyWordExist.length > 0) {
@@ -951,11 +951,6 @@ export default {
           this.isLoading = true
           this.totalPageProductsSearch = 0
           this.callTopSaleProductsAction(this.searchOptions.page)
-          const el = document.querySelector(':focus')
-          if (el) {
-            el.blur()
-            this.searchOptions.checkBarcode = false
-          }
         } else {
           toasts.error('Vui lòng chọn khách hàng trước khi chọn sản phẩm')
         }
