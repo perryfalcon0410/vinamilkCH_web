@@ -9,7 +9,7 @@ export default [
   //   resource: 'Purchases',
   // },
   {
-  title: 'Purchases',
+    title: 'Purchases',
     icon: 'ShoppingCartIcon',
     tag: '5',
     tagVariant: 'light-warning',
