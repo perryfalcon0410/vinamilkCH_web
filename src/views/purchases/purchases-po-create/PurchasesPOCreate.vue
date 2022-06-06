@@ -578,11 +578,7 @@ export default {
         }
         this.productQuantityList.push(temp)
       })
-      PoAutoService.savePoAuto({ productQuantityList: this.productQuantityList }).then(res => {
-        if (res.data.data === 1) {
-          console.log('SUCCESS')
-        }
-      })
+      PoAutoService.savePoAuto({ productQuantityList: this.productQuantityList })
     },
   },
 }
