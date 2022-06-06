@@ -937,7 +937,6 @@ export default {
     //   }
     // },
     onChangeKeyWord() {
-      console.log(this.searchOptions.keyWord)
       let keywordSplice = this.searchOptions.keyWord
       if (this.keyWordExist.length > 0) {
         keywordSplice = keywordSplice.slice(0, this.keyWordExist.length)
