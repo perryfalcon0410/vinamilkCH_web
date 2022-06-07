@@ -76,7 +76,7 @@
         class="pt-2"
         style-class="vgt-table striped"
         :pagination-options="{
-          enabled: true
+          enabled: false
         }"
         line-numbers
         :select-options="{
@@ -106,7 +106,7 @@
         </template>
 
         <!-- START - Pagination -->
-        <template
+        <!-- <template
           slot="pagination-bottom"
         >
           <b-row
@@ -141,7 +141,7 @@
               </template>
             </b-pagination>
           </b-row>
-        </template>
+        </template> -->
       <!-- END - Pagination -->
       </vue-good-table>
       <b-row class="justify-content-center mt-4 mr-1">
@@ -200,10 +200,10 @@ export default {
       poSelectedList: [],
       userInputMap: [],
       poPassingValue: [],
-      currentPage: 1,
-      maxPage: 1,
-      maxRow: 1,
-      perPage: 10,
+      // currentPage: 1,
+      // maxPage: 1,
+      // maxRow: 1,
+      // perPage: 10,
       select: ['Vuetify', 'Programming'],
       items: [
         'Programming',
@@ -260,11 +260,11 @@ export default {
   watch: {
     productList() {
       this.rows = []
-      this.productList.content.forEach(n => {
+      this.productList.forEach(n => {
         n.userInput = null
       })
-      this.rows = this.productList.content
-      this.maxRow = this.productList.totalElements
+      this.rows = this.productList
+      // this.maxRow = this.productList.totalElements
     },
     getPassValue() {
       this.poPassingValue = this.pochooselist
@@ -284,8 +284,8 @@ export default {
     },
     init() {
       this.GET_PRODUCT_ACTION({
-        page: (this.currentPage - 1),
-        size: 10,
+        // page: (this.currentPage - 1),
+        // size: 10,
       })
     },
     onClickChooseProduct() {
@@ -295,20 +295,20 @@ export default {
       this.$emit('close')
       this.$emit('passvalue', this.poSelectedList)
     },
-    pageChanged(page) {
-      this.$refs['my-table'].selectedRows.forEach(n => {
-        this.poSelectedList.push(n)
-      })
-      this.GET_PRODUCT_ACTION({
-        page: (page.currentPage - 1),
-        size: 10,
-      })
-    },
+    // pageChanged(page) {
+    //   this.$refs['my-table'].selectedRows.forEach(n => {
+    //     this.poSelectedList.push(n)
+    //   })
+    //   this.GET_PRODUCT_ACTION({
+    //     page: (page.currentPage - 1),
+    //     size: 10,
+    //   })
+    // },
     searchWithKeyword() {
       this.GET_PRODUCT_ACTION({
         keyword: this.searchKeyword,
-        page: (this.currentPage - 1),
-        size: 10,
+        // page: (this.currentPage - 1),
+        // size: 10,
       })
     },
   },

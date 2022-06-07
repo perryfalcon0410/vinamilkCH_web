@@ -9,7 +9,7 @@
         sm="4"
       >
         <label>
-          Thời gian:
+          Thời gian: {{ basicInfo.dayInMonth }}
         </label>
       </b-col>
       <b-col
@@ -18,7 +18,7 @@
         sm="4"
       >
         <label>
-          Số ngày bán hàng thực tế:
+          Số ngày bán hàng thực tế: {{ basicInfo.saleDayInMonth }}
         </label>
       </b-col>
       <b-col
@@ -27,7 +27,7 @@
         sm="4"
       >
         <label>
-          Số ngày bán hàng trong tháng:
+          Số ngày bán hàng trong tháng: {{ basicInfo.salePlanInMonth }}
         </label>
       </b-col>
     </v-card-actions>
@@ -36,11 +36,30 @@
 
 <script>
 import VCardActions from '@/@core/components/v-card-actions/VCardActions.vue'
+import PoAutoService from '@/views/purchases/api-service'
 
 export default {
   components: {
     VCardActions,
   },
-
+  data() {
+    return {
+      basicInfo: {},
+    }
+  },
+  mounted() {
+    this.init()
+  },
+  methods: {
+    init() {
+      this.basicInfo = PoAutoService.getPoCreateBasicInfo()
+        .then(response => response.data)
+        .then(res => {
+          if (res.success) {
+            this.basicInfo = res.data
+          }
+        })
+    },
+  },
 }
 </script>

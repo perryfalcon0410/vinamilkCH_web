@@ -43,4 +43,10 @@ export default {
       params: formatURLParams(args),
     })
   },
+
+  getPoCreateBasicInfo(args) {
+    return axios.get('/sales/po-auto/po-create-basic-info', {
+      params: formatURLParams(args),
+    })
+  },
 }

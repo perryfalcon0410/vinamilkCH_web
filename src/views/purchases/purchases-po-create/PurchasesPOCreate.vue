@@ -324,7 +324,7 @@ export default {
       pageNumber: 1,
       paginationOptions: purchaseData.pagination,
       isChooseProductsModal: false,
-      selected: 0,
+      selected: 'A',
       options: purchaseData.poType,
       poChooseList: [],
       manualRows: [],
